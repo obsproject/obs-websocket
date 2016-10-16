@@ -1,4 +1,5 @@
 #include "WSServer.h"
+#include "WSRequestHandler.h"
 #include <QtWebSockets/QWebSocketServer>
 #include <QtWebSockets/QWebSocket>
 #include <QtCore/QDebug>
@@ -53,29 +54,9 @@ void WSServer::processTextMessage(QString textMessage) {
 		const char *msg = textMessage.toLocal8Bit();
 		blog(LOG_INFO, "[obs-websockets] new message : %s", msg);
 
-		obs_data_t *request = obs_data_create_from_json(msg);
-		if (!request) {
-			blog(LOG_ERROR, "[obs-websockets] invalid JSON payload for '%s'", msg);
-		}
-
-		const char *requestType = obs_data_get_string(request, "request");
-		if (strcmp(requestType, "scene_change") == 0) {
-			const char *sceneName = obs_data_get_string(request, "switch_to");
-
-			blog(LOG_INFO, "[obs-websockets] processing scene change request to %s", sceneName);
-
-			obs_source_t *source = obs_get_source_by_name(sceneName);
-
-			if (source) {
-				obs_frontend_set_current_scene(source);
-			}
-			else {
-				blog(LOG_ERROR, "[obs-websockets] requested scene '%s' doesn't exist !", sceneName);
-			}
-			
-		}
-
-		obs_data_release(request);
+		WSRequestHandler *handler = new WSRequestHandler(pSender);
+		handler->handleMessage(msg);
+		delete handler;
 	}
 }
 

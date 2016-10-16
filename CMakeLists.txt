@@ -12,10 +12,16 @@ find_package(Qt5WebSockets REQUIRED)
 
 set(obs-websocket_SOURCES 
 	obs-websocket.cpp
-	WSServer.cpp)
+	WSServer.cpp
+	WSRequestHandler.cpp
+	WSEvents.cpp
+	Utils.cpp)
 
 set(obs-websocket_HEADERS
-	WSServer.h)
+	WSServer.h
+	WSRequestHandler.h
+	WSEvents.h
+	Utils.h)
 
 add_library(obs-websocket MODULE 
 	${obs-websocket_SOURCES}
