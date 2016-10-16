@@ -81,6 +81,8 @@ void WSRequestHandler::HandleSetCurrentScene(WSRequestHandler *owner) {
 		blog(LOG_ERROR, "[obs-websockets] requested scene '%s' doesn't exist !", sceneName);
 		owner->SendErrorResponse("requested scene does not exist");
 	}
+
+	obs_source_release(source);
 }
 
 void WSRequestHandler::HandleGetCurrentScene(WSRequestHandler *owner) {
@@ -93,6 +95,7 @@ void WSRequestHandler::HandleGetCurrentScene(WSRequestHandler *owner) {
 
 	owner->SendOKResponse(data);
 	obs_data_release(data);
+	obs_source_release(source);
 }
 
 void WSRequestHandler::HandleGetStreamingStatus(WSRequestHandler *owner) {

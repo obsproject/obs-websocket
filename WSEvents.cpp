@@ -60,6 +60,7 @@ void WSEvents::broadcastUpdate(const char *updateType, obs_data_t *additionalFie
 	_srv->broadcast(obs_data_get_json(update));
 
 	obs_data_release(update);
+	obs_source_release(source);
 }
 
 void WSEvents::OnSceneChange() {
@@ -73,6 +74,7 @@ void WSEvents::OnSceneChange() {
 	broadcastUpdate("SwitchScenes", data);
 
 	obs_data_release(data);
+	obs_source_release(source);
 }
 
 void WSEvents::OnStreamStarting() {
@@ -179,4 +181,5 @@ void WSEvents::StreamStatus() {
 	broadcastUpdate("StreamStatus", data);
 
 	obs_data_release(data);
+	obs_output_release(streamOutput);
 }
