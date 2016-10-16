@@ -27,6 +27,7 @@ class WSEvents : public QObject
 		void broadcastUpdate(const char *updateType, obs_data_t *additionalFields);
 
 		void OnSceneChange();
+		void OnSceneListChange();
 
 		void OnStreamStarting();
 		void OnStreamStarted();
@@ -37,6 +38,8 @@ class WSEvents : public QObject
 		void OnRecordingStarted();
 		void OnRecordingStopping();
 		void OnRecordingStopped();
+
+		void OnExit();
 };
 
 #endif // WSEVENTS_H

@@ -18,6 +18,7 @@ set(obs-websocket_SOURCES
 	Utils.cpp)
 
 set(obs-websocket_HEADERS
+	obs-websocket.h
 	WSServer.h
 	WSRequestHandler.h
 	WSEvents.h

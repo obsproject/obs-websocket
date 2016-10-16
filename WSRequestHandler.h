@@ -4,8 +4,6 @@
 #include <map>
 #include <QtWebSockets/QWebSocket>
 #include <obs-frontend-api.h>
-#include "Utils.h"
-#include "WSServer.h"
 
 class WSRequestHandler
 {
@@ -24,10 +22,14 @@ class WSRequestHandler
 
 		void SendOKResponse(obs_data_t *additionalFields = NULL);
 		void SendErrorResponse(const char *errorMessage);
-		
 		static void ErrNotImplemented(WSRequestHandler *owner);
+		
+		static void HandleGetVersion(WSRequestHandler *owner);
+		static void HandleGetAuthRequired(WSRequestHandler *owner);
+		static void HandleAuthenticate(WSRequestHandler *owner);
 		static void HandleSetCurrentScene(WSRequestHandler *owner);
 		static void HandleGetCurrentScene(WSRequestHandler *owner);
+		static void HandleGetSceneList(WSRequestHandler *owner);
 		static void HandleGetStreamingStatus(WSRequestHandler *owner);
 		static void HandleStartStopStreaming(WSRequestHandler *owner);
 		static void HandleStartStopRecording(WSRequestHandler *owner);

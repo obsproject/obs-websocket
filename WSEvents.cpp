@@ -5,7 +5,7 @@ WSEvents::WSEvents(WSServer *server) {
 	obs_frontend_add_event_callback(WSEvents::FrontendEventHandler, this);
 
 	QTimer *statusTimer = new QTimer();
-	connect(statusTimer, SIGNAL(timeout()), this, SLOT(StreamStatus));
+	connect(statusTimer, SIGNAL(timeout()), this, SLOT(StreamStatus()));
 	statusTimer->start(1000);
 }
 
@@ -17,8 +17,13 @@ void WSEvents::FrontendEventHandler(enum obs_frontend_event event, void *private
 {
 	WSEvents *owner = static_cast<WSEvents *>(private_data);
 
+	// TODO : implement SourceChanged, SourceOrderChanged and RepopulateSources
+
 	if (event == OBS_FRONTEND_EVENT_SCENE_CHANGED) {
 		owner->OnSceneChange();
+	}
+	else if (event == OBS_FRONTEND_EVENT_SCENE_LIST_CHANGED) {
+		owner->OnSceneListChange();
 	}
 	else if (event == OBS_FRONTEND_EVENT_STREAMING_STARTING) {
 		owner->OnStreamStarting();
@@ -43,6 +48,9 @@ void WSEvents::FrontendEventHandler(enum obs_frontend_event event, void *private
 	}
 	else if (event == OBS_FRONTEND_EVENT_RECORDING_STOPPED) {
 		owner->OnRecordingStopped();
+	}
+	else if (event == OBS_FRONTEND_EVENT_EXIT) {
+		owner->OnExit();
 	}
 }
 
@@ -75,6 +83,10 @@ void WSEvents::OnSceneChange() {
 
 	obs_data_release(data);
 	obs_source_release(source);
+}
+
+void WSEvents::OnSceneListChange() {
+	broadcastUpdate("ScenesChanged");
 }
 
 void WSEvents::OnStreamStarting() {
@@ -130,21 +142,20 @@ void WSEvents::OnRecordingStopped() {
 	broadcastUpdate("RecordingStopped");
 }
 
-// TODO : Add a timer to trigger StreamStatus
-void WSEvents::StreamStatus() {
-	blog(LOG_INFO, "top StreamStatus");
+void WSEvents::OnExit() {
+	// New update type specific to OBS Studio
+	broadcastUpdate("Exiting");
+}
 
+void WSEvents::StreamStatus() {
 	bool streamingActive = obs_frontend_streaming_active();
 	bool recordingActive = obs_frontend_recording_active();
 
 	obs_output_t *streamOutput = obs_frontend_get_streaming_output();
 
-	if (!streamOutput) {
-		blog(LOG_INFO, "not this time. no stream output running.");
+	if (!streamOutput || !streamingActive || !recordingActive) {
 		return;
 	}
-
-	uint64_t bytesPerSec = 0;
 
 	uint64_t bytesSent = obs_output_get_total_bytes(streamOutput);
 	uint64_t bytesSentTime = os_gettime_ns();
@@ -160,22 +171,22 @@ void WSEvents::StreamStatus() {
 	double timePassed = double(bytesSentTime - _lastBytesSentTime) / 1000000000.0;
 
 	uint64_t bitsPerSec = bitsBetween / timePassed;
-	bytesPerSec = bitsPerSec / 8;
+	uint64_t bytesPerSec = bitsPerSec / 8;
 
-	uint64_t totalStreamTime = (os_gettime_ns() - _streamStartTime); // TODO : convert to seconds
-	
-	uint64_t droppedFrames = obs_output_get_frames_dropped(streamOutput);
-	uint64_t totalFrames = obs_output_get_total_frames(streamOutput);
+	_lastBytesSent = bytesSent;
+	_lastBytesSentTime = bytesSentTime;
+
+	uint64_t totalStreamTime = (os_gettime_ns() - _streamStartTime) / 1000000000;
 
 	obs_data_t *data = obs_data_create();
 	obs_data_set_bool(data, "streaming", streamingActive);
-	obs_data_set_bool(data, "recording", recordingActive); // New in OBS Studio
+	obs_data_set_bool(data, "recording", recordingActive);
 	obs_data_set_bool(data, "preview-only", false); // Retrocompat with OBSRemote
-	obs_data_set_int(data, "bytes-per-sec", bytesPerSec);
-	obs_data_set_double(data, "strain", 0.0); // TODO
+	obs_data_set_int(data, "bytes-per-sec", bytesPerSec); // BUG : Computation seems buggy
+	obs_data_set_double(data, "strain", 0.0); // dafuq is strain
 	obs_data_set_int(data, "total-stream-time", totalStreamTime);
-	obs_data_set_int(data, "num-total-frames", totalFrames);
-	obs_data_set_int(data, "num-dropped-frames", droppedFrames);
+	obs_data_set_int(data, "num-total-frames", obs_output_get_total_frames(streamOutput));
+	obs_data_set_int(data, "num-dropped-frames", obs_output_get_frames_dropped(streamOutput));
 	obs_data_set_double(data, "fps", obs_get_active_fps());
 
 	broadcastUpdate("StreamStatus", data);

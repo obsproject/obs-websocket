@@ -1,11 +1,17 @@
 #include "WSRequestHandler.h"
+#include "obs-websocket.h"
+#include "Utils.h"
 
 WSRequestHandler::WSRequestHandler(QWebSocket *client) {
 	_client = client;
 
+	messageMap["GetVersion"] = WSRequestHandler::HandleGetVersion;
+	messageMap["GetAuthRequired"] = WSRequestHandler::HandleGetAuthRequired;
+	messageMap["Authenticate"] = WSRequestHandler::HandleAuthenticate;
+
 	messageMap["SetCurrentScene"] = WSRequestHandler::HandleSetCurrentScene;
 	messageMap["GetCurrentScene"] = WSRequestHandler::HandleGetCurrentScene;
-	messageMap["GetSceneList"] = WSRequestHandler::ErrNotImplemented;
+	messageMap["GetSceneList"] = WSRequestHandler::HandleGetSceneList;
 	messageMap["SetSourceOrder"] = WSRequestHandler::ErrNotImplemented;
 	messageMap["SetSourceRender"] = WSRequestHandler::ErrNotImplemented;
 	messageMap["SetSceneItemPositionAndSize"] = WSRequestHandler::ErrNotImplemented;
@@ -69,6 +75,41 @@ void WSRequestHandler::SendErrorResponse(const char *errorMessage) {
 	obs_data_release(response);
 }
 
+void WSRequestHandler::HandleGetVersion(WSRequestHandler *owner) {
+	obs_data_t *data = obs_data_create();
+	obs_data_set_double(data, "version", OBS_WEBSOCKET_VERSION);
+
+	owner->SendOKResponse(data);
+
+	obs_data_release(data);
+}
+
+void WSRequestHandler::HandleGetAuthRequired(WSRequestHandler *owner) {
+	bool authRequired = false; // Auth isn't implemented yet
+	
+	obs_data_t *data = obs_data_create();
+	obs_data_set_bool(data, "authRequired", authRequired);
+	if (authRequired) {
+		// Just here for protocol doc
+		obs_data_set_string(data, "challenge", "");
+		obs_data_set_string(data, "salt", "");
+	}
+
+	owner->SendOKResponse(data);
+
+	obs_data_release(data);
+}
+
+void WSRequestHandler::HandleAuthenticate(WSRequestHandler *owner) {
+	const char *auth = obs_data_get_string(owner->_requestData, "auth");
+	if (!auth) {
+		owner->SendErrorResponse("auth not specified!");
+		return;
+	}
+
+	owner->SendOKResponse();
+}
+
 void WSRequestHandler::HandleSetCurrentScene(WSRequestHandler *owner) {
 	const char *sceneName = obs_data_get_string(owner->_requestData, "scene-name");
 	obs_source_t *source = obs_get_source_by_name(sceneName);
@@ -78,7 +119,6 @@ void WSRequestHandler::HandleSetCurrentScene(WSRequestHandler *owner) {
 		owner->SendOKResponse();
 	}
 	else {
-		blog(LOG_ERROR, "[obs-websockets] requested scene '%s' doesn't exist !", sceneName);
 		owner->SendErrorResponse("requested scene does not exist");
 	}
 
@@ -96,6 +136,16 @@ void WSRequestHandler::HandleGetCurrentScene(WSRequestHandler *owner) {
 	owner->SendOKResponse(data);
 	obs_data_release(data);
 	obs_source_release(source);
+}
+
+void WSRequestHandler::HandleGetSceneList(WSRequestHandler *owner) {
+	obs_data_t *data = obs_data_create();
+	obs_data_set_string(data, "current-scene", obs_source_get_name(obs_frontend_get_current_scene()));
+	obs_data_set_array(data, "scenes", Utils::GetScenes());
+
+	owner->SendOKResponse(data);
+
+	obs_data_release(data);
 }
 
 void WSRequestHandler::HandleGetStreamingStatus(WSRequestHandler *owner) {
