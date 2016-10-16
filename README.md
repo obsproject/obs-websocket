@@ -1,4 +1,4 @@
-obs-websockets
+obs-websocket
 ==============
 OBS Studio remote control made easy.
 
