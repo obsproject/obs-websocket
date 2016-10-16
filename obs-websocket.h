@@ -1,0 +1,6 @@
+#ifndef OBSWEBSOCKET_H
+#define OBSWEBSOCKET_H
+
+#define OBS_WEBSOCKET_VERSION 0.2
+
+#endif // OBSWEBSOCKET_H
