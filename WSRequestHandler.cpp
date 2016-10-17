@@ -13,7 +13,7 @@ WSRequestHandler::WSRequestHandler(QWebSocket *client) {
 	messageMap["GetCurrentScene"] = WSRequestHandler::HandleGetCurrentScene;
 	messageMap["GetSceneList"] = WSRequestHandler::HandleGetSceneList;
 	messageMap["SetSourceOrder"] = WSRequestHandler::ErrNotImplemented;
-	messageMap["SetSourceRender"] = WSRequestHandler::ErrNotImplemented;
+	messageMap["SetSourceRender"] = WSRequestHandler::HandleSetSourceRender;
 	messageMap["SetSceneItemPositionAndSize"] = WSRequestHandler::ErrNotImplemented;
 	messageMap["GetStreamingStatus"] = WSRequestHandler::HandleGetStreamingStatus;
 	messageMap["StartStopStreaming"] = WSRequestHandler::HandleStartStopStreaming;
@@ -146,6 +146,29 @@ void WSRequestHandler::HandleGetSceneList(WSRequestHandler *owner) {
 	owner->SendOKResponse(data);
 
 	obs_data_release(data);
+}
+
+void WSRequestHandler::HandleSetSourceRender(WSRequestHandler *owner) {
+	const char *itemName = obs_data_get_string(owner->_requestData, "source");
+	bool isVisible = obs_data_get_bool(owner->_requestData, "render");
+	if (itemName == NULL) {
+		owner->SendErrorResponse("invalid request parameters");
+		return;
+	}
+
+	obs_source_t* currentScene = obs_frontend_get_current_scene();
+	
+	obs_sceneitem_t *sceneItem = Utils::GetSceneItemFromName(currentScene, itemName);
+	if (sceneItem != NULL) {
+		obs_sceneitem_set_visible(sceneItem, isVisible);
+		obs_sceneitem_release(sceneItem);
+		owner->SendOKResponse();
+	}
+	else {
+		owner->SendErrorResponse("specified scene item doesn't exist");
+	}
+
+	obs_source_release(currentScene);
 }
 
 void WSRequestHandler::HandleGetStreamingStatus(WSRequestHandler *owner) {

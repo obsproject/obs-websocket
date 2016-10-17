@@ -1,17 +1,19 @@
 #include "Utils.h"
 
-bool enum_scene_items(obs_scene_t *scene, obs_sceneitem_t *currentItem, void *param) {
-	obs_data_array_t *data = static_cast<obs_data_array *>(param);
-	obs_data_array_push_back(data, Utils::GetSceneItemData(currentItem));
-	return true;
-}
-
 obs_data_array_t* Utils::GetSceneItems(obs_source_t *source) {
 	obs_data_array_t *items = obs_data_array_create();
 	obs_scene_t *scene = obs_scene_from_source(source);
+	if (scene == NULL) {
+		return NULL;
+	}
 
-	obs_scene_enum_items(scene, enum_scene_items, items);
+	obs_scene_enum_items(scene, [](obs_scene_t *scene, obs_sceneitem_t *currentItem, void *param) {
+		obs_data_array_t *data = static_cast<obs_data_array_t *>(param);
+		obs_data_array_push_back(data, GetSceneItemData(currentItem));
+		return true;
+	}, items);
 
+	obs_scene_release(scene);
 	return items;
 }
 
@@ -37,6 +39,38 @@ obs_data_t* Utils::GetSceneItemData(obs_sceneitem_t *item) {
 	obs_data_set_bool(data, "render", obs_sceneitem_visible(item));
 
 	return data;
+}
+
+
+obs_sceneitem_t* Utils::GetSceneItemFromName(obs_source_t* source, const char* name) {
+	struct current_search {
+		const char* query;
+		obs_sceneitem_t* result;
+	};
+
+	current_search search;
+	search.query = name;
+	search.result = NULL;
+
+	obs_scene_t *scene = obs_scene_from_source(source);
+	if (scene == NULL) {
+		return NULL;
+	}
+
+	obs_scene_enum_items(scene, [](obs_scene_t *scene, obs_sceneitem_t *currentItem, void *param) {
+		current_search *search = static_cast<current_search *>(param);
+		
+		const char* currentItemName = obs_source_get_name(obs_sceneitem_get_source(currentItem));
+		if (strcmp(currentItemName, search->query) == 0) {
+			search->result = currentItem;
+			obs_sceneitem_addref(search->result);
+			return false;
+		}
+
+		return true;
+	}, &search);
+
+	return search.result;
 }
 
 obs_data_array_t* Utils::GetScenes() {
