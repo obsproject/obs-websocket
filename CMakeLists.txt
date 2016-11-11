@@ -10,11 +10,17 @@ find_package(LibObs REQUIRED)
 find_package(Qt5Core REQUIRED)
 find_package(Qt5WebSockets REQUIRED)
 
+set(OBS_FRONTEND_LIB "OBS_FRONTEND_LIB-NOTFOUND" CACHE FILEPATH "OBS frontend library")
+if(OBS_FRONTEND_LIB EQUAL "OBS_FRONTEND_LIB-NOTFOUND")
+	message(FATAL_ERROR "Could not find OBS Frontend API\'s library !")
+endif()
+
 set(obs-websocket_SOURCES 
 	obs-websocket.cpp
 	WSServer.cpp
 	WSRequestHandler.cpp
 	WSEvents.cpp
+	Config.cpp
 	Utils.cpp)
 
 set(obs-websocket_HEADERS
@@ -22,6 +28,7 @@ set(obs-websocket_HEADERS
 	WSServer.h
 	WSRequestHandler.h
 	WSEvents.h
+	Config.h
 	Utils.h)
 
 add_library(obs-websocket MODULE 
