@@ -1,6 +1,6 @@
 obs-websocket
 ==============
-OBS Studio remote control made easy.
+Websocket API for OBS Studio.
 
 ## Build prerequisites
 You need QT 5.7 (with QtWebSockets), CMake, and a working development environment for OBS Studio installed on your computer.
