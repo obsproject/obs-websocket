@@ -54,6 +54,18 @@ Recording is stopping but isn't completely stopped yet.
 *New in OBS Studio*  
 Recording has been stopped successfully.
 
+#### "StreamStatus"
+Sent every second with those additional fields :  
+- **streaming** (bool) : streaming state
+- **recording** (bool) : recording state
+- **preview-only** (bool) : always false.
+- **bytes-per-sec** (integer) : during streaming, amount of data (in bytes) transmitted by the stream encoder
+- **strain** (double) : i have no idea what this is
+- **total-stream-time** (integer) : total time since the beginning of streaming
+- **num-total-frames** (integer) : total number of frames transmitted since the beginning
+- **num-dropped-frames** (integer) : number of frames dropped by the encoder for the current streaming session
+- **fps** (double) : current framerate
+
 #### "Exiting"
 *New in OBS Studio*  
 OBS is exiting.
