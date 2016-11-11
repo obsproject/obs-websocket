@@ -17,7 +17,7 @@ Additional fields will be present in the event message if the event type require
 
 ### Event types
 #### "SwitchScenes" 
-OBS is switching to another scene.
+OBS is switching to another scene.  
 Additional fields :
 - **scene-name** : the name of the scene being switched to
 
@@ -35,27 +35,27 @@ Streaming has been started successfully.
 Streaming is stopping but isn't completely stopped yet.
 
 #### "StreamStopped"
-*New in OBS Studio*
+*New in OBS Studio*  
 Streaming has been stopped successfully.
 
 #### "RecordingStarting"
-*New in OBS Studio*
+*New in OBS Studio*  
 Recording is starting but isn't completely started yet.
 
 #### "RecordingStarted"
-*New in OBS Studio*
+*New in OBS Studio*  
 Recording has been started successfully.
 
 #### "RecordingStopping"
-*New in OBS Studio*
+*New in OBS Studio*  
 Recording is stopping but isn't completely stopped yet.
 
 #### "RecordingStopped"
-*New in OBS Studio*
+*New in OBS Studio*  
 Recording has been stopped successfully.
 
 #### "Exiting"
-*New in OBS Studio*
+*New in OBS Studio*  
 OBS is exiting.
 
 ## Requests

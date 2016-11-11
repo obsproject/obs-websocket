@@ -12,8 +12,8 @@ In CMake, you'll need to fill these CMake variables :
 - **LIBOBS_LIB** (filepath) : location of the obs.lib file
 - **OBS_FRONTEND_LIB** (filepath) : location of the obs-frontend-api.lib file
 
-After building the obs-websocket plugin's binary, copy its Qt dependencies (QtCore, QtNetwork and QtWebSockets library binaries)in the same folder.
+After building the obs-websocket plugin's binary, copy its Qt dependencies (QtCore, QtNetwork and QtWebSockets library binaries) in the same folder.
 
 ## How to use
-There's currently no frontend or language API available for obs-websocket. However, the full protocol reference is documented in the [PROTOCOL.md](PROTOCOL.md) file.
+There's currently no frontend or language API available for obs-websocket. However, the full protocol reference is documented in the [PROTOCOL.md](PROTOCOL.md) file.  
 A simple websocket client can connect to the plugin's embedded server.
