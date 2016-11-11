@@ -1,8 +1,14 @@
 #include "WSRequestHandler.h"
 #include "obs-websocket.h"
+#include "Config.h"
 #include "Utils.h"
 
-WSRequestHandler::WSRequestHandler(QWebSocket *client) {
+WSRequestHandler::WSRequestHandler(QWebSocket *client) :
+	_authenticated(false),
+	_messageId(0),
+	_requestType(""),
+	_requestData(nullptr)
+{
 	_client = client;
 
 	messageMap["GetVersion"] = WSRequestHandler::HandleGetVersion;
@@ -21,18 +27,42 @@ WSRequestHandler::WSRequestHandler(QWebSocket *client) {
 	messageMap["ToggleMute"] = WSRequestHandler::ErrNotImplemented;
 	messageMap["GetVolumes"] = WSRequestHandler::ErrNotImplemented;
 	messageMap["SetVolume"] = WSRequestHandler::ErrNotImplemented;
+
+	messageMap["GetTransitionList"] = WSRequestHandler::HandleGetTransitionList;
+	messageMap["GetCurrentTransition"] = WSRequestHandler::HandleGetCurrentTransition;
+	messageMap["SetCurrentTransition"] = WSRequestHandler::HandleSetCurrentTransition;
+
+	authNotRequired.insert("GetVersion");
+	authNotRequired.insert("GetAuthRequired");
+	authNotRequired.insert("Authenticate");
+
+	blog(LOG_INFO, "[obs-websockets] new client connected from %s:%d", _client->peerAddress().toString().toLocal8Bit(), _client->peerPort());
+
+	connect(_client, &QWebSocket::textMessageReceived, this, &WSRequestHandler::processTextMessage);
+	connect(_client, &QWebSocket::disconnected, this, &WSRequestHandler::socketDisconnected);
 }
 
-void WSRequestHandler::handleMessage(const char *message) {
-	_requestData = obs_data_create_from_json(message);
+void WSRequestHandler::processTextMessage(QString textMessage) {
+	QByteArray msgData = textMessage.toLocal8Bit();
+	const char *msg = msgData;
+
+	_requestData = obs_data_create_from_json(msg);
 	if (!_requestData) {
-		blog(LOG_ERROR, "[obs-websockets] invalid JSON payload for '%s'", message);
+		blog(LOG_ERROR, "[obs-websockets] invalid JSON payload for '%s'", msg);
 		SendErrorResponse("invalid JSON payload");
 		return;
 	}
 
 	_requestType = obs_data_get_string(_requestData, "request-type");
 	_messageId = obs_data_get_int(_requestData, "message-id");
+
+	if (Config::Current()->AuthRequired 
+		&& !_authenticated 
+		&& authNotRequired.find(_requestType) == authNotRequired.end()) 
+	{
+		SendErrorResponse("Not Authenticated");
+		return;
+	}
 
 	void (*handlerFunc)(WSRequestHandler*) = (messageMap[_requestType]);
 
@@ -42,6 +72,17 @@ void WSRequestHandler::handleMessage(const char *message) {
 	else {
 		SendErrorResponse("invalid request type");
 	}
+}
+
+void WSRequestHandler::socketDisconnected() {
+	blog(LOG_INFO, "[obs-websockets] client %s:%d disconnected", _client->peerAddress().toString().toStdString(), _client->peerPort());
+
+	_client->deleteLater();
+	emit disconnected();
+}
+
+void WSRequestHandler::sendTextMessage(QString textMessage) {
+	_client->sendTextMessage(textMessage);
 }
 
 WSRequestHandler::~WSRequestHandler() {
@@ -78,21 +119,20 @@ void WSRequestHandler::SendErrorResponse(const char *errorMessage) {
 void WSRequestHandler::HandleGetVersion(WSRequestHandler *owner) {
 	obs_data_t *data = obs_data_create();
 	obs_data_set_double(data, "version", OBS_WEBSOCKET_VERSION);
-
 	owner->SendOKResponse(data);
 
 	obs_data_release(data);
 }
 
 void WSRequestHandler::HandleGetAuthRequired(WSRequestHandler *owner) {
-	bool authRequired = false; // Auth isn't implemented yet
-	
+	bool authRequired = Config::Current()->AuthRequired;
+
 	obs_data_t *data = obs_data_create();
 	obs_data_set_bool(data, "authRequired", authRequired);
+
 	if (authRequired) {
-		// Just here for protocol doc
-		obs_data_set_string(data, "challenge", "");
-		obs_data_set_string(data, "salt", "");
+		obs_data_set_string(data, "challenge", Config::Current()->Challenge);
+		obs_data_set_string(data, "salt", Config::Current()->Salt);
 	}
 
 	owner->SendOKResponse(data);
@@ -102,11 +142,14 @@ void WSRequestHandler::HandleGetAuthRequired(WSRequestHandler *owner) {
 
 void WSRequestHandler::HandleAuthenticate(WSRequestHandler *owner) {
 	const char *auth = obs_data_get_string(owner->_requestData, "auth");
-	if (!auth) {
+	if (!auth || strlen(auth) < 1) {
 		owner->SendErrorResponse("auth not specified!");
 		return;
 	}
 
+	// TODO : Implement auth here
+
+	owner->_authenticated = true;
 	owner->SendOKResponse();
 }
 
@@ -201,6 +244,52 @@ void WSRequestHandler::HandleStartStopRecording(WSRequestHandler *owner) {
 	}
 
 	owner->SendOKResponse();
+}
+
+void WSRequestHandler::HandleGetTransitionList(WSRequestHandler *owner) {
+	obs_frontend_source_list transitionList = {};
+	obs_frontend_get_transitions(&transitionList);
+
+	obs_data_array_t* transitions = obs_data_array_create();
+	for (size_t i = 0; i < (&transitionList)->sources.num; i++) {
+		obs_source_t* transition = (&transitionList)->sources.array[i];
+		
+		obs_data_t *obj = obs_data_create();
+		obs_data_set_string(obj, "name", obs_source_get_name(transition));
+
+		obs_data_array_push_back(transitions, obj);
+	}
+	obs_frontend_source_list_free(&transitionList);
+
+	obs_data_t *response = obs_data_create();
+	obs_data_set_string(response, "current-transition", obs_source_get_name(obs_frontend_get_current_transition()));
+	obs_data_set_array(response, "transitions", transitions);
+	owner->SendOKResponse(response);
+
+	obs_data_release(response);
+}
+
+void WSRequestHandler::HandleGetCurrentTransition(WSRequestHandler *owner) {
+	obs_data_t *response = obs_data_create();
+	obs_data_set_string(response, "name", obs_source_get_name(obs_frontend_get_current_transition()));
+	owner->SendOKResponse(response);
+
+	obs_data_release(response);
+}
+
+void WSRequestHandler::HandleSetCurrentTransition(WSRequestHandler *owner) {
+	const char *name = obs_data_get_string(owner->_requestData, "transition-name");
+	obs_source_t *transition = obs_get_source_by_name(name);
+
+	if (transition) {
+		obs_frontend_set_current_transition(transition);
+		owner->SendOKResponse();
+
+		obs_source_release(transition);
+	}
+	else {
+		owner->SendErrorResponse("requested transition does not exist");
+	}
 }
 
 void WSRequestHandler::ErrNotImplemented(WSRequestHandler *owner) {

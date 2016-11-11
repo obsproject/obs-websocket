@@ -4,6 +4,7 @@
 #include <QtCore/QObject>
 #include <QtCore/QList>
 #include <QtCore/QByteArray>
+#include "WSRequestHandler.h"
 
 QT_FORWARD_DECLARE_CLASS(QWebSocketServer)
 QT_FORWARD_DECLARE_CLASS(QWebSocket)
@@ -19,12 +20,11 @@ class WSServer : public QObject
 
 	private Q_SLOTS:
 		void onNewConnection();
-		void processTextMessage(QString textMessage);
 		void socketDisconnected();
 
 	private:
 		QWebSocketServer *_wsServer;
-		QList<QWebSocket *> _clients;
+		QList<WSRequestHandler *> _clients;
 };
 
 #endif // WSSERVER_H

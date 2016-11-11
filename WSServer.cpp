@@ -31,7 +31,7 @@ WSServer::~WSServer()
 
 void WSServer::broadcast(QString message)
 {
-	Q_FOREACH(QWebSocket *pClient, _clients) {
+	Q_FOREACH(WSRequestHandler *pClient, _clients) {
 		pClient->sendTextMessage(message);
 	}
 }
@@ -40,31 +40,17 @@ void WSServer::onNewConnection()
 {
 	QWebSocket *pSocket = _wsServer->nextPendingConnection();
 
-	blog(LOG_INFO, "[obs-websockets] new client connected from %s:%d", pSocket->peerAddress().toString().toStdString(), pSocket->peerPort());
+	if (pSocket) {
+		WSRequestHandler *pHandler = new WSRequestHandler(pSocket);
 
-	connect(pSocket, &QWebSocket::textMessageReceived, this, &WSServer::processTextMessage);
-	connect(pSocket, &QWebSocket::disconnected, this, &WSServer::socketDisconnected);
-
-	_clients << pSocket;
-}
-
-void WSServer::processTextMessage(QString textMessage) {
-	QWebSocket *pSender = qobject_cast<QWebSocket *>(sender());
-	if (pSender) {
-		const char *msg = textMessage.toLocal8Bit();
-		blog(LOG_INFO, "[obs-websockets] new message : %s", msg);
-
-		WSRequestHandler *handler = new WSRequestHandler(pSender);
-		handler->handleMessage(msg);
-		delete handler;
+		connect(pHandler, &WSRequestHandler::disconnected, this, &WSServer::socketDisconnected);
+		_clients << pHandler;
 	}
 }
 
 void WSServer::socketDisconnected()
 {
-	QWebSocket *pClient = qobject_cast<QWebSocket *>(sender());
-
-	blog(LOG_INFO, "[obs-websockets] client %s:%d disconnected", pClient->peerAddress().toString().toStdString(), pClient->peerPort());
+	WSRequestHandler *pClient = qobject_cast<WSRequestHandler *>(sender());
 
 	if (pClient) {
 		_clients.removeAll(pClient);

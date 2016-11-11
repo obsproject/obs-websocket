@@ -50,6 +50,7 @@ void WSEvents::FrontendEventHandler(enum obs_frontend_event event, void *private
 		owner->OnRecordingStopped();
 	}
 	else if (event == OBS_FRONTEND_EVENT_EXIT) {
+		obs_frontend_save();
 		owner->OnExit();
 	}
 }
