@@ -77,6 +77,7 @@ void WSRequestHandler::processTextMessage(QString textMessage) {
 void WSRequestHandler::socketDisconnected() {
 	blog(LOG_INFO, "[obs-websockets] client %s:%d disconnected", _client->peerAddress().toString().toStdString(), _client->peerPort());
 
+	_authenticated = false;
 	_client->deleteLater();
 	emit disconnected();
 }
@@ -147,10 +148,13 @@ void WSRequestHandler::HandleAuthenticate(WSRequestHandler *owner) {
 		return;
 	}
 
-	// TODO : Implement auth here
-
-	owner->_authenticated = true;
-	owner->SendOKResponse();
+	if (!(owner->_authenticated) && Config::Current()->CheckAuth(auth)) {
+		owner->_authenticated = true;
+		owner->SendOKResponse();
+	}
+	else {
+		owner->SendErrorResponse("Authentication Failed.");
+	}
 }
 
 void WSRequestHandler::HandleSetCurrentScene(WSRequestHandler *owner) {
