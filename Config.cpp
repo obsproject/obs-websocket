@@ -127,8 +127,6 @@ void Config::OBSSaveCallback(obs_data_t *save_data, bool saving, void *private_d
 		obs_data_set_string(settings, CONFIG_PARAM_SALT, conf->Salt);
 
 		obs_data_set_obj(save_data, CONFIG_SECTION_NAME, settings);
-
-		obs_data_release(settings);
 	}
 	else {
 		obs_data_t *settings = obs_data_get_obj(save_data, CONFIG_SECTION_NAME);
@@ -139,7 +137,6 @@ void Config::OBSSaveCallback(obs_data_t *save_data, bool saving, void *private_d
 
 			conf->SettingsLoaded = true;
 		}
-		obs_data_release(settings);
 	}
 }
 
