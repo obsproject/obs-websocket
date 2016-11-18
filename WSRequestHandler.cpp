@@ -150,7 +150,7 @@ void WSRequestHandler::HandleGetAuthRequired(WSRequestHandler *owner) {
 	obs_data_set_bool(data, "authRequired", authRequired);
 
 	if (authRequired) {
-		obs_data_set_string(data, "challenge", Config::Current()->Challenge);
+		obs_data_set_string(data, "challenge", Config::Current()->SessionChallenge);
 		obs_data_set_string(data, "salt", Config::Current()->Salt);
 	}
 

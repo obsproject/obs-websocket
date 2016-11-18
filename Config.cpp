@@ -22,7 +22,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include "Config.h"
 
 #define CONFIG_SECTION_NAME "obs-websocket"
-#define CONFIG_PARAM_CHALLENGE "auth_hash"
+#define CONFIG_PARAM_SECRET "auth_hash"
 #define CONFIG_PARAM_SALT "auth_salt"
 #define CONFIG_PARAM_AUTHREQUIRED "auth_required"
 
@@ -31,7 +31,7 @@ Config *Config::_instance = new Config();
 Config::Config() {
 	// Default settings
 	AuthRequired = false;
-	Challenge = "";
+	Secret = "";
 	Salt = "";
 	SettingsLoaded = false;
 
@@ -39,6 +39,8 @@ Config::Config() {
 	mbedtls_ctr_drbg_init(&rng);
 	mbedtls_ctr_drbg_seed(&rng, mbedtls_entropy_func, &entropy, nullptr, 0);
 	//mbedtls_ctr_drbg_set_prediction_resistance(&rng, MBEDTLS_CTR_DRBG_PR_ON);
+
+	SessionChallenge = GenerateSalt();
 }
 
 Config::~Config() {
@@ -46,10 +48,10 @@ Config::~Config() {
 	mbedtls_entropy_free(&entropy);
 }
 
-const char* Config::GenerateSalt(mbedtls_ctr_drbg_context *rng) {
+const char* Config::GenerateSalt() {
 	// Generate 32 random chars
 	unsigned char *random_chars = (unsigned char *)bzalloc(32);
-	mbedtls_ctr_drbg_random(rng, random_chars, 32);
+	mbedtls_ctr_drbg_random(&rng, random_chars, 32);
 
 	// Convert the 32 random chars to a base64 string
 	unsigned char *salt = (unsigned char*)bzalloc(64);
@@ -61,7 +63,7 @@ const char* Config::GenerateSalt(mbedtls_ctr_drbg_context *rng) {
 	return (char *)salt;
 }
 
-const char* Config::GenerateChallenge(const char *password, const char *salt) {
+const char* Config::GenerateSecret(const char *password, const char *salt) {
 	size_t passwordLength = strlen(password);
 	size_t saltLength = strlen(salt);
 
@@ -87,25 +89,26 @@ const char* Config::GenerateChallenge(const char *password, const char *salt) {
 }
 
 void Config::SetPassword(const char *password) {
-	const char *new_salt = GenerateSalt(&rng);
-	const char *new_challenge = GenerateChallenge(password, new_salt);
+	const char *new_salt = GenerateSalt();
+	const char *new_challenge = GenerateSecret(password, new_salt);
 
 	this->Salt = new_salt;
-	this->Challenge = new_challenge;
+	this->Secret = new_challenge;
 }
 
 bool Config::CheckAuth(const char *response) {
-	size_t challengeLength = strlen(this->Challenge);
+	size_t secretLength = strlen(this->Secret);
+	size_t sessChallengeLength = strlen(this->SessionChallenge);
 	
-	// Concatenate challenge with itself (dafuq ?)
-	char *challengeAndResponse = (char*)bzalloc(challengeLength * 2);
-	memcpy(challengeAndResponse, this->Challenge, challengeLength);
-	memcpy(challengeAndResponse + challengeLength, this->Challenge, challengeLength);
-	challengeAndResponse[challengeLength * 2] = 0; // Null-terminate the string
+	// Concatenate auth secret with the challenge sent to the user
+	char *challengeAndResponse = (char*)bzalloc(secretLength + sessChallengeLength);
+	memcpy(challengeAndResponse, this->Secret, secretLength);
+	memcpy(challengeAndResponse + secretLength, this->SessionChallenge, sessChallengeLength);
+	challengeAndResponse[secretLength + sessChallengeLength] = 0; // Null-terminate the string
 
 	// Generate a SHA256 hash of challengeAndResponse
 	unsigned char *hash = (unsigned char*)bzalloc(32);
-	mbedtls_sha256((unsigned char*)challengeAndResponse, challengeLength * 2, hash, 0);
+	mbedtls_sha256((unsigned char*)challengeAndResponse, secretLength + sessChallengeLength, hash, 0);
 
 	// Encode the SHA256 hash to Base64
 	unsigned char *expected_response = (unsigned char*)bzalloc(64);
@@ -113,7 +116,13 @@ bool Config::CheckAuth(const char *response) {
 	mbedtls_base64_encode(expected_response, 64, &base64_size, hash, 32);
 	expected_response[64] = 0; // Null-terminate the string
 
-	return (strcmp((char*)expected_response, response) == 0);
+	if (strcmp((char*)expected_response, response) == 0) {
+		SessionChallenge = GenerateSalt();
+		return true;
+	}
+	else {
+		return false;
+	}
 }
 
 void Config::OBSSaveCallback(obs_data_t *save_data, bool saving, void *private_data) {
@@ -122,7 +131,7 @@ void Config::OBSSaveCallback(obs_data_t *save_data, bool saving, void *private_d
 	if (saving) {
 		obs_data_t *settings = obs_data_create();
 		obs_data_set_bool(settings, CONFIG_PARAM_AUTHREQUIRED, conf->AuthRequired);
-		obs_data_set_string(settings, CONFIG_PARAM_CHALLENGE, conf->Challenge);
+		obs_data_set_string(settings, CONFIG_PARAM_SECRET, conf->Secret);
 		obs_data_set_string(settings, CONFIG_PARAM_SALT, conf->Salt);
 
 		obs_data_set_obj(save_data, CONFIG_SECTION_NAME, settings);
@@ -131,7 +140,7 @@ void Config::OBSSaveCallback(obs_data_t *save_data, bool saving, void *private_d
 		obs_data_t *settings = obs_data_get_obj(save_data, CONFIG_SECTION_NAME);
 		if (settings) {
 			conf->AuthRequired = obs_data_get_bool(settings, CONFIG_PARAM_AUTHREQUIRED);
-			conf->Challenge = obs_data_get_string(settings, CONFIG_PARAM_CHALLENGE);
+			conf->Secret = obs_data_get_string(settings, CONFIG_PARAM_SECRET);
 			conf->Salt = obs_data_get_string(settings, CONFIG_PARAM_SALT);
 
 			conf->SettingsLoaded = true;
