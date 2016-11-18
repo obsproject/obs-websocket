@@ -96,17 +96,16 @@ void Config::SetPassword(const char *password) {
 
 bool Config::CheckAuth(const char *response) {
 	size_t challengeLength = strlen(this->Challenge);
-	size_t responseLength = strlen(response);
 	
-	// Concatenate challenge and auth response
-	char *challengeAndResponse = (char*)bzalloc(challengeLength + responseLength);
+	// Concatenate challenge with itself
+	char *challengeAndResponse = (char*)bzalloc(challengeLength * 2);
 	memcpy(challengeAndResponse, this->Challenge, challengeLength);
-	memcpy(challengeAndResponse + challengeLength, response, responseLength);
-	challengeAndResponse[challengeLength + responseLength] = 0; // Null-terminate the string
+	memcpy(challengeAndResponse + challengeLength, this->Challenge, challengeLength);
+	challengeAndResponse[challengeLength * 2] = 0; // Null-terminate the string
 
 	// Generate a SHA256 hash of challengeAndResponse
 	unsigned char *hash = (unsigned char*)bzalloc(32);
-	mbedtls_sha256((unsigned char*)challengeAndResponse, challengeLength + responseLength, hash, 0);
+	mbedtls_sha256((unsigned char*)challengeAndResponse, challengeLength * 2, hash, 0);
 
 	// Encode the SHA256 hash to Base64
 	unsigned char *expected_response = (unsigned char*)bzalloc(64);
