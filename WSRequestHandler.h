@@ -43,7 +43,7 @@ class WSRequestHandler : public QObject
 	private:
 		QWebSocket *_client;
 		bool _authenticated;
-		unsigned long _messageId;
+		const char *_messageId;
 		const char *_requestType;
 		obs_data_t *_requestData;
 

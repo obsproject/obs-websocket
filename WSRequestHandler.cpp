@@ -72,7 +72,7 @@ void WSRequestHandler::processTextMessage(QString textMessage) {
 	}
 
 	_requestType = obs_data_get_string(_requestData, "request-type");
-	_messageId = obs_data_get_int(_requestData, "message-id");
+	_messageId = obs_data_get_string(_requestData, "message-id");
 
 	if (Config::Current()->AuthRequired 
 		&& !_authenticated 
@@ -113,7 +113,7 @@ WSRequestHandler::~WSRequestHandler() {
 void WSRequestHandler::SendOKResponse(obs_data_t *additionalFields) {
 	obs_data_t *response = obs_data_create();
 	obs_data_set_string(response, "status", "ok");
-	obs_data_set_int(response, "message-id", _messageId);
+	obs_data_set_string(response, "message-id", _messageId);
 
 	if (additionalFields != NULL) {
 		obs_data_apply(response, additionalFields);
@@ -128,7 +128,7 @@ void WSRequestHandler::SendErrorResponse(const char *errorMessage) {
 	obs_data_t *response = obs_data_create();
 	obs_data_set_string(response, "status", "error");
 	obs_data_set_string(response, "error", errorMessage);
-	obs_data_set_int(response, "message-id", _messageId);
+	obs_data_set_string(response, "message-id", _messageId);
 
 	_client->sendTextMessage(obs_data_get_json(response));
 

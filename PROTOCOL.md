@@ -75,11 +75,11 @@ OBS is exiting.
 ### Description
 Requests are sent by the client and have at least two fields :
 - **"request-type"** (string) : one of the request types listed in the sub-section "Requests".
-- **"message-id"** (unsigned integer) : an integer number defined by the client that will be embedded in the response from the server.
+- **"message-id"** (string) : an string defined by the client that will be embedded in the response from the server.
 Depending on the request type, additional fields are needed in the request message (see the "Request types" section below for more informations).
 
 Once a request is sent, the server processes it and sends a JSON response to the client with the following fields in it :
-- **"message-id"** (unsigned integer) : the unsigned integer you specified in the request.
+- **"message-id"** (string) : the custom string you specified in the request.
 - **"status"** (string) : two possible values : "ok" or "error".
 - **"error"** (string) : the error message associated with an error reponse (when "status" equals "error").
 Additional fields can be sent in the response if a request type requires it.
