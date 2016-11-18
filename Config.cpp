@@ -97,7 +97,7 @@ void Config::SetPassword(const char *password) {
 bool Config::CheckAuth(const char *response) {
 	size_t challengeLength = strlen(this->Challenge);
 	
-	// Concatenate challenge with itself
+	// Concatenate challenge with itself (dafuq ?)
 	char *challengeAndResponse = (char*)bzalloc(challengeLength * 2);
 	memcpy(challengeAndResponse, this->Challenge, challengeLength);
 	memcpy(challengeAndResponse + challengeLength, this->Challenge, challengeLength);
