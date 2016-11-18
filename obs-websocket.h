@@ -19,6 +19,6 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #ifndef OBSWEBSOCKET_H
 #define OBSWEBSOCKET_H
 
-#define OBS_WEBSOCKET_VERSION 0.2
+#define OBS_WEBSOCKET_VERSION "0.2-beta"
 
 #endif // OBSWEBSOCKET_H

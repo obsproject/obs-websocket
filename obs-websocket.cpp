@@ -35,7 +35,7 @@ SettingsDialog *settings_dialog;
 
 bool obs_module_load(void) 
 {
-	blog(LOG_INFO, "[obs-websockets] you can haz websockets (version %.1f)", OBS_WEBSOCKET_VERSION);
+	blog(LOG_INFO, "[obs-websockets] you can haz websockets (version %s)", OBS_WEBSOCKET_VERSION);
 	
 	server = new WSServer(4444);
 	eventHandler = new WSEvents(server);
