@@ -21,6 +21,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <QtWebSockets/QWebSocketServer>
 #include <QtWebSockets/QWebSocket>
 #include <QtCore/QDebug>
+#include <QtCore/QThread>
 #include <obs-frontend-api.h>
 
 QT_USE_NAMESPACE
@@ -30,10 +31,13 @@ WSServer::WSServer(quint16 port, QObject *parent) :
 	_wsServer(Q_NULLPTR),
 	_clients()
 {
+	_serverThread = new QThread();
 	_wsServer = new QWebSocketServer(
 		QStringLiteral("OBS Websocket API"),
 		QWebSocketServer::NonSecureMode,
 		this);
+	_wsServer->moveToThread(_serverThread);
+	_serverThread->start();
 
 	bool serverStarted = _wsServer->listen(QHostAddress::Any, port);
 	if (serverStarted) {

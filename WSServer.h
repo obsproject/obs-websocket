@@ -43,6 +43,7 @@ class WSServer : public QObject
 	private:
 		QWebSocketServer *_wsServer;
 		QList<WSRequestHandler *> _clients;
+		QThread *_serverThread;
 };
 
 #endif // WSSERVER_H
