@@ -68,7 +68,7 @@ void SettingsDialog::FormAccepted() {
 			Config::Current()->SetPassword(new_password);
 		}
 		
-		if (strcmp(Config::Current()->Challenge, "") != 0) {
+		if (strcmp(Config::Current()->Secret, "") != 0) {
 			Config::Current()->AuthRequired = true;
 		}
 		else {

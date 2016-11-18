@@ -29,13 +29,14 @@ class Config {
 		~Config();
 		void SetPassword(const char *password);
 		bool CheckAuth(const char *userChallenge);
-		static const char* GenerateSalt(mbedtls_ctr_drbg_context *rng);
-		static const char* GenerateChallenge(const char *password, const char *salt);
+		const char* GenerateSalt();
+		static const char* GenerateSecret(const char *password, const char *salt);
 		static void OBSSaveCallback(obs_data_t *save_data, bool saving, void *);
 
 		bool AuthRequired;
-		const char *Challenge;
+		const char *Secret;
 		const char *Salt;
+		const char *SessionChallenge;
 		bool SettingsLoaded;
 		
 		static Config* Current();
