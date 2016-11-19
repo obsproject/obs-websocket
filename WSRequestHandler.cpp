@@ -215,7 +215,7 @@ void WSRequestHandler::HandleGetSceneList(WSRequestHandler *owner) {
 
 	owner->SendOKResponse(data);
 
-	obs_data_release(data);
+	//obs_data_release(data); // da hell ? sometimes causes a crash too, like in GetCurrentScene...
 }
 
 void WSRequestHandler::HandleSetSourceRender(WSRequestHandler *owner) {
