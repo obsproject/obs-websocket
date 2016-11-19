@@ -139,7 +139,8 @@ void WSRequestHandler::HandleGetVersion(WSRequestHandler *owner) {
 	obs_data_t *data = obs_data_create();
 	obs_data_set_double(data, "version", 1.1);
 	obs_data_set_string(data, "obs-websocket-version", OBS_WEBSOCKET_VERSION);
-	obs_data_set_string(data, "obs-studio-version", OBS_VERSION);
+	//obs_data_set_string(data, "obs-studio-version", OBS_VERSION); // Wrong
+	
 	owner->SendOKResponse(data);
 
 	obs_data_release(data);
