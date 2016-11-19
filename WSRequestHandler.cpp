@@ -196,13 +196,16 @@ void WSRequestHandler::HandleGetCurrentScene(WSRequestHandler *owner) {
 	obs_source_t *source = obs_frontend_get_current_scene();
 	const char *name = obs_source_get_name(source);
 
+	obs_data_array_t *scene_items = Utils::GetSceneItems(source);
+
 	obs_data_t *data = obs_data_create();
 	obs_data_set_string(data, "name", name);
-	obs_data_set_array(data, "sources", Utils::GetSceneItems(source));
+	obs_data_set_array(data, "sources", scene_items);
 
 	owner->SendOKResponse(data);
 	obs_data_release(data);
-	obs_source_release(source);
+	obs_data_array_release(scene_items);
+	//obs_source_release(source); // causes a source destroy sometimes
 }
 
 void WSRequestHandler::HandleGetSceneList(WSRequestHandler *owner) {
