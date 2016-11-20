@@ -1,70 +1,73 @@
 obs-websocket protocol reference
 ================================
 
-## General introduction
+## General Introduction
 **This document is still a WIP. Some things are missing (but won't stay like this for long).**
 
-Messages exchanged between the client and the server are JSON objects.
-The protocol in general in based on the OBS Remote protoctol created by Bill Hamilton, with new commands specific to OBS Studio. 
+Messages exchanged between the client and the server are JSON objects.  
+The protocol in general is based on the OBS Remote protocol created by Bill Hamilton, with new commands specific to OBS Studio.
 
 ## Events
 
 ### Description
-Events are sent exclusively by the server and broadcasted to every client connected to the server.
-An event message has at least one field :
-- **update-type** (string) : the type of event
-Additional fields will be present in the event message if the event type requires it.
+Events are sent exclusively by the server and broadcast to each connected client.  
+An event message will contain at least one field :
+- **update-type** (string) : the type of event  
 
-### Event types
-#### "SwitchScenes" 
-OBS is switching to another scene.  
-Additional fields :
-- **scene-name** : the name of the scene being switched to
+Additional fields will be present in the event message depending on the event type.
+
+### Event Types
+#### "SwitchScenes"
+OBS is switching to another scene.
+- **scene-name** (string) : The name of the scene being switched to.
 
 #### "ScenesChanged"
-The scene list has been modified (scenes added, removed or moved).
+The scene list has been modified (Scenes have been added, removed, or renamed).
 
 #### "StreamStarting"
-Streaming is starting but isn't completely started yet.
+A request to start streaming has been issued.
+- **preview-only** (bool) : Always false.
 
 #### "StreamStarted"
-*New in OBS Studio*
-Streaming has been started successfully.
+*New in OBS Studio*  
+Streaming started successfully.
 
 #### "StreamStopping"
-Streaming is stopping but isn't completely stopped yet.
+A request to stop streaming has been issued.
+- **preview-only** (bool) : Always false.
 
 #### "StreamStopped"
 *New in OBS Studio*  
-Streaming has been stopped successfully.
+Streaming stopped successfully.
 
 #### "RecordingStarting"
 *New in OBS Studio*  
-Recording is starting but isn't completely started yet.
+A request to start recording has been issued.
 
 #### "RecordingStarted"
 *New in OBS Studio*  
-Recording has been started successfully.
+Recording started successfully.
 
 #### "RecordingStopping"
 *New in OBS Studio*  
-Recording is stopping but isn't completely stopped yet.
+A request to stop streaming has been issued.  
+Not Yet Implemented.
 
 #### "RecordingStopped"
 *New in OBS Studio*  
-Recording has been stopped successfully.
+Recording stopped successfully.
 
 #### "StreamStatus"
-Sent every second with those additional fields :  
-- **streaming** (bool) : streaming state
-- **recording** (bool) : recording state
-- **preview-only** (bool) : always false.
-- **bytes-per-sec** (integer) : during streaming, amount of data (in bytes) transmitted by the stream encoder
+Sent each second with the following information :  
+- **streaming** (bool) : Current Streaming state.
+- **recording** (bool) : Current Recording state.
+- **preview-only** (bool) : Always false.
+- **bytes-per-sec** (integer) : Amount of data (in bytes) transmitted by the stream encoder.
 - **strain** (double) : i have no idea what this is
-- **total-stream-time** (integer) : total time since the beginning of streaming
-- **num-total-frames** (integer) : total number of frames transmitted since the beginning
-- **num-dropped-frames** (integer) : number of frames dropped by the encoder for the current streaming session
-- **fps** (double) : current framerate
+- **total-stream-time** (integer) : Total time (in seconds) since the stream started.
+- **num-total-frames** (integer) : Total number of frames transmitted since the stream started.
+- **num-dropped-frames** (integer) : Number of frames dropped by the encoder since the stream started.
+- **fps** (double) : Current framerate.
 
 #### "Exiting"
 *New in OBS Studio*  
@@ -73,32 +76,42 @@ OBS is exiting.
 ## Requests
 
 ### Description
-Requests are sent by the client and have at least two fields :
-- **"request-type"** (string) : one of the request types listed in the sub-section "Requests".
-- **"message-id"** (string) : an string defined by the client that will be embedded in the response from the server.
-Depending on the request type, additional fields are needed in the request message (see the "Request types" section below for more informations).
+Requests are sent by the client and must have at least the following two fields :  
+- **"request-type"** (string) : One of the request types listed in the sub-section "[Requests Types](#request-types)".
+- **"message-id"** (string) : An identifier defined by the client which will be embedded in the server response.  
 
-Once a request is sent, the server processes it and sends a JSON response to the client with the following fields in it :
-- **"message-id"** (string) : the custom string you specified in the request.
-- **"status"** (string) : two possible values : "ok" or "error".
-- **"error"** (string) : the error message associated with an error reponse (when "status" equals "error").
-Additional fields can be sent in the response if a request type requires it.
+Depending on the request type additional fields may be required (see the "[Request Types](#request-types)" section below for more information).
 
-### Request types
+Once a request is sent, the server will return a JSON response with the following fields :  
+- **"message-id"** (string) : The identifier specified in the request.
+- **"status"** (string) : Response status, will be one of the following : "ok", "error"
+- **"error"** (string) : The error message associated with an "error" status.  
+
+Depending on the request type additional fields may be present (see the "[Request Types](#request-types)" section below for more information).
+
+### Request Types
 #### "GetVersion"
 #### "GetAuthRequired"
 #### "Authenticate"
+- **auth** (string) : Authentication credentials.
+
 #### "GetCurrentScene"
 #### "SetCurrentScene"
+- **scene-name** (string) : The name of the scene to switch to.
+
 #### "GetSceneList"
 #### "SetSourceRender"
+- **source** (string) : The name of the source in the currently active scene.
+- **render** (bool) : Render the specified source.
+
 #### "StartStopStreaming"
 #### "StartStopRecording"
-*New in OBS Studio*
+*New in OBS Studio*  
 #### "GetStreamingStatus"
 #### "GetTransitionList"
-*New in OBS Studio*
+*New in OBS Studio*  
 #### "GetCurrentTransition"
-*New in OBS Studio*
+*New in OBS Studio*  
 #### "SetCurrentTransition"
-*New in OBS Studio*
+*New in OBS Studio*  
+- **transition-name** (string) : The name of the transition.
