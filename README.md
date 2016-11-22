@@ -12,6 +12,7 @@ There's currently no frontend or language API available for obs-websocket. Howev
 - Automate scene switching with a third-party program (e.g. : auto-pilot, foot pedal, ...)
 
 ## How to build
+### Windows
 You'll need QT 5.7 with QtWebSockets, CMake, and a working development environment for OBS Studio installed on your computer.  
 In CMake, you'll have to set the following variables :
 - **QTDIR** (path) : location of the Qt environment suited for your compiler and architecture
@@ -20,3 +21,9 @@ In CMake, you'll have to set the following variables :
 - **OBS_FRONTEND_LIB** (filepath) : location of the obs-frontend-api.lib file
 
 After building the obs-websocket binary, copy its Qt dependencies (QtCore, QtNetwork and QtWebSockets library binaries) in the same folder.
+
+### Linux
+*To do*
+
+### OS X
+*To do*
