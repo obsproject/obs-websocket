@@ -67,4 +67,10 @@ if(UNIX)
 		obs-frontend-api)
 endif()
 
-install_external_plugin_with_data(obs-websocket data)
+if(UNIX AND NOT APPLE)
+	set_target_properties(obs-websocket PROPERTIES PREFIX "")
+	install(TARGETS obs-websocket
+		LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/obs-plugins)
+	install(FILES data/locale/en-US.ini data/locale/fr-FR.ini
+		DESTINATION "${CMAKE_INSTALL_PREFIX}/share/obs/obs-plugins/obs-websocket/locale")
+endif()
