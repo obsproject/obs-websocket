@@ -11,7 +11,7 @@ There's currently no frontend or language API available for obs-websocket. Howev
 - Change your stream overlay/graphics based on the current scene (like the AGDQ overlay does)
 - Automate scene switching with a third-party program (e.g. : auto-pilot, foot pedal, ...)
 
-## How to build
+## Build instructions
 You'll need QT 5 with QtWebSockets, CMake, and a working development environment for OBS Studio installed on your computer. 
 
 ### Windows
@@ -21,7 +21,7 @@ In cmake-gui, you'll have to set the following variables :
 - **LIBOBS_LIB** (filepath) : location of the obs.lib file
 - **OBS_FRONTEND_LIB** (filepath) : location of the obs-frontend-api.lib file
 
-After building the obs-websocket binary, copy its Qt dependencies (QtCore, QtNetwork and QtWebSockets library binaries) in the same folder.
+After building the obs-websocket binary, copy Qt5Network.dll and Qt5WebSockets.dll from Qt's `bin/` to the folder of the obs-websocket's binary.
 
 ### Linux
 On Debian/Ubuntu :  
