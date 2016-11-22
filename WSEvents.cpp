@@ -61,8 +61,8 @@ void WSEvents::FrontendEventHandler(enum obs_frontend_event event, void *private
 	else if (event == OBS_FRONTEND_EVENT_RECORDING_STARTED) {
 		owner->OnRecordingStarted();
 	}
-	else if (event == OBS_FRONTEND_EVENT_RECORDING_STARTING) {
-		owner->OnRecordingStarting();
+	else if (event == OBS_FRONTEND_EVENT_RECORDING_STOPPING) {
+		owner->OnRecordingStopping();
 	}
 	else if (event == OBS_FRONTEND_EVENT_RECORDING_STOPPED) {
 		owner->OnRecordingStopped();
