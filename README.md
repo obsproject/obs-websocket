@@ -21,8 +21,6 @@ In cmake-gui, you'll have to set the following variables :
 - **LIBOBS_LIB** (filepath) : location of the obs.lib file
 - **OBS_FRONTEND_LIB** (filepath) : location of the obs-frontend-api.lib file
 
-After building the obs-websocket binary, copy Qt5Network.dll and Qt5WebSockets.dll from Qt's `bin/` to the folder of the obs-websocket's binary.
-
 ### Linux
 On Debian/Ubuntu :  
 ```

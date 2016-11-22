@@ -59,6 +59,11 @@ if(WIN32)
 	
 	target_link_libraries(obs-websocket
 		"${OBS_FRONTEND_LIB}")
+	add_custom_command(TARGET obs-websocket POST_BUILD
+		COMMAND "${CMAKE_COMMAND}" -E copy
+		"${QTDIR}/bin/Qt5WebSockets.dll"
+		"${QTDIR}/bin/Qt5Network.dll"
+		"${CMAKE_BINARY_DIR}/$<CONFIG>")
 endif()
 
 if(UNIX)
