@@ -51,7 +51,6 @@ Recording started successfully.
 #### "RecordingStopping"
 *New in OBS Studio*  
 A request to stop streaming has been issued.  
-Not Yet Implemented.
 
 #### "RecordingStopped"
 *New in OBS Studio*  
