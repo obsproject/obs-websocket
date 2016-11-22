@@ -15,11 +15,6 @@ find_package(Qt5Widgets REQUIRED)
 add_subdirectory(deps/mbedtls EXCLUDE_FROM_ALL)
 set(ENABLED_PROGRAMS false)
 
-set(OBS_FRONTEND_LIB "OBS_FRONTEND_LIB-NOTFOUND" CACHE FILEPATH "OBS frontend library")
-if(OBS_FRONTEND_LIB EQUAL "OBS_FRONTEND_LIB-NOTFOUND")
-	message(FATAL_ERROR "Could not find OBS Frontend API\'s library !")
-endif()
-
 set(obs-websocket_SOURCES 
 	obs-websocket.cpp
 	WSServer.cpp
@@ -51,8 +46,25 @@ include_directories(
 	"${CMAKE_SOURCE_DIR}/deps/mbedtls/include")
 target_link_libraries(obs-websocket 
 	libobs
-	${OBS_FRONTEND_LIB}
 	Qt5::Core
 	Qt5::WebSockets
 	Qt5::Widgets
 	mbedcrypto)
+
+if(WIN32)
+	set(OBS_FRONTEND_LIB "OBS_FRONTEND_LIB-NOTFOUND" CACHE FILEPATH "OBS frontend library")
+	if(OBS_FRONTEND_LIB EQUAL "OBS_FRONTEND_LIB-NOTFOUND")
+		message(FATAL_ERROR "Could not find OBS Frontend API\'s library !")
+	endif()
+	
+	target_link_libraries(obs-websocket
+		"${OBS-FRONTEND-API}")
+endif()
+
+if(UNIX)
+	target_compile_options(mbedcrypto PRIVATE -fPIC)
+	target_link_libraries(obs-websocket
+		obs-frontend-api)
+endif()
+
+install_external_plugin_with_data(obs-websocket data)
