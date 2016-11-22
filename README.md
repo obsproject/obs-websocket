@@ -32,7 +32,8 @@ cd obs-websocket
 mkdir build && cd build
 cmake -DLIBOBS_INCLUDE_DIR="<path to the libobs sub-folder in obs-studio's source code>" ..
 make
-sudo make install
+sudo cp obs-websocket.so /usr/lib/obs-plugins
+sudo cp -r ../data /usr/share/obs/obs-plugins/obs-websocket
 ```
 
 ### OS X
