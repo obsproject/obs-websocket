@@ -58,7 +58,7 @@ if(WIN32)
 	endif()
 	
 	target_link_libraries(obs-websocket
-		"${OBS-FRONTEND-API}")
+		"${OBS_FRONTEND_LIB}")
 endif()
 
 if(UNIX)
