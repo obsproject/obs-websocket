@@ -66,14 +66,12 @@ if(WIN32)
 		"${CMAKE_BINARY_DIR}/$<CONFIG>")
 endif()
 
-if(UNIX)
+if(UNIX AND NOT APPLE)
 	target_compile_options(mbedcrypto PRIVATE -fPIC)
+	set_target_properties(obs-websocket PROPERTIES PREFIX "")
 	target_link_libraries(obs-websocket
 		obs-frontend-api)
-endif()
 
-if(UNIX AND NOT APPLE)
-	set_target_properties(obs-websocket PROPERTIES PREFIX "")
 	install(TARGETS obs-websocket
 		LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/obs-plugins)
 	install(FILES data/locale/en-US.ini data/locale/fr-FR.ini
