@@ -3,8 +3,10 @@ obs-websocket
 Websocket API for OBS Studio.
 
 ## How to use
-The Websocket API server runs on port 4444. A settings window is available in "Websocket server settings" under OBS' "Tools" menu.  
-There's currently no frontend or language API available for obs-websocket. However, the full protocol reference is available in [PROTOCOL.md](PROTOCOL.md).
+The Websocket API server runs on port 4444 and a settings window is available in "Websocket server settings" under OBS' "Tools" menu. The obs-websocket protocol is documented in [PROTOCOL.md](PROTOCOL.md).  
+Here is a list of language APIs for obs-websocket :
+- Javascript (browser & nodejs) : https://github.com/haganbmj/obs-websocket-js
+There's currently no frontend available for obs-websocket.
 
 ## Possible use cases
 - Remote control OBS from a phone or tablet on the same local network
