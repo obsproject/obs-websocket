@@ -24,7 +24,7 @@ WSEvents::WSEvents(WSServer *server) {
 
 	QTimer *statusTimer = new QTimer();
 	connect(statusTimer, SIGNAL(timeout()), this, SLOT(StreamStatus()));
-	statusTimer->start(1000);
+	statusTimer->start(2000); // equal to frontend's constant BITRATE_UPDATE_SECONDS
 }
 
 WSEvents::~WSEvents() {
@@ -167,49 +167,60 @@ void WSEvents::OnExit() {
 }
 
 void WSEvents::StreamStatus() {
-	bool streamingActive = obs_frontend_streaming_active();
-	bool recordingActive = obs_frontend_recording_active();
+	bool streaming_active = obs_frontend_streaming_active();
+	bool recording_active = obs_frontend_recording_active();
 
-	obs_output_t *streamOutput = obs_frontend_get_streaming_output();
+	obs_output_t *stream_output = obs_frontend_get_streaming_output();
 
-	if (!streamOutput || !streamingActive || !recordingActive) {
+	if (!stream_output || !streaming_active) {
+		if (stream_output) {
+			obs_output_release(stream_output);
+		}
 		return;
 	}
 
-	uint64_t bytesSent = obs_output_get_total_bytes(streamOutput);
-	uint64_t bytesSentTime = os_gettime_ns();
+	uint64_t bytes_sent = obs_output_get_total_bytes(stream_output);
+	uint64_t bytes_sent_time = os_gettime_ns();
 
-	if (bytesSent < _lastBytesSent) {
-		bytesSent = 0;
+	if (bytes_sent < _lastBytesSent) {
+		bytes_sent = 0;
 	}
-	if (bytesSent == 0) {
+	if (bytes_sent == 0) {
 		_lastBytesSent = 0;
 	}
 	
-	uint64_t bitsBetween = (bytesSent - _lastBytesSent) * 8;
-	double timePassed = double(bytesSentTime - _lastBytesSentTime) / 1000000000.0;
+	uint64_t bytes_between = bytes_sent - _lastBytesSent;
+	double time_passed = double(bytes_sent_time - _lastBytesSentTime) / 1000000000.0;
 
-	uint64_t bitsPerSec = bitsBetween / timePassed;
-	uint64_t bytesPerSec = bitsPerSec / 8;
+	uint64_t bytes_per_sec = bytes_between / time_passed;
 
-	_lastBytesSent = bytesSent;
-	_lastBytesSentTime = bytesSentTime;
+	_lastBytesSent = bytes_sent;
+	_lastBytesSentTime = bytes_sent_time;
 
 	uint64_t totalStreamTime = (os_gettime_ns() - _streamStartTime) / 1000000000;
 
+	int total_frames = obs_output_get_total_frames(stream_output);
+	int dropped_frames = obs_output_get_frames_dropped(stream_output);
+
+	float strain = 0.0;
+	if (total_frames > 0) {
+		strain = (dropped_frames / total_frames) * 100.0;
+	}
+
 	obs_data_t *data = obs_data_create();
-	obs_data_set_bool(data, "streaming", streamingActive);
-	obs_data_set_bool(data, "recording", recordingActive);
-	obs_data_set_bool(data, "preview-only", false); // Retrocompat with OBSRemote
-	obs_data_set_int(data, "bytes-per-sec", bytesPerSec); // BUG : Computation seems buggy
-	obs_data_set_double(data, "strain", 0.0); // dafuq is strain
+	obs_data_set_bool(data, "streaming", streaming_active);
+	obs_data_set_bool(data, "recording", recording_active);
+	obs_data_set_int(data, "bytes-per-sec", bytes_per_sec);
+	obs_data_set_int(data, "kbits-per-sec", (bytes_per_sec * 8) / 1024);
 	obs_data_set_int(data, "total-stream-time", totalStreamTime);
-	obs_data_set_int(data, "num-total-frames", obs_output_get_total_frames(streamOutput));
-	obs_data_set_int(data, "num-dropped-frames", obs_output_get_frames_dropped(streamOutput));
+	obs_data_set_int(data, "num-total-frames", total_frames);
+	obs_data_set_int(data, "num-dropped-frames", dropped_frames);
 	obs_data_set_double(data, "fps", obs_get_active_fps());
+	obs_data_set_double(data, "strain", strain);
+	obs_data_set_bool(data, "preview-only", false); // Retrocompat with OBSRemote
 
 	broadcastUpdate("StreamStatus", data);
 
 	obs_data_release(data);
-	obs_output_release(streamOutput);
+	obs_output_release(stream_output);
 }

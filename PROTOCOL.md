@@ -57,12 +57,13 @@ A request to stop streaming has been issued.
 Recording stopped successfully.
 
 #### "StreamStatus"
-Sent each second with the following information :  
+Sent every 2 seconds with the following information :  
 - **streaming** (bool) : Current Streaming state.
 - **recording** (bool) : Current Recording state.
 - **preview-only** (bool) : Always false.
-- **bytes-per-sec** (integer) : Amount of data (in bytes) transmitted by the stream encoder.
-- **strain** (double) : i have no idea what this is
+- **bytes-per-sec** (integer) : Amount of data per second (in bytes) transmitted by the stream encoder.
+- **kbits-per-sec** (integer) : "bytes-per-sec" converted to kilobits per second
+- **strain** (double) : Percentage of dropped frames
 - **total-stream-time** (integer) : Total time (in seconds) since the stream started.
 - **num-total-frames** (integer) : Total number of frames transmitted since the stream started.
 - **num-dropped-frames** (integer) : Number of frames dropped by the encoder since the stream started.
