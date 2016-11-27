@@ -18,6 +18,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include "WSServer.h"
 #include "WSRequestHandler.h"
+#include "Config.h"
 #include <QtWebSockets/QWebSocketServer>
 #include <QtWebSockets/QWebSocket>
 #include <QtCore/QDebug>
@@ -54,6 +55,12 @@ WSServer::~WSServer()
 void WSServer::broadcast(QString message)
 {
 	Q_FOREACH(WSRequestHandler *pClient, _clients) {
+		if (Config::Current()->AuthRequired == true 
+			&& pClient->isAuthenticated() == false) {
+			// Skip this client if unauthenticated
+			continue;
+		}
+
 		pClient->sendTextMessage(message);
 	}
 }

@@ -104,6 +104,10 @@ void WSRequestHandler::sendTextMessage(QString textMessage) {
 	_client->sendTextMessage(textMessage);
 }
 
+bool WSRequestHandler::isAuthenticated() {
+	return _authenticated;
+}
+
 WSRequestHandler::~WSRequestHandler() {
 	if (_requestData != NULL) {
 		obs_data_release(_requestData);
@@ -140,7 +144,7 @@ void WSRequestHandler::HandleGetVersion(WSRequestHandler *owner) {
 	obs_data_set_double(data, "version", 1.1);
 	obs_data_set_string(data, "obs-websocket-version", OBS_WEBSOCKET_VERSION);
 	//obs_data_set_string(data, "obs-studio-version", OBS_VERSION); // Wrong
-	
+
 	owner->SendOKResponse(data);
 
 	obs_data_release(data);

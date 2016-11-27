@@ -32,6 +32,7 @@ class WSRequestHandler : public QObject
 		explicit WSRequestHandler(QWebSocket *client);
 		~WSRequestHandler();
 		void sendTextMessage(QString textMessage);
+		bool isAuthenticated();
 
 	private Q_SLOTS:
 		void processTextMessage(QString textMessage);
