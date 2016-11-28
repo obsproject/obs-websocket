@@ -5,6 +5,11 @@ obs-websocket protocol reference
 Messages exchanged between the client and the server are JSON objects.  
 The protocol in general is based on the OBS Remote protocol created by Bill Hamilton, with new commands specific to OBS Studio.
 
+### Table of contents
+- [Events](#events)
+- [Requests](#requests)
+- [Authentication](#authentication)
+
 ## Events
 ### Description
 Events are sent exclusively by the server and broadcast to each connected client.  
@@ -96,7 +101,7 @@ __Response__ : always OK, with these additional fields :
 - **"obs-websocket-version"** (string) : obs-websocket version
 
 #### "GetAuthRequired"
-Tells the client if authentication is required. If it is, authentication parameters "challenge" and "salt" are passed in the response fields (see Authentication).
+Tells the client if authentication is required. If it is, authentication parameters "challenge" and "salt" are passed in the response fields (see "Authentication").
 
 __Request fields__ : none  
 __Response__ : always OK, with these additional fields :  
@@ -108,7 +113,7 @@ __Response__ : always OK, with these additional fields :
 Try to authenticate the client on the server.
 
 __Request fields__ :  
-- **"auth"** (string) : response to the auth challenge (see Authentication).
+- **"auth"** (string) : response to the auth challenge (see "Authentication").
 
 __Response__ : OK if auth succeeded, error if invalid credentials. No additional fields.
 
@@ -207,3 +212,30 @@ __Response__ : OK if specified transition exists, error otherwise.
 *New in OBS Studio*  
 
 ### Authentication 
+A call to `GetAuthRequired` gives the client two elements :
+- A challenge : a random string that will be used to generate the auth response
+- A salt : applied to the password when generating the auth response
+
+The client knows a password and must it to authenticate itself to the server.  
+However, it must keep this password secret, and it is the purpose of the authentication mecanism used by obs-websocket.
+
+After a call to `GetAuthRequired`, the client knows a password (kept secret), a challenge and a salt (sent by the server).
+To generate the answer to the auth challenge, follow this procedure :
+- Concatenate the password with the salt sent by the server (in this order : password + server salt), then generate a binary SHA256 hash of the result and encode the resulting SHA256 binary hash to base64.
+- Concatenate the base64 secret with the challenge sent by the server (in this order : base64 secret + server challenge), then generate a binary SHA256 hash of the result and encode it to base64.
+- Voilà, this last base64 string is the auth response. You may now use it to authenticate to the server with the `Authenticate` request.
+
+Here's how it looks in pseudocode :
+```
+password = "supersecretpassword"
+challenge = "ztTBnnuqrqaKDzRM3xcVdbYm"
+salt = "PZVbYpvAnZut2SS6JNJytDm9"
+
+secret_string = password + salt
+secret_hash = binary_sha256(secret_string)
+secret = base64_encode(secret_hash)
+
+auth_response_string = secret + challenge
+auth_response_hash = binary_sha256(auth_response_string)
+auth_response = base64_encode(auth_response_hash)
+```
