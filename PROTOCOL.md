@@ -2,13 +2,10 @@ obs-websocket protocol reference
 ================================
 
 ## General Introduction
-**This document is still a WIP. Some things are missing (but won't stay like this for long).**
-
 Messages exchanged between the client and the server are JSON objects.  
 The protocol in general is based on the OBS Remote protocol created by Bill Hamilton, with new commands specific to OBS Studio.
 
 ## Events
-
 ### Description
 Events are sent exclusively by the server and broadcast to each connected client.  
 An event message will contain at least one field :
@@ -18,43 +15,43 @@ Additional fields will be present in the event message depending on the event ty
 
 ### Event Types
 #### "SwitchScenes"
-OBS is switching to another scene.
+OBS is switching to another scene.  
 - **scene-name** (string) : The name of the scene being switched to.
 
 #### "ScenesChanged"
 The scene list has been modified (Scenes have been added, removed, or renamed).
 
 #### "StreamStarting"
-A request to start streaming has been issued.
+A request to start streaming has been issued.  
 - **preview-only** (bool) : Always false.
 
-#### "StreamStarted"
-*New in OBS Studio*  
-Streaming started successfully.
+#### "StreamStarted"  
+Streaming started successfully.  
+*New in OBS Studio*
 
 #### "StreamStopping"
-A request to stop streaming has been issued.
+A request to stop streaming has been issued.  
 - **preview-only** (bool) : Always false.
 
-#### "StreamStopped"
-*New in OBS Studio*  
-Streaming stopped successfully.
+#### "StreamStopped"  
+Streaming stopped successfully.  
+*New in OBS Studio*
 
-#### "RecordingStarting"
-*New in OBS Studio*  
-A request to start recording has been issued.
+#### "RecordingStarting"  
+A request to start recording has been issued.  
+*New in OBS Studio*
 
-#### "RecordingStarted"
-*New in OBS Studio*  
-Recording started successfully.
+#### "RecordingStarted"  
+Recording started successfully.  
+*New in OBS Studio*
 
-#### "RecordingStopping"
-*New in OBS Studio*  
+#### "RecordingStopping" 
 A request to stop streaming has been issued.  
+*New in OBS Studio*
 
-#### "RecordingStopped"
-*New in OBS Studio*  
-Recording stopped successfully.
+#### "RecordingStopped"  
+Recording stopped successfully.  
+*New in OBS Studio*
 
 #### "StreamStatus"
 Sent every 2 seconds with the following information :  
@@ -91,27 +88,122 @@ Depending on the request type additional fields may be present (see the "[Reques
 
 ### Request Types
 #### "GetVersion"
+Returns the latest version of the plugin and the API. 
+
+__Request fields__ : none  
+__Response__ : always OK, with these additional fields :  
+- **"version"** (double) : OBSRemote API version. Fixed to 1.1 for retrocompatibility.
+- **"obs-websocket-version"** (string) : obs-websocket version
+
 #### "GetAuthRequired"
+Tells the client if authentication is required. If it is, authentication parameters "challenge" and "salt" are passed in the response fields (see Authentication).
+
+__Request fields__ : none  
+__Response__ : always OK, with these additional fields :  
+- **"authRequired"** (bool)
+- **"challenge"** (string)
+- **"salt"** (string)
+
 #### "Authenticate"
-- **auth** (string) : Authentication credentials.
+Try to authenticate the client on the server.
+
+__Request fields__ :  
+- **"auth"** (string) : response to the auth challenge (see Authentication).
+
+__Response__ : OK if auth succeeded, error if invalid credentials. No additional fields.
 
 #### "GetCurrentScene"
+Get the current scene's name and items.
+
+__Request fields__ : none  
+__Response__ : always OK, with these additional fields :  
+- **"name"** (string) : name of the current scene
+- **"sources"** (array of objects) : ordered list of the current scene's items descriptions
+
+Objects in the "sources" array have the following fields :
+- **"name"** (string) : name of the source associated with the scene item
+- **"type"** (string) : internal source type name
+- **"volume"** (double) : audio volume of the source, ranging from 0.0 to 1.0
+- **"x"** (double) : X coordinate of the top-left corner of the item in the scene
+- **"y"** (double) : Y coordinate of the top-left corner of the item in the scene
+- **"cx"** (double) : width of the item (with scale applied)
+- **"cy"** (double) : height of the item (with scale applied)
+
 #### "SetCurrentScene"
-- **scene-name** (string) : The name of the scene to switch to.
+Switch to the scene specified in "scene-name".
+
+__Request fields__ :  
+- **"scene-name"** (string) : name of the scene to switch to.
+
+__Response__ : always OK if scene exists, error if it doesn't. No additional fields
 
 #### "GetSceneList"
+List OBS' scenes.
+
+__Request fields__ : none  
+__Response__ : always OK, with these additional fields :  
+- **"current-scene"** (string) : name of the currently active scene
+- **"scenes"** (array of objects) : ordered list of scene descriptions (see `GetCurrentScene` for reference)
+
 #### "SetSourceRender"
-- **source** (string) : The name of the source in the currently active scene.
-- **render** (bool) : Render the specified source.
+Show or hide a specific source in the current scene.
+
+__Request fields__ :  
+- **"source"** (string) : name of the source in the currently active scene.
+- **"render"** (bool) : desired visibility
+
+__Response__ : OK if source exists in the current scene, error otherwise.
 
 #### "StartStopStreaming"
-#### "StartStopRecording"
-*New in OBS Studio*  
+Toggle streaming on or off.
+
+__Request fields__ : none  
+__Response__ : always OK. No additional fields.
+
+#### "StartStopRecording" 
+Toggle recording on or off.
+
+__Request fields__ : none  
+__Response__ : always OK. No additional fields.  
+*New in OBS Studio* 
+
 #### "GetStreamingStatus"
+Get current streaming and recording status.
+
+__Request fields__ : none  
+__Response__ : always OK, with these additional fields :
+- **"streaming"** (bool) : streaming status (active or not)
+- **"recording"** (bool) : recording status (active or not)
+- **"preview-only"** (bool) : always false. Retrocompat with OBSRemote.
+
 #### "GetTransitionList"
+List all transitions available in the frontend's dropdown menu.
+
+__Request fields__ : none  
+__Response__ : always OK, with these additional fields :
+- **"current-transition"** (string) : name of the current transition
+- **"transitions"** (array of objects) : list of transition descriptions
+
+Objects in the "transitions" array have only one field :
+- **"name"** (string) : name of the transition
+
 *New in OBS Studio*  
+
 #### "GetCurrentTransition"
+Get the name of the currently selected transition in the frontend's dropdown menu.
+
+__Request fields__ : none  
+__Request__ : always OK, with these additional fields :
+- **"name"** (string) : name of the selected transition
+
 *New in OBS Studio*  
+
 #### "SetCurrentTransition"
+__Request fields__ :
+- **"transition-name"** (string) : The name of the transition.
+
+__Response__ : OK if specified transition exists, error otherwise.
+
 *New in OBS Studio*  
-- **transition-name** (string) : The name of the transition.
+
+### Authentication 
