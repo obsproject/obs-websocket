@@ -2,7 +2,10 @@ obs-websocket
 ==============
 Websocket API for OBS Studio.
 
-## How to use
+## Downloads
+Binaries for Windows are available in the [Releases](https://github.com/Palakis/obs-websocket/releases) section. Linux and OS X releases coming soon.
+
+## Using obs-websocket
 The Websocket API server runs on port 4444 and a settings window is available in "Websocket server settings" under OBS' "Tools" menu. The obs-websocket protocol is documented in [PROTOCOL.md](PROTOCOL.md).  
 
 Here's a list of available language APIs for obs-websocket :
@@ -10,12 +13,13 @@ Here's a list of available language APIs for obs-websocket :
 
 There's currently no frontend available for obs-websocket.
 
-## Possible use cases
+### Possible use cases
 - Remote control OBS from a phone or tablet on the same local network
 - Change your stream overlay/graphics based on the current scene (like the AGDQ overlay does)
 - Automate scene switching with a third-party program (e.g. : auto-pilot, foot pedal, ...)
 
-## Build instructions
+## Compiling obs-websocket
+### Prerequisites
 You'll need QT 5 with QtWebSockets, CMake, and a working development environment for OBS Studio installed on your computer. 
 
 ### Windows
