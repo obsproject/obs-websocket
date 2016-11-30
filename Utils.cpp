@@ -93,6 +93,28 @@ obs_sceneitem_t* Utils::GetSceneItemFromName(obs_source_t* source, const char* n
 	return search.result;
 }
 
+obs_source_t* Utils::GetTransitionFromName(const char *search_name) {
+	obs_source_t *found_transition = NULL;
+
+	obs_frontend_source_list transition_list = {};
+	obs_frontend_get_transitions(&transition_list);
+
+	for (size_t i = 0; i < transition_list.sources.num; i++) {
+		obs_source_t *transition = transition_list.sources.array[i];
+
+		const char *transition_name = obs_source_get_name(transition);
+		if (strcmp(transition_name, search_name) == 0) {
+			found_transition = transition;
+			obs_source_addref(found_transition);
+			break;
+		}
+	}
+
+	obs_frontend_source_list_free(&transition_list);
+
+	return found_transition;
+}
+
 obs_data_array_t* Utils::GetScenes() {
 	obs_frontend_source_list sceneList = {};
 	obs_frontend_get_scenes(&sceneList);

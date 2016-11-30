@@ -27,7 +27,8 @@ class Utils
 	public:
 		static obs_data_array_t* GetSceneItems(obs_source_t *source);
 		static obs_data_t* GetSceneItemData(obs_scene_item *item);
-		static obs_sceneitem_t* GetSceneItemFromName(obs_source_t *source, const char* name);
+		static obs_sceneitem_t* GetSceneItemFromName(obs_source_t *source, const char *name);
+		static obs_source_t* GetTransitionFromName(const char *search_name);
 
 		static obs_data_array_t* GetScenes();
 		static obs_data_t* GetSceneData(obs_source *source);

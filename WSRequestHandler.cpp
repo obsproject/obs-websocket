@@ -329,7 +329,7 @@ void WSRequestHandler::HandleGetCurrentTransition(WSRequestHandler *owner) {
 
 void WSRequestHandler::HandleSetCurrentTransition(WSRequestHandler *owner) {
 	const char *name = obs_data_get_string(owner->_requestData, "transition-name");
-	obs_source_t *transition = obs_get_source_by_name(name);
+	obs_source_t *transition = Utils::GetTransitionFromName(name);
 
 	if (transition) {
 		obs_frontend_set_current_transition(transition);
