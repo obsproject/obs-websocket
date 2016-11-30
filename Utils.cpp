@@ -18,6 +18,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include "Utils.h"
 
+// Causes memory leaks
 obs_data_array_t* Utils::GetSceneItems(obs_source_t *source) {
 	obs_data_array_t *items = obs_data_array_create();
 	obs_scene_t *scene = obs_scene_from_source(source);
@@ -31,7 +32,7 @@ obs_data_array_t* Utils::GetSceneItems(obs_source_t *source) {
 		return true;
 	}, items);
 
-	obs_scene_release(scene);
+	//obs_scene_release(scene); // Can cause crashes
 	return items;
 }
 
@@ -59,7 +60,7 @@ obs_data_t* Utils::GetSceneItemData(obs_sceneitem_t *item) {
 	return data;
 }
 
-
+// Causes memory leaks
 obs_sceneitem_t* Utils::GetSceneItemFromName(obs_source_t* source, const char* name) {
 	struct current_search {
 		const char* query;
@@ -88,6 +89,8 @@ obs_sceneitem_t* Utils::GetSceneItemFromName(obs_source_t* source, const char* n
 		return true;
 	}, &search);
 
+	//obs_scene_release(scene); // Can cause crashes
+
 	return search.result;
 }
 
@@ -96,12 +99,12 @@ obs_data_array_t* Utils::GetScenes() {
 	obs_frontend_get_scenes(&sceneList);
 
 	obs_data_array_t* scenes = obs_data_array_create();
-	for (size_t i = 0; i < (&sceneList)->sources.num; i++) {
-		obs_source_t* scene = (&sceneList)->sources.array[i];
+	for (size_t i = 0; i < sceneList.sources.num; i++) {
+		obs_source_t* scene = sceneList.sources.array[i];
 		obs_data_array_push_back(scenes, GetSceneData(scene));
 	}
 
-	obs_frontend_source_list_free(&sceneList);
+	obs_frontend_source_list_free(&sceneList); 
 
 	return scenes;
 }

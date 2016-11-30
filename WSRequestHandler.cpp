@@ -90,6 +90,8 @@ void WSRequestHandler::processTextMessage(QString textMessage) {
 	else {
 		SendErrorResponse("invalid request type");
 	}
+	
+	obs_data_release(_requestData);
 }
 
 void WSRequestHandler::socketDisconnected() {
@@ -197,30 +199,38 @@ void WSRequestHandler::HandleSetCurrentScene(WSRequestHandler *owner) {
 	obs_source_release(source);
 }
 
+// Indirectly causes memory leaks
 void WSRequestHandler::HandleGetCurrentScene(WSRequestHandler *owner) {
-	obs_source_t *source = obs_frontend_get_current_scene();
-	const char *name = obs_source_get_name(source);
+	obs_source_t *current_scene = obs_frontend_get_current_scene();
+	const char *name = obs_source_get_name(current_scene);
 
-	obs_data_array_t *scene_items = Utils::GetSceneItems(source);
+	obs_data_array_t *scene_items = Utils::GetSceneItems(current_scene); // Causes memory leaks
 
 	obs_data_t *data = obs_data_create();
 	obs_data_set_string(data, "name", name);
 	obs_data_set_array(data, "sources", scene_items);
 
 	owner->SendOKResponse(data);
+
 	obs_data_release(data);
 	obs_data_array_release(scene_items);
-	//obs_source_release(source); // causes a source destroy sometimes
+	obs_source_release(current_scene);
 }
 
+// Indirectly causes memory leaks
 void WSRequestHandler::HandleGetSceneList(WSRequestHandler *owner) {
+	obs_source_t *current_scene = obs_frontend_get_current_scene();
+	obs_data_array_t *scenes = Utils::GetScenes(); // Causes memory leaks via GetSceneItems
+
 	obs_data_t *data = obs_data_create();
-	obs_data_set_string(data, "current-scene", obs_source_get_name(obs_frontend_get_current_scene()));
-	obs_data_set_array(data, "scenes", Utils::GetScenes());
+	obs_data_set_string(data, "current-scene", obs_source_get_name(current_scene));
+	obs_data_set_array(data, "scenes", scenes);
 
 	owner->SendOKResponse(data);
 
-	//obs_data_release(data); // da hell ? sometimes causes a crash too, like in GetCurrentScene...
+	obs_data_release(data);
+	obs_data_array_release(scenes);
+	obs_source_release(current_scene);
 }
 
 void WSRequestHandler::HandleSetSourceRender(WSRequestHandler *owner) {
@@ -278,35 +288,44 @@ void WSRequestHandler::HandleStartStopRecording(WSRequestHandler *owner) {
 	owner->SendOKResponse();
 }
 
+// Causes memory leaks
 void WSRequestHandler::HandleGetTransitionList(WSRequestHandler *owner) {
+	obs_source_t *current_transition = obs_frontend_get_current_transition();	
 	obs_frontend_source_list transitionList = {};
 	obs_frontend_get_transitions(&transitionList);
 
 	obs_data_array_t* transitions = obs_data_array_create();
-	for (size_t i = 0; i < (&transitionList)->sources.num; i++) {
-		obs_source_t* transition = (&transitionList)->sources.array[i];
+	for (size_t i = 0; i < transitionList.sources.num; i++) {
+		obs_source_t* transition = transitionList.sources.array[i];
 		
 		obs_data_t *obj = obs_data_create();
 		obs_data_set_string(obj, "name", obs_source_get_name(transition));
-
+		
 		obs_data_array_push_back(transitions, obj);
 	}
 	obs_frontend_source_list_free(&transitionList);
 
 	obs_data_t *response = obs_data_create();
-	obs_data_set_string(response, "current-transition", obs_source_get_name(obs_frontend_get_current_transition()));
+	obs_data_set_string(response, "current-transition", obs_source_get_name(current_transition));
 	obs_data_set_array(response, "transitions", transitions);
+
 	owner->SendOKResponse(response);
 
 	obs_data_release(response);
+	obs_data_array_release(transitions);
+	obs_source_release(current_transition);
 }
 
 void WSRequestHandler::HandleGetCurrentTransition(WSRequestHandler *owner) {
+	obs_source_t *current_transition = obs_frontend_get_current_transition();
+
 	obs_data_t *response = obs_data_create();
-	obs_data_set_string(response, "name", obs_source_get_name(obs_frontend_get_current_transition()));
+	obs_data_set_string(response, "name", obs_source_get_name(current_transition));
+
 	owner->SendOKResponse(response);
 
 	obs_data_release(response);
+	obs_source_release(current_transition);
 }
 
 void WSRequestHandler::HandleSetCurrentTransition(WSRequestHandler *owner) {
