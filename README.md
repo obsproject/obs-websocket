@@ -36,10 +36,9 @@ sudo apt-get install libqt5websockets5-dev
 git clone --recursive https://github.com/Palakis/obs-websocket.git
 cd obs-websocket
 mkdir build && cd build
-cmake -DLIBOBS_INCLUDE_DIR="<path to the libobs sub-folder in obs-studio's source code>" ..
-make
-sudo cp obs-websocket.so /usr/lib/obs-plugins
-sudo cp -r ../data /usr/share/obs/obs-plugins/obs-websocket
+cmake -DLIBOBS_INCLUDE_DIR="<path to the libobs sub-folder in obs-studio's source code>" -DCMAKE_INSTALL_PREFIX=/usr ..
+make -j4
+sudo make install
 ```
 
 ### OS X
