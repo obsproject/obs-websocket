@@ -18,7 +18,6 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include "Utils.h"
 
-// Causes memory leaks
 obs_data_array_t* Utils::GetSceneItems(obs_source_t *source) {
 	obs_data_array_t *items = obs_data_array_create();
 	obs_scene_t *scene = obs_scene_from_source(source);
@@ -28,11 +27,14 @@ obs_data_array_t* Utils::GetSceneItems(obs_source_t *source) {
 
 	obs_scene_enum_items(scene, [](obs_scene_t *scene, obs_sceneitem_t *currentItem, void *param) {
 		obs_data_array_t *data = static_cast<obs_data_array_t *>(param);
-		obs_data_array_push_back(data, GetSceneItemData(currentItem));
+		
+		obs_data_t *item_data = GetSceneItemData(currentItem);
+		obs_data_array_push_back(data, item_data);
+
+		obs_data_release(item_data);
 		return true;
 	}, items);
 
-	//obs_scene_release(scene); // Can cause crashes
 	return items;
 }
 
@@ -60,7 +62,6 @@ obs_data_t* Utils::GetSceneItemData(obs_sceneitem_t *item) {
 	return data;
 }
 
-// Causes memory leaks
 obs_sceneitem_t* Utils::GetSceneItemFromName(obs_source_t* source, const char* name) {
 	struct current_search {
 		const char* query;
@@ -89,8 +90,6 @@ obs_sceneitem_t* Utils::GetSceneItemFromName(obs_source_t* source, const char* n
 		return true;
 	}, &search);
 
-	//obs_scene_release(scene); // Can cause crashes
-
 	return search.result;
 }
 
@@ -100,8 +99,12 @@ obs_data_array_t* Utils::GetScenes() {
 
 	obs_data_array_t* scenes = obs_data_array_create();
 	for (size_t i = 0; i < sceneList.sources.num; i++) {
-		obs_source_t* scene = sceneList.sources.array[i];
-		obs_data_array_push_back(scenes, GetSceneData(scene));
+		obs_source_t *scene = sceneList.sources.array[i];
+		
+		obs_data_t *scene_data = GetSceneData(scene);
+		obs_data_array_push_back(scenes, scene_data);
+
+		obs_data_release(scene_data);
 	}
 
 	obs_frontend_source_list_free(&sceneList); 
@@ -110,9 +113,12 @@ obs_data_array_t* Utils::GetScenes() {
 }
 
 obs_data_t* Utils::GetSceneData(obs_source *source) {
+	obs_data_array_t *scene_items = GetSceneItems(source);
+
 	obs_data_t* sceneData = obs_data_create();
 	obs_data_set_string(sceneData, "name", obs_source_get_name(source));
-	obs_data_set_array(sceneData, "sources", GetSceneItems(source));
+	obs_data_set_array(sceneData, "sources", scene_items);
 	
+	obs_data_array_release(scene_items);
 	return sceneData;
 }

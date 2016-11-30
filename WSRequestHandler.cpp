@@ -217,10 +217,9 @@ void WSRequestHandler::HandleGetCurrentScene(WSRequestHandler *owner) {
 	obs_source_release(current_scene);
 }
 
-// Indirectly causes memory leaks
 void WSRequestHandler::HandleGetSceneList(WSRequestHandler *owner) {
 	obs_source_t *current_scene = obs_frontend_get_current_scene();
-	obs_data_array_t *scenes = Utils::GetScenes(); // Causes memory leaks via GetSceneItems
+	obs_data_array_t *scenes = Utils::GetScenes();
 
 	obs_data_t *data = obs_data_create();
 	obs_data_set_string(data, "current-scene", obs_source_get_name(current_scene));
@@ -288,7 +287,6 @@ void WSRequestHandler::HandleStartStopRecording(WSRequestHandler *owner) {
 	owner->SendOKResponse();
 }
 
-// Causes memory leaks
 void WSRequestHandler::HandleGetTransitionList(WSRequestHandler *owner) {
 	obs_source_t *current_transition = obs_frontend_get_current_transition();	
 	obs_frontend_source_list transitionList = {};
@@ -302,6 +300,7 @@ void WSRequestHandler::HandleGetTransitionList(WSRequestHandler *owner) {
 		obs_data_set_string(obj, "name", obs_source_get_name(transition));
 		
 		obs_data_array_push_back(transitions, obj);
+		obs_data_release(obj);
 	}
 	obs_frontend_source_list_free(&transitionList);
 
