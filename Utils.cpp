@@ -29,7 +29,7 @@ obs_data_array_t* Utils::GetSceneItems(obs_source_t *source) {
 		obs_data_array_t *data = static_cast<obs_data_array_t *>(param);
 		
 		obs_data_t *item_data = GetSceneItemData(currentItem);
-		obs_data_array_push_back(data, item_data);
+		obs_data_array_insert(data, 0, item_data);
 
 		obs_data_release(item_data);
 		return true;
