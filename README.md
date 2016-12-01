@@ -3,7 +3,7 @@ obs-websocket
 Websocket API for OBS Studio.
 
 ## Downloads
-Binaries for Windows are available in the [Releases](https://github.com/Palakis/obs-websocket/releases) section. Linux and OS X releases coming soon.
+Binaries for Windows and Linux are available in the [Releases](https://github.com/Palakis/obs-websocket/releases) section.
 
 ## Using obs-websocket
 The Websocket API server runs on port 4444 and a settings window is available in "Websocket server settings" under OBS' "Tools" menu. The obs-websocket protocol is documented in [PROTOCOL.md](PROTOCOL.md).  
