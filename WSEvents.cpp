@@ -92,15 +92,28 @@ void WSEvents::broadcastUpdate(const char *updateType, obs_data_t *additionalFie
 
 void WSEvents::OnSceneChange() {
 	// Implements an existing update type from bilhamil's OBS Remote
+
+	// Default behavior : get the new scene from the running transition
 	obs_source_t *transition = obs_frontend_get_current_transition();
 	obs_source_t *new_scene = obs_transition_get_source(transition, OBS_TRANSITION_SOURCE_B);
 	if (!new_scene) {
 		obs_source_release(transition);
 		return;
 	}
+	
+	const char *scene_name = obs_source_get_name(new_scene);
+	if (!scene_name) {
+		// Fallback behaviour : get the new scene straight from the API
+		obs_source_release(new_scene);
+		new_scene = obs_frontend_get_current_scene();
+
+		if (new_scene) {
+			scene_name = obs_source_get_name(new_scene);
+		}
+	}
 
 	obs_data_t *data = obs_data_create();
-	obs_data_set_string(data, "scene-name", obs_source_get_name(new_scene));
+	obs_data_set_string(data, "scene-name", scene_name);
 	
 	broadcastUpdate("SwitchScenes", data);
 
