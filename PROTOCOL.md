@@ -26,6 +26,13 @@ OBS is switching to another scene.
 #### "ScenesChanged"
 The scene list has been modified (Scenes have been added, removed, or renamed).
 
+#### "SwitchTransition"
+The active transition has been changed.  
+- **transition-name** (string) : The name of the active transition.
+
+#### "TransitionListChanged"
+The list of available transitions has been modified (Transitions have been added, removed, or renamed).
+
 #### "StreamStarting"
 A request to start streaming has been issued.  
 - **preview-only** (bool) : Always false.
@@ -50,7 +57,7 @@ A request to start recording has been issued.
 Recording started successfully.  
 *New in OBS Studio*
 
-#### "RecordingStopping" 
+#### "RecordingStopping"
 A request to stop streaming has been issued.  
 *New in OBS Studio*
 
@@ -93,7 +100,7 @@ Depending on the request type additional fields may be present (see the "[Reques
 
 ### Request Types
 #### "GetVersion"
-Returns the latest version of the plugin and the API. 
+Returns the latest version of the plugin and the API.
 
 __Request fields__ : none  
 __Response__ : always OK, with these additional fields :  
@@ -165,12 +172,12 @@ Toggle streaming on or off.
 __Request fields__ : none  
 __Response__ : always OK. No additional fields.
 
-#### "StartStopRecording" 
+#### "StartStopRecording"
 Toggle recording on or off.
 
 __Request fields__ : none  
 __Response__ : always OK. No additional fields.  
-*New in OBS Studio* 
+*New in OBS Studio*
 
 #### "GetStreamingStatus"
 Get current streaming and recording status.
@@ -211,7 +218,7 @@ __Response__ : OK if specified transition exists, error otherwise.
 
 *New in OBS Studio*  
 
-### Authentication 
+### Authentication
 A call to `GetAuthRequired` gives the client two elements :
 - A challenge : a random string that will be used to generate the auth response
 - A salt : applied to the password when generating the auth response

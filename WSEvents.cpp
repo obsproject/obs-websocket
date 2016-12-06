@@ -43,6 +43,12 @@ void WSEvents::FrontendEventHandler(enum obs_frontend_event event, void *private
 	else if (event == OBS_FRONTEND_EVENT_SCENE_LIST_CHANGED) {
 		owner->OnSceneListChange();
 	}
+	else if (event == OBS_FRONTEND_EVENT_TRANSITION_CHANGED) {
+		owner->OnTransitionChange();
+	}
+	else if (event == OBS_FRONTEND_EVENT_TRANSITION_LIST_CHANGED) {
+		owner->OnTransitionListChange();
+	}
 	else if (event == OBS_FRONTEND_EVENT_STREAMING_STARTING) {
 		owner->OnStreamStarting();
 	}
@@ -124,6 +130,23 @@ void WSEvents::OnSceneChange() {
 
 void WSEvents::OnSceneListChange() {
 	broadcastUpdate("ScenesChanged");
+}
+
+void WSEvents::OnTransitionChange() {
+	obs_source_t *transition = obs_frontend_get_current_transition();
+	const char *transition_name = obs_source_get_name(transition);
+
+	obs_data_t *data = obs_data_create();
+	obs_data_set_string(data, "transition-name", transition_name);
+
+	broadcastUpdate("SwitchTransition", data);
+
+	obs_data_release(data);
+	obs_source_release(transition);
+}
+
+void WSEvents::OnTransitionListChange() {
+	broadcastUpdate("TransitionListChanged");
 }
 
 void WSEvents::OnStreamStarting() {
