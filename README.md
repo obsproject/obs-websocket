@@ -6,9 +6,14 @@ Websocket API for OBS Studio.
 Binaries for Windows and Linux are available in the [Releases](https://github.com/Palakis/obs-websocket/releases) section.
 
 ## Using obs-websocket
+An HTML5 frontend made by [t2t2](https://github.com/t2t2/obs-tablet-remote) (compatible with tablets and other touch interfaces) is available here : http://t2t2.github.io/obs-tablet-remote/
+
 You may want to protect the Websocket server with some form of authentication. To do this, open the "Websocket server settings" dialog under OBS' "Tools" menu. In the settings dialogs, you can enable or disable authentication and set a password for it.
 
-An HTML5 frontend made by [t2t2](https://github.com/t2t2/obs-tablet-remote) (compatible with tablets and other touch interfaces) is available here : http://t2t2.github.io/obs-tablet-remote/
+### Possible use cases
+- Remote control OBS from a phone or tablet on the same local network
+- Change your stream overlay/graphics based on the current scene (like the AGDQ overlay does)
+- Automate scene switching with a third-party program (e.g. : auto-pilot, foot pedal, ...)
 
 ### For developers
 The Websocket API server runs on port 4444 and the protocol is documented in [PROTOCOL.md](PROTOCOL.md).  
@@ -17,11 +22,6 @@ Here's a list of available language APIs for obs-websocket :
 - Javascript (browser & nodejs) : [obs-websocket-js](https://github.com/haganbmj/obs-websocket-js) by haganbmj
 
 I'd like to know what you're building with or for obs-websocket. If you do something in this fashion, feel free to drop me an email at `contact at slepin dot fr` !
-
-### Possible use cases
-- Remote control OBS from a phone or tablet on the same local network
-- Change your stream overlay/graphics based on the current scene (like the AGDQ overlay does)
-- Automate scene switching with a third-party program (e.g. : auto-pilot, foot pedal, ...)
 
 ## Compiling obs-websocket
 ### Prerequisites
