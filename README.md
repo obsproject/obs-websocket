@@ -6,12 +6,17 @@ Websocket API for OBS Studio.
 Binaries for Windows and Linux are available in the [Releases](https://github.com/Palakis/obs-websocket/releases) section.
 
 ## Using obs-websocket
-The Websocket API server runs on port 4444 and a settings window is available in "Websocket server settings" under OBS' "Tools" menu. The obs-websocket protocol is documented in [PROTOCOL.md](PROTOCOL.md).  
+You may want to protect the Websocket server with some form of authentication. To do this, open the "Websocket server settings" dialog under OBS' "Tools" menu. In the settings dialogs, you can enable or disable authentication and set a password for it.
+
+An HTML5 frontend made by [t2t2](https://github.com/t2t2/obs-tablet-remote) (compatible with tablets and other touch interfaces) is available here : http://t2t2.github.io/obs-tablet-remote/
+
+### For developers
+The Websocket API server runs on port 4444 and the protocol is documented in [PROTOCOL.md](PROTOCOL.md).  
 
 Here's a list of available language APIs for obs-websocket :
 - Javascript (browser & nodejs) : [obs-websocket-js](https://github.com/haganbmj/obs-websocket-js) by haganbmj
 
-There's currently no frontend available for obs-websocket.
+I'd like to know what you're building with or for obs-websocket. If you do something in this fashion, feel free to drop me an email at `contact at slepin dot fr` !
 
 ### Possible use cases
 - Remote control OBS from a phone or tablet on the same local network
