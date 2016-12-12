@@ -54,7 +54,9 @@ WSRequestHandler::WSRequestHandler(QWebSocket *client) :
 	authNotRequired.insert("GetAuthRequired");
 	authNotRequired.insert("Authenticate");
 
-	blog(LOG_INFO, "[obs-websockets] new client connected from %s:%d", _client->peerAddress().toString().toLocal8Bit(), _client->peerPort());
+	const char *client_ip = _client->peerAddress().toString().toLocal8Bit().constData();
+	uint16_t client_port = _client->peerPort();
+	blog(LOG_INFO, "[obs-websockets] new client connected from %s:%d", client_ip, client_port);
 
 	connect(_client, &QWebSocket::textMessageReceived, this, &WSRequestHandler::processTextMessage);
 	connect(_client, &QWebSocket::disconnected, this, &WSRequestHandler::socketDisconnected);
@@ -95,7 +97,9 @@ void WSRequestHandler::processTextMessage(QString textMessage) {
 }
 
 void WSRequestHandler::socketDisconnected() {
-	blog(LOG_INFO, "[obs-websockets] client %s:%d disconnected", _client->peerAddress().toString().toStdString(), _client->peerPort());
+	const char *client_ip = _client->peerAddress().toString().toLocal8Bit().constData();
+	uint16_t client_port = _client->peerPort();
+	blog(LOG_INFO, "[obs-websockets] client %s:%d disconnected", client_ip, client_port);
 
 	_authenticated = false;
 	_client->deleteLater();
