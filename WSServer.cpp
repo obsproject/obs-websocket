@@ -34,7 +34,7 @@ WSServer::WSServer(quint16 port, QObject *parent) :
 {
 	_serverThread = new QThread();
 	_wsServer = new QWebSocketServer(
-		QStringLiteral("OBS Websocket API"),
+		QStringLiteral("obs-websocket"),
 		QWebSocketServer::NonSecureMode,
 		this);
 	_wsServer->moveToThread(_serverThread);
