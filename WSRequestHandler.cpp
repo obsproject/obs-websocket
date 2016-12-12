@@ -54,9 +54,8 @@ WSRequestHandler::WSRequestHandler(QWebSocket *client) :
 	authNotRequired.insert("GetAuthRequired");
 	authNotRequired.insert("Authenticate");
 
-	const char *client_ip = _client->peerAddress().toString().toLocal8Bit().constData();
-	uint16_t client_port = _client->peerPort();
-	blog(LOG_INFO, "[obs-websockets] new client connected from %s:%d", client_ip, client_port);
+	QByteArray client_ip = _client->peerAddress().toString().toLocal8Bit();
+	blog(LOG_INFO, "[obs-websockets] new client connection from %s:%d", client_ip.constData(), _client->peerPort());
 
 	connect(_client, &QWebSocket::textMessageReceived, this, &WSRequestHandler::processTextMessage);
 	connect(_client, &QWebSocket::disconnected, this, &WSRequestHandler::socketDisconnected);
@@ -68,7 +67,11 @@ void WSRequestHandler::processTextMessage(QString textMessage) {
 
 	_requestData = obs_data_create_from_json(msg);
 	if (!_requestData) {
-		blog(LOG_ERROR, "[obs-websockets] invalid JSON payload for '%s'", msg);
+		if (!msg) {
+			msg = "<null pointer>";
+		}
+
+		blog(LOG_ERROR, "[obs-websockets] invalid JSON payload received for '%s'", msg);
 		SendErrorResponse("invalid JSON payload");
 		return;
 	}
@@ -97,9 +100,8 @@ void WSRequestHandler::processTextMessage(QString textMessage) {
 }
 
 void WSRequestHandler::socketDisconnected() {
-	const char *client_ip = _client->peerAddress().toString().toLocal8Bit().constData();
-	uint16_t client_port = _client->peerPort();
-	blog(LOG_INFO, "[obs-websockets] client %s:%d disconnected", client_ip, client_port);
+	QByteArray client_ip = _client->peerAddress().toString().toLocal8Bit();
+	blog(LOG_INFO, "[obs-websockets] client %s:%d disconnected", client_ip.constData(), _client->peerPort());
 
 	_authenticated = false;
 	_client->deleteLater();
@@ -203,12 +205,11 @@ void WSRequestHandler::HandleSetCurrentScene(WSRequestHandler *owner) {
 	obs_source_release(source);
 }
 
-// Indirectly causes memory leaks
 void WSRequestHandler::HandleGetCurrentScene(WSRequestHandler *owner) {
 	obs_source_t *current_scene = obs_frontend_get_current_scene();
 	const char *name = obs_source_get_name(current_scene);
 
-	obs_data_array_t *scene_items = Utils::GetSceneItems(current_scene); // Causes memory leaks
+	obs_data_array_t *scene_items = Utils::GetSceneItems(current_scene);
 
 	obs_data_t *data = obs_data_create();
 	obs_data_set_string(data, "name", name);
