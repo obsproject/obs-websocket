@@ -71,6 +71,9 @@ class WSRequestHandler : public QObject
 		static void HandleGetTransitionList(WSRequestHandler *owner);
 		static void HandleGetCurrentTransition(WSRequestHandler *owner);
 		static void HandleSetCurrentTransition(WSRequestHandler *owner);
+
+		static void HandleSetVolume(WSRequestHandler *owner);
+		static void HandleGetVolume(WSRequestHandler *owner);
 };
 
 #endif // WSPROTOCOL_H

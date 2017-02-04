@@ -205,7 +205,7 @@ Objects in the "transitions" array have only one field :
 Get the name of the currently selected transition in the frontend's dropdown menu.
 
 __Request fields__ : none  
-__Request__ : always OK, with these additional fields :
+__Response__ : always OK, with these additional fields :
 - **"name"** (string) : name of the selected transition
 
 *New in OBS Studio*  
@@ -217,6 +217,25 @@ __Request fields__ :
 __Response__ : OK if specified transition exists, error otherwise.
 
 *New in OBS Studio*  
+
+#### "SetVolume"
+Set the volume of a specific source.
+
+__Request fields__ :
+- **"source"** (string) : the name of the source
+- **"volume"** (double) : the desired volume
+
+__Response__ : OK if specified source exists, error otherwise.
+
+#### "GetVolume"
+Get the volume of a specific source.
+
+__Request fields__ :
+- **"source"** (string) : name of the source
+
+__Response__ : OK if source exists, with these additional fields :
+- **"name"** (string) : name of the requested source
+- **"volume"** (double) : volume of the requested source, on a linear scale (0.0 to 1.0)
 
 ### Authentication
 A call to `GetAuthRequired` gives the client two elements :

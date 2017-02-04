@@ -42,19 +42,21 @@ WSRequestHandler::WSRequestHandler(QWebSocket *client) :
 	messageMap["GetStreamingStatus"] = WSRequestHandler::HandleGetStreamingStatus;
 	messageMap["StartStopStreaming"] = WSRequestHandler::HandleStartStopStreaming;
 	messageMap["StartStopRecording"] = WSRequestHandler::HandleStartStopRecording;
-	messageMap["ToggleMute"] = WSRequestHandler::ErrNotImplemented;
-	messageMap["GetVolumes"] = WSRequestHandler::ErrNotImplemented;
-	messageMap["SetVolume"] = WSRequestHandler::ErrNotImplemented;
 
 	messageMap["GetTransitionList"] = WSRequestHandler::HandleGetTransitionList;
 	messageMap["GetCurrentTransition"] = WSRequestHandler::HandleGetCurrentTransition;
 	messageMap["SetCurrentTransition"] = WSRequestHandler::HandleSetCurrentTransition;
 
+	messageMap["SetVolume"] = WSRequestHandler::HandleSetVolume;
+	messageMap["GetVolume"] = WSRequestHandler::HandleGetVolume;
+	messageMap["ToggleMute"] = WSRequestHandler::ErrNotImplemented;
+	messageMap["GetVolumes"] = WSRequestHandler::ErrNotImplemented;
+	
 	authNotRequired.insert("GetVersion");
 	authNotRequired.insert("GetAuthRequired");
 	authNotRequired.insert("Authenticate");
 
-	QByteArray client_ip = _client->peerAddress().toString().toLocal8Bit();
+	QByteArray client_ip = _client->peerAddress().toString().toUtf8();
 	blog(LOG_INFO, "[obs-websockets] new client connection from %s:%d", client_ip.constData(), _client->peerPort());
 
 	connect(_client, &QWebSocket::textMessageReceived, this, &WSRequestHandler::processTextMessage);
@@ -62,7 +64,7 @@ WSRequestHandler::WSRequestHandler(QWebSocket *client) :
 }
 
 void WSRequestHandler::processTextMessage(QString textMessage) {
-	QByteArray msgData = textMessage.toLocal8Bit();
+	QByteArray msgData = textMessage.toUtf8();
 	const char *msg = msgData;
 
 	_requestData = obs_data_create_from_json(msg);
@@ -100,7 +102,7 @@ void WSRequestHandler::processTextMessage(QString textMessage) {
 }
 
 void WSRequestHandler::socketDisconnected() {
-	QByteArray client_ip = _client->peerAddress().toString().toLocal8Bit();
+	QByteArray client_ip = _client->peerAddress().toString().toUtf8();
 	blog(LOG_INFO, "[obs-websockets] client %s:%d disconnected", client_ip.constData(), _client->peerPort());
 
 	_authenticated = false;
@@ -345,6 +347,46 @@ void WSRequestHandler::HandleSetCurrentTransition(WSRequestHandler *owner) {
 	else {
 		owner->SendErrorResponse("requested transition does not exist");
 	}
+}
+
+void WSRequestHandler::HandleSetVolume(WSRequestHandler *owner) {
+	const char *item_name = obs_data_get_string(owner->_requestData, "source");
+	float item_volume = obs_data_get_double(owner->_requestData, "volume");
+
+	if (item_name == NULL || item_volume < 0.0 || item_volume > 1.0) {
+		owner->SendErrorResponse("invalid request parameters");
+		return;
+	}
+
+	obs_source_t* item = obs_get_source_by_name(item_name);
+	if (!item) {
+		owner->SendErrorResponse("specified source doesn't exist");
+		return;
+	}
+
+	obs_source_set_volume(item, item_volume);
+	owner->SendOKResponse();
+
+	obs_source_release(item);
+}
+
+void WSRequestHandler::HandleGetVolume(WSRequestHandler *owner) {
+	const char *item_name = obs_data_get_string(owner->_requestData, "source");
+	if (item_name == NULL) {
+		owner->SendErrorResponse("invalid request parameters");
+		return;
+	}
+
+	obs_source_t* item = obs_get_source_by_name(item_name);
+	
+	obs_data_t* response = obs_data_create();
+	obs_data_set_string(response, "name", item_name);
+	obs_data_set_double(response, "volume", obs_source_get_volume(item));
+
+	owner->SendOKResponse(response);
+
+	obs_data_release(response);
+	obs_source_release(item);
 }
 
 void WSRequestHandler::ErrNotImplemented(WSRequestHandler *owner) {
