@@ -80,9 +80,6 @@ void WSEvents::FrontendEventHandler(enum obs_frontend_event event, void *private
 }
 
 void WSEvents::broadcastUpdate(const char *updateType, obs_data_t *additionalFields = NULL) {
-	obs_source_t *source = obs_frontend_get_current_scene();
-	const char *name = obs_source_get_name(source);
-
 	obs_data_t *update = obs_data_create();
 
 	obs_data_set_string(update, "update-type", updateType);
@@ -93,7 +90,6 @@ void WSEvents::broadcastUpdate(const char *updateType, obs_data_t *additionalFie
 	_srv->broadcast(obs_data_get_json(update));
 
 	obs_data_release(update);
-	obs_source_release(source);
 }
 
 void WSEvents::OnSceneChange() {
