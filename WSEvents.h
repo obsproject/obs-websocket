@@ -39,7 +39,8 @@ class WSEvents : public QObject
 
 	private:
 		WSServer *_srv;
-		uint64_t _streamStartTime;
+		uint64_t _stream_starttime;
+		uint64_t _rec_starttime;
 		uint64_t _lastBytesSent;
 		uint64_t _lastBytesSentTime;
 		void broadcastUpdate(const char *updateType, obs_data_t *additionalFields);

@@ -25,6 +25,9 @@ WSEvents::WSEvents(WSServer *server) {
 	QTimer *statusTimer = new QTimer();
 	connect(statusTimer, SIGNAL(timeout()), this, SLOT(StreamStatus()));
 	statusTimer->start(2000); // equal to frontend's constant BITRATE_UPDATE_SECONDS
+
+	_stream_starttime = 0;
+	_rec_starttime = 0;
 }
 
 WSEvents::~WSEvents() {
@@ -157,7 +160,7 @@ void WSEvents::OnStreamStarting() {
 
 void WSEvents::OnStreamStarted() {
 	// New update type specific to OBS Studio
-	_streamStartTime = os_gettime_ns();
+	_stream_starttime = os_gettime_ns();
 	_lastBytesSent = 0;
 	broadcastUpdate("StreamStarted");
 }
@@ -174,7 +177,7 @@ void WSEvents::OnStreamStopping() {
 
 void WSEvents::OnStreamStopped() {
 	// New update type specific to OBS Studio
-	_streamStartTime = 0;
+	_stream_starttime = 0;
 	broadcastUpdate("StreamStopped");
 }
 
@@ -185,6 +188,7 @@ void WSEvents::OnRecordingStarting() {
 
 void WSEvents::OnRecordingStarted() {
 	// New update type specific to OBS Studio
+	_rec_starttime = os_gettime_ns();
 	broadcastUpdate("RecordingStarted");
 }
 
@@ -195,6 +199,7 @@ void WSEvents::OnRecordingStopping() {
 
 void WSEvents::OnRecordingStopped() {
 	// New update type specific to OBS Studio
+	_rec_starttime = 0;
 	broadcastUpdate("RecordingStopped");
 }
 
@@ -234,7 +239,7 @@ void WSEvents::StreamStatus() {
 	_lastBytesSent = bytes_sent;
 	_lastBytesSentTime = bytes_sent_time;
 
-	uint64_t totalStreamTime = (os_gettime_ns() - _streamStartTime) / 1000000000;
+	uint64_t totalStreamTime = (os_gettime_ns() - _stream_starttime) / 1000000000;
 
 	int total_frames = obs_output_get_total_frames(stream_output);
 	int dropped_frames = obs_output_get_frames_dropped(stream_output);
