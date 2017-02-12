@@ -21,6 +21,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include <QtCore/QObject>
 #include <QtCore/QList>
+#include <QtCore/QMutex>
 #include <QtCore/QByteArray>
 #include "WSRequestHandler.h"
 
@@ -43,6 +44,7 @@ class WSServer : public QObject
 	private:
 		QWebSocketServer *_wsServer;
 		QList<WSRequestHandler *> _clients;
+		QMutex _clMutex;
 		QThread *_serverThread;
 };
 
