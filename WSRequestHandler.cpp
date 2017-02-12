@@ -49,7 +49,8 @@ WSRequestHandler::WSRequestHandler(QWebSocket *client) :
 
 	messageMap["SetVolume"] = WSRequestHandler::HandleSetVolume;
 	messageMap["GetVolume"] = WSRequestHandler::HandleGetVolume;
-	messageMap["ToggleMute"] = WSRequestHandler::ErrNotImplemented;
+	messageMap["ToggleMute"] = WSRequestHandler::ToggleMute;
+       messageMap["SetMute"] = WSRequestHandler::SetMute;
 	messageMap["GetVolumes"] = WSRequestHandler::ErrNotImplemented;
 	
 	authNotRequired.insert("GetVersion");
@@ -382,11 +383,49 @@ void WSRequestHandler::HandleGetVolume(WSRequestHandler *owner) {
 	obs_data_t* response = obs_data_create();
 	obs_data_set_string(response, "name", item_name);
 	obs_data_set_double(response, "volume", obs_source_get_volume(item));
+       obs_data_set_bool(response, "muted", obs_source_muted(item));
 
 	owner->SendOKResponse(response);
 
 	obs_data_release(response);
 	obs_source_release(item);
+}
+
+void WSRequestHandler::ToggleMute(WSRequestHandler *owner) {
+       const char *item_name = obs_data_get_string(owner->_requestData, "source");
+       if (item_name == NULL) {
+               owner->SendErrorResponse("invalid request parameters");
+               return;
+       }
+
+       obs_source_t* item = obs_get_source_by_name(item_name);
+       if (!item) {
+               owner->SendErrorResponse("invalid request parameters");
+       }
+
+       obs_source_set_muted(item, obs_source_muted(item));
+       owner->SendOKResponse();
+
+       obs_source_release(item);
+}
+
+void WSRequestHandler::SetMute(WSRequestHandler *owner) {
+       const char *item_name = obs_data_get_string(owner->_requestData, "source");
+       bool mute = obs_data_get_bool(owner->_requestData, "mute");
+       if (item_name == NULL) {
+               owner->SendErrorResponse("invalid request parameters");
+               return;
+       }
+
+       obs_source_t* item = obs_get_source_by_name(item_name);
+       if (!item) {
+               owner->SendErrorResponse("specified source doesn't exist");
+       }
+
+       obs_source_set_muted(item, mute);
+       owner->SendOKResponse();
+
+       obs_source_release(item);
 }
 
 void WSRequestHandler::ErrNotImplemented(WSRequestHandler *owner) {
