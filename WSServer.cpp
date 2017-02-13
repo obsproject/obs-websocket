@@ -34,10 +34,12 @@ WSServer::WSServer(quint16 port, QObject *parent) :
 	_clMutex(QMutex::NonRecursive)
 {
 	_serverThread = new QThread();
+
 	_wsServer = new QWebSocketServer(
 		QStringLiteral("obs-websocket"),
 		QWebSocketServer::NonSecureMode,
 		this);
+
 	_wsServer->moveToThread(_serverThread);
 	_serverThread->start();
 
@@ -89,13 +91,13 @@ void WSServer::onNewConnection()
 
 void WSServer::socketDisconnected()
 {
-	WSRequestHandler *pClient = qobject_cast<WSRequestHandler *>(sender());
+	WSRequestHandler *pHandler = qobject_cast<WSRequestHandler *>(sender());
 
-	if (pClient) {
+	if (pHandler) {
 		_clMutex.lock();
-		_clients.removeAll(pClient);
+		_clients.removeAll(pHandler);
 		_clMutex.unlock();
 
-		pClient->deleteLater();
+		pHandler->deleteLater();
 	}
 }
