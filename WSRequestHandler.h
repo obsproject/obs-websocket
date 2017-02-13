@@ -19,8 +19,6 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #ifndef WSREQUESTHANDLER_H
 #define WSREQUESTHANDLER_H
 
-#include <map>
-#include <set>
 #include <QtWebSockets/QWebSocket>
 #include <obs-frontend-api.h>
 
@@ -48,8 +46,8 @@ class WSRequestHandler : public QObject
 		const char *_requestType;
 		obs_data_t *_requestData;
 
-		std::map<std::string, void(*)(WSRequestHandler*)> messageMap;
-		std::set<std::string> authNotRequired;
+		QMap<QString, void(*)(WSRequestHandler*)> messageMap;
+		QSet<QString> authNotRequired;
 
 		void SendOKResponse(obs_data_t *additionalFields = NULL);
 		void SendErrorResponse(const char *errorMessage);
