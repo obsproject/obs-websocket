@@ -236,7 +236,7 @@ __Request fields__ :
 __Response__ : OK if source exists, with these additional fields :
 - **"name"** (string) : name of the requested source
 - **"volume"** (double) : volume of the requested source, on a linear scale (0.0 to 1.0)
-- **"mute"** (bool) : mute status of the requested source
+- **"muted"** (bool) : mute status of the requested source
 
 ### "SetMute"
 Mutes or unmutes a specific source.
