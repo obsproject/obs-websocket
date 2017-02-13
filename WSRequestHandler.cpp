@@ -401,6 +401,7 @@ void WSRequestHandler::ToggleMute(WSRequestHandler *owner) {
 	obs_source_t* item = obs_get_source_by_name(item_name);
 	if (!item) {
 		owner->SendErrorResponse("invalid request parameters");
+		return;
 	}
 
 	obs_source_set_muted(item, !obs_source_muted(item));
@@ -420,6 +421,7 @@ void WSRequestHandler::SetMute(WSRequestHandler *owner) {
 	obs_source_t* item = obs_get_source_by_name(item_name);
 	if (!item) {
 		owner->SendErrorResponse("specified source doesn't exist");
+		return;
 	}
 
 	obs_source_set_muted(item, mute);
