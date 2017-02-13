@@ -74,8 +74,8 @@ class WSRequestHandler : public QObject
 
 		static void HandleSetVolume(WSRequestHandler *owner);
 		static void HandleGetVolume(WSRequestHandler *owner);
-               static void ToggleMute(WSRequestHandler *owner);
-               static void SetMute(WSRequestHandler *owner);
+		static void ToggleMute(WSRequestHandler *owner);
+		static void SetMute(WSRequestHandler *owner);
 };
 
 #endif // WSPROTOCOL_H
