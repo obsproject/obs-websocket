@@ -49,9 +49,10 @@ WSRequestHandler::WSRequestHandler(QWebSocket *client) :
 
 	messageMap["SetVolume"] = WSRequestHandler::HandleSetVolume;
 	messageMap["GetVolume"] = WSRequestHandler::HandleGetVolume;
-	messageMap["ToggleMute"] = WSRequestHandler::ErrNotImplemented;
+	messageMap["ToggleMute"] = WSRequestHandler::ToggleMute;
+	messageMap["SetMute"] = WSRequestHandler::SetMute;
 	messageMap["GetVolumes"] = WSRequestHandler::ErrNotImplemented;
-	
+
 	authNotRequired.insert("GetVersion");
 	authNotRequired.insert("GetAuthRequired");
 	authNotRequired.insert("Authenticate");
@@ -81,9 +82,9 @@ void WSRequestHandler::processTextMessage(QString textMessage) {
 	_requestType = obs_data_get_string(_requestData, "request-type");
 	_messageId = obs_data_get_string(_requestData, "message-id");
 
-	if (Config::Current()->AuthRequired 
-		&& !_authenticated 
-		&& authNotRequired.find(_requestType) == authNotRequired.end()) 
+	if (Config::Current()->AuthRequired
+		&& !_authenticated
+		&& authNotRequired.find(_requestType) == authNotRequired.end())
 	{
 		SendErrorResponse("Not Authenticated");
 		return;
@@ -97,7 +98,7 @@ void WSRequestHandler::processTextMessage(QString textMessage) {
 	else {
 		SendErrorResponse("invalid request type");
 	}
-	
+
 	obs_data_release(_requestData);
 }
 
@@ -248,7 +249,7 @@ void WSRequestHandler::HandleSetSourceRender(WSRequestHandler *owner) {
 	}
 
 	obs_source_t* currentScene = obs_frontend_get_current_scene();
-	
+
 	obs_sceneitem_t *sceneItem = Utils::GetSceneItemFromName(currentScene, itemName);
 	if (sceneItem != NULL) {
 		obs_sceneitem_set_visible(sceneItem, isVisible);
@@ -295,17 +296,17 @@ void WSRequestHandler::HandleStartStopRecording(WSRequestHandler *owner) {
 }
 
 void WSRequestHandler::HandleGetTransitionList(WSRequestHandler *owner) {
-	obs_source_t *current_transition = obs_frontend_get_current_transition();	
+	obs_source_t *current_transition = obs_frontend_get_current_transition();
 	obs_frontend_source_list transitionList = {};
 	obs_frontend_get_transitions(&transitionList);
 
 	obs_data_array_t* transitions = obs_data_array_create();
 	for (size_t i = 0; i < transitionList.sources.num; i++) {
 		obs_source_t* transition = transitionList.sources.array[i];
-		
+
 		obs_data_t *obj = obs_data_create();
 		obs_data_set_string(obj, "name", obs_source_get_name(transition));
-		
+
 		obs_data_array_push_back(transitions, obj);
 		obs_data_release(obj);
 	}
@@ -378,14 +379,54 @@ void WSRequestHandler::HandleGetVolume(WSRequestHandler *owner) {
 	}
 
 	obs_source_t* item = obs_get_source_by_name(item_name);
-	
+
 	obs_data_t* response = obs_data_create();
 	obs_data_set_string(response, "name", item_name);
 	obs_data_set_double(response, "volume", obs_source_get_volume(item));
+       obs_data_set_bool(response, "muted", obs_source_muted(item));
 
 	owner->SendOKResponse(response);
 
 	obs_data_release(response);
+	obs_source_release(item);
+}
+
+void WSRequestHandler::ToggleMute(WSRequestHandler *owner) {
+	const char *item_name = obs_data_get_string(owner->_requestData, "source");
+	if (item_name == NULL) {
+		owner->SendErrorResponse("invalid request parameters");
+		return;
+	}
+
+	obs_source_t* item = obs_get_source_by_name(item_name);
+	if (!item) {
+		owner->SendErrorResponse("invalid request parameters");
+		return;
+	}
+
+	obs_source_set_muted(item, !obs_source_muted(item));
+	owner->SendOKResponse();
+
+	obs_source_release(item);
+}
+
+void WSRequestHandler::SetMute(WSRequestHandler *owner) {
+	const char *item_name = obs_data_get_string(owner->_requestData, "source");
+	bool mute = obs_data_get_bool(owner->_requestData, "mute");
+	if (item_name == NULL) {
+		owner->SendErrorResponse("invalid request parameters");
+		return;
+	}
+
+	obs_source_t* item = obs_get_source_by_name(item_name);
+	if (!item) {
+		owner->SendErrorResponse("specified source doesn't exist");
+		return;
+	}
+
+	obs_source_set_muted(item, mute);
+	owner->SendOKResponse();
+
 	obs_source_release(item);
 }
 

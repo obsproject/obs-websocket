@@ -236,6 +236,20 @@ __Request fields__ :
 __Response__ : OK if source exists, with these additional fields :
 - **"name"** (string) : name of the requested source
 - **"volume"** (double) : volume of the requested source, on a linear scale (0.0 to 1.0)
+- **"muted"** (bool) : mute status of the requested source
+
+#### "SetMute"
+Mutes or unmutes a specific source.
+
+__Request fields__ :
+- **"source"** (string) : the name of the source
+- **"mute"** (bool) : the desired mute status
+
+#### "ToggleMute"
+Inverts the mute status of a specific source.
+
+__Request fields__ :
+- **"source"** (string) : the name of the source
 
 ### Authentication
 A call to `GetAuthRequired` gives the client two elements :
