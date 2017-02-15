@@ -22,7 +22,6 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include "Utils.h"
 
 WSRequestHandler::WSRequestHandler(QWebSocket *client) :
-	_authenticated(false),
 	_messageId(0),
 	_requestType(""),
 	_requestData(nullptr)
@@ -56,15 +55,9 @@ WSRequestHandler::WSRequestHandler(QWebSocket *client) :
 	authNotRequired.insert("GetVersion");
 	authNotRequired.insert("GetAuthRequired");
 	authNotRequired.insert("Authenticate");
-
-	QByteArray client_ip = _client->peerAddress().toString().toUtf8();
-	blog(LOG_INFO, "[obs-websockets] new client connection from %s:%d", client_ip.constData(), _client->peerPort());
-
-	connect(_client, &QWebSocket::textMessageReceived, this, &WSRequestHandler::processTextMessage);
-	connect(_client, &QWebSocket::disconnected, this, &WSRequestHandler::socketDisconnected);
 }
 
-void WSRequestHandler::processTextMessage(QString textMessage) {
+void WSRequestHandler::processIncomingMessage(QString textMessage) {
 	QByteArray msgData = textMessage.toUtf8();
 	const char *msg = msgData;
 
@@ -83,7 +76,7 @@ void WSRequestHandler::processTextMessage(QString textMessage) {
 	_messageId = obs_data_get_string(_requestData, "message-id");
 
 	if (Config::Current()->AuthRequired
-		&& !_authenticated
+		&& _client->property(PROP_AUTHENTICATED) == false
 		&& authNotRequired.find(_requestType) == authNotRequired.end())
 	{
 		SendErrorResponse("Not Authenticated");
@@ -100,23 +93,6 @@ void WSRequestHandler::processTextMessage(QString textMessage) {
 	}
 
 	obs_data_release(_requestData);
-}
-
-void WSRequestHandler::socketDisconnected() {
-	QByteArray client_ip = _client->peerAddress().toString().toUtf8();
-	blog(LOG_INFO, "[obs-websockets] client %s:%d disconnected", client_ip.constData(), _client->peerPort());
-
-	_authenticated = false;
-	_client->deleteLater();
-	emit disconnected();
-}
-
-void WSRequestHandler::sendTextMessage(QString textMessage) {
-	_client->sendTextMessage(textMessage);
-}
-
-bool WSRequestHandler::isAuthenticated() {
-	return _authenticated;
 }
 
 WSRequestHandler::~WSRequestHandler() {
@@ -184,8 +160,8 @@ void WSRequestHandler::HandleAuthenticate(WSRequestHandler *owner) {
 		return;
 	}
 
-	if (!(owner->_authenticated) && Config::Current()->CheckAuth(auth)) {
-		owner->_authenticated = true;
+	if (owner->_client->property(PROP_AUTHENTICATED) == false && Config::Current()->CheckAuth(auth)) {
+		owner->_client->setProperty(PROP_AUTHENTICATED, true);
 		owner->SendOKResponse();
 	}
 	else {

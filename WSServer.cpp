@@ -25,6 +25,8 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <QtCore/QThread>
 #include <obs-frontend-api.h>
 
+#include "obs-websocket.h"
+
 QT_USE_NAMESPACE
 
 WSServer::WSServer(quint16 port, QObject *parent) :
@@ -56,15 +58,17 @@ WSServer::~WSServer()
 	_clMutex.lock();
 	qDeleteAll(_clients.begin(), _clients.end());
 	_clMutex.unlock();
+
+	delete _serverThread;
 }
 
 void WSServer::broadcast(QString message)
 {
 	_clMutex.lock();
 
-	Q_FOREACH(WSRequestHandler *pClient, _clients) {
+	Q_FOREACH(QWebSocket *pClient, _clients) {
 		if (Config::Current()->AuthRequired == true 
-			&& pClient->isAuthenticated() == false) {
+			&& pClient->property(PROP_AUTHENTICATED) == false) {
 			// Skip this client if unauthenticated
 			continue;
 		}
@@ -80,24 +84,43 @@ void WSServer::onNewConnection()
 	QWebSocket *pSocket = _wsServer->nextPendingConnection();
 
 	if (pSocket) {
-		WSRequestHandler *pHandler = new WSRequestHandler(pSocket);
-		connect(pHandler, &WSRequestHandler::disconnected, this, &WSServer::socketDisconnected);
-		
+		connect(pSocket, &QWebSocket::textMessageReceived, this, &WSServer::textMessageReceived);
+		connect(pSocket, &QWebSocket::disconnected, this, &WSServer::socketDisconnected);
+		pSocket->setProperty(PROP_AUTHENTICATED, false);
+
 		_clMutex.lock();
-		_clients << pHandler;
+		_clients << pSocket;
 		_clMutex.unlock();
+
+		QByteArray client_ip = pSocket->peerAddress().toString().toUtf8();
+		blog(LOG_INFO, "[obs-websockets] new client connection from %s:%d", client_ip.constData(), pSocket->peerPort());
+	}
+}
+
+void WSServer::textMessageReceived(QString message) 
+{
+	QWebSocket *pSocket = qobject_cast<QWebSocket *>(sender());
+
+	if (pSocket) {
+		WSRequestHandler handler(pSocket);
+		handler.processIncomingMessage(message);
 	}
 }
 
 void WSServer::socketDisconnected()
 {
-	WSRequestHandler *pHandler = qobject_cast<WSRequestHandler *>(sender());
+	QWebSocket *pSocket = qobject_cast<QWebSocket *>(sender());
 
-	if (pHandler) {
+	if (pSocket) {
+		pSocket->setProperty(PROP_AUTHENTICATED, false);
+
 		_clMutex.lock();
-		_clients.removeAll(pHandler);
+		_clients.removeAll(pSocket);
 		_clMutex.unlock();
 
-		pHandler->deleteLater();
+		pSocket->deleteLater();
+
+		QByteArray client_ip = pSocket->peerAddress().toString().toUtf8();
+		blog(LOG_INFO, "[obs-websockets] client %s:%d disconnected", client_ip.constData(), pSocket->peerPort());
 	}
 }

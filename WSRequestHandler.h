@@ -20,6 +20,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #define WSREQUESTHANDLER_H
 
 #include <QtWebSockets/QWebSocket>
+#include <QtWebSockets/QWebSocketServer>
 #include <obs-frontend-api.h>
 
 class WSRequestHandler : public QObject
@@ -29,19 +30,10 @@ class WSRequestHandler : public QObject
 	public:
 		explicit WSRequestHandler(QWebSocket *client);
 		~WSRequestHandler();
-		void sendTextMessage(QString textMessage);
-		bool isAuthenticated();
-
-	private Q_SLOTS:
-		void processTextMessage(QString textMessage);
-		void socketDisconnected();
-
-	Q_SIGNALS:
-		void disconnected();
+		void processIncomingMessage(QString textMessage);
 
 	private:
 		QWebSocket *_client;
-		bool _authenticated;
 		const char *_messageId;
 		const char *_requestType;
 		obs_data_t *_requestData;

@@ -23,6 +23,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <QtCore/QList>
 #include <QtCore/QMutex>
 #include <QtCore/QByteArray>
+#include <QtCore/QThread>
 #include "WSRequestHandler.h"
 
 QT_FORWARD_DECLARE_CLASS(QWebSocketServer)
@@ -39,11 +40,12 @@ class WSServer : public QObject
 
 	private Q_SLOTS:
 		void onNewConnection();
+		void textMessageReceived(QString message);
 		void socketDisconnected();
 
 	private:
 		QWebSocketServer *_wsServer;
-		QList<WSRequestHandler *> _clients;
+		QList<QWebSocket *> _clients;
 		QMutex _clMutex;
 		QThread *_serverThread;
 };
