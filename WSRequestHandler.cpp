@@ -57,13 +57,16 @@ WSRequestHandler::WSRequestHandler(QWebSocket *client) :
 	authNotRequired.insert("Authenticate");
 }
 
-void WSRequestHandler::processIncomingMessage(QString textMessage) {
+void WSRequestHandler::processIncomingMessage(QString textMessage)
+{
 	QByteArray msgData = textMessage.toUtf8();
 	const char *msg = msgData;
 
 	_requestData = obs_data_create_from_json(msg);
-	if (!_requestData) {
-		if (!msg) {
+	if (!_requestData)
+	{
+		if (!msg)
+		{
 			msg = "<null pointer>";
 		}
 
@@ -76,8 +79,8 @@ void WSRequestHandler::processIncomingMessage(QString textMessage) {
 	_messageId = obs_data_get_string(_requestData, "message-id");
 
 	if (Config::Current()->AuthRequired
-		&& _client->property(PROP_AUTHENTICATED) == false
-		&& authNotRequired.find(_requestType) == authNotRequired.end())
+		&& (_client->property(PROP_AUTHENTICATED).toBool() == false)
+		&& (authNotRequired.find(_requestType) == authNotRequired.end()))
 	{
 		SendErrorResponse("Not Authenticated");
 		return;
@@ -85,28 +88,34 @@ void WSRequestHandler::processIncomingMessage(QString textMessage) {
 
 	void (*handlerFunc)(WSRequestHandler*) = (messageMap[_requestType]);
 
-	if (handlerFunc != NULL) {
+	if (handlerFunc != NULL)
+	{
 		handlerFunc(this);
 	}
-	else {
+	else
+	{
 		SendErrorResponse("invalid request type");
 	}
 
 	obs_data_release(_requestData);
 }
 
-WSRequestHandler::~WSRequestHandler() {
-	if (_requestData != NULL) {
+WSRequestHandler::~WSRequestHandler()
+{
+	if (_requestData != NULL)
+	{
 		obs_data_release(_requestData);
 	}
 }
 
-void WSRequestHandler::SendOKResponse(obs_data_t *additionalFields) {
+void WSRequestHandler::SendOKResponse(obs_data_t *additionalFields)
+{
 	obs_data_t *response = obs_data_create();
 	obs_data_set_string(response, "status", "ok");
 	obs_data_set_string(response, "message-id", _messageId);
 
-	if (additionalFields != NULL) {
+	if (additionalFields != NULL) 
+	{
 		obs_data_apply(response, additionalFields);
 	}
 
@@ -115,7 +124,8 @@ void WSRequestHandler::SendOKResponse(obs_data_t *additionalFields) {
 	obs_data_release(response);
 }
 
-void WSRequestHandler::SendErrorResponse(const char *errorMessage) {
+void WSRequestHandler::SendErrorResponse(const char *errorMessage)
+{
 	obs_data_t *response = obs_data_create();
 	obs_data_set_string(response, "status", "error");
 	obs_data_set_string(response, "error", errorMessage);
@@ -126,7 +136,8 @@ void WSRequestHandler::SendErrorResponse(const char *errorMessage) {
 	obs_data_release(response);
 }
 
-void WSRequestHandler::HandleGetVersion(WSRequestHandler *owner) {
+void WSRequestHandler::HandleGetVersion(WSRequestHandler *owner)
+{
 	obs_data_t *data = obs_data_create();
 	obs_data_set_double(data, "version", 1.1);
 	obs_data_set_string(data, "obs-websocket-version", OBS_WEBSOCKET_VERSION);
@@ -137,13 +148,15 @@ void WSRequestHandler::HandleGetVersion(WSRequestHandler *owner) {
 	obs_data_release(data);
 }
 
-void WSRequestHandler::HandleGetAuthRequired(WSRequestHandler *owner) {
+void WSRequestHandler::HandleGetAuthRequired(WSRequestHandler *owner)
+{
 	bool authRequired = Config::Current()->AuthRequired;
 
 	obs_data_t *data = obs_data_create();
 	obs_data_set_bool(data, "authRequired", authRequired);
 
-	if (authRequired) {
+	if (authRequired) 
+	{
 		obs_data_set_string(data, "challenge", Config::Current()->SessionChallenge);
 		obs_data_set_string(data, "salt", Config::Current()->Salt);
 	}
@@ -153,38 +166,51 @@ void WSRequestHandler::HandleGetAuthRequired(WSRequestHandler *owner) {
 	obs_data_release(data);
 }
 
-void WSRequestHandler::HandleAuthenticate(WSRequestHandler *owner) {
+void WSRequestHandler::HandleAuthenticate(WSRequestHandler *owner)
+{
 	const char *auth = obs_data_get_string(owner->_requestData, "auth");
-	if (!auth || strlen(auth) < 1) {
+	if (!auth || strlen(auth) < 1) 
+	{
 		owner->SendErrorResponse("auth not specified!");
 		return;
 	}
 
-	if (owner->_client->property(PROP_AUTHENTICATED) == false && Config::Current()->CheckAuth(auth)) {
+	blog(LOG_INFO, "[obs-websocket] preauth : client_authenticated : %d", owner->_client->property(PROP_AUTHENTICATED).toBool());
+
+	if ((owner->_client->property(PROP_AUTHENTICATED).toBool() == false) && Config::Current()->CheckAuth(auth)) 
+	{
+		blog(LOG_INFO, "[obs-websocket] auth successful");
+
 		owner->_client->setProperty(PROP_AUTHENTICATED, true);
 		owner->SendOKResponse();
 	}
-	else {
+	else 
+	{
+		blog(LOG_INFO, "[obs-websocket] auth refused");
 		owner->SendErrorResponse("Authentication Failed.");
 	}
 }
 
-void WSRequestHandler::HandleSetCurrentScene(WSRequestHandler *owner) {
+void WSRequestHandler::HandleSetCurrentScene(WSRequestHandler *owner)
+{
 	const char *sceneName = obs_data_get_string(owner->_requestData, "scene-name");
 	obs_source_t *source = obs_get_source_by_name(sceneName);
 
-	if (source) {
+	if (source)
+	{
 		obs_frontend_set_current_scene(source);
 		owner->SendOKResponse();
 	}
-	else {
+	else
+	{
 		owner->SendErrorResponse("requested scene does not exist");
 	}
 
 	obs_source_release(source);
 }
 
-void WSRequestHandler::HandleGetCurrentScene(WSRequestHandler *owner) {
+void WSRequestHandler::HandleGetCurrentScene(WSRequestHandler *owner)
+{
 	obs_source_t *current_scene = obs_frontend_get_current_scene();
 	const char *name = obs_source_get_name(current_scene);
 
@@ -201,7 +227,8 @@ void WSRequestHandler::HandleGetCurrentScene(WSRequestHandler *owner) {
 	obs_source_release(current_scene);
 }
 
-void WSRequestHandler::HandleGetSceneList(WSRequestHandler *owner) {
+void WSRequestHandler::HandleGetSceneList(WSRequestHandler *owner)
+{
 	obs_source_t *current_scene = obs_frontend_get_current_scene();
 	obs_data_array_t *scenes = Utils::GetScenes();
 
@@ -216,10 +243,12 @@ void WSRequestHandler::HandleGetSceneList(WSRequestHandler *owner) {
 	obs_source_release(current_scene);
 }
 
-void WSRequestHandler::HandleSetSourceRender(WSRequestHandler *owner) {
+void WSRequestHandler::HandleSetSourceRender(WSRequestHandler *owner)
+{
 	const char *itemName = obs_data_get_string(owner->_requestData, "source");
 	bool isVisible = obs_data_get_bool(owner->_requestData, "render");
-	if (itemName == NULL) {
+	if (itemName == NULL)
+	{
 		owner->SendErrorResponse("invalid request parameters");
 		return;
 	}
@@ -227,19 +256,22 @@ void WSRequestHandler::HandleSetSourceRender(WSRequestHandler *owner) {
 	obs_source_t* currentScene = obs_frontend_get_current_scene();
 
 	obs_sceneitem_t *sceneItem = Utils::GetSceneItemFromName(currentScene, itemName);
-	if (sceneItem != NULL) {
+	if (sceneItem != NULL)
+	{
 		obs_sceneitem_set_visible(sceneItem, isVisible);
 		obs_sceneitem_release(sceneItem);
 		owner->SendOKResponse();
 	}
-	else {
+	else
+	{
 		owner->SendErrorResponse("specified scene item doesn't exist");
 	}
 
 	obs_source_release(currentScene);
 }
 
-void WSRequestHandler::HandleGetStreamingStatus(WSRequestHandler *owner) {
+void WSRequestHandler::HandleGetStreamingStatus(WSRequestHandler *owner)
+{
 	obs_data_t *data = obs_data_create();
 	obs_data_set_bool(data, "streaming", obs_frontend_streaming_active());
 	obs_data_set_bool(data, "recording", obs_frontend_recording_active());
@@ -249,35 +281,43 @@ void WSRequestHandler::HandleGetStreamingStatus(WSRequestHandler *owner) {
 	obs_data_release(data);
 }
 
-void WSRequestHandler::HandleStartStopStreaming(WSRequestHandler *owner) {
-	if (obs_frontend_streaming_active()) {
+void WSRequestHandler::HandleStartStopStreaming(WSRequestHandler *owner)
+{
+	if (obs_frontend_streaming_active())
+	{
 		obs_frontend_streaming_stop();
 	}
-	else {
+	else
+	{
 		obs_frontend_streaming_start();
 	}
 
 	owner->SendOKResponse();
 }
 
-void WSRequestHandler::HandleStartStopRecording(WSRequestHandler *owner) {
-	if (obs_frontend_recording_active()) {
+void WSRequestHandler::HandleStartStopRecording(WSRequestHandler *owner)
+{
+	if (obs_frontend_recording_active())
+	{
 		obs_frontend_recording_stop();
 	}
-	else {
+	else
+	{
 		obs_frontend_recording_start();
 	}
 
 	owner->SendOKResponse();
 }
 
-void WSRequestHandler::HandleGetTransitionList(WSRequestHandler *owner) {
+void WSRequestHandler::HandleGetTransitionList(WSRequestHandler *owner)
+{
 	obs_source_t *current_transition = obs_frontend_get_current_transition();
 	obs_frontend_source_list transitionList = {};
 	obs_frontend_get_transitions(&transitionList);
 
 	obs_data_array_t* transitions = obs_data_array_create();
-	for (size_t i = 0; i < transitionList.sources.num; i++) {
+	for (size_t i = 0; i < transitionList.sources.num; i++)
+	{
 		obs_source_t* transition = transitionList.sources.array[i];
 
 		obs_data_t *obj = obs_data_create();
@@ -299,7 +339,8 @@ void WSRequestHandler::HandleGetTransitionList(WSRequestHandler *owner) {
 	obs_source_release(current_transition);
 }
 
-void WSRequestHandler::HandleGetCurrentTransition(WSRequestHandler *owner) {
+void WSRequestHandler::HandleGetCurrentTransition(WSRequestHandler *owner)
+{
 	obs_source_t *current_transition = obs_frontend_get_current_transition();
 
 	obs_data_t *response = obs_data_create();
@@ -311,32 +352,38 @@ void WSRequestHandler::HandleGetCurrentTransition(WSRequestHandler *owner) {
 	obs_source_release(current_transition);
 }
 
-void WSRequestHandler::HandleSetCurrentTransition(WSRequestHandler *owner) {
+void WSRequestHandler::HandleSetCurrentTransition(WSRequestHandler *owner)
+{
 	const char *name = obs_data_get_string(owner->_requestData, "transition-name");
 	obs_source_t *transition = Utils::GetTransitionFromName(name);
 
-	if (transition) {
+	if (transition)
+	{
 		obs_frontend_set_current_transition(transition);
 		owner->SendOKResponse();
 
 		obs_source_release(transition);
 	}
-	else {
+	else
+	{
 		owner->SendErrorResponse("requested transition does not exist");
 	}
 }
 
-void WSRequestHandler::HandleSetVolume(WSRequestHandler *owner) {
+void WSRequestHandler::HandleSetVolume(WSRequestHandler *owner)
+{
 	const char *item_name = obs_data_get_string(owner->_requestData, "source");
 	float item_volume = obs_data_get_double(owner->_requestData, "volume");
 
-	if (item_name == NULL || item_volume < 0.0 || item_volume > 1.0) {
+	if (item_name == NULL || item_volume < 0.0 || item_volume > 1.0)
+	{
 		owner->SendErrorResponse("invalid request parameters");
 		return;
 	}
 
 	obs_source_t* item = obs_get_source_by_name(item_name);
-	if (!item) {
+	if (!item)
+	{
 		owner->SendErrorResponse("specified source doesn't exist");
 		return;
 	}
@@ -347,9 +394,11 @@ void WSRequestHandler::HandleSetVolume(WSRequestHandler *owner) {
 	obs_source_release(item);
 }
 
-void WSRequestHandler::HandleGetVolume(WSRequestHandler *owner) {
+void WSRequestHandler::HandleGetVolume(WSRequestHandler *owner)
+{
 	const char *item_name = obs_data_get_string(owner->_requestData, "source");
-	if (item_name == NULL) {
+	if (item_name == NULL)
+	{
 		owner->SendErrorResponse("invalid request parameters");
 		return;
 	}
@@ -369,13 +418,15 @@ void WSRequestHandler::HandleGetVolume(WSRequestHandler *owner) {
 
 void WSRequestHandler::ToggleMute(WSRequestHandler *owner) {
 	const char *item_name = obs_data_get_string(owner->_requestData, "source");
-	if (item_name == NULL) {
+	if (item_name == NULL)
+	{
 		owner->SendErrorResponse("invalid request parameters");
 		return;
 	}
 
 	obs_source_t* item = obs_get_source_by_name(item_name);
-	if (!item) {
+	if (!item)
+	{
 		owner->SendErrorResponse("invalid request parameters");
 		return;
 	}
@@ -386,16 +437,19 @@ void WSRequestHandler::ToggleMute(WSRequestHandler *owner) {
 	obs_source_release(item);
 }
 
-void WSRequestHandler::SetMute(WSRequestHandler *owner) {
+void WSRequestHandler::SetMute(WSRequestHandler *owner)
+{
 	const char *item_name = obs_data_get_string(owner->_requestData, "source");
 	bool mute = obs_data_get_bool(owner->_requestData, "mute");
-	if (item_name == NULL) {
+	if (item_name == NULL)
+	{
 		owner->SendErrorResponse("invalid request parameters");
 		return;
 	}
 
 	obs_source_t* item = obs_get_source_by_name(item_name);
-	if (!item) {
+	if (!item)
+	{
 		owner->SendErrorResponse("specified source doesn't exist");
 		return;
 	}
@@ -406,6 +460,7 @@ void WSRequestHandler::SetMute(WSRequestHandler *owner) {
 	obs_source_release(item);
 }
 
-void WSRequestHandler::ErrNotImplemented(WSRequestHandler *owner) {
+void WSRequestHandler::ErrNotImplemented(WSRequestHandler *owner)
+{
 	owner->SendErrorResponse("not implemented");
 }

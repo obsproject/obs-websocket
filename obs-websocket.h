@@ -19,7 +19,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #ifndef OBSWEBSOCKET_H
 #define OBSWEBSOCKET_H
 
-#define PROP_AUTHENTICATED "authenticated"
+#define PROP_AUTHENTICATED "wsclient_authenticated"
 #define OBS_WEBSOCKET_VERSION "0.3.2"
 
 #endif // OBSWEBSOCKET_H

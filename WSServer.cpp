@@ -46,7 +46,8 @@ WSServer::WSServer(quint16 port, QObject *parent) :
 	_serverThread->start();
 
 	bool serverStarted = _wsServer->listen(QHostAddress::Any, port);
-	if (serverStarted) {
+	if (serverStarted)
+	{
 		connect(_wsServer, &QWebSocketServer::newConnection, this, &WSServer::onNewConnection);
 	}
 }
@@ -66,9 +67,11 @@ void WSServer::broadcast(QString message)
 {
 	_clMutex.lock();
 
-	Q_FOREACH(QWebSocket *pClient, _clients) {
-		if (Config::Current()->AuthRequired == true 
-			&& pClient->property(PROP_AUTHENTICATED) == false) {
+	Q_FOREACH(QWebSocket *pClient, _clients)
+	{
+		if (Config::Current()->AuthRequired
+			&& (pClient->property(PROP_AUTHENTICATED).toBool() == false))
+		{
 			// Skip this client if unauthenticated
 			continue;
 		}
@@ -83,7 +86,8 @@ void WSServer::onNewConnection()
 {
 	QWebSocket *pSocket = _wsServer->nextPendingConnection();
 
-	if (pSocket) {
+	if (pSocket)
+	{
 		connect(pSocket, &QWebSocket::textMessageReceived, this, &WSServer::textMessageReceived);
 		connect(pSocket, &QWebSocket::disconnected, this, &WSServer::socketDisconnected);
 		pSocket->setProperty(PROP_AUTHENTICATED, false);
@@ -101,7 +105,8 @@ void WSServer::textMessageReceived(QString message)
 {
 	QWebSocket *pSocket = qobject_cast<QWebSocket *>(sender());
 
-	if (pSocket) {
+	if (pSocket)
+	{
 		WSRequestHandler handler(pSocket);
 		handler.processIncomingMessage(message);
 	}
@@ -111,7 +116,8 @@ void WSServer::socketDisconnected()
 {
 	QWebSocket *pSocket = qobject_cast<QWebSocket *>(sender());
 
-	if (pSocket) {
+	if (pSocket)
+	{
 		pSocket->setProperty(PROP_AUTHENTICATED, false);
 
 		_clMutex.lock();
