@@ -1,6 +1,7 @@
 /*
 obs-websocket
-Copyright (C) 2016	Stéphane Lepin <stephane.lepin@gmail.com>
+Copyright (C) 2016-2017	Stéphane Lepin <stephane.lepin@gmail.com>
+Copyright (C) 2017	Brendan Hagan <https://github.com/haganbmj>
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
