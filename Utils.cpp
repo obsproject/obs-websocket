@@ -148,3 +148,18 @@ obs_data_t* Utils::GetSceneData(obs_source *source) {
 	obs_data_array_release(scene_items);
 	return sceneData;
 }
+
+const char* Utils::OBSVersionString() {
+	uint32_t version = obs_get_version();
+
+	uint8_t major, minor, patch;
+	major = (version >> 24) & 0xFF;
+	minor = (version >> 16) & 0xFF;
+	patch = version & 0xFF;
+
+	size_t string_size = sizeof(char) * 12;
+	char *result = (char*)bmalloc(string_size);
+	sprintf_s(result, string_size, "%d.%d.%d", major, minor, patch);
+
+	return result;
+}
