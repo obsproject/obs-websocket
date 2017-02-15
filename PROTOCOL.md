@@ -246,11 +246,15 @@ __Request fields__ :
 - **"source"** (string) : the name of the source
 - **"mute"** (bool) : the desired mute status
 
+__Response__ : OK if specified source exists, error otherwise.
+
 #### "ToggleMute"
 Inverts the mute status of a specific source.
 
 __Request fields__ :
 - **"source"** (string) : the name of the source
+
+__Response__ : OK if specified source exists, error otherwise.
 
 ### Authentication
 A call to `GetAuthRequired` gives the client two elements :
