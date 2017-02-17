@@ -36,9 +36,12 @@ WSRequestHandler::WSRequestHandler(QWebSocket *client) :
 	messageMap["SetCurrentScene"] = WSRequestHandler::HandleSetCurrentScene;
 	messageMap["GetCurrentScene"] = WSRequestHandler::HandleGetCurrentScene;
 	messageMap["GetSceneList"] = WSRequestHandler::HandleGetSceneList;
-	messageMap["SetSourceOrder"] = WSRequestHandler::ErrNotImplemented;
-	messageMap["SetSourceRender"] = WSRequestHandler::HandleSetSourceRender;
-	messageMap["SetSceneItemPositionAndSize"] = WSRequestHandler::ErrNotImplemented;
+
+	messageMap["SetSourceRender"] = WSRequestHandler::HandleSetSourceRender; // Retrocompat
+	messageMap["SetSceneItemRender"] = WSRequestHandler::HandleSetSourceRender;
+	messageMap["SetSceneItemPosition"] = WSRequestHandler::HandleSetSceneItemPosition;
+	messageMap["SetSceneItemTransform"] = WSRequestHandler::HandleSetSceneItemTransform;
+	
 	messageMap["GetStreamingStatus"] = WSRequestHandler::HandleGetStreamingStatus;
 	messageMap["StartStopStreaming"] = WSRequestHandler::HandleStartStopStreaming;
 	messageMap["StartStopRecording"] = WSRequestHandler::HandleStartStopRecording;
@@ -51,7 +54,6 @@ WSRequestHandler::WSRequestHandler(QWebSocket *client) :
 	messageMap["GetVolume"] = WSRequestHandler::HandleGetVolume;
 	messageMap["ToggleMute"] = WSRequestHandler::ToggleMute;
 	messageMap["SetMute"] = WSRequestHandler::SetMute;
-	messageMap["GetVolumes"] = WSRequestHandler::ErrNotImplemented;
 
 	authNotRequired.insert("GetVersion");
 	authNotRequired.insert("GetAuthRequired");
@@ -462,6 +464,69 @@ void WSRequestHandler::SetMute(WSRequestHandler *owner)
 	owner->SendOKResponse();
 
 	obs_source_release(item);
+}
+
+void WSRequestHandler::HandleSetSceneItemPosition(WSRequestHandler *owner)
+{
+	const char *item_name = obs_data_get_string(owner->_requestData, "item");
+	if (!item_name)
+	{
+		owner->SendErrorResponse("invalid request parameters");
+	}
+
+	vec2 item_position = {0};
+	item_position.x = obs_data_get_double(owner->_requestData, "x");
+	item_position.y = obs_data_get_double(owner->_requestData, "y");
+
+	obs_source_t* current_scene = obs_frontend_get_current_scene();
+	obs_sceneitem_t *scene_item = Utils::GetSceneItemFromName(current_scene, item_name);
+
+	if (scene_item)
+	{
+		obs_sceneitem_set_pos(scene_item, &item_position);
+
+		obs_sceneitem_release(scene_item);
+		owner->SendOKResponse();
+	}
+	else
+	{
+		owner->SendErrorResponse("specified scene item doesn't exist");
+	}
+
+	obs_source_release(current_scene);
+}
+
+void WSRequestHandler::HandleSetSceneItemTransform(WSRequestHandler *owner)
+{
+	const char *item_name = obs_data_get_string(owner->_requestData, "item");
+	if (!item_name)
+	{
+		owner->SendErrorResponse("invalid request parameters");
+	}
+
+	vec2 scale;
+	scale.x = obs_data_get_double(owner->_requestData, "x-scale");
+	scale.y = obs_data_get_double(owner->_requestData, "y-scale");
+
+	float rotation = obs_data_get_double(owner->_requestData, "rotation");
+
+	obs_source_t* current_scene = obs_frontend_get_current_scene();
+	obs_sceneitem_t *scene_item = Utils::GetSceneItemFromName(current_scene, item_name);
+
+	if (scene_item)
+	{
+		obs_sceneitem_set_scale(scene_item, &scale);
+		obs_sceneitem_set_rot(scene_item, rotation);
+
+		obs_sceneitem_release(scene_item);
+		owner->SendOKResponse();
+	}
+	else
+	{
+		owner->SendErrorResponse("specified scene item doesn't exist");
+	}
+
+	obs_source_release(current_scene);
 }
 
 void WSRequestHandler::ErrNotImplemented(WSRequestHandler *owner)
