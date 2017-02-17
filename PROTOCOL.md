@@ -139,6 +139,8 @@ Objects in the "sources" array have the following fields :
 - **"volume"** (double) : audio volume of the source, ranging from 0.0 to 1.0
 - **"x"** (double) : X coordinate of the top-left corner of the item in the scene
 - **"y"** (double) : Y coordinate of the top-left corner of the item in the scene
+- **"source_cx"** (integer) : width of the item (without scale applied)
+- **"source_cy"** (integer) : height of the item (without scale applied)
 - **"cx"** (double) : width of the item (with scale applied)
 - **"cy"** (double) : height of the item (with scale applied)
 
@@ -228,6 +230,8 @@ __Request fields__ :
 
 __Response__ : OK if specified source exists, error otherwise.
 
+*Updated for OBS Studio*
+
 #### "GetVolume"
 Get the volume of a specific source.
 
@@ -239,6 +243,8 @@ __Response__ : OK if source exists, with these additional fields :
 - **"volume"** (double) : volume of the requested source, on a linear scale (0.0 to 1.0)
 - **"muted"** (bool) : mute status of the requested source
 
+*Update for OBS Studio*
+
 #### "SetMute"
 Mutes or unmutes a specific source.
 
@@ -248,6 +254,8 @@ __Request fields__ :
 
 __Response__ : OK if specified source exists, error otherwise.
 
+*Updated for OBS Studio*
+
 #### "ToggleMute"
 Inverts the mute status of a specific source.
 
@@ -255,6 +263,29 @@ __Request fields__ :
 - **"source"** (string) : the name of the source
 
 __Response__ : OK if specified source exists, error otherwise.
+
+*Updated for OBS Studio*
+
+#### "SetSceneItemPosition"
+__Request fields__ :
+- **"item"** (string) : The name of the scene item.
+- **"x"** (float) : x coordinate
+- **"y"** (float) : y coordinate
+
+__Response__ : OK if specified item exists, error otherwise.
+
+*New in OBS Studio*
+
+#### "SetSceneItemTransform"
+__Request fields__ :
+- **"item"** (string) : The name of the scene item.
+- **"x-scale"** (float) : width scale factor
+- **"y-scale"** (float) : height scale factor
+- **"rotation"** (float) : item rotation (in degrees)
+
+__Response__ : OK if specified item exists, error otherwise.
+
+*New in OBS Studio*
 
 ### Authentication
 A call to `GetAuthRequired` gives the client two elements :
