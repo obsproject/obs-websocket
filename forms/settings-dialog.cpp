@@ -83,7 +83,6 @@ void SettingsDialog::FormAccepted()
 			QByteArray pwd = ui->password->text().toLocal8Bit();
 			const char *new_password = pwd;
 
-			blog(LOG_INFO, "new password : %s", new_password);
 			conf->SetPassword(new_password);
 		}
 		
