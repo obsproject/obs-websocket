@@ -23,47 +23,71 @@ Additional fields will be present in the event message depending on the event ty
 OBS is switching to another scene.  
 - **scene-name** (string) : The name of the scene being switched to.
 
+---
+
 #### "ScenesChanged"
 The scene list has been modified (Scenes have been added, removed, or renamed).
+
+---
 
 #### "SwitchTransition"
 The active transition has been changed.  
 - **transition-name** (string) : The name of the active transition.
 
+---
+
 #### "TransitionListChanged"
 The list of available transitions has been modified (Transitions have been added, removed, or renamed).
+
+---
 
 #### "StreamStarting"
 A request to start streaming has been issued.  
 - **preview-only** (bool) : Always false.
 
+---
+
 #### "StreamStarted"  
 Streaming started successfully.  
 *New in OBS Studio*
+
+---
 
 #### "StreamStopping"
 A request to stop streaming has been issued.  
 - **preview-only** (bool) : Always false.
 
+---
+
 #### "StreamStopped"  
 Streaming stopped successfully.  
 *New in OBS Studio*
+
+---
 
 #### "RecordingStarting"  
 A request to start recording has been issued.  
 *New in OBS Studio*
 
+---
+
 #### "RecordingStarted"  
 Recording started successfully.  
 *New in OBS Studio*
+
+---
 
 #### "RecordingStopping"
 A request to stop streaming has been issued.  
 *New in OBS Studio*
 
+---
+
 #### "RecordingStopped"  
 Recording stopped successfully.  
 *New in OBS Studio*
+
+---
 
 #### "StreamStatus"
 Sent every 2 seconds with the following information :  
@@ -78,9 +102,13 @@ Sent every 2 seconds with the following information :
 - **num-dropped-frames** (integer) : Number of frames dropped by the encoder since the stream started.
 - **fps** (double) : Current framerate.
 
+---
+
 #### "Exiting"
-*New in OBS Studio*  
 OBS is exiting.
+*New in OBS Studio*  
+
+---
 
 ## Requests
 
@@ -108,6 +136,8 @@ __Response__ : always OK, with these additional fields :
 - **"obs-websocket-version"** (string) : obs-websocket version string
 - **"obs-studio-version"** (string) : OBS Studio version string
 
+---
+
 #### "GetAuthRequired"
 Tells the client if authentication is required. If it is, authentication parameters "challenge" and "salt" are passed in the response fields (see "Authentication").
 
@@ -117,6 +147,8 @@ __Response__ : always OK, with these additional fields :
 - **"challenge"** (string)
 - **"salt"** (string)
 
+---
+
 #### "Authenticate"
 Try to authenticate the client on the server.
 
@@ -124,6 +156,8 @@ __Request fields__ :
 - **"auth"** (string) : response to the auth challenge (see "Authentication").
 
 __Response__ : OK if auth succeeded, error if invalid credentials. No additional fields.
+
+---
 
 #### "GetCurrentScene"
 Get the current scene's name and items.
@@ -144,6 +178,8 @@ Objects in the "sources" array have the following fields :
 - **"cx"** (double) : width of the item (with scale applied)
 - **"cy"** (double) : height of the item (with scale applied)
 
+---
+
 #### "SetCurrentScene"
 Switch to the scene specified in "scene-name".
 
@@ -152,6 +188,8 @@ __Request fields__ :
 
 __Response__ : always OK if scene exists, error if it doesn't. No additional fields
 
+---
+
 #### "GetSceneList"
 List OBS' scenes.
 
@@ -159,6 +197,8 @@ __Request fields__ : none
 __Response__ : always OK, with these additional fields :  
 - **"current-scene"** (string) : name of the currently active scene
 - **"scenes"** (array of objects) : ordered list of scene descriptions (see `GetCurrentScene` for reference)
+
+---
 
 #### "SetSourceRender"
 Show or hide a specific source in the current scene.
@@ -169,11 +209,15 @@ __Request fields__ :
 
 __Response__ : OK if source exists in the current scene, error otherwise.
 
+---
+
 #### "StartStopStreaming"
 Toggle streaming on or off.
 
 __Request fields__ : none  
 __Response__ : always OK. No additional fields.
+
+---
 
 #### "StartStopRecording"
 Toggle recording on or off.
@@ -181,6 +225,8 @@ Toggle recording on or off.
 __Request fields__ : none  
 __Response__ : always OK. No additional fields.  
 *New in OBS Studio*
+
+---
 
 #### "GetStreamingStatus"
 Get current streaming and recording status.
@@ -190,6 +236,8 @@ __Response__ : always OK, with these additional fields :
 - **"streaming"** (bool) : streaming status (active or not)
 - **"recording"** (bool) : recording status (active or not)
 - **"preview-only"** (bool) : always false. Retrocompat with OBSRemote.
+
+---
 
 #### "GetTransitionList"
 List all transitions available in the frontend's dropdown menu.
@@ -204,6 +252,8 @@ Objects in the "transitions" array have only one field :
 
 *New in OBS Studio*  
 
+---
+
 #### "GetCurrentTransition"
 Get the name of the currently selected transition in the frontend's dropdown menu.
 
@@ -213,6 +263,8 @@ __Response__ : always OK, with these additional fields :
 
 *New in OBS Studio*  
 
+---
+
 #### "SetCurrentTransition"
 __Request fields__ :
 - **"transition-name"** (string) : The name of the transition.
@@ -220,6 +272,8 @@ __Request fields__ :
 __Response__ : OK if specified transition exists, error otherwise.
 
 *New in OBS Studio*  
+
+---
 
 #### "SetVolume"
 Set the volume of a specific source.
@@ -232,6 +286,8 @@ __Response__ : OK if specified source exists, error otherwise.
 
 *Updated for OBS Studio*
 
+---
+
 #### "GetVolume"
 Get the volume of a specific source.
 
@@ -243,7 +299,9 @@ __Response__ : OK if source exists, with these additional fields :
 - **"volume"** (double) : volume of the requested source, on a linear scale (0.0 to 1.0)
 - **"muted"** (bool) : mute status of the requested source
 
-*Update for OBS Studio*
+*Updated for OBS Studio*
+
+---
 
 #### "SetMute"
 Mutes or unmutes a specific source.
@@ -256,6 +314,8 @@ __Response__ : OK if specified source exists, error otherwise.
 
 *Updated for OBS Studio*
 
+---
+
 #### "ToggleMute"
 Inverts the mute status of a specific source.
 
@@ -265,6 +325,8 @@ __Request fields__ :
 __Response__ : OK if specified source exists, error otherwise.
 
 *Updated for OBS Studio*
+
+---
 
 #### "SetSceneItemPosition"
 __Request fields__ :
@@ -276,6 +338,8 @@ __Response__ : OK if specified item exists, error otherwise.
 
 *New in OBS Studio*
 
+---
+
 #### "SetSceneItemTransform"
 __Request fields__ :
 - **"item"** (string) : The name of the scene item.
@@ -286,6 +350,8 @@ __Request fields__ :
 __Response__ : OK if specified item exists, error otherwise.
 
 *New in OBS Studio*
+
+---
 
 ### Authentication
 A call to `GetAuthRequired` gives the client two elements :
