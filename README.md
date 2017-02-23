@@ -1,6 +1,6 @@
 obs-websocket
 ==============
-Remote control of OBS Studio made easy with a Websockets server, which clients connect to and send messages to it.
+Remote control of OBS Studio made easy through a Websockets server, which clients connect to and send messages to it.
 
 ## Downloads
 Binaries for Windows and Linux are available in the [Releases](https://github.com/Palakis/obs-websocket/releases) section.
