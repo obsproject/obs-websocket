@@ -1,6 +1,6 @@
 obs-websocket
 ==============
-Remote control of OBS Studio made easy through a Websockets server, which clients connect to and send messages to it.
+Remote control of OBS Studio made easy.
 
 ## Downloads
 Binaries for Windows and Linux are available in the [Releases](https://github.com/Palakis/obs-websocket/releases) section.
@@ -8,7 +8,7 @@ Binaries for Windows and Linux are available in the [Releases](https://github.co
 ## Using obs-websocket
 A web client and frontend made by [t2t2](https://github.com/t2t2/obs-tablet-remote) (compatible with tablets and other touch interfaces) is available here : http://t2t2.github.io/obs-tablet-remote/
 
-You may want to protect the Websocket server with some form of authentication. To do this, open the "Websocket server settings" dialog under OBS' "Tools" menu. In the settings dialogs, you can enable or disable authentication and set a password for it.
+It is **highly recommended** to protect obs-websocket with a password against unauthorized control. To do this, open the "Websocket server settings" dialog under OBS' "Tools" menu. In the settings dialogs, you can enable or disable authentication and set a password for it.
 
 ### Possible use cases
 - Remote control OBS from a phone or tablet on the same local network
