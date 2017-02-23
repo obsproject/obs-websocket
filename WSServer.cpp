@@ -35,7 +35,7 @@ WSServer::WSServer(QObject *parent) :
 	QObject(parent),
 	_wsServer(Q_NULLPTR),
 	_clients(),
-	_clMutex(QMutex::NonRecursive)
+	_clMutex(QMutex::Recursive)
 {
 	_serverThread = new QThread();
 
@@ -77,8 +77,6 @@ void WSServer::Stop()
 	{
 		pClient->close();
 	}
-
-	qDeleteAll(_clients.begin(), _clients.end());
 	_clMutex.unlock();
 
 	_wsServer->close();
