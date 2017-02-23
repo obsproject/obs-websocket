@@ -22,12 +22,12 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <util/config-file.h>
 #include "Config.h"
 
-#define SECTION_NAME "obs-websocket"
-#define PARAM_ENABLE "server_enabled"
-#define PARAM_PORT "server_port"
-#define PARAM_SECRET "auth_hash"
-#define PARAM_SALT "auth_salt"
-#define PARAM_AUTHREQUIRED "auth_required"
+#define SECTION_NAME "WebsocketAPI"
+#define PARAM_ENABLE "ServerEnabled"
+#define PARAM_PORT "ServerPort"
+#define PARAM_AUTHREQUIRED "AuthRequired"
+#define PARAM_SECRET "AuthSecret"
+#define PARAM_SALT "AuthSalt"
 
 Config *Config::_instance = new Config();
 
