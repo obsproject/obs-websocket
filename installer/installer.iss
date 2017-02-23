@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "obs-websocket"
-#define MyAppVersion "0.4.0"
+#define MyAppVersion "4.0.0"
 #define MyAppPublisher "Stéphane Lepin"
 #define MyAppURL "http://github.com/Palakis/obs-websocket"
 
