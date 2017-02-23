@@ -21,8 +21,8 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <QAction>
 
 #include "obs-websocket.h"
-#include "WSEvents.h"
 #include "WSServer.h"
+#include "WSEvents.h"
 #include "Config.h"
 #include "forms/settings-dialog.h"
 
@@ -30,19 +30,21 @@ OBS_DECLARE_MODULE()
 OBS_MODULE_USE_DEFAULT_LOCALE("obs-websocket", "en-US")
 
 WSEvents *eventHandler;
-WSServer *server;
 SettingsDialog *settings_dialog;
 
 bool obs_module_load(void) 
 {
-	blog(LOG_INFO, "[obs-websockets] you can haz websockets (version %s)", OBS_WEBSOCKET_VERSION);
-	
-	server = new WSServer(4444);
-	eventHandler = new WSEvents(server);
-	
-	obs_frontend_add_save_callback(Config::OBSSaveCallback, Config::Current());
+	// Core setup
+	Config* config = Config::Current();
+	config->Load();
 
-	QAction *menu_action = (QAction*)obs_frontend_add_tools_menu_qaction(obs_module_text("Menu.SettingsItem"));
+	if (config->ServerEnabled)
+		WSServer::Instance->Start(config->ServerPort);
+
+	eventHandler = new WSEvents(WSServer::Instance);
+
+	// UI setup
+	QAction *menu_action = (QAction*)obs_frontend_add_tools_menu_qaction(obs_module_text("OBSWebsocket.Menu.SettingsItem"));
 
 	obs_frontend_push_ui_translation(obs_module_get_string);
 	settings_dialog = new SettingsDialog();
@@ -52,6 +54,9 @@ bool obs_module_load(void)
 		settings_dialog->ToggleShowHide();
 	};
 	menu_action->connect(menu_action, &QAction::triggered, menu_cb);
+
+	// Loading finished
+	blog(LOG_INFO, "[obs-websockets] you can haz websockets (version %s)", OBS_WEBSOCKET_VERSION);
 
 	return true;
 }

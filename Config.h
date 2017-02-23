@@ -23,15 +23,21 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <mbedtls/entropy.h>
 #include <mbedtls/ctr_drbg.h>
 
-class Config {
+class Config
+{
 	public:
 		Config();
 		~Config();
+		void Load();
+		void Save();
+
 		void SetPassword(const char *password);
 		bool CheckAuth(const char *userChallenge);
 		const char* GenerateSalt();
 		static const char* GenerateSecret(const char *password, const char *salt);
-		static void OBSSaveCallback(obs_data_t *save_data, bool saving, void *);
+
+		bool ServerEnabled;
+		uint64_t ServerPort;
 
 		bool AuthRequired;
 		const char *Secret;

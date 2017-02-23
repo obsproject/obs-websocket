@@ -19,21 +19,40 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <mbedtls/base64.h>
 #include <mbedtls/sha256.h>
 #include <obs-frontend-api.h>
+#include <util/config-file.h>
 #include "Config.h"
 
-#define CONFIG_SECTION_NAME "obs-websocket"
-#define CONFIG_PARAM_SECRET "auth_hash"
-#define CONFIG_PARAM_SALT "auth_salt"
-#define CONFIG_PARAM_AUTHREQUIRED "auth_required"
+#define SECTION_NAME "obs-websocket"
+#define PARAM_ENABLE "server_enabled"
+#define PARAM_PORT "server_port"
+#define PARAM_SECRET "auth_hash"
+#define PARAM_SALT "auth_salt"
+#define PARAM_AUTHREQUIRED "auth_required"
 
 Config *Config::_instance = new Config();
 
-Config::Config() {
+Config::Config()
+{
 	// Default settings
+	ServerEnabled = true;
+	ServerPort = 4444;
+
 	AuthRequired = false;
 	Secret = "";
 	Salt = "";
 	SettingsLoaded = false;
+
+	// OBS Config defaults
+	config_t* obs_config = obs_frontend_get_global_config();
+	if (obs_config)
+	{
+		config_set_default_bool(obs_config, SECTION_NAME, PARAM_ENABLE, ServerEnabled);
+		config_set_default_uint(obs_config, SECTION_NAME, PARAM_PORT, ServerPort);
+
+		config_set_default_bool(obs_config, SECTION_NAME, PARAM_AUTHREQUIRED, AuthRequired);
+		config_set_default_string(obs_config, SECTION_NAME, PARAM_SECRET, Secret);
+		config_set_default_string(obs_config, SECTION_NAME, PARAM_SALT, Salt);
+	}
 
 	mbedtls_entropy_init(&entropy);
 	mbedtls_ctr_drbg_init(&rng);
@@ -43,12 +62,40 @@ Config::Config() {
 	SessionChallenge = GenerateSalt();
 }
 
-Config::~Config() {
+Config::~Config()
+{
 	mbedtls_ctr_drbg_free(&rng);
 	mbedtls_entropy_free(&entropy);
 }
 
-const char* Config::GenerateSalt() {
+void Config::Load()
+{
+	config_t* obs_config = obs_frontend_get_global_config();
+
+	ServerEnabled = config_get_bool(obs_config, SECTION_NAME, PARAM_ENABLE);
+	ServerPort = config_get_uint(obs_config, SECTION_NAME, PARAM_PORT);
+
+	AuthRequired = config_get_bool(obs_config, SECTION_NAME, PARAM_AUTHREQUIRED);
+	Secret = config_get_string(obs_config, SECTION_NAME, PARAM_SECRET);
+	Salt = config_get_string(obs_config, SECTION_NAME, PARAM_SALT);
+}
+
+void Config::Save()
+{
+	config_t* obs_config = obs_frontend_get_global_config();
+
+	config_set_bool(obs_config, SECTION_NAME, PARAM_ENABLE, ServerEnabled);
+	config_set_uint(obs_config, SECTION_NAME, PARAM_PORT, ServerPort);
+
+	config_set_bool(obs_config, SECTION_NAME, PARAM_AUTHREQUIRED, AuthRequired);
+	config_set_string(obs_config, SECTION_NAME, PARAM_SECRET, Secret);
+	config_set_string(obs_config, SECTION_NAME, PARAM_SALT, Salt);
+
+	config_save(obs_config);
+}
+
+const char* Config::GenerateSalt()
+{
 	// Generate 32 random chars
 	unsigned char *random_chars = (unsigned char *)bzalloc(32);
 	mbedtls_ctr_drbg_random(&rng, random_chars, 32);
@@ -63,7 +110,8 @@ const char* Config::GenerateSalt() {
 	return (char *)salt;
 }
 
-const char* Config::GenerateSecret(const char *password, const char *salt) {
+const char* Config::GenerateSecret(const char *password, const char *salt)
+{
 	size_t passwordLength = strlen(password);
 	size_t saltLength = strlen(salt);
 
@@ -88,7 +136,8 @@ const char* Config::GenerateSecret(const char *password, const char *salt) {
 	return (char*)challenge;
 }
 
-void Config::SetPassword(const char *password) {
+void Config::SetPassword(const char *password)
+{
 	const char *new_salt = GenerateSalt();
 	const char *new_challenge = GenerateSecret(password, new_salt);
 
@@ -96,7 +145,8 @@ void Config::SetPassword(const char *password) {
 	this->Secret = new_challenge;
 }
 
-bool Config::CheckAuth(const char *response) {
+bool Config::CheckAuth(const char *response)
+{
 	size_t secretLength = strlen(this->Secret);
 	size_t sessChallengeLength = strlen(this->SessionChallenge);
 	
@@ -125,29 +175,7 @@ bool Config::CheckAuth(const char *response) {
 	}
 }
 
-void Config::OBSSaveCallback(obs_data_t *save_data, bool saving, void *private_data) {
-	Config *conf = static_cast<Config *>(private_data);
-
-	if (saving) {
-		obs_data_t *settings = obs_data_create();
-		obs_data_set_bool(settings, CONFIG_PARAM_AUTHREQUIRED, conf->AuthRequired);
-		obs_data_set_string(settings, CONFIG_PARAM_SECRET, conf->Secret);
-		obs_data_set_string(settings, CONFIG_PARAM_SALT, conf->Salt);
-
-		obs_data_set_obj(save_data, CONFIG_SECTION_NAME, settings);
-	}
-	else {
-		obs_data_t *settings = obs_data_get_obj(save_data, CONFIG_SECTION_NAME);
-		if (settings) {
-			conf->AuthRequired = obs_data_get_bool(settings, CONFIG_PARAM_AUTHREQUIRED);
-			conf->Secret = obs_data_get_string(settings, CONFIG_PARAM_SECRET);
-			conf->Salt = obs_data_get_string(settings, CONFIG_PARAM_SALT);
-
-			conf->SettingsLoaded = true;
-		}
-	}
-}
-
-Config* Config::Current() {
+Config* Config::Current()
+{
 	return _instance;
 }

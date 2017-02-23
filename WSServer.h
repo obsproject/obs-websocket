@@ -34,9 +34,12 @@ class WSServer : public QObject
 	Q_OBJECT
 
 	public:
-		explicit WSServer(quint16 port, QObject *parent = Q_NULLPTR);
+		explicit WSServer(QObject *parent = Q_NULLPTR);
 		virtual ~WSServer();
+		void Start(quint16 port);
+		void Stop();
 		void broadcast(QString message);
+		static WSServer* Instance;
 
 	private Q_SLOTS:
 		void onNewConnection();

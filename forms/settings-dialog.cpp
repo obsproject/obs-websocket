@@ -17,9 +17,12 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 */
 
 #include <obs-frontend-api.h>
+
+#include "obs-websocket.h"
+#include "Config.h"
+#include "WSServer.h"
 #include "settings-dialog.h"
 #include "ui_settings-dialog.h"
-#include "Config.h"
 
 #define CHANGE_ME "changeme"
 
@@ -35,12 +38,19 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
 	AuthCheckboxChanged();
 }
 
-void SettingsDialog::showEvent(QShowEvent *event) {
-	ui->authRequired->setChecked(Config::Current()->AuthRequired);
+void SettingsDialog::showEvent(QShowEvent *event)
+{
+	Config* conf = Config::Current();
+
+	ui->serverEnabled->setChecked(conf->ServerEnabled);
+	ui->serverPort->setValue(conf->ServerPort);
+
+	ui->authRequired->setChecked(conf->AuthRequired);
 	ui->password->setText(CHANGE_ME);
 }
 
-void SettingsDialog::ToggleShowHide() {
+void SettingsDialog::ToggleShowHide()
+{
 	if (!isVisible()) {
 		setVisible(true);
 	}
@@ -49,7 +59,8 @@ void SettingsDialog::ToggleShowHide() {
 	}
 }
 
-void SettingsDialog::AuthCheckboxChanged() {
+void SettingsDialog::AuthCheckboxChanged()
+{
 	if (ui->authRequired->isChecked()) {
 		ui->password->setEnabled(true);
 	}
@@ -58,28 +69,48 @@ void SettingsDialog::AuthCheckboxChanged() {
 	}
 }
 
-void SettingsDialog::FormAccepted() {
-	if (ui->authRequired->isChecked()) {
-		if (ui->password->text() != CHANGE_ME) {
+void SettingsDialog::FormAccepted()
+{
+	Config* conf = Config::Current();
+
+	conf->ServerEnabled = ui->serverEnabled->isChecked();
+	conf->ServerPort = ui->serverPort->value();
+
+	if (ui->authRequired->isChecked())
+	{
+		if (ui->password->text() != CHANGE_ME)
+		{
 			QByteArray pwd = ui->password->text().toLocal8Bit();
 			const char *new_password = pwd;
 
 			blog(LOG_INFO, "new password : %s", new_password);
-			Config::Current()->SetPassword(new_password);
+			conf->SetPassword(new_password);
 		}
 		
-		if (strcmp(Config::Current()->Secret, "") != 0) {
-			Config::Current()->AuthRequired = true;
+		if (strcmp(Config::Current()->Secret, "") != 0)
+		{
+			conf->AuthRequired = true;
 		}
-		else {
-			Config::Current()->AuthRequired = false;
+		else
+		{
+			conf->AuthRequired = false;
 		}
 	}
-	else {
-		Config::Current()->AuthRequired = false;
+	else
+	{
+		conf->AuthRequired = false;
 	}
-	
-	obs_frontend_save();
+
+	conf->Save();
+
+	if (conf->ServerEnabled)
+	{
+		WSServer::Instance->Start(conf->ServerPort);
+	}
+	else
+	{
+		WSServer::Instance->Stop();
+	}
 }
 
 SettingsDialog::~SettingsDialog()

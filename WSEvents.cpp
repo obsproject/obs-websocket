@@ -19,8 +19,8 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include "WSEvents.h"
 
-WSEvents::WSEvents(WSServer *server) {
-	_srv = server;
+WSEvents::WSEvents(WSServer *srv) {
+	_srv = srv;
 	obs_frontend_add_event_callback(WSEvents::FrontendEventHandler, this);
 
 	QTimer *statusTimer = new QTimer();
@@ -38,6 +38,9 @@ WSEvents::~WSEvents() {
 void WSEvents::FrontendEventHandler(enum obs_frontend_event event, void *private_data)
 {
 	WSEvents *owner = static_cast<WSEvents *>(private_data);
+
+	if (!owner->_srv)
+		return;
 
 	// TODO : implement SourceChanged, SourceOrderChanged and RepopulateSources
 

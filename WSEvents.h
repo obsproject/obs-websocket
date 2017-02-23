@@ -31,7 +31,7 @@ class WSEvents : public QObject
 	Q_OBJECT
 
 	public:
-		explicit WSEvents(WSServer *server);
+		explicit WSEvents(WSServer *srv);
 		~WSEvents();
 		static void FrontendEventHandler(enum obs_frontend_event event, void *private_data);
 

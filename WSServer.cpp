@@ -29,7 +29,9 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 QT_USE_NAMESPACE
 
-WSServer::WSServer(quint16 port, QObject *parent) :
+WSServer* WSServer::Instance = new WSServer();
+
+WSServer::WSServer(QObject *parent) :
 	QObject(parent),
 	_wsServer(Q_NULLPTR),
 	_clients(),
@@ -44,6 +46,22 @@ WSServer::WSServer(quint16 port, QObject *parent) :
 
 	_wsServer->moveToThread(_serverThread);
 	_serverThread->start();
+}
+
+WSServer::~WSServer()
+{
+	Stop();
+
+	delete _serverThread;
+}
+
+void WSServer::Start(quint16 port)
+{
+	if (port == _wsServer->serverPort())
+		return;
+
+	if(_wsServer->isListening())
+		Stop();
 
 	bool serverStarted = _wsServer->listen(QHostAddress::Any, port);
 	if (serverStarted)
@@ -52,15 +70,18 @@ WSServer::WSServer(quint16 port, QObject *parent) :
 	}
 }
 
-WSServer::~WSServer()
+void WSServer::Stop()
 {
-	_wsServer->close();
-
 	_clMutex.lock();
+	Q_FOREACH(QWebSocket *pClient, _clients)
+	{
+		pClient->close();
+	}
+
 	qDeleteAll(_clients.begin(), _clients.end());
 	_clMutex.unlock();
 
-	delete _serverThread;
+	_wsServer->close();
 }
 
 void WSServer::broadcast(QString message)
