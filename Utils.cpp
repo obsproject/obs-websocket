@@ -159,9 +159,8 @@ const char* Utils::OBSVersionString() {
 	minor = (version >> 16) & 0xFF;
 	patch = version & 0xFF;
 
-	size_t string_size = sizeof(char) * 12;
-	char *result = (char*)bmalloc(string_size);
-	snprintf(result, string_size, "%d.%d.%d", major, minor, patch);
+	char *result = (char*)bmalloc(sizeof(char) * 12);
+	sprintf(result, "%d.%d.%d", major, minor, patch);
 
 	return result;
 }
