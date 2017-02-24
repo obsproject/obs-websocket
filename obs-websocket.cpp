@@ -20,6 +20,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <obs-frontend-api.h>
 #include <QAction>
 #include <QMainWindow>
+#include <QTimer>
 
 #include "obs-websocket.h"
 #include "WSServer.h"
@@ -33,10 +34,8 @@ OBS_MODULE_USE_DEFAULT_LOCALE("obs-websocket", "en-US")
 WSEvents *eventHandler;
 SettingsDialog *settings_dialog;
 
-bool obs_module_load(void) 
+void module_init()
 {
-	blog(LOG_INFO, "you can haz websockets (version %s)", OBS_WEBSOCKET_VERSION);
-
 	// Core setup
 	Config* config = Config::Current();
 	config->Load();
@@ -63,6 +62,18 @@ bool obs_module_load(void)
 
 	// Loading finished
 	blog(LOG_INFO, "module loaded!");
+}
+
+bool obs_module_load(void) 
+{
+	blog(LOG_INFO, "you can haz websockets (version %s)", OBS_WEBSOCKET_VERSION);
+
+	// Dirty fix : had issues with a "Must construct a QApplication before a QWidget" 
+	// exception at startup, so delayed the module's init to wait 
+	// until the event loop runs 
+	QTimer::singleShot(0, []() mutable {
+		module_init();
+	});
 
 	return true;
 }
