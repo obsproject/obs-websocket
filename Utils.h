@@ -34,7 +34,7 @@ class Utils
 		static obs_data_array_t* GetScenes();
 		static obs_data_t* GetSceneData(obs_source *source);
 
-		static const char* Utils::OBSVersionString();
+		static const char* OBSVersionString();
 };
 
 #endif // UTILS_H
