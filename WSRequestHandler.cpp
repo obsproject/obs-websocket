@@ -73,7 +73,7 @@ void WSRequestHandler::processIncomingMessage(QString textMessage)
 			msg = "<null pointer>";
 		}
 
-		blog(LOG_ERROR, "[obs-websockets] invalid JSON payload received for '%s'", msg);
+		blog(LOG_ERROR, "invalid JSON payload received for '%s'", msg);
 		SendErrorResponse("invalid JSON payload");
 		return;
 	}
@@ -181,18 +181,13 @@ void WSRequestHandler::HandleAuthenticate(WSRequestHandler *owner)
 		return;
 	}
 
-	blog(LOG_INFO, "[obs-websocket] preauth : client_authenticated : %d", owner->_client->property(PROP_AUTHENTICATED).toBool());
-
 	if ((owner->_client->property(PROP_AUTHENTICATED).toBool() == false) && Config::Current()->CheckAuth(auth)) 
 	{
-		blog(LOG_INFO, "[obs-websocket] auth successful");
-
 		owner->_client->setProperty(PROP_AUTHENTICATED, true);
 		owner->SendOKResponse();
 	}
 	else 
 	{
-		blog(LOG_INFO, "[obs-websocket] auth refused");
 		owner->SendErrorResponse("Authentication Failed.");
 	}
 }

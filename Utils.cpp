@@ -17,6 +17,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 */
 
 #include "Utils.h"
+#include <obs-frontend-api.h>
 
 obs_data_array_t* Utils::GetSceneItems(obs_source_t *source) {
 	obs_data_array_t *items = obs_data_array_create();

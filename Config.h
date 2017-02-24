@@ -19,7 +19,6 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #ifndef CONFIG_H
 #define CONFIG_H
 
-#include <obs-module.h>
 #include <mbedtls/entropy.h>
 #include <mbedtls/ctr_drbg.h>
 

@@ -19,6 +19,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <obs-module.h>
 #include <obs-frontend-api.h>
 #include <QAction>
+#include <QMainWindow>
 
 #include "obs-websocket.h"
 #include "WSServer.h"
@@ -34,9 +35,13 @@ SettingsDialog *settings_dialog;
 
 bool obs_module_load(void) 
 {
+	blog(LOG_INFO, "you can haz websockets (version %s)", OBS_WEBSOCKET_VERSION);
+
 	// Core setup
 	Config* config = Config::Current();
 	config->Load();
+
+	WSServer::Instance = new WSServer();
 
 	if (config->ServerEnabled)
 		WSServer::Instance->Start(config->ServerPort);
@@ -47,7 +52,8 @@ bool obs_module_load(void)
 	QAction *menu_action = (QAction*)obs_frontend_add_tools_menu_qaction(obs_module_text("OBSWebsocket.Menu.SettingsItem"));
 
 	obs_frontend_push_ui_translation(obs_module_get_string);
-	settings_dialog = new SettingsDialog();
+	QMainWindow* main_window = (QMainWindow*)obs_frontend_get_main_window();
+	settings_dialog = new SettingsDialog(main_window);
 	obs_frontend_pop_ui_translation();
 
 	auto menu_cb = [] {
@@ -56,13 +62,13 @@ bool obs_module_load(void)
 	menu_action->connect(menu_action, &QAction::triggered, menu_cb);
 
 	// Loading finished
-	blog(LOG_INFO, "[obs-websockets] you can haz websockets (version %s)", OBS_WEBSOCKET_VERSION);
+	blog(LOG_INFO, "module loaded!");
 
 	return true;
 }
 
 void obs_module_unload()
 {
-	blog(LOG_INFO, "[obs-websockets] goodbye !");
+	blog(LOG_INFO, "goodbye!");
 }
 

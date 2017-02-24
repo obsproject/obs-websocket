@@ -21,7 +21,6 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include <stdio.h>
 #include <obs-module.h>
-#include <obs-frontend-api.h>
 
 class Utils
 {

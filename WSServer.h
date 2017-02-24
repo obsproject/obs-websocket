@@ -22,12 +22,11 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <QtCore/QObject>
 #include <QtCore/QList>
 #include <QtCore/QMutex>
-#include <QtCore/QByteArray>
-#include <QtCore/QThread>
-#include "WSRequestHandler.h"
 
 QT_FORWARD_DECLARE_CLASS(QWebSocketServer)
 QT_FORWARD_DECLARE_CLASS(QWebSocket)
+
+#include "WSRequestHandler.h"
 
 class WSServer : public QObject
 {

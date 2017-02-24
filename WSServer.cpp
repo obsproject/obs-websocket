@@ -16,20 +16,18 @@ You should have received a copy of the GNU General Public License along
 with this program. If not, see <https://www.gnu.org/licenses/>
 */
 
-#include "WSServer.h"
-#include "WSRequestHandler.h"
-#include "Config.h"
-#include <QtWebSockets/QWebSocketServer>
 #include <QtWebSockets/QWebSocket>
-#include <QtCore/QDebug>
 #include <QtCore/QThread>
+#include <QtCore/QByteArray>
 #include <obs-frontend-api.h>
 
+#include "WSServer.h"
 #include "obs-websocket.h"
+#include "Config.h"
 
 QT_USE_NAMESPACE
 
-WSServer* WSServer::Instance = new WSServer();
+WSServer* WSServer::Instance = nullptr;
 
 WSServer::WSServer(QObject *parent) :
 	QObject(parent),
@@ -116,7 +114,7 @@ void WSServer::onNewConnection()
 		_clMutex.unlock();
 
 		QByteArray client_ip = pSocket->peerAddress().toString().toUtf8();
-		blog(LOG_INFO, "[obs-websockets] new client connection from %s:%d", client_ip.constData(), pSocket->peerPort());
+		blog(LOG_INFO, "new client connection from %s:%d", client_ip.constData(), pSocket->peerPort());
 	}
 }
 
@@ -146,6 +144,6 @@ void WSServer::socketDisconnected()
 		pSocket->deleteLater();
 
 		QByteArray client_ip = pSocket->peerAddress().toString().toUtf8();
-		blog(LOG_INFO, "[obs-websockets] client %s:%d disconnected", client_ip.constData(), pSocket->peerPort());
+		blog(LOG_INFO, "client %s:%d disconnected", client_ip.constData(), pSocket->peerPort());
 	}
 }

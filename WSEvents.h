@@ -20,10 +20,8 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #ifndef WSEVENTS_H
 #define WSEVENTS_H
 
-#include <QtWebSockets/QWebSocket>
-#include <QTimer>
 #include <obs-frontend-api.h>
-#include <util/platform.h>
+
 #include "WSServer.h"
 
 class WSEvents : public QObject 

@@ -20,9 +20,9 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #ifndef WSREQUESTHANDLER_H
 #define WSREQUESTHANDLER_H
 
+#include <obs-frontend-api.h>
 #include <QtWebSockets/QWebSocket>
 #include <QtWebSockets/QWebSocketServer>
-#include <obs-frontend-api.h>
 
 class WSRequestHandler : public QObject
 {

@@ -22,4 +22,6 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #define PROP_AUTHENTICATED "wsclient_authenticated"
 #define OBS_WEBSOCKET_VERSION "4.0.0"
 
+#define blog(level, msg, ...) blog(level, "[obs-websocket] " msg, ##__VA_ARGS__)
+
 #endif // OBSWEBSOCKET_H
