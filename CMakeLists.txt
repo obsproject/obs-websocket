@@ -33,10 +33,13 @@ set(obs-websocket_HEADERS
 	Utils.h
 	forms/settings-dialog.h)
 
+# --- Platform-independent build settings ---
 add_library(obs-websocket MODULE 
 	${obs-websocket_SOURCES}
 	${obs-websocket_HEADERS})
+
 add_dependencies(obs-websocket mbedcrypto)
+
 include_directories( 
 	"${LIBOBS_INCLUDE_DIR}/../UI/obs-frontend-api"
 	${Qt5Core_INCLUDES}
@@ -44,13 +47,16 @@ include_directories(
 	${Qt5Widgets_INCLUDES}
 	${mbedcrypto_INCLUDES}
 	"${CMAKE_SOURCE_DIR}/deps/mbedtls/include")
+
 target_link_libraries(obs-websocket 
 	libobs
 	Qt5::Core
 	Qt5::WebSockets
 	Qt5::Widgets
 	mbedcrypto)
+# --- End of section ---
 
+# --- Windows-specific build settings and tasks ---
 if(WIN32)
 	set(OBS_FRONTEND_LIB "OBS_FRONTEND_LIB-NOTFOUND" CACHE FILEPATH "OBS frontend library")
 	if(OBS_FRONTEND_LIB EQUAL "OBS_FRONTEND_LIB-NOTFOUND")
@@ -59,13 +65,51 @@ if(WIN32)
 	
 	target_link_libraries(obs-websocket
 		"${OBS_FRONTEND_LIB}")
-	add_custom_command(TARGET obs-websocket POST_BUILD
-		COMMAND "${CMAKE_COMMAND}" -E copy
-		"${QTDIR}/bin/Qt5WebSockets.dll"
-		"${QTDIR}/bin/Qt5Network.dll"
-		"${CMAKE_BINARY_DIR}/$<CONFIG>")
-endif()
 
+	add_custom_command(TARGET obs-websocket POST_BUILD
+		COMMAND if $<CONFIG:Release>==1 ("${CMAKE_COMMAND}" -E copy
+			"${QTDIR}/bin/Qt5WebSockets.dll"
+			"${QTDIR}/bin/Qt5Network.dll"
+			"${CMAKE_BINARY_DIR}/$<CONFIG>")
+
+		COMMAND if $<CONFIG:Debug>==1 ("${CMAKE_COMMAND}" -E copy
+			"${QTDIR}/bin/Qt5WebSocketsd.dll"
+			"${QTDIR}/bin/Qt5Networkd.dll"
+			"${CMAKE_BINARY_DIR}/$<CONFIG>")
+	)
+
+	# --- Release package helper ---
+	# The "release" folder has a structure similar OBS' one on Windows
+	set(RELEASE_DIR "${PROJECT_SOURCE_DIR}/release")
+
+	if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+		set(ARCH_NAME "64bit")
+	else()
+		set(ARCH_NAME "32bit")
+	endif()
+
+	add_custom_command(TARGET obs-websocket POST_BUILD
+		COMMAND if $<CONFIG:Release>==1 (
+			"${CMAKE_COMMAND}" -E make_directory
+			"${RELEASE_DIR}/data/obs-plugins/obs-websocket"
+			"${RELEASE_DIR}/obs-plugins/${ARCH_NAME}")
+			
+		COMMAND if $<CONFIG:Release>==1 ("${CMAKE_COMMAND}" -E copy_directory
+			"${PROJECT_SOURCE_DIR}/data/locale"
+			"${RELEASE_DIR}/data/obs-plugins/obs-websocket")
+
+		COMMAND if $<CONFIG:Release>==1 ("${CMAKE_COMMAND}" -E copy 
+			"$<TARGET_FILE:obs-websocket>"
+			"${QTDIR}/bin/Qt5WebSockets.dll" 
+			"${QTDIR}/bin/Qt5Network.dll" 
+			"${RELEASE_DIR}/obs-plugins/${ARCH_NAME}")
+	)
+	# --- End of sub-section ---
+
+endif()
+# --- End of section ---
+
+# --- Linux-specific build settings and tasks ---
 if(UNIX AND NOT APPLE)
 	target_compile_options(mbedcrypto PRIVATE -fPIC)
 	set_target_properties(obs-websocket PROPERTIES PREFIX "")
@@ -77,3 +121,6 @@ if(UNIX AND NOT APPLE)
 	install(FILES data/locale/en-US.ini data/locale/fr-FR.ini data/locale/de-DE.ini
 		DESTINATION "${CMAKE_INSTALL_PREFIX}/share/obs/obs-plugins/obs-websocket/locale")
 endif()
+# --- End of section ---
+
+# TODO : OS X build settings and tasks
