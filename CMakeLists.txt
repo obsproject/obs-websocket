@@ -95,7 +95,7 @@ if(WIN32)
 			"${RELEASE_DIR}/obs-plugins/${ARCH_NAME}")
 			
 		COMMAND if $<CONFIG:Release>==1 ("${CMAKE_COMMAND}" -E copy_directory
-			"${PROJECT_SOURCE_DIR}/data/locale"
+			"${PROJECT_SOURCE_DIR}/data"
 			"${RELEASE_DIR}/data/obs-plugins/obs-websocket")
 
 		COMMAND if $<CONFIG:Release>==1 ("${CMAKE_COMMAND}" -E copy 
