@@ -13,7 +13,7 @@ find_package(Qt5WebSockets REQUIRED)
 find_package(Qt5Widgets REQUIRED)
 
 add_subdirectory(deps/mbedtls EXCLUDE_FROM_ALL)
-set(ENABLED_PROGRAMS false)
+set(ENABLE_PROGRAMS false)
 
 set(obs-websocket_SOURCES 
 	obs-websocket.cpp
