@@ -26,7 +26,7 @@ I'd like to know what you're building with or for obs-websocket. If you do somet
 
 ## Compiling obs-websocket
 ### Prerequisites
-You'll need QT 5.7 with QtWebSockets, CMake, and a working development environment for OBS Studio installed on your computer. 
+You'll need [QT 5.7.0](https://download.qt.io/official_releases/qt/5.7/5.7.0/) with QtWebSockets, CMake, and a working development environment for OBS Studio installed on your computer. 
 
 ### Windows
 In cmake-gui, you'll have to set the following variables :
