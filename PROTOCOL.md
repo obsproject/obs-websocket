@@ -401,7 +401,7 @@ __Request fields__ :
 - **"item"** (string) : The name of the scene item.
 - **"x"** (float) : x coordinate
 - **"y"** (float) : y coordinate
-
+- **"scene_name"** (string) : scene the item belongs to.  defaults to current scene.
 __Response__ : OK if specified item exists, error otherwise.
 
 *New in OBS Studio*
@@ -414,6 +414,7 @@ __Request fields__ :
 - **"x-scale"** (float) : width scale factor
 - **"y-scale"** (float) : height scale factor
 - **"rotation"** (float) : item rotation (in degrees)
+- **"scene_name"** (string) : scene the item belongs to.  defaults to current scene.
 
 __Response__ : OK if specified item exists, error otherwise.
 
