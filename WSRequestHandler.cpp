@@ -564,7 +564,15 @@ void WSRequestHandler::HandleGetCurrentSceneCollection(WSRequestHandler *owner)
 
 void WSRequestHandler::HandleListSceneCollections(WSRequestHandler *owner)
 {
-	// TODO
+	obs_data_array_t *scene_collections = Utils::GetSceneCollections();
+
+	obs_data_t *response = obs_data_create();
+	obs_data_set_array(response, "scene-collections", scene_collections);
+
+	owner->SendOKResponse(response);
+
+	obs_data_release(response);
+	obs_data_array_release(scene_collections);
 }
 
 void WSRequestHandler::HandleSetCurrentProfile(WSRequestHandler *owner)
@@ -595,7 +603,15 @@ void WSRequestHandler::HandleGetCurrentProfile(WSRequestHandler *owner)
 
 void WSRequestHandler::HandleListProfiles(WSRequestHandler *owner)
 {
-	// TODO
+	obs_data_array_t *profiles = Utils::GetProfiles();
+
+	obs_data_t *response = obs_data_create();
+	obs_data_set_array(response, "profiles", profiles);
+
+	owner->SendOKResponse(response);
+
+	obs_data_release(response);
+	obs_data_array_release(profiles);
 }
 
 void WSRequestHandler::ErrNotImplemented(WSRequestHandler *owner)

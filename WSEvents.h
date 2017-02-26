@@ -46,9 +46,14 @@ class WSEvents : public QObject
 
 		void OnSceneChange();
 		void OnSceneListChange();
+		void OnSceneCollectionChange();
+		void OnSceneCollectionListChange();
 
 		void OnTransitionChange();
 		void OnTransitionListChange();
+
+		void OnProfileChange();
+		void OnProfileListChange();
 
 		void OnStreamStarting();
 		void OnStreamStarted();

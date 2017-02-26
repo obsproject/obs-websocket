@@ -18,6 +18,31 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include "Utils.h"
 #include <obs-frontend-api.h>
+#include "obs-websocket.h"
+
+obs_data_array_t* string_list_to_array(char** strings, char* key)
+{
+	if (!strings)
+		return obs_data_array_create();
+
+	obs_data_array_t *list = obs_data_array_create();
+
+	char* value = "";
+	for (int i = 0; value != nullptr; i++)
+	{
+		value = strings[i];
+
+		obs_data_t *item = obs_data_create();
+		obs_data_set_string(item, key, value);
+
+		if (value)
+			obs_data_array_push_back(list, item);
+
+		obs_data_release(item);
+	}
+
+	return list;
+}
 
 obs_data_array_t* Utils::GetSceneItems(obs_source_t *source) {
 	obs_data_array_t *items = obs_data_array_create();
@@ -150,6 +175,24 @@ obs_data_t* Utils::GetSceneData(obs_source *source) {
 	
 	obs_data_array_release(scene_items);
 	return sceneData;
+}
+
+obs_data_array_t* Utils::GetSceneCollections()
+{
+	char** scene_collections = obs_frontend_get_scene_collections();
+	obs_data_array_t *list = string_list_to_array(scene_collections, "sc-name");
+
+	bfree(scene_collections);
+	return list;
+}
+
+obs_data_array_t* Utils::GetProfiles()
+{
+	char** profiles = obs_frontend_get_profiles();
+	obs_data_array_t *list = string_list_to_array(profiles, "profile-name");
+
+	bfree(profiles);
+	return list;
 }
 
 const char* Utils::OBSVersionString() {

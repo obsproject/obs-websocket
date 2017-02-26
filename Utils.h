@@ -33,6 +33,9 @@ class Utils
 		static obs_data_array_t* GetScenes();
 		static obs_data_t* GetSceneData(obs_source *source);
 
+		static obs_data_array_t* GetSceneCollections();
+		static obs_data_array_t* GetProfiles();
+
 		static const char* OBSVersionString();
 };
 

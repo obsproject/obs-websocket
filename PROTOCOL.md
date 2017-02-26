@@ -11,8 +11,12 @@ The protocol in general is based on the OBS Remote protocol created by Bill Hami
   - [Event Types](#event-types)
     - ["SwitchScenes"](#switchscenes)
     - ["ScenesChanged"](#sceneschanged)
+    - ["SceneCollectionChanged"](#scenecollectionchanged)
+    - ["SceneCollectionListChanged"](#scenecollectionlistchanged)
     - ["SwitchTransition"](#switchtransition)
     - ["TransitionListChanged"](#transitionlistchanged)
+    - ["ProfileChanged"](#profilechanged)
+    - ["ProfileListChanged"](#profilelistchanged)
     - ["StreamStarting"](#streamstarting)
     - ["StreamStarted"](#streamstarted)
     - ["StreamStopping"](#streamstopping)
@@ -45,6 +49,12 @@ The protocol in general is based on the OBS Remote protocol created by Bill Hami
     - ["ToggleMute"](#togglemute)
     - ["SetSceneItemPosition"](#setsceneitemposition)
     - ["SetSceneItemTransform"](#setsceneitemtransform)
+    - ["SetCurrentSceneCollection"](#setcurrentscenecollection)
+    - ["GetCurrentSceneCollection"](#getcurrentscenecollection)
+    - ["ListSceneCollections"](#listscenecollections)
+    - ["SetCurrentProfile"](#setcurrentprofile)
+    - ["GetCurrentProfile"](#getcurrentprofile)
+    - ["ListProfiles"](#listprofiles)
 * [Authentication](#authentication)
 
 ## Events
@@ -67,6 +77,16 @@ The scene list has been modified (Scenes have been added, removed, or renamed).
 
 ---
 
+#### "SceneCollectionChanged"
+Triggered when switching to another scene collection or when renaming the current scene collection.
+
+---
+
+#### "SceneCollectionListChanged"
+Triggered when a scene collection is created, added, renamed or removed.
+
+---
+
 #### "SwitchTransition"
 The active transition has been changed.  
 - **transition-name** (string) : The name of the active transition.
@@ -75,6 +95,16 @@ The active transition has been changed.
 
 #### "TransitionListChanged"
 The list of available transitions has been modified (Transitions have been added, removed, or renamed).
+
+---
+
+#### "ProfileChanged"
+Triggered when switching to another profile or when renaming the current profile.
+
+---
+
+#### "ProfileListChanged"
+Triggered when a profile is created, added, renamed or removed.
 
 ---
 
@@ -387,6 +417,66 @@ __Request fields__ :
 __Response__ : OK if specified item exists, error otherwise.
 
 *New in OBS Studio*
+
+---
+
+#### "SetCurrentSceneCollection"
+Change the current scene collection.
+
+__Request fields__ :
+- **"sc-name"** (string) : name of the desired scene collection
+
+__Response__ : OK if scene collection exists, error otherwise.
+
+---
+
+#### "GetCurrentSceneCollection"
+Get the name of the current scene collection.
+
+__Request fields__ : none
+
+__Response__ : OK with these additional fields :
+- **"sc-name"** (string) : name of the current scene collection
+
+---
+
+#### "ListSceneCollections"
+Get a list of available scene collections.
+
+__Request fields__ : none
+
+__Response__ : OK with these additional fields :
+- **"scene-collections"** (array of objects) : names of available scene collections
+
+---
+
+#### "SetCurrentProfile"
+Change the current profile.
+
+__Request fields__ :
+- **"profile-name"** (string) : name of the desired profile
+
+__Response__ : OK if profile exists, error otherwise.
+
+---
+
+#### "GetCurrentProfile"
+Get the name of the current profile.
+
+__Request fields__ : none
+
+__Response__ : OK with these additional fields :
+- **"profile-name"** (string) : name of the current profile
+
+---
+
+#### "ListProfiles"
+Get a list of available profiles.
+
+__Request fields__ : none
+
+__Response__ : OK with the additional fields :
+- **"profiles"** (array of objects) : names of available profiles
 
 ---
 
