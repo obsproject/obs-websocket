@@ -262,7 +262,19 @@ void WSRequestHandler::HandleSetSourceRender(WSRequestHandler *owner)
 		return;
 	}
 
-	obs_source_t* currentScene = obs_frontend_get_current_scene();
+	obs_source_t* scene;
+	const char *sceneName = obs_data_get_string(owner->_requestData, "scene-name");
+	if (sceneName != NULL) {
+		scene = obs_get_source_by_name(sceneName);
+	}
+	else {
+	 	scene = obs_frontend_get_current_scene();
+	}
+
+	if (scene == NULL) {
+		owner->SendErrorResponse("specified scene doesn't exist");
+		return;
+	}
 
 	obs_sceneitem_t *sceneItem = Utils::GetSceneItemFromName(currentScene, itemName);
 	if (sceneItem != NULL)
