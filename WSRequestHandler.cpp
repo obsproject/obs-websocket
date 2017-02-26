@@ -264,15 +264,15 @@ void WSRequestHandler::HandleSetSourceRender(WSRequestHandler *owner)
 
 	obs_source_t* scene;
 	const char *sceneName = obs_data_get_string(owner->_requestData, "scene-name");
-	if (sceneName != NULL) {
-		scene = obs_get_source_by_name(sceneName);
+	if (!sceneName || !strlen(sceneName)) {
+		scene = obs_frontend_get_current_scene();
 	}
 	else {
-	 	scene = obs_frontend_get_current_scene();
+		scene = obs_get_source_by_name(sceneName);
 	}
 
 	if (scene == NULL) {
-		owner->SendErrorResponse("specified scene doesn't exist");
+		owner->SendErrorResponse("requested scene doesn't exist");
 		return;
 	}
 
