@@ -402,6 +402,7 @@ __Request fields__ :
 - **"x"** (float) : x coordinate
 - **"y"** (float) : y coordinate
 - **"scene_name"** (string) : scene the item belongs to.  defaults to current scene.
+
 __Response__ : OK if specified item exists, error otherwise.
 
 *New in OBS Studio*
