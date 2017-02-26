@@ -68,8 +68,16 @@ class WSRequestHandler : public QObject
 
 		static void HandleSetVolume(WSRequestHandler *owner);
 		static void HandleGetVolume(WSRequestHandler *owner);
-		static void ToggleMute(WSRequestHandler *owner);
-		static void SetMute(WSRequestHandler *owner);
+		static void HandleToggleMute(WSRequestHandler *owner);
+		static void HandleSetMute(WSRequestHandler *owner);
+
+		static void HandleSetCurrentSceneCollection(WSRequestHandler *owner);
+		static void HandleGetCurrentSceneCollection(WSRequestHandler *owner);
+		static void HandleListSceneCollections(WSRequestHandler *owner);
+
+		static void HandleSetCurrentProfile(WSRequestHandler *owner);
+		static void HandleGetCurrentProfile(WSRequestHandler *owner);
+		static void HandleListProfiles(WSRequestHandler *owner);
 };
 
 #endif // WSPROTOCOL_H

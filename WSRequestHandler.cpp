@@ -52,8 +52,16 @@ WSRequestHandler::WSRequestHandler(QWebSocket *client) :
 
 	messageMap["SetVolume"] = WSRequestHandler::HandleSetVolume;
 	messageMap["GetVolume"] = WSRequestHandler::HandleGetVolume;
-	messageMap["ToggleMute"] = WSRequestHandler::ToggleMute;
-	messageMap["SetMute"] = WSRequestHandler::SetMute;
+	messageMap["ToggleMute"] = WSRequestHandler::HandleToggleMute;
+	messageMap["SetMute"] = WSRequestHandler::HandleSetMute;
+
+	messageMap["SetCurrentSceneCollection"] = WSRequestHandler::HandleSetCurrentSceneCollection;
+	messageMap["GetCurrentSceneCollection"] = WSRequestHandler::HandleGetCurrentSceneCollection;
+	messageMap["ListSceneCollections"] = WSRequestHandler::HandleListSceneCollections;
+
+	messageMap["SetCurrentProfile"] = WSRequestHandler::HandleSetCurrentProfile;
+	messageMap["GetCurrentProfile"] = WSRequestHandler::HandleGetCurrentProfile;
+	messageMap["ListProfiles"] = WSRequestHandler::HandleListProfiles;
 
 	authNotRequired.insert("GetVersion");
 	authNotRequired.insert("GetAuthRequired");
@@ -398,26 +406,28 @@ void WSRequestHandler::HandleSetVolume(WSRequestHandler *owner)
 void WSRequestHandler::HandleGetVolume(WSRequestHandler *owner)
 {
 	const char *item_name = obs_data_get_string(owner->_requestData, "source");
-	if (item_name == NULL)
+
+	if (item_name)
+	{
+		obs_source_t* item = obs_get_source_by_name(item_name);
+
+		obs_data_t* response = obs_data_create();
+		obs_data_set_string(response, "name", item_name);
+		obs_data_set_double(response, "volume", obs_source_get_volume(item));
+		obs_data_set_bool(response, "muted", obs_source_muted(item));
+
+		owner->SendOKResponse(response);
+
+		obs_data_release(response);
+		obs_source_release(item);
+	}
+	else
 	{
 		owner->SendErrorResponse("invalid request parameters");
-		return;
 	}
-
-	obs_source_t* item = obs_get_source_by_name(item_name);
-
-	obs_data_t* response = obs_data_create();
-	obs_data_set_string(response, "name", item_name);
-	obs_data_set_double(response, "volume", obs_source_get_volume(item));
-       obs_data_set_bool(response, "muted", obs_source_muted(item));
-
-	owner->SendOKResponse(response);
-
-	obs_data_release(response);
-	obs_source_release(item);
 }
 
-void WSRequestHandler::ToggleMute(WSRequestHandler *owner) {
+void WSRequestHandler::HandleToggleMute(WSRequestHandler *owner) {
 	const char *item_name = obs_data_get_string(owner->_requestData, "source");
 	if (item_name == NULL)
 	{
@@ -438,7 +448,7 @@ void WSRequestHandler::ToggleMute(WSRequestHandler *owner) {
 	obs_source_release(item);
 }
 
-void WSRequestHandler::SetMute(WSRequestHandler *owner)
+void WSRequestHandler::HandleSetMute(WSRequestHandler *owner)
 {
 	const char *item_name = obs_data_get_string(owner->_requestData, "source");
 	bool mute = obs_data_get_bool(owner->_requestData, "mute");
@@ -467,6 +477,7 @@ void WSRequestHandler::HandleSetSceneItemPosition(WSRequestHandler *owner)
 	if (!item_name)
 	{
 		owner->SendErrorResponse("invalid request parameters");
+		return;
 	}
 
 	vec2 item_position = {0};
@@ -497,6 +508,7 @@ void WSRequestHandler::HandleSetSceneItemTransform(WSRequestHandler *owner)
 	if (!item_name)
 	{
 		owner->SendErrorResponse("invalid request parameters");
+		return;
 	}
 
 	vec2 scale;
@@ -522,6 +534,68 @@ void WSRequestHandler::HandleSetSceneItemTransform(WSRequestHandler *owner)
 	}
 
 	obs_source_release(current_scene);
+}
+
+void WSRequestHandler::HandleSetCurrentSceneCollection(WSRequestHandler *owner)
+{
+	const char* scene_collection = obs_data_get_string(owner->_requestData, "sc-name");
+	
+	if (scene_collection)
+	{
+		// TODO : Check if profile exists
+		obs_frontend_set_current_scene_collection(scene_collection);
+		owner->SendOKResponse();
+	}
+	else
+	{
+		owner->SendErrorResponse("invalid request parameters");
+	}
+}
+
+void WSRequestHandler::HandleGetCurrentSceneCollection(WSRequestHandler *owner)
+{
+	obs_data_t *response = obs_data_create();
+	obs_data_set_string(response, "sc-name", obs_frontend_get_current_scene_collection());
+
+	owner->SendOKResponse(response);
+
+	obs_data_release(response);
+}
+
+void WSRequestHandler::HandleListSceneCollections(WSRequestHandler *owner)
+{
+	// TODO
+}
+
+void WSRequestHandler::HandleSetCurrentProfile(WSRequestHandler *owner)
+{
+	const char* profile_name = obs_data_get_string(owner->_requestData, "profile-name");
+
+	if (profile_name)
+	{
+		// TODO : check if profile exists
+		obs_frontend_set_current_profile(profile_name);
+		owner->SendOKResponse();
+	}
+	else
+	{
+		owner->SendErrorResponse("invalid request parameters");
+	}
+}
+
+void WSRequestHandler::HandleGetCurrentProfile(WSRequestHandler *owner)
+{
+	obs_data_t *response = obs_data_create();
+	obs_data_set_string(response, "profile-name", obs_frontend_get_current_profile());
+
+	owner->SendOKResponse(response);
+
+	obs_data_release(response);
+}
+
+void WSRequestHandler::HandleListProfiles(WSRequestHandler *owner)
+{
+	// TODO
 }
 
 void WSRequestHandler::ErrNotImplemented(WSRequestHandler *owner)
