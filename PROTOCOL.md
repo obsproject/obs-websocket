@@ -273,6 +273,7 @@ Show or hide a specific source in the current scene.
 __Request fields__ :  
 - **"source"** (string) : name of the source in the currently active scene.
 - **"render"** (bool) : desired visibility
+- **"scene-name"** (string; optional) : name of the scene the source belongs to.  defaults to current scene.
 
 __Response__ : OK if source exists in the current scene, error otherwise.
 
