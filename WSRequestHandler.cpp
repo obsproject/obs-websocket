@@ -41,7 +41,7 @@ WSRequestHandler::WSRequestHandler(QWebSocket *client) :
 	messageMap["SetSceneItemRender"] = WSRequestHandler::HandleSetSourceRender;
 	messageMap["SetSceneItemPosition"] = WSRequestHandler::HandleSetSceneItemPosition;
 	messageMap["SetSceneItemTransform"] = WSRequestHandler::HandleSetSceneItemTransform;
-	
+
 	messageMap["GetStreamingStatus"] = WSRequestHandler::HandleGetStreamingStatus;
 	messageMap["StartStopStreaming"] = WSRequestHandler::HandleStartStopStreaming;
 	messageMap["StartStopRecording"] = WSRequestHandler::HandleStartStopRecording;
@@ -125,7 +125,7 @@ void WSRequestHandler::SendOKResponse(obs_data_t *additionalFields)
 	obs_data_set_string(response, "status", "ok");
 	obs_data_set_string(response, "message-id", _messageId);
 
-	if (additionalFields != NULL) 
+	if (additionalFields != NULL)
 	{
 		obs_data_apply(response, additionalFields);
 	}
@@ -169,7 +169,7 @@ void WSRequestHandler::HandleGetAuthRequired(WSRequestHandler *owner)
 	obs_data_t *data = obs_data_create();
 	obs_data_set_bool(data, "authRequired", authRequired);
 
-	if (authRequired) 
+	if (authRequired)
 	{
 		obs_data_set_string(data, "challenge", Config::Current()->SessionChallenge);
 		obs_data_set_string(data, "salt", Config::Current()->Salt);
@@ -183,18 +183,18 @@ void WSRequestHandler::HandleGetAuthRequired(WSRequestHandler *owner)
 void WSRequestHandler::HandleAuthenticate(WSRequestHandler *owner)
 {
 	const char *auth = obs_data_get_string(owner->_requestData, "auth");
-	if (!auth || strlen(auth) < 1) 
+	if (!auth || strlen(auth) < 1)
 	{
 		owner->SendErrorResponse("auth not specified!");
 		return;
 	}
 
-	if ((owner->_client->property(PROP_AUTHENTICATED).toBool() == false) && Config::Current()->CheckAuth(auth)) 
+	if ((owner->_client->property(PROP_AUTHENTICATED).toBool() == false) && Config::Current()->CheckAuth(auth))
 	{
 		owner->_client->setProperty(PROP_AUTHENTICATED, true);
 		owner->SendOKResponse();
 	}
-	else 
+	else
 	{
 		owner->SendErrorResponse("Authentication Failed.");
 	}
@@ -276,7 +276,7 @@ void WSRequestHandler::HandleSetSourceRender(WSRequestHandler *owner)
 		return;
 	}
 
-	obs_sceneitem_t *sceneItem = Utils::GetSceneItemFromName(currentScene, itemName);
+	obs_sceneitem_t *sceneItem = Utils::GetSceneItemFromName(scene, itemName);
 	if (sceneItem != NULL)
 	{
 		obs_sceneitem_set_visible(sceneItem, isVisible);
@@ -288,7 +288,7 @@ void WSRequestHandler::HandleSetSourceRender(WSRequestHandler *owner)
 		owner->SendErrorResponse("specified scene item doesn't exist");
 	}
 
-	obs_source_release(currentScene);
+	obs_source_release(scene);
 }
 
 void WSRequestHandler::HandleGetStreamingStatus(WSRequestHandler *owner)
@@ -551,7 +551,7 @@ void WSRequestHandler::HandleSetSceneItemTransform(WSRequestHandler *owner)
 void WSRequestHandler::HandleSetCurrentSceneCollection(WSRequestHandler *owner)
 {
 	const char* scene_collection = obs_data_get_string(owner->_requestData, "sc-name");
-	
+
 	if (scene_collection)
 	{
 		// TODO : Check if profile exists
