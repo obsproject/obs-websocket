@@ -262,15 +262,8 @@ void WSRequestHandler::HandleSetSourceRender(WSRequestHandler *owner)
 		return;
 	}
 
-	obs_source_t* scene;
 	const char *sceneName = obs_data_get_string(owner->_requestData, "scene-name");
-	if (!sceneName || !strlen(sceneName)) {
-		scene = obs_frontend_get_current_scene();
-	}
-	else {
-		scene = obs_get_source_by_name(sceneName);
-	}
-
+	obs_source_t *scene = Utils::GetSceneFromNameOrCurrent(sceneName);
 	if (scene == NULL) {
 		owner->SendErrorResponse("requested scene doesn't exist");
 		return;
@@ -492,12 +485,18 @@ void WSRequestHandler::HandleSetSceneItemPosition(WSRequestHandler *owner)
 		return;
 	}
 
+	const char *scene_name = obs_data_get_string(owner->_requestData, "scene-name");
+	obs_source_t *scene = Utils::GetSceneFromNameOrCurrent(scene_name);
+	if (scene == NULL) {
+		owner->SendErrorResponse("requested scene could not be found");
+		return;
+	}
+
 	vec2 item_position = {0};
 	item_position.x = obs_data_get_double(owner->_requestData, "x");
 	item_position.y = obs_data_get_double(owner->_requestData, "y");
 
-	obs_source_t* current_scene = obs_frontend_get_current_scene();
-	obs_sceneitem_t *scene_item = Utils::GetSceneItemFromName(current_scene, item_name);
+	obs_sceneitem_t *scene_item = Utils::GetSceneItemFromName(scene, item_name);
 
 	if (scene_item)
 	{
@@ -511,7 +510,7 @@ void WSRequestHandler::HandleSetSceneItemPosition(WSRequestHandler *owner)
 		owner->SendErrorResponse("specified scene item doesn't exist");
 	}
 
-	obs_source_release(current_scene);
+	obs_source_release(scene);
 }
 
 void WSRequestHandler::HandleSetSceneItemTransform(WSRequestHandler *owner)
@@ -523,14 +522,20 @@ void WSRequestHandler::HandleSetSceneItemTransform(WSRequestHandler *owner)
 		return;
 	}
 
+	const char *scene_name = obs_data_get_string(owner->_requestData, "scene-name");
+	obs_source_t* scene = Utils::GetSceneFromNameOrCurrent(scene_name);
+	if (scene == NULL) {
+		owner->SendErrorResponse("requested scene doesn't exist");
+		return;
+	}
+
 	vec2 scale;
 	scale.x = obs_data_get_double(owner->_requestData, "x-scale");
 	scale.y = obs_data_get_double(owner->_requestData, "y-scale");
 
 	float rotation = obs_data_get_double(owner->_requestData, "rotation");
 
-	obs_source_t* current_scene = obs_frontend_get_current_scene();
-	obs_sceneitem_t *scene_item = Utils::GetSceneItemFromName(current_scene, item_name);
+	obs_sceneitem_t *scene_item = Utils::GetSceneItemFromName(scene, item_name);
 
 	if (scene_item)
 	{
@@ -545,7 +550,7 @@ void WSRequestHandler::HandleSetSceneItemTransform(WSRequestHandler *owner)
 		owner->SendErrorResponse("specified scene item doesn't exist");
 	}
 
-	obs_source_release(current_scene);
+	obs_source_release(scene);
 }
 
 void WSRequestHandler::HandleSetCurrentSceneCollection(WSRequestHandler *owner)

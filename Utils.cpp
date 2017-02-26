@@ -147,6 +147,18 @@ obs_source_t* Utils::GetTransitionFromName(const char *search_name) {
 	return found_transition;
 }
 
+obs_source_t* Utils::GetSceneFromNameOrCurrent(const char *scene_name) {
+	obs_source_t* scene;
+	if (!scene_name || !strlen(scene_name)) {
+		scene = obs_frontend_get_current_scene();
+	}
+	else {
+		scene = obs_get_source_by_name(scene_name);
+	}
+
+	return scene;
+}
+
 obs_data_array_t* Utils::GetScenes() {
 	obs_frontend_source_list sceneList = {};
 	obs_frontend_get_scenes(&sceneList);
