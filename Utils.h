@@ -37,6 +37,9 @@ class Utils
 		static obs_data_array_t* GetSceneCollections();
 		static obs_data_array_t* GetProfiles();
 
+		static int GetTransitionDuration();
+		static void SetTransitionDuration(int ms);
+
 		static const char* OBSVersionString();
 };
 

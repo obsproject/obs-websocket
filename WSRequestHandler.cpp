@@ -49,6 +49,7 @@ WSRequestHandler::WSRequestHandler(QWebSocket *client) :
 	messageMap["GetTransitionList"] = WSRequestHandler::HandleGetTransitionList;
 	messageMap["GetCurrentTransition"] = WSRequestHandler::HandleGetCurrentTransition;
 	messageMap["SetCurrentTransition"] = WSRequestHandler::HandleSetCurrentTransition;
+	messageMap["SetTransitionDuration"] = WSRequestHandler::HandleSetTransitionDuration;
 
 	messageMap["SetVolume"] = WSRequestHandler::HandleSetVolume;
 	messageMap["GetVolume"] = WSRequestHandler::HandleGetVolume;
@@ -359,6 +360,11 @@ void WSRequestHandler::HandleGetCurrentTransition(WSRequestHandler *owner)
 
 	obs_data_t *response = obs_data_create();
 	obs_data_set_string(response, "name", obs_source_get_name(current_transition));
+	
+	if (!obs_transition_fixed(current_transition))
+	{
+		obs_data_set_int(response, "duration", Utils::GetTransitionDuration());
+	}
 
 	owner->SendOKResponse(response);
 
@@ -382,6 +388,13 @@ void WSRequestHandler::HandleSetCurrentTransition(WSRequestHandler *owner)
 	{
 		owner->SendErrorResponse("requested transition does not exist");
 	}
+}
+
+void WSRequestHandler::HandleSetTransitionDuration(WSRequestHandler *owner)
+{
+	int ms = obs_data_get_int(owner->_requestData, "duration");
+	Utils::SetTransitionDuration(ms);
+	owner->SendOKResponse();
 }
 
 void WSRequestHandler::HandleSetVolume(WSRequestHandler *owner)

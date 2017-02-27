@@ -18,6 +18,8 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include "Utils.h"
 #include <obs-frontend-api.h>
+#include <QMainWindow>
+#include <QSpinBox>
 #include "obs-websocket.h"
 
 obs_data_array_t* string_list_to_array(char** strings, char* key)
@@ -205,6 +207,32 @@ obs_data_array_t* Utils::GetProfiles()
 
 	bfree(profiles);
 	return list;
+}
+
+int Utils::GetTransitionDuration()
+{
+	QMainWindow *window = (QMainWindow*)obs_frontend_get_main_window();
+	QSpinBox* durationControl = window->findChild<QSpinBox*>("transitionDuration");
+
+	if (durationControl)
+	{
+		return durationControl->value();
+	}
+	else
+	{
+		return -1;
+	}
+}
+
+void Utils::SetTransitionDuration(int ms)
+{
+	QMainWindow *window = (QMainWindow*)obs_frontend_get_main_window();
+	QSpinBox* durationControl = window->findChild<QSpinBox*>("transitionDuration");
+
+	if (durationControl && ms >= 0)
+	{
+		durationControl->setValue(ms);
+	}
 }
 
 const char* Utils::OBSVersionString() {

@@ -78,6 +78,8 @@ class WSRequestHandler : public QObject
 		static void HandleSetCurrentProfile(WSRequestHandler *owner);
 		static void HandleGetCurrentProfile(WSRequestHandler *owner);
 		static void HandleListProfiles(WSRequestHandler *owner);
+
+		static void HandleSetTransitionDuration(WSRequestHandler *owner);
 };
 
 #endif // WSPROTOCOL_H

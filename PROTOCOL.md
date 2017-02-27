@@ -43,6 +43,7 @@ The protocol in general is based on the OBS Remote protocol created by Bill Hami
     - ["GetTransitionList"](#gettransitionlist)
     - ["GetCurrentTransition"](#getcurrenttransition)
     - ["SetCurrentTransition"](#setcurrenttransition)
+    - ["SetTransitionDuration"](#settransitionduration)
     - ["SetVolume"](#setvolume)
     - ["GetVolume"](#getvolume)
     - ["SetMute"](#setmute)
@@ -328,6 +329,7 @@ Get the name of the currently selected transition in the frontend's dropdown men
 __Request fields__ : none  
 __Response__ : always OK, with these additional fields :
 - **"name"** (string) : name of the selected transition
+- **"duration"** (integer, only if transition supports this) : transition duration
 
 *New in OBS Studio*  
 
@@ -340,6 +342,18 @@ __Request fields__ :
 __Response__ : OK if specified transition exists, error otherwise.
 
 *New in OBS Studio*  
+
+---
+
+#### "SetTransitionDuration"
+Set the duration of the currently selected transition.
+
+__Request fields__ :
+- **"duration"** (integer) : desired transition duration in milliseconds
+
+__Response__ : always OK.
+
+*New in OBS Studio*
 
 ---
 
