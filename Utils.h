@@ -19,6 +19,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #ifndef UTILS_H
 #define UTILS_H
 
+#include <QSpinBox>
 #include <stdio.h>
 #include <obs-module.h>
 
@@ -37,6 +38,7 @@ class Utils
 		static obs_data_array_t* GetSceneCollections();
 		static obs_data_array_t* GetProfiles();
 
+		static QSpinBox* GetTransitionDurationControl();
 		static int GetTransitionDuration();
 		static void SetTransitionDuration(int ms);
 

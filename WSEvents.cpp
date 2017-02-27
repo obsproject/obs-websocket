@@ -19,13 +19,16 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include <util/platform.h>
 #include <QTimer>
-
+#include "Utils.h"
 #include "WSEvents.h"
 
 WSEvents::WSEvents(WSServer *srv)
 {
 	_srv = srv;
 	obs_frontend_add_event_callback(WSEvents::FrontendEventHandler, this);
+
+	QSpinBox* duration_control = Utils::GetTransitionDurationControl();
+	connect(duration_control, SIGNAL(valueChanged(int)), this, SLOT(TransitionDurationChanged(int)));
 
 	QTimer *statusTimer = new QTimer();
 	connect(statusTimer, SIGNAL(timeout()), this, SLOT(StreamStatus()));
@@ -339,4 +342,14 @@ void WSEvents::StreamStatus()
 
 	obs_data_release(data);
 	obs_output_release(stream_output);
+}
+
+void WSEvents::TransitionDurationChanged(int ms)
+{
+	obs_data_t* fields = obs_data_create();
+	obs_data_set_int(fields, "new-duration", ms);
+
+	broadcastUpdate("TransitionDurationChanged", fields);
+
+	obs_data_release(fields);
 }

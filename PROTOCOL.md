@@ -14,6 +14,7 @@ The protocol in general is based on the OBS Remote protocol created by Bill Hami
     - ["SceneCollectionChanged"](#scenecollectionchanged)
     - ["SceneCollectionListChanged"](#scenecollectionlistchanged)
     - ["SwitchTransition"](#switchtransition)
+    - ["TransitionDurationChanged"](#transitiondurationchanged)
     - ["TransitionListChanged"](#transitionlistchanged)
     - ["ProfileChanged"](#profilechanged)
     - ["ProfileListChanged"](#profilelistchanged)
@@ -91,6 +92,12 @@ Triggered when a scene collection is created, added, renamed or removed.
 #### "SwitchTransition"
 The active transition has been changed.  
 - **transition-name** (string) : The name of the active transition.
+
+---
+
+#### "TransitionDurationChanged"
+Triggered when the transition duration has changed.
+- **"new-duration"** (integer) : new transition duration
 
 ---
 

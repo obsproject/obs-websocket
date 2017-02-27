@@ -209,14 +209,18 @@ obs_data_array_t* Utils::GetProfiles()
 	return list;
 }
 
-int Utils::GetTransitionDuration()
+QSpinBox* Utils::GetTransitionDurationControl()
 {
 	QMainWindow *window = (QMainWindow*)obs_frontend_get_main_window();
-	QSpinBox* durationControl = window->findChild<QSpinBox*>("transitionDuration");
+	return window->findChild<QSpinBox*>("transitionDuration");
+}
 
-	if (durationControl)
+int Utils::GetTransitionDuration()
+{
+	QSpinBox* control = GetTransitionDurationControl();
+	if (control)
 	{
-		return durationControl->value();
+		return control->value();
 	}
 	else
 	{
@@ -226,12 +230,11 @@ int Utils::GetTransitionDuration()
 
 void Utils::SetTransitionDuration(int ms)
 {
-	QMainWindow *window = (QMainWindow*)obs_frontend_get_main_window();
-	QSpinBox* durationControl = window->findChild<QSpinBox*>("transitionDuration");
+	QSpinBox* control = GetTransitionDurationControl();
 
-	if (durationControl && ms >= 0)
+	if (control && ms >= 0)
 	{
-		durationControl->setValue(ms);
+		control->setValue(ms);
 	}
 }
 
