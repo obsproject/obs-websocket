@@ -70,7 +70,7 @@ Additional fields will be present in the event message depending on the event ty
 
 ### Event Types
 #### "SwitchScenes"
-OBS is switching to another scene.  
+OBS is switching to another scene (called at the end of the transition).  
 - **scene-name** (string) : The name of the scene being switched to.
 
 ---
