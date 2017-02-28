@@ -22,6 +22,20 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include "Utils.h"
 #include "WSEvents.h"
 
+bool transition_is_cut(obs_source_t *transition)
+{
+	if (!transition)
+		return false;
+
+	if (obs_source_get_type(transition) == OBS_SOURCE_TYPE_TRANSITION 
+		&& strcmp(obs_source_get_id(transition), "cut_transition") == 0)
+	{
+		return true;
+	}
+
+	return false;
+}
+
 WSEvents::WSEvents(WSServer *srv)
 {
 	_srv = srv;
@@ -147,12 +161,10 @@ void WSEvents::broadcastUpdate(const char *updateType, obs_data_t *additionalFie
 
 void WSEvents::connectTransitionSignals(obs_source_t* current_transition)
 {
-	if (!obs_transition_fixed(current_transition))
+	if (!transition_is_cut(current_transition))
 	{
 		transition_handler = obs_source_get_signal_handler(current_transition);
-		signal_handler_connect(transition_handler, "transition_start", OnTransitionBegin, this);
-		signal_handler_connect(transition_handler, "transition_stop", OnTransitionEnd, this);
-	}
+		signal_handler_connect(transition_handler, "transition_start", OnTransitionBegin, this);	}
 	else
 	{
 		transition_handler = nullptr;
@@ -193,7 +205,6 @@ void WSEvents::OnTransitionChange()
 	if (transition_handler)
 	{
 		signal_handler_disconnect(transition_handler, "transition_start", OnTransitionBegin, this);
-		signal_handler_disconnect(transition_handler, "transition_stop", OnTransitionEnd, this);
 	}
 
 	obs_source_t* current_transition = obs_frontend_get_current_transition();
@@ -370,21 +381,4 @@ void WSEvents::OnTransitionBegin(void* param, calldata_t* data)
 	instance->broadcastUpdate("TransitionBegin");
 
 	blog(LOG_INFO, "transition begin");
-}
-
-void WSEvents::OnTransitionEnd(void* param, calldata_t* data)
-{
-	UNUSED_PARAMETER(data);
-
-	WSEvents* instance = static_cast<WSEvents*>(param);
-	instance->broadcastUpdate("TransitionEnd");
-
-	blog(LOG_INFO, "transition end");
-}
-
-void WSEvents::OnTransitionStopped(void* param, calldata_t* data)
-{
-
-
-	blog(LOG_INFO, "transition stopped");
 }

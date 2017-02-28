@@ -72,8 +72,6 @@ class WSEvents : public QObject
 		void OnExit();
 
 		static void OnTransitionBegin(void *param, calldata_t *data);
-		static void OnTransitionEnd(void *param, calldata_t *data);
-		static void OnTransitionStopped(void *param, calldata_t *data);
 };
 
 #endif // WSEVENTS_H

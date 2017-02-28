@@ -97,10 +97,6 @@ void WSServer::broadcast(QString message)
 	}
 
 	_clMutex.unlock();
-	
-	// Dirty hack because several quick successive calls to sendTextMessage() 
-	// can deadlock the socket
-	QThread::msleep(50);
 }
 
 void WSServer::onNewConnection()
@@ -130,10 +126,6 @@ void WSServer::textMessageReceived(QString message)
 	{
 		WSRequestHandler handler(pSocket);
 		handler.processIncomingMessage(message);
-
-		// Dirty hack because several quick successive calls to sendTextMessage() 
-		// can deadlock the socket
-		QThread::msleep(50);
 	}
 }
 
