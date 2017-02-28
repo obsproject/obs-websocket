@@ -11,6 +11,9 @@ The protocol in general is based on the OBS Remote protocol created by Bill Hami
   - [Event Types](#event-types)
     - ["SwitchScenes"](#switchscenes)
     - ["ScenesChanged"](#sceneschanged)
+    - ["SourceOrderChanged"](#sourceorderchanged)
+    - ["SceneItemAdded"](#sceneitemadded)
+    - ["SceneItemRemoved"](#sceneitemremoved)
     - ["SceneCollectionChanged"](#scenecollectionchanged)
     - ["SceneCollectionListChanged"](#scenecollectionlistchanged)
     - ["SwitchTransition"](#switchtransition)
@@ -77,6 +80,26 @@ OBS is switching to another scene (called at the end of the transition).
 
 #### "ScenesChanged"
 The scene list has been modified (Scenes have been added, removed, or renamed).
+
+---
+
+#### "SourceOrderChanged"
+Scene items have been reordered.
+- **"scene-name"** (string) : name of the scene where items have been reordered
+
+---
+
+#### "SceneItemAdded"
+An item has been added to the current scene.
+- **"scene-name"** (string) :  name of the scene
+- **"item-name"** (string) : name of the item added to **scene-name**
+
+---
+
+#### "SceneItemRemoved"
+An item has been removed from the current scene.
+- **"scene-name"** (string) :  name of the scene
+- **"item-name"** (string) : name of the item removed from **scene-name**
 
 ---
 

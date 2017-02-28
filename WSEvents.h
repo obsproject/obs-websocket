@@ -31,7 +31,8 @@ class WSEvents : public QObject
 		explicit WSEvents(WSServer *srv);
 		~WSEvents();
 		static void FrontendEventHandler(enum obs_frontend_event event, void *private_data);
-		void connectTransitionSignals(obs_source_t* current_transition);
+		void connectTransitionSignals(obs_source_t* transition);
+		void connectSceneSignals(obs_source_t* scene);
 
 	private Q_SLOTS:
 		void StreamStatus();
@@ -40,7 +41,8 @@ class WSEvents : public QObject
 	private:
 		WSServer *_srv;
 		signal_handler_t *transition_handler;
-		
+		signal_handler_t *scene_handler;
+
 		uint64_t _stream_starttime;
 		uint64_t _rec_starttime;
 		uint64_t _lastBytesSent;
@@ -72,6 +74,10 @@ class WSEvents : public QObject
 		void OnExit();
 
 		static void OnTransitionBegin(void *param, calldata_t *data);
+
+		static void OnSceneReordered(void *param, calldata_t *data);
+		static void OnSceneItemAdd(void *param, calldata_t *data);
+		static void OnSceneItemDelete(void *param, calldata_t *data);
 };
 
 #endif // WSEVENTS_H
