@@ -42,8 +42,6 @@ bool obs_module_load(void)
 	Config* config = Config::Current();
 	config->Load();
 
-	WSServer::Instance = new WSServer();
-
 	if (config->ServerEnabled)
 		WSServer::Instance->Start(config->ServerPort);
 

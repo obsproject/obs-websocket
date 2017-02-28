@@ -16,6 +16,8 @@ The protocol in general is based on the OBS Remote protocol created by Bill Hami
     - ["SwitchTransition"](#switchtransition)
     - ["TransitionDurationChanged"](#transitiondurationchanged)
     - ["TransitionListChanged"](#transitionlistchanged)
+    - ["TransitionBegin"](#transitionbegin)
+    - ["TransitionEnd"](#transitionend)
     - ["ProfileChanged"](#profilechanged)
     - ["ProfileListChanged"](#profilelistchanged)
     - ["StreamStarting"](#streamstarting)
@@ -103,6 +105,16 @@ Triggered when the transition duration has changed.
 
 #### "TransitionListChanged"
 The list of available transitions has been modified (Transitions have been added, removed, or renamed).
+
+---
+
+#### "TransitionBegin"
+A non-fixed transition has begun.
+
+---
+
+#### "TransitionEnd"
+A non-fixed transition has ended.
 
 ---
 

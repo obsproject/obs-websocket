@@ -34,6 +34,15 @@ WSEvents::WSEvents(WSServer *srv)
 	connect(statusTimer, SIGNAL(timeout()), this, SLOT(StreamStatus()));
 	statusTimer->start(2000); // equal to frontend's constant BITRATE_UPDATE_SECONDS
 
+	transition_handler = nullptr;
+
+	WSEvents* instance = this;
+	QTimer::singleShot(1000, [instance]() {
+		obs_source_t* transition = obs_frontend_get_current_transition();
+		instance->connectTransitionSignals(transition);
+		obs_source_release(transition);
+	});
+
 	_stream_starttime = 0;
 	_rec_starttime = 0;
 }
@@ -50,7 +59,7 @@ void WSEvents::FrontendEventHandler(enum obs_frontend_event event, void *private
 	if (!owner->_srv)
 		return;
 
-	// TODO : implement SourceChanged, SourceOrderChanged and RepopulateSources
+	// TODO : implement SourceOrderChanged and RepopulateSources
 
 	if (event == OBS_FRONTEND_EVENT_SCENE_CHANGED)
 	{
@@ -136,39 +145,32 @@ void WSEvents::broadcastUpdate(const char *updateType, obs_data_t *additionalFie
 	obs_data_release(update);
 }
 
+void WSEvents::connectTransitionSignals(obs_source_t* current_transition)
+{
+	if (!obs_transition_fixed(current_transition))
+	{
+		transition_handler = obs_source_get_signal_handler(current_transition);
+		signal_handler_connect(transition_handler, "transition_start", OnTransitionBegin, this);
+		signal_handler_connect(transition_handler, "transition_stop", OnTransitionEnd, this);
+	}
+	else
+	{
+		transition_handler = nullptr;
+	}
+}
+
 void WSEvents::OnSceneChange()
 {
 	// Implements an existing update type from bilhamil's OBS Remote
-
-	// Default behavior : get the new scene from the running transition
-	obs_source_t *transition = obs_frontend_get_current_transition();
-	obs_source_t *new_scene = obs_transition_get_source(transition, OBS_TRANSITION_SOURCE_B);
-	if (!new_scene)
-	{
-		obs_source_release(transition);
-		return;
-	}
-	
-	const char *scene_name = obs_source_get_name(new_scene);
-	if (!scene_name)
-	{
-		// Fallback behaviour : get the new scene straight from the API
-		obs_source_release(new_scene);
-		new_scene = obs_frontend_get_current_scene();
-
-		if (new_scene) {
-			scene_name = obs_source_get_name(new_scene);
-		}
-	}
-
 	obs_data_t *data = obs_data_create();
-	obs_data_set_string(data, "scene-name", scene_name);
+
+	obs_source_t* current_scene = obs_frontend_get_current_scene();
+	obs_data_set_string(data, "scene-name", obs_source_get_name(current_scene));
 	
 	broadcastUpdate("SwitchScenes", data);
 
 	obs_data_release(data);
-	obs_source_release(new_scene);
-	obs_source_release(transition);
+	obs_source_release(current_scene);
 }
 
 void WSEvents::OnSceneListChange()
@@ -188,16 +190,22 @@ void WSEvents::OnSceneCollectionListChange()
 
 void WSEvents::OnTransitionChange()
 {
-	obs_source_t *transition = obs_frontend_get_current_transition();
-	const char *transition_name = obs_source_get_name(transition);
+	if (transition_handler)
+	{
+		signal_handler_disconnect(transition_handler, "transition_start", OnTransitionBegin, this);
+		signal_handler_disconnect(transition_handler, "transition_stop", OnTransitionEnd, this);
+	}
+
+	obs_source_t* current_transition = obs_frontend_get_current_transition();
+	connectTransitionSignals(current_transition);
 
 	obs_data_t *data = obs_data_create();
-	obs_data_set_string(data, "transition-name", transition_name);
-
+	obs_data_set_string(data, "transition-name", obs_source_get_name(current_transition));
+		
 	broadcastUpdate("SwitchTransition", data);
-
+	
 	obs_data_release(data);
-	obs_source_release(transition);
+	obs_source_release(current_transition);
 }
 
 void WSEvents::OnTransitionListChange()
@@ -352,4 +360,31 @@ void WSEvents::TransitionDurationChanged(int ms)
 	broadcastUpdate("TransitionDurationChanged", fields);
 
 	obs_data_release(fields);
+}
+
+void WSEvents::OnTransitionBegin(void* param, calldata_t* data)
+{
+	UNUSED_PARAMETER(data);
+
+	WSEvents* instance = static_cast<WSEvents*>(param);
+	instance->broadcastUpdate("TransitionBegin");
+
+	blog(LOG_INFO, "transition begin");
+}
+
+void WSEvents::OnTransitionEnd(void* param, calldata_t* data)
+{
+	UNUSED_PARAMETER(data);
+
+	WSEvents* instance = static_cast<WSEvents*>(param);
+	instance->broadcastUpdate("TransitionEnd");
+
+	blog(LOG_INFO, "transition end");
+}
+
+void WSEvents::OnTransitionStopped(void* param, calldata_t* data)
+{
+
+
+	blog(LOG_INFO, "transition stopped");
 }

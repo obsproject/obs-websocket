@@ -27,7 +27,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 QT_USE_NAMESPACE
 
-WSServer* WSServer::Instance = nullptr;
+WSServer* WSServer::Instance = new WSServer();
 
 WSServer::WSServer(QObject *parent) :
 	QObject(parent),
@@ -97,6 +97,10 @@ void WSServer::broadcast(QString message)
 	}
 
 	_clMutex.unlock();
+	
+	// Dirty hack because several quick successive calls to sendTextMessage() 
+	// can deadlock the socket
+	QThread::msleep(50);
 }
 
 void WSServer::onNewConnection()
@@ -126,6 +130,10 @@ void WSServer::textMessageReceived(QString message)
 	{
 		WSRequestHandler handler(pSocket);
 		handler.processIncomingMessage(message);
+
+		// Dirty hack because several quick successive calls to sendTextMessage() 
+		// can deadlock the socket
+		QThread::msleep(50);
 	}
 }
 
@@ -140,7 +148,7 @@ void WSServer::socketDisconnected()
 		_clMutex.lock();
 		_clients.removeAll(pSocket);
 		_clMutex.unlock();
-
+		
 		pSocket->deleteLater();
 
 		QByteArray client_ip = pSocket->peerAddress().toString().toUtf8();
