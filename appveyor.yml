@@ -6,12 +6,12 @@ install:
   - cd C:\projects\
   - git clone --recursive https://github.com/jp9000/obs-studio
   - cd C:\projects\obs-studio\
-  - if not exist dependencies2015.zip curl -kLO https://obsproject.com/downloads/dependencies2015.zip -f --retry 5 -C -
-  - 7z x dependencies2015.zip -odependencies2015
-  - set DepsPath32=%CD%\dependencies2015\win32
-  - set DepsPath64=%CD%\dependencies2015\win64
-  - set QTDIR32=C:\Qt\5.7\msvc2015
-  - set QTDIR64=C:\Qt\5.7\msvc2015_64
+  - if not exist dependencies2013.zip curl -kLO https://obsproject.com/downloads/dependencies2013.zip -f --retry 5 -C -
+  - 7z x dependencies2013.zip -odependencies2013
+  - set DepsPath32=%CD%\dependencies2013\win32
+  - set DepsPath64=%CD%\dependencies2013\win64
+  - set QTDIR32=C:\Qt\5.7\msvc2013
+  - set QTDIR64=C:\Qt\5.7\msvc2013_64
   - set build_config=Release
   - mkdir build
   - mkdir build32
@@ -26,9 +26,9 @@ install:
   - mkdir build32
   - mkdir build64
   - cd ./build32
-  - cmake -G "Visual Studio 14 2015" -DQTDIR="%QTDIR32%" -DLibObs_DIR="C:\projects\obs-studio\build32\libobs" -DLIBOBS_INCLUDE_DIR="C:\projects\obs-studio\libobs" -DLIBOBS_LIB="C:\projects\obs-studio\build32\libobs\%build_config%\obs.lib" -DOBS_FRONTEND_LIB="C:\projects\obs-studio\build32\UI\obs-frontend-api\%build_config%\obs-frontend-api.lib" ..
+  - cmake -G "Visual Studio 12 2013" -DQTDIR="%QTDIR32%" -DLibObs_DIR="C:\projects\obs-studio\build32\libobs" -DLIBOBS_INCLUDE_DIR="C:\projects\obs-studio\libobs" -DLIBOBS_LIB="C:\projects\obs-studio\build32\libobs\%build_config%\obs.lib" -DOBS_FRONTEND_LIB="C:\projects\obs-studio\build32\UI\obs-frontend-api\%build_config%\obs-frontend-api.lib" ..
   - cd ../build64
-  - cmake -G "Visual Studio 14 2015 Win64" -DQTDIR="%QTDIR64%" -DLibObs_DIR="C:\projects\obs-studio\build64\libobs" -DLIBOBS_INCLUDE_DIR="C:\projects\obs-studio\libobs" -DLIBOBS_LIB="C:\projects\obs-studio\build64\libobs\%build_config%\obs.lib" -DOBS_FRONTEND_LIB="C:\projects\obs-studio\build64\UI\obs-frontend-api\%build_config%\obs-frontend-api.lib" ..
+  - cmake -G "Visual Studio 12 2013 Win64" -DQTDIR="%QTDIR64%" -DLibObs_DIR="C:\projects\obs-studio\build64\libobs" -DLIBOBS_INCLUDE_DIR="C:\projects\obs-studio\libobs" -DLIBOBS_LIB="C:\projects\obs-studio\build64\libobs\%build_config%\obs.lib" -DOBS_FRONTEND_LIB="C:\projects\obs-studio\build64\UI\obs-frontend-api\%build_config%\obs-frontend-api.lib" ..
 
 build_script:
   - call msbuild /m /p:Configuration=%build_config% C:\projects\obs-websocket\build32\obs-websocket.sln /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
@@ -43,4 +43,4 @@ deploy_script:
 test: off
 
 cache:
-  - dependencies2015.zip
+  - dependencies2013.zip
