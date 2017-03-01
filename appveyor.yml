@@ -38,7 +38,7 @@ before_deploy:
   - 7z a "C:\projects\obs-websocket\build.zip" C:\projects\obs-websocket\release\*
 
 deploy_script:
-  - ps: Push-AppveyorArtifact "C:\projects\obs-websocket\build.zip" -FileName "build.zip"
+  - ps: Push-AppveyorArtifact "C:\projects\obs-websocket\build.zip" -FileName "obs-websocket-$(git log --pretty=format:'%h' -n 1).zip"
 
 test: off
 
