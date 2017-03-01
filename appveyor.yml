@@ -17,9 +17,9 @@ install:
   - mkdir build32
   - mkdir build64
   - cd ./build32
-  - cmake -G "Visual Studio 14 2015" -DCOPIED_DEPENDENCIES=false -DCOPY_DEPENDENCIES=true ..
+  - cmake -G "Visual Studio 12 2013" -DCOPIED_DEPENDENCIES=false -DCOPY_DEPENDENCIES=true ..
   - cd ../build64
-  - cmake -G "Visual Studio 14 2015 Win64" -DCOPIED_DEPENDENCIES=false -DCOPY_DEPENDENCIES=true ..
+  - cmake -G "Visual Studio 12 2013 Win64" -DCOPIED_DEPENDENCIES=false -DCOPY_DEPENDENCIES=true ..
   - call msbuild /m /p:Configuration=%build_config% C:\projects\obs-studio\build32\obs-studio.sln /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
   - call msbuild /m /p:Configuration=%build_config% C:\projects\obs-studio\build64\obs-studio.sln /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
   - cd C:\projects\obs-websocket\
@@ -43,4 +43,4 @@ deploy_script:
 test: off
 
 cache:
-  - dependencies2013.zip
+  - C:\projects\obs-studio\dependencies2013.zip
