@@ -58,8 +58,8 @@ target_link_libraries(obs-websocket
 
 # --- Windows-specific build settings and tasks ---
 if(WIN32)
-	set(OBS_FRONTEND_LIB "OBS_FRONTEND_LIB-NOTFOUND" CACHE FILEPATH "OBS frontend library")
-	if(OBS_FRONTEND_LIB EQUAL "OBS_FRONTEND_LIB-NOTFOUND")
+	if(NOT DEFINED OBS_FRONTEND_LIB)
+		set(OBS_FRONTEND_LIB "OBS_FRONTEND_LIB-NOTFOUND" CACHE FILEPATH "OBS frontend library")
 		message(FATAL_ERROR "Could not find OBS Frontend API\'s library !")
 	endif()
 	
