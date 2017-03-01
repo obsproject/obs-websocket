@@ -14,6 +14,7 @@ The protocol in general is based on the OBS Remote protocol created by Bill Hami
     - ["SourceOrderChanged"](#sourceorderchanged)
     - ["SceneItemAdded"](#sceneitemadded)
     - ["SceneItemRemoved"](#sceneitemremoved)
+    - ["SceneItemVisibilityChanged"](#sceneitemvisibilitychanged)
     - ["SceneCollectionChanged"](#scenecollectionchanged)
     - ["SceneCollectionListChanged"](#scenecollectionlistchanged)
     - ["SwitchTransition"](#switchtransition)
@@ -100,6 +101,14 @@ An item has been added to the current scene.
 An item has been removed from the current scene.
 - **"scene-name"** (string) :  name of the scene
 - **"item-name"** (string) : name of the item removed from **scene-name**
+
+---
+
+#### "SceneItemVisibilityChanged"
+An item's visibility has been toggled.
+- **"scene-name"** (string) :  name of the scene
+- **"item-name"** (string) : name of the item in **scene-name**
+- **"item-visible"** (bool) : new visibility of item **item-name**
 
 ---
 

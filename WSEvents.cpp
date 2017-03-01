@@ -191,12 +191,14 @@ void WSEvents::connectSceneSignals(obs_source_t* scene)
 		signal_handler_disconnect(scene_handler, "reorder", OnSceneReordered, this);
 		signal_handler_disconnect(scene_handler, "item_add", OnSceneItemAdd, this);
 		signal_handler_disconnect(scene_handler, "item_remove", OnSceneItemDelete, this);
+		signal_handler_disconnect(scene_handler, "item_visible", OnSceneItemVisibilityChanged, this);
 	}
 
 	scene_handler = obs_source_get_signal_handler(scene);
 	signal_handler_connect(scene_handler, "reorder", OnSceneReordered, this);
 	signal_handler_connect(scene_handler, "item_add", OnSceneItemAdd, this);
 	signal_handler_connect(scene_handler, "item_remove", OnSceneItemDelete, this);
+	signal_handler_connect(scene_handler, "item_visible", OnSceneItemVisibilityChanged, this);
 }
 
 void WSEvents::OnSceneChange()
@@ -463,6 +465,32 @@ void WSEvents::OnSceneItemDelete(void *param, calldata_t *data)
 	obs_data_set_string(fields, "item-name", sceneitem_name);
 
 	instance->broadcastUpdate("SceneItemRemoved", fields);
+
+	obs_data_release(fields);
+}
+
+void WSEvents::OnSceneItemVisibilityChanged(void *param, calldata_t *data)
+{
+	WSEvents* instance = static_cast<WSEvents*>(param);
+
+	obs_scene_t* scene = nullptr;
+	calldata_get_ptr(data, "scene", &scene);
+
+	obs_sceneitem_t* scene_item = nullptr;
+	calldata_get_ptr(data, "item", &scene_item);
+
+	bool visible = false;
+	calldata_get_bool(data, "visible", &visible);
+
+	const char* scene_name = obs_source_get_name(obs_scene_get_source(scene));
+	const char* sceneitem_name = obs_source_get_name(obs_sceneitem_get_source(scene_item));
+
+	obs_data_t* fields = obs_data_create();
+	obs_data_set_string(fields, "scene-name", scene_name);
+	obs_data_set_string(fields, "item-name", sceneitem_name);
+	obs_data_set_bool(fields, "item-visible", visible);
+
+	instance->broadcastUpdate("SceneItemVisibilityChanged", fields);
 
 	obs_data_release(fields);
 }
