@@ -4,9 +4,6 @@ environment:
 install:
   - git submodule update --init --recursive
   - cd C:\projects\
-  - git clone --recursive https://github.com/jp9000/obs-studio
-  - cd C:\projects\obs-studio\
-  - git checkout 18.0.0
   - if not exist dependencies2013.zip curl -kLO https://obsproject.com/downloads/dependencies2013.zip -f --retry 5 -C -
   - 7z x dependencies2013.zip -odependencies2013
   - if not exist qt570.zip curl -kLO https://www.slepin.fr/obs-websocket/ci/qt570.zip -f --retry 5 -C -
@@ -16,6 +13,9 @@ install:
   - set QTDIR32=%CD%\Qt5.7.0\msvc2013
   - set QTDIR64=%CD%\Qt5.7.0\msvc2013_64
   - set build_config=Release
+  - git clone --recursive https://github.com/jp9000/obs-studio
+  - cd C:\projects\obs-studio\
+  - git checkout 18.0.0
   - mkdir build
   - mkdir build32
   - mkdir build64
@@ -46,5 +46,5 @@ deploy_script:
 test: off
 
 cache:
-  - C:\projects\obs-studio\dependencies2013.zip
-  - C:\projects\obs-studio\qt570.zip
+  - C:\projects\dependencies2013.zip
+  - C:\projects\qt570.zip
