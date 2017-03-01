@@ -80,7 +80,7 @@ void SettingsDialog::FormAccepted()
 	{
 		if (ui->password->text() != CHANGE_ME)
 		{
-			QByteArray pwd = ui->password->text().toLocal8Bit();
+			QByteArray pwd = ui->password->text().toUtf8();
 			const char *new_password = pwd;
 
 			conf->SetPassword(new_password);
