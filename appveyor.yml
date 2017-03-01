@@ -1,0 +1,49 @@
+environment:
+  CURL_VERSION: 7.39.0
+
+install:
+  - cd C:\projects\
+  - git clone --recursive https://github.com/jp9000/obs-studio
+  - cd C:\projects\obs-studio\
+  - if not exist dependencies2015.zip curl -kLO https://obsproject.com/downloads/dependencies2015.zip -f --retry 5 -C -
+  - 7z x dependencies2015.zip -odependencies2015
+  - set DepsPath32=%CD%\dependencies2015\win32
+  - set DepsPath64=%CD%\dependencies2015\win64
+  - set QTDIR32=C:\Qt\5.7\msvc2015
+  - set QTDIR64=C:\Qt\5.7\msvc2015_64
+  - set build_config=RelWithDebInfo
+  - move "C:\Program Files (x86)\Windows Kits\10\Include\10.0.14393.0\um\d3d11on12*" "C:\Program Files (x86)\Windows Kits\8.1\Include\um"
+  - move "C:\Program Files (x86)\Windows Kits\10\Include\10.0.14393.0\um\d3d12*" "C:\Program Files (x86)\Windows Kits\8.1\Include\um"
+  - move "C:\Program Files (x86)\Windows Kits\10\Include\10.0.14393.0\shared\dxgi*" "C:\Program Files (x86)\Windows Kits\8.1\Include\shared"
+  - mkdir build
+  - mkdir build32
+  - mkdir build64
+  - cd ./build32
+  - cmake -G "Visual Studio 14 2015" -DCOPIED_DEPENDENCIES=false -DCOPY_DEPENDENCIES=true ..
+  - cd ../build64
+  - cmake -G "Visual Studio 14 2015 Win64" -DCOPIED_DEPENDENCIES=false -DCOPY_DEPENDENCIES=true ..
+  - call msbuild /m /p:Configuration=%build_config% C:\projects\obs-studio\build32\obs-studio.sln /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
+  - call msbuild /m /p:Configuration=%build_config% C:\projects\obs-studio\build64\obs-studio.sln /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
+  - cd C:\projects\obs-websocket\
+  - git submodule update --init --recursive
+  - mkdir build32
+  - mkdir build64
+  - cd ./build32
+  - cmake -G "Visual Studio 14 2015" -DCOPIED_DEPENDENCIES=false -DCOPY_DEPENDENCIES=true -DQTDIR="C:\Qt\5.7\msvc2015" -DLIBOBS_INCLUDE_DIR="C:\projects\obs-studio\libobs" -DLIBOBS_LIB="C:\projects\obs-studio\build32\libobs\RelWithDebInfo\obs.lib" -DOBS_FRONTEND_LIB="C:\projects\obs-studio\build32\UI\obs-frontend-api\RelWithDebInfo\obs-frontend-api.lib" ..
+  - cd ../build64
+  - cmake -G "Visual Studio 14 2015 Win64" -DCOPIED_DEPENDENCIES=false -DCOPY_DEPENDENCIES=true -DQTDIR="C:\Qt\5.7\msvc2015_64" -DLIBOBS_INCLUDE_DIR="C:\projects\obs-studio\libobs" -DLIBOBS_LIB="C:\projects\obs-studio\build64\libobs\RelWithDebInfo\obs.lib" -DOBS_FRONTEND_LIB="C:\projects\obs-studio\build64\UI\obs-frontend-api\RelWithDebInfo\obs-frontend-api.lib"
+
+build_script:
+  - call msbuild /m /p:Configuration=%build_config% C:\projects\obs-websocket\build32\obs-websocket.sln /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
+  - call msbuild /m /p:Configuration=%build_config% C:\projects\obs-websocket\build64\obs-websocket.sln /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
+
+before_deploy:
+  - C:\projects\obs-studio\CI\before-deploy-win.cmd
+
+deploy_script:
+  - ps: Push-AppveyorArtifact "build.zip" -FileName "$(git describe).zip"
+
+test: off
+
+cache:
+  - dependencies2015.zip
