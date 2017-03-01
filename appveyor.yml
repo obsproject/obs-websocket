@@ -35,10 +35,10 @@ build_script:
   - call msbuild /m /p:Configuration=%build_config% C:\projects\obs-websocket\build64\obs-websocket.sln /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
 
 before_deploy:
-  - 7z a obs-websocket.zip C:\projects\obs-websocket\release\*
+  - 7z a "C:\projects\obs-websocket\build.zip" C:\projects\obs-websocket\release\*
 
 deploy_script:
-  - ps: Push-AppveyorArtifact "build.zip" -FileName "$(git describe).zip"
+  - ps: Push-AppveyorArtifact "C:\projects\obs-websocket\build.zip" -FileName "build.zip"
 
 test: off
 
