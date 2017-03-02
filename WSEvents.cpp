@@ -264,6 +264,15 @@ void WSEvents::OnSceneListChange()
 void WSEvents::OnSceneCollectionChange()
 {
 	broadcastUpdate("SceneCollectionChanged");
+
+	scene_handler = nullptr;
+	transition_handler = nullptr;
+
+	OnTransitionListChange();
+	OnTransitionChange();
+
+	OnSceneListChange();
+	OnSceneChange();
 }
 
 void WSEvents::OnSceneCollectionListChange()
