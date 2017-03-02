@@ -44,9 +44,10 @@ sudo apt-get install -y qt5-qmake
 cd ..
 git clone https://github.com/qt/qtwebsockets/ ./qtwebsockets
 cd qtwebsockets
-git checkout v5.7.0
+git checkout v5.3.0
 qmake
-make -j4 && sudo make install
+make -j4 
+sudo make install
 
 # Build obs-studio
 cd ..
@@ -54,6 +55,7 @@ git clone https://github.com/jp9000/obs-studio ./obs-studio
 cd obs-studio
 mkdir build && cd build
 cmake -DUNIX_STRUCTURE=1 -DCMAKE_INSTALL_PREFIX=/usr ..
-make -j4 && sudo make install
+make -j4
+sudo make install
 
 sudo ldconfig
