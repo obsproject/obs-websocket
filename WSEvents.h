@@ -43,8 +43,12 @@ class WSEvents : public QObject
 		signal_handler_t *transition_handler;
 		signal_handler_t *scene_handler;
 
+		bool _streaming_active;
+		bool _recording_active;
+
 		uint64_t _stream_starttime;
 		uint64_t _rec_starttime;
+
 		uint64_t _lastBytesSent;
 		uint64_t _lastBytesSentTime;
 

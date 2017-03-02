@@ -68,7 +68,11 @@ The protocol in general is based on the OBS Remote protocol created by Bill Hami
 ### Description
 Events are sent exclusively by the server and broadcast to each connected client.  
 An event message will contain at least one field :
-- **update-type** (string) : the type of event  
+- **update-type** (string) : the type of event
+- **stream-timecode** (string, optional) : time elapsed between now and stream start (only present if OBS Studio is streaming)
+- **rec-timecode** (string, optional) : time elapsed between now and recording start (only present if OBS Studio is recording)
+
+Timecodes are in the following format : HH:MM:SS.mmm
 
 Additional fields will be present in the event message depending on the event type.
 

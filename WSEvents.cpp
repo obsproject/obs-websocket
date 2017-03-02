@@ -37,6 +37,23 @@ bool transition_is_cut(obs_source_t *transition)
 	return false;
 }
 
+const char* ns_to_timestamp(uint64_t ns)
+{
+	uint64_t ms = ns / (1000 * 1000);
+	uint64_t secs = ms / 1000;
+	uint64_t minutes = secs / 60;
+
+	uint64_t hours_part = minutes / 60;
+	uint64_t minutes_part = minutes % 60;
+	uint64_t secs_part = secs % 60;
+	uint64_t ms_part = ms % 1000;
+
+	char* ts = (char*)bmalloc(64);
+	sprintf(ts, "%02d:%02d:%02d.%03d", hours_part, minutes_part, secs_part, ms_part);
+
+	return ts;
+}
+
 WSEvents::WSEvents(WSServer *srv)
 {
 	_srv = srv;
@@ -62,6 +79,9 @@ WSEvents::WSEvents(WSServer *srv)
 		instance->connectSceneSignals(scene);
 		obs_source_release(scene);
 	});
+
+	_streaming_active = false;
+	_recording_active = false;
 
 	_stream_starttime = 0;
 	_rec_starttime = 0;
@@ -119,6 +139,7 @@ void WSEvents::FrontendEventHandler(enum obs_frontend_event event, void *private
 	}
 	else if (event == OBS_FRONTEND_EVENT_STREAMING_STARTED)
 	{
+		owner->_streaming_active = true;
 		owner->OnStreamStarted();
 	}
 	else if (event == OBS_FRONTEND_EVENT_STREAMING_STOPPING)
@@ -127,6 +148,7 @@ void WSEvents::FrontendEventHandler(enum obs_frontend_event event, void *private
 	}
 	else if (event == OBS_FRONTEND_EVENT_STREAMING_STOPPED)
 	{
+		owner->_streaming_active = false;
 		owner->OnStreamStopped();
 	}
 	else if (event == OBS_FRONTEND_EVENT_RECORDING_STARTING)
@@ -135,6 +157,7 @@ void WSEvents::FrontendEventHandler(enum obs_frontend_event event, void *private
 	}
 	else if (event == OBS_FRONTEND_EVENT_RECORDING_STARTED)
 	{
+		owner->_recording_active = true;
 		owner->OnRecordingStarted();
 	}
 	else if (event == OBS_FRONTEND_EVENT_RECORDING_STOPPING)
@@ -143,6 +166,7 @@ void WSEvents::FrontendEventHandler(enum obs_frontend_event event, void *private
 	}
 	else if (event == OBS_FRONTEND_EVENT_RECORDING_STOPPED)
 	{
+		owner->_recording_active = false;
 		owner->OnRecordingStopped();
 	}
 	else if (event == OBS_FRONTEND_EVENT_EXIT)
@@ -154,8 +178,23 @@ void WSEvents::FrontendEventHandler(enum obs_frontend_event event, void *private
 void WSEvents::broadcastUpdate(const char *updateType, obs_data_t *additionalFields = NULL)
 {
 	obs_data_t *update = obs_data_create();
-
 	obs_data_set_string(update, "update-type", updateType);
+	
+	const char* ts = nullptr;
+	if (_streaming_active)
+	{
+		ts = ns_to_timestamp(os_gettime_ns() - _stream_starttime);
+		obs_data_set_string(update, "stream-timecode", ts);
+		bfree((void*)ts);
+	}
+
+	if (_recording_active)
+	{
+		ts = ns_to_timestamp(os_gettime_ns() - _rec_starttime);
+		obs_data_set_string(update, "rec-timecode", ts);
+		bfree((void*)ts);
+	}
+	
 	if (additionalFields != NULL) {
 		obs_data_apply(update, additionalFields);
 	}
@@ -367,10 +406,7 @@ void WSEvents::StreamStatus()
 	int total_frames = obs_output_get_total_frames(stream_output);
 	int dropped_frames = obs_output_get_frames_dropped(stream_output);
 
-	float strain = 0.0;
-	if (total_frames > 0) {
-		strain = (dropped_frames / total_frames) * 100.0;
-	}
+	float strain = obs_output_get_congestion(stream_output);
 
 	obs_data_t *data = obs_data_create();
 	obs_data_set_bool(data, "streaming", streaming_active);
