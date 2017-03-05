@@ -2,6 +2,8 @@ obs-websocket
 ==============
 Remote control of OBS Studio made easy.
 
+Follow the project on Twitter for news & updates : [@obswebsocket](https://twitter.com/obswebsocket)
+
 ## Downloads
 Binaries for Windows and Linux are available in the [Releases](https://github.com/Palakis/obs-websocket/releases) section.
 
