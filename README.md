@@ -25,7 +25,7 @@ The protocol understood by the server is documented in [PROTOCOL.md](PROTOCOL.md
 
 Here's a list of available language APIs for obs-websocket :
 - Javascript (browser & nodejs) : [obs-websocket-js](https://github.com/haganbmj/obs-websocket-js) by haganbmj
-- C#/VB.NET : [obs-websocket-dotnet](https://github.com/Palakis/obs-websocket-dotnet) by me (Palakis)
+- C#/VB.NET : [obs-websocket-dotnet](https://github.com/Palakis/obs-websocket-dotnet)
 
 I'd like to know what you're building with or for obs-websocket. If you do something in this fashion, feel free to drop me an email at `contact at slepin dot fr` !
 
