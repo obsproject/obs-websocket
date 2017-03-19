@@ -55,6 +55,7 @@ WSRequestHandler::WSRequestHandler(QWebSocket *client) :
 	messageMap["GetCurrentTransition"] = WSRequestHandler::HandleGetCurrentTransition;
 	messageMap["SetCurrentTransition"] = WSRequestHandler::HandleSetCurrentTransition;
 	messageMap["SetTransitionDuration"] = WSRequestHandler::HandleSetTransitionDuration;
+	messageMap["GetTransitionDuration"] = WSRequestHandler::HandleGetTransitionDuration;
 
 	messageMap["SetVolume"] = WSRequestHandler::HandleSetVolume;
 	messageMap["GetVolume"] = WSRequestHandler::HandleGetVolume;
@@ -432,6 +433,15 @@ void WSRequestHandler::HandleSetTransitionDuration(WSRequestHandler *owner)
 	int ms = obs_data_get_int(owner->_requestData, "duration");
 	Utils::SetTransitionDuration(ms);
 	owner->SendOKResponse();
+}
+
+void WSRequestHandler::HandleGetTransitionDuration(WSRequestHandler *owner)
+{
+	obs_data_t* response = obs_data_create();
+	obs_data_set_int(response, "transition-duration", Utils::GetTransitionDuration());
+
+	owner->SendOKResponse(response);
+	obs_data_release(response);
 }
 
 void WSRequestHandler::HandleSetVolume(WSRequestHandler *owner)

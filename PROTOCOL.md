@@ -54,6 +54,7 @@ The protocol in general is based on the OBS Remote protocol created by Bill Hami
     - ["GetCurrentTransition"](#getcurrenttransition)
     - ["SetCurrentTransition"](#setcurrenttransition)
     - ["SetTransitionDuration"](#settransitionduration)
+    - ["GetTransitionDuration"](#gettransitionduration)
     - ["SetVolume"](#setvolume)
     - ["GetVolume"](#getvolume)
     - ["SetMute"](#setmute)
@@ -442,6 +443,17 @@ __Request fields__ :
 - **"duration"** (integer) : desired transition duration in milliseconds
 
 __Response__ : always OK.
+
+*New in OBS Studio*
+
+---
+
+#### "SetTransitionDuration"
+Set the duration of the currently selected transition.
+
+__Request fields__ : none  
+__Response__ : always OK, with these additional fields :
+- **"transition-duration"** (integer) : current transition duration, in milliseconds
 
 *New in OBS Studio*
 

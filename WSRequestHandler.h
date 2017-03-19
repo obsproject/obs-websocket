@@ -86,7 +86,7 @@ class WSRequestHandler : public QObject
 		static void HandleListProfiles(WSRequestHandler *owner);
 
 		static void HandleSetTransitionDuration(WSRequestHandler *owner);
-		// TODO : GetTransitionDuration
+		static void HandleGetTransitionDuration(WSRequestHandler *owner);
 };
 
 #endif // WSPROTOCOL_H
