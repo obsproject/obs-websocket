@@ -54,13 +54,18 @@ class WSRequestHandler : public QObject
 		static void HandleGetCurrentScene(WSRequestHandler *owner);
 		static void HandleGetSceneList(WSRequestHandler *owner);
 		
-		static void HandleSetSourceRender(WSRequestHandler *owner);
+		static void HandleSetSceneItemRender(WSRequestHandler *owner);
 		static void HandleSetSceneItemPosition(WSRequestHandler *owner);
 		static void HandleSetSceneItemTransform(WSRequestHandler *owner);
+		static void HandleSetSceneItemCrop(WSRequestHandler *owner);
 
 		static void HandleGetStreamingStatus(WSRequestHandler *owner);
 		static void HandleStartStopStreaming(WSRequestHandler *owner);
+		// TODO : StartStreaming
+		// TODO : StopStreaming
 		static void HandleStartStopRecording(WSRequestHandler *owner);
+		// TODO : StartRecording
+		// TODO : StopRecording
 
 		static void HandleGetTransitionList(WSRequestHandler *owner);
 		static void HandleGetCurrentTransition(WSRequestHandler *owner);
@@ -70,6 +75,7 @@ class WSRequestHandler : public QObject
 		static void HandleGetVolume(WSRequestHandler *owner);
 		static void HandleToggleMute(WSRequestHandler *owner);
 		static void HandleSetMute(WSRequestHandler *owner);
+		// TODO : GetMute
 
 		static void HandleSetCurrentSceneCollection(WSRequestHandler *owner);
 		static void HandleGetCurrentSceneCollection(WSRequestHandler *owner);
@@ -80,6 +86,7 @@ class WSRequestHandler : public QObject
 		static void HandleListProfiles(WSRequestHandler *owner);
 
 		static void HandleSetTransitionDuration(WSRequestHandler *owner);
+		// TODO : GetTransitionDuration
 };
 
 #endif // WSPROTOCOL_H

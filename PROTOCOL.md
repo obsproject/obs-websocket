@@ -486,6 +486,19 @@ __Response__ : OK if specified item exists, error otherwise.
 
 ---
 
+#### "SetSceneItemCrop"
+__Request fields__ :
+- **"item"** (string) : Name of the scene item
+- **"scene-name"** (string, optional) : Scene the item belongs to. Default : current scene.
+- **"top"** (integer)
+- **"bottom"** (integer)
+- **"left"** (integer)
+- **"right"** (integer)
+
+__Response__ : OK if specified item exists, error otherwise.
+
+---
+
 #### "SetCurrentSceneCollection"
 Change the current scene collection.
 

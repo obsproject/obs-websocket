@@ -37,10 +37,11 @@ WSRequestHandler::WSRequestHandler(QWebSocket *client) :
 	messageMap["GetCurrentScene"] = WSRequestHandler::HandleGetCurrentScene;
 	messageMap["GetSceneList"] = WSRequestHandler::HandleGetSceneList;
 
-	messageMap["SetSourceRender"] = WSRequestHandler::HandleSetSourceRender; // Retrocompat
-	messageMap["SetSceneItemRender"] = WSRequestHandler::HandleSetSourceRender;
+	messageMap["SetSourceRender"] = WSRequestHandler::HandleSetSceneItemRender; // Retrocompat
+	messageMap["SetSceneItemRender"] = WSRequestHandler::HandleSetSceneItemRender;
 	messageMap["SetSceneItemPosition"] = WSRequestHandler::HandleSetSceneItemPosition;
 	messageMap["SetSceneItemTransform"] = WSRequestHandler::HandleSetSceneItemTransform;
+	messageMap["SetSceneItemCrop"] = WSRequestHandler::HandleSetSceneItemCrop;
 
 	messageMap["GetStreamingStatus"] = WSRequestHandler::HandleGetStreamingStatus;
 	messageMap["StartStopStreaming"] = WSRequestHandler::HandleStartStopStreaming;
@@ -153,7 +154,7 @@ void WSRequestHandler::HandleGetVersion(WSRequestHandler *owner)
 	const char* obs_version = Utils::OBSVersionString();
 
 	obs_data_t *data = obs_data_create();
-	obs_data_set_double(data, "version", 1.1);
+	obs_data_set_double(data, "version", 1.2);
 	obs_data_set_string(data, "obs-websocket-version", OBS_WEBSOCKET_VERSION);
 	obs_data_set_string(data, "obs-studio-version", obs_version);
 
@@ -253,7 +254,7 @@ void WSRequestHandler::HandleGetSceneList(WSRequestHandler *owner)
 	obs_source_release(current_scene);
 }
 
-void WSRequestHandler::HandleSetSourceRender(WSRequestHandler *owner)
+void WSRequestHandler::HandleSetSceneItemRender(WSRequestHandler *owner)
 {
 	const char *itemName = obs_data_get_string(owner->_requestData, "source");
 	bool isVisible = obs_data_get_bool(owner->_requestData, "render");
@@ -554,6 +555,45 @@ void WSRequestHandler::HandleSetSceneItemTransform(WSRequestHandler *owner)
 	{
 		obs_sceneitem_set_scale(scene_item, &scale);
 		obs_sceneitem_set_rot(scene_item, rotation);
+		
+		obs_sceneitem_release(scene_item);
+		owner->SendOKResponse();
+	}
+	else
+	{
+		owner->SendErrorResponse("specified scene item doesn't exist");
+	}
+
+	obs_source_release(scene);
+}
+
+void WSRequestHandler::HandleSetSceneItemCrop(WSRequestHandler *owner)
+{
+	const char *item_name = obs_data_get_string(owner->_requestData, "item");
+	if (!item_name)
+	{
+		owner->SendErrorResponse("invalid request parameters");
+		return;
+	}
+
+	const char *scene_name = obs_data_get_string(owner->_requestData, "scene-name");
+	obs_source_t* scene = Utils::GetSceneFromNameOrCurrent(scene_name);
+	if (scene == NULL) {
+		owner->SendErrorResponse("requested scene doesn't exist");
+		return;
+	}
+
+	obs_sceneitem_t *scene_item = Utils::GetSceneItemFromName(scene, item_name);
+
+	if (scene_item)
+	{
+		struct obs_sceneitem_crop crop = { 0 };
+		crop.top = obs_data_get_int(owner->_requestData, "top");
+		crop.bottom = obs_data_get_int(owner->_requestData, "bottom");;
+		crop.left = obs_data_get_int(owner->_requestData, "left");;
+		crop.right = obs_data_get_int(owner->_requestData, "right");
+
+		obs_sceneitem_set_crop(scene_item, &crop);
 
 		obs_sceneitem_release(scene_item);
 		owner->SendOKResponse();
@@ -572,7 +612,7 @@ void WSRequestHandler::HandleSetCurrentSceneCollection(WSRequestHandler *owner)
 
 	if (scene_collection)
 	{
-		// TODO : Check if profile exists
+		// TODO : Check if specified profile exists and if changing is allowed
 		obs_frontend_set_current_scene_collection(scene_collection);
 		owner->SendOKResponse();
 	}
