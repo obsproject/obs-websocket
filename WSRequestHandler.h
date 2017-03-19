@@ -61,11 +61,11 @@ class WSRequestHandler : public QObject
 
 		static void HandleGetStreamingStatus(WSRequestHandler *owner);
 		static void HandleStartStopStreaming(WSRequestHandler *owner);
-		// TODO : StartStreaming
-		// TODO : StopStreaming
 		static void HandleStartStopRecording(WSRequestHandler *owner);
-		// TODO : StartRecording
-		// TODO : StopRecording
+		static void HandleStartStreaming(WSRequestHandler *owner);
+		static void HandleStopStreaming(WSRequestHandler *owner);
+		static void HandleStartRecording(WSRequestHandler *owner);
+		static void HandleStopRecording(WSRequestHandler *owner);
 
 		static void HandleGetTransitionList(WSRequestHandler *owner);
 		static void HandleGetCurrentTransition(WSRequestHandler *owner);

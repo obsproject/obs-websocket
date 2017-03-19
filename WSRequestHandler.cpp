@@ -46,6 +46,10 @@ WSRequestHandler::WSRequestHandler(QWebSocket *client) :
 	messageMap["GetStreamingStatus"] = WSRequestHandler::HandleGetStreamingStatus;
 	messageMap["StartStopStreaming"] = WSRequestHandler::HandleStartStopStreaming;
 	messageMap["StartStopRecording"] = WSRequestHandler::HandleStartStopRecording;
+	messageMap["StartStreaming"] = WSRequestHandler::HandleStartStreaming;
+	messageMap["StopStreaming"] = WSRequestHandler::HandleStopStreaming;
+	messageMap["StartRecording"] = WSRequestHandler::HandleStartRecording;
+	messageMap["StopRecording"] = WSRequestHandler::HandleStopRecording;
 
 	messageMap["GetTransitionList"] = WSRequestHandler::HandleGetTransitionList;
 	messageMap["GetCurrentTransition"] = WSRequestHandler::HandleGetCurrentTransition;
@@ -321,6 +325,38 @@ void WSRequestHandler::HandleStartStopRecording(WSRequestHandler *owner)
 	{
 		obs_frontend_recording_start();
 	}
+
+	owner->SendOKResponse();
+}
+
+void WSRequestHandler::HandleStartStreaming(WSRequestHandler *owner)
+{
+	if (obs_frontend_streaming_active() == false)
+		obs_frontend_streaming_start();
+
+	owner->SendOKResponse();
+}
+
+void WSRequestHandler::HandleStopStreaming(WSRequestHandler *owner)
+{
+	if (obs_frontend_streaming_active() == true)
+		obs_frontend_streaming_stop();
+
+	owner->SendOKResponse();
+}
+
+void WSRequestHandler::HandleStartRecording(WSRequestHandler *owner)
+{
+	if (obs_frontend_recording_active() == false)
+		obs_frontend_recording_start();
+
+	owner->SendOKResponse();
+}
+
+void WSRequestHandler::HandleStopRecording(WSRequestHandler *owner)
+{
+	if (obs_frontend_recording_active() == true)
+		obs_frontend_recording_stop();
 
 	owner->SendOKResponse();
 }

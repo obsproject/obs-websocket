@@ -45,6 +45,10 @@ The protocol in general is based on the OBS Remote protocol created by Bill Hami
     - ["SetSourceRender"](#setsourcerender)
     - ["StartStopStreaming"](#startstopstreaming)
     - ["StartStopRecording"](#startstoprecording)
+    - ["StartStreaming"](#startstreaming)
+    - ["StopStreaming"](#stopstreaming)
+    - ["StartRecording"](#startrecording)
+    - ["StopRecording"](#stoprecording)
     - ["GetStreamingStatus"](#getstreamingstatus)
     - ["GetTransitionList"](#gettransitionlist)
     - ["GetCurrentTransition"](#getcurrenttransition)
@@ -56,6 +60,7 @@ The protocol in general is based on the OBS Remote protocol created by Bill Hami
     - ["ToggleMute"](#togglemute)
     - ["SetSceneItemPosition"](#setsceneitemposition)
     - ["SetSceneItemTransform"](#setsceneitemtransform)
+    - ["SetSceneItemCrop"](#setsceneitemcrop)
     - ["SetCurrentSceneCollection"](#setcurrentscenecollection)
     - ["GetCurrentSceneCollection"](#getcurrentscenecollection)
     - ["ListSceneCollections"](#listscenecollections)
@@ -339,6 +344,42 @@ __Response__ : always OK. No additional fields.
 
 #### "StartStopRecording"
 Toggle recording on or off.
+
+__Request fields__ : none  
+__Response__ : always OK. No additional fields.  
+*New in OBS Studio*
+
+---
+
+#### "StartStreaming"
+Start streaming.
+
+__Request fields__ : none  
+__Response__ : always OK. No additional fields.  
+*New in OBS Studio*
+
+---
+
+#### "StopStreaming"
+Stop streaming.
+
+__Request fields__ : none  
+__Response__ : always OK. No additional fields.  
+*New in OBS Studio*
+
+---
+
+#### "StartRecording"
+Start recording.
+
+__Request fields__ : none  
+__Response__ : always OK. No additional fields.  
+*New in OBS Studio*
+
+---
+
+#### "StopRecording"
+Stop recording.
 
 __Request fields__ : none  
 __Response__ : always OK. No additional fields.  
