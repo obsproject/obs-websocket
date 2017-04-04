@@ -19,7 +19,7 @@ cd obs-studio
 mkdir build && cd build
 cmake .. \
   -DCMAKE_PREFIX_PATH=$(brew --prefix qt5) \
-  -DWITH_QT5=1 \
+  -DWITH_QT=1 \
 && make -j4
 
 sudo make install
