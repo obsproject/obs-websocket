@@ -51,7 +51,7 @@ make -j4
 sudo make install
 
 # travis doesn't support xenial yet, so we need this hack to deal with ancient qt 5.2.1 from trusty
-sudo sed -i -e 's/5.3.0 ${_Qt5WebSockets_FIND_VERSION_EXACT}/5.2.1 5.3.0 ${_Qt5WebSockets_FIND_VERSION_EXACT}/' /usr/lib/x86_64-linux-gnu/cmake/Qt5WebSockets/Qt5WebSocketsConfig.cmake
+sudo sed -i -e 's/5.3.0 ${_Qt5WebSockets_FIND_VERSION_EXACT}/5.2.1 ${_Qt5WebSockets_FIND_VERSION_EXACT}/' /usr/lib/x86_64-linux-gnu/cmake/Qt5WebSockets/Qt5WebSocketsConfig.cmake
 
 # Build obs-studio
 cd ..
