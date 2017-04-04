@@ -17,6 +17,13 @@ cd ..
 git clone --recursive https://github.com/jp9000/obs-studio
 cd obs-studio
 mkdir build && cd build
-cmake .. -DCMAKE_PREFIX_PATH=$(brew --prefix qt5)/lib/cmake/ -DQt5WebSockets_DIR=$(brew --prefix qt5)/lib/cmake/Qt5WebSockets -DLIBOBS_INCLUDE_DIR=../obs-studio/libobs -DLIBOBS_LIB=../obs-studio/libobs && make -j4
+cmake .. -DCMAKE_PREFIX_PATH=$(brew --prefix qt5)/lib/cmake/ && make -j4
+
+echo "DEBUG QT5 FindQt5Core.cmake"
+find $(brew --prefix qt5) -name FindQt5Core.cmake
+echo "DEBUG QT5"
+find $(brew --prefix qt5)
+echo "END DEBUG"
+
 sudo make install
 
