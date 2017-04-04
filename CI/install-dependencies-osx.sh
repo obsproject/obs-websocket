@@ -18,7 +18,7 @@ git clone --recursive https://github.com/jp9000/obs-studio
 cd obs-studio
 mkdir build && cd build
 cmake .. \
-  -DCMAKE_PREFIX_PATH=$(brew --prefix qt5) \
+  -DCMAKE_PREFIX_PATH=$(brew --prefix qt5)/lib/cmake \
   -DWITH_QT=1 \
 && make -j4
 
