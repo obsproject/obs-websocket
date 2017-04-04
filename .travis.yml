@@ -3,9 +3,13 @@ language: cpp
 matrix:
   include:
     - os: linux
-      dist: xenial
+      dist: trusty
       sudo: required
       before_install: "./CI/install-dependencies-linux.sh"
       before_script: "./CI/before-script-linux.sh"
+
+    - os: osx
+      before_install: "./CI/install-dependencies-osx.sh"
+      before_script: "./CI/before-script-osx.sh"
 
 script: cd ./build && make -j4 && cd -
