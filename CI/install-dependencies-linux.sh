@@ -38,7 +38,7 @@ sudo apt-get install -y \
         qtbase5-dev
 
 # qtwebsockets deps
-sudo apt-get install -y qt5-qmake
+sudo apt-get install -y qt5-qmake qtcreator
 
 # obs-websocket deps
 cd ..
