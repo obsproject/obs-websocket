@@ -4,16 +4,9 @@ matrix:
   include:
     - os: linux
       dist: trusty
-      services:
-        - docker
-      before_install:
-        - docker run -d --name xenial ubuntu:xenial sleep 15m
-        - docker ps -a
-        - docker cp ./CI/install-dependencies-linux.sh xenial:/tmp/
-        - docker exec -it xenial /tmp/install-dependencies-linux.sh
-      before_script:
-        - docker cp ./CI/before-script-linux.sh xenial:/tmp/
-        - docker exec -it xenial /tmp/before-script-linux.sh
+      sudo: required
+      before_install: "./CI/install-dependencies-linux.sh"
+      before_script: "./CI/before-script-linux.sh"
 
     - os: osx
       before_install: "./CI/install-dependencies-osx.sh"
