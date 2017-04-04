@@ -41,13 +41,14 @@ sudo apt-get install -y \
 sudo apt-get install -y qt5-qmake qtbase5-private-dev qtcreator
 
 # obs-websocket deps
-cd ..
-git clone https://github.com/qt/qtwebsockets/ ./qtwebsockets
-cd qtwebsockets
-git checkout v5.3.0
-qmake
-make -j4 
-sudo make install
+#cd ..
+#git clone https://github.com/qt/qtwebsockets/ ./qtwebsockets
+#cd qtwebsockets
+#git checkout v5.3.0
+#qmake
+#make -j4 
+#sudo make install
+sudo apt-get install -y libqt5websockets5-dev
 
 # Build obs-studio
 cd ..
