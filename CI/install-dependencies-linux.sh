@@ -3,7 +3,6 @@ set -ex
 
 # OBS Studio deps
 sudo add-apt-repository ppa:kirillshkrogalev/ffmpeg-next -y
-sudo add-apt-repository ppa:beineri/opt-qt532-trusty -y
 sudo apt-get -qq update
 sudo apt-get install -y \
         build-essential \
