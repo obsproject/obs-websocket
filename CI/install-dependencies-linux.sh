@@ -2,10 +2,10 @@
 set -ex
 
 # OBS Studio deps
-sudo add-apt-repository "deb http://archive.ubuntu.com/ubuntu $(lsb_release -sc) universe" -y
-sudo add-apt-repository ppa:kirillshkrogalev/ffmpeg-next -y
-sudo apt-get -qq update
-sudo apt-get install -y \
+add-apt-repository "deb http://archive.ubuntu.com/ubuntu $(lsb_release -sc) universe" -y
+add-apt-repository ppa:kirillshkrogalev/ffmpeg-next -y
+apt-get -qq update
+apt-get install -y \
         build-essential \
         checkinstall \
         cmake \
@@ -39,7 +39,7 @@ sudo apt-get install -y \
         qtbase5-dev
 
 # qtwebsockets deps
-sudo apt-get install -y qt5-qmake qtbase5-private-dev qtcreator
+apt-get install -y qt5-qmake qtbase5-private-dev qtcreator
 
 # obs-websocket deps
 #cd ..
@@ -48,8 +48,8 @@ sudo apt-get install -y qt5-qmake qtbase5-private-dev qtcreator
 #git checkout v5.3.0
 #qmake
 #make -j4 
-#sudo make install
-sudo apt-get install -y libqt5websockets5-dev
+#make install
+apt-get install -y libqt5websockets5-dev
 
 # Build obs-studio
 cd ..
@@ -58,6 +58,6 @@ cd obs-studio
 mkdir build && cd build
 cmake -DUNIX_STRUCTURE=1 -DCMAKE_INSTALL_PREFIX=/usr ..
 make -j4
-sudo make install
+make install
 
-sudo ldconfig
+ldconfig
