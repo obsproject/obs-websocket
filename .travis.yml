@@ -7,13 +7,13 @@ matrix:
       services:
         - docker
       before_install:
-        - docker run -d ubuntu:xenial --name xenial sleep 15m
+        - docker run -d --name xenial ubuntu:xenial sleep 15m
         - docker ps -a
         - docker cp ./CI/install-dependencies-linux.sh xenial:/tmp/
-        - docker exec -it /tmp/install-dependencies-linux.sh
+        - docker exec -it xenial /tmp/install-dependencies-linux.sh
       before_script:
         - docker cp ./CI/before-script-linux.sh xenial:/tmp/
-        - docker exec -it /tmp/before-script-linux.sh
+        - docker exec -it xenial /tmp/before-script-linux.sh
 
     - os: osx
       before_install: "./CI/install-dependencies-osx.sh"
