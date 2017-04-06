@@ -20,6 +20,7 @@ matrix:
         - docker exec -it xenial /root/obs-websocket/CI/before-script-xenial.sh
 
     - os: osx
+      osx_image: xcode8.3
       before_install: "./CI/install-dependencies-osx.sh"
       before_script: "./CI/before-script-osx.sh"
 
