@@ -5,8 +5,18 @@ matrix:
     - os: linux
       dist: trusty
       sudo: required
-      before_install: "./CI/install-dependencies-linux.sh"
-      before_script: "./CI/before-script-linux.sh"
+      #before_install: "./CI/install-dependencies-linux.sh"
+      #before_script: "./CI/before-script-linux.sh"
+      services:
+        - docker
+      before_install:
+        - docker run -d --name xenial nimmis/ubuntu:16.04
+        - docker ps -a
+        - docker cp ./CI/install-dependencies-linux.sh xenial:/tmp/
+        - docker exec -it xenial /tmp/install-dependencies-linux.sh
+      before_script:
+        - docker cp ./CI/before-script-linux.sh xenial:/tmp/
+        - docker exec -it xenial /tmp/before-script-linux.sh
 
     - os: osx
       before_install: "./CI/install-dependencies-osx.sh"
