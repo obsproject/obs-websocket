@@ -15,9 +15,9 @@ matrix:
         - docker
       before_install:
         - docker run -d --name xenial -v $(dirname $(pwd)):/root -w /root nimmis/ubuntu:16.04
-        - docker exec -it xenial /root/CI/install-dependencies-xenial.sh
+        - docker exec -it xenial /root/obs-websocket/CI/install-dependencies-xenial.sh
       before_script:
-        - docker exec -it xenial /root/CI/before-script-xenial.sh
+        - docker exec -it xenial /root/obs-websocket/CI/before-script-xenial.sh
 
     - os: osx
       before_install: "./CI/install-dependencies-osx.sh"
