@@ -4,6 +4,11 @@ set -ex
 # OBS Studio deps
 apt-get -qq update
 apt-get install -y \
+        libc-dev-bin libc6-dev \
+        git \
+        build-essential
+
+apt-get install -y \
         build-essential \
         checkinstall \
         cmake \
