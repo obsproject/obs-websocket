@@ -10,4 +10,4 @@ cmake .. \
   -DQt5WebSockets_DIR=$(brew --prefix qt5)/lib/cmake/Qt5WebSockets \
   -DLIBOBS_INCLUDE_DIR=../../obs-studio/libobs \
   -DCMAKE_INSTALL_PREFIX=/usr \
-&& make -j4 -v
+&& make -j4

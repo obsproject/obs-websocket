@@ -12,4 +12,4 @@ matrix:
       before_install: "./CI/install-dependencies-osx.sh"
       before_script: "./CI/before-script-osx.sh"
 
-script: cd ./build && make -j4 && cd -
+script: cd ./build && make -j4 -v && cd -
