@@ -2,8 +2,7 @@
 set -ex
 
 # OBS Studio deps
-add-apt-repository "deb http://archive.ubuntu.com/ubuntu $(lsb_release -sc) universe" -y
-add-apt-repository ppa:kirillshkrogalev/ffmpeg-next -y
+#add-apt-repository ppa:kirillshkrogalev/ffmpeg-next -y
 apt-get -qq update
 apt-get install -y \
         build-essential \
