@@ -14,14 +14,10 @@ matrix:
       services:
         - docker
       before_install:
-        - docker run -d --name xenial nimmis/ubuntu:16.04
-        - docker ps -a
-        - docker cp obs-websocket xenial:/root/
-        - docker cp ./CI/install-dependencies-xenial.sh xenial:/root/
-        - docker exec -it xenial /root/install-dependencies-xenial.sh
+        - docker run -d --name xenial -v $(dirname $(pwd)):/root -w /root nimmis/ubuntu:16.04
+        - docker exec -it xenial /root/CI/install-dependencies-xenial.sh
       before_script:
-        - docker cp ./CI/before-script-xenial.sh xenial:/root/
-        - docker exec -it xenial /root/before-script-xenial.sh
+        - docker exec -it xenial /root/CI/before-script-xenial.sh
 
     - os: osx
       before_install: "./CI/install-dependencies-osx.sh"
