@@ -9,5 +9,6 @@ cmake .. \
   -DQt5Widgets_DIR=$(brew --prefix qt5)/lib/cmake/Qt5Widgets \
   -DQt5WebSockets_DIR=$(brew --prefix qt5)/lib/cmake/Qt5WebSockets \
   -DLIBOBS_INCLUDE_DIR=../../obs-studio/libobs \
+  -DLIBOBS_LIB=../../obs-studio/build/libobs/libobs.dylib \
   -DCMAKE_INSTALL_PREFIX=/usr \
-&& make -j4 V=1
+&& make -j4
