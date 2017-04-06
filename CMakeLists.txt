@@ -126,9 +126,3 @@ endif()
 # --- End of section ---
 
 # TODO : OS X build settings and tasks
-if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX OR CMAKE_COMPILER_IS_CLANG)
-	option(USE_LIBC++ "Use libc++ instead of libstdc++" ${APPLE})
-	if(USE_LIBC++)
-		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
-	endif()
-endif()
