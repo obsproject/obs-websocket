@@ -40,7 +40,7 @@ apt-get install -y \
 apt-get install -y qt5-qmake qtbase5-private-dev qtcreator
 
 # obs-websocket deps
-apt-get install libqt5websockets5-dev
+apt-get install -y libqt5websockets5-dev
 
 # Build obs-studio
 cd /root
