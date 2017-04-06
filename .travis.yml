@@ -23,5 +23,5 @@ matrix:
       before_install: "./CI/install-dependencies-osx.sh"
       before_script: "./CI/before-script-osx.sh"
 
-# this is already handled in before_script
-#script: cd ./build && make -j4 && cd -
+# build is already handled in before_script
+script: true
