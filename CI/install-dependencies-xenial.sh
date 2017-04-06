@@ -2,18 +2,17 @@
 set -ex
 
 # OBS Studio deps
-#add-apt-repository ppa:kirillshkrogalev/ffmpeg-next -y
 apt-get -qq update
 apt-get install -y \
         build-essential \
         checkinstall \
         cmake \
         libasound2-dev \
-        libavcodec-ffmpeg-dev \
-        libavdevice-ffmpeg-dev \
-        libavfilter-ffmpeg-dev \
-        libavformat-ffmpeg-dev \
-        libavutil-ffmpeg-dev \
+        libavcodec-dev \
+        libavdevice-dev \
+        libavfilter-dev \
+        libavformat-dev \
+        libavutil-dev \
         libcurl4-openssl-dev \
         libfontconfig-dev \
         libfreetype6-dev \
@@ -23,8 +22,8 @@ apt-get install -y \
         libpulse-dev \
         libqt5x11extras5-dev \
         libspeexdsp-dev \
-        libswresample-ffmpeg-dev \
-        libswscale-ffmpeg-dev \
+        libswresample-dev \
+        libswscale-dev \
         libudev-dev \
         libv4l-dev \
         libvlc-dev \
