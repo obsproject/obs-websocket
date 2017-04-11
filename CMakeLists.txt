@@ -128,4 +128,4 @@ endif()
 # TODO : OS X build settings and tasks
 if (APPLE)
     set_xcode_property(obs-browser CLANG_CXX_LIBRARY "libc++")
-endif(APPLEE)
+endif(APPLE)
