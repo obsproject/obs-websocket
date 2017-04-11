@@ -126,6 +126,3 @@ endif()
 # --- End of section ---
 
 # TODO : OS X build settings and tasks
-if (APPLE)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libstdc++")
-endif(APPLE)
