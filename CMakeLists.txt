@@ -127,5 +127,5 @@ endif()
 
 # TODO : OS X build settings and tasks
 if (APPLE)
-    set_xcode_property(obs-browser CLANG_CXX_LIBRARY "libc++")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
 endif(APPLE)
