@@ -41,9 +41,6 @@ apt-get install -y \
         pkg-config \
         qtbase5-dev
 
-# qtwebsockets deps
-apt-get install -y qt5-qmake qtbase5-private-dev qtcreator
-
 # obs-websocket deps
 apt-get install -y libqt5websockets5-dev
 
