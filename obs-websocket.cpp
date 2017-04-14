@@ -31,7 +31,6 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 OBS_DECLARE_MODULE()
 OBS_MODULE_USE_DEFAULT_LOCALE("obs-websocket", "en-US")
 
-WSEvents *eventHandler;
 SettingsDialog *settings_dialog;
 
 bool obs_module_load(void) 
@@ -42,10 +41,11 @@ bool obs_module_load(void)
 	Config* config = Config::Current();
 	config->Load();
 
+	WSServer::Instance = new WSServer();
+	WSEvents::Instance = new WSEvents(WSServer::Instance);
+
 	if (config->ServerEnabled)
 		WSServer::Instance->Start(config->ServerPort);
-
-	eventHandler = new WSEvents(WSServer::Instance);
 
 	// UI setup
 	QAction *menu_action = (QAction*)obs_frontend_add_tools_menu_qaction(obs_module_text("OBSWebsocket.Menu.SettingsItem"));

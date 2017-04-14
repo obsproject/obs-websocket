@@ -27,7 +27,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 QT_USE_NAMESPACE
 
-WSServer* WSServer::Instance = new WSServer();
+WSServer* WSServer::Instance = nullptr;
 
 WSServer::WSServer(QObject *parent) :
 	QObject(parent),

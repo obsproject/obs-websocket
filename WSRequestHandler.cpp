@@ -18,6 +18,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 */
 
 #include "WSRequestHandler.h"
+#include "WSEvents.h"
 #include "obs-websocket.h"
 #include "Config.h"
 #include "Utils.h"
@@ -297,6 +298,21 @@ void WSRequestHandler::HandleGetStreamingStatus(WSRequestHandler *owner)
 	obs_data_set_bool(data, "streaming", obs_frontend_streaming_active());
 	obs_data_set_bool(data, "recording", obs_frontend_recording_active());
 	obs_data_set_bool(data, "preview-only", false);
+
+	const char* tc = nullptr;
+	if (obs_frontend_streaming_active())
+	{
+		tc = WSEvents::Instance->GetStreamingTimecode();
+		obs_data_set_string(data, "stream-timecode", tc);
+		bfree((void*)tc);
+	}
+
+	if (obs_frontend_recording_active())
+	{
+		tc = WSEvents::Instance->GetRecordingTimecode();
+		obs_data_set_string(data, "rec-timecode", tc);
+		bfree((void*)tc);
+	}
 
 	owner->SendOKResponse(data);
 	obs_data_release(data);

@@ -54,6 +54,8 @@ const char* ns_to_timestamp(uint64_t ns)
 	return ts;
 }
 
+WSEvents* WSEvents::Instance = nullptr;
+
 WSEvents::WSEvents(WSServer *srv)
 {
 	_srv = srv;
@@ -83,7 +85,8 @@ WSEvents::~WSEvents()
 	obs_frontend_remove_event_callback(WSEvents::FrontendEventHandler, this);
 }
 
-void WSEvents::deferredInitOperations() {
+void WSEvents::deferredInitOperations()
+{
 	obs_source_t* transition = obs_frontend_get_current_transition();
 	connectTransitionSignals(transition);
 	obs_source_release(transition);
@@ -239,6 +242,32 @@ void WSEvents::connectSceneSignals(obs_source_t* scene)
 	signal_handler_connect(scene_handler, "item_add", OnSceneItemAdd, this);
 	signal_handler_connect(scene_handler, "item_remove", OnSceneItemDelete, this);
 	signal_handler_connect(scene_handler, "item_visible", OnSceneItemVisibilityChanged, this);
+}
+
+uint64_t WSEvents::GetStreamingTime()
+{
+	if (_streaming_active)
+		return (os_gettime_ns() - _stream_starttime);
+	else
+		return 0;
+}
+
+const char* WSEvents::GetStreamingTimecode()
+{
+	return ns_to_timestamp(GetStreamingTime());
+}
+
+uint64_t WSEvents::GetRecordingTime()
+{
+	if (_recording_active)
+		return (os_gettime_ns() - _rec_starttime);
+	else
+		return 0;
+}
+
+const char* WSEvents::GetRecordingTimecode()
+{
+	return ns_to_timestamp(GetRecordingTime());
 }
 
 void WSEvents::OnSceneChange()

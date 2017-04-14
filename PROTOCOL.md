@@ -395,8 +395,9 @@ __Request fields__ : none
 __Response__ : always OK, with these additional fields :
 - **"streaming"** (bool) : streaming status (active or not)
 - **"recording"** (bool) : recording status (active or not)
+- **stream-timecode** (string, optional) : time elapsed between now and stream start (only present if OBS Studio is streaming)
+- **rec-timecode** (string, optional) : time elapsed between now and recording start (only present if OBS Studio is recording)
 - **"preview-only"** (bool) : always false. Retrocompat with OBSRemote.
-
 ---
 
 #### "GetTransitionList"

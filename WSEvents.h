@@ -33,6 +33,12 @@ class WSEvents : public QObject
 		static void FrontendEventHandler(enum obs_frontend_event event, void *private_data);
 		void connectTransitionSignals(obs_source_t* transition);
 		void connectSceneSignals(obs_source_t* scene);
+		static WSEvents* Instance;
+
+		uint64_t GetStreamingTime();
+		const char* GetStreamingTimecode();
+		uint64_t GetRecordingTime();
+		const char* GetRecordingTimecode();
 
 	private Q_SLOTS:
 		void StreamStatus();
