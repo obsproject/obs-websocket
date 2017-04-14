@@ -130,5 +130,5 @@ if(APPLE)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++ -fvisibility=default -v")
 
     set_target_properties(obs-websocket PROPERTIES PREFIX "")
-    target_link_libraries(obs-websocket obs-frontend-api)
+    target_link_libraries(obs-websocket libobs-frontend-api)
 endif()
