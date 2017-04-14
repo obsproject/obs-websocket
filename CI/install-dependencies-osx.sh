@@ -10,8 +10,6 @@ brew install libav
 # qtwebsockets deps
 brew install qt5
 
-# obs-websocket deps
-
 # Build obs-studio
 cd ..
 git clone --recursive https://github.com/jp9000/obs-studio

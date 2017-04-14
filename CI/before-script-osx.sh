@@ -3,8 +3,6 @@ set -ex
 
 mkdir build && cd build
 
-ls -lh ../../obs-studio/build/UI/obs-frontend-api
-
 cmake .. \
   -DCMAKE_PREFIX_PATH=$(brew --prefix qt5)/lib/cmake \
   -DQt5Core_DIR=$(brew --prefix qt5)/lib/cmake/Qt5Core \
