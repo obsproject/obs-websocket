@@ -132,5 +132,5 @@ if(APPLE)
     set_target_properties(obs-websocket PROPERTIES PREFIX "")
 
     link_directories(obs-websocket "${OBS_FRONTEND_LIB_DIR}")
-    target_link_libraries(obs-websocket libobs-frontend-api)
+    target_link_libraries(obs-websocket obs-frontend-api)
 endif()
