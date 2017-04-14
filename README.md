@@ -35,6 +35,7 @@ I'd like to know what you're building with or for obs-websocket. If you do somet
 - [Tobias Frahmer](https://github.com/Frahmer) : German translation
 - [G-monitor](https://github.com/G-monitor) : Simplified Chinese and Traditional Chinese translations
 - [Larissa Gabilan](https://github.com/laris151) : Portuguese translation
+- [Andy Asquelt](https://github.com/asquelt) : Polish translation
 
 ## Compiling obs-websocket
 See the [build instructions](BUILDING.md).
