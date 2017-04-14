@@ -398,6 +398,7 @@ __Response__ : always OK, with these additional fields :
 - **stream-timecode** (string, optional) : time elapsed between now and stream start (only present if OBS Studio is streaming)
 - **rec-timecode** (string, optional) : time elapsed between now and recording start (only present if OBS Studio is recording)
 - **"preview-only"** (bool) : always false. Retrocompat with OBSRemote.
+
 ---
 
 #### "GetTransitionList"
