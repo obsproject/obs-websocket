@@ -11,8 +11,7 @@ cmake .. \
   -DQt5Widgets_DIR=$(brew --prefix qt5)/lib/cmake/Qt5Widgets \
   -DQt5WebSockets_DIR=$(brew --prefix qt5)/lib/cmake/Qt5WebSockets \
   -DLIBOBS_INCLUDE_DIR=../../obs-studio/libobs \
-  -DLIBOBS_LIB=../../obs-studio/build/libobs/libobs.dylib \
-  -DOBS_FRONTEND_LIB=../../obs-studio/build/UI/obs-frontend-api/libobs-frontend-api.dylib \
+  -DOBS_FRONTEND_LIB_DIR=../../obs-studio/build/UI/obs-frontend-api \
   -DCMAKE_INSTALL_PREFIX=/usr \
 && make -j4
 
