@@ -69,16 +69,7 @@ WSEvents::WSEvents(WSServer *srv)
 	transition_handler = nullptr;
 	scene_handler = nullptr;
 
-	WSEvents* instance = this;
-	QTimer::singleShot(1000, [instance]() {
-		obs_source_t* transition = obs_frontend_get_current_transition();
-		instance->connectTransitionSignals(transition);
-		obs_source_release(transition);
-
-		obs_source_t* scene = obs_frontend_get_current_scene();
-		instance->connectSceneSignals(scene);
-		obs_source_release(scene);
-	});
+	QTimer::singleShot(1000, this, SLOT(deferredInitOperations()));
 
 	_streaming_active = false;
 	_recording_active = false;
@@ -90,6 +81,16 @@ WSEvents::WSEvents(WSServer *srv)
 WSEvents::~WSEvents()
 {
 	obs_frontend_remove_event_callback(WSEvents::FrontendEventHandler, this);
+}
+
+void WSEvents::deferredInitOperations() {
+	obs_source_t* transition = obs_frontend_get_current_transition();
+	connectTransitionSignals(transition);
+	obs_source_release(transition);
+
+	obs_source_t* scene = obs_frontend_get_current_scene();
+	connectSceneSignals(scene);
+	obs_source_release(scene);
 }
 
 void WSEvents::FrontendEventHandler(enum obs_frontend_event event, void *private_data)

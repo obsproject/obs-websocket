@@ -37,6 +37,7 @@ class WSEvents : public QObject
 	private Q_SLOTS:
 		void StreamStatus();
 		void TransitionDurationChanged(int ms);
+		void deferredInitOperations();
 
 	private:
 		WSServer *_srv;
