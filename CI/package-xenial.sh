@@ -15,7 +15,7 @@ cd /root/obs-websocket/build
 
 rm -rf /root/obs-websocket/package
 
-checkinstall -y --type=debian --fstrans=no --nodoc \
+PAGER=cat checkinstall -y --type=debian --fstrans=no --nodoc \
 	--backup=no --deldoc=yes --install=no \
 	--pkgname=obs-websocket --pkgversion="$PKG_VERSION" \
 	--pkglicense="GPLv2.0" --maintainer="contact@slepin.fr" \
