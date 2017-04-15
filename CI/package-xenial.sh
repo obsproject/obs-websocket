@@ -19,6 +19,5 @@ checkinstall -y --type=debian --fstrans=no --nodoc \
 	--pkgname=obs-websocket --pkgversion="$PKG_VERSION" \
 	--pkglicense="GPLv2.0" --maintainer="contact@slepin.fr" \
 	--requires="obs-studio,libqt5websockets5" --pkggroup="video" \
-	--pakdir="/root/package"
 
 ls -lh /root/package
