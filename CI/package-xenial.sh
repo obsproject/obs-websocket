@@ -20,4 +20,4 @@ checkinstall -y --type=debian --fstrans=no --nodoc \
 	--requires="obs-studio,libqt5websockets5" --pkggroup="video" \
 	--pakdir="$(dirname $(pwd))/package"
 
-ls -lh /root/package
+ls -lh ./package
