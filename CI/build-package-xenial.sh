@@ -7,7 +7,7 @@ mkdir /root/package
 cd /root/obs-websocket
 
 export GIT_HASH=$(git rev-parse --short HEAD)
-export PKG_VERSION="$GIT_HASH-$TRAVIS_BRANCH"
+export PKG_VERSION="$GIT_HASH-git"
 
 if [ -n "${TRAVIS_TAG}" ]; then
 	export PKG_VERSION="$TRAVIS_TAG"
