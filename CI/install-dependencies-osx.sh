@@ -1,9 +1,8 @@
 #!/bin/sh
 set -ex
 
-brew update
-
 # OBS Studio deps
+brew update
 brew install ffmpeg
 brew install libav
 
@@ -20,3 +19,8 @@ cmake .. \
 && make -j4
 
 sudo make install
+
+# Packages app
+cd ..
+curl -L -O https://www.slepin.fr/obs-websocket/ci/Packages.pkg -f --retry 5 -C -
+sudo installer -pkg ./Packages.pkg -target /
