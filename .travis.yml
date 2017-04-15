@@ -3,7 +3,7 @@ language: cpp
 addons:
   artifacts:
     paths:
-      - $(dirname $(pwd))/obs-websocket/build/*.deb
+      - $(dirname $(pwd))/obs-websocket/build/package/*
 
 matrix:
   include:
