@@ -12,8 +12,8 @@ matrix:
         - docker exec -it xenial /root/obs-websocket/CI/install-dependencies-xenial.sh
       before_script:
         - docker exec -it xenial /root/obs-websocket/CI/before-script-xenial.sh
-      before_deploy:
-        - docker exec -it xenial /root/obs-websocket/CI/before-deploy-xenial.sh
+      after_success:
+        - docker exec -it xenial /root/obs-websocket/CI/build-package-xenial.sh
 
     - os: osx
       osx_image: xcode8.3
