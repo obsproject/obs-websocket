@@ -13,7 +13,7 @@ fi
 
 cd /root/obs-websocket/build
 
-rm -rf /root/obs-websocket/package
+rm -f /package/*
 
 PAGER=cat checkinstall -y --type=debian --fstrans=no --nodoc \
 	--backup=no --deldoc=yes --install=no \
@@ -21,8 +21,8 @@ PAGER=cat checkinstall -y --type=debian --fstrans=no --nodoc \
 	--pkglicense="GPLv2.0" --maintainer="contact@slepin.fr" \
 	--requires="libqt5websockets5" --pkggroup="video" \
 	--pkgsource="https://github.com/Palakis/obs-websocket" \
-	--pakdir="$(dirname $(pwd))/package"
+	--pakdir="/package"
 
-ls -lh /root/obs-websocket/package
+chmod ao+r /package/*
 
-chmod ao+r /root/obs-websocket/package/*
+ls -lh /package
