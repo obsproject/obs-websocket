@@ -118,10 +118,13 @@ if(UNIX AND NOT APPLE)
 	target_link_libraries(obs-websocket
 		obs-frontend-api)
 
+	file(GLOB LOCALE_FILES data/locale/*.ini)
+
 	install(TARGETS obs-websocket
 		LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/obs-plugins)
-	install(FILES data/locale/en-US.ini data/locale/fr-FR.ini data/locale/de-DE.ini
+	install(FILES ${LOCALE_FILES}
 		DESTINATION "${CMAKE_INSTALL_PREFIX}/share/obs/obs-plugins/obs-websocket/locale")
+	}
 endif()
 # --- End of section ---
 
