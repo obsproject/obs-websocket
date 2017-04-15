@@ -15,15 +15,12 @@ matrix:
       before_install:
         - docker run -d --name xenial -v $(dirname $(pwd)):/root -w /root nimmis/ubuntu:16.04
         - docker exec -it xenial /root/obs-websocket/CI/install-dependencies-xenial.sh
-      before_script:
-        - docker exec -it xenial /root/obs-websocket/CI/before-script-xenial.sh
+      script:
+        - docker exec -it xenial /root/obs-websocket/CI/build-xenial.sh
       after_success:
-        - docker exec -it xenial /root/obs-websocket/CI/build-package-xenial.sh
+        - docker exec -it xenial /root/obs-websocket/CI/package-xenial.sh
 
     - os: osx
       osx_image: xcode8.3
       before_install: "./CI/install-dependencies-osx.sh"
-      before_script: "./CI/before-script-osx.sh"
-
-# build is already handled in before_script
-script: true
+      script: "./CI/build-osx.sh"
