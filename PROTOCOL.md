@@ -450,7 +450,7 @@ __Response__ : always OK.
 
 ---
 
-#### "SetTransitionDuration"
+#### "GetTransitionDuration"
 Set the duration of the currently selected transition.
 
 __Request fields__ : none  
