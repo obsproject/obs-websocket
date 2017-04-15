@@ -21,3 +21,5 @@ checkinstall -y --type=debian --fstrans=no --nodoc \
 	--pakdir="$(dirname $(pwd))/package"
 
 ls -lh /root/obs-websocket/package
+
+chmod ao+r /root/obs-websocket/package/*
