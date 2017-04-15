@@ -3,7 +3,7 @@ language: cpp
 addons:
   artifacts:
     paths:
-      - $(ls "$(dirname $(pwd))/obs-websocket/build/package")
+      - $(ls "$(dirname $(pwd))/obs-websocket/package")
 
 matrix:
   include:

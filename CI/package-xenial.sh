@@ -12,7 +12,7 @@ if [ -n "${TRAVIS_TAG}" ]; then
 fi
 
 cd /root/obs-websocket/build
-mkdir package
+
 checkinstall -y --type=debian --fstrans=no --nodoc \
 	--backup=no --deldoc=yes --install=no \
 	--pkgname=obs-websocket --pkgversion="$PKG_VERSION" \
