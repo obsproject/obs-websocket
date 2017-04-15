@@ -62,7 +62,7 @@ if(WIN32)
 		set(OBS_FRONTEND_LIB "OBS_FRONTEND_LIB-NOTFOUND" CACHE FILEPATH "OBS frontend library")
 		message(FATAL_ERROR "Could not find OBS Frontend API\'s library !")
 	endif()
-	
+
 	target_link_libraries(obs-websocket
 		"${OBS_FRONTEND_LIB}")
 
@@ -118,13 +118,12 @@ if(UNIX AND NOT APPLE)
 	target_link_libraries(obs-websocket
 		obs-frontend-api)
 
-	file(GLOB LOCALE_FILES data/locale/*.ini)
+	file(GLOB locale_files data/locale/*.ini)
 
 	install(TARGETS obs-websocket
-		LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/obs-plugins)
-	install(FILES ${LOCALE_FILES}
+		LIBRARY DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/obs-plugins")
+	install(FILES ${locale_files}
 		DESTINATION "${CMAKE_INSTALL_PREFIX}/share/obs/obs-plugins/obs-websocket/locale")
-	}
 endif()
 # --- End of section ---
 
