@@ -21,12 +21,12 @@ matrix:
     - docker exec -it xenial /root/obs-websocket/CI/build-xenial.sh
     after_success:
     - docker exec -it xenial /root/obs-websocket/CI/package-xenial.sh
-    - ls -lh /home/travis/package
 
   - os: osx
     osx_image: xcode8.3
     before_install: "./CI/install-dependencies-osx.sh"
     script: "./CI/build-osx.sh"
+    after_success: "./CI/package-osx.sh"
 
 deploy:
   provider: s3
