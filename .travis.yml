@@ -29,7 +29,7 @@ matrix:
     after_success: "./CI/package-osx.sh"
 
 deploy:
-  provider: s3
+- provider: s3
   region: eu-central-1
   bucket: obs-websocket-linux-builds
   access_key_id: "$AWS_ID"
@@ -40,4 +40,16 @@ deploy:
   on:
     repo: Palakis/obs-websocket
     condition: "$TRAVIS_OS_NAME = linux"
+    all_branches: true
+- provider: s3
+  region: eu-central-1
+  bucket: obs-websocket-osx-builds
+  access_key_id: "$AWS_ID"
+  secret_access_key: "$AWS_SECRET"
+  local_dir: release
+  skip_cleanup: true
+  acl: public_read
+  on:
+    repo: Palakis/obs-websocket
+    condition: "$TRAVIS_OS_NAME = osx"
     all_branches: true
