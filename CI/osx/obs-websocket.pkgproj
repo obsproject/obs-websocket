@@ -39,9 +39,9 @@
 																				<key>GID</key>
 																				<integer>80</integer>
 																				<key>PATH</key>
-																				<string>/Users/admin/obs-websocket/data/locale</string>
+																				<string>../../data/locale</string>
 																				<key>PATH_TYPE</key>
-																				<integer>0</integer>
+																				<integer>1</integer>
 																				<key>PERMISSIONS</key>
 																				<integer>493</integer>
 																				<key>TYPE</key>
@@ -171,9 +171,9 @@
 																		<key>GID</key>
 																		<integer>80</integer>
 																		<key>PATH</key>
-																		<string>/Users/admin/obs-websocket/build/obs-websocket.so</string>
+																		<string>../../build/obs-websocket.so</string>
 																		<key>PATH_TYPE</key>
-																		<integer>0</integer>
+																		<integer>1</integer>
 																		<key>PERMISSIONS</key>
 																		<integer>493</integer>
 																		<key>TYPE</key>
