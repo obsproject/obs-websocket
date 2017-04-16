@@ -34,9 +34,9 @@ deploy:
   bucket: obs-websocket-linux-builds
   access_key_id: "$AWS_ID"
   secret_access_key: "$AWS_SECRET"
-  skip_cleanup: true
   file_glob: true
-  file: "/home/travis/package/*.deb"
+  file: /home/travis/package/*
+  skip_cleanup: true
   acl: public_read
   on:
     repo: Palakis/obs-websocket
