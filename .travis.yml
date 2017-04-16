@@ -13,7 +13,7 @@ matrix:
     services:
     - docker
     before_install:
-    - docker run -d --name xenial -v $(dirname $(pwd)):/root -v /home/travis/package:/package
+    - docker run -d --name xenial -v $(dirname $(pwd)):/root -v /home/travis/package:/package -e TRAVIS_BRANCH="$TRAVIS_BRANCH"
       -w /root nimmis/ubuntu:16.04
     - docker exec -it xenial /root/obs-websocket/CI/install-dependencies-xenial.sh
     script:
@@ -25,7 +25,7 @@ matrix:
     osx_image: xcode8.3
     before_install: "./CI/install-dependencies-osx.sh"
     script: "./CI/build-osx.sh"
-    
+
 deploy:
   provider: s3
   region: eu-central-1
@@ -35,8 +35,7 @@ deploy:
   skip_cleanup: true
   file_glob: true
   file: "/home/travis/package/*.deb"
+  acl: public_read
   on:
     repo: Palakis/obs-websocket
     condition: "$TRAVIS_OS_NAME = linux"
-    branch: true
-    tags: true
