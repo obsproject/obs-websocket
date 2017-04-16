@@ -3,7 +3,13 @@
 set -e
 
 export GIT_HASH=$(git rev-parse --short HEAD)
-export FILENAME="obs-websocket-$GIT_HASH-$TRAVIS_BRANCH-osx.pkg"
+
+export VERSION="$GIT_HASH-$TRAVIS_BRANCH"
+if [ -n "${TRAVIS_TAG}" ]; then
+	export VERSION="$TRAVIS_TAG"
+fi
+
+export FILENAME="obs-websocket-$VERSION-osx.pkg"
 
 mkdir release
 
