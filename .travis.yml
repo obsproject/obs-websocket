@@ -36,8 +36,8 @@ deploy:
   secret_access_key: "$AWS_SECRET"
   local_dir: /home/travis/package
   skip_cleanup: true
-  all_branches: true
   acl: public_read
   on:
     repo: Palakis/obs-websocket
     condition: "$TRAVIS_OS_NAME = linux"
+    all_branches: true
