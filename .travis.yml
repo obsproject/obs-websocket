@@ -1,27 +1,42 @@
 language: cpp
 
-addons:
-  artifacts:
-    paths:
-      - $(find /home/travis/package)
+env:
+  global:
+  - secure: h7qbZQY6qjlbC/eiuWdBbKBtgHjhu/orIoi+3z0my4NXYQLOpdqT0C6whuWdOzr+nbWzo3iny5wkG+GcLDXyTspv/NP+0fQVirvUTV5sZjxPb0ykmWHoE88+SraypUk/3QLAfql8MO+nfGUTWcM8Ium/hUsF2cDJuhgpWP0pjvAe0Kbufg9eIA5RIwjNyHvloYVmFVpm9BqFpq1SonRpFx01WljmNZN2apjyTEpTd5wCagkAfz3aE16bmWorVUvfpBErHNHHvcqC3GdSRldtXBzBX4ImLpZfhHB1pW/VRr0SN1t0eO+dBRir3lvpXWPWaaDNASSjtEgfzR2/b/4onC1CeKE0nTVLD7/4HsZnbuvTCFoAn1y+02WeaJQ8LiXbf7wBAC/lfARPLTY3VDmqmq76e3W93qjhjm8sxj6xncMAzMlvB1H9PKOovYO3HTARLdztlX2mbJCNhfd8mt8sSqkV7Cwj6Pdghpi/QI1TNl4BdJ0U0hLGnJaOLnQd8AnU+34gLv89iQslpBNDOiTJmkXiTb1NkuL3H8qDVseeMZN2mxlZRq7Ree5LJOMf/RLSO7zMN5lZaI6gafmrAYwSExQMqCIfyF7k1MrtmzN42nE4JlLbxEj7mozwqpxqMx2XsETbxhRz1XrQ2/F5YPRVZ5D7o/e/wnIPUfp07yisitU=
+  - secure: k5I2bbr+u1dKk3B+GPyyp2tp6n2ZNngCEKVZxwXAifRbdqhilmpwNJKH3JQxHGs+MvDfAd8VXc+VSjzBfWYrbrvs2EeZS10X2yDQuNU9Fhua0OCD6aSdZ4O4keUx8tEqT4RnzDghc7HRhuJtA5reFXgu/d3IAWZB2wKI3Bg3iT7l4Nll15+1ZwqbdTB49VBZe5rKzh3c603m/aiAQOmBoYx7I1iDKCY3CPPAuUG0WMYMZBnGOo9/6rJbWl0q1XwlEUvv8r818Ft/uP2RH7cZSit6eRKaVFFKfLmnt7cZvwpuvc+RU5ZCnBooz+JjCLA+kWe0euaMe6HxiDMr9b2BFynS3a7wr2qy1jREJ//SwDviBJjPFhN0XCLkpj/CrrFcW1JpAwGjlGSlYBLjFjuepNvBSNFSNIqen+4cTtqtTf5lB9Z/d8oxtorAXzGSjNK9vhXXfodSxFICECyWG4RGlAjqV9/vdTd4eRvIIN7JgrcoU5lZ5Nn21DC+0brPZEy6NZfbVCP00Z1NKy0nWMiAt0WA2Q3lmCcwb+fEO/hJClmrdkKdPTir/TdV+MCZKbEervCU0kXtn8fDv2tB0VKeJM3hZwpxv1G+NuYng3gDFfO7Uka6oh5ESaw/9Ebrol09lUpxaRW588FVopRQbow/QVLzAwcXRPuwI9gnvJbg6d0=
 
 matrix:
   include:
-    - os: linux
-      dist: trusty
-      sudo: required
-      services:
-        - docker
-      before_install:
-        - docker run -d --name xenial -v $(dirname $(pwd)):/root -v /home/travis/package:/package -w /root nimmis/ubuntu:16.04
-        - docker exec -it xenial /root/obs-websocket/CI/install-dependencies-xenial.sh
-      script:
-        - docker exec -it xenial /root/obs-websocket/CI/build-xenial.sh
-      after_success:
-        - docker exec -it xenial /root/obs-websocket/CI/package-xenial.sh
-        - ls -lh /home/travis/package
-
-    - os: osx
-      osx_image: xcode8.3
-      before_install: "./CI/install-dependencies-osx.sh"
-      script: "./CI/build-osx.sh"
+  - os: linux
+    dist: trusty
+    sudo: required
+    services:
+    - docker
+    before_install:
+    - docker run -d --name xenial -v $(dirname $(pwd)):/root -v /home/travis/package:/package
+      -w /root nimmis/ubuntu:16.04
+    - docker exec -it xenial /root/obs-websocket/CI/install-dependencies-xenial.sh
+    script:
+    - docker exec -it xenial /root/obs-websocket/CI/build-xenial.sh
+    after_success:
+    - docker exec -it xenial /root/obs-websocket/CI/package-xenial.sh
+    - ls -lh /home/travis/package
+  - os: osx
+    osx_image: xcode8.3
+    before_install: "./CI/install-dependencies-osx.sh"
+    script: "./CI/build-osx.sh"
+    
+deploy:
+  provider: s3
+  region: eu-central-1
+  bucket: obs-websocket-linux-builds
+  access_key_id: "$AWS_ID"
+  secret_access_key: "$AWS_SECRET"
+  skip_cleanup: true
+  file_glob: true
+  file: "/home/travis/package/*.deb"
+  on:
+    repo: Palakis/obs-websocket
+    condition: "$TRAVIS_OS_NAME = linux"
+    branch: true
+    tags: true
