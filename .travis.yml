@@ -19,6 +19,7 @@ matrix:
         - docker exec -it xenial /root/obs-websocket/CI/build-xenial.sh
       after_success:
         - docker exec -it xenial /root/obs-websocket/CI/package-xenial.sh
+        - ls -lh /home/travis/package
 
     - os: osx
       osx_image: xcode8.3
