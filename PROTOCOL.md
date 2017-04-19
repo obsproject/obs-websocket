@@ -21,6 +21,7 @@ The protocol in general is based on the OBS Remote protocol created by Bill Hami
     - ["TransitionDurationChanged"](#transitiondurationchanged)
     - ["TransitionListChanged"](#transitionlistchanged)
     - ["TransitionBegin"](#transitionbegin)
+    - ["PreviewSceneChanged"](#previewscenechanged)
     - ["ProfileChanged"](#profilechanged)
     - ["ProfileListChanged"](#profilelistchanged)
     - ["StreamStarting"](#streamstarting)
@@ -43,6 +44,12 @@ The protocol in general is based on the OBS Remote protocol created by Bill Hami
     - ["SetCurrentScene"](#setcurrentscene)
     - ["GetSceneList"](#getscenelist)
     - ["SetSourceRender"](#setsourcerender)
+    - ["GetStudioModeStatus"](#getstudiomodestatus)
+    - ["SetPreviewScene"](#setpreviewscene)
+    - ["TransitionToProgram"](#transitiontoprogram)
+    - ["EnableStudioMode"](#enablestudiomode)
+    - ["DisableStudioMode"](#disablestudiomode)
+    - ["ToggleStudioMode"](#togglestudiomode)
     - ["StartStopStreaming"](#startstopstreaming)
     - ["StartStopRecording"](#startstoprecording)
     - ["StartStreaming"](#startstreaming)
@@ -151,6 +158,11 @@ The list of available transitions has been modified (Transitions have been added
 
 #### "TransitionBegin"
 A transition other than "Cut" has begun.
+
+---
+
+#### "PreviewSceneChanged"
+The selected Preview scene changed (only in Studio Mode).
 
 ---
 
@@ -335,8 +347,60 @@ __Response__ : OK if source exists in the current scene, error otherwise.
 
 ---
 
+#### "GetStudioModeStatus"
+List OBS' scenes.
+
+__Request fields__ : none  
+__Response__ : always OK, with these additional fields :  
+- **"studio-mode"** (bool) : true if OBS is in Studio Mode, false otherwise.
+- **"preview-scene"** (string, optional) : name of the current Previewed scene (present only if Studio Mode is enabled).
+
+---
+
+#### "SetPreviewScene"
+Studio Mode only. Sets the specified scene as the Previewed scene in Studio Mode.
+
+__Request fields__ :  
+- **"scene-name"** (string) : name of the scene to selected as the preview of Studio Mode
+
+__Response__ : OK if specified scene exists, error otherwise.
+
+---
+
+#### "TransitionToProgram"
+Studio Mode only. Transitions the currently previewed scene to Program (main output).
+
+__Request fields__ : none  
+__Response__ : always OK. No additional fields.
+
+---
+
+#### "EnableStudioMode"
+Enables Studio Mode.
+
+__Request fields__ : none  
+__Response__ : always OK. No additional fields.
+
+---
+
+#### "DisableStudioMode"
+Disables Studio Mode.
+
+__Request fields__ : none  
+__Response__ : always OK. No additional fields.
+
+---
+
+#### "ToggleStudioMode"
+Toggles Studio Mode on or off.
+
+__Request fields__ : none  
+__Response__ : always OK. No additional fields.
+
+---
+
 #### "StartStopStreaming"
-Toggle streaming on or off.
+Toggles streaming on or off.
 
 __Request fields__ : none  
 __Response__ : always OK. No additional fields.
@@ -344,7 +408,7 @@ __Response__ : always OK. No additional fields.
 ---
 
 #### "StartStopRecording"
-Toggle recording on or off.
+Toggles recording on or off.
 
 __Request fields__ : none  
 __Response__ : always OK. No additional fields.  
