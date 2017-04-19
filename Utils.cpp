@@ -299,7 +299,7 @@ void Utils::TogglePreviewMode()
 	GetPreviewModeButtonControl()->click();
 }
 
-const char* Utils::GetPreviewSceneName()
+obs_scene_t* Utils::GetPreviewScene()
 {
 	if (IsPreviewModeActive())
 	{
@@ -309,9 +309,10 @@ const char* Utils::GetPreviewSceneName()
 		blog(LOG_INFO, "GetPreviewSceneName: %d selected item(s)", selected.count());
 
 		// Qt::UserRole == QtUserRole::OBSRef
-		obs_source_t* source = obs_scene_get_source(Utils::SceneListItemToScene(selected.first()));
+		obs_scene_t* scene = Utils::SceneListItemToScene(selected.first());
 
-		return obs_source_get_name(source);
+		obs_scene_addref(scene);
+		return scene;
 	}
 	
 	return nullptr;

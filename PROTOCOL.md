@@ -348,12 +348,19 @@ __Response__ : OK if source exists in the current scene, error otherwise.
 ---
 
 #### "GetStudioModeStatus"
-List OBS' scenes.
+Tells if Studio Mode is currently enabled or disabled.
 
 __Request fields__ : none  
 __Response__ : always OK, with these additional fields :  
 - **"studio-mode"** (bool) : true if OBS is in Studio Mode, false otherwise.
-- **"preview-scene"** (string, optional) : name of the current Previewed scene (present only if Studio Mode is enabled).
+
+---
+
+#### "GetPreviewScene"
+Studio Mode only. Gets the name of the currently Previewed scene, along with a list of its sources.
+
+__Request fields__ : none  
+__Response__ : OK if Studio Mode is enabled, with the same fields as [`GetCurrentScene`](#getcurrentscene), error otherwise.
 
 ---
 

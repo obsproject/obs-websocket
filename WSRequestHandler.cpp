@@ -72,6 +72,7 @@ WSRequestHandler::WSRequestHandler(QWebSocket *client) :
 	messageMap["ListProfiles"] = WSRequestHandler::HandleListProfiles;
 
 	messageMap["GetStudioModeStatus"] = WSRequestHandler::HandleGetStudioModeStatus;
+	messageMap["GetPreviewScene"] = WSRequestHandler::HandleGetPreviewScene;
 	messageMap["SetPreviewScene"] = WSRequestHandler::HandleSetPreviewScene;
 	messageMap["TransitionToProgram"] = WSRequestHandler::HandleTransitionToProgram;
 	messageMap["EnableStudioMode"] = WSRequestHandler::HandleEnableStudioMode;
@@ -760,14 +761,35 @@ void WSRequestHandler::HandleGetStudioModeStatus(WSRequestHandler *owner)
 	obs_data_t* response = obs_data_create();
 	obs_data_set_bool(response, "studio-mode", previewActive);
 
-	if (previewActive) {
-		const char* currentPreviewScene = Utils::GetPreviewSceneName();
-		obs_data_set_string(response, "preview-scene", currentPreviewScene);
-	}
-
 	owner->SendOKResponse(response);
 
 	obs_data_release(response);
+}
+
+void WSRequestHandler::HandleGetPreviewScene(WSRequestHandler *owner)
+{
+	if (!Utils::IsPreviewModeActive())
+	{
+		owner->SendErrorResponse("studio mode not enabled");
+		return;
+	}
+
+	obs_scene_t* preview_scene = Utils::GetPreviewScene();
+	obs_source_t* source = obs_scene_get_source(preview_scene);
+	const char *name = obs_source_get_name(source);
+
+	obs_data_array_t *scene_items = Utils::GetSceneItems(source);
+
+	obs_data_t *data = obs_data_create();
+	obs_data_set_string(data, "name", name);
+	obs_data_set_array(data, "sources", scene_items);
+
+	owner->SendOKResponse(data);
+
+	obs_data_release(data);
+	obs_data_array_release(scene_items);
+
+	obs_scene_release(preview_scene);
 }
 
 void WSRequestHandler::HandleSetPreviewScene(WSRequestHandler *owner)

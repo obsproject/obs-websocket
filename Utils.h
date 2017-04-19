@@ -55,7 +55,7 @@ class Utils
 		static void DisablePreviewMode();
 		static void TogglePreviewMode();
 
-		static const char* GetPreviewSceneName();
+		static obs_scene_t* GetPreviewScene();
 		static void SetPreviewScene(const char* name);
 		static void TransitionToProgram();
 
