@@ -261,7 +261,7 @@ bool Utils::IsPreviewModeActive()
 	bool buttonToggledOn = GetPreviewModeButtonControl()->isChecked();
 
 	// Clue 2 : Preview layout has more than one item
-	int previewChildCount = GetPreviewLayout()->children().count();
+	int previewChildCount = GetPreviewLayout()->count();
 	blog(LOG_INFO, "preview layout children count : %d", previewChildCount);
 
 	return buttonToggledOn || (previewChildCount >= 2);
@@ -269,17 +269,19 @@ bool Utils::IsPreviewModeActive()
 
 void Utils::EnablePreviewMode()
 {
-	GetPreviewModeButtonControl()->setChecked(true);
+	if (!IsPreviewModeActive())
+		GetPreviewModeButtonControl()->click();
 }
 
 void Utils::DisablePreviewMode()
 {
-	GetPreviewModeButtonControl()->setChecked(false);
+	if (IsPreviewModeActive())
+		GetPreviewModeButtonControl()->click();
 }
 
 void Utils::TogglePreviewMode()
 {
-	GetPreviewModeButtonControl()->toggle();
+	GetPreviewModeButtonControl()->click();
 }
 
 const char* Utils::GetPreviewSceneName()
