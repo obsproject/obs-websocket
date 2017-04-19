@@ -71,6 +71,11 @@ WSRequestHandler::WSRequestHandler(QWebSocket *client) :
 	messageMap["GetCurrentProfile"] = WSRequestHandler::HandleGetCurrentProfile;
 	messageMap["ListProfiles"] = WSRequestHandler::HandleListProfiles;
 
+	messageMap["GetStudioModeStatus"] = WSRequestHandler::HandleGetStudioModeStatus;
+	messageMap["EnableStudioMode"] = WSRequestHandler::HandleEnableStudioMode;
+	messageMap["DisableStudioMode"] = WSRequestHandler::HandleDisableStudioMode;
+	messageMap["ToggleStudioMode"] = WSRequestHandler::HandleToggleStudioMode;
+
 	authNotRequired.insert("GetVersion");
 	authNotRequired.insert("GetAuthRequired");
 	authNotRequired.insert("Authenticate");
@@ -744,6 +749,41 @@ void WSRequestHandler::HandleListProfiles(WSRequestHandler *owner)
 
 	obs_data_release(response);
 	obs_data_array_release(profiles);
+}
+
+void WSRequestHandler::HandleGetStudioModeStatus(WSRequestHandler *owner)
+{
+	bool previewActive = Utils::IsPreviewModeActive();
+
+	obs_data_t* response = obs_data_create();
+	obs_data_set_bool(response, "studio-mode", previewActive);
+
+	if (previewActive) {
+		//const char* currentPreviewScene = Utils::GetPreviewSceneName();
+		//obs_data_set_string(response, "preview-scene", currentPreviewScene);
+	}
+
+	owner->SendOKResponse(response);
+
+	obs_data_release(response);
+}
+
+void WSRequestHandler::HandleEnableStudioMode(WSRequestHandler *owner)
+{
+	Utils::EnablePreviewMode();
+	owner->SendOKResponse();
+}
+
+void WSRequestHandler::HandleDisableStudioMode(WSRequestHandler *owner)
+{
+	Utils::DisablePreviewMode();
+	owner->SendOKResponse();
+}
+
+void WSRequestHandler::HandleToggleStudioMode(WSRequestHandler *owner)
+{
+	Utils::TogglePreviewMode();
+	owner->SendOKResponse();
 }
 
 void WSRequestHandler::ErrNotImplemented(WSRequestHandler *owner)

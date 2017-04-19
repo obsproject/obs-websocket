@@ -262,6 +262,7 @@ bool Utils::IsPreviewModeActive()
 
 	// Clue 2 : Preview layout has more than one item
 	int previewChildCount = GetPreviewLayout()->children().count();
+	blog(LOG_INFO, "preview layout children count : %d", previewChildCount);
 
 	return buttonToggledOn || (previewChildCount >= 2);
 }
