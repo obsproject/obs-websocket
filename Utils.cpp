@@ -20,6 +20,9 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <obs-frontend-api.h>
 #include <QMainWindow>
 #include <QSpinBox>
+#include <QPushButton>
+#include <QListWidget>
+#include <QLayout>
 #include "obs-websocket.h"
 
 obs_data_array_t* string_list_to_array(char** strings, char* key)
@@ -236,6 +239,83 @@ void Utils::SetTransitionDuration(int ms)
 	{
 		control->setValue(ms);
 	}
+}
+
+QPushButton* Utils::GetPreviewModeButtonControl()
+{
+	QMainWindow* main = (QMainWindow*)obs_frontend_get_main_window();
+	return main->findChild<QPushButton*>("modeSwitch");
+}
+
+QLayout* Utils::GetPreviewLayout()
+{
+	QMainWindow* main = (QMainWindow*)obs_frontend_get_main_window();
+	return main->findChild<QLayout*>("previewLayout");
+}
+
+bool Utils::IsPreviewModeActive()
+{
+	QMainWindow* main = (QMainWindow*)obs_frontend_get_main_window();
+
+	// Clue 1 : "Studio Mode" button is toggled on
+	bool buttonToggledOn = GetPreviewModeButtonControl()->isChecked();
+
+	// Clue 2 : Preview layout has more than one item
+	int previewChildCount = GetPreviewLayout()->children().count();
+
+	return buttonToggledOn || (previewChildCount >= 2);
+}
+
+void Utils::EnablePreviewMode()
+{
+	GetPreviewModeButtonControl()->setChecked(true);
+}
+
+void Utils::DisablePreviewMode()
+{
+	GetPreviewModeButtonControl()->setChecked(false);
+}
+
+void Utils::TogglePreviewMode()
+{
+	GetPreviewModeButtonControl()->toggle();
+}
+
+const char* Utils::GetPreviewSceneName()
+{
+	if (IsPreviewModeActive())
+	{
+		QMainWindow* main = (QMainWindow*)obs_frontend_get_main_window();
+		QListWidget* sceneList = main->findChild<QListWidget*>("scenes");
+
+		QString name = sceneList->selectedItems().first()->text();
+		return name.toUtf8().constData();
+	}
+	
+	return nullptr;
+}
+
+void Utils::TransitionToProgram()
+{
+	if (!IsPreviewModeActive())
+		return;
+
+	// WARNING : if the layout created in OBS' CreateProgramOptions() changes
+	// then this won't work as expected
+
+	// The program options widget is the second item in the left-to-right layout
+	QWidget* programOptions = GetPreviewLayout()->itemAt(1)->widget();
+
+	// The "Transition" button lies in the mainButtonLayout 
+	// which is the first itemin the program options' layout
+	QLayout* mainButtonLayout = programOptions->layout()->itemAt(0)->layout();
+	QWidget* transitionBtnWidget = mainButtonLayout->itemAt(0)->widget();
+
+	// Try to cast that widget into a button
+	QPushButton* transitionBtn = qobject_cast<QPushButton*>(transitionBtnWidget);
+
+	// Perform a click on that button
+	transitionBtn->click();
 }
 
 const char* Utils::OBSVersionString() {

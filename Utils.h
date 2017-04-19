@@ -20,6 +20,8 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #define UTILS_H
 
 #include <QSpinBox>
+#include <QPushButton>
+#include <QLayout>
 #include <stdio.h>
 #include <obs-module.h>
 
@@ -41,6 +43,17 @@ class Utils
 		static QSpinBox* GetTransitionDurationControl();
 		static int GetTransitionDuration();
 		static void SetTransitionDuration(int ms);
+
+		static QPushButton* GetPreviewModeButtonControl();
+		static QLayout* GetPreviewLayout();
+
+		static bool IsPreviewModeActive();
+		static void EnablePreviewMode();
+		static void DisablePreviewMode();
+		static void TogglePreviewMode();
+
+		static const char* GetPreviewSceneName();
+		static void TransitionToProgram();
 
 		static const char* OBSVersionString();
 };
