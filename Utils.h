@@ -45,6 +45,8 @@ class Utils
 		static int GetTransitionDuration();
 		static void SetTransitionDuration(int ms);
 
+		static bool SetTransitionByName(const char* transition_name);
+
 		static QPushButton* GetPreviewModeButtonControl();
 		static QLayout* GetPreviewLayout();
 		static QListWidget* GetSceneListControl();

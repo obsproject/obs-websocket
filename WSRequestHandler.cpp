@@ -437,19 +437,13 @@ void WSRequestHandler::HandleGetCurrentTransition(WSRequestHandler *owner)
 void WSRequestHandler::HandleSetCurrentTransition(WSRequestHandler *owner)
 {
 	const char *name = obs_data_get_string(owner->_requestData, "transition-name");
-	obs_source_t *transition = Utils::GetTransitionFromName(name);
 
-	if (transition)
-	{
-		obs_frontend_set_current_transition(transition);
+	bool success = Utils::SetTransitionByName(name);
+
+	if (success)
 		owner->SendOKResponse();
-
-		obs_source_release(transition);
-	}
 	else
-	{
 		owner->SendErrorResponse("requested transition does not exist");
-	}
 }
 
 void WSRequestHandler::HandleSetTransitionDuration(WSRequestHandler *owner)
@@ -808,6 +802,30 @@ void WSRequestHandler::HandleSetPreviewScene(WSRequestHandler *owner)
 
 void WSRequestHandler::HandleTransitionToProgram(WSRequestHandler *owner)
 {
+	obs_data_t* transitionInfo = obs_data_get_obj(owner->_requestData, "with-transition");
+
+	if (transitionInfo)
+	{
+		const char* transitionName = obs_data_get_string(transitionInfo, "name");
+		int transitionDuration = obs_data_get_int(transitionInfo, "duration");
+
+		if (!transitionName)
+		{
+			owner->SendErrorResponse("specified transition doesn't exist");
+			return;
+		}
+
+		bool success = Utils::SetTransitionByName(transitionName);
+		if (!success)
+		{
+			owner->SendErrorResponse("unknown error while trying to change current transition");
+			return;
+		}
+
+		if (transitionDuration > 0)
+			Utils::SetTransitionDuration(transitionDuration);
+	}
+
 	Utils::TransitionToProgram();
 	owner->SendOKResponse();
 }

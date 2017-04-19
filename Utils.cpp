@@ -241,6 +241,23 @@ void Utils::SetTransitionDuration(int ms)
 	}
 }
 
+bool Utils::SetTransitionByName(const char* transition_name)
+{
+	obs_source_t *transition = GetTransitionFromName(transition_name);
+
+	if (transition)
+	{
+		obs_frontend_set_current_transition(transition);
+		obs_source_release(transition);
+
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
 QPushButton* Utils::GetPreviewModeButtonControl()
 {
 	QMainWindow* main = (QMainWindow*)obs_frontend_get_main_window();

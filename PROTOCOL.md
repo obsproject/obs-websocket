@@ -377,8 +377,14 @@ __Response__ : OK if specified scene exists, error otherwise.
 #### "TransitionToProgram"
 Studio Mode only. Transitions the currently previewed scene to Program (main output).
 
-__Request fields__ : none  
-__Response__ : always OK. No additional fields.
+__Request fields__ :  
+- **"with-transition" (object, optional) : if specified, use this transition when switching from preview to program. This will change the current transition in the frontend to this one.
+
+__Response__ : always OK. No additional fields
+
+An object passed as `"with-transition"` in a request must have the following fields :  
+- **"name"** (string) : transition name
+- **"duration"** (integer, optional) : transition duration in milliseconds
 
 ---
 
