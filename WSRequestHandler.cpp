@@ -72,6 +72,7 @@ WSRequestHandler::WSRequestHandler(QWebSocket *client) :
 	messageMap["ListProfiles"] = WSRequestHandler::HandleListProfiles;
 
 	messageMap["GetStudioModeStatus"] = WSRequestHandler::HandleGetStudioModeStatus;
+	messageMap["SetPreviewScene"] = WSRequestHandler::HandleSetPreviewScene;
 	messageMap["EnableStudioMode"] = WSRequestHandler::HandleEnableStudioMode;
 	messageMap["DisableStudioMode"] = WSRequestHandler::HandleDisableStudioMode;
 	messageMap["ToggleStudioMode"] = WSRequestHandler::HandleToggleStudioMode;
@@ -759,13 +760,27 @@ void WSRequestHandler::HandleGetStudioModeStatus(WSRequestHandler *owner)
 	obs_data_set_bool(response, "studio-mode", previewActive);
 
 	if (previewActive) {
-		//const char* currentPreviewScene = Utils::GetPreviewSceneName();
-		//obs_data_set_string(response, "preview-scene", currentPreviewScene);
+		const char* currentPreviewScene = Utils::GetPreviewSceneName();
+		obs_data_set_string(response, "preview-scene", currentPreviewScene);
 	}
 
 	owner->SendOKResponse(response);
 
 	obs_data_release(response);
+}
+
+void WSRequestHandler::HandleSetPreviewScene(WSRequestHandler *owner)
+{
+	const char* scene_name = obs_data_get_string(owner->_requestData, "scene-name");
+	if (!scene_name)
+	{
+		owner->SendErrorResponse("invalid request parameters");
+		return;
+	}
+
+	Utils::SetPreviewScene(scene_name);
+
+	owner->SendOKResponse();
 }
 
 void WSRequestHandler::HandleEnableStudioMode(WSRequestHandler *owner)

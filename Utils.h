@@ -22,6 +22,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <QSpinBox>
 #include <QPushButton>
 #include <QLayout>
+#include <QListWidget>
 #include <stdio.h>
 #include <obs-module.h>
 
@@ -46,6 +47,8 @@ class Utils
 
 		static QPushButton* GetPreviewModeButtonControl();
 		static QLayout* GetPreviewLayout();
+		static QListWidget* GetSceneListControl();
+		static obs_scene_t* SceneListItemToScene(QListWidgetItem* item);
 
 		static bool IsPreviewModeActive();
 		static void EnablePreviewMode();
@@ -53,6 +56,7 @@ class Utils
 		static void TogglePreviewMode();
 
 		static const char* GetPreviewSceneName();
+		static void SetPreviewScene(const char* name);
 		static void TransitionToProgram();
 
 		static const char* OBSVersionString();

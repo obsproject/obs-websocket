@@ -18,12 +18,11 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include "Utils.h"
 #include <obs-frontend-api.h>
+#include <obs.hpp>
 #include <QMainWindow>
-#include <QSpinBox>
-#include <QPushButton>
-#include <QListWidget>
-#include <QLayout>
 #include "obs-websocket.h"
+
+Q_DECLARE_METATYPE(OBSScene);
 
 obs_data_array_t* string_list_to_array(char** strings, char* key)
 {
@@ -247,6 +246,21 @@ QPushButton* Utils::GetPreviewModeButtonControl()
 	return main->findChild<QPushButton*>("modeSwitch");
 }
 
+QListWidget* Utils::GetSceneListControl()
+{
+	QMainWindow* main = (QMainWindow*)obs_frontend_get_main_window();
+	return main->findChild<QListWidget*>("scenes");
+}
+
+obs_scene_t* Utils::SceneListItemToScene(QListWidgetItem* item)
+{
+	if (!item)
+		return nullptr;
+
+	QVariant item_data = item->data(static_cast<int>(Qt::UserRole));
+	return item_data.value<OBSScene>();
+}
+
 QLayout* Utils::GetPreviewLayout()
 {
 	QMainWindow* main = (QMainWindow*)obs_frontend_get_main_window();
@@ -288,14 +302,30 @@ const char* Utils::GetPreviewSceneName()
 {
 	if (IsPreviewModeActive())
 	{
-		QMainWindow* main = (QMainWindow*)obs_frontend_get_main_window();
-		QListWidget* sceneList = main->findChild<QListWidget*>("scenes");
+		QListWidget* sceneList = GetSceneListControl();
 
-		QString name = sceneList->selectedItems().first()->text();
-		return name.toUtf8().constData();
+		QList<QListWidgetItem*> selected = sceneList->selectedItems();
+		blog(LOG_INFO, "GetPreviewSceneName: %d selected item(s)", selected.count());
+
+		// Qt::UserRole == QtUserRole::OBSRef
+		obs_source_t* source = obs_scene_get_source(Utils::SceneListItemToScene(selected.first()));
+
+		return obs_source_get_name(source);
 	}
 	
 	return nullptr;
+}
+
+void Utils::SetPreviewScene(const char* name)
+{
+	if (IsPreviewModeActive())
+	{
+		QListWidget* sceneList = GetSceneListControl();
+		QList<QListWidgetItem*> matchingItems = sceneList->findItems(name, Qt::MatchExactly);
+
+		if (matchingItems.count() > 0)
+			sceneList->setCurrentItem(matchingItems.first());
+	}
 }
 
 void Utils::TransitionToProgram()

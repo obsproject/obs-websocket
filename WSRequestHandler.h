@@ -89,6 +89,7 @@ class WSRequestHandler : public QObject
 		static void HandleGetTransitionDuration(WSRequestHandler *owner);
 
 		static void HandleGetStudioModeStatus(WSRequestHandler *owner);
+		static void HandleSetPreviewScene(WSRequestHandler *owner);
 		static void HandleEnableStudioMode(WSRequestHandler *owner);
 		static void HandleDisableStudioMode(WSRequestHandler *owner);
 		static void HandleToggleStudioMode(WSRequestHandler *owner);

@@ -68,6 +68,9 @@ WSEvents::WSEvents(WSServer *srv)
 	connect(statusTimer, SIGNAL(timeout()), this, SLOT(StreamStatus()));
 	statusTimer->start(2000); // equal to frontend's constant BITRATE_UPDATE_SECONDS
 
+	QListWidget* sceneList = Utils::GetSceneListControl();
+	connect(sceneList, SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)), this, SLOT(SelectedSceneChanged(QListWidgetItem*, QListWidgetItem*)));
+
 	transition_handler = nullptr;
 	scene_handler = nullptr;
 
@@ -568,4 +571,22 @@ void WSEvents::OnSceneItemVisibilityChanged(void *param, calldata_t *data)
 	instance->broadcastUpdate("SceneItemVisibilityChanged", fields);
 
 	obs_data_release(fields);
+}
+
+void WSEvents::SelectedSceneChanged(QListWidgetItem *current, QListWidgetItem *prev)
+{
+	if (Utils::IsPreviewModeActive())
+	{
+		obs_scene_t* scene = Utils::SceneListItemToScene(current);
+		if (!scene) return;
+
+		obs_source_t* scene_source = obs_scene_get_source(scene);
+
+		obs_data_t* data = obs_data_create();
+		obs_data_set_string(data, "scene-name", obs_source_get_name(scene_source));
+
+		broadcastUpdate("PreviewSceneChanged", data);
+
+		obs_data_release(data);
+	}
 }

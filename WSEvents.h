@@ -21,6 +21,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #define WSEVENTS_H
 
 #include <obs-frontend-api.h>
+#include <QListWidgetItem>
 #include "WSServer.h"
 
 class WSEvents : public QObject 
@@ -43,6 +44,7 @@ class WSEvents : public QObject
 	private Q_SLOTS:
 		void StreamStatus();
 		void TransitionDurationChanged(int ms);
+		void SelectedSceneChanged(QListWidgetItem *current, QListWidgetItem *prev);
 		void deferredInitOperations();
 
 	private:
