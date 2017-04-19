@@ -20,6 +20,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <obs-frontend-api.h>
 #include <obs.hpp>
 #include <QMainWindow>
+#include <QPainter>
 #include "obs-websocket.h"
 
 Q_DECLARE_METATYPE(OBSScene);
@@ -336,12 +337,14 @@ void Utils::TransitionToProgram()
 	// WARNING : if the layout created in OBS' CreateProgramOptions() changes
 	// then this won't work as expected
 
+	QMainWindow* main = (QMainWindow*)obs_frontend_get_main_window();
+
 	// The program options widget is the second item in the left-to-right layout
 	QWidget* programOptions = GetPreviewLayout()->itemAt(1)->widget();
 
 	// The "Transition" button lies in the mainButtonLayout 
 	// which is the first itemin the program options' layout
-	QLayout* mainButtonLayout = programOptions->layout()->itemAt(0)->layout();
+	QLayout* mainButtonLayout = programOptions->layout()->itemAt(1)->layout();
 	QWidget* transitionBtnWidget = mainButtonLayout->itemAt(0)->widget();
 
 	// Try to cast that widget into a button

@@ -90,6 +90,7 @@ class WSRequestHandler : public QObject
 
 		static void HandleGetStudioModeStatus(WSRequestHandler *owner);
 		static void HandleSetPreviewScene(WSRequestHandler *owner);
+		static void HandleTransitionToProgram(WSRequestHandler *owner);
 		static void HandleEnableStudioMode(WSRequestHandler *owner);
 		static void HandleDisableStudioMode(WSRequestHandler *owner);
 		static void HandleToggleStudioMode(WSRequestHandler *owner);

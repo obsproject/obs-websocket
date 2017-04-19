@@ -73,6 +73,7 @@ WSRequestHandler::WSRequestHandler(QWebSocket *client) :
 
 	messageMap["GetStudioModeStatus"] = WSRequestHandler::HandleGetStudioModeStatus;
 	messageMap["SetPreviewScene"] = WSRequestHandler::HandleSetPreviewScene;
+	messageMap["TransitionToProgram"] = WSRequestHandler::HandleTransitionToProgram;
 	messageMap["EnableStudioMode"] = WSRequestHandler::HandleEnableStudioMode;
 	messageMap["DisableStudioMode"] = WSRequestHandler::HandleDisableStudioMode;
 	messageMap["ToggleStudioMode"] = WSRequestHandler::HandleToggleStudioMode;
@@ -780,6 +781,12 @@ void WSRequestHandler::HandleSetPreviewScene(WSRequestHandler *owner)
 
 	Utils::SetPreviewScene(scene_name);
 
+	owner->SendOKResponse();
+}
+
+void WSRequestHandler::HandleTransitionToProgram(WSRequestHandler *owner)
+{
+	Utils::TransitionToProgram();
 	owner->SendOKResponse();
 }
 
