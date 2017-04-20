@@ -9,13 +9,13 @@ Follow the project on Twitter for news & updates : [@obswebsocket](https://twitt
 ## Downloads
 Binaries for Windows and Linux are available in the [Releases](https://github.com/Palakis/obs-websocket/releases) section.
 
+## Sponsors
+[![Support Class](doc/supportclass_logo_blacktext.png)](http://supportclass.net)
+
 ## Using obs-websocket
 A web client and frontend made by [t2t2](https://github.com/t2t2/obs-tablet-remote) (compatible with tablets and other touch interfaces) is available here : http://t2t2.github.io/obs-tablet-remote/
 
 It is **highly recommended** to protect obs-websocket with a password against unauthorized control. To do this, open the "Websocket server settings" dialog under OBS' "Tools" menu. In the settings dialogs, you can enable or disable authentication and set a password for it.
-
-## Sponsors
-[![Support Class](doc/supportclass_logo_blacktext.png)](http://supportclass.net)
 
 ### Possible use cases
 - Remote control OBS from a phone or tablet on the same local network
