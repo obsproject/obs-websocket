@@ -300,6 +300,7 @@ Objects in the "sources" array have the following fields :
 - **"source_cy"** (integer) : height of the item (without scale applied)
 - **"cx"** (double) : width of the item (with scale applied)
 - **"cy"** (double) : height of the item (with scale applied)
+- **"render"** (bool) : visibility of the source in the scene
 
 ---
 
