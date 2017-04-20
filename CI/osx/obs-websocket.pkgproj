@@ -33,7 +33,7 @@
 																<key>GID</key>
 																<integer>80</integer>
 																<key>PATH</key>
-																<string>../../release/QtNetwork</string>
+																<string>../../build/QtNetwork</string>
 																<key>PATH_TYPE</key>
 																<integer>1</integer>
 																<key>PERMISSIONS</key>
@@ -49,7 +49,7 @@
 																<key>GID</key>
 																<integer>80</integer>
 																<key>PATH</key>
-																<string>../../release/QtWebSockets</string>
+																<string>../../build/QtWebSockets</string>
 																<key>PATH_TYPE</key>
 																<integer>1</integer>
 																<key>PERMISSIONS</key>

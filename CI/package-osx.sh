@@ -23,9 +23,8 @@ install_name_tool \
 	-change "$(brew --prefix qt5)/lib/QtCore.framework/Versions/5/QtCore" @rpath/QtCore \
 	./build/obs-websocket.so
 
-mkdir release
-cp $WS_LIB ./release
-cp $NET_LIB ./release
+cp $WS_LIB ./build
+cp $NET_LIB ./build
 
 packagesbuild ./CI/osx/obs-websocket.pkgproj
 
