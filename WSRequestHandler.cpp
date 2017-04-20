@@ -71,6 +71,14 @@ WSRequestHandler::WSRequestHandler(QWebSocket *client) :
 	messageMap["GetCurrentProfile"] = WSRequestHandler::HandleGetCurrentProfile;
 	messageMap["ListProfiles"] = WSRequestHandler::HandleListProfiles;
 
+	messageMap["GetStudioModeStatus"] = WSRequestHandler::HandleGetStudioModeStatus;
+	messageMap["GetPreviewScene"] = WSRequestHandler::HandleGetPreviewScene;
+	messageMap["SetPreviewScene"] = WSRequestHandler::HandleSetPreviewScene;
+	messageMap["TransitionToProgram"] = WSRequestHandler::HandleTransitionToProgram;
+	messageMap["EnableStudioMode"] = WSRequestHandler::HandleEnableStudioMode;
+	messageMap["DisableStudioMode"] = WSRequestHandler::HandleDisableStudioMode;
+	messageMap["ToggleStudioMode"] = WSRequestHandler::HandleToggleStudioMode;
+
 	authNotRequired.insert("GetVersion");
 	authNotRequired.insert("GetAuthRequired");
 	authNotRequired.insert("Authenticate");
@@ -429,19 +437,13 @@ void WSRequestHandler::HandleGetCurrentTransition(WSRequestHandler *owner)
 void WSRequestHandler::HandleSetCurrentTransition(WSRequestHandler *owner)
 {
 	const char *name = obs_data_get_string(owner->_requestData, "transition-name");
-	obs_source_t *transition = Utils::GetTransitionFromName(name);
 
-	if (transition)
-	{
-		obs_frontend_set_current_transition(transition);
+	bool success = Utils::SetTransitionByName(name);
+
+	if (success)
 		owner->SendOKResponse();
-
-		obs_source_release(transition);
-	}
 	else
-	{
 		owner->SendErrorResponse("requested transition does not exist");
-	}
 }
 
 void WSRequestHandler::HandleSetTransitionDuration(WSRequestHandler *owner)
@@ -744,6 +746,120 @@ void WSRequestHandler::HandleListProfiles(WSRequestHandler *owner)
 
 	obs_data_release(response);
 	obs_data_array_release(profiles);
+}
+
+void WSRequestHandler::HandleGetStudioModeStatus(WSRequestHandler *owner)
+{
+	bool previewActive = Utils::IsPreviewModeActive();
+
+	obs_data_t* response = obs_data_create();
+	obs_data_set_bool(response, "studio-mode", previewActive);
+
+	owner->SendOKResponse(response);
+
+	obs_data_release(response);
+}
+
+void WSRequestHandler::HandleGetPreviewScene(WSRequestHandler *owner)
+{
+	if (!Utils::IsPreviewModeActive())
+	{
+		owner->SendErrorResponse("studio mode not enabled");
+		return;
+	}
+
+	obs_scene_t* preview_scene = Utils::GetPreviewScene();
+	obs_source_t* source = obs_scene_get_source(preview_scene);
+	const char *name = obs_source_get_name(source);
+
+	obs_data_array_t *scene_items = Utils::GetSceneItems(source);
+
+	obs_data_t *data = obs_data_create();
+	obs_data_set_string(data, "name", name);
+	obs_data_set_array(data, "sources", scene_items);
+
+	owner->SendOKResponse(data);
+
+	obs_data_release(data);
+	obs_data_array_release(scene_items);
+
+	obs_scene_release(preview_scene);
+}
+
+void WSRequestHandler::HandleSetPreviewScene(WSRequestHandler *owner)
+{
+	if (!Utils::IsPreviewModeActive())
+	{
+		owner->SendErrorResponse("studio mode not enabled");
+		return;
+	}
+
+	if (!obs_data_has_user_value(owner->_requestData, "scene-name"))
+	{
+		owner->SendErrorResponse("invalid request parameters");
+		return;
+	}
+
+	const char* scene_name = obs_data_get_string(owner->_requestData, "scene-name");
+	Utils::SetPreviewScene(scene_name);
+
+	owner->SendOKResponse();
+}
+
+void WSRequestHandler::HandleTransitionToProgram(WSRequestHandler *owner)
+{
+	if (!Utils::IsPreviewModeActive())
+	{
+		owner->SendErrorResponse("studio mode not enabled");
+		return;
+	}
+
+	if (obs_data_has_user_value(owner->_requestData, "with-transition"))
+	{
+		obs_data_t* transitionInfo = obs_data_get_obj(owner->_requestData, "with-transition");
+
+		if (obs_data_has_user_value(transitionInfo, "name"))
+		{
+			const char* transitionName = obs_data_get_string(transitionInfo, "name");
+			bool success = Utils::SetTransitionByName(transitionName);
+
+			if (!success)
+			{
+				owner->SendErrorResponse("specified transition doesn't exist");
+				obs_data_release(transitionInfo);
+				return;
+			}
+		}
+
+		if (obs_data_has_user_value(transitionInfo, "duration"))
+		{
+			int transitionDuration = obs_data_get_int(transitionInfo, "duration");
+			Utils::SetTransitionDuration(transitionDuration);
+		}
+		
+		obs_data_release(transitionInfo);
+	}
+
+	Utils::TransitionToProgram();
+	owner->SendOKResponse();
+}
+
+void WSRequestHandler::HandleEnableStudioMode(WSRequestHandler *owner)
+{
+	Utils::EnablePreviewMode();
+	owner->SendOKResponse();
+}
+
+void WSRequestHandler::HandleDisableStudioMode(WSRequestHandler *owner)
+{
+	Utils::DisablePreviewMode();
+	owner->SendOKResponse();
+}
+
+void WSRequestHandler::HandleToggleStudioMode(WSRequestHandler *owner)
+{
+	Utils::TogglePreviewMode();
+	owner->SendOKResponse();
 }
 
 void WSRequestHandler::ErrNotImplemented(WSRequestHandler *owner)

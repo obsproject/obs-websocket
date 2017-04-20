@@ -19,6 +19,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include <util/platform.h>
 #include <QTimer>
+#include <QPushButton>
 #include "Utils.h"
 #include "WSEvents.h"
 #include "obs-websocket.h"
@@ -67,6 +68,12 @@ WSEvents::WSEvents(WSServer *srv)
 	QTimer *statusTimer = new QTimer();
 	connect(statusTimer, SIGNAL(timeout()), this, SLOT(StreamStatus()));
 	statusTimer->start(2000); // equal to frontend's constant BITRATE_UPDATE_SECONDS
+
+	QListWidget* sceneList = Utils::GetSceneListControl();
+	connect(sceneList, SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)), this, SLOT(SelectedSceneChanged(QListWidgetItem*, QListWidgetItem*)));
+
+	QPushButton* modeSwitch = Utils::GetPreviewModeButtonControl();
+	connect(modeSwitch, SIGNAL(clicked(bool)), this, SLOT(ModeSwitchClicked(bool)));
 
 	transition_handler = nullptr;
 	scene_handler = nullptr;
@@ -276,14 +283,17 @@ void WSEvents::OnSceneChange()
 	obs_data_t *data = obs_data_create();
 
 	obs_source_t* current_scene = obs_frontend_get_current_scene();
+	obs_data_array_t* scene_items = Utils::GetSceneItems(current_scene);
 	connectSceneSignals(current_scene);
 
 	obs_data_set_string(data, "scene-name", obs_source_get_name(current_scene));
-	
+	obs_data_set_array(data, "sources", scene_items);
+
 	broadcastUpdate("SwitchScenes", data);
 
-	obs_data_release(data);
+	obs_data_array_release(scene_items);
 	obs_source_release(current_scene);
+	obs_data_release(data);
 }
 
 void WSEvents::OnSceneListChange()
@@ -568,4 +578,35 @@ void WSEvents::OnSceneItemVisibilityChanged(void *param, calldata_t *data)
 	instance->broadcastUpdate("SceneItemVisibilityChanged", fields);
 
 	obs_data_release(fields);
+}
+
+void WSEvents::SelectedSceneChanged(QListWidgetItem *current, QListWidgetItem *prev)
+{
+	if (Utils::IsPreviewModeActive())
+	{
+		obs_scene_t* scene = Utils::SceneListItemToScene(current);
+		if (!scene) return;
+
+		obs_source_t* scene_source = obs_scene_get_source(scene);
+		obs_data_array_t* scene_items = Utils::GetSceneItems(scene_source);
+
+		obs_data_t* data = obs_data_create();
+		obs_data_set_string(data, "scene-name", obs_source_get_name(scene_source));
+		obs_data_set_array(data, "sources", scene_items);
+
+		broadcastUpdate("PreviewSceneChanged", data);
+
+		obs_data_array_release(scene_items);
+		obs_data_release(data);
+	}
+}
+
+void WSEvents::ModeSwitchClicked(bool checked)
+{
+	obs_data_t* data = obs_data_create();
+	obs_data_set_bool(data, "new-state", checked);
+
+	broadcastUpdate("StudioModeSwitched", data);
+
+	obs_data_release(data);
 }

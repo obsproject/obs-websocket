@@ -21,6 +21,8 @@ The protocol in general is based on the OBS Remote protocol created by Bill Hami
     - ["TransitionDurationChanged"](#transitiondurationchanged)
     - ["TransitionListChanged"](#transitionlistchanged)
     - ["TransitionBegin"](#transitionbegin)
+    - ["PreviewSceneChanged"](#previewscenechanged)
+    - ["StudioModeSwitched"](#studiomodeswitched)
     - ["ProfileChanged"](#profilechanged)
     - ["ProfileListChanged"](#profilelistchanged)
     - ["StreamStarting"](#streamstarting)
@@ -43,6 +45,12 @@ The protocol in general is based on the OBS Remote protocol created by Bill Hami
     - ["SetCurrentScene"](#setcurrentscene)
     - ["GetSceneList"](#getscenelist)
     - ["SetSourceRender"](#setsourcerender)
+    - ["GetStudioModeStatus"](#getstudiomodestatus)
+    - ["SetPreviewScene"](#setpreviewscene)
+    - ["TransitionToProgram"](#transitiontoprogram)
+    - ["EnableStudioMode"](#enablestudiomode)
+    - ["DisableStudioMode"](#disablestudiomode)
+    - ["ToggleStudioMode"](#togglestudiomode)
     - ["StartStopStreaming"](#startstopstreaming)
     - ["StartStopRecording"](#startstoprecording)
     - ["StartStreaming"](#startstreaming)
@@ -86,6 +94,7 @@ Additional fields will be present in the event message depending on the event ty
 #### "SwitchScenes"
 OBS is switching to another scene (called at the end of the transition).  
 - **scene-name** (string) : The name of the scene being switched to.
+- **sources** (array of objects) : List of sources composing the scene. Same specification as [`GetCurrentScene`](#getcurrentscene).
 
 ---
 
@@ -151,6 +160,19 @@ The list of available transitions has been modified (Transitions have been added
 
 #### "TransitionBegin"
 A transition other than "Cut" has begun.
+
+---
+
+#### "PreviewSceneChanged"
+The selected Preview scene changed (only in Studio Mode).
+- **scene-name** (string) : Name of the scene being previewed.
+- **sources** (array of objects) : List of sources composing the scene. Same specification as [`GetCurrentScene`](#getcurrentscene).
+
+---
+
+#### "StudioModeSwitched"
+Studio Mode has been switched on or off.
+- **"new-state"** (bool) : new state of Studio Mode: true if enabled, false if disabled.
 
 ---
 
@@ -336,8 +358,73 @@ __Response__ : OK if source exists in the current scene, error otherwise.
 
 ---
 
+#### "GetStudioModeStatus"
+Tells if Studio Mode is currently enabled or disabled.
+
+__Request fields__ : none  
+__Response__ : always OK, with these additional fields :  
+- **"studio-mode"** (bool) : true if OBS is in Studio Mode, false otherwise.
+
+---
+
+#### "GetPreviewScene"
+Studio Mode only. Gets the name of the currently Previewed scene, along with a list of its sources.
+
+__Request fields__ : none  
+__Response__ : OK if Studio Mode is enabled, with the same fields as [`GetCurrentScene`](#getcurrentscene), error otherwise.
+
+---
+
+#### "SetPreviewScene"
+Studio Mode only. Sets the specified scene as the Previewed scene in Studio Mode.
+
+__Request fields__ :  
+- **"scene-name"** (string) : name of the scene to selected as the preview of Studio Mode
+
+__Response__ : OK if Studio Mode is enabled and specified scene exists, error otherwise.
+
+---
+
+#### "TransitionToProgram"
+Studio Mode only. Transitions the currently previewed scene to Program (main output).
+
+__Request fields__ :  
+- **"with-transition" (object, optional) : if specified, use this transition when switching from preview to program. This will change the current transition in the frontend to this one.
+
+__Response__ : OK if studio mode is enabled and optional transition exists, error otherwise.
+
+An object passed as `"with-transition"` in a request must have the following fields :  
+- **"name"** (string, optional) : transition name
+- **"duration"** (integer, optional) : transition duration in milliseconds
+
+---
+
+#### "EnableStudioMode"
+Enables Studio Mode.
+
+__Request fields__ : none  
+__Response__ : always OK. No additional fields.
+
+---
+
+#### "DisableStudioMode"
+Disables Studio Mode.
+
+__Request fields__ : none  
+__Response__ : always OK. No additional fields.
+
+---
+
+#### "ToggleStudioMode"
+Toggles Studio Mode on or off.
+
+__Request fields__ : none  
+__Response__ : always OK. No additional fields.
+
+---
+
 #### "StartStopStreaming"
-Toggle streaming on or off.
+Toggles streaming on or off.
 
 __Request fields__ : none  
 __Response__ : always OK. No additional fields.
@@ -345,7 +432,7 @@ __Response__ : always OK. No additional fields.
 ---
 
 #### "StartStopRecording"
-Toggle recording on or off.
+Toggles recording on or off.
 
 __Request fields__ : none  
 __Response__ : always OK. No additional fields.  

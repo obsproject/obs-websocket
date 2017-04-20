@@ -18,9 +18,12 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include "Utils.h"
 #include <obs-frontend-api.h>
+#include <obs.hpp>
 #include <QMainWindow>
-#include <QSpinBox>
+#include <QPainter>
 #include "obs-websocket.h"
+
+Q_DECLARE_METATYPE(OBSScene);
 
 obs_data_array_t* string_list_to_array(char** strings, char* key)
 {
@@ -236,6 +239,136 @@ void Utils::SetTransitionDuration(int ms)
 	{
 		control->setValue(ms);
 	}
+}
+
+bool Utils::SetTransitionByName(const char* transition_name)
+{
+	obs_source_t *transition = GetTransitionFromName(transition_name);
+
+	if (transition)
+	{
+		obs_frontend_set_current_transition(transition);
+		obs_source_release(transition);
+
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+QPushButton* Utils::GetPreviewModeButtonControl()
+{
+	QMainWindow* main = (QMainWindow*)obs_frontend_get_main_window();
+	return main->findChild<QPushButton*>("modeSwitch");
+}
+
+QListWidget* Utils::GetSceneListControl()
+{
+	QMainWindow* main = (QMainWindow*)obs_frontend_get_main_window();
+	return main->findChild<QListWidget*>("scenes");
+}
+
+obs_scene_t* Utils::SceneListItemToScene(QListWidgetItem* item)
+{
+	if (!item)
+		return nullptr;
+
+	QVariant item_data = item->data(static_cast<int>(Qt::UserRole));
+	return item_data.value<OBSScene>();
+}
+
+QLayout* Utils::GetPreviewLayout()
+{
+	QMainWindow* main = (QMainWindow*)obs_frontend_get_main_window();
+	return main->findChild<QLayout*>("previewLayout");
+}
+
+bool Utils::IsPreviewModeActive()
+{
+	QMainWindow* main = (QMainWindow*)obs_frontend_get_main_window();
+
+	// Clue 1 : "Studio Mode" button is toggled on
+	bool buttonToggledOn = GetPreviewModeButtonControl()->isChecked();
+
+	// Clue 2 : Preview layout has more than one item
+	int previewChildCount = GetPreviewLayout()->count();
+	blog(LOG_INFO, "preview layout children count : %d", previewChildCount);
+
+	return buttonToggledOn || (previewChildCount >= 2);
+}
+
+void Utils::EnablePreviewMode()
+{
+	if (!IsPreviewModeActive())
+		GetPreviewModeButtonControl()->click();
+}
+
+void Utils::DisablePreviewMode()
+{
+	if (IsPreviewModeActive())
+		GetPreviewModeButtonControl()->click();
+}
+
+void Utils::TogglePreviewMode()
+{
+	GetPreviewModeButtonControl()->click();
+}
+
+obs_scene_t* Utils::GetPreviewScene()
+{
+	if (IsPreviewModeActive())
+	{
+		QListWidget* sceneList = GetSceneListControl();
+
+		QList<QListWidgetItem*> selected = sceneList->selectedItems();
+
+		// Qt::UserRole == QtUserRole::OBSRef
+		obs_scene_t* scene = Utils::SceneListItemToScene(selected.first());
+
+		obs_scene_addref(scene);
+		return scene;
+	}
+	
+	return nullptr;
+}
+
+void Utils::SetPreviewScene(const char* name)
+{
+	if (IsPreviewModeActive())
+	{
+		QListWidget* sceneList = GetSceneListControl();
+		QList<QListWidgetItem*> matchingItems = sceneList->findItems(name, Qt::MatchExactly);
+
+		if (matchingItems.count() > 0)
+			sceneList->setCurrentItem(matchingItems.first());
+	}
+}
+
+void Utils::TransitionToProgram()
+{
+	if (!IsPreviewModeActive())
+		return;
+
+	// WARNING : if the layout created in OBS' CreateProgramOptions() changes
+	// then this won't work as expected
+
+	QMainWindow* main = (QMainWindow*)obs_frontend_get_main_window();
+
+	// The program options widget is the second item in the left-to-right layout
+	QWidget* programOptions = GetPreviewLayout()->itemAt(1)->widget();
+
+	// The "Transition" button lies in the mainButtonLayout 
+	// which is the first itemin the program options' layout
+	QLayout* mainButtonLayout = programOptions->layout()->itemAt(1)->layout();
+	QWidget* transitionBtnWidget = mainButtonLayout->itemAt(0)->widget();
+
+	// Try to cast that widget into a button
+	QPushButton* transitionBtn = qobject_cast<QPushButton*>(transitionBtnWidget);
+
+	// Perform a click on that button
+	transitionBtn->click();
 }
 
 const char* Utils::OBSVersionString() {
