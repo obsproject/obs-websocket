@@ -27,15 +27,15 @@ chmod +rw ./build/QtWebSockets ./build/QtNetwork
 echo "-- Modifying QtNetwork"
 # TODO : put a loop in there
 install_name_tool \
-	-change "/usr/local/opt/qt/lib/QtNetwork.framework/Versions/5/QtNetwork" @rpath/QtNetwork \
-	-change "$QT_PREFIX/lib/QtCore.framework/Versions/5/QtCore" @rpath/QtCore \
+	-change /usr/local/opt/qt/lib/QtNetwork.framework/Versions/5/QtNetwork @rpath/QtNetwork \
+	-change /usr/local/Cellar/qt/5.8.0_2/lib/QtCore.framework/Versions/5/QtCore @rpath/QtCore \
 	./build/QtNetwork
 
 echo "-- Modifying QtWebSockets"
 install_name_tool \
-	-change "/usr/local/opt/qt/lib/QtWebSockets.framework/Versions/5/QtWebSockets" @rpath/QtWebSockets \
-	-change "$QT_PREFIX/lib/QtNetwork.framework/Versions/5/QtNetwork" @rpath/QtNetwork \
-	-change "$QT_PREFIX/lib/QtCore.framework/Versions/5/QtCore" @rpath/QtCore \
+	-change /usr/local/opt/qt/lib/QtWebSockets.framework/Versions/5/QtWebSockets @rpath/QtWebSockets \
+	-change /usr/local/Cellar/qt/5.8.0_2/lib/QtNetwork.framework/Versions/5/QtNetwork @rpath/QtNetwork \
+	-change /usr/local/Cellar/qt/5.8.0_2/lib/QtCore.framework/Versions/5/QtCore @rpath/QtCore \
 	./build/QtWebSockets
 
 echo "-- Modifying obs-websocket.so"
