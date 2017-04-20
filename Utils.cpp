@@ -323,7 +323,6 @@ obs_scene_t* Utils::GetPreviewScene()
 		QListWidget* sceneList = GetSceneListControl();
 
 		QList<QListWidgetItem*> selected = sceneList->selectedItems();
-		blog(LOG_INFO, "GetPreviewSceneName: %d selected item(s)", selected.count());
 
 		// Qt::UserRole == QtUserRole::OBSRef
 		obs_scene_t* scene = Utils::SceneListItemToScene(selected.first());

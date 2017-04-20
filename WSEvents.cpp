@@ -19,6 +19,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include <util/platform.h>
 #include <QTimer>
+#include <QPushButton>
 #include "Utils.h"
 #include "WSEvents.h"
 #include "obs-websocket.h"
@@ -70,6 +71,9 @@ WSEvents::WSEvents(WSServer *srv)
 
 	QListWidget* sceneList = Utils::GetSceneListControl();
 	connect(sceneList, SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)), this, SLOT(SelectedSceneChanged(QListWidgetItem*, QListWidgetItem*)));
+
+	QPushButton* modeSwitch = Utils::GetPreviewModeButtonControl();
+	connect(modeSwitch, SIGNAL(clicked(bool)), this, SLOT(ModeSwitchClicked(bool)));
 
 	transition_handler = nullptr;
 	scene_handler = nullptr;
@@ -589,4 +593,14 @@ void WSEvents::SelectedSceneChanged(QListWidgetItem *current, QListWidgetItem *p
 
 		obs_data_release(data);
 	}
+}
+
+void WSEvents::ModeSwitchClicked(bool checked)
+{
+	obs_data_t* data = obs_data_create();
+	obs_data_set_bool(data, "new-state", checked);
+
+	broadcastUpdate("StudioModeSwitched", data);
+
+	obs_data_release(data);
 }

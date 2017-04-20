@@ -22,6 +22,7 @@ The protocol in general is based on the OBS Remote protocol created by Bill Hami
     - ["TransitionListChanged"](#transitionlistchanged)
     - ["TransitionBegin"](#transitionbegin)
     - ["PreviewSceneChanged"](#previewscenechanged)
+    - ["StudioModeSwitched"](#studiomodeswitched)
     - ["ProfileChanged"](#profilechanged)
     - ["ProfileListChanged"](#profilelistchanged)
     - ["StreamStarting"](#streamstarting)
@@ -163,6 +164,12 @@ A transition other than "Cut" has begun.
 
 #### "PreviewSceneChanged"
 The selected Preview scene changed (only in Studio Mode).
+
+---
+
+#### "StudioModeSwitched"
+Studio Mode has been switched on or off.
+- **"new-state"** (bool) : new state of Studio Mode: true if enabled, false if disabled.
 
 ---
 

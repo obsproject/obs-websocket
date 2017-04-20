@@ -42,10 +42,11 @@ class WSEvents : public QObject
 		const char* GetRecordingTimecode();
 
 	private Q_SLOTS:
+		void deferredInitOperations();
 		void StreamStatus();
 		void TransitionDurationChanged(int ms);
 		void SelectedSceneChanged(QListWidgetItem *current, QListWidgetItem *prev);
-		void deferredInitOperations();
+		void ModeSwitchClicked(bool checked);
 
 	private:
 		WSServer *_srv;
