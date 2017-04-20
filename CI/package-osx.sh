@@ -2,6 +2,8 @@
 
 set -e
 
+echo "-- Preparing package build"
+
 export WS_LIB="$(brew --prefix qt5)/lib/QtWebSockets.framework/QtWebSockets"
 export NET_LIB="$(brew --prefix qt5)/lib/QtNetwork.framework/QtNetwork"
 
@@ -14,18 +16,41 @@ fi
 
 export FILENAME="obs-websocket-$VERSION-osx.pkg"
 
+export QT_PREFIX="$(brew --prefix qt5)"
+
+echo "-- Copying Qt dependencies"
+#cp $WS_LIB ./build
+#cp $NET_LIB ./build
+
+chmod +rw ./build/QtWebSockets ./build/QtNetwork
+
+echo "-- Modifying QtNetwork"
 # TODO : put a loop in there
 install_name_tool \
-	-change "$(brew --prefix qt5)/lib/QtWebSockets.framework/Versions/5/QtWebSockets" @rpath/QtWebSockets \
-	-change "$(brew --prefix qt5)/lib/QtWidgets.framework/Versions/5/QtWidgets" @rpath/QtWidgets \
-	-change "$(brew --prefix qt5)/lib/QtNetwork.framework/Versions/5/QtNetwork" @rpath/QtNetwork \
-	-change "$(brew --prefix qt5)/lib/QtGui.framework/Versions/5/QtGui" @rpath/QtGui \
-	-change "$(brew --prefix qt5)/lib/QtCore.framework/Versions/5/QtCore" @rpath/QtCore \
+	-change "/usr/local/opt/qt/lib/QtNetwork.framework/Versions/5/QtNetwork" @rpath/QtNetwork \
+	-change "$QT_PREFIX/lib/QtCore.framework/Versions/5/QtCore" @rpath/QtCore \
+	./build/QtNetwork
+
+echo "-- Modifying QtWebSockets"
+install_name_tool \
+	-change "/usr/local/opt/qt/lib/QtWebSockets.framework/Versions/5/QtWebSockets" @rpath/QtWebSockets \
+	-change "$QT_PREFIX/lib/QtNetwork.framework/Versions/5/QtNetwork" @rpath/QtNetwork \
+	-change "$QT_PREFIX/lib/QtCore.framework/Versions/5/QtCore" @rpath/QtCore \
+	./build/QtWebSockets
+
+echo "-- Modifying obs-websocket.so"
+install_name_tool \
+	-change "$QT_PREFIX/lib/QtWebSockets.framework/Versions/5/QtWebSockets" @rpath/QtWebSockets \
+	-change "$QT_PREFIX/lib/QtWidgets.framework/Versions/5/QtWidgets" @rpath/QtWidgets \
+	-change "$QT_PREFIX/lib/QtNetwork.framework/Versions/5/QtNetwork" @rpath/QtNetwork \
+	-change "$QT_PREFIX/lib/QtGui.framework/Versions/5/QtGui" @rpath/QtGui \
+	-change "$QT_PREFIX/lib/QtCore.framework/Versions/5/QtCore" @rpath/QtCore \
 	./build/obs-websocket.so
 
-cp $WS_LIB ./build
-cp $NET_LIB ./build
+chmod -w ./build/QtWebSockets ./build/QtNetwork
 
+echo "-- Actual package build"
 packagesbuild ./CI/osx/obs-websocket.pkgproj
 
+echo "-- Renaming obs-websocket.pkg to $FILENAME"
 mv ./release/obs-websocket.pkg ./release/$FILENAME
