@@ -19,8 +19,8 @@ export FILENAME="obs-websocket-$VERSION-osx.pkg"
 export QT_PREFIX="$(brew --prefix qt5)"
 
 echo "-- Copying Qt dependencies"
-#cp $WS_LIB ./build
-#cp $NET_LIB ./build
+cp $WS_LIB ./build
+cp $NET_LIB ./build
 
 chmod +rw ./build/QtWebSockets ./build/QtNetwork
 
