@@ -40,9 +40,8 @@ WSServer::WSServer(QObject *parent) :
 	_wsServer = new QWebSocketServer(
 		QStringLiteral("obs-websocket"),
 		QWebSocketServer::NonSecureMode,
-		this);
+		_serverThread);
 
-	_wsServer->moveToThread(_serverThread);
 	_serverThread->start();
 }
 
