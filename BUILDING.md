@@ -26,4 +26,4 @@ sudo make install
 
 ## Automated Builds
 - Windows : [![Automated Build status for Windows](https://ci.appveyor.com/api/projects/status/github/Palakis/obs-websocket)](https://ci.appveyor.com/project/Palakis/obs-websocket/history)
-- Linux & OS X : coming soon
+- Linux & OS X : [![Automated Build status for Linux & OS X](https://travis-ci.org/Palakis/obs-websocket.svg?branch=master)](https://travis-ci.org/Palakis/obs-websocket)
