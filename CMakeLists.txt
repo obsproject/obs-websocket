@@ -7,6 +7,7 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 
 include(external/FindLibObs.cmake)
+
 find_package(LibObs REQUIRED)
 find_package(Qt5Core REQUIRED)
 find_package(Qt5WebSockets REQUIRED)
@@ -54,6 +55,7 @@ target_link_libraries(obs-websocket
 	Qt5::WebSockets
 	Qt5::Widgets
 	mbedcrypto)
+
 # --- End of section ---
 
 # --- Windows-specific build settings and tasks ---
@@ -127,10 +129,11 @@ if(UNIX AND NOT APPLE)
 endif()
 # --- End of section ---
 
-# TODO : OS X build settings and tasks
+# -- OS X specific build settings and tasks --
 if(APPLE)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++ -fvisibility=default -v")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++ -fvisibility=default")
 
-    set_target_properties(obs-websocket PROPERTIES PREFIX "")
-    target_link_libraries(obs-websocket "${OBS_FRONTEND_LIB}")
+	set_target_properties(obs-websocket PROPERTIES PREFIX "")
+	target_link_libraries(obs-websocket "${OBS_FRONTEND_LIB}")
 endif()
+# -- End of section --
