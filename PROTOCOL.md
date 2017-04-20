@@ -377,7 +377,7 @@ Studio Mode only. Sets the specified scene as the Previewed scene in Studio Mode
 __Request fields__ :  
 - **"scene-name"** (string) : name of the scene to selected as the preview of Studio Mode
 
-__Response__ : OK if specified scene exists, error otherwise.
+__Response__ : OK if Studio Mode is enabled and specified scene exists, error otherwise.
 
 ---
 
@@ -387,10 +387,10 @@ Studio Mode only. Transitions the currently previewed scene to Program (main out
 __Request fields__ :  
 - **"with-transition" (object, optional) : if specified, use this transition when switching from preview to program. This will change the current transition in the frontend to this one.
 
-__Response__ : always OK. No additional fields
+__Response__ : OK if studio mode is enabled and optional transition exists, error otherwise.
 
 An object passed as `"with-transition"` in a request must have the following fields :  
-- **"name"** (string) : transition name
+- **"name"** (string, optional) : transition name
 - **"duration"** (integer, optional) : transition duration in milliseconds
 
 ---

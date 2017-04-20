@@ -788,13 +788,19 @@ void WSRequestHandler::HandleGetPreviewScene(WSRequestHandler *owner)
 
 void WSRequestHandler::HandleSetPreviewScene(WSRequestHandler *owner)
 {
-	const char* scene_name = obs_data_get_string(owner->_requestData, "scene-name");
-	if (!scene_name)
+	if (!Utils::IsPreviewModeActive())
+	{
+		owner->SendErrorResponse("studio mode not enabled");
+		return;
+	}
+
+	if (!obs_data_has_user_value(owner->_requestData, "scene-name"))
 	{
 		owner->SendErrorResponse("invalid request parameters");
 		return;
 	}
 
+	const char* scene_name = obs_data_get_string(owner->_requestData, "scene-name");
 	Utils::SetPreviewScene(scene_name);
 
 	owner->SendOKResponse();
@@ -802,28 +808,36 @@ void WSRequestHandler::HandleSetPreviewScene(WSRequestHandler *owner)
 
 void WSRequestHandler::HandleTransitionToProgram(WSRequestHandler *owner)
 {
-	obs_data_t* transitionInfo = obs_data_get_obj(owner->_requestData, "with-transition");
-
-	if (transitionInfo)
+	if (!Utils::IsPreviewModeActive())
 	{
-		const char* transitionName = obs_data_get_string(transitionInfo, "name");
-		int transitionDuration = obs_data_get_int(transitionInfo, "duration");
+		owner->SendErrorResponse("studio mode not enabled");
+		return;
+	}
 
-		if (!transitionName)
+	if (obs_data_has_user_value(owner->_requestData, "with-transition"))
+	{
+		obs_data_t* transitionInfo = obs_data_get_obj(owner->_requestData, "with-transition");
+
+		if (obs_data_has_user_value(transitionInfo, "name"))
 		{
-			owner->SendErrorResponse("specified transition doesn't exist");
-			return;
+			const char* transitionName = obs_data_get_string(transitionInfo, "name");
+			bool success = Utils::SetTransitionByName(transitionName);
+
+			if (!success)
+			{
+				owner->SendErrorResponse("specified transition doesn't exist");
+				obs_data_release(transitionInfo);
+				return;
+			}
 		}
 
-		bool success = Utils::SetTransitionByName(transitionName);
-		if (!success)
+		if (obs_data_has_user_value(transitionInfo, "duration"))
 		{
-			owner->SendErrorResponse("unknown error while trying to change current transition");
-			return;
-		}
-
-		if (transitionDuration > 0)
+			int transitionDuration = obs_data_get_int(transitionInfo, "duration");
 			Utils::SetTransitionDuration(transitionDuration);
+		}
+		
+		obs_data_release(transitionInfo);
 	}
 
 	Utils::TransitionToProgram();
