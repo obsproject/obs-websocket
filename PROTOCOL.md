@@ -94,6 +94,7 @@ Additional fields will be present in the event message depending on the event ty
 #### "SwitchScenes"
 OBS is switching to another scene (called at the end of the transition).  
 - **scene-name** (string) : The name of the scene being switched to.
+- **sources** (array of objects) : List of sources composing the scene. Same specification as [`GetCurrentScene`](#getcurrentscene).
 
 ---
 
@@ -164,6 +165,8 @@ A transition other than "Cut" has begun.
 
 #### "PreviewSceneChanged"
 The selected Preview scene changed (only in Studio Mode).
+- **scene-name** (string) : Name of the scene being previewed.
+- **sources** (array of objects) : List of sources composing the scene. Same specification as [`GetCurrentScene`](#getcurrentscene).
 
 ---
 

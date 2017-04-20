@@ -283,14 +283,17 @@ void WSEvents::OnSceneChange()
 	obs_data_t *data = obs_data_create();
 
 	obs_source_t* current_scene = obs_frontend_get_current_scene();
+	obs_data_array_t* scene_items = Utils::GetSceneItems(current_scene);
 	connectSceneSignals(current_scene);
 
 	obs_data_set_string(data, "scene-name", obs_source_get_name(current_scene));
-	
+	obs_data_set_array(data, "sources", scene_items);
+
 	broadcastUpdate("SwitchScenes", data);
 
-	obs_data_release(data);
+	obs_data_array_release(scene_items);
 	obs_source_release(current_scene);
+	obs_data_release(data);
 }
 
 void WSEvents::OnSceneListChange()
@@ -585,12 +588,15 @@ void WSEvents::SelectedSceneChanged(QListWidgetItem *current, QListWidgetItem *p
 		if (!scene) return;
 
 		obs_source_t* scene_source = obs_scene_get_source(scene);
+		obs_data_array_t* scene_items = Utils::GetSceneItems(scene_source);
 
 		obs_data_t* data = obs_data_create();
 		obs_data_set_string(data, "scene-name", obs_source_get_name(scene_source));
+		obs_data_set_array(data, "sources", scene_items);
 
 		broadcastUpdate("PreviewSceneChanged", data);
 
+		obs_data_array_release(scene_items);
 		obs_data_release(data);
 	}
 }
