@@ -12,6 +12,8 @@ Binaries for Windows and Linux are available in the [Releases](https://github.co
 ## Supporters
 They have contributed financially to the project and made possible the addition of several features into obs-websocket. Many thanks to them!
 
+---
+
 [Support Class](http://supportclass.net) designs and develops professional livestreams, with services ranging from broadcast graphics design and integration to event organization, along many other skills.  
 
 [![Support Class](doc/supportclass_logo_blacktext.png)](http://supportclass.net)
