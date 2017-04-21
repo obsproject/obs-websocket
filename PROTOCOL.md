@@ -13,7 +13,7 @@ The protocol in general is based on the OBS Remote protocol created by Bill Hami
     - **Scenes**
       - ["SwitchScenes"](#switchscenes)
       - ["ScenesChanged"](#sceneschanged)
-    - **Sources / Scene Items**
+    - **Scene Items**
       - ["SourceOrderChanged"](#sourceorderchanged)
       - ["SceneItemAdded"](#sceneitemadded)
       - ["SceneItemRemoved"](#sceneitemremoved)
@@ -85,8 +85,10 @@ The protocol in general is based on the OBS Remote protocol created by Bill Hami
       - ["SetVolume"](#setvolume)
       - ["GetVolume"](#getvolume)
       - ["SetMute"](#setmute)
+      - ["GetMute"](#getmute)
       - ["ToggleMute"](#togglemute)
-      - ["SetSourceRender"](#setsourcerender)
+    - **Scene Items**
+      - ["SetSceneItemRender"](#setsourcerender) (a.k.a `SetSourceRender`)
       - ["SetSceneItemPosition"](#setsceneitemposition)
       - ["SetSceneItemTransform"](#setsceneitemtransform)
       - ["SetSceneItemCrop"](#setsceneitemcrop)
@@ -246,7 +248,6 @@ A request to start streaming has been issued.
 
 #### "StreamStarted"  
 Streaming started successfully.  
-*New in OBS Studio*
 
 ---
 
@@ -258,31 +259,26 @@ A request to stop streaming has been issued.
 
 #### "StreamStopped"  
 Streaming stopped successfully.  
-*New in OBS Studio*
 
 ---
 
 #### "RecordingStarting"  
 A request to start recording has been issued.  
-*New in OBS Studio*
 
 ---
 
 #### "RecordingStarted"  
 Recording started successfully.  
-*New in OBS Studio*
 
 ---
 
 #### "RecordingStopping"
 A request to stop streaming has been issued.  
-*New in OBS Studio*
 
 ---
 
 #### "RecordingStopped"  
 Recording stopped successfully.  
-*New in OBS Studio*
 
 ---
 
@@ -302,8 +298,7 @@ Sent every 2 seconds with the following information :
 ---
 
 #### "Exiting"
-OBS is exiting.
-*New in OBS Studio*  
+OBS is exiting.  
 
 ---
 
@@ -488,7 +483,6 @@ Toggles recording on or off.
 
 __Request fields__ : none  
 __Response__ : always OK. No additional fields.  
-*New in OBS Studio*
 
 ---
 
@@ -497,7 +491,6 @@ Start streaming.
 
 __Request fields__ : none  
 __Response__ : always OK. No additional fields.  
-*New in OBS Studio*
 
 ---
 
@@ -506,7 +499,6 @@ Stop streaming.
 
 __Request fields__ : none  
 __Response__ : always OK. No additional fields.  
-*New in OBS Studio*
 
 ---
 
@@ -515,7 +507,6 @@ Start recording.
 
 __Request fields__ : none  
 __Response__ : always OK. No additional fields.  
-*New in OBS Studio*
 
 ---
 
@@ -524,7 +515,6 @@ Stop recording.
 
 __Request fields__ : none  
 __Response__ : always OK. No additional fields.  
-*New in OBS Studio*
 
 ---
 
@@ -552,8 +542,6 @@ __Response__ : always OK, with these additional fields :
 Objects in the "transitions" array have only one field :
 - **"name"** (string) : name of the transition
 
-*New in OBS Studio*  
-
 ---
 
 #### "GetCurrentTransition"
@@ -564,17 +552,13 @@ __Response__ : always OK, with these additional fields :
 - **"name"** (string) : name of the selected transition
 - **"duration"** (integer, only if transition supports this) : transition duration
 
-*New in OBS Studio*  
-
 ---
 
 #### "SetCurrentTransition"
 __Request fields__ :
 - **"transition-name"** (string) : The name of the transition.
 
-__Response__ : OK if specified transition exists, error otherwise.
-
-*New in OBS Studio*  
+__Response__ : OK if specified transition exists, error otherwise. 
 
 ---
 
@@ -586,8 +570,6 @@ __Request fields__ :
 
 __Response__ : always OK.
 
-*New in OBS Studio*
-
 ---
 
 #### "GetTransitionDuration"
@@ -596,8 +578,6 @@ Set the duration of the currently selected transition.
 __Request fields__ : none  
 __Response__ : always OK, with these additional fields :
 - **"transition-duration"** (integer) : current transition duration, in milliseconds
-
-*New in OBS Studio*
 
 ---
 
@@ -610,8 +590,6 @@ __Request fields__ :
 
 __Response__ : OK if specified source exists, error otherwise.
 
-*Updated for OBS Studio*
-
 ---
 
 #### "GetVolume"
@@ -621,11 +599,9 @@ __Request fields__ :
 - **"source"** (string) : name of the source
 
 __Response__ : OK if source exists, with these additional fields :
-- **"name"** (string) : name of the requested source
-- **"volume"** (double) : volume of the requested source, on a linear scale (0.0 to 1.0)
-- **"muted"** (bool) : mute status of the requested source
-
-*Updated for OBS Studio*
+- **"name"** (string) : source name
+- **"volume"** (double) : source volume, on a linear scale (0.0 to 1.0)
+- **"muted"** (bool) : source mute status
 
 ---
 
@@ -638,7 +614,17 @@ __Request fields__ :
 
 __Response__ : OK if specified source exists, error otherwise.
 
-*Updated for OBS Studio*
+---
+
+#### "GetMute"
+Get mute status of a specific source.
+
+__Request fields__ :
+- **"source"** (string) : the name of the source
+
+__Response__ : OK if source exists, with these additional fields :
+- **"name"** (string) : source name
+- **"muted"** (bool) : source mute status
 
 ---
 
@@ -649,8 +635,6 @@ __Request fields__ :
 - **"source"** (string) : the name of the source
 
 __Response__ : OK if specified source exists, error otherwise.
-
-*Updated for OBS Studio*
 
 ---
 
@@ -663,8 +647,6 @@ __Request fields__ :
 
 __Response__ : OK if specified item exists, error otherwise.
 
-*New in OBS Studio*
-
 ---
 
 #### "SetSceneItemTransform"
@@ -676,8 +658,6 @@ __Request fields__ :
 - **"scene-name"** (string) : scene the item belongs to.  defaults to current scene.
 
 __Response__ : OK if specified item exists, error otherwise.
-
-*New in OBS Studio*
 
 ---
 
