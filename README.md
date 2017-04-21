@@ -10,11 +10,19 @@ Follow the project on Twitter for news & updates : [@obswebsocket](https://twitt
 Binaries for Windows and Linux are available in the [Releases](https://github.com/Palakis/obs-websocket/releases) section.
 
 ## Supporters
-[Support Class](http://supportclass.net) designs and develops professional livestreams, with services ranging from broadcast graphics design and integration to event organization, along many other skills.  
-
 They have contributed financially to the project and made possible the addition of several features into obs-websocket. Many thanks to them!
 
+[Support Class](http://supportclass.net) designs and develops professional livestreams, with services ranging from broadcast graphics design and integration to event organization, along many other skills.  
+
 [![Support Class](doc/supportclass_logo_blacktext.png)](http://supportclass.net)
+
+---
+
+[MediaUnit](http://www.mediaunit.no) is a Norwegian media company developing products and services for the media industry, primarly focused on web and events.  
+
+[![MediaUnit](doc/mediaunit_logo_black.png)](http://www.mediaunit.no/)
+
+---
 
 ## Using obs-websocket
 A web client and frontend made by [t2t2](https://github.com/t2t2/obs-tablet-remote) (compatible with tablets and other touch interfaces) is available here : http://t2t2.github.io/obs-tablet-remote/
