@@ -63,7 +63,7 @@ class WSEvents : public QObject
 		uint64_t _lastBytesSentTime;
 
 		void broadcastUpdate(const char *updateType, obs_data_t *additionalFields);
-		
+
 		void OnSceneChange();
 		void OnSceneListChange();
 		void OnSceneCollectionChange();

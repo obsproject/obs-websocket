@@ -23,6 +23,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <QPushButton>
 #include <QLayout>
 #include <QListWidget>
+#include <QSystemTrayIcon>
 #include <stdio.h>
 #include <obs-module.h>
 
@@ -62,6 +63,9 @@ class Utils
 		static void TransitionToProgram();
 
 		static const char* OBSVersionString();
+
+		static QSystemTrayIcon* GetTrayIcon();
+		static void SysTrayNotify(QString &text, QSystemTrayIcon::MessageIcon n, QString title = QString("obs-websocket"));
 };
 
 #endif // UTILS_H
