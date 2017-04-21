@@ -68,6 +68,7 @@ WSRequestHandler::WSRequestHandler(QWebSocket *client) :
 	messageMap["ToggleMute"] = WSRequestHandler::HandleToggleMute;
 	messageMap["SetMute"] = WSRequestHandler::HandleSetMute;
 	messageMap["GetMute"] = WSRequestHandler::HandleGetMute;
+	messageMap["GetSpecialSources"] = WSRequestHandler::HandleGetSpecialSources;
 
 	messageMap["SetCurrentSceneCollection"] = WSRequestHandler::HandleSetCurrentSceneCollection;
 	messageMap["GetCurrentSceneCollection"] = WSRequestHandler::HandleGetCurrentSceneCollection;
@@ -1006,4 +1007,36 @@ void WSRequestHandler::HandleToggleStudioMode(WSRequestHandler *req)
 {
 	Utils::TogglePreviewMode();
 	req->SendOKResponse();
+}
+
+void WSRequestHandler::HandleGetSpecialSources(WSRequestHandler *req)
+{
+	obs_data_t* response = obs_data_create();
+
+	QMap<const char*, int> sources;
+	sources["desktop-1"] = 1;
+	sources["desktop-2"] = 2;
+	sources["mic-1"] = 3;
+	sources["mic-2"] = 4;
+	sources["mic-3"] = 5;
+
+	QMapIterator<const char*, int> i(sources);
+	while (i.hasNext())
+	{
+		i.next();
+
+		const char* id = i.key();
+		obs_source_t* source = obs_get_output_source(i.value());
+		blog(LOG_INFO, "%s : %p", id, source);
+
+		if (source)
+		{
+			obs_data_set_string(response, id, obs_source_get_name(source));
+			obs_source_release(source);
+		}
+	}
+
+	req->SendOKResponse(response);
+
+	obs_data_release(response);
 }

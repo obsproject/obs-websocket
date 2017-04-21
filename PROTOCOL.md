@@ -638,6 +638,20 @@ __Response__ : OK if specified source exists, error otherwise.
 
 ---
 
+#### "GetSpecialSources"
+Get configured special sources like Desktop Audio and Mic/Aux sources.
+
+__Request fields__ : none
+
+__Response__ : always OK, with these additional fields :  
+- **"desktop-1"** (string, optional) : Name of the first Desktop Audio capture source
+- **"desktop-1"** (string, optional) : Name of the second Desktop Audio capture source
+- **"mic-1"** (string, optional) : Name of the first Mic/Aux input source
+- **"mic-2"** (string, optional) : Name of the second Mic/Aux input source
+- **"mic-3"** (string, optional) : Name of the third Mic/Aux input source
+
+---
+
 #### "SetSceneItemPosition"
 __Request fields__ :
 - **"item"** (string) : The name of the scene item.

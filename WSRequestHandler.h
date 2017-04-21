@@ -76,6 +76,7 @@ class WSRequestHandler : public QObject
 		static void HandleToggleMute(WSRequestHandler *req);
 		static void HandleSetMute(WSRequestHandler *req);
 		static void HandleGetMute(WSRequestHandler *req);
+		static void HandleGetSpecialSources(WSRequestHandler *req);
 
 		static void HandleSetCurrentSceneCollection(WSRequestHandler *req);
 		static void HandleGetCurrentSceneCollection(WSRequestHandler *req);
