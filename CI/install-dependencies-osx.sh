@@ -13,6 +13,7 @@ brew install qt5
 cd ..
 git clone --recursive https://github.com/jp9000/obs-studio
 cd obs-studio
+git checkout 18.0.1
 mkdir build && cd build
 cmake .. \
   -DCMAKE_PREFIX_PATH=$(brew --prefix qt5)/lib/cmake \

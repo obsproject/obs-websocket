@@ -48,6 +48,7 @@ apt-get install -y libqt5websockets5-dev
 cd /root
 git clone https://github.com/jp9000/obs-studio ./obs-studio
 cd obs-studio
+git checkout 18.0.1
 mkdir build && cd build
 cmake -DUNIX_STRUCTURE=1 -DCMAKE_INSTALL_PREFIX=/usr ..
 make -j4
