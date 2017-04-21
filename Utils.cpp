@@ -388,11 +388,7 @@ const char* Utils::OBSVersionString() {
 QSystemTrayIcon* Utils::GetTrayIcon()
 {
 	QMainWindow* main = (QMainWindow*)obs_frontend_get_main_window();
-
-	QSystemTrayIcon* trayIcon = main->findChildren<QSystemTrayIcon*>().first();
-	blog(LOG_INFO, "tray icon : %s", trayIcon);
-
-	return trayIcon;
+	return main->findChildren<QSystemTrayIcon*>().first();
 }
 
 void Utils::SysTrayNotify(QString &text, QSystemTrayIcon::MessageIcon icon, QString title)
