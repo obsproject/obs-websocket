@@ -82,6 +82,7 @@ The protocol in general is based on the OBS Remote protocol created by Bill Hami
     - **Sources**
       - ["GetCurrentScene"](#getcurrentscene)
       - ["GetSceneList"](#getscenelist)
+      - ["GetSpecialSources"](#getspecialsources)
       - ["SetVolume"](#setvolume)
       - ["GetVolume"](#getvolume)
       - ["SetMute"](#setmute)
