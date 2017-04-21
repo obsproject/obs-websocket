@@ -36,7 +36,7 @@ See the [build instructions](BUILDING.md).
 - [Brendan H.](https://github.com/haganbmj) : Code contributions and better English in the Protocol specification
 - [Mikhail Swift](https://github.com/mikhailswift) : Code contributions
 - [Tobias Frahmer](https://github.com/Frahmer) : German translation
-- [G-monitor](https://github.com/G-monitor) : Simplified Chinese and Traditional Chinese translations
+- [Genture](https://github.com/Genteure) : Simplified Chinese and Traditional Chinese translations
 - [Larissa Gabilan](https://github.com/laris151) : Portuguese translation
 - [Andy Asquelt](https://github.com/asquelt) : Polish translation
 - [Marcel Haazen](https://github.com/inpothet) : Dutch translation
