@@ -24,6 +24,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include "WSServer.h"
 #include "obs-websocket.h"
 #include "Config.h"
+#include "Utils.h"
 
 QT_USE_NAMESPACE
 
@@ -114,6 +115,9 @@ void WSServer::onNewConnection()
 
 		QByteArray client_ip = pSocket->peerAddress().toString().toUtf8();
 		blog(LOG_INFO, "new client connection from %s:%d", client_ip.constData(), pSocket->peerPort());
+
+		QString msg = QString("Client IP: ") + pSocket->peerAddress().toString();
+		Utils::SysTrayNotify(msg, QSystemTrayIcon::Information, QString("New WebSocket connection"));
 	}
 }
 

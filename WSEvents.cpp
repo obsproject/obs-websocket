@@ -234,8 +234,6 @@ void WSEvents::connectTransitionSignals(obs_source_t* transition)
 
 void WSEvents::connectSceneSignals(obs_source_t* scene)
 {
-	// TODO : connect to all scenes, not just the current one.
-
 	if (scene_handler)
 	{
 		signal_handler_disconnect(scene_handler, "reorder", OnSceneReordered, this);
@@ -244,6 +242,7 @@ void WSEvents::connectSceneSignals(obs_source_t* scene)
 		signal_handler_disconnect(scene_handler, "item_visible", OnSceneItemVisibilityChanged, this);
 	}
 
+	// TODO : connect to all scenes, not just the current one.
 	scene_handler = obs_source_get_signal_handler(scene);
 	signal_handler_connect(scene_handler, "reorder", OnSceneReordered, this);
 	signal_handler_connect(scene_handler, "item_add", OnSceneItemAdd, this);

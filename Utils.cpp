@@ -384,3 +384,24 @@ const char* Utils::OBSVersionString() {
 
 	return result;
 }
+
+QSystemTrayIcon* Utils::GetTrayIcon()
+{
+	QMainWindow* main = (QMainWindow*)obs_frontend_get_main_window();
+
+	QSystemTrayIcon* trayIcon = main->findChildren<QSystemTrayIcon*>().first();
+	blog(LOG_INFO, "tray icon : %s", trayIcon);
+
+	return trayIcon;
+}
+
+void Utils::SysTrayNotify(QString &text, QSystemTrayIcon::MessageIcon icon, QString &title)
+{
+	if (!QSystemTrayIcon::supportsMessages())
+		return;
+
+	QSystemTrayIcon* trayIcon = GetTrayIcon();
+	
+	if (trayIcon)
+		trayIcon->showMessage(title, text, icon);
+}
