@@ -122,7 +122,7 @@ void WSServer::onNewConnection()
 			+ QString(" ") 
 			+ clientAddr.toString();
 		
-		Utils::SysTrayNotify(msg, QSystemTrayIcon::Information, QString(obs_module_text("OBSWebsocket.ConnectNotify.Title")));
+		Utils::SysTrayNotify(msg, QSystemTrayIcon::Information, QString(obs_module_text("OBSWebsocket.ConnectNotify.Connected")));
 	}
 }
 
@@ -151,7 +151,15 @@ void WSServer::socketDisconnected()
 		
 		pSocket->deleteLater();
 
-		QByteArray client_ip = pSocket->peerAddress().toString().toUtf8();
-		blog(LOG_INFO, "client %s:%d disconnected", client_ip.constData(), pSocket->peerPort());
+		QHostAddress clientAddr = pSocket->peerAddress();
+		QString clientIp = Utils::FormatIPAddress(clientAddr);
+
+		blog(LOG_INFO, "client %s:%d disconnected", clientIp.toUtf8().constData(), pSocket->peerPort());
+
+		QString msg = QString(obs_module_text("OBSWebsocket.ConnectNotify.ClientIP"))
+			+ QString(" ")
+			+ clientAddr.toString();
+
+		Utils::SysTrayNotify(msg, QSystemTrayIcon::Information, QString(obs_module_text("OBSWebsocket.ConnectNotify.Disconnected")));
 	}
 }
