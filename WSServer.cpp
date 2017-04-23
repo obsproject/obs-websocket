@@ -113,12 +113,14 @@ void WSServer::onNewConnection()
 		_clients << pSocket;
 		_clMutex.unlock();
 
-		QByteArray client_ip = pSocket->peerAddress().toString().toUtf8();
-		blog(LOG_INFO, "new client connection from %s:%d", client_ip.constData(), pSocket->peerPort());
+		QHostAddress clientAddr = pSocket->peerAddress();
+		QString clientIp = clientAddr.toString();
+
+		blog(LOG_INFO, "new client connection from %s:%d", clientIp.toUtf8().constData(), pSocket->peerPort());
 
 		QString msg = QString(obs_module_text("OBSWebsocket.ConnectNotify.ClientIP")) 
 			+ QString(" ") 
-			+ pSocket->peerAddress().toString();
+			+ clientAddr.toString();
 		
 		Utils::SysTrayNotify(msg, QSystemTrayIcon::Information, QString(obs_module_text("OBSWebsocket.ConnectNotify.Title")));
 	}
