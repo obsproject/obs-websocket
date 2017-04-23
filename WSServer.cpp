@@ -114,7 +114,7 @@ void WSServer::onNewConnection()
 		_clMutex.unlock();
 
 		QHostAddress clientAddr = pSocket->peerAddress();
-		QString clientIp = clientAddr.toString();
+		QString clientIp = Utils::FormatIPAddress(clientAddr);
 
 		blog(LOG_INFO, "new client connection from %s:%d", clientIp.toUtf8().constData(), pSocket->peerPort());
 

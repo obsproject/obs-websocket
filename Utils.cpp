@@ -16,11 +16,11 @@ You should have received a copy of the GNU General Public License along
 with this program. If not, see <https://www.gnu.org/licenses/>
 */
 
-#include "Utils.h"
 #include <obs-frontend-api.h>
 #include <obs.hpp>
 #include <QMainWindow>
-#include <QPainter>
+#include <QDir>
+#include "Utils.h"
 #include "obs-websocket.h"
 
 Q_DECLARE_METATYPE(OBSScene);
@@ -351,6 +351,8 @@ bool Utils::SetPreviewScene(const char* name)
 			return false;
 		}
 	}
+
+	return false;
 }
 
 void Utils::TransitionToProgram()
@@ -407,4 +409,52 @@ void Utils::SysTrayNotify(QString &text, QSystemTrayIcon::MessageIcon icon, QStr
 	
 	if (trayIcon)
 		trayIcon->showMessage(title, text, icon);
+}
+
+QString Utils::FormatIPAddress(QHostAddress &addr)
+{
+	if (addr.protocol() == QAbstractSocket::IPv4Protocol)
+	{
+		QString v4addr = addr.toString().replace("::fff:", "");
+	}
+
+	return addr.toString();
+}
+
+const char* Utils::GetRecordingFolder()
+{
+	config_t* profile = obs_frontend_get_profile_config();
+	const char* outputMode = config_get_string(profile, "Output", "Mode");
+
+	if (strcmp(outputMode, "Advanced") == 0)
+	{
+		// Advanced mode
+		return config_get_string(profile, "AdvOut", "RecFilePath");
+	}
+	else
+	{
+		// Simple mode
+		return config_get_string(profile, "SimpleOutput", "FilePath");
+	}
+}
+
+bool Utils::SetRecordingFolder(const char* path)
+{
+	if (!QDir(path).exists())
+		return false;
+
+	config_t* profile = obs_frontend_get_profile_config();
+	const char* outputMode = config_get_string(profile, "Output", "Mode");
+
+	if (strcmp(outputMode, "Advanced") == 0)
+	{
+		config_set_string(profile, "AdvOut", "RecFilePath", path);
+	}
+	else
+	{
+		config_set_string(profile, "SimpleOutput", "FilePath", path);
+	}
+
+	config_save(profile);
+	return true;
 }

@@ -24,8 +24,10 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <QLayout>
 #include <QListWidget>
 #include <QSystemTrayIcon>
+#include <QHostAddress>
 #include <stdio.h>
 #include <obs-module.h>
+#include <util/config-file.h>
 
 class Utils
 {
@@ -66,6 +68,10 @@ class Utils
 
 		static QSystemTrayIcon* GetTrayIcon();
 		static void SysTrayNotify(QString &text, QSystemTrayIcon::MessageIcon n, QString title = QString("obs-websocket"));
+
+		static QString FormatIPAddress(QHostAddress &addr);
+		static const char* GetRecordingFolder();
+		static bool SetRecordingFolder(const char* path);
 };
 
 #endif // UTILS_H
