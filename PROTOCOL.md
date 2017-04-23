@@ -491,7 +491,7 @@ __Response__ : always OK. No additional fields.
 Start streaming.
 
 __Request fields__ : none  
-__Response__ : always OK. No additional fields.  
+__Response__ : Error if streaming is already active, OK otherwise. No additional fields.  
 
 ---
 
@@ -499,7 +499,7 @@ __Response__ : always OK. No additional fields.
 Stop streaming.
 
 __Request fields__ : none  
-__Response__ : always OK. No additional fields.  
+__Response__ : Error if streaming is already inactive, OK otherwise. No additional fields.  
 
 ---
 
@@ -507,7 +507,7 @@ __Response__ : always OK. No additional fields.
 Start recording.
 
 __Request fields__ : none  
-__Response__ : always OK. No additional fields.  
+__Response__ : Error if recording is already active, OK otherwise. No additional fields.  
 
 ---
 
@@ -515,7 +515,7 @@ __Response__ : always OK. No additional fields.
 Stop recording.
 
 __Request fields__ : none  
-__Response__ : always OK. No additional fields.  
+__Response__ : Error if recording is already inactive, OK otherwise. No additional fields.  
 
 ---
 

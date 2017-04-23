@@ -391,33 +391,53 @@ void WSRequestHandler::HandleStartStopRecording(WSRequestHandler *req)
 void WSRequestHandler::HandleStartStreaming(WSRequestHandler *req)
 {
 	if (obs_frontend_streaming_active() == false)
+	{
 		obs_frontend_streaming_start();
-
-	req->SendOKResponse();
+		req->SendOKResponse();
+	}
+	else
+	{
+		req->SendErrorResponse("streaming already active");
+	}
 }
 
 void WSRequestHandler::HandleStopStreaming(WSRequestHandler *req)
 {
 	if (obs_frontend_streaming_active() == true)
+	{
 		obs_frontend_streaming_stop();
-
-	req->SendOKResponse();
+		req->SendOKResponse();
+	}
+	else
+	{
+		req->SendErrorResponse("streaming not active");
+	}
 }
 
 void WSRequestHandler::HandleStartRecording(WSRequestHandler *req)
 {
 	if (obs_frontend_recording_active() == false)
+	{
 		obs_frontend_recording_start();
-
-	req->SendOKResponse();
+		req->SendOKResponse();
+	}
+	else
+	{
+		req->SendErrorResponse("recording already active");
+	}
 }
 
 void WSRequestHandler::HandleStopRecording(WSRequestHandler *req)
 {
 	if (obs_frontend_recording_active() == true)
+	{
 		obs_frontend_recording_stop();
-
-	req->SendOKResponse();
+		req->SendOKResponse();
+	}
+	else
+	{
+		req->SendErrorResponse("recording not active");
+	}
 }
 
 void WSRequestHandler::HandleGetTransitionList(WSRequestHandler *req)
