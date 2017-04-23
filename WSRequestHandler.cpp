@@ -363,13 +363,9 @@ void WSRequestHandler::HandleGetStreamingStatus(WSRequestHandler *req)
 void WSRequestHandler::HandleStartStopStreaming(WSRequestHandler *req)
 {
 	if (obs_frontend_streaming_active())
-	{
 		obs_frontend_streaming_stop();
-	}
 	else
-	{
 		obs_frontend_streaming_start();
-	}
 
 	req->SendOKResponse();
 }
@@ -377,13 +373,9 @@ void WSRequestHandler::HandleStartStopStreaming(WSRequestHandler *req)
 void WSRequestHandler::HandleStartStopRecording(WSRequestHandler *req)
 {
 	if (obs_frontend_recording_active())
-	{
 		obs_frontend_recording_stop();
-	}
 	else
-	{
 		obs_frontend_recording_start();
-	}
 
 	req->SendOKResponse();
 }
@@ -983,7 +975,7 @@ void WSRequestHandler::HandleTransitionToProgram(WSRequestHandler *req)
 	{
 		obs_data_t* transitionInfo = obs_data_get_obj(req->data, "with-transition");
 
-		if (req->hasField("name"))
+		if (obs_data_has_user_value(transitionInfo, "name"))
 		{
 			const char* transitionName = obs_data_get_string(transitionInfo, "name");
 			if (!str_valid(transitionName))
@@ -1001,7 +993,7 @@ void WSRequestHandler::HandleTransitionToProgram(WSRequestHandler *req)
 			}
 		}
 
-		if (req->hasField("duration"))
+		if (obs_data_has_user_value(transitionInfo, "duration"))
 		{
 			int transitionDuration = obs_data_get_int(transitionInfo, "duration");
 			Utils::SetTransitionDuration(transitionDuration);
