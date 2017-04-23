@@ -293,6 +293,14 @@ void WSEvents::OnSceneChange()
 	obs_data_array_release(scene_items);
 	obs_source_release(current_scene);
 	obs_data_release(data);
+
+	// Dirty fix : OBS blocks signals when swapping scenes in Studio Mode
+	// after transition end, so SelectedSceneChanged is never called...
+	if (Utils::IsPreviewModeActive())
+	{
+		QListWidget* list = Utils::GetSceneListControl();
+		SelectedSceneChanged(list->currentItem(), nullptr);
+	}
 }
 
 void WSEvents::OnSceneListChange()
