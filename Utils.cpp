@@ -334,7 +334,7 @@ obs_scene_t* Utils::GetPreviewScene()
 	return nullptr;
 }
 
-void Utils::SetPreviewScene(const char* name)
+bool Utils::SetPreviewScene(const char* name)
 {
 	if (IsPreviewModeActive())
 	{
@@ -342,7 +342,14 @@ void Utils::SetPreviewScene(const char* name)
 		QList<QListWidgetItem*> matchingItems = sceneList->findItems(name, Qt::MatchExactly);
 
 		if (matchingItems.count() > 0)
+		{
 			sceneList->setCurrentItem(matchingItems.first());
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
 }
 

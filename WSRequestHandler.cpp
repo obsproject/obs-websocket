@@ -943,9 +943,12 @@ void WSRequestHandler::HandleSetPreviewScene(WSRequestHandler *req)
 	}
 
 	const char* scene_name = obs_data_get_string(req->data, "scene-name");
-	Utils::SetPreviewScene(scene_name);
+	bool success = Utils::SetPreviewScene(scene_name);
 
-	req->SendOKResponse();
+	if (success)
+		req->SendOKResponse();
+	else
+		req->SendErrorResponse("specified scene doesn't exist");
 }
 
 void WSRequestHandler::HandleTransitionToProgram(WSRequestHandler *req)
