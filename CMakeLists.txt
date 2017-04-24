@@ -42,6 +42,7 @@ add_library(obs-websocket MODULE
 add_dependencies(obs-websocket mbedcrypto)
 
 include_directories( 
+	"${LIBOBS_INCLUDE_DIR}/../UI/obs-frontend-api"
 	${Qt5Core_INCLUDES}
 	${Qt5WebSockets_INCLUDES}
 	${Qt5Widgets_INCLUDES}
@@ -63,9 +64,6 @@ if(WIN32)
 		set(OBS_FRONTEND_LIB "OBS_FRONTEND_LIB-NOTFOUND" CACHE FILEPATH "OBS frontend library")
 		message(FATAL_ERROR "Could not find OBS Frontend API\'s library !")
 	endif()
-
-	include_directories(
-		"${LIBOBS_INCLUDE_DIR}/../UI/obs-frontend-api")
 
 	target_link_libraries(obs-websocket
 		"${OBS_FRONTEND_LIB}")
