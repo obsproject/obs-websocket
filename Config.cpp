@@ -167,13 +167,16 @@ bool Config::CheckAuth(const char *response)
 	mbedtls_base64_encode(expected_response, 64, &base64_size, hash, 32);
 	expected_response[64] = 0; // Null-terminate the string
 
+	bool authSuccess = false;
 	if (strcmp((char*)expected_response, response) == 0) {
 		SessionChallenge = GenerateSalt();
-		return true;
+		authSuccess = true;
 	}
-	else {
-		return false;
-	}
+
+	bfree(challengeAndResponse);
+	bfree(expected_response);
+
+	return authSuccess;
 }
 
 Config* Config::Current()
