@@ -1,4 +1,4 @@
-obs-websocket protocol reference
+obs-websocket 4.1 protocol reference
 ================================
 
 ## General Introduction
