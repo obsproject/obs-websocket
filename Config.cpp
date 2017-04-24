@@ -20,6 +20,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <mbedtls/sha256.h>
 #include <obs-frontend-api.h>
 #include <util/config-file.h>
+#include <string>
 
 #include "Config.h"
 
@@ -98,43 +99,36 @@ void Config::Save()
 const char* Config::GenerateSalt()
 {
 	// Generate 32 random chars
-	unsigned char *random_chars = (unsigned char *)bzalloc(32);
+	unsigned char* random_chars = (unsigned char*)bzalloc(32);
 	mbedtls_ctr_drbg_random(&rng, random_chars, 32);
 
 	// Convert the 32 random chars to a base64 string
-	unsigned char *salt = (unsigned char*)bzalloc(64);
+	char* salt = (char*)bzalloc(64);
 	size_t salt_bytes;
-	mbedtls_base64_encode(salt, 64, &salt_bytes, random_chars, 32);
-	salt[salt_bytes] = 0; // Null-terminate the string
+	mbedtls_base64_encode((unsigned char*)salt, 64, &salt_bytes, random_chars, 32);
 
 	bfree(random_chars);
-	return (char *)salt;
+	return salt;
 }
 
 const char* Config::GenerateSecret(const char *password, const char *salt)
 {
-	size_t passwordLength = strlen(password);
-	size_t saltLength = strlen(salt);
-
 	// Concatenate the password and the salt
-	unsigned char *passAndSalt = (unsigned char*)bzalloc(passwordLength + saltLength);
-	memcpy(passAndSalt, password, passwordLength);
-	memcpy(passAndSalt + passwordLength, salt, saltLength);
-	passAndSalt[passwordLength + saltLength] = 0; // Null-terminate the string
+	std::string passAndSalt = "";
+	passAndSalt += password;
+	passAndSalt += salt;
 
 	// Generate a SHA256 hash of the password
-	unsigned char *challengeHash = (unsigned char *)bzalloc(32);
-	mbedtls_sha256(passAndSalt, passwordLength + saltLength, challengeHash, 0);
+	unsigned char* challengeHash = (unsigned char*)bzalloc(32);
+	mbedtls_sha256((unsigned char*)passAndSalt.c_str(), passAndSalt.length(), challengeHash, 0);
 	
 	// Encode SHA256 hash to Base64
-	unsigned char *challenge = (unsigned char*)bzalloc(64);
+	char* challenge = (char*)bzalloc(64);
 	size_t challenge_bytes = 0;
-	mbedtls_base64_encode(challenge, 64, &challenge_bytes, challengeHash, 32);
-	challenge[64] = 0; // Null-terminate the string
+	mbedtls_base64_encode((unsigned char*)challenge, 64, &challenge_bytes, challengeHash, 32);
 
-	bfree(passAndSalt);
 	bfree(challengeHash);
-	return (char*)challenge;
+	return challenge;
 }
 
 void Config::SetPassword(const char *password)
@@ -148,34 +142,28 @@ void Config::SetPassword(const char *password)
 
 bool Config::CheckAuth(const char *response)
 {
-	size_t secretLength = strlen(this->Secret);
-	size_t sessChallengeLength = strlen(this->SessionChallenge);
-	
 	// Concatenate auth secret with the challenge sent to the user
-	char *challengeAndResponse = (char*)bzalloc(secretLength + sessChallengeLength);
-	memcpy(challengeAndResponse, this->Secret, secretLength);
-	memcpy(challengeAndResponse + secretLength, this->SessionChallenge, sessChallengeLength);
-	challengeAndResponse[secretLength + sessChallengeLength] = 0; // Null-terminate the string
+	std::string challengeAndResponse = "";
+	challengeAndResponse += this->Secret;
+	challengeAndResponse += this->SessionChallenge;
 
 	// Generate a SHA256 hash of challengeAndResponse
-	unsigned char *hash = (unsigned char*)bzalloc(32);
-	mbedtls_sha256((unsigned char*)challengeAndResponse, secretLength + sessChallengeLength, hash, 0);
+	unsigned char* hash = (unsigned char*)bzalloc(32);
+	mbedtls_sha256((unsigned char*)challengeAndResponse.c_str(), challengeAndResponse.length(), hash, 0);
 
 	// Encode the SHA256 hash to Base64
-	unsigned char *expected_response = (unsigned char*)bzalloc(64);
+	char* expected_response = (char*)bzalloc(64);
 	size_t base64_size = 0;
-	mbedtls_base64_encode(expected_response, 64, &base64_size, hash, 32);
-	expected_response[64] = 0; // Null-terminate the string
+	mbedtls_base64_encode((unsigned char*)expected_response, 64, &base64_size, hash, 32);
 
 	bool authSuccess = false;
-	if (strcmp((char*)expected_response, response) == 0) {
+	if (strcmp(expected_response, response) == 0) {
 		SessionChallenge = GenerateSalt();
 		authSuccess = true;
 	}
 
-	bfree(challengeAndResponse);
+	bfree(hash);
 	bfree(expected_response);
-
 	return authSuccess;
 }
 
