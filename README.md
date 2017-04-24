@@ -32,6 +32,9 @@ I'd like to know what you're building with or for obs-websocket. If you do somet
 ## Compiling obs-websocket
 See the [build instructions](BUILDING.md).
 
+## Translations
+**We need your help on translations**. Please join the localization project on Crowdin: https://crowdin.com/project/obs-websocket
+
 ## Special thanks
 - [Brendan H.](https://github.com/haganbmj) : Code contributions and better English in the Protocol specification
 - [Mikhail Swift](https://github.com/mikhailswift) : Code contributions
