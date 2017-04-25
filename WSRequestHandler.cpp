@@ -139,8 +139,6 @@ void WSRequestHandler::processIncomingMessage(QString textMessage)
 
 WSRequestHandler::~WSRequestHandler()
 {
-	if (data)
-		obs_data_release(data);
 }
 
 void WSRequestHandler::SendOKResponse(obs_data_t *additionalFields)
