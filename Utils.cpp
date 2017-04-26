@@ -85,9 +85,12 @@ obs_data_t* Utils::GetSceneItemData(obs_sceneitem_t *item) {
 	float item_height = float(obs_source_get_height(item_source));
 
 	obs_data_t *data = obs_data_create();
-	obs_data_set_string(data, "name", obs_source_get_name(obs_sceneitem_get_source(item)));
-	obs_data_set_string(data, "type", obs_source_get_id(obs_sceneitem_get_source(item)));
-	obs_data_set_double(data, "volume", obs_source_get_volume(obs_sceneitem_get_source(item)));
+	obs_data_set_string(data, "name",
+		obs_source_get_name(obs_sceneitem_get_source(item)));
+	obs_data_set_string(data, "type",
+		obs_source_get_id(obs_sceneitem_get_source(item)));
+	obs_data_set_double(data, "volume",
+		obs_source_get_volume(obs_sceneitem_get_source(item)));
 	obs_data_set_double(data, "x", pos.x);
 	obs_data_set_double(data, "y", pos.y);
 	obs_data_set_int(data, "source_cx", (int)item_width);
@@ -117,7 +120,9 @@ obs_sceneitem_t* Utils::GetSceneItemFromName(obs_source_t* source, const char* n
 	obs_scene_enum_items(scene, [](obs_scene_t *scene, obs_sceneitem_t *currentItem, void *param) {
 		current_search *search = static_cast<current_search *>(param);
 		
-		const char* currentItemName = obs_source_get_name(obs_sceneitem_get_source(currentItem));
+		const char* currentItemName =
+			obs_source_get_name(obs_sceneitem_get_source(currentItem));
+		
 		if (strcmp(currentItemName, search->query) == 0) {
 			search->result = currentItem;
 			obs_sceneitem_addref(search->result);
@@ -339,7 +344,8 @@ bool Utils::SetPreviewScene(const char* name)
 	if (IsPreviewModeActive())
 	{
 		QListWidget* sceneList = GetSceneListControl();
-		QList<QListWidgetItem*> matchingItems = sceneList->findItems(name, Qt::MatchExactly);
+		QList<QListWidgetItem*> matchingItems = 
+			sceneList->findItems(name, Qt::MatchExactly);
 
 		if (matchingItems.count() > 0)
 		{

@@ -27,13 +27,16 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #define CHANGE_ME "changeme"
 
 SettingsDialog::SettingsDialog(QWidget *parent) :
-    QDialog(parent, Qt::Dialog),
-    ui(new Ui::SettingsDialog)
+	QDialog(parent, Qt::Dialog),
+	ui(new Ui::SettingsDialog)
 {
-    ui->setupUi(this);
+	ui->setupUi(this);
 	
-	connect(ui->authRequired, &QCheckBox::stateChanged, this, &SettingsDialog::AuthCheckboxChanged);
-	connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &SettingsDialog::FormAccepted);
+	connect(ui->authRequired, &QCheckBox::stateChanged, 
+		this, &SettingsDialog::AuthCheckboxChanged);
+	connect(ui->buttonBox, &QDialogButtonBox::accepted, 
+		this, &SettingsDialog::FormAccepted);
+
 
 	AuthCheckboxChanged();
 }
@@ -114,5 +117,5 @@ void SettingsDialog::FormAccepted()
 
 SettingsDialog::~SettingsDialog()
 {
-    delete ui;
+	delete ui;
 }

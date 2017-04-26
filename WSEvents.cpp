@@ -50,7 +50,8 @@ const char* ns_to_timestamp(uint64_t ns)
 	uint64_t ms_part = ms % 1000;
 
 	char* ts = (char*)bmalloc(64);
-	sprintf(ts, "%02d:%02d:%02d.%03d", hours_part, minutes_part, secs_part, ms_part);
+	sprintf(ts, "%02d:%02d:%02d.%03d",
+		hours_part, minutes_part, secs_part, ms_part);
 
 	return ts;
 }
@@ -63,14 +64,17 @@ WSEvents::WSEvents(WSServer *srv)
 	obs_frontend_add_event_callback(WSEvents::FrontendEventHandler, this);
 
 	QSpinBox* duration_control = Utils::GetTransitionDurationControl();
-	connect(duration_control, SIGNAL(valueChanged(int)), this, SLOT(TransitionDurationChanged(int)));
+	connect(duration_control, SIGNAL(valueChanged(int)), 
+		this, SLOT(TransitionDurationChanged(int)));
 
 	QTimer *statusTimer = new QTimer();
-	connect(statusTimer, SIGNAL(timeout()), this, SLOT(StreamStatus()));
+	connect(statusTimer, SIGNAL(timeout()), 
+		this, SLOT(StreamStatus()));
 	statusTimer->start(2000); // equal to frontend's constant BITRATE_UPDATE_SECONDS
 
 	QListWidget* sceneList = Utils::GetSceneListControl();
-	connect(sceneList, SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)), this, SLOT(SelectedSceneChanged(QListWidgetItem*, QListWidgetItem*)));
+	connect(sceneList, SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)),
+		this, SLOT(SelectedSceneChanged(QListWidgetItem*, QListWidgetItem*)));
 
 	QPushButton* modeSwitch = Utils::GetPreviewModeButtonControl();
 	connect(modeSwitch, SIGNAL(clicked(bool)), this, SLOT(ModeSwitchClicked(bool)));
@@ -219,13 +223,15 @@ void WSEvents::connectTransitionSignals(obs_source_t* transition)
 {
 	if (transition_handler)
 	{
-		signal_handler_disconnect(transition_handler, "transition_start", OnTransitionBegin, this);
+		signal_handler_disconnect(transition_handler,
+			"transition_start", OnTransitionBegin, this);
 	}
 
 	if (!transition_is_cut(transition))
 	{
 		transition_handler = obs_source_get_signal_handler(transition);
-		signal_handler_connect(transition_handler, "transition_start", OnTransitionBegin, this);	}
+		signal_handler_connect(transition_handler,
+			"transition_start", OnTransitionBegin, this);	}
 	else
 	{
 		transition_handler = nullptr;
@@ -236,18 +242,26 @@ void WSEvents::connectSceneSignals(obs_source_t* scene)
 {
 	if (scene_handler)
 	{
-		signal_handler_disconnect(scene_handler, "reorder", OnSceneReordered, this);
-		signal_handler_disconnect(scene_handler, "item_add", OnSceneItemAdd, this);
-		signal_handler_disconnect(scene_handler, "item_remove", OnSceneItemDelete, this);
-		signal_handler_disconnect(scene_handler, "item_visible", OnSceneItemVisibilityChanged, this);
+		signal_handler_disconnect(scene_handler,
+			"reorder", OnSceneReordered, this);
+		signal_handler_disconnect(scene_handler,
+			"item_add", OnSceneItemAdd, this);
+		signal_handler_disconnect(scene_handler,
+			"item_remove", OnSceneItemDelete, this);
+		signal_handler_disconnect(scene_handler,
+			"item_visible", OnSceneItemVisibilityChanged, this);
 	}
 
 	// TODO : connect to all scenes, not just the current one.
 	scene_handler = obs_source_get_signal_handler(scene);
-	signal_handler_connect(scene_handler, "reorder", OnSceneReordered, this);
-	signal_handler_connect(scene_handler, "item_add", OnSceneItemAdd, this);
-	signal_handler_connect(scene_handler, "item_remove", OnSceneItemDelete, this);
-	signal_handler_connect(scene_handler, "item_visible", OnSceneItemVisibilityChanged, this);
+	signal_handler_connect(scene_handler,
+		"reorder", OnSceneReordered, this);
+	signal_handler_connect(scene_handler,
+		"item_add", OnSceneItemAdd, this);
+	signal_handler_connect(scene_handler,
+		"item_remove", OnSceneItemDelete, this);
+	signal_handler_connect(scene_handler,
+		"item_visible", OnSceneItemVisibilityChanged, this);
 }
 
 uint64_t WSEvents::GetStreamingTime()
@@ -333,7 +347,8 @@ void WSEvents::OnTransitionChange()
 	connectTransitionSignals(current_transition);
 
 	obs_data_t *data = obs_data_create();
-	obs_data_set_string(data, "transition-name", obs_source_get_name(current_transition));
+	obs_data_set_string(data, "transition-name", 
+		obs_source_get_name(current_transition));
 		
 	broadcastUpdate("SwitchTransition", data);
 	
@@ -450,14 +465,16 @@ void WSEvents::StreamStatus()
 	}
 	
 	uint64_t bytes_between = bytes_sent - _lastBytesSent;
-	double time_passed = double(bytes_sent_time - _lastBytesSentTime) / 1000000000.0;
+	double time_passed =
+		double(bytes_sent_time - _lastBytesSentTime) / 1000000000.0;
 
 	uint64_t bytes_per_sec = bytes_between / time_passed;
 
 	_lastBytesSent = bytes_sent;
 	_lastBytesSentTime = bytes_sent_time;
 
-	uint64_t totalStreamTime = (os_gettime_ns() - _stream_starttime) / 1000000000;
+	uint64_t totalStreamTime =
+		(os_gettime_ns() - _stream_starttime) / 1000000000;
 
 	int total_frames = obs_output_get_total_frames(stream_output);
 	int dropped_frames = obs_output_get_frames_dropped(stream_output);
@@ -510,7 +527,8 @@ void WSEvents::OnSceneReordered(void *param, calldata_t *data)
 	calldata_get_ptr(data, "scene", &scene);
 
 	obs_data_t *fields = obs_data_create();
-	obs_data_set_string(fields, "scene-name", obs_source_get_name(obs_scene_get_source(scene)));
+	obs_data_set_string(fields, "scene-name", 
+		obs_source_get_name(obs_scene_get_source(scene)));
 	
 	instance->broadcastUpdate("SourceOrderChanged", fields);
 
@@ -527,8 +545,10 @@ void WSEvents::OnSceneItemAdd(void *param, calldata_t *data)
 	obs_sceneitem_t* scene_item = nullptr;
 	calldata_get_ptr(data, "item", &scene_item);
 
-	const char* scene_name = obs_source_get_name(obs_scene_get_source(scene));
-	const char* sceneitem_name = obs_source_get_name(obs_sceneitem_get_source(scene_item));
+	const char* scene_name =
+		obs_source_get_name(obs_scene_get_source(scene));
+	const char* sceneitem_name =
+		obs_source_get_name(obs_sceneitem_get_source(scene_item));
 
 	obs_data_t* fields = obs_data_create();
 	obs_data_set_string(fields, "scene-name", scene_name);
@@ -549,8 +569,10 @@ void WSEvents::OnSceneItemDelete(void *param, calldata_t *data)
 	obs_sceneitem_t* scene_item = nullptr;
 	calldata_get_ptr(data, "item", &scene_item);
 
-	const char* scene_name = obs_source_get_name(obs_scene_get_source(scene));
-	const char* sceneitem_name = obs_source_get_name(obs_sceneitem_get_source(scene_item));
+	const char* scene_name =
+		obs_source_get_name(obs_scene_get_source(scene));
+	const char* sceneitem_name =
+		obs_source_get_name(obs_sceneitem_get_source(scene_item));
 
 	obs_data_t* fields = obs_data_create();
 	obs_data_set_string(fields, "scene-name", scene_name);
@@ -574,8 +596,10 @@ void WSEvents::OnSceneItemVisibilityChanged(void *param, calldata_t *data)
 	bool visible = false;
 	calldata_get_bool(data, "visible", &visible);
 
-	const char* scene_name = obs_source_get_name(obs_scene_get_source(scene));
-	const char* sceneitem_name = obs_source_get_name(obs_sceneitem_get_source(scene_item));
+	const char* scene_name =
+		obs_source_get_name(obs_scene_get_source(scene));
+	const char* sceneitem_name =
+		obs_source_get_name(obs_sceneitem_get_source(scene_item));
 
 	obs_data_t* fields = obs_data_create();
 	obs_data_set_string(fields, "scene-name", scene_name);

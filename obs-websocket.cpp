@@ -48,7 +48,8 @@ bool obs_module_load(void)
 		WSServer::Instance->Start(config->ServerPort);
 
 	// UI setup
-	QAction *menu_action = (QAction*)obs_frontend_add_tools_menu_qaction(obs_module_text("OBSWebsocket.Menu.SettingsItem"));
+	QAction *menu_action = (QAction*)obs_frontend_add_tools_menu_qaction(
+		obs_module_text("OBSWebsocket.Menu.SettingsItem"));
 
 	obs_frontend_push_ui_translation(obs_module_get_string);
 	QMainWindow* main_window = (QMainWindow*)obs_frontend_get_main_window();

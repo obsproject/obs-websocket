@@ -48,12 +48,17 @@ Config::Config()
 	config_t* obs_config = obs_frontend_get_global_config();
 	if (obs_config)
 	{
-		config_set_default_bool(obs_config, SECTION_NAME, PARAM_ENABLE, ServerEnabled);
-		config_set_default_uint(obs_config, SECTION_NAME, PARAM_PORT, ServerPort);
+		config_set_default_bool(obs_config, 
+			SECTION_NAME, PARAM_ENABLE, ServerEnabled);
+		config_set_default_uint(obs_config, 
+			SECTION_NAME, PARAM_PORT, ServerPort);
 
-		config_set_default_bool(obs_config, SECTION_NAME, PARAM_AUTHREQUIRED, AuthRequired);
-		config_set_default_string(obs_config, SECTION_NAME, PARAM_SECRET, Secret);
-		config_set_default_string(obs_config, SECTION_NAME, PARAM_SALT, Salt);
+		config_set_default_bool(obs_config, 
+			SECTION_NAME, PARAM_AUTHREQUIRED, AuthRequired);
+		config_set_default_string(obs_config, 
+			SECTION_NAME, PARAM_SECRET, Secret);
+		config_set_default_string(obs_config, 
+			SECTION_NAME, PARAM_SALT, Salt);
 	}
 
 	mbedtls_entropy_init(&entropy);
@@ -105,7 +110,9 @@ const char* Config::GenerateSalt()
 	// Convert the 32 random chars to a base64 string
 	char* salt = (char*)bzalloc(64);
 	size_t salt_bytes;
-	mbedtls_base64_encode((unsigned char*)salt, 64, &salt_bytes, random_chars, 32);
+	mbedtls_base64_encode(
+		(unsigned char*)salt, 64, &salt_bytes,
+		random_chars, 32);
 
 	bfree(random_chars);
 	return salt;
@@ -120,12 +127,16 @@ const char* Config::GenerateSecret(const char *password, const char *salt)
 
 	// Generate a SHA256 hash of the password
 	unsigned char* challengeHash = (unsigned char*)bzalloc(32);
-	mbedtls_sha256((unsigned char*)passAndSalt.c_str(), passAndSalt.length(), challengeHash, 0);
+	mbedtls_sha256(
+		(unsigned char*)passAndSalt.c_str(), passAndSalt.length(),
+		challengeHash, 0);
 	
 	// Encode SHA256 hash to Base64
 	char* challenge = (char*)bzalloc(64);
 	size_t challenge_bytes = 0;
-	mbedtls_base64_encode((unsigned char*)challenge, 64, &challenge_bytes, challengeHash, 32);
+	mbedtls_base64_encode(
+		(unsigned char*)challenge, 64, &challenge_bytes,
+		challengeHash, 32);
 
 	bfree(challengeHash);
 	return challenge;
@@ -149,12 +160,17 @@ bool Config::CheckAuth(const char *response)
 
 	// Generate a SHA256 hash of challengeAndResponse
 	unsigned char* hash = (unsigned char*)bzalloc(32);
-	mbedtls_sha256((unsigned char*)challengeAndResponse.c_str(), challengeAndResponse.length(), hash, 0);
+	mbedtls_sha256(
+		(unsigned char*)challengeAndResponse.c_str(),
+		challengeAndResponse.length(),
+		hash, 0);
 
 	// Encode the SHA256 hash to Base64
 	char* expected_response = (char*)bzalloc(64);
 	size_t base64_size = 0;
-	mbedtls_base64_encode((unsigned char*)expected_response, 64, &base64_size, hash, 32);
+	mbedtls_base64_encode(
+		(unsigned char*)expected_response, 64, &base64_size,
+		hash, 32);
 
 	bool authSuccess = false;
 	if (strcmp(expected_response, response) == 0) {

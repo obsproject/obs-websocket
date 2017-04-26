@@ -199,8 +199,10 @@ void WSRequestHandler::HandleGetAuthRequired(WSRequestHandler *req)
 
 	if (authRequired)
 	{
-		obs_data_set_string(data, "challenge", Config::Current()->SessionChallenge);
-		obs_data_set_string(data, "salt", Config::Current()->Salt);
+		obs_data_set_string(data, "challenge",
+			Config::Current()->SessionChallenge);
+		obs_data_set_string(data, "salt",
+			Config::Current()->Salt);
 	}
 
 	req->SendOKResponse(data);
@@ -223,7 +225,8 @@ void WSRequestHandler::HandleAuthenticate(WSRequestHandler *req)
 		return;
 	}
 
-	if ((req->_client->property(PROP_AUTHENTICATED).toBool() == false) && Config::Current()->CheckAuth(auth))
+	if ((req->_client->property(PROP_AUTHENTICATED).toBool() == false) 
+		&& Config::Current()->CheckAuth(auth))
 	{
 		req->_client->setProperty(PROP_AUTHENTICATED, true);
 		req->SendOKResponse();
@@ -282,7 +285,8 @@ void WSRequestHandler::HandleGetSceneList(WSRequestHandler *req)
 	obs_data_array_t *scenes = Utils::GetScenes();
 
 	obs_data_t *data = obs_data_create();
-	obs_data_set_string(data, "current-scene", obs_source_get_name(current_scene));
+	obs_data_set_string(data, "current-scene",
+		obs_source_get_name(current_scene));
 	obs_data_set_array(data, "scenes", scenes);
 
 	req->SendOKResponse(data);
@@ -450,7 +454,8 @@ void WSRequestHandler::HandleGetTransitionList(WSRequestHandler *req)
 	obs_frontend_source_list_free(&transitionList);
 
 	obs_data_t *response = obs_data_create();
-	obs_data_set_string(response, "current-transition", obs_source_get_name(current_transition));
+	obs_data_set_string(response, "current-transition",
+		obs_source_get_name(current_transition));
 	obs_data_set_array(response, "transitions", transitions);
 
 	req->SendOKResponse(response);
@@ -465,7 +470,8 @@ void WSRequestHandler::HandleGetCurrentTransition(WSRequestHandler *req)
 	obs_source_t *current_transition = obs_frontend_get_current_transition();
 
 	obs_data_t *response = obs_data_create();
-	obs_data_set_string(response, "name", obs_source_get_name(current_transition));
+	obs_data_set_string(response, "name",
+		obs_source_get_name(current_transition));
 	
 	if (!obs_transition_fixed(current_transition))
 	{
@@ -512,7 +518,8 @@ void WSRequestHandler::HandleSetTransitionDuration(WSRequestHandler *req)
 void WSRequestHandler::HandleGetTransitionDuration(WSRequestHandler *req)
 {
 	obs_data_t* response = obs_data_create();
-	obs_data_set_int(response, "transition-duration", Utils::GetTransitionDuration());
+	obs_data_set_int(response, "transition-duration",
+		Utils::GetTransitionDuration());
 
 	req->SendOKResponse(response);
 	obs_data_release(response);
@@ -835,7 +842,8 @@ void WSRequestHandler::HandleSetCurrentSceneCollection(WSRequestHandler *req)
 void WSRequestHandler::HandleGetCurrentSceneCollection(WSRequestHandler *req)
 {
 	obs_data_t *response = obs_data_create();
-	obs_data_set_string(response, "sc-name", obs_frontend_get_current_scene_collection());
+	obs_data_set_string(response, "sc-name",
+		obs_frontend_get_current_scene_collection());
 
 	req->SendOKResponse(response);
 
@@ -880,7 +888,8 @@ void WSRequestHandler::HandleSetCurrentProfile(WSRequestHandler *req)
 void WSRequestHandler::HandleGetCurrentProfile(WSRequestHandler *req)
 {
 	obs_data_t *response = obs_data_create();
-	obs_data_set_string(response, "profile-name", obs_frontend_get_current_profile());
+	obs_data_set_string(response, "profile-name",
+		obs_frontend_get_current_profile());
 
 	req->SendOKResponse(response);
 
@@ -971,11 +980,14 @@ void WSRequestHandler::HandleTransitionToProgram(WSRequestHandler *req)
 
 	if (req->hasField("with-transition"))
 	{
-		obs_data_t* transitionInfo = obs_data_get_obj(req->data, "with-transition");
+		obs_data_t* transitionInfo =
+			obs_data_get_obj(req->data, "with-transition");
 
 		if (obs_data_has_user_value(transitionInfo, "name"))
 		{
-			const char* transitionName = obs_data_get_string(transitionInfo, "name");
+			const char* transitionName =
+				obs_data_get_string(transitionInfo, "name");
+			
 			if (!str_valid(transitionName))
 			{
 				req->SendErrorResponse("invalid request parameters");
@@ -993,7 +1005,9 @@ void WSRequestHandler::HandleTransitionToProgram(WSRequestHandler *req)
 
 		if (obs_data_has_user_value(transitionInfo, "duration"))
 		{
-			int transitionDuration = obs_data_get_int(transitionInfo, "duration");
+			int transitionDuration =
+				obs_data_get_int(transitionInfo, "duration");
+
 			Utils::SetTransitionDuration(transitionDuration);
 		}
 		
