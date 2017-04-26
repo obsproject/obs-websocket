@@ -54,22 +54,18 @@ void SettingsDialog::showEvent(QShowEvent *event)
 
 void SettingsDialog::ToggleShowHide()
 {
-	if (!isVisible()) {
+	if (!isVisible())
 		setVisible(true);
-	}
-	else {
+	else
 		setVisible(false);
-	}
 }
 
 void SettingsDialog::AuthCheckboxChanged()
 {
-	if (ui->authRequired->isChecked()) {
+	if (ui->authRequired->isChecked())
 		ui->password->setEnabled(true);
-	}
-	else {
+	else
 		ui->password->setEnabled(false);
-	}
 }
 
 void SettingsDialog::FormAccepted()
@@ -90,13 +86,9 @@ void SettingsDialog::FormAccepted()
 		}
 		
 		if (strcmp(Config::Current()->Secret, "") != 0)
-		{
 			conf->AuthRequired = true;
-		}
 		else
-		{
 			conf->AuthRequired = false;
-		}
 	}
 	else
 	{
@@ -106,13 +98,9 @@ void SettingsDialog::FormAccepted()
 	conf->Save();
 
 	if (conf->ServerEnabled)
-	{
 		WSServer::Instance->Start(conf->ServerPort);
-	}
 	else
-	{
 		WSServer::Instance->Stop();
-	}
 }
 
 SettingsDialog::~SettingsDialog()

@@ -33,7 +33,8 @@ class Config
 		void SetPassword(const char *password);
 		bool CheckAuth(const char *userChallenge);
 		const char* GenerateSalt();
-		static const char* GenerateSecret(const char *password, const char *salt);
+		static const char* GenerateSecret(
+			const char *password, const char *salt);
 
 		bool ServerEnabled;
 		uint64_t ServerPort;

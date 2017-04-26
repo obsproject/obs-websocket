@@ -34,7 +34,8 @@ class Utils
 	public:
 		static obs_data_array_t* GetSceneItems(obs_source_t *source);
 		static obs_data_t* GetSceneItemData(obs_scene_item *item);
-		static obs_sceneitem_t* GetSceneItemFromName(obs_source_t *source, const char *name);
+		static obs_sceneitem_t* GetSceneItemFromName(
+			obs_source_t *source, const char *name);
 		static obs_source_t* GetTransitionFromName(const char *search_name);
 		static obs_source_t* GetSceneFromNameOrCurrent(const char *scene_name);
 
@@ -67,7 +68,10 @@ class Utils
 		static const char* OBSVersionString();
 
 		static QSystemTrayIcon* GetTrayIcon();
-		static void SysTrayNotify(QString &text, QSystemTrayIcon::MessageIcon n, QString title = QString("obs-websocket"));
+		static void SysTrayNotify(
+			QString &text,
+			QSystemTrayIcon::MessageIcon n,
+			QString title = QString("obs-websocket"));
 
 		static QString FormatIPAddress(QHostAddress &addr);
 		static const char* GetRecordingFolder();

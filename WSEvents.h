@@ -31,7 +31,8 @@ class WSEvents : public QObject
 	public:
 		explicit WSEvents(WSServer *srv);
 		~WSEvents();
-		static void FrontendEventHandler(enum obs_frontend_event event, void *private_data);
+		static void FrontendEventHandler(
+			enum obs_frontend_event event, void *private_data);
 		void connectTransitionSignals(obs_source_t* transition);
 		void connectSceneSignals(obs_source_t* scene);
 		static WSEvents* Instance;
@@ -45,7 +46,8 @@ class WSEvents : public QObject
 		void deferredInitOperations();
 		void StreamStatus();
 		void TransitionDurationChanged(int ms);
-		void SelectedSceneChanged(QListWidgetItem *current, QListWidgetItem *prev);
+		void SelectedSceneChanged(
+			QListWidgetItem *current, QListWidgetItem *prev);
 		void ModeSwitchClicked(bool checked);
 
 	private:
@@ -62,7 +64,8 @@ class WSEvents : public QObject
 		uint64_t _lastBytesSent;
 		uint64_t _lastBytesSentTime;
 
-		void broadcastUpdate(const char *updateType, obs_data_t *additionalFields);
+		void broadcastUpdate(const char *updateType, 
+			obs_data_t *additionalFields);
 
 		void OnSceneChange();
 		void OnSceneListChange();
