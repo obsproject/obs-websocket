@@ -10,11 +10,14 @@ export NET_LIB="$(brew --prefix qt5)/lib/QtNetwork.framework/QtNetwork"
 export GIT_HASH=$(git rev-parse --short HEAD)
 
 export VERSION="$GIT_HASH-$TRAVIS_BRANCH"
+export LATEST_VERSION="$TRAVIS_BRANCH"
 if [ -n "${TRAVIS_TAG}" ]; then
 	export VERSION="$TRAVIS_TAG"
+	export LATEST_VERSION="$TRAVIS_TAG"
 fi
 
-export FILENAME="obs-websocket-$VERSION-osx.pkg"
+export FILENAME="obs-websocket-$VERSION.pkg"
+export LATEST_FILENAME="obs-websocket-latest-$LATEST_VERSION.pkg"
 
 export QT_PREFIX="$(brew --prefix qt5)"
 
@@ -53,4 +56,5 @@ echo "-- Actual package build"
 packagesbuild ./CI/osx/obs-websocket.pkgproj
 
 echo "-- Renaming obs-websocket.pkg to $FILENAME"
-mv ./release/obs-websocket.pkg ./release/$FILENAME
+mv ./release/obs-websocket.pkg ./release/$LATEST_FILENAME
+cp ./release/$LATEST_FILENAME ./release/$FILENAME
