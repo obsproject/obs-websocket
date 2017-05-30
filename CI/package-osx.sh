@@ -56,5 +56,5 @@ echo "-- Actual package build"
 packagesbuild ./CI/osx/obs-websocket.pkgproj
 
 echo "-- Renaming obs-websocket.pkg to $FILENAME"
-mv ./release/obs-websocket.pkg ./release/$LATEST_FILENAME
-cp ./release/$LATEST_FILENAME ./release/$FILENAME
+mv ./release/obs-websocket.pkg ./release/$FILENAME
+cp ./release/$FILENAME ./release/$LATEST_FILENAME
