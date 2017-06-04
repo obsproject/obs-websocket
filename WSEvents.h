@@ -88,6 +88,11 @@ class WSEvents : public QObject
 		void OnRecordingStopping();
 		void OnRecordingStopped();
 
+		void OnReplayStarting();
+		void OnReplayStarted();
+		void OnReplayStopping();
+		void OnReplayStopped();
+
 		void OnExit();
 
 		static void OnTransitionBegin(void* param, calldata_t* data);

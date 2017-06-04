@@ -189,6 +189,22 @@ void WSEvents::FrontendEventHandler(enum obs_frontend_event event, void* private
 	{
 		owner->OnExit();
 	}
+	else if (event == OBS_FRONTEND_EVENT_REPLAY_BUFFER_STARTING)
+	{
+		owner->OnReplayStarting();
+	}
+	else if (event == OBS_FRONTEND_EVENT_REPLAY_BUFFER_STARTED)
+	{
+		owner->OnReplayStarted();
+	}
+	else if (event == OBS_FRONTEND_EVENT_REPLAY_BUFFER_STOPPING)
+	{
+		owner->OnReplayStopping();
+	}
+	else if (event == OBS_FRONTEND_EVENT_REPLAY_BUFFER_STOPPED)
+	{
+		owner->OnReplayStopped();
+	}
 }
 
 void WSEvents::broadcastUpdate(const char* updateType, obs_data_t* additionalFields = NULL)
@@ -436,6 +452,32 @@ void WSEvents::OnRecordingStopped()
 	// New update type specific to OBS Studio
 	_rec_starttime = 0;
 	broadcastUpdate("RecordingStopped");
+}
+
+void WSEvents::OnReplayStarting()
+{
+	// New update type specific to OBS Studio
+	broadcastUpdate("ReplayStarting");
+}
+
+void WSEvents::OnReplayStarted()
+{
+	// New update type specific to OBS Studio
+	_rec_starttime = os_gettime_ns();
+	broadcastUpdate("ReplayStarted");
+}
+
+void WSEvents::OnReplayStopping()
+{
+	// New update type specific to OBS Studio
+	broadcastUpdate("ReplayStopping");
+}
+
+void WSEvents::OnReplayStopped()
+{
+	// New update type specific to OBS Studio
+	_rec_starttime = 0;
+	broadcastUpdate("ReplayStopped");
 }
 
 void WSEvents::OnExit()
