@@ -44,6 +44,11 @@ The protocol in general is based on the OBS Remote protocol created by Bill Hami
       - ["RecordingStarted"](#recordingstarted)
       - ["RecordingStopping"](#recordingstopping)
       - ["RecordingStopped"](#recordingstopped)
+    - **Replay Buffer**
+      - ["ReplayStarting"](#replaystarting)
+      - ["ReplayStarted"](#replaystarted)
+      - ["ReplayStopping"](#replaystopping)
+      - ["ReplayStopped"](#replaystopped)
     - **Other**
       - ["Exiting"](#exiting)
 * [Requests](#requests)
@@ -291,6 +296,26 @@ A request to stop streaming has been issued.
 
 #### "RecordingStopped"  
 Recording stopped successfully.  
+
+---
+
+#### "ReplayStarting"  
+A request to start the replay buffer has been issued.  
+
+---
+
+#### "ReplayStarted"  
+Replay buffer started successfully.  
+
+---
+
+#### "ReplayStopping"
+A request to stop the replay buffer has been issued.  
+
+---
+
+#### "ReplayStopped"  
+Replay buffer stopped successfully.  
 
 ---
 
