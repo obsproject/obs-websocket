@@ -19,7 +19,7 @@ fi
 export FILENAME="obs-websocket-$VERSION.pkg"
 export LATEST_FILENAME="obs-websocket-latest-$LATEST_VERSION.pkg"
 
-export QT_PREFIX="$(brew --prefix qt5)"
+export QT_PREFIX="/usr/local/opt/qt5"
 
 echo "-- Copying Qt dependencies"
 cp $WS_LIB ./build
