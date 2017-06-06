@@ -33,7 +33,7 @@ class WSServer : public QObject
 	Q_OBJECT
 
 	public:
-		explicit WSServer(QObject *parent = Q_NULLPTR);
+		explicit WSServer(QObject* parent = Q_NULLPTR);
 		virtual ~WSServer();
 		void Start(quint16 port);
 		void Stop();
@@ -46,10 +46,10 @@ class WSServer : public QObject
 		void socketDisconnected();
 
 	private:
-		QWebSocketServer *_wsServer;
-		QList<QWebSocket *> _clients;
+		QWebSocketServer* _wsServer;
+		QList<QWebSocket*> _clients;
 		QMutex _clMutex;
-		QThread *_serverThread;
+		QThread* _serverThread;
 };
 
 #endif // WSSERVER_H

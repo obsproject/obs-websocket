@@ -30,7 +30,7 @@ QT_USE_NAMESPACE
 
 WSServer* WSServer::Instance = nullptr;
 
-WSServer::WSServer(QObject *parent) :
+WSServer::WSServer(QObject* parent) :
 	QObject(parent),
 	_wsServer(Q_NULLPTR),
 	_clients(),
@@ -49,7 +49,6 @@ WSServer::WSServer(QObject *parent) :
 WSServer::~WSServer()
 {
 	Stop();
-
 	delete _serverThread;
 }
 
@@ -64,7 +63,7 @@ void WSServer::Start(quint16 port)
 	bool serverStarted = _wsServer->listen(QHostAddress::Any, port);
 	if (serverStarted)
 	{
-		connect(_wsServer, &QWebSocketServer::newConnection, 
+		connect(_wsServer, &QWebSocketServer::newConnection,
 			this, &WSServer::onNewConnection);
 	}
 }
@@ -72,7 +71,7 @@ void WSServer::Start(quint16 port)
 void WSServer::Stop()
 {
 	_clMutex.lock();
-	Q_FOREACH(QWebSocket *pClient, _clients)
+	Q_FOREACH(QWebSocket* pClient, _clients)
 	{
 		pClient->close();
 	}
@@ -85,7 +84,7 @@ void WSServer::broadcast(QString message)
 {
 	_clMutex.lock();
 
-	Q_FOREACH(QWebSocket *pClient, _clients)
+	Q_FOREACH(QWebSocket* pClient, _clients)
 	{
 		if (Config::Current()->AuthRequired
 			&& (pClient->property(PROP_AUTHENTICATED).toBool() == false))
@@ -102,13 +101,13 @@ void WSServer::broadcast(QString message)
 
 void WSServer::onNewConnection()
 {
-	QWebSocket *pSocket = _wsServer->nextPendingConnection();
+	QWebSocket* pSocket = _wsServer->nextPendingConnection();
 
 	if (pSocket)
 	{
-		connect(pSocket, &QWebSocket::textMessageReceived, 
+		connect(pSocket, &QWebSocket::textMessageReceived,
 			this, &WSServer::textMessageReceived);
-		connect(pSocket, &QWebSocket::disconnected, 
+		connect(pSocket, &QWebSocket::disconnected,
 			this, &WSServer::socketDisconnected);
 		pSocket->setProperty(PROP_AUTHENTICATED, false);
 
@@ -119,22 +118,22 @@ void WSServer::onNewConnection()
 		QHostAddress clientAddr = pSocket->peerAddress();
 		QString clientIp = Utils::FormatIPAddress(clientAddr);
 
-		blog(LOG_INFO, "new client connection from %s:%d", 
+		blog(LOG_INFO, "new client connection from %s:%d",
 			clientIp.toUtf8().constData(), pSocket->peerPort());
 
-		QString msg = QString(obs_module_text("OBSWebsocket.ConnectNotify.ClientIP")) 
-			+ QString(" ") 
+		QString msg = QString(obs_module_text("OBSWebsocket.ConnectNotify.ClientIP"))
+			+ QString(" ")
 			+ clientAddr.toString();
-		
+
 		Utils::SysTrayNotify(msg,
 			QSystemTrayIcon::Information,
 			QString(obs_module_text("OBSWebsocket.ConnectNotify.Connected")));
 	}
 }
 
-void WSServer::textMessageReceived(QString message) 
+void WSServer::textMessageReceived(QString message)
 {
-	QWebSocket *pSocket = qobject_cast<QWebSocket *>(sender());
+	QWebSocket* pSocket = qobject_cast<QWebSocket*>(sender());
 
 	if (pSocket)
 	{
@@ -145,7 +144,7 @@ void WSServer::textMessageReceived(QString message)
 
 void WSServer::socketDisconnected()
 {
-	QWebSocket *pSocket = qobject_cast<QWebSocket *>(sender());
+	QWebSocket* pSocket = qobject_cast<QWebSocket*>(sender());
 
 	if (pSocket)
 	{
@@ -154,13 +153,13 @@ void WSServer::socketDisconnected()
 		_clMutex.lock();
 		_clients.removeAll(pSocket);
 		_clMutex.unlock();
-		
+
 		pSocket->deleteLater();
 
 		QHostAddress clientAddr = pSocket->peerAddress();
 		QString clientIp = Utils::FormatIPAddress(clientAddr);
 
-		blog(LOG_INFO, "client %s:%d disconnected", 
+		blog(LOG_INFO, "client %s:%d disconnected",
 			clientIp.toUtf8().constData(), pSocket->peerPort());
 
 		QString msg = QString(obs_module_text("OBSWebsocket.ConnectNotify.ClientIP"))

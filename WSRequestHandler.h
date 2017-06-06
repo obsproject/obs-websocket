@@ -29,73 +29,73 @@ class WSRequestHandler : public QObject
 	Q_OBJECT
 
 	public:
-		explicit WSRequestHandler(QWebSocket *client);
+		explicit WSRequestHandler(QWebSocket* client);
 		~WSRequestHandler();
 		void processIncomingMessage(QString textMessage);
 		bool hasField(const char* name);
 
 	private:
-		QWebSocket *_client;
-		const char *_messageId;
-		const char *_requestType;
-		obs_data_t *data;
+		QWebSocket* _client;
+		const char* _messageId;
+		const char* _requestType;
+		obs_data_t* data;
 
 		QMap<QString, void(*)(WSRequestHandler*)> messageMap;
 		QSet<QString> authNotRequired;
 
-		void SendOKResponse(obs_data_t *additionalFields = NULL);
-		void SendErrorResponse(const char *errorMessage);
-		
-		static void HandleGetVersion(WSRequestHandler *req);
-		static void HandleGetAuthRequired(WSRequestHandler *req);
-		static void HandleAuthenticate(WSRequestHandler *req);
+		void SendOKResponse(obs_data_t* additionalFields = NULL);
+		void SendErrorResponse(const char* errorMessage);
 
-		static void HandleSetCurrentScene(WSRequestHandler *req);
-		static void HandleGetCurrentScene(WSRequestHandler *req);
-		static void HandleGetSceneList(WSRequestHandler *req);
-		
-		static void HandleSetSceneItemRender(WSRequestHandler *req);
-		static void HandleSetSceneItemPosition(WSRequestHandler *req);
-		static void HandleSetSceneItemTransform(WSRequestHandler *req);
-		static void HandleSetSceneItemCrop(WSRequestHandler *req);
+		static void HandleGetVersion(WSRequestHandler* req);
+		static void HandleGetAuthRequired(WSRequestHandler* req);
+		static void HandleAuthenticate(WSRequestHandler* req);
 
-		static void HandleGetStreamingStatus(WSRequestHandler *req);
-		static void HandleStartStopStreaming(WSRequestHandler *req);
-		static void HandleStartStopRecording(WSRequestHandler *req);
-		static void HandleStartStreaming(WSRequestHandler *req);
-		static void HandleStopStreaming(WSRequestHandler *req);
-		static void HandleStartRecording(WSRequestHandler *req);
-		static void HandleStopRecording(WSRequestHandler *req);
+		static void HandleSetCurrentScene(WSRequestHandler* req);
+		static void HandleGetCurrentScene(WSRequestHandler* req);
+		static void HandleGetSceneList(WSRequestHandler* req);
 
-		static void HandleGetTransitionList(WSRequestHandler *req);
-		static void HandleGetCurrentTransition(WSRequestHandler *req);
-		static void HandleSetCurrentTransition(WSRequestHandler *req);
+		static void HandleSetSceneItemRender(WSRequestHandler* req);
+		static void HandleSetSceneItemPosition(WSRequestHandler* req);
+		static void HandleSetSceneItemTransform(WSRequestHandler* req);
+		static void HandleSetSceneItemCrop(WSRequestHandler* req);
 
-		static void HandleSetVolume(WSRequestHandler *req);
-		static void HandleGetVolume(WSRequestHandler *req);
-		static void HandleToggleMute(WSRequestHandler *req);
-		static void HandleSetMute(WSRequestHandler *req);
-		static void HandleGetMute(WSRequestHandler *req);
-		static void HandleGetSpecialSources(WSRequestHandler *req);
+		static void HandleGetStreamingStatus(WSRequestHandler* req);
+		static void HandleStartStopStreaming(WSRequestHandler* req);
+		static void HandleStartStopRecording(WSRequestHandler* req);
+		static void HandleStartStreaming(WSRequestHandler* req);
+		static void HandleStopStreaming(WSRequestHandler* req);
+		static void HandleStartRecording(WSRequestHandler* req);
+		static void HandleStopRecording(WSRequestHandler* req);
 
-		static void HandleSetCurrentSceneCollection(WSRequestHandler *req);
-		static void HandleGetCurrentSceneCollection(WSRequestHandler *req);
-		static void HandleListSceneCollections(WSRequestHandler *req);
+		static void HandleGetTransitionList(WSRequestHandler* req);
+		static void HandleGetCurrentTransition(WSRequestHandler* req);
+		static void HandleSetCurrentTransition(WSRequestHandler* req);
 
-		static void HandleSetCurrentProfile(WSRequestHandler *req);
-		static void HandleGetCurrentProfile(WSRequestHandler *req);
-		static void HandleListProfiles(WSRequestHandler *req);
+		static void HandleSetVolume(WSRequestHandler* req);
+		static void HandleGetVolume(WSRequestHandler* req);
+		static void HandleToggleMute(WSRequestHandler* req);
+		static void HandleSetMute(WSRequestHandler* req);
+		static void HandleGetMute(WSRequestHandler* req);
+		static void HandleGetSpecialSources(WSRequestHandler* req);
 
-		static void HandleSetTransitionDuration(WSRequestHandler *req);
-		static void HandleGetTransitionDuration(WSRequestHandler *req);
+		static void HandleSetCurrentSceneCollection(WSRequestHandler* req);
+		static void HandleGetCurrentSceneCollection(WSRequestHandler* req);
+		static void HandleListSceneCollections(WSRequestHandler* req);
 
-		static void HandleGetStudioModeStatus(WSRequestHandler *req);
-		static void HandleGetPreviewScene(WSRequestHandler *req);
-		static void HandleSetPreviewScene(WSRequestHandler *req);
-		static void HandleTransitionToProgram(WSRequestHandler *req);
-		static void HandleEnableStudioMode(WSRequestHandler *req);
-		static void HandleDisableStudioMode(WSRequestHandler *req);
-		static void HandleToggleStudioMode(WSRequestHandler *req);
+		static void HandleSetCurrentProfile(WSRequestHandler* req);
+		static void HandleGetCurrentProfile(WSRequestHandler* req);
+		static void HandleListProfiles(WSRequestHandler* req);
+
+		static void HandleSetTransitionDuration(WSRequestHandler* req);
+		static void HandleGetTransitionDuration(WSRequestHandler* req);
+
+		static void HandleGetStudioModeStatus(WSRequestHandler* req);
+		static void HandleGetPreviewScene(WSRequestHandler* req);
+		static void HandleSetPreviewScene(WSRequestHandler* req);
+		static void HandleTransitionToProgram(WSRequestHandler* req);
+		static void HandleEnableStudioMode(WSRequestHandler* req);
+		static void HandleDisableStudioMode(WSRequestHandler* req);
+		static void HandleToggleStudioMode(WSRequestHandler* req);
 };
 
 #endif // WSPROTOCOL_H

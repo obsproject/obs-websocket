@@ -24,15 +24,15 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <QListWidgetItem>
 #include "WSServer.h"
 
-class WSEvents : public QObject 
+class WSEvents : public QObject
 {
 	Q_OBJECT
 
 	public:
-		explicit WSEvents(WSServer *srv);
+		explicit WSEvents(WSServer* srv);
 		~WSEvents();
 		static void FrontendEventHandler(
-			enum obs_frontend_event event, void *private_data);
+			enum obs_frontend_event event, void* private_data);
 		void connectTransitionSignals(obs_source_t* transition);
 		void connectSceneSignals(obs_source_t* scene);
 		static WSEvents* Instance;
@@ -47,13 +47,13 @@ class WSEvents : public QObject
 		void StreamStatus();
 		void TransitionDurationChanged(int ms);
 		void SelectedSceneChanged(
-			QListWidgetItem *current, QListWidgetItem *prev);
+			QListWidgetItem* current, QListWidgetItem* prev);
 		void ModeSwitchClicked(bool checked);
 
 	private:
-		WSServer *_srv;
-		signal_handler_t *transition_handler;
-		signal_handler_t *scene_handler;
+		WSServer* _srv;
+		signal_handler_t* transition_handler;
+		signal_handler_t* scene_handler;
 
 		bool _streaming_active;
 		bool _recording_active;
@@ -64,8 +64,8 @@ class WSEvents : public QObject
 		uint64_t _lastBytesSent;
 		uint64_t _lastBytesSentTime;
 
-		void broadcastUpdate(const char *updateType, 
-			obs_data_t *additionalFields);
+		void broadcastUpdate(const char* updateType,
+			obs_data_t* additionalFields);
 
 		void OnSceneChange();
 		void OnSceneListChange();
@@ -90,12 +90,12 @@ class WSEvents : public QObject
 
 		void OnExit();
 
-		static void OnTransitionBegin(void *param, calldata_t *data);
+		static void OnTransitionBegin(void* param, calldata_t* data);
 
-		static void OnSceneReordered(void *param, calldata_t *data);
-		static void OnSceneItemAdd(void *param, calldata_t *data);
-		static void OnSceneItemDelete(void *param, calldata_t *data);
-		static void OnSceneItemVisibilityChanged(void *param, calldata_t *data);
+		static void OnSceneReordered(void* param, calldata_t* data);
+		static void OnSceneItemAdd(void* param, calldata_t* data);
+		static void OnSceneItemDelete(void* param, calldata_t* data);
+		static void OnSceneItemVisibilityChanged(void* param, calldata_t* data);
 };
 
 #endif // WSEVENTS_H

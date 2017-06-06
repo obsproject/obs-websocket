@@ -26,22 +26,22 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #define CHANGE_ME "changeme"
 
-SettingsDialog::SettingsDialog(QWidget *parent) :
+SettingsDialog::SettingsDialog(QWidget* parent) :
 	QDialog(parent, Qt::Dialog),
 	ui(new Ui::SettingsDialog)
 {
 	ui->setupUi(this);
-	
-	connect(ui->authRequired, &QCheckBox::stateChanged, 
+
+	connect(ui->authRequired, &QCheckBox::stateChanged,
 		this, &SettingsDialog::AuthCheckboxChanged);
-	connect(ui->buttonBox, &QDialogButtonBox::accepted, 
+	connect(ui->buttonBox, &QDialogButtonBox::accepted,
 		this, &SettingsDialog::FormAccepted);
 
 
 	AuthCheckboxChanged();
 }
 
-void SettingsDialog::showEvent(QShowEvent *event)
+void SettingsDialog::showEvent(QShowEvent* event)
 {
 	Config* conf = Config::Current();
 
@@ -84,7 +84,7 @@ void SettingsDialog::FormAccepted()
 
 			conf->SetPassword(new_password);
 		}
-		
+
 		if (strcmp(Config::Current()->Secret, "") != 0)
 			conf->AuthRequired = true;
 		else
