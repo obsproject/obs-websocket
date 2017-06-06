@@ -57,6 +57,9 @@ WSRequestHandler::WSRequestHandler(QWebSocket* client) :
 	messageMap["StartRecording"] = WSRequestHandler::HandleStartRecording;
 	messageMap["StopRecording"] = WSRequestHandler::HandleStopRecording;
 
+	messageMap["SetRecordingFolder"] = WSRequestHandler::HandleSetRecordingFolder;
+	messageMap["GetRecordingFolder"] = WSRequestHandler::HandleGetRecordingFolder;
+
 	messageMap["GetTransitionList"] = WSRequestHandler::HandleGetTransitionList;
 	messageMap["GetCurrentTransition"] = WSRequestHandler::HandleGetCurrentTransition;
 	messageMap["SetCurrentTransition"] = WSRequestHandler::HandleSetCurrentTransition;
@@ -1061,5 +1064,33 @@ void WSRequestHandler::HandleGetSpecialSources(WSRequestHandler* req)
 
 	req->SendOKResponse(response);
 
+	obs_data_release(response);
+}
+
+void WSRequestHandler::HandleSetRecordingFolder(WSRequestHandler* req)
+{
+	if (!req->hasField("rec-folder"))
+	{
+		req->SendErrorResponse("missing request parameters");
+		return;
+	}
+
+	const char* newRecFolder = obs_data_get_string(req->data, "rec-folder");
+	bool success = Utils::SetRecordingFolder(newRecFolder);
+
+	if (success)
+		req->SendOKResponse();
+	else
+		req->SendErrorResponse("invalid request parameters");
+}
+
+void WSRequestHandler::HandleGetRecordingFolder(WSRequestHandler* req)
+{
+	const char* recFolder = Utils::GetRecordingFolder();
+
+	obs_data_t* response = obs_data_create();
+	obs_data_set_string(response, "rec-folder", recFolder);
+
+	req->SendOKResponse(response);
 	obs_data_release(response);
 }

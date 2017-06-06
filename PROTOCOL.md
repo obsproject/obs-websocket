@@ -73,6 +73,8 @@ The protocol in general is based on the OBS Remote protocol created by Bill Hami
       - ["StartRecording"](#startrecording)
       - ["StopRecording"](#stoprecording)
       - ["GetStreamingStatus"](#getstreamingstatus)
+      - ["SetRecordingFolder"](#setrecordingfolder)
+      - ["GetRecordingFolder"](#getrecordingfolder)
     - **Transitions**
       - ["GetTransitionList"](#gettransitionlist)
       - ["GetCurrentTransition"](#getcurrenttransition)
@@ -516,6 +518,26 @@ Stop recording.
 
 __Request fields__ : none  
 __Response__ : Error if recording is already inactive, OK otherwise. No additional fields.  
+
+---
+
+#### "SetRecordingFolder"
+Change the current recording folder.
+
+__Request fields__ :
+- **"rec-folder"** (string) : path of the desired recording folder
+
+__Response__ : OK if path is valid, error otherwise.
+
+---
+
+#### "GetRecordingFolder"
+Get the path of the current recording folder.
+
+__Request fields__ : none
+
+__Response__ : OK with these additional fields :
+- **"rec-folder"** (string) : path of the current recording folder
 
 ---
 

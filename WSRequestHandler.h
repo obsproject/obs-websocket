@@ -67,6 +67,9 @@ class WSRequestHandler : public QObject
 		static void HandleStartRecording(WSRequestHandler* req);
 		static void HandleStopRecording(WSRequestHandler* req);
 
+		static void HandleSetRecordingFolder(WSRequestHandler* req);
+		static void HandleGetRecordingFolder(WSRequestHandler* req);
+
 		static void HandleGetTransitionList(WSRequestHandler* req);
 		static void HandleGetCurrentTransition(WSRequestHandler* req);
 		static void HandleSetCurrentTransition(WSRequestHandler* req);
