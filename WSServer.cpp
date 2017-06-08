@@ -71,8 +71,7 @@ void WSServer::Start(quint16 port)
 void WSServer::Stop()
 {
 	_clMutex.lock();
-	Q_FOREACH(QWebSocket* pClient, _clients)
-	{
+	for(QWebSocket* pClient : _clients) {
 		pClient->close();
 	}
 	_clMutex.unlock();
@@ -84,8 +83,7 @@ void WSServer::broadcast(QString message)
 {
 	_clMutex.lock();
 
-	Q_FOREACH(QWebSocket* pClient, _clients)
-	{
+	for(QWebSocket* pClient : _clients) {
 		if (Config::Current()->AuthRequired
 			&& (pClient->property(PROP_AUTHENTICATED).toBool() == false))
 		{
