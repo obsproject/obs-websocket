@@ -16,7 +16,7 @@ cd obs-studio
 git checkout 19.0.2
 mkdir build && cd build
 cmake .. \
-  -DCMAKE_PREFIX_PATH=$(brew --prefix qt5)/lib/cmake \
+  -DCMAKE_PREFIX_PATH=/usr/local/opt/qt5/lib/cmake \
 && make -j4
 
 sudo make install
