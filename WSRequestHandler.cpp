@@ -332,9 +332,10 @@ void WSRequestHandler::HandleSetSceneItemRender(WSRequestHandler* req)
 				obs_data_t* settings = obs_source_get_settings(sceneItemSource);
 				const char* text = obs_data_get_string(req->data, "text");
 				obs_data_set_string(settings, "text", text);
+				obs_source_update(sceneItemSource, settings);
+				obs_data_release(settings);
 			}
-			obs_source_update(sceneItemSource, settings);
-			obs_data_release(settings);
+
 		}
 		
 		obs_sceneitem_set_visible(sceneItem, isVisible);
