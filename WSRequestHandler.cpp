@@ -325,6 +325,18 @@ void WSRequestHandler::HandleSetSceneItemRender(WSRequestHandler* req)
 	obs_sceneitem_t* sceneItem = Utils::GetSceneItemFromName(scene, itemName);
 	if (sceneItem != NULL)
 	{
+		if (req->hasField("text")) {
+			obs_source_t* sceneItemSource = obs_sceneitem_get_source(sceneItem);
+			const char* sceneItemSourceId = obs_source_get_id(sceneItemSource);
+			if (strcmp(sceneItemSourceId, "text_gdiplus") == 0) {
+				obs_data_t* settings = obs_source_get_settings(sceneItemSource);
+				const char* text = obs_data_get_string(req->data, "text");
+				obs_data_set_string(settings, "text", text);
+			}
+			obs_source_update(sceneItemSource, settings);
+			obs_data_release(settings);
+		}
+		
 		obs_sceneitem_set_visible(sceneItem, isVisible);
 		obs_sceneitem_release(sceneItem);
 		req->SendOKResponse();
