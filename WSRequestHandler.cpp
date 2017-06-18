@@ -88,6 +88,9 @@ WSRequestHandler::WSRequestHandler(QWebSocket* client) :
 	messageMap["EnableStudioMode"] = WSRequestHandler::HandleEnableStudioMode;
 	messageMap["DisableStudioMode"] = WSRequestHandler::HandleDisableStudioMode;
 	messageMap["ToggleStudioMode"] = WSRequestHandler::HandleToggleStudioMode;
+		
+	messageMap["SetGDITextProperties"] = WSRequestHandler::HandleSetGDITextProperties;
+	messageMap["GetGDITextProperties"] = WSRequestHandler::HandleGetGDITextProperties;
 
 	authNotRequired.insert("GetVersion");
 	authNotRequired.insert("GetAuthRequired");
@@ -1093,4 +1096,279 @@ void WSRequestHandler::HandleGetRecordingFolder(WSRequestHandler* req)
 
 	req->SendOKResponse(response);
 	obs_data_release(response);
+}
+
+void WSRequestHandler::HandleGetSpecialSources(WSRequestHandler* req)
+{
+	obs_data_t* response = obs_data_create();
+
+	QMap<const char*, int> sources;
+	sources["desktop-1"] = 1;
+	sources["desktop-2"] = 2;
+	sources["mic-1"] = 3;
+	sources["mic-2"] = 4;
+	sources["mic-3"] = 5;
+
+	QMapIterator<const char*, int> i(sources);
+	while (i.hasNext())
+	{
+		i.next();
+
+		const char* id = i.key();
+		obs_source_t* source = obs_get_output_source(i.value());
+		blog(LOG_INFO, "%s : %p", id, source);
+
+		if (source)
+		{
+			obs_data_set_string(response, id, obs_source_get_name(source));
+			obs_source_release(source);
+		}
+	}
+
+	req->SendOKResponse(response);
+
+	obs_data_release(response);
+}
+
+void WSRequestHandler::HandleSetRecordingFolder(WSRequestHandler* req)
+{
+	if (!req->hasField("rec-folder"))
+	{
+		req->SendErrorResponse("missing request parameters");
+		return;
+	}
+
+	const char* newRecFolder = obs_data_get_string(req->data, "rec-folder");
+	bool success = Utils::SetRecordingFolder(newRecFolder);
+
+	if (success)
+		req->SendOKResponse();
+	else
+		req->SendErrorResponse("invalid request parameters");
+}
+
+void WSRequestHandler::HandleGetRecordingFolder(WSRequestHandler* req)
+{
+	const char* recFolder = Utils::GetRecordingFolder();
+
+	obs_data_t* response = obs_data_create();
+	obs_data_set_string(response, "rec-folder", recFolder);
+
+	req->SendOKResponse(response);
+	obs_data_release(response);
+}
+
+void WSRequestHandler::HandleSetGDITextProperties(WSRequestHandler* req)
+{
+	if (!req->hasField("source") )
+	{
+		req->SendErrorResponse("missing request parameters");
+		return;
+	}
+
+	/*
+		!req->hasField("scene-name") ||
+		!req->hasField("text") ||
+		!req->hasField("font_size") ||
+		!req->hasField("bk_color") ||
+		!req->hasField("bk_opacity") ||
+		!req->hasField("color") ||
+		!req->hasField("render")
+	*/
+	const char* itemName = obs_data_get_string(req->data, "source");
+	if (!itemName)
+	{
+		req->SendErrorResponse("invalid request parameters");
+		return;
+	}
+
+	const char* sceneName = obs_data_get_string(req->data, "scene-name");
+	obs_source_t* scene = Utils::GetSceneFromNameOrCurrent(sceneName);
+	if (scene == NULL) {
+		req->SendErrorResponse("requested scene doesn't exist");
+		return;
+	}
+
+	obs_sceneitem_t* sceneItem = Utils::GetSceneItemFromName(scene, itemName);
+	if (sceneItem != NULL)
+	{
+		obs_source_t* sceneItemSource = obs_sceneitem_get_source(sceneItem);
+		const char* sceneItemSourceId = obs_source_get_id(sceneItemSource);
+
+		if (strcmp(sceneItemSourceId, "text_gdiplus") == 0)
+		{
+
+			obs_data_t* settings = obs_source_get_settings(sceneItemSource);
+
+			if (req->hasField("bk_color"))
+			{
+				int value = (int)obs_data_get_int(req->data, "bk_color");
+				obs_data_set_int(settings, "bk_color", value);
+			}
+
+			if (req->hasField("bk-opacity"))
+			{
+				int value = (int)obs_data_get_int(req->data, "bk_opacity");
+				obs_data_set_int(settings, "bk_opacity", value);
+			}
+
+			if (req->hasField("color"))
+			{
+				int value = (int)obs_data_get_int(req->data, "color");
+				obs_data_set_int(settings, "color", value);
+			}
+
+			if (req->hasField("font_face") ||
+				req->hasField("font_flags") ||
+				req->hasField("font_size") ||
+				req->hasField("font_style"))
+			{
+				obs_data_t* font_obj = obs_data_get_obj(settings, "font");
+				if (font_obj != NULL)
+				{
+					if (req->hasField("font_face"))
+					{
+						const char* value = obs_data_get_string(req->data, "font_face");
+						obs_data_set_string(font_obj, "face", value);
+					}
+
+					if (req->hasField("font_flags"))
+					{
+						int value = (int)obs_data_get_int(req->data, "font_flags");
+						obs_data_set_int(font_obj, "flags", value);
+					}
+
+					if (req->hasField("font_size"))
+					{
+						int value = (int)obs_data_get_int(req->data, "font_size");
+						obs_data_set_int(font_obj, "size", value);
+					}
+
+					if (req->hasField("font_style"))
+					{
+						const char* value = obs_data_get_string(req->data, "font_style");
+						obs_data_set_string(font_obj, "style", value);
+					}
+					obs_data_release(font_obj);
+				}
+			}
+			
+			if (req->hasField("text"))
+			{
+				const char* text = obs_data_get_string(req->data, "text");
+				obs_data_set_string(settings, "text", text);
+			}
+
+			obs_source_update(sceneItemSource, settings);
+
+			obs_data_release(settings);
+		} 
+		else
+		{
+			req->SendErrorResponse("not text gdi plus source");
+			return;
+		}
+
+		if (req->hasField("render"))
+		{
+			bool isVisible = obs_data_get_bool(req->data, "render");
+			obs_sceneitem_set_visible(sceneItem, isVisible);
+		}
+
+		obs_sceneitem_release(sceneItem);
+		req->SendOKResponse();
+	}
+	else
+	{
+		req->SendErrorResponse("specified scene item doesn't exist");
+	}
+
+	obs_source_release(scene);
+
+}
+void WSRequestHandler::HandleGetGDITextProperties(WSRequestHandler* req)
+{
+
+	const char* itemName = obs_data_get_string(req->data, "source");
+	if (!itemName)
+	{
+		req->SendErrorResponse("invalid request parameters");
+		return;
+	}
+
+	const char* sceneName = obs_data_get_string(req->data, "scene-name");
+	obs_source_t* scene = Utils::GetSceneFromNameOrCurrent(sceneName);
+	if (scene == NULL) {
+		req->SendErrorResponse("requested scene doesn't exist");
+		return;
+	}
+
+	obs_sceneitem_t* sceneItem = Utils::GetSceneItemFromName(scene, itemName);
+	if (sceneItem != NULL)
+	{
+		obs_source_t* sceneItemSource = obs_sceneitem_get_source(sceneItem);
+		const char* sceneItemSourceId = obs_source_get_id(sceneItemSource);
+		obs_data_t* response = obs_data_create();
+
+		if (strcmp(sceneItemSourceId, "text_gdiplus") == 0)
+		{
+
+			obs_data_set_string(response, "source", itemName);
+			obs_data_set_string(response, "scene-name", sceneName);
+
+			obs_data_t* settings = obs_source_get_settings(sceneItemSource);
+
+			obs_data_set_int(response, "bk_color", 
+				obs_data_get_int(settings, "bk_color"));
+
+			obs_data_set_int(response, "bk_opacity",
+				obs_data_get_int(settings, "bk_opacity"));
+
+			obs_data_set_string(response, "color",
+				obs_data_get_string(settings, "color"));
+
+			obs_data_t* font_obj = obs_data_get_obj(settings, "font");
+			if (font_obj != NULL)
+			{
+				obs_data_set_string(response, "font_face",
+					obs_data_get_string(font_obj, "face"));
+
+				obs_data_set_int(response, "font_flags",
+					obs_data_get_int(font_obj, "flags"));
+
+				obs_data_set_int(response, "font_size",
+					obs_data_get_int(font_obj, "size"));
+
+				obs_data_set_string(response, "font_style",
+					obs_data_get_string(font_obj, "style"));
+
+				obs_data_release(font_obj);
+			}
+
+			obs_data_set_string(response, "text",
+				obs_data_get_string(settings, "text"));
+
+			obs_data_release(settings);
+		}
+		else
+		{
+			req->SendErrorResponse("not text gdi plus source");
+			return;
+		}
+
+		obs_data_set_bool(response, "render",
+			obs_sceneitem_visible(sceneItem));
+
+		obs_sceneitem_release(sceneItem);
+		req->SendOKResponse(response);
+		obs_data_release(response);
+
+	}
+	else
+	{
+		req->SendErrorResponse("specified scene item doesn't exist");
+	}
+
+	obs_source_release(scene);
+
 }
