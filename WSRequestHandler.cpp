@@ -89,6 +89,8 @@ WSRequestHandler::WSRequestHandler(QWebSocket* client) :
 	messageMap["DisableStudioMode"] = WSRequestHandler::HandleDisableStudioMode;
 	messageMap["ToggleStudioMode"] = WSRequestHandler::HandleToggleStudioMode;
 
+	messageMap["SetTextGDIPlusProperties"] = WSRequestHandler::HandleSetTextGDIPlusProperties;
+	messageMap["GetTextGDIPlusProperties"] = WSRequestHandler::HandleGetTextGDIPlusProperties;																					   																					   
 	authNotRequired.insert("GetVersion");
 	authNotRequired.insert("GetAuthRequired");
 	authNotRequired.insert("Authenticate");
@@ -1094,3 +1096,285 @@ void WSRequestHandler::HandleGetRecordingFolder(WSRequestHandler* req)
 	req->SendOKResponse(response);
 	obs_data_release(response);
 }
+
+void WSRequestHandler::HandleGetTextGDIPlusProperties(WSRequestHandler* req)
+{
+
+	const char* itemName = obs_data_get_string(req->data, "source");
+	if (!itemName)
+	{
+		req->SendErrorResponse("invalid request parameters");
+		return;
+	}
+
+	const char* sceneName = obs_data_get_string(req->data, "scene-name");
+	obs_source_t* scene = Utils::GetSceneFromNameOrCurrent(sceneName);
+	if (scene == NULL) {
+		req->SendErrorResponse("requested scene doesn't exist");
+		return;
+	}
+
+	obs_sceneitem_t* sceneItem = Utils::GetSceneItemFromName(scene, itemName);
+	if (sceneItem != NULL)
+	{
+		obs_source_t* sceneItemSource = obs_sceneitem_get_source(sceneItem);
+		const char* sceneItemSourceId = obs_source_get_id(sceneItemSource);
+
+		if (strcmp(sceneItemSourceId, "text_gdiplus") == 0)
+		{
+			obs_data_t* response = obs_source_get_settings(sceneItemSource);
+			obs_data_set_string(response, "source", itemName);
+			obs_data_set_string(response, "scene-name", sceneName);
+			obs_data_set_bool(response, "render",
+				obs_sceneitem_visible(sceneItem));
+
+			obs_sceneitem_release(sceneItem);
+			req->SendOKResponse(response);
+			obs_data_release(response);
+		}
+		else
+		{
+			req->SendErrorResponse("not text gdi plus source");
+		}
+
+	}
+	else
+	{
+		req->SendErrorResponse("specified scene item doesn't exist");
+	}
+
+	obs_source_release(scene);
+
+}
+
+void WSRequestHandler::HandleSetTextGDIPlusProperties(WSRequestHandler* req)
+{
+	if (!req->hasField("source") )
+	{
+		req->SendErrorResponse("missing request parameters");
+		return;
+	}
+
+	const char* itemName = obs_data_get_string(req->data, "source");
+	if (!itemName)
+	{
+		req->SendErrorResponse("invalid request parameters");
+		return;
+	}
+
+	const char* sceneName = obs_data_get_string(req->data, "scene-name");
+	obs_source_t* scene = Utils::GetSceneFromNameOrCurrent(sceneName);
+	if (scene == NULL) {
+		req->SendErrorResponse("requested scene doesn't exist");
+		return;
+	}
+
+	obs_sceneitem_t* sceneItem = Utils::GetSceneItemFromName(scene, itemName);
+	if (sceneItem != NULL)
+	{
+		obs_source_t* sceneItemSource = obs_sceneitem_get_source(sceneItem);
+		const char* sceneItemSourceId = obs_source_get_id(sceneItemSource);
+
+		if (strcmp(sceneItemSourceId, "text_gdiplus") == 0)
+		{
+
+			obs_data_t* settings = obs_source_get_settings(sceneItemSource);
+
+			if (req->hasField("align"))
+			{
+				obs_data_set_string(settings, "align", 
+					obs_data_get_string(req->data, "align"));
+			}
+
+			if (req->hasField("bk_color"))
+			{
+				obs_data_set_int(settings, "bk_color", 
+					(int)obs_data_get_int(req->data, "bk_color"));
+			}
+
+			if (req->hasField("bk-opacity"))
+			{
+				obs_data_set_int(settings, "bk_opacity", 
+					(int)obs_data_get_int(req->data, "bk_opacity"));
+			}
+
+			if (req->hasField("chatlog"))
+			{
+				obs_data_set_bool(settings, "chatlog", 
+					obs_data_get_bool(req->data, "chatlog"));
+			}
+			
+			if (req->hasField("chatlog_lines"))
+			{
+				obs_data_set_int(settings, "chatlog_lines",
+					(int)obs_data_get_int(req->data, "chatlog_lines"));
+			}
+
+			if (req->hasField("color"))
+			{
+				obs_data_set_int(settings, "color", 
+					(int)obs_data_get_int(req->data, "color"));
+			}
+
+			if (req->hasField("extents"))
+			{
+				obs_data_set_bool(settings, "extents", 
+					obs_data_get_bool(req->data, "extents"));
+			}
+
+			if (req->hasField("extents_wrap"))
+			{
+				obs_data_set_bool(settings, "extents_wrap",
+					obs_data_get_bool(req->data, "extents_wrap"));
+			}
+
+			if (req->hasField("extents_cx"))
+			{
+				obs_data_set_int(settings, "extents_cx",
+					(int)obs_data_get_int(req->data, "extents_cx"));
+			}
+
+			if (req->hasField("extents_cy"))
+			{
+				obs_data_set_int(settings, "extents_cy",
+					(int)obs_data_get_int(req->data, "extents_cy"));
+			}
+
+			if (req->hasField("file"))
+			{
+				obs_data_set_string(settings, "file", 
+					obs_data_get_string(req->data, "file"));
+			}
+
+			if (req->hasField("font"))
+			{
+			    
+				obs_data_t* font_obj = obs_data_get_obj(settings, "font");
+				if (font_obj != NULL)
+				{
+					obs_data_t* req_font_obj = obs_data_get_obj(req->data, "font");
+
+					if (obs_data_has_user_value(req_font_obj, "face")) {
+						obs_data_set_string(font_obj, "face",
+							obs_data_get_string(req_font_obj, "face"));
+					}
+
+					if (obs_data_has_user_value(req_font_obj, "flags")) {
+						obs_data_set_int(font_obj, "flags",
+							(int)obs_data_get_int(req_font_obj, "flags"));
+					}
+
+					if (obs_data_has_user_value(req_font_obj, "size")) {
+						obs_data_set_int(font_obj, "size", 
+							(int)obs_data_get_int(req_font_obj, "size"));
+					}
+
+					if (obs_data_has_user_value(req_font_obj, "style")) {
+						obs_data_set_string(font_obj, "style",
+							obs_data_get_string(req_font_obj, "style"));
+					}
+
+					obs_data_release(req_font_obj);
+					obs_data_release(font_obj);
+				}
+			}
+
+			if (req->hasField("gradient"))
+			{
+				obs_data_set_bool(settings, "gradient", 
+					obs_data_get_bool(req->data, "gradient"));
+			}
+
+			if (req->hasField("gradient_color"))
+			{
+				obs_data_set_int(settings, "gradient_color",
+					obs_data_get_int(req->data, "gradient_color"));
+			}
+
+			if (req->hasField("gradient_dir"))
+			{
+				obs_data_set_double(settings, "gradient_dir",
+					obs_data_get_double(req->data, "gradient_dir"));
+			}
+
+			if (req->hasField("gradient_opacity"))
+			{
+				obs_data_set_int(settings, "gradient_opacity",
+					obs_data_get_int(req->data, "gradient_opacity"));
+			}
+
+			if (req->hasField("outline"))
+			{
+				obs_data_set_bool(settings, "outline", 
+					obs_data_get_bool(req->data, "outline"));
+			}
+
+			if (req->hasField("outline_size"))
+			{
+				obs_data_set_int(settings, "outline_size",
+					obs_data_get_int(req->data, "outline_size"));
+			}
+
+			if (req->hasField("outline_color"))
+			{
+				obs_data_set_int(settings, "outline_color",
+					obs_data_get_int(req->data, "outline_color"));
+			}
+
+			if (req->hasField("outline_opacity"))
+			{
+				obs_data_set_int(settings, "outline_opacity", 
+					obs_data_get_int(req->data, "outline_opacity"));
+			}
+
+			if (req->hasField("read_from_file"))
+			{
+				obs_data_set_bool(settings, "read_from_file", 
+					obs_data_get_bool(req->data, "read_from_file"));
+			}
+
+			if (req->hasField("text"))
+			{
+				obs_data_set_string(settings, "text", 
+					obs_data_get_string(req->data, "text"));
+			}
+
+			if (req->hasField("valign"))
+			{
+				obs_data_set_string(settings, "valign", 
+					obs_data_get_string(req->data, "valign"));
+			}
+
+			if (req->hasField("vertical"))
+			{
+				obs_data_set_bool(settings, "vertical", 
+					obs_data_get_bool(req->data, "vertical"));
+			}
+
+			obs_source_update(sceneItemSource, settings);
+
+			if (req->hasField("render"))
+			{
+				obs_sceneitem_set_visible(sceneItem, 
+					obs_data_get_bool(req->data, "render"));
+			}
+
+			req->SendOKResponse();
+
+			obs_sceneitem_release(sceneItem);
+			obs_data_release(settings);
+		} 
+		else
+		{
+			req->SendErrorResponse("not text gdi plus source");
+		}
+
+	}
+	else
+	{
+		req->SendErrorResponse("specified scene item doesn't exist");
+	}
+
+	obs_source_release(scene);
+
+}	  
