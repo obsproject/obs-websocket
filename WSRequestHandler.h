@@ -100,8 +100,8 @@ class WSRequestHandler : public QObject
 		static void HandleDisableStudioMode(WSRequestHandler* req);
 		static void HandleToggleStudioMode(WSRequestHandler* req);
 		
-		static void HandleSetGDITextProperties(WSRequestHandler* req);
-		static void HandleGetGDITextProperties(WSRequestHandler* req);
+		static void HandleSetTextGDIPlusProperties(WSRequestHandler* req);
+		static void HandleGetTestGDIPlusProperties(WSRequestHandler* req);
 };
 
 #endif // WSPROTOCOL_H
