@@ -1099,7 +1099,6 @@ void WSRequestHandler::HandleGetRecordingFolder(WSRequestHandler* req)
 
 void WSRequestHandler::HandleGetTextGDIPlusProperties(WSRequestHandler* req)
 {
-
 	const char* itemName = obs_data_get_string(req->data, "source");
 	if (!itemName)
 	{
@@ -1109,13 +1108,13 @@ void WSRequestHandler::HandleGetTextGDIPlusProperties(WSRequestHandler* req)
 
 	const char* sceneName = obs_data_get_string(req->data, "scene-name");
 	obs_source_t* scene = Utils::GetSceneFromNameOrCurrent(sceneName);
-	if (scene == NULL) {
+	if (!scene) {
 		req->SendErrorResponse("requested scene doesn't exist");
 		return;
 	}
 
 	obs_sceneitem_t* sceneItem = Utils::GetSceneItemFromName(scene, itemName);
-	if (sceneItem != NULL)
+	if (sceneItem)
 	{
 		obs_source_t* sceneItemSource = obs_sceneitem_get_source(sceneItem);
 		const char* sceneItemSourceId = obs_source_get_id(sceneItemSource);
@@ -1128,9 +1127,10 @@ void WSRequestHandler::HandleGetTextGDIPlusProperties(WSRequestHandler* req)
 			obs_data_set_bool(response, "render",
 				obs_sceneitem_visible(sceneItem));
 
-			obs_sceneitem_release(sceneItem);
 			req->SendOKResponse(response);
+
 			obs_data_release(response);
+			obs_sceneitem_release(sceneItem);
 		}
 		else
 		{
@@ -1149,7 +1149,7 @@ void WSRequestHandler::HandleGetTextGDIPlusProperties(WSRequestHandler* req)
 
 void WSRequestHandler::HandleSetTextGDIPlusProperties(WSRequestHandler* req)
 {
-	if (!req->hasField("source") )
+	if (!req->hasField("source"))
 	{
 		req->SendErrorResponse("missing request parameters");
 		return;
@@ -1164,20 +1164,19 @@ void WSRequestHandler::HandleSetTextGDIPlusProperties(WSRequestHandler* req)
 
 	const char* sceneName = obs_data_get_string(req->data, "scene-name");
 	obs_source_t* scene = Utils::GetSceneFromNameOrCurrent(sceneName);
-	if (scene == NULL) {
+	if (!scene) {
 		req->SendErrorResponse("requested scene doesn't exist");
 		return;
 	}
 
 	obs_sceneitem_t* sceneItem = Utils::GetSceneItemFromName(scene, itemName);
-	if (sceneItem != NULL)
+	if (sceneItem)
 	{
 		obs_source_t* sceneItemSource = obs_sceneitem_get_source(sceneItem);
 		const char* sceneItemSourceId = obs_source_get_id(sceneItemSource);
 
 		if (strcmp(sceneItemSourceId, "text_gdiplus") == 0)
 		{
-
 			obs_data_t* settings = obs_source_get_settings(sceneItemSource);
 
 			if (req->hasField("align"))
@@ -1189,13 +1188,13 @@ void WSRequestHandler::HandleSetTextGDIPlusProperties(WSRequestHandler* req)
 			if (req->hasField("bk_color"))
 			{
 				obs_data_set_int(settings, "bk_color", 
-					(int)obs_data_get_int(req->data, "bk_color"));
+					obs_data_get_int(req->data, "bk_color"));
 			}
 
 			if (req->hasField("bk-opacity"))
 			{
 				obs_data_set_int(settings, "bk_opacity", 
-					(int)obs_data_get_int(req->data, "bk_opacity"));
+					obs_data_get_int(req->data, "bk_opacity"));
 			}
 
 			if (req->hasField("chatlog"))
@@ -1207,13 +1206,13 @@ void WSRequestHandler::HandleSetTextGDIPlusProperties(WSRequestHandler* req)
 			if (req->hasField("chatlog_lines"))
 			{
 				obs_data_set_int(settings, "chatlog_lines",
-					(int)obs_data_get_int(req->data, "chatlog_lines"));
+					obs_data_get_int(req->data, "chatlog_lines"));
 			}
 
 			if (req->hasField("color"))
 			{
 				obs_data_set_int(settings, "color", 
-					(int)obs_data_get_int(req->data, "color"));
+					obs_data_get_int(req->data, "color"));
 			}
 
 			if (req->hasField("extents"))
@@ -1231,13 +1230,13 @@ void WSRequestHandler::HandleSetTextGDIPlusProperties(WSRequestHandler* req)
 			if (req->hasField("extents_cx"))
 			{
 				obs_data_set_int(settings, "extents_cx",
-					(int)obs_data_get_int(req->data, "extents_cx"));
+					obs_data_get_int(req->data, "extents_cx"));
 			}
 
 			if (req->hasField("extents_cy"))
 			{
 				obs_data_set_int(settings, "extents_cy",
-					(int)obs_data_get_int(req->data, "extents_cy"));
+					obs_data_get_int(req->data, "extents_cy"));
 			}
 
 			if (req->hasField("file"))
@@ -1248,9 +1247,8 @@ void WSRequestHandler::HandleSetTextGDIPlusProperties(WSRequestHandler* req)
 
 			if (req->hasField("font"))
 			{
-			    
 				obs_data_t* font_obj = obs_data_get_obj(settings, "font");
-				if (font_obj != NULL)
+				if (font_obj)
 				{
 					obs_data_t* req_font_obj = obs_data_get_obj(req->data, "font");
 
@@ -1261,12 +1259,12 @@ void WSRequestHandler::HandleSetTextGDIPlusProperties(WSRequestHandler* req)
 
 					if (obs_data_has_user_value(req_font_obj, "flags")) {
 						obs_data_set_int(font_obj, "flags",
-							(int)obs_data_get_int(req_font_obj, "flags"));
+							obs_data_get_int(req_font_obj, "flags"));
 					}
 
 					if (obs_data_has_user_value(req_font_obj, "size")) {
 						obs_data_set_int(font_obj, "size", 
-							(int)obs_data_get_int(req_font_obj, "size"));
+							obs_data_get_int(req_font_obj, "size"));
 					}
 
 					if (obs_data_has_user_value(req_font_obj, "style")) {
@@ -1361,8 +1359,8 @@ void WSRequestHandler::HandleSetTextGDIPlusProperties(WSRequestHandler* req)
 
 			req->SendOKResponse();
 
-			obs_sceneitem_release(sceneItem);
 			obs_data_release(settings);
+			obs_sceneitem_release(sceneItem);
 		} 
 		else
 		{

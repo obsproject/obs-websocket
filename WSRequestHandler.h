@@ -102,7 +102,6 @@ class WSRequestHandler : public QObject
 		
 		static void HandleSetTextGDIPlusProperties(WSRequestHandler* req);
 		static void HandleGetTextGDIPlusProperties(WSRequestHandler* req);
-
 };
 
 #endif // WSPROTOCOL_H
