@@ -3,9 +3,10 @@
 set -e
 
 echo "-- Preparing package build"
+export QT_PREFIX="/usr/local/opt/qt5"
 
-export WS_LIB="$(brew --prefix qt5)/lib/QtWebSockets.framework/QtWebSockets"
-export NET_LIB="$(brew --prefix qt5)/lib/QtNetwork.framework/QtNetwork"
+export WS_LIB="$QT_PREFIX/lib/QtWebSockets.framework/QtWebSockets"
+export NET_LIB="$QT_PREFIX/lib/QtNetwork.framework/QtNetwork"
 
 export GIT_HASH=$(git rev-parse --short HEAD)
 
@@ -19,8 +20,6 @@ fi
 export FILENAME="obs-websocket-$VERSION.pkg"
 export LATEST_FILENAME="obs-websocket-latest-$LATEST_VERSION.pkg"
 
-export QT_PREFIX="/usr/local/opt/qt5"
-
 echo "-- Copying Qt dependencies"
 cp $WS_LIB ./build
 cp $NET_LIB ./build
@@ -31,14 +30,14 @@ echo "-- Modifying QtNetwork"
 # TODO : put a loop in there
 install_name_tool \
 	-change /usr/local/opt/qt/lib/QtNetwork.framework/Versions/5/QtNetwork @rpath/QtNetwork \
-	-change /usr/local/Cellar/qt/5.8.0_2/lib/QtCore.framework/Versions/5/QtCore @rpath/QtCore \
+	-change /usr/local/opt/qt/lib/QtCore.framework/Versions/5/QtCore @rpath/QtCore \
 	./build/QtNetwork
 
 echo "-- Modifying QtWebSockets"
 install_name_tool \
 	-change /usr/local/opt/qt/lib/QtWebSockets.framework/Versions/5/QtWebSockets @rpath/QtWebSockets \
-	-change /usr/local/Cellar/qt/5.8.0_2/lib/QtNetwork.framework/Versions/5/QtNetwork @rpath/QtNetwork \
-	-change /usr/local/Cellar/qt/5.8.0_2/lib/QtCore.framework/Versions/5/QtCore @rpath/QtCore \
+	-change /usr/local/opt/qt/lib/QtNetwork.framework/Versions/5/QtNetwork @rpath/QtNetwork \
+	-change /usr/local/opt/qt/lib/QtCore.framework/Versions/5/QtCore @rpath/QtCore \
 	./build/QtWebSockets
 
 echo "-- Modifying obs-websocket.so"
