@@ -86,6 +86,10 @@ The protocol in general is based on the OBS Remote protocol created by Bill Hami
       - ["GetCurrentScene"](#getcurrentscene)
       - ["GetSceneList"](#getscenelist)
       - ["GetSpecialSources"](#getspecialsources)
+	  - ["GetTextGDIPlusProperties"](#gettextgdiplusproperties)
+	  - ["SetTextGDIPlusProperties"](#settextgdiplusproperties)
+	  - ["GetBrowserSourceProperties"](#getbrowsersourceproperties)
+	  - ["SetBrowserSourceProperties"](#setbrowsersourceproperties)
       - ["SetVolume"](#setvolume)
       - ["GetVolume"](#getvolume)
       - ["SetMute"](#setmute)
@@ -769,5 +773,126 @@ __Request fields__ : none
 
 __Response__ : OK with the additional fields :
 - **"profiles"** (array of objects) : names of available profiles
+
+---
+
+#### "GetTextGDIPlusProperties"
+Gets current properties for Text GDI Plus source.
+
+__Request fields__ :  
+- **"source"** (string) : name of the source in the currently active scene.
+- **"scene-name"** (string; optional) : name of the scene the source belongs to.  defaults to current scene.
+
+__Response__ : OK if source exists in the current scene with these additional fields when fields are set, error otherwise.
+- **"align"** (string) : "left","center","right" : text alignment
+- **"bk_color"** (integer) : background color
+- **"bk_opacity"** (integer) : background opacity range 0 to 100
+- **"chatlog"** (bool) : chat log 
+- **"chatlog_lines"** (integer) : chat log lines
+- **"color"** (integer) : text color
+- **"extents"** (bool) : extents 
+- **"extents_wrap"** (bool) : extents wrap 
+- **"extents_cx"** (integer) : extents cx
+- **"extents_cy"** (integer) : extents cy
+- **"file"** (string) : file path name
+- **"read_from_file"** (bool) : read text from file specified
+- **"font"** (object) : holds font data for face, flags, size and style
+-- Example: "font": {"face": "Arial","flags": 0,"size": 150,"style": ""}
+- **"face"** (string) : font face i.e. Arial
+- **"flags"** (integer) : font text style flag i.e. Bold 1, Italic 2, Bold Italic 3, Underline 5, Strikeout 8
+- **"size"** (integer) : font text size
+- **"style"** (string) : font style (unknown function)
+- **"gradient"** (bool) : gradient 
+- **"gradient_color"** (integer) : gradient color
+- **"gradient_dir"** (float) : gradient direction
+- **"gradient_opacity"** (integer) : gradient opacity range 0 to 100
+- **"outline"** (bool) : outline 
+- **"outline_color"** (integer) : outline color
+- **"outline_size"** (integer) : outline size
+- **"outline_opacity"** (integer) : outline opacity range 0 to 100
+- **"text"** (string) : text to be displayed
+- **"valign"** (string) : "top","center","bottom" : text vertical alignment
+- **"vertical"** (bool) : vertical text 
+- **"render"** (bool) : visibility of the scene item
+
+---
+
+#### "SetTextGDIPlusProperties"
+Sets current properties for Text GDI Plus source.
+
+__Request fields__ :  
+- **"source"** (string) : name of the source in the currently active scene.
+- **"scene-name"** (string; optional) : name of the scene the source belongs to.  defaults to current scene.
+- **"align"** (string; optional) : "left","center","right" : text alignment
+- **"bk_color"** (integer; optional) : background color
+- **"bk_opacity"** (integer; optional) : background opacity range 0 to 100
+- **"chatlog"** (bool; optional) : chat log 
+- **"chatlog_lines"** (integer; optional) : chat log lines
+- **"color"** (integer; optional) : text color
+- **"extents"** (bool; optional) : extents 
+- **"extents_wrap"** (bool; optional) : extents wrap 
+- **"extents_cx"** (integer; optional) : extents cx
+- **"extents_cy"** (integer; optional) : extents cy
+- **"file"** (string; optional) : file path name
+- **"read_from_file"** (bool; optional) : read text from file specified
+- **"font"** (object; optional) : holds font data for face, flags, size and style
+-- Example: "font":{"face": "Arial","flags": 0,"size": 150,"style": ""}
+- **"face"** (string; optional) : font face i.e. Arial
+-- Example: "font":{"face": "Arial"}
+- **"flags"** (integer; optional) : font text style flag i.e. Bold 1, Italic 2, Bold Italic 3, Underline 5, Strikeout 8
+- **"size"** (integer; optional) : font text size 
+-- Example: "font": {"size":125}
+- **"style"** (string; optional) : font style (unknown function)
+- **"gradient"** (bool; optional) : gradient 
+- **"gradient_color"** (integer; optional) : gradient color
+- **"gradient_dir"** (float; optional) : gradient direction
+- **"gradient_opacity"** (integer; optional) : gradient opacity range 0 to 100
+- **"outline"** (bool; optional) : outline 
+- **"outline_color"** (integer; optional) : outline color
+- **"outline_size"** (integer; optional) : outline size
+- **"outline_opacity"** (integer; optional) : outline opacity range 0 to 100
+- **"text"** (string; optional) : text to be displayed
+- **"valign"** (string; optional) : "top","center","bottom" : text vertical alignment
+- **"vertical"** (bool; optional) : vertical text 
+- **"render"** (bool; optional) : visibility of the scene item
+
+__Response__ : OK if source exists in the current scene, error otherwise.
+
+---
+
+#### "GetBrowserSourceProperties"
+Gets current properties for Browser Source.
+
+__Request fields__ :  
+- **"source"** (string) : name of the source in the currently active scene.
+- **"scene-name"** (string; optional) : name of the scene the source belongs to.  defaults to current scene.
+
+__Response__ : OK if source exists in the current scene with these additional fields when fields are set, error otherwise.
+
+- **"is_local_file"** (bool) : use local file
+- **"url"** (string) : url or file path
+- **"css"** (string) : cascading style sheet code
+- **"width"** (integer) : width
+- **"height"** (integer) : height
+- **"fps"** (integer) : frames per second 
+- **"shutdown"** (bool) : shutdown when sorce is not visible
+- **"render"** (bool; optional) : visibility of the scene item
+
+---
+
+#### "SetBrowserSourceProperties"
+Sets current properties for Browser Source.
+
+__Request fields__ :  
+- **"source"** (string) : name of the source in the currently active scene.
+- **"scene-name"** (string; optional) : name of the scene the source belongs to.  defaults to current scene.
+- **"is_local_file"** (bool; optional) : use local file
+- **"url"** (string; optional) : url or file path
+- **"css"** (string; optional) : cascading style sheet code
+- **"width"** (integer; optional) : width
+- **"height"** (integer; optional) : height
+- **"fps"** (integer; optional) : frames per second 
+- **"shutdown"** (bool; optional) : shutdown when sorce is not visible
+- **"render"** (bool; optional) : visibility of the scene item
 
 ---
