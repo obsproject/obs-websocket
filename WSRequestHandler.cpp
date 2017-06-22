@@ -1147,7 +1147,6 @@ void WSRequestHandler::HandleGetTextGDIPlusProperties(WSRequestHandler* req)
 	}
 
 	obs_source_release(scene);
-
 }
 
 void WSRequestHandler::HandleSetTextGDIPlusProperties(WSRequestHandler* req)
@@ -1369,15 +1368,13 @@ void WSRequestHandler::HandleSetTextGDIPlusProperties(WSRequestHandler* req)
 		{
 			req->SendErrorResponse("not text gdi plus source");
 		}
-
 	}
 	else
 	{
 		req->SendErrorResponse("specified scene item doesn't exist");
 	}
-
+	
 	obs_source_release(scene);
-
 }
 
 void WSRequestHandler::HandleGetBrowserSourceProperties(WSRequestHandler* req)
@@ -1419,17 +1416,13 @@ void WSRequestHandler::HandleGetBrowserSourceProperties(WSRequestHandler* req)
 		{
 			req->SendErrorResponse("not browser source");
 		}
-
 	}
 	else
 	{
 		req->SendErrorResponse("specified scene item doesn't exist");
 	}
-
 	obs_source_release(scene);
-
 }
-
 
 void WSRequestHandler::HandleSetBrowserSourceProperties(WSRequestHandler* req)
 {
@@ -1528,13 +1521,10 @@ void WSRequestHandler::HandleSetBrowserSourceProperties(WSRequestHandler* req)
 		{
 			req->SendErrorResponse("not browser source");
 		}
-
 	}
 	else
 	{
 		req->SendErrorResponse("specified scene item doesn't exist");
 	}
-
 	obs_source_release(scene);
-
 }
