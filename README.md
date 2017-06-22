@@ -37,6 +37,7 @@ See the [build instructions](BUILDING.md).
 **We need your help on translations**. Please join the localization project on Crowdin: https://crowdin.com/project/obs-websocket
 
 ## Special thanks
+In order of appearance:
 - [Brendan H.](https://github.com/haganbmj) : Code contributions and better English in the Protocol specification
 - [Mikhail Swift](https://github.com/mikhailswift) : Code contributions
 - [Tobias Frahmer](https://github.com/Frahmer) : German translation
@@ -44,7 +45,9 @@ See the [build instructions](BUILDING.md).
 - [Larissa Gabilan](https://github.com/laris151) : Portuguese translation
 - [Andy Asquelt](https://github.com/asquelt) : Polish translation
 - [Marcel Haazen](https://github.com/inpothet) : Dutch translation
-- Supporters of the project
+- [Peter Antonvich](https://github.com/pantonvich) : Code contributions
+
+And also: special thanks to supporters of the project!
 
 ## Supporters
 They have contributed financially to the project and made possible the addition of several features into obs-websocket. Many thanks to them!
