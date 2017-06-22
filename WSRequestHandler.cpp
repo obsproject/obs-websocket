@@ -90,7 +90,10 @@ WSRequestHandler::WSRequestHandler(QWebSocket* client) :
 	messageMap["ToggleStudioMode"] = WSRequestHandler::HandleToggleStudioMode;
 
 	messageMap["SetTextGDIPlusProperties"] = WSRequestHandler::HandleSetTextGDIPlusProperties;
-	messageMap["GetTextGDIPlusProperties"] = WSRequestHandler::HandleGetTextGDIPlusProperties;																					   																					   
+	messageMap["GetTextGDIPlusProperties"] = WSRequestHandler::HandleGetTextGDIPlusProperties;
+	messageMap["GetBrowserSourceProperties"] = WSRequestHandler::HandleGetBrowserSourceProperties;
+	messageMap["SetBrowserSourceProperties"] = WSRequestHandler::HandleSetBrowserSourceProperties;
+
 	authNotRequired.insert("GetVersion");
 	authNotRequired.insert("GetAuthRequired");
 	authNotRequired.insert("Authenticate");
@@ -1144,7 +1147,6 @@ void WSRequestHandler::HandleGetTextGDIPlusProperties(WSRequestHandler* req)
 	}
 
 	obs_source_release(scene);
-
 }
 
 void WSRequestHandler::HandleSetTextGDIPlusProperties(WSRequestHandler* req)
@@ -1366,13 +1368,163 @@ void WSRequestHandler::HandleSetTextGDIPlusProperties(WSRequestHandler* req)
 		{
 			req->SendErrorResponse("not text gdi plus source");
 		}
-
 	}
 	else
 	{
 		req->SendErrorResponse("specified scene item doesn't exist");
 	}
-
+	
 	obs_source_release(scene);
+}
 
-}	  
+void WSRequestHandler::HandleGetBrowserSourceProperties(WSRequestHandler* req)
+{
+	const char* itemName = obs_data_get_string(req->data, "source");
+	if (!itemName)
+	{
+		req->SendErrorResponse("invalid request parameters");
+		return;
+	}
+
+	const char* sceneName = obs_data_get_string(req->data, "scene-name");
+	obs_source_t* scene = Utils::GetSceneFromNameOrCurrent(sceneName);
+	if (!scene) {
+		req->SendErrorResponse("requested scene doesn't exist");
+		return;
+	}
+
+	obs_sceneitem_t* sceneItem = Utils::GetSceneItemFromName(scene, itemName);
+	if (sceneItem)
+	{
+		obs_source_t* sceneItemSource = obs_sceneitem_get_source(sceneItem);
+		const char* sceneItemSourceId = obs_source_get_id(sceneItemSource);
+
+		if (strcmp(sceneItemSourceId, "browser_source") == 0)
+		{
+			obs_data_t* response = obs_source_get_settings(sceneItemSource);
+			obs_data_set_string(response, "source", itemName);
+			obs_data_set_string(response, "scene-name", sceneName);
+			obs_data_set_bool(response, "render",
+				obs_sceneitem_visible(sceneItem));
+
+			req->SendOKResponse(response);
+
+			obs_data_release(response);
+			obs_sceneitem_release(sceneItem);
+		}
+		else
+		{
+			req->SendErrorResponse("not browser source");
+		}
+	}
+	else
+	{
+		req->SendErrorResponse("specified scene item doesn't exist");
+	}
+	obs_source_release(scene);
+}
+
+void WSRequestHandler::HandleSetBrowserSourceProperties(WSRequestHandler* req)
+{
+	if (!req->hasField("source"))
+	{
+		req->SendErrorResponse("missing request parameters");
+		return;
+	}
+
+	const char* itemName = obs_data_get_string(req->data, "source");
+	if (!itemName)
+	{
+		req->SendErrorResponse("invalid request parameters");
+		return;
+	}
+
+	const char* sceneName = obs_data_get_string(req->data, "scene-name");
+	obs_source_t* scene = Utils::GetSceneFromNameOrCurrent(sceneName);
+	if (!scene) {
+		req->SendErrorResponse("requested scene doesn't exist");
+		return;
+	}
+
+	obs_sceneitem_t* sceneItem = Utils::GetSceneItemFromName(scene, itemName);
+	if (sceneItem)
+	{
+		obs_source_t* sceneItemSource = obs_sceneitem_get_source(sceneItem);
+		const char* sceneItemSourceId = obs_source_get_id(sceneItemSource);
+
+		if (strcmp(sceneItemSourceId, "browser_source") == 0)
+		{
+			obs_data_t* settings = obs_source_get_settings(sceneItemSource);
+
+			if (req->hasField("restart_when_active"))
+			{
+				obs_data_set_bool(settings, "restart_when_active",
+					obs_data_get_bool(req->data, "restart_when_active"));
+			}
+
+			if (req->hasField("shutdown"))
+			{
+				obs_data_set_bool(settings, "shutdown",
+					obs_data_get_bool(req->data, "shutdown"));
+			}
+
+			if (req->hasField("is_local_file"))
+			{
+				obs_data_set_bool(settings, "is_local_file",
+					obs_data_get_bool(req->data, "is_local_file"));
+			}
+
+			if (req->hasField("url"))
+			{
+				obs_data_set_string(settings, "url",
+					obs_data_get_string(req->data, "url"));
+			}
+
+			if (req->hasField("css"))
+			{
+				obs_data_set_string(settings, "css",
+					obs_data_get_string(req->data, "css"));
+			}
+
+			if (req->hasField("width"))
+			{
+				obs_data_set_int(settings, "width",
+					obs_data_get_int(req->data, "width"));
+			}
+
+			if (req->hasField("height"))
+			{
+				obs_data_set_int(settings, "height",
+					obs_data_get_int(req->data, "height"));
+			}
+			
+			if (req->hasField("fps"))
+			{
+				obs_data_set_int(settings, "fps",
+					obs_data_get_int(req->data, "fps"));
+			}
+
+			obs_source_update(sceneItemSource, settings);
+
+			if (req->hasField("render"))
+			{
+				obs_sceneitem_set_visible(sceneItem,
+					obs_data_get_bool(req->data, "render"));
+			}
+
+			req->SendOKResponse();
+
+			obs_data_release(settings);
+			obs_sceneitem_release(sceneItem);
+		}
+		else
+		{
+			req->SendErrorResponse("not browser source");
+		}
+	}
+	else
+	{
+		req->SendErrorResponse("specified scene item doesn't exist");
+	}
+	obs_source_release(scene);
+}
