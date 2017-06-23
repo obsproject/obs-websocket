@@ -104,6 +104,10 @@ The protocol in general is based on the OBS Remote protocol created by Bill Hami
       - ["ListSceneCollections"](#listscenecollections)
       - ["SetCurrentSceneCollection"](#setcurrentscenecollection)
       - ["GetCurrentSceneCollection"](#getcurrentscenecollection)
+    - **Streaming Server Settings**
+      - ["GetStreamingServerSettings"](#getstreamingserversettings)
+      - ["SetStreamingServerSettings"](#setstreamingserversettings)
+      - ["SaveStreamingServerSettings"](#savestreamingsserversettings)
     - **Profiles**
       - ["ListProfiles"](#listprofiles)
       - ["SetCurrentProfile"](#setcurrentprofile)
@@ -745,6 +749,54 @@ __Response__ : OK with these additional fields :
 - **"scene-collections"** (array of objects) : names of available scene collections
 
 ---
+
+#### "GetStreamingServerSettings"
+Gets the current streaming server settings
+
+__Request fields__ : none
+
+__Response__ : OK with these additional fields :
+- **"url"** (string) : The publish URL
+- **"key"** (string) : The published stream key
+- **"id"** (string) : the internal identifier for the given streaming provider ('rtmp_custom' for custom settings)
+- **"name"** (string) : the internal name for the given streaming provider
+- **"display-name"** (string) : a human readable name for the streaming provider
+- **"use-auth"** (bool) : should authentication be used when connecting to the streaming server
+- **"username"** (string) : if authentication is enabled, the username for access to the streaming server
+- **"password"** (string) : if authentication is enabled, the password for access to the streaming server
+
+--
+
+#### "SetStreamingServerSettings"
+Sets one or more attributes of the current streaming server settings. Any options not passed will remain unchanged.  At least one request parameter is required. Returns the updated settings in response
+
+__Request fields__ :
+- **"url"** (string) : The publish URL
+- **"key"** (string) : The published stream key
+- **"use-auth"** (bool) : should authentication be used when connecting to the streaming server
+- **"username"** (string) : if authentication is enabled, the username for access to the streaming server
+- **"password"** (string) : if authentication is enabled, the password
+- **"save"** (bool) : if specified as true, the settings will be saved to disk after change, otherwise they will only be in memory
+
+__Response__ : OK with these additional fields :
+- **"url"** (string) : The publish URL
+- **"key"** (string) : The published stream key
+- **"id"** (string) : the internal identifier for the given streaming provider ('rtmp_custom' for custom settings)
+- **"name"** (string) : the internal name for the given streaming provider
+- **"display-name"** (string) : a human readable name for the streaming provider
+- **"use-auth"** (bool) : should authentication be used when connecting to the streaming server
+- **"username"** (string) : if authentication is enabled, the username for access to the streaming server
+- **"password"** (string) : if authentication is enabled, the password
+
+---
+
+#### "SaveStreamingServerSettings"
+Saves the current streaming server settings to disk
+
+__Request fields__ : none
+
+__Response__ : OK
+
 
 #### "SetCurrentProfile"
 Change the current profile.
