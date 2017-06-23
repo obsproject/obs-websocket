@@ -81,6 +81,10 @@ WSRequestHandler::WSRequestHandler(QWebSocket* client) :
 	messageMap["GetCurrentProfile"] = WSRequestHandler::HandleGetCurrentProfile;
 	messageMap["ListProfiles"] = WSRequestHandler::HandleListProfiles;
 
+	messageMap["SetStreamingServerSettings"] = WSRequestHandler::HandleSetStreamingServerSettings;
+	messageMap["GetStreamingServerSettings"] = WSRequestHandler::HandleGetStreamingServerSettings;
+	messageMap["SaveStreamingServerSettings"] = WSRequestHandler::HandleSaveStreamingServerSettings;
+
 	messageMap["GetStudioModeStatus"] = WSRequestHandler::HandleGetStudioModeStatus;
 	messageMap["GetPreviewScene"] = WSRequestHandler::HandleGetPreviewScene;
 	messageMap["SetPreviewScene"] = WSRequestHandler::HandleSetPreviewScene;
@@ -91,6 +95,7 @@ WSRequestHandler::WSRequestHandler(QWebSocket* client) :
 
 	messageMap["SetTextGDIPlusProperties"] = WSRequestHandler::HandleSetTextGDIPlusProperties;
 	messageMap["GetTextGDIPlusProperties"] = WSRequestHandler::HandleGetTextGDIPlusProperties;
+
 	messageMap["GetBrowserSourceProperties"] = WSRequestHandler::HandleGetBrowserSourceProperties;
 	messageMap["SetBrowserSourceProperties"] = WSRequestHandler::HandleSetBrowserSourceProperties;
 
@@ -900,6 +905,104 @@ void WSRequestHandler::HandleGetCurrentProfile(WSRequestHandler* req)
 	obs_data_release(response);
 }
 
+void WSRequestHandler::HandleSetStreamingServerSettings(WSRequestHandler* req)
+{
+	if (!req->hasField("key") &&
+		!req->hasField("username") &&
+		!req->hasField("password") &&
+		!req->hasField("url")  &&
+		!req->hasField("use_auth"))
+	{
+		req->SendErrorResponse("missing request parameter 'key', 'url', 'use_auth', 'username' or 'password' (at least one is required)");
+		return;
+	}
+
+	const char* key = req->hasField("key") ? obs_data_get_string(req->data, "key") : nullptr;
+	const char* url = req->hasField("url") ? obs_data_get_string(req->data, "url") : nullptr;
+	const char* username = req->hasField("username") ? obs_data_get_string(req->data, "username") : nullptr;
+	const char* password = req->hasField("password") ? obs_data_get_string(req->data, "password") : nullptr;
+
+	obs_service_t* service = obs_frontend_get_streaming_service();
+	obs_data_t* settings = obs_service_get_settings(service);
+
+	if (key != nullptr) {
+		if (strlen(key) > 0)
+		{
+			obs_data_set_string(settings, "key", key);
+		}
+		else
+		{
+			req->SendErrorResponse("invalid key. must not be empty");
+			return;
+		}
+	}
+
+	if (url != nullptr) {
+		if (strlen(url) > 0)
+		{
+			obs_data_set_string(settings, "server", url);
+		}
+		else
+		{
+			req->SendErrorResponse("invalid url. must not be empty");
+			return;
+		}
+	}
+	
+	if (str_valid(username))
+	{
+		obs_data_set_string(settings, "username", username);
+	}
+	
+	if (str_valid(password))
+	{
+		obs_data_set_string(settings, "password", password);
+	}
+	
+	if (req->hasField("use-auth")) {
+		obs_data_set_bool(settings, "use_auth", obs_data_get_bool(req->data, "use-auth"));
+	}
+	
+	obs_service_update(service, settings);
+	
+	if (req->hasField("save") && obs_data_get_bool(req->data, "save")) {
+		obs_frontend_save_streaming_service();
+	}
+	
+	HandleGetStreamingServerSettings(req);
+}
+
+void WSRequestHandler::HandleGetStreamingServerSettings(WSRequestHandler* req)
+{
+	obs_service_t* service = obs_frontend_get_streaming_service();
+	obs_data_t* settings = obs_service_get_settings(service);
+	obs_data_t* response = obs_data_create();
+	
+	const char *id = obs_service_get_id(service);
+	
+	obs_data_set_string(response, "id", id);
+	obs_data_set_string(response, "name", obs_service_get_name(service));
+	obs_data_set_string(response, "display-name", obs_service_get_display_name(id));
+
+	obs_data_set_string(response, "url", obs_service_get_url(service));
+	obs_data_set_string(response, "key", obs_service_get_key(service));
+
+	if (obs_data_get_bool(settings, "use_auth")) {
+		obs_data_set_bool(response, "use-auth", true);
+		obs_data_set_string(response, "username", obs_service_get_username(service));
+		obs_data_set_string(response, "password", obs_service_get_password(service));
+	}
+
+	req->SendOKResponse(response);
+	obs_data_release(response);
+}
+
+void WSRequestHandler::HandleSaveStreamingServerSettings(WSRequestHandler* req)
+{
+	obs_frontend_save_streaming_service();
+	req->SendOKResponse();
+}
+
 void WSRequestHandler::HandleListProfiles(WSRequestHandler* req)
 {
 	obs_data_array_t* profiles = Utils::GetProfiles();
@@ -1528,3 +1631,4 @@ void WSRequestHandler::HandleSetBrowserSourceProperties(WSRequestHandler* req)
 	}
 	obs_source_release(scene);
 }
+
