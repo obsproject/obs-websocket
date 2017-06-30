@@ -47,6 +47,8 @@ void SettingsDialog::showEvent(QShowEvent* event)
 
 	ui->serverEnabled->setChecked(conf->ServerEnabled);
 	ui->serverPort->setValue(conf->ServerPort);
+	
+	ui->debugEnabled->setChecked(conf->DebugEnabled);
 
 	ui->authRequired->setChecked(conf->AuthRequired);
 	ui->password->setText(CHANGE_ME);
@@ -74,6 +76,8 @@ void SettingsDialog::FormAccepted()
 
 	conf->ServerEnabled = ui->serverEnabled->isChecked();
 	conf->ServerPort = ui->serverPort->value();
+	
+	conf->DebugEnabled = ui->debugEnabled->isChecked();
 
 	if (ui->authRequired->isChecked())
 	{

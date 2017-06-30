@@ -27,6 +27,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #define SECTION_NAME "WebsocketAPI"
 #define PARAM_ENABLE "ServerEnabled"
 #define PARAM_PORT "ServerPort"
+#define PARAM_DEBUG "DebugEnabled"
 #define PARAM_AUTHREQUIRED "AuthRequired"
 #define PARAM_SECRET "AuthSecret"
 #define PARAM_SALT "AuthSalt"
@@ -38,6 +39,8 @@ Config::Config()
 	// Default settings
 	ServerEnabled = true;
 	ServerPort = 4444;
+	
+	DebugEnabled = false;
 
 	AuthRequired = false;
 	Secret = "";
@@ -52,6 +55,9 @@ Config::Config()
 			SECTION_NAME, PARAM_ENABLE, ServerEnabled);
 		config_set_default_uint(obs_config, 
 			SECTION_NAME, PARAM_PORT, ServerPort);
+			
+		config_set_default_bool(obs_config,
+			SECTION_NAME, PARAM_DEBUG, DebugEnabled);
 
 		config_set_default_bool(obs_config, 
 			SECTION_NAME, PARAM_AUTHREQUIRED, AuthRequired);
@@ -81,6 +87,8 @@ void Config::Load()
 
 	ServerEnabled = config_get_bool(obs_config, SECTION_NAME, PARAM_ENABLE);
 	ServerPort = config_get_uint(obs_config, SECTION_NAME, PARAM_PORT);
+	
+	DebugEnabled = config_get_bool(obs_config, SECTION_NAME, PARAM_DEBUG);
 
 	AuthRequired = config_get_bool(obs_config, SECTION_NAME, PARAM_AUTHREQUIRED);
 	Secret = config_get_string(obs_config, SECTION_NAME, PARAM_SECRET);
@@ -93,6 +101,8 @@ void Config::Save()
 
 	config_set_bool(obs_config, SECTION_NAME, PARAM_ENABLE, ServerEnabled);
 	config_set_uint(obs_config, SECTION_NAME, PARAM_PORT, ServerPort);
+	
+	config_set_bool(obs_config, SECTION_NAME, PARAM_DEBUG, DebugEnabled);
 
 	config_set_bool(obs_config, SECTION_NAME, PARAM_AUTHREQUIRED, AuthRequired);
 	config_set_string(obs_config, SECTION_NAME, PARAM_SECRET, Secret);

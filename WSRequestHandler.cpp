@@ -114,6 +114,11 @@ void WSRequestHandler::processIncomingMessage(QString textMessage)
 		SendErrorResponse("invalid JSON payload");
 		return;
 	}
+	
+	if (Config::Current()->DebugEnabled)
+	{
+		blog(LOG_INFO, ">> '%s'", msg);
+	}
 
 	if (!hasField("request-type") ||
 		!hasField("message-id"))
