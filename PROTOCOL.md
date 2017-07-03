@@ -444,7 +444,7 @@ __Response__ : OK if Studio Mode is enabled and specified scene exists, error ot
 Studio Mode only. Transitions the currently previewed scene to Program (main output).
 
 __Request fields__ :  
-- **"with-transition" (object, optional) : if specified, use this transition when switching from preview to program. This will change the current transition in the frontend to this one.
+- **"with-transition"** (object, optional) : if specified, use this transition when switching from preview to program. This will change the current transition in the frontend to this one.
 
 __Response__ : OK if studio mode is enabled and optional transition exists, error otherwise.
 
