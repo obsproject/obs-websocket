@@ -116,9 +116,7 @@ void WSRequestHandler::processIncomingMessage(QString textMessage)
 	}
 	
 	if (Config::Current()->DebugEnabled)
-	{
 		blog(LOG_DEBUG, "Request >> '%s'", msg);
-	}
 
 	if (!hasField("request-type") ||
 		!hasField("message-id"))
@@ -177,14 +175,11 @@ void WSRequestHandler::SendErrorResponse(const char* errorMessage)
 void WSRequestHandler::SendResponse(obs_data_t* response) 
 {
 	const char *json = obs_data_get_json(response);
-	obs_data_release(response);
-	
-	if (Config::Current()->DebugEnabled)
-	{
-		blog(LOG_DEBUG, "Response << '%s'", json);
-	}
-	
 	_client->sendTextMessage(json);
+	if (Config::Current()->DebugEnabled)
+		blog(LOG_DEBUG, "Response << '%s'", json);
+	
+	obs_data_release(response);
 }
 
 bool WSRequestHandler::hasField(const char* name)
