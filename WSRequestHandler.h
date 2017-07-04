@@ -45,6 +45,7 @@ class WSRequestHandler : public QObject
 
 		void SendOKResponse(obs_data_t* additionalFields = NULL);
 		void SendErrorResponse(const char* errorMessage);
+		void SendResponse(obs_data_t* response);
 
 		static void HandleGetVersion(WSRequestHandler* req);
 		static void HandleGetAuthRequired(WSRequestHandler* req);
