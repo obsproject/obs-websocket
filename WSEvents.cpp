@@ -215,14 +215,11 @@ void WSEvents::broadcastUpdate(const char* updateType, obs_data_t* additionalFie
 		obs_data_apply(update, additionalFields);
 
 	const char *json = obs_data_get_json(update);
-	obs_data_release(update);
-	
-	if (Config::Current()->DebugEnabled)
-	{
-		blog(LOG_DEBUG, "Update << '%s'", json);
-	}
-
 	_srv->broadcast(json);
+	if (Config::Current()->DebugEnabled)
+		blog(LOG_DEBUG, "Update << '%s'", json);
+
+	obs_data_release(update);
 }
 
 void WSEvents::connectTransitionSignals(obs_source_t* transition)
