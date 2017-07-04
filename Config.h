@@ -38,6 +38,8 @@ class Config
 
 		bool ServerEnabled;
 		uint64_t ServerPort;
+		
+		bool DebugEnabled;
 
 		bool AuthRequired;
 		const char *Secret;

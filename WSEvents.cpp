@@ -20,6 +20,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <util/platform.h>
 #include <QTimer>
 #include <QPushButton>
+#include "Config.h"
 #include "Utils.h"
 #include "WSEvents.h"
 #include "obs-websocket.h"
@@ -213,9 +214,15 @@ void WSEvents::broadcastUpdate(const char* updateType, obs_data_t* additionalFie
 	if (additionalFields != NULL)
 		obs_data_apply(update, additionalFields);
 
-	_srv->broadcast(obs_data_get_json(update));
-
+	const char *json = obs_data_get_json(update);
 	obs_data_release(update);
+	
+	if (Config::Current()->DebugEnabled)
+	{
+		blog(LOG_DEBUG, "Update << '%s'", json);
+	}
+
+	_srv->broadcast(json);
 }
 
 void WSEvents::connectTransitionSignals(obs_source_t* transition)
