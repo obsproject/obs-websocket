@@ -34,7 +34,7 @@ class WSRequestHandler : public QObject
 		~WSRequestHandler();
 		void processIncomingMessage(QString textMessage);
 		bool hasField(const char* name);
-	
+
 	private:
 		static obs_service_t* _service;
 		QWebSocket* _client;
