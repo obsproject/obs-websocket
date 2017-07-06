@@ -76,6 +76,8 @@ class Utils
 		static QString FormatIPAddress(QHostAddress &addr);
 		static const char* GetRecordingFolder();
 		static bool SetRecordingFolder(const char* path);
+	
+		static QString* ParseDataToQueryString(obs_data_t * data);
 };
 
 #endif // UTILS_H

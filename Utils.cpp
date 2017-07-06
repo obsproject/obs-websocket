@@ -20,6 +20,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <obs.hpp>
 #include <QMainWindow>
 #include <QDir>
+#include <QUrl>
 #include "Utils.h"
 #include "obs-websocket.h"
 
@@ -464,4 +465,56 @@ bool Utils::SetRecordingFolder(const char* path)
 
 	config_save(profile);
 	return true;
+}
+
+QString* Utils::ParseDataToQueryString(obs_data_t * data) {
+	QString * query = nullptr;
+	if (data) {
+		obs_data_item_t * item = obs_data_first(data);
+		if (item) {
+			query = new QString();
+			bool isFirst = true;
+			do {
+				if (!obs_data_item_has_user_value(item)) {
+					continue;
+				}
+				if (!isFirst) {
+					query->append('&');
+				} else {
+					isFirst = false;
+				}
+				const char * attrName = obs_data_item_get_name(item);
+				query->append(attrName).append("=");
+				switch (obs_data_item_gettype(item)) {
+					case OBS_DATA_BOOLEAN:
+						query->append(obs_data_item_get_bool(item)?"true":"false");
+						break;
+					case OBS_DATA_NUMBER:
+						switch (obs_data_item_numtype(item)) {
+							case OBS_DATA_NUM_DOUBLE: {
+								double value = obs_data_item_get_double(item);
+								query->append(QString::number(value));
+								break;
+							}
+							case OBS_DATA_NUM_INT: {
+								long long value = obs_data_item_get_int(item);
+								query->append(QString::number(value));
+								break;
+							}
+							case OBS_DATA_NUM_INVALID:
+								break;
+						}
+						break;
+					case OBS_DATA_STRING:
+						query->append(QUrl::toPercentEncoding(QString(obs_data_item_get_string(item))));
+						break;
+					default:
+						//other types are not supported
+						break;
+				}
+			} while ( obs_data_item_next( &item ) );
+		}
+	}
+	
+	return query;
 }
