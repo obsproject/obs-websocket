@@ -105,9 +105,9 @@ The protocol in general is based on the OBS Remote protocol created by Bill Hami
       - ["SetCurrentSceneCollection"](#setcurrentscenecollection)
       - ["GetCurrentSceneCollection"](#getcurrentscenecollection)
     - **Streaming Server Settings**
-      - ["GetStreamingServerSettings"](#getstreamingserversettings)
-      - ["SetStreamingServerSettings"](#setstreamingserversettings)
-      - ["SaveStreamingServerSettings"](#savestreamingsserversettings)
+      - ["GetStreamSettings"](#getstreamsettings)
+      - ["SetStreamSettings"](#setstreamsettings)
+      - ["SaveStreamSettings"](#savestreamsettings)
     - **Profiles**
       - ["ListProfiles"](#listprofiles)
       - ["SetCurrentProfile"](#setcurrentprofile)
@@ -493,7 +493,9 @@ __Response__ : always OK. No additional fields.
 #### "StartStopRecording"
 Toggles recording on or off.
 
-__Request fields__ : none  
+__Request fields__ : 
+- **"stream"** (object; optional) : See 'stream' parameter in 'StartStreaming'.  Ignored if stream is already started.
+
 __Response__ : always OK. No additional fields.  
 
 ---
@@ -501,7 +503,23 @@ __Response__ : always OK. No additional fields.
 #### "StartStreaming"
 Start streaming.
 
-__Request fields__ : none  
+__Request fields__ : 
+- **"stream"** (object; optional) : If specified allows for special configuration of the stream
+ 
+The 'stream' object has the following fields:
+- **"settings"** (object; optional) : The settings for the stream
+- **"type"** (string; optional) : If specified ensures the type of the stream matches the given type (usually 'rtmp\_custom' or 'rtmp\_common').  If the currently configured stream type does not match the given stream type, all settings must be specified in the 'settings' object or an error will occur starting the stream.
+- **"metadata"** (object; optional) : Adds the given object parameters as encoded query string parameters to the 'key' of the RTMP stream.  Used to pass data to the RTMP service about the stream.
+
+The 'settings' object has the following fields:
+- **"server"** (string; optional) : The publish URL
+- **"key"** (string; optional) : The publish key of the stream
+- **"use-auth"** (bool; optional) : should authentication be used when connecting to the streaming server
+- **"username"** (string; optional) : if authentication is enabled, the username for access to the streaming server. Ignored if 'use-auth' is not specified as 'true'.
+- **"password"** (string; optional) : if authentication is enabled, the password for access to the streaming server. Ignored if 'use-auth' is not specified as 'true'.
+
+The 'metadata' object supports passing any string, numeric or boolean field.
+  
 __Response__ : Error if streaming is already active, OK otherwise. No additional fields.  
 
 ---
@@ -750,47 +768,46 @@ __Response__ : OK with these additional fields :
 
 ---
 
-#### "GetStreamingServerSettings"
+#### "GetStreamSettings"
 Gets the current streaming server settings
 
 __Request fields__ : none
 
 __Response__ : OK with these additional fields :
-- **"url"** (string) : The publish URL
-- **"key"** (string) : The published stream key
-- **"id"** (string) : the internal identifier for the given streaming provider ('rtmp_custom' for custom settings)
-- **"name"** (string) : the internal name for the given streaming provider
-- **"display-name"** (string) : a human readable name for the streaming provider
+- **"type"** (string) : The type of streaming service configuration usually 'rtmp\_custom' or 'rtmp\_common'
+- **"settings"** (object) : The actual settings of the stream (i.e. server, key, use-auth, username, password)
+
+The 'settings' object has the following fields however they may vary by 'type':
+- **"server"** (string) : The publish URL
+- **"key"** (string) : The publish key of the stream
 - **"use-auth"** (bool) : should authentication be used when connecting to the streaming server
 - **"username"** (string) : if authentication is enabled, the username for access to the streaming server
 - **"password"** (string) : if authentication is enabled, the password for access to the streaming server
 
 --
 
-#### "SetStreamingServerSettings"
-Sets one or more attributes of the current streaming server settings. Any options not passed will remain unchanged.  At least one request parameter is required. Returns the updated settings in response
+#### "SetStreamSettings"
+Sets one or more attributes of the current streaming server settings. Any options not passed will remain unchanged. Returns the updated settings in response. 
+If 'type' is different than the current streaming service type, all settings are required.
+Returns the full settings of the stream (i.e. the same as GetStreamSettings)
 
 __Request fields__ :
-- **"url"** (string) : The publish URL
-- **"key"** (string) : The published stream key
-- **"use-auth"** (bool) : should authentication be used when connecting to the streaming server
-- **"username"** (string) : if authentication is enabled, the username for access to the streaming server
-- **"password"** (string) : if authentication is enabled, the password
-- **"save"** (bool) : if specified as true, the settings will be saved to disk after change, otherwise they will only be in memory
+- **"type"** (string) : The type of streaming service configuration usually 'rtmp\_custom' or 'rtmp\_common'
+- **"settings"** (object) : The actual settings of the stream (i.e. server, key, use-auth, username, password)
+- **"save"** (bool) : If specified as true, saves the settings to disk
 
-__Response__ : OK with these additional fields :
-- **"url"** (string) : The publish URL
-- **"key"** (string) : The published stream key
-- **"id"** (string) : the internal identifier for the given streaming provider ('rtmp_custom' for custom settings)
-- **"name"** (string) : the internal name for the given streaming provider
-- **"display-name"** (string) : a human readable name for the streaming provider
-- **"use-auth"** (bool) : should authentication be used when connecting to the streaming server
-- **"username"** (string) : if authentication is enabled, the username for access to the streaming server
-- **"password"** (string) : if authentication is enabled, the password
+The 'settings' object has the following fields however they may vary by 'type':
+- **"server"** (string; optional) : The publish URL
+- **"key"** (string; optional) : The publish key of the stream
+- **"use-auth"** (bool; optional) : should authentication be used when connecting to the streaming server
+- **"username"** (string; optional) : if authentication is enabled, the username for access to the streaming server
+- **"password"** (string; optional) : if authentication is enabled, the password for access to the streaming server
+
+__Response__ : OK with the same fields as the request (except 'save')
 
 ---
 
-#### "SaveStreamingServerSettings"
+#### "SaveStreamSettings"
 Saves the current streaming server settings to disk
 
 __Request fields__ : none
