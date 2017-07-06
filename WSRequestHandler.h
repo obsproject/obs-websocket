@@ -21,6 +21,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #define WSREQUESTHANDLER_H
 
 #include <obs-frontend-api.h>
+
 #include <QtWebSockets/QWebSocket>
 #include <QtWebSockets/QWebSocketServer>
 
@@ -35,6 +36,7 @@ class WSRequestHandler : public QObject
 		bool hasField(const char* name);
 
 	private:
+		static obs_service_t* _service;
 		QWebSocket* _client;
 		const char* _messageId;
 		const char* _requestType;
@@ -89,6 +91,10 @@ class WSRequestHandler : public QObject
 		static void HandleSetCurrentProfile(WSRequestHandler* req);
 		static void HandleGetCurrentProfile(WSRequestHandler* req);
 		static void HandleListProfiles(WSRequestHandler* req);
+
+		static void HandleSetStreamSettings(WSRequestHandler* req);
+		static void HandleGetStreamSettings(WSRequestHandler* req);
+		static void HandleSaveStreamSettings(WSRequestHandler* req);
 
 		static void HandleSetTransitionDuration(WSRequestHandler* req);
 		static void HandleGetTransitionDuration(WSRequestHandler* req);

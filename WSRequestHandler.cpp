@@ -17,16 +17,21 @@ You should have received a copy of the GNU General Public License along
 with this program. If not, see <https://www.gnu.org/licenses/>
 */
 
+#include <obs-data.h>
 #include "WSRequestHandler.h"
 #include "WSEvents.h"
 #include "obs-websocket.h"
 #include "Config.h"
 #include "Utils.h"
+#include <qstring.h>
 
 bool str_valid(const char* str)
 {
 	return (str != nullptr && strlen(str) > 0);
 }
+
+
+obs_service_t* WSRequestHandler::_service = nullptr;
 
 WSRequestHandler::WSRequestHandler(QWebSocket* client) :
 	_messageId(0),
@@ -81,6 +86,10 @@ WSRequestHandler::WSRequestHandler(QWebSocket* client) :
 	messageMap["GetCurrentProfile"] = WSRequestHandler::HandleGetCurrentProfile;
 	messageMap["ListProfiles"] = WSRequestHandler::HandleListProfiles;
 
+	messageMap["SetStreamSettings"] = WSRequestHandler::HandleSetStreamSettings;
+	messageMap["GetStreamSettings"] = WSRequestHandler::HandleGetStreamSettings;
+	messageMap["SaveStreamSettings"] = WSRequestHandler::HandleSaveStreamSettings;
+
 	messageMap["GetStudioModeStatus"] = WSRequestHandler::HandleGetStudioModeStatus;
 	messageMap["GetPreviewScene"] = WSRequestHandler::HandleGetPreviewScene;
 	messageMap["SetPreviewScene"] = WSRequestHandler::HandleSetPreviewScene;
@@ -91,6 +100,7 @@ WSRequestHandler::WSRequestHandler(QWebSocket* client) :
 
 	messageMap["SetTextGDIPlusProperties"] = WSRequestHandler::HandleSetTextGDIPlusProperties;
 	messageMap["GetTextGDIPlusProperties"] = WSRequestHandler::HandleGetTextGDIPlusProperties;
+
 	messageMap["GetBrowserSourceProperties"] = WSRequestHandler::HandleGetBrowserSourceProperties;
 	messageMap["SetBrowserSourceProperties"] = WSRequestHandler::HandleSetBrowserSourceProperties;
 
@@ -380,11 +390,13 @@ void WSRequestHandler::HandleGetStreamingStatus(WSRequestHandler* req)
 void WSRequestHandler::HandleStartStopStreaming(WSRequestHandler* req)
 {
 	if (obs_frontend_streaming_active())
-		obs_frontend_streaming_stop();
+	{
+		HandleStopStreaming(req);
+	}
 	else
-		obs_frontend_streaming_start();
-
-	req->SendOKResponse();
+	{
+		HandleStartStreaming(req);
+	}
 }
 
 void WSRequestHandler::HandleStartStopRecording(WSRequestHandler* req)
@@ -401,8 +413,97 @@ void WSRequestHandler::HandleStartStreaming(WSRequestHandler* req)
 {
 	if (obs_frontend_streaming_active() == false)
 	{
+		obs_data_t* streamData = obs_data_get_obj(req->data, "stream");
+		obs_service_t* currentService = nullptr;
+		
+		if (streamData)
+		{
+			currentService =  obs_frontend_get_streaming_service();
+			obs_service_addref(currentService);
+			
+			obs_service_t* service = _service;
+			const char* currentServiceType = obs_service_get_type(currentService);
+			
+			const char* requestedType = obs_data_has_user_value(streamData, "type") ? obs_data_get_string(streamData, "type") : currentServiceType;
+			const char* serviceType = service != nullptr ? obs_service_get_type(service) : currentServiceType;
+			obs_data_t* settings = obs_data_get_obj(streamData, "settings");
+			
+			
+			obs_data_t* metadata = obs_data_get_obj(streamData, "metadata");
+			QString* query = Utils::ParseDataToQueryString(metadata);
+			
+			if (strcmp(requestedType, serviceType) != 0)
+			{
+				if (settings)
+				{
+					obs_service_release(service);
+					service = nullptr; //different type so we can't reuse the existing service instance
+				}
+				else
+				{
+					req->SendErrorResponse("Service type requested does not match currently configured type and no 'settings' were provided");
+					return;
+				}
+			}
+			else
+			{
+				//if type isn't changing we should overlay the settings we got with the existing settings
+				obs_data_t* existingSettings = obs_service_get_settings(currentService);
+				obs_data_t* newSettings = obs_data_create(); //by doing this you can send a request to the websocket that only contains a setting you want to change instead of having to do a get and then change them
+				
+				obs_data_apply(newSettings, existingSettings); //first apply the existing settings
+				
+				obs_data_apply(newSettings, settings); //then apply the settings from the request should they exist
+				obs_data_release(settings);
+				
+				settings = newSettings;
+				obs_data_release(existingSettings);
+			}
+			
+			if (service == nullptr)
+			{  //create the new custom service setup by the websocket
+				service = obs_service_create(requestedType, "websocket_custom_service", settings, nullptr);
+			}
+			
+			//Supporting adding metadata parameters to key query string
+			if (query && query->length() > 0) {
+				const char* key = obs_data_get_string(settings, "key");
+				int keylen = strlen(key);
+				bool hasQuestionMark = false;
+				for (int i = 0; i < keylen; i++) {
+					if (key[i] == '?') {
+						hasQuestionMark = true;
+						break;
+					}
+				}
+				if (hasQuestionMark) {
+					query->prepend('&');
+				} else {
+					query->prepend('?');
+				}
+				query->prepend(key);
+				key = query->toUtf8();
+				obs_data_set_string(settings, "key", key);
+			}
+			
+			obs_service_update(service, settings);
+			obs_data_release(settings);
+			obs_data_release(metadata);
+			_service = service;
+			obs_frontend_set_streaming_service(_service);
+		} else if (_service != nullptr) {
+			obs_service_release(_service);
+			_service = nullptr;
+		}
+		
 		obs_frontend_streaming_start();
+		
+		if (_service != nullptr) {
+			obs_frontend_set_streaming_service(currentService);
+		}
+		
 		req->SendOKResponse();
+		obs_service_release(currentService);
 	}
 	else
 	{
@@ -907,6 +1008,77 @@ void WSRequestHandler::HandleGetCurrentProfile(WSRequestHandler* req)
 	req->SendOKResponse(response);
 
 	obs_data_release(response);
+}
+
+void WSRequestHandler::HandleSetStreamSettings(WSRequestHandler* req)
+{
+	obs_service_t* service = obs_frontend_get_streaming_service();
+	
+	obs_data_t* settings = obs_data_get_obj(req->data, "settings");
+	if (!settings)
+	{
+		req->SendErrorResponse("'settings' are required'");
+		return;
+	}
+	
+	const char* serviceType = obs_service_get_type(service);
+	const char* requestedType = obs_data_get_string(req->data, "type");
+	
+	if (requestedType != nullptr && strcmp(requestedType, serviceType) != 0)
+	{
+		obs_data_t* hotkeys = obs_hotkeys_save_service(service);
+		obs_service_release(service);
+		service = obs_service_create(requestedType, "websocket_custom_service", settings, hotkeys);
+		obs_data_release(hotkeys);
+	}
+	else
+	{
+		obs_data_t* existingSettings = obs_service_get_settings(service);  //if type isn't changing we should overlay the settings we got with the existing settings
+		obs_data_t* newSettings = obs_data_create(); //by doing this you can send a request to the websocket that only contains a setting you want to change instead of having to do a get and then change them
+		obs_data_apply(newSettings, existingSettings); //first apply the existing settings
+		obs_data_apply(newSettings, settings); //then apply the settings from the request
+		obs_data_release(settings);
+		obs_data_release(existingSettings);
+		obs_service_update(service, settings);
+		settings = newSettings;
+	}
+	
+	if (obs_data_get_bool(req->data, "save")) //if save is specified we should immediately save the streaming service
+	{
+		obs_frontend_save_streaming_service();
+	}
+	
+	obs_data_t* response = obs_data_create();
+	obs_data_set_string(response, "type", requestedType);
+	obs_data_set_obj(response, "settings", settings);
+	
+	req->SendOKResponse(response);
+	
+	obs_data_release(settings);
+	obs_data_release(response);
+}
+
+void WSRequestHandler::HandleGetStreamSettings(WSRequestHandler* req)
+{
+	obs_service_t* service = obs_frontend_get_streaming_service();
+	
+	const char* serviceType = obs_service_get_type(service);
+	obs_data_t* settings = obs_service_get_settings(service);
+	
+	obs_data_t* response = obs_data_create();
+	obs_data_set_string(response, "type", serviceType);
+	obs_data_set_obj(response, "settings", settings);
+	
+	req->SendOKResponse(response);
+	
+	obs_data_release(settings);
+	obs_data_release(response);
+}
+
+void WSRequestHandler::HandleSaveStreamSettings(WSRequestHandler* req)
+{
+	obs_frontend_save_streaming_service();
+	req->SendOKResponse();
 }
 
 void WSRequestHandler::HandleListProfiles(WSRequestHandler* req)
