@@ -456,27 +456,21 @@ void WSEvents::OnRecordingStopped()
 
 void WSEvents::OnReplayStarting()
 {
-	// New update type specific to OBS Studio
 	broadcastUpdate("ReplayStarting");
 }
 
 void WSEvents::OnReplayStarted()
 {
-	// New update type specific to OBS Studio
-	_rec_starttime = os_gettime_ns();
 	broadcastUpdate("ReplayStarted");
 }
 
 void WSEvents::OnReplayStopping()
 {
-	// New update type specific to OBS Studio
 	broadcastUpdate("ReplayStopping");
 }
 
 void WSEvents::OnReplayStopped()
 {
-	// New update type specific to OBS Studio
-	_rec_starttime = 0;
 	broadcastUpdate("ReplayStopped");
 }
 
