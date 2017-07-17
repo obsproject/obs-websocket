@@ -62,6 +62,10 @@ WSRequestHandler::WSRequestHandler(QWebSocket* client) :
 	messageMap["StartRecording"] = WSRequestHandler::HandleStartRecording;
 	messageMap["StopRecording"] = WSRequestHandler::HandleStopRecording;
 
+	messageMap["StartStopReplayBuffer"] = WSRequestHandler::HandleStartStopReplayBuffer;
+	messageMap["StartReplayBuffer"] = WSRequestHandler::HandleStartReplayBuffer;
+	messageMap["StopReplayBuffer"] = WSRequestHandler::HandleStopReplayBuffer;
+
 	messageMap["SetRecordingFolder"] = WSRequestHandler::HandleSetRecordingFolder;
 	messageMap["GetRecordingFolder"] = WSRequestHandler::HandleGetRecordingFolder;
 
@@ -547,6 +551,42 @@ void WSRequestHandler::HandleStopRecording(WSRequestHandler* req)
 	else
 	{
 		req->SendErrorResponse("recording not active");
+	}
+}
+
+void WSRequestHandler::HandleStartStopReplayBuffer(WSRequestHandler *req)
+{
+	if (obs_frontend_replay_buffer_active())
+		obs_frontend_replay_buffer_stop();
+	else
+		obs_frontend_replay_buffer_start();
+
+	req->SendOKResponse();
+}
+
+void WSRequestHandler::HandleStartReplayBuffer(WSRequestHandler *req)
+{
+	if (obs_frontend_replay_buffer_active() == false)
+	{
+		obs_frontend_replay_buffer_start();
+		req->SendOKResponse();
+	}
+	else
+	{
+		req->SendErrorResponse("replay buffer already active");
+	}
+}
+
+void WSRequestHandler::HandleStopReplayBuffer(WSRequestHandler *req)
+{
+	if (obs_frontend_replay_buffer_active() == true)
+	{
+		obs_frontend_replay_buffer_stop();
+		req->SendOKResponse();
+	}
+	else
+	{
+		req->SendErrorResponse("replay buffer not active");
 	}
 }
 
