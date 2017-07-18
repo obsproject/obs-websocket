@@ -100,6 +100,7 @@ The protocol in general is based on the OBS Remote protocol created by Bill Hami
       - ["SetSceneItemPosition"](#setsceneitemposition)
       - ["SetSceneItemTransform"](#setsceneitemtransform)
       - ["SetSceneItemCrop"](#setsceneitemcrop)
+      - ["ResetSceneItem"](#resetsceneitem)
     - **Scene Collections**
       - ["ListSceneCollections"](#listscenecollections)
       - ["SetCurrentSceneCollection"](#setcurrentscenecollection)
@@ -733,6 +734,15 @@ __Request fields__ :
 - **"bottom"** (integer)
 - **"left"** (integer)
 - **"right"** (integer)
+
+__Response__ : OK if specified item exists, error otherwise.
+
+---
+
+#### "ResetSceneItem"
+__Request fields__ :
+- **"item"** (string) : Name of the scene item
+- **"scene-name"** (string, optional) : Scene the item belongs to. Default : current scene.
 
 __Response__ : OK if specified item exists, error otherwise.
 
