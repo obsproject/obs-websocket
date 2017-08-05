@@ -260,7 +260,6 @@ const char* WSEvents::GetRecordingTimecode() {
 }
 
 void WSEvents::OnSceneChange() {
-    // Implements an existing update type from bilhamil's OBS Remote
     obs_data_t* data = obs_data_create();
 
     obs_source_t* current_scene = obs_frontend_get_current_scene();
@@ -332,7 +331,6 @@ void WSEvents::OnProfileListChange() {
 }
 
 void WSEvents::OnStreamStarting() {
-    // Implements an existing update type from bilhamil's OBS Remote
     obs_data_t* data = obs_data_create();
     obs_data_set_bool(data, "preview-only", false);
 
@@ -342,14 +340,12 @@ void WSEvents::OnStreamStarting() {
 }
 
 void WSEvents::OnStreamStarted() {
-    // New update type specific to OBS Studio
     _stream_starttime = os_gettime_ns();
     _lastBytesSent = 0;
     broadcastUpdate("StreamStarted");
 }
 
 void WSEvents::OnStreamStopping() {
-    // Implements an existing update type from bilhamil's OBS Remote
     obs_data_t* data = obs_data_create();
     obs_data_set_bool(data, "preview-only", false);
 
@@ -359,35 +355,29 @@ void WSEvents::OnStreamStopping() {
 }
 
 void WSEvents::OnStreamStopped() {
-    // New update type specific to OBS Studio
     _stream_starttime = 0;
     broadcastUpdate("StreamStopped");
 }
 
 void WSEvents::OnRecordingStarting() {
-    // New update type specific to OBS Studio
     broadcastUpdate("RecordingStarting");
 }
 
 void WSEvents::OnRecordingStarted() {
-    // New update type specific to OBS Studio
     _rec_starttime = os_gettime_ns();
     broadcastUpdate("RecordingStarted");
 }
 
 void WSEvents::OnRecordingStopping() {
-    // New update type specific to OBS Studio
     broadcastUpdate("RecordingStopping");
 }
 
 void WSEvents::OnRecordingStopped() {
-    // New update type specific to OBS Studio
     _rec_starttime = 0;
     broadcastUpdate("RecordingStopped");
 }
 
 void WSEvents::OnExit() {
-    // New update type specific to OBS Studio
     broadcastUpdate("Exiting");
 }
 
