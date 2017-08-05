@@ -31,141 +31,121 @@ QT_USE_NAMESPACE
 WSServer* WSServer::Instance = nullptr;
 
 WSServer::WSServer(QObject* parent) :
-	QObject(parent),
-	_wsServer(Q_NULLPTR),
-	_clients(),
-	_clMutex(QMutex::Recursive)
-{
-	_serverThread = new QThread();
-
-	_wsServer = new QWebSocketServer(
-		QStringLiteral("obs-websocket"),
-		QWebSocketServer::NonSecureMode,
-		_serverThread);
-
-	_serverThread->start();
+    QObject(parent),
+    _wsServer(Q_NULLPTR),
+    _clients(),
+    _clMutex(QMutex::Recursive) {
+    _serverThread = new QThread();
+    _wsServer = new QWebSocketServer(
+        QStringLiteral("obs-websocket"),
+        QWebSocketServer::NonSecureMode,
+        _serverThread);
+    _serverThread->start();
 }
 
-WSServer::~WSServer()
-{
-	Stop();
-	delete _serverThread;
+WSServer::~WSServer() {
+    Stop();
+    delete _serverThread;
 }
 
-void WSServer::Start(quint16 port)
-{
-	if (port == _wsServer->serverPort())
-		return;
+void WSServer::Start(quint16 port) {
+    if (port == _wsServer->serverPort())
+        return;
 
-	if(_wsServer->isListening())
-		Stop();
+    if(_wsServer->isListening())
+        Stop();
 
-	bool serverStarted = _wsServer->listen(QHostAddress::Any, port);
-	if (serverStarted)
-	{
-		connect(_wsServer, &QWebSocketServer::newConnection,
-			this, &WSServer::onNewConnection);
-	}
+    bool serverStarted = _wsServer->listen(QHostAddress::Any, port);
+    if (serverStarted) {
+        connect(_wsServer, SIGNAL(newConnection()),
+            this, SLOT(onNewConnection()));
+    }
 }
 
-void WSServer::Stop()
-{
-	_clMutex.lock();
-	for(QWebSocket* pClient : _clients) {
-		pClient->close();
-	}
-	_clMutex.unlock();
+void WSServer::Stop() {
+    _clMutex.lock();
+    for(QWebSocket* pClient : _clients) {
+        pClient->close();
+    }
+    _clMutex.unlock();
 
-	_wsServer->close();
+    _wsServer->close();
 }
 
-void WSServer::broadcast(QString message)
-{
-	_clMutex.lock();
-
-	for(QWebSocket* pClient : _clients) {
-		if (Config::Current()->AuthRequired
-			&& (pClient->property(PROP_AUTHENTICATED).toBool() == false))
-		{
-			// Skip this client if unauthenticated
-			continue;
-		}
-
-		pClient->sendTextMessage(message);
-	}
-
-	_clMutex.unlock();
+void WSServer::broadcast(QString message) {
+    _clMutex.lock();
+    for(QWebSocket* pClient : _clients) {
+        if (Config::Current()->AuthRequired
+            && (pClient->property(PROP_AUTHENTICATED).toBool() == false)) {
+            // Skip this client if unauthenticated
+            continue;
+        }
+        pClient->sendTextMessage(message);
+    }
+    _clMutex.unlock();
 }
 
-void WSServer::onNewConnection()
-{
-	QWebSocket* pSocket = _wsServer->nextPendingConnection();
+void WSServer::onNewConnection() {
+    QWebSocket* pSocket = _wsServer->nextPendingConnection();
+    if (pSocket) {
+        connect(pSocket, SIGNAL(textMessageReceived(const QString&)),
+            this, SLOT(onTextMessageReceived(QString)));
+        connect(pSocket, SIGNAL(disconnected()),
+            this, SLOT(onSocketDisconnected()));
 
-	if (pSocket)
-	{
-		connect(pSocket, &QWebSocket::textMessageReceived,
-			this, &WSServer::textMessageReceived);
-		connect(pSocket, &QWebSocket::disconnected,
-			this, &WSServer::socketDisconnected);
-		pSocket->setProperty(PROP_AUTHENTICATED, false);
+        pSocket->setProperty(PROP_AUTHENTICATED, false);
 
-		_clMutex.lock();
-		_clients << pSocket;
-		_clMutex.unlock();
+        _clMutex.lock();
+        _clients << pSocket;
+        _clMutex.unlock();
 
-		QHostAddress clientAddr = pSocket->peerAddress();
-		QString clientIp = Utils::FormatIPAddress(clientAddr);
+        QHostAddress clientAddr = pSocket->peerAddress();
+        QString clientIp = Utils::FormatIPAddress(clientAddr);
 
-		blog(LOG_INFO, "new client connection from %s:%d",
-			clientIp.toUtf8().constData(), pSocket->peerPort());
+        blog(LOG_INFO, "new client connection from %s:%d",
+            clientIp.toUtf8().constData(), pSocket->peerPort());
 
-		QString msg = QString(obs_module_text("OBSWebsocket.ConnectNotify.ClientIP"))
-			+ QString(" ")
-			+ clientAddr.toString();
+        QString msg = QString(obs_module_text("OBSWebsocket.ConnectNotify.ClientIP"))
+            + QString(" ")
+            + clientAddr.toString();
 
-		Utils::SysTrayNotify(msg,
-			QSystemTrayIcon::Information,
-			QString(obs_module_text("OBSWebsocket.ConnectNotify.Connected")));
-	}
+        Utils::SysTrayNotify(msg,
+            QSystemTrayIcon::Information,
+            QString(obs_module_text("OBSWebsocket.ConnectNotify.Connected")));
+    }
 }
 
-void WSServer::textMessageReceived(QString message)
-{
-	QWebSocket* pSocket = qobject_cast<QWebSocket*>(sender());
-
-	if (pSocket)
-	{
-		WSRequestHandler handler(pSocket);
-		handler.processIncomingMessage(message);
-	}
+void WSServer::onTextMessageReceived(QString message) {
+    QWebSocket* pSocket = qobject_cast<QWebSocket*>(sender());
+    if (pSocket) {
+        WSRequestHandler handler(pSocket);
+        handler.processIncomingMessage(message);
+    }
 }
 
-void WSServer::socketDisconnected()
-{
-	QWebSocket* pSocket = qobject_cast<QWebSocket*>(sender());
+void WSServer::onSocketDisconnected() {
+    QWebSocket* pSocket = qobject_cast<QWebSocket*>(sender());
+    if (pSocket) {
+        pSocket->setProperty(PROP_AUTHENTICATED, false);
 
-	if (pSocket)
-	{
-		pSocket->setProperty(PROP_AUTHENTICATED, false);
+        _clMutex.lock();
+        _clients.removeAll(pSocket);
+        _clMutex.unlock();
 
-		_clMutex.lock();
-		_clients.removeAll(pSocket);
-		_clMutex.unlock();
+        pSocket->deleteLater();
 
-		pSocket->deleteLater();
+        QHostAddress clientAddr = pSocket->peerAddress();
+        QString clientIp = Utils::FormatIPAddress(clientAddr);
 
-		QHostAddress clientAddr = pSocket->peerAddress();
-		QString clientIp = Utils::FormatIPAddress(clientAddr);
+        blog(LOG_INFO, "client %s:%d disconnected",
+            clientIp.toUtf8().constData(), pSocket->peerPort());
 
-		blog(LOG_INFO, "client %s:%d disconnected",
-			clientIp.toUtf8().constData(), pSocket->peerPort());
+        QString msg = QString(obs_module_text("OBSWebsocket.ConnectNotify.ClientIP"))
+            + QString(" ")
+            + clientAddr.toString();
 
-		QString msg = QString(obs_module_text("OBSWebsocket.ConnectNotify.ClientIP"))
-			+ QString(" ")
-			+ clientAddr.toString();
-
-		Utils::SysTrayNotify(msg,
-			QSystemTrayIcon::Information,
-			QString(obs_module_text("OBSWebsocket.ConnectNotify.Disconnected")));
-	}
+        Utils::SysTrayNotify(msg,
+            QSystemTrayIcon::Information,
+            QString(obs_module_text("OBSWebsocket.ConnectNotify.Disconnected")));
+    }
 }

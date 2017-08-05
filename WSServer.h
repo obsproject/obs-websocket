@@ -19,37 +19,35 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #ifndef WSSERVER_H
 #define WSSERVER_H
 
-#include <QtCore/QObject>
-#include <QtCore/QList>
-#include <QtCore/QMutex>
+#include <QObject>
+#include <QList>
+#include <QMutex>
+
+#include "WSRequestHandler.h"
 
 QT_FORWARD_DECLARE_CLASS(QWebSocketServer)
 QT_FORWARD_DECLARE_CLASS(QWebSocket)
 
-#include "WSRequestHandler.h"
+class WSServer : public QObject {
+  Q_OBJECT
+  public:
+    explicit WSServer(QObject* parent = Q_NULLPTR);
+    virtual ~WSServer();
+    void Start(quint16 port);
+    void Stop();
+    void broadcast(QString message);
+    static WSServer* Instance;
 
-class WSServer : public QObject
-{
-	Q_OBJECT
+  private slots:
+    void onNewConnection();
+    void onTextMessageReceived(QString message);
+    void onSocketDisconnected();
 
-	public:
-		explicit WSServer(QObject* parent = Q_NULLPTR);
-		virtual ~WSServer();
-		void Start(quint16 port);
-		void Stop();
-		void broadcast(QString message);
-		static WSServer* Instance;
-
-	private Q_SLOTS:
-		void onNewConnection();
-		void textMessageReceived(QString message);
-		void socketDisconnected();
-
-	private:
-		QWebSocketServer* _wsServer;
-		QList<QWebSocket*> _clients;
-		QMutex _clMutex;
-		QThread* _serverThread;
+  private:
+    QWebSocketServer* _wsServer;
+    QList<QWebSocket*> _clients;
+    QMutex _clMutex;
+    QThread* _serverThread;
 };
 
 #endif // WSSERVER_H

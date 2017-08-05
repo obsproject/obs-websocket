@@ -22,37 +22,36 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <mbedtls/entropy.h>
 #include <mbedtls/ctr_drbg.h>
 
-class Config
-{
-	public:
-		Config();
-		~Config();
-		void Load();
-		void Save();
+class Config {
+  public:
+    Config();
+    ~Config();
+    void Load();
+    void Save();
 
-		void SetPassword(const char *password);
-		bool CheckAuth(const char *userChallenge);
-		const char* GenerateSalt();
-		static const char* GenerateSecret(
-			const char *password, const char *salt);
+    void SetPassword(const char* password);
+    bool CheckAuth(const char* userChallenge);
+    const char* GenerateSalt();
+    static const char* GenerateSecret(
+        const char* password, const char* salt);
 
-		bool ServerEnabled;
-		uint64_t ServerPort;
-		
-		bool DebugEnabled;
+    bool ServerEnabled;
+    uint64_t ServerPort;
+        
+    bool DebugEnabled;
 
-		bool AuthRequired;
-		const char *Secret;
-		const char *Salt;
-		const char *SessionChallenge;
-		bool SettingsLoaded;
-		
-		static Config* Current();
+    bool AuthRequired;
+    const char* Secret;
+    const char* Salt;
+    const char* SessionChallenge;
+    bool SettingsLoaded;
+        
+    static Config* Current();
 
-	private:
-		static Config *_instance;
-		mbedtls_entropy_context entropy;
-		mbedtls_ctr_drbg_context rng;
+  private:
+    static Config* _instance;
+    mbedtls_entropy_context entropy;
+    mbedtls_ctr_drbg_context rng;
 };
 
 #endif // CONFIG_H
