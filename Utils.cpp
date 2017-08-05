@@ -16,26 +16,25 @@ You should have received a copy of the GNU General Public License along
 with this program. If not, see <https://www.gnu.org/licenses/>
 */
 
-#include <obs-frontend-api.h>
-#include <obs.hpp>
 #include <QMainWindow>
 #include <QDir>
 #include <QUrl>
-#include "Utils.h"
+#include <obs-frontend-api.h>
+#include <obs.hpp>
 #include "obs-websocket.h"
+
+#include "Utils.h"
 
 Q_DECLARE_METATYPE(OBSScene);
 
-obs_data_array_t* string_list_to_array(char** strings, char* key)
-{
+obs_data_array_t* string_list_to_array(char** strings, char* key) {
 	if (!strings)
 		return obs_data_array_create();
 
 	obs_data_array_t* list = obs_data_array_create();
 
 	char* value = "";
-	for (int i = 0; value != nullptr; i++)
-	{
+	for (int i = 0; value != nullptr; i++) {
 		value = strings[i];
 
 		obs_data_t* item = obs_data_create();
@@ -50,17 +49,18 @@ obs_data_array_t* string_list_to_array(char** strings, char* key)
 	return list;
 }
 
-obs_data_array_t* Utils::GetSceneItems(obs_source_t* source)
-{
+obs_data_array_t* Utils::GetSceneItems(obs_source_t* source) {
 	obs_data_array_t* items = obs_data_array_create();
 	obs_scene_t* scene = obs_scene_from_source(source);
 
 	if (!scene)
 		return nullptr;
 
-	obs_scene_enum_items(scene, [](obs_scene_t* scene, obs_sceneitem_t* currentItem, void* param)
-	{
-		obs_data_array_t* data = static_cast<obs_data_array_t* >(param);
+	obs_scene_enum_items(scene, [](
+            obs_scene_t* scene,
+            obs_sceneitem_t* currentItem,
+            void* param) {
+		obs_data_array_t* data = static_cast<obs_data_array_t*>(param);
 
 		obs_data_t* item_data = GetSceneItemData(currentItem);
 		obs_data_array_insert(data, 0, item_data);
@@ -72,8 +72,7 @@ obs_data_array_t* Utils::GetSceneItems(obs_source_t* source)
 	return items;
 }
 
-obs_data_t* Utils::GetSceneItemData(obs_sceneitem_t* item)
-{
+obs_data_t* Utils::GetSceneItemData(obs_sceneitem_t* item) {
 	if (!item)
 		return nullptr;
 
@@ -105,8 +104,7 @@ obs_data_t* Utils::GetSceneItemData(obs_sceneitem_t* item)
 	return data;
 }
 
-obs_sceneitem_t* Utils::GetSceneItemFromName(obs_source_t* source, const char* name)
-{
+obs_sceneitem_t* Utils::GetSceneItemFromName(obs_source_t* source, const char* name) {
 	struct current_search {
 		const char* query;
 		obs_sceneitem_t* result;
@@ -120,15 +118,16 @@ obs_sceneitem_t* Utils::GetSceneItemFromName(obs_source_t* source, const char* n
 	if (scene == nullptr)
 		return nullptr;
 
-	obs_scene_enum_items(scene, [](obs_scene_t* scene, obs_sceneitem_t* currentItem, void* param)
-	{
-		current_search* search = static_cast<current_search* >(param);
+	obs_scene_enum_items(scene, [](
+            obs_scene_t* scene,
+            obs_sceneitem_t* currentItem,
+            void* param) {
+		current_search* search = static_cast<current_search*>(param);
 
 		const char* currentItemName =
 			obs_source_get_name(obs_sceneitem_get_source(currentItem));
 
-		if (strcmp(currentItemName, search->query) == 0)
-		{
+		if (strcmp(currentItemName, search->query) == 0) {
 			search->result = currentItem;
 			obs_sceneitem_addref(search->result);
 			return false;
@@ -140,15 +139,13 @@ obs_sceneitem_t* Utils::GetSceneItemFromName(obs_source_t* source, const char* n
 	return search.result;
 }
 
-obs_source_t* Utils::GetTransitionFromName(const char* search_name)
-{
+obs_source_t* Utils::GetTransitionFromName(const char* search_name) {
 	obs_source_t* found_transition = NULL;
 
 	obs_frontend_source_list transition_list = {};
 	obs_frontend_get_transitions(&transition_list);
 
-	for (size_t i = 0; i < transition_list.sources.num; i++)
-	{
+	for (size_t i = 0; i < transition_list.sources.num; i++) {
 		obs_source_t* transition = transition_list.sources.array[i];
 
 		const char* transition_name = obs_source_get_name(transition);
@@ -165,8 +162,7 @@ obs_source_t* Utils::GetTransitionFromName(const char* search_name)
 	return found_transition;
 }
 
-obs_source_t* Utils::GetSceneFromNameOrCurrent(const char* scene_name)
-{
+obs_source_t* Utils::GetSceneFromNameOrCurrent(const char* scene_name) {
 	obs_source_t* scene = nullptr;
 
 	if (!scene_name || !strlen(scene_name))
@@ -177,14 +173,12 @@ obs_source_t* Utils::GetSceneFromNameOrCurrent(const char* scene_name)
 	return scene;
 }
 
-obs_data_array_t* Utils::GetScenes()
-{
+obs_data_array_t* Utils::GetScenes() {
 	obs_frontend_source_list sceneList = {};
 	obs_frontend_get_scenes(&sceneList);
 
 	obs_data_array_t* scenes = obs_data_array_create();
-	for (size_t i = 0; i < sceneList.sources.num; i++)
-	{
+	for (size_t i = 0; i < sceneList.sources.num; i++) {
 		obs_source_t* scene = sceneList.sources.array[i];
 
 		obs_data_t* scene_data = GetSceneData(scene);
@@ -198,8 +192,7 @@ obs_data_array_t* Utils::GetScenes()
 	return scenes;
 }
 
-obs_data_t* Utils::GetSceneData(obs_source* source)
-{
+obs_data_t* Utils::GetSceneData(obs_source* source) {
 	obs_data_array_t* scene_items = GetSceneItems(source);
 
 	obs_data_t* sceneData = obs_data_create();
@@ -210,8 +203,7 @@ obs_data_t* Utils::GetSceneData(obs_source* source)
 	return sceneData;
 }
 
-obs_data_array_t* Utils::GetSceneCollections()
-{
+obs_data_array_t* Utils::GetSceneCollections() {
 	char** scene_collections = obs_frontend_get_scene_collections();
 	obs_data_array_t* list = string_list_to_array(scene_collections, "sc-name");
 
@@ -219,8 +211,7 @@ obs_data_array_t* Utils::GetSceneCollections()
 	return list;
 }
 
-obs_data_array_t* Utils::GetProfiles()
-{
+obs_data_array_t* Utils::GetProfiles() {
 	char** profiles = obs_frontend_get_profiles();
 	obs_data_array_t* list = string_list_to_array(profiles, "profile-name");
 
@@ -228,14 +219,12 @@ obs_data_array_t* Utils::GetProfiles()
 	return list;
 }
 
-QSpinBox* Utils::GetTransitionDurationControl()
-{
+QSpinBox* Utils::GetTransitionDurationControl() {
 	QMainWindow* window = (QMainWindow*)obs_frontend_get_main_window();
 	return window->findChild<QSpinBox*>("transitionDuration");
 }
 
-int Utils::GetTransitionDuration()
-{
+int Utils::GetTransitionDuration() {
 	QSpinBox* control = GetTransitionDurationControl();
 	if (control)
 		return control->value();
@@ -243,45 +232,35 @@ int Utils::GetTransitionDuration()
 		return -1;
 }
 
-void Utils::SetTransitionDuration(int ms)
-{
+void Utils::SetTransitionDuration(int ms) {
 	QSpinBox* control = GetTransitionDurationControl();
-
 	if (control && ms >= 0)
 		control->setValue(ms);
 }
 
-bool Utils::SetTransitionByName(const char* transition_name)
-{
+bool Utils::SetTransitionByName(const char* transition_name) {
 	obs_source_t* transition = GetTransitionFromName(transition_name);
 
-	if (transition)
-	{
+	if (transition) {
 		obs_frontend_set_current_transition(transition);
 		obs_source_release(transition);
-
 		return true;
-	}
-	else
-	{
+	} else {
 		return false;
 	}
 }
 
-QPushButton* Utils::GetPreviewModeButtonControl()
-{
+QPushButton* Utils::GetPreviewModeButtonControl() {
 	QMainWindow* main = (QMainWindow*)obs_frontend_get_main_window();
 	return main->findChild<QPushButton*>("modeSwitch");
 }
 
-QListWidget* Utils::GetSceneListControl()
-{
+QListWidget* Utils::GetSceneListControl() {
 	QMainWindow* main = (QMainWindow*)obs_frontend_get_main_window();
 	return main->findChild<QListWidget*>("scenes");
 }
 
-obs_scene_t* Utils::SceneListItemToScene(QListWidgetItem* item)
-{
+obs_scene_t* Utils::SceneListItemToScene(QListWidgetItem* item) {
 	if (!item)
 		return nullptr;
 
@@ -289,14 +268,12 @@ obs_scene_t* Utils::SceneListItemToScene(QListWidgetItem* item)
 	return item_data.value<OBSScene>();
 }
 
-QLayout* Utils::GetPreviewLayout()
-{
+QLayout* Utils::GetPreviewLayout() {
 	QMainWindow* main = (QMainWindow*)obs_frontend_get_main_window();
 	return main->findChild<QLayout*>("previewLayout");
 }
 
-bool Utils::IsPreviewModeActive()
-{
+bool Utils::IsPreviewModeActive() {
 	QMainWindow* main = (QMainWindow*)obs_frontend_get_main_window();
 
 	// Clue 1 : "Studio Mode" button is toggled on
@@ -309,29 +286,23 @@ bool Utils::IsPreviewModeActive()
 	return buttonToggledOn || (previewChildCount >= 2);
 }
 
-void Utils::EnablePreviewMode()
-{
+void Utils::EnablePreviewMode() {
 	if (!IsPreviewModeActive())
 		GetPreviewModeButtonControl()->click();
 }
 
-void Utils::DisablePreviewMode()
-{
+void Utils::DisablePreviewMode() {
 	if (IsPreviewModeActive())
 		GetPreviewModeButtonControl()->click();
 }
 
-void Utils::TogglePreviewMode()
-{
+void Utils::TogglePreviewMode() {
 	GetPreviewModeButtonControl()->click();
 }
 
-obs_scene_t* Utils::GetPreviewScene()
-{
-	if (IsPreviewModeActive())
-	{
+obs_scene_t* Utils::GetPreviewScene() {
+	if (IsPreviewModeActive()) {
 		QListWidget* sceneList = GetSceneListControl();
-
 		QList<QListWidgetItem*> selected = sceneList->selectedItems();
 
 		// Qt::UserRole == QtUserRole::OBSRef
@@ -344,21 +315,16 @@ obs_scene_t* Utils::GetPreviewScene()
 	return nullptr;
 }
 
-bool Utils::SetPreviewScene(const char* name)
-{
-	if (IsPreviewModeActive())
-	{
+bool Utils::SetPreviewScene(const char* name) {
+	if (IsPreviewModeActive()) {
 		QListWidget* sceneList = GetSceneListControl();
 		QList<QListWidgetItem*> matchingItems =
 			sceneList->findItems(name, Qt::MatchExactly);
 
-		if (matchingItems.count() > 0)
-		{
+		if (matchingItems.count() > 0) {
 			sceneList->setCurrentItem(matchingItems.first());
 			return true;
-		}
-		else
-		{
+		} else {
 			return false;
 		}
 	}
@@ -366,8 +332,7 @@ bool Utils::SetPreviewScene(const char* name)
 	return false;
 }
 
-void Utils::TransitionToProgram()
-{
+void Utils::TransitionToProgram() {
 	if (!IsPreviewModeActive())
 		return;
 
@@ -405,14 +370,13 @@ const char* Utils::OBSVersionString() {
 	return result;
 }
 
-QSystemTrayIcon* Utils::GetTrayIcon()
-{
+QSystemTrayIcon* Utils::GetTrayIcon() {
 	QMainWindow* main = (QMainWindow*)obs_frontend_get_main_window();
 	return main->findChildren<QSystemTrayIcon*>().first();
 }
 
-void Utils::SysTrayNotify(QString &text, QSystemTrayIcon::MessageIcon icon, QString title)
-{
+void Utils::SysTrayNotify(QString &text,
+    QSystemTrayIcon::MessageIcon icon, QString title) {
 	if (!QSystemTrayIcon::supportsMessages())
 		return;
 
@@ -421,45 +385,36 @@ void Utils::SysTrayNotify(QString &text, QSystemTrayIcon::MessageIcon icon, QStr
 		trayIcon->showMessage(title, text, icon);
 }
 
-QString Utils::FormatIPAddress(QHostAddress &addr)
-{
+QString Utils::FormatIPAddress(QHostAddress &addr) {
 	if (addr.protocol() == QAbstractSocket::IPv4Protocol)
 		QString v4addr = addr.toString().replace("::fff:", "");
 
 	return addr.toString();
 }
 
-const char* Utils::GetRecordingFolder()
-{
+const char* Utils::GetRecordingFolder() {
 	config_t* profile = obs_frontend_get_profile_config();
 	const char* outputMode = config_get_string(profile, "Output", "Mode");
 
-	if (strcmp(outputMode, "Advanced") == 0)
-	{
+	if (strcmp(outputMode, "Advanced") == 0) {
 		// Advanced mode
 		return config_get_string(profile, "AdvOut", "RecFilePath");
-	}
-	else
-	{
+	} else {
 		// Simple mode
 		return config_get_string(profile, "SimpleOutput", "FilePath");
 	}
 }
 
-bool Utils::SetRecordingFolder(const char* path)
-{
+bool Utils::SetRecordingFolder(const char* path) {
 	if (!QDir(path).exists())
 		return false;
 
 	config_t* profile = obs_frontend_get_profile_config();
 	const char* outputMode = config_get_string(profile, "Output", "Mode");
 
-	if (strcmp(outputMode, "Advanced") == 0)
-	{
+	if (strcmp(outputMode, "Advanced") == 0) {
 		config_set_string(profile, "AdvOut", "RecFilePath", path);
-	}
-	else
-	{
+	} else {
 		config_set_string(profile, "SimpleOutput", "FilePath", path);
 	}
 
@@ -467,18 +422,14 @@ bool Utils::SetRecordingFolder(const char* path)
 	return true;
 }
 
-QString* Utils::ParseDataToQueryString(obs_data_t * data)
-{
+QString* Utils::ParseDataToQueryString(obs_data_t* data) {
 	QString* query = nullptr;
-	if (data)
-	{
-		obs_data_item_t* item = obs_data_first(data);
-		if (item)
-		{
+	if (data) {
+	    obs_data_item_t* item = obs_data_first(data);
+		if (item) {
 			query = new QString();
 			bool isFirst = true;
-			do
-			{
+			do {
 				if (!obs_data_item_has_user_value(item))
 					continue;
 				
@@ -489,8 +440,8 @@ QString* Utils::ParseDataToQueryString(obs_data_t * data)
 				
 				const char* attrName = obs_data_item_get_name(item);
 				query->append(attrName).append("=");
-				switch (obs_data_item_gettype(item))
-				{
+
+				switch (obs_data_item_gettype(item)) {
 					case OBS_DATA_BOOLEAN:
 						query->append(obs_data_item_get_bool(item)?"true":"false");
 						break;
@@ -498,25 +449,27 @@ QString* Utils::ParseDataToQueryString(obs_data_t * data)
 						switch (obs_data_item_numtype(item))
 						{
 							case OBS_DATA_NUM_DOUBLE:
-								query->append(QString::number(obs_data_item_get_double(item)));
+								query->append(
+                                    QString::number(obs_data_item_get_double(item)));
 								break;
 							case OBS_DATA_NUM_INT:
-								query->append(QString::number(obs_data_item_get_int(item)));
+								query->append(
+                                    QString::number(obs_data_item_get_int(item)));
 								break;
 							case OBS_DATA_NUM_INVALID:
 								break;
 						}
 						break;
 					case OBS_DATA_STRING:
-						query->append(QUrl::toPercentEncoding(QString(obs_data_item_get_string(item))));
+						query->append(QUrl::toPercentEncoding(
+                            QString(obs_data_item_get_string(item))));
 						break;
 					default:
 						//other types are not supported
 						break;
 				}
-			} while ( obs_data_item_next( &item ) );
+			} while (obs_data_item_next(&item));
 		}
 	}
-	
 	return query;
 }

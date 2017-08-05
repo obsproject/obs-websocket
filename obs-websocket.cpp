@@ -31,10 +31,9 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 OBS_DECLARE_MODULE()
 OBS_MODULE_USE_DEFAULT_LOCALE("obs-websocket", "en-US")
 
-SettingsDialog *settings_dialog;
+SettingsDialog* settings_dialog;
 
-bool obs_module_load(void) 
-{
+bool obs_module_load(void) {
 	blog(LOG_INFO, "you can haz websockets (version %s)", OBS_WEBSOCKET_VERSION);
 
 	// Core setup
@@ -48,7 +47,7 @@ bool obs_module_load(void)
 		WSServer::Instance->Start(config->ServerPort);
 
 	// UI setup
-	QAction *menu_action = (QAction*)obs_frontend_add_tools_menu_qaction(
+	QAction* menu_action = (QAction*)obs_frontend_add_tools_menu_qaction(
 		obs_module_text("OBSWebsocket.Menu.SettingsItem"));
 
 	obs_frontend_push_ui_translation(obs_module_get_string);
@@ -67,8 +66,7 @@ bool obs_module_load(void)
 	return true;
 }
 
-void obs_module_unload()
-{
+void obs_module_unload() {
 	blog(LOG_INFO, "goodbye!");
 }
 

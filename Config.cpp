@@ -22,8 +22,6 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <util/config-file.h>
 #include <string>
 
-#include "Config.h"
-
 #define SECTION_NAME "WebsocketAPI"
 #define PARAM_ENABLE "ServerEnabled"
 #define PARAM_PORT "ServerPort"
@@ -32,25 +30,21 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #define PARAM_SECRET "AuthSecret"
 #define PARAM_SALT "AuthSalt"
 
-Config *Config::_instance = new Config();
+#include "Config.h"
 
-Config::Config()
-{
-	// Default settings
-	ServerEnabled = true;
-	ServerPort = 4444;
-	
-	DebugEnabled = false;
+Config* Config::_instance = new Config();
 
-	AuthRequired = false;
-	Secret = "";
-	Salt = "";
-	SettingsLoaded = false;
-
+Config::Config() :
+    ServerEnabled(true),
+    ServerPort(4444),
+    DebugEnabled(false),
+    AuthRequired(false),
+    Secret(""),
+    Salt(""),
+    SettingsLoaded(false) {
 	// OBS Config defaults
 	config_t* obs_config = obs_frontend_get_global_config();
-	if (obs_config)
-	{
+	if (obs_config) {
 		config_set_default_bool(obs_config, 
 			SECTION_NAME, PARAM_ENABLE, ServerEnabled);
 		config_set_default_uint(obs_config, 
@@ -70,19 +64,16 @@ Config::Config()
 	mbedtls_entropy_init(&entropy);
 	mbedtls_ctr_drbg_init(&rng);
 	mbedtls_ctr_drbg_seed(&rng, mbedtls_entropy_func, &entropy, nullptr, 0);
-	//mbedtls_ctr_drbg_set_prediction_resistance(&rng, MBEDTLS_CTR_DRBG_PR_ON);
 
 	SessionChallenge = GenerateSalt();
 }
 
-Config::~Config()
-{
+Config::~Config() {
 	mbedtls_ctr_drbg_free(&rng);
 	mbedtls_entropy_free(&entropy);
 }
 
-void Config::Load()
-{
+void Config::Load() {
 	config_t* obs_config = obs_frontend_get_global_config();
 
 	ServerEnabled = config_get_bool(obs_config, SECTION_NAME, PARAM_ENABLE);
@@ -95,8 +86,7 @@ void Config::Load()
 	Salt = config_get_string(obs_config, SECTION_NAME, PARAM_SALT);
 }
 
-void Config::Save()
-{
+void Config::Save() {
 	config_t* obs_config = obs_frontend_get_global_config();
 
 	config_set_bool(obs_config, SECTION_NAME, PARAM_ENABLE, ServerEnabled);
@@ -111,8 +101,7 @@ void Config::Save()
 	config_save(obs_config);
 }
 
-const char* Config::GenerateSalt()
-{
+const char* Config::GenerateSalt() {
 	// Generate 32 random chars
 	unsigned char* random_chars = (unsigned char*)bzalloc(32);
 	mbedtls_ctr_drbg_random(&rng, random_chars, 32);
@@ -128,8 +117,7 @@ const char* Config::GenerateSalt()
 	return salt;
 }
 
-const char* Config::GenerateSecret(const char *password, const char *salt)
-{
+const char* Config::GenerateSecret(const char* password, const char* salt) {
 	// Concatenate the password and the salt
 	std::string passAndSalt = "";
 	passAndSalt += password;
@@ -152,17 +140,15 @@ const char* Config::GenerateSecret(const char *password, const char *salt)
 	return challenge;
 }
 
-void Config::SetPassword(const char *password)
-{
-	const char *new_salt = GenerateSalt();
-	const char *new_challenge = GenerateSecret(password, new_salt);
+void Config::SetPassword(const char* password) {
+	const char* new_salt = GenerateSalt();
+	const char* new_challenge = GenerateSecret(password, new_salt);
 
 	this->Salt = new_salt;
 	this->Secret = new_challenge;
 }
 
-bool Config::CheckAuth(const char *response)
-{
+bool Config::CheckAuth(const char* response) {
 	// Concatenate auth secret with the challenge sent to the user
 	std::string challengeAndResponse = "";
 	challengeAndResponse += this->Secret;
@@ -193,7 +179,6 @@ bool Config::CheckAuth(const char *response)
 	return authSuccess;
 }
 
-Config* Config::Current()
-{
+Config* Config::Current() {
 	return _instance;
 }
