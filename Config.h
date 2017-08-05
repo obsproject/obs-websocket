@@ -37,7 +37,7 @@ class Config {
 
     bool ServerEnabled;
     uint64_t ServerPort;
-		
+        
     bool DebugEnabled;
 
     bool AuthRequired;
@@ -45,7 +45,7 @@ class Config {
     const char* Salt;
     const char* SessionChallenge;
     bool SettingsLoaded;
-		
+        
     static Config* Current();
 
   private:

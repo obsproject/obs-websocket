@@ -41,7 +41,7 @@ class WSServer : public QObject {
   private slots:
     void onNewConnection();
     void onTextMessageReceived(QString message);
-	void onSocketDisconnected();
+    void onSocketDisconnected();
 
   private:
     QWebSocketServer* _wsServer;

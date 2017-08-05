@@ -49,7 +49,7 @@ class Utils {
     static int GetTransitionDuration();
     static void SetTransitionDuration(int ms);
 
-	static bool SetTransitionByName(const char* transition_name);
+    static bool SetTransitionByName(const char* transition_name);
 
     static QPushButton* GetPreviewModeButtonControl();
     static QLayout* GetPreviewLayout();
@@ -76,7 +76,7 @@ class Utils {
     static QString FormatIPAddress(QHostAddress &addr);
     static const char* GetRecordingFolder();
     static bool SetRecordingFolder(const char* path);
-	
+    
     static QString* ParseDataToQueryString(obs_data_t * data);
 };
 
