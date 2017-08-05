@@ -80,7 +80,6 @@ void WSServer::broadcast(QString message) {
             // Skip this client if unauthenticated
             continue;
         }
-
         pClient->sendTextMessage(message);
     }
     _clMutex.unlock();
@@ -89,11 +88,6 @@ void WSServer::broadcast(QString message) {
 void WSServer::onNewConnection() {
     QWebSocket* pSocket = _wsServer->nextPendingConnection();
     if (pSocket) {
-        connect(pSocket, &QWebSocket::textMessageReceived,
-            this, &WSServer::onTextMessageReceived);
-        connect(pSocket, &QWebSocket::disconnected,
-            this, &WSServer::onSocketDisconnected);
-
         connect(pSocket, SIGNAL(textMessageReceived(const QString&)),
             this, SLOT(onTextMessageReceived(QString)));
         connect(pSocket, SIGNAL(disconnected()),
