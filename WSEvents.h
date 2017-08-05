@@ -22,80 +22,79 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include <obs-frontend-api.h>
 #include <QListWidgetItem>
+
 #include "WSServer.h"
 
-class WSEvents : public QObject
-{
-	Q_OBJECT
+class WSEvents : public QObject {
+  Q_OBJECT
+  public:
+    explicit WSEvents(WSServer* srv);
+    ~WSEvents();
+    static void FrontendEventHandler(
+        enum obs_frontend_event event, void* private_data);
+    void connectTransitionSignals(obs_source_t* transition);
+    void connectSceneSignals(obs_source_t* scene);
+    static WSEvents* Instance;
 
-	public:
-		explicit WSEvents(WSServer* srv);
-		~WSEvents();
-		static void FrontendEventHandler(
-			enum obs_frontend_event event, void* private_data);
-		void connectTransitionSignals(obs_source_t* transition);
-		void connectSceneSignals(obs_source_t* scene);
-		static WSEvents* Instance;
+    uint64_t GetStreamingTime();
+    const char* GetStreamingTimecode();
+    uint64_t GetRecordingTime();
+    const char* GetRecordingTimecode();
 
-		uint64_t GetStreamingTime();
-		const char* GetStreamingTimecode();
-		uint64_t GetRecordingTime();
-		const char* GetRecordingTimecode();
+  private slots:
+    void deferredInitOperations();
+    void StreamStatus();
+    void TransitionDurationChanged(int ms);
+    void SelectedSceneChanged(
+        QListWidgetItem* current, QListWidgetItem* prev);
+    void ModeSwitchClicked(bool checked);
 
-	private Q_SLOTS:
-		void deferredInitOperations();
-		void StreamStatus();
-		void TransitionDurationChanged(int ms);
-		void SelectedSceneChanged(
-			QListWidgetItem* current, QListWidgetItem* prev);
-		void ModeSwitchClicked(bool checked);
+  private:
+    WSServer* _srv;
+    signal_handler_t* transition_handler;
+    signal_handler_t* scene_handler;
 
-	private:
-		WSServer* _srv;
-		signal_handler_t* transition_handler;
-		signal_handler_t* scene_handler;
+    bool _streaming_active;
+    bool _recording_active;
 
-		bool _streaming_active;
-		bool _recording_active;
+    uint64_t _stream_starttime;
+    uint64_t _rec_starttime;
 
-		uint64_t _stream_starttime;
-		uint64_t _rec_starttime;
+    uint64_t _lastBytesSent;
+    uint64_t _lastBytesSentTime;
 
-		uint64_t _lastBytesSent;
-		uint64_t _lastBytesSentTime;
+    void broadcastUpdate(const char* updateType,
+        obs_data_t* additionalFields);
 
-		void broadcastUpdate(const char* updateType,
-			obs_data_t* additionalFields);
+    void OnSceneChange();
+    void OnSceneListChange();
+    void OnSceneCollectionChange();
+    void OnSceneCollectionListChange();
 
-		void OnSceneChange();
-		void OnSceneListChange();
-		void OnSceneCollectionChange();
-		void OnSceneCollectionListChange();
+    void OnTransitionChange();
+    void OnTransitionListChange();
 
-		void OnTransitionChange();
-		void OnTransitionListChange();
+    void OnProfileChange();
+    void OnProfileListChange();
 
-		void OnProfileChange();
-		void OnProfileListChange();
+    void OnStreamStarting();
+    void OnStreamStarted();
+    void OnStreamStopping();
+    void OnStreamStopped();
 
-		void OnStreamStarting();
-		void OnStreamStarted();
-		void OnStreamStopping();
-		void OnStreamStopped();
+    void OnRecordingStarting();
+    void OnRecordingStarted();
+    void OnRecordingStopping();
+    void OnRecordingStopped();
 
-		void OnRecordingStarting();
-		void OnRecordingStarted();
-		void OnRecordingStopping();
-		void OnRecordingStopped();
+    void OnExit();
 
-		void OnExit();
+    static void OnTransitionBegin(void* param, calldata_t* data);
 
-		static void OnTransitionBegin(void* param, calldata_t* data);
-
-		static void OnSceneReordered(void* param, calldata_t* data);
-		static void OnSceneItemAdd(void* param, calldata_t* data);
-		static void OnSceneItemDelete(void* param, calldata_t* data);
-		static void OnSceneItemVisibilityChanged(void* param, calldata_t* data);
+    static void OnSceneReordered(void* param, calldata_t* data);
+    static void OnSceneItemAdd(void* param, calldata_t* data);
+    static void OnSceneItemDelete(void* param, calldata_t* data);
+    static void OnSceneItemVisibilityChanged(void* param, calldata_t* data);
 };
 
 #endif // WSEVENTS_H
