@@ -18,12 +18,16 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 */
 
 #include <obs-data.h>
-#include "WSRequestHandler.h"
+
+#include <QList>
+#include <QString>
+
 #include "WSEvents.h"
 #include "obs-websocket.h"
 #include "Config.h"
 #include "Utils.h"
-#include <qstring.h>
+
+#include "WSRequestHandler.h"
 
 bool str_valid(const char* str) {
     return (str != nullptr && strlen(str) > 0);
@@ -192,13 +196,21 @@ bool WSRequestHandler::hasField(const char* name) {
 void WSRequestHandler::HandleGetVersion(WSRequestHandler* req) {
     const char* obs_version = Utils::OBSVersionString();
 
+    QList<QString> names = req->messageMap.keys();
+    names.sort(Qt::CaseInsensitive);
+    QString requests;
+    requests += names.takeFirst();
+    for (QString reqName : names) {
+        requests += ("," + reqName);
+    }
+
     obs_data_t* data = obs_data_create();
     obs_data_set_double(data, "version", API_VERSION);
     obs_data_set_string(data, "obs-websocket-version", OBS_WEBSOCKET_VERSION);
     obs_data_set_string(data, "obs-studio-version", obs_version);
+    obs_data_set_string(data, "available-requests", requests.toUtf8().constData());
 
     req->SendOKResponse(data);
-
     obs_data_release(data);
     bfree((void*)obs_version);
 }

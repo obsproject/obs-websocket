@@ -20,6 +20,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #ifndef WSREQUESTHANDLER_H
 #define WSREQUESTHANDLER_H
 
+#include <QMap>
 #include <QWebSocket>
 #include <QWebSocketServer>
 
