@@ -60,6 +60,7 @@ class WSRequestHandler : public QObject {
     static void HandleSetSceneItemPosition(WSRequestHandler* req);
     static void HandleSetSceneItemTransform(WSRequestHandler* req);
     static void HandleSetSceneItemCrop(WSRequestHandler* req);
+    static void HandleResetSceneItem(WSRequestHandler* req);
 
     static void HandleGetStreamingStatus(WSRequestHandler* req);
     static void HandleStartStopStreaming(WSRequestHandler* req);

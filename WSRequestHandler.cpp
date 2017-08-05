@@ -49,6 +49,7 @@ WSRequestHandler::WSRequestHandler(QWebSocket* client) :
     messageMap["SetSceneItemPosition"] = WSRequestHandler::HandleSetSceneItemPosition;
     messageMap["SetSceneItemTransform"] = WSRequestHandler::HandleSetSceneItemTransform;
     messageMap["SetSceneItemCrop"] = WSRequestHandler::HandleSetSceneItemCrop;
+    messageMap["ResetSceneItem"] = WSRequestHandler::HandleResetSceneItem;
 
     messageMap["GetStreamingStatus"] = WSRequestHandler::HandleGetStreamingStatus;
     messageMap["StartStopStreaming"] = WSRequestHandler::HandleStartStopStreaming;
@@ -1462,5 +1463,40 @@ void WSRequestHandler::HandleSetBrowserSourceProperties(WSRequestHandler* req) {
     } else {
         req->SendErrorResponse("specified scene item doesn't exist");
     }
+    obs_source_release(scene);
+}
+
+void WSRequestHandler::HandleResetSceneItem(WSRequestHandler* req) {
+    if (!req->hasField("item")) {
+        req->SendErrorResponse("missing request parameters");
+        return;
+    }
+
+    const char* itemName = obs_data_get_string(req->data, "item");
+    if (!itemName) {
+        req->SendErrorResponse("invalid request parameters");
+        return;
+    }
+
+    const char* sceneName = obs_data_get_string(req->data, "scene-name");
+    obs_source_t* scene = Utils::GetSceneFromNameOrCurrent(sceneName);
+    if (!scene) {
+        req->SendErrorResponse("requested scene doesn't exist");
+        return;
+    }
+
+    obs_sceneitem_t* sceneItem = Utils::GetSceneItemFromName(scene, itemName);
+    if (sceneItem) {
+        obs_source_t* sceneItemSource = obs_sceneitem_get_source(sceneItem);
+
+        obs_data_t* settings = obs_source_get_settings(sceneItemSource);
+        obs_source_update(sceneItemSource, settings);
+
+        obs_sceneitem_release(sceneItem);
+        req->SendOKResponse();
+    } else {
+        req->SendErrorResponse("specified scene item doesn't exist");
+    }
+
     obs_source_release(scene);
 }
