@@ -227,6 +227,8 @@ The list of available transitions has been modified (Transitions have been added
 
 #### "TransitionBegin"
 A transition other than "Cut" has begun.
+- **"name"** (string) : transition name
+- **"duration"** (integer) : transition duration (in milliseconds)
 
 ---
 

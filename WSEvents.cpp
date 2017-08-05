@@ -443,17 +443,24 @@ void WSEvents::TransitionDurationChanged(int ms) {
     obs_data_set_int(fields, "new-duration", ms);
 
     broadcastUpdate("TransitionDurationChanged", fields);
-
     obs_data_release(fields);
 }
 
 void WSEvents::OnTransitionBegin(void* param, calldata_t* data) {
     UNUSED_PARAMETER(data);
-
     WSEvents* instance = static_cast<WSEvents*>(param);
-    instance->broadcastUpdate("TransitionBegin");
 
-    blog(LOG_INFO, "transition begin");
+    obs_source_t* current_transition = obs_frontend_get_current_transition();
+    const char* name = obs_source_get_name(current_transition);
+    int duration = Utils::GetTransitionDuration();
+
+    obs_data_t* fields = obs_data_create();
+    obs_data_set_string(fields, "name", name);
+    obs_data_set_int(fields, "duration", duration);
+
+    instance->broadcastUpdate("TransitionBegin", fields);
+    obs_data_release(fields);
+    obs_source_release(current_transition);
 }
 
 void WSEvents::OnSceneReordered(void* param, calldata_t* data) {
@@ -467,7 +474,6 @@ void WSEvents::OnSceneReordered(void* param, calldata_t* data) {
         obs_source_get_name(obs_scene_get_source(scene)));
 
     instance->broadcastUpdate("SourceOrderChanged", fields);
-
     obs_data_release(fields);
 }
 
@@ -490,7 +496,6 @@ void WSEvents::OnSceneItemAdd(void* param, calldata_t* data) {
     obs_data_set_string(fields, "item-name", sceneitem_name);
 
     instance->broadcastUpdate("SceneItemAdded", fields);
-
     obs_data_release(fields);
 }
 
@@ -513,7 +518,6 @@ void WSEvents::OnSceneItemDelete(void* param, calldata_t* data) {
     obs_data_set_string(fields, "item-name", sceneitem_name);
 
     instance->broadcastUpdate("SceneItemRemoved", fields);
-
     obs_data_release(fields);
 }
 
@@ -540,7 +544,6 @@ void WSEvents::OnSceneItemVisibilityChanged(void* param, calldata_t* data) {
     obs_data_set_bool(fields, "item-visible", visible);
 
     instance->broadcastUpdate("SceneItemVisibilityChanged", fields);
-
     obs_data_release(fields);
 }
 
@@ -568,6 +571,5 @@ void WSEvents::ModeSwitchClicked(bool checked) {
     obs_data_set_bool(data, "new-state", checked);
 
     broadcastUpdate("StudioModeSwitched", data);
-
     obs_data_release(data);
 }
