@@ -5,8 +5,8 @@ set -e
 echo "-- Preparing package build"
 #export QT_PREFIX="$(find /usr/local/Cellar/qt5 -d 1 | tail -n 1)"
 
-export WS_LIB="$QT_PREFIX/lib/QtWebSockets.framework/QtWebSockets"
-export NET_LIB="$QT_PREFIX/lib/QtNetwork.framework/QtNetwork"
+export WS_LIB="/usr/local/opt/qt/lib/QtWebSockets.framework/QtWebSockets"
+export NET_LIB="/usr/local/opt/qt/lib/QtNetwork.framework/QtNetwork"
 
 export GIT_HASH=$(git rev-parse --short HEAD)
 
