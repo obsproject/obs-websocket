@@ -14,7 +14,7 @@ echo "Qt path: $(find /usr/local/Cellar/qt5 -d 1 | tail -n 1)"
 cd ..
 git clone --recursive https://github.com/jp9000/obs-studio
 cd obs-studio
-git checkout 19.0.2
+git checkout 19.0.3
 mkdir build && cd build
 cmake .. \
   -DCMAKE_PREFIX_PATH=/usr/local/opt/qt5/lib/cmake \
