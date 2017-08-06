@@ -339,7 +339,6 @@ Returns the latest version of the plugin and the API.
 
 __Request fields__ : none  
 __Response__ : always OK, with these additional fields :  
-- **"version"** (double) : OBSRemote API version. Fixed to 1.1 for retrocompatibility.
 - **"obs-websocket-version"** (string) : obs-websocket version string
 - **"obs-studio-version"** (string) : OBS Studio version string
 - **"available-requests"** (string) : comma-separated list of available request types
