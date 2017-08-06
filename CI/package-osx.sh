@@ -28,24 +28,24 @@ chmod +rw ./build/QtWebSockets ./build/QtNetwork
 
 echo "-- Modifying QtNetwork"
 install_name_tool \
-	-change "/usr/local/opt/qt5/lib/QtNetwork.framework/Versions/5/QtNetwork" @rpath/QtNetwork \
+	-change /usr/local/opt/qt5/lib/QtNetwork.framework/Versions/5/QtNetwork @rpath/QtNetwork \
 	-change "$QT_PREFIX/lib/QtCore.framework/Versions/5/QtCore" @rpath/QtCore \
 	./build/QtNetwork
 
 echo "-- Modifying QtWebSockets"
 install_name_tool \
-	-change "/usr/local/opt/qt5/lib/QtWebSockets.framework/Versions/5/QtWebSockets" @rpath/QtWebSockets \
-	-change "$QT_PREFIX/lib/QtNetwork.framework/Versions/5/QtNetwork" @rpath/QtNetwork \
-	-change "$QT_PREFIX/lib/QtCore.framework/Versions/5/QtCore" @rpath/QtCore \
+	-change /usr/local/opt/qt5/lib/QtWebSockets.framework/Versions/5/QtWebSockets @rpath/QtWebSockets \
+	-change $QT_PREFIX/lib/QtNetwork.framework/Versions/5/QtNetwork @rpath/QtNetwork \
+	-change $QT_PREFIX/lib/QtCore.framework/Versions/5/QtCore @rpath/QtCore \
 	./build/QtWebSockets
 
 echo "-- Modifying obs-websocket.so"
 install_name_tool \
-	-change "$QT_PREFIX/lib/QtWebSockets.framework/Versions/5/QtWebSockets" @rpath/QtWebSockets \
-	-change "$QT_PREFIX/lib/QtWidgets.framework/Versions/5/QtWidgets" @rpath/QtWidgets \
-	-change "$QT_PREFIX/lib/QtNetwork.framework/Versions/5/QtNetwork" @rpath/QtNetwork \
-	-change "$QT_PREFIX/lib/QtGui.framework/Versions/5/QtGui" @rpath/QtGui \
-	-change "$QT_PREFIX/lib/QtCore.framework/Versions/5/QtCore" @rpath/QtCore \
+	-change /usr/local/opt/qt5/lib/QtWebSockets.framework/Versions/5/QtWebSockets @rpath/QtWebSockets \
+	-change /usr/local/opt/qt5/lib/QtWidgets.framework/Versions/5/QtWidgets @rpath/QtWidgets \
+	-change /usr/local/opt/qt5/lib/QtNetwork.framework/Versions/5/QtNetwork @rpath/QtNetwork \
+	-change /usr/local/opt/qt5/lib/QtGui.framework/Versions/5/QtGui @rpath/QtGui \
+	-change /usr/local/opt/qt5/lib/QtCore.framework/Versions/5/QtCore @rpath/QtCore \
 	./build/obs-websocket.so
 
 # Check if replacement worked
