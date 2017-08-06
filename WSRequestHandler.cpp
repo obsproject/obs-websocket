@@ -526,20 +526,7 @@ void WSRequestHandler::HandleSaveReplayBuffer(WSRequestHandler* req) {
         return;
     }
 
-    // Find the id of hotkey named "ReplayBuffer.Save"
-    obs_hotkey_id hk;
-    obs_enum_hotkeys([](void* data, obs_hotkey_id id, obs_hotkey_t* hotkey) {
-        obs_hotkey_id* hkPtr = static_cast<obs_hotkey_id*>(data);
-        const char* name = obs_hotkey_get_name(hotkey);
-        if (strcmp(name, "ReplayBuffer.Save") == 0) {
-            *hkPtr = id;
-            blog(LOG_INFO, "found %s at id %d", name, id);
-            return false;
-        }
-        return true;
-    }, &hk);
-
-    blog(LOG_INFO, "using hotkey id %d", hk);
+    obs_hotkey_id hk = Utils::FindHotkeyByName("ReplayBuffer.Save");
     if (hk >= 0) {
         obs_hotkey_trigger_routed_callback(hk, true);
         req->SendOKResponse();
