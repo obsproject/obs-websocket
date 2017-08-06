@@ -62,6 +62,7 @@ WSRequestHandler::WSRequestHandler(QWebSocket* client) :
     messageMap["StartStopReplayBuffer"] = WSRequestHandler::HandleStartStopReplayBuffer;
     messageMap["StartReplayBuffer"] = WSRequestHandler::HandleStartReplayBuffer;
     messageMap["StopReplayBuffer"] = WSRequestHandler::HandleStopReplayBuffer;  
+    messageMap["SaveReplayBuffer"] = WSRequestHandler::HandleSaveReplayBuffer;
 
     messageMap["SetRecordingFolder"] = WSRequestHandler::HandleSetRecordingFolder;
     messageMap["GetRecordingFolder"] = WSRequestHandler::HandleGetRecordingFolder;
@@ -516,6 +517,34 @@ void WSRequestHandler::HandleStopReplayBuffer(WSRequestHandler* req) {
         req->SendOKResponse();
     } else {
         req->SendErrorResponse("replay buffer not active");
+    }
+}
+
+void WSRequestHandler::HandleSaveReplayBuffer(WSRequestHandler* req) {
+    if (!obs_frontend_replay_buffer_active()) {
+        req->SendErrorResponse("replay buffer not active");
+        return;
+    }
+
+    // Find the id of hotkey named "ReplayBuffer.Save"
+    obs_hotkey_id hk;
+    obs_enum_hotkeys([](void* data, obs_hotkey_id id, obs_hotkey_t* hotkey) {
+        obs_hotkey_id* hkPtr = static_cast<obs_hotkey_id*>(data);
+        const char* name = obs_hotkey_get_name(hotkey);
+        if (strcmp(name, "ReplayBuffer.Save") == 0) {
+            *hkPtr = id;
+            blog(LOG_INFO, "found %s at id %d", name, id);
+            return false;
+        }
+        return true;
+    }, &hk);
+
+    blog(LOG_INFO, "using hotkey id %d", hk);
+    if (hk >= 0) {
+        obs_hotkey_trigger_routed_callback(hk, true);
+        req->SendOKResponse();
+    } else {
+        req->SendErrorResponse("failed to save replay buffer");
     }
 }
 
