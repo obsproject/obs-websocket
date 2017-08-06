@@ -7,7 +7,6 @@ brew install ffmpeg
 brew install libav
 
 # qtwebsockets deps
-brew versions qt5
 brew install qt5
 #echo "Qt path: $(find /usr/local/Cellar/qt5 -d 1 | tail -n 1)"
 
