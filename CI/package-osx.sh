@@ -50,11 +50,11 @@ install_name_tool \
 
 # Check if replacement worked
 echo "-- Dependencies for QtNetwork"
-otool -l ./build/QtNetwork
+otool -L ./build/QtNetwork
 echo "-- Dependencies for QtWebSockets"
-otool -l ./build/QtWebSockets
+otool -L ./build/QtWebSockets
 echo "-- Dependencies for obs-websocket"
-otool -l ./build/obs-websocket.so
+otool -L ./build/obs-websocket.so
 
 chmod -w ./build/QtWebSockets ./build/QtNetwork
 
