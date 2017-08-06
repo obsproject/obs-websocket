@@ -3,7 +3,7 @@
 set -e
 
 echo "-- Preparing package build"
-export QT_PREFIX="/usr/local/opt/qt5"
+export QT_PREFIX="$(find /usr/local/Cellar/qt5 -d 1 | tail -n 1)"
 
 export WS_LIB="$QT_PREFIX/lib/QtWebSockets.framework/QtWebSockets"
 export NET_LIB="$QT_PREFIX/lib/QtNetwork.framework/QtNetwork"
@@ -28,15 +28,15 @@ chmod +rw ./build/QtWebSockets ./build/QtNetwork
 
 echo "-- Modifying QtNetwork"
 install_name_tool \
-	-change /usr/local/opt/qt/lib/QtNetwork.framework/Versions/5/QtNetwork @rpath/QtNetwork \
-	-change /usr/local/opt/qt/lib/QtCore.framework/Versions/5/QtCore @rpath/QtCore \
+	-change "/usr/local/opt/qt5/lib/QtNetwork.framework/Versions/5/QtNetwork" @rpath/QtNetwork \
+	-change "$QT_PREFIX/lib/QtCore.framework/Versions/5/QtCore" @rpath/QtCore \
 	./build/QtNetwork
 
 echo "-- Modifying QtWebSockets"
 install_name_tool \
-	-change /usr/local/opt/qt/lib/QtWebSockets.framework/Versions/5/QtWebSockets @rpath/QtWebSockets \
-	-change /usr/local/opt/qt/lib/QtNetwork.framework/Versions/5/QtNetwork @rpath/QtNetwork \
-	-change /usr/local/opt/qt/lib/QtCore.framework/Versions/5/QtCore @rpath/QtCore \
+	-change "/usr/local/opt/qt5/lib/QtWebSockets.framework/Versions/5/QtWebSockets" @rpath/QtWebSockets \
+	-change "$QT_PREFIX/lib/QtNetwork.framework/Versions/5/QtNetwork" @rpath/QtNetwork \
+	-change "$QT_PREFIX/lib/QtCore.framework/Versions/5/QtCore" @rpath/QtCore \
 	./build/QtWebSockets
 
 echo "-- Modifying obs-websocket.so"
