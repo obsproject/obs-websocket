@@ -27,7 +27,6 @@ cp $NET_LIB ./build
 chmod +rw ./build/QtWebSockets ./build/QtNetwork
 
 echo "-- Modifying QtNetwork"
-# TODO : put a loop in there
 install_name_tool \
 	-change /usr/local/opt/qt/lib/QtNetwork.framework/Versions/5/QtNetwork @rpath/QtNetwork \
 	-change /usr/local/opt/qt/lib/QtCore.framework/Versions/5/QtCore @rpath/QtCore \
@@ -48,6 +47,14 @@ install_name_tool \
 	-change "$QT_PREFIX/lib/QtGui.framework/Versions/5/QtGui" @rpath/QtGui \
 	-change "$QT_PREFIX/lib/QtCore.framework/Versions/5/QtCore" @rpath/QtCore \
 	./build/obs-websocket.so
+
+# Check if replacement worked
+echo "-- Dependencies for QtNetwork"
+otool -l ./build/QtNetwork
+echo "-- Dependencies for QtWebSockets"
+otool -l ./build/QtWebSockets
+echo "-- Dependencies for obs-websocket"
+otool -l ./build/obs-websocket.so
 
 chmod -w ./build/QtWebSockets ./build/QtNetwork
 
