@@ -196,6 +196,7 @@ bool WSRequestHandler::hasField(const char* name) {
 void WSRequestHandler::HandleGetVersion(WSRequestHandler* req) {
     const char* obs_version = Utils::OBSVersionString();
 
+    // (Palakis) OBS' data arrays only support object arrays, so I improvised.
     QList<QString> names = req->messageMap.keys();
     names.sort(Qt::CaseInsensitive);
     QString requests;
