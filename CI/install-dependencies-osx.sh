@@ -7,7 +7,7 @@ brew install ffmpeg
 brew install libav
 
 # qtwebsockets deps
-brew install qt5
+brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/fdb7c6e960e830b3bf630850c0002c5df9f68ed8/Formula/qt5.rb
 echo "Qt path: $(find /usr/local/Cellar/qt5 -d 1 | tail -n 1)"
 
 # Build obs-studio
