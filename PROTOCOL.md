@@ -81,6 +81,11 @@ The protocol in general is based on the OBS Remote protocol created by Bill Hami
       - ["GetStreamingStatus"](#getstreamingstatus)
       - ["SetRecordingFolder"](#setrecordingfolder)
       - ["GetRecordingFolder"](#getrecordingfolder)
+    - **Replay buffer**
+      - ["StartStopReplayBuffer"](#startstopreplaybuffer)
+      - ["StartReplayBuffer"](#startreplaybuffer)
+      - ["StopReplayBuffer"](#stopreplaybuffer)
+      - ["SaveReplayBuffer"](#savereplaybuffer)
     - **Transitions**
       - ["GetTransitionList"](#gettransitionlist)
       - ["GetCurrentTransition"](#getcurrenttransition)
@@ -591,6 +596,42 @@ __Request fields__ : none
 
 __Response__ : OK with these additional fields :
 - **"rec-folder"** (string) : path of the current recording folder
+
+---
+
+#### "StartStopReplayBuffer"
+Toggle the replay buffer state
+
+__Request fields__ : none
+
+__Response__ : always OK
+
+---
+
+#### "StartReplayBuffer"
+Start recording into the replay buffer
+
+__Request fields__ : none
+
+__Response__ : OK if replay buffer not already active, error otherwise
+
+---
+
+#### "StopReplayBuffer"
+Stop recording into the replay buffer
+
+__Request fields__ : none
+
+__Response__ : OK if replay buffer is active, error otherwise
+
+---
+
+#### "SaveReplayBuffer"
+Save the contents of the replay buffer to disk
+
+__Request fields__ : none
+
+__Response__ : OK if replay buffer is active, error otherwise
 
 ---
 
