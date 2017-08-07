@@ -88,9 +88,9 @@ class WSEvents : public QObject {
     void OnRecordingStopped();
 
     void OnReplayStarting();
-		void OnReplayStarted();
-		void OnReplayStopping();
-		void OnReplayStopped();
+    void OnReplayStarted();
+    void OnReplayStopping();
+    void OnReplayStopped();
 
     void OnExit();
 
