@@ -503,7 +503,10 @@ void WSRequestHandler::HandleStartStopReplayBuffer(WSRequestHandler* req) {
 }
 
 void WSRequestHandler::HandleStartReplayBuffer(WSRequestHandler* req) {
+    // TODO: error message in case replay buffer is disabled in the settings
     if (obs_frontend_replay_buffer_active() == false) {
+        // TODO: bind dummy hotkey to "ReplayBuffer.Save" if none assigned
+        // to avoid error message
         obs_frontend_replay_buffer_start();
         req->SendOKResponse();
     } else {
