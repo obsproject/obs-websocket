@@ -78,7 +78,7 @@ class Utils {
     static bool SetRecordingFolder(const char* path);
     
     static QString* ParseDataToQueryString(obs_data_t * data);
-    static obs_hotkey_id FindHotkeyByName(const char* name);
+    static obs_hotkey_t* FindHotkeyByName(const char* name);
 };
 
 #endif // UTILS_H

@@ -474,24 +474,23 @@ QString* Utils::ParseDataToQueryString(obs_data_t* data) {
     return query;
 }
 
-obs_hotkey_id Utils::FindHotkeyByName(const char* name) {
+obs_hotkey_t* Utils::FindHotkeyByName(const char* name) {
     struct current_search {
         const char* query;
-        obs_hotkey_id result;
+        obs_hotkey_t* result;
     };
 
     current_search search;
     search.query = name;
-    search.result = -1;
+    search.result = nullptr;
 
     obs_enum_hotkeys([](void* data, obs_hotkey_id id, obs_hotkey_t* hotkey) {
         current_search* search = static_cast<current_search*>(data);
         
         const char* hk_name = obs_hotkey_get_name(hotkey);
         if (strcmp(hk_name, search->query) == 0) {
-            search->result = id;
-            blog(LOG_INFO, "Utils::FindHotkeyByName: found %s at id %d",
-                hk_name, id);
+            search->result = hotkey;
+            blog(LOG_INFO, "Utils::FindHotkeyByName: found %s", hk_name);
             return false;
         }
         return true;

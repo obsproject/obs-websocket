@@ -529,9 +529,9 @@ void WSRequestHandler::HandleSaveReplayBuffer(WSRequestHandler* req) {
         return;
     }
 
-    obs_hotkey_id hk = Utils::FindHotkeyByName("ReplayBuffer.Save");
-    if (hk >= 0) {
-        obs_hotkey_trigger_routed_callback(hk, true);
+    obs_hotkey_t* hk = Utils::FindHotkeyByName("ReplayBuffer.Save");
+    if (hk) {
+        obs_hotkey_trigger_routed_callback(obs_hotkey_get_id(hk), true);
         req->SendOKResponse();
     } else {
         req->SendErrorResponse("failed to save replay buffer");
