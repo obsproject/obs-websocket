@@ -77,8 +77,8 @@ WSRequestHandler::WSRequestHandler(QWebSocket* client) :
     messageMap["ToggleMute"] = WSRequestHandler::HandleToggleMute;
     messageMap["SetMute"] = WSRequestHandler::HandleSetMute;
     messageMap["GetMute"] = WSRequestHandler::HandleGetMute;
-	messageMap["SetSyncOffset"] = WSRequestHandler::HandleSetSyncOffset;
-	messageMap["GetSyncOffset"] = WSRequestHandler::HandleGetSyncOffset;
+    messageMap["SetSyncOffset"] = WSRequestHandler::HandleSetSyncOffset;
+    messageMap["GetSyncOffset"] = WSRequestHandler::HandleGetSyncOffset;
     messageMap["GetSpecialSources"] = WSRequestHandler::HandleGetSpecialSources;
 
     messageMap["SetCurrentSceneCollection"] = WSRequestHandler::HandleSetCurrentSceneCollection;
@@ -713,55 +713,55 @@ void WSRequestHandler::HandleGetMute(WSRequestHandler* req) {
 }
 
 void WSRequestHandler::HandleSetSyncOffset(WSRequestHandler* req) {
-	if (!req->hasField("source") ||
-		!req->hasField("offset")) {
-		req->SendErrorResponse("missing request parameters");
-		return;
-	}
+    if (!req->hasField("source") ||
+	!req->hasField("offset")) {
+	req->SendErrorResponse("missing request parameters");
+	return;
+    }
 
-	const char* source_name = obs_data_get_string(req->data, "source");
-	int64_t source_sync_offset = (int64_t)obs_data_get_int(req->data, "offset");
+    const char* source_name = obs_data_get_string(req->data, "source");
+    int64_t source_sync_offset = (int64_t)obs_data_get_int(req->data, "offset");
 
-	if (source_name == NULL || strlen(source_name) < 1 ||
-		source_sync_offset < 0 {
-		req->SendErrorResponse("invalid request parameters");
-		return;
-	}
+    if (source_name == NULL || strlen(source_name) < 1 ||
+	source_sync_offset < 0 {
+	req->SendErrorResponse("invalid request parameters");
+	return;
+    }
 
-	obs_source_t* source = obs_get_source_by_name(source_name);
-	if (!source) {
-		req->SendErrorResponse("specified source doesn't exist");
-		return;
-	}
+    obs_source_t* source = obs_get_source_by_name(source_name);
+    if (!source) {
+        req->SendErrorResponse("specified source doesn't exist");
+	return;
+    }
 
-	obs_source_set_sync_offset(source, source_sync_offset);
-	req->SendOKResponse();
+    obs_source_set_sync_offset(source, source_sync_offset);
+    req->SendOKResponse();
 
-	obs_source_release(source);
+    obs_source_release(source);
 }
 
 void WSRequestHandler::HandleGetSyncOffset(WSRequestHandler* req) {
-	if (!req->hasField("source")) {
-		req->SendErrorResponse("missing request parameters");
-		return;
-	}
+    if (!req->hasField("source")) {
+	req->SendErrorResponse("missing request parameters");
+	return;
+    }
 
-	const char* source_name = obs_data_get_string(req->data, "source");
-	if (str_valid(source_name)) {
-		obs_source_t* source = obs_get_source_by_name(source_name);
+    const char* source_name = obs_data_get_string(req->data, "source");
+    if (str_valid(source_name)) {
+	obs_source_t* source = obs_get_source_by_name(source_name);
 
-		obs_data_t* response = obs_data_create();
-		obs_data_set_string(response, "name", source_name);
-		obs_data_set_int(response, "offset", obs_source_get_sync_offset(source));
+	obs_data_t* response = obs_data_create();
+	obs_data_set_string(response, "name", source_name);
+	obs_data_set_int(response, "offset", obs_source_get_sync_offset(source));
 
-		req->SendOKResponse(response);
+	req->SendOKResponse(response);
 
-		obs_data_release(response);
-		obs_source_release(source);
-	}
-	else {
-		req->SendErrorResponse("invalid request parameters");
-	}
+	obs_data_release(response);
+	obs_source_release(source);
+    }
+    else {
+	req->SendErrorResponse("invalid request parameters");
+    }
 }
 
 void WSRequestHandler::HandleSetSceneItemPosition(WSRequestHandler* req) {
