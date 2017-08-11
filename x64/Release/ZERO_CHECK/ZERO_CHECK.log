@@ -1,0 +1,14 @@
+﻿  Checking Build System
+  CMake does not need to re-run because C:/obs2017/obs-websocket/build/CMakeFiles/generate.stamp is up-to-date.
+  CMake does not need to re-run because C:/obs2017/obs-websocket/build/deps/mbedtls/CMakeFiles/generate.stamp is up-to-date.
+  CMake does not need to re-run because C:/obs2017/obs-websocket/build/deps/mbedtls/library/CMakeFiles/generate.stamp is up-to-date.
+  CMake does not need to re-run because C:/obs2017/obs-websocket/build/deps/mbedtls/include/CMakeFiles/generate.stamp is up-to-date.
+  CMake does not need to re-run because C:/obs2017/obs-websocket/build/deps/mbedtls/programs/CMakeFiles/generate.stamp is up-to-date.
+  CMake does not need to re-run because C:/obs2017/obs-websocket/build/deps/mbedtls/programs/aes/CMakeFiles/generate.stamp is up-to-date.
+  CMake does not need to re-run because C:/obs2017/obs-websocket/build/deps/mbedtls/programs/hash/CMakeFiles/generate.stamp is up-to-date.
+  CMake does not need to re-run because C:/obs2017/obs-websocket/build/deps/mbedtls/programs/pkey/CMakeFiles/generate.stamp is up-to-date.
+  CMake does not need to re-run because C:/obs2017/obs-websocket/build/deps/mbedtls/programs/random/CMakeFiles/generate.stamp is up-to-date.
+  CMake does not need to re-run because C:/obs2017/obs-websocket/build/deps/mbedtls/programs/ssl/CMakeFiles/generate.stamp is up-to-date.
+  CMake does not need to re-run because C:/obs2017/obs-websocket/build/deps/mbedtls/programs/test/CMakeFiles/generate.stamp is up-to-date.
+  CMake does not need to re-run because C:/obs2017/obs-websocket/build/deps/mbedtls/programs/x509/CMakeFiles/generate.stamp is up-to-date.
+  CMake does not need to re-run because C:/obs2017/obs-websocket/build/deps/mbedtls/programs/util/CMakeFiles/generate.stamp is up-to-date.

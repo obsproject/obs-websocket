@@ -1,21 +1,21 @@
-/**
- * obs-websocket
- * Copyright (C) 2016-2017	Stéphane Lepin <stephane.lepin@gmail.com>
- * Copyright (C) 2017	Brendan Hagan <https://github.com/haganbmj>
- * 
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program. If not, see <https://www.gnu.org/licenses/>
- */
+/*
+obs-websocket
+Copyright (C) 2016-2017	Stéphane Lepin <stephane.lepin@gmail.com>
+Copyright (C) 2017	Brendan Hagan <https://github.com/haganbmj>
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along
+with this program. If not, see <https://www.gnu.org/licenses/>
+*/
 
 #include <util/platform.h>
 
@@ -69,6 +69,9 @@ WSEvents::WSEvents(WSServer* srv) {
     QTimer* statusTimer = new QTimer();
     connect(statusTimer, SIGNAL(timeout()),
         this, SLOT(StreamStatus()));
+    pulse = false;
+    connect(statusTimer, SIGNAL(timeout()),
+        this, SLOT(Heartbeat()));
     statusTimer->start(2000); // equal to frontend's constant BITRATE_UPDATE_SECONDS
 
     QListWidget* sceneList = Utils::GetSceneListControl();
@@ -163,18 +166,6 @@ void WSEvents::FrontendEventHandler(enum obs_frontend_event event, void* private
     else if (event == OBS_FRONTEND_EVENT_RECORDING_STOPPED) {
         owner->_recording_active = false;
         owner->OnRecordingStopped();
-    }
-    else if (event == OBS_FRONTEND_EVENT_REPLAY_BUFFER_STARTING) {
-        owner->OnReplayStarting();
-    }
-    else if (event == OBS_FRONTEND_EVENT_REPLAY_BUFFER_STARTED) {
-        owner->OnReplayStarted();
-    }
-    else if (event == OBS_FRONTEND_EVENT_REPLAY_BUFFER_STOPPING) {
-        owner->OnReplayStopping();
-    }
-    else if (event == OBS_FRONTEND_EVENT_REPLAY_BUFFER_STOPPED) {
-        owner->OnReplayStopped();
     }
     else if (event == OBS_FRONTEND_EVENT_EXIT) {
         owner->OnExit();
@@ -271,16 +262,6 @@ const char* WSEvents::GetRecordingTimecode() {
     return ns_to_timestamp(GetRecordingTime());
 }
 
- /**
- * Indicates a scene change.
- * 
- * @return {String} `scene-name` The new scene.
- * @return {Array} `sources` List of sources in the new scene.
- *
- * @api events
- * @name OnSceneChange
- * @category scenes
- */
 void WSEvents::OnSceneChange() {
     obs_data_t* data = obs_data_create();
 
@@ -305,25 +286,10 @@ void WSEvents::OnSceneChange() {
     }
 }
 
-/**
- * The scene list has been modified.
- * Scenes have been added, removed, or renamed.
- * 
- * @api events
- * @name ScenesChanged
- * @category scenes
- */
 void WSEvents::OnSceneListChange() {
     broadcastUpdate("ScenesChanged");
 }
 
-/**
- * Triggered when switching to another scene collection or when renaming the current scene collection.
- * 
- * @api events
- * @name SceneCollectionChanged
- * @category scenes
- */
 void WSEvents::OnSceneCollectionChange() {
     broadcastUpdate("SceneCollectionChanged");
 
@@ -337,26 +303,10 @@ void WSEvents::OnSceneCollectionChange() {
     OnSceneChange();
 }
 
-/**
- * Triggered when a scene collection is created, added, renamed, or removed.
- * 
- * @api events
- * @name SceneCollectionListChanged
- * @category scenes
- */
 void WSEvents::OnSceneCollectionListChange() {
     broadcastUpdate("SceneCollectionListChanged");
 }
 
-/**
- * The active transition has been changed.
- *
- * @return {String} `transition-name` The name of the new active transition.
- *
- * @api events
- * @name SwitchTransition
- * @category transitions
- */
 void WSEvents::OnTransitionChange() {
     obs_source_t* current_transition = obs_frontend_get_current_transition();
     connectTransitionSignals(current_transition);
@@ -371,49 +321,18 @@ void WSEvents::OnTransitionChange() {
     obs_source_release(current_transition);
 }
 
-/**
- * The list of available transitions has been modified.
- * Transitions have been added, removed, or renamed.
- *
- * @api events
- * @name TransitionListChanged
- * @category transitions
- */
 void WSEvents::OnTransitionListChange() {
     broadcastUpdate("TransitionListChanged");
 }
 
-/**
- * Triggered when switching to another profile or when renaming the current profile.
- *
- * @api events
- * @name ProfileChanged
- * @category profiles
- */
 void WSEvents::OnProfileChange() {
     broadcastUpdate("ProfileChanged");
 }
 
-/**
- * Triggered when a profile is created, added, renamed, or removed.
- *
- * @api events
- * @name ProfileListChanged
- * @category profiles
- */
 void WSEvents::OnProfileListChange() {
     broadcastUpdate("ProfileListChanged");
 }
 
-/**
- * A request to start streaming has been issued.
- *
- * @return {boolean} `preview-only` Always false (retrocompatibility).
- *
- * @api events
- * @name StreamStarting
- * @category streaming
- */
 void WSEvents::OnStreamStarting() {
     obs_data_t* data = obs_data_create();
     obs_data_set_bool(data, "preview-only", false);
@@ -423,28 +342,12 @@ void WSEvents::OnStreamStarting() {
     obs_data_release(data);
 }
 
-/**
- * Streaming started successfully.
- *
- * @api events
- * @name StreamStarted
- * @category streaming
- */
 void WSEvents::OnStreamStarted() {
     _stream_starttime = os_gettime_ns();
     _lastBytesSent = 0;
     broadcastUpdate("StreamStarted");
 }
 
-/**
- * A request to stop streaming has been issued.
- * 
- * @return {boolean} `preview-only` Always false (retrocompatibility).
- *
- * @api events
- * @name StreamStopping
- * @category streaming
- */
 void WSEvents::OnStreamStopping() {
     obs_data_t* data = obs_data_create();
     obs_data_set_bool(data, "preview-only", false);
@@ -454,137 +357,33 @@ void WSEvents::OnStreamStopping() {
     obs_data_release(data);
 }
 
-/**
- * Streaming stopped successfully.
- *
- * @api events
- * @name StreamStopped
- * @category streaming
- */
 void WSEvents::OnStreamStopped() {
     _stream_starttime = 0;
     broadcastUpdate("StreamStopped");
 }
 
-/**
- * A request to start recording has been issued.
- *
- * @api events
- * @name RecordingStarting
- * @category recording
- */
 void WSEvents::OnRecordingStarting() {
     broadcastUpdate("RecordingStarting");
 }
 
-/**
- * Recording started successfully.
- *
- * @api events
- * @name RecordingStarted
- * @category recording
- */
 void WSEvents::OnRecordingStarted() {
     _rec_starttime = os_gettime_ns();
     broadcastUpdate("RecordingStarted");
 }
 
-/**
- * A request to stop recording has been issued.
- *
- * @api events
- * @name RecordingStopping
- * @category recording
- */
 void WSEvents::OnRecordingStopping() {
     broadcastUpdate("RecordingStopping");
 }
 
-/**
- * Recording stopped successfully.
- *
- * @api events
- * @name RecordingStopped
- * @category recording
- */
 void WSEvents::OnRecordingStopped() {
     _rec_starttime = 0;
     broadcastUpdate("RecordingStopped");
 }
 
-/**
-* A request to start the replay buffer has been issued.
-*
-* @api events
-* @name ReplayStarting
-* @category replay buffer
-*/
-void WSEvents::OnReplayStarting() {
-    broadcastUpdate("ReplayStarting");
-}
-
-/**
-* Replay Buffer started successfully
-*
-* @api events
-* @name ReplayStarted
-* @category replay buffer
-*/
-void WSEvents::OnReplayStarted() {
-    broadcastUpdate("ReplayStarted");
-}
-
-/**
-* A request to start the replay buffer has been issued.
-*
-* @api events
-* @name ReplayStopping
-* @category replay buffer
-*/
-void WSEvents::OnReplayStopping() {
-    broadcastUpdate("ReplayStopping");
-}
-
-/**
-* Replay Buffer stopped successfully
-*
-* @api events
-* @name ReplayStopped
-* @category replay buffer
-*/
-void WSEvents::OnReplayStopped() {
-    broadcastUpdate("ReplayStopped");
-}
-
-/**
- * OBS is exiting.
- *
- * @api events
- * @name Exiting
- * @category other
- */
 void WSEvents::OnExit() {
     broadcastUpdate("Exiting");
 }
 
-/**
- * Emit every 2 seconds.
- *
- * @return {boolean} `streaming` Current streaming state.
- * @return {boolean} `recording` Current recording state.
- * @return {boolean} `preview-only` Always false (retrocompatibility).
- * @return {int} `bytes-per-sec` Amount of data per second (in bytes) transmitted by the stream encoder.
- * @return {int} `kbits-per-sec` Amount of data per second (in kilobits) transmitted by the stream encoder.
- * @return {double} `strain` Percentage of dropped frames.
- * @return {int} `total-stream-time` Total time (in seconds) since the stream started.
- * @return {int} `num-total-frames` Total number of frames transmitted since the stream started.
- * @return {int} `num-dropped-frames` Number of frames dropped by the encoder since the stream started.
- * @return {double} `fps` Current framerate.
- *
- * @api events
- * @name StreamStatus
- * @category streaming
- */
 void WSEvents::StreamStatus() {
     bool streaming_active = obs_frontend_streaming_active();
     bool recording_active = obs_frontend_recording_active();
@@ -642,15 +441,45 @@ void WSEvents::StreamStatus() {
     obs_output_release(stream_output);
 }
 
-/**
- * The active transition duration has been changed.
- *
- * @return {int} `new-duration` New transition duration.
- *
- * @api events
- * @name TransitionDurationChanged
- * @category transitions
- */
+void WSEvents::Heartbeat() {
+    bool streaming_active = obs_frontend_streaming_active();
+    bool recording_active = obs_frontend_recording_active();
+    obs_data_t* data = obs_data_create();
+
+    pulse = !pulse;
+    obs_data_set_bool(data, "pulse", pulse);
+
+    obs_data_set_string(data, "current-profile", obs_frontend_get_current_profile());
+
+    obs_source_t* current_scene = obs_frontend_get_current_scene();
+    const char* name = obs_source_get_name(current_scene);
+    obs_source_release(current_scene);
+    obs_data_set_string(data, "current-scene", name);
+
+    if (streaming_active) {
+        uint64_t totalStreamTime = (os_gettime_ns() - _stream_starttime) / 1000000000;
+        obs_data_set_bool(data, "streaming", streaming_active);
+        obs_data_set_int(data, "total-stream-time", totalStreamTime);
+    }
+    else {
+        obs_data_set_bool(data, "streaming", false);
+        obs_data_set_int(data, "total-stream-time", 0);
+    }
+
+    if (recording_active) {
+        uint64_t totalRecordTime = (os_gettime_ns() - _rec_starttime) / 1000000000;
+        obs_data_set_bool(data, "recording", recording_active);
+        obs_data_set_int(data, "total-record-time", totalRecordTime);
+    }
+    else {
+        obs_data_set_bool(data, "recording", false);
+        obs_data_set_int(data, "total-record-time", 0);
+    }
+
+    broadcastUpdate("Heartbeat", data);
+    obs_data_release(data);
+}
+
 void WSEvents::TransitionDurationChanged(int ms) {
     obs_data_t* fields = obs_data_create();
     obs_data_set_int(fields, "new-duration", ms);
@@ -659,16 +488,6 @@ void WSEvents::TransitionDurationChanged(int ms) {
     obs_data_release(fields);
 }
 
-/**
- * A transition (other than "cut") has begun.
- *
- * @return {String} `name` Transition name.
- * @return {int} `duration` Transition duration (in milliseconds).
- *
- * @api events
- * @name TransitionBegin
- * @category transitions
- */
 void WSEvents::OnTransitionBegin(void* param, calldata_t* data) {
     UNUSED_PARAMETER(data);
     WSEvents* instance = static_cast<WSEvents*>(param);
@@ -686,15 +505,6 @@ void WSEvents::OnTransitionBegin(void* param, calldata_t* data) {
     obs_source_release(current_transition);
 }
 
-/**
- * Scene items have been reordered.
- *
- * @return {String} `scene-name` Name of the scene where items have been reordered.
- *
- * @api events
- * @name SourceOrderChanged
- * @category sources
- */
 void WSEvents::OnSceneReordered(void* param, calldata_t* data) {
     WSEvents* instance = static_cast<WSEvents*>(param);
 
@@ -709,16 +519,6 @@ void WSEvents::OnSceneReordered(void* param, calldata_t* data) {
     obs_data_release(fields);
 }
 
-/**
- * An item has been added to the current scene.
- *
- * @return {String} `scene-name` Name of the scene.
- * @return {String} `item-name` Name of the item added to the scene.
- *
- * @api events
- * @name SceneItemAdded
- * @category sources
- */
 void WSEvents::OnSceneItemAdd(void* param, calldata_t* data) {
     WSEvents* instance = static_cast<WSEvents*>(param);
 
@@ -741,16 +541,6 @@ void WSEvents::OnSceneItemAdd(void* param, calldata_t* data) {
     obs_data_release(fields);
 }
 
-/**
- * An item has been removed from the current scene.
- *
- * @return {String} `scene-name` Name of the scene.
- * @return {String} `item-name` Name of the item removed from the scene.
- *
- * @api events
- * @name SceneItemRemoved
- * @category sources
- */
 void WSEvents::OnSceneItemDelete(void* param, calldata_t* data) {
     WSEvents* instance = static_cast<WSEvents*>(param);
 
@@ -773,17 +563,6 @@ void WSEvents::OnSceneItemDelete(void* param, calldata_t* data) {
     obs_data_release(fields);
 }
 
-/**
- * An item's visibility has been toggled.
- *
- * @return {String} `scene-name` Name of the scene.
- * @return {String} `item-name` Name of the item in the scene.
- * @return {boolean} `item-visible` New visibility state of the item.
- *
- * @api events
- * @name SceneItemVisibilityChanged
- * @category sources
- */
 void WSEvents::OnSceneItemVisibilityChanged(void* param, calldata_t* data) {
     WSEvents* instance = static_cast<WSEvents*>(param);
 
@@ -810,16 +589,6 @@ void WSEvents::OnSceneItemVisibilityChanged(void* param, calldata_t* data) {
     obs_data_release(fields);
 }
 
-/**
- * The selected preview scene has changed (only available in Studio Mode).
- *
- * @return {String} `scene-name` Name of the scene being previewed.
- * @return {Source|Array} `sources` List of sources composing the scene. Same specification as [`GetCurrentScene`](#getcurrentscene).
- *
- * @api events
- * @name PreviewSceneChanged
- * @category studio mode
- */
 void WSEvents::SelectedSceneChanged(QListWidgetItem* current, QListWidgetItem* prev) {
     if (Utils::IsPreviewModeActive()) {
         obs_scene_t* scene = Utils::SceneListItemToScene(current);
@@ -839,15 +608,6 @@ void WSEvents::SelectedSceneChanged(QListWidgetItem* current, QListWidgetItem* p
     }
 }
 
-/**
- * Studio Mode has been enabled or disabled.
- *
- * @return {boolean} `new-state` The new enabled state of Studio Mode.
- *
- * @api events
- * @name StudioModeSwitched
- * @category studio mode
- */
 void WSEvents::ModeSwitchClicked(bool checked) {
     obs_data_t* data = obs_data_create();
     obs_data_set_bool(data, "new-state", checked);

@@ -1,0 +1,26 @@
+﻿  WSEvents.cpp
+C:\obs2017\obs-websocket\WSEvents.cpp(54): warning C4477: 'sprintf' : format string '%02d' requires an argument of type 'int', but variadic argument 1 has type 'uint64_t'
+  C:\obs2017\obs-websocket\WSEvents.cpp(54): note: consider using '%lld' in the format string
+  C:\obs2017\obs-websocket\WSEvents.cpp(54): note: consider using '%Id' in the format string
+  C:\obs2017\obs-websocket\WSEvents.cpp(54): note: consider using '%I64d' in the format string
+C:\obs2017\obs-websocket\WSEvents.cpp(54): warning C4477: 'sprintf' : format string '%02d' requires an argument of type 'int', but variadic argument 2 has type 'uint64_t'
+  C:\obs2017\obs-websocket\WSEvents.cpp(54): note: consider using '%lld' in the format string
+  C:\obs2017\obs-websocket\WSEvents.cpp(54): note: consider using '%Id' in the format string
+  C:\obs2017\obs-websocket\WSEvents.cpp(54): note: consider using '%I64d' in the format string
+C:\obs2017\obs-websocket\WSEvents.cpp(54): warning C4477: 'sprintf' : format string '%02d' requires an argument of type 'int', but variadic argument 3 has type 'uint64_t'
+  C:\obs2017\obs-websocket\WSEvents.cpp(54): note: consider using '%lld' in the format string
+  C:\obs2017\obs-websocket\WSEvents.cpp(54): note: consider using '%Id' in the format string
+  C:\obs2017\obs-websocket\WSEvents.cpp(54): note: consider using '%I64d' in the format string
+C:\obs2017\obs-websocket\WSEvents.cpp(54): warning C4477: 'sprintf' : format string '%03d' requires an argument of type 'int', but variadic argument 4 has type 'uint64_t'
+  C:\obs2017\obs-websocket\WSEvents.cpp(54): note: consider using '%lld' in the format string
+  C:\obs2017\obs-websocket\WSEvents.cpp(54): note: consider using '%Id' in the format string
+  C:\obs2017\obs-websocket\WSEvents.cpp(54): note: consider using '%I64d' in the format string
+C:\obs2017\obs-websocket\WSEvents.cpp(54): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  C:\Program Files (x86)\Windows Kits\10\Include\10.0.15063.0\ucrt\stdio.h(1772): note: see declaration of 'sprintf'
+  WSRequestHandler.cpp
+C:\obs2017\obs-websocket\WSRequestHandler.cpp(434): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+  mocs_compilation.cpp
+  obs-websocket.cpp
+  Generating Code...
+     Creating library C:/obs2017/obs-websocket/build/Release/obs-websocket.lib and object C:/obs2017/obs-websocket/build/Release/obs-websocket.exp
+  obs-websocket.vcxproj -> C:\obs2017\obs-websocket\build\Release\obs-websocket.dll

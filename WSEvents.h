@@ -22,7 +22,6 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include <obs-frontend-api.h>
 #include <QListWidgetItem>
-
 #include "WSServer.h"
 
 class WSEvents : public QObject {
@@ -44,6 +43,7 @@ class WSEvents : public QObject {
   private slots:
     void deferredInitOperations();
     void StreamStatus();
+    void Heartbeart();
     void TransitionDurationChanged(int ms);
     void SelectedSceneChanged(
         QListWidgetItem* current, QListWidgetItem* prev);
@@ -53,6 +53,8 @@ class WSEvents : public QObject {
     WSServer* _srv;
     signal_handler_t* transition_handler;
     signal_handler_t* scene_handler;
+
+    bool pulse;
 
     bool _streaming_active;
     bool _recording_active;
