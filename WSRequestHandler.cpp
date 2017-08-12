@@ -183,7 +183,7 @@ void WSRequestHandler::SendResponse(obs_data_t* response)  {
     _client->sendTextMessage(json);
     if (Config::Current()->DebugEnabled)
         blog(LOG_DEBUG, "Response << '%s'", json);
-    
+
     obs_data_release(response);
 }
 
@@ -378,23 +378,23 @@ void WSRequestHandler::HandleStartStreaming(WSRequestHandler* req)
     if (obs_frontend_streaming_active() == false) {
         obs_data_t* streamData = obs_data_get_obj(req->data, "stream");
         obs_service_t* currentService = nullptr;
-        
+
         if (streamData) {
             currentService = obs_frontend_get_streaming_service();
             obs_service_addref(currentService);
-            
+
             obs_service_t* service = _service;
             const char* currentServiceType = obs_service_get_type(currentService);
-            
+
             const char* requestedType =
                 obs_data_has_user_value(streamData, "type") ? obs_data_get_string(streamData, "type") : currentServiceType;
             const char* serviceType =
                 service != nullptr ? obs_service_get_type(service) : currentServiceType;
             obs_data_t* settings = obs_data_get_obj(streamData, "settings");
-            
+
             obs_data_t* metadata = obs_data_get_obj(streamData, "metadata");
             QString* query = Utils::ParseDataToQueryString(metadata);
-            
+
             if (strcmp(requestedType, serviceType) != 0) {
                 if (settings) {
                     obs_service_release(service);
@@ -407,20 +407,20 @@ void WSRequestHandler::HandleStartStreaming(WSRequestHandler* req)
                 //if type isn't changing we should overlay the settings we got with the existing settings
                 obs_data_t* existingSettings = obs_service_get_settings(currentService);
                 obs_data_t* newSettings = obs_data_create(); //by doing this you can send a request to the websocket that only contains a setting you want to change instead of having to do a get and then change them
-                
+
                 obs_data_apply(newSettings, existingSettings); //first apply the existing settings
-                
+
                 obs_data_apply(newSettings, settings); //then apply the settings from the request should they exist
                 obs_data_release(settings);
-                
+
                 settings = newSettings;
                 obs_data_release(existingSettings);
             }
-            
+
             if (!service){
                 service = obs_service_create(requestedType, "websocket_custom_service", settings, nullptr);
             }
-            
+
             //Supporting adding metadata parameters to key query string
             if (query && query->length() > 0) {
                 const char* key = obs_data_get_string(settings, "key");
@@ -441,7 +441,7 @@ void WSRequestHandler::HandleStartStreaming(WSRequestHandler* req)
                 key = query->toUtf8();
                 obs_data_set_string(settings, "key", key);
             }
-            
+
             obs_service_update(service, settings);
             obs_data_release(settings);
             obs_data_release(metadata);
@@ -452,13 +452,13 @@ void WSRequestHandler::HandleStartStreaming(WSRequestHandler* req)
             obs_service_release(_service);
             _service = nullptr;
         }
-        
+
         obs_frontend_streaming_start();
-        
+
         if (_service != nullptr) {
             obs_frontend_set_streaming_service(currentService);
         }
-        
+
         req->SendOKResponse();
         obs_service_release(currentService);
     } else {
@@ -927,13 +927,13 @@ void WSRequestHandler::HandleGetCurrentProfile(WSRequestHandler* req) {
 
 void WSRequestHandler::HandleSetStreamSettings(WSRequestHandler* req) {
     obs_service_t* service = obs_frontend_get_streaming_service();
-    
+
     obs_data_t* settings = obs_data_get_obj(req->data, "settings");
     if (!settings) {
         req->SendErrorResponse("'settings' are required'");
         return;
     }
-    
+
     const char* serviceType = obs_service_get_type(service);
     const char* requestedType = obs_data_get_string(req->data, "type");
     if (requestedType != nullptr && strcmp(requestedType, serviceType) != 0) {
@@ -945,27 +945,27 @@ void WSRequestHandler::HandleSetStreamSettings(WSRequestHandler* req) {
         //if type isn't changing we should overlay the settings we got with the existing settings
         obs_data_t* existingSettings = obs_service_get_settings(service);
         //by doing this you can send a request to the websocket that only contains a setting you want to change instead of having to do a get and then change them
-        obs_data_t* newSettings = obs_data_create(); 
-        
+        obs_data_t* newSettings = obs_data_create();
+
         obs_data_apply(newSettings, existingSettings); //first apply the existing settings
         obs_data_apply(newSettings, settings); //then apply the settings from the request
-        
+
         obs_data_release(settings);
         obs_data_release(existingSettings);
-        
+
         obs_service_update(service, settings);
         settings = newSettings;
     }
-    
+
     //if save is specified we should immediately save the streaming service
     if (obs_data_get_bool(req->data, "save")) {
         obs_frontend_save_streaming_service();
     }
-    
+
     obs_data_t* response = obs_data_create();
     obs_data_set_string(response, "type", requestedType);
     obs_data_set_obj(response, "settings", settings);
-    
+
     req->SendOKResponse(response);
     obs_data_release(settings);
     obs_data_release(response);
@@ -975,11 +975,11 @@ void WSRequestHandler::HandleGetStreamSettings(WSRequestHandler* req) {
     obs_service_t* service = obs_frontend_get_streaming_service();
     const char* serviceType = obs_service_get_type(service);
     obs_data_t* settings = obs_service_get_settings(service);
-    
+
     obs_data_t* response = obs_data_create();
     obs_data_set_string(response, "type", serviceType);
     obs_data_set_obj(response, "settings", settings);
-    
+
     req->SendOKResponse(response);
     obs_data_release(settings);
     obs_data_release(response);
@@ -1226,37 +1226,37 @@ void WSRequestHandler::HandleSetTextGDIPlusProperties(WSRequestHandler* req) {
             obs_data_t* settings = obs_source_get_settings(sceneItemSource);
 
             if (req->hasField("align")) {
-                obs_data_set_string(settings, "align", 
+                obs_data_set_string(settings, "align",
                     obs_data_get_string(req->data, "align"));
             }
 
             if (req->hasField("bk_color")) {
-                obs_data_set_int(settings, "bk_color", 
+                obs_data_set_int(settings, "bk_color",
                     obs_data_get_int(req->data, "bk_color"));
             }
 
             if (req->hasField("bk-opacity")) {
-                obs_data_set_int(settings, "bk_opacity", 
+                obs_data_set_int(settings, "bk_opacity",
                     obs_data_get_int(req->data, "bk_opacity"));
             }
 
             if (req->hasField("chatlog")) {
-                obs_data_set_bool(settings, "chatlog", 
+                obs_data_set_bool(settings, "chatlog",
                     obs_data_get_bool(req->data, "chatlog"));
             }
-            
+
             if (req->hasField("chatlog_lines")) {
                 obs_data_set_int(settings, "chatlog_lines",
                     obs_data_get_int(req->data, "chatlog_lines"));
             }
 
             if (req->hasField("color")) {
-                obs_data_set_int(settings, "color", 
+                obs_data_set_int(settings, "color",
                     obs_data_get_int(req->data, "color"));
             }
 
             if (req->hasField("extents")) {
-                obs_data_set_bool(settings, "extents", 
+                obs_data_set_bool(settings, "extents",
                     obs_data_get_bool(req->data, "extents"));
             }
 
@@ -1276,7 +1276,7 @@ void WSRequestHandler::HandleSetTextGDIPlusProperties(WSRequestHandler* req) {
             }
 
             if (req->hasField("file")) {
-                obs_data_set_string(settings, "file", 
+                obs_data_set_string(settings, "file",
                     obs_data_get_string(req->data, "file"));
             }
 
@@ -1296,7 +1296,7 @@ void WSRequestHandler::HandleSetTextGDIPlusProperties(WSRequestHandler* req) {
                     }
 
                     if (obs_data_has_user_value(req_font_obj, "size")) {
-                        obs_data_set_int(font_obj, "size", 
+                        obs_data_set_int(font_obj, "size",
                             obs_data_get_int(req_font_obj, "size"));
                     }
 
@@ -1311,7 +1311,7 @@ void WSRequestHandler::HandleSetTextGDIPlusProperties(WSRequestHandler* req) {
             }
 
             if (req->hasField("gradient")) {
-                obs_data_set_bool(settings, "gradient", 
+                obs_data_set_bool(settings, "gradient",
                     obs_data_get_bool(req->data, "gradient"));
             }
 
@@ -1331,7 +1331,7 @@ void WSRequestHandler::HandleSetTextGDIPlusProperties(WSRequestHandler* req) {
             }
 
             if (req->hasField("outline")) {
-                obs_data_set_bool(settings, "outline", 
+                obs_data_set_bool(settings, "outline",
                     obs_data_get_bool(req->data, "outline"));
             }
 
@@ -1346,34 +1346,34 @@ void WSRequestHandler::HandleSetTextGDIPlusProperties(WSRequestHandler* req) {
             }
 
             if (req->hasField("outline_opacity")) {
-                obs_data_set_int(settings, "outline_opacity", 
+                obs_data_set_int(settings, "outline_opacity",
                     obs_data_get_int(req->data, "outline_opacity"));
             }
 
             if (req->hasField("read_from_file")) {
-                obs_data_set_bool(settings, "read_from_file", 
+                obs_data_set_bool(settings, "read_from_file",
                     obs_data_get_bool(req->data, "read_from_file"));
             }
 
             if (req->hasField("text")) {
-                obs_data_set_string(settings, "text", 
+                obs_data_set_string(settings, "text",
                     obs_data_get_string(req->data, "text"));
             }
 
             if (req->hasField("valign")) {
-                obs_data_set_string(settings, "valign", 
+                obs_data_set_string(settings, "valign",
                     obs_data_get_string(req->data, "valign"));
             }
 
             if (req->hasField("vertical")) {
-                obs_data_set_bool(settings, "vertical", 
+                obs_data_set_bool(settings, "vertical",
                     obs_data_get_bool(req->data, "vertical"));
             }
 
             obs_source_update(sceneItemSource, settings);
 
             if (req->hasField("render")) {
-                obs_sceneitem_set_visible(sceneItem, 
+                obs_sceneitem_set_visible(sceneItem,
                     obs_data_get_bool(req->data, "render"));
             }
 
@@ -1386,7 +1386,7 @@ void WSRequestHandler::HandleSetTextGDIPlusProperties(WSRequestHandler* req) {
     } else {
         req->SendErrorResponse("specified scene item doesn't exist");
     }
-    
+
     obs_source_release(scene);
 }
 
@@ -1490,7 +1490,7 @@ void WSRequestHandler::HandleSetBrowserSourceProperties(WSRequestHandler* req) {
                 obs_data_set_int(settings, "height",
                     obs_data_get_int(req->data, "height"));
             }
-            
+
             if (req->hasField("fps")) {
                 obs_data_set_int(settings, "fps",
                     obs_data_get_int(req->data, "fps"));
