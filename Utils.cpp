@@ -432,12 +432,12 @@ QString* Utils::ParseDataToQueryString(obs_data_t* data) {
             do {
                 if (!obs_data_item_has_user_value(item))
                     continue;
-                
+
                 if (!isFirst)
                     query->append('&');
                 else
                     isFirst = false;
-                
+
                 const char* attrName = obs_data_item_get_name(item);
                 query->append(attrName).append("=");
 
@@ -486,7 +486,7 @@ obs_hotkey_t* Utils::FindHotkeyByName(const char* name) {
 
     obs_enum_hotkeys([](void* data, obs_hotkey_id id, obs_hotkey_t* hotkey) {
         current_search* search = static_cast<current_search*>(data);
-        
+
         const char* hk_name = obs_hotkey_get_name(hotkey);
         if (strcmp(hk_name, search->query) == 0) {
             search->result = hotkey;
@@ -497,4 +497,15 @@ obs_hotkey_t* Utils::FindHotkeyByName(const char* name) {
     }, &search);
 
     return search.result;
+}
+
+bool Utils::ReplayBufferEnabled() {
+    config_t* profile = obs_frontend_get_profile_config();
+    const char* outputMode = config_get_string(profile, "Output", "Mode");
+
+    if (strcmp(outputMode, "Simple") == 0) {
+        return config_get_bool(profile, "SimpleOutput", "RecRB");
+    }
+
+    return false;
 }

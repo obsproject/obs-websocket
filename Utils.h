@@ -76,9 +76,10 @@ class Utils {
     static QString FormatIPAddress(QHostAddress &addr);
     static const char* GetRecordingFolder();
     static bool SetRecordingFolder(const char* path);
-    
+
     static QString* ParseDataToQueryString(obs_data_t * data);
     static obs_hotkey_t* FindHotkeyByName(const char* name);
+    static bool ReplayBufferEnabled();
 };
 
 #endif // UTILS_H
