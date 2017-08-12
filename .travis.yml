@@ -1,4 +1,8 @@
 language: cpp
+branches:
+  except:
+    - gh-pages
+
 env:
   global:
   # AWS key ID
