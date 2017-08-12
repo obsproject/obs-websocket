@@ -24,9 +24,10 @@ The server is a typical Websockets server running by default on port 4444 (the p
 The protocol understood by the server is documented in [PROTOCOL.md](PROTOCOL.md).  
 
 Here's a list of available language APIs for obs-websocket :
-- Javascript (browser & nodejs) : [obs-websocket-js](https://github.com/haganbmj/obs-websocket-js) by Brendan Hagan
-- C#/VB.NET : [obs-websocket-dotnet](https://github.com/Palakis/obs-websocket-dotnet)
-- Python : [obs-websocket-py](https://github.com/Elektordi/obs-websocket-py) by Guillaume Genty a.k.a Elektordi
+- Javascript (browser & nodejs): [obs-websocket-js](https://github.com/haganbmj/obs-websocket-js) by Brendan Hagan
+- C#/VB.NET: [obs-websocket-dotnet](https://github.com/Palakis/obs-websocket-dotnet)
+- Python 2 and 3: [obs-websocket-py](https://github.com/Elektordi/obs-websocket-py) by Guillaume Genty a.k.a Elektordi
+- Python 3.5+ with asyncio: [obs-ws-rc](https://github.com/KirillMysnik/obs-ws-rc) by Kirill Mysnik
 
 I'd like to know what you're building with or for obs-websocket. If you do something in this fashion, feel free to drop me an email at `contact at slepin dot fr` !
 
@@ -46,6 +47,10 @@ In order of appearance:
 - [Andy Asquelt](https://github.com/asquelt) : Polish translation
 - [Marcel Haazen](https://github.com/inpothet) : Dutch translation
 - [Peter Antonvich](https://github.com/pantonvich) : Code contributions
+- [yinzara](https://github.com/yinzara) : Code contributions
+- [Chris Angelico](https://github.com/Rosuav) : Code contributions
+- [Guillaume "Elektordi" Genty](https://github.com/Elektordi) : Code contributions
+- [Marwin M](https://github.com/dragonbane0) : Code contributions
 
 And also: special thanks to supporters of the project!
 
