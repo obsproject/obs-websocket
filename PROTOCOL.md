@@ -95,6 +95,8 @@ The protocol in general is based on the OBS Remote protocol created by Bill Hami
       - ["SetMute"](#setmute)
       - ["GetMute"](#getmute)
       - ["ToggleMute"](#togglemute)
+      - ["SetSyncOffset"](#setsyncoffset)
+      - ["GetSyncOffset"](#getsyncoffset)
     - **Scene Items**
       - ["SetSceneItemRender"](#setsourcerender) (a.k.a `SetSourceRender`)
       - ["SetSceneItemPosition"](#setsceneitemposition)
@@ -688,6 +690,29 @@ __Request fields__ :
 - **"source"** (string) : the name of the source
 
 __Response__ : OK if specified source exists, error otherwise.
+
+---
+
+#### "SetSyncOffset"
+Set the sync offset of a specific source.
+
+__Request fields__ :
+- **"source"** (string) : the name of the source
+- **"offset"** (integer) : the desired sync offset in nanoseconds
+
+__Response__ : OK if specified source exists, error otherwise.
+
+---
+
+#### "GetSyncOffset"
+Get the sync offset of a specific source.
+
+__Request fields__ :
+- **"source"** (string) : the name of the source
+
+__Response__ : OK if source exists, with these additional fields :
+- **"name"** (string) : source name
+- **"offset"** (integer) : source sync offset, in nanoseconds
 
 ---
 
