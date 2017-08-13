@@ -1441,6 +1441,98 @@
       },
       {
         "subheads": [],
+        "description": "Set the audio sync offset of a specified source.",
+        "param": [
+          "{String} `source` The name of the source.",
+          "{int} `offset` The desired audio sync offset (in nanoseconds)."
+        ],
+        "api": "requests",
+        "name": "SetSyncOffset",
+        "category": "sources",
+        "params": [
+          {
+            "type": "String",
+            "name": "source",
+            "description": "The name of the source."
+          },
+          {
+            "type": "int",
+            "name": "offset",
+            "description": "The desired audio sync offset (in nanoseconds)."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "SetSyncOffset"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "sources"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "SetSyncOffset"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Get the audio sync offset of a specified source.",
+        "param": "{String} `source` The name of the source.",
+        "return": [
+          "{String} `name` The name of the source.",
+          "{int} `offset` The audio sync offset (in nanoseconds)."
+        ],
+        "api": "requests",
+        "name": "GetSyncOffset",
+        "category": "sources",
+        "returns": [
+          {
+            "type": "String",
+            "name": "name",
+            "description": "The name of the source."
+          },
+          {
+            "type": "int",
+            "name": "offset",
+            "description": "The audio sync offset (in nanoseconds)."
+          }
+        ],
+        "params": [
+          {
+            "type": "String",
+            "name": "source",
+            "description": "The name of the source."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "GetSyncOffset"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "sources"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "GetSyncOffset"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
         "description": "Sets the coordinates of a specified source item.",
         "param": [
           "{String (optional)} `scene-name` The name of the scene that the source item belongs to. Defaults to the current scene.",

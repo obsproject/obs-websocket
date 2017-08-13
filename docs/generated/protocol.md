@@ -96,6 +96,8 @@ auth_response = base64_encode(auth_response_hash)
     + [ToggleMute](#togglemute)
     + [SetMute](#setmute)
     + [GetMute](#getmute)
+    + [SetSyncOffset](#setsyncoffset)
+    + [GetSyncOffset](#getsyncoffset)
     + [SetSceneItemPosition](#setsceneitemposition)
     + [SetSceneItemTransform](#setsceneitemtransform)
     + [SetSceneItemCrop](#setsceneitemcrop)
@@ -733,6 +735,45 @@ Get the mute status of a specified source.
 | ---- | :---: | ------------|
 | `name` | _String_ | The name of the source. |
 | `muted` | _boolean_ | Mute status of the source. |
+
+
+---
+
+### SetSyncOffset
+
+Set the audio sync offset of a specified source.
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `source` | _String_ | The name of the source. |
+| `offset` | _int_ | The desired audio sync offset (in nanoseconds). |
+
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+### GetSyncOffset
+
+Get the audio sync offset of a specified source.
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `source` | _String_ | The name of the source. |
+
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `name` | _String_ | The name of the source. |
+| `offset` | _int_ | The audio sync offset (in nanoseconds). |
 
 
 ---
