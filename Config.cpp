@@ -37,8 +37,9 @@ Config* Config::_instance = new Config();
 Config::Config() :
     ServerEnabled(true),
     ServerPort(4444),
-    DebugEnabled(false),
-    AuthRequired(false),
+	//DebugEnabled(false), ???
+	DebugEnabled(true),
+	AuthRequired(false),
     Secret(""),
     Salt(""),
     SettingsLoaded(false) {

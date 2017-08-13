@@ -86,6 +86,14 @@ WSEvents::WSEvents(WSServer* srv) {
 
     QTimer::singleShot(1000, this, SLOT(deferredInitOperations()));
 
+    Heartbeat_active = false;
+    Heartbeat_CurrentProfile_active=false;
+    Heartbeat_CurrentScene_active-false;
+    Heartbeat_Streaming_active=false;
+    Heartbeat_Recording_active = false;
+    Heartbeat_TotalStreamTime_active = false;
+    Heartbeat_TotalRecordTime_active = false;
+
     _streaming_active = false;
     _recording_active = false;
 
@@ -446,37 +454,47 @@ void WSEvents::Heartbeat() {
     bool recording_active = obs_frontend_recording_active();
     obs_data_t* data = obs_data_create();
 
-    pulse = !pulse;
-    obs_data_set_bool(data, "pulse", pulse);
+    if (Heartbeat_active) {
+        pulse = !pulse;
+        obs_data_set_bool(data, "pulse", pulse);
 
-    obs_data_set_string(data, "current-profile", obs_frontend_get_current_profile());
+        if (Heartbeat_CurrentProfile_active) obs_data_set_string(data, "current-profile", obs_frontend_get_current_profile());
 
-    obs_source_t* current_scene = obs_frontend_get_current_scene();
-    const char* name = obs_source_get_name(current_scene);
-    obs_source_release(current_scene);
-    obs_data_set_string(data, "current-scene", name);
+        if (Heartbeat_CurrentScene_active) {
+            obs_source_t* current_scene = obs_frontend_get_current_scene();
+            const char* name = obs_source_get_name(current_scene);
+            obs_source_release(current_scene);
+            obs_data_set_string(data, "current-scene", name);
+        }
 
-    if (streaming_active) {
-        uint64_t totalStreamTime = (os_gettime_ns() - _stream_starttime) / 1000000000;
-        obs_data_set_bool(data, "streaming", streaming_active);
-        obs_data_set_int(data, "total-stream-time", totalStreamTime);
+        if (Heartbeat_Streaming_active) {
+            if (streaming_active) obs_data_set_bool(data, "streaming", streaming_active);
+            else obs_data_set_bool(data, "streaming", false);
+        }
+        if (Heartbeat_TotalStreamTime_active) {
+            if (streaming_active) {
+                uint64_t totalStreamTime = (os_gettime_ns() - _stream_starttime) / 1000000000;
+                obs_data_set_int(data, "total-stream-time", totalStreamTime);
+            }else{
+                obs_data_set_int(data, "total-stream-time", 0);
+            }
+        }
+
+        if (Heartbeat_Recording_active) {
+            if (recording_active) obs_data_set_bool(data, "recording", recording_active);
+            else obs_data_set_bool(data, "recording", false);
+        }
+        if (Heartbeat_TotalRecordTime_active) {
+            if (recording_active) {
+                uint64_t totalRecordTime = (os_gettime_ns() - _rec_starttime) / 1000000000;
+                obs_data_set_int(data, "total-record-time", totalRecordTime);
+            }else{
+                obs_data_set_int(data, "total-record-time", 0);
+            }
+        }
+
+        broadcastUpdate("Heartbeat", data);
     }
-    else {
-        obs_data_set_bool(data, "streaming", false);
-        obs_data_set_int(data, "total-stream-time", 0);
-    }
-
-    if (recording_active) {
-        uint64_t totalRecordTime = (os_gettime_ns() - _rec_starttime) / 1000000000;
-        obs_data_set_bool(data, "recording", recording_active);
-        obs_data_set_int(data, "total-record-time", totalRecordTime);
-    }
-    else {
-        obs_data_set_bool(data, "recording", false);
-        obs_data_set_int(data, "total-record-time", 0);
-    }
-
-    broadcastUpdate("Heartbeat", data);
     obs_data_release(data);
 }
 
