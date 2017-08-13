@@ -967,25 +967,23 @@ void WSRequestHandler::HandleGetMute(WSRequestHandler* req) {
  * @category sources
  */
 void WSRequestHandler::HandleSetSyncOffset(WSRequestHandler* req) {
-    if (!req->hasField("source") ||
-	!req->hasField("offset")) {
-	req->SendErrorResponse("missing request parameters");
-	return;
+    if (!req->hasField("source") || !req->hasField("offset")) {
+        req->SendErrorResponse("missing request parameters");
+        return;
     }
 
     const char* source_name = obs_data_get_string(req->data, "source");
     int64_t source_sync_offset = (int64_t)obs_data_get_int(req->data, "offset");
 
-    if (!source_name || strlen(source_name) < 1 ||
-	source_sync_offset < 0) {
-	req->SendErrorResponse("invalid request parameters");
-	return;
+    if (!source_name || strlen(source_name) < 1 || source_sync_offset < 0) {
+	    req->SendErrorResponse("invalid request parameters");
+	    return;
     }
 
     obs_source_t* source = obs_get_source_by_name(source_name);
     if (!source) {
         req->SendErrorResponse("specified source doesn't exist");
-	return;
+	    return;
     }
 
     obs_source_set_sync_offset(source, source_sync_offset);
@@ -995,7 +993,7 @@ void WSRequestHandler::HandleSetSyncOffset(WSRequestHandler* req) {
 }
 
 /**
- * Get teh audio sync offset of a specified source.
+ * Get the audio sync offset of a specified source.
  * 
  * @param {String} `source` The name of the source.
  * 
@@ -1008,25 +1006,24 @@ void WSRequestHandler::HandleSetSyncOffset(WSRequestHandler* req) {
  */
 void WSRequestHandler::HandleGetSyncOffset(WSRequestHandler* req) {
     if (!req->hasField("source")) {
-	req->SendErrorResponse("missing request parameters");
-	return;
+        req->SendErrorResponse("missing request parameters");
+        return;
     }
 
     const char* source_name = obs_data_get_string(req->data, "source");
     if (str_valid(source_name)) {
-	obs_source_t* source = obs_get_source_by_name(source_name);
+        obs_source_t* source = obs_get_source_by_name(source_name);
 
-	obs_data_t* response = obs_data_create();
-	obs_data_set_string(response, "name", source_name);
-	obs_data_set_int(response, "offset", obs_source_get_sync_offset(source));
+        obs_data_t* response = obs_data_create();
+        obs_data_set_string(response, "name", source_name);
+        obs_data_set_int(response, "offset", obs_source_get_sync_offset(source));
 
-	req->SendOKResponse(response);
+        req->SendOKResponse(response);
 
-	obs_data_release(response);
-	obs_source_release(source);
-    }
-    else {
-	req->SendErrorResponse("invalid request parameters");
+        obs_data_release(response);
+        obs_source_release(source);
+    } else {
+	    req->SendErrorResponse("invalid request parameters");
     }
 }
 
