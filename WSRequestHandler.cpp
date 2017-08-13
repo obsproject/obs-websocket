@@ -1,21 +1,21 @@
-/*
-obs-websocket
-Copyright (C) 2016-2017	Stéphane Lepin <stephane.lepin@gmail.com>
-Copyright (C) 2017	Mikhail Swift <https://github.com/mikhailswift>
-
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License along
-with this program. If not, see <https://www.gnu.org/licenses/>
-*/
+/**
+ * obs-websocket
+ * Copyright (C) 2016-2017	Stéphane Lepin <stephane.lepin@gmail.com>
+ * Copyright (C) 2017	Mikhail Swift <https://github.com/mikhailswift>
+ * 
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program. If not, see <https://www.gnu.org/licenses/>
+ */
 
 #include <obs-data.h>
 
@@ -195,6 +195,18 @@ bool WSRequestHandler::hasField(const char* name) {
     return obs_data_has_user_value(data, name);
 }
 
+/**
+ * Returns the latest version of the plugin and the API.
+ * 
+ * @return {double} `version` OBSRemote compatible API version. Fixed to 1.1 for retrocompatibility.
+ * @return {String} `obs-websocket-version` obs-websocket plugin version.
+ * @return {String} `obs-studio-version` OBS Studio program version.
+ * @return {String|Array} `available-requests` List of available request types.
+ * 
+ * @api requests
+ * @name GetVersion
+ * @category general
+ */
 void WSRequestHandler::HandleGetVersion(WSRequestHandler* req) {
     const char* obs_version = Utils::OBSVersionString();
 
@@ -217,6 +229,18 @@ void WSRequestHandler::HandleGetVersion(WSRequestHandler* req) {
     bfree((void*)obs_version);
 }
 
+/**
+ * Tells the client if authentication is required. If so, returns authentication parameters `challenge`
+ * and `salt` (see "Authentication" for more information).
+ * 
+ * @return {boolean} `authRequired` Indicates whether authentication is required.
+ * @return {String (optional)} `challenge` 
+ * @return {String (optional)} `salt` 
+ * 
+ * @api requests
+ * @name GetAuthRequired
+ * @category general
+ */
 void WSRequestHandler::HandleGetAuthRequired(WSRequestHandler* req) {
     bool authRequired = Config::Current()->AuthRequired;
 
@@ -235,6 +259,15 @@ void WSRequestHandler::HandleGetAuthRequired(WSRequestHandler* req) {
     obs_data_release(data);
 }
 
+/**
+ * Attempt to authenticate the client to the server.
+ * 
+ * @param {String} `auth` Response to the auth challenge (see "Authentication" for more information).
+ *
+ * @api requests
+ * @name Authenticate
+ * @category general
+ */
 void WSRequestHandler::HandleAuthenticate(WSRequestHandler* req) {
     if (!req->hasField("auth")) {
         req->SendErrorResponse("missing request parameters");
@@ -256,6 +289,15 @@ void WSRequestHandler::HandleAuthenticate(WSRequestHandler* req) {
     }
 }
 
+ /**
+ * Switch to the specified scene.
+ * 
+ * @param {String} `scene-name` Name of the scene to switch to.
+ *
+ * @api requests
+ * @name SetCurrentScene
+ * @category scenes
+ */
 void WSRequestHandler::HandleSetCurrentScene(WSRequestHandler* req) {
     if (!req->hasField("scene-name")) {
         req->SendErrorResponse("missing request parameters");
@@ -275,6 +317,16 @@ void WSRequestHandler::HandleSetCurrentScene(WSRequestHandler* req) {
     obs_source_release(source);
 }
 
+/**
+ * Get the current scene's name and source items.
+ * 
+ * @return {String} `name` Name of the currently active scene.
+ * @return {Source|Array} `sources` Ordered list of the current scene's source items.
+ *
+ * @api requests
+ * @name GetCurrentScene
+ * @category scenes
+ */
 void WSRequestHandler::HandleGetCurrentScene(WSRequestHandler* req) {
     obs_source_t* current_scene = obs_frontend_get_current_scene();
     const char* name = obs_source_get_name(current_scene);
@@ -292,6 +344,16 @@ void WSRequestHandler::HandleGetCurrentScene(WSRequestHandler* req) {
     obs_source_release(current_scene);
 }
 
+/**
+ * Get a list of scenes in the currently active profile.
+ * 
+ * @return {String} `current-scene` Name of the currently active scene.
+ * @return {Scene|Array} `scenes` Ordered list of the current profile's scenes (See `[GetCurrentScene](#getcurrentscene)` for more information).
+ *
+ * @api requests
+ * @name GetSceneList
+ * @category scenes
+ */
 void WSRequestHandler::HandleGetSceneList(WSRequestHandler* req) {
     obs_source_t* current_scene = obs_frontend_get_current_scene();
     obs_data_array_t* scenes = Utils::GetScenes();
@@ -308,6 +370,17 @@ void WSRequestHandler::HandleGetSceneList(WSRequestHandler* req) {
     obs_source_release(current_scene);
 }
 
+ /**
+ * Show or hide a specified source item in a specified scene.
+ * 
+ * @param {String} `source` Name of the source in the specified scene.
+ * @param {boolean} `render` Desired visibility.
+ * @param {String (optional)} `scene-name` Name of the scene where the source resides. Defaults to the currently active scene.
+ *
+ * @api requests
+ * @name SetSourceRender
+ * @category sources
+ */
 void WSRequestHandler::HandleSetSceneItemRender(WSRequestHandler* req) {
     if (!req->hasField("source") ||
         !req->hasField("render")) {
@@ -342,6 +415,19 @@ void WSRequestHandler::HandleSetSceneItemRender(WSRequestHandler* req) {
     obs_source_release(scene);
 }
 
+ /**
+ * Get current streaming and recording status.
+ * 
+ * @return {boolean} `streaming` Current streaming status.
+ * @return {boolean} `recording` Current recording status.
+ * @return {String (optional)} `stream-timecode` Time elapsed since streaming started (only present if currently streaming).
+ * @return {String (optional)} `rec-timecode` Time elapsed since recording started (only present if currently recording).
+ * @return {boolean} `preview-only` Always false. Retrocompatibility with OBSRemote.
+ *
+ * @api requests
+ * @name GetStreamingStatus
+ * @category streaming
+ */
 void WSRequestHandler::HandleGetStreamingStatus(WSRequestHandler* req) {
     obs_data_t* data = obs_data_create();
     obs_data_set_bool(data, "streaming", obs_frontend_streaming_active());
@@ -365,6 +451,13 @@ void WSRequestHandler::HandleGetStreamingStatus(WSRequestHandler* req) {
     obs_data_release(data);
 }
 
+/**
+ * Toggle streaming on or off.
+ *
+ * @api requests
+ * @name StartStopStreaming
+ * @category streaming
+ */
 void WSRequestHandler::HandleStartStopStreaming(WSRequestHandler* req) {
     if (obs_frontend_streaming_active())
         HandleStopStreaming(req);
@@ -372,6 +465,13 @@ void WSRequestHandler::HandleStartStopStreaming(WSRequestHandler* req) {
         HandleStartStreaming(req);
 }
 
+/**
+ * Toggle recording on or off.
+ *
+ * @api requests
+ * @name StartStopRecording
+ * @category recording
+ */
 void WSRequestHandler::HandleStartStopRecording(WSRequestHandler* req)
 {
     if (obs_frontend_recording_active())
@@ -382,6 +482,24 @@ void WSRequestHandler::HandleStartStopRecording(WSRequestHandler* req)
     req->SendOKResponse();
 }
 
+/**
+ * Start streaming.
+ * Will return an `error` if streaming is already active.
+ *
+ * @param {Object (optional)} `stream` Special stream configuration.
+ * @param {String (optional)} `type` If specified ensures the type of stream matches the given type (usually 'rtmp_custom' or 'rtmp_common'). If the currently configured stream type does not match the given stream type, all settings must be specified in the `settings` object or an error will occur when starting the stream.
+ * @param {Object (optional)} `metadata` Adds the given object parameters as encoded query string parameters to the 'key' of the RTMP stream. Used to pass data to the RTMP service about the streaming. May be any String, Numeric, or Boolean field. 
+ * @param {Object (optional)} `settings` Settings for the stream.
+ * @param {String (optional)} `settings.server` The publish URL.
+ * @param {String (optional)} `settings.key` The publish key of the stream.
+ * @param {boolean (optional)} `settings.use-auth` Indicates whether authentication should be used when connecting to the streaming server.
+ * @param {String (optional)} `settings.username` If authentication is enabled, the username for the streaming server. Ignored if `use-auth` is not set to `true`.
+ * @param {String (optional)} `settings.password` If authentication is enabled, the password for the streaming server. Ignored if `use-auth` is not set to `true`.
+ *
+ * @api requests
+ * @name StartStreaming
+ * @category streaming
+ */
 void WSRequestHandler::HandleStartStreaming(WSRequestHandler* req)
 {
     if (obs_frontend_streaming_active() == false) {
@@ -475,6 +593,14 @@ void WSRequestHandler::HandleStartStreaming(WSRequestHandler* req)
     }
 }
 
+/**
+ * Stop streaming.
+ * Will return an `error` if streaming is not active.
+ *
+ * @api requests
+ * @name StopStreaming
+ * @category streaming
+ */
 void WSRequestHandler::HandleStopStreaming(WSRequestHandler* req) {
     if (obs_frontend_streaming_active() == true) {
         obs_frontend_streaming_stop();
@@ -484,6 +610,14 @@ void WSRequestHandler::HandleStopStreaming(WSRequestHandler* req) {
     }
 }
 
+/**
+ * Start recording.
+ * Will return an `error` if recording is already active.
+ *
+ * @api requests
+ * @name StartRecording
+ * @category recording
+ */
 void WSRequestHandler::HandleStartRecording(WSRequestHandler* req) {
     if (obs_frontend_recording_active() == false) {
         obs_frontend_recording_start();
@@ -493,6 +627,14 @@ void WSRequestHandler::HandleStartRecording(WSRequestHandler* req) {
     }
 }
 
+/**
+ * Stop recording.
+ * Will return an `error` if recording is not active.
+ *
+ * @api requests
+ * @name StopRecording
+ * @category recording
+ */
 void WSRequestHandler::HandleStopRecording(WSRequestHandler* req) {
     if (obs_frontend_recording_active() == true) {
         obs_frontend_recording_stop();
@@ -502,6 +644,17 @@ void WSRequestHandler::HandleStopRecording(WSRequestHandler* req) {
     }
 }
 
+/**
+ * List of all transitions available in the frontend's dropdown menu.
+ *
+ * @return {String} `current-transition` Name of the currently active transition.
+ * @return {Object|Array} `transitions` List of transitions.
+ * @return {String} `transitions[].name` Name of the transition.
+ *
+ * @api requests
+ * @name GetTransitionList
+ * @category transitions
+ */
 void WSRequestHandler::HandleGetTransitionList(WSRequestHandler* req) {
     obs_source_t* current_transition = obs_frontend_get_current_transition();
     obs_frontend_source_list transitionList = {};
@@ -531,6 +684,16 @@ void WSRequestHandler::HandleGetTransitionList(WSRequestHandler* req) {
     obs_source_release(current_transition);
 }
 
+/**
+ * Get the name of the currently selected transition in the frontend's dropdown menu.
+ *
+ * @return {String} `name` Name of the selected transition.
+ * @return {int (optional)} `duration` Transition duration (in milliseconds) if supported by the transition.
+ *
+ * @api requests
+ * @name GetCurrentTransition
+ * @category transitions
+ */
 void WSRequestHandler::HandleGetCurrentTransition(WSRequestHandler* req) {
     obs_source_t* current_transition = obs_frontend_get_current_transition();
 
@@ -547,6 +710,15 @@ void WSRequestHandler::HandleGetCurrentTransition(WSRequestHandler* req) {
     obs_source_release(current_transition);
 }
 
+/**
+ * Set the active transition.
+ *
+ * @param {String} `transition-name` The name of the transition.
+ *
+ * @api requests
+ * @name SetCurrentTransition
+ * @category transitions
+ */
 void WSRequestHandler::HandleSetCurrentTransition(WSRequestHandler* req) {
     if (!req->hasField("transition-name")) {
         req->SendErrorResponse("missing request parameters");
@@ -561,6 +733,15 @@ void WSRequestHandler::HandleSetCurrentTransition(WSRequestHandler* req) {
         req->SendErrorResponse("requested transition does not exist");
 }
 
+/**
+ * Set the duration of the currently selected transition if supported.
+ *
+ * @param {int} `duration` Desired duration of the transition (in milliseconds).
+ *
+ * @api requests
+ * @name SetTransitionDuration
+ * @category transitions
+ */
 void WSRequestHandler::HandleSetTransitionDuration(WSRequestHandler* req) {
     if (!req->hasField("duration")) {
         req->SendErrorResponse("missing request parameters");
@@ -572,6 +753,15 @@ void WSRequestHandler::HandleSetTransitionDuration(WSRequestHandler* req) {
     req->SendOKResponse();
 }
 
+/**
+ * Get the duration of the currently selected transition if supported.
+ *
+ * @return {int} `transition-duration` Duration of the current transition (in milliseconds).
+ *
+ * @api requests
+ * @name GetTransitionDuration
+ * @category transitions
+ */
 void WSRequestHandler::HandleGetTransitionDuration(WSRequestHandler* req) {
     obs_data_t* response = obs_data_create();
     obs_data_set_int(response, "transition-duration",
@@ -581,6 +771,16 @@ void WSRequestHandler::HandleGetTransitionDuration(WSRequestHandler* req) {
     obs_data_release(response);
 }
 
+/**
+ * Set the volume of the specified source.
+ *
+ * @param {String} `source` Name of the source.
+ * @param {double} `volume` Desired volume. Must be between `0.0` and `1.0`.
+ *
+ * @api requests
+ * @name SetVolume
+ * @category sources
+ */
 void WSRequestHandler::HandleSetVolume(WSRequestHandler* req) {
     if (!req->hasField("source") ||
         !req->hasField("volume")) {
@@ -609,6 +809,19 @@ void WSRequestHandler::HandleSetVolume(WSRequestHandler* req) {
     obs_source_release(source);
 }
 
+/**
+ * Get the volume of the specified source.
+ *
+ * @param {String} `source` Name of the source.
+ *
+ * @return {String} `name` Name of the source.
+ * @return {double} `volume` Volume of the source. Between `0.0` and `1.0`.
+ * @return {boolean} `mute` Indicates whether the source is muted.
+ *
+ * @api requests
+ * @name GetVolume
+ * @category sources
+ */
 void WSRequestHandler::HandleGetVolume(WSRequestHandler* req) {
     if (!req->hasField("source")) {
         req->SendErrorResponse("missing request parameters");
@@ -633,6 +846,15 @@ void WSRequestHandler::HandleGetVolume(WSRequestHandler* req) {
     }
 }
 
+/**
+ * Inverts the mute status of a specified source.
+ *
+ * @param {String} `source` The name of the source.
+ *
+ * @api requests
+ * @name ToggleMute
+ * @category sources
+ */
 void WSRequestHandler::HandleToggleMute(WSRequestHandler* req) {
     if (!req->hasField("source")) {
         req->SendErrorResponse("missing request parameters");
@@ -657,6 +879,16 @@ void WSRequestHandler::HandleToggleMute(WSRequestHandler* req) {
     obs_source_release(source);
 }
 
+/**
+ * Sets the mute status of a specified source.
+ *
+ * @param {String} `source` The name of the source.
+ * @param {boolean} `mute` Desired mute status.
+ *
+ * @api requests
+ * @name SetMute
+ * @category sources
+ */
 void WSRequestHandler::HandleSetMute(WSRequestHandler* req) {
     if (!req->hasField("source") ||
         !req->hasField("mute")) {
@@ -684,6 +916,18 @@ void WSRequestHandler::HandleSetMute(WSRequestHandler* req) {
     obs_source_release(source);
 }
 
+/**
+ * Get the mute status of a specified source.
+ *
+ * @param {String} `source` The name of the source.
+ *
+ * @return {String} `name` The name of the source.
+ * @return {boolean} `muted` Mute status of the source.
+ *
+ * @api requests
+ * @name GetMute
+ * @category sources
+ */
 void WSRequestHandler::HandleGetMute(WSRequestHandler* req) {
     if (!req->hasField("source")) {
         req->SendErrorResponse("mssing request parameters");
@@ -712,6 +956,16 @@ void WSRequestHandler::HandleGetMute(WSRequestHandler* req) {
     obs_data_release(response);
 }
 
+/**
+ * Set the audio sync offset of a specified source.
+ * 
+ * @param {String} `source` The name of the source.
+ * @param {int} `offset` The desired audio sync offset (in nanoseconds).
+ * 
+ * @api requests
+ * @name SetSyncOffset
+ * @category sources
+ */
 void WSRequestHandler::HandleSetSyncOffset(WSRequestHandler* req) {
     if (!req->hasField("source") ||
 	!req->hasField("offset")) {
@@ -740,6 +994,18 @@ void WSRequestHandler::HandleSetSyncOffset(WSRequestHandler* req) {
     obs_source_release(source);
 }
 
+/**
+ * Get teh audio sync offset of a specified source.
+ * 
+ * @param {String} `source` The name of the source.
+ * 
+ * @return {String} `name` The name of the source.
+ * @return {int} `offset` The audio sync offset (in nanoseconds).
+ * 
+ * @api requests
+ * @name GetSyncOffset
+ * @category sources
+ */
 void WSRequestHandler::HandleGetSyncOffset(WSRequestHandler* req) {
     if (!req->hasField("source")) {
 	req->SendErrorResponse("missing request parameters");
@@ -764,6 +1030,19 @@ void WSRequestHandler::HandleGetSyncOffset(WSRequestHandler* req) {
     }
 }
 
+/**
+ * Sets the coordinates of a specified source item.
+ *
+ * @param {String (optional)} `scene-name` The name of the scene that the source item belongs to. Defaults to the current scene.
+ * @param {String} `item` The name of the source item.
+ * @param {double} `x` X coordinate.
+ * @param {double} `y` Y coordinate.
+ 
+ *
+ * @api requests
+ * @name SetSceneItemPosition
+ * @category sources
+ */
 void WSRequestHandler::HandleSetSceneItemPosition(WSRequestHandler* req) {
     if (!req->hasField("item") ||
         !req->hasField("x") || !req->hasField("y")) {
@@ -801,6 +1080,19 @@ void WSRequestHandler::HandleSetSceneItemPosition(WSRequestHandler* req) {
     obs_source_release(scene);
 }
 
+/**
+ * Set the transform of the specified source item.
+ *
+ * @param {String (optional)} `scene-name` The name of the scene that the source item belongs to. Defaults to the current scene.
+ * @param {String} `item` The name of the source item.
+ * @param {double} `x-scale` Width scale factor.
+ * @param {double} `y-scale` Height scale factor.
+ * @param {double} `rotation` Source item rotation (in degrees). 
+ *
+ * @api requests
+ * @name SetSceneItemTransform
+ * @category sources
+ */
 void WSRequestHandler::HandleSetSceneItemTransform(WSRequestHandler* req) {
     if (!req->hasField("item") ||
         !req->hasField("x-scale") ||
@@ -842,6 +1134,20 @@ void WSRequestHandler::HandleSetSceneItemTransform(WSRequestHandler* req) {
     obs_source_release(scene);
 }
 
+/**
+ * Sets the crop coordinates of the specified source item.
+ *
+ * @param {String (optional)} `scene-name` the name of the scene that the source item belongs to. Defaults to the current scene.
+ * @param {String} `item` The name of the source.
+ * @param {int} `top` Pixel position of the top of the source item.
+ * @param {int} `bottom` Pixel position of the bottom of the source item.
+ * @param {int} `left` Pixel position of the left of the source item.
+ * @param {int} `right` Pixel position of the right of the source item.
+ *
+ * @api requests
+ * @name SetSceneItemCrop
+ * @category sources
+ */
 void WSRequestHandler::HandleSetSceneItemCrop(WSRequestHandler* req) {
     if (!req->hasField("item")) {
         req->SendErrorResponse("missing request parameters");
@@ -880,6 +1186,15 @@ void WSRequestHandler::HandleSetSceneItemCrop(WSRequestHandler* req) {
     obs_source_release(scene);
 }
 
+/**
+ * Change the active scene collection.
+ *
+ * @param {String} `sc-name` Name of the desired scene collection.
+ *
+ * @api requests
+ * @name SetCurrentSceneCollection
+ * @category scene collections
+ */
 void WSRequestHandler::HandleSetCurrentSceneCollection(WSRequestHandler* req) {
     if (!req->hasField("sc-name")) {
         req->SendErrorResponse("missing request parameters");
@@ -896,6 +1211,15 @@ void WSRequestHandler::HandleSetCurrentSceneCollection(WSRequestHandler* req) {
     }
 }
 
+/**
+ * Get the name of the current scene collection.
+ *
+ * @return {String} `sc-name` Name of the currently active scene collection.
+ *
+ * @api requests
+ * @name GetCurrentSceneCollection
+ * @category scene collections
+ */
 void WSRequestHandler::HandleGetCurrentSceneCollection(WSRequestHandler* req) {
     obs_data_t* response = obs_data_create();
     obs_data_set_string(response, "sc-name",
@@ -916,6 +1240,15 @@ void WSRequestHandler::HandleListSceneCollections(WSRequestHandler* req) {
     obs_data_array_release(scene_collections);
 }
 
+/**
+ * Set the currently active profile.
+ * 
+ * @param {String} `profile-name` Name of the desired profile.
+ *
+ * @api requests
+ * @name SetCurrentProfile
+ * @category profiles
+ */
 void WSRequestHandler::HandleSetCurrentProfile(WSRequestHandler* req) {
     if (!req->hasField("profile-name")) {
         req->SendErrorResponse("missing request parameters");
@@ -932,6 +1265,15 @@ void WSRequestHandler::HandleSetCurrentProfile(WSRequestHandler* req) {
     }
 }
 
+ /**
+ * Get the name of the current profile.
+ * 
+ * @return {String} `profile-name` Name of the currently active profile.
+ *
+ * @api requests
+ * @name GetCurrentProfile
+ * @category profiles
+ */
 void WSRequestHandler::HandleGetCurrentProfile(WSRequestHandler* req) {
     obs_data_t* response = obs_data_create();
     obs_data_set_string(response, "profile-name",
@@ -941,6 +1283,22 @@ void WSRequestHandler::HandleGetCurrentProfile(WSRequestHandler* req) {
     obs_data_release(response);
 }
 
+/**
+ * Sets one or more attributes of the current streaming server settings. Any options not passed will remain unchanged. Returns the updated settings in response. If 'type' is different than the current streaming service type, all settings are required. Returns the full settings of the stream (the same as GetStreamSettings).
+ * 
+ * @param {String} `type` The type of streaming service configuration, usually `rtmp_custom` or `rtmp_common`.
+ * @param {Object} `settings` The actual settings of the stream.
+ * @param {String (optional)} `settings.server` The publish URL.
+ * @param {String (optional)} `settings.key` The publish key.
+ * @param {boolean (optional)} `settings.use-auth` Indicates whether authentication should be used when connecting to the streaming server.
+ * @param {String (optional)} `settings.username` The username for the streaming service.
+ * @param {String (optional)} `settings.password` The password for the streaming service.
+ * @param {boolean} `save` Persist the settings to disk.
+ *
+ * @api requests
+ * @name SetStreamingSettings
+ * @category settings
+ */
 void WSRequestHandler::HandleSetStreamSettings(WSRequestHandler* req) {
     obs_service_t* service = obs_frontend_get_streaming_service();
     
@@ -987,6 +1345,21 @@ void WSRequestHandler::HandleSetStreamSettings(WSRequestHandler* req) {
     obs_data_release(response);
 }
 
+/**
+ * Get the current streaming server settings.
+ *
+ * @return {String} `type` The type of streaming service configuration. Usually 'rtmp_custom' or 'rtmp_common'.
+ * @return {Object} `settings` Setings of the stream.
+ * @return {String} `settings.server` The publish URL.
+ * @return {String} `settings.key` The publish key of the stream.
+ * @return {boolean} `settings.use-auth` Indicates whether audentication should be used when connecting to the streaming server.
+ * @return {String} `settings.username` The username to use when accessing the streaming server. Only present if `use-auth` is `true`.
+ * @return {String} `settings.password` The password to use when accessing the streaming server. Only present if `use-auth` is `true`.
+ *
+ * @api requests
+ * @name GetStreamSettings
+ * @category settings
+ */
 void WSRequestHandler::HandleGetStreamSettings(WSRequestHandler* req) {
     obs_service_t* service = obs_frontend_get_streaming_service();
     const char* serviceType = obs_service_get_type(service);
@@ -1001,11 +1374,27 @@ void WSRequestHandler::HandleGetStreamSettings(WSRequestHandler* req) {
     obs_data_release(response);
 }
 
+/**
+ * Save the current streaming server settings to disk.
+ *
+ * @api requests
+ * @name SaveStreamSettings
+ * @category settings
+ */
 void WSRequestHandler::HandleSaveStreamSettings(WSRequestHandler* req) {
     obs_frontend_save_streaming_service();
     req->SendOKResponse();
 }
 
+/**
+ * Get a list of available profiles.
+ *
+ * @return {Object|Array} `profiles` List of available profiles.
+ *
+ * @api requests
+ * @name ListProfiles
+ * @category profiles
+ */
 void WSRequestHandler::HandleListProfiles(WSRequestHandler* req) {
     obs_data_array_t* profiles = Utils::GetProfiles();
 
@@ -1017,6 +1406,15 @@ void WSRequestHandler::HandleListProfiles(WSRequestHandler* req) {
     obs_data_array_release(profiles);
 }
 
+/**
+ * Indicates if Studio Mode is currently enabled.
+ *
+ * @return {boolean} `studio-mode` Indicates if Studio Mode is enabled.
+ *
+ * @api requests
+ * @name GetStudioModeStatus
+ * @category studio mode
+ */
 void WSRequestHandler::HandleGetStudioModeStatus(WSRequestHandler* req) {
     bool previewActive = Utils::IsPreviewModeActive();
 
@@ -1027,6 +1425,17 @@ void WSRequestHandler::HandleGetStudioModeStatus(WSRequestHandler* req) {
     obs_data_release(response);
 }
 
+/**
+ * Get the name of the currently previewed scene and its list of sources.
+ * Will return an `error` if Studio Mode is not enabled.
+ *
+ * @return {String} `name` The name of the active preview scene.
+ * @return {Source|Array} `sources`
+ *
+ * @api requests
+ * @name GetPreviewScene
+ * @category studio mode
+ */
 void WSRequestHandler::HandleGetPreviewScene(WSRequestHandler* req) {
     if (!Utils::IsPreviewModeActive()) {
         req->SendErrorResponse("studio mode not enabled");
@@ -1049,6 +1458,16 @@ void WSRequestHandler::HandleGetPreviewScene(WSRequestHandler* req) {
     obs_scene_release(preview_scene);
 }
 
+/**
+ * Set the active preview scene.
+ * Will return an `error` if Studio Mode is not enabled.
+ *
+ * @param {String} `scene-name` The name of the scene to preview.
+ *
+ * @api requests
+ * @name SetPreviewScene
+ * @category studio mode
+ */
 void WSRequestHandler::HandleSetPreviewScene(WSRequestHandler* req) {
     if (!Utils::IsPreviewModeActive()) {
         req->SendErrorResponse("studio mode not enabled");
@@ -1068,6 +1487,18 @@ void WSRequestHandler::HandleSetPreviewScene(WSRequestHandler* req) {
         req->SendErrorResponse("specified scene doesn't exist");
 }
 
+/**
+ * Transitions the currently previewed scene to the main output.
+ * Will return an `error` if Studio Mode is not enabled.
+ *
+ * @param {Object (optional)} `with-transition` Change the active transition before switching scenes. Defaults to the active transition. 
+ * @param {String} `with-transition.name` Name of the transition.
+ * @param {int (optional)} `with-transition.duration` Transition duration (in milliseconds).
+ *
+ * @api requests
+ * @name TransitionToProgram
+ * @category studio mode
+ */
 void WSRequestHandler::HandleTransitionToProgram(WSRequestHandler* req) {
     if (!Utils::IsPreviewModeActive()) {
         req->SendErrorResponse("studio mode not enabled");
@@ -1107,21 +1538,55 @@ void WSRequestHandler::HandleTransitionToProgram(WSRequestHandler* req) {
     req->SendOKResponse();
 }
 
+/**
+ * Enables Studio Mode.
+ *
+ * @api requests
+ * @name EnableStudioMode
+ * @category studio mode
+ */
 void WSRequestHandler::HandleEnableStudioMode(WSRequestHandler* req) {
     Utils::EnablePreviewMode();
     req->SendOKResponse();
 }
 
+/**
+ * Disables Studio Mode.
+ *
+ * @api requests
+ * @name DisableStudioMode
+ * @category studio mode
+ */
 void WSRequestHandler::HandleDisableStudioMode(WSRequestHandler* req) {
     Utils::DisablePreviewMode();
     req->SendOKResponse();
 }
 
+/**
+ * Toggles Studio Mode.
+ *
+ * @api requests
+ * @name ToggleStudioMode
+ * @category studio mode
+ */
 void WSRequestHandler::HandleToggleStudioMode(WSRequestHandler* req) {
     Utils::TogglePreviewMode();
     req->SendOKResponse();
 }
 
+/**
+ * Get configured special sources like Desktop Audio and Mic/Aux sources.
+ *
+ * @return {String (optional)} `desktop-1` Name of the first Desktop Audio capture source.
+ * @return {String (optional)} `desktop-2` Name of the second Desktop Audio capture source.
+ * @return {String (optional)} `mic-1` Name of the first Mic/Aux input source.
+ * @return {String (optional)} `mic-2` Name of the second Mic/Aux input source.
+ * @return {String (optional)} `mic-3` NAme of the third Mic/Aux input source.
+ *
+ * @api requests
+ * @name GetSpecialSources
+ * @category studio mode
+ */
 void WSRequestHandler::HandleGetSpecialSources(WSRequestHandler* req) {
     obs_data_t* response = obs_data_create();
 
@@ -1150,6 +1615,15 @@ void WSRequestHandler::HandleGetSpecialSources(WSRequestHandler* req) {
     obs_data_release(response);
 }
 
+/**
+ * Change the current recording folder.
+ *
+ * @param {Stsring} `rec-folder` Path of the recording folder.
+ *
+ * @api requests
+ * @name SetRecordingFolder
+ * @category recording
+ */
 void WSRequestHandler::HandleSetRecordingFolder(WSRequestHandler* req) {
     if (!req->hasField("rec-folder")) {
         req->SendErrorResponse("missing request parameters");
@@ -1164,6 +1638,15 @@ void WSRequestHandler::HandleSetRecordingFolder(WSRequestHandler* req) {
         req->SendErrorResponse("invalid request parameters");
 }
 
+/**
+ * Get the path of  the current recording folder.
+ *
+ * @return {Stsring} `rec-folder` Path of the recording folder.
+ *
+ * @api requests
+ * @name GetRecordingFolder
+ * @category recording
+ */
 void WSRequestHandler::HandleGetRecordingFolder(WSRequestHandler* req) {
     const char* recFolder = Utils::GetRecordingFolder();
 
@@ -1174,6 +1657,45 @@ void WSRequestHandler::HandleGetRecordingFolder(WSRequestHandler* req) {
     obs_data_release(response);
 }
 
+/**
+ * Get the current properties of a Text GDI Plus source.
+ *
+ * @param {String (optional)} `scene-name` Name of the scene to retrieve. Defaults to the current scene.
+ * @param {String} `source` Name of the source.
+ *
+ * @return {String} `align` Text Alignment ("left", "center", "right").
+ * @return {int} `bk-color` Background color.
+ * @return {int} `bk-opacity` Background opacity (0-100).
+ * @return {boolean} `chatlog` Chat log.
+ * @return {int} `chatlog_lines` Chat log lines.
+ * @return {int} `color` Text color.
+ * @return {boolean} `extents` Extents wrap.
+ * @return {int} `extents_cx` Extents cx.
+ * @return {int} `extents_cy` Extents cy.
+ * @return {String} `file` File path name.
+ * @return {boolean} `read_from_file` Read text from the specified file.
+ * @return {Object} `font` Holds data for the font. Ex: `"font": { "face": "Arial", "flags": 0, "size": 150, "style": "" }`
+ * @return {String} `font.face` Font face.
+ * @return {int} `font.flags` Font text styling flag. `Bold=1, Italic=2, Bold Italic=3, Underline=5, Strikeout=8`
+ * @return {int} `font.size` Font text size.
+ * @return {String} `font.style` Font Style (unknown function).
+ * @return {boolean} `gradient` Gradient enabled.
+ * @return {int} `gradient_color` Gradient color.
+ * @return {float} `gradient_dir` Gradient direction.
+ * @return {int} `gradient_opacity` Gradient opacity (0-100).
+ * @return {boolean} `outline` Outline.
+ * @return {int} `outline_color` Outline color.
+ * @return {int} `outline_size` Outline size.
+ * @return {int} `outline_opacity` Outline opacity (0-100).
+ * @return {String} `text` Text content to be displayed.
+ * @return {String} `valign` Text vertical alignment ("top", "center", "bottom").
+ * @return {boolean} `vertical` Vertical text enabled.
+ * @return {boolean} `render` Visibility of the scene item.
+ *
+ * @api requests
+ * @name GetTextGDIPlusProperties
+ * @category sources
+ */
 void WSRequestHandler::HandleGetTextGDIPlusProperties(WSRequestHandler* req) {
     const char* itemName = obs_data_get_string(req->data, "source");
     if (!itemName) {
@@ -1214,6 +1736,44 @@ void WSRequestHandler::HandleGetTextGDIPlusProperties(WSRequestHandler* req) {
     obs_source_release(scene);
 }
 
+/**
+ * Get the current properties of a Text GDI Plus source.
+ *
+ * @param {String (optional)} `scene-name` Name of the scene to retrieve. Defaults to the current scene.
+ * @param {String} `source` Name of the source.
+ * @param {String (optional)} `align` Text Alignment ("left", "center", "right").
+ * @param {int (optional)} `bk-color` Background color.
+ * @param {int (optional)} `bk-opacity` Background opacity (0-100).
+ * @param {boolean (optional)} `chatlog` Chat log.
+ * @param {int (optional)} `chatlog_lines` Chat log lines.
+ * @param {int (optional)} `color` Text color.
+ * @param {boolean (optional)} `extents` Extents wrap.
+ * @param {int (optional)} `extents_cx` Extents cx.
+ * @param {int (optional)} `extents_cy` Extents cy.
+ * @param {String (optional)} `file` File path name.
+ * @param {boolean (optional)} `read_from_file` Read text from the specified file.
+ * @param {Object (optional)} `font` Holds data for the font. Ex: `"font": { "face": "Arial", "flags": 0, "size": 150, "style": "" }`
+ * @param {String (optional)} `font.face` Font face.
+ * @param {int (optional)} `font.flags` Font text styling flag. `Bold=1, Italic=2, Bold Italic=3, Underline=5, Strikeout=8`
+ * @param {int (optional)} `font.size` Font text size.
+ * @param {String (optional)} `font.style` Font Style (unknown function).
+ * @param {boolean (optional)} `gradient` Gradient enabled.
+ * @param {int (optional)} `gradient_color` Gradient color.
+ * @param {float (optional)} `gradient_dir` Gradient direction.
+ * @param {int (optional)} `gradient_opacity` Gradient opacity (0-100).
+ * @param {boolean (optional)} `outline` Outline.
+ * @param {int (optional)} `outline_color` Outline color.
+ * @param {int (optional)} `outline_size` Outline size.
+ * @param {int (optional)} `outline_opacity` Outline opacity (0-100).
+ * @param {String (optional)} `text` Text content to be displayed.
+ * @param {String (optional)} `valign` Text vertical alignment ("top", "center", "bottom").
+ * @param {boolean (optional)} `vertical` Vertical text enabled.
+ * @param {boolean (optional)} `render` Visibility of the scene item.
+ *
+ * @api requests
+ * @name SetTextGDIPlusProperties
+ * @category sources
+ */
 void WSRequestHandler::HandleSetTextGDIPlusProperties(WSRequestHandler* req) {
     if (!req->hasField("source")) {
         req->SendErrorResponse("missing request parameters");
@@ -1406,6 +1966,25 @@ void WSRequestHandler::HandleSetTextGDIPlusProperties(WSRequestHandler* req) {
     obs_source_release(scene);
 }
 
+/**
+ * Get current properties for a Browser Source.
+ *
+ * @param {String (optional)} `scene-name` Name of the scene that the source belongs to. Defaults to the current scene.
+ * @param {String} `source` Name of the source.
+ *
+ * @return {boolean} `is_local_file` Indicates that a local file is in use.
+ * @return {String} `url` Url or file path.
+ * @return {String} `css` CSS to inject.
+ * @return {int} `width` Width.
+ * @return {int} `height` Height.
+ * @return {int} `fps` Framerate.
+ * @return {boolean} `shutdown` Indicates whether the source should be shutdown when not visible.
+ * @return {boolean (optional)} `render` Visibility of the scene item.
+ *
+ * @api requests
+ * @name GetBrowserSourceProperties
+ * @category sources
+ */
 void WSRequestHandler::HandleGetBrowserSourceProperties(WSRequestHandler* req) {
     const char* itemName = obs_data_get_string(req->data, "source");
     if (!itemName) {
@@ -1445,6 +2024,24 @@ void WSRequestHandler::HandleGetBrowserSourceProperties(WSRequestHandler* req) {
     obs_source_release(scene);
 }
 
+/**
+ * Set current properties for a Browser Source.
+ *
+ * @param {String (optional)} `scene-name` Name of the scene that the source belongs to. Defaults to the current scene.
+ * @param {String} `source` Name of the source.
+ * @param {boolean (optional)} `is_local_file` Indicates that a local file is in use.
+ * @param {String (optional)} `url` Url or file path.
+ * @param {String (optional)} `css` CSS to inject.
+ * @param {int (optional)} `width` Width.
+ * @param {int (optional)} `height` Height.
+ * @param {int (optional)} `fps` Framerate.
+ * @param {boolean (optional)} `shutdown` Indicates whether the source should be shutdown when not visible.
+ * @param {boolean (optional)} `render` Visibility of the scene item.
+ *
+ * @api requests
+ * @name SetBrowserSourceProperties
+ * @category sources
+ */
 void WSRequestHandler::HandleSetBrowserSourceProperties(WSRequestHandler* req) {
     if (!req->hasField("source")) {
         req->SendErrorResponse("missing request parameters");
@@ -1532,6 +2129,16 @@ void WSRequestHandler::HandleSetBrowserSourceProperties(WSRequestHandler* req) {
     obs_source_release(scene);
 }
 
+/**
+ * Reset a source item.
+ *
+ * @param {String (optional)} `scene-name` Name of the scene the source belogns to. Defaults to the current scene.
+ * @param {String} `item` Name of the source item.
+ *
+ * @api requests
+ * @name ResetSceneItem
+ * @category sources
+ */
 void WSRequestHandler::HandleResetSceneItem(WSRequestHandler* req) {
     if (!req->hasField("item")) {
         req->SendErrorResponse("missing request parameters");

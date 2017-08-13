@@ -21,7 +21,7 @@ It is **highly recommended** to protect obs-websocket with a password against un
 
 ### For developers
 The server is a typical Websockets server running by default on port 4444 (the port number can be changed in the Settings dialog). 
-The protocol understood by the server is documented in [PROTOCOL.md](PROTOCOL.md).  
+The protocol understood by the server is documented in [PROTOCOL.md](docs/generated/protocol.md).  
 
 Here's a list of available language APIs for obs-websocket :
 - Javascript (browser & nodejs): [obs-websocket-js](https://github.com/haganbmj/obs-websocket-js) by Brendan Hagan
@@ -39,7 +39,7 @@ See the [build instructions](BUILDING.md).
 
 ## Special thanks
 In order of appearance:
-- [Brendan H.](https://github.com/haganbmj) : Code contributions and better English in the Protocol specification
+- [Brendan H.](https://github.com/haganbmj) : Code contributions and gooder English in the Protocol specification
 - [Mikhail Swift](https://github.com/mikhailswift) : Code contributions
 - [Tobias Frahmer](https://github.com/Frahmer) : German translation
 - [Genture](https://github.com/Genteure) : Simplified Chinese and Traditional Chinese translations
@@ -61,10 +61,10 @@ They have contributed financially to the project and made possible the addition 
 
 [Support Class](http://supportclass.net) designs and develops professional livestreams, with services ranging from broadcast graphics design and integration to event organization, along many other skills.  
 
-[![Support Class](doc/supportclass_logo_blacktext.png)](http://supportclass.net)
+[![Support Class](.github/images/supportclass_logo_blacktext.png)](http://supportclass.net)
 
 ---
 
 [MediaUnit](http://www.mediaunit.no) is a Norwegian media company developing products and services for the media industry, primarly focused on web and events.  
 
-[![MediaUnit](doc/mediaunit_logo_black.png)](http://www.mediaunit.no/)
+[![MediaUnit](.github/images/mediaunit_logo_black.png)](http://www.mediaunit.no/)
