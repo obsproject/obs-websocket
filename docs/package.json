@@ -1,0 +1,21 @@
+{
+  "name": "obs-websocket-docs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "docs.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "docs": "node ./docs.js",
+    "comments": "node ./comments.js",
+    "build": "npm run comments && npm run docs"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "glob": "^7.1.2",
+    "handlebars": "^4.0.10",
+    "handlebars-helpers": "^0.9.6",
+    "markdown-toc": "^1.1.0",
+    "parse-comments": "^0.4.3"
+  }
+}

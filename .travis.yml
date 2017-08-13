@@ -1,7 +1,4 @@
 language: cpp
-branches:
-  except:
-    - gh-pages
 
 env:
   global:
@@ -10,8 +7,15 @@ env:
   # AWS key secret
   - secure: bGwljoP3E1OVBXLXox0O6p8kwQXLcNQ8YDKVa4H8u9Y+Ic7uqE4iV3rYS3ynNWSBMVRWY3ZbyClnhrCNwRhBAlcd8qWSJdpjVzs6HdQyzhuKa1P3V4FJPb7upGP/5R/DECGwex8Mun9dmXpYDak75LxfKIJUidPis5VDCYqul7k/xVVCou6Ctjpj7vQhWXDj2G/py+mdB8DERhymnQCtyK1Ziu8c4QlFKByZmnD72GFm/h3JPI1Pq1V2mz3x6x6GaYjb9Rdbd0UNwqjGQX4q2M/c3GEJa6B2JBCoTncawNZBNnPUF9qtv+zh0TNaNHMRWX13AJ/qYB+nVDub0C9b/6Mc48mt0Tv4ze15MproVrylZdV6qHYEG8yGPBqpTVbRP6gv6Y2TXIHWoTzqA+F/Gv2IDChyHXsld/MQQS2MSo5iaYktIrZKtX8Z0qAmTzPwIVBromaSI3vrE7UH0fRSQ6fAM8+Tn+MRthOBdqu23kS1dnG+X2CPbUhBfsJp0OSwVQD5jQtA51/sREVeGFiJvzQIkvwQDjb5MYilsRnwmoBXemkLmqaviXVY4rz1o5AIvz2pgZS2YggK1xHZCuI5tSjcNEkb77VwZTfsqrdDo9EJh6VgfdnGlHQhR2/A5hUJ4ANpJ/LgZlgfVp71Xg2GWQW6M4Znc5uj6A6xLBkO6FA=
 
+cache:
+  directories:
+  - node_modules
+
 matrix:
   include:
+  - os: linux
+    script: "./CI/generate-docs.sh"
+
   - os: linux
     dist: trusty
     sudo: required
@@ -30,7 +34,8 @@ matrix:
     osx_image: xcode8.3
     before_install: "./CI/install-dependencies-osx.sh"
     script: "./CI/build-osx.sh"
-    after_success: "./CI/package-osx.sh"
+    after_success: 
+    - ./CI/package-osx.sh
 
 deploy:
 - provider: s3
@@ -43,7 +48,9 @@ deploy:
   acl: public_read
   on:
     repo: Palakis/obs-websocket
-    condition: "$TRAVIS_OS_NAME = linux"
+    condition: 
+    - "$TRAVIS_OS_NAME = linux"
+    - "-d /home/travis/package"
     all_branches: true
 - provider: s3
   region: eu-central-1
