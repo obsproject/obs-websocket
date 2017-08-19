@@ -80,6 +80,7 @@ class Utils {
     static QString* ParseDataToQueryString(obs_data_t * data);
     static obs_hotkey_t* FindHotkeyByName(const char* name);
     static bool ReplayBufferEnabled();
+    static bool RPHotkeySet();
 };
 
 #endif // UTILS_H

@@ -20,6 +20,7 @@
 #include <obs-data.h>
 
 #include <QList>
+#include <QObject>
 #include <QString>
 
 #include "WSEvents.h"
@@ -657,11 +658,15 @@ void WSRequestHandler::HandleStopRecording(WSRequestHandler* req) {
 * @category replay buffer
 */
 void WSRequestHandler::HandleStartStopReplayBuffer(WSRequestHandler* req) {
-    if (obs_frontend_replay_buffer_active())
+    if (obs_frontend_replay_buffer_active()) {
         obs_frontend_replay_buffer_stop();
-    else
+    } else {
+        if (!Utils::RPHotkeySet()) {
+            req->SendErrorResponse("replay buffer hotkey not set");
+            return;
+        }
         obs_frontend_replay_buffer_start();
-
+    }
     req->SendOKResponse();
 }
 
@@ -679,14 +684,18 @@ void WSRequestHandler::HandleStartReplayBuffer(WSRequestHandler* req) {
         return;
     }
 
-    if (obs_frontend_replay_buffer_active() == false) {
-        // TODO: bind dummy hotkey to "ReplayBuffer.Save" if none assigned
-        // to avoid error message
-        obs_frontend_replay_buffer_start();
-        req->SendOKResponse();
-    } else {
+    if (obs_frontend_replay_buffer_active() == true) {
         req->SendErrorResponse("replay buffer already active");
+        return;
     }
+
+    if (!Utils::RPHotkeySet()) {
+        req->SendErrorResponse("replay buffer hotkey not set");
+        return;
+    }
+
+    obs_frontend_replay_buffer_start();
+    req->SendOKResponse();
 }
 
 /**
@@ -1724,7 +1733,7 @@ void WSRequestHandler::HandleSetRecordingFolder(WSRequestHandler* req) {
 /**
  * Get the path of  the current recording folder.
  *
- * @return {Stsring} `rec-folder` Path of the recording folder.
+ * @return {String} `rec-folder` Path of the recording folder.
  *
  * @api requests
  * @name GetRecordingFolder

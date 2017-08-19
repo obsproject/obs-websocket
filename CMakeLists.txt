@@ -65,6 +65,18 @@ if(WIN32)
 		message(FATAL_ERROR "Could not find OBS Frontend API\'s library !")
 	endif()
 
+	if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+		set(ARCH_NAME "64bit")
+		set(OBS_BUILDDIR_ARCH "build64")
+	else()
+		set(ARCH_NAME "32bit")
+		set(OBS_BUILDDIR_ARCH "build32")
+	endif()
+
+	include_directories(
+		"${LIBOBS_INCLUDE_DIR}/../${OBS_BUILDDIR_ARCH}/UI"
+	)
+
 	target_link_libraries(obs-websocket
 		"${OBS_FRONTEND_LIB}")
 
@@ -83,14 +95,6 @@ if(WIN32)
 	# --- Release package helper ---
 	# The "release" folder has a structure similar OBS' one on Windows
 	set(RELEASE_DIR "${PROJECT_SOURCE_DIR}/release")
-
-	if(CMAKE_SIZEOF_VOID_P EQUAL 8)
-		set(ARCH_NAME "64bit")
-		set(OBS_BUILDDIR_ARCH "build64")
-	else()
-		set(ARCH_NAME "32bit")
-		set(OBS_BUILDDIR_ARCH "build32")
-	endif()
 
 	add_custom_command(TARGET obs-websocket POST_BUILD
 		COMMAND if $<CONFIG:Release>==1 (

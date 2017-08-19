@@ -509,3 +509,19 @@ bool Utils::ReplayBufferEnabled() {
 
     return false;
 }
+
+bool Utils::RPHotkeySet() {
+    obs_output_t* rp_output = obs_frontend_get_replay_buffer_output();
+    
+    obs_data_t *hotkeys = obs_hotkeys_save_output(rp_output);
+    obs_data_array_t *bindings = obs_data_get_array(hotkeys,
+        "ReplayBuffer.Save");
+
+    size_t count = obs_data_array_count(bindings);
+    
+    obs_data_array_release(bindings);
+    obs_data_release(hotkeys);
+    obs_output_release(rp_output);
+
+    return (count > 0);
+}
