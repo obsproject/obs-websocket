@@ -1,6 +1,8 @@
-# obs-websocket 4.1 protocol reference
+# obs-websocket 4.2 protocol reference
 
-**This is the reference for the latest 4.1 development build. [See here for obs-websocket 4.0.0!](https://github.com/Palakis/obs-websocket/blob/4.0.0/PROTOCOL.md)**
+**This is the reference for the latest version of obs-websocket. See the list below for older versions.**
+- [4.1.0 protocol reference](https://github.com/Palakis/obs-websocket/blob/4.1.0/PROTOCOL.md)
+- [4.0.0 protocol reference](https://github.com/Palakis/obs-websocket/blob/4.0.0/PROTOCOL.md)
 
 # General Introduction
 Messages are exchanged between the client and the server as JSON objects.
