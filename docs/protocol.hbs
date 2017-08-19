@@ -1,0 +1,80 @@
+{{#read "partials/introduction.md"}}{{/read}}
+
+
+
+# Table of Contents
+<!-- toc -->
+
+
+
+{{#read "partials/eventsHeader.md"}}{{/read}}
+
+{{#each events}}
+## {{capitalizeAll @key}}
+
+{{#each this}}
+### {{name}}
+
+{{{description}}}
+
+**Response Items:**
+
+{{#if returns.length}}
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+{{#each returns}}
+| `{{name}}` | _{{depipe type}}_ | {{{description}}} |
+{{/each}}
+
+{{else}}
+_No additional response items._
+{{/if}}
+
+---
+
+{{/each}}
+{{/each}}
+
+
+
+{{#read "partials/requestsHeader.md"}}{{/read}}
+
+{{#each requests}}
+## {{capitalizeAll @key}}
+
+{{#each this}}
+### {{name}}
+
+{{{description}}}
+
+**Request Fields:**
+
+{{#if params.length}}
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+{{#each params}}
+| `{{name}}` | _{{depipe type}}_ | {{{description}}} |
+{{/each}}
+
+{{else}}
+_No specified parameters._
+{{/if}}
+
+**Response Items:**
+
+{{#if returns.length}}
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+{{#each returns}}
+| `{{name}}` | _{{depipe type}}_ | {{{description}}} |
+{{/each}}
+
+{{else}}
+_No additional response items._
+{{/if}}
+
+---
+
+{{/each}}
+{{/each}}
+

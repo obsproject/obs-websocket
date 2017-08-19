@@ -1,0 +1,3556 @@
+{
+  "events": {
+    "scenes": [
+      {
+        "subheads": [],
+        "description": "Indicates a scene change.",
+        "return": [
+          "{String} `scene-name` The new scene.",
+          "{Array} `sources` List of sources in the new scene."
+        ],
+        "api": "events",
+        "name": "OnSceneChange",
+        "category": "scenes",
+        "returns": [
+          {
+            "type": "String",
+            "name": "scene-name",
+            "description": "The new scene."
+          },
+          {
+            "type": "Array",
+            "name": "sources",
+            "description": "List of sources in the new scene."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "OnSceneChange"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "scenes"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "OnSceneChange"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "The scene list has been modified.\nScenes have been added, removed, or renamed.",
+        "api": "events",
+        "name": "ScenesChanged",
+        "category": "scenes",
+        "names": [
+          {
+            "name": "",
+            "description": "ScenesChanged"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "scenes"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "ScenesChanged"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Triggered when switching to another scene collection or when renaming the current scene collection.",
+        "api": "events",
+        "name": "SceneCollectionChanged",
+        "category": "scenes",
+        "names": [
+          {
+            "name": "",
+            "description": "SceneCollectionChanged"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "scenes"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "SceneCollectionChanged"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Triggered when a scene collection is created, added, renamed, or removed.",
+        "api": "events",
+        "name": "SceneCollectionListChanged",
+        "category": "scenes",
+        "names": [
+          {
+            "name": "",
+            "description": "SceneCollectionListChanged"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "scenes"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "SceneCollectionListChanged"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      }
+    ],
+    "transitions": [
+      {
+        "subheads": [],
+        "description": "The active transition has been changed.",
+        "return": "{String} `transition-name` The name of the new active transition.",
+        "api": "events",
+        "name": "SwitchTransition",
+        "category": "transitions",
+        "returns": [
+          {
+            "type": "String",
+            "name": "transition-name",
+            "description": "The name of the new active transition."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "SwitchTransition"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "transitions"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "SwitchTransition"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "The list of available transitions has been modified.\nTransitions have been added, removed, or renamed.",
+        "api": "events",
+        "name": "TransitionListChanged",
+        "category": "transitions",
+        "names": [
+          {
+            "name": "",
+            "description": "TransitionListChanged"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "transitions"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "TransitionListChanged"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "The active transition duration has been changed.",
+        "return": "{int} `new-duration` New transition duration.",
+        "api": "events",
+        "name": "TransitionDurationChanged",
+        "category": "transitions",
+        "returns": [
+          {
+            "type": "int",
+            "name": "new-duration",
+            "description": "New transition duration."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "TransitionDurationChanged"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "transitions"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "TransitionDurationChanged"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "A transition (other than \"cut\") has begun.",
+        "return": [
+          "{String} `name` Transition name.",
+          "{int} `duration` Transition duration (in milliseconds)."
+        ],
+        "api": "events",
+        "name": "TransitionBegin",
+        "category": "transitions",
+        "returns": [
+          {
+            "type": "String",
+            "name": "name",
+            "description": "Transition name."
+          },
+          {
+            "type": "int",
+            "name": "duration",
+            "description": "Transition duration (in milliseconds)."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "TransitionBegin"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "transitions"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "TransitionBegin"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      }
+    ],
+    "profiles": [
+      {
+        "subheads": [],
+        "description": "Triggered when switching to another profile or when renaming the current profile.",
+        "api": "events",
+        "name": "ProfileChanged",
+        "category": "profiles",
+        "names": [
+          {
+            "name": "",
+            "description": "ProfileChanged"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "profiles"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "ProfileChanged"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Triggered when a profile is created, added, renamed, or removed.",
+        "api": "events",
+        "name": "ProfileListChanged",
+        "category": "profiles",
+        "names": [
+          {
+            "name": "",
+            "description": "ProfileListChanged"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "profiles"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "ProfileListChanged"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      }
+    ],
+    "streaming": [
+      {
+        "subheads": [],
+        "description": "A request to start streaming has been issued.",
+        "return": "{boolean} `preview-only` Always false (retrocompatibility).",
+        "api": "events",
+        "name": "StreamStarting",
+        "category": "streaming",
+        "returns": [
+          {
+            "type": "boolean",
+            "name": "preview-only",
+            "description": "Always false (retrocompatibility)."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "StreamStarting"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "streaming"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "StreamStarting"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Streaming started successfully.",
+        "api": "events",
+        "name": "StreamStarted",
+        "category": "streaming",
+        "names": [
+          {
+            "name": "",
+            "description": "StreamStarted"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "streaming"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "StreamStarted"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "A request to stop streaming has been issued.",
+        "return": "{boolean} `preview-only` Always false (retrocompatibility).",
+        "api": "events",
+        "name": "StreamStopping",
+        "category": "streaming",
+        "returns": [
+          {
+            "type": "boolean",
+            "name": "preview-only",
+            "description": "Always false (retrocompatibility)."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "StreamStopping"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "streaming"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "StreamStopping"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Streaming stopped successfully.",
+        "api": "events",
+        "name": "StreamStopped",
+        "category": "streaming",
+        "names": [
+          {
+            "name": "",
+            "description": "StreamStopped"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "streaming"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "StreamStopped"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Emit every 2 seconds.",
+        "return": [
+          "{boolean} `streaming` Current streaming state.",
+          "{boolean} `recording` Current recording state.",
+          "{boolean} `preview-only` Always false (retrocompatibility).",
+          "{int} `bytes-per-sec` Amount of data per second (in bytes) transmitted by the stream encoder.",
+          "{int} `kbits-per-sec` Amount of data per second (in kilobits) transmitted by the stream encoder.",
+          "{double} `strain` Percentage of dropped frames.",
+          "{int} `total-stream-time` Total time (in seconds) since the stream started.",
+          "{int} `num-total-frames` Total number of frames transmitted since the stream started.",
+          "{int} `num-dropped-frames` Number of frames dropped by the encoder since the stream started.",
+          "{double} `fps` Current framerate."
+        ],
+        "api": "events",
+        "name": "StreamStatus",
+        "category": "streaming",
+        "returns": [
+          {
+            "type": "boolean",
+            "name": "streaming",
+            "description": "Current streaming state."
+          },
+          {
+            "type": "boolean",
+            "name": "recording",
+            "description": "Current recording state."
+          },
+          {
+            "type": "boolean",
+            "name": "preview-only",
+            "description": "Always false (retrocompatibility)."
+          },
+          {
+            "type": "int",
+            "name": "bytes-per-sec",
+            "description": "Amount of data per second (in bytes) transmitted by the stream encoder."
+          },
+          {
+            "type": "int",
+            "name": "kbits-per-sec",
+            "description": "Amount of data per second (in kilobits) transmitted by the stream encoder."
+          },
+          {
+            "type": "double",
+            "name": "strain",
+            "description": "Percentage of dropped frames."
+          },
+          {
+            "type": "int",
+            "name": "total-stream-time",
+            "description": "Total time (in seconds) since the stream started."
+          },
+          {
+            "type": "int",
+            "name": "num-total-frames",
+            "description": "Total number of frames transmitted since the stream started."
+          },
+          {
+            "type": "int",
+            "name": "num-dropped-frames",
+            "description": "Number of frames dropped by the encoder since the stream started."
+          },
+          {
+            "type": "double",
+            "name": "fps",
+            "description": "Current framerate."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "StreamStatus"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "streaming"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "StreamStatus"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      }
+    ],
+    "recording": [
+      {
+        "subheads": [],
+        "description": "A request to start recording has been issued.",
+        "api": "events",
+        "name": "RecordingStarting",
+        "category": "recording",
+        "names": [
+          {
+            "name": "",
+            "description": "RecordingStarting"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "recording"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "RecordingStarting"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Recording started successfully.",
+        "api": "events",
+        "name": "RecordingStarted",
+        "category": "recording",
+        "names": [
+          {
+            "name": "",
+            "description": "RecordingStarted"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "recording"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "RecordingStarted"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "A request to stop recording has been issued.",
+        "api": "events",
+        "name": "RecordingStopping",
+        "category": "recording",
+        "names": [
+          {
+            "name": "",
+            "description": "RecordingStopping"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "recording"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "RecordingStopping"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Recording stopped successfully.",
+        "api": "events",
+        "name": "RecordingStopped",
+        "category": "recording",
+        "names": [
+          {
+            "name": "",
+            "description": "RecordingStopped"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "recording"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "RecordingStopped"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      }
+    ],
+    "other": [
+      {
+        "subheads": [],
+        "description": "OBS is exiting.",
+        "api": "events",
+        "name": "Exiting",
+        "category": "other",
+        "names": [
+          {
+            "name": "",
+            "description": "Exiting"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "other"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "Exiting"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      }
+    ],
+    "sources": [
+      {
+        "subheads": [],
+        "description": "Scene items have been reordered.",
+        "return": "{String} `scene-name` Name of the scene where items have been reordered.",
+        "api": "events",
+        "name": "SourceOrderChanged",
+        "category": "sources",
+        "returns": [
+          {
+            "type": "String",
+            "name": "scene-name",
+            "description": "Name of the scene where items have been reordered."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "SourceOrderChanged"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "sources"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "SourceOrderChanged"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "An item has been added to the current scene.",
+        "return": [
+          "{String} `scene-name` Name of the scene.",
+          "{String} `item-name` Name of the item added to the scene."
+        ],
+        "api": "events",
+        "name": "SceneItemAdded",
+        "category": "sources",
+        "returns": [
+          {
+            "type": "String",
+            "name": "scene-name",
+            "description": "Name of the scene."
+          },
+          {
+            "type": "String",
+            "name": "item-name",
+            "description": "Name of the item added to the scene."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "SceneItemAdded"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "sources"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "SceneItemAdded"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "An item has been removed from the current scene.",
+        "return": [
+          "{String} `scene-name` Name of the scene.",
+          "{String} `item-name` Name of the item removed from the scene."
+        ],
+        "api": "events",
+        "name": "SceneItemRemoved",
+        "category": "sources",
+        "returns": [
+          {
+            "type": "String",
+            "name": "scene-name",
+            "description": "Name of the scene."
+          },
+          {
+            "type": "String",
+            "name": "item-name",
+            "description": "Name of the item removed from the scene."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "SceneItemRemoved"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "sources"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "SceneItemRemoved"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "An item's visibility has been toggled.",
+        "return": [
+          "{String} `scene-name` Name of the scene.",
+          "{String} `item-name` Name of the item in the scene.",
+          "{boolean} `item-visible` New visibility state of the item."
+        ],
+        "api": "events",
+        "name": "SceneItemVisibilityChanged",
+        "category": "sources",
+        "returns": [
+          {
+            "type": "String",
+            "name": "scene-name",
+            "description": "Name of the scene."
+          },
+          {
+            "type": "String",
+            "name": "item-name",
+            "description": "Name of the item in the scene."
+          },
+          {
+            "type": "boolean",
+            "name": "item-visible",
+            "description": "New visibility state of the item."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "SceneItemVisibilityChanged"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "sources"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "SceneItemVisibilityChanged"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      }
+    ],
+    "studio mode": [
+      {
+        "subheads": [],
+        "description": "The selected preview scene has changed (only available in Studio Mode).",
+        "return": [
+          "{String} `scene-name` Name of the scene being previewed.",
+          "{Source|Array} `sources` List of sources composing the scene. Same specification as [`GetCurrentScene`](#getcurrentscene)."
+        ],
+        "api": "events",
+        "name": "PreviewSceneChanged",
+        "category": "studio mode",
+        "returns": [
+          {
+            "type": "String",
+            "name": "scene-name",
+            "description": "Name of the scene being previewed."
+          },
+          {
+            "type": "Source|Array",
+            "name": "sources",
+            "description": "List of sources composing the scene. Same specification as [`GetCurrentScene`](#getcurrentscene)."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "PreviewSceneChanged"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "studio mode"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "PreviewSceneChanged"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Studio Mode has been enabled or disabled.",
+        "return": "{boolean} `new-state` The new enabled state of Studio Mode.",
+        "api": "events",
+        "name": "StudioModeSwitched",
+        "category": "studio mode",
+        "returns": [
+          {
+            "type": "boolean",
+            "name": "new-state",
+            "description": "The new enabled state of Studio Mode."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "StudioModeSwitched"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "studio mode"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "StudioModeSwitched"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      }
+    ]
+  },
+  "requests": {
+    "general": [
+      {
+        "subheads": [],
+        "description": "Returns the latest version of the plugin and the API.",
+        "return": [
+          "{double} `version` OBSRemote compatible API version. Fixed to 1.1 for retrocompatibility.",
+          "{String} `obs-websocket-version` obs-websocket plugin version.",
+          "{String} `obs-studio-version` OBS Studio program version.",
+          "{String|Array} `available-requests` List of available request types."
+        ],
+        "api": "requests",
+        "name": "GetVersion",
+        "category": "general",
+        "returns": [
+          {
+            "type": "double",
+            "name": "version",
+            "description": "OBSRemote compatible API version. Fixed to 1.1 for retrocompatibility."
+          },
+          {
+            "type": "String",
+            "name": "obs-websocket-version",
+            "description": "obs-websocket plugin version."
+          },
+          {
+            "type": "String",
+            "name": "obs-studio-version",
+            "description": "OBS Studio program version."
+          },
+          {
+            "type": "String|Array",
+            "name": "available-requests",
+            "description": "List of available request types."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "GetVersion"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "general"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "GetVersion"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Tells the client if authentication is required. If so, returns authentication parameters `challenge`\nand `salt` (see \"Authentication\" for more information).",
+        "return": [
+          "{boolean} `authRequired` Indicates whether authentication is required.",
+          "{String (optional)} `challenge`",
+          "{String (optional)} `salt`"
+        ],
+        "api": "requests",
+        "name": "GetAuthRequired",
+        "category": "general",
+        "returns": [
+          {
+            "type": "boolean",
+            "name": "authRequired",
+            "description": "Indicates whether authentication is required."
+          },
+          {
+            "type": "String (optional)",
+            "name": "challenge",
+            "description": ""
+          },
+          {
+            "type": "String (optional)",
+            "name": "salt",
+            "description": ""
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "GetAuthRequired"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "general"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "GetAuthRequired"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Attempt to authenticate the client to the server.",
+        "param": "{String} `auth` Response to the auth challenge (see \"Authentication\" for more information).",
+        "api": "requests",
+        "name": "Authenticate",
+        "category": "general",
+        "params": [
+          {
+            "type": "String",
+            "name": "auth",
+            "description": "Response to the auth challenge (see \"Authentication\" for more information)."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "Authenticate"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "general"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "Authenticate"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      }
+    ],
+    "scenes": [
+      {
+        "subheads": [],
+        "description": "Switch to the specified scene.",
+        "param": "{String} `scene-name` Name of the scene to switch to.",
+        "api": "requests",
+        "name": "SetCurrentScene",
+        "category": "scenes",
+        "params": [
+          {
+            "type": "String",
+            "name": "scene-name",
+            "description": "Name of the scene to switch to."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "SetCurrentScene"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "scenes"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "SetCurrentScene"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Get the current scene's name and source items.",
+        "return": [
+          "{String} `name` Name of the currently active scene.",
+          "{Source|Array} `sources` Ordered list of the current scene's source items."
+        ],
+        "api": "requests",
+        "name": "GetCurrentScene",
+        "category": "scenes",
+        "returns": [
+          {
+            "type": "String",
+            "name": "name",
+            "description": "Name of the currently active scene."
+          },
+          {
+            "type": "Source|Array",
+            "name": "sources",
+            "description": "Ordered list of the current scene's source items."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "GetCurrentScene"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "scenes"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "GetCurrentScene"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Get a list of scenes in the currently active profile.",
+        "return": [
+          "{String} `current-scene` Name of the currently active scene.",
+          "{Scene|Array} `scenes` Ordered list of the current profile's scenes (See `[GetCurrentScene](#getcurrentscene)` for more information)."
+        ],
+        "api": "requests",
+        "name": "GetSceneList",
+        "category": "scenes",
+        "returns": [
+          {
+            "type": "String",
+            "name": "current-scene",
+            "description": "Name of the currently active scene."
+          },
+          {
+            "type": "Scene|Array",
+            "name": "scenes",
+            "description": "Ordered list of the current profile's scenes (See `[GetCurrentScene](#getcurrentscene)` for more information)."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "GetSceneList"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "scenes"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "GetSceneList"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      }
+    ],
+    "sources": [
+      {
+        "subheads": [],
+        "description": "Show or hide a specified source item in a specified scene.",
+        "param": [
+          "{String} `source` Name of the source in the specified scene.",
+          "{boolean} `render` Desired visibility.",
+          "{String (optional)} `scene-name` Name of the scene where the source resides. Defaults to the currently active scene."
+        ],
+        "api": "requests",
+        "name": "SetSourceRender",
+        "category": "sources",
+        "params": [
+          {
+            "type": "String",
+            "name": "source",
+            "description": "Name of the source in the specified scene."
+          },
+          {
+            "type": "boolean",
+            "name": "render",
+            "description": "Desired visibility."
+          },
+          {
+            "type": "String (optional)",
+            "name": "scene-name",
+            "description": "Name of the scene where the source resides. Defaults to the currently active scene."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "SetSourceRender"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "sources"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "SetSourceRender"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Set the volume of the specified source.",
+        "param": [
+          "{String} `source` Name of the source.",
+          "{double} `volume` Desired volume. Must be between `0.0` and `1.0`."
+        ],
+        "api": "requests",
+        "name": "SetVolume",
+        "category": "sources",
+        "params": [
+          {
+            "type": "String",
+            "name": "source",
+            "description": "Name of the source."
+          },
+          {
+            "type": "double",
+            "name": "volume",
+            "description": "Desired volume. Must be between `0.0` and `1.0`."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "SetVolume"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "sources"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "SetVolume"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Get the volume of the specified source.",
+        "param": "{String} `source` Name of the source.",
+        "return": [
+          "{String} `name` Name of the source.",
+          "{double} `volume` Volume of the source. Between `0.0` and `1.0`.",
+          "{boolean} `mute` Indicates whether the source is muted."
+        ],
+        "api": "requests",
+        "name": "GetVolume",
+        "category": "sources",
+        "returns": [
+          {
+            "type": "String",
+            "name": "name",
+            "description": "Name of the source."
+          },
+          {
+            "type": "double",
+            "name": "volume",
+            "description": "Volume of the source. Between `0.0` and `1.0`."
+          },
+          {
+            "type": "boolean",
+            "name": "mute",
+            "description": "Indicates whether the source is muted."
+          }
+        ],
+        "params": [
+          {
+            "type": "String",
+            "name": "source",
+            "description": "Name of the source."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "GetVolume"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "sources"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "GetVolume"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Inverts the mute status of a specified source.",
+        "param": "{String} `source` The name of the source.",
+        "api": "requests",
+        "name": "ToggleMute",
+        "category": "sources",
+        "params": [
+          {
+            "type": "String",
+            "name": "source",
+            "description": "The name of the source."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "ToggleMute"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "sources"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "ToggleMute"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Sets the mute status of a specified source.",
+        "param": [
+          "{String} `source` The name of the source.",
+          "{boolean} `mute` Desired mute status."
+        ],
+        "api": "requests",
+        "name": "SetMute",
+        "category": "sources",
+        "params": [
+          {
+            "type": "String",
+            "name": "source",
+            "description": "The name of the source."
+          },
+          {
+            "type": "boolean",
+            "name": "mute",
+            "description": "Desired mute status."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "SetMute"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "sources"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "SetMute"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Get the mute status of a specified source.",
+        "param": "{String} `source` The name of the source.",
+        "return": [
+          "{String} `name` The name of the source.",
+          "{boolean} `muted` Mute status of the source."
+        ],
+        "api": "requests",
+        "name": "GetMute",
+        "category": "sources",
+        "returns": [
+          {
+            "type": "String",
+            "name": "name",
+            "description": "The name of the source."
+          },
+          {
+            "type": "boolean",
+            "name": "muted",
+            "description": "Mute status of the source."
+          }
+        ],
+        "params": [
+          {
+            "type": "String",
+            "name": "source",
+            "description": "The name of the source."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "GetMute"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "sources"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "GetMute"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Set the audio sync offset of a specified source.",
+        "param": [
+          "{String} `source` The name of the source.",
+          "{int} `offset` The desired audio sync offset (in nanoseconds)."
+        ],
+        "api": "requests",
+        "name": "SetSyncOffset",
+        "category": "sources",
+        "params": [
+          {
+            "type": "String",
+            "name": "source",
+            "description": "The name of the source."
+          },
+          {
+            "type": "int",
+            "name": "offset",
+            "description": "The desired audio sync offset (in nanoseconds)."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "SetSyncOffset"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "sources"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "SetSyncOffset"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Get the audio sync offset of a specified source.",
+        "param": "{String} `source` The name of the source.",
+        "return": [
+          "{String} `name` The name of the source.",
+          "{int} `offset` The audio sync offset (in nanoseconds)."
+        ],
+        "api": "requests",
+        "name": "GetSyncOffset",
+        "category": "sources",
+        "returns": [
+          {
+            "type": "String",
+            "name": "name",
+            "description": "The name of the source."
+          },
+          {
+            "type": "int",
+            "name": "offset",
+            "description": "The audio sync offset (in nanoseconds)."
+          }
+        ],
+        "params": [
+          {
+            "type": "String",
+            "name": "source",
+            "description": "The name of the source."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "GetSyncOffset"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "sources"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "GetSyncOffset"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Sets the coordinates of a specified source item.",
+        "param": [
+          "{String (optional)} `scene-name` The name of the scene that the source item belongs to. Defaults to the current scene.",
+          "{String} `item` The name of the source item.",
+          "{double} `x` X coordinate.",
+          "{double} `y` Y coordinate."
+        ],
+        "api": "requests",
+        "name": "SetSceneItemPosition",
+        "category": "sources",
+        "params": [
+          {
+            "type": "String (optional)",
+            "name": "scene-name",
+            "description": "The name of the scene that the source item belongs to. Defaults to the current scene."
+          },
+          {
+            "type": "String",
+            "name": "item",
+            "description": "The name of the source item."
+          },
+          {
+            "type": "double",
+            "name": "x",
+            "description": "X coordinate."
+          },
+          {
+            "type": "double",
+            "name": "y",
+            "description": "Y coordinate."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "SetSceneItemPosition"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "sources"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "SetSceneItemPosition"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Set the transform of the specified source item.",
+        "param": [
+          "{String (optional)} `scene-name` The name of the scene that the source item belongs to. Defaults to the current scene.",
+          "{String} `item` The name of the source item.",
+          "{double} `x-scale` Width scale factor.",
+          "{double} `y-scale` Height scale factor.",
+          "{double} `rotation` Source item rotation (in degrees)."
+        ],
+        "api": "requests",
+        "name": "SetSceneItemTransform",
+        "category": "sources",
+        "params": [
+          {
+            "type": "String (optional)",
+            "name": "scene-name",
+            "description": "The name of the scene that the source item belongs to. Defaults to the current scene."
+          },
+          {
+            "type": "String",
+            "name": "item",
+            "description": "The name of the source item."
+          },
+          {
+            "type": "double",
+            "name": "x-scale",
+            "description": "Width scale factor."
+          },
+          {
+            "type": "double",
+            "name": "y-scale",
+            "description": "Height scale factor."
+          },
+          {
+            "type": "double",
+            "name": "rotation",
+            "description": "Source item rotation (in degrees)."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "SetSceneItemTransform"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "sources"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "SetSceneItemTransform"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Sets the crop coordinates of the specified source item.",
+        "param": [
+          "{String (optional)} `scene-name` the name of the scene that the source item belongs to. Defaults to the current scene.",
+          "{String} `item` The name of the source.",
+          "{int} `top` Pixel position of the top of the source item.",
+          "{int} `bottom` Pixel position of the bottom of the source item.",
+          "{int} `left` Pixel position of the left of the source item.",
+          "{int} `right` Pixel position of the right of the source item."
+        ],
+        "api": "requests",
+        "name": "SetSceneItemCrop",
+        "category": "sources",
+        "params": [
+          {
+            "type": "String (optional)",
+            "name": "scene-name",
+            "description": "the name of the scene that the source item belongs to. Defaults to the current scene."
+          },
+          {
+            "type": "String",
+            "name": "item",
+            "description": "The name of the source."
+          },
+          {
+            "type": "int",
+            "name": "top",
+            "description": "Pixel position of the top of the source item."
+          },
+          {
+            "type": "int",
+            "name": "bottom",
+            "description": "Pixel position of the bottom of the source item."
+          },
+          {
+            "type": "int",
+            "name": "left",
+            "description": "Pixel position of the left of the source item."
+          },
+          {
+            "type": "int",
+            "name": "right",
+            "description": "Pixel position of the right of the source item."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "SetSceneItemCrop"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "sources"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "SetSceneItemCrop"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Get the current properties of a Text GDI Plus source.",
+        "param": [
+          "{String (optional)} `scene-name` Name of the scene to retrieve. Defaults to the current scene.",
+          "{String} `source` Name of the source."
+        ],
+        "return": [
+          "{String} `align` Text Alignment (\"left\", \"center\", \"right\").",
+          "{int} `bk-color` Background color.",
+          "{int} `bk-opacity` Background opacity (0-100).",
+          "{boolean} `chatlog` Chat log.",
+          "{int} `chatlog_lines` Chat log lines.",
+          "{int} `color` Text color.",
+          "{boolean} `extents` Extents wrap.",
+          "{int} `extents_cx` Extents cx.",
+          "{int} `extents_cy` Extents cy.",
+          "{String} `file` File path name.",
+          "{boolean} `read_from_file` Read text from the specified file.",
+          "{Object} `font` Holds data for the font. Ex: `\"font\": { \"face\": \"Arial\", \"flags\": 0, \"size\": 150, \"style\": \"\" }`",
+          "{String} `font.face` Font face.",
+          "{int} `font.flags` Font text styling flag. `Bold=1, Italic=2, Bold Italic=3, Underline=5, Strikeout=8`",
+          "{int} `font.size` Font text size.",
+          "{String} `font.style` Font Style (unknown function).",
+          "{boolean} `gradient` Gradient enabled.",
+          "{int} `gradient_color` Gradient color.",
+          "{float} `gradient_dir` Gradient direction.",
+          "{int} `gradient_opacity` Gradient opacity (0-100).",
+          "{boolean} `outline` Outline.",
+          "{int} `outline_color` Outline color.",
+          "{int} `outline_size` Outline size.",
+          "{int} `outline_opacity` Outline opacity (0-100).",
+          "{String} `text` Text content to be displayed.",
+          "{String} `valign` Text vertical alignment (\"top\", \"center\", \"bottom\").",
+          "{boolean} `vertical` Vertical text enabled.",
+          "{boolean} `render` Visibility of the scene item."
+        ],
+        "api": "requests",
+        "name": "GetTextGDIPlusProperties",
+        "category": "sources",
+        "returns": [
+          {
+            "type": "String",
+            "name": "align",
+            "description": "Text Alignment (\"left\", \"center\", \"right\")."
+          },
+          {
+            "type": "int",
+            "name": "bk-color",
+            "description": "Background color."
+          },
+          {
+            "type": "int",
+            "name": "bk-opacity",
+            "description": "Background opacity (0-100)."
+          },
+          {
+            "type": "boolean",
+            "name": "chatlog",
+            "description": "Chat log."
+          },
+          {
+            "type": "int",
+            "name": "chatlog_lines",
+            "description": "Chat log lines."
+          },
+          {
+            "type": "int",
+            "name": "color",
+            "description": "Text color."
+          },
+          {
+            "type": "boolean",
+            "name": "extents",
+            "description": "Extents wrap."
+          },
+          {
+            "type": "int",
+            "name": "extents_cx",
+            "description": "Extents cx."
+          },
+          {
+            "type": "int",
+            "name": "extents_cy",
+            "description": "Extents cy."
+          },
+          {
+            "type": "String",
+            "name": "file",
+            "description": "File path name."
+          },
+          {
+            "type": "boolean",
+            "name": "read_from_file",
+            "description": "Read text from the specified file."
+          },
+          {
+            "type": "Object",
+            "name": "font",
+            "description": "Holds data for the font. Ex: `\"font\": { \"face\": \"Arial\", \"flags\": 0, \"size\": 150, \"style\": \"\" }`"
+          },
+          {
+            "type": "String",
+            "name": "font.face",
+            "description": "Font face."
+          },
+          {
+            "type": "int",
+            "name": "font.flags",
+            "description": "Font text styling flag. `Bold=1, Italic=2, Bold Italic=3, Underline=5, Strikeout=8`"
+          },
+          {
+            "type": "int",
+            "name": "font.size",
+            "description": "Font text size."
+          },
+          {
+            "type": "String",
+            "name": "font.style",
+            "description": "Font Style (unknown function)."
+          },
+          {
+            "type": "boolean",
+            "name": "gradient",
+            "description": "Gradient enabled."
+          },
+          {
+            "type": "int",
+            "name": "gradient_color",
+            "description": "Gradient color."
+          },
+          {
+            "type": "float",
+            "name": "gradient_dir",
+            "description": "Gradient direction."
+          },
+          {
+            "type": "int",
+            "name": "gradient_opacity",
+            "description": "Gradient opacity (0-100)."
+          },
+          {
+            "type": "boolean",
+            "name": "outline",
+            "description": "Outline."
+          },
+          {
+            "type": "int",
+            "name": "outline_color",
+            "description": "Outline color."
+          },
+          {
+            "type": "int",
+            "name": "outline_size",
+            "description": "Outline size."
+          },
+          {
+            "type": "int",
+            "name": "outline_opacity",
+            "description": "Outline opacity (0-100)."
+          },
+          {
+            "type": "String",
+            "name": "text",
+            "description": "Text content to be displayed."
+          },
+          {
+            "type": "String",
+            "name": "valign",
+            "description": "Text vertical alignment (\"top\", \"center\", \"bottom\")."
+          },
+          {
+            "type": "boolean",
+            "name": "vertical",
+            "description": "Vertical text enabled."
+          },
+          {
+            "type": "boolean",
+            "name": "render",
+            "description": "Visibility of the scene item."
+          }
+        ],
+        "params": [
+          {
+            "type": "String (optional)",
+            "name": "scene-name",
+            "description": "Name of the scene to retrieve. Defaults to the current scene."
+          },
+          {
+            "type": "String",
+            "name": "source",
+            "description": "Name of the source."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "GetTextGDIPlusProperties"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "sources"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "GetTextGDIPlusProperties"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Get the current properties of a Text GDI Plus source.",
+        "param": [
+          "{String (optional)} `scene-name` Name of the scene to retrieve. Defaults to the current scene.",
+          "{String} `source` Name of the source.",
+          "{String (optional)} `align` Text Alignment (\"left\", \"center\", \"right\").",
+          "{int (optional)} `bk-color` Background color.",
+          "{int (optional)} `bk-opacity` Background opacity (0-100).",
+          "{boolean (optional)} `chatlog` Chat log.",
+          "{int (optional)} `chatlog_lines` Chat log lines.",
+          "{int (optional)} `color` Text color.",
+          "{boolean (optional)} `extents` Extents wrap.",
+          "{int (optional)} `extents_cx` Extents cx.",
+          "{int (optional)} `extents_cy` Extents cy.",
+          "{String (optional)} `file` File path name.",
+          "{boolean (optional)} `read_from_file` Read text from the specified file.",
+          "{Object (optional)} `font` Holds data for the font. Ex: `\"font\": { \"face\": \"Arial\", \"flags\": 0, \"size\": 150, \"style\": \"\" }`",
+          "{String (optional)} `font.face` Font face.",
+          "{int (optional)} `font.flags` Font text styling flag. `Bold=1, Italic=2, Bold Italic=3, Underline=5, Strikeout=8`",
+          "{int (optional)} `font.size` Font text size.",
+          "{String (optional)} `font.style` Font Style (unknown function).",
+          "{boolean (optional)} `gradient` Gradient enabled.",
+          "{int (optional)} `gradient_color` Gradient color.",
+          "{float (optional)} `gradient_dir` Gradient direction.",
+          "{int (optional)} `gradient_opacity` Gradient opacity (0-100).",
+          "{boolean (optional)} `outline` Outline.",
+          "{int (optional)} `outline_color` Outline color.",
+          "{int (optional)} `outline_size` Outline size.",
+          "{int (optional)} `outline_opacity` Outline opacity (0-100).",
+          "{String (optional)} `text` Text content to be displayed.",
+          "{String (optional)} `valign` Text vertical alignment (\"top\", \"center\", \"bottom\").",
+          "{boolean (optional)} `vertical` Vertical text enabled.",
+          "{boolean (optional)} `render` Visibility of the scene item."
+        ],
+        "api": "requests",
+        "name": "SetTextGDIPlusProperties",
+        "category": "sources",
+        "params": [
+          {
+            "type": "String (optional)",
+            "name": "scene-name",
+            "description": "Name of the scene to retrieve. Defaults to the current scene."
+          },
+          {
+            "type": "String",
+            "name": "source",
+            "description": "Name of the source."
+          },
+          {
+            "type": "String (optional)",
+            "name": "align",
+            "description": "Text Alignment (\"left\", \"center\", \"right\")."
+          },
+          {
+            "type": "int (optional)",
+            "name": "bk-color",
+            "description": "Background color."
+          },
+          {
+            "type": "int (optional)",
+            "name": "bk-opacity",
+            "description": "Background opacity (0-100)."
+          },
+          {
+            "type": "boolean (optional)",
+            "name": "chatlog",
+            "description": "Chat log."
+          },
+          {
+            "type": "int (optional)",
+            "name": "chatlog_lines",
+            "description": "Chat log lines."
+          },
+          {
+            "type": "int (optional)",
+            "name": "color",
+            "description": "Text color."
+          },
+          {
+            "type": "boolean (optional)",
+            "name": "extents",
+            "description": "Extents wrap."
+          },
+          {
+            "type": "int (optional)",
+            "name": "extents_cx",
+            "description": "Extents cx."
+          },
+          {
+            "type": "int (optional)",
+            "name": "extents_cy",
+            "description": "Extents cy."
+          },
+          {
+            "type": "String (optional)",
+            "name": "file",
+            "description": "File path name."
+          },
+          {
+            "type": "boolean (optional)",
+            "name": "read_from_file",
+            "description": "Read text from the specified file."
+          },
+          {
+            "type": "Object (optional)",
+            "name": "font",
+            "description": "Holds data for the font. Ex: `\"font\": { \"face\": \"Arial\", \"flags\": 0, \"size\": 150, \"style\": \"\" }`"
+          },
+          {
+            "type": "String (optional)",
+            "name": "font.face",
+            "description": "Font face."
+          },
+          {
+            "type": "int (optional)",
+            "name": "font.flags",
+            "description": "Font text styling flag. `Bold=1, Italic=2, Bold Italic=3, Underline=5, Strikeout=8`"
+          },
+          {
+            "type": "int (optional)",
+            "name": "font.size",
+            "description": "Font text size."
+          },
+          {
+            "type": "String (optional)",
+            "name": "font.style",
+            "description": "Font Style (unknown function)."
+          },
+          {
+            "type": "boolean (optional)",
+            "name": "gradient",
+            "description": "Gradient enabled."
+          },
+          {
+            "type": "int (optional)",
+            "name": "gradient_color",
+            "description": "Gradient color."
+          },
+          {
+            "type": "float (optional)",
+            "name": "gradient_dir",
+            "description": "Gradient direction."
+          },
+          {
+            "type": "int (optional)",
+            "name": "gradient_opacity",
+            "description": "Gradient opacity (0-100)."
+          },
+          {
+            "type": "boolean (optional)",
+            "name": "outline",
+            "description": "Outline."
+          },
+          {
+            "type": "int (optional)",
+            "name": "outline_color",
+            "description": "Outline color."
+          },
+          {
+            "type": "int (optional)",
+            "name": "outline_size",
+            "description": "Outline size."
+          },
+          {
+            "type": "int (optional)",
+            "name": "outline_opacity",
+            "description": "Outline opacity (0-100)."
+          },
+          {
+            "type": "String (optional)",
+            "name": "text",
+            "description": "Text content to be displayed."
+          },
+          {
+            "type": "String (optional)",
+            "name": "valign",
+            "description": "Text vertical alignment (\"top\", \"center\", \"bottom\")."
+          },
+          {
+            "type": "boolean (optional)",
+            "name": "vertical",
+            "description": "Vertical text enabled."
+          },
+          {
+            "type": "boolean (optional)",
+            "name": "render",
+            "description": "Visibility of the scene item."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "SetTextGDIPlusProperties"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "sources"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "SetTextGDIPlusProperties"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Get current properties for a Browser Source.",
+        "param": [
+          "{String (optional)} `scene-name` Name of the scene that the source belongs to. Defaults to the current scene.",
+          "{String} `source` Name of the source."
+        ],
+        "return": [
+          "{boolean} `is_local_file` Indicates that a local file is in use.",
+          "{String} `url` Url or file path.",
+          "{String} `css` CSS to inject.",
+          "{int} `width` Width.",
+          "{int} `height` Height.",
+          "{int} `fps` Framerate.",
+          "{boolean} `shutdown` Indicates whether the source should be shutdown when not visible.",
+          "{boolean (optional)} `render` Visibility of the scene item."
+        ],
+        "api": "requests",
+        "name": "GetBrowserSourceProperties",
+        "category": "sources",
+        "returns": [
+          {
+            "type": "boolean",
+            "name": "is_local_file",
+            "description": "Indicates that a local file is in use."
+          },
+          {
+            "type": "String",
+            "name": "url",
+            "description": "Url or file path."
+          },
+          {
+            "type": "String",
+            "name": "css",
+            "description": "CSS to inject."
+          },
+          {
+            "type": "int",
+            "name": "width",
+            "description": "Width."
+          },
+          {
+            "type": "int",
+            "name": "height",
+            "description": "Height."
+          },
+          {
+            "type": "int",
+            "name": "fps",
+            "description": "Framerate."
+          },
+          {
+            "type": "boolean",
+            "name": "shutdown",
+            "description": "Indicates whether the source should be shutdown when not visible."
+          },
+          {
+            "type": "boolean (optional)",
+            "name": "render",
+            "description": "Visibility of the scene item."
+          }
+        ],
+        "params": [
+          {
+            "type": "String (optional)",
+            "name": "scene-name",
+            "description": "Name of the scene that the source belongs to. Defaults to the current scene."
+          },
+          {
+            "type": "String",
+            "name": "source",
+            "description": "Name of the source."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "GetBrowserSourceProperties"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "sources"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "GetBrowserSourceProperties"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Set current properties for a Browser Source.",
+        "param": [
+          "{String (optional)} `scene-name` Name of the scene that the source belongs to. Defaults to the current scene.",
+          "{String} `source` Name of the source.",
+          "{boolean (optional)} `is_local_file` Indicates that a local file is in use.",
+          "{String (optional)} `url` Url or file path.",
+          "{String (optional)} `css` CSS to inject.",
+          "{int (optional)} `width` Width.",
+          "{int (optional)} `height` Height.",
+          "{int (optional)} `fps` Framerate.",
+          "{boolean (optional)} `shutdown` Indicates whether the source should be shutdown when not visible.",
+          "{boolean (optional)} `render` Visibility of the scene item."
+        ],
+        "api": "requests",
+        "name": "SetBrowserSourceProperties",
+        "category": "sources",
+        "params": [
+          {
+            "type": "String (optional)",
+            "name": "scene-name",
+            "description": "Name of the scene that the source belongs to. Defaults to the current scene."
+          },
+          {
+            "type": "String",
+            "name": "source",
+            "description": "Name of the source."
+          },
+          {
+            "type": "boolean (optional)",
+            "name": "is_local_file",
+            "description": "Indicates that a local file is in use."
+          },
+          {
+            "type": "String (optional)",
+            "name": "url",
+            "description": "Url or file path."
+          },
+          {
+            "type": "String (optional)",
+            "name": "css",
+            "description": "CSS to inject."
+          },
+          {
+            "type": "int (optional)",
+            "name": "width",
+            "description": "Width."
+          },
+          {
+            "type": "int (optional)",
+            "name": "height",
+            "description": "Height."
+          },
+          {
+            "type": "int (optional)",
+            "name": "fps",
+            "description": "Framerate."
+          },
+          {
+            "type": "boolean (optional)",
+            "name": "shutdown",
+            "description": "Indicates whether the source should be shutdown when not visible."
+          },
+          {
+            "type": "boolean (optional)",
+            "name": "render",
+            "description": "Visibility of the scene item."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "SetBrowserSourceProperties"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "sources"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "SetBrowserSourceProperties"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Reset a source item.",
+        "param": [
+          "{String (optional)} `scene-name` Name of the scene the source belogns to. Defaults to the current scene.",
+          "{String} `item` Name of the source item."
+        ],
+        "api": "requests",
+        "name": "ResetSceneItem",
+        "category": "sources",
+        "params": [
+          {
+            "type": "String (optional)",
+            "name": "scene-name",
+            "description": "Name of the scene the source belogns to. Defaults to the current scene."
+          },
+          {
+            "type": "String",
+            "name": "item",
+            "description": "Name of the source item."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "ResetSceneItem"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "sources"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "ResetSceneItem"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      }
+    ],
+    "streaming": [
+      {
+        "subheads": [],
+        "description": "Get current streaming and recording status.",
+        "return": [
+          "{boolean} `streaming` Current streaming status.",
+          "{boolean} `recording` Current recording status.",
+          "{String (optional)} `stream-timecode` Time elapsed since streaming started (only present if currently streaming).",
+          "{String (optional)} `rec-timecode` Time elapsed since recording started (only present if currently recording).",
+          "{boolean} `preview-only` Always false. Retrocompatibility with OBSRemote."
+        ],
+        "api": "requests",
+        "name": "GetStreamingStatus",
+        "category": "streaming",
+        "returns": [
+          {
+            "type": "boolean",
+            "name": "streaming",
+            "description": "Current streaming status."
+          },
+          {
+            "type": "boolean",
+            "name": "recording",
+            "description": "Current recording status."
+          },
+          {
+            "type": "String (optional)",
+            "name": "stream-timecode",
+            "description": "Time elapsed since streaming started (only present if currently streaming)."
+          },
+          {
+            "type": "String (optional)",
+            "name": "rec-timecode",
+            "description": "Time elapsed since recording started (only present if currently recording)."
+          },
+          {
+            "type": "boolean",
+            "name": "preview-only",
+            "description": "Always false. Retrocompatibility with OBSRemote."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "GetStreamingStatus"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "streaming"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "GetStreamingStatus"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Toggle streaming on or off.",
+        "api": "requests",
+        "name": "StartStopStreaming",
+        "category": "streaming",
+        "names": [
+          {
+            "name": "",
+            "description": "StartStopStreaming"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "streaming"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "StartStopStreaming"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Start streaming.\nWill return an `error` if streaming is already active.",
+        "param": [
+          "{Object (optional)} `stream` Special stream configuration.",
+          "{String (optional)} `type` If specified ensures the type of stream matches the given type (usually 'rtmp_custom' or 'rtmp_common'). If the currently configured stream type does not match the given stream type, all settings must be specified in the `settings` object or an error will occur when starting the stream.",
+          "{Object (optional)} `metadata` Adds the given object parameters as encoded query string parameters to the 'key' of the RTMP stream. Used to pass data to the RTMP service about the streaming. May be any String, Numeric, or Boolean field.",
+          "{Object (optional)} `settings` Settings for the stream.",
+          "{String (optional)} `settings.server` The publish URL.",
+          "{String (optional)} `settings.key` The publish key of the stream.",
+          "{boolean (optional)} `settings.use-auth` Indicates whether authentication should be used when connecting to the streaming server.",
+          "{String (optional)} `settings.username` If authentication is enabled, the username for the streaming server. Ignored if `use-auth` is not set to `true`.",
+          "{String (optional)} `settings.password` If authentication is enabled, the password for the streaming server. Ignored if `use-auth` is not set to `true`."
+        ],
+        "api": "requests",
+        "name": "StartStreaming",
+        "category": "streaming",
+        "params": [
+          {
+            "type": "Object (optional)",
+            "name": "stream",
+            "description": "Special stream configuration."
+          },
+          {
+            "type": "String (optional)",
+            "name": "type",
+            "description": "If specified ensures the type of stream matches the given type (usually 'rtmp_custom' or 'rtmp_common'). If the currently configured stream type does not match the given stream type, all settings must be specified in the `settings` object or an error will occur when starting the stream."
+          },
+          {
+            "type": "Object (optional)",
+            "name": "metadata",
+            "description": "Adds the given object parameters as encoded query string parameters to the 'key' of the RTMP stream. Used to pass data to the RTMP service about the streaming. May be any String, Numeric, or Boolean field."
+          },
+          {
+            "type": "Object (optional)",
+            "name": "settings",
+            "description": "Settings for the stream."
+          },
+          {
+            "type": "String (optional)",
+            "name": "settings.server",
+            "description": "The publish URL."
+          },
+          {
+            "type": "String (optional)",
+            "name": "settings.key",
+            "description": "The publish key of the stream."
+          },
+          {
+            "type": "boolean (optional)",
+            "name": "settings.use-auth",
+            "description": "Indicates whether authentication should be used when connecting to the streaming server."
+          },
+          {
+            "type": "String (optional)",
+            "name": "settings.username",
+            "description": "If authentication is enabled, the username for the streaming server. Ignored if `use-auth` is not set to `true`."
+          },
+          {
+            "type": "String (optional)",
+            "name": "settings.password",
+            "description": "If authentication is enabled, the password for the streaming server. Ignored if `use-auth` is not set to `true`."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "StartStreaming"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "streaming"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "StartStreaming"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Stop streaming.\nWill return an `error` if streaming is not active.",
+        "api": "requests",
+        "name": "StopStreaming",
+        "category": "streaming",
+        "names": [
+          {
+            "name": "",
+            "description": "StopStreaming"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "streaming"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "StopStreaming"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      }
+    ],
+    "recording": [
+      {
+        "subheads": [],
+        "description": "Toggle recording on or off.",
+        "api": "requests",
+        "name": "StartStopRecording",
+        "category": "recording",
+        "names": [
+          {
+            "name": "",
+            "description": "StartStopRecording"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "recording"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "StartStopRecording"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Start recording.\nWill return an `error` if recording is already active.",
+        "api": "requests",
+        "name": "StartRecording",
+        "category": "recording",
+        "names": [
+          {
+            "name": "",
+            "description": "StartRecording"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "recording"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "StartRecording"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Stop recording.\nWill return an `error` if recording is not active.",
+        "api": "requests",
+        "name": "StopRecording",
+        "category": "recording",
+        "names": [
+          {
+            "name": "",
+            "description": "StopRecording"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "recording"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "StopRecording"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Change the current recording folder.",
+        "param": "{Stsring} `rec-folder` Path of the recording folder.",
+        "api": "requests",
+        "name": "SetRecordingFolder",
+        "category": "recording",
+        "params": [
+          {
+            "type": "Stsring",
+            "name": "rec-folder",
+            "description": "Path of the recording folder."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "SetRecordingFolder"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "recording"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "SetRecordingFolder"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Get the path of  the current recording folder.",
+        "return": "{Stsring} `rec-folder` Path of the recording folder.",
+        "api": "requests",
+        "name": "GetRecordingFolder",
+        "category": "recording",
+        "returns": [
+          {
+            "type": "Stsring",
+            "name": "rec-folder",
+            "description": "Path of the recording folder."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "GetRecordingFolder"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "recording"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "GetRecordingFolder"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      }
+    ],
+    "transitions": [
+      {
+        "subheads": [],
+        "description": "List of all transitions available in the frontend's dropdown menu.",
+        "return": [
+          "{String} `current-transition` Name of the currently active transition.",
+          "{Object|Array} `transitions` List of transitions.",
+          "{String} `transitions[].name` Name of the transition."
+        ],
+        "api": "requests",
+        "name": "GetTransitionList",
+        "category": "transitions",
+        "returns": [
+          {
+            "type": "String",
+            "name": "current-transition",
+            "description": "Name of the currently active transition."
+          },
+          {
+            "type": "Object|Array",
+            "name": "transitions",
+            "description": "List of transitions."
+          },
+          {
+            "type": "String",
+            "name": "transitions[].name",
+            "description": "Name of the transition."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "GetTransitionList"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "transitions"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "GetTransitionList"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Get the name of the currently selected transition in the frontend's dropdown menu.",
+        "return": [
+          "{String} `name` Name of the selected transition.",
+          "{int (optional)} `duration` Transition duration (in milliseconds) if supported by the transition."
+        ],
+        "api": "requests",
+        "name": "GetCurrentTransition",
+        "category": "transitions",
+        "returns": [
+          {
+            "type": "String",
+            "name": "name",
+            "description": "Name of the selected transition."
+          },
+          {
+            "type": "int (optional)",
+            "name": "duration",
+            "description": "Transition duration (in milliseconds) if supported by the transition."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "GetCurrentTransition"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "transitions"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "GetCurrentTransition"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Set the active transition.",
+        "param": "{String} `transition-name` The name of the transition.",
+        "api": "requests",
+        "name": "SetCurrentTransition",
+        "category": "transitions",
+        "params": [
+          {
+            "type": "String",
+            "name": "transition-name",
+            "description": "The name of the transition."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "SetCurrentTransition"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "transitions"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "SetCurrentTransition"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Set the duration of the currently selected transition if supported.",
+        "param": "{int} `duration` Desired duration of the transition (in milliseconds).",
+        "api": "requests",
+        "name": "SetTransitionDuration",
+        "category": "transitions",
+        "params": [
+          {
+            "type": "int",
+            "name": "duration",
+            "description": "Desired duration of the transition (in milliseconds)."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "SetTransitionDuration"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "transitions"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "SetTransitionDuration"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Get the duration of the currently selected transition if supported.",
+        "return": "{int} `transition-duration` Duration of the current transition (in milliseconds).",
+        "api": "requests",
+        "name": "GetTransitionDuration",
+        "category": "transitions",
+        "returns": [
+          {
+            "type": "int",
+            "name": "transition-duration",
+            "description": "Duration of the current transition (in milliseconds)."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "GetTransitionDuration"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "transitions"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "GetTransitionDuration"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      }
+    ],
+    "scene collections": [
+      {
+        "subheads": [],
+        "description": "Change the active scene collection.",
+        "param": "{String} `sc-name` Name of the desired scene collection.",
+        "api": "requests",
+        "name": "SetCurrentSceneCollection",
+        "category": "scene collections",
+        "params": [
+          {
+            "type": "String",
+            "name": "sc-name",
+            "description": "Name of the desired scene collection."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "SetCurrentSceneCollection"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "scene collections"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "SetCurrentSceneCollection"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Get the name of the current scene collection.",
+        "return": "{String} `sc-name` Name of the currently active scene collection.",
+        "api": "requests",
+        "name": "GetCurrentSceneCollection",
+        "category": "scene collections",
+        "returns": [
+          {
+            "type": "String",
+            "name": "sc-name",
+            "description": "Name of the currently active scene collection."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "GetCurrentSceneCollection"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "scene collections"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "GetCurrentSceneCollection"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      }
+    ],
+    "profiles": [
+      {
+        "subheads": [],
+        "description": "Set the currently active profile.",
+        "param": "{String} `profile-name` Name of the desired profile.",
+        "api": "requests",
+        "name": "SetCurrentProfile",
+        "category": "profiles",
+        "params": [
+          {
+            "type": "String",
+            "name": "profile-name",
+            "description": "Name of the desired profile."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "SetCurrentProfile"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "profiles"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "SetCurrentProfile"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Get the name of the current profile.",
+        "return": "{String} `profile-name` Name of the currently active profile.",
+        "api": "requests",
+        "name": "GetCurrentProfile",
+        "category": "profiles",
+        "returns": [
+          {
+            "type": "String",
+            "name": "profile-name",
+            "description": "Name of the currently active profile."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "GetCurrentProfile"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "profiles"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "GetCurrentProfile"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Get a list of available profiles.",
+        "return": "{Object|Array} `profiles` List of available profiles.",
+        "api": "requests",
+        "name": "ListProfiles",
+        "category": "profiles",
+        "returns": [
+          {
+            "type": "Object|Array",
+            "name": "profiles",
+            "description": "List of available profiles."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "ListProfiles"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "profiles"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "ListProfiles"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      }
+    ],
+    "settings": [
+      {
+        "subheads": [],
+        "description": "Sets one or more attributes of the current streaming server settings. Any options not passed will remain unchanged. Returns the updated settings in response. If 'type' is different than the current streaming service type, all settings are required. Returns the full settings of the stream (the same as GetStreamSettings).",
+        "param": [
+          "{String} `type` The type of streaming service configuration, usually `rtmp_custom` or `rtmp_common`.",
+          "{Object} `settings` The actual settings of the stream.",
+          "{String (optional)} `settings.server` The publish URL.",
+          "{String (optional)} `settings.key` The publish key.",
+          "{boolean (optional)} `settings.use-auth` Indicates whether authentication should be used when connecting to the streaming server.",
+          "{String (optional)} `settings.username` The username for the streaming service.",
+          "{String (optional)} `settings.password` The password for the streaming service.",
+          "{boolean} `save` Persist the settings to disk."
+        ],
+        "api": "requests",
+        "name": "SetStreamingSettings",
+        "category": "settings",
+        "params": [
+          {
+            "type": "String",
+            "name": "type",
+            "description": "The type of streaming service configuration, usually `rtmp_custom` or `rtmp_common`."
+          },
+          {
+            "type": "Object",
+            "name": "settings",
+            "description": "The actual settings of the stream."
+          },
+          {
+            "type": "String (optional)",
+            "name": "settings.server",
+            "description": "The publish URL."
+          },
+          {
+            "type": "String (optional)",
+            "name": "settings.key",
+            "description": "The publish key."
+          },
+          {
+            "type": "boolean (optional)",
+            "name": "settings.use-auth",
+            "description": "Indicates whether authentication should be used when connecting to the streaming server."
+          },
+          {
+            "type": "String (optional)",
+            "name": "settings.username",
+            "description": "The username for the streaming service."
+          },
+          {
+            "type": "String (optional)",
+            "name": "settings.password",
+            "description": "The password for the streaming service."
+          },
+          {
+            "type": "boolean",
+            "name": "save",
+            "description": "Persist the settings to disk."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "SetStreamingSettings"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "settings"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "SetStreamingSettings"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Get the current streaming server settings.",
+        "return": [
+          "{String} `type` The type of streaming service configuration. Usually 'rtmp_custom' or 'rtmp_common'.",
+          "{Object} `settings` Setings of the stream.",
+          "{String} `settings.server` The publish URL.",
+          "{String} `settings.key` The publish key of the stream.",
+          "{boolean} `settings.use-auth` Indicates whether audentication should be used when connecting to the streaming server.",
+          "{String} `settings.username` The username to use when accessing the streaming server. Only present if `use-auth` is `true`.",
+          "{String} `settings.password` The password to use when accessing the streaming server. Only present if `use-auth` is `true`."
+        ],
+        "api": "requests",
+        "name": "GetStreamSettings",
+        "category": "settings",
+        "returns": [
+          {
+            "type": "String",
+            "name": "type",
+            "description": "The type of streaming service configuration. Usually 'rtmp_custom' or 'rtmp_common'."
+          },
+          {
+            "type": "Object",
+            "name": "settings",
+            "description": "Setings of the stream."
+          },
+          {
+            "type": "String",
+            "name": "settings.server",
+            "description": "The publish URL."
+          },
+          {
+            "type": "String",
+            "name": "settings.key",
+            "description": "The publish key of the stream."
+          },
+          {
+            "type": "boolean",
+            "name": "settings.use-auth",
+            "description": "Indicates whether audentication should be used when connecting to the streaming server."
+          },
+          {
+            "type": "String",
+            "name": "settings.username",
+            "description": "The username to use when accessing the streaming server. Only present if `use-auth` is `true`."
+          },
+          {
+            "type": "String",
+            "name": "settings.password",
+            "description": "The password to use when accessing the streaming server. Only present if `use-auth` is `true`."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "GetStreamSettings"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "settings"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "GetStreamSettings"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Save the current streaming server settings to disk.",
+        "api": "requests",
+        "name": "SaveStreamSettings",
+        "category": "settings",
+        "names": [
+          {
+            "name": "",
+            "description": "SaveStreamSettings"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "settings"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "SaveStreamSettings"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      }
+    ],
+    "studio mode": [
+      {
+        "subheads": [],
+        "description": "Indicates if Studio Mode is currently enabled.",
+        "return": "{boolean} `studio-mode` Indicates if Studio Mode is enabled.",
+        "api": "requests",
+        "name": "GetStudioModeStatus",
+        "category": "studio mode",
+        "returns": [
+          {
+            "type": "boolean",
+            "name": "studio-mode",
+            "description": "Indicates if Studio Mode is enabled."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "GetStudioModeStatus"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "studio mode"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "GetStudioModeStatus"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Get the name of the currently previewed scene and its list of sources.\nWill return an `error` if Studio Mode is not enabled.",
+        "return": [
+          "{String} `name` The name of the active preview scene.",
+          "{Source|Array} `sources`"
+        ],
+        "api": "requests",
+        "name": "GetPreviewScene",
+        "category": "studio mode",
+        "returns": [
+          {
+            "type": "String",
+            "name": "name",
+            "description": "The name of the active preview scene."
+          },
+          {
+            "type": "Source|Array",
+            "name": "sources",
+            "description": ""
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "GetPreviewScene"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "studio mode"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "GetPreviewScene"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Set the active preview scene.\nWill return an `error` if Studio Mode is not enabled.",
+        "param": "{String} `scene-name` The name of the scene to preview.",
+        "api": "requests",
+        "name": "SetPreviewScene",
+        "category": "studio mode",
+        "params": [
+          {
+            "type": "String",
+            "name": "scene-name",
+            "description": "The name of the scene to preview."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "SetPreviewScene"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "studio mode"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "SetPreviewScene"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Transitions the currently previewed scene to the main output.\nWill return an `error` if Studio Mode is not enabled.",
+        "param": [
+          "{Object (optional)} `with-transition` Change the active transition before switching scenes. Defaults to the active transition.",
+          "{String} `with-transition.name` Name of the transition.",
+          "{int (optional)} `with-transition.duration` Transition duration (in milliseconds)."
+        ],
+        "api": "requests",
+        "name": "TransitionToProgram",
+        "category": "studio mode",
+        "params": [
+          {
+            "type": "Object (optional)",
+            "name": "with-transition",
+            "description": "Change the active transition before switching scenes. Defaults to the active transition."
+          },
+          {
+            "type": "String",
+            "name": "with-transition.name",
+            "description": "Name of the transition."
+          },
+          {
+            "type": "int (optional)",
+            "name": "with-transition.duration",
+            "description": "Transition duration (in milliseconds)."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "TransitionToProgram"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "studio mode"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "TransitionToProgram"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Enables Studio Mode.",
+        "api": "requests",
+        "name": "EnableStudioMode",
+        "category": "studio mode",
+        "names": [
+          {
+            "name": "",
+            "description": "EnableStudioMode"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "studio mode"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "EnableStudioMode"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Disables Studio Mode.",
+        "api": "requests",
+        "name": "DisableStudioMode",
+        "category": "studio mode",
+        "names": [
+          {
+            "name": "",
+            "description": "DisableStudioMode"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "studio mode"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "DisableStudioMode"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Toggles Studio Mode.",
+        "api": "requests",
+        "name": "ToggleStudioMode",
+        "category": "studio mode",
+        "names": [
+          {
+            "name": "",
+            "description": "ToggleStudioMode"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "studio mode"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "ToggleStudioMode"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Get configured special sources like Desktop Audio and Mic/Aux sources.",
+        "return": [
+          "{String (optional)} `desktop-1` Name of the first Desktop Audio capture source.",
+          "{String (optional)} `desktop-2` Name of the second Desktop Audio capture source.",
+          "{String (optional)} `mic-1` Name of the first Mic/Aux input source.",
+          "{String (optional)} `mic-2` Name of the second Mic/Aux input source.",
+          "{String (optional)} `mic-3` NAme of the third Mic/Aux input source."
+        ],
+        "api": "requests",
+        "name": "GetSpecialSources",
+        "category": "studio mode",
+        "returns": [
+          {
+            "type": "String (optional)",
+            "name": "desktop-1",
+            "description": "Name of the first Desktop Audio capture source."
+          },
+          {
+            "type": "String (optional)",
+            "name": "desktop-2",
+            "description": "Name of the second Desktop Audio capture source."
+          },
+          {
+            "type": "String (optional)",
+            "name": "mic-1",
+            "description": "Name of the first Mic/Aux input source."
+          },
+          {
+            "type": "String (optional)",
+            "name": "mic-2",
+            "description": "Name of the second Mic/Aux input source."
+          },
+          {
+            "type": "String (optional)",
+            "name": "mic-3",
+            "description": "NAme of the third Mic/Aux input source."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "GetSpecialSources"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "studio mode"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "GetSpecialSources"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      }
+    ]
+  }
+}

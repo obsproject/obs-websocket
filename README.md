@@ -21,12 +21,13 @@ It is **highly recommended** to protect obs-websocket with a password against un
 
 ### For developers
 The server is a typical Websockets server running by default on port 4444 (the port number can be changed in the Settings dialog). 
-The protocol understood by the server is documented in [PROTOCOL.md](PROTOCOL.md).  
+The protocol understood by the server is documented in [PROTOCOL.md](docs/generated/protocol.md).  
 
 Here's a list of available language APIs for obs-websocket :
-- Javascript (browser & nodejs) : [obs-websocket-js](https://github.com/haganbmj/obs-websocket-js) by Brendan Hagan
-- C#/VB.NET : [obs-websocket-dotnet](https://github.com/Palakis/obs-websocket-dotnet)
-- Python : [obs-websocket-py](https://github.com/Elektordi/obs-websocket-py) by Guillaume Genty a.k.a Elektordi
+- Javascript (browser & nodejs): [obs-websocket-js](https://github.com/haganbmj/obs-websocket-js) by Brendan Hagan
+- C#/VB.NET: [obs-websocket-dotnet](https://github.com/Palakis/obs-websocket-dotnet)
+- Python 2 and 3: [obs-websocket-py](https://github.com/Elektordi/obs-websocket-py) by Guillaume Genty a.k.a Elektordi
+- Python 3.5+ with asyncio: [obs-ws-rc](https://github.com/KirillMysnik/obs-ws-rc) by Kirill Mysnik
 
 I'd like to know what you're building with or for obs-websocket. If you do something in this fashion, feel free to drop me an email at `contact at slepin dot fr` !
 
@@ -38,7 +39,7 @@ See the [build instructions](BUILDING.md).
 
 ## Special thanks
 In order of appearance:
-- [Brendan H.](https://github.com/haganbmj) : Code contributions and better English in the Protocol specification
+- [Brendan H.](https://github.com/haganbmj) : Code contributions and gooder English in the Protocol specification
 - [Mikhail Swift](https://github.com/mikhailswift) : Code contributions
 - [Tobias Frahmer](https://github.com/Frahmer) : German translation
 - [Genture](https://github.com/Genteure) : Simplified Chinese and Traditional Chinese translations
@@ -46,6 +47,10 @@ In order of appearance:
 - [Andy Asquelt](https://github.com/asquelt) : Polish translation
 - [Marcel Haazen](https://github.com/inpothet) : Dutch translation
 - [Peter Antonvich](https://github.com/pantonvich) : Code contributions
+- [yinzara](https://github.com/yinzara) : Code contributions
+- [Chris Angelico](https://github.com/Rosuav) : Code contributions
+- [Guillaume "Elektordi" Genty](https://github.com/Elektordi) : Code contributions
+- [Marwin M](https://github.com/dragonbane0) : Code contributions
 
 And also: special thanks to supporters of the project!
 
@@ -56,10 +61,10 @@ They have contributed financially to the project and made possible the addition 
 
 [Support Class](http://supportclass.net) designs and develops professional livestreams, with services ranging from broadcast graphics design and integration to event organization, along many other skills.  
 
-[![Support Class](doc/supportclass_logo_blacktext.png)](http://supportclass.net)
+[![Support Class](.github/images/supportclass_logo_blacktext.png)](http://supportclass.net)
 
 ---
 
 [MediaUnit](http://www.mediaunit.no) is a Norwegian media company developing products and services for the media industry, primarly focused on web and events.  
 
-[![MediaUnit](doc/mediaunit_logo_black.png)](http://www.mediaunit.no/)
+[![MediaUnit](.github/images/mediaunit_logo_black.png)](http://www.mediaunit.no/)

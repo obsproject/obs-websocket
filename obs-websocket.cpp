@@ -35,6 +35,8 @@ SettingsDialog* settings_dialog;
 
 bool obs_module_load(void) {
     blog(LOG_INFO, "you can haz websockets (version %s)", OBS_WEBSOCKET_VERSION);
+    blog(LOG_INFO, "qt version (compile-time): %s ; qt version (run-time): %s",
+        QT_VERSION_STR, qVersion());
 
     // Core setup
     Config* config = Config::Current();

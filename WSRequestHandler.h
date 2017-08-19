@@ -20,6 +20,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #ifndef WSREQUESTHANDLER_H
 #define WSREQUESTHANDLER_H
 
+#include <QMap>
 #include <QWebSocket>
 #include <QWebSocketServer>
 
@@ -87,6 +88,8 @@ class WSRequestHandler : public QObject {
     static void HandleToggleMute(WSRequestHandler* req);
     static void HandleSetMute(WSRequestHandler* req);
     static void HandleGetMute(WSRequestHandler* req);
+    static void HandleSetSyncOffset(WSRequestHandler* req);
+    static void HandleGetSyncOffset(WSRequestHandler* req);
     static void HandleGetSpecialSources(WSRequestHandler* req);
 
     static void HandleSetCurrentSceneCollection(WSRequestHandler* req);

@@ -3,10 +3,10 @@
 set -e
 
 echo "-- Preparing package build"
-export QT_PREFIX="/usr/local/opt/qt5"
+export QT_CELLAR_PREFIX="$(find /usr/local/Cellar/qt -d 1 | tail -n 1)"
 
-export WS_LIB="$QT_PREFIX/lib/QtWebSockets.framework/QtWebSockets"
-export NET_LIB="$QT_PREFIX/lib/QtNetwork.framework/QtNetwork"
+export WS_LIB="/usr/local/opt/qt/lib/QtWebSockets.framework/QtWebSockets"
+export NET_LIB="/usr/local/opt/qt/lib/QtNetwork.framework/QtNetwork"
 
 export GIT_HASH=$(git rev-parse --short HEAD)
 
@@ -27,27 +27,34 @@ cp $NET_LIB ./build
 chmod +rw ./build/QtWebSockets ./build/QtNetwork
 
 echo "-- Modifying QtNetwork"
-# TODO : put a loop in there
 install_name_tool \
 	-change /usr/local/opt/qt/lib/QtNetwork.framework/Versions/5/QtNetwork @rpath/QtNetwork \
-	-change /usr/local/opt/qt/lib/QtCore.framework/Versions/5/QtCore @rpath/QtCore \
+	-change $QT_CELLAR_PREFIX/lib/QtCore.framework/Versions/5/QtCore @rpath/QtCore \
 	./build/QtNetwork
 
 echo "-- Modifying QtWebSockets"
 install_name_tool \
 	-change /usr/local/opt/qt/lib/QtWebSockets.framework/Versions/5/QtWebSockets @rpath/QtWebSockets \
-	-change /usr/local/opt/qt/lib/QtNetwork.framework/Versions/5/QtNetwork @rpath/QtNetwork \
-	-change /usr/local/opt/qt/lib/QtCore.framework/Versions/5/QtCore @rpath/QtCore \
+	-change $QT_CELLAR_PREFIX/lib/QtNetwork.framework/Versions/5/QtNetwork @rpath/QtNetwork \
+	-change $QT_CELLAR_PREFIX/lib/QtCore.framework/Versions/5/QtCore @rpath/QtCore \
 	./build/QtWebSockets
 
 echo "-- Modifying obs-websocket.so"
 install_name_tool \
-	-change "$QT_PREFIX/lib/QtWebSockets.framework/Versions/5/QtWebSockets" @rpath/QtWebSockets \
-	-change "$QT_PREFIX/lib/QtWidgets.framework/Versions/5/QtWidgets" @rpath/QtWidgets \
-	-change "$QT_PREFIX/lib/QtNetwork.framework/Versions/5/QtNetwork" @rpath/QtNetwork \
-	-change "$QT_PREFIX/lib/QtGui.framework/Versions/5/QtGui" @rpath/QtGui \
-	-change "$QT_PREFIX/lib/QtCore.framework/Versions/5/QtCore" @rpath/QtCore \
+	-change /usr/local/opt/qt/lib/QtWebSockets.framework/Versions/5/QtWebSockets @rpath/QtWebSockets \
+	-change /usr/local/opt/qt/lib/QtWidgets.framework/Versions/5/QtWidgets @rpath/QtWidgets \
+	-change /usr/local/opt/qt/lib/QtNetwork.framework/Versions/5/QtNetwork @rpath/QtNetwork \
+	-change /usr/local/opt/qt/lib/QtGui.framework/Versions/5/QtGui @rpath/QtGui \
+	-change /usr/local/opt/qt/lib/QtCore.framework/Versions/5/QtCore @rpath/QtCore \
 	./build/obs-websocket.so
+
+# Check if replacement worked
+echo "-- Dependencies for QtNetwork"
+otool -L ./build/QtNetwork
+echo "-- Dependencies for QtWebSockets"
+otool -L ./build/QtWebSockets
+echo "-- Dependencies for obs-websocket"
+otool -L ./build/obs-websocket.so
 
 chmod -w ./build/QtWebSockets ./build/QtNetwork
 
