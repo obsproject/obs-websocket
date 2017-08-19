@@ -976,14 +976,14 @@ void WSRequestHandler::HandleSetSyncOffset(WSRequestHandler* req) {
     int64_t source_sync_offset = (int64_t)obs_data_get_int(req->data, "offset");
 
     if (!source_name || strlen(source_name) < 1 || source_sync_offset < 0) {
-	    req->SendErrorResponse("invalid request parameters");
-	    return;
+        req->SendErrorResponse("invalid request parameters");
+        return;
     }
 
     obs_source_t* source = obs_get_source_by_name(source_name);
     if (!source) {
         req->SendErrorResponse("specified source doesn't exist");
-	    return;
+        return;
     }
 
     obs_source_set_sync_offset(source, source_sync_offset);
@@ -1023,7 +1023,7 @@ void WSRequestHandler::HandleGetSyncOffset(WSRequestHandler* req) {
         obs_data_release(response);
         obs_source_release(source);
     } else {
-	    req->SendErrorResponse("invalid request parameters");
+        req->SendErrorResponse("invalid request parameters");
     }
 }
 
