@@ -632,6 +632,112 @@
         "examples": []
       }
     ],
+    "replay buffer": [
+      {
+        "subheads": [],
+        "description": "A request to start the replay buffer has been issued.",
+        "api": "events",
+        "name": "ReplayStarting",
+        "category": "replay buffer",
+        "names": [
+          {
+            "name": "",
+            "description": "ReplayStarting"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "replay buffer"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "ReplayStarting"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Replay Buffer started successfully",
+        "api": "events",
+        "name": "ReplayStarted",
+        "category": "replay buffer",
+        "names": [
+          {
+            "name": "",
+            "description": "ReplayStarted"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "replay buffer"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "ReplayStarted"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "A request to start the replay buffer has been issued.",
+        "api": "events",
+        "name": "ReplayStopping",
+        "category": "replay buffer",
+        "names": [
+          {
+            "name": "",
+            "description": "ReplayStopping"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "replay buffer"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "ReplayStopping"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Replay Buffer stopped successfully",
+        "api": "events",
+        "name": "ReplayStopped",
+        "category": "replay buffer",
+        "names": [
+          {
+            "name": "",
+            "description": "ReplayStopped"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "replay buffer"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "ReplayStopped"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      }
+    ],
     "other": [
       {
         "subheads": [],
@@ -2676,13 +2782,13 @@
       {
         "subheads": [],
         "description": "Get the path of  the current recording folder.",
-        "return": "{Stsring} `rec-folder` Path of the recording folder.",
+        "return": "{String} `rec-folder` Path of the recording folder.",
         "api": "requests",
         "name": "GetRecordingFolder",
         "category": "recording",
         "returns": [
           {
-            "type": "Stsring",
+            "type": "String",
             "name": "rec-folder",
             "description": "Path of the recording folder."
           }
@@ -2702,6 +2808,112 @@
         "heading": {
           "level": 2,
           "text": "GetRecordingFolder"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      }
+    ],
+    "replay buffer": [
+      {
+        "subheads": [],
+        "description": "Toggle the Replay Buffer on/off.",
+        "api": "requests",
+        "name": "StartStopReplayBuffer",
+        "category": "replay buffer",
+        "names": [
+          {
+            "name": "",
+            "description": "StartStopReplayBuffer"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "replay buffer"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "StartStopReplayBuffer"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Start recording into the Replay Buffer.\nWill return an `error` if the Replay Buffer is already active or if the\n\"Save Replay Buffer\" hotkey is not set in OBS' settings.\nSetting this hotkey is mandatory, even when triggering saves only\nthrough obs-websocket.",
+        "api": "requests",
+        "name": "StartReplayBuffer",
+        "category": "replay buffer",
+        "names": [
+          {
+            "name": "",
+            "description": "StartReplayBuffer"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "replay buffer"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "StartReplayBuffer"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Stop recording into the Replay Buffer.\nWill return an `error` if the Replay Buffer is not active.",
+        "api": "requests",
+        "name": "StopReplayBuffer",
+        "category": "replay buffer",
+        "names": [
+          {
+            "name": "",
+            "description": "StopReplayBuffer"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "replay buffer"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "StopReplayBuffer"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Save and flush the contents of the Replay Buffer to disk. This is\nbasically the same as triggering the \"Save Replay Buffer\" hotkey.\nWill return an `error` if the Replay Buffer is not active.",
+        "api": "requests",
+        "name": "SaveReplayBuffer",
+        "category": "replay buffer",
+        "names": [
+          {
+            "name": "",
+            "description": "SaveReplayBuffer"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "replay buffer"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "SaveReplayBuffer"
         },
         "lead": "",
         "type": "class",

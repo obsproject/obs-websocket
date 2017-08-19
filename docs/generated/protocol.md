@@ -72,6 +72,11 @@ auth_response = base64_encode(auth_response_hash)
     + [RecordingStarted](#recordingstarted)
     + [RecordingStopping](#recordingstopping)
     + [RecordingStopped](#recordingstopped)
+  * [Replay Buffer](#replay-buffer)
+    + [ReplayStarting](#replaystarting)
+    + [ReplayStarted](#replaystarted)
+    + [ReplayStopping](#replaystopping)
+    + [ReplayStopped](#replaystopped)
   * [Other](#other)
     + [Exiting](#exiting)
   * [Sources](#sources)
@@ -119,6 +124,11 @@ auth_response = base64_encode(auth_response_hash)
     + [StopRecording](#stoprecording)
     + [SetRecordingFolder](#setrecordingfolder)
     + [GetRecordingFolder](#getrecordingfolder)
+  * [Replay Buffer](#replay-buffer-1)
+    + [StartStopReplayBuffer](#startstopreplaybuffer)
+    + [StartReplayBuffer](#startreplaybuffer)
+    + [StopReplayBuffer](#stopreplaybuffer)
+    + [SaveReplayBuffer](#savereplaybuffer)
   * [Transitions](#transitions-1)
     + [GetTransitionList](#gettransitionlist)
     + [GetCurrentTransition](#getcurrenttransition)
@@ -388,6 +398,48 @@ _No additional response items._
 ### RecordingStopped
 
 Recording stopped successfully.
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+## Replay Buffer
+
+### ReplayStarting
+
+A request to start the replay buffer has been issued.
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+### ReplayStarted
+
+Replay Buffer started successfully
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+### ReplayStopping
+
+A request to start the replay buffer has been issued.
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+### ReplayStopped
+
+Replay Buffer stopped successfully
 
 **Response Items:**
 
@@ -1162,8 +1214,73 @@ _No specified parameters._
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
-| `rec-folder` | _Stsring_ | Path of the recording folder. |
+| `rec-folder` | _String_ | Path of the recording folder. |
 
+
+---
+
+## Replay Buffer
+
+### StartStopReplayBuffer
+
+Toggle the Replay Buffer on/off.
+
+**Request Fields:**
+
+_No specified parameters._
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+### StartReplayBuffer
+
+Start recording into the Replay Buffer.
+Will return an `error` if the Replay Buffer is already active or if the
+"Save Replay Buffer" hotkey is not set in OBS' settings.
+Setting this hotkey is mandatory, even when triggering saves only
+through obs-websocket.
+
+**Request Fields:**
+
+_No specified parameters._
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+### StopReplayBuffer
+
+Stop recording into the Replay Buffer.
+Will return an `error` if the Replay Buffer is not active.
+
+**Request Fields:**
+
+_No specified parameters._
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+### SaveReplayBuffer
+
+Save and flush the contents of the Replay Buffer to disk. This is
+basically the same as triggering the "Save Replay Buffer" hotkey.
+Will return an `error` if the Replay Buffer is not active.
+
+**Request Fields:**
+
+_No specified parameters._
+
+**Response Items:**
+
+_No additional response items._
 
 ---
 
