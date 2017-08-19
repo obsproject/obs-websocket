@@ -649,6 +649,13 @@ void WSRequestHandler::HandleStopRecording(WSRequestHandler* req) {
     }
 }
 
+/**
+* Toggle the Replay Buffer on/off.
+*
+* @api requests
+* @name StartStopReplayBuffer
+* @category replay buffer
+*/
 void WSRequestHandler::HandleStartStopReplayBuffer(WSRequestHandler* req) {
     if (obs_frontend_replay_buffer_active())
         obs_frontend_replay_buffer_stop();
@@ -658,6 +665,14 @@ void WSRequestHandler::HandleStartStopReplayBuffer(WSRequestHandler* req) {
     req->SendOKResponse();
 }
 
+/**
+* Start recording into the Replay Buffer.
+* Will return an `error` if the Replay Buffer is already active.
+*
+* @api requests
+* @name StartReplayBuffer
+* @category replay buffer
+*/
 void WSRequestHandler::HandleStartReplayBuffer(WSRequestHandler* req) {
     if (!Utils::ReplayBufferEnabled()) {
         req->SendErrorResponse("replay buffer disabled in settings");
@@ -674,6 +689,14 @@ void WSRequestHandler::HandleStartReplayBuffer(WSRequestHandler* req) {
     }
 }
 
+/**
+* Stop recording into the Replay Buffer.
+* Will return an `error` if the Replay Buffer is not active.
+*
+* @api requests
+* @name StopReplayBuffer
+* @category replay buffer
+*/
 void WSRequestHandler::HandleStopReplayBuffer(WSRequestHandler* req) {
     if (obs_frontend_replay_buffer_active() == true) {
         obs_frontend_replay_buffer_stop();
@@ -683,6 +706,15 @@ void WSRequestHandler::HandleStopReplayBuffer(WSRequestHandler* req) {
     }
 }
 
+/**
+* Save and flush the contents of the Replay Buffer to disk. This is
+* basically the same as triggering the "Save Replay Buffer" hotkey.
+* Will return an `error` if the Replay Buffer is not active.
+*
+* @api requests
+* @name SaveReplayBuffer
+* @category replay buffer
+*/
 void WSRequestHandler::HandleSaveReplayBuffer(WSRequestHandler* req) {
     if (!obs_frontend_replay_buffer_active()) {
         req->SendErrorResponse("replay buffer not active");
