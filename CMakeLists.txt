@@ -86,8 +86,10 @@ if(WIN32)
 
 	if(CMAKE_SIZEOF_VOID_P EQUAL 8)
 		set(ARCH_NAME "64bit")
+		set(OBS_BUILDDIR_ARCH "build64")
 	else()
 		set(ARCH_NAME "32bit")
+		set(OBS_BUILDDIR_ARCH "build32")
 	endif()
 
 	add_custom_command(TARGET obs-websocket POST_BUILD
@@ -105,6 +107,23 @@ if(WIN32)
 			"${QTDIR}/bin/Qt5WebSockets.dll" 
 			"${QTDIR}/bin/Qt5Network.dll" 
 			"${RELEASE_DIR}/obs-plugins/${ARCH_NAME}")
+
+		# Copy to obs-studio dev environment for immediate testing
+		COMMAND if $<CONFIG:Debug>==1 (
+			"${CMAKE_COMMAND}" -E copy
+				"$<TARGET_FILE:obs-websocket>"
+				"${QTDIR}/bin/Qt5WebSocketsd.dll"
+				"${QTDIR}/bin/Qt5Networkd.dll"
+				"${LIBOBS_INCLUDE_DIR}/../${OBS_BUILDDIR_ARCH}/rundir/$<CONFIG>/obs-plugins/${ARCH_NAME}")
+
+		COMMAND if $<CONFIG:Debug>==1 (
+			"${CMAKE_COMMAND}" -E make_directory
+				"${LIBOBS_INCLUDE_DIR}/../${OBS_BUILDDIR_ARCH}/rundir/$<CONFIG>/data/obs-plugins/obs-websocket")
+
+		COMMAND if $<CONFIG:Debug>==1 (
+			"${CMAKE_COMMAND}" -E copy_directory
+				"${PROJECT_SOURCE_DIR}/data"
+				"${LIBOBS_INCLUDE_DIR}/../${OBS_BUILDDIR_ARCH}/rundir/$<CONFIG>/data/obs-plugins/obs-websocket")
 	)
 	# --- End of sub-section ---
 
