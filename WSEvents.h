@@ -51,7 +51,7 @@ class WSEvents : public QObject {
   private slots:
     void deferredInitOperations();
     void StreamStatus();
-    void Heartbeart();
+    void Heartbeat();
     void TransitionDurationChanged(int ms);
     void SelectedSceneChanged(
         QListWidgetItem* current, QListWidgetItem* prev);
