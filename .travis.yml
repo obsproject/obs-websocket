@@ -14,9 +14,11 @@ cache:
 matrix:
   include:
   - os: linux
+    env: BUILDNAME="generate-docs"
     script: "./CI/generate-docs.sh"
 
   - os: linux
+    env: BUILDNAME="linux-build"
     dist: trusty
     sudo: required
     services:
@@ -31,6 +33,7 @@ matrix:
     - docker exec -it xenial /root/obs-websocket/CI/package-xenial.sh
 
   - os: osx
+    env: BUILDNAME="macos-build"
     osx_image: xcode8.3
     before_install: "./CI/install-dependencies-osx.sh"
     script: "./CI/build-osx.sh"
