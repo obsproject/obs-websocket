@@ -164,6 +164,18 @@ void WSEvents::FrontendEventHandler(enum obs_frontend_event event, void* private
         owner->_recording_active = false;
         owner->OnRecordingStopped();
     }
+    else if (event == OBS_FRONTEND_EVENT_REPLAY_BUFFER_STARTING) {
+        owner->OnReplayStarting();
+    }
+    else if (event == OBS_FRONTEND_EVENT_REPLAY_BUFFER_STARTED) {
+        owner->OnReplayStarted();
+    }
+    else if (event == OBS_FRONTEND_EVENT_REPLAY_BUFFER_STOPPING) {
+        owner->OnReplayStopping();
+    }
+    else if (event == OBS_FRONTEND_EVENT_REPLAY_BUFFER_STOPPED) {
+        owner->OnReplayStopped();
+    }
     else if (event == OBS_FRONTEND_EVENT_EXIT) {
         owner->OnExit();
     }
@@ -498,6 +510,50 @@ void WSEvents::OnRecordingStopping() {
 void WSEvents::OnRecordingStopped() {
     _rec_starttime = 0;
     broadcastUpdate("RecordingStopped");
+}
+
+/**
+* A request to start the replay buffer has been issued.
+*
+* @api events
+* @name ReplayStarting
+* @category replay buffer
+*/
+void WSEvents::OnReplayStarting() {
+    broadcastUpdate("ReplayStarting");
+}
+
+/**
+* Replay Buffer started successfully
+*
+* @api events
+* @name ReplayStarted
+* @category replay buffer
+*/
+void WSEvents::OnReplayStarted() {
+    broadcastUpdate("ReplayStarted");
+}
+
+/**
+* A request to start the replay buffer has been issued.
+*
+* @api events
+* @name ReplayStopping
+* @category replay buffer
+*/
+void WSEvents::OnReplayStopping() {
+    broadcastUpdate("ReplayStopping");
+}
+
+/**
+* Replay Buffer stopped successfully
+*
+* @api events
+* @name ReplayStopped
+* @category replay buffer
+*/
+void WSEvents::OnReplayStopped() {
+    broadcastUpdate("ReplayStopped");
 }
 
 /**
