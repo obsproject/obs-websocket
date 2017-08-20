@@ -87,12 +87,15 @@ WSEvents::WSEvents(WSServer* srv) {
     QTimer::singleShot(1000, this, SLOT(deferredInitOperations()));
 
     Heartbeat_active = false;
-    Heartbeat_CurrentProfile_active=false;
-    Heartbeat_CurrentScene_active-false;
-    Heartbeat_Streaming_active=false;
+    Heartbeat_CurrentProfile_active = false;
+    Heartbeat_CurrentScene_active = false;
+    Heartbeat_Streaming_active = false;
     Heartbeat_Recording_active = false;
-    Heartbeat_TotalStreamTime_active = false;
-    Heartbeat_TotalRecordTime_active = false;
+	Heartbeat_TotalStreamTime_active = false;
+	Heartbeat_TotalRecordTime_active = false;
+	Heartbeat_TotalStreamBytes_active = false;
+	Heartbeat_TotalRecordBytes_active = false;
+	Heartbeat_TotalRecordFrames_active = false;
 
     _streaming_active = false;
     _recording_active = false;
@@ -653,12 +656,36 @@ void WSEvents::StreamStatus() {
     obs_output_release(stream_output);
 }
 
+/************************************************************************************************************
+* Heatbeat is emitted every 2 seconds, when enabled with request:											*
+*                                        void WSRequestHandler::HandleSetHeartbeat(WSRequestHandler* req)	*
+* Individual key/value pairs can be enabled in the Hearbeat message via ::HandleSetHeartbeat				*
+* When the Heartbeat is enabled it always sends a `pulse` to indicate that the host obs is alive.			*
+*																											*
+* @return {boolean} `pulse` Toggles between every JSON meassage as an "I am alive" indicator.				*
+* @return {string (optional)} `current-profile` Current active profile.										*
+* @return {string (optional)} `current-scene` Current active scene.											*
+* @return {boolean (optional)} `streaming` Current streaming state.											*
+* @return {int (optional)} `total-stream-time` Total time (in seconds) since the stream started.			*
+* @return {int (optional)} `total-stream-bytes` Total bytes sent since the stream started.					*
+* @return {boolean (optional)} `recording` Current recording state.											*
+* @return {int (optional)} `total-record-time` Total time (in seconds) since recording started.				*
+* @return {int (optional)} `total-record-bytes` Total bytes recorded since the stream started.				*
+* @return {int (optional)} `total-record-frames` Total frames recorded since the stream started.			*
+*																											*
+* @api events																								*
+* @name Heartbeat																							*
+* @category general																							*
+*************************************************************************** August 2017 *** by RainbowEK ***/
 void WSEvents::Heartbeat() {
-    bool streaming_active = obs_frontend_streaming_active();
-    bool recording_active = obs_frontend_recording_active();
-    obs_data_t* data = obs_data_create();
 
     if (Heartbeat_active) {
+		bool streaming_active = obs_frontend_streaming_active();
+		bool recording_active = obs_frontend_recording_active();
+		obs_data_t* data = obs_data_create();
+		obs_output_t* record_output = obs_frontend_get_recording_output();
+		obs_output_t* stream_output = obs_frontend_get_streaming_output();
+
         pulse = !pulse;
         obs_data_set_bool(data, "pulse", pulse);
 
@@ -672,34 +699,35 @@ void WSEvents::Heartbeat() {
         }
 
         if (Heartbeat_Streaming_active) {
-            if (streaming_active) obs_data_set_bool(data, "streaming", streaming_active);
-            else obs_data_set_bool(data, "streaming", false);
+            obs_data_set_bool(data, "streaming", streaming_active);
         }
-        if (Heartbeat_TotalStreamTime_active) {
-            if (streaming_active) {
+        if (Heartbeat_TotalStreamTime_active && streaming_active) {
                 uint64_t totalStreamTime = (os_gettime_ns() - _stream_starttime) / 1000000000;
                 obs_data_set_int(data, "total-stream-time", totalStreamTime);
-            }else{
-                obs_data_set_int(data, "total-stream-time", 0);
-            }
         }
+		if (Heartbeat_TotalStreamBytes_active) {
+			obs_data_set_int(data, "total-stream-bytes", (uint64_t)obs_output_get_total_bytes(stream_output));
+		}
 
         if (Heartbeat_Recording_active) {
-            if (recording_active) obs_data_set_bool(data, "recording", recording_active);
-            else obs_data_set_bool(data, "recording", false);
+            obs_data_set_bool(data, "recording", recording_active);
         }
-        if (Heartbeat_TotalRecordTime_active) {
-            if (recording_active) {
+        if (Heartbeat_TotalRecordTime_active && recording_active) {
                 uint64_t totalRecordTime = (os_gettime_ns() - _rec_starttime) / 1000000000;
                 obs_data_set_int(data, "total-record-time", totalRecordTime);
-            }else{
-                obs_data_set_int(data, "total-record-time", 0);
-            }
         }
+		if (Heartbeat_TotalRecordBytes_active) {
+			obs_data_set_int(data, "total-record-bytes", (uint64_t)obs_output_get_total_bytes(record_output));
+		}
+		if (Heartbeat_TotalRecordFrames_active) {
+			obs_data_set_int(data, "total-record-frames", obs_output_get_total_frames(record_output));
+		}
 
         broadcastUpdate("Heartbeat", data);
-    }
-    obs_data_release(data);
+		obs_data_release(data);
+		obs_output_release(record_output);
+		obs_output_release(stream_output);
+	}
 }
 
 /**

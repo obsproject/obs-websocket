@@ -45,8 +45,11 @@ class WSEvents : public QObject {
     bool Heartbeat_CurrentScene_active;
     bool Heartbeat_Streaming_active;
     bool Heartbeat_Recording_active;
-    bool Heartbeat_TotalStreamTime_active;
-    bool Heartbeat_TotalRecordTime_active;
+	bool Heartbeat_TotalStreamTime_active;
+	bool Heartbeat_TotalRecordTime_active;
+	bool Heartbeat_TotalStreamBytes_active;
+	bool Heartbeat_TotalRecordBytes_active;
+	bool Heartbeat_TotalRecordFrames_active;
 
   private slots:
     void deferredInitOperations();
