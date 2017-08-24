@@ -278,7 +278,7 @@ const char* WSEvents::GetRecordingTimecode() {
  * @return {Array} `sources` List of sources in the new scene.
  *
  * @api events
- * @name OnSceneChange
+ * @name SwitchScenes
  * @category scenes
  */
 void WSEvents::OnSceneChange() {
