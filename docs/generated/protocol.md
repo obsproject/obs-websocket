@@ -49,7 +49,7 @@ auth_response = base64_encode(auth_response_hash)
 
 - [Events](#events)
   * [Scenes](#scenes)
-    + [OnSceneChange](#onscenechange)
+    + [SwitchScenes](#switchscenes)
     + [ScenesChanged](#sceneschanged)
     + [SceneCollectionChanged](#scenecollectionchanged)
     + [SceneCollectionListChanged](#scenecollectionlistchanged)
@@ -173,7 +173,7 @@ Additional fields may be present in the event message depending on the event typ
 
 ## Scenes
 
-### OnSceneChange
+### SwitchScenes
 
 Indicates a scene change.
 

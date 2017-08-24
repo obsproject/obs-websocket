@@ -9,7 +9,7 @@
           "{Array} `sources` List of sources in the new scene."
         ],
         "api": "events",
-        "name": "OnSceneChange",
+        "name": "SwitchScenes",
         "category": "scenes",
         "returns": [
           {
@@ -26,7 +26,7 @@
         "names": [
           {
             "name": "",
-            "description": "OnSceneChange"
+            "description": "SwitchScenes"
           }
         ],
         "categories": [
@@ -37,7 +37,7 @@
         ],
         "heading": {
           "level": 2,
-          "text": "OnSceneChange"
+          "text": "SwitchScenes"
         },
         "lead": "",
         "type": "class",
