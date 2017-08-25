@@ -11,6 +11,7 @@
         "api": "events",
         "name": "SwitchScenes",
         "category": "scenes",
+        "since": "0.3",
         "returns": [
           {
             "type": "String",
@@ -35,6 +36,12 @@
             "description": "scenes"
           }
         ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "0.3"
+          }
+        ],
         "heading": {
           "level": 2,
           "text": "SwitchScenes"
@@ -49,6 +56,7 @@
         "api": "events",
         "name": "ScenesChanged",
         "category": "scenes",
+        "since": "0.3",
         "names": [
           {
             "name": "",
@@ -59,6 +67,12 @@
           {
             "name": "",
             "description": "scenes"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "0.3"
           }
         ],
         "heading": {
@@ -75,6 +89,7 @@
         "api": "events",
         "name": "SceneCollectionChanged",
         "category": "scenes",
+        "since": "4.0.0",
         "names": [
           {
             "name": "",
@@ -85,6 +100,12 @@
           {
             "name": "",
             "description": "scenes"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.0.0"
           }
         ],
         "heading": {
@@ -101,6 +122,7 @@
         "api": "events",
         "name": "SceneCollectionListChanged",
         "category": "scenes",
+        "since": "4.0.0",
         "names": [
           {
             "name": "",
@@ -111,6 +133,12 @@
           {
             "name": "",
             "description": "scenes"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.0.0"
           }
         ],
         "heading": {
@@ -130,6 +158,7 @@
         "api": "events",
         "name": "SwitchTransition",
         "category": "transitions",
+        "since": "4.0.0",
         "returns": [
           {
             "type": "String",
@@ -149,6 +178,12 @@
             "description": "transitions"
           }
         ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.0.0"
+          }
+        ],
         "heading": {
           "level": 2,
           "text": "SwitchTransition"
@@ -163,6 +198,7 @@
         "api": "events",
         "name": "TransitionListChanged",
         "category": "transitions",
+        "since": "4.0.0",
         "names": [
           {
             "name": "",
@@ -173,6 +209,12 @@
           {
             "name": "",
             "description": "transitions"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.0.0"
           }
         ],
         "heading": {
@@ -190,6 +232,7 @@
         "api": "events",
         "name": "TransitionDurationChanged",
         "category": "transitions",
+        "since": "4.0.0",
         "returns": [
           {
             "type": "int",
@@ -207,6 +250,12 @@
           {
             "name": "",
             "description": "transitions"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.0.0"
           }
         ],
         "heading": {
@@ -227,6 +276,7 @@
         "api": "events",
         "name": "TransitionBegin",
         "category": "transitions",
+        "since": "4.0.0",
         "returns": [
           {
             "type": "String",
@@ -251,6 +301,12 @@
             "description": "transitions"
           }
         ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.0.0"
+          }
+        ],
         "heading": {
           "level": 2,
           "text": "TransitionBegin"
@@ -267,6 +323,7 @@
         "api": "events",
         "name": "ProfileChanged",
         "category": "profiles",
+        "since": "4.0.0",
         "names": [
           {
             "name": "",
@@ -277,6 +334,12 @@
           {
             "name": "",
             "description": "profiles"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.0.0"
           }
         ],
         "heading": {
@@ -293,6 +356,7 @@
         "api": "events",
         "name": "ProfileListChanged",
         "category": "profiles",
+        "since": "4.0.0",
         "names": [
           {
             "name": "",
@@ -303,6 +367,12 @@
           {
             "name": "",
             "description": "profiles"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.0.0"
           }
         ],
         "heading": {
@@ -322,6 +392,7 @@
         "api": "events",
         "name": "StreamStarting",
         "category": "streaming",
+        "since": "0.3",
         "returns": [
           {
             "type": "boolean",
@@ -341,6 +412,12 @@
             "description": "streaming"
           }
         ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "0.3"
+          }
+        ],
         "heading": {
           "level": 2,
           "text": "StreamStarting"
@@ -355,6 +432,7 @@
         "api": "events",
         "name": "StreamStarted",
         "category": "streaming",
+        "since": "0.3",
         "names": [
           {
             "name": "",
@@ -365,6 +443,12 @@
           {
             "name": "",
             "description": "streaming"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "0.3"
           }
         ],
         "heading": {
@@ -382,6 +466,7 @@
         "api": "events",
         "name": "StreamStopping",
         "category": "streaming",
+        "since": "0.3",
         "returns": [
           {
             "type": "boolean",
@@ -401,6 +486,12 @@
             "description": "streaming"
           }
         ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "0.3"
+          }
+        ],
         "heading": {
           "level": 2,
           "text": "StreamStopping"
@@ -415,6 +506,7 @@
         "api": "events",
         "name": "StreamStopped",
         "category": "streaming",
+        "since": "0.3",
         "names": [
           {
             "name": "",
@@ -425,6 +517,12 @@
           {
             "name": "",
             "description": "streaming"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "0.3"
           }
         ],
         "heading": {
@@ -453,6 +551,7 @@
         "api": "events",
         "name": "StreamStatus",
         "category": "streaming",
+        "since": "0.3",
         "returns": [
           {
             "type": "boolean",
@@ -517,6 +616,12 @@
             "description": "streaming"
           }
         ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "0.3"
+          }
+        ],
         "heading": {
           "level": 2,
           "text": "StreamStatus"
@@ -533,6 +638,7 @@
         "api": "events",
         "name": "RecordingStarting",
         "category": "recording",
+        "since": "0.3",
         "names": [
           {
             "name": "",
@@ -543,6 +649,12 @@
           {
             "name": "",
             "description": "recording"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "0.3"
           }
         ],
         "heading": {
@@ -559,6 +671,7 @@
         "api": "events",
         "name": "RecordingStarted",
         "category": "recording",
+        "since": "0.3",
         "names": [
           {
             "name": "",
@@ -569,6 +682,12 @@
           {
             "name": "",
             "description": "recording"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "0.3"
           }
         ],
         "heading": {
@@ -585,6 +704,7 @@
         "api": "events",
         "name": "RecordingStopping",
         "category": "recording",
+        "since": "0.3",
         "names": [
           {
             "name": "",
@@ -595,6 +715,12 @@
           {
             "name": "",
             "description": "recording"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "0.3"
           }
         ],
         "heading": {
@@ -611,6 +737,7 @@
         "api": "events",
         "name": "RecordingStopped",
         "category": "recording",
+        "since": "0.3",
         "names": [
           {
             "name": "",
@@ -621,6 +748,12 @@
           {
             "name": "",
             "description": "recording"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "0.3"
           }
         ],
         "heading": {
@@ -639,6 +772,7 @@
         "api": "events",
         "name": "ReplayStarting",
         "category": "replay buffer",
+        "since": "unreleased",
         "names": [
           {
             "name": "",
@@ -649,6 +783,12 @@
           {
             "name": "",
             "description": "replay buffer"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "unreleased"
           }
         ],
         "heading": {
@@ -665,6 +805,7 @@
         "api": "events",
         "name": "ReplayStarted",
         "category": "replay buffer",
+        "since": "unreleased",
         "names": [
           {
             "name": "",
@@ -675,6 +816,12 @@
           {
             "name": "",
             "description": "replay buffer"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "unreleased"
           }
         ],
         "heading": {
@@ -691,6 +838,7 @@
         "api": "events",
         "name": "ReplayStopping",
         "category": "replay buffer",
+        "since": "unreleased",
         "names": [
           {
             "name": "",
@@ -701,6 +849,12 @@
           {
             "name": "",
             "description": "replay buffer"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "unreleased"
           }
         ],
         "heading": {
@@ -717,6 +871,7 @@
         "api": "events",
         "name": "ReplayStopped",
         "category": "replay buffer",
+        "since": "unreleased",
         "names": [
           {
             "name": "",
@@ -727,6 +882,12 @@
           {
             "name": "",
             "description": "replay buffer"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "unreleased"
           }
         ],
         "heading": {
@@ -745,6 +906,7 @@
         "api": "events",
         "name": "Exiting",
         "category": "other",
+        "since": "0.3",
         "names": [
           {
             "name": "",
@@ -755,6 +917,12 @@
           {
             "name": "",
             "description": "other"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "0.3"
           }
         ],
         "heading": {
@@ -774,6 +942,7 @@
         "api": "events",
         "name": "SourceOrderChanged",
         "category": "sources",
+        "since": "4.0.0",
         "returns": [
           {
             "type": "String",
@@ -791,6 +960,12 @@
           {
             "name": "",
             "description": "sources"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.0.0"
           }
         ],
         "heading": {
@@ -811,6 +986,7 @@
         "api": "events",
         "name": "SceneItemAdded",
         "category": "sources",
+        "since": "4.0.0",
         "returns": [
           {
             "type": "String",
@@ -835,6 +1011,12 @@
             "description": "sources"
           }
         ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.0.0"
+          }
+        ],
         "heading": {
           "level": 2,
           "text": "SceneItemAdded"
@@ -853,6 +1035,7 @@
         "api": "events",
         "name": "SceneItemRemoved",
         "category": "sources",
+        "since": "4.0.0",
         "returns": [
           {
             "type": "String",
@@ -877,6 +1060,12 @@
             "description": "sources"
           }
         ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.0.0"
+          }
+        ],
         "heading": {
           "level": 2,
           "text": "SceneItemRemoved"
@@ -896,6 +1085,7 @@
         "api": "events",
         "name": "SceneItemVisibilityChanged",
         "category": "sources",
+        "since": "4.0.0",
         "returns": [
           {
             "type": "String",
@@ -925,6 +1115,12 @@
             "description": "sources"
           }
         ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.0.0"
+          }
+        ],
         "heading": {
           "level": 2,
           "text": "SceneItemVisibilityChanged"
@@ -945,6 +1141,7 @@
         "api": "events",
         "name": "PreviewSceneChanged",
         "category": "studio mode",
+        "since": "4.1.0",
         "returns": [
           {
             "type": "String",
@@ -969,6 +1166,12 @@
             "description": "studio mode"
           }
         ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.1.0"
+          }
+        ],
         "heading": {
           "level": 2,
           "text": "PreviewSceneChanged"
@@ -984,6 +1187,7 @@
         "api": "events",
         "name": "StudioModeSwitched",
         "category": "studio mode",
+        "since": "4.1.0",
         "returns": [
           {
             "type": "boolean",
@@ -1001,6 +1205,12 @@
           {
             "name": "",
             "description": "studio mode"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.1.0"
           }
         ],
         "heading": {
@@ -1027,6 +1237,7 @@
         "api": "requests",
         "name": "GetVersion",
         "category": "general",
+        "since": "0.3",
         "returns": [
           {
             "type": "double",
@@ -1061,6 +1272,12 @@
             "description": "general"
           }
         ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "0.3"
+          }
+        ],
         "heading": {
           "level": 2,
           "text": "GetVersion"
@@ -1080,6 +1297,7 @@
         "api": "requests",
         "name": "GetAuthRequired",
         "category": "general",
+        "since": "0.3",
         "returns": [
           {
             "type": "boolean",
@@ -1109,6 +1327,12 @@
             "description": "general"
           }
         ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "0.3"
+          }
+        ],
         "heading": {
           "level": 2,
           "text": "GetAuthRequired"
@@ -1124,6 +1348,7 @@
         "api": "requests",
         "name": "Authenticate",
         "category": "general",
+        "since": "0.3",
         "params": [
           {
             "type": "String",
@@ -1143,6 +1368,12 @@
             "description": "general"
           }
         ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "0.3"
+          }
+        ],
         "heading": {
           "level": 2,
           "text": "Authenticate"
@@ -1160,6 +1391,7 @@
         "api": "requests",
         "name": "SetCurrentScene",
         "category": "scenes",
+        "since": "0.3",
         "params": [
           {
             "type": "String",
@@ -1177,6 +1409,12 @@
           {
             "name": "",
             "description": "scenes"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "0.3"
           }
         ],
         "heading": {
@@ -1197,6 +1435,7 @@
         "api": "requests",
         "name": "GetCurrentScene",
         "category": "scenes",
+        "since": "0.3",
         "returns": [
           {
             "type": "String",
@@ -1221,6 +1460,12 @@
             "description": "scenes"
           }
         ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "0.3"
+          }
+        ],
         "heading": {
           "level": 2,
           "text": "GetCurrentScene"
@@ -1239,6 +1484,7 @@
         "api": "requests",
         "name": "GetSceneList",
         "category": "scenes",
+        "since": "0.3",
         "returns": [
           {
             "type": "String",
@@ -1263,6 +1509,12 @@
             "description": "scenes"
           }
         ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "0.3"
+          }
+        ],
         "heading": {
           "level": 2,
           "text": "GetSceneList"
@@ -1284,6 +1536,7 @@
         "api": "requests",
         "name": "SetSourceRender",
         "category": "sources",
+        "since": "0.3",
         "params": [
           {
             "type": "String",
@@ -1313,6 +1566,12 @@
             "description": "sources"
           }
         ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "0.3"
+          }
+        ],
         "heading": {
           "level": 2,
           "text": "SetSourceRender"
@@ -1331,6 +1590,7 @@
         "api": "requests",
         "name": "SetVolume",
         "category": "sources",
+        "since": "4.0.0",
         "params": [
           {
             "type": "String",
@@ -1355,6 +1615,12 @@
             "description": "sources"
           }
         ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.0.0"
+          }
+        ],
         "heading": {
           "level": 2,
           "text": "SetVolume"
@@ -1375,6 +1641,7 @@
         "api": "requests",
         "name": "GetVolume",
         "category": "sources",
+        "since": "4.0.0",
         "returns": [
           {
             "type": "String",
@@ -1411,6 +1678,12 @@
             "description": "sources"
           }
         ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.0.0"
+          }
+        ],
         "heading": {
           "level": 2,
           "text": "GetVolume"
@@ -1426,6 +1699,7 @@
         "api": "requests",
         "name": "ToggleMute",
         "category": "sources",
+        "since": "4.0.0",
         "params": [
           {
             "type": "String",
@@ -1443,6 +1717,12 @@
           {
             "name": "",
             "description": "sources"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.0.0"
           }
         ],
         "heading": {
@@ -1463,6 +1743,7 @@
         "api": "requests",
         "name": "SetMute",
         "category": "sources",
+        "since": "4.0.0",
         "params": [
           {
             "type": "String",
@@ -1487,6 +1768,12 @@
             "description": "sources"
           }
         ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.0.0"
+          }
+        ],
         "heading": {
           "level": 2,
           "text": "SetMute"
@@ -1506,6 +1793,7 @@
         "api": "requests",
         "name": "GetMute",
         "category": "sources",
+        "since": "4.0.0",
         "returns": [
           {
             "type": "String",
@@ -1537,6 +1825,12 @@
             "description": "sources"
           }
         ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.0.0"
+          }
+        ],
         "heading": {
           "level": 2,
           "text": "GetMute"
@@ -1555,6 +1849,7 @@
         "api": "requests",
         "name": "SetSyncOffset",
         "category": "sources",
+        "since": "unreleased",
         "params": [
           {
             "type": "String",
@@ -1579,6 +1874,12 @@
             "description": "sources"
           }
         ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "unreleased"
+          }
+        ],
         "heading": {
           "level": 2,
           "text": "SetSyncOffset"
@@ -1598,6 +1899,7 @@
         "api": "requests",
         "name": "GetSyncOffset",
         "category": "sources",
+        "since": "unreleased",
         "returns": [
           {
             "type": "String",
@@ -1629,6 +1931,12 @@
             "description": "sources"
           }
         ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "unreleased"
+          }
+        ],
         "heading": {
           "level": 2,
           "text": "GetSyncOffset"
@@ -1649,6 +1957,7 @@
         "api": "requests",
         "name": "SetSceneItemPosition",
         "category": "sources",
+        "since": "4.0.0",
         "params": [
           {
             "type": "String (optional)",
@@ -1683,6 +1992,12 @@
             "description": "sources"
           }
         ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.0.0"
+          }
+        ],
         "heading": {
           "level": 2,
           "text": "SetSceneItemPosition"
@@ -1704,6 +2019,7 @@
         "api": "requests",
         "name": "SetSceneItemTransform",
         "category": "sources",
+        "since": "4.0.0",
         "params": [
           {
             "type": "String (optional)",
@@ -1743,6 +2059,12 @@
             "description": "sources"
           }
         ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.0.0"
+          }
+        ],
         "heading": {
           "level": 2,
           "text": "SetSceneItemTransform"
@@ -1765,6 +2087,7 @@
         "api": "requests",
         "name": "SetSceneItemCrop",
         "category": "sources",
+        "since": "4.1.0",
         "params": [
           {
             "type": "String (optional)",
@@ -1807,6 +2130,12 @@
           {
             "name": "",
             "description": "sources"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.1.0"
           }
         ],
         "heading": {
@@ -1857,6 +2186,7 @@
         "api": "requests",
         "name": "GetTextGDIPlusProperties",
         "category": "sources",
+        "since": "4.1.0",
         "returns": [
           {
             "type": "String",
@@ -2023,6 +2353,12 @@
             "description": "sources"
           }
         ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.1.0"
+          }
+        ],
         "heading": {
           "level": 2,
           "text": "GetTextGDIPlusProperties"
@@ -2069,6 +2405,7 @@
         "api": "requests",
         "name": "SetTextGDIPlusProperties",
         "category": "sources",
+        "since": "4.1.0",
         "params": [
           {
             "type": "String (optional)",
@@ -2233,6 +2570,12 @@
             "description": "sources"
           }
         ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.1.0"
+          }
+        ],
         "heading": {
           "level": 2,
           "text": "SetTextGDIPlusProperties"
@@ -2261,6 +2604,7 @@
         "api": "requests",
         "name": "GetBrowserSourceProperties",
         "category": "sources",
+        "since": "4.1.0",
         "returns": [
           {
             "type": "boolean",
@@ -2327,6 +2671,12 @@
             "description": "sources"
           }
         ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.1.0"
+          }
+        ],
         "heading": {
           "level": 2,
           "text": "GetBrowserSourceProperties"
@@ -2353,6 +2703,7 @@
         "api": "requests",
         "name": "SetBrowserSourceProperties",
         "category": "sources",
+        "since": "4.1.0",
         "params": [
           {
             "type": "String (optional)",
@@ -2417,6 +2768,12 @@
             "description": "sources"
           }
         ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.1.0"
+          }
+        ],
         "heading": {
           "level": 2,
           "text": "SetBrowserSourceProperties"
@@ -2435,6 +2792,7 @@
         "api": "requests",
         "name": "ResetSceneItem",
         "category": "sources",
+        "since": "unreleased",
         "params": [
           {
             "type": "String (optional)",
@@ -2457,6 +2815,12 @@
           {
             "name": "",
             "description": "sources"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "unreleased"
           }
         ],
         "heading": {
@@ -2482,6 +2846,7 @@
         "api": "requests",
         "name": "GetStreamingStatus",
         "category": "streaming",
+        "since": "0.3",
         "returns": [
           {
             "type": "boolean",
@@ -2521,6 +2886,12 @@
             "description": "streaming"
           }
         ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "0.3"
+          }
+        ],
         "heading": {
           "level": 2,
           "text": "GetStreamingStatus"
@@ -2535,6 +2906,7 @@
         "api": "requests",
         "name": "StartStopStreaming",
         "category": "streaming",
+        "since": "0.3",
         "names": [
           {
             "name": "",
@@ -2545,6 +2917,12 @@
           {
             "name": "",
             "description": "streaming"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "0.3"
           }
         ],
         "heading": {
@@ -2572,6 +2950,7 @@
         "api": "requests",
         "name": "StartStreaming",
         "category": "streaming",
+        "since": "4.1.0",
         "params": [
           {
             "type": "Object (optional)",
@@ -2631,6 +3010,12 @@
             "description": "streaming"
           }
         ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.1.0"
+          }
+        ],
         "heading": {
           "level": 2,
           "text": "StartStreaming"
@@ -2645,6 +3030,7 @@
         "api": "requests",
         "name": "StopStreaming",
         "category": "streaming",
+        "since": "4.1.0",
         "names": [
           {
             "name": "",
@@ -2655,6 +3041,12 @@
           {
             "name": "",
             "description": "streaming"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.1.0"
           }
         ],
         "heading": {
@@ -2673,6 +3065,7 @@
         "api": "requests",
         "name": "StartStopRecording",
         "category": "recording",
+        "since": "0.3",
         "names": [
           {
             "name": "",
@@ -2683,6 +3076,12 @@
           {
             "name": "",
             "description": "recording"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "0.3"
           }
         ],
         "heading": {
@@ -2699,6 +3098,7 @@
         "api": "requests",
         "name": "StartRecording",
         "category": "recording",
+        "since": "4.1.0",
         "names": [
           {
             "name": "",
@@ -2709,6 +3109,12 @@
           {
             "name": "",
             "description": "recording"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.1.0"
           }
         ],
         "heading": {
@@ -2725,6 +3131,7 @@
         "api": "requests",
         "name": "StopRecording",
         "category": "recording",
+        "since": "4.1.0",
         "names": [
           {
             "name": "",
@@ -2735,6 +3142,12 @@
           {
             "name": "",
             "description": "recording"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.1.0"
           }
         ],
         "heading": {
@@ -2752,6 +3165,7 @@
         "api": "requests",
         "name": "SetRecordingFolder",
         "category": "recording",
+        "since": "4.1.0",
         "params": [
           {
             "type": "Stsring",
@@ -2771,6 +3185,12 @@
             "description": "recording"
           }
         ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.1.0"
+          }
+        ],
         "heading": {
           "level": 2,
           "text": "SetRecordingFolder"
@@ -2786,6 +3206,7 @@
         "api": "requests",
         "name": "GetRecordingFolder",
         "category": "recording",
+        "since": "4.1.0",
         "returns": [
           {
             "type": "String",
@@ -2805,6 +3226,12 @@
             "description": "recording"
           }
         ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.1.0"
+          }
+        ],
         "heading": {
           "level": 2,
           "text": "GetRecordingFolder"
@@ -2821,6 +3248,7 @@
         "api": "requests",
         "name": "StartStopReplayBuffer",
         "category": "replay buffer",
+        "since": "unreleased",
         "names": [
           {
             "name": "",
@@ -2831,6 +3259,12 @@
           {
             "name": "",
             "description": "replay buffer"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "unreleased"
           }
         ],
         "heading": {
@@ -2847,6 +3281,7 @@
         "api": "requests",
         "name": "StartReplayBuffer",
         "category": "replay buffer",
+        "since": "unreleased",
         "names": [
           {
             "name": "",
@@ -2857,6 +3292,12 @@
           {
             "name": "",
             "description": "replay buffer"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "unreleased"
           }
         ],
         "heading": {
@@ -2873,6 +3314,7 @@
         "api": "requests",
         "name": "StopReplayBuffer",
         "category": "replay buffer",
+        "since": "unreleased",
         "names": [
           {
             "name": "",
@@ -2883,6 +3325,12 @@
           {
             "name": "",
             "description": "replay buffer"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "unreleased"
           }
         ],
         "heading": {
@@ -2899,6 +3347,7 @@
         "api": "requests",
         "name": "SaveReplayBuffer",
         "category": "replay buffer",
+        "since": "unreleased",
         "names": [
           {
             "name": "",
@@ -2909,6 +3358,12 @@
           {
             "name": "",
             "description": "replay buffer"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "unreleased"
           }
         ],
         "heading": {
@@ -2932,6 +3387,7 @@
         "api": "requests",
         "name": "GetTransitionList",
         "category": "transitions",
+        "since": "4.1.0",
         "returns": [
           {
             "type": "String",
@@ -2961,6 +3417,12 @@
             "description": "transitions"
           }
         ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.1.0"
+          }
+        ],
         "heading": {
           "level": 2,
           "text": "GetTransitionList"
@@ -2979,6 +3441,7 @@
         "api": "requests",
         "name": "GetCurrentTransition",
         "category": "transitions",
+        "since": "0.3",
         "returns": [
           {
             "type": "String",
@@ -3003,6 +3466,12 @@
             "description": "transitions"
           }
         ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "0.3"
+          }
+        ],
         "heading": {
           "level": 2,
           "text": "GetCurrentTransition"
@@ -3018,6 +3487,7 @@
         "api": "requests",
         "name": "SetCurrentTransition",
         "category": "transitions",
+        "since": "0.3",
         "params": [
           {
             "type": "String",
@@ -3037,6 +3507,12 @@
             "description": "transitions"
           }
         ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "0.3"
+          }
+        ],
         "heading": {
           "level": 2,
           "text": "SetCurrentTransition"
@@ -3052,6 +3528,7 @@
         "api": "requests",
         "name": "SetTransitionDuration",
         "category": "transitions",
+        "since": "4.0.0",
         "params": [
           {
             "type": "int",
@@ -3071,6 +3548,12 @@
             "description": "transitions"
           }
         ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.0.0"
+          }
+        ],
         "heading": {
           "level": 2,
           "text": "SetTransitionDuration"
@@ -3086,6 +3569,7 @@
         "api": "requests",
         "name": "GetTransitionDuration",
         "category": "transitions",
+        "since": "4.1.0",
         "returns": [
           {
             "type": "int",
@@ -3105,6 +3589,12 @@
             "description": "transitions"
           }
         ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.1.0"
+          }
+        ],
         "heading": {
           "level": 2,
           "text": "GetTransitionDuration"
@@ -3122,6 +3612,7 @@
         "api": "requests",
         "name": "SetCurrentSceneCollection",
         "category": "scene collections",
+        "since": "4.0.0",
         "params": [
           {
             "type": "String",
@@ -3141,6 +3632,12 @@
             "description": "scene collections"
           }
         ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.0.0"
+          }
+        ],
         "heading": {
           "level": 2,
           "text": "SetCurrentSceneCollection"
@@ -3156,6 +3653,7 @@
         "api": "requests",
         "name": "GetCurrentSceneCollection",
         "category": "scene collections",
+        "since": "4.0.0",
         "returns": [
           {
             "type": "String",
@@ -3175,6 +3673,12 @@
             "description": "scene collections"
           }
         ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.0.0"
+          }
+        ],
         "heading": {
           "level": 2,
           "text": "GetCurrentSceneCollection"
@@ -3192,6 +3696,7 @@
         "api": "requests",
         "name": "SetCurrentProfile",
         "category": "profiles",
+        "since": "4.0.0",
         "params": [
           {
             "type": "String",
@@ -3211,6 +3716,12 @@
             "description": "profiles"
           }
         ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.0.0"
+          }
+        ],
         "heading": {
           "level": 2,
           "text": "SetCurrentProfile"
@@ -3226,6 +3737,7 @@
         "api": "requests",
         "name": "GetCurrentProfile",
         "category": "profiles",
+        "since": "4.0.0",
         "returns": [
           {
             "type": "String",
@@ -3245,6 +3757,12 @@
             "description": "profiles"
           }
         ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.0.0"
+          }
+        ],
         "heading": {
           "level": 2,
           "text": "GetCurrentProfile"
@@ -3260,6 +3778,7 @@
         "api": "requests",
         "name": "ListProfiles",
         "category": "profiles",
+        "since": "4.0.0",
         "returns": [
           {
             "type": "Object|Array",
@@ -3277,6 +3796,12 @@
           {
             "name": "",
             "description": "profiles"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.0.0"
           }
         ],
         "heading": {
@@ -3305,6 +3830,7 @@
         "api": "requests",
         "name": "SetStreamingSettings",
         "category": "settings",
+        "since": "4.1.0",
         "params": [
           {
             "type": "String",
@@ -3359,6 +3885,12 @@
             "description": "settings"
           }
         ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.1.0"
+          }
+        ],
         "heading": {
           "level": 2,
           "text": "SetStreamingSettings"
@@ -3382,6 +3914,7 @@
         "api": "requests",
         "name": "GetStreamSettings",
         "category": "settings",
+        "since": "4.1.0",
         "returns": [
           {
             "type": "String",
@@ -3431,6 +3964,12 @@
             "description": "settings"
           }
         ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.1.0"
+          }
+        ],
         "heading": {
           "level": 2,
           "text": "GetStreamSettings"
@@ -3445,6 +3984,7 @@
         "api": "requests",
         "name": "SaveStreamSettings",
         "category": "settings",
+        "since": "4.1.0",
         "names": [
           {
             "name": "",
@@ -3455,6 +3995,12 @@
           {
             "name": "",
             "description": "settings"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.1.0"
           }
         ],
         "heading": {
@@ -3474,6 +4020,7 @@
         "api": "requests",
         "name": "GetStudioModeStatus",
         "category": "studio mode",
+        "since": "4.1.0",
         "returns": [
           {
             "type": "boolean",
@@ -3491,6 +4038,12 @@
           {
             "name": "",
             "description": "studio mode"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.1.0"
           }
         ],
         "heading": {
@@ -3511,6 +4064,7 @@
         "api": "requests",
         "name": "GetPreviewScene",
         "category": "studio mode",
+        "since": "4.1.0",
         "returns": [
           {
             "type": "String",
@@ -3535,6 +4089,12 @@
             "description": "studio mode"
           }
         ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.1.0"
+          }
+        ],
         "heading": {
           "level": 2,
           "text": "GetPreviewScene"
@@ -3550,6 +4110,7 @@
         "api": "requests",
         "name": "SetPreviewScene",
         "category": "studio mode",
+        "since": "4.1.0",
         "params": [
           {
             "type": "String",
@@ -3567,6 +4128,12 @@
           {
             "name": "",
             "description": "studio mode"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.1.0"
           }
         ],
         "heading": {
@@ -3588,6 +4155,7 @@
         "api": "requests",
         "name": "TransitionToProgram",
         "category": "studio mode",
+        "since": "4.1.0",
         "params": [
           {
             "type": "Object (optional)",
@@ -3617,6 +4185,12 @@
             "description": "studio mode"
           }
         ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.1.0"
+          }
+        ],
         "heading": {
           "level": 2,
           "text": "TransitionToProgram"
@@ -3631,6 +4205,7 @@
         "api": "requests",
         "name": "EnableStudioMode",
         "category": "studio mode",
+        "since": "4.1.0",
         "names": [
           {
             "name": "",
@@ -3641,6 +4216,12 @@
           {
             "name": "",
             "description": "studio mode"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.1.0"
           }
         ],
         "heading": {
@@ -3657,6 +4238,7 @@
         "api": "requests",
         "name": "DisableStudioMode",
         "category": "studio mode",
+        "since": "4.1.0",
         "names": [
           {
             "name": "",
@@ -3667,6 +4249,12 @@
           {
             "name": "",
             "description": "studio mode"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.1.0"
           }
         ],
         "heading": {
@@ -3683,6 +4271,7 @@
         "api": "requests",
         "name": "ToggleStudioMode",
         "category": "studio mode",
+        "since": "4.1.0",
         "names": [
           {
             "name": "",
@@ -3693,6 +4282,12 @@
           {
             "name": "",
             "description": "studio mode"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.1.0"
           }
         ],
         "heading": {
@@ -3716,6 +4311,7 @@
         "api": "requests",
         "name": "GetSpecialSources",
         "category": "studio mode",
+        "since": "4.1.0",
         "returns": [
           {
             "type": "String (optional)",
@@ -3753,6 +4349,12 @@
           {
             "name": "",
             "description": "studio mode"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.1.0"
           }
         ],
         "heading": {

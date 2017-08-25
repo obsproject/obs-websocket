@@ -15,6 +15,12 @@
 {{#each this}}
 ### {{name}}
 
+{{#eq since "unreleased"}}
+- Unreleased
+{{else}}
+- Added in v{{since}}
+{{/eq}}
+
 {{{description}}}
 
 **Response Items:**
@@ -44,6 +50,12 @@ _No additional response items._
 
 {{#each this}}
 ### {{name}}
+
+{{#eq since "unreleased"}}
+- Unreleased
+{{else}}
+- Added in v{{since}}
+{{/eq}}
 
 {{{description}}}
 

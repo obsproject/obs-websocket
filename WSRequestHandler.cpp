@@ -212,6 +212,7 @@ bool WSRequestHandler::hasField(const char* name) {
  * @api requests
  * @name GetVersion
  * @category general
+ * @since 0.3
  */
 void WSRequestHandler::HandleGetVersion(WSRequestHandler* req) {
     const char* obs_version = Utils::OBSVersionString();
@@ -246,6 +247,7 @@ void WSRequestHandler::HandleGetVersion(WSRequestHandler* req) {
  * @api requests
  * @name GetAuthRequired
  * @category general
+ * @since 0.3
  */
 void WSRequestHandler::HandleGetAuthRequired(WSRequestHandler* req) {
     bool authRequired = Config::Current()->AuthRequired;
@@ -273,6 +275,7 @@ void WSRequestHandler::HandleGetAuthRequired(WSRequestHandler* req) {
  * @api requests
  * @name Authenticate
  * @category general
+ * @since 0.3
  */
 void WSRequestHandler::HandleAuthenticate(WSRequestHandler* req) {
     if (!req->hasField("auth")) {
@@ -303,6 +306,7 @@ void WSRequestHandler::HandleAuthenticate(WSRequestHandler* req) {
  * @api requests
  * @name SetCurrentScene
  * @category scenes
+ * @since 0.3
  */
 void WSRequestHandler::HandleSetCurrentScene(WSRequestHandler* req) {
     if (!req->hasField("scene-name")) {
@@ -332,6 +336,7 @@ void WSRequestHandler::HandleSetCurrentScene(WSRequestHandler* req) {
  * @api requests
  * @name GetCurrentScene
  * @category scenes
+ * @since 0.3
  */
 void WSRequestHandler::HandleGetCurrentScene(WSRequestHandler* req) {
     obs_source_t* current_scene = obs_frontend_get_current_scene();
@@ -359,6 +364,7 @@ void WSRequestHandler::HandleGetCurrentScene(WSRequestHandler* req) {
  * @api requests
  * @name GetSceneList
  * @category scenes
+ * @since 0.3
  */
 void WSRequestHandler::HandleGetSceneList(WSRequestHandler* req) {
     obs_source_t* current_scene = obs_frontend_get_current_scene();
@@ -386,6 +392,7 @@ void WSRequestHandler::HandleGetSceneList(WSRequestHandler* req) {
  * @api requests
  * @name SetSourceRender
  * @category sources
+ * @since 0.3
  */
 void WSRequestHandler::HandleSetSceneItemRender(WSRequestHandler* req) {
     if (!req->hasField("source") ||
@@ -433,6 +440,7 @@ void WSRequestHandler::HandleSetSceneItemRender(WSRequestHandler* req) {
  * @api requests
  * @name GetStreamingStatus
  * @category streaming
+ * @since 0.3
  */
 void WSRequestHandler::HandleGetStreamingStatus(WSRequestHandler* req) {
     obs_data_t* data = obs_data_create();
@@ -463,6 +471,7 @@ void WSRequestHandler::HandleGetStreamingStatus(WSRequestHandler* req) {
  * @api requests
  * @name StartStopStreaming
  * @category streaming
+ * @since 0.3
  */
 void WSRequestHandler::HandleStartStopStreaming(WSRequestHandler* req) {
     if (obs_frontend_streaming_active())
@@ -477,6 +486,7 @@ void WSRequestHandler::HandleStartStopStreaming(WSRequestHandler* req) {
  * @api requests
  * @name StartStopRecording
  * @category recording
+ * @since 0.3
  */
 void WSRequestHandler::HandleStartStopRecording(WSRequestHandler* req)
 {
@@ -505,6 +515,7 @@ void WSRequestHandler::HandleStartStopRecording(WSRequestHandler* req)
  * @api requests
  * @name StartStreaming
  * @category streaming
+ * @since 4.1.0
  */
 void WSRequestHandler::HandleStartStreaming(WSRequestHandler* req)
 {
@@ -606,6 +617,7 @@ void WSRequestHandler::HandleStartStreaming(WSRequestHandler* req)
  * @api requests
  * @name StopStreaming
  * @category streaming
+ * @since 4.1.0
  */
 void WSRequestHandler::HandleStopStreaming(WSRequestHandler* req) {
     if (obs_frontend_streaming_active() == true) {
@@ -623,6 +635,7 @@ void WSRequestHandler::HandleStopStreaming(WSRequestHandler* req) {
  * @api requests
  * @name StartRecording
  * @category recording
+ * @since 4.1.0
  */
 void WSRequestHandler::HandleStartRecording(WSRequestHandler* req) {
     if (obs_frontend_recording_active() == false) {
@@ -640,6 +653,7 @@ void WSRequestHandler::HandleStartRecording(WSRequestHandler* req) {
  * @api requests
  * @name StopRecording
  * @category recording
+ * @since 4.1.0
  */
 void WSRequestHandler::HandleStopRecording(WSRequestHandler* req) {
     if (obs_frontend_recording_active() == true) {
@@ -656,6 +670,7 @@ void WSRequestHandler::HandleStopRecording(WSRequestHandler* req) {
 * @api requests
 * @name StartStopReplayBuffer
 * @category replay buffer
+* @since unreleased
 */
 void WSRequestHandler::HandleStartStopReplayBuffer(WSRequestHandler* req) {
     if (obs_frontend_replay_buffer_active()) {
@@ -680,6 +695,7 @@ void WSRequestHandler::HandleStartStopReplayBuffer(WSRequestHandler* req) {
 * @api requests
 * @name StartReplayBuffer
 * @category replay buffer
+* @since unreleased
 */
 void WSRequestHandler::HandleStartReplayBuffer(WSRequestHandler* req) {
     if (!Utils::ReplayBufferEnabled()) {
@@ -708,6 +724,7 @@ void WSRequestHandler::HandleStartReplayBuffer(WSRequestHandler* req) {
 * @api requests
 * @name StopReplayBuffer
 * @category replay buffer
+* @since unreleased
 */
 void WSRequestHandler::HandleStopReplayBuffer(WSRequestHandler* req) {
     if (obs_frontend_replay_buffer_active() == true) {
@@ -726,6 +743,7 @@ void WSRequestHandler::HandleStopReplayBuffer(WSRequestHandler* req) {
 * @api requests
 * @name SaveReplayBuffer
 * @category replay buffer
+* @since unreleased
 */
 void WSRequestHandler::HandleSaveReplayBuffer(WSRequestHandler* req) {
     if (!obs_frontend_replay_buffer_active()) {
@@ -752,6 +770,7 @@ void WSRequestHandler::HandleSaveReplayBuffer(WSRequestHandler* req) {
  * @api requests
  * @name GetTransitionList
  * @category transitions
+ * @since 4.1.0
  */
 void WSRequestHandler::HandleGetTransitionList(WSRequestHandler* req) {
     obs_source_t* current_transition = obs_frontend_get_current_transition();
@@ -791,6 +810,7 @@ void WSRequestHandler::HandleGetTransitionList(WSRequestHandler* req) {
  * @api requests
  * @name GetCurrentTransition
  * @category transitions
+ * @since 0.3
  */
 void WSRequestHandler::HandleGetCurrentTransition(WSRequestHandler* req) {
     obs_source_t* current_transition = obs_frontend_get_current_transition();
@@ -816,6 +836,7 @@ void WSRequestHandler::HandleGetCurrentTransition(WSRequestHandler* req) {
  * @api requests
  * @name SetCurrentTransition
  * @category transitions
+ * @since 0.3
  */
 void WSRequestHandler::HandleSetCurrentTransition(WSRequestHandler* req) {
     if (!req->hasField("transition-name")) {
@@ -839,6 +860,7 @@ void WSRequestHandler::HandleSetCurrentTransition(WSRequestHandler* req) {
  * @api requests
  * @name SetTransitionDuration
  * @category transitions
+ * @since 4.0.0
  */
 void WSRequestHandler::HandleSetTransitionDuration(WSRequestHandler* req) {
     if (!req->hasField("duration")) {
@@ -859,6 +881,7 @@ void WSRequestHandler::HandleSetTransitionDuration(WSRequestHandler* req) {
  * @api requests
  * @name GetTransitionDuration
  * @category transitions
+ * @since 4.1.0
  */
 void WSRequestHandler::HandleGetTransitionDuration(WSRequestHandler* req) {
     obs_data_t* response = obs_data_create();
@@ -878,6 +901,7 @@ void WSRequestHandler::HandleGetTransitionDuration(WSRequestHandler* req) {
  * @api requests
  * @name SetVolume
  * @category sources
+ * @since 4.0.0
  */
 void WSRequestHandler::HandleSetVolume(WSRequestHandler* req) {
     if (!req->hasField("source") ||
@@ -919,6 +943,7 @@ void WSRequestHandler::HandleSetVolume(WSRequestHandler* req) {
  * @api requests
  * @name GetVolume
  * @category sources
+ * @since 4.0.0
  */
 void WSRequestHandler::HandleGetVolume(WSRequestHandler* req) {
     if (!req->hasField("source")) {
@@ -952,6 +977,7 @@ void WSRequestHandler::HandleGetVolume(WSRequestHandler* req) {
  * @api requests
  * @name ToggleMute
  * @category sources
+ * @since 4.0.0
  */
 void WSRequestHandler::HandleToggleMute(WSRequestHandler* req) {
     if (!req->hasField("source")) {
@@ -986,6 +1012,7 @@ void WSRequestHandler::HandleToggleMute(WSRequestHandler* req) {
  * @api requests
  * @name SetMute
  * @category sources
+ * @since 4.0.0
  */
 void WSRequestHandler::HandleSetMute(WSRequestHandler* req) {
     if (!req->hasField("source") ||
@@ -1025,6 +1052,7 @@ void WSRequestHandler::HandleSetMute(WSRequestHandler* req) {
  * @api requests
  * @name GetMute
  * @category sources
+ * @since 4.0.0
  */
 void WSRequestHandler::HandleGetMute(WSRequestHandler* req) {
     if (!req->hasField("source")) {
@@ -1063,6 +1091,7 @@ void WSRequestHandler::HandleGetMute(WSRequestHandler* req) {
  * @api requests
  * @name SetSyncOffset
  * @category sources
+ * @since unreleased
  */
 void WSRequestHandler::HandleSetSyncOffset(WSRequestHandler* req) {
     if (!req->hasField("source") || !req->hasField("offset")) {
@@ -1101,6 +1130,7 @@ void WSRequestHandler::HandleSetSyncOffset(WSRequestHandler* req) {
  * @api requests
  * @name GetSyncOffset
  * @category sources
+ * @since unreleased
  */
 void WSRequestHandler::HandleGetSyncOffset(WSRequestHandler* req) {
     if (!req->hasField("source")) {
@@ -1137,6 +1167,7 @@ void WSRequestHandler::HandleGetSyncOffset(WSRequestHandler* req) {
  * @api requests
  * @name SetSceneItemPosition
  * @category sources
+ * @since 4.0.0
  */
 void WSRequestHandler::HandleSetSceneItemPosition(WSRequestHandler* req) {
     if (!req->hasField("item") ||
@@ -1187,6 +1218,7 @@ void WSRequestHandler::HandleSetSceneItemPosition(WSRequestHandler* req) {
  * @api requests
  * @name SetSceneItemTransform
  * @category sources
+ * @since 4.0.0
  */
 void WSRequestHandler::HandleSetSceneItemTransform(WSRequestHandler* req) {
     if (!req->hasField("item") ||
@@ -1242,6 +1274,7 @@ void WSRequestHandler::HandleSetSceneItemTransform(WSRequestHandler* req) {
  * @api requests
  * @name SetSceneItemCrop
  * @category sources
+ * @since 4.1.0
  */
 void WSRequestHandler::HandleSetSceneItemCrop(WSRequestHandler* req) {
     if (!req->hasField("item")) {
@@ -1289,6 +1322,7 @@ void WSRequestHandler::HandleSetSceneItemCrop(WSRequestHandler* req) {
  * @api requests
  * @name SetCurrentSceneCollection
  * @category scene collections
+ * @since 4.0.0
  */
 void WSRequestHandler::HandleSetCurrentSceneCollection(WSRequestHandler* req) {
     if (!req->hasField("sc-name")) {
@@ -1314,6 +1348,7 @@ void WSRequestHandler::HandleSetCurrentSceneCollection(WSRequestHandler* req) {
  * @api requests
  * @name GetCurrentSceneCollection
  * @category scene collections
+ * @since 4.0.0
  */
 void WSRequestHandler::HandleGetCurrentSceneCollection(WSRequestHandler* req) {
     obs_data_t* response = obs_data_create();
@@ -1343,6 +1378,7 @@ void WSRequestHandler::HandleListSceneCollections(WSRequestHandler* req) {
  * @api requests
  * @name SetCurrentProfile
  * @category profiles
+ * @since 4.0.0
  */
 void WSRequestHandler::HandleSetCurrentProfile(WSRequestHandler* req) {
     if (!req->hasField("profile-name")) {
@@ -1368,6 +1404,7 @@ void WSRequestHandler::HandleSetCurrentProfile(WSRequestHandler* req) {
  * @api requests
  * @name GetCurrentProfile
  * @category profiles
+ * @since 4.0.0
  */
 void WSRequestHandler::HandleGetCurrentProfile(WSRequestHandler* req) {
     obs_data_t* response = obs_data_create();
@@ -1393,6 +1430,7 @@ void WSRequestHandler::HandleGetCurrentProfile(WSRequestHandler* req) {
  * @api requests
  * @name SetStreamingSettings
  * @category settings
+ * @since 4.1.0
  */
 void WSRequestHandler::HandleSetStreamSettings(WSRequestHandler* req) {
     obs_service_t* service = obs_frontend_get_streaming_service();
@@ -1454,6 +1492,7 @@ void WSRequestHandler::HandleSetStreamSettings(WSRequestHandler* req) {
  * @api requests
  * @name GetStreamSettings
  * @category settings
+ * @since 4.1.0
  */
 void WSRequestHandler::HandleGetStreamSettings(WSRequestHandler* req) {
     obs_service_t* service = obs_frontend_get_streaming_service();
@@ -1475,6 +1514,7 @@ void WSRequestHandler::HandleGetStreamSettings(WSRequestHandler* req) {
  * @api requests
  * @name SaveStreamSettings
  * @category settings
+ * @since 4.1.0
  */
 void WSRequestHandler::HandleSaveStreamSettings(WSRequestHandler* req) {
     obs_frontend_save_streaming_service();
@@ -1489,6 +1529,7 @@ void WSRequestHandler::HandleSaveStreamSettings(WSRequestHandler* req) {
  * @api requests
  * @name ListProfiles
  * @category profiles
+ * @since 4.0.0
  */
 void WSRequestHandler::HandleListProfiles(WSRequestHandler* req) {
     obs_data_array_t* profiles = Utils::GetProfiles();
@@ -1509,6 +1550,7 @@ void WSRequestHandler::HandleListProfiles(WSRequestHandler* req) {
  * @api requests
  * @name GetStudioModeStatus
  * @category studio mode
+ * @since 4.1.0
  */
 void WSRequestHandler::HandleGetStudioModeStatus(WSRequestHandler* req) {
     bool previewActive = Utils::IsPreviewModeActive();
@@ -1530,6 +1572,7 @@ void WSRequestHandler::HandleGetStudioModeStatus(WSRequestHandler* req) {
  * @api requests
  * @name GetPreviewScene
  * @category studio mode
+ * @since 4.1.0
  */
 void WSRequestHandler::HandleGetPreviewScene(WSRequestHandler* req) {
     if (!Utils::IsPreviewModeActive()) {
@@ -1562,6 +1605,7 @@ void WSRequestHandler::HandleGetPreviewScene(WSRequestHandler* req) {
  * @api requests
  * @name SetPreviewScene
  * @category studio mode
+ * @since 4.1.0
  */
 void WSRequestHandler::HandleSetPreviewScene(WSRequestHandler* req) {
     if (!Utils::IsPreviewModeActive()) {
@@ -1593,6 +1637,7 @@ void WSRequestHandler::HandleSetPreviewScene(WSRequestHandler* req) {
  * @api requests
  * @name TransitionToProgram
  * @category studio mode
+ * @since 4.1.0
  */
 void WSRequestHandler::HandleTransitionToProgram(WSRequestHandler* req) {
     if (!Utils::IsPreviewModeActive()) {
@@ -1639,6 +1684,7 @@ void WSRequestHandler::HandleTransitionToProgram(WSRequestHandler* req) {
  * @api requests
  * @name EnableStudioMode
  * @category studio mode
+ * @since 4.1.0
  */
 void WSRequestHandler::HandleEnableStudioMode(WSRequestHandler* req) {
     Utils::EnablePreviewMode();
@@ -1651,6 +1697,7 @@ void WSRequestHandler::HandleEnableStudioMode(WSRequestHandler* req) {
  * @api requests
  * @name DisableStudioMode
  * @category studio mode
+ * @since 4.1.0
  */
 void WSRequestHandler::HandleDisableStudioMode(WSRequestHandler* req) {
     Utils::DisablePreviewMode();
@@ -1663,6 +1710,7 @@ void WSRequestHandler::HandleDisableStudioMode(WSRequestHandler* req) {
  * @api requests
  * @name ToggleStudioMode
  * @category studio mode
+ * @since 4.1.0
  */
 void WSRequestHandler::HandleToggleStudioMode(WSRequestHandler* req) {
     Utils::TogglePreviewMode();
@@ -1681,6 +1729,7 @@ void WSRequestHandler::HandleToggleStudioMode(WSRequestHandler* req) {
  * @api requests
  * @name GetSpecialSources
  * @category studio mode
+ * @since 4.1.0
  */
 void WSRequestHandler::HandleGetSpecialSources(WSRequestHandler* req) {
     obs_data_t* response = obs_data_create();
@@ -1718,6 +1767,7 @@ void WSRequestHandler::HandleGetSpecialSources(WSRequestHandler* req) {
  * @api requests
  * @name SetRecordingFolder
  * @category recording
+ * @since 4.1.0
  */
 void WSRequestHandler::HandleSetRecordingFolder(WSRequestHandler* req) {
     if (!req->hasField("rec-folder")) {
@@ -1741,6 +1791,7 @@ void WSRequestHandler::HandleSetRecordingFolder(WSRequestHandler* req) {
  * @api requests
  * @name GetRecordingFolder
  * @category recording
+ * @since 4.1.0
  */
 void WSRequestHandler::HandleGetRecordingFolder(WSRequestHandler* req) {
     const char* recFolder = Utils::GetRecordingFolder();
@@ -1790,6 +1841,7 @@ void WSRequestHandler::HandleGetRecordingFolder(WSRequestHandler* req) {
  * @api requests
  * @name GetTextGDIPlusProperties
  * @category sources
+ * @since 4.1.0
  */
 void WSRequestHandler::HandleGetTextGDIPlusProperties(WSRequestHandler* req) {
     const char* itemName = obs_data_get_string(req->data, "source");
@@ -1868,6 +1920,7 @@ void WSRequestHandler::HandleGetTextGDIPlusProperties(WSRequestHandler* req) {
  * @api requests
  * @name SetTextGDIPlusProperties
  * @category sources
+ * @since 4.1.0
  */
 void WSRequestHandler::HandleSetTextGDIPlusProperties(WSRequestHandler* req) {
     if (!req->hasField("source")) {
@@ -2079,6 +2132,7 @@ void WSRequestHandler::HandleSetTextGDIPlusProperties(WSRequestHandler* req) {
  * @api requests
  * @name GetBrowserSourceProperties
  * @category sources
+ * @since 4.1.0
  */
 void WSRequestHandler::HandleGetBrowserSourceProperties(WSRequestHandler* req) {
     const char* itemName = obs_data_get_string(req->data, "source");
@@ -2136,6 +2190,7 @@ void WSRequestHandler::HandleGetBrowserSourceProperties(WSRequestHandler* req) {
  * @api requests
  * @name SetBrowserSourceProperties
  * @category sources
+ * @since 4.1.0
  */
 void WSRequestHandler::HandleSetBrowserSourceProperties(WSRequestHandler* req) {
     if (!req->hasField("source")) {
@@ -2233,6 +2288,7 @@ void WSRequestHandler::HandleSetBrowserSourceProperties(WSRequestHandler* req) {
  * @api requests
  * @name ResetSceneItem
  * @category sources
+ * @since unreleased
  */
 void WSRequestHandler::HandleResetSceneItem(WSRequestHandler* req) {
     if (!req->hasField("item")) {
