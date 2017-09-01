@@ -175,6 +175,8 @@ Additional fields may be present in the event message depending on the event typ
 
 ### SwitchScenes
 
+- Added in v0.3
+
 Indicates a scene change.
 
 **Response Items:**
@@ -189,6 +191,8 @@ Indicates a scene change.
 
 ### ScenesChanged
 
+- Added in v0.3
+
 The scene list has been modified.
 Scenes have been added, removed, or renamed.
 
@@ -200,6 +204,8 @@ _No additional response items._
 
 ### SceneCollectionChanged
 
+- Added in v4.0.0
+
 Triggered when switching to another scene collection or when renaming the current scene collection.
 
 **Response Items:**
@@ -209,6 +215,8 @@ _No additional response items._
 ---
 
 ### SceneCollectionListChanged
+
+- Added in v4.0.0
 
 Triggered when a scene collection is created, added, renamed, or removed.
 
@@ -221,6 +229,8 @@ _No additional response items._
 ## Transitions
 
 ### SwitchTransition
+
+- Added in v4.0.0
 
 The active transition has been changed.
 
@@ -235,6 +245,8 @@ The active transition has been changed.
 
 ### TransitionListChanged
 
+- Added in v4.0.0
+
 The list of available transitions has been modified.
 Transitions have been added, removed, or renamed.
 
@@ -245,6 +257,8 @@ _No additional response items._
 ---
 
 ### TransitionDurationChanged
+
+- Added in v4.0.0
 
 The active transition duration has been changed.
 
@@ -258,6 +272,8 @@ The active transition duration has been changed.
 ---
 
 ### TransitionBegin
+
+- Added in v4.0.0
 
 A transition (other than "cut") has begun.
 
@@ -275,6 +291,8 @@ A transition (other than "cut") has begun.
 
 ### ProfileChanged
 
+- Added in v4.0.0
+
 Triggered when switching to another profile or when renaming the current profile.
 
 **Response Items:**
@@ -284,6 +302,8 @@ _No additional response items._
 ---
 
 ### ProfileListChanged
+
+- Added in v4.0.0
 
 Triggered when a profile is created, added, renamed, or removed.
 
@@ -296,6 +316,8 @@ _No additional response items._
 ## Streaming
 
 ### StreamStarting
+
+- Added in v0.3
 
 A request to start streaming has been issued.
 
@@ -310,6 +332,8 @@ A request to start streaming has been issued.
 
 ### StreamStarted
 
+- Added in v0.3
+
 Streaming started successfully.
 
 **Response Items:**
@@ -319,6 +343,8 @@ _No additional response items._
 ---
 
 ### StreamStopping
+
+- Added in v0.3
 
 A request to stop streaming has been issued.
 
@@ -333,6 +359,8 @@ A request to stop streaming has been issued.
 
 ### StreamStopped
 
+- Added in v0.3
+
 Streaming stopped successfully.
 
 **Response Items:**
@@ -342,6 +370,8 @@ _No additional response items._
 ---
 
 ### StreamStatus
+
+- Added in v0.3
 
 Emit every 2 seconds.
 
@@ -367,6 +397,8 @@ Emit every 2 seconds.
 
 ### RecordingStarting
 
+- Added in v0.3
+
 A request to start recording has been issued.
 
 **Response Items:**
@@ -376,6 +408,8 @@ _No additional response items._
 ---
 
 ### RecordingStarted
+
+- Added in v0.3
 
 Recording started successfully.
 
@@ -387,6 +421,8 @@ _No additional response items._
 
 ### RecordingStopping
 
+- Added in v0.3
+
 A request to stop recording has been issued.
 
 **Response Items:**
@@ -396,6 +432,8 @@ _No additional response items._
 ---
 
 ### RecordingStopped
+
+- Added in v0.3
 
 Recording stopped successfully.
 
@@ -409,6 +447,8 @@ _No additional response items._
 
 ### ReplayStarting
 
+- Unreleased
+
 A request to start the replay buffer has been issued.
 
 **Response Items:**
@@ -418,6 +458,8 @@ _No additional response items._
 ---
 
 ### ReplayStarted
+
+- Unreleased
 
 Replay Buffer started successfully
 
@@ -429,6 +471,8 @@ _No additional response items._
 
 ### ReplayStopping
 
+- Unreleased
+
 A request to start the replay buffer has been issued.
 
 **Response Items:**
@@ -438,6 +482,8 @@ _No additional response items._
 ---
 
 ### ReplayStopped
+
+- Unreleased
 
 Replay Buffer stopped successfully
 
@@ -451,6 +497,8 @@ _No additional response items._
 
 ### Exiting
 
+- Added in v0.3
+
 OBS is exiting.
 
 **Response Items:**
@@ -462,6 +510,8 @@ _No additional response items._
 ## Sources
 
 ### SourceOrderChanged
+
+- Added in v4.0.0
 
 Scene items have been reordered.
 
@@ -475,6 +525,8 @@ Scene items have been reordered.
 ---
 
 ### SceneItemAdded
+
+- Added in v4.0.0
 
 An item has been added to the current scene.
 
@@ -490,6 +542,8 @@ An item has been added to the current scene.
 
 ### SceneItemRemoved
 
+- Added in v4.0.0
+
 An item has been removed from the current scene.
 
 **Response Items:**
@@ -503,6 +557,8 @@ An item has been removed from the current scene.
 ---
 
 ### SceneItemVisibilityChanged
+
+- Added in v4.0.0
 
 An item's visibility has been toggled.
 
@@ -521,6 +577,8 @@ An item's visibility has been toggled.
 
 ### PreviewSceneChanged
 
+- Added in v4.1.0
+
 The selected preview scene has changed (only available in Studio Mode).
 
 **Response Items:**
@@ -534,6 +592,8 @@ The selected preview scene has changed (only available in Studio Mode).
 ---
 
 ### StudioModeSwitched
+
+- Added in v4.1.0
 
 Studio Mode has been enabled or disabled.
 
@@ -566,6 +626,8 @@ Additional information may be required/returned depending on the request type. S
 
 ### GetVersion
 
+- Added in v0.3
+
 Returns the latest version of the plugin and the API.
 
 **Request Fields:**
@@ -585,6 +647,8 @@ _No specified parameters._
 ---
 
 ### GetAuthRequired
+
+- Added in v0.3
 
 Tells the client if authentication is required. If so, returns authentication parameters `challenge`
 and `salt` (see "Authentication" for more information).
@@ -606,6 +670,8 @@ _No specified parameters._
 
 ### Authenticate
 
+- Added in v0.3
+
 Attempt to authenticate the client to the server.
 
 **Request Fields:**
@@ -625,6 +691,8 @@ _No additional response items._
 
 ### SetCurrentScene
 
+- Added in v0.3
+
 Switch to the specified scene.
 
 **Request Fields:**
@@ -641,6 +709,8 @@ _No additional response items._
 ---
 
 ### GetCurrentScene
+
+- Added in v0.3
 
 Get the current scene's name and source items.
 
@@ -659,6 +729,8 @@ _No specified parameters._
 ---
 
 ### GetSceneList
+
+- Added in v0.3
 
 Get a list of scenes in the currently active profile.
 
@@ -680,6 +752,8 @@ _No specified parameters._
 
 ### SetSourceRender
 
+- Added in v0.3
+
 Show or hide a specified source item in a specified scene.
 
 **Request Fields:**
@@ -699,6 +773,8 @@ _No additional response items._
 
 ### SetVolume
 
+- Added in v4.0.0
+
 Set the volume of the specified source.
 
 **Request Fields:**
@@ -716,6 +792,8 @@ _No additional response items._
 ---
 
 ### GetVolume
+
+- Added in v4.0.0
 
 Get the volume of the specified source.
 
@@ -739,6 +817,8 @@ Get the volume of the specified source.
 
 ### ToggleMute
 
+- Added in v4.0.0
+
 Inverts the mute status of a specified source.
 
 **Request Fields:**
@@ -755,6 +835,8 @@ _No additional response items._
 ---
 
 ### SetMute
+
+- Added in v4.0.0
 
 Sets the mute status of a specified source.
 
@@ -773,6 +855,8 @@ _No additional response items._
 ---
 
 ### GetMute
+
+- Added in v4.0.0
 
 Get the mute status of a specified source.
 
@@ -795,6 +879,8 @@ Get the mute status of a specified source.
 
 ### SetSyncOffset
 
+- Unreleased
+
 Set the audio sync offset of a specified source.
 
 **Request Fields:**
@@ -812,6 +898,8 @@ _No additional response items._
 ---
 
 ### GetSyncOffset
+
+- Unreleased
 
 Get the audio sync offset of a specified source.
 
@@ -834,6 +922,8 @@ Get the audio sync offset of a specified source.
 
 ### SetSceneItemPosition
 
+- Added in v4.0.0
+
 Sets the coordinates of a specified source item.
 
 **Request Fields:**
@@ -853,6 +943,8 @@ _No additional response items._
 ---
 
 ### SetSceneItemTransform
+
+- Added in v4.0.0
 
 Set the transform of the specified source item.
 
@@ -875,6 +967,8 @@ _No additional response items._
 
 ### SetSceneItemCrop
 
+- Added in v4.1.0
+
 Sets the crop coordinates of the specified source item.
 
 **Request Fields:**
@@ -896,6 +990,8 @@ _No additional response items._
 ---
 
 ### GetTextGDIPlusProperties
+
+- Added in v4.1.0
 
 Get the current properties of a Text GDI Plus source.
 
@@ -945,6 +1041,8 @@ Get the current properties of a Text GDI Plus source.
 
 ### SetTextGDIPlusProperties
 
+- Added in v4.1.0
+
 Get the current properties of a Text GDI Plus source.
 
 **Request Fields:**
@@ -991,6 +1089,8 @@ _No additional response items._
 
 ### GetBrowserSourceProperties
 
+- Added in v4.1.0
+
 Get current properties for a Browser Source.
 
 **Request Fields:**
@@ -1019,6 +1119,8 @@ Get current properties for a Browser Source.
 
 ### SetBrowserSourceProperties
 
+- Added in v4.1.0
+
 Set current properties for a Browser Source.
 
 **Request Fields:**
@@ -1045,6 +1147,8 @@ _No additional response items._
 
 ### ResetSceneItem
 
+- Unreleased
+
 Reset a source item.
 
 **Request Fields:**
@@ -1064,6 +1168,8 @@ _No additional response items._
 ## Streaming
 
 ### GetStreamingStatus
+
+- Added in v0.3
 
 Get current streaming and recording status.
 
@@ -1086,6 +1192,8 @@ _No specified parameters._
 
 ### StartStopStreaming
 
+- Added in v0.3
+
 Toggle streaming on or off.
 
 **Request Fields:**
@@ -1099,6 +1207,8 @@ _No additional response items._
 ---
 
 ### StartStreaming
+
+- Added in v4.1.0
 
 Start streaming.
 Will return an `error` if streaming is already active.
@@ -1126,6 +1236,8 @@ _No additional response items._
 
 ### StopStreaming
 
+- Added in v4.1.0
+
 Stop streaming.
 Will return an `error` if streaming is not active.
 
@@ -1143,6 +1255,8 @@ _No additional response items._
 
 ### StartStopRecording
 
+- Added in v0.3
+
 Toggle recording on or off.
 
 **Request Fields:**
@@ -1156,6 +1270,8 @@ _No additional response items._
 ---
 
 ### StartRecording
+
+- Added in v4.1.0
 
 Start recording.
 Will return an `error` if recording is already active.
@@ -1172,6 +1288,8 @@ _No additional response items._
 
 ### StopRecording
 
+- Added in v4.1.0
+
 Stop recording.
 Will return an `error` if recording is not active.
 
@@ -1186,6 +1304,8 @@ _No additional response items._
 ---
 
 ### SetRecordingFolder
+
+- Added in v4.1.0
 
 Change the current recording folder.
 
@@ -1203,6 +1323,8 @@ _No additional response items._
 ---
 
 ### GetRecordingFolder
+
+- Added in v4.1.0
 
 Get the path of  the current recording folder.
 
@@ -1223,6 +1345,8 @@ _No specified parameters._
 
 ### StartStopReplayBuffer
 
+- Unreleased
+
 Toggle the Replay Buffer on/off.
 
 **Request Fields:**
@@ -1236,6 +1360,8 @@ _No additional response items._
 ---
 
 ### StartReplayBuffer
+
+- Unreleased
 
 Start recording into the Replay Buffer.
 Will return an `error` if the Replay Buffer is already active or if the
@@ -1255,6 +1381,8 @@ _No additional response items._
 
 ### StopReplayBuffer
 
+- Unreleased
+
 Stop recording into the Replay Buffer.
 Will return an `error` if the Replay Buffer is not active.
 
@@ -1269,6 +1397,8 @@ _No additional response items._
 ---
 
 ### SaveReplayBuffer
+
+- Unreleased
 
 Save and flush the contents of the Replay Buffer to disk. This is
 basically the same as triggering the "Save Replay Buffer" hotkey.
@@ -1287,6 +1417,8 @@ _No additional response items._
 ## Transitions
 
 ### GetTransitionList
+
+- Added in v4.1.0
 
 List of all transitions available in the frontend's dropdown menu.
 
@@ -1307,6 +1439,8 @@ _No specified parameters._
 
 ### GetCurrentTransition
 
+- Added in v0.3
+
 Get the name of the currently selected transition in the frontend's dropdown menu.
 
 **Request Fields:**
@@ -1325,6 +1459,8 @@ _No specified parameters._
 
 ### SetCurrentTransition
 
+- Added in v0.3
+
 Set the active transition.
 
 **Request Fields:**
@@ -1342,6 +1478,8 @@ _No additional response items._
 
 ### SetTransitionDuration
 
+- Added in v4.0.0
+
 Set the duration of the currently selected transition if supported.
 
 **Request Fields:**
@@ -1358,6 +1496,8 @@ _No additional response items._
 ---
 
 ### GetTransitionDuration
+
+- Added in v4.1.0
 
 Get the duration of the currently selected transition if supported.
 
@@ -1378,6 +1518,8 @@ _No specified parameters._
 
 ### SetCurrentSceneCollection
 
+- Added in v4.0.0
+
 Change the active scene collection.
 
 **Request Fields:**
@@ -1394,6 +1536,8 @@ _No additional response items._
 ---
 
 ### GetCurrentSceneCollection
+
+- Added in v4.0.0
 
 Get the name of the current scene collection.
 
@@ -1414,6 +1558,8 @@ _No specified parameters._
 
 ### SetCurrentProfile
 
+- Added in v4.0.0
+
 Set the currently active profile.
 
 **Request Fields:**
@@ -1431,6 +1577,8 @@ _No additional response items._
 
 ### GetCurrentProfile
 
+- Added in v4.0.0
+
 Get the name of the current profile.
 
 **Request Fields:**
@@ -1447,6 +1595,8 @@ _No specified parameters._
 ---
 
 ### ListProfiles
+
+- Added in v4.0.0
 
 Get a list of available profiles.
 
@@ -1466,6 +1616,8 @@ _No specified parameters._
 ## Settings
 
 ### SetStreamingSettings
+
+- Added in v4.1.0
 
 Sets one or more attributes of the current streaming server settings. Any options not passed will remain unchanged. Returns the updated settings in response. If 'type' is different than the current streaming service type, all settings are required. Returns the full settings of the stream (the same as GetStreamSettings).
 
@@ -1491,6 +1643,8 @@ _No additional response items._
 
 ### GetStreamSettings
 
+- Added in v4.1.0
+
 Get the current streaming server settings.
 
 **Request Fields:**
@@ -1514,6 +1668,8 @@ _No specified parameters._
 
 ### SaveStreamSettings
 
+- Added in v4.1.0
+
 Save the current streaming server settings to disk.
 
 **Request Fields:**
@@ -1529,6 +1685,8 @@ _No additional response items._
 ## Studio Mode
 
 ### GetStudioModeStatus
+
+- Added in v4.1.0
 
 Indicates if Studio Mode is currently enabled.
 
@@ -1546,6 +1704,8 @@ _No specified parameters._
 ---
 
 ### GetPreviewScene
+
+- Added in v4.1.0
 
 Get the name of the currently previewed scene and its list of sources.
 Will return an `error` if Studio Mode is not enabled.
@@ -1566,6 +1726,8 @@ _No specified parameters._
 
 ### SetPreviewScene
 
+- Added in v4.1.0
+
 Set the active preview scene.
 Will return an `error` if Studio Mode is not enabled.
 
@@ -1583,6 +1745,8 @@ _No additional response items._
 ---
 
 ### TransitionToProgram
+
+- Added in v4.1.0
 
 Transitions the currently previewed scene to the main output.
 Will return an `error` if Studio Mode is not enabled.
@@ -1604,6 +1768,8 @@ _No additional response items._
 
 ### EnableStudioMode
 
+- Added in v4.1.0
+
 Enables Studio Mode.
 
 **Request Fields:**
@@ -1617,6 +1783,8 @@ _No additional response items._
 ---
 
 ### DisableStudioMode
+
+- Added in v4.1.0
 
 Disables Studio Mode.
 
@@ -1632,6 +1800,8 @@ _No additional response items._
 
 ### ToggleStudioMode
 
+- Added in v4.1.0
+
 Toggles Studio Mode.
 
 **Request Fields:**
@@ -1645,6 +1815,8 @@ _No additional response items._
 ---
 
 ### GetSpecialSources
+
+- Added in v4.1.0
 
 Get configured special sources like Desktop Audio and Mic/Aux sources.
 

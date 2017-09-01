@@ -280,6 +280,7 @@ const char* WSEvents::GetRecordingTimecode() {
  * @api events
  * @name SwitchScenes
  * @category scenes
+ * @since 0.3
  */
 void WSEvents::OnSceneChange() {
     obs_data_t* data = obs_data_create();
@@ -312,6 +313,7 @@ void WSEvents::OnSceneChange() {
  * @api events
  * @name ScenesChanged
  * @category scenes
+ * @since 0.3
  */
 void WSEvents::OnSceneListChange() {
     broadcastUpdate("ScenesChanged");
@@ -323,6 +325,7 @@ void WSEvents::OnSceneListChange() {
  * @api events
  * @name SceneCollectionChanged
  * @category scenes
+ * @since 4.0.0
  */
 void WSEvents::OnSceneCollectionChange() {
     broadcastUpdate("SceneCollectionChanged");
@@ -343,6 +346,7 @@ void WSEvents::OnSceneCollectionChange() {
  * @api events
  * @name SceneCollectionListChanged
  * @category scenes
+ * @since 4.0.0
  */
 void WSEvents::OnSceneCollectionListChange() {
     broadcastUpdate("SceneCollectionListChanged");
@@ -356,6 +360,7 @@ void WSEvents::OnSceneCollectionListChange() {
  * @api events
  * @name SwitchTransition
  * @category transitions
+ * @since 4.0.0
  */
 void WSEvents::OnTransitionChange() {
     obs_source_t* current_transition = obs_frontend_get_current_transition();
@@ -378,6 +383,7 @@ void WSEvents::OnTransitionChange() {
  * @api events
  * @name TransitionListChanged
  * @category transitions
+ * @since 4.0.0
  */
 void WSEvents::OnTransitionListChange() {
     broadcastUpdate("TransitionListChanged");
@@ -389,6 +395,7 @@ void WSEvents::OnTransitionListChange() {
  * @api events
  * @name ProfileChanged
  * @category profiles
+ * @since 4.0.0
  */
 void WSEvents::OnProfileChange() {
     broadcastUpdate("ProfileChanged");
@@ -400,6 +407,7 @@ void WSEvents::OnProfileChange() {
  * @api events
  * @name ProfileListChanged
  * @category profiles
+ * @since 4.0.0
  */
 void WSEvents::OnProfileListChange() {
     broadcastUpdate("ProfileListChanged");
@@ -413,6 +421,7 @@ void WSEvents::OnProfileListChange() {
  * @api events
  * @name StreamStarting
  * @category streaming
+ * @since 0.3
  */
 void WSEvents::OnStreamStarting() {
     obs_data_t* data = obs_data_create();
@@ -429,6 +438,7 @@ void WSEvents::OnStreamStarting() {
  * @api events
  * @name StreamStarted
  * @category streaming
+ * @since 0.3
  */
 void WSEvents::OnStreamStarted() {
     _stream_starttime = os_gettime_ns();
@@ -444,6 +454,7 @@ void WSEvents::OnStreamStarted() {
  * @api events
  * @name StreamStopping
  * @category streaming
+ * @since 0.3
  */
 void WSEvents::OnStreamStopping() {
     obs_data_t* data = obs_data_create();
@@ -460,6 +471,7 @@ void WSEvents::OnStreamStopping() {
  * @api events
  * @name StreamStopped
  * @category streaming
+ * @since 0.3
  */
 void WSEvents::OnStreamStopped() {
     _stream_starttime = 0;
@@ -472,6 +484,7 @@ void WSEvents::OnStreamStopped() {
  * @api events
  * @name RecordingStarting
  * @category recording
+ * @since 0.3
  */
 void WSEvents::OnRecordingStarting() {
     broadcastUpdate("RecordingStarting");
@@ -483,6 +496,7 @@ void WSEvents::OnRecordingStarting() {
  * @api events
  * @name RecordingStarted
  * @category recording
+ * @since 0.3
  */
 void WSEvents::OnRecordingStarted() {
     _rec_starttime = os_gettime_ns();
@@ -495,6 +509,7 @@ void WSEvents::OnRecordingStarted() {
  * @api events
  * @name RecordingStopping
  * @category recording
+ * @since 0.3
  */
 void WSEvents::OnRecordingStopping() {
     broadcastUpdate("RecordingStopping");
@@ -506,6 +521,7 @@ void WSEvents::OnRecordingStopping() {
  * @api events
  * @name RecordingStopped
  * @category recording
+ * @since 0.3
  */
 void WSEvents::OnRecordingStopped() {
     _rec_starttime = 0;
@@ -518,6 +534,7 @@ void WSEvents::OnRecordingStopped() {
 * @api events
 * @name ReplayStarting
 * @category replay buffer
+* @since unreleased
 */
 void WSEvents::OnReplayStarting() {
     broadcastUpdate("ReplayStarting");
@@ -529,6 +546,7 @@ void WSEvents::OnReplayStarting() {
 * @api events
 * @name ReplayStarted
 * @category replay buffer
+* @since unreleased
 */
 void WSEvents::OnReplayStarted() {
     broadcastUpdate("ReplayStarted");
@@ -540,6 +558,7 @@ void WSEvents::OnReplayStarted() {
 * @api events
 * @name ReplayStopping
 * @category replay buffer
+* @since unreleased
 */
 void WSEvents::OnReplayStopping() {
     broadcastUpdate("ReplayStopping");
@@ -551,6 +570,7 @@ void WSEvents::OnReplayStopping() {
 * @api events
 * @name ReplayStopped
 * @category replay buffer
+* @since unreleased
 */
 void WSEvents::OnReplayStopped() {
     broadcastUpdate("ReplayStopped");
@@ -562,6 +582,7 @@ void WSEvents::OnReplayStopped() {
  * @api events
  * @name Exiting
  * @category other
+ * @since 0.3
  */
 void WSEvents::OnExit() {
     broadcastUpdate("Exiting");
@@ -584,6 +605,7 @@ void WSEvents::OnExit() {
  * @api events
  * @name StreamStatus
  * @category streaming
+ * @since 0.3
  */
 void WSEvents::StreamStatus() {
     bool streaming_active = obs_frontend_streaming_active();
@@ -650,6 +672,7 @@ void WSEvents::StreamStatus() {
  * @api events
  * @name TransitionDurationChanged
  * @category transitions
+ * @since 4.0.0
  */
 void WSEvents::TransitionDurationChanged(int ms) {
     obs_data_t* fields = obs_data_create();
@@ -668,6 +691,7 @@ void WSEvents::TransitionDurationChanged(int ms) {
  * @api events
  * @name TransitionBegin
  * @category transitions
+ * @since 4.0.0
  */
 void WSEvents::OnTransitionBegin(void* param, calldata_t* data) {
     UNUSED_PARAMETER(data);
@@ -694,6 +718,7 @@ void WSEvents::OnTransitionBegin(void* param, calldata_t* data) {
  * @api events
  * @name SourceOrderChanged
  * @category sources
+ * @since 4.0.0
  */
 void WSEvents::OnSceneReordered(void* param, calldata_t* data) {
     WSEvents* instance = static_cast<WSEvents*>(param);
@@ -718,6 +743,7 @@ void WSEvents::OnSceneReordered(void* param, calldata_t* data) {
  * @api events
  * @name SceneItemAdded
  * @category sources
+ * @since 4.0.0
  */
 void WSEvents::OnSceneItemAdd(void* param, calldata_t* data) {
     WSEvents* instance = static_cast<WSEvents*>(param);
@@ -750,6 +776,7 @@ void WSEvents::OnSceneItemAdd(void* param, calldata_t* data) {
  * @api events
  * @name SceneItemRemoved
  * @category sources
+ * @since 4.0.0
  */
 void WSEvents::OnSceneItemDelete(void* param, calldata_t* data) {
     WSEvents* instance = static_cast<WSEvents*>(param);
@@ -783,6 +810,7 @@ void WSEvents::OnSceneItemDelete(void* param, calldata_t* data) {
  * @api events
  * @name SceneItemVisibilityChanged
  * @category sources
+ * @since 4.0.0
  */
 void WSEvents::OnSceneItemVisibilityChanged(void* param, calldata_t* data) {
     WSEvents* instance = static_cast<WSEvents*>(param);
@@ -819,6 +847,7 @@ void WSEvents::OnSceneItemVisibilityChanged(void* param, calldata_t* data) {
  * @api events
  * @name PreviewSceneChanged
  * @category studio mode
+ * @since 4.1.0
  */
 void WSEvents::SelectedSceneChanged(QListWidgetItem* current, QListWidgetItem* prev) {
     if (Utils::IsPreviewModeActive()) {
@@ -847,6 +876,7 @@ void WSEvents::SelectedSceneChanged(QListWidgetItem* current, QListWidgetItem* p
  * @api events
  * @name StudioModeSwitched
  * @category studio mode
+ * @since 4.1.0
  */
 void WSEvents::ModeSwitchClicked(bool checked) {
     obs_data_t* data = obs_data_create();
