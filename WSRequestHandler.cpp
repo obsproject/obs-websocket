@@ -325,10 +325,10 @@ void WSRequestHandler::HandleSetHeartbeat(WSRequestHandler* req) {
             WSEvents::Instance->Heartbeat_Recording_active = false;
             WSEvents::Instance->Heartbeat_TotalStreamTime_active = false;
             WSEvents::Instance->Heartbeat_TotalRecordTime_active = false;
-			WSEvents::Instance->Heartbeat_TotalStreamBytes_active = false;
-			WSEvents::Instance->Heartbeat_TotalRecordBytes_active = false;
-			WSEvents::Instance->Heartbeat_TotalRecordFrames_active = false;
-			obs_data_set_string(response, "mode", keyValueStr);
+            WSEvents::Instance->Heartbeat_TotalStreamBytes_active = false;
+            WSEvents::Instance->Heartbeat_TotalRecordBytes_active = false;
+            WSEvents::Instance->Heartbeat_TotalRecordFrames_active = false;
+            obs_data_set_string(response, "mode", keyValueStr);
             req->SendOKResponse(response);
         } else if (strcmp(keyValueStr, "on") == 0) {
             WSEvents::Instance->Heartbeat_active = true;
@@ -340,12 +340,12 @@ void WSRequestHandler::HandleSetHeartbeat(WSRequestHandler* req) {
             WSEvents::Instance->Heartbeat_CurrentScene_active = true;
             WSEvents::Instance->Heartbeat_Streaming_active = true;
             WSEvents::Instance->Heartbeat_Recording_active = true;
-			WSEvents::Instance->Heartbeat_TotalStreamTime_active = true;
-			WSEvents::Instance->Heartbeat_TotalRecordTime_active = true;
-			WSEvents::Instance->Heartbeat_TotalStreamBytes_active = true;
-			WSEvents::Instance->Heartbeat_TotalRecordBytes_active = true;
-			WSEvents::Instance->Heartbeat_TotalRecordFrames_active = true;
-			obs_data_set_string(response, "mode", keyValueStr);
+            WSEvents::Instance->Heartbeat_TotalStreamTime_active = true;
+            WSEvents::Instance->Heartbeat_TotalRecordTime_active = true;
+            WSEvents::Instance->Heartbeat_TotalStreamBytes_active = true;
+            WSEvents::Instance->Heartbeat_TotalRecordBytes_active = true;
+            WSEvents::Instance->Heartbeat_TotalRecordFrames_active = true;
+            obs_data_set_string(response, "mode", keyValueStr);
             req->SendOKResponse(response);
         } else {
             req->SendErrorResponse("Heartbeat missing or wrong <mode> <value> parameter");
@@ -377,19 +377,19 @@ void WSRequestHandler::HandleSetHeartbeat(WSRequestHandler* req) {
             WSEvents::Instance->Heartbeat_TotalRecordTime_active = true;
             obs_data_set_string(response, "add", keyValueStr);
             req->SendOKResponse(response);
-		} else if (strcmp(keyValueStr, "total-stream-bytes") == 0) {
-			WSEvents::Instance->Heartbeat_TotalStreamBytes_active = true;
-			obs_data_set_string(response, "add", keyValueStr);
-			req->SendOKResponse(response);
-		} else if (strcmp(keyValueStr, "total-record-bytes") == 0) {
-			WSEvents::Instance->Heartbeat_TotalRecordTime_active = true;
-			obs_data_set_string(response, "add", keyValueStr);
-			req->SendOKResponse(response);
-		} else if (strcmp(keyValueStr, "total-record-frames") == 0) {
-			WSEvents::Instance->Heartbeat_TotalRecordFrames_active = true;
-			obs_data_set_string(response, "add", keyValueStr);
-			req->SendOKResponse(response);
-		} else {
+        } else if (strcmp(keyValueStr, "total-stream-bytes") == 0) {
+            WSEvents::Instance->Heartbeat_TotalStreamBytes_active = true;
+            obs_data_set_string(response, "add", keyValueStr);
+            req->SendOKResponse(response);
+        } else if (strcmp(keyValueStr, "total-record-bytes") == 0) {
+            WSEvents::Instance->Heartbeat_TotalRecordTime_active = true;
+            obs_data_set_string(response, "add", keyValueStr);
+            req->SendOKResponse(response);
+        } else if (strcmp(keyValueStr, "total-record-frames") == 0) {
+            WSEvents::Instance->Heartbeat_TotalRecordFrames_active = true;
+            obs_data_set_string(response, "add", keyValueStr);
+            req->SendOKResponse(response);
+        } else {
             req->SendErrorResponse("Heartbeat missing or wrong <add> <value> parameter");
         }
 
@@ -419,19 +419,19 @@ void WSRequestHandler::HandleSetHeartbeat(WSRequestHandler* req) {
             WSEvents::Instance->Heartbeat_TotalRecordTime_active = false;
             obs_data_set_string(response, "sub", keyValueStr);
             req->SendOKResponse(response);
-		} else if (strcmp(keyValueStr, "total-stream-bytes") == 0) {
-			WSEvents::Instance->Heartbeat_TotalStreamTime_active = false;
-			obs_data_set_string(response, "sub", keyValueStr);
-			req->SendOKResponse(response);
-		} else if (strcmp(keyValueStr, "total-record-bytes") == 0) {
-			WSEvents::Instance->Heartbeat_TotalRecordTime_active = false;
-			obs_data_set_string(response, "sub", keyValueStr);
-			req->SendOKResponse(response);
-		} else if (strcmp(keyValueStr, "total-record-frames") == 0) {
-			WSEvents::Instance->Heartbeat_TotalRecordFrames_active = false;
-			obs_data_set_string(response, "sub", keyValueStr);
-			req->SendOKResponse(response);
-		} else {
+        } else if (strcmp(keyValueStr, "total-stream-bytes") == 0) {
+            WSEvents::Instance->Heartbeat_TotalStreamTime_active = false;
+            obs_data_set_string(response, "sub", keyValueStr);
+            req->SendOKResponse(response);
+        } else if (strcmp(keyValueStr, "total-record-bytes") == 0) {
+            WSEvents::Instance->Heartbeat_TotalRecordTime_active = false;
+            obs_data_set_string(response, "sub", keyValueStr);
+            req->SendOKResponse(response);
+        } else if (strcmp(keyValueStr, "total-record-frames") == 0) {
+            WSEvents::Instance->Heartbeat_TotalRecordFrames_active = false;
+            obs_data_set_string(response, "sub", keyValueStr);
+            req->SendOKResponse(response);
+        } else {
             req->SendErrorResponse("Heartbeat missing or wrong <sub> <value> parameter");
         }
 

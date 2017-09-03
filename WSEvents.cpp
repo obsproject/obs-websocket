@@ -91,11 +91,11 @@ WSEvents::WSEvents(WSServer* srv) {
     Heartbeat_CurrentScene_active = false;
     Heartbeat_Streaming_active = false;
     Heartbeat_Recording_active = false;
-	Heartbeat_TotalStreamTime_active = false;
-	Heartbeat_TotalRecordTime_active = false;
-	Heartbeat_TotalStreamBytes_active = false;
-	Heartbeat_TotalRecordBytes_active = false;
-	Heartbeat_TotalRecordFrames_active = false;
+    Heartbeat_TotalStreamTime_active = false;
+    Heartbeat_TotalRecordTime_active = false;
+    Heartbeat_TotalStreamBytes_active = false;
+    Heartbeat_TotalRecordBytes_active = false;
+    Heartbeat_TotalRecordFrames_active = false;
 
     _streaming_active = false;
     _recording_active = false;
@@ -657,8 +657,7 @@ void WSEvents::StreamStatus() {
 }
 
 /************************************************************************************************************
-* Heatbeat is emitted every 2 seconds, when enabled with request:											*
-*                                        void WSRequestHandler::HandleSetHeartbeat(WSRequestHandler* req)	*
+* Heatbeat is emitted every 2 seconds, when enabled with request: SetHeartbeat   							*
 * Individual key/value pairs can be enabled in the Hearbeat message via ::HandleSetHeartbeat				*
 * When the Heartbeat is enabled it always sends a `pulse` to indicate that the host obs is alive.			*
 *																											*
@@ -680,11 +679,11 @@ void WSEvents::StreamStatus() {
 void WSEvents::Heartbeat() {
 
     if (Heartbeat_active) {
-		bool streaming_active = obs_frontend_streaming_active();
-		bool recording_active = obs_frontend_recording_active();
-		obs_data_t* data = obs_data_create();
-		obs_output_t* record_output = obs_frontend_get_recording_output();
-		obs_output_t* stream_output = obs_frontend_get_streaming_output();
+        bool streaming_active = obs_frontend_streaming_active();
+        bool recording_active = obs_frontend_recording_active();
+        obs_data_t* data = obs_data_create();
+        obs_output_t* record_output = obs_frontend_get_recording_output();
+        obs_output_t* stream_output = obs_frontend_get_streaming_output();
 
         pulse = !pulse;
         obs_data_set_bool(data, "pulse", pulse);
@@ -705,29 +704,29 @@ void WSEvents::Heartbeat() {
                 uint64_t totalStreamTime = (os_gettime_ns() - _stream_starttime) / 1000000000;
                 obs_data_set_int(data, "total-stream-time", totalStreamTime);
         }
-		if (Heartbeat_TotalStreamBytes_active) {
-			obs_data_set_int(data, "total-stream-bytes", (uint64_t)obs_output_get_total_bytes(stream_output));
-		}
+        if (Heartbeat_TotalStreamBytes_active) {
+            obs_data_set_int(data, "total-stream-bytes", (uint64_t)obs_output_get_total_bytes(stream_output));
+        }
 
         if (Heartbeat_Recording_active) {
             obs_data_set_bool(data, "recording", recording_active);
         }
         if (Heartbeat_TotalRecordTime_active && recording_active) {
-                uint64_t totalRecordTime = (os_gettime_ns() - _rec_starttime) / 1000000000;
-                obs_data_set_int(data, "total-record-time", totalRecordTime);
+            uint64_t totalRecordTime = (os_gettime_ns() - _rec_starttime) / 1000000000;
+            obs_data_set_int(data, "total-record-time", totalRecordTime);
         }
-		if (Heartbeat_TotalRecordBytes_active) {
-			obs_data_set_int(data, "total-record-bytes", (uint64_t)obs_output_get_total_bytes(record_output));
-		}
-		if (Heartbeat_TotalRecordFrames_active) {
-			obs_data_set_int(data, "total-record-frames", obs_output_get_total_frames(record_output));
-		}
+        if (Heartbeat_TotalRecordBytes_active) {
+            obs_data_set_int(data, "total-record-bytes", (uint64_t)obs_output_get_total_bytes(record_output));
+        }
+        if (Heartbeat_TotalRecordFrames_active) {
+            obs_data_set_int(data, "total-record-frames", obs_output_get_total_frames(record_output));
+        }
 
         broadcastUpdate("Heartbeat", data);
-		obs_data_release(data);
-		obs_output_release(record_output);
-		obs_output_release(stream_output);
-	}
+        obs_data_release(data);
+        obs_output_release(record_output);
+        obs_output_release(stream_output);
+    }
 }
 
 /**
