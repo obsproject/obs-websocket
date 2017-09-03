@@ -657,24 +657,24 @@ void WSEvents::StreamStatus() {
 }
 
 /************************************************************************************************************
-* Heatbeat is emitted every 2 seconds, when enabled with request: SetHeartbeat   							*
-* Individual key/value pairs can be enabled in the Hearbeat message via ::HandleSetHeartbeat				*
-* When the Heartbeat is enabled it always sends a `pulse` to indicate that the host obs is alive.			*
-*																											*
-* @return {boolean} `pulse` Toggles between every JSON meassage as an "I am alive" indicator.				*
-* @return {string (optional)} `current-profile` Current active profile.										*
-* @return {string (optional)} `current-scene` Current active scene.											*
-* @return {boolean (optional)} `streaming` Current streaming state.											*
-* @return {int (optional)} `total-stream-time` Total time (in seconds) since the stream started.			*
-* @return {int (optional)} `total-stream-bytes` Total bytes sent since the stream started.					*
-* @return {boolean (optional)} `recording` Current recording state.											*
-* @return {int (optional)} `total-record-time` Total time (in seconds) since recording started.				*
-* @return {int (optional)} `total-record-bytes` Total bytes recorded since the stream started.				*
-* @return {int (optional)} `total-record-frames` Total frames recorded since the stream started.			*
-*																											*
-* @api events																								*
-* @name Heartbeat																							*
-* @category general																							*
+* Heatbeat is emitted every 2 seconds, when enabled with request: SetHeartbeat                              *
+* Individual key/value pairs can be enabled in the Hearbeat message via ::HandleSetHeartbeat                *
+* When the Heartbeat is enabled it always sends a `pulse` to indicate that the host obs is alive.           *
+*                                                                                                           *
+* @return {boolean} `pulse` Toggles between every JSON meassage as an "I am alive" indicator.               *
+* @return {string (optional)} `current-profile` Current active profile.                                     *
+* @return {string (optional)} `current-scene` Current active scene.                                         *
+* @return {boolean (optional)} `streaming` Current streaming state.                                         *
+* @return {int (optional)} `total-stream-time` Total time (in seconds) since the stream started.            *
+* @return {int (optional)} `total-stream-bytes` Total bytes sent since the stream started.                  *
+* @return {boolean (optional)} `recording` Current recording state.                                         *
+* @return {int (optional)} `total-record-time` Total time (in seconds) since recording started.             *
+* @return {int (optional)} `total-record-bytes` Total bytes recorded since the stream started.              *
+* @return {int (optional)} `total-record-frames` Total frames recorded since the stream started.            *
+*                                                                                                           *
+* @api events                                                                                               *
+* @name Heartbeat                                                                                           *
+* @category general                                                                                         *
 *************************************************************************** August 2017 *** by RainbowEK ***/
 void WSEvents::Heartbeat() {
 

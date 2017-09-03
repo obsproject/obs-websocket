@@ -298,18 +298,18 @@ void WSRequestHandler::HandleAuthenticate(WSRequestHandler* req) {
 }
 
 /************************************************************************************************************
-* Heatbeat update message is emitted every 2 seconds, when enabled with this request.						*
-* Individual key/value pairs can be added or removed in the Hearbeat message.								*
-* When the Heartbeat is enabled it always sends a `pulse` to indicate that the host obs is alive.			*
-* Read comment from 'void WSEvents::Heartbeat()' for the total picture.										*
-*																											*
-* @param {string} `mode` Value options: `off`, `on`, `all`.													*
-* @param {string} `add` Value options: all keys from the Heartbeat update type.								*
-* @param {string} `sub` Value options: all keys from the Heartbeat update type.								*
-*																											*
-* @api requests																								*
-* @name HandleSetHeartbeat																					*
-* @category general																							*
+* Heatbeat update message is emitted every 2 seconds, when enabled with this request.                       *
+* Individual key/value pairs can be added or removed in the Hearbeat message.                               *
+* When the Heartbeat is enabled it always sends a `pulse` to indicate that the host obs is alive.           *
+* Read comment from 'void WSEvents::Heartbeat()' for the total picture.                                     *
+*                                                                                                           *
+* @param {string} `mode` Value options: `off`, `on`, `all`.                                                 *
+* @param {string} `add` Value options: all keys from the Heartbeat update type.                             *
+* @param {string} `sub` Value options: all keys from the Heartbeat update type.                             *
+*                                                                                                           *
+* @api requests                                                                                             *
+* @name HandleSetHeartbeat                                                                                  *
+* @category general                                                                                         *
 *************************************************************************** August 2017 *** by RainbowEK ***/
 void WSRequestHandler::HandleSetHeartbeat(WSRequestHandler* req) {
     obs_data_t* response = obs_data_create();
