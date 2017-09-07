@@ -30,22 +30,18 @@ QT_USE_NAMESPACE
 
 WSServer* WSServer::Instance = nullptr;
 
-WSServer::WSServer(QObject* parent) :
-    QObject(parent),
-    _wsServer(Q_NULLPTR),
-    _clients(),
-    _clMutex(QMutex::Recursive) {
-    _serverThread = new QThread();
+WSServer::WSServer(QObject* parent)
+    : QObject(parent),
+      _wsServer(Q_NULLPTR),
+      _clients(),
+      _clMutex(QMutex::Recursive) {
     _wsServer = new QWebSocketServer(
         QStringLiteral("obs-websocket"),
-        QWebSocketServer::NonSecureMode,
-        _serverThread);
-    _serverThread->start();
+        QWebSocketServer::NonSecureMode);
 }
 
 WSServer::~WSServer() {
     Stop();
-    delete _serverThread;
 }
 
 void WSServer::Start(quint16 port) {

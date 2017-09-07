@@ -47,7 +47,6 @@ class WSServer : public QObject {
     QWebSocketServer* _wsServer;
     QList<QWebSocket*> _clients;
     QMutex _clMutex;
-    QThread* _serverThread;
 };
 
 #endif // WSSERVER_H
