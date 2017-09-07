@@ -386,10 +386,12 @@ void Utils::SysTrayNotify(QString &text,
 }
 
 QString Utils::FormatIPAddress(QHostAddress &addr) {
-    if (addr.protocol() == QAbstractSocket::IPv4Protocol)
-        QString v4addr = addr.toString().replace("::fff:", "");
-
-    return addr.toString();
+    QRegExp v4regex("(::ffff:)(((\\d).){3})", Qt::CaseInsensitive);
+    QString addrString = addr.toString();
+    if (addrString.contains(v4regex)) {
+        addrString = QHostAddress(addr.toIPv4Address()).toString();
+    }
+    return addrString;
 }
 
 const char* Utils::GetRecordingFolder() {

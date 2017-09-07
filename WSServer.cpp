@@ -103,7 +103,7 @@ void WSServer::onNewConnection() {
 
         QString msg = QString(obs_module_text("OBSWebsocket.ConnectNotify.ClientIP"))
             + QString(" ")
-            + clientAddr.toString();
+            + Utils::FormatIPAddress(clientAddr);
 
         Utils::SysTrayNotify(msg,
             QSystemTrayIcon::Information,
@@ -138,7 +138,7 @@ void WSServer::onSocketDisconnected() {
 
         QString msg = QString(obs_module_text("OBSWebsocket.ConnectNotify.ClientIP"))
             + QString(" ")
-            + clientAddr.toString();
+            + Utils::FormatIPAddress(clientAddr);
 
         Utils::SysTrayNotify(msg,
             QSystemTrayIcon::Information,
