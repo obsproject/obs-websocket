@@ -772,7 +772,7 @@
         "api": "events",
         "name": "ReplayStarting",
         "category": "replay buffer",
-        "since": "unreleased",
+        "since": "4.2.0",
         "names": [
           {
             "name": "",
@@ -788,7 +788,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "unreleased"
+            "description": "4.2.0"
           }
         ],
         "heading": {
@@ -805,7 +805,7 @@
         "api": "events",
         "name": "ReplayStarted",
         "category": "replay buffer",
-        "since": "unreleased",
+        "since": "4.2.0",
         "names": [
           {
             "name": "",
@@ -821,7 +821,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "unreleased"
+            "description": "4.2.0"
           }
         ],
         "heading": {
@@ -838,7 +838,7 @@
         "api": "events",
         "name": "ReplayStopping",
         "category": "replay buffer",
-        "since": "unreleased",
+        "since": "4.2.0",
         "names": [
           {
             "name": "",
@@ -854,7 +854,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "unreleased"
+            "description": "4.2.0"
           }
         ],
         "heading": {
@@ -871,7 +871,7 @@
         "api": "events",
         "name": "ReplayStopped",
         "category": "replay buffer",
-        "since": "unreleased",
+        "since": "4.2.0",
         "names": [
           {
             "name": "",
@@ -887,7 +887,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "unreleased"
+            "description": "4.2.0"
           }
         ],
         "heading": {
@@ -1849,7 +1849,7 @@
         "api": "requests",
         "name": "SetSyncOffset",
         "category": "sources",
-        "since": "unreleased",
+        "since": "4.2.0",
         "params": [
           {
             "type": "String",
@@ -1877,7 +1877,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "unreleased"
+            "description": "4.2.0"
           }
         ],
         "heading": {
@@ -1899,7 +1899,7 @@
         "api": "requests",
         "name": "GetSyncOffset",
         "category": "sources",
-        "since": "unreleased",
+        "since": "4.2.0",
         "returns": [
           {
             "type": "String",
@@ -1934,7 +1934,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "unreleased"
+            "description": "4.2.0"
           }
         ],
         "heading": {
@@ -2792,7 +2792,7 @@
         "api": "requests",
         "name": "ResetSceneItem",
         "category": "sources",
-        "since": "unreleased",
+        "since": "4.2.0",
         "params": [
           {
             "type": "String (optional)",
@@ -2820,7 +2820,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "unreleased"
+            "description": "4.2.0"
           }
         ],
         "heading": {
@@ -3248,7 +3248,7 @@
         "api": "requests",
         "name": "StartStopReplayBuffer",
         "category": "replay buffer",
-        "since": "unreleased",
+        "since": "4.2.0",
         "names": [
           {
             "name": "",
@@ -3264,7 +3264,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "unreleased"
+            "description": "4.2.0"
           }
         ],
         "heading": {
@@ -3281,7 +3281,7 @@
         "api": "requests",
         "name": "StartReplayBuffer",
         "category": "replay buffer",
-        "since": "unreleased",
+        "since": "4.2.0",
         "names": [
           {
             "name": "",
@@ -3297,7 +3297,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "unreleased"
+            "description": "4.2.0"
           }
         ],
         "heading": {
@@ -3314,7 +3314,7 @@
         "api": "requests",
         "name": "StopReplayBuffer",
         "category": "replay buffer",
-        "since": "unreleased",
+        "since": "4.2.0",
         "names": [
           {
             "name": "",
@@ -3330,7 +3330,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "unreleased"
+            "description": "4.2.0"
           }
         ],
         "heading": {
@@ -3347,7 +3347,7 @@
         "api": "requests",
         "name": "SaveReplayBuffer",
         "category": "replay buffer",
-        "since": "unreleased",
+        "since": "4.2.0",
         "names": [
           {
             "name": "",
@@ -3363,7 +3363,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "unreleased"
+            "description": "4.2.0"
           }
         ],
         "heading": {

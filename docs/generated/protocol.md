@@ -1,8 +1,8 @@
 <!-- This file was generated based on handlebars templates. Do not edit directly! -->
 
-# obs-websocket 4.2 protocol reference
+# obs-websocket 4.2.0 protocol reference
 
-**This is the reference for the latest version of obs-websocket. See the list below for older versions.**
+**This is the reference for obs-websocket 4.2.0. See the list below for older versions.**
 - [4.1.0 protocol reference](https://github.com/Palakis/obs-websocket/blob/4.1.0/PROTOCOL.md)
 - [4.0.0 protocol reference](https://github.com/Palakis/obs-websocket/blob/4.0.0/PROTOCOL.md)
 
@@ -447,7 +447,7 @@ _No additional response items._
 
 ### ReplayStarting
 
-- Unreleased
+- Added in v4.2.0
 
 A request to start the replay buffer has been issued.
 
@@ -459,7 +459,7 @@ _No additional response items._
 
 ### ReplayStarted
 
-- Unreleased
+- Added in v4.2.0
 
 Replay Buffer started successfully
 
@@ -471,7 +471,7 @@ _No additional response items._
 
 ### ReplayStopping
 
-- Unreleased
+- Added in v4.2.0
 
 A request to start the replay buffer has been issued.
 
@@ -483,7 +483,7 @@ _No additional response items._
 
 ### ReplayStopped
 
-- Unreleased
+- Added in v4.2.0
 
 Replay Buffer stopped successfully
 
@@ -879,7 +879,7 @@ Get the mute status of a specified source.
 
 ### SetSyncOffset
 
-- Unreleased
+- Added in v4.2.0
 
 Set the audio sync offset of a specified source.
 
@@ -899,7 +899,7 @@ _No additional response items._
 
 ### GetSyncOffset
 
-- Unreleased
+- Added in v4.2.0
 
 Get the audio sync offset of a specified source.
 
@@ -1147,7 +1147,7 @@ _No additional response items._
 
 ### ResetSceneItem
 
-- Unreleased
+- Added in v4.2.0
 
 Reset a source item.
 
@@ -1345,7 +1345,7 @@ _No specified parameters._
 
 ### StartStopReplayBuffer
 
-- Unreleased
+- Added in v4.2.0
 
 Toggle the Replay Buffer on/off.
 
@@ -1361,7 +1361,7 @@ _No additional response items._
 
 ### StartReplayBuffer
 
-- Unreleased
+- Added in v4.2.0
 
 Start recording into the Replay Buffer.
 Will return an `error` if the Replay Buffer is already active or if the
@@ -1381,7 +1381,7 @@ _No additional response items._
 
 ### StopReplayBuffer
 
-- Unreleased
+- Added in v4.2.0
 
 Stop recording into the Replay Buffer.
 Will return an `error` if the Replay Buffer is not active.
@@ -1398,7 +1398,7 @@ _No additional response items._
 
 ### SaveReplayBuffer
 
-- Unreleased
+- Added in v4.2.0
 
 Save and flush the contents of the Replay Buffer to disk. This is
 basically the same as triggering the "Save Replay Buffer" hotkey.
