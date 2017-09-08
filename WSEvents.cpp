@@ -534,7 +534,7 @@ void WSEvents::OnRecordingStopped() {
 * @api events
 * @name ReplayStarting
 * @category replay buffer
-* @since unreleased
+* @since 4.2.0
 */
 void WSEvents::OnReplayStarting() {
     broadcastUpdate("ReplayStarting");
@@ -546,7 +546,7 @@ void WSEvents::OnReplayStarting() {
 * @api events
 * @name ReplayStarted
 * @category replay buffer
-* @since unreleased
+* @since 4.2.0
 */
 void WSEvents::OnReplayStarted() {
     broadcastUpdate("ReplayStarted");
@@ -558,7 +558,7 @@ void WSEvents::OnReplayStarted() {
 * @api events
 * @name ReplayStopping
 * @category replay buffer
-* @since unreleased
+* @since 4.2.0
 */
 void WSEvents::OnReplayStopping() {
     broadcastUpdate("ReplayStopping");
@@ -570,7 +570,7 @@ void WSEvents::OnReplayStopping() {
 * @api events
 * @name ReplayStopped
 * @category replay buffer
-* @since unreleased
+* @since 4.2.0
 */
 void WSEvents::OnReplayStopped() {
     broadcastUpdate("ReplayStopped");

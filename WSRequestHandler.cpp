@@ -670,7 +670,7 @@ void WSRequestHandler::HandleStopRecording(WSRequestHandler* req) {
 * @api requests
 * @name StartStopReplayBuffer
 * @category replay buffer
-* @since unreleased
+* @since 4.2.0
 */
 void WSRequestHandler::HandleStartStopReplayBuffer(WSRequestHandler* req) {
     if (obs_frontend_replay_buffer_active()) {
@@ -695,7 +695,7 @@ void WSRequestHandler::HandleStartStopReplayBuffer(WSRequestHandler* req) {
 * @api requests
 * @name StartReplayBuffer
 * @category replay buffer
-* @since unreleased
+* @since 4.2.0
 */
 void WSRequestHandler::HandleStartReplayBuffer(WSRequestHandler* req) {
     if (!Utils::ReplayBufferEnabled()) {
@@ -724,7 +724,7 @@ void WSRequestHandler::HandleStartReplayBuffer(WSRequestHandler* req) {
 * @api requests
 * @name StopReplayBuffer
 * @category replay buffer
-* @since unreleased
+* @since 4.2.0
 */
 void WSRequestHandler::HandleStopReplayBuffer(WSRequestHandler* req) {
     if (obs_frontend_replay_buffer_active() == true) {
@@ -743,7 +743,7 @@ void WSRequestHandler::HandleStopReplayBuffer(WSRequestHandler* req) {
 * @api requests
 * @name SaveReplayBuffer
 * @category replay buffer
-* @since unreleased
+* @since 4.2.0
 */
 void WSRequestHandler::HandleSaveReplayBuffer(WSRequestHandler* req) {
     if (!obs_frontend_replay_buffer_active()) {
@@ -1091,7 +1091,7 @@ void WSRequestHandler::HandleGetMute(WSRequestHandler* req) {
  * @api requests
  * @name SetSyncOffset
  * @category sources
- * @since unreleased
+ * @since 4.2.0
  */
 void WSRequestHandler::HandleSetSyncOffset(WSRequestHandler* req) {
     if (!req->hasField("source") || !req->hasField("offset")) {
@@ -1130,7 +1130,7 @@ void WSRequestHandler::HandleSetSyncOffset(WSRequestHandler* req) {
  * @api requests
  * @name GetSyncOffset
  * @category sources
- * @since unreleased
+ * @since 4.2.0
  */
 void WSRequestHandler::HandleGetSyncOffset(WSRequestHandler* req) {
     if (!req->hasField("source")) {
@@ -2288,7 +2288,7 @@ void WSRequestHandler::HandleSetBrowserSourceProperties(WSRequestHandler* req) {
  * @api requests
  * @name ResetSceneItem
  * @category sources
- * @since unreleased
+ * @since 4.2.0
  */
 void WSRequestHandler::HandleResetSceneItem(WSRequestHandler* req) {
     if (!req->hasField("item")) {
