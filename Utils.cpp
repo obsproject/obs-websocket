@@ -59,7 +59,8 @@ obs_data_array_t* Utils::GetSceneItems(obs_source_t* source) {
     obs_scene_enum_items(scene, [](
             obs_scene_t* scene,
             obs_sceneitem_t* currentItem,
-            void* param) {
+            void* param)
+    {
         obs_data_array_t* data = static_cast<obs_data_array_t*>(param);
 
         obs_data_t* item_data = GetSceneItemData(currentItem);
@@ -121,7 +122,8 @@ obs_sceneitem_t* Utils::GetSceneItemFromName(obs_source_t* source, const char* n
     obs_scene_enum_items(scene, [](
             obs_scene_t* scene,
             obs_sceneitem_t* currentItem,
-            void* param) {
+            void* param)
+    {
         current_search* search = static_cast<current_search*>(param);
 
         const char* currentItemName =
