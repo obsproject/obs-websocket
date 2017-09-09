@@ -40,16 +40,7 @@ class WSEvents : public QObject {
     uint64_t GetRecordingTime();
     const char* GetRecordingTimecode();
 
-    bool Heartbeat_active;
-    bool Heartbeat_CurrentProfile_active;
-    bool Heartbeat_CurrentScene_active;
-    bool Heartbeat_Streaming_active;
-    bool Heartbeat_Recording_active;
-	bool Heartbeat_TotalStreamTime_active;
-	bool Heartbeat_TotalRecordTime_active;
-	bool Heartbeat_TotalStreamBytes_active;
-	bool Heartbeat_TotalRecordBytes_active;
-	bool Heartbeat_TotalRecordFrames_active;
+	bool Heartbeat_active;
 
   private slots:
     void deferredInitOperations();
