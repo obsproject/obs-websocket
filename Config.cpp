@@ -26,6 +26,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #define PARAM_ENABLE "ServerEnabled"
 #define PARAM_PORT "ServerPort"
 #define PARAM_DEBUG "DebugEnabled"
+#define PARAM_ALERT "AlertsEnabled"
 #define PARAM_AUTHREQUIRED "AuthRequired"
 #define PARAM_SECRET "AuthSecret"
 #define PARAM_SALT "AuthSalt"
@@ -38,6 +39,7 @@ Config::Config() :
     ServerEnabled(true),
     ServerPort(4444),
     DebugEnabled(false),
+    AlertsEnabled(true),
     AuthRequired(false),
     Secret(""),
     Salt(""),
@@ -52,6 +54,8 @@ Config::Config() :
             
         config_set_default_bool(obs_config,
             SECTION_NAME, PARAM_DEBUG, DebugEnabled);
+        config_set_default_bool(obs_config,
+            SECTION_NAME, PARAM_ALERT, AlertsEnabled);
 
         config_set_default_bool(obs_config, 
             SECTION_NAME, PARAM_AUTHREQUIRED, AuthRequired);
@@ -80,6 +84,7 @@ void Config::Load() {
     ServerPort = config_get_uint(obs_config, SECTION_NAME, PARAM_PORT);
     
     DebugEnabled = config_get_bool(obs_config, SECTION_NAME, PARAM_DEBUG);
+    AlertsEnabled = config_get_bool(obs_config, SECTION_NAME, PARAM_ALERT);
 
     AuthRequired = config_get_bool(obs_config, SECTION_NAME, PARAM_AUTHREQUIRED);
     Secret = config_get_string(obs_config, SECTION_NAME, PARAM_SECRET);
@@ -93,6 +98,7 @@ void Config::Save() {
     config_set_uint(obs_config, SECTION_NAME, PARAM_PORT, ServerPort);
     
     config_set_bool(obs_config, SECTION_NAME, PARAM_DEBUG, DebugEnabled);
+    config_set_bool(obs_config, SECTION_NAME, PARAM_ALERT, AlertsEnabled);
 
     config_set_bool(obs_config, SECTION_NAME, PARAM_AUTHREQUIRED, AuthRequired);
     config_set_string(obs_config, SECTION_NAME, PARAM_SECRET, Secret);

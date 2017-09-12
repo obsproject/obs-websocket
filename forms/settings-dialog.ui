@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>407</width>
-    <height>175</height>
+    <height>195</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -80,6 +80,16 @@
       </widget>
      </item>
      <item row="5" column="1">
+       <widget class="QCheckBox" name="alertsEnabled">
+         <property name="text">
+           <string>OBSWebsocket.Settings.AlertsEnable</string>
+         </property>
+         <property name="checked">
+           <bool>true</bool>
+         </property>
+       </widget>
+     </item>
+     <item row="6" column="1">
        <widget class="QCheckBox" name="debugEnabled">
          <property name="text">
            <string>OBSWebsocket.Settings.DebugEnable</string>
@@ -113,11 +123,11 @@
    <hints>
     <hint type="sourcelabel">
      <x>248</x>
-     <y>274</y>
+     <y>294</y>
     </hint>
     <hint type="destinationlabel">
      <x>157</x>
-     <y>294</y>
+     <y>314</y>
     </hint>
    </hints>
   </connection>
@@ -129,11 +139,11 @@
    <hints>
     <hint type="sourcelabel">
      <x>316</x>
-     <y>280</y>
+     <y>300</y>
     </hint>
     <hint type="destinationlabel">
      <x>286</x>
-     <y>294</y>
+     <y>314</y>
     </hint>
    </hints>
   </connection>
