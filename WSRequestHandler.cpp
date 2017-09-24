@@ -45,6 +45,8 @@ WSRequestHandler::WSRequestHandler(QWebSocket* client) :
     messageMap["GetAuthRequired"] = WSRequestHandler::HandleGetAuthRequired;
     messageMap["Authenticate"] = WSRequestHandler::HandleAuthenticate;
 
+    messageMap["SetHeartbeat"] = WSRequestHandler::HandleSetHeartbeat;
+
     messageMap["SetCurrentScene"] = WSRequestHandler::HandleSetCurrentScene;
     messageMap["GetCurrentScene"] = WSRequestHandler::HandleGetCurrentScene;
     messageMap["GetSceneList"] = WSRequestHandler::HandleGetSceneList;
@@ -296,6 +298,35 @@ void WSRequestHandler::HandleAuthenticate(WSRequestHandler* req) {
     } else {
         req->SendErrorResponse("Authentication Failed.");
     }
+}
+
+/************************************************************************************************************
+* Heatbeat update message is emitted every 2 seconds, when enabled with this request.                       *
+* When the Heartbeat is enabled it always sends a `pulse` to indicate that the host obs is alive.           *
+* Read comment from 'void WSEvents::Heartbeat()' for the total picture.                                     *
+*                                                                                                           *
+* @param {boolean} `enable` Starts/Stops emitting heartbeat messages                                        *
+*                                                                                                           *
+* @api requests                                                                                             *
+* @name HandleSetHeartbeat                                                                                  *
+* @category general                                                                                         *
+************************************************************************ September 2017 *** by RainbowEK ***/
+void WSRequestHandler::HandleSetHeartbeat(WSRequestHandler* req) {
+	if (!req->hasField("enable")) {
+		req->SendErrorResponse("Heartbeat <enable> parameter missing");
+		return;
+	}
+
+    obs_data_t* response = obs_data_create();
+
+    bool keyValue = obs_data_get_bool(req->data, "enable");
+    if (keyValue) WSEvents::Instance->Heartbeat_active = true;
+    else WSEvents::Instance->Heartbeat_active = false;
+		
+    obs_data_set_bool(response, "enable", keyValue);
+    req->SendOKResponse(response);
+
+    obs_data_release(response);
 }
 
  /**

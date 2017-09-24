@@ -53,6 +53,8 @@ class WSRequestHandler : public QObject {
     static void HandleGetAuthRequired(WSRequestHandler* req);
     static void HandleAuthenticate(WSRequestHandler* req);
 
+    static void HandleSetHeartbeat(WSRequestHandler* req);
+
     static void HandleSetCurrentScene(WSRequestHandler* req);
     static void HandleGetCurrentScene(WSRequestHandler* req);
     static void HandleGetSceneList(WSRequestHandler* req);
