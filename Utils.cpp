@@ -24,6 +24,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include "obs-websocket.h"
 
 #include "Utils.h"
+#include "Config.h"
 
 Q_DECLARE_METATYPE(OBSScene);
 
@@ -379,7 +380,7 @@ QSystemTrayIcon* Utils::GetTrayIcon() {
 
 void Utils::SysTrayNotify(QString &text,
     QSystemTrayIcon::MessageIcon icon, QString title) {
-    if (!QSystemTrayIcon::supportsMessages())
+    if (!Config::Current()->AlertsEnabled || !QSystemTrayIcon::supportsMessages())
         return;
 
     QSystemTrayIcon* trayIcon = GetTrayIcon();

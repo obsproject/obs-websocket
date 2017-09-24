@@ -39,6 +39,7 @@ class Config {
     uint64_t ServerPort;
         
     bool DebugEnabled;
+    bool AlertsEnabled;
 
     bool AuthRequired;
     const char* Secret;
