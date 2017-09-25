@@ -2,7 +2,7 @@
  * obs-websocket
  * Copyright (C) 2016-2017	Stéphane Lepin <stephane.lepin@gmail.com>
  * Copyright (C) 2017	Mikhail Swift <https://github.com/mikhailswift>
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -243,8 +243,8 @@ void WSRequestHandler::HandleGetVersion(WSRequestHandler* req) {
  * and `salt` (see "Authentication" for more information).
  * 
  * @return {boolean} `authRequired` Indicates whether authentication is required.
- * @return {String (optional)} `challenge` 
- * @return {String (optional)} `salt` 
+ * @return {String (optional)} `challenge`
+ * @return {String (optional)} `salt`
  * 
  * @api requests
  * @name GetAuthRequired
@@ -300,45 +300,42 @@ void WSRequestHandler::HandleAuthenticate(WSRequestHandler* req) {
     }
 }
 
-/************************************************************************************************************
-* Heatbeat update message is emitted every 2 seconds, when enabled with this request.                       *
-* When the Heartbeat is enabled it always sends a `pulse` to indicate that the host obs is alive.           *
-* Read comment from 'void WSEvents::Heartbeat()' for the total picture.                                     *
-*                                                                                                           *
-* @param {boolean} `enable` Starts/Stops emitting heartbeat messages                                        *
-*                                                                                                           *
-* @api requests                                                                                             *
-* @name HandleSetHeartbeat                                                                                  *
-* @category general                                                                                         *
-************************************************************************ September 2017 *** by RainbowEK ***/
+/**
+ * Enable/disable sending of the Heartbeat event
+ *
+ * @param {boolean} `enable` Starts/Stops emitting heartbeat messages
+ *
+ * @api requests
+ * @name HandleSetHeartbeat
+ * @category general
+ */
 void WSRequestHandler::HandleSetHeartbeat(WSRequestHandler* req) {
-	if (!req->hasField("enable")) {
-		req->SendErrorResponse("Heartbeat <enable> parameter missing");
-		return;
-	}
+    if (!req->hasField("enable")) {
+        req->SendErrorResponse("Heartbeat <enable> parameter missing");
+        return;
+    }
+
+    WSEvents::Instance->Heartbeat_active =
+        obs_data_get_bool(req->data, "enable");
 
     obs_data_t* response = obs_data_create();
-
-    bool keyValue = obs_data_get_bool(req->data, "enable");
-    if (keyValue) WSEvents::Instance->Heartbeat_active = true;
-    else WSEvents::Instance->Heartbeat_active = false;
-		
-    obs_data_set_bool(response, "enable", keyValue);
+    obs_data_set_bool(response, "enable",
+        WSEvents::Instance->Heartbeat_active);
     req->SendOKResponse(response);
 
     obs_data_release(response);
 }
 
  /**
- * Switch to the specified scene.
- * 
- * @param {String} `scene-name` Name of the scene to switch to.
- *
- * @api requests
- * @name SetCurrentScene
- * @category scenes
- * @since 0.3
- */
+  * Switch to the specified scene.
+  *
+  * @param {String} `scene-name` Name of the scene to switch to.
+  *
+  * @api requests
+  * @name SetCurrentScene
+  * @category scenes
+  * @since 0.3
+  */
 void WSRequestHandler::HandleSetCurrentScene(WSRequestHandler* req) {
     if (!req->hasField("scene-name")) {
         req->SendErrorResponse("missing request parameters");

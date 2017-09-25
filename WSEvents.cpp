@@ -2,7 +2,7 @@
  * obs-websocket
  * Copyright (C) 2016-2017	Stéphane Lepin <stephane.lepin@gmail.com>
  * Copyright (C) 2017	Brendan Hagan <https://github.com/haganbmj>
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -114,8 +114,6 @@ void WSEvents::FrontendEventHandler(enum obs_frontend_event event, void* private
 
     if (!owner->_srv)
         return;
-
-    // TODO : implement SourceOrderChanged and RepopulateSources
 
     if (event == OBS_FRONTEND_EVENT_SCENE_CHANGED) {
         owner->OnSceneChange();
@@ -669,25 +667,25 @@ void WSEvents::StreamStatus() {
     obs_output_release(stream_output);
 }
 
-/************************************************************************************************************
-* Heatbeat is emitted every 2 seconds, when enabled with request: SetHeartbeat                              *
-*                                                                                                           *
-* @return {boolean} `pulse` Toggles between every JSON meassage as an "I am alive" indicator.               *
-* @return {string (optional)} `current-profile` Current active profile.                                     *
-* @return {string (optional)} `current-scene` Current active scene.                                         *
-* @return {boolean (optional)} `streaming` Current streaming state.                                         *
-* @return {int (optional)} `total-stream-time` Total time (in seconds) since the stream started.            *
-* @return {int (optional)} `total-stream-bytes` Total bytes sent since the stream started.                  *
-* @return {int (optional)} `total-stream-frames` Total frames streamed since the stream started.            *
-* @return {boolean (optional)} `recording` Current recording state.                                         *
-* @return {int (optional)} `total-record-time` Total time (in seconds) since recording started.             *
-* @return {int (optional)} `total-record-bytes` Total bytes recorded since the recording started.           *
-* @return {int (optional)} `total-record-frames` Total frames recorded since the recording started.         *
-*                                                                                                           *
-* @api events                                                                                               *
-* @name Heartbeat                                                                                           *
-* @category general                                                                                         *
-************************************************************************ September 2017 *** by RainbowEK ***/
+/**
+ * Emitted every 2 seconds after enabling it by calling SetHeartbeat.
+ * 
+ * @return {boolean} `pulse` Toggles between every JSON meassage as an "I am alive" indicator.
+ * @return {string (optional)} `current-profile` Current active profile.
+ * @return {string (optional)} `current-scene` Current active scene.
+ * @return {boolean (optional)} `streaming` Current streaming state.
+ * @return {int (optional)} `total-stream-time` Total time (in seconds) since the stream started.
+ * @return {int (optional)} `total-stream-bytes` Total bytes sent since the stream started.
+ * @return {int (optional)} `total-stream-frames` Total frames streamed since the stream started.
+ * @return {boolean (optional)} `recording` Current recording state.
+ * @return {int (optional)} `total-record-time` Total time (in seconds) since recording started.
+ * @return {int (optional)} `total-record-bytes` Total bytes recorded since the recording started.
+ * @return {int (optional)} `total-record-frames` Total frames recorded since the recording started.
+ * 
+ * @api events
+ * @name Heartbeat
+ * @category general
+ */
 void WSEvents::Heartbeat() {
 
     if (!Heartbeat_active) return;
@@ -709,20 +707,20 @@ void WSEvents::Heartbeat() {
     obs_data_set_string(data, "current-scene", name);
 
     obs_data_set_bool(data, "streaming", streaming_active);
-	if (streaming_active) {
-		uint64_t totalStreamTime = (os_gettime_ns() - _stream_starttime) / 1000000000;
-		obs_data_set_int(data, "total-stream-time", totalStreamTime);
-		obs_data_set_int(data, "total-stream-bytes", (uint64_t)obs_output_get_total_bytes(stream_output));
-		obs_data_set_int(data, "total-stream-frames", obs_output_get_total_frames(stream_output));
-	}
+    if (streaming_active) {
+        uint64_t totalStreamTime = (os_gettime_ns() - _stream_starttime) / 1000000000;
+        obs_data_set_int(data, "total-stream-time", totalStreamTime);
+        obs_data_set_int(data, "total-stream-bytes", (uint64_t)obs_output_get_total_bytes(stream_output));
+        obs_data_set_int(data, "total-stream-frames", obs_output_get_total_frames(stream_output));
+    }
 
     obs_data_set_bool(data, "recording", recording_active);
-	if (recording_active) {
-		uint64_t totalRecordTime = (os_gettime_ns() - _rec_starttime) / 1000000000;
+    if (recording_active) {
+        uint64_t totalRecordTime = (os_gettime_ns() - _rec_starttime) / 1000000000;
         obs_data_set_int(data, "total-record-time", totalRecordTime);
-		obs_data_set_int(data, "total-record-bytes", (uint64_t)obs_output_get_total_bytes(record_output));
-		obs_data_set_int(data, "total-record-frames", obs_output_get_total_frames(record_output));
-	}
+        obs_data_set_int(data, "total-record-bytes", (uint64_t)obs_output_get_total_bytes(record_output));
+        obs_data_set_int(data, "total-record-frames", obs_output_get_total_frames(record_output));
+    }
 
     broadcastUpdate("Heartbeat", data);
     obs_data_release(data);

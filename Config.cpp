@@ -47,11 +47,11 @@ Config::Config() :
     // OBS Config defaults
     config_t* obs_config = obs_frontend_get_global_config();
     if (obs_config) {
-        config_set_default_bool(obs_config, 
+        config_set_default_bool(obs_config,
             SECTION_NAME, PARAM_ENABLE, ServerEnabled);
-        config_set_default_uint(obs_config, 
+        config_set_default_uint(obs_config,
             SECTION_NAME, PARAM_PORT, ServerPort);
-            
+
         config_set_default_bool(obs_config,
             SECTION_NAME, PARAM_DEBUG, DebugEnabled);
         config_set_default_bool(obs_config,
@@ -82,7 +82,7 @@ void Config::Load() {
 
     ServerEnabled = config_get_bool(obs_config, SECTION_NAME, PARAM_ENABLE);
     ServerPort = config_get_uint(obs_config, SECTION_NAME, PARAM_PORT);
-    
+
     DebugEnabled = config_get_bool(obs_config, SECTION_NAME, PARAM_DEBUG);
     AlertsEnabled = config_get_bool(obs_config, SECTION_NAME, PARAM_ALERT);
 
@@ -96,7 +96,7 @@ void Config::Save() {
 
     config_set_bool(obs_config, SECTION_NAME, PARAM_ENABLE, ServerEnabled);
     config_set_uint(obs_config, SECTION_NAME, PARAM_PORT, ServerPort);
-    
+
     config_set_bool(obs_config, SECTION_NAME, PARAM_DEBUG, DebugEnabled);
     config_set_bool(obs_config, SECTION_NAME, PARAM_ALERT, AlertsEnabled);
 
@@ -134,7 +134,7 @@ const char* Config::GenerateSecret(const char* password, const char* salt) {
     mbedtls_sha256(
         (unsigned char*)passAndSalt.c_str(), passAndSalt.length(),
         challengeHash, 0);
-    
+
     // Encode SHA256 hash to Base64
     char* challenge = (char*)bzalloc(64);
     size_t challenge_bytes = 0;
