@@ -80,6 +80,8 @@ auth_response = base64_encode(auth_response_hash)
     + [ReplayStopped](#replaystopped)
   * [Other](#other)
     + [Exiting](#exiting)
+  * [General](#general)
+    + [Heartbeat](#heartbeat)
   * [Sources](#sources)
     + [SourceOrderChanged](#sourceorderchanged)
     + [SceneItemAdded](#sceneitemadded)
@@ -89,10 +91,11 @@ auth_response = base64_encode(auth_response_hash)
     + [PreviewSceneChanged](#previewscenechanged)
     + [StudioModeSwitched](#studiomodeswitched)
 - [Requests](#requests)
-  * [General](#general)
+  * [General](#general-1)
     + [GetVersion](#getversion)
     + [GetAuthRequired](#getauthrequired)
     + [Authenticate](#authenticate)
+    + [HandleSetHeartbeat](#handlesetheartbeat)
   * [Scenes](#scenes-1)
     + [SetCurrentScene](#setcurrentscene)
     + [GetCurrentScene](#getcurrentscene)
@@ -508,6 +511,33 @@ _No additional response items._
 
 ---
 
+## General
+
+### Heartbeat
+
+- Added in v
+
+Emitted every 2 seconds after enabling it by calling SetHeartbeat.
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `pulse` | _boolean_ | Toggles between every JSON meassage as an "I am alive" indicator. |
+| `current-profile` | _string (optional)_ | Current active profile. |
+| `current-scene` | _string (optional)_ | Current active scene. |
+| `streaming` | _boolean (optional)_ | Current streaming state. |
+| `total-stream-time` | _int (optional)_ | Total time (in seconds) since the stream started. |
+| `total-stream-bytes` | _int (optional)_ | Total bytes sent since the stream started. |
+| `total-stream-frames` | _int (optional)_ | Total frames streamed since the stream started. |
+| `recording` | _boolean (optional)_ | Current recording state. |
+| `total-record-time` | _int (optional)_ | Total time (in seconds) since recording started. |
+| `total-record-bytes` | _int (optional)_ | Total bytes recorded since the recording started. |
+| `total-record-frames` | _int (optional)_ | Total frames recorded since the recording started. |
+
+
+---
+
 ## Sources
 
 ### SourceOrderChanged
@@ -680,6 +710,25 @@ Attempt to authenticate the client to the server.
 | Name | Type  | Description |
 | ---- | :---: | ------------|
 | `auth` | _String_ | Response to the auth challenge (see "Authentication" for more information). |
+
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+### HandleSetHeartbeat
+
+- Added in v
+
+Enable/disable sending of the Heartbeat event
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `enable` | _boolean_ | Starts/Stops emitting heartbeat messages |
 
 
 **Response Items:**

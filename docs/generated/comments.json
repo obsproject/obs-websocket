@@ -934,6 +934,104 @@
         "examples": []
       }
     ],
+    "general": [
+      {
+        "subheads": [],
+        "description": "Emitted every 2 seconds after enabling it by calling SetHeartbeat.",
+        "return": [
+          "{boolean} `pulse` Toggles between every JSON meassage as an \"I am alive\" indicator.",
+          "{string (optional)} `current-profile` Current active profile.",
+          "{string (optional)} `current-scene` Current active scene.",
+          "{boolean (optional)} `streaming` Current streaming state.",
+          "{int (optional)} `total-stream-time` Total time (in seconds) since the stream started.",
+          "{int (optional)} `total-stream-bytes` Total bytes sent since the stream started.",
+          "{int (optional)} `total-stream-frames` Total frames streamed since the stream started.",
+          "{boolean (optional)} `recording` Current recording state.",
+          "{int (optional)} `total-record-time` Total time (in seconds) since recording started.",
+          "{int (optional)} `total-record-bytes` Total bytes recorded since the recording started.",
+          "{int (optional)} `total-record-frames` Total frames recorded since the recording started."
+        ],
+        "api": "events",
+        "name": "Heartbeat",
+        "category": "general",
+        "returns": [
+          {
+            "type": "boolean",
+            "name": "pulse",
+            "description": "Toggles between every JSON meassage as an \"I am alive\" indicator."
+          },
+          {
+            "type": "string (optional)",
+            "name": "current-profile",
+            "description": "Current active profile."
+          },
+          {
+            "type": "string (optional)",
+            "name": "current-scene",
+            "description": "Current active scene."
+          },
+          {
+            "type": "boolean (optional)",
+            "name": "streaming",
+            "description": "Current streaming state."
+          },
+          {
+            "type": "int (optional)",
+            "name": "total-stream-time",
+            "description": "Total time (in seconds) since the stream started."
+          },
+          {
+            "type": "int (optional)",
+            "name": "total-stream-bytes",
+            "description": "Total bytes sent since the stream started."
+          },
+          {
+            "type": "int (optional)",
+            "name": "total-stream-frames",
+            "description": "Total frames streamed since the stream started."
+          },
+          {
+            "type": "boolean (optional)",
+            "name": "recording",
+            "description": "Current recording state."
+          },
+          {
+            "type": "int (optional)",
+            "name": "total-record-time",
+            "description": "Total time (in seconds) since recording started."
+          },
+          {
+            "type": "int (optional)",
+            "name": "total-record-bytes",
+            "description": "Total bytes recorded since the recording started."
+          },
+          {
+            "type": "int (optional)",
+            "name": "total-record-frames",
+            "description": "Total frames recorded since the recording started."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "Heartbeat"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "general"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "Heartbeat"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      }
+    ],
     "sources": [
       {
         "subheads": [],
@@ -1377,6 +1475,40 @@
         "heading": {
           "level": 2,
           "text": "Authenticate"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Enable/disable sending of the Heartbeat event",
+        "param": "{boolean} `enable` Starts/Stops emitting heartbeat messages",
+        "api": "requests",
+        "name": "HandleSetHeartbeat",
+        "category": "general",
+        "params": [
+          {
+            "type": "boolean",
+            "name": "enable",
+            "description": "Starts/Stops emitting heartbeat messages"
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "HandleSetHeartbeat"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "general"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "HandleSetHeartbeat"
         },
         "lead": "",
         "type": "class",
