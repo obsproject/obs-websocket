@@ -306,7 +306,7 @@ void WSRequestHandler::HandleAuthenticate(WSRequestHandler* req) {
  * @param {boolean} `enable` Starts/Stops emitting heartbeat messages
  *
  * @api requests
- * @name HandleSetHeartbeat
+ * @name SetHeartbeat
  * @category general
  */
 void WSRequestHandler::HandleSetHeartbeat(WSRequestHandler* req) {
@@ -326,16 +326,16 @@ void WSRequestHandler::HandleSetHeartbeat(WSRequestHandler* req) {
     obs_data_release(response);
 }
 
- /**
-  * Switch to the specified scene.
-  *
-  * @param {String} `scene-name` Name of the scene to switch to.
-  *
-  * @api requests
-  * @name SetCurrentScene
-  * @category scenes
-  * @since 0.3
-  */
+/**
+ * Switch to the specified scene.
+ *
+ * @param {String} `scene-name` Name of the scene to switch to.
+ *
+ * @api requests
+ * @name SetCurrentScene
+ * @category scenes
+ * @since 0.3
+ */
 void WSRequestHandler::HandleSetCurrentScene(WSRequestHandler* req) {
     if (!req->hasField("scene-name")) {
         req->SendErrorResponse("missing request parameters");
