@@ -1485,7 +1485,7 @@
         "description": "Enable/disable sending of the Heartbeat event",
         "param": "{boolean} `enable` Starts/Stops emitting heartbeat messages",
         "api": "requests",
-        "name": "HandleSetHeartbeat",
+        "name": "SetHeartbeat",
         "category": "general",
         "params": [
           {
@@ -1497,7 +1497,7 @@
         "names": [
           {
             "name": "",
-            "description": "HandleSetHeartbeat"
+            "description": "SetHeartbeat"
           }
         ],
         "categories": [
@@ -1508,7 +1508,7 @@
         ],
         "heading": {
           "level": 2,
-          "text": "HandleSetHeartbeat"
+          "text": "SetHeartbeat"
         },
         "lead": "",
         "type": "class",

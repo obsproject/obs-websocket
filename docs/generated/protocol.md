@@ -95,7 +95,7 @@ auth_response = base64_encode(auth_response_hash)
     + [GetVersion](#getversion)
     + [GetAuthRequired](#getauthrequired)
     + [Authenticate](#authenticate)
-    + [HandleSetHeartbeat](#handlesetheartbeat)
+    + [SetHeartbeat](#setheartbeat)
   * [Scenes](#scenes-1)
     + [SetCurrentScene](#setcurrentscene)
     + [GetCurrentScene](#getcurrentscene)
@@ -718,7 +718,7 @@ _No additional response items._
 
 ---
 
-### HandleSetHeartbeat
+### SetHeartbeat
 
 - Added in v
 
