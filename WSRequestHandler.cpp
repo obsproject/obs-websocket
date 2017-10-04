@@ -1372,7 +1372,7 @@ void WSRequestHandler::HandleSetSceneItemCrop(WSRequestHandler* req) {
  * @category sources
  * @since 4.1.3?
  */
-void WSRequestHandler::HandleGetSceneItemSceneProperties(WSRequestHandler* req) {
+void WSRequestHandler::HandleGetSceneItemProperties(WSRequestHandler* req) {
     if (!req->hasField("item")) {
         req->SendErrorResponse("missing request parameters");
         return;
