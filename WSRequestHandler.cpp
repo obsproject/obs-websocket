@@ -56,6 +56,7 @@ WSRequestHandler::WSRequestHandler(QWebSocket* client) :
     messageMap["SetSceneItemPosition"] = WSRequestHandler::HandleSetSceneItemPosition;
     messageMap["SetSceneItemTransform"] = WSRequestHandler::HandleSetSceneItemTransform;
     messageMap["SetSceneItemCrop"] = WSRequestHandler::HandleSetSceneItemCrop;
+    messageMap["GetSceneItemSceneProperties"] = WSRequestHandler::HandleGetSceneItemSceneProperties;
     messageMap["ResetSceneItem"] = WSRequestHandler::HandleResetSceneItem;
 
     messageMap["GetStreamingStatus"] = WSRequestHandler::HandleGetStreamingStatus;
