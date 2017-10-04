@@ -56,8 +56,7 @@ WSRequestHandler::WSRequestHandler(QWebSocket* client) :
     messageMap["SetSceneItemPosition"] = WSRequestHandler::HandleSetSceneItemPosition;
     messageMap["SetSceneItemTransform"] = WSRequestHandler::HandleSetSceneItemTransform;
     messageMap["SetSceneItemCrop"] = WSRequestHandler::HandleSetSceneItemCrop;
-    // This method name needs work. Perhaps just "GetSceneItemProperties"
-    messageMap["GetSceneItemSceneProperties"] = WSRequestHandler::HandleGetSceneItemSceneProperties;
+    messageMap["GetSceneItemProperties"] = WSRequestHandler::HandleGetSceneItemProperties;
     messageMap["ResetSceneItem"] = WSRequestHandler::HandleResetSceneItem;
 
     messageMap["GetStreamingStatus"] = WSRequestHandler::HandleGetStreamingStatus;
@@ -1350,7 +1349,23 @@ void WSRequestHandler::HandleSetSceneItemCrop(WSRequestHandler* req) {
  * @param {String (optional)} `scene-name` the name of the scene that the source item belongs to. Defaults to the current scene.
  * @param {String} `item` The name of the source.
  *
- * @return TO POPULATE
+ * @return {String} `name` The name of the source.
+ * @return {int} `position.x` The x position of the source from the left.
+ * @return {int} `position.y` The y position of the source from the top.
+ * @return {double} `rotation` The clockwise rotation of the item in degrees around the point of alignment.
+ * @return {int?string?} `alignment` The point on the source that the item is manipulated from.
+ * @return {double} `scale.x` The x-scale factor of the source.
+ * @return {double} `scale.y` The y-scale factor of the source.
+ * @return {int} `crop.top` The number of pixels cropped off the top of the source before scaling.
+ * @return {int} `crop.right` The number of pixels cropped off the right of the source before scaling.
+ * @return {int} `crop.bottom` The number of pixels cropped off the bottom of the source before scaling.
+ * @return {int} `crop.left` The number of pixels cropped off the left of the source before scaling.
+ * @return {bool} `visible` If the source is visible.
+ * @return {bool/Object} `bounds` False if bounds are not turned on. Object if bounds are turned on.
+ * @return {String} `bounds.type` Type of bounding box.
+ * @return {int?string?} `bounds.alignment` Alignment of the bounding box.
+ * @return {double} `bounds.width` Width of the bounding box.
+ * @return {double} `bounds.height` Height of the bounding box.
  *
  * @api requests
  * @name GetSceneItemSceneProperties
@@ -1383,7 +1398,6 @@ void WSRequestHandler::HandleGetSceneItemSceneProperties(WSRequestHandler* req) 
         // is name even needed here?
         obs_data_set_string(data, "name", item_name);
         
-        // is nested ideal?
         obs_data_t* pos_data = obs_data_create();
         vec2 pos;
         obs_sceneitem_get_pos(scene_item, &pos);
@@ -1393,7 +1407,7 @@ void WSRequestHandler::HandleGetSceneItemSceneProperties(WSRequestHandler* req) 
 
         obs_data_set_double(data, "rotation", obs_sceneitem_get_rot(scene_item));
 
-        // investigate this and maybe convert so string in switch statment
+        // investigate this and maybe convert so string in switch statement
         // #define OBS_ALIGN_CENTER (0)
         // #define OBS_ALIGN_LEFT   (1<<0)
         // #define OBS_ALIGN_RIGHT  (1<<1)
@@ -1461,8 +1475,8 @@ void WSRequestHandler::HandleGetSceneItemSceneProperties(WSRequestHandler* req) 
             obs_data_set_int(bounds_data, obs_sceneitem_get_bounds_alignment(scene_item));
             vec2 bounds;
             obs_sceneitem_get_bounds(scene_item, &bounds);
-            obs_data_set_float(bounds_data, "width", bounds.x);
-            obs_data_set_float(bounds_data, "height", bounds.y);
+            obs_data_set_double(bounds_data, "width", bounds.x);
+            obs_data_set_double(bounds_data, "height", bounds.y);
             obs_data_set_obj(data, "bounds", bounds_data);
         }
 
