@@ -1343,6 +1343,104 @@ void WSRequestHandler::HandleSetSceneItemCrop(WSRequestHandler* req) {
 }
 
 /**
+ * Gets the scene specific properties of the specified source item.
+ *
+ * @param {String (optional)} `scene-name` the name of the scene that the source item belongs to. Defaults to the current scene.
+ * @param {String} `item` The name of the source.
+ *
+ * @return SOMESTUFF HERE
+ *
+ * @api requests
+ * @name GetSceneItemSceneProperties
+ * @category sources
+ * @since 4.1.3?
+ */
+void WSRequestHandler::HandleGetSceneItemSceneProperties(WSRequestHandler* req) {
+    if (!req->hasField("item")) {
+        req->SendErrorResponse("missing request parameters");
+        return;
+    }
+
+    const char* item_name = obs_data_get_string(req->data, "item");
+    if (!str_valid(item_name)) {
+        req->SendErrorResponse("invalid request parameters");
+        return;
+    }
+
+    const char* scene_name = obs_data_get_string(req->data, "scene-name");
+    obs_source_t* scene = Utils::GetSceneFromNameOrCurrent(scene_name);
+    if (!scene) {
+        req->SendErrorResponse("requested scene doesn't exist");
+        return;
+    }
+
+    obs_sceneitem_t* scene_item = Utils::GetSceneItemFromName(scene, item_name);
+    if (scene_item) {
+        obs_data_t* data = obs_data_create();
+
+        // is name even needed here?
+        obs_data_set_string(data, "name", obs_source_get_name(obs_sceneitem_get_source(scene_item)));
+        
+        obs_data_t* pos_data = obs_data_create();
+        vec2 pos;
+        obs_sceneitem_get_pos(scene_item, &pos);
+        obs_data_set_double(pos_data, "x", pos.x);
+        obs_data_set_double(pos_data, "y", pos.y);
+        obs_data_set_obj(data, "position", pos_data);
+
+        obs_data_set_double(data, "rotation", obs_sceneitem_get_rot(scene_item));
+
+        // investigate this and maybe convert so string in switch statment
+        obs_data_set_int(data, "alignment", obs_sceneitem_get_alignment(scene_item));
+        
+        obs_data_t* scale_data = obs_data_create();
+        vec2 scale;
+        obs_sceneitem_get_scale(scene_item, &scale);
+        obs_data_set_double(scale_data, "x", scale.x);
+        obs_data_set_double(scale_data, "y", scale.y);
+        obs_data_set_obj(data, "scale", scale_data);
+
+        obs_data_t* crop_data = obs_data_create();
+        obs_sceneitem_crop crop;
+        obs_sceneitem_get_crop(scene_item, &crop);
+        obs_data_set_int(crop_data, "left", crop.left);
+        obs_data_set_int(crop_data, "top", crop.top);
+        obs_data_set_int(crop_data, "right", crop.right);
+        obs_data_set_int(crop_data, "bottom", crop.bottom);
+        obs_data_set_obj(data, "crop", crop_data);
+
+        obs_data_set_bool(data, "visible", obs_sceneitem_visible(scene_item));
+
+        obs_bounds_type bounds_type = obs_sceneitem_get_bounds_type(scene_item); // enum obs_bounds_type
+        if (bounds_type != OBS_BOUNDS_NONE) {
+            obs_data_t bounds_data;
+            // same with alignment above, decide if it should convert to string
+            obs_data_set_int(bounds_data, obs_sceneitem_get_bounds_alignment(scene_item));
+            vec2 bounds;
+            obs_sceneitem_get_bounds(scene_item, &bounds);
+            obs_data_set_float(bounds_data, "width", bounds.x);
+            obs_data_set_float(bounds_data, "height", bounds.y);
+            obs_data_set_obj(data, "bounds", bounds_data);
+        }
+
+        // source width?
+        // source height?
+        // locked?
+
+        // obs_source_t* item_source = obs_sceneitem_get_source(item);
+        // float item_width = float(obs_source_get_width(item_source));
+        // float item_height = float(obs_source_get_height(item_source));
+
+        obs_sceneitem_release(scene_item);
+        req->SendOKResponse(data);
+    } else {
+        req->SendErrorResponse("specified scene item doesn't exist");
+    }
+
+    obs_source_release(scene);
+}
+
+/**
  * Change the active scene collection.
  *
  * @param {String} `sc-name` Name of the desired scene collection.
