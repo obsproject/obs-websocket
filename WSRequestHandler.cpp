@@ -1472,7 +1472,7 @@ void WSRequestHandler::HandleGetSceneItemProperties(WSRequestHandler* req) {
             // #define OBS_ALIGN_RIGHT  (1<<1)
             // #define OBS_ALIGN_TOP    (1<<2)
             // #define OBS_ALIGN_BOTTOM (1<<3)
-            obs_data_set_int(bounds_data, obs_sceneitem_get_bounds_alignment(scene_item));
+            obs_data_set_int(bounds_data, "alignment", obs_sceneitem_get_bounds_alignment(scene_item));
             vec2 bounds;
             obs_sceneitem_get_bounds(scene_item, &bounds);
             obs_data_set_double(bounds_data, "width", bounds.x);
