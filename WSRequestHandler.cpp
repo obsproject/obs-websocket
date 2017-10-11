@@ -1541,7 +1541,7 @@ void WSRequestHandler::HandleSetSceneItemProperties(WSRequestHandler* req) {
     if (req->hasField("position")) {
         vec2 old_position;
         obs_sceneitem_get_pos(scene_item, &old_position);
-        vec2 req_position = obs_data_get_obj(req->data, "position");
+        obs_data_t* req_position = obs_data_get_obj(req->data, "position");
         vec2 new_position = old_position;
         if (req_crop->hasField("x")) {
             new_position.x = obs_data_get_int(req_position, "x");
@@ -1555,7 +1555,7 @@ void WSRequestHandler::HandleSetSceneItemProperties(WSRequestHandler* req) {
     if (req->hasField("crop")) {
         obs_sceneitem_crop old_crop;
         obs_sceneitem_get_crop(scene_item, &old_crop);
-        obs_data_t req_crop = obs_data_get_obj(req->data, "crop");
+        obs_data_t* req_crop = obs_data_get_obj(req->data, "crop");
         obs_sceneitem_crop new_crop = old_crop;
         if (req_crop->hasField("top")) {
             new_crop.top = obs_data_get_int(req_crop, "top");
