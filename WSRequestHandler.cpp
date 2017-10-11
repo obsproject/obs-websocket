@@ -57,6 +57,7 @@ WSRequestHandler::WSRequestHandler(QWebSocket* client) :
     messageMap["SetSceneItemTransform"] = WSRequestHandler::HandleSetSceneItemTransform;
     messageMap["SetSceneItemCrop"] = WSRequestHandler::HandleSetSceneItemCrop;
     messageMap["GetSceneItemProperties"] = WSRequestHandler::HandleGetSceneItemProperties;
+    messageMap["SetSceneItemProperties"] = WSRequestHandler::HandleSetSceneItemProperties;
     messageMap["ResetSceneItem"] = WSRequestHandler::HandleResetSceneItem;
 
     messageMap["GetStreamingStatus"] = WSRequestHandler::HandleGetStreamingStatus;
@@ -1328,8 +1329,8 @@ void WSRequestHandler::HandleSetSceneItemCrop(WSRequestHandler* req) {
     if (scene_item) {
         struct obs_sceneitem_crop crop = { 0 };
         crop.top = obs_data_get_int(req->data, "top");
-        crop.bottom = obs_data_get_int(req->data, "bottom");;
-        crop.left = obs_data_get_int(req->data, "left");;
+        crop.bottom = obs_data_get_int(req->data, "bottom");
+        crop.left = obs_data_get_int(req->data, "left");
         crop.right = obs_data_get_int(req->data, "right");
 
         obs_sceneitem_set_crop(scene_item, &crop);
@@ -1491,6 +1492,88 @@ void WSRequestHandler::HandleGetSceneItemProperties(WSRequestHandler* req) {
 
     obs_sceneitem_release(scene_item);
     req->SendOKResponse(data);
+    obs_source_release(scene);
+}
+
+/**
+ * Sets the scene specific properties of a source.
+ *
+ * @param {String (optional)} `scene-name` the name of the scene that the source item belongs to. Defaults to the current scene.
+ * @param {String} `item` The name of the source.
+ * @param {int} `position.x`
+ * @param {int} `position.y`
+ * @param {int} `crop.top`
+ * @param {int} `crop.bottom`
+ * @param {int} `crop.left`
+ * @param {int} `crop.right`
+ *
+ * @api requests
+ * @name SetSceneItemCrop
+ * @category sources
+ * @since 4.1.0
+ */
+void WSRequestHandler::HandleSetSceneItemProperties(WSRequestHandler* req) {
+    if (!req->hasField("item")) {
+        req->SendErrorResponse("missing request parameters");
+        return;
+    }
+
+    const char* item_name = obs_data_get_string(req->data, "item");
+    if (!str_valid(item_name)) {
+        req->SendErrorResponse("invalid request parameters");
+        return;
+    }
+
+    const char* scene_name = obs_data_get_string(req->data, "scene-name");
+    obs_source_t* scene = Utils::GetSceneFromNameOrCurrent(scene_name);
+    if (!scene) {
+        req->SendErrorResponse("requested scene doesn't exist");
+        return;
+    }
+
+    obs_sceneitem_t* scene_item = Utils::GetSceneItemFromName(scene, item_name);
+    if (!scene_item) {
+        req->SendErrorResponse("specified scene item doesn't exist");
+        obs_source_release(scene);
+        return;
+    }
+
+    if (req->hasField("position")) {
+        vec2 old_position;
+        obs_sceneitem_get_pos(scene_item, &old_position);
+        vec2 req_position = obs_data_get_obj(req->data, "position");
+        vec2 new_position = old_position;
+        if (req_crop->hasField("x")) {
+            new_position.x = obs_data_get_int(req_position, "x");
+        }
+        if (req_crop->hasField("y")) {
+            new_position.y = obs_data_get_int(req_position, "y");
+        }
+        obs_sceneitem_set_pos(scene_item, &new_position);
+    }
+
+    if (req->hasField("crop")) {
+        obs_sceneitem_crop old_crop;
+        obs_sceneitem_get_crop(scene_item, &old_crop);
+        obs_data_t req_crop = obs_data_get_obj(req->data, "crop");
+        obs_sceneitem_crop new_crop = old_crop;
+        if (req_crop->hasField("top")) {
+            new_crop.top = obs_data_get_int(req_crop, "top");
+        }
+        if (req_crop->hasField("right")) {
+            new_crop.right = obs_data_get_int(req_crop, "right");
+        }
+        if (req_crop->hasField("bottom")) {
+            new_crop.bottom = obs_data_get_int(req_crop, "bottom");
+        }
+        if (req_crop->hasField("left")) {
+            new_crop.left = obs_data_get_int(req_crop, "left");
+        }
+        obs_sceneitem_set_crop(scene_item, &new_crop);
+    }
+
+    obs_sceneitem_release(scene_item);
+    req->SendOKResponse();
     obs_source_release(scene);
 }
 
