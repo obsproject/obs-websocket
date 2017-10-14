@@ -142,7 +142,7 @@ obs_sceneitem_t* Utils::GetSceneItemFromName(obs_source_t* source, const char* n
     return search.result;
 }
 
-bool Utils::IsValidAlignment(const bool alignment) {
+bool Utils::IsValidAlignment(const uint32_t alignment) {
     switch (alignment) {
         case OBS_ALIGN_CENTER:
         case OBS_ALIGN_LEFT:

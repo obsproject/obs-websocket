@@ -39,7 +39,7 @@ class Utils {
     static obs_source_t* GetTransitionFromName(const char* search_name);
     static obs_source_t* GetSceneFromNameOrCurrent(const char* scene_name);
 
-    static bool IsValidAlignment(const bool alignment);
+    static bool IsValidAlignment(const uint32_t alignment);
 
     static obs_data_array_t* GetScenes();
     static obs_data_t* GetSceneData(obs_source* source);
