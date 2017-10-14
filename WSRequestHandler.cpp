@@ -1552,7 +1552,7 @@ void WSRequestHandler::HandleSetSceneItemProperties(WSRequestHandler* req) {
         if (obs_data_has_user_value(req_position, "alignment")) {
             const uint32_t alignment = obs_data_get_int(req_position, "alignment");
             if (Utils::IsValidAlignment(alignment)) {
-                obs_sceneitem_set_alignment(alignment);
+                obs_sceneitem_set_alignment(scene_item, alignment);
             }
             // Send an error in the else statement?
             // Append an error message to the response?
