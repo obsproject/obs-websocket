@@ -1353,8 +1353,8 @@ void WSRequestHandler::HandleSetSceneItemCrop(WSRequestHandler* req) {
  * @return {String} `name` The name of the source.
  * @return {int} `position.x` The x position of the source from the left.
  * @return {int} `position.y` The y position of the source from the top.
+ * @return {int} `position.alignment` The point on the source that the item is manipulated from.
  * @return {double} `rotation` The clockwise rotation of the item in degrees around the point of alignment.
- * @return {int?string?} `alignment` The point on the source that the item is manipulated from.
  * @return {double} `scale.x` The x-scale factor of the source.
  * @return {double} `scale.y` The y-scale factor of the source.
  * @return {int} `crop.top` The number of pixels cropped off the top of the source before scaling.
@@ -1364,7 +1364,7 @@ void WSRequestHandler::HandleSetSceneItemCrop(WSRequestHandler* req) {
  * @return {bool} `visible` If the source is visible.
  * @return {bool/Object} `bounds` False if bounds are not turned on. Object if bounds are turned on.
  * @return {String} `bounds.type` Type of bounding box.
- * @return {int?string?} `bounds.alignment` Alignment of the bounding box.
+ * @return {int} `bounds.alignment` Alignment of the bounding box.
  * @return {double} `bounds.width` Width of the bounding box.
  * @return {double} `bounds.height` Height of the bounding box.
  *
@@ -1409,17 +1409,16 @@ void WSRequestHandler::HandleGetSceneItemProperties(WSRequestHandler* req) {
     obs_sceneitem_get_pos(scene_item, &pos);
     obs_data_set_double(pos_data, "x", pos.x);
     obs_data_set_double(pos_data, "y", pos.y);
-    obs_data_set_obj(data, "position", pos_data);
-
-    obs_data_set_double(data, "rotation", obs_sceneitem_get_rot(scene_item));
-
-    // investigate this and maybe convert so string in switch statement
     // #define OBS_ALIGN_CENTER (0)
     // #define OBS_ALIGN_LEFT   (1<<0)
     // #define OBS_ALIGN_RIGHT  (1<<1)
     // #define OBS_ALIGN_TOP    (1<<2)
     // #define OBS_ALIGN_BOTTOM (1<<3)
-    obs_data_set_int(data, "alignment", obs_sceneitem_get_alignment(scene_item));
+    obs_data_set_int(pos_data, "alignment", obs_sceneitem_get_alignment(scene_item));
+    obs_data_set_obj(data, "position", pos_data);
+
+    obs_data_set_double(data, "rotation", obs_sceneitem_get_rot(scene_item));
+
 
     obs_data_t* scale_data = obs_data_create();
     vec2 scale;
@@ -1472,7 +1471,6 @@ void WSRequestHandler::HandleGetSceneItemProperties(WSRequestHandler* req) {
             }
         }
 
-        // same with alignment above, decide if it should convert to string
         // #define OBS_ALIGN_CENTER (0)
         // #define OBS_ALIGN_LEFT   (1<<0)
         // #define OBS_ALIGN_RIGHT  (1<<1)
@@ -1502,6 +1500,8 @@ void WSRequestHandler::HandleGetSceneItemProperties(WSRequestHandler* req) {
  * @param {String} `item` The name of the source.
  * @param {int} `position.x`
  * @param {int} `position.y`
+ * @param {int} `position.alignment`
+ * @param {double} `rotation` The new clockwise rotation of the item in degrees
  * @param {int} `crop.top`
  * @param {int} `crop.bottom`
  * @param {int} `crop.left`
@@ -1549,7 +1549,19 @@ void WSRequestHandler::HandleSetSceneItemProperties(WSRequestHandler* req) {
         if (obs_data_has_user_value(req_position, "y")) {
             new_position.y = obs_data_get_int(req_position, "y");
         }
+        if (obs_data_has_user_value(req_position, "alignment")) {
+            const uint32_t alignment = obs_data_get_int(req_position, "alignment");
+            if (Utils::IsValidAlignment(alignment)) {
+                obs_sceneitem_set_alignment(alignment);
+            }
+            // Send an error in the else statement?
+            // Append an error message to the response?
+        }
         obs_sceneitem_set_pos(scene_item, &new_position);
+    }
+
+    if (req->hasField("rotation")) {
+        obs_sceneitem_set_rot(scene_item, (float)obs_data_get_double(req->data, "rotation"));
     }
 
     if (req->hasField("crop")) {
