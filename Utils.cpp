@@ -149,10 +149,10 @@ bool Utils::IsValidAlignment(const uint32_t alignment) {
         case OBS_ALIGN_RIGHT:
         case OBS_ALIGN_TOP:
         case OBS_ALIGN_BOTTOM:
-        case OBS_ALIGN_TOP & OBS_ALIGN_LEFT:
-        case OBS_ALIGN_TOP & OBS_ALIGN_RIGHT:
-        case OBS_ALIGN_BOTTOM & OBS_ALIGN_LEFT:
-        case OBS_ALIGN_BOTTOM & OBS_ALIGN_RIGHT: {
+        case (OBS_ALIGN_TOP & OBS_ALIGN_LEFT):
+        case (OBS_ALIGN_TOP & OBS_ALIGN_RIGHT):
+        case (OBS_ALIGN_BOTTOM & OBS_ALIGN_LEFT):
+        case (OBS_ALIGN_BOTTOM & OBS_ALIGN_RIGHT): {
             return true;
         }
     }
