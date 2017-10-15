@@ -1362,7 +1362,6 @@ void WSRequestHandler::HandleSetSceneItemCrop(WSRequestHandler* req) {
  * @return {int} `crop.bottom` The number of pixels cropped off the bottom of the source before scaling.
  * @return {int} `crop.left` The number of pixels cropped off the left of the source before scaling.
  * @return {bool} `visible` If the source is visible.
- * @return {bool/Object} `bounds` False if bounds are not turned on. Object if bounds are turned on.
  * @return {String} `bounds.type` Type of bounding box.
  * @return {int} `bounds.alignment` Alignment of the bounding box.
  * @return {double} `bounds.width` Width of the bounding box.
@@ -1441,48 +1440,42 @@ void WSRequestHandler::HandleGetSceneItemProperties(WSRequestHandler* req) {
     obs_data_t* bounds_data = obs_data_create();
     obs_bounds_type bounds_type = obs_sceneitem_get_bounds_type(scene_item);
     if (bounds_type == OBS_BOUNDS_NONE) {
-        obs_data_set_bool(data, "bounds", false);
+        obs_data_set_string(bounds_data, "type", "none");
     }
     else {
         switch(bounds_type) {
             case OBS_BOUNDS_STRETCH: {
-                obs_data_set_string(bounds_data, "type", "Stretch");
+                obs_data_set_string(bounds_data, "type", "stretch");
                 break;
             }
             case OBS_BOUNDS_SCALE_INNER: {
-                obs_data_set_string(bounds_data, "type", "Inner");
+                obs_data_set_string(bounds_data, "type", "inner");
                 break;
             }
             case OBS_BOUNDS_SCALE_OUTER: {
-                obs_data_set_string(bounds_data, "type", "Outer");
+                obs_data_set_string(bounds_data, "type", "outer");
                 break;
             }
             case OBS_BOUNDS_SCALE_TO_WIDTH: {
-                obs_data_set_string(bounds_data, "type", "Width");
+                obs_data_set_string(bounds_data, "type", "width");
                 break;
             }
             case OBS_BOUNDS_SCALE_TO_HEIGHT: {
-                obs_data_set_string(bounds_data, "type", "Height");
+                obs_data_set_string(bounds_data, "type", "height");
                 break;
             }
             case OBS_BOUNDS_MAX_ONLY: {
-                obs_data_set_string(bounds_data, "type", "Max");
+                obs_data_set_string(bounds_data, "type", "max");
                 break;
             }
         }
-
-        // #define OBS_ALIGN_CENTER (0)
-        // #define OBS_ALIGN_LEFT   (1<<0)
-        // #define OBS_ALIGN_RIGHT  (1<<1)
-        // #define OBS_ALIGN_TOP    (1<<2)
-        // #define OBS_ALIGN_BOTTOM (1<<3)
         obs_data_set_int(bounds_data, "alignment", obs_sceneitem_get_bounds_alignment(scene_item));
         vec2 bounds;
         obs_sceneitem_get_bounds(scene_item, &bounds);
         obs_data_set_double(bounds_data, "width", bounds.x);
         obs_data_set_double(bounds_data, "height", bounds.y);
-        obs_data_set_obj(data, "bounds", bounds_data);
     }
+    obs_data_set_obj(data, "bounds", bounds_data);
 
     // add source width?
     // add source height?
@@ -1502,10 +1495,13 @@ void WSRequestHandler::HandleGetSceneItemProperties(WSRequestHandler* req) {
  * @param {int} `position.y`
  * @param {int} `position.alignment`
  * @param {double} `rotation` The new clockwise rotation of the item in degrees
+ * @param {double} `scale.x`
+ * @param {double} `scale.y`
  * @param {int} `crop.top`
  * @param {int} `crop.bottom`
  * @param {int} `crop.left`
  * @param {int} `crop.right`
+ * @param {bool} `visible`
  *
  * @api requests
  * @name SetSceneItemCrop
@@ -1564,6 +1560,19 @@ void WSRequestHandler::HandleSetSceneItemProperties(WSRequestHandler* req) {
         obs_sceneitem_set_rot(scene_item, (float)obs_data_get_double(req->data, "rotation"));
     }
 
+    if (req->hasField("scale")) {
+        vec2 old_scale;
+        obs_sceneitem_get_scale(scene_item, &old_scale);
+        obs_data_t* req_scale = obs_data_get_obj(req->data, "crop");
+        vec2 new_scale = old_scale;
+        if (obs_data_has_user_value(req_scale, "x")) {
+            new_scale.x = obs_data_get_double(req_scale, "x");
+        }
+        if (obs_data_has_user_value(req_scale, "y")) {
+            new_scale.y = obs_data_get_double(req_scale, "y");
+        }
+    }
+
     if (req->hasField("crop")) {
         obs_sceneitem_crop old_crop;
         obs_sceneitem_get_crop(scene_item, &old_crop);
@@ -1582,6 +1591,10 @@ void WSRequestHandler::HandleSetSceneItemProperties(WSRequestHandler* req) {
             new_crop.left = obs_data_get_int(req_crop, "left");
         }
         obs_sceneitem_set_crop(scene_item, &new_crop);
+    }
+
+    if (req->hasField("visible")) {
+        obs_sceneitem_set_visible(scene_item, obs_data_get_bool(req->data, "visible"));
     }
 
     obs_sceneitem_release(scene_item);
