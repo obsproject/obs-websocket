@@ -1617,7 +1617,6 @@ void WSRequestHandler::HandleSetSceneItemProperties(WSRequestHandler* req) {
             // Send an error in the else statement?
             // Append an error message to the response?
         }
-        obs_sceneitem_set_pos(scene_item, &new_position);
     }
 
     obs_sceneitem_release(scene_item);
