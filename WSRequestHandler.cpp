@@ -1364,8 +1364,8 @@ void WSRequestHandler::HandleSetSceneItemCrop(WSRequestHandler* req) {
  * @return {bool} `visible` If the source is visible.
  * @return {String} `bounds.type` Type of bounding box.
  * @return {int} `bounds.alignment` Alignment of the bounding box.
- * @return {double} `bounds.width` Width of the bounding box.
- * @return {double} `bounds.height` Height of the bounding box.
+ * @return {double} `bounds.x` Width of the bounding box.
+ * @return {double} `bounds.y` Height of the bounding box.
  *
  * @api requests
  * @name GetSceneItemSceneProperties
@@ -1408,11 +1408,6 @@ void WSRequestHandler::HandleGetSceneItemProperties(WSRequestHandler* req) {
     obs_sceneitem_get_pos(scene_item, &pos);
     obs_data_set_double(pos_data, "x", pos.x);
     obs_data_set_double(pos_data, "y", pos.y);
-    // #define OBS_ALIGN_CENTER (0)
-    // #define OBS_ALIGN_LEFT   (1<<0)
-    // #define OBS_ALIGN_RIGHT  (1<<1)
-    // #define OBS_ALIGN_TOP    (1<<2)
-    // #define OBS_ALIGN_BOTTOM (1<<3)
     obs_data_set_int(pos_data, "alignment", obs_sceneitem_get_alignment(scene_item));
     obs_data_set_obj(data, "position", pos_data);
 
@@ -1443,7 +1438,7 @@ void WSRequestHandler::HandleGetSceneItemProperties(WSRequestHandler* req) {
         obs_data_set_string(bounds_data, "type", "none");
     }
     else {
-        switch(bounds_type) {
+        switch(bounds_type) { // Is this implementation of bounds type good? Is passing an int better?
             case OBS_BOUNDS_STRETCH: {
                 obs_data_set_string(bounds_data, "type", "stretch");
                 break;
@@ -1472,8 +1467,8 @@ void WSRequestHandler::HandleGetSceneItemProperties(WSRequestHandler* req) {
         obs_data_set_int(bounds_data, "alignment", obs_sceneitem_get_bounds_alignment(scene_item));
         vec2 bounds;
         obs_sceneitem_get_bounds(scene_item, &bounds);
-        obs_data_set_double(bounds_data, "width", bounds.x);
-        obs_data_set_double(bounds_data, "height", bounds.y);
+        obs_data_set_double(bounds_data, "x", bounds.x);
+        obs_data_set_double(bounds_data, "y", bounds.y);
     }
     obs_data_set_obj(data, "bounds", bounds_data);
 
@@ -1502,6 +1497,10 @@ void WSRequestHandler::HandleGetSceneItemProperties(WSRequestHandler* req) {
  * @param {int} `crop.left`
  * @param {int} `crop.right`
  * @param {bool} `visible`
+ * @param {int} `bounds.type`
+ * @param {int} `bounds.alignment`
+ * @param {double} `bounds.x`
+ * @param {double} `bounds.y'
  *
  * @api requests
  * @name SetSceneItemCrop
@@ -1595,6 +1594,30 @@ void WSRequestHandler::HandleSetSceneItemProperties(WSRequestHandler* req) {
 
     if (req->hasField("visible")) {
         obs_sceneitem_set_visible(scene_item, obs_data_get_bool(req->data, "visible"));
+    }
+
+    if (req->hasField("bounds")) {
+        // TODO: figure out what to do with bounds type
+        vec2 old_bounds;
+        obs_sceneitem_get_bounds(scene_item, &old_bounds);
+        obs_data_t* req_bounds = obs_data_get_obj(req->data, "bounds");
+        vec2 new_bounds = old_bounds;
+        if (obs_data_has_user_value(req_bounds, "x")) {
+            new_bounds.x = obs_data_get_double(req_bounds, "x");
+        }
+        if (obs_data_has_user_value(req_bounds, "y")) {
+            new_bounds.y = obs_data_get_double(req_bounds, "y");
+        }
+        obs_sceneitem_set_bounds(scene_item, &new_bounds);
+        if (obs_data_has_user_value(req_bounds, "alignment")) {
+            const uint32_t bounds_alignment = obs_data_get_int(req_bounds, "alignment");
+            if (Utils::IsValidAlignment(bounds_alignment)) {
+                obs_sceneitem_set_bounds_alignment(scene_item, bounds_alignment);
+            }
+            // Send an error in the else statement?
+            // Append an error message to the response?
+        }
+        obs_sceneitem_set_pos(scene_item, &new_position);
     }
 
     obs_sceneitem_release(scene_item);
