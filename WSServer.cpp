@@ -59,17 +59,17 @@ void WSServer::Start(quint16 port) {
 }
 
 void WSServer::Stop() {
-    _clMutex.lock();
+    QMutexLocker locker(&_clMutex);
     for(QWebSocket* pClient : _clients) {
         pClient->close();
     }
-    _clMutex.unlock();
+    locker.unlock();
 
     _wsServer->close();
 }
 
 void WSServer::broadcast(QString message) {
-    _clMutex.lock();
+    QMutexLocker locker(&_clMutex);
     for(QWebSocket* pClient : _clients) {
         if (Config::Current()->AuthRequired
             && (pClient->property(PROP_AUTHENTICATED).toBool() == false)) {
@@ -78,7 +78,6 @@ void WSServer::broadcast(QString message) {
         }
         pClient->sendTextMessage(message);
     }
-    _clMutex.unlock();
 }
 
 void WSServer::onNewConnection() {
@@ -91,9 +90,9 @@ void WSServer::onNewConnection() {
 
         pSocket->setProperty(PROP_AUTHENTICATED, false);
 
-        _clMutex.lock();
+        QMutexLocker locker(&_clMutex);
         _clients << pSocket;
-        _clMutex.unlock();
+        locker.unlock();
 
         QHostAddress clientAddr = pSocket->peerAddress();
         QString clientIp = Utils::FormatIPAddress(clientAddr);
@@ -124,9 +123,9 @@ void WSServer::onSocketDisconnected() {
     if (pSocket) {
         pSocket->setProperty(PROP_AUTHENTICATED, false);
 
-        _clMutex.lock();
+        QMutexLocker locker(&_clMutex);
         _clients.removeAll(pSocket);
-        _clMutex.unlock();
+        locker.unlock();
 
         pSocket->deleteLater();
 
