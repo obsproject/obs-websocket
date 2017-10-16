@@ -1370,7 +1370,7 @@ void WSRequestHandler::HandleSetSceneItemCrop(WSRequestHandler* req) {
  * @api requests
  * @name GetSceneItemSceneProperties
  * @category sources
- * @since 4.1.3?
+ * @since unreleased
  */
 void WSRequestHandler::HandleGetSceneItemProperties(WSRequestHandler* req) {
     if (!req->hasField("item")) {
@@ -1482,30 +1482,30 @@ void WSRequestHandler::HandleGetSceneItemProperties(WSRequestHandler* req) {
 }
 
 /**
- * Sets the scene specific properties of a source.
+ * Sets the scene specific properties of a source. Unspecified properties will remain unchanged.
  *
  * @param {String (optional)} `scene-name` the name of the scene that the source item belongs to. Defaults to the current scene.
  * @param {String} `item` The name of the source.
- * @param {int} `position.x`
- * @param {int} `position.y`
- * @param {int} `position.alignment`
- * @param {double} `rotation` The new clockwise rotation of the item in degrees
- * @param {double} `scale.x`
- * @param {double} `scale.y`
- * @param {int} `crop.top`
- * @param {int} `crop.bottom`
- * @param {int} `crop.left`
- * @param {int} `crop.right`
- * @param {bool} `visible`
- * @param {int} `bounds.type`
- * @param {int} `bounds.alignment`
- * @param {double} `bounds.x`
- * @param {double} `bounds.y'
+ * @param {int} `position.x` The new x position of the source.
+ * @param {int} `position.y` The new y position of the source.
+ * @param {int} `position.alignment` The new alignment of the source.
+ * @param {double} `rotation` The new clockwise rotation of the item in degrees.
+ * @param {double} `scale.x` The new x scale of the item.
+ * @param {double} `scale.y` The new y scale of the item.
+ * @param {int} `crop.top` The new amount of pixels cropped off the top of the source before scaling.
+ * @param {int} `crop.bottom` The new amount of pixels cropped off the bottom of the source before scaling.
+ * @param {int} `crop.left` The new amount of pixels cropped off the left of the source before scaling.
+ * @param {int} `crop.right` The new amount of pixels cropped off the right of the source before scaling.
+ * @param {bool} `visible` The new visibility of the source. 'true' shows source, 'false' hides source.
+ * @param {String} `bounds.type` The new bounds type of the source: 'none' 'stretch' 'inner' 'outer' 'width' 'height' 'max'
+ * @param {int} `bounds.alignment` The new alignment of the bounding box. (0-2, 4-6, 8-10)
+ * @param {double} `bounds.x` The new width of the bounding box.
+ * @param {double} `bounds.y' The new height of the bounding box.
  *
  * @api requests
- * @name SetSceneItemCrop
+ * @name SetSceneItemProperties
  * @category sources
- * @since 4.1.0
+ * @since unreleased
  */
 void WSRequestHandler::HandleSetSceneItemProperties(WSRequestHandler* req) {
     if (!req->hasField("item")) {
@@ -1597,10 +1597,47 @@ void WSRequestHandler::HandleSetSceneItemProperties(WSRequestHandler* req) {
     }
 
     if (req->hasField("bounds")) {
-        // TODO: figure out what to do with bounds type
+        obs_data_t* req_bounds = obs_data_get_obj(req->data, "bounds");
+        if (obs_data_has_user_value(req_bounds, "type")) {
+            const char* new_bounds_type = obs_data_get_string(req_bounds, "type");
+            switch(new_bounds_type) {
+                case "none": {
+                    obs_sceneitem_set_bounds_type(OBS_BOUNDS_NONE);
+                    break;
+                }
+                case "stretch": {
+                    obs_sceneitem_set_bounds_type(OBS_BOUNDS_STRETCH);
+                    break;
+                }
+                case "inner": {
+                    obs_sceneitem_set_bounds_type(OBS_BOUNDS_SCALE_INNER);
+                    break;
+                }
+                case "outer": {
+                    obs_sceneitem_set_bounds_type(OBS_BOUNDS_SCALE_OUTER);
+                    break;
+                }
+                case "width": {
+                    obs_sceneitem_set_bounds_type(OBS_BOUNDS_SCALE_TO_WIDTH);
+                    break;
+                }
+                case "height": {
+                    obs_sceneitem_set_bounds_type(OBS_BOUNDS_SCALE_TO_HEIGHT);
+                    break;
+                }
+                case "max": {
+                    obs_sceneitem_set_bounds_type(OBS_BOUNDS_MAX_ONLY);
+                    break;
+                }
+                default: {
+                    // Is this the right course of action?
+                    // Should we just append an error to the response for a bad bounds type?
+                    break;
+                }
+            }
+        }
         vec2 old_bounds;
         obs_sceneitem_get_bounds(scene_item, &old_bounds);
-        obs_data_t* req_bounds = obs_data_get_obj(req->data, "bounds");
         vec2 new_bounds = old_bounds;
         if (obs_data_has_user_value(req_bounds, "x")) {
             new_bounds.x = obs_data_get_double(req_bounds, "x");
