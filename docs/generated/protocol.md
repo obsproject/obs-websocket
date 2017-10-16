@@ -147,7 +147,7 @@ auth_response = base64_encode(auth_response_hash)
     + [GetCurrentProfile](#getcurrentprofile)
     + [ListProfiles](#listprofiles)
   * [Settings](#settings)
-    + [SetStreamingSettings](#setstreamingsettings)
+    + [SetStreamSettings](#setstreamsettings)
     + [GetStreamSettings](#getstreamsettings)
     + [SaveStreamSettings](#savestreamsettings)
   * [Studio Mode](#studio-mode-1)
@@ -1665,7 +1665,7 @@ _No specified parameters._
 
 ## Settings
 
-### SetStreamingSettings
+### SetStreamSettings
 
 - Added in v4.1.0
 
@@ -1705,8 +1705,8 @@ _No specified parameters._
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
-| `type` | _String_ | The type of streaming service configuration. Usually 'rtmp_custom' or 'rtmp_common'. |
-| `settings` | _Object_ | Setings of the stream. |
+| `type` | _String_ | The type of streaming service configuration. Possible values: 'rtmp_custom' or 'rtmp_common'. |
+| `settings` | _Object_ | Stream settings object. |
 | `settings.server` | _String_ | The publish URL. |
 | `settings.key` | _String_ | The publish key of the stream. |
 | `settings.use-auth` | _boolean_ | Indicates whether audentication should be used when connecting to the streaming server. |

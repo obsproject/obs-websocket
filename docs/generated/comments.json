@@ -3960,7 +3960,7 @@
           "{boolean} `save` Persist the settings to disk."
         ],
         "api": "requests",
-        "name": "SetStreamingSettings",
+        "name": "SetStreamSettings",
         "category": "settings",
         "since": "4.1.0",
         "params": [
@@ -4008,7 +4008,7 @@
         "names": [
           {
             "name": "",
-            "description": "SetStreamingSettings"
+            "description": "SetStreamSettings"
           }
         ],
         "categories": [
@@ -4025,7 +4025,7 @@
         ],
         "heading": {
           "level": 2,
-          "text": "SetStreamingSettings"
+          "text": "SetStreamSettings"
         },
         "lead": "",
         "type": "class",
@@ -4035,8 +4035,8 @@
         "subheads": [],
         "description": "Get the current streaming server settings.",
         "return": [
-          "{String} `type` The type of streaming service configuration. Usually 'rtmp_custom' or 'rtmp_common'.",
-          "{Object} `settings` Setings of the stream.",
+          "{String} `type` The type of streaming service configuration. Possible values: 'rtmp_custom' or 'rtmp_common'.",
+          "{Object} `settings` Stream settings object.",
           "{String} `settings.server` The publish URL.",
           "{String} `settings.key` The publish key of the stream.",
           "{boolean} `settings.use-auth` Indicates whether audentication should be used when connecting to the streaming server.",
@@ -4051,12 +4051,12 @@
           {
             "type": "String",
             "name": "type",
-            "description": "The type of streaming service configuration. Usually 'rtmp_custom' or 'rtmp_common'."
+            "description": "The type of streaming service configuration. Possible values: 'rtmp_custom' or 'rtmp_common'."
           },
           {
             "type": "Object",
             "name": "settings",
-            "description": "Setings of the stream."
+            "description": "Stream settings object."
           },
           {
             "type": "String",
