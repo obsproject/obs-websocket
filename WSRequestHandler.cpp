@@ -1600,40 +1600,30 @@ void WSRequestHandler::HandleSetSceneItemProperties(WSRequestHandler* req) {
         obs_data_t* req_bounds = obs_data_get_obj(req->data, "bounds");
         if (obs_data_has_user_value(req_bounds, "type")) {
             const char* new_bounds_type = obs_data_get_string(req_bounds, "type");
-            switch(new_bounds_type) {
-                case "none": {
-                    obs_sceneitem_set_bounds_type(OBS_BOUNDS_NONE);
-                    break;
-                }
-                case "stretch": {
-                    obs_sceneitem_set_bounds_type(OBS_BOUNDS_STRETCH);
-                    break;
-                }
-                case "inner": {
-                    obs_sceneitem_set_bounds_type(OBS_BOUNDS_SCALE_INNER);
-                    break;
-                }
-                case "outer": {
-                    obs_sceneitem_set_bounds_type(OBS_BOUNDS_SCALE_OUTER);
-                    break;
-                }
-                case "width": {
-                    obs_sceneitem_set_bounds_type(OBS_BOUNDS_SCALE_TO_WIDTH);
-                    break;
-                }
-                case "height": {
-                    obs_sceneitem_set_bounds_type(OBS_BOUNDS_SCALE_TO_HEIGHT);
-                    break;
-                }
-                case "max": {
-                    obs_sceneitem_set_bounds_type(OBS_BOUNDS_MAX_ONLY);
-                    break;
-                }
-                default: {
-                    // Is this the right course of action?
-                    // Should we just append an error to the response for a bad bounds type?
-                    break;
-                }
+            if (new_bounds_type == "none") {
+                obs_sceneitem_set_bounds_type(OBS_BOUNDS_NONE);
+            }
+            else if (new_bounds_type == "stretch") {
+                obs_sceneitem_set_bounds_type(OBS_BOUNDS_STRETCH);
+            }
+            else if (new_bounds_type == "inner") {
+                obs_sceneitem_set_bounds_type(OBS_BOUNDS_SCALE_INNER);
+            }
+            else if (new_bounds_type == "outer") {
+                obs_sceneitem_set_bounds_type(OBS_BOUNDS_SCALE_OUTER);
+            }
+            else if (new_bounds_type == "width") {
+                obs_sceneitem_set_bounds_type(OBS_BOUNDS_SCALE_TO_WIDTH);
+            }
+            else if (new_bounds_type == "height") {
+                obs_sceneitem_set_bounds_type(OBS_BOUNDS_SCALE_TO_HEIGHT);
+            }
+            else if (new_bounds_type == "max") {
+                obs_sceneitem_set_bounds_type(OBS_BOUNDS_MAX_ONLY);
+            }
+            else {
+                // Is this the right course of action?
+                // Should we just append an error to the response for a bad bounds type?
             }
         }
         vec2 old_bounds;
