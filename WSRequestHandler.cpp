@@ -1601,25 +1601,25 @@ void WSRequestHandler::HandleSetSceneItemProperties(WSRequestHandler* req) {
         if (obs_data_has_user_value(req_bounds, "type")) {
             const char* new_bounds_type = obs_data_get_string(req_bounds, "type");
             if (new_bounds_type == "none") {
-                obs_sceneitem_set_bounds_type(OBS_BOUNDS_NONE);
+                obs_sceneitem_set_bounds_type(scene_item, OBS_BOUNDS_NONE);
             }
             else if (new_bounds_type == "stretch") {
-                obs_sceneitem_set_bounds_type(OBS_BOUNDS_STRETCH);
+                obs_sceneitem_set_bounds_type(scene_item, OBS_BOUNDS_STRETCH);
             }
             else if (new_bounds_type == "inner") {
-                obs_sceneitem_set_bounds_type(OBS_BOUNDS_SCALE_INNER);
+                obs_sceneitem_set_bounds_type(scene_item, OBS_BOUNDS_SCALE_INNER);
             }
             else if (new_bounds_type == "outer") {
-                obs_sceneitem_set_bounds_type(OBS_BOUNDS_SCALE_OUTER);
+                obs_sceneitem_set_bounds_type(scene_item, OBS_BOUNDS_SCALE_OUTER);
             }
             else if (new_bounds_type == "width") {
-                obs_sceneitem_set_bounds_type(OBS_BOUNDS_SCALE_TO_WIDTH);
+                obs_sceneitem_set_bounds_type(scene_item, OBS_BOUNDS_SCALE_TO_WIDTH);
             }
             else if (new_bounds_type == "height") {
-                obs_sceneitem_set_bounds_type(OBS_BOUNDS_SCALE_TO_HEIGHT);
+                obs_sceneitem_set_bounds_type(scene_item, OBS_BOUNDS_SCALE_TO_HEIGHT);
             }
             else if (new_bounds_type == "max") {
-                obs_sceneitem_set_bounds_type(OBS_BOUNDS_MAX_ONLY);
+                obs_sceneitem_set_bounds_type(scene_item, OBS_BOUNDS_MAX_ONLY);
             }
             else {
                 // Is this the right course of action?
