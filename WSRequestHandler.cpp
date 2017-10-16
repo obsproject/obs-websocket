@@ -133,7 +133,7 @@ void WSRequestHandler::processIncomingMessage(QString textMessage) {
         SendErrorResponse("invalid JSON payload");
         return;
     }
-    
+
     if (Config::Current()->DebugEnabled) {
         blog(LOG_DEBUG, "Request >> '%s'", msg);
     }
@@ -1456,7 +1456,7 @@ void WSRequestHandler::HandleGetCurrentProfile(WSRequestHandler* req) {
  * @param {boolean} `save` Persist the settings to disk.
  *
  * @api requests
- * @name SetStreamingSettings
+ * @name SetStreamSettings
  * @category settings
  * @since 4.1.0
  */
@@ -1509,8 +1509,8 @@ void WSRequestHandler::HandleSetStreamSettings(WSRequestHandler* req) {
 /**
  * Get the current streaming server settings.
  *
- * @return {String} `type` The type of streaming service configuration. Usually 'rtmp_custom' or 'rtmp_common'.
- * @return {Object} `settings` Setings of the stream.
+ * @return {String} `type` The type of streaming service configuration. Possible values: 'rtmp_custom' or 'rtmp_common'.
+ * @return {Object} `settings` Stream settings object.
  * @return {String} `settings.server` The publish URL.
  * @return {String} `settings.key` The publish key of the stream.
  * @return {boolean} `settings.use-auth` Indicates whether audentication should be used when connecting to the streaming server.
