@@ -44,7 +44,7 @@ class Utils {
 
     static obs_data_array_t* GetSceneCollections();
     static obs_data_array_t* GetProfiles();
-    
+
     static QSpinBox* GetTransitionDurationControl();
     static int GetTransitionDuration();
     static void SetTransitionDuration(int ms);
@@ -56,13 +56,6 @@ class Utils {
     static QListWidget* GetSceneListControl();
     static obs_scene_t* SceneListItemToScene(QListWidgetItem* item);
 
-    static bool IsPreviewModeActive();
-    static void EnablePreviewMode();
-    static void DisablePreviewMode();
-    static void TogglePreviewMode();
-
-    static obs_scene_t* GetPreviewScene();
-    static bool SetPreviewScene(const char* name);
     static void TransitionToProgram();
 
     static const char* OBSVersionString();

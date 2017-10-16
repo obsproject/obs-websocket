@@ -276,67 +276,8 @@ QLayout* Utils::GetPreviewLayout() {
     return main->findChild<QLayout*>("previewLayout");
 }
 
-bool Utils::IsPreviewModeActive() {
-    QMainWindow* main = (QMainWindow*)obs_frontend_get_main_window();
-
-    // Clue 1 : "Studio Mode" button is toggled on
-    bool buttonToggledOn = GetPreviewModeButtonControl()->isChecked();
-
-    // Clue 2 : Preview layout has more than one item
-    int previewChildCount = GetPreviewLayout()->count();
-    blog(LOG_INFO, "preview layout children count : %d", previewChildCount);
-
-    return buttonToggledOn || (previewChildCount >= 2);
-}
-
-void Utils::EnablePreviewMode() {
-    if (!IsPreviewModeActive())
-        GetPreviewModeButtonControl()->click();
-}
-
-void Utils::DisablePreviewMode() {
-    if (IsPreviewModeActive())
-        GetPreviewModeButtonControl()->click();
-}
-
-void Utils::TogglePreviewMode() {
-    GetPreviewModeButtonControl()->click();
-}
-
-obs_scene_t* Utils::GetPreviewScene() {
-    if (IsPreviewModeActive()) {
-        QListWidget* sceneList = GetSceneListControl();
-        QList<QListWidgetItem*> selected = sceneList->selectedItems();
-
-        // Qt::UserRole == QtUserRole::OBSRef
-        obs_scene_t* scene = Utils::SceneListItemToScene(selected.first());
-
-        obs_scene_addref(scene);
-        return scene;
-    }
-
-    return nullptr;
-}
-
-bool Utils::SetPreviewScene(const char* name) {
-    if (IsPreviewModeActive()) {
-        QListWidget* sceneList = GetSceneListControl();
-        QList<QListWidgetItem*> matchingItems =
-            sceneList->findItems(name, Qt::MatchExactly);
-
-        if (matchingItems.count() > 0) {
-            sceneList->setCurrentItem(matchingItems.first());
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    return false;
-}
-
 void Utils::TransitionToProgram() {
-    if (!IsPreviewModeActive())
+    if (!obs_frontend_preview_program_mode_active())
         return;
 
     // WARNING : if the layout created in OBS' CreateProgramOptions() changes
@@ -517,13 +458,13 @@ bool Utils::ReplayBufferEnabled() {
 
 bool Utils::RPHotkeySet() {
     obs_output_t* rp_output = obs_frontend_get_replay_buffer_output();
-    
+
     obs_data_t *hotkeys = obs_hotkeys_save_output(rp_output);
     obs_data_array_t *bindings = obs_data_get_array(hotkeys,
         "ReplayBuffer.Save");
 
     size_t count = obs_data_array_count(bindings);
-    
+
     obs_data_array_release(bindings);
     obs_data_release(hotkeys);
     obs_output_release(rp_output);

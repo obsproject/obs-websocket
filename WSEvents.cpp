@@ -78,9 +78,6 @@ WSEvents::WSEvents(WSServer* srv) {
     connect(sceneList, SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)),
         this, SLOT(SelectedSceneChanged(QListWidgetItem*, QListWidgetItem*)));
 
-    QPushButton* modeSwitch = Utils::GetPreviewModeButtonControl();
-    connect(modeSwitch, SIGNAL(clicked(bool)), this, SLOT(ModeSwitchClicked(bool)));
-
     transition_handler = nullptr;
     scene_handler = nullptr;
 
@@ -178,6 +175,12 @@ void WSEvents::FrontendEventHandler(enum obs_frontend_event event, void* private
     }
     else if (event == OBS_FRONTEND_EVENT_REPLAY_BUFFER_STOPPED) {
         owner->OnReplayStopped();
+    }
+    else if (event == OBS_FRONTEND_EVENT_STUDIO_MODE_ENABLED) {
+        owner->OnStudioModeSwitched(true);
+    }
+    else if (event == OBS_FRONTEND_EVENT_STUDIO_MODE_DISABLED) {
+        owner->OnStudioModeSwitched(false);
     }
     else if (event == OBS_FRONTEND_EVENT_EXIT) {
         owner->OnExit();
@@ -303,7 +306,7 @@ void WSEvents::OnSceneChange() {
 
     // Dirty fix : OBS blocks signals when swapping scenes in Studio Mode
     // after transition end, so SelectedSceneChanged is never called...
-    if (Utils::IsPreviewModeActive()) {
+    if (obs_frontend_preview_program_mode_active()) {
         QListWidget* list = Utils::GetSceneListControl();
         SelectedSceneChanged(list->currentItem(), nullptr);
     }
@@ -914,7 +917,7 @@ void WSEvents::OnSceneItemVisibilityChanged(void* param, calldata_t* data) {
  * @since 4.1.0
  */
 void WSEvents::SelectedSceneChanged(QListWidgetItem* current, QListWidgetItem* prev) {
-    if (Utils::IsPreviewModeActive()) {
+    if (obs_frontend_preview_program_mode_active()) {
         obs_scene_t* scene = Utils::SceneListItemToScene(current);
         if (!scene) return;
 
@@ -942,7 +945,7 @@ void WSEvents::SelectedSceneChanged(QListWidgetItem* current, QListWidgetItem* p
  * @category studio mode
  * @since 4.1.0
  */
-void WSEvents::ModeSwitchClicked(bool checked) {
+void WSEvents::OnStudioModeSwitched(bool checked) {
     obs_data_t* data = obs_data_create();
     obs_data_set_bool(data, "new-state", checked);
 

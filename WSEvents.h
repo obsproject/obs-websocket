@@ -49,7 +49,6 @@ class WSEvents : public QObject {
     void TransitionDurationChanged(int ms);
     void SelectedSceneChanged(
         QListWidgetItem* current, QListWidgetItem* prev);
-    void ModeSwitchClicked(bool checked);
 
   private:
     WSServer* _srv;
@@ -95,6 +94,8 @@ class WSEvents : public QObject {
     void OnReplayStarted();
     void OnReplayStopping();
     void OnReplayStopped();
+
+    void OnStudioModeSwitched(bool enabled);
 
     void OnExit();
 
