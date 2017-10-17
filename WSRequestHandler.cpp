@@ -1435,32 +1435,32 @@ void WSRequestHandler::HandleGetSceneItemProperties(WSRequestHandler* req) {
     obs_data_t* bounds_data = obs_data_create();
     obs_bounds_type bounds_type = obs_sceneitem_get_bounds_type(scene_item);
     if (bounds_type == OBS_BOUNDS_NONE) {
-        obs_data_set_string(bounds_data, "type", "none");
+        obs_data_set_string(bounds_data, "type", "OBS_BOUNDS_NONE");
     }
     else {
         switch(bounds_type) { // Is this implementation of bounds type good? Is passing an int better?
             case OBS_BOUNDS_STRETCH: {
-                obs_data_set_string(bounds_data, "type", "stretch");
+                obs_data_set_string(bounds_data, "type", "OBS_BOUNDS_STRETCH");
                 break;
             }
             case OBS_BOUNDS_SCALE_INNER: {
-                obs_data_set_string(bounds_data, "type", "inner");
+                obs_data_set_string(bounds_data, "type", "OBS_BOUNDS_SCALE_INNER");
                 break;
             }
             case OBS_BOUNDS_SCALE_OUTER: {
-                obs_data_set_string(bounds_data, "type", "outer");
+                obs_data_set_string(bounds_data, "type", "OBS_BOUNDS_SCALE_OUTER");
                 break;
             }
             case OBS_BOUNDS_SCALE_TO_WIDTH: {
-                obs_data_set_string(bounds_data, "type", "width");
+                obs_data_set_string(bounds_data, "type", "OBS_BOUNDS_SCALE_TO_WIDTH");
                 break;
             }
             case OBS_BOUNDS_SCALE_TO_HEIGHT: {
-                obs_data_set_string(bounds_data, "type", "height");
+                obs_data_set_string(bounds_data, "type", "OBS_BOUNDS_SCALE_TO_HEIGHT");
                 break;
             }
             case OBS_BOUNDS_MAX_ONLY: {
-                obs_data_set_string(bounds_data, "type", "max");
+                obs_data_set_string(bounds_data, "type", "OBS_BOUNDS_MAX_ONLY");
                 break;
             }
         }
@@ -1497,7 +1497,7 @@ void WSRequestHandler::HandleGetSceneItemProperties(WSRequestHandler* req) {
  * @param {int} `crop.left` The new amount of pixels cropped off the left of the source before scaling.
  * @param {int} `crop.right` The new amount of pixels cropped off the right of the source before scaling.
  * @param {bool} `visible` The new visibility of the source. 'true' shows source, 'false' hides source.
- * @param {String} `bounds.type` The new bounds type of the source: 'none' 'stretch' 'inner' 'outer' 'width' 'height' 'max'
+ * @param {String} `bounds.type` The new bounds type of the source.
  * @param {int} `bounds.alignment` The new alignment of the bounding box. (0-2, 4-6, 8-10)
  * @param {double} `bounds.x` The new width of the bounding box.
  * @param {double} `bounds.y' The new height of the bounding box.
@@ -1600,25 +1600,25 @@ void WSRequestHandler::HandleSetSceneItemProperties(WSRequestHandler* req) {
         obs_data_t* req_bounds = obs_data_get_obj(req->data, "bounds");
         if (obs_data_has_user_value(req_bounds, "type")) {
             const char* new_bounds_type = obs_data_get_string(req_bounds, "type");
-            if (new_bounds_type == "none") {
+            if (new_bounds_type == "OBS_BOUNDS_NONE") {
                 obs_sceneitem_set_bounds_type(scene_item, OBS_BOUNDS_NONE);
             }
-            else if (new_bounds_type == "stretch") {
+            else if (new_bounds_type == "OBS_BOUNDS_STRETCH") {
                 obs_sceneitem_set_bounds_type(scene_item, OBS_BOUNDS_STRETCH);
             }
-            else if (new_bounds_type == "inner") {
+            else if (new_bounds_type == "OBS_BOUNDS_SCALE_INNER") {
                 obs_sceneitem_set_bounds_type(scene_item, OBS_BOUNDS_SCALE_INNER);
             }
-            else if (new_bounds_type == "outer") {
+            else if (new_bounds_type == "OBS_BOUNDS_SCALE_OUTER") {
                 obs_sceneitem_set_bounds_type(scene_item, OBS_BOUNDS_SCALE_OUTER);
             }
-            else if (new_bounds_type == "width") {
+            else if (new_bounds_type == "OBS_BOUNDS_SCALE_TO_WIDTH") {
                 obs_sceneitem_set_bounds_type(scene_item, OBS_BOUNDS_SCALE_TO_WIDTH);
             }
-            else if (new_bounds_type == "height") {
+            else if (new_bounds_type == "OBS_BOUNDS_SCALE_TO_HEIGHT") {
                 obs_sceneitem_set_bounds_type(scene_item, OBS_BOUNDS_SCALE_TO_HEIGHT);
             }
-            else if (new_bounds_type == "max") {
+            else if (new_bounds_type == "OBS_BOUNDS_MAX_ONLY") {
                 obs_sceneitem_set_bounds_type(scene_item, OBS_BOUNDS_MAX_ONLY);
             }
             else {
