@@ -59,7 +59,7 @@ otool -L ./build/obs-websocket.so
 chmod -w ./build/QtWebSockets ./build/QtNetwork
 
 echo "-- Actual package build"
-packagesbuild ./CI/osx/obs-websocket.pkgproj
+packagesbuild ./CI/macos/obs-websocket.pkgproj
 
 echo "-- Renaming obs-websocket.pkg to $FILENAME"
 mv ./release/obs-websocket.pkg ./release/$FILENAME
