@@ -452,6 +452,9 @@ bool Utils::ReplayBufferEnabled() {
     if (strcmp(outputMode, "Simple") == 0) {
         return config_get_bool(profile, "SimpleOutput", "RecRB");
     }
+    else if (strcmp(outputMode, "Advanced") == 0) {
+        return config_get_bool(profile, "AdvOut", "RecRB");
+    }
 
     return false;
 }
