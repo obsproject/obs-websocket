@@ -780,13 +780,15 @@ void WSRequestHandler::HandleSaveReplayBuffer(WSRequestHandler* req) {
         return;
     }
 
-    obs_hotkey_t* hk = Utils::FindHotkeyByName("ReplayBuffer.Save");
-    if (hk) {
-        obs_hotkey_trigger_routed_callback(obs_hotkey_get_id(hk), true);
-        req->SendOKResponse();
-    } else {
-        req->SendErrorResponse("failed to save replay buffer");
-    }
+    calldata_t cd = {0};
+    obs_output_t* replay_output = obs_frontend_get_replay_buffer_output();
+    proc_handler_t* ph = obs_output_get_proc_handler(replay_output);
+    proc_handler_call(ph, "save", &cd);
+
+    req->SendOKResponse();
+
+    calldata_free(&cd);
+    obs_output_release(replay_output);
 }
 
 /**
