@@ -121,6 +121,8 @@ class WSRequestHandler : public QObject {
     static void HandleGetTextGDIPlusProperties(WSRequestHandler* req);
     static void HandleSetBrowserSourceProperties(WSRequestHandler* req);
     static void HandleGetBrowserSourceProperties(WSRequestHandler* req);
+  
+    static void HandleGetSourceData(WSRequestHandler* req);
 };
 
 #endif // WSPROTOCOL_H
