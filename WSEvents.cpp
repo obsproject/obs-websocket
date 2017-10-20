@@ -617,16 +617,20 @@ void WSEvents::StreamStatus() {
     bool streaming_active = obs_frontend_streaming_active();
     bool recording_active = obs_frontend_recording_active();
 
-    obs_output_t* stream_output = obs_frontend_get_streaming_output();
+    obs_output_t* status_output = obs_frontend_get_streaming_output();
 
-    if (!stream_output || !streaming_active) {
-        if (stream_output) {
-            obs_output_release(stream_output);
+    if (recording_active) {
+        status_output = obs_frontend_get_recording_output();
+    }
+
+    if (!status_output || (!streaming_active && !recording_active)) {
+        if (status_output) {
+            obs_output_release(status_output);
         }
         return;
     }
 
-    uint64_t bytes_sent = obs_output_get_total_bytes(stream_output);
+    uint64_t bytes_sent = obs_output_get_total_bytes(status_output);
     uint64_t bytes_sent_time = os_gettime_ns();
 
     if (bytes_sent < _lastBytesSent)
