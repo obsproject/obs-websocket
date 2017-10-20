@@ -617,6 +617,7 @@ void WSEvents::StreamStatus() {
     bool streaming_active = obs_frontend_streaming_active();
     bool recording_active = obs_frontend_recording_active();
 
+    obs_output_t* stream_output = obs_frontend_get_streaming_output();
     obs_output_t* status_output = obs_frontend_get_streaming_output();
 
     if (recording_active) {
