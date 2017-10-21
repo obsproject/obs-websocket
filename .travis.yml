@@ -35,10 +35,10 @@ matrix:
   - os: osx
     env: _macos_build
     osx_image: xcode8.3
-    before_install: "./CI/install-dependencies-osx.sh"
-    script: "./CI/build-osx.sh"
+    before_install: "./CI/install-dependencies-macos.sh"
+    script: "./CI/build-macos.sh"
     after_success: 
-    - ./CI/package-osx.sh
+    - ./CI/package-macos.sh
 
 deploy:
 - provider: s3
