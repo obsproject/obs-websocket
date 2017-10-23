@@ -1400,7 +1400,6 @@ void WSRequestHandler::HandleGetSceneItemProperties(WSRequestHandler* req) {
 
     obs_data_t* data = obs_data_create();
 
-    // is name even needed here?
     obs_data_set_string(data, "name", item_name);
 
     obs_data_t* pos_data = obs_data_create();
@@ -1412,7 +1411,6 @@ void WSRequestHandler::HandleGetSceneItemProperties(WSRequestHandler* req) {
     obs_data_set_obj(data, "position", pos_data);
 
     obs_data_set_double(data, "rotation", obs_sceneitem_get_rot(scene_item));
-
 
     obs_data_t* scale_data = obs_data_create();
     vec2 scale;
@@ -1438,7 +1436,7 @@ void WSRequestHandler::HandleGetSceneItemProperties(WSRequestHandler* req) {
         obs_data_set_string(bounds_data, "type", "OBS_BOUNDS_NONE");
     }
     else {
-        switch(bounds_type) { // Is this implementation of bounds type good? Is passing an int better?
+        switch(bounds_type) {
             case OBS_BOUNDS_STRETCH: {
                 obs_data_set_string(bounds_data, "type", "OBS_BOUNDS_STRETCH");
                 break;
@@ -1471,10 +1469,6 @@ void WSRequestHandler::HandleGetSceneItemProperties(WSRequestHandler* req) {
         obs_data_set_double(bounds_data, "y", bounds.y);
     }
     obs_data_set_obj(data, "bounds", bounds_data);
-
-    // add source width?
-    // add source height?
-    // add locked?
 
     obs_sceneitem_release(scene_item);
     req->SendOKResponse(data);
@@ -1533,8 +1527,12 @@ void WSRequestHandler::HandleSetSceneItemProperties(WSRequestHandler* req) {
         return;
     }
 
+    bool bad_request = false;
+    obs_data_t* error_message = obs_data_create();
+
     if (req->hasField("position")) {
         vec2 old_position;
+        obs_data_t* position_error = obs_data_create();
         obs_sceneitem_get_pos(scene_item, &old_position);
         obs_data_t* req_position = obs_data_get_obj(req->data, "position");
         vec2 new_position = old_position;
@@ -1548,9 +1546,11 @@ void WSRequestHandler::HandleSetSceneItemProperties(WSRequestHandler* req) {
             const uint32_t alignment = obs_data_get_int(req_position, "alignment");
             if (Utils::IsValidAlignment(alignment)) {
                 obs_sceneitem_set_alignment(scene_item, alignment);
+            } else {
+                bad_request = true;
+                obs_data_set_string(position_error, "alignment", "invalid");
+                obs_data_set_obj(error_message, "position", position_error);
             }
-            // Send an error in the else statement?
-            // Append an error message to the response?
         }
         obs_sceneitem_set_pos(scene_item, &new_position);
     }
@@ -1597,6 +1597,8 @@ void WSRequestHandler::HandleSetSceneItemProperties(WSRequestHandler* req) {
     }
 
     if (req->hasField("bounds")) {
+        bool bad_bounds = false;
+        obs_data_t* bounds_error = obs_data_create();
         obs_data_t* req_bounds = obs_data_get_obj(req->data, "bounds");
         if (obs_data_has_user_value(req_bounds, "type")) {
             const char* new_bounds_type = obs_data_get_string(req_bounds, "type");
@@ -1622,8 +1624,8 @@ void WSRequestHandler::HandleSetSceneItemProperties(WSRequestHandler* req) {
                 obs_sceneitem_set_bounds_type(scene_item, OBS_BOUNDS_MAX_ONLY);
             }
             else {
-                // Is this the right course of action?
-                // Should we just append an error to the response for a bad bounds type?
+                bad_request = bad_bounds = true;
+                obs_data_set_string(bounds_error, "type", "invalid");
             }
         }
         vec2 old_bounds;
@@ -1640,14 +1642,22 @@ void WSRequestHandler::HandleSetSceneItemProperties(WSRequestHandler* req) {
             const uint32_t bounds_alignment = obs_data_get_int(req_bounds, "alignment");
             if (Utils::IsValidAlignment(bounds_alignment)) {
                 obs_sceneitem_set_bounds_alignment(scene_item, bounds_alignment);
+            } else {
+                bad_request = bad_bounds = true;
+                obs_data_set_string(bounds_error, "alignment", "invalid");
             }
-            // Send an error in the else statement?
-            // Append an error message to the response?
+        }
+        if (bad_bounds) {
+            obs_data_set_obj(error_message, "bounds", bounds_error);
         }
     }
 
     obs_sceneitem_release(scene_item);
-    req->SendOKResponse();
+    if (bad_request) {
+        req->SendErrorResponse(error_message);
+    } else {
+        req->SendOKResponse();
+    }
     obs_source_release(scene);
 }
 
