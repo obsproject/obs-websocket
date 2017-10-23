@@ -189,6 +189,17 @@ void WSRequestHandler::SendErrorResponse(const char* errorMessage) {
     SendResponse(response);
 }
 
+void WSRequestHandler::SendErrorResponse(obs_data_t* additionalFields) {
+    obs_data_t* response = obs_data_create();
+    obs_data_set_string(response, "status", "error");
+    obs_data_set_string(response, "message-id", _messageId);
+
+    if (additionalFields)
+        obs_data_set_obj(response, "error", additionalFields);
+
+    SendResponse(response);
+}
+
 void WSRequestHandler::SendResponse(obs_data_t* response)  {
     const char *json = obs_data_get_json(response);
     _client->sendTextMessage(json);
