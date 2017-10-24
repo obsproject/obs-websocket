@@ -1573,7 +1573,7 @@ void WSRequestHandler::HandleSetSceneItemProperties(WSRequestHandler* req) {
     if (req->hasField("scale")) {
         vec2 old_scale;
         obs_sceneitem_get_scale(scene_item, &old_scale);
-        obs_data_t* req_scale = obs_data_get_obj(req->data, "crop");
+        obs_data_t* req_scale = obs_data_get_obj(req->data, "scale");
         vec2 new_scale = old_scale;
         if (obs_data_has_user_value(req_scale, "x")) {
             new_scale.x = obs_data_get_double(req_scale, "x");
