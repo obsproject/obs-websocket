@@ -34,7 +34,8 @@ WSServer::WSServer(QObject* parent)
     : QObject(parent),
       _wsServer(Q_NULLPTR),
       _clients(),
-      _clMutex(QMutex::Recursive) {
+      _clMutex(QMutex::Recursive)
+{
     _wsServer = new QWebSocketServer(
         QStringLiteral("obs-websocket"),
         QWebSocketServer::NonSecureMode);

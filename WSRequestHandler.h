@@ -20,7 +20,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #ifndef WSREQUESTHANDLER_H
 #define WSREQUESTHANDLER_H
 
-#include <QMap>
+#include <QHash>
 #include <QWebSocket>
 #include <QWebSocketServer>
 
@@ -42,7 +42,7 @@ class WSRequestHandler : public QObject {
     const char* _requestType;
     obs_data_t* data;
 
-    QMap<QString, void(*)(WSRequestHandler*)> messageMap;
+    QHash<QString, void(*)(WSRequestHandler*)> messageMap;
     QSet<QString> authNotRequired;
 
     void SendOKResponse(obs_data_t* additionalFields = NULL);
@@ -116,7 +116,7 @@ class WSRequestHandler : public QObject {
     static void HandleEnableStudioMode(WSRequestHandler* req);
     static void HandleDisableStudioMode(WSRequestHandler* req);
     static void HandleToggleStudioMode(WSRequestHandler* req);
-        
+
     static void HandleSetTextGDIPlusProperties(WSRequestHandler* req);
     static void HandleGetTextGDIPlusProperties(WSRequestHandler* req);
     static void HandleSetBrowserSourceProperties(WSRequestHandler* req);

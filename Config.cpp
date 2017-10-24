@@ -43,7 +43,8 @@ Config::Config() :
     AuthRequired(false),
     Secret(""),
     Salt(""),
-    SettingsLoaded(false) {
+    SettingsLoaded(false)
+{
     // OBS Config defaults
     config_t* obs_config = obs_frontend_get_global_config();
     if (obs_config) {
@@ -57,11 +58,11 @@ Config::Config() :
         config_set_default_bool(obs_config,
             SECTION_NAME, PARAM_ALERT, AlertsEnabled);
 
-        config_set_default_bool(obs_config, 
+        config_set_default_bool(obs_config,
             SECTION_NAME, PARAM_AUTHREQUIRED, AuthRequired);
-        config_set_default_string(obs_config, 
+        config_set_default_string(obs_config,
             SECTION_NAME, PARAM_SECRET, Secret);
-        config_set_default_string(obs_config, 
+        config_set_default_string(obs_config,
             SECTION_NAME, PARAM_SALT, Salt);
     }
 

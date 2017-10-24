@@ -41,13 +41,12 @@ SettingsDialog::SettingsDialog(QWidget* parent) :
     AuthCheckboxChanged();
 }
 
-void SettingsDialog::showEvent(QShowEvent* event)
-{
+void SettingsDialog::showEvent(QShowEvent* event) {
     Config* conf = Config::Current();
 
     ui->serverEnabled->setChecked(conf->ServerEnabled);
     ui->serverPort->setValue(conf->ServerPort);
-    
+
     ui->debugEnabled->setChecked(conf->DebugEnabled);
     ui->alertsEnabled->setChecked(conf->AlertsEnabled);
 
@@ -55,29 +54,26 @@ void SettingsDialog::showEvent(QShowEvent* event)
     ui->password->setText(CHANGE_ME);
 }
 
-void SettingsDialog::ToggleShowHide()
-{
+void SettingsDialog::ToggleShowHide() {
     if (!isVisible())
         setVisible(true);
     else
         setVisible(false);
 }
 
-void SettingsDialog::AuthCheckboxChanged()
-{
+void SettingsDialog::AuthCheckboxChanged() {
     if (ui->authRequired->isChecked())
         ui->password->setEnabled(true);
     else
         ui->password->setEnabled(false);
 }
 
-void SettingsDialog::FormAccepted()
-{
+void SettingsDialog::FormAccepted() {
     Config* conf = Config::Current();
 
     conf->ServerEnabled = ui->serverEnabled->isChecked();
     conf->ServerPort = ui->serverPort->value();
-    
+
     conf->DebugEnabled = ui->debugEnabled->isChecked();
     conf->AlertsEnabled = ui->alertsEnabled->isChecked();
 
@@ -109,7 +105,6 @@ void SettingsDialog::FormAccepted()
         WSServer::Instance->Stop();
 }
 
-SettingsDialog::~SettingsDialog()
-{
+SettingsDialog::~SettingsDialog() {
     delete ui;
 }
