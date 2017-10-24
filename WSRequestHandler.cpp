@@ -1581,6 +1581,7 @@ void WSRequestHandler::HandleSetSceneItemProperties(WSRequestHandler* req) {
         if (obs_data_has_user_value(req_scale, "y")) {
             new_scale.y = obs_data_get_double(req_scale, "y");
         }
+        obs_sceneitem_set_scale(scene_item, &new_scale);
     }
 
     if (req->hasField("crop")) {
