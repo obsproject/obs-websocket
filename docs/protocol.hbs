@@ -15,6 +15,10 @@
 {{#each this}}
 ### {{name}}
 
+{{#if deprecated}}
+- **⚠️ Deprecated. {{deprecated}} ⚠️**
+{{/if}}
+
 {{#eq since "unreleased"}}
 - Unreleased
 {{else}}
@@ -50,6 +54,10 @@ _No additional response items._
 
 {{#each this}}
 ### {{name}}
+
+{{#if deprecated}}
+- **⚠️ Deprecated. {{deprecated}} ⚠️**
+{{/if}}
 
 {{#eq since "unreleased"}}
 - Unreleased
@@ -89,4 +97,3 @@ _No additional response items._
 
 {{/each}}
 {{/each}}
-
