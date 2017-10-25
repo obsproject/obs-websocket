@@ -459,7 +459,36 @@ bool Utils::ReplayBufferEnabled() {
     return false;
 }
 
-bool Utils::RPHotkeySet() {
+void Utils::StartReplayBuffer() {
+    if (obs_frontend_replay_buffer_active())
+        return;
+
+    if (!IsRPHotkeySet()) {
+        obs_output_t* rpOutput = obs_frontend_get_replay_buffer_output();
+        OBSData outputHotkeys = obs_hotkeys_save_output(rpOutput);
+
+        OBSData dummyBinding = obs_data_create();
+        obs_data_set_bool(dummyBinding, "control", true);
+        obs_data_set_bool(dummyBinding, "alt", true);
+        obs_data_set_bool(dummyBinding, "shift", true);
+        obs_data_set_bool(dummyBinding, "command", true);
+        obs_data_set_string(dummyBinding, "key", "OBS_KEY_0");
+
+        OBSDataArray rpSaveHotkey = obs_data_get_array(
+            outputHotkeys, "ReplayBuffer.Save");
+        obs_data_array_push_back(rpSaveHotkey, dummyBinding);
+
+        obs_hotkeys_load_output(rpOutput, outputHotkeys);
+        obs_frontend_replay_buffer_start();
+
+        obs_output_release(rpOutput);
+    }
+    else {
+        obs_frontend_replay_buffer_start();
+    }
+}
+
+bool Utils::IsRPHotkeySet() {
     obs_output_t* rp_output = obs_frontend_get_replay_buffer_output();
 
     obs_data_t *hotkeys = obs_hotkeys_save_output(rp_output);

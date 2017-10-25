@@ -705,11 +705,7 @@ void WSRequestHandler::HandleStartStopReplayBuffer(WSRequestHandler* req) {
     if (obs_frontend_replay_buffer_active()) {
         obs_frontend_replay_buffer_stop();
     } else {
-        if (!Utils::RPHotkeySet()) {
-            req->SendErrorResponse("replay buffer hotkey not set");
-            return;
-        }
-        obs_frontend_replay_buffer_start();
+        Utils::StartReplayBuffer();
     }
     req->SendOKResponse();
 }
@@ -737,12 +733,7 @@ void WSRequestHandler::HandleStartReplayBuffer(WSRequestHandler* req) {
         return;
     }
 
-    if (!Utils::RPHotkeySet()) {
-        req->SendErrorResponse("replay buffer hotkey not set");
-        return;
-    }
-
-    obs_frontend_replay_buffer_start();
+    Utils::StartReplayBuffer();
     req->SendOKResponse();
 }
 
