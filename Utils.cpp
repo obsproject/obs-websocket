@@ -30,7 +30,7 @@ Q_DECLARE_METATYPE(OBSScene);
 
 const char* qstring_data_copy(QString value) {
     QByteArray stringData = value.toUtf8();
-    const char* constStringData = new const char[stringData.size()];
+    const char* constStringData = new const char[stringData.size()]();
     memcpy((void*)constStringData, stringData.constData(), stringData.size());
     return constStringData;
 }
