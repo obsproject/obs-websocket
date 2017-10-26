@@ -33,8 +33,8 @@ class WSEvents : public QObject {
     static void FrontendEventHandler(
         enum obs_frontend_event event, void* privateData);
     static WSEvents* Instance;
-    void connectTransitionSignals(OBSSource transition);
-    void connectSceneSignals(OBSSource scene);
+    void connectTransitionSignals(obs_source_t* transition);
+    void connectSceneSignals(obs_source_t* scene);
 
     uint64_t GetStreamingTime();
     const char* GetStreamingTimecode();
@@ -68,7 +68,7 @@ class WSEvents : public QObject {
     uint64_t _lastBytesSentTime;
 
     void broadcastUpdate(const char* updateType,
-        OBSData additionalFields);
+        obs_data_t* additionalFields);
 
     void OnSceneChange();
     void OnSceneListChange();

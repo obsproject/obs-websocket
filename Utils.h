@@ -36,15 +36,15 @@ const char* qstring_data_copy(QString value);
 
 class Utils {
   public:
-    static obs_data_array_t* GetSceneItems(OBSSource source);
-    static obs_data_t* GetSceneItemData(OBSSceneItem item);
+    static obs_data_array_t* GetSceneItems(obs_source_t* source);
+    static obs_data_t* GetSceneItemData(obs_sceneitem_t* item);
     static obs_sceneitem_t* GetSceneItemFromName(
-        OBSSource source, QString name);
+        obs_source_t* source, QString name);
     static obs_source_t* GetTransitionFromName(QString transitionName);
     static obs_source_t* GetSceneFromNameOrCurrent(QString sceneName);
 
     static obs_data_array_t* GetScenes();
-    static obs_data_t* GetSceneData(OBSSource source);
+    static obs_data_t* GetSceneData(obs_source_t* source);
 
     static obs_data_array_t* GetSceneCollections();
     static obs_data_array_t* GetProfiles();
@@ -74,7 +74,7 @@ class Utils {
     static const char* GetRecordingFolder();
     static bool SetRecordingFolder(const char* path);
 
-    static QString ParseDataToQueryString(OBSData data);
+    static QString ParseDataToQueryString(obs_data_t* data);
     static obs_hotkey_t* FindHotkeyByName(QString name);
     static bool ReplayBufferEnabled();
     static bool RPHotkeySet();

@@ -103,13 +103,11 @@ WSEvents::~WSEvents() {
 }
 
 void WSEvents::deferredInitOperations() {
-    obs_source_t* transition = obs_frontend_get_current_transition();
+    OBSSourceAutoRelease transition = obs_frontend_get_current_transition();
     connectTransitionSignals(transition);
-    obs_source_release(transition);
 
-    obs_source_t* scene = obs_frontend_get_current_scene();
+    OBSSourceAutoRelease scene = obs_frontend_get_current_scene();
     connectSceneSignals(scene);
-    obs_source_release(scene);
 }
 
 void WSEvents::FrontendEventHandler(enum obs_frontend_event event, void* private_data) {
@@ -194,9 +192,9 @@ void WSEvents::FrontendEventHandler(enum obs_frontend_event event, void* private
 }
 
 void WSEvents::broadcastUpdate(const char* updateType,
-    OBSData additionalFields = nullptr)
+    obs_data_t* additionalFields = nullptr)
 {
-    OBSData update = obs_data_create();
+    OBSDataAutoRelease update = obs_data_create();
     obs_data_set_string(update, "update-type", updateType);
 
     const char* ts = nullptr;
@@ -222,7 +220,7 @@ void WSEvents::broadcastUpdate(const char* updateType,
         blog(LOG_DEBUG, "Update << '%s'", json.toUtf8().constData());
 }
 
-void WSEvents::connectTransitionSignals(OBSSource transition) {
+void WSEvents::connectTransitionSignals(obs_source_t* transition) {
     if (transitionHandler) {
         signal_handler_disconnect(transitionHandler,
             "transition_start", OnTransitionBegin, this);
@@ -237,7 +235,7 @@ void WSEvents::connectTransitionSignals(OBSSource transition) {
     }
 }
 
-void WSEvents::connectSceneSignals(OBSSource scene) {
+void WSEvents::connectSceneSignals(obs_source_t* scene) {
     if (sceneHandler) {
         signal_handler_disconnect(sceneHandler,
             "reorder", OnSceneReordered, this);
@@ -295,11 +293,11 @@ const char* WSEvents::GetRecordingTimecode() {
  * @since 0.3
  */
 void WSEvents::OnSceneChange() {
-    obs_source_t* currentScene = obs_frontend_get_current_scene();
-    OBSDataArray sceneItems = Utils::GetSceneItems(currentScene);
+    OBSSourceAutoRelease currentScene = obs_frontend_get_current_scene();
+    OBSDataArrayAutoRelease sceneItems = Utils::GetSceneItems(currentScene);
     connectSceneSignals(currentScene);
 
-    OBSData data = obs_data_create();
+    OBSDataAutoRelease data = obs_data_create();
     obs_data_set_string(data, "scene-name", obs_source_get_name(currentScene));
     obs_data_set_array(data, "sources", sceneItems);
 
@@ -311,8 +309,6 @@ void WSEvents::OnSceneChange() {
         QListWidget* list = Utils::GetSceneListControl();
         SelectedSceneChanged(list->currentItem(), nullptr);
     }
-
-    obs_source_release(currentScene);
 }
 
 /**
@@ -372,16 +368,14 @@ void WSEvents::OnSceneCollectionListChange() {
  * @since 4.0.0
  */
 void WSEvents::OnTransitionChange() {
-    obs_source_t* currentTransition = obs_frontend_get_current_transition();
+    OBSSourceAutoRelease currentTransition = obs_frontend_get_current_transition();
     connectTransitionSignals(currentTransition);
 
-    OBSData data = obs_data_create();
+    OBSDataAutoRelease data = obs_data_create();
     obs_data_set_string(data, "transition-name",
         obs_source_get_name(currentTransition));
 
     broadcastUpdate("SwitchTransition", data);
-
-    obs_source_release(currentTransition);
 }
 
 /**
@@ -432,7 +426,7 @@ void WSEvents::OnProfileListChange() {
  * @since 0.3
  */
 void WSEvents::OnStreamStarting() {
-    OBSData data = obs_data_create();
+    OBSDataAutoRelease data = obs_data_create();
     obs_data_set_bool(data, "preview-only", false);
 
     broadcastUpdate("StreamStarting", data);
@@ -463,7 +457,7 @@ void WSEvents::OnStreamStarted() {
  * @since 0.3
  */
 void WSEvents::OnStreamStopping() {
-    OBSData data = obs_data_create();
+    OBSDataAutoRelease data = obs_data_create();
     obs_data_set_bool(data, "preview-only", false);
 
     broadcastUpdate("StreamStopping", data);
@@ -615,7 +609,7 @@ void WSEvents::StreamStatus() {
     bool streamingActive = obs_frontend_streaming_active();
     bool recordingActive = obs_frontend_recording_active();
 
-    obs_output_t* streamOutput = obs_frontend_get_streaming_output();
+    OBSOutputAutoRelease streamOutput = obs_frontend_get_streaming_output();
 
     if (!streamOutput || !streamingActive) {
         return;
@@ -647,7 +641,7 @@ void WSEvents::StreamStatus() {
 
     float strain = obs_output_get_congestion(streamOutput);
 
-    OBSData data = obs_data_create();
+    OBSDataAutoRelease data = obs_data_create();
     obs_data_set_bool(data, "streaming", streamingActive);
     obs_data_set_bool(data, "recording", recordingActive);
     obs_data_set_int(data, "bytes-per-sec", bytesPerSec);
@@ -660,8 +654,6 @@ void WSEvents::StreamStatus() {
     obs_data_set_bool(data, "preview-only", false); // Retrocompat with OBSRemote
 
     broadcastUpdate("StreamStatus", data);
-
-    obs_output_release(streamOutput);
 }
 
 /**
@@ -690,18 +682,17 @@ void WSEvents::Heartbeat() {
     bool streamingActive = obs_frontend_streaming_active();
     bool recordingActive = obs_frontend_recording_active();
 
-    OBSData data = obs_data_create();
-    obs_output_t* recordOutput = obs_frontend_get_recording_output();
-    obs_output_t* streamOutput = obs_frontend_get_streaming_output();
+    OBSDataAutoRelease data = obs_data_create();
+    OBSOutputAutoRelease recordOutput = obs_frontend_get_recording_output();
+    OBSOutputAutoRelease streamOutput = obs_frontend_get_streaming_output();
 
     pulse = !pulse;
     obs_data_set_bool(data, "pulse", pulse);
 
     obs_data_set_string(data, "current-profile", obs_frontend_get_current_profile());
 
-    obs_source_t* currentScene = obs_frontend_get_current_scene();
+    OBSSourceAutoRelease currentScene = obs_frontend_get_current_scene();
     obs_data_set_string(data, "current-scene", obs_source_get_name(currentScene));
-    obs_source_release(currentScene);
 
     obs_data_set_bool(data, "streaming", streamingActive);
     if (streamingActive) {
@@ -720,9 +711,6 @@ void WSEvents::Heartbeat() {
     }
 
     broadcastUpdate("Heartbeat", data);
-
-    obs_output_release(streamOutput);
-    obs_output_release(recordOutput);
 }
 
 /**
@@ -736,7 +724,7 @@ void WSEvents::Heartbeat() {
  * @since 4.0.0
  */
 void WSEvents::TransitionDurationChanged(int ms) {
-    OBSData fields = obs_data_create();
+    OBSDataAutoRelease fields = obs_data_create();
     obs_data_set_int(fields, "new-duration", ms);
 
     broadcastUpdate("TransitionDurationChanged", fields);
@@ -757,15 +745,13 @@ void WSEvents::OnTransitionBegin(void* param, calldata_t* data) {
     UNUSED_PARAMETER(data);
     WSEvents* instance = static_cast<WSEvents*>(param);
 
-    obs_source_t* currentTransition = obs_frontend_get_current_transition();
+    OBSSourceAutoRelease currentTransition = obs_frontend_get_current_transition();
 
-    OBSData fields = obs_data_create();
+    OBSDataAutoRelease fields = obs_data_create();
     obs_data_set_string(fields, "name", obs_source_get_name(currentTransition));
     obs_data_set_int(fields, "duration", Utils::GetTransitionDuration());
 
     instance->broadcastUpdate("TransitionBegin", fields);
-
-    obs_source_release(currentTransition);
 }
 
 /**
@@ -784,7 +770,7 @@ void WSEvents::OnSceneReordered(void* param, calldata_t* data) {
     obs_scene_t* scene = nullptr;
     calldata_get_ptr(data, "scene", &scene);
 
-    OBSData fields = obs_data_create();
+    OBSDataAutoRelease fields = obs_data_create();
     obs_data_set_string(fields, "scene-name",
         obs_source_get_name(obs_scene_get_source(scene)));
 
@@ -816,7 +802,7 @@ void WSEvents::OnSceneItemAdd(void* param, calldata_t* data) {
     const char* sceneItemName =
         obs_source_get_name(obs_sceneitem_get_source(sceneItem));
 
-    OBSData fields = obs_data_create();
+    OBSDataAutoRelease fields = obs_data_create();
     obs_data_set_string(fields, "scene-name", sceneName);
     obs_data_set_string(fields, "item-name", sceneItemName);
 
@@ -848,7 +834,7 @@ void WSEvents::OnSceneItemDelete(void* param, calldata_t* data) {
     const char* sceneItemName =
         obs_source_get_name(obs_sceneitem_get_source(sceneItem));
 
-    OBSData fields = obs_data_create();
+    OBSDataAutoRelease fields = obs_data_create();
     obs_data_set_string(fields, "scene-name", sceneName);
     obs_data_set_string(fields, "item-name", sceneItemName);
 
@@ -884,7 +870,7 @@ void WSEvents::OnSceneItemVisibilityChanged(void* param, calldata_t* data) {
     const char* sceneItemName =
         obs_source_get_name(obs_sceneitem_get_source(sceneItem));
 
-    OBSData fields = obs_data_create();
+    OBSDataAutoRelease fields = obs_data_create();
     obs_data_set_string(fields, "scene-name", sceneName);
     obs_data_set_string(fields, "item-name", sceneItemName);
     obs_data_set_bool(fields, "item-visible", visible);
@@ -906,12 +892,13 @@ void WSEvents::OnSceneItemVisibilityChanged(void* param, calldata_t* data) {
 void WSEvents::SelectedSceneChanged(QListWidgetItem* current, QListWidgetItem* prev) {
     if (obs_frontend_preview_program_mode_active()) {
         OBSScene scene = Utils::SceneListItemToScene(current);
-        if (!scene) return;
+        if (!scene)
+            return;
 
         OBSSource sceneSource = obs_scene_get_source(scene);
-        OBSDataArray sceneItems = Utils::GetSceneItems(sceneSource);
+        OBSDataArrayAutoRelease sceneItems = Utils::GetSceneItems(sceneSource);
 
-        OBSData data = obs_data_create();
+        OBSDataAutoRelease data = obs_data_create();
         obs_data_set_string(data, "scene-name", obs_source_get_name(sceneSource));
         obs_data_set_array(data, "sources", sceneItems);
 
@@ -930,7 +917,7 @@ void WSEvents::SelectedSceneChanged(QListWidgetItem* current, QListWidgetItem* p
  * @since 4.1.0
  */
 void WSEvents::OnStudioModeSwitched(bool checked) {
-    OBSData data = obs_data_create();
+    OBSDataAutoRelease data = obs_data_create();
     obs_data_set_bool(data, "new-state", checked);
 
     broadcastUpdate("StudioModeSwitched", data);

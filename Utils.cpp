@@ -45,7 +45,7 @@ obs_data_array_t* stringListToArray(char** strings, char* key) {
     for (int i = 0; value != nullptr; i++) {
         value = strings[i];
 
-        OBSData item = obs_data_create();
+        OBSDataAutoRelease item = obs_data_create();
         obs_data_set_string(item, key, value);
 
         if (value)
@@ -55,7 +55,7 @@ obs_data_array_t* stringListToArray(char** strings, char* key) {
     return list;
 }
 
-obs_data_array_t* Utils::GetSceneItems(OBSSource source) {
+obs_data_array_t* Utils::GetSceneItems(obs_source_t* source) {
     obs_data_array_t* items = obs_data_array_create();
     OBSScene scene = obs_scene_from_source(source);
 
@@ -67,9 +67,9 @@ obs_data_array_t* Utils::GetSceneItems(OBSSource source) {
             obs_sceneitem_t* currentItem,
             void* param)
     {
-        OBSDataArray data = static_cast<obs_data_array_t*>(param);
+        obs_data_array_t* data = static_cast<obs_data_array_t*>(param);
 
-        OBSData itemData = GetSceneItemData(currentItem);
+        OBSDataAutoRelease itemData = GetSceneItemData(currentItem);
         obs_data_array_insert(data, 0, itemData);
         return true;
     }, items);
@@ -77,7 +77,7 @@ obs_data_array_t* Utils::GetSceneItems(OBSSource source) {
     return items;
 }
 
-obs_data_t* Utils::GetSceneItemData(OBSSceneItem item) {
+obs_data_t* Utils::GetSceneItemData(obs_sceneitem_t* item) {
     if (!item)
         return nullptr;
 
@@ -110,10 +110,10 @@ obs_data_t* Utils::GetSceneItemData(OBSSceneItem item) {
     return data;
 }
 
-obs_sceneitem_t* Utils::GetSceneItemFromName(OBSSource source, QString name) {
+obs_sceneitem_t* Utils::GetSceneItemFromName(obs_source_t* source, QString name) {
     struct current_search {
         QString query;
-        OBSSceneItem result;
+        obs_sceneitem_t* result;
     };
 
     current_search search;
@@ -153,7 +153,7 @@ obs_source_t* Utils::GetTransitionFromName(QString searchName) {
     obs_frontend_get_transitions(&transition_list);
 
     for (size_t i = 0; i < transition_list.sources.num; i++) {
-        OBSSource transition = transition_list.sources.array[i];
+        obs_source_t* transition = transition_list.sources.array[i];
         QString transitionName = obs_source_get_name(transition);
 
         if (transitionName == searchName) {
@@ -184,21 +184,21 @@ obs_data_array_t* Utils::GetScenes() {
     obs_frontend_source_list sceneList = {};
     obs_frontend_get_scenes(&sceneList);
 
-    OBSDataArray scenes = obs_data_array_create();
+    obs_data_array_t* scenes = obs_data_array_create();
     for (size_t i = 0; i < sceneList.sources.num; i++) {
-        OBSSource scene = sceneList.sources.array[i];
-        OBSData scene_data = GetSceneData(scene);
-        obs_data_array_push_back(scenes, scene_data);
+        obs_source_t* scene = sceneList.sources.array[i];
+        OBSDataAutoRelease sceneData = GetSceneData(scene);
+        obs_data_array_push_back(scenes, sceneData);
     }
 
     obs_frontend_source_list_free(&sceneList);
     return scenes;
 }
 
-obs_data_t* Utils::GetSceneData(OBSSource source) {
-    OBSDataArray sceneItems = GetSceneItems(source);
+obs_data_t* Utils::GetSceneData(obs_source_t* source) {
+    OBSDataArrayAutoRelease sceneItems = GetSceneItems(source);
 
-    OBSData sceneData = obs_data_create();
+    obs_data_t* sceneData = obs_data_create();
     obs_data_set_string(sceneData, "name", obs_source_get_name(source));
     obs_data_set_array(sceneData, "sources", sceneItems);
 
@@ -207,7 +207,7 @@ obs_data_t* Utils::GetSceneData(OBSSource source) {
 
 obs_data_array_t* Utils::GetSceneCollections() {
     char** sceneCollections = obs_frontend_get_scene_collections();
-    OBSDataArray list = stringListToArray(sceneCollections, "sc-name");
+    obs_data_array_t* list = stringListToArray(sceneCollections, "sc-name");
 
     bfree(sceneCollections);
     return list;
@@ -215,7 +215,7 @@ obs_data_array_t* Utils::GetSceneCollections() {
 
 obs_data_array_t* Utils::GetProfiles() {
     char** profiles = obs_frontend_get_profiles();
-    OBSDataArray list = stringListToArray(profiles, "profile-name");
+    obs_data_array_t* list = stringListToArray(profiles, "profile-name");
 
     bfree(profiles);
     return list;
@@ -241,7 +241,7 @@ void Utils::SetTransitionDuration(int ms) {
 }
 
 bool Utils::SetTransitionByName(QString transitionName) {
-    OBSSource transition = GetTransitionFromName(transitionName);
+    OBSSourceAutoRelease transition = GetTransitionFromName(transitionName);
 
     if (transition) {
         obs_frontend_set_current_transition(transition);
@@ -366,7 +366,7 @@ bool Utils::SetRecordingFolder(const char* path) {
     return true;
 }
 
-QString Utils::ParseDataToQueryString(OBSData data) {
+QString Utils::ParseDataToQueryString(obs_data_t* data) {
     QString query = QString().null;
     if (data) {
         obs_data_item_t* item = obs_data_first(data);
@@ -457,14 +457,12 @@ bool Utils::ReplayBufferEnabled() {
 }
 
 bool Utils::RPHotkeySet() {
-    obs_output_t* rpOutput = obs_frontend_get_replay_buffer_output();
+    OBSOutputAutoRelease rpOutput = obs_frontend_get_replay_buffer_output();
 
-    OBSData hotkeys = obs_hotkeys_save_output(rpOutput);
-    OBSDataArray bindings = obs_data_get_array(hotkeys,
+    OBSDataAutoRelease hotkeys = obs_hotkeys_save_output(rpOutput);
+    OBSDataArrayAutoRelease bindings = obs_data_get_array(hotkeys,
         "ReplayBuffer.Save");
 
     size_t count = obs_data_array_count(bindings);
-    obs_output_release(rpOutput);
-
     return (count > 0);
 }
