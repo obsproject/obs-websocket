@@ -77,17 +77,12 @@ void SettingsDialog::FormAccepted() {
     conf->DebugEnabled = ui->debugEnabled->isChecked();
     conf->AlertsEnabled = ui->alertsEnabled->isChecked();
 
-    if (ui->authRequired->isChecked())
-    {
-        if (ui->password->text() != CHANGE_ME)
-        {
-            QByteArray pwd = ui->password->text().toUtf8();
-            const char *new_password = pwd;
-
-            conf->SetPassword(new_password);
+    if (ui->authRequired->isChecked()) {
+        if (ui->password->text() != CHANGE_ME) {
+            conf->SetPassword(ui->password->text());
         }
 
-        if (strcmp(Config::Current()->Secret, "") != 0)
+        if (!Config::Current()->Secret.isEmpty())
             conf->AuthRequired = true;
         else
             conf->AuthRequired = false;

@@ -30,11 +30,7 @@
 
 #include "WSRequestHandler.h"
 
-bool str_valid(const char* str) {
-    return (str != nullptr && strlen(str) > 0);
-}
-
-obs_service_t* WSRequestHandler::_service = nullptr;
+OBSService WSRequestHandler::_service = nullptr;
 
 WSRequestHandler::WSRequestHandler(QWebSocket* client) :
     _messageId(0),
@@ -123,7 +119,7 @@ WSRequestHandler::WSRequestHandler(QWebSocket* client) :
 
 void WSRequestHandler::processIncomingMessage(QString textMessage) {
     QByteArray msgData = textMessage.toUtf8();
-    const char* msg = msgData;
+    const char* msg = msgData.constData();
 
     data = obs_data_create_from_json(msg);
     if (!data) {
@@ -139,8 +135,9 @@ void WSRequestHandler::processIncomingMessage(QString textMessage) {
         blog(LOG_DEBUG, "Request >> '%s'", msg);
     }
 
-    if (!hasField("request-type") ||
-        !hasField("message-id")) {
+    if (!hasField("request-type")
+        || !hasField("message-id"))
+    {
         SendErrorResponse("missing request parameters");
         return;
     }
@@ -150,26 +147,25 @@ void WSRequestHandler::processIncomingMessage(QString textMessage) {
 
     if (Config::Current()->AuthRequired
         && (_client->property(PROP_AUTHENTICATED).toBool() == false)
-        && (authNotRequired.find(_requestType) == authNotRequired.end())) {
+        && (authNotRequired.find(_requestType) == authNotRequired.end()))
+    {
         SendErrorResponse("Not Authenticated");
         return;
     }
 
     void (*handlerFunc)(WSRequestHandler*) = (messageMap[_requestType]);
 
-    if (handlerFunc != NULL)
+    if (handlerFunc != nullptr)
         handlerFunc(this);
     else
         SendErrorResponse("invalid request type");
-
-    obs_data_release(data);
 }
 
 WSRequestHandler::~WSRequestHandler() {
 }
 
-void WSRequestHandler::SendOKResponse(obs_data_t* additionalFields) {
-    obs_data_t* response = obs_data_create();
+void WSRequestHandler::SendOKResponse(OBSData additionalFields) {
+    OBSData response = obs_data_create();
     obs_data_set_string(response, "status", "ok");
     obs_data_set_string(response, "message-id", _messageId);
 
@@ -180,7 +176,7 @@ void WSRequestHandler::SendOKResponse(obs_data_t* additionalFields) {
 }
 
 void WSRequestHandler::SendErrorResponse(const char* errorMessage) {
-    obs_data_t* response = obs_data_create();
+    OBSData response = obs_data_create();
     obs_data_set_string(response, "status", "error");
     obs_data_set_string(response, "error", errorMessage);
     obs_data_set_string(response, "message-id", _messageId);
@@ -188,20 +184,19 @@ void WSRequestHandler::SendErrorResponse(const char* errorMessage) {
     SendResponse(response);
 }
 
-void WSRequestHandler::SendResponse(obs_data_t* response)  {
-    const char *json = obs_data_get_json(response);
+void WSRequestHandler::SendResponse(OBSData response)  {
+    QString json = obs_data_get_json(response);
     _client->sendTextMessage(json);
-    if (Config::Current()->DebugEnabled)
-        blog(LOG_DEBUG, "Response << '%s'", json);
 
-    obs_data_release(response);
+    if (Config::Current()->DebugEnabled)
+        blog(LOG_DEBUG, "Response << '%s'", json.toUtf8().constData());
 }
 
-bool WSRequestHandler::hasField(const char* name) {
-    if (!name || !data)
+bool WSRequestHandler::hasField(QString name) {
+    if (!data || name.isEmpty() || name.isNull())
         return false;
 
-    return obs_data_has_user_value(data, name);
+    return obs_data_has_user_value(data, name.toUtf8());
 }
 
 /**
@@ -218,7 +213,7 @@ bool WSRequestHandler::hasField(const char* name) {
  * @since 0.3
  */
 void WSRequestHandler::HandleGetVersion(WSRequestHandler* req) {
-    const char* obs_version = Utils::OBSVersionString();
+    QString obsVersion = Utils::OBSVersionString();
 
     // (Palakis) OBS' data arrays only support object arrays, so I improvised.
     QList<QString> names = req->messageMap.keys();
@@ -229,14 +224,12 @@ void WSRequestHandler::HandleGetVersion(WSRequestHandler* req) {
         requests += ("," + reqName);
     }
 
-    obs_data_t* data = obs_data_create();
+    OBSData data = obs_data_create();
     obs_data_set_string(data, "obs-websocket-version", OBS_WEBSOCKET_VERSION);
-    obs_data_set_string(data, "obs-studio-version", obs_version);
-    obs_data_set_string(data, "available-requests", requests.toUtf8().constData());
+    obs_data_set_string(data, "obs-studio-version", obsVersion.toUtf8());
+    obs_data_set_string(data, "available-requests", requests.toUtf8());
 
     req->SendOKResponse(data);
-    obs_data_release(data);
-    bfree((void*)obs_version);
 }
 
 /**
@@ -255,19 +248,17 @@ void WSRequestHandler::HandleGetVersion(WSRequestHandler* req) {
 void WSRequestHandler::HandleGetAuthRequired(WSRequestHandler* req) {
     bool authRequired = Config::Current()->AuthRequired;
 
-    obs_data_t* data = obs_data_create();
+    OBSData data = obs_data_create();
     obs_data_set_bool(data, "authRequired", authRequired);
 
     if (authRequired) {
         obs_data_set_string(data, "challenge",
-            Config::Current()->SessionChallenge);
+            Config::Current()->SessionChallenge.toUtf8());
         obs_data_set_string(data, "salt",
-            Config::Current()->Salt);
+            Config::Current()->Salt.toUtf8());
     }
 
     req->SendOKResponse(data);
-
-    obs_data_release(data);
 }
 
 /**
@@ -286,14 +277,15 @@ void WSRequestHandler::HandleAuthenticate(WSRequestHandler* req) {
         return;
     }
 
-    const char* auth = obs_data_get_string(req->data, "auth");
-    if (!str_valid(auth)) {
+    QString auth = obs_data_get_string(req->data, "auth");
+    if (auth.isEmpty()) {
         req->SendErrorResponse("auth not specified!");
         return;
     }
 
     if ((req->_client->property(PROP_AUTHENTICATED).toBool() == false)
-        && Config::Current()->CheckAuth(auth)) {
+        && Config::Current()->CheckAuth(auth))
+    {
         req->_client->setProperty(PROP_AUTHENTICATED, true);
         req->SendOKResponse();
     } else {
@@ -316,15 +308,13 @@ void WSRequestHandler::HandleSetHeartbeat(WSRequestHandler* req) {
         return;
     }
 
-    WSEvents::Instance->Heartbeat_active =
+    WSEvents::Instance->HeartbeatIsActive =
         obs_data_get_bool(req->data, "enable");
 
-    obs_data_t* response = obs_data_create();
+    OBSData response = obs_data_create();
     obs_data_set_bool(response, "enable",
-        WSEvents::Instance->Heartbeat_active);
+        WSEvents::Instance->HeartbeatIsActive);
     req->SendOKResponse(response);
-
-    obs_data_release(response);
 }
 
 /**
@@ -349,11 +339,10 @@ void WSRequestHandler::HandleSetCurrentScene(WSRequestHandler* req) {
     if (source) {
         obs_frontend_set_current_scene(source);
         req->SendOKResponse();
+        obs_source_release(source);
     } else {
         req->SendErrorResponse("requested scene does not exist");
     }
-
-    obs_source_release(source);
 }
 
 /**
@@ -368,20 +357,16 @@ void WSRequestHandler::HandleSetCurrentScene(WSRequestHandler* req) {
  * @since 0.3
  */
 void WSRequestHandler::HandleGetCurrentScene(WSRequestHandler* req) {
-    obs_source_t* current_scene = obs_frontend_get_current_scene();
-    const char* name = obs_source_get_name(current_scene);
+    obs_source_t* currentScene = obs_frontend_get_current_scene();
+    OBSDataArray sceneItems = Utils::GetSceneItems(currentScene);
 
-    obs_data_array_t* scene_items = Utils::GetSceneItems(current_scene);
-
-    obs_data_t* data = obs_data_create();
-    obs_data_set_string(data, "name", name);
-    obs_data_set_array(data, "sources", scene_items);
+    OBSData data = obs_data_create();
+    obs_data_set_string(data, "name", obs_source_get_name(currentScene));
+    obs_data_set_array(data, "sources", sceneItems);
 
     req->SendOKResponse(data);
 
-    obs_data_release(data);
-    obs_data_array_release(scene_items);
-    obs_source_release(current_scene);
+    obs_source_release(currentScene);
 }
 
 /**
@@ -396,19 +381,17 @@ void WSRequestHandler::HandleGetCurrentScene(WSRequestHandler* req) {
  * @since 0.3
  */
 void WSRequestHandler::HandleGetSceneList(WSRequestHandler* req) {
-    obs_source_t* current_scene = obs_frontend_get_current_scene();
-    obs_data_array_t* scenes = Utils::GetScenes();
+    obs_source_t* currentScene = obs_frontend_get_current_scene();
+    OBSDataArray scenes = Utils::GetScenes();
 
-    obs_data_t* data = obs_data_create();
+    OBSData data = obs_data_create();
     obs_data_set_string(data, "current-scene",
-        obs_source_get_name(current_scene));
+        obs_source_get_name(currentScene));
     obs_data_set_array(data, "scenes", scenes);
 
     req->SendOKResponse(data);
 
-    obs_data_release(data);
-    obs_data_array_release(scenes);
-    obs_source_release(current_scene);
+    obs_source_release(currentScene);
 }
 
  /**
@@ -425,7 +408,8 @@ void WSRequestHandler::HandleGetSceneList(WSRequestHandler* req) {
  */
 void WSRequestHandler::HandleSetSceneItemRender(WSRequestHandler* req) {
     if (!req->hasField("source") ||
-        !req->hasField("render")) {
+        !req->hasField("render"))
+    {
         req->SendErrorResponse("missing request parameters");
         return;
     }
@@ -445,10 +429,9 @@ void WSRequestHandler::HandleSetSceneItemRender(WSRequestHandler* req) {
         return;
     }
 
-    obs_sceneitem_t* sceneItem = Utils::GetSceneItemFromName(scene, itemName);
+    OBSSceneItem sceneItem = Utils::GetSceneItemFromName(scene, itemName);
     if (sceneItem) {
         obs_sceneitem_set_visible(sceneItem, isVisible);
-        obs_sceneitem_release(sceneItem);
         req->SendOKResponse();
     } else {
         req->SendErrorResponse("specified scene item doesn't exist");
@@ -472,7 +455,7 @@ void WSRequestHandler::HandleSetSceneItemRender(WSRequestHandler* req) {
  * @since 0.3
  */
 void WSRequestHandler::HandleGetStreamingStatus(WSRequestHandler* req) {
-    obs_data_t* data = obs_data_create();
+    OBSData data = obs_data_create();
     obs_data_set_bool(data, "streaming", obs_frontend_streaming_active());
     obs_data_set_bool(data, "recording", obs_frontend_recording_active());
     obs_data_set_bool(data, "preview-only", false);
@@ -491,7 +474,6 @@ void WSRequestHandler::HandleGetStreamingStatus(WSRequestHandler* req) {
     }
 
     req->SendOKResponse(data);
-    obs_data_release(data);
 }
 
 /**
@@ -517,8 +499,7 @@ void WSRequestHandler::HandleStartStopStreaming(WSRequestHandler* req) {
  * @category recording
  * @since 0.3
  */
-void WSRequestHandler::HandleStartStopRecording(WSRequestHandler* req)
-{
+void WSRequestHandler::HandleStartStopRecording(WSRequestHandler* req) {
     if (obs_frontend_recording_active())
         obs_frontend_recording_stop();
     else
@@ -546,31 +527,29 @@ void WSRequestHandler::HandleStartStopRecording(WSRequestHandler* req)
  * @category streaming
  * @since 4.1.0
  */
-void WSRequestHandler::HandleStartStreaming(WSRequestHandler* req)
-{
+void WSRequestHandler::HandleStartStreaming(WSRequestHandler* req) {
     if (obs_frontend_streaming_active() == false) {
-        obs_data_t* streamData = obs_data_get_obj(req->data, "stream");
-        obs_service_t* currentService = nullptr;
+        OBSData streamData = obs_data_get_obj(req->data, "stream");
+        OBSService currentService = nullptr;
 
         if (streamData) {
             currentService = obs_frontend_get_streaming_service();
             obs_service_addref(currentService);
 
-            obs_service_t* service = _service;
-            const char* currentServiceType = obs_service_get_type(currentService);
+            OBSService service = _service;
+            QString currentServiceType = obs_service_get_type(currentService);
 
-            const char* requestedType =
+            QString requestedType =
                 obs_data_has_user_value(streamData, "type") ? obs_data_get_string(streamData, "type") : currentServiceType;
-            const char* serviceType =
+            QString serviceType =
                 service != nullptr ? obs_service_get_type(service) : currentServiceType;
-            obs_data_t* settings = obs_data_get_obj(streamData, "settings");
+            OBSData settings = obs_data_get_obj(streamData, "settings");
 
-            obs_data_t* metadata = obs_data_get_obj(streamData, "metadata");
-            QString* query = Utils::ParseDataToQueryString(metadata);
+            OBSData metadata = obs_data_get_obj(streamData, "metadata");
+            QString query = Utils::ParseDataToQueryString(metadata);
 
-            if (strcmp(requestedType, serviceType) != 0) {
+            if (requestedType == serviceType) {
                 if (settings) {
-                    obs_service_release(service);
                     service = nullptr; //different type so we can't reuse the existing service instance
                 } else {
                     req->SendErrorResponse("Service type requested does not match currently configured type and no 'settings' were provided");
@@ -578,26 +557,24 @@ void WSRequestHandler::HandleStartStreaming(WSRequestHandler* req)
                 }
             } else {
                 //if type isn't changing we should overlay the settings we got with the existing settings
-                obs_data_t* existingSettings = obs_service_get_settings(currentService);
-                obs_data_t* newSettings = obs_data_create(); //by doing this you can send a request to the websocket that only contains a setting you want to change instead of having to do a get and then change them
+                OBSData existingSettings = obs_service_get_settings(currentService);
+                OBSData newSettings = obs_data_create(); //by doing this you can send a request to the websocket that only contains a setting you want to change instead of having to do a get and then change them
 
                 obs_data_apply(newSettings, existingSettings); //first apply the existing settings
-
                 obs_data_apply(newSettings, settings); //then apply the settings from the request should they exist
-                obs_data_release(settings);
 
                 settings = newSettings;
-                obs_data_release(existingSettings);
             }
 
             if (!service){
-                service = obs_service_create(requestedType, "websocket_custom_service", settings, nullptr);
+                service = obs_service_create(requestedType.toUtf8(),
+                    "websocket_custom_service", settings, nullptr);
             }
 
             //Supporting adding metadata parameters to key query string
-            if (query && query->length() > 0) {
-                const char* key = obs_data_get_string(settings, "key");
-                int keylen = strlen(key);
+            if (!query.isNull() && query.length() > 0) {
+                QString key = obs_data_get_string(settings, "key");
+                int keylen = key.length();
                 bool hasQuestionMark = false;
                 for (int i = 0; i < keylen; i++) {
                     if (key[i] == '?') {
@@ -606,23 +583,20 @@ void WSRequestHandler::HandleStartStreaming(WSRequestHandler* req)
                     }
                 }
                 if (hasQuestionMark) {
-                    query->prepend('&');
+                    query.prepend('&');
                 } else {
-                    query->prepend('?');
+                    query.prepend('?');
                 }
-                query->prepend(key);
-                key = query->toUtf8();
-                obs_data_set_string(settings, "key", key);
+                query.prepend(key);
+                key = query;
+                obs_data_set_string(settings, "key", key.toUtf8());
             }
 
             obs_service_update(service, settings);
-            obs_data_release(settings);
-            obs_data_release(metadata);
 
             _service = service;
             obs_frontend_set_streaming_service(_service);
         } else if (_service != nullptr) {
-            obs_service_release(_service);
             _service = nullptr;
         }
 
@@ -633,7 +607,6 @@ void WSRequestHandler::HandleStartStreaming(WSRequestHandler* req)
         }
 
         req->SendOKResponse();
-        obs_service_release(currentService);
     } else {
         req->SendErrorResponse("streaming already active");
     }
@@ -780,15 +753,16 @@ void WSRequestHandler::HandleSaveReplayBuffer(WSRequestHandler* req) {
         return;
     }
 
-    calldata_t cd = {0};
-    obs_output_t* replay_output = obs_frontend_get_replay_buffer_output();
-    proc_handler_t* ph = obs_output_get_proc_handler(replay_output);
+    obs_output_t* replayOutput = obs_frontend_get_replay_buffer_output();
+
+    calldata_t cd = { 0 };
+    proc_handler_t* ph = obs_output_get_proc_handler(replayOutput);
     proc_handler_call(ph, "save", &cd);
+    calldata_free(&cd);
+
+    obs_output_release(replayOutput);
 
     req->SendOKResponse();
-
-    calldata_free(&cd);
-    obs_output_release(replay_output);
 }
 
 /**
@@ -804,32 +778,28 @@ void WSRequestHandler::HandleSaveReplayBuffer(WSRequestHandler* req) {
  * @since 4.1.0
  */
 void WSRequestHandler::HandleGetTransitionList(WSRequestHandler* req) {
-    obs_source_t* current_transition = obs_frontend_get_current_transition();
+    obs_source_t* currentTransition = obs_frontend_get_current_transition();
     obs_frontend_source_list transitionList = {};
     obs_frontend_get_transitions(&transitionList);
 
-    obs_data_array_t* transitions = obs_data_array_create();
+    OBSDataArray transitions = obs_data_array_create();
     for (size_t i = 0; i < transitionList.sources.num; i++) {
-        obs_source_t* transition = transitionList.sources.array[i];
+        OBSSource transition = transitionList.sources.array[i];
 
-        obs_data_t* obj = obs_data_create();
+        OBSData obj = obs_data_create();
         obs_data_set_string(obj, "name", obs_source_get_name(transition));
-
         obs_data_array_push_back(transitions, obj);
-        obs_data_release(obj);
     }
     obs_frontend_source_list_free(&transitionList);
 
-    obs_data_t* response = obs_data_create();
+    OBSData response = obs_data_create();
     obs_data_set_string(response, "current-transition",
-        obs_source_get_name(current_transition));
+        obs_source_get_name(currentTransition));
     obs_data_set_array(response, "transitions", transitions);
 
     req->SendOKResponse(response);
 
-    obs_data_release(response);
-    obs_data_array_release(transitions);
-    obs_source_release(current_transition);
+    obs_source_release(currentTransition);
 }
 
 /**
@@ -844,19 +814,18 @@ void WSRequestHandler::HandleGetTransitionList(WSRequestHandler* req) {
  * @since 0.3
  */
 void WSRequestHandler::HandleGetCurrentTransition(WSRequestHandler* req) {
-    obs_source_t* current_transition = obs_frontend_get_current_transition();
+    obs_source_t* currentTransition = obs_frontend_get_current_transition();
 
-    obs_data_t* response = obs_data_create();
+    OBSData response = obs_data_create();
     obs_data_set_string(response, "name",
-        obs_source_get_name(current_transition));
+        obs_source_get_name(currentTransition));
 
-    if (!obs_transition_fixed(current_transition))
+    if (!obs_transition_fixed(currentTransition))
         obs_data_set_int(response, "duration", Utils::GetTransitionDuration());
 
     req->SendOKResponse(response);
 
-    obs_data_release(response);
-    obs_source_release(current_transition);
+    obs_source_release(currentTransition);
 }
 
 /**
@@ -875,7 +844,7 @@ void WSRequestHandler::HandleSetCurrentTransition(WSRequestHandler* req) {
         return;
     }
 
-    const char* name = obs_data_get_string(req->data, "transition-name");
+    QString name = obs_data_get_string(req->data, "transition-name");
     bool success = Utils::SetTransitionByName(name);
     if (success)
         req->SendOKResponse();
@@ -915,12 +884,11 @@ void WSRequestHandler::HandleSetTransitionDuration(WSRequestHandler* req) {
  * @since 4.1.0
  */
 void WSRequestHandler::HandleGetTransitionDuration(WSRequestHandler* req) {
-    obs_data_t* response = obs_data_create();
+    OBSData response = obs_data_create();
     obs_data_set_int(response, "transition-duration",
         Utils::GetTransitionDuration());
 
     req->SendOKResponse(response);
-    obs_data_release(response);
 }
 
 /**
@@ -936,27 +904,28 @@ void WSRequestHandler::HandleGetTransitionDuration(WSRequestHandler* req) {
  */
 void WSRequestHandler::HandleSetVolume(WSRequestHandler* req) {
     if (!req->hasField("source") ||
-        !req->hasField("volume")) {
+        !req->hasField("volume"))
+    {
         req->SendErrorResponse("missing request parameters");
         return;
     }
 
-    const char* source_name = obs_data_get_string(req->data, "source");
-    float source_volume = obs_data_get_double(req->data, "volume");
+    QString sourceName = obs_data_get_string(req->data, "source");
+    float sourceVolume = obs_data_get_double(req->data, "volume");
 
-    if (source_name == NULL || strlen(source_name) < 1 || 
-        source_volume < 0.0 || source_volume > 1.0) {
+    if (sourceName.isEmpty() ||
+        sourceVolume < 0.0 || sourceVolume > 1.0) {
         req->SendErrorResponse("invalid request parameters");
         return;
     }
 
-    obs_source_t* source = obs_get_source_by_name(source_name);
+    obs_source_t* source = obs_get_source_by_name(sourceName.toUtf8());
     if (!source) {
         req->SendErrorResponse("specified source doesn't exist");
         return;
     }
 
-    obs_source_set_volume(source, source_volume);
+    obs_source_set_volume(source, sourceVolume);
     req->SendOKResponse();
 
     obs_source_release(source);
@@ -982,18 +951,17 @@ void WSRequestHandler::HandleGetVolume(WSRequestHandler* req) {
         return;
     }
 
-    const char* source_name = obs_data_get_string(req->data, "source");
-    if (str_valid(source_name)) {
-        obs_source_t* source = obs_get_source_by_name(source_name);
+    QString sourceName = obs_data_get_string(req->data, "source");
+    if (!sourceName.isEmpty()) {
+        obs_source_t* source = obs_get_source_by_name(sourceName.toUtf8());
 
-        obs_data_t* response = obs_data_create();
-        obs_data_set_string(response, "name", source_name);
+        OBSData response = obs_data_create();
+        obs_data_set_string(response, "name", sourceName.toUtf8());
         obs_data_set_double(response, "volume", obs_source_get_volume(source));
         obs_data_set_bool(response, "muted", obs_source_muted(source));
 
         req->SendOKResponse(response);
 
-        obs_data_release(response);
         obs_source_release(source);
     } else {
         req->SendErrorResponse("invalid request parameters");
@@ -1016,13 +984,13 @@ void WSRequestHandler::HandleToggleMute(WSRequestHandler* req) {
         return;
     }
 
-    const char* source_name = obs_data_get_string(req->data, "source");
-    if (!str_valid(source_name)) {
+    QString sourceName = obs_data_get_string(req->data, "source");
+    if (sourceName.isEmpty()) {
         req->SendErrorResponse("invalid request parameters");
         return;
     }
 
-    obs_source_t* source = obs_get_source_by_name(source_name);
+    obs_source_t* source = obs_get_source_by_name(sourceName.toUtf8());
     if (!source) {
         req->SendErrorResponse("invalid request parameters");
         return;
@@ -1052,15 +1020,15 @@ void WSRequestHandler::HandleSetMute(WSRequestHandler* req) {
         return;
     }
 
-    const char* source_name = obs_data_get_string(req->data, "source");
+    QString sourceName = obs_data_get_string(req->data, "source");
     bool mute = obs_data_get_bool(req->data, "mute");
 
-    if (!str_valid(source_name)) {
+    if (sourceName.isEmpty()) {
         req->SendErrorResponse("invalid request parameters");
         return;
     }
 
-    obs_source_t* source = obs_get_source_by_name(source_name);
+    obs_source_t* source = obs_get_source_by_name(sourceName.toUtf8());
     if (!source) {
         req->SendErrorResponse("specified source doesn't exist");
         return;
@@ -1091,26 +1059,25 @@ void WSRequestHandler::HandleGetMute(WSRequestHandler* req) {
         return;
     }
 
-    const char* source_name = obs_data_get_string(req->data, "source");
-    if (!str_valid(source_name)) {
+    QString sourceName = obs_data_get_string(req->data, "source");
+    if (sourceName.isEmpty()) {
         req->SendErrorResponse("invalid request parameters");
         return;
     }
 
-    obs_source_t* source = obs_get_source_by_name(source_name);
+    obs_source_t* source = obs_get_source_by_name(sourceName.toUtf8());
     if (!source) {
         req->SendErrorResponse("specified source doesn't exist");
         return;
     }
 
-    obs_data_t* response = obs_data_create();
+    OBSData response = obs_data_create();
     obs_data_set_string(response, "name", obs_source_get_name(source));
     obs_data_set_bool(response, "muted", obs_source_muted(source));
 
     req->SendOKResponse(response);
 
     obs_source_release(source);
-    obs_data_release(response);
 }
 
 /**
@@ -1130,21 +1097,21 @@ void WSRequestHandler::HandleSetSyncOffset(WSRequestHandler* req) {
         return;
     }
 
-    const char* source_name = obs_data_get_string(req->data, "source");
-    int64_t source_sync_offset = (int64_t)obs_data_get_int(req->data, "offset");
+    QString sourceName = obs_data_get_string(req->data, "source");
+    int64_t sourceSyncOffset = (int64_t)obs_data_get_int(req->data, "offset");
 
-    if (!source_name || strlen(source_name) < 1 || source_sync_offset < 0) {
+    if (sourceName.isEmpty() || sourceSyncOffset < 0) {
         req->SendErrorResponse("invalid request parameters");
         return;
     }
 
-    obs_source_t* source = obs_get_source_by_name(source_name);
+    obs_source_t* source = obs_get_source_by_name(sourceName.toUtf8());
     if (!source) {
         req->SendErrorResponse("specified source doesn't exist");
         return;
     }
 
-    obs_source_set_sync_offset(source, source_sync_offset);
+    obs_source_set_sync_offset(source, sourceSyncOffset);
     req->SendOKResponse();
 
     obs_source_release(source);
@@ -1169,17 +1136,16 @@ void WSRequestHandler::HandleGetSyncOffset(WSRequestHandler* req) {
         return;
     }
 
-    const char* source_name = obs_data_get_string(req->data, "source");
-    if (str_valid(source_name)) {
-        obs_source_t* source = obs_get_source_by_name(source_name);
+    QString sourceName = obs_data_get_string(req->data, "source");
+    if (!sourceName.isEmpty()) {
+        obs_source_t* source = obs_get_source_by_name(sourceName.toUtf8());
 
-        obs_data_t* response = obs_data_create();
-        obs_data_set_string(response, "name", source_name);
+        OBSData response = obs_data_create();
+        obs_data_set_string(response, "name", sourceName.toUtf8());
         obs_data_set_int(response, "offset", obs_source_get_sync_offset(source));
 
         req->SendOKResponse(response);
 
-        obs_data_release(response);
         obs_source_release(source);
     } else {
         req->SendErrorResponse("invalid request parameters");
@@ -1207,28 +1173,26 @@ void WSRequestHandler::HandleSetSceneItemPosition(WSRequestHandler* req) {
         return;
     }
 
-    const char* item_name = obs_data_get_string(req->data, "item");
-    if (!str_valid(item_name)) {
+    QString itemName = obs_data_get_string(req->data, "item");
+    if (itemName.isEmpty()) {
         req->SendErrorResponse("invalid request parameters");
         return;
     }
 
-    const char* scene_name = obs_data_get_string(req->data, "scene-name");
-    obs_source_t* scene = Utils::GetSceneFromNameOrCurrent(scene_name);
+    QString sceneName = obs_data_get_string(req->data, "scene-name");
+    obs_source_t* scene = Utils::GetSceneFromNameOrCurrent(sceneName);
     if (!scene) {
         req->SendErrorResponse("requested scene could not be found");
         return;
     }
 
-    obs_sceneitem_t* scene_item = Utils::GetSceneItemFromName(scene, item_name);
-    if (scene_item) {
+    OBSSceneItem sceneItem = Utils::GetSceneItemFromName(scene, itemName);
+    if (sceneItem) {
         vec2 item_position = { 0 };
         item_position.x = obs_data_get_double(req->data, "x");
         item_position.y = obs_data_get_double(req->data, "y");
+        obs_sceneitem_set_pos(sceneItem, &item_position);
 
-        obs_sceneitem_set_pos(scene_item, &item_position);
-
-        obs_sceneitem_release(scene_item);
         req->SendOKResponse();
     } else {
         req->SendErrorResponse("specified scene item doesn't exist");
@@ -1255,19 +1219,20 @@ void WSRequestHandler::HandleSetSceneItemTransform(WSRequestHandler* req) {
     if (!req->hasField("item") ||
         !req->hasField("x-scale") ||
         !req->hasField("y-scale") ||
-        !req->hasField("rotation")) {
+        !req->hasField("rotation"))
+    {
         req->SendErrorResponse("missing request parameters");
         return;
     }
 
-    const char* item_name = obs_data_get_string(req->data, "item");
-    if (!str_valid(item_name)) {
+    QString itemName = obs_data_get_string(req->data, "item");
+    if (itemName.isEmpty()) {
         req->SendErrorResponse("invalid request parameters");
         return;
     }
 
-    const char* scene_name = obs_data_get_string(req->data, "scene-name");
-    obs_source_t* scene = Utils::GetSceneFromNameOrCurrent(scene_name);
+    QString sceneName = obs_data_get_string(req->data, "scene-name");
+    obs_source_t* scene = Utils::GetSceneFromNameOrCurrent(sceneName);
     if (!scene) {
         req->SendErrorResponse("requested scene doesn't exist");
         return;
@@ -1278,12 +1243,10 @@ void WSRequestHandler::HandleSetSceneItemTransform(WSRequestHandler* req) {
     scale.y = obs_data_get_double(req->data, "y-scale");
     float rotation = obs_data_get_double(req->data, "rotation");
 
-    obs_sceneitem_t* scene_item = Utils::GetSceneItemFromName(scene, item_name);
-    if (scene_item) {
-        obs_sceneitem_set_scale(scene_item, &scale);
-        obs_sceneitem_set_rot(scene_item, rotation);
-
-        obs_sceneitem_release(scene_item);
+    OBSSceneItem sceneItem = Utils::GetSceneItemFromName(scene, itemName);
+    if (sceneItem) {
+        obs_sceneitem_set_scale(sceneItem, &scale);
+        obs_sceneitem_set_rot(sceneItem, rotation);
         req->SendOKResponse();
     } else {
         req->SendErrorResponse("specified scene item doesn't exist");
@@ -1313,30 +1276,29 @@ void WSRequestHandler::HandleSetSceneItemCrop(WSRequestHandler* req) {
         return;
     }
 
-    const char* item_name = obs_data_get_string(req->data, "item");
-    if (!str_valid(item_name)) {
+    QString itemName = obs_data_get_string(req->data, "item");
+    if (itemName.isEmpty()) {
         req->SendErrorResponse("invalid request parameters");
         return;
     }
 
-    const char* scene_name = obs_data_get_string(req->data, "scene-name");
-    obs_source_t* scene = Utils::GetSceneFromNameOrCurrent(scene_name);
+    QString sceneName = obs_data_get_string(req->data, "scene-name");
+    obs_source_t* scene = Utils::GetSceneFromNameOrCurrent(sceneName);
     if (!scene) {
         req->SendErrorResponse("requested scene doesn't exist");
         return;
     }
 
-    obs_sceneitem_t* scene_item = Utils::GetSceneItemFromName(scene, item_name);
-    if (scene_item) {
+    OBSSceneItem sceneItem = Utils::GetSceneItemFromName(scene, itemName);
+    if (sceneItem) {
         struct obs_sceneitem_crop crop = { 0 };
         crop.top = obs_data_get_int(req->data, "top");
         crop.bottom = obs_data_get_int(req->data, "bottom");;
         crop.left = obs_data_get_int(req->data, "left");;
         crop.right = obs_data_get_int(req->data, "right");
 
-        obs_sceneitem_set_crop(scene_item, &crop);
+        obs_sceneitem_set_crop(sceneItem, &crop);
 
-        obs_sceneitem_release(scene_item);
         req->SendOKResponse();
     } else {
         req->SendErrorResponse("specified scene item doesn't exist");
@@ -1361,10 +1323,10 @@ void WSRequestHandler::HandleSetCurrentSceneCollection(WSRequestHandler* req) {
         return;
     }
 
-    const char* scene_collection = obs_data_get_string(req->data, "sc-name");
-    if (str_valid(scene_collection)) {
+    QString sceneCollection = obs_data_get_string(req->data, "sc-name");
+    if (!sceneCollection.isEmpty()) {
         // TODO : Check if specified profile exists and if changing is allowed
-        obs_frontend_set_current_scene_collection(scene_collection);
+        obs_frontend_set_current_scene_collection(sceneCollection.toUtf8());
         req->SendOKResponse();
     } else {
         req->SendErrorResponse("invalid request parameters");
@@ -1382,23 +1344,20 @@ void WSRequestHandler::HandleSetCurrentSceneCollection(WSRequestHandler* req) {
  * @since 4.0.0
  */
 void WSRequestHandler::HandleGetCurrentSceneCollection(WSRequestHandler* req) {
-    obs_data_t* response = obs_data_create();
+    OBSData response = obs_data_create();
     obs_data_set_string(response, "sc-name",
         obs_frontend_get_current_scene_collection());
 
     req->SendOKResponse(response);
-    obs_data_release(response);
 }
 
 void WSRequestHandler::HandleListSceneCollections(WSRequestHandler* req) {
-    obs_data_array_t* scene_collections = Utils::GetSceneCollections();
+    OBSDataArray sceneCollections = Utils::GetSceneCollections();
 
-    obs_data_t* response = obs_data_create();
-    obs_data_set_array(response, "scene-collections", scene_collections);
+    OBSData response = obs_data_create();
+    obs_data_set_array(response, "scene-collections", sceneCollections);
 
     req->SendOKResponse(response);
-    obs_data_release(response);
-    obs_data_array_release(scene_collections);
 }
 
 /**
@@ -1417,10 +1376,10 @@ void WSRequestHandler::HandleSetCurrentProfile(WSRequestHandler* req) {
         return;
     }
 
-    const char* profile_name = obs_data_get_string(req->data, "profile-name");
-    if (str_valid(profile_name)) {
+    QString profileName = obs_data_get_string(req->data, "profile-name");
+    if (!profileName.isEmpty()) {
         // TODO : check if profile exists
-        obs_frontend_set_current_profile(profile_name);
+        obs_frontend_set_current_profile(profileName.toUtf8());
         req->SendOKResponse();
     } else {
         req->SendErrorResponse("invalid request parameters");
@@ -1438,12 +1397,11 @@ void WSRequestHandler::HandleSetCurrentProfile(WSRequestHandler* req) {
  * @since 4.0.0
  */
 void WSRequestHandler::HandleGetCurrentProfile(WSRequestHandler* req) {
-    obs_data_t* response = obs_data_create();
+    OBSData response = obs_data_create();
     obs_data_set_string(response, "profile-name",
         obs_frontend_get_current_profile());
 
     req->SendOKResponse(response);
-    obs_data_release(response);
 }
 
 /**
@@ -1464,9 +1422,9 @@ void WSRequestHandler::HandleGetCurrentProfile(WSRequestHandler* req) {
  * @since 4.1.0
  */
 void WSRequestHandler::HandleSetStreamSettings(WSRequestHandler* req) {
-    obs_service_t* service = obs_frontend_get_streaming_service();
+    OBSService service = obs_frontend_get_streaming_service();
 
-    obs_data_t* settings = obs_data_get_obj(req->data, "settings");
+    OBSData settings = obs_data_get_obj(req->data, "settings");
     if (!settings) {
         req->SendErrorResponse("'settings' are required'");
         return;
@@ -1475,21 +1433,16 @@ void WSRequestHandler::HandleSetStreamSettings(WSRequestHandler* req) {
     const char* serviceType = obs_service_get_type(service);
     const char* requestedType = obs_data_get_string(req->data, "type");
     if (requestedType != nullptr && strcmp(requestedType, serviceType) != 0) {
-        obs_data_t* hotkeys = obs_hotkeys_save_service(service);
-        obs_service_release(service);
+        OBSData hotkeys = obs_hotkeys_save_service(service);
         service = obs_service_create(requestedType, "websocket_custom_service", settings, hotkeys);
-        obs_data_release(hotkeys);
     } else {
         //if type isn't changing we should overlay the settings we got with the existing settings
-        obs_data_t* existingSettings = obs_service_get_settings(service);
+        OBSData existingSettings = obs_service_get_settings(service);
         //by doing this you can send a request to the websocket that only contains a setting you want to change instead of having to do a get and then change them
-        obs_data_t* newSettings = obs_data_create();
+        OBSData newSettings = obs_data_create();
 
         obs_data_apply(newSettings, existingSettings); //first apply the existing settings
         obs_data_apply(newSettings, settings); //then apply the settings from the request
-
-        obs_data_release(settings);
-        obs_data_release(existingSettings);
 
         obs_service_update(service, settings);
         settings = newSettings;
@@ -1500,13 +1453,11 @@ void WSRequestHandler::HandleSetStreamSettings(WSRequestHandler* req) {
         obs_frontend_save_streaming_service();
     }
 
-    obs_data_t* response = obs_data_create();
+    OBSData response = obs_data_create();
     obs_data_set_string(response, "type", requestedType);
     obs_data_set_obj(response, "settings", settings);
 
     req->SendOKResponse(response);
-    obs_data_release(settings);
-    obs_data_release(response);
 }
 
 /**
@@ -1526,17 +1477,15 @@ void WSRequestHandler::HandleSetStreamSettings(WSRequestHandler* req) {
  * @since 4.1.0
  */
 void WSRequestHandler::HandleGetStreamSettings(WSRequestHandler* req) {
-    obs_service_t* service = obs_frontend_get_streaming_service();
+    OBSService service = obs_frontend_get_streaming_service();
     const char* serviceType = obs_service_get_type(service);
-    obs_data_t* settings = obs_service_get_settings(service);
+    OBSData settings = obs_service_get_settings(service);
 
-    obs_data_t* response = obs_data_create();
+    OBSData response = obs_data_create();
     obs_data_set_string(response, "type", serviceType);
     obs_data_set_obj(response, "settings", settings);
 
     req->SendOKResponse(response);
-    obs_data_release(settings);
-    obs_data_release(response);
 }
 
 /**
@@ -1563,14 +1512,12 @@ void WSRequestHandler::HandleSaveStreamSettings(WSRequestHandler* req) {
  * @since 4.0.0
  */
 void WSRequestHandler::HandleListProfiles(WSRequestHandler* req) {
-    obs_data_array_t* profiles = Utils::GetProfiles();
+    OBSDataArray profiles = Utils::GetProfiles();
 
-    obs_data_t* response = obs_data_create();
+    OBSData response = obs_data_create();
     obs_data_set_array(response, "profiles", profiles);
 
     req->SendOKResponse(response);
-    obs_data_release(response);
-    obs_data_array_release(profiles);
 }
 
 /**
@@ -1586,11 +1533,10 @@ void WSRequestHandler::HandleListProfiles(WSRequestHandler* req) {
 void WSRequestHandler::HandleGetStudioModeStatus(WSRequestHandler* req) {
     bool previewActive = obs_frontend_preview_program_mode_active();
 
-    obs_data_t* response = obs_data_create();
+    OBSData response = obs_data_create();
     obs_data_set_bool(response, "studio-mode", previewActive);
 
     req->SendOKResponse(response);
-    obs_data_release(response);
 }
 
 /**
@@ -1612,15 +1558,15 @@ void WSRequestHandler::HandleGetPreviewScene(WSRequestHandler* req) {
     }
 
     obs_source_t* scene = obs_frontend_get_current_preview_scene();
-    obs_data_array_t* scene_items = Utils::GetSceneItems(scene);
+    OBSDataArray sceneItems = Utils::GetSceneItems(scene);
 
-    obs_data_t* data = obs_data_create();
+    OBSData data = obs_data_create();
     obs_data_set_string(data, "name", obs_source_get_name(scene));
-    obs_data_set_array(data, "sources", scene_items);
+    obs_data_set_array(data, "sources", sceneItems);
 
     req->SendOKResponse(data);
-    obs_data_release(data);
-    obs_data_array_release(scene_items);
+
+    obs_source_release(scene);
 }
 
 /**
@@ -1678,13 +1624,13 @@ void WSRequestHandler::HandleTransitionToProgram(WSRequestHandler* req) {
     }
 
     if (req->hasField("with-transition")) {
-        obs_data_t* transitionInfo =
+        OBSData transitionInfo =
             obs_data_get_obj(req->data, "with-transition");
 
         if (obs_data_has_user_value(transitionInfo, "name")) {
-            const char* transitionName =
+            QString transitionName =
                 obs_data_get_string(transitionInfo, "name");
-            if (!str_valid(transitionName)) {
+            if (transitionName.isEmpty()) {
                 req->SendErrorResponse("invalid request parameters");
                 return;
             }
@@ -1692,7 +1638,6 @@ void WSRequestHandler::HandleTransitionToProgram(WSRequestHandler* req) {
             bool success = Utils::SetTransitionByName(transitionName);
             if (!success) {
                 req->SendErrorResponse("specified transition doesn't exist");
-                obs_data_release(transitionInfo);
                 return;
             }
         }
@@ -1702,8 +1647,6 @@ void WSRequestHandler::HandleTransitionToProgram(WSRequestHandler* req) {
                 obs_data_get_int(transitionInfo, "duration");
             Utils::SetTransitionDuration(transitionDuration);
         }
-
-        obs_data_release(transitionInfo);
     }
 
     Utils::TransitionToProgram();
@@ -1765,7 +1708,7 @@ void WSRequestHandler::HandleToggleStudioMode(WSRequestHandler* req) {
  * @since 4.1.0
  */
 void WSRequestHandler::HandleGetSpecialSources(WSRequestHandler* req) {
-    obs_data_t* response = obs_data_create();
+    OBSData response = obs_data_create();
 
     QMap<const char*, int> sources;
     sources["desktop-1"] = 1;
@@ -1780,8 +1723,6 @@ void WSRequestHandler::HandleGetSpecialSources(WSRequestHandler* req) {
 
         const char* id = i.key();
         obs_source_t* source = obs_get_output_source(i.value());
-        blog(LOG_INFO, "%s : %p", id, source);
-
         if (source) {
             obs_data_set_string(response, id, obs_source_get_name(source));
             obs_source_release(source);
@@ -1789,7 +1730,6 @@ void WSRequestHandler::HandleGetSpecialSources(WSRequestHandler* req) {
     }
 
     req->SendOKResponse(response);
-    obs_data_release(response);
 }
 
 /**
@@ -1829,11 +1769,10 @@ void WSRequestHandler::HandleSetRecordingFolder(WSRequestHandler* req) {
 void WSRequestHandler::HandleGetRecordingFolder(WSRequestHandler* req) {
     const char* recFolder = Utils::GetRecordingFolder();
 
-    obs_data_t* response = obs_data_create();
+    OBSData response = obs_data_create();
     obs_data_set_string(response, "rec-folder", recFolder);
 
     req->SendOKResponse(response);
-    obs_data_release(response);
 }
 
 /**
@@ -1890,22 +1829,19 @@ void WSRequestHandler::HandleGetTextGDIPlusProperties(WSRequestHandler* req) {
         return;
     }
 
-    obs_sceneitem_t* sceneItem = Utils::GetSceneItemFromName(scene, itemName);
+    OBSSceneItem sceneItem = Utils::GetSceneItemFromName(scene, itemName);
     if (sceneItem) {
-        obs_source_t* sceneItemSource = obs_sceneitem_get_source(sceneItem);
+        OBSSource sceneItemSource = obs_sceneitem_get_source(sceneItem);
         const char* sceneItemSourceId = obs_source_get_id(sceneItemSource);
 
         if (strcmp(sceneItemSourceId, "text_gdiplus") == 0) {
-            obs_data_t* response = obs_source_get_settings(sceneItemSource);
+            OBSData response = obs_source_get_settings(sceneItemSource);
             obs_data_set_string(response, "source", itemName);
             obs_data_set_string(response, "scene-name", sceneName);
             obs_data_set_bool(response, "render",
                 obs_sceneitem_visible(sceneItem));
 
             req->SendOKResponse(response);
-
-            obs_data_release(response);
-            obs_sceneitem_release(sceneItem);
         } else {
             req->SendErrorResponse("not text gdi plus source");
         }
@@ -1974,13 +1910,13 @@ void WSRequestHandler::HandleSetTextGDIPlusProperties(WSRequestHandler* req) {
         return;
     }
 
-    obs_sceneitem_t* sceneItem = Utils::GetSceneItemFromName(scene, itemName);
+    OBSSceneItem sceneItem = Utils::GetSceneItemFromName(scene, itemName);
     if (sceneItem) {
-        obs_source_t* sceneItemSource = obs_sceneitem_get_source(sceneItem);
+        OBSSource sceneItemSource = obs_sceneitem_get_source(sceneItem);
         const char* sceneItemSourceId = obs_source_get_id(sceneItemSource);
 
         if (strcmp(sceneItemSourceId, "text_gdiplus") == 0) {
-            obs_data_t* settings = obs_source_get_settings(sceneItemSource);
+            OBSData settings = obs_source_get_settings(sceneItemSource);
 
             if (req->hasField("align")) {
                 obs_data_set_string(settings, "align",
@@ -2038,9 +1974,9 @@ void WSRequestHandler::HandleSetTextGDIPlusProperties(WSRequestHandler* req) {
             }
 
             if (req->hasField("font")) {
-                obs_data_t* font_obj = obs_data_get_obj(settings, "font");
+                OBSData font_obj = obs_data_get_obj(settings, "font");
                 if (font_obj) {
-                    obs_data_t* req_font_obj = obs_data_get_obj(req->data, "font");
+                    OBSData req_font_obj = obs_data_get_obj(req->data, "font");
 
                     if (obs_data_has_user_value(req_font_obj, "face")) {
                         obs_data_set_string(font_obj, "face",
@@ -2061,9 +1997,6 @@ void WSRequestHandler::HandleSetTextGDIPlusProperties(WSRequestHandler* req) {
                         obs_data_set_string(font_obj, "style",
                             obs_data_get_string(req_font_obj, "style"));
                     }
-
-                    obs_data_release(req_font_obj);
-                    obs_data_release(font_obj);
                 }
             }
 
@@ -2135,8 +2068,6 @@ void WSRequestHandler::HandleSetTextGDIPlusProperties(WSRequestHandler* req) {
             }
 
             req->SendOKResponse();
-            obs_data_release(settings);
-            obs_sceneitem_release(sceneItem);
         } else {
             req->SendErrorResponse("not text gdi plus source");
         }
@@ -2181,28 +2112,26 @@ void WSRequestHandler::HandleGetBrowserSourceProperties(WSRequestHandler* req) {
         return;
     }
 
-    obs_sceneitem_t* sceneItem = Utils::GetSceneItemFromName(scene, itemName);
+    OBSSceneItem sceneItem = Utils::GetSceneItemFromName(scene, itemName);
     if (sceneItem) {
-        obs_source_t* sceneItemSource = obs_sceneitem_get_source(sceneItem);
+        OBSSource sceneItemSource = obs_sceneitem_get_source(sceneItem);
         const char* sceneItemSourceId = obs_source_get_id(sceneItemSource);
 
         if (strcmp(sceneItemSourceId, "browser_source") == 0) {
-            obs_data_t* response = obs_source_get_settings(sceneItemSource);
+            OBSData response = obs_source_get_settings(sceneItemSource);
             obs_data_set_string(response, "source", itemName);
             obs_data_set_string(response, "scene-name", sceneName);
             obs_data_set_bool(response, "render",
                 obs_sceneitem_visible(sceneItem));
 
             req->SendOKResponse(response);
-
-            obs_data_release(response);
-            obs_sceneitem_release(sceneItem);
         } else {
             req->SendErrorResponse("not browser source");
         }
     } else {
         req->SendErrorResponse("specified scene item doesn't exist");
     }
+
     obs_source_release(scene);
 }
 
@@ -2244,13 +2173,13 @@ void WSRequestHandler::HandleSetBrowserSourceProperties(WSRequestHandler* req) {
         return;
     }
 
-    obs_sceneitem_t* sceneItem = Utils::GetSceneItemFromName(scene, itemName);
+    OBSSceneItem sceneItem = Utils::GetSceneItemFromName(scene, itemName);
     if (sceneItem) {
-        obs_source_t* sceneItemSource = obs_sceneitem_get_source(sceneItem);
+        OBSSource sceneItemSource = obs_sceneitem_get_source(sceneItem);
         const char* sceneItemSourceId = obs_source_get_id(sceneItemSource);
 
         if (strcmp(sceneItemSourceId, "browser_source") == 0) {
-            obs_data_t* settings = obs_source_get_settings(sceneItemSource);
+            OBSData settings = obs_source_get_settings(sceneItemSource);
 
             if (req->hasField("restart_when_active")) {
                 obs_data_set_bool(settings, "restart_when_active",
@@ -2300,15 +2229,13 @@ void WSRequestHandler::HandleSetBrowserSourceProperties(WSRequestHandler* req) {
             }
 
             req->SendOKResponse();
-
-            obs_data_release(settings);
-            obs_sceneitem_release(sceneItem);
         } else {
             req->SendErrorResponse("not browser source");
         }
     } else {
         req->SendErrorResponse("specified scene item doesn't exist");
     }
+
     obs_source_release(scene);
 }
 
@@ -2342,14 +2269,13 @@ void WSRequestHandler::HandleResetSceneItem(WSRequestHandler* req) {
         return;
     }
 
-    obs_sceneitem_t* sceneItem = Utils::GetSceneItemFromName(scene, itemName);
+    OBSSceneItem sceneItem = Utils::GetSceneItemFromName(scene, itemName);
     if (sceneItem) {
-        obs_source_t* sceneItemSource = obs_sceneitem_get_source(sceneItem);
+        OBSSource sceneItemSource = obs_sceneitem_get_source(sceneItem);
 
-        obs_data_t* settings = obs_source_get_settings(sceneItemSource);
+        OBSData settings = obs_source_get_settings(sceneItemSource);
         obs_source_update(sceneItemSource, settings);
 
-        obs_sceneitem_release(sceneItem);
         req->SendOKResponse();
     } else {
         req->SendErrorResponse("specified scene item doesn't exist");
