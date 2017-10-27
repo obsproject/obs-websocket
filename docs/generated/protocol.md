@@ -112,6 +112,8 @@ auth_response = base64_encode(auth_response_hash)
     + [SetSceneItemPosition](#setsceneitemposition)
     + [SetSceneItemTransform](#setsceneitemtransform)
     + [SetSceneItemCrop](#setsceneitemcrop)
+    + [GetSceneItemSceneProperties](#getsceneitemsceneproperties)
+    + [SetSceneItemProperties](#setsceneitemproperties)
     + [GetTextGDIPlusProperties](#gettextgdiplusproperties)
     + [SetTextGDIPlusProperties](#settextgdiplusproperties)
     + [GetBrowserSourceProperties](#getbrowsersourceproperties)
@@ -1084,6 +1086,81 @@ Sets the crop coordinates of the specified source item.
 | `bottom` | _int_ | Pixel position of the bottom of the source item. |
 | `left` | _int_ | Pixel position of the left of the source item. |
 | `right` | _int_ | Pixel position of the right of the source item. |
+
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+### GetSceneItemSceneProperties
+
+
+- Unreleased
+
+Gets the scene specific properties of the specified source item.
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `scene-name` | _String (optional)_ | the name of the scene that the source item belongs to. Defaults to the current scene. |
+| `item` | _String_ | The name of the source. |
+
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `name` | _String_ | The name of the source. |
+| `position.x` | _int_ | The x position of the source from the left. |
+| `position.y` | _int_ | The y position of the source from the top. |
+| `position.alignment` | _int_ | The point on the source that the item is manipulated from. |
+| `rotation` | _double_ | The clockwise rotation of the item in degrees around the point of alignment. |
+| `scale.x` | _double_ | The x-scale factor of the source. |
+| `scale.y` | _double_ | The y-scale factor of the source. |
+| `crop.top` | _int_ | The number of pixels cropped off the top of the source before scaling. |
+| `crop.right` | _int_ | The number of pixels cropped off the right of the source before scaling. |
+| `crop.bottom` | _int_ | The number of pixels cropped off the bottom of the source before scaling. |
+| `crop.left` | _int_ | The number of pixels cropped off the left of the source before scaling. |
+| `visible` | _bool_ | If the source is visible. |
+| `bounds.type` | _String_ | Type of bounding box. |
+| `bounds.alignment` | _int_ | Alignment of the bounding box. |
+| `bounds.x` | _double_ | Width of the bounding box. |
+| `bounds.y` | _double_ | Height of the bounding box. |
+
+
+---
+
+### SetSceneItemProperties
+
+
+- Unreleased
+
+Sets the scene specific properties of a source. Unspecified properties will remain unchanged.
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `scene-name` | _String (optional)_ | the name of the scene that the source item belongs to. Defaults to the current scene. |
+| `item` | _String_ | The name of the source. |
+| `position.x` | _int_ | The new x position of the source. |
+| `position.y` | _int_ | The new y position of the source. |
+| `position.alignment` | _int_ | The new alignment of the source. |
+| `rotation` | _double_ | The new clockwise rotation of the item in degrees. |
+| `scale.x` | _double_ | The new x scale of the item. |
+| `scale.y` | _double_ | The new y scale of the item. |
+| `crop.top` | _int_ | The new amount of pixels cropped off the top of the source before scaling. |
+| `crop.bottom` | _int_ | The new amount of pixels cropped off the bottom of the source before scaling. |
+| `crop.left` | _int_ | The new amount of pixels cropped off the left of the source before scaling. |
+| `crop.right` | _int_ | The new amount of pixels cropped off the right of the source before scaling. |
+| `visible` | _bool_ | The new visibility of the source. 'true' shows source, 'false' hides source. |
+| `bounds.type` | _String_ | The new bounds type of the source. |
+| `bounds.alignment` | _int_ | The new alignment of the bounding box. (0-2, 4-6, 8-10) |
+| `bounds.x` | _double_ | The new width of the bounding box. |
+| `` | _double_ | `bounds.y' The new height of the bounding box. |
 
 
 **Response Items:**
