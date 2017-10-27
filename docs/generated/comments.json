@@ -2332,7 +2332,7 @@
           "{double} `bounds.y` Height of the bounding box."
         ],
         "api": "requests",
-        "name": "GetSceneItemSceneProperties",
+        "name": "GetSceneItemProperties",
         "category": "sources",
         "since": "unreleased",
         "returns": [
@@ -2432,7 +2432,7 @@
         "names": [
           {
             "name": "",
-            "description": "GetSceneItemSceneProperties"
+            "description": "GetSceneItemProperties"
           }
         ],
         "categories": [
@@ -2449,7 +2449,7 @@
         ],
         "heading": {
           "level": 2,
-          "text": "GetSceneItemSceneProperties"
+          "text": "GetSceneItemProperties"
         },
         "lead": "",
         "type": "class",
