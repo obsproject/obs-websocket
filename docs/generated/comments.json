@@ -3281,6 +3281,131 @@
       },
       {
         "subheads": [],
+        "description": "List all sources available in the running OBS instance",
+        "return": [
+          "{Array of Objects} `sources` Array of sources as objects",
+          "{String} `sources.*.name` Source name",
+          "{String} `sources.*.type` Source type"
+        ],
+        "api": "requests",
+        "name": "GetSourcesList",
+        "category": "sources",
+        "since": "unreleased",
+        "returns": [
+          {
+            "type": "Array of Objects",
+            "name": "sources",
+            "description": "Array of sources as objects"
+          },
+          {
+            "type": "String",
+            "name": "sources.*.name",
+            "description": "Source name"
+          },
+          {
+            "type": "String",
+            "name": "sources.*.type",
+            "description": "Source type"
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "GetSourcesList"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "sources"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "unreleased"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "GetSourcesList"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Get settings of the specified source",
+        "param": [
+          "{String} `sourceName` Name of the source item.",
+          "{String (optional) `sourceType` Type of the specified source. Useful for type-checking if you expect a specific settings schema."
+        ],
+        "return": [
+          "{String} `sourceName` Source name",
+          "{String} `sourceType` Type of the specified source",
+          "{Object} `sourceSettings` Source settings. Varying between source types."
+        ],
+        "api": "requests",
+        "name": "GetSourceSettings",
+        "category": "sources",
+        "since": "unreleased",
+        "returns": [
+          {
+            "type": "String",
+            "name": "sourceName",
+            "description": "Source name"
+          },
+          {
+            "type": "String",
+            "name": "sourceType",
+            "description": "Type of the specified source"
+          },
+          {
+            "type": "Object",
+            "name": "sourceSettings",
+            "description": "Source settings. Varying between source types."
+          }
+        ],
+        "params": [
+          {
+            "type": "String",
+            "name": "sourceName",
+            "description": "Name of the source item."
+          },
+          {
+            "name": "",
+            "description": "{String (optional) `sourceType` Type of the specified source. Useful for type-checking if you expect a specific settings schema."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "GetSourceSettings"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "sources"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "unreleased"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "GetSourceSettings"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
         "description": "Set settings of the specified source.",
         "param": [
           "{String} `sourceName` Name of the source item.",
