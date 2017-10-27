@@ -368,55 +368,60 @@ bool Utils::SetRecordingFolder(const char* path) {
     return true;
 }
 
-QString* Utils::ParseDataToQueryString(obs_data_t* data) {
-    QString* query = nullptr;
-    if (data) {
-        obs_data_item_t* item = obs_data_first(data);
-        if (item) {
-            query = new QString();
-            bool isFirst = true;
-            do {
-                if (!obs_data_item_has_user_value(item))
-                    continue;
+QString Utils::ParseDataToQueryString(obs_data_t* data) {
+    if (!data)
+        return QString();
 
-                if (!isFirst)
-                    query->append('&');
-                else
-                    isFirst = false;
+    QString query;
 
-                const char* attrName = obs_data_item_get_name(item);
-                query->append(attrName).append("=");
+    obs_data_item_t* item = obs_data_first(data);
+    if (item) {
+        bool isFirst = true;
+        do {
+            if (!obs_data_item_has_user_value(item))
+                continue;
 
-                switch (obs_data_item_gettype(item)) {
-                    case OBS_DATA_BOOLEAN:
-                        query->append(obs_data_item_get_bool(item)?"true":"false");
-                        break;
-                    case OBS_DATA_NUMBER:
-                        switch (obs_data_item_numtype(item))
-                        {
-                            case OBS_DATA_NUM_DOUBLE:
-                                query->append(
-                                    QString::number(obs_data_item_get_double(item)));
-                                break;
-                            case OBS_DATA_NUM_INT:
-                                query->append(
-                                    QString::number(obs_data_item_get_int(item)));
-                                break;
-                            case OBS_DATA_NUM_INVALID:
-                                break;
-                        }
-                        break;
-                    case OBS_DATA_STRING:
-                        query->append(QUrl::toPercentEncoding(
-                            QString(obs_data_item_get_string(item))));
-                        break;
-                    default:
-                        //other types are not supported
-                        break;
-                }
-            } while (obs_data_item_next(&item));
-        }
+            if (!isFirst)
+                query += "&";
+            else
+                isFirst = false;
+
+            QString attrName = obs_data_item_get_name(item);
+            query += (attrName + "=");
+
+            switch (obs_data_item_gettype(item)) {
+                case OBS_DATA_BOOLEAN:
+                    query += (obs_data_item_get_bool(item) ? "true" : "false");
+                    break;
+
+                case OBS_DATA_NUMBER:
+                    switch (obs_data_item_numtype(item)) {
+                        case OBS_DATA_NUM_DOUBLE:
+                            query +=
+                                QString::number(obs_data_item_get_double(item));
+                            break;
+                        case OBS_DATA_NUM_INT:
+                            query +=
+                                QString::number(obs_data_item_get_int(item));
+                            break;
+                        case OBS_DATA_NUM_INVALID:
+                            break;
+                    }
+                    break;
+
+                case OBS_DATA_STRING:
+                    query +=
+                        QUrl::toPercentEncoding(
+                            QString(obs_data_item_get_string(item)));
+                    break;
+
+                default:
+                    //other types are not supported
+                    break;
+            }
+        } while (obs_data_item_next(&item));
     }
+
     return query;
 }
 

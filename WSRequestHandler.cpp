@@ -34,8 +34,6 @@ bool str_valid(const char* str) {
     return (str != nullptr && strlen(str) > 0);
 }
 
-obs_service_t* WSRequestHandler::_service = nullptr;
-
 WSRequestHandler::WSRequestHandler(QWebSocket* client) :
     _messageId(0),
     _requestType(""),
@@ -549,55 +547,24 @@ void WSRequestHandler::HandleStartStopRecording(WSRequestHandler* req)
 void WSRequestHandler::HandleStartStreaming(WSRequestHandler* req)
 {
     if (obs_frontend_streaming_active() == false) {
-        obs_data_t* streamData = obs_data_get_obj(req->data, "stream");
-        obs_service_t* currentService = nullptr;
+        obs_service_t* currentService = obs_frontend_get_streaming_service();
+        obs_service_addref(currentService);
+        obs_data_t* currentServiceHotkeys =
+            obs_hotkeys_save_service(currentService);
 
-        if (streamData) {
-            currentService = obs_frontend_get_streaming_service();
-            obs_service_addref(currentService);
-
-            obs_service_t* service = _service;
-            const char* currentServiceType = obs_service_get_type(currentService);
-
-            const char* requestedType =
-                obs_data_has_user_value(streamData, "type") ? obs_data_get_string(streamData, "type") : currentServiceType;
-            const char* serviceType =
-                service != nullptr ? obs_service_get_type(service) : currentServiceType;
-            obs_data_t* settings = obs_data_get_obj(streamData, "settings");
-
-            obs_data_t* metadata = obs_data_get_obj(streamData, "metadata");
-            QString* query = Utils::ParseDataToQueryString(metadata);
-
-            if (strcmp(requestedType, serviceType) != 0) {
-                if (settings) {
-                    obs_service_release(service);
-                    service = nullptr; //different type so we can't reuse the existing service instance
-                } else {
-                    req->SendErrorResponse("Service type requested does not match currently configured type and no 'settings' were provided");
-                    return;
-                }
-            } else {
-                //if type isn't changing we should overlay the settings we got with the existing settings
-                obs_data_t* existingSettings = obs_service_get_settings(currentService);
-                obs_data_t* newSettings = obs_data_create(); //by doing this you can send a request to the websocket that only contains a setting you want to change instead of having to do a get and then change them
-
-                obs_data_apply(newSettings, existingSettings); //first apply the existing settings
-
-                obs_data_apply(newSettings, settings); //then apply the settings from the request should they exist
-                obs_data_release(settings);
-
-                settings = newSettings;
-                obs_data_release(existingSettings);
-            }
-
-            if (!service){
-                service = obs_service_create(requestedType, "websocket_custom_service", settings, nullptr);
-            }
+        if (req->hasField("stream")) {
+            obs_data_t* streamData = obs_data_get_obj(req->data, "stream");
+            obs_data_t* newSettings = obs_data_get_obj(streamData, "settings");
+            obs_data_t* newMetadata = obs_data_get_obj(streamData, "metadata");
 
             //Supporting adding metadata parameters to key query string
-            if (query && query->length() > 0) {
-                const char* key = obs_data_get_string(settings, "key");
+            QString query = Utils::ParseDataToQueryString(newMetadata);
+            if (!query.isEmpty()
+                    && obs_data_has_user_value(newSettings, "key"))
+            {
+                const char* key = obs_data_get_string(newSettings, "key");
                 int keylen = strlen(key);
+
                 bool hasQuestionMark = false;
                 for (int i = 0; i < keylen; i++) {
                     if (key[i] == '?') {
@@ -605,34 +572,53 @@ void WSRequestHandler::HandleStartStreaming(WSRequestHandler* req)
                         break;
                     }
                 }
+
                 if (hasQuestionMark) {
-                    query->prepend('&');
+                    query.prepend('&');
                 } else {
-                    query->prepend('?');
+                    query.prepend('?');
                 }
-                query->prepend(key);
-                key = query->toUtf8();
-                obs_data_set_string(settings, "key", key);
+
+                query.prepend(key);
+                obs_data_set_string(newSettings, "key", query.toUtf8());
             }
 
-            obs_service_update(service, settings);
-            obs_data_release(settings);
-            obs_data_release(metadata);
+            QString currentType = obs_service_get_type(currentService);
+            QString newType = obs_data_get_string(streamData, "type");
+            if (newType.isEmpty() || newType.isNull()) {
+                newType = currentType;
+            }
 
-            _service = service;
-            obs_frontend_set_streaming_service(_service);
-        } else if (_service != nullptr) {
-            obs_service_release(_service);
-            _service = nullptr;
+            if (newType == currentType) {
+                // Service type doesn't change: apply settings to current service
+                obs_data_t* currentSettings = obs_service_get_settings(currentService);
+                obs_data_t* updatedSettings = obs_data_create(); //by doing this you can send a request to the websocket that only contains a setting you want to change instead of having to do a get and then change them
+
+                obs_data_apply(updatedSettings, currentSettings); //first apply the existing settings
+                obs_data_apply(updatedSettings, newSettings); //then apply the settings from the request should they exist
+
+                obs_service_update(currentService, updatedSettings);
+
+                obs_data_release(updatedSettings);
+                obs_data_release(currentSettings);
+            }
+            else {
+                // Service type changed: create new service
+                obs_service_t* newService = obs_service_create(
+                    newType.toUtf8(), "websocket_custom_service",
+                    newSettings, currentServiceHotkeys);
+                obs_frontend_set_streaming_service(newService);
+            }
+
+            obs_data_release(newMetadata);
+            obs_data_release(newSettings);
+            obs_data_release(streamData);
         }
 
         obs_frontend_streaming_start();
-
-        if (_service != nullptr) {
-            obs_frontend_set_streaming_service(currentService);
-        }
-
         req->SendOKResponse();
+
+        obs_data_release(currentServiceHotkeys);
         obs_service_release(currentService);
     } else {
         req->SendErrorResponse("streaming already active");
@@ -1459,19 +1445,26 @@ void WSRequestHandler::HandleSetStreamSettings(WSRequestHandler* req) {
     // get_streaming_service doesn't addref, so let's do it ourselves
     obs_service_addref(service);
 
-    obs_data_t* settings = obs_data_get_obj(req->data, "settings");
-    if (!settings) {
+    obs_data_t* requestSettings = obs_data_get_obj(req->data, "settings");
+    if (!requestSettings) {
         req->SendErrorResponse("'settings' are required'");
         return;
     }
 
-    const char* serviceType = obs_service_get_type(service);
-    const char* requestedType = obs_data_get_string(req->data, "type");
+    QString serviceType = obs_service_get_type(service);
+    QString requestedType = obs_data_get_string(req->data, "type");
 
-    if (requestedType != nullptr && strcmp(requestedType, serviceType) != 0) {
+    if (requestedType != nullptr && requestedType != serviceType) {
         obs_data_t* hotkeys = obs_hotkeys_save_service(service);
+
+        // Release current service pointer before creating the new one
+        obs_service_release(service);
+
         service = obs_service_create(
-            requestedType, "websocket_custom_service", settings, hotkeys);
+            requestedType.toUtf8(), "websocket_custom_service", requestSettings, hotkeys);
+
+        obs_service_addref(service);
+
         obs_data_release(hotkeys);
     } else {
         // If type isn't changing, we should overlay the settings we got
@@ -1485,12 +1478,11 @@ void WSRequestHandler::HandleSetStreamSettings(WSRequestHandler* req) {
         // Apply existing settings
         obs_data_apply(newSettings, existingSettings);
         // Then apply the settings from the request
-        obs_data_apply(newSettings, settings);
+        obs_data_apply(newSettings, requestSettings);
 
-        obs_service_update(service, settings);
-        settings = newSettings;
+        obs_service_update(service, newSettings);
 
-        obs_data_release(settings);
+        obs_data_release(newSettings);
         obs_data_release(existingSettings);
     }
 
@@ -1499,14 +1491,17 @@ void WSRequestHandler::HandleSetStreamSettings(WSRequestHandler* req) {
         obs_frontend_save_streaming_service();
     }
 
+    obs_data_t* serviceSettings = obs_service_get_settings(service);
+
     obs_data_t* response = obs_data_create();
-    obs_data_set_string(response, "type", requestedType);
-    obs_data_set_obj(response, "settings", settings);
+    obs_data_set_string(response, "type", requestedType.toUtf8());
+    obs_data_set_obj(response, "settings", serviceSettings);
 
     req->SendOKResponse(response);
 
-    obs_data_release(settings);
     obs_data_release(response);
+    obs_data_release(serviceSettings);
+    obs_data_release(requestSettings);
     obs_service_release(service);
 }
 

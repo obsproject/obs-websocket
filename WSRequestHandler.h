@@ -36,7 +36,6 @@ class WSRequestHandler : public QObject {
     bool hasField(const char* name);
 
   private:
-    static obs_service_t* _service;
     QWebSocket* _client;
     const char* _messageId;
     const char* _requestType;
