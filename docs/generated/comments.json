@@ -1669,6 +1669,7 @@
         "name": "SetSourceRender",
         "category": "sources",
         "since": "0.3",
+        "deprecated": "Since unreleased. Prefer the use of SetSceneItemProperties.",
         "params": [
           {
             "type": "String",
@@ -1702,6 +1703,12 @@
           {
             "name": "",
             "description": "0.3"
+          }
+        ],
+        "deprecateds": [
+          {
+            "name": "",
+            "description": "Since unreleased. Prefer the use of SetSceneItemProperties."
           }
         ],
         "heading": {
@@ -2090,6 +2097,7 @@
         "name": "SetSceneItemPosition",
         "category": "sources",
         "since": "4.0.0",
+        "deprecated": "Since unreleased. Prefer the use of SetSceneItemProperties.",
         "params": [
           {
             "type": "String (optional)",
@@ -2130,6 +2138,12 @@
             "description": "4.0.0"
           }
         ],
+        "deprecateds": [
+          {
+            "name": "",
+            "description": "Since unreleased. Prefer the use of SetSceneItemProperties."
+          }
+        ],
         "heading": {
           "level": 2,
           "text": "SetSceneItemPosition"
@@ -2152,6 +2166,7 @@
         "name": "SetSceneItemTransform",
         "category": "sources",
         "since": "4.0.0",
+        "deprecated": "Since unreleased. Prefer the use of SetSceneItemProperties.",
         "params": [
           {
             "type": "String (optional)",
@@ -2197,6 +2212,12 @@
             "description": "4.0.0"
           }
         ],
+        "deprecateds": [
+          {
+            "name": "",
+            "description": "Since unreleased. Prefer the use of SetSceneItemProperties."
+          }
+        ],
         "heading": {
           "level": 2,
           "text": "SetSceneItemTransform"
@@ -2220,6 +2241,7 @@
         "name": "SetSceneItemCrop",
         "category": "sources",
         "since": "4.1.0",
+        "deprecated": "Since unreleased. Prefer the use of SetSceneItemProperties.",
         "params": [
           {
             "type": "String (optional)",
@@ -2268,6 +2290,12 @@
           {
             "name": "",
             "description": "4.1.0"
+          }
+        ],
+        "deprecateds": [
+          {
+            "name": "",
+            "description": "Since unreleased. Prefer the use of SetSceneItemProperties."
           }
         ],
         "heading": {
