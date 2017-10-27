@@ -43,6 +43,8 @@ class Utils {
     static obs_source_t* GetTransitionFromName(QString transitionName);
     static obs_source_t* GetSceneFromNameOrCurrent(QString sceneName);
 
+    static bool IsValidAlignment(const uint32_t alignment);
+
     static obs_data_array_t* GetScenes();
     static obs_data_t* GetSceneData(obs_source_t* source);
 
@@ -77,7 +79,8 @@ class Utils {
     static QString ParseDataToQueryString(obs_data_t* data);
     static obs_hotkey_t* FindHotkeyByName(QString name);
     static bool ReplayBufferEnabled();
-    static bool RPHotkeySet();
+    static void StartReplayBuffer();
+    static bool IsRPHotkeySet();
 };
 
 #endif // UTILS_H

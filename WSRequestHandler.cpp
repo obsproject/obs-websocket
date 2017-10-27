@@ -53,6 +53,8 @@ WSRequestHandler::WSRequestHandler(QWebSocket* client) :
     messageMap["SetSceneItemPosition"] = WSRequestHandler::HandleSetSceneItemPosition;
     messageMap["SetSceneItemTransform"] = WSRequestHandler::HandleSetSceneItemTransform;
     messageMap["SetSceneItemCrop"] = WSRequestHandler::HandleSetSceneItemCrop;
+    messageMap["GetSceneItemProperties"] = WSRequestHandler::HandleGetSceneItemProperties;
+    messageMap["SetSceneItemProperties"] = WSRequestHandler::HandleSetSceneItemProperties;
     messageMap["ResetSceneItem"] = WSRequestHandler::HandleResetSceneItem;
 
     messageMap["GetStreamingStatus"] = WSRequestHandler::HandleGetStreamingStatus;
@@ -180,6 +182,17 @@ void WSRequestHandler::SendErrorResponse(const char* errorMessage) {
     obs_data_set_string(response, "status", "error");
     obs_data_set_string(response, "error", errorMessage);
     obs_data_set_string(response, "message-id", _messageId);
+
+    SendResponse(response);
+}
+
+void WSRequestHandler::SendErrorResponse(obs_data_t* additionalFields) {
+    obs_data_t* response = obs_data_create();
+    obs_data_set_string(response, "status", "error");
+    obs_data_set_string(response, "message-id", _messageId);
+
+    if (additionalFields)
+        obs_data_set_obj(response, "error", additionalFields);
 
     SendResponse(response);
 }
@@ -401,6 +414,7 @@ void WSRequestHandler::HandleGetSceneList(WSRequestHandler* req) {
  * @name SetSourceRender
  * @category sources
  * @since 0.3
+ * @deprecated Since unreleased. Prefer the use of SetSceneItemProperties.
  */
 void WSRequestHandler::HandleSetSceneItemRender(WSRequestHandler* req) {
     if (!req->hasField("source") ||
@@ -508,14 +522,14 @@ void WSRequestHandler::HandleStartStopRecording(WSRequestHandler* req) {
  * Will return an `error` if streaming is already active.
  *
  * @param {Object (optional)} `stream` Special stream configuration.
- * @param {String (optional)} `type` If specified ensures the type of stream matches the given type (usually 'rtmp_custom' or 'rtmp_common'). If the currently configured stream type does not match the given stream type, all settings must be specified in the `settings` object or an error will occur when starting the stream.
- * @param {Object (optional)} `metadata` Adds the given object parameters as encoded query string parameters to the 'key' of the RTMP stream. Used to pass data to the RTMP service about the streaming. May be any String, Numeric, or Boolean field. 
- * @param {Object (optional)} `settings` Settings for the stream.
- * @param {String (optional)} `settings.server` The publish URL.
- * @param {String (optional)} `settings.key` The publish key of the stream.
- * @param {boolean (optional)} `settings.use-auth` Indicates whether authentication should be used when connecting to the streaming server.
- * @param {String (optional)} `settings.username` If authentication is enabled, the username for the streaming server. Ignored if `use-auth` is not set to `true`.
- * @param {String (optional)} `settings.password` If authentication is enabled, the password for the streaming server. Ignored if `use-auth` is not set to `true`.
+ * @param {String (optional)} `stream.type` If specified ensures the type of stream matches the given type (usually 'rtmp_custom' or 'rtmp_common'). If the currently configured stream type does not match the given stream type, all settings must be specified in the `settings` object or an error will occur when starting the stream.
+ * @param {Object (optional)} `stream.metadata` Adds the given object parameters as encoded query string parameters to the 'key' of the RTMP stream. Used to pass data to the RTMP service about the streaming. May be any String, Numeric, or Boolean field. 
+ * @param {Object (optional)} `stream.settings` Settings for the stream.
+ * @param {String (optional)} `stream.settings.server` The publish URL.
+ * @param {String (optional)} `stream.settings.key` The publish key of the stream.
+ * @param {boolean (optional)} `stream.settings.use-auth` Indicates whether authentication should be used when connecting to the streaming server.
+ * @param {String (optional)} `stream.settings.username` If authentication is enabled, the username for the streaming server. Ignored if `use-auth` is not set to `true`.
+ * @param {String (optional)} `stream.settings.password` If authentication is enabled, the password for the streaming server. Ignored if `use-auth` is not set to `true`.
  *
  * @api requests
  * @name StartStreaming
@@ -524,51 +538,29 @@ void WSRequestHandler::HandleStartStopRecording(WSRequestHandler* req) {
  */
 void WSRequestHandler::HandleStartStreaming(WSRequestHandler* req) {
     if (obs_frontend_streaming_active() == false) {
-        OBSDataAutoRelease streamData = obs_data_get_obj(req->data, "stream");
-        OBSService currentService = nullptr;
+        obs_service_t* currentService = obs_frontend_get_streaming_service();
+        // get_streaming_service doesn't addref, so let's do it ourselves
+        obs_service_addref(currentService);
 
-        if (streamData) {
-            currentService = obs_frontend_get_streaming_service();
+        if (req->hasField("stream")) {
+            obs_data_t* streamData = obs_data_get_obj(req->data, "stream");
+            obs_data_t* newSettings = obs_data_get_obj(streamData, "settings");
+            obs_data_t* newMetadata = obs_data_get_obj(streamData, "metadata");
 
-            OBSService service = _service;
-            QString currentServiceType = obs_service_get_type(currentService);
-
-            QString requestedType =
-                obs_data_has_user_value(streamData, "type") ? obs_data_get_string(streamData, "type") : currentServiceType;
-            QString serviceType =
-                service != nullptr ? obs_service_get_type(service) : currentServiceType;
-            OBSDataAutoRelease settings = obs_data_get_obj(streamData, "settings");
-
-            OBSDataAutoRelease metadata = obs_data_get_obj(streamData, "metadata");
-            QString query = Utils::ParseDataToQueryString(metadata);
-
-            if (requestedType == serviceType) {
-                if (settings) {
-                    service = nullptr; //different type so we can't reuse the existing service instance
-                } else {
-                    req->SendErrorResponse("Service type requested does not match currently configured type and no 'settings' were provided");
-                    return;
-                }
-            } else {
-                //if type isn't changing we should overlay the settings we got with the existing settings
-                OBSDataAutoRelease existingSettings = obs_service_get_settings(currentService);
-                OBSDataAutoRelease newSettings = obs_data_create(); //by doing this you can send a request to the websocket that only contains a setting you want to change instead of having to do a get and then change them
-
-                obs_data_apply(newSettings, existingSettings); //first apply the existing settings
-                obs_data_apply(newSettings, settings); //then apply the settings from the request should they exist
-
-                settings = newSettings;
-            }
-
-            if (!service){
-                service = obs_service_create(requestedType.toUtf8(),
-                    "websocket_custom_service", settings, nullptr);
+            QString currentType = obs_service_get_type(currentService);
+            QString newType = obs_data_get_string(streamData, "type");
+            if (newType.isEmpty() || newType.isNull()) {
+                newType = currentType;
             }
 
             //Supporting adding metadata parameters to key query string
-            if (!query.isNull() && query.length() > 0) {
-                QString key = obs_data_get_string(settings, "key");
-                int keylen = key.length();
+            QString query = Utils::ParseDataToQueryString(newMetadata);
+            if (!query.isEmpty()
+                    && obs_data_has_user_value(newSettings, "key"))
+            {
+                const char* key = obs_data_get_string(newSettings, "key");
+                int keylen = strlen(key);
+
                 bool hasQuestionMark = false;
                 for (int i = 0; i < keylen; i++) {
                     if (key[i] == '?') {
@@ -576,31 +568,53 @@ void WSRequestHandler::HandleStartStreaming(WSRequestHandler* req) {
                         break;
                     }
                 }
+
                 if (hasQuestionMark) {
                     query.prepend('&');
                 } else {
                     query.prepend('?');
                 }
+
                 query.prepend(key);
-                key = query;
-                obs_data_set_string(settings, "key", key.toUtf8());
+                obs_data_set_string(newSettings, "key", query.toUtf8());
             }
 
-            obs_service_update(service, settings);
+            if (newType == currentType) {
+                // Service type doesn't change: apply settings to current service
+                obs_data_t* currentSettings = obs_service_get_settings(currentService);
+                obs_data_t* updatedSettings = obs_data_create(); //by doing this you can send a request to the websocket that only contains a setting you want to change instead of having to do a get and then change them
 
-            _service = service;
-            obs_frontend_set_streaming_service(_service);
-        } else if (_service != nullptr) {
-            _service = nullptr;
+                obs_data_apply(updatedSettings, currentSettings); //first apply the existing settings
+                obs_data_apply(updatedSettings, newSettings); //then apply the settings from the request should they exist
+
+                obs_service_update(currentService, updatedSettings);
+
+                obs_data_release(updatedSettings);
+                obs_data_release(currentSettings);
+            }
+            else {
+                // Service type changed: create new service
+                obs_data_t* hotkeys =
+                    obs_hotkeys_save_service(currentService);
+
+                obs_service_t* newService = obs_service_create(
+                    newType.toUtf8(), "websocket_custom_service",
+                    newSettings, hotkeys);
+
+                obs_frontend_set_streaming_service(newService);
+
+                obs_data_release(hotkeys);
+            }
+
+            obs_data_release(newMetadata);
+            obs_data_release(newSettings);
+            obs_data_release(streamData);
         }
 
         obs_frontend_streaming_start();
-
-        if (_service != nullptr) {
-            obs_frontend_set_streaming_service(currentService);
-        }
-
         req->SendOKResponse();
+
+        obs_service_release(currentService);
     } else {
         req->SendErrorResponse("streaming already active");
     }
@@ -672,11 +686,7 @@ void WSRequestHandler::HandleStartStopReplayBuffer(WSRequestHandler* req) {
     if (obs_frontend_replay_buffer_active()) {
         obs_frontend_replay_buffer_stop();
     } else {
-        if (!Utils::RPHotkeySet()) {
-            req->SendErrorResponse("replay buffer hotkey not set");
-            return;
-        }
-        obs_frontend_replay_buffer_start();
+        Utils::StartReplayBuffer();
     }
     req->SendOKResponse();
 }
@@ -704,12 +714,7 @@ void WSRequestHandler::HandleStartReplayBuffer(WSRequestHandler* req) {
         return;
     }
 
-    if (!Utils::RPHotkeySet()) {
-        req->SendErrorResponse("replay buffer hotkey not set");
-        return;
-    }
-
-    obs_frontend_replay_buffer_start();
+    Utils::StartReplayBuffer();
     req->SendOKResponse();
 }
 
@@ -1139,6 +1144,7 @@ void WSRequestHandler::HandleGetSyncOffset(WSRequestHandler* req) {
  * @name SetSceneItemPosition
  * @category sources
  * @since 4.0.0
+ * @deprecated Since unreleased. Prefer the use of SetSceneItemProperties.
  */
 void WSRequestHandler::HandleSetSceneItemPosition(WSRequestHandler* req) {
     if (!req->hasField("item") ||
@@ -1186,6 +1192,7 @@ void WSRequestHandler::HandleSetSceneItemPosition(WSRequestHandler* req) {
  * @name SetSceneItemTransform
  * @category sources
  * @since 4.0.0
+ * @deprecated Since unreleased. Prefer the use of SetSceneItemProperties.
  */
 void WSRequestHandler::HandleSetSceneItemTransform(WSRequestHandler* req) {
     if (!req->hasField("item") ||
@@ -1239,6 +1246,7 @@ void WSRequestHandler::HandleSetSceneItemTransform(WSRequestHandler* req) {
  * @name SetSceneItemCrop
  * @category sources
  * @since 4.1.0
+ * @deprecated Since unreleased. Prefer the use of SetSceneItemProperties.
  */
 void WSRequestHandler::HandleSetSceneItemCrop(WSRequestHandler* req) {
     if (!req->hasField("item")) {
@@ -1263,8 +1271,8 @@ void WSRequestHandler::HandleSetSceneItemCrop(WSRequestHandler* req) {
     if (sceneItem) {
         struct obs_sceneitem_crop crop = { 0 };
         crop.top = obs_data_get_int(req->data, "top");
-        crop.bottom = obs_data_get_int(req->data, "bottom");;
-        crop.left = obs_data_get_int(req->data, "left");;
+        crop.bottom = obs_data_get_int(req->data, "bottom");
+        crop.left = obs_data_get_int(req->data, "left");
         crop.right = obs_data_get_int(req->data, "right");
 
         obs_sceneitem_set_crop(sceneItem, &crop);
@@ -1273,6 +1281,324 @@ void WSRequestHandler::HandleSetSceneItemCrop(WSRequestHandler* req) {
     } else {
         req->SendErrorResponse("specified scene item doesn't exist");
     }
+}
+
+/**
+ * Gets the scene specific properties of the specified source item.
+ *
+ * @param {String (optional)} `scene-name` the name of the scene that the source item belongs to. Defaults to the current scene.
+ * @param {String} `item` The name of the source.
+ *
+ * @return {String} `name` The name of the source.
+ * @return {int} `position.x` The x position of the source from the left.
+ * @return {int} `position.y` The y position of the source from the top.
+ * @return {int} `position.alignment` The point on the source that the item is manipulated from.
+ * @return {double} `rotation` The clockwise rotation of the item in degrees around the point of alignment.
+ * @return {double} `scale.x` The x-scale factor of the source.
+ * @return {double} `scale.y` The y-scale factor of the source.
+ * @return {int} `crop.top` The number of pixels cropped off the top of the source before scaling.
+ * @return {int} `crop.right` The number of pixels cropped off the right of the source before scaling.
+ * @return {int} `crop.bottom` The number of pixels cropped off the bottom of the source before scaling.
+ * @return {int} `crop.left` The number of pixels cropped off the left of the source before scaling.
+ * @return {bool} `visible` If the source is visible.
+ * @return {String} `bounds.type` Type of bounding box.
+ * @return {int} `bounds.alignment` Alignment of the bounding box.
+ * @return {double} `bounds.x` Width of the bounding box.
+ * @return {double} `bounds.y` Height of the bounding box.
+ *
+ * @api requests
+ * @name GetSceneItemSceneProperties
+ * @category sources
+ * @since unreleased
+ */
+void WSRequestHandler::HandleGetSceneItemProperties(WSRequestHandler* req) {
+    if (!req->hasField("item")) {
+        req->SendErrorResponse("missing request parameters");
+        return;
+    }
+
+    const char* item_name = obs_data_get_string(req->data, "item");
+    if (!str_valid(item_name)) {
+        req->SendErrorResponse("invalid request parameters");
+        return;
+    }
+
+    const char* scene_name = obs_data_get_string(req->data, "scene-name");
+    obs_source_t* scene = Utils::GetSceneFromNameOrCurrent(scene_name);
+    if (!scene) {
+        req->SendErrorResponse("requested scene doesn't exist");
+        return;
+    }
+
+    obs_sceneitem_t* scene_item = Utils::GetSceneItemFromName(scene, item_name);
+    if (!scene_item) {
+        req->SendErrorResponse("specified scene item doesn't exist");
+        obs_source_release(scene);
+        return;
+    }
+
+    obs_data_t* data = obs_data_create();
+
+    obs_data_set_string(data, "name", item_name);
+
+    obs_data_t* pos_data = obs_data_create();
+    vec2 pos;
+    obs_sceneitem_get_pos(scene_item, &pos);
+    obs_data_set_double(pos_data, "x", pos.x);
+    obs_data_set_double(pos_data, "y", pos.y);
+    obs_data_set_int(pos_data, "alignment", obs_sceneitem_get_alignment(scene_item));
+    obs_data_set_obj(data, "position", pos_data);
+
+    obs_data_set_double(data, "rotation", obs_sceneitem_get_rot(scene_item));
+
+    obs_data_t* scale_data = obs_data_create();
+    vec2 scale;
+    obs_sceneitem_get_scale(scene_item, &scale);
+    obs_data_set_double(scale_data, "x", scale.x);
+    obs_data_set_double(scale_data, "y", scale.y);
+    obs_data_set_obj(data, "scale", scale_data);
+
+    obs_data_t* crop_data = obs_data_create();
+    obs_sceneitem_crop crop;
+    obs_sceneitem_get_crop(scene_item, &crop);
+    obs_data_set_int(crop_data, "left", crop.left);
+    obs_data_set_int(crop_data, "top", crop.top);
+    obs_data_set_int(crop_data, "right", crop.right);
+    obs_data_set_int(crop_data, "bottom", crop.bottom);
+    obs_data_set_obj(data, "crop", crop_data);
+
+    obs_data_set_bool(data, "visible", obs_sceneitem_visible(scene_item));
+
+    obs_data_t* bounds_data = obs_data_create();
+    obs_bounds_type bounds_type = obs_sceneitem_get_bounds_type(scene_item);
+    if (bounds_type == OBS_BOUNDS_NONE) {
+        obs_data_set_string(bounds_data, "type", "OBS_BOUNDS_NONE");
+    }
+    else {
+        switch(bounds_type) {
+            case OBS_BOUNDS_STRETCH: {
+                obs_data_set_string(bounds_data, "type", "OBS_BOUNDS_STRETCH");
+                break;
+            }
+            case OBS_BOUNDS_SCALE_INNER: {
+                obs_data_set_string(bounds_data, "type", "OBS_BOUNDS_SCALE_INNER");
+                break;
+            }
+            case OBS_BOUNDS_SCALE_OUTER: {
+                obs_data_set_string(bounds_data, "type", "OBS_BOUNDS_SCALE_OUTER");
+                break;
+            }
+            case OBS_BOUNDS_SCALE_TO_WIDTH: {
+                obs_data_set_string(bounds_data, "type", "OBS_BOUNDS_SCALE_TO_WIDTH");
+                break;
+            }
+            case OBS_BOUNDS_SCALE_TO_HEIGHT: {
+                obs_data_set_string(bounds_data, "type", "OBS_BOUNDS_SCALE_TO_HEIGHT");
+                break;
+            }
+            case OBS_BOUNDS_MAX_ONLY: {
+                obs_data_set_string(bounds_data, "type", "OBS_BOUNDS_MAX_ONLY");
+                break;
+            }
+        }
+        obs_data_set_int(bounds_data, "alignment", obs_sceneitem_get_bounds_alignment(scene_item));
+        vec2 bounds;
+        obs_sceneitem_get_bounds(scene_item, &bounds);
+        obs_data_set_double(bounds_data, "x", bounds.x);
+        obs_data_set_double(bounds_data, "y", bounds.y);
+    }
+    obs_data_set_obj(data, "bounds", bounds_data);
+
+    obs_sceneitem_release(scene_item);
+    req->SendOKResponse(data);
+    obs_source_release(scene);
+}
+
+/**
+ * Sets the scene specific properties of a source. Unspecified properties will remain unchanged.
+ *
+ * @param {String (optional)} `scene-name` the name of the scene that the source item belongs to. Defaults to the current scene.
+ * @param {String} `item` The name of the source.
+ * @param {int} `position.x` The new x position of the source.
+ * @param {int} `position.y` The new y position of the source.
+ * @param {int} `position.alignment` The new alignment of the source.
+ * @param {double} `rotation` The new clockwise rotation of the item in degrees.
+ * @param {double} `scale.x` The new x scale of the item.
+ * @param {double} `scale.y` The new y scale of the item.
+ * @param {int} `crop.top` The new amount of pixels cropped off the top of the source before scaling.
+ * @param {int} `crop.bottom` The new amount of pixels cropped off the bottom of the source before scaling.
+ * @param {int} `crop.left` The new amount of pixels cropped off the left of the source before scaling.
+ * @param {int} `crop.right` The new amount of pixels cropped off the right of the source before scaling.
+ * @param {bool} `visible` The new visibility of the source. 'true' shows source, 'false' hides source.
+ * @param {String} `bounds.type` The new bounds type of the source.
+ * @param {int} `bounds.alignment` The new alignment of the bounding box. (0-2, 4-6, 8-10)
+ * @param {double} `bounds.x` The new width of the bounding box.
+ * @param {double} `bounds.y' The new height of the bounding box.
+ *
+ * @api requests
+ * @name SetSceneItemProperties
+ * @category sources
+ * @since unreleased
+ */
+void WSRequestHandler::HandleSetSceneItemProperties(WSRequestHandler* req) {
+    if (!req->hasField("item")) {
+        req->SendErrorResponse("missing request parameters");
+        return;
+    }
+
+    const char* item_name = obs_data_get_string(req->data, "item");
+    if (!str_valid(item_name)) {
+        req->SendErrorResponse("invalid request parameters");
+        return;
+    }
+
+    const char* scene_name = obs_data_get_string(req->data, "scene-name");
+    obs_source_t* scene = Utils::GetSceneFromNameOrCurrent(scene_name);
+    if (!scene) {
+        req->SendErrorResponse("requested scene doesn't exist");
+        return;
+    }
+
+    obs_sceneitem_t* scene_item = Utils::GetSceneItemFromName(scene, item_name);
+    if (!scene_item) {
+        req->SendErrorResponse("specified scene item doesn't exist");
+        obs_source_release(scene);
+        return;
+    }
+
+    bool bad_request = false;
+    obs_data_t* error_message = obs_data_create();
+
+    if (req->hasField("position")) {
+        vec2 old_position;
+        obs_data_t* position_error = obs_data_create();
+        obs_sceneitem_get_pos(scene_item, &old_position);
+        obs_data_t* req_position = obs_data_get_obj(req->data, "position");
+        vec2 new_position = old_position;
+        if (obs_data_has_user_value(req_position, "x")) {
+            new_position.x = obs_data_get_int(req_position, "x");
+        }
+        if (obs_data_has_user_value(req_position, "y")) {
+            new_position.y = obs_data_get_int(req_position, "y");
+        }
+        if (obs_data_has_user_value(req_position, "alignment")) {
+            const uint32_t alignment = obs_data_get_int(req_position, "alignment");
+            if (Utils::IsValidAlignment(alignment)) {
+                obs_sceneitem_set_alignment(scene_item, alignment);
+            } else {
+                bad_request = true;
+                obs_data_set_string(position_error, "alignment", "invalid");
+                obs_data_set_obj(error_message, "position", position_error);
+            }
+        }
+        obs_sceneitem_set_pos(scene_item, &new_position);
+    }
+
+    if (req->hasField("rotation")) {
+        obs_sceneitem_set_rot(scene_item, (float)obs_data_get_double(req->data, "rotation"));
+    }
+
+    if (req->hasField("scale")) {
+        vec2 old_scale;
+        obs_sceneitem_get_scale(scene_item, &old_scale);
+        obs_data_t* req_scale = obs_data_get_obj(req->data, "scale");
+        vec2 new_scale = old_scale;
+        if (obs_data_has_user_value(req_scale, "x")) {
+            new_scale.x = obs_data_get_double(req_scale, "x");
+        }
+        if (obs_data_has_user_value(req_scale, "y")) {
+            new_scale.y = obs_data_get_double(req_scale, "y");
+        }
+        obs_sceneitem_set_scale(scene_item, &new_scale);
+    }
+
+    if (req->hasField("crop")) {
+        obs_sceneitem_crop old_crop;
+        obs_sceneitem_get_crop(scene_item, &old_crop);
+        obs_data_t* req_crop = obs_data_get_obj(req->data, "crop");
+        obs_sceneitem_crop new_crop = old_crop;
+        if (obs_data_has_user_value(req_crop, "top")) {
+            new_crop.top = obs_data_get_int(req_crop, "top");
+        }
+        if (obs_data_has_user_value(req_crop, "right")) {
+            new_crop.right = obs_data_get_int(req_crop, "right");
+        }
+        if (obs_data_has_user_value(req_crop, "bottom")) {
+            new_crop.bottom = obs_data_get_int(req_crop, "bottom");
+        }
+        if (obs_data_has_user_value(req_crop, "left")) {
+            new_crop.left = obs_data_get_int(req_crop, "left");
+        }
+        obs_sceneitem_set_crop(scene_item, &new_crop);
+    }
+
+    if (req->hasField("visible")) {
+        obs_sceneitem_set_visible(scene_item, obs_data_get_bool(req->data, "visible"));
+    }
+
+    if (req->hasField("bounds")) {
+        bool bad_bounds = false;
+        obs_data_t* bounds_error = obs_data_create();
+        obs_data_t* req_bounds = obs_data_get_obj(req->data, "bounds");
+        if (obs_data_has_user_value(req_bounds, "type")) {
+            const char* new_bounds_type = obs_data_get_string(req_bounds, "type");
+            if (new_bounds_type == "OBS_BOUNDS_NONE") {
+                obs_sceneitem_set_bounds_type(scene_item, OBS_BOUNDS_NONE);
+            }
+            else if (new_bounds_type == "OBS_BOUNDS_STRETCH") {
+                obs_sceneitem_set_bounds_type(scene_item, OBS_BOUNDS_STRETCH);
+            }
+            else if (new_bounds_type == "OBS_BOUNDS_SCALE_INNER") {
+                obs_sceneitem_set_bounds_type(scene_item, OBS_BOUNDS_SCALE_INNER);
+            }
+            else if (new_bounds_type == "OBS_BOUNDS_SCALE_OUTER") {
+                obs_sceneitem_set_bounds_type(scene_item, OBS_BOUNDS_SCALE_OUTER);
+            }
+            else if (new_bounds_type == "OBS_BOUNDS_SCALE_TO_WIDTH") {
+                obs_sceneitem_set_bounds_type(scene_item, OBS_BOUNDS_SCALE_TO_WIDTH);
+            }
+            else if (new_bounds_type == "OBS_BOUNDS_SCALE_TO_HEIGHT") {
+                obs_sceneitem_set_bounds_type(scene_item, OBS_BOUNDS_SCALE_TO_HEIGHT);
+            }
+            else if (new_bounds_type == "OBS_BOUNDS_MAX_ONLY") {
+                obs_sceneitem_set_bounds_type(scene_item, OBS_BOUNDS_MAX_ONLY);
+            }
+            else {
+                bad_request = bad_bounds = true;
+                obs_data_set_string(bounds_error, "type", "invalid");
+            }
+        }
+        vec2 old_bounds;
+        obs_sceneitem_get_bounds(scene_item, &old_bounds);
+        vec2 new_bounds = old_bounds;
+        if (obs_data_has_user_value(req_bounds, "x")) {
+            new_bounds.x = obs_data_get_double(req_bounds, "x");
+        }
+        if (obs_data_has_user_value(req_bounds, "y")) {
+            new_bounds.y = obs_data_get_double(req_bounds, "y");
+        }
+        obs_sceneitem_set_bounds(scene_item, &new_bounds);
+        if (obs_data_has_user_value(req_bounds, "alignment")) {
+            const uint32_t bounds_alignment = obs_data_get_int(req_bounds, "alignment");
+            if (Utils::IsValidAlignment(bounds_alignment)) {
+                obs_sceneitem_set_bounds_alignment(scene_item, bounds_alignment);
+            } else {
+                bad_request = bad_bounds = true;
+                obs_data_set_string(bounds_error, "alignment", "invalid");
+            }
+        }
+        if (bad_bounds) {
+            obs_data_set_obj(error_message, "bounds", bounds_error);
+        }
+    }
+
+    obs_sceneitem_release(scene_item);
+    if (bad_request) {
+        req->SendErrorResponse(error_message);
+    } else {
+        req->SendOKResponse();
+    }
+    obs_source_release(scene);
 }
 
 /**
@@ -1390,30 +1716,49 @@ void WSRequestHandler::HandleGetCurrentProfile(WSRequestHandler* req) {
  * @since 4.1.0
  */
 void WSRequestHandler::HandleSetStreamSettings(WSRequestHandler* req) {
-    OBSService service = obs_frontend_get_streaming_service();
+    obs_service_t* service = obs_frontend_get_streaming_service();
+    // get_streaming_service doesn't addref, so let's do it ourselves
+    obs_service_addref(service);
 
-    OBSDataAutoRelease settings = obs_data_get_obj(req->data, "settings");
-    if (!settings) {
+    obs_data_t* requestSettings = obs_data_get_obj(req->data, "settings");
+    if (!requestSettings) {
         req->SendErrorResponse("'settings' are required'");
         return;
     }
 
-    const char* serviceType = obs_service_get_type(service);
-    const char* requestedType = obs_data_get_string(req->data, "type");
-    if (requestedType != nullptr && strcmp(requestedType, serviceType) != 0) {
-        OBSDataAutoRelease hotkeys = obs_hotkeys_save_service(service);
-        service = obs_service_create(requestedType, "websocket_custom_service", settings, hotkeys);
+    QString serviceType = obs_service_get_type(service);
+    QString requestedType = obs_data_get_string(req->data, "type");
+
+    if (requestedType != nullptr && requestedType != serviceType) {
+        obs_data_t* hotkeys = obs_hotkeys_save_service(service);
+
+        // Release current service pointer before creating the new one
+        obs_service_release(service);
+
+        service = obs_service_create(
+            requestedType.toUtf8(), "websocket_custom_service", requestSettings, hotkeys);
+
+        obs_service_addref(service);
+
+        obs_data_release(hotkeys);
     } else {
-        //if type isn't changing we should overlay the settings we got with the existing settings
-        OBSDataAutoRelease existingSettings = obs_service_get_settings(service);
-        //by doing this you can send a request to the websocket that only contains a setting you want to change instead of having to do a get and then change them
-        OBSDataAutoRelease newSettings = obs_data_create();
+        // If type isn't changing, we should overlay the settings we got
+        // to the existing settings. By doing so, you can send a request that
+        // only contains the settings you want to change, instead of having to
+        // do a get and then change them
 
-        obs_data_apply(newSettings, existingSettings); //first apply the existing settings
-        obs_data_apply(newSettings, settings); //then apply the settings from the request
+        obs_data_t* existingSettings = obs_service_get_settings(service);
+        obs_data_t* newSettings = obs_data_create();
 
-        obs_service_update(service, settings);
-        settings = newSettings;
+        // Apply existing settings
+        obs_data_apply(newSettings, existingSettings);
+        // Then apply the settings from the request
+        obs_data_apply(newSettings, requestSettings);
+
+        obs_service_update(service, newSettings);
+
+        obs_data_release(newSettings);
+        obs_data_release(existingSettings);
     }
 
     //if save is specified we should immediately save the streaming service
@@ -1421,11 +1766,18 @@ void WSRequestHandler::HandleSetStreamSettings(WSRequestHandler* req) {
         obs_frontend_save_streaming_service();
     }
 
-    OBSDataAutoRelease response = obs_data_create();
-    obs_data_set_string(response, "type", requestedType);
-    obs_data_set_obj(response, "settings", settings);
+    obs_data_t* serviceSettings = obs_service_get_settings(service);
+
+    obs_data_t* response = obs_data_create();
+    obs_data_set_string(response, "type", requestedType.toUtf8());
+    obs_data_set_obj(response, "settings", serviceSettings);
 
     req->SendOKResponse(response);
+
+    obs_data_release(response);
+    obs_data_release(serviceSettings);
+    obs_data_release(requestSettings);
+    obs_service_release(service);
 }
 
 /**
@@ -1445,7 +1797,10 @@ void WSRequestHandler::HandleSetStreamSettings(WSRequestHandler* req) {
  * @since 4.1.0
  */
 void WSRequestHandler::HandleGetStreamSettings(WSRequestHandler* req) {
-    OBSService service = obs_frontend_get_streaming_service();
+    obs_service_t* service = obs_frontend_get_streaming_service();
+    // get_streaming_service doesn't addref, so let's do it ourselves
+    obs_service_addref(service);
+
     const char* serviceType = obs_service_get_type(service);
     OBSDataAutoRelease settings = obs_service_get_settings(service);
 
@@ -1454,6 +1809,10 @@ void WSRequestHandler::HandleGetStreamSettings(WSRequestHandler* req) {
     obs_data_set_obj(response, "settings", settings);
 
     req->SendOKResponse(response);
+
+    obs_data_release(response);
+    obs_data_release(settings);
+    obs_service_release(service);
 }
 
 /**

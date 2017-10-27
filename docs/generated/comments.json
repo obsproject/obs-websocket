@@ -1669,6 +1669,7 @@
         "name": "SetSourceRender",
         "category": "sources",
         "since": "0.3",
+        "deprecated": "Since unreleased. Prefer the use of SetSceneItemProperties.",
         "params": [
           {
             "type": "String",
@@ -1702,6 +1703,12 @@
           {
             "name": "",
             "description": "0.3"
+          }
+        ],
+        "deprecateds": [
+          {
+            "name": "",
+            "description": "Since unreleased. Prefer the use of SetSceneItemProperties."
           }
         ],
         "heading": {
@@ -2090,6 +2097,7 @@
         "name": "SetSceneItemPosition",
         "category": "sources",
         "since": "4.0.0",
+        "deprecated": "Since unreleased. Prefer the use of SetSceneItemProperties.",
         "params": [
           {
             "type": "String (optional)",
@@ -2130,6 +2138,12 @@
             "description": "4.0.0"
           }
         ],
+        "deprecateds": [
+          {
+            "name": "",
+            "description": "Since unreleased. Prefer the use of SetSceneItemProperties."
+          }
+        ],
         "heading": {
           "level": 2,
           "text": "SetSceneItemPosition"
@@ -2152,6 +2166,7 @@
         "name": "SetSceneItemTransform",
         "category": "sources",
         "since": "4.0.0",
+        "deprecated": "Since unreleased. Prefer the use of SetSceneItemProperties.",
         "params": [
           {
             "type": "String (optional)",
@@ -2197,6 +2212,12 @@
             "description": "4.0.0"
           }
         ],
+        "deprecateds": [
+          {
+            "name": "",
+            "description": "Since unreleased. Prefer the use of SetSceneItemProperties."
+          }
+        ],
         "heading": {
           "level": 2,
           "text": "SetSceneItemTransform"
@@ -2220,6 +2241,7 @@
         "name": "SetSceneItemCrop",
         "category": "sources",
         "since": "4.1.0",
+        "deprecated": "Since unreleased. Prefer the use of SetSceneItemProperties.",
         "params": [
           {
             "type": "String (optional)",
@@ -2268,6 +2290,12 @@
           {
             "name": "",
             "description": "4.1.0"
+          }
+        ],
+        "deprecateds": [
+          {
+            "name": "",
+            "description": "Since unreleased. Prefer the use of SetSceneItemProperties."
           }
         ],
         "heading": {
@@ -3070,14 +3098,14 @@
         "description": "Start streaming.\nWill return an `error` if streaming is already active.",
         "param": [
           "{Object (optional)} `stream` Special stream configuration.",
-          "{String (optional)} `type` If specified ensures the type of stream matches the given type (usually 'rtmp_custom' or 'rtmp_common'). If the currently configured stream type does not match the given stream type, all settings must be specified in the `settings` object or an error will occur when starting the stream.",
-          "{Object (optional)} `metadata` Adds the given object parameters as encoded query string parameters to the 'key' of the RTMP stream. Used to pass data to the RTMP service about the streaming. May be any String, Numeric, or Boolean field.",
-          "{Object (optional)} `settings` Settings for the stream.",
-          "{String (optional)} `settings.server` The publish URL.",
-          "{String (optional)} `settings.key` The publish key of the stream.",
-          "{boolean (optional)} `settings.use-auth` Indicates whether authentication should be used when connecting to the streaming server.",
-          "{String (optional)} `settings.username` If authentication is enabled, the username for the streaming server. Ignored if `use-auth` is not set to `true`.",
-          "{String (optional)} `settings.password` If authentication is enabled, the password for the streaming server. Ignored if `use-auth` is not set to `true`."
+          "{String (optional)} `stream.type` If specified ensures the type of stream matches the given type (usually 'rtmp_custom' or 'rtmp_common'). If the currently configured stream type does not match the given stream type, all settings must be specified in the `settings` object or an error will occur when starting the stream.",
+          "{Object (optional)} `stream.metadata` Adds the given object parameters as encoded query string parameters to the 'key' of the RTMP stream. Used to pass data to the RTMP service about the streaming. May be any String, Numeric, or Boolean field.",
+          "{Object (optional)} `stream.settings` Settings for the stream.",
+          "{String (optional)} `stream.settings.server` The publish URL.",
+          "{String (optional)} `stream.settings.key` The publish key of the stream.",
+          "{boolean (optional)} `stream.settings.use-auth` Indicates whether authentication should be used when connecting to the streaming server.",
+          "{String (optional)} `stream.settings.username` If authentication is enabled, the username for the streaming server. Ignored if `use-auth` is not set to `true`.",
+          "{String (optional)} `stream.settings.password` If authentication is enabled, the password for the streaming server. Ignored if `use-auth` is not set to `true`."
         ],
         "api": "requests",
         "name": "StartStreaming",
@@ -3091,42 +3119,42 @@
           },
           {
             "type": "String (optional)",
-            "name": "type",
+            "name": "stream.type",
             "description": "If specified ensures the type of stream matches the given type (usually 'rtmp_custom' or 'rtmp_common'). If the currently configured stream type does not match the given stream type, all settings must be specified in the `settings` object or an error will occur when starting the stream."
           },
           {
             "type": "Object (optional)",
-            "name": "metadata",
+            "name": "stream.metadata",
             "description": "Adds the given object parameters as encoded query string parameters to the 'key' of the RTMP stream. Used to pass data to the RTMP service about the streaming. May be any String, Numeric, or Boolean field."
           },
           {
             "type": "Object (optional)",
-            "name": "settings",
+            "name": "stream.settings",
             "description": "Settings for the stream."
           },
           {
             "type": "String (optional)",
-            "name": "settings.server",
+            "name": "stream.settings.server",
             "description": "The publish URL."
           },
           {
             "type": "String (optional)",
-            "name": "settings.key",
+            "name": "stream.settings.key",
             "description": "The publish key of the stream."
           },
           {
             "type": "boolean (optional)",
-            "name": "settings.use-auth",
+            "name": "stream.settings.use-auth",
             "description": "Indicates whether authentication should be used when connecting to the streaming server."
           },
           {
             "type": "String (optional)",
-            "name": "settings.username",
+            "name": "stream.settings.username",
             "description": "If authentication is enabled, the username for the streaming server. Ignored if `use-auth` is not set to `true`."
           },
           {
             "type": "String (optional)",
-            "name": "settings.password",
+            "name": "stream.settings.password",
             "description": "If authentication is enabled, the password for the streaming server. Ignored if `use-auth` is not set to `true`."
           }
         ],
