@@ -119,6 +119,7 @@ auth_response = base64_encode(auth_response_hash)
     + [GetBrowserSourceProperties](#getbrowsersourceproperties)
     + [SetBrowserSourceProperties](#setbrowsersourceproperties)
     + [ResetSceneItem](#resetsceneitem)
+    + [GetSourcesList](#getsourceslist)
   * [Streaming](#streaming-1)
     + [GetStreamingStatus](#getstreamingstatus)
     + [StartStopStreaming](#startstopstreaming)
@@ -1350,6 +1351,33 @@ _No additional response items._
 
 ---
 
+### GetSourcesList
+
+
+- Unreleased
+
+Set settings of the specified source.
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sourceName` | _String_ | Name of the source item. |
+| `sourceType` | _String (optional)_ | Type of the specified source. Useful for type-checking to avoid settings a set of settings incompatible with the actual source's type. |
+| `sourceSettings` | _Object_ | Source settings. Varying between source types. |
+
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sourceName` | _String_ | Source name |
+| `sourceType` | _String_ | Type of the specified source |
+| `sourceSettings` | _Object_ | Source settings. Varying between source types. |
+
+
+---
+
 ## Streaming
 
 ### GetStreamingStatus
@@ -1506,7 +1534,7 @@ Change the current recording folder.
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
-| `rec-folder` | _Stsring_ | Path of the recording folder. |
+| `rec-folder` | _String_ | Path of the recording folder. |
 
 
 **Response Items:**
