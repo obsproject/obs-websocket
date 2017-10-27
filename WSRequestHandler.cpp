@@ -2570,33 +2570,25 @@ void WSRequestHandler::HandleResetSceneItem(WSRequestHandler* req) {
 * @since unreleased
 */
 void WSRequestHandler::HandleGetSourcesList(WSRequestHandler* req) {
-    obs_data_array_t* sourcesArray = obs_data_array_create();
+    OBSDataArrayAutoRelease sourcesArray = obs_data_array_create();
 
-    auto source_enum = [](void* privateData, obs_source_t* source) -> bool {
+    auto sourceEnumProc = [](void* privateData, obs_source_t* source) -> bool {
         obs_data_array_t* sourcesArray = (obs_data_array_t*)privateData;
 
-        obs_data_t* sourceSettings = obs_source_get_settings(source);
+        OBSDataAutoRelease sourceSettings = obs_source_get_settings(source);
 
-        obs_data_t* sourceData = obs_data_create();
+        OBSDataAutoRelease sourceData = obs_data_create();
         obs_data_set_string(sourceData, "name", obs_source_get_name(source));
         obs_data_set_string(sourceData, "type", obs_source_get_id(source));
 
         obs_data_array_push_back(sourcesArray, sourceData);
-
-        obs_data_release(sourceSettings);
-        obs_data_release(sourceData);
-
         return true;
     };
-    obs_enum_sources(source_enum, sourcesArray);
+    obs_enum_sources(sourceEnumProc, sourcesArray);
 
-
-    obs_data_t* response = obs_data_create();
+    OBSDataAutoRelease response = obs_data_create();
     obs_data_set_array(response, "sources", sourcesArray);
     req->SendOKResponse(response);
-
-    obs_data_release(response);
-    obs_data_array_release(sourcesArray);
 }
 
 /**
@@ -2621,7 +2613,7 @@ void WSRequestHandler::HandleGetSourceSettings(WSRequestHandler* req) {
     }
 
     const char* sourceName = obs_data_get_string(req->data, "sourceName");
-    obs_source_t* source = obs_get_source_by_name(sourceName);
+    OBSSourceAutoRelease source = obs_get_source_by_name(sourceName);
     if (!source) {
         req->SendErrorResponse("specified source doesn't exist");
         return;
@@ -2633,22 +2625,17 @@ void WSRequestHandler::HandleGetSourceSettings(WSRequestHandler* req) {
 
         if (actualSourceType != requestedType) {
             req->SendErrorResponse("specified source exists but is not of expected type");
-            obs_source_release(source);
             return;
         }
     }
 
-    obs_data_t* sourceSettings = obs_source_get_settings(source);
+    OBSDataAutoRelease sourceSettings = obs_source_get_settings(source);
 
-    obs_data_t* response = obs_data_create();
+    OBSDataAutoRelease response = obs_data_create();
     obs_data_set_string(response, "sourceName", obs_source_get_name(source));
     obs_data_set_string(response, "sourceType", obs_source_get_id(source));
     obs_data_set_obj(response, "sourceSettings", sourceSettings);
     req->SendOKResponse(response);
-
-    obs_data_release(response);
-    obs_data_release(sourceSettings);
-    obs_source_release(source);
 }
 
 /**
@@ -2674,7 +2661,7 @@ void WSRequestHandler::HandleSetSourceSettings(WSRequestHandler* req) {
     }
 
     const char* sourceName = obs_data_get_string(req->data, "sourceName");
-    obs_source_t* source = obs_get_source_by_name(sourceName);
+    OBSSourceAutoRelease source = obs_get_source_by_name(sourceName);
     if (!source) {
         req->SendErrorResponse("specified source doesn't exist");
         return;
@@ -2686,30 +2673,23 @@ void WSRequestHandler::HandleSetSourceSettings(WSRequestHandler* req) {
 
         if (actualSourceType != requestedType) {
             req->SendErrorResponse("specified source exists but is not of expected type");
-            obs_source_release(source);
             return;
         }
     }
 
-    obs_data_t* currentSettings = obs_source_get_settings(source);
-    obs_data_t* newSettings = obs_data_get_obj(req->data, "sourceSettings");
+    OBSDataAutoRelease currentSettings = obs_source_get_settings(source);
+    OBSDataAutoRelease newSettings = obs_data_get_obj(req->data, "sourceSettings");
 
-    obs_data_t* sourceSettings = obs_data_create();
+    OBSDataAutoRelease sourceSettings = obs_data_create();
     obs_data_apply(sourceSettings, currentSettings);
     obs_data_apply(sourceSettings, newSettings);
 
     obs_source_update(source, sourceSettings);
     obs_source_update_properties(source);
 
-    obs_data_t* response = obs_data_create();
+    OBSDataAutoRelease response = obs_data_create();
     obs_data_set_string(response, "sourceName", obs_source_get_name(source));
     obs_data_set_string(response, "sourceType", obs_source_get_id(source));
     obs_data_set_obj(response, "sourceSettings", sourceSettings);
     req->SendOKResponse(response);
-
-    obs_data_release(response);
-    obs_data_release(sourceSettings);
-    obs_data_release(newSettings);
-    obs_data_release(currentSettings);
-    obs_source_release(source);
 }
