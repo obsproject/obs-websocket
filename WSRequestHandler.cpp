@@ -89,6 +89,8 @@ WSRequestHandler::WSRequestHandler(QWebSocket* client) :
     messageMap["SetSyncOffset"] = WSRequestHandler::HandleSetSyncOffset;
     messageMap["GetSyncOffset"] = WSRequestHandler::HandleGetSyncOffset;
     messageMap["GetSpecialSources"] = WSRequestHandler::HandleGetSpecialSources;
+    messageMap["GetSourceSettings"] = WSRequestHandler::HandleGetSourceSettings;
+    messageMap["SetSourceSettings"] = WSRequestHandler::HandleSetSourceSettings;
 
     messageMap["SetCurrentSceneCollection"] = WSRequestHandler::HandleSetCurrentSceneCollection;
     messageMap["GetCurrentSceneCollection"] = WSRequestHandler::HandleGetCurrentSceneCollection;
@@ -2135,7 +2137,7 @@ void WSRequestHandler::HandleGetSpecialSources(WSRequestHandler* req) {
 /**
  * Change the current recording folder.
  *
- * @param {Stsring} `rec-folder` Path of the recording folder.
+ * @param {String} `rec-folder` Path of the recording folder.
  *
  * @api requests
  * @name SetRecordingFolder
@@ -2696,4 +2698,117 @@ void WSRequestHandler::HandleResetSceneItem(WSRequestHandler* req) {
     }
 
     obs_source_release(scene);
+}
+* Get settings of the specified source
+*
+* @param {String} `sourceName` Name of the source item.
+* @param {String (optional) `sourceType` Type of the specified source. Useful for type-checking if you expect a specific settings schema.
+* 
+* @return {String} `sourceName` Source name
+* @return {String} `sourceType` Type of the specified source
+* @return {Object} `sourceSettings` Source settings. Varying between source types.
+*
+* @api requests
+* @name GetSourcesList
+* @category sources
+* @since unreleased
+*/
+void WSRequestHandler::HandleGetSourceSettings(WSRequestHandler* req) {
+    if (!req->hasField("sourceName")) {
+        req->SendErrorResponse("missing request parameters");
+        return;
+    }
+
+    const char* sourceName = obs_data_get_string(req->data, "sourceName");
+    obs_source_t* source = obs_get_source_by_name(sourceName);
+    if (!source) {
+        req->SendErrorResponse("specified source doesn't exist");
+        return;
+    }
+
+    if (req->hasField("sourceType")) {
+        QString actualSourceType = obs_source_get_id(source);
+        QString requestedType = obs_data_get_string(req->data, "sourceType");
+
+        if (actualSourceType != requestedType) {
+            req->SendErrorResponse("specified source exists but is not of expected type");
+            obs_source_release(source);
+            return;
+        }
+    }
+
+    obs_data_t* sourceSettings = obs_source_get_settings(source);
+
+    obs_data_t* response = obs_data_create();
+    obs_data_set_string(response, "sourceName", obs_source_get_name(source));
+    obs_data_set_string(response, "sourceType", obs_source_get_id(source));
+    obs_data_set_obj(response, "sourceSettings", sourceSettings);
+    req->SendOKResponse(response);
+
+    obs_data_release(response);
+    obs_data_release(sourceSettings);
+    obs_source_release(source);
+}
+
+/**
+* Set settings of the specified source.
+*
+* @param {String} `sourceName` Name of the source item.
+* @param {String (optional)} `sourceType` Type of the specified source. Useful for type-checking to avoid settings a set of settings incompatible with the actual source's type.
+* @param {Object} `sourceSettings` Source settings. Varying between source types.
+*
+* @return {String} `sourceName` Source name
+* @return {String} `sourceType` Type of the specified source
+* @return {Object} `sourceSettings` Source settings. Varying between source types.
+*
+* @api requests
+* @name GetSourcesList
+* @category sources
+* @since unreleased
+*/
+void WSRequestHandler::HandleSetSourceSettings(WSRequestHandler* req) {
+    if (!req->hasField("sourceName") || !req->hasField("sourceSettings")) {
+        req->SendErrorResponse("missing request parameters");
+        return;
+    }
+
+    const char* sourceName = obs_data_get_string(req->data, "sourceName");
+    obs_source_t* source = obs_get_source_by_name(sourceName);
+    if (!source) {
+        req->SendErrorResponse("specified source doesn't exist");
+        return;
+    }
+
+    if (req->hasField("sourceType")) {
+        QString actualSourceType = obs_source_get_id(source);
+        QString requestedType = obs_data_get_string(req->data, "sourceType");
+
+        if (actualSourceType != requestedType) {
+            req->SendErrorResponse("specified source exists but is not of expected type");
+            obs_source_release(source);
+            return;
+        }
+    }
+
+    obs_data_t* currentSettings = obs_source_get_settings(source);
+    obs_data_t* newSettings = obs_data_get_obj(req->data, "sourceSettings");
+
+    obs_data_t* sourceSettings = obs_data_create();
+    obs_data_apply(sourceSettings, currentSettings);
+    obs_data_apply(sourceSettings, newSettings);
+
+    obs_source_update(source, sourceSettings);
+    obs_source_update_properties(source);
+
+    obs_data_t* response = obs_data_create();
+    obs_data_set_string(response, "sourceName", obs_source_get_name(source));
+    obs_data_set_string(response, "sourceType", obs_source_get_id(source));
+    obs_data_set_obj(response, "sourceSettings", nullptr);
+    req->SendOKResponse(response);
+
+    obs_data_release(response);
+    obs_data_release(sourceSettings);
+    obs_data_release(newSettings);
+    obs_data_release(currentSettings);
+    obs_source_release(source);
 }
