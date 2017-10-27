@@ -1370,7 +1370,7 @@ void WSRequestHandler::HandleSetSceneItemCrop(WSRequestHandler* req) {
  * @return {double} `bounds.y` Height of the bounding box.
  *
  * @api requests
- * @name GetSceneItemSceneProperties
+ * @name GetSceneItemProperties
  * @category sources
  * @since unreleased
  */
