@@ -2703,13 +2703,13 @@ void WSRequestHandler::HandleResetSceneItem(WSRequestHandler* req) {
 *
 * @param {String} `sourceName` Name of the source item.
 * @param {String (optional) `sourceType` Type of the specified source. Useful for type-checking if you expect a specific settings schema.
-* 
+*
 * @return {String} `sourceName` Source name
 * @return {String} `sourceType` Type of the specified source
 * @return {Object} `sourceSettings` Source settings. Varying between source types.
 *
 * @api requests
-* @name GetSourcesList
+* @name GetSourceSettings
 * @category sources
 * @since unreleased
 */
@@ -2762,7 +2762,7 @@ void WSRequestHandler::HandleGetSourceSettings(WSRequestHandler* req) {
 * @return {Object} `sourceSettings` Source settings. Varying between source types.
 *
 * @api requests
-* @name GetSourcesList
+* @name SetSourceSettings
 * @category sources
 * @since unreleased
 */
