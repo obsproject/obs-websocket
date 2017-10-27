@@ -46,6 +46,7 @@ class WSRequestHandler : public QObject {
 
     void SendOKResponse(obs_data_t* additionalFields = NULL);
     void SendErrorResponse(const char* errorMessage);
+    void SendErrorResponse(obs_data_t* additionalFields = NULL);
     void SendResponse(obs_data_t* response);
 
     static void HandleGetVersion(WSRequestHandler* req);
@@ -62,6 +63,8 @@ class WSRequestHandler : public QObject {
     static void HandleSetSceneItemPosition(WSRequestHandler* req);
     static void HandleSetSceneItemTransform(WSRequestHandler* req);
     static void HandleSetSceneItemCrop(WSRequestHandler* req);
+    static void HandleGetSceneItemProperties(WSRequestHandler* req);
+    static void HandleSetSceneItemProperties(WSRequestHandler* req);
     static void HandleResetSceneItem(WSRequestHandler* req);
 
     static void HandleGetStreamingStatus(WSRequestHandler* req);

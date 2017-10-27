@@ -55,6 +55,8 @@ WSRequestHandler::WSRequestHandler(QWebSocket* client) :
     messageMap["SetSceneItemPosition"] = WSRequestHandler::HandleSetSceneItemPosition;
     messageMap["SetSceneItemTransform"] = WSRequestHandler::HandleSetSceneItemTransform;
     messageMap["SetSceneItemCrop"] = WSRequestHandler::HandleSetSceneItemCrop;
+    messageMap["GetSceneItemProperties"] = WSRequestHandler::HandleGetSceneItemProperties;
+    messageMap["SetSceneItemProperties"] = WSRequestHandler::HandleSetSceneItemProperties;
     messageMap["ResetSceneItem"] = WSRequestHandler::HandleResetSceneItem;
 
     messageMap["GetStreamingStatus"] = WSRequestHandler::HandleGetStreamingStatus;
@@ -182,6 +184,17 @@ void WSRequestHandler::SendErrorResponse(const char* errorMessage) {
     obs_data_set_string(response, "status", "error");
     obs_data_set_string(response, "error", errorMessage);
     obs_data_set_string(response, "message-id", _messageId);
+
+    SendResponse(response);
+}
+
+void WSRequestHandler::SendErrorResponse(obs_data_t* additionalFields) {
+    obs_data_t* response = obs_data_create();
+    obs_data_set_string(response, "status", "error");
+    obs_data_set_string(response, "message-id", _messageId);
+
+    if (additionalFields)
+        obs_data_set_obj(response, "error", additionalFields);
 
     SendResponse(response);
 }
@@ -1315,8 +1328,8 @@ void WSRequestHandler::HandleSetSceneItemCrop(WSRequestHandler* req) {
     if (scene_item) {
         struct obs_sceneitem_crop crop = { 0 };
         crop.top = obs_data_get_int(req->data, "top");
-        crop.bottom = obs_data_get_int(req->data, "bottom");;
-        crop.left = obs_data_get_int(req->data, "left");;
+        crop.bottom = obs_data_get_int(req->data, "bottom");
+        crop.left = obs_data_get_int(req->data, "left");
         crop.right = obs_data_get_int(req->data, "right");
 
         obs_sceneitem_set_crop(scene_item, &crop);
@@ -1327,6 +1340,324 @@ void WSRequestHandler::HandleSetSceneItemCrop(WSRequestHandler* req) {
         req->SendErrorResponse("specified scene item doesn't exist");
     }
 
+    obs_source_release(scene);
+}
+
+/**
+ * Gets the scene specific properties of the specified source item.
+ *
+ * @param {String (optional)} `scene-name` the name of the scene that the source item belongs to. Defaults to the current scene.
+ * @param {String} `item` The name of the source.
+ *
+ * @return {String} `name` The name of the source.
+ * @return {int} `position.x` The x position of the source from the left.
+ * @return {int} `position.y` The y position of the source from the top.
+ * @return {int} `position.alignment` The point on the source that the item is manipulated from.
+ * @return {double} `rotation` The clockwise rotation of the item in degrees around the point of alignment.
+ * @return {double} `scale.x` The x-scale factor of the source.
+ * @return {double} `scale.y` The y-scale factor of the source.
+ * @return {int} `crop.top` The number of pixels cropped off the top of the source before scaling.
+ * @return {int} `crop.right` The number of pixels cropped off the right of the source before scaling.
+ * @return {int} `crop.bottom` The number of pixels cropped off the bottom of the source before scaling.
+ * @return {int} `crop.left` The number of pixels cropped off the left of the source before scaling.
+ * @return {bool} `visible` If the source is visible.
+ * @return {String} `bounds.type` Type of bounding box.
+ * @return {int} `bounds.alignment` Alignment of the bounding box.
+ * @return {double} `bounds.x` Width of the bounding box.
+ * @return {double} `bounds.y` Height of the bounding box.
+ *
+ * @api requests
+ * @name GetSceneItemSceneProperties
+ * @category sources
+ * @since unreleased
+ */
+void WSRequestHandler::HandleGetSceneItemProperties(WSRequestHandler* req) {
+    if (!req->hasField("item")) {
+        req->SendErrorResponse("missing request parameters");
+        return;
+    }
+
+    const char* item_name = obs_data_get_string(req->data, "item");
+    if (!str_valid(item_name)) {
+        req->SendErrorResponse("invalid request parameters");
+        return;
+    }
+
+    const char* scene_name = obs_data_get_string(req->data, "scene-name");
+    obs_source_t* scene = Utils::GetSceneFromNameOrCurrent(scene_name);
+    if (!scene) {
+        req->SendErrorResponse("requested scene doesn't exist");
+        return;
+    }
+
+    obs_sceneitem_t* scene_item = Utils::GetSceneItemFromName(scene, item_name);
+    if (!scene_item) {
+        req->SendErrorResponse("specified scene item doesn't exist");
+        obs_source_release(scene);
+        return;
+    }
+
+    obs_data_t* data = obs_data_create();
+
+    obs_data_set_string(data, "name", item_name);
+
+    obs_data_t* pos_data = obs_data_create();
+    vec2 pos;
+    obs_sceneitem_get_pos(scene_item, &pos);
+    obs_data_set_double(pos_data, "x", pos.x);
+    obs_data_set_double(pos_data, "y", pos.y);
+    obs_data_set_int(pos_data, "alignment", obs_sceneitem_get_alignment(scene_item));
+    obs_data_set_obj(data, "position", pos_data);
+
+    obs_data_set_double(data, "rotation", obs_sceneitem_get_rot(scene_item));
+
+    obs_data_t* scale_data = obs_data_create();
+    vec2 scale;
+    obs_sceneitem_get_scale(scene_item, &scale);
+    obs_data_set_double(scale_data, "x", scale.x);
+    obs_data_set_double(scale_data, "y", scale.y);
+    obs_data_set_obj(data, "scale", scale_data);
+
+    obs_data_t* crop_data = obs_data_create();
+    obs_sceneitem_crop crop;
+    obs_sceneitem_get_crop(scene_item, &crop);
+    obs_data_set_int(crop_data, "left", crop.left);
+    obs_data_set_int(crop_data, "top", crop.top);
+    obs_data_set_int(crop_data, "right", crop.right);
+    obs_data_set_int(crop_data, "bottom", crop.bottom);
+    obs_data_set_obj(data, "crop", crop_data);
+
+    obs_data_set_bool(data, "visible", obs_sceneitem_visible(scene_item));
+
+    obs_data_t* bounds_data = obs_data_create();
+    obs_bounds_type bounds_type = obs_sceneitem_get_bounds_type(scene_item);
+    if (bounds_type == OBS_BOUNDS_NONE) {
+        obs_data_set_string(bounds_data, "type", "OBS_BOUNDS_NONE");
+    }
+    else {
+        switch(bounds_type) {
+            case OBS_BOUNDS_STRETCH: {
+                obs_data_set_string(bounds_data, "type", "OBS_BOUNDS_STRETCH");
+                break;
+            }
+            case OBS_BOUNDS_SCALE_INNER: {
+                obs_data_set_string(bounds_data, "type", "OBS_BOUNDS_SCALE_INNER");
+                break;
+            }
+            case OBS_BOUNDS_SCALE_OUTER: {
+                obs_data_set_string(bounds_data, "type", "OBS_BOUNDS_SCALE_OUTER");
+                break;
+            }
+            case OBS_BOUNDS_SCALE_TO_WIDTH: {
+                obs_data_set_string(bounds_data, "type", "OBS_BOUNDS_SCALE_TO_WIDTH");
+                break;
+            }
+            case OBS_BOUNDS_SCALE_TO_HEIGHT: {
+                obs_data_set_string(bounds_data, "type", "OBS_BOUNDS_SCALE_TO_HEIGHT");
+                break;
+            }
+            case OBS_BOUNDS_MAX_ONLY: {
+                obs_data_set_string(bounds_data, "type", "OBS_BOUNDS_MAX_ONLY");
+                break;
+            }
+        }
+        obs_data_set_int(bounds_data, "alignment", obs_sceneitem_get_bounds_alignment(scene_item));
+        vec2 bounds;
+        obs_sceneitem_get_bounds(scene_item, &bounds);
+        obs_data_set_double(bounds_data, "x", bounds.x);
+        obs_data_set_double(bounds_data, "y", bounds.y);
+    }
+    obs_data_set_obj(data, "bounds", bounds_data);
+
+    obs_sceneitem_release(scene_item);
+    req->SendOKResponse(data);
+    obs_source_release(scene);
+}
+
+/**
+ * Sets the scene specific properties of a source. Unspecified properties will remain unchanged.
+ *
+ * @param {String (optional)} `scene-name` the name of the scene that the source item belongs to. Defaults to the current scene.
+ * @param {String} `item` The name of the source.
+ * @param {int} `position.x` The new x position of the source.
+ * @param {int} `position.y` The new y position of the source.
+ * @param {int} `position.alignment` The new alignment of the source.
+ * @param {double} `rotation` The new clockwise rotation of the item in degrees.
+ * @param {double} `scale.x` The new x scale of the item.
+ * @param {double} `scale.y` The new y scale of the item.
+ * @param {int} `crop.top` The new amount of pixels cropped off the top of the source before scaling.
+ * @param {int} `crop.bottom` The new amount of pixels cropped off the bottom of the source before scaling.
+ * @param {int} `crop.left` The new amount of pixels cropped off the left of the source before scaling.
+ * @param {int} `crop.right` The new amount of pixels cropped off the right of the source before scaling.
+ * @param {bool} `visible` The new visibility of the source. 'true' shows source, 'false' hides source.
+ * @param {String} `bounds.type` The new bounds type of the source.
+ * @param {int} `bounds.alignment` The new alignment of the bounding box. (0-2, 4-6, 8-10)
+ * @param {double} `bounds.x` The new width of the bounding box.
+ * @param {double} `bounds.y' The new height of the bounding box.
+ *
+ * @api requests
+ * @name SetSceneItemProperties
+ * @category sources
+ * @since unreleased
+ */
+void WSRequestHandler::HandleSetSceneItemProperties(WSRequestHandler* req) {
+    if (!req->hasField("item")) {
+        req->SendErrorResponse("missing request parameters");
+        return;
+    }
+
+    const char* item_name = obs_data_get_string(req->data, "item");
+    if (!str_valid(item_name)) {
+        req->SendErrorResponse("invalid request parameters");
+        return;
+    }
+
+    const char* scene_name = obs_data_get_string(req->data, "scene-name");
+    obs_source_t* scene = Utils::GetSceneFromNameOrCurrent(scene_name);
+    if (!scene) {
+        req->SendErrorResponse("requested scene doesn't exist");
+        return;
+    }
+
+    obs_sceneitem_t* scene_item = Utils::GetSceneItemFromName(scene, item_name);
+    if (!scene_item) {
+        req->SendErrorResponse("specified scene item doesn't exist");
+        obs_source_release(scene);
+        return;
+    }
+
+    bool bad_request = false;
+    obs_data_t* error_message = obs_data_create();
+
+    if (req->hasField("position")) {
+        vec2 old_position;
+        obs_data_t* position_error = obs_data_create();
+        obs_sceneitem_get_pos(scene_item, &old_position);
+        obs_data_t* req_position = obs_data_get_obj(req->data, "position");
+        vec2 new_position = old_position;
+        if (obs_data_has_user_value(req_position, "x")) {
+            new_position.x = obs_data_get_int(req_position, "x");
+        }
+        if (obs_data_has_user_value(req_position, "y")) {
+            new_position.y = obs_data_get_int(req_position, "y");
+        }
+        if (obs_data_has_user_value(req_position, "alignment")) {
+            const uint32_t alignment = obs_data_get_int(req_position, "alignment");
+            if (Utils::IsValidAlignment(alignment)) {
+                obs_sceneitem_set_alignment(scene_item, alignment);
+            } else {
+                bad_request = true;
+                obs_data_set_string(position_error, "alignment", "invalid");
+                obs_data_set_obj(error_message, "position", position_error);
+            }
+        }
+        obs_sceneitem_set_pos(scene_item, &new_position);
+    }
+
+    if (req->hasField("rotation")) {
+        obs_sceneitem_set_rot(scene_item, (float)obs_data_get_double(req->data, "rotation"));
+    }
+
+    if (req->hasField("scale")) {
+        vec2 old_scale;
+        obs_sceneitem_get_scale(scene_item, &old_scale);
+        obs_data_t* req_scale = obs_data_get_obj(req->data, "scale");
+        vec2 new_scale = old_scale;
+        if (obs_data_has_user_value(req_scale, "x")) {
+            new_scale.x = obs_data_get_double(req_scale, "x");
+        }
+        if (obs_data_has_user_value(req_scale, "y")) {
+            new_scale.y = obs_data_get_double(req_scale, "y");
+        }
+        obs_sceneitem_set_scale(scene_item, &new_scale);
+    }
+
+    if (req->hasField("crop")) {
+        obs_sceneitem_crop old_crop;
+        obs_sceneitem_get_crop(scene_item, &old_crop);
+        obs_data_t* req_crop = obs_data_get_obj(req->data, "crop");
+        obs_sceneitem_crop new_crop = old_crop;
+        if (obs_data_has_user_value(req_crop, "top")) {
+            new_crop.top = obs_data_get_int(req_crop, "top");
+        }
+        if (obs_data_has_user_value(req_crop, "right")) {
+            new_crop.right = obs_data_get_int(req_crop, "right");
+        }
+        if (obs_data_has_user_value(req_crop, "bottom")) {
+            new_crop.bottom = obs_data_get_int(req_crop, "bottom");
+        }
+        if (obs_data_has_user_value(req_crop, "left")) {
+            new_crop.left = obs_data_get_int(req_crop, "left");
+        }
+        obs_sceneitem_set_crop(scene_item, &new_crop);
+    }
+
+    if (req->hasField("visible")) {
+        obs_sceneitem_set_visible(scene_item, obs_data_get_bool(req->data, "visible"));
+    }
+
+    if (req->hasField("bounds")) {
+        bool bad_bounds = false;
+        obs_data_t* bounds_error = obs_data_create();
+        obs_data_t* req_bounds = obs_data_get_obj(req->data, "bounds");
+        if (obs_data_has_user_value(req_bounds, "type")) {
+            const char* new_bounds_type = obs_data_get_string(req_bounds, "type");
+            if (new_bounds_type == "OBS_BOUNDS_NONE") {
+                obs_sceneitem_set_bounds_type(scene_item, OBS_BOUNDS_NONE);
+            }
+            else if (new_bounds_type == "OBS_BOUNDS_STRETCH") {
+                obs_sceneitem_set_bounds_type(scene_item, OBS_BOUNDS_STRETCH);
+            }
+            else if (new_bounds_type == "OBS_BOUNDS_SCALE_INNER") {
+                obs_sceneitem_set_bounds_type(scene_item, OBS_BOUNDS_SCALE_INNER);
+            }
+            else if (new_bounds_type == "OBS_BOUNDS_SCALE_OUTER") {
+                obs_sceneitem_set_bounds_type(scene_item, OBS_BOUNDS_SCALE_OUTER);
+            }
+            else if (new_bounds_type == "OBS_BOUNDS_SCALE_TO_WIDTH") {
+                obs_sceneitem_set_bounds_type(scene_item, OBS_BOUNDS_SCALE_TO_WIDTH);
+            }
+            else if (new_bounds_type == "OBS_BOUNDS_SCALE_TO_HEIGHT") {
+                obs_sceneitem_set_bounds_type(scene_item, OBS_BOUNDS_SCALE_TO_HEIGHT);
+            }
+            else if (new_bounds_type == "OBS_BOUNDS_MAX_ONLY") {
+                obs_sceneitem_set_bounds_type(scene_item, OBS_BOUNDS_MAX_ONLY);
+            }
+            else {
+                bad_request = bad_bounds = true;
+                obs_data_set_string(bounds_error, "type", "invalid");
+            }
+        }
+        vec2 old_bounds;
+        obs_sceneitem_get_bounds(scene_item, &old_bounds);
+        vec2 new_bounds = old_bounds;
+        if (obs_data_has_user_value(req_bounds, "x")) {
+            new_bounds.x = obs_data_get_double(req_bounds, "x");
+        }
+        if (obs_data_has_user_value(req_bounds, "y")) {
+            new_bounds.y = obs_data_get_double(req_bounds, "y");
+        }
+        obs_sceneitem_set_bounds(scene_item, &new_bounds);
+        if (obs_data_has_user_value(req_bounds, "alignment")) {
+            const uint32_t bounds_alignment = obs_data_get_int(req_bounds, "alignment");
+            if (Utils::IsValidAlignment(bounds_alignment)) {
+                obs_sceneitem_set_bounds_alignment(scene_item, bounds_alignment);
+            } else {
+                bad_request = bad_bounds = true;
+                obs_data_set_string(bounds_error, "alignment", "invalid");
+            }
+        }
+        if (bad_bounds) {
+            obs_data_set_obj(error_message, "bounds", bounds_error);
+        }
+    }
+
+    obs_sceneitem_release(scene_item);
+    if (bad_request) {
+        req->SendErrorResponse(error_message);
+    } else {
+        req->SendOKResponse();
+    }
     obs_source_release(scene);
 }
 

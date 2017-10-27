@@ -142,6 +142,23 @@ obs_sceneitem_t* Utils::GetSceneItemFromName(obs_source_t* source, const char* n
     return search.result;
 }
 
+bool Utils::IsValidAlignment(const uint32_t alignment) {
+    switch (alignment) {
+        case OBS_ALIGN_CENTER:
+        case OBS_ALIGN_LEFT:
+        case OBS_ALIGN_RIGHT:
+        case OBS_ALIGN_TOP:
+        case OBS_ALIGN_BOTTOM:
+        case OBS_ALIGN_TOP | OBS_ALIGN_LEFT:
+        case OBS_ALIGN_TOP | OBS_ALIGN_RIGHT:
+        case OBS_ALIGN_BOTTOM | OBS_ALIGN_LEFT:
+        case OBS_ALIGN_BOTTOM | OBS_ALIGN_RIGHT: {
+            return true;
+        }
+    }
+    return false;
+}
+
 obs_source_t* Utils::GetTransitionFromName(const char* search_name) {
     obs_source_t* found_transition = NULL;
 
