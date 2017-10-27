@@ -116,6 +116,8 @@ WSRequestHandler::WSRequestHandler(QWebSocket* client) :
     messageMap["GetBrowserSourceProperties"] = WSRequestHandler::HandleGetBrowserSourceProperties;
     messageMap["SetBrowserSourceProperties"] = WSRequestHandler::HandleSetBrowserSourceProperties;
 
+    messageMap["GetSourceData"] = WSRequestHandler::HandleGetSourceData;
+        
     authNotRequired.insert("GetVersion");
     authNotRequired.insert("GetAuthRequired");
     authNotRequired.insert("Authenticate");
@@ -2696,4 +2698,44 @@ void WSRequestHandler::HandleResetSceneItem(WSRequestHandler* req) {
     }
 
     obs_source_release(scene);
+}
+
+/**
+ * Get Source Data
+ *
+ * @param {String} `source-name` Name of the source item.
+ *
+ * @api requests
+ * @name GetSourceData
+ * @category sources
+ * @since ???
+ */
+void WSRequestHandler::HandleGetSourceData(WSRequestHandler* req) {
+
+    if (!req->hasField("source-name")) {
+        req->SendErrorResponse("missing request parameters");
+        return;
+    }    
+
+    const char* sourceName = obs_data_get_string(req->data, "source-name");
+    obs_source_t* source = obs_get_source_by_name(sourceName);
+
+    obs_data_t* data = obs_data_create();
+    obs_data_t* response = obs_data_create();
+
+    if (source) {
+        obs_data_set_string(response, "name",
+                            obs_source_get_name(source));
+        obs_data_set_double(response, "video_fps",
+                            obs_source_get_video_fps(source));
+        obs_data_set_double(response, "video_avg_fps",
+                            obs_source_get_video_avg_fps(source));
+        obs_data_set_double(response, "total_frames",
+                            obs_source_get_total_frames(source));
+        obs_data_set_int(response, "last_frame_ts",
+                            obs_source_get_last_frame_ts(source));
+    }    
+
+    req->SendOKResponse(response);
+    obs_data_release(response);
 }

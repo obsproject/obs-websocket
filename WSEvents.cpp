@@ -51,7 +51,7 @@ const char* ns_to_timestamp(uint64_t ns) {
 
     char* ts = (char*)bmalloc(64);
     sprintf(ts, "%02d:%02d:%02d.%03d",
-        hours_part, minutes_part, secs_part, ms_part);
+        (int)hours_part, (int)minutes_part, (int)secs_part, (int)ms_part);
 
     return ts;
 }
@@ -618,15 +618,20 @@ void WSEvents::StreamStatus() {
     bool recording_active = obs_frontend_recording_active();
 
     obs_output_t* stream_output = obs_frontend_get_streaming_output();
+    obs_output_t* status_output = obs_frontend_get_streaming_output();
 
-    if (!stream_output || !streaming_active) {
-        if (stream_output) {
-            obs_output_release(stream_output);
+    if (recording_active) {
+        status_output = obs_frontend_get_recording_output();
+    }
+
+    if (!status_output || (!streaming_active && !recording_active)) {
+        if (status_output) {
+            obs_output_release(status_output);
         }
         return;
     }
 
-    uint64_t bytes_sent = obs_output_get_total_bytes(stream_output);
+    uint64_t bytes_sent = obs_output_get_total_bytes(status_output);
     uint64_t bytes_sent_time = os_gettime_ns();
 
     if (bytes_sent < _lastBytesSent)
