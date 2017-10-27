@@ -1302,101 +1302,99 @@ void WSRequestHandler::HandleGetSceneItemProperties(WSRequestHandler* req) {
         return;
     }
 
-    QString item_name = obs_data_get_string(req->data, "item");
-    if (item_name.isEmpty()) {
+    QString itemName = obs_data_get_string(req->data, "item");
+    if (itemName.isEmpty()) {
         req->SendErrorResponse("invalid request parameters");
         return;
     }
 
-    const char* scene_name = obs_data_get_string(req->data, "scene-name");
-    obs_source_t* scene = Utils::GetSceneFromNameOrCurrent(scene_name);
+    QString sceneName = obs_data_get_string(req->data, "scene-name");
+    OBSSourceAutoRelease scene = Utils::GetSceneFromNameOrCurrent(sceneName);
     if (!scene) {
         req->SendErrorResponse("requested scene doesn't exist");
         return;
     }
 
-    obs_sceneitem_t* scene_item = Utils::GetSceneItemFromName(scene, item_name);
-    if (!scene_item) {
+    OBSSceneItemAutoRelease sceneItem =
+        Utils::GetSceneItemFromName(scene, itemName);
+    if (!sceneItem) {
         req->SendErrorResponse("specified scene item doesn't exist");
         obs_source_release(scene);
         return;
     }
 
-    obs_data_t* data = obs_data_create();
+    OBSDataAutoRelease data = obs_data_create();
+    obs_data_set_string(data, "name", itemName.toUtf8());
 
-    obs_data_set_string(data, "name", item_name.toUtf8());
-
-    obs_data_t* pos_data = obs_data_create();
+    OBSDataAutoRelease posData = obs_data_create();
     vec2 pos;
-    obs_sceneitem_get_pos(scene_item, &pos);
-    obs_data_set_double(pos_data, "x", pos.x);
-    obs_data_set_double(pos_data, "y", pos.y);
-    obs_data_set_int(pos_data, "alignment", obs_sceneitem_get_alignment(scene_item));
-    obs_data_set_obj(data, "position", pos_data);
+    obs_sceneitem_get_pos(sceneItem, &pos);
+    obs_data_set_double(posData, "x", pos.x);
+    obs_data_set_double(posData, "y", pos.y);
+    obs_data_set_int(posData, "alignment", obs_sceneitem_get_alignment(sceneItem));
+    obs_data_set_obj(data, "position", posData);
 
-    obs_data_set_double(data, "rotation", obs_sceneitem_get_rot(scene_item));
+    obs_data_set_double(data, "rotation", obs_sceneitem_get_rot(sceneItem));
 
-    obs_data_t* scale_data = obs_data_create();
+    OBSDataAutoRelease scaleData = obs_data_create();
     vec2 scale;
-    obs_sceneitem_get_scale(scene_item, &scale);
-    obs_data_set_double(scale_data, "x", scale.x);
-    obs_data_set_double(scale_data, "y", scale.y);
-    obs_data_set_obj(data, "scale", scale_data);
+    obs_sceneitem_get_scale(sceneItem, &scale);
+    obs_data_set_double(scaleData, "x", scale.x);
+    obs_data_set_double(scaleData, "y", scale.y);
+    obs_data_set_obj(data, "scale", scaleData);
 
-    obs_data_t* crop_data = obs_data_create();
+    OBSDataAutoRelease cropData = obs_data_create();
     obs_sceneitem_crop crop;
-    obs_sceneitem_get_crop(scene_item, &crop);
-    obs_data_set_int(crop_data, "left", crop.left);
-    obs_data_set_int(crop_data, "top", crop.top);
-    obs_data_set_int(crop_data, "right", crop.right);
-    obs_data_set_int(crop_data, "bottom", crop.bottom);
-    obs_data_set_obj(data, "crop", crop_data);
+    obs_sceneitem_get_crop(sceneItem, &crop);
+    obs_data_set_int(cropData, "left", crop.left);
+    obs_data_set_int(cropData, "top", crop.top);
+    obs_data_set_int(cropData, "right", crop.right);
+    obs_data_set_int(cropData, "bottom", crop.bottom);
+    obs_data_set_obj(data, "crop", cropData);
 
-    obs_data_set_bool(data, "visible", obs_sceneitem_visible(scene_item));
+    obs_data_set_bool(data, "visible", obs_sceneitem_visible(sceneItem));
 
-    obs_data_t* bounds_data = obs_data_create();
-    obs_bounds_type bounds_type = obs_sceneitem_get_bounds_type(scene_item);
-    if (bounds_type == OBS_BOUNDS_NONE) {
-        obs_data_set_string(bounds_data, "type", "OBS_BOUNDS_NONE");
+    OBSDataAutoRelease boundsData = obs_data_create();
+    obs_bounds_type boundsType = obs_sceneitem_get_bounds_type(sceneItem);
+    if (boundsType == OBS_BOUNDS_NONE) {
+        obs_data_set_string(boundsData, "type", "OBS_BOUNDS_NONE");
     }
     else {
-        switch(bounds_type) {
+        switch(boundsType) {
             case OBS_BOUNDS_STRETCH: {
-                obs_data_set_string(bounds_data, "type", "OBS_BOUNDS_STRETCH");
+                obs_data_set_string(boundsData, "type", "OBS_BOUNDS_STRETCH");
                 break;
             }
             case OBS_BOUNDS_SCALE_INNER: {
-                obs_data_set_string(bounds_data, "type", "OBS_BOUNDS_SCALE_INNER");
+                obs_data_set_string(boundsData, "type", "OBS_BOUNDS_SCALE_INNER");
                 break;
             }
             case OBS_BOUNDS_SCALE_OUTER: {
-                obs_data_set_string(bounds_data, "type", "OBS_BOUNDS_SCALE_OUTER");
+                obs_data_set_string(boundsData, "type", "OBS_BOUNDS_SCALE_OUTER");
                 break;
             }
             case OBS_BOUNDS_SCALE_TO_WIDTH: {
-                obs_data_set_string(bounds_data, "type", "OBS_BOUNDS_SCALE_TO_WIDTH");
+                obs_data_set_string(boundsData, "type", "OBS_BOUNDS_SCALE_TO_WIDTH");
                 break;
             }
             case OBS_BOUNDS_SCALE_TO_HEIGHT: {
-                obs_data_set_string(bounds_data, "type", "OBS_BOUNDS_SCALE_TO_HEIGHT");
+                obs_data_set_string(boundsData, "type", "OBS_BOUNDS_SCALE_TO_HEIGHT");
                 break;
             }
             case OBS_BOUNDS_MAX_ONLY: {
-                obs_data_set_string(bounds_data, "type", "OBS_BOUNDS_MAX_ONLY");
+                obs_data_set_string(boundsData, "type", "OBS_BOUNDS_MAX_ONLY");
                 break;
             }
         }
-        obs_data_set_int(bounds_data, "alignment", obs_sceneitem_get_bounds_alignment(scene_item));
+        obs_data_set_int(boundsData, "alignment", obs_sceneitem_get_bounds_alignment(sceneItem));
         vec2 bounds;
-        obs_sceneitem_get_bounds(scene_item, &bounds);
-        obs_data_set_double(bounds_data, "x", bounds.x);
-        obs_data_set_double(bounds_data, "y", bounds.y);
+        obs_sceneitem_get_bounds(sceneItem, &bounds);
+        obs_data_set_double(boundsData, "x", bounds.x);
+        obs_data_set_double(boundsData, "y", bounds.y);
     }
-    obs_data_set_obj(data, "bounds", bounds_data);
+    obs_data_set_obj(data, "bounds", boundsData);
 
-    obs_sceneitem_release(scene_item);
     req->SendOKResponse(data);
-    obs_source_release(scene);
 }
 
 /**
@@ -1431,159 +1429,158 @@ void WSRequestHandler::HandleSetSceneItemProperties(WSRequestHandler* req) {
         return;
     }
 
-    QString item_name = obs_data_get_string(req->data, "item");
-    if (item_name.isEmpty()) {
+    QString itemName = obs_data_get_string(req->data, "item");
+    if (itemName.isEmpty()) {
         req->SendErrorResponse("invalid request parameters");
         return;
     }
 
-    const char* scene_name = obs_data_get_string(req->data, "scene-name");
-    obs_source_t* scene = Utils::GetSceneFromNameOrCurrent(scene_name);
+    QString sceneName = obs_data_get_string(req->data, "scene-name");
+    OBSSourceAutoRelease scene = Utils::GetSceneFromNameOrCurrent(sceneName);
     if (!scene) {
         req->SendErrorResponse("requested scene doesn't exist");
         return;
     }
 
-    obs_sceneitem_t* scene_item = Utils::GetSceneItemFromName(scene, item_name);
-    if (!scene_item) {
+    OBSSceneItemAutoRelease sceneItem =
+        Utils::GetSceneItemFromName(scene, itemName);
+    if (!sceneItem) {
         req->SendErrorResponse("specified scene item doesn't exist");
         obs_source_release(scene);
         return;
     }
 
-    bool bad_request = false;
-    obs_data_t* error_message = obs_data_create();
+    bool badRequest = false;
+    OBSDataAutoRelease errorMessage = obs_data_create();
 
     if (req->hasField("position")) {
-        vec2 old_position;
-        obs_data_t* position_error = obs_data_create();
-        obs_sceneitem_get_pos(scene_item, &old_position);
-        obs_data_t* req_position = obs_data_get_obj(req->data, "position");
-        vec2 new_position = old_position;
-        if (obs_data_has_user_value(req_position, "x")) {
-            new_position.x = obs_data_get_int(req_position, "x");
+        vec2 oldPosition;
+        OBSDataAutoRelease positionError = obs_data_create();
+        obs_sceneitem_get_pos(sceneItem, &oldPosition);
+        OBSDataAutoRelease reqPosition = obs_data_get_obj(req->data, "position");
+        vec2 newPosition = oldPosition;
+        if (obs_data_has_user_value(reqPosition, "x")) {
+            newPosition.x = obs_data_get_int(reqPosition, "x");
         }
-        if (obs_data_has_user_value(req_position, "y")) {
-            new_position.y = obs_data_get_int(req_position, "y");
+        if (obs_data_has_user_value(reqPosition, "y")) {
+            newPosition.y = obs_data_get_int(reqPosition, "y");
         }
-        if (obs_data_has_user_value(req_position, "alignment")) {
-            const uint32_t alignment = obs_data_get_int(req_position, "alignment");
+        if (obs_data_has_user_value(reqPosition, "alignment")) {
+            const uint32_t alignment = obs_data_get_int(reqPosition, "alignment");
             if (Utils::IsValidAlignment(alignment)) {
-                obs_sceneitem_set_alignment(scene_item, alignment);
+                obs_sceneitem_set_alignment(sceneItem, alignment);
             } else {
-                bad_request = true;
-                obs_data_set_string(position_error, "alignment", "invalid");
-                obs_data_set_obj(error_message, "position", position_error);
+                badRequest = true;
+                obs_data_set_string(positionError, "alignment", "invalid");
+                obs_data_set_obj(errorMessage, "position", positionError);
             }
         }
-        obs_sceneitem_set_pos(scene_item, &new_position);
+        obs_sceneitem_set_pos(sceneItem, &newPosition);
     }
 
     if (req->hasField("rotation")) {
-        obs_sceneitem_set_rot(scene_item, (float)obs_data_get_double(req->data, "rotation"));
+        obs_sceneitem_set_rot(sceneItem, (float)obs_data_get_double(req->data, "rotation"));
     }
 
     if (req->hasField("scale")) {
-        vec2 old_scale;
-        obs_sceneitem_get_scale(scene_item, &old_scale);
-        obs_data_t* req_scale = obs_data_get_obj(req->data, "scale");
-        vec2 new_scale = old_scale;
-        if (obs_data_has_user_value(req_scale, "x")) {
-            new_scale.x = obs_data_get_double(req_scale, "x");
+        vec2 oldScale;
+        obs_sceneitem_get_scale(sceneItem, &oldScale);
+        obs_data_t* reqScale = obs_data_get_obj(req->data, "scale");
+        vec2 newScale = oldScale;
+        if (obs_data_has_user_value(reqScale, "x")) {
+            newScale.x = obs_data_get_double(reqScale, "x");
         }
-        if (obs_data_has_user_value(req_scale, "y")) {
-            new_scale.y = obs_data_get_double(req_scale, "y");
+        if (obs_data_has_user_value(reqScale, "y")) {
+            newScale.y = obs_data_get_double(reqScale, "y");
         }
-        obs_sceneitem_set_scale(scene_item, &new_scale);
+        obs_sceneitem_set_scale(sceneItem, &newScale);
     }
 
     if (req->hasField("crop")) {
-        obs_sceneitem_crop old_crop;
-        obs_sceneitem_get_crop(scene_item, &old_crop);
-        obs_data_t* req_crop = obs_data_get_obj(req->data, "crop");
-        obs_sceneitem_crop new_crop = old_crop;
-        if (obs_data_has_user_value(req_crop, "top")) {
-            new_crop.top = obs_data_get_int(req_crop, "top");
+        obs_sceneitem_crop oldCrop;
+        obs_sceneitem_get_crop(sceneItem, &oldCrop);
+        obs_data_t* reqCrop = obs_data_get_obj(req->data, "crop");
+        obs_sceneitem_crop newCrop = oldCrop;
+        if (obs_data_has_user_value(reqCrop, "top")) {
+            newCrop.top = obs_data_get_int(reqCrop, "top");
         }
-        if (obs_data_has_user_value(req_crop, "right")) {
-            new_crop.right = obs_data_get_int(req_crop, "right");
+        if (obs_data_has_user_value(reqCrop, "right")) {
+            newCrop.right = obs_data_get_int(reqCrop, "right");
         }
-        if (obs_data_has_user_value(req_crop, "bottom")) {
-            new_crop.bottom = obs_data_get_int(req_crop, "bottom");
+        if (obs_data_has_user_value(reqCrop, "bottom")) {
+            newCrop.bottom = obs_data_get_int(reqCrop, "bottom");
         }
-        if (obs_data_has_user_value(req_crop, "left")) {
-            new_crop.left = obs_data_get_int(req_crop, "left");
+        if (obs_data_has_user_value(reqCrop, "left")) {
+            newCrop.left = obs_data_get_int(reqCrop, "left");
         }
-        obs_sceneitem_set_crop(scene_item, &new_crop);
+        obs_sceneitem_set_crop(sceneItem, &newCrop);
     }
 
     if (req->hasField("visible")) {
-        obs_sceneitem_set_visible(scene_item, obs_data_get_bool(req->data, "visible"));
+        obs_sceneitem_set_visible(sceneItem, obs_data_get_bool(req->data, "visible"));
     }
 
     if (req->hasField("bounds")) {
-        bool bad_bounds = false;
-        obs_data_t* bounds_error = obs_data_create();
-        obs_data_t* req_bounds = obs_data_get_obj(req->data, "bounds");
-        if (obs_data_has_user_value(req_bounds, "type")) {
-            const char* new_bounds_type = obs_data_get_string(req_bounds, "type");
-            if (new_bounds_type == "OBS_BOUNDS_NONE") {
-                obs_sceneitem_set_bounds_type(scene_item, OBS_BOUNDS_NONE);
+        bool badBounds = false;
+        obs_data_t* boundsError = obs_data_create();
+        obs_data_t* reqBounds = obs_data_get_obj(req->data, "bounds");
+        if (obs_data_has_user_value(reqBounds, "type")) {
+            const char* newBoundsType = obs_data_get_string(reqBounds, "type");
+            if (newBoundsType == "OBS_BOUNDS_NONE") {
+                obs_sceneitem_set_bounds_type(sceneItem, OBS_BOUNDS_NONE);
             }
-            else if (new_bounds_type == "OBS_BOUNDS_STRETCH") {
-                obs_sceneitem_set_bounds_type(scene_item, OBS_BOUNDS_STRETCH);
+            else if (newBoundsType == "OBS_BOUNDS_STRETCH") {
+                obs_sceneitem_set_bounds_type(sceneItem, OBS_BOUNDS_STRETCH);
             }
-            else if (new_bounds_type == "OBS_BOUNDS_SCALE_INNER") {
-                obs_sceneitem_set_bounds_type(scene_item, OBS_BOUNDS_SCALE_INNER);
+            else if (newBoundsType == "OBS_BOUNDS_SCALE_INNER") {
+                obs_sceneitem_set_bounds_type(sceneItem, OBS_BOUNDS_SCALE_INNER);
             }
-            else if (new_bounds_type == "OBS_BOUNDS_SCALE_OUTER") {
-                obs_sceneitem_set_bounds_type(scene_item, OBS_BOUNDS_SCALE_OUTER);
+            else if (newBoundsType == "OBS_BOUNDS_SCALE_OUTER") {
+                obs_sceneitem_set_bounds_type(sceneItem, OBS_BOUNDS_SCALE_OUTER);
             }
-            else if (new_bounds_type == "OBS_BOUNDS_SCALE_TO_WIDTH") {
-                obs_sceneitem_set_bounds_type(scene_item, OBS_BOUNDS_SCALE_TO_WIDTH);
+            else if (newBoundsType == "OBS_BOUNDS_SCALE_TO_WIDTH") {
+                obs_sceneitem_set_bounds_type(sceneItem, OBS_BOUNDS_SCALE_TO_WIDTH);
             }
-            else if (new_bounds_type == "OBS_BOUNDS_SCALE_TO_HEIGHT") {
-                obs_sceneitem_set_bounds_type(scene_item, OBS_BOUNDS_SCALE_TO_HEIGHT);
+            else if (newBoundsType == "OBS_BOUNDS_SCALE_TO_HEIGHT") {
+                obs_sceneitem_set_bounds_type(sceneItem, OBS_BOUNDS_SCALE_TO_HEIGHT);
             }
-            else if (new_bounds_type == "OBS_BOUNDS_MAX_ONLY") {
-                obs_sceneitem_set_bounds_type(scene_item, OBS_BOUNDS_MAX_ONLY);
+            else if (newBoundsType == "OBS_BOUNDS_MAX_ONLY") {
+                obs_sceneitem_set_bounds_type(sceneItem, OBS_BOUNDS_MAX_ONLY);
             }
             else {
-                bad_request = bad_bounds = true;
-                obs_data_set_string(bounds_error, "type", "invalid");
+                badRequest = badBounds = true;
+                obs_data_set_string(boundsError, "type", "invalid");
             }
         }
-        vec2 old_bounds;
-        obs_sceneitem_get_bounds(scene_item, &old_bounds);
-        vec2 new_bounds = old_bounds;
-        if (obs_data_has_user_value(req_bounds, "x")) {
-            new_bounds.x = obs_data_get_double(req_bounds, "x");
+        vec2 oldBounds;
+        obs_sceneitem_get_bounds(sceneItem, &oldBounds);
+        vec2 newBounds = oldBounds;
+        if (obs_data_has_user_value(reqBounds, "x")) {
+            newBounds.x = obs_data_get_double(reqBounds, "x");
         }
-        if (obs_data_has_user_value(req_bounds, "y")) {
-            new_bounds.y = obs_data_get_double(req_bounds, "y");
+        if (obs_data_has_user_value(reqBounds, "y")) {
+            newBounds.y = obs_data_get_double(reqBounds, "y");
         }
-        obs_sceneitem_set_bounds(scene_item, &new_bounds);
-        if (obs_data_has_user_value(req_bounds, "alignment")) {
-            const uint32_t bounds_alignment = obs_data_get_int(req_bounds, "alignment");
+        obs_sceneitem_set_bounds(sceneItem, &newBounds);
+        if (obs_data_has_user_value(reqBounds, "alignment")) {
+            const uint32_t bounds_alignment = obs_data_get_int(reqBounds, "alignment");
             if (Utils::IsValidAlignment(bounds_alignment)) {
-                obs_sceneitem_set_bounds_alignment(scene_item, bounds_alignment);
+                obs_sceneitem_set_bounds_alignment(sceneItem, bounds_alignment);
             } else {
-                bad_request = bad_bounds = true;
-                obs_data_set_string(bounds_error, "alignment", "invalid");
+                badRequest = badBounds = true;
+                obs_data_set_string(boundsError, "alignment", "invalid");
             }
         }
-        if (bad_bounds) {
-            obs_data_set_obj(error_message, "bounds", bounds_error);
+        if (badBounds) {
+            obs_data_set_obj(errorMessage, "bounds", boundsError);
         }
     }
 
-    obs_sceneitem_release(scene_item);
-    if (bad_request) {
-        req->SendErrorResponse(error_message);
+    if (badRequest) {
+        req->SendErrorResponse(errorMessage);
     } else {
         req->SendOKResponse();
     }
-    obs_source_release(scene);
 }
 
 /**
