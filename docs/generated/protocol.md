@@ -1268,14 +1268,14 @@ Will return an `error` if streaming is already active.
 | Name | Type  | Description |
 | ---- | :---: | ------------|
 | `stream` | _Object (optional)_ | Special stream configuration. |
-| `type` | _String (optional)_ | If specified ensures the type of stream matches the given type (usually 'rtmp_custom' or 'rtmp_common'). If the currently configured stream type does not match the given stream type, all settings must be specified in the `settings` object or an error will occur when starting the stream. |
-| `metadata` | _Object (optional)_ | Adds the given object parameters as encoded query string parameters to the 'key' of the RTMP stream. Used to pass data to the RTMP service about the streaming. May be any String, Numeric, or Boolean field. |
-| `settings` | _Object (optional)_ | Settings for the stream. |
-| `settings.server` | _String (optional)_ | The publish URL. |
-| `settings.key` | _String (optional)_ | The publish key of the stream. |
-| `settings.use-auth` | _boolean (optional)_ | Indicates whether authentication should be used when connecting to the streaming server. |
-| `settings.username` | _String (optional)_ | If authentication is enabled, the username for the streaming server. Ignored if `use-auth` is not set to `true`. |
-| `settings.password` | _String (optional)_ | If authentication is enabled, the password for the streaming server. Ignored if `use-auth` is not set to `true`. |
+| `stream.type` | _String (optional)_ | If specified ensures the type of stream matches the given type (usually 'rtmp_custom' or 'rtmp_common'). If the currently configured stream type does not match the given stream type, all settings must be specified in the `settings` object or an error will occur when starting the stream. |
+| `stream.metadata` | _Object (optional)_ | Adds the given object parameters as encoded query string parameters to the 'key' of the RTMP stream. Used to pass data to the RTMP service about the streaming. May be any String, Numeric, or Boolean field. |
+| `stream.settings` | _Object (optional)_ | Settings for the stream. |
+| `stream.settings.server` | _String (optional)_ | The publish URL. |
+| `stream.settings.key` | _String (optional)_ | The publish key of the stream. |
+| `stream.settings.use-auth` | _boolean (optional)_ | Indicates whether authentication should be used when connecting to the streaming server. |
+| `stream.settings.username` | _String (optional)_ | If authentication is enabled, the username for the streaming server. Ignored if `use-auth` is not set to `true`. |
+| `stream.settings.password` | _String (optional)_ | If authentication is enabled, the password for the streaming server. Ignored if `use-auth` is not set to `true`. |
 
 
 **Response Items:**
