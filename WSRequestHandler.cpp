@@ -1456,6 +1456,8 @@ void WSRequestHandler::HandleGetCurrentProfile(WSRequestHandler* req) {
  */
 void WSRequestHandler::HandleSetStreamSettings(WSRequestHandler* req) {
     obs_service_t* service = obs_frontend_get_streaming_service();
+    // get_streaming_service doesn't addref, so let's do it ourselves
+    obs_service_addref(service);
 
     obs_data_t* settings = obs_data_get_obj(req->data, "settings");
     if (!settings) {
@@ -1465,25 +1467,31 @@ void WSRequestHandler::HandleSetStreamSettings(WSRequestHandler* req) {
 
     const char* serviceType = obs_service_get_type(service);
     const char* requestedType = obs_data_get_string(req->data, "type");
+
     if (requestedType != nullptr && strcmp(requestedType, serviceType) != 0) {
         obs_data_t* hotkeys = obs_hotkeys_save_service(service);
-        obs_service_release(service);
-        service = obs_service_create(requestedType, "websocket_custom_service", settings, hotkeys);
+        service = obs_service_create(
+            requestedType, "websocket_custom_service", settings, hotkeys);
         obs_data_release(hotkeys);
     } else {
-        //if type isn't changing we should overlay the settings we got with the existing settings
+        // If type isn't changing, we should overlay the settings we got
+        // to the existing settings. By doing so, you can send a request that
+        // only contains the settings you want to change, instead of having to
+        // do a get and then change them
+
         obs_data_t* existingSettings = obs_service_get_settings(service);
-        //by doing this you can send a request to the websocket that only contains a setting you want to change instead of having to do a get and then change them
         obs_data_t* newSettings = obs_data_create();
 
-        obs_data_apply(newSettings, existingSettings); //first apply the existing settings
-        obs_data_apply(newSettings, settings); //then apply the settings from the request
-
-        obs_data_release(settings);
-        obs_data_release(existingSettings);
+        // Apply existing settings
+        obs_data_apply(newSettings, existingSettings);
+        // Then apply the settings from the request
+        obs_data_apply(newSettings, settings);
 
         obs_service_update(service, settings);
         settings = newSettings;
+
+        obs_data_release(settings);
+        obs_data_release(existingSettings);
     }
 
     //if save is specified we should immediately save the streaming service
@@ -1496,8 +1504,10 @@ void WSRequestHandler::HandleSetStreamSettings(WSRequestHandler* req) {
     obs_data_set_obj(response, "settings", settings);
 
     req->SendOKResponse(response);
+
     obs_data_release(settings);
     obs_data_release(response);
+    obs_service_release(service);
 }
 
 /**
@@ -1518,6 +1528,9 @@ void WSRequestHandler::HandleSetStreamSettings(WSRequestHandler* req) {
  */
 void WSRequestHandler::HandleGetStreamSettings(WSRequestHandler* req) {
     obs_service_t* service = obs_frontend_get_streaming_service();
+    // get_streaming_service doesn't addref, so let's do it ourselves
+    obs_service_addref(service);
+
     const char* serviceType = obs_service_get_type(service);
     obs_data_t* settings = obs_service_get_settings(service);
 
@@ -1526,8 +1539,10 @@ void WSRequestHandler::HandleGetStreamSettings(WSRequestHandler* req) {
     obs_data_set_obj(response, "settings", settings);
 
     req->SendOKResponse(response);
-    obs_data_release(settings);
+
     obs_data_release(response);
+    obs_data_release(settings);
+    obs_service_release(service);
 }
 
 /**
