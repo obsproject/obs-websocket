@@ -2803,7 +2803,7 @@ void WSRequestHandler::HandleSetSourceSettings(WSRequestHandler* req) {
     obs_data_t* response = obs_data_create();
     obs_data_set_string(response, "sourceName", obs_source_get_name(source));
     obs_data_set_string(response, "sourceType", obs_source_get_id(source));
-    obs_data_set_obj(response, "sourceSettings", nullptr);
+    obs_data_set_obj(response, "sourceSettings", sourceSettings);
     req->SendOKResponse(response);
 
     obs_data_release(response);
