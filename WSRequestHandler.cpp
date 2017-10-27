@@ -24,7 +24,6 @@
 #include <QString>
 
 #include "WSEvents.h"
-#include "obs-websocket.h"
 #include "Config.h"
 #include "Utils.h"
 

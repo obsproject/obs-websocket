@@ -27,6 +27,8 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <obs.hpp>
 #include <obs-frontend-api.h>
 
+#include "obs-websocket.h"
+
 class WSRequestHandler : public QObject {
   Q_OBJECT
 
@@ -40,7 +42,7 @@ class WSRequestHandler : public QObject {
     QWebSocket* _client;
     const char* _messageId;
     const char* _requestType;
-    OBSData data;
+    OBSDataAutoRelease data;
 
     QHash<QString, void(*)(WSRequestHandler*)> messageMap;
     QSet<QString> authNotRequired;
