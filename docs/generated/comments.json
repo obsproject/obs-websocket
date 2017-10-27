@@ -3293,7 +3293,7 @@
           "{Object} `sourceSettings` Source settings. Varying between source types."
         ],
         "api": "requests",
-        "name": "GetSourcesList",
+        "name": "SetSourceSettings",
         "category": "sources",
         "since": "unreleased",
         "returns": [
@@ -3333,7 +3333,7 @@
         "names": [
           {
             "name": "",
-            "description": "GetSourcesList"
+            "description": "SetSourceSettings"
           }
         ],
         "categories": [
@@ -3350,7 +3350,7 @@
         ],
         "heading": {
           "level": 2,
-          "text": "GetSourcesList"
+          "text": "SetSourceSettings"
         },
         "lead": "",
         "type": "class",

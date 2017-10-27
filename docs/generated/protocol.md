@@ -119,7 +119,7 @@ auth_response = base64_encode(auth_response_hash)
     + [GetBrowserSourceProperties](#getbrowsersourceproperties)
     + [SetBrowserSourceProperties](#setbrowsersourceproperties)
     + [ResetSceneItem](#resetsceneitem)
-    + [GetSourcesList](#getsourceslist)
+    + [SetSourceSettings](#setsourcesettings)
   * [Streaming](#streaming-1)
     + [GetStreamingStatus](#getstreamingstatus)
     + [StartStopStreaming](#startstopstreaming)
@@ -1351,7 +1351,7 @@ _No additional response items._
 
 ---
 
-### GetSourcesList
+### SetSourceSettings
 
 
 - Unreleased
