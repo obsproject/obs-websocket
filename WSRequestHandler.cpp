@@ -530,14 +530,14 @@ void WSRequestHandler::HandleStartStopRecording(WSRequestHandler* req)
  * Will return an `error` if streaming is already active.
  *
  * @param {Object (optional)} `stream` Special stream configuration.
- * @param {String (optional)} `type` If specified ensures the type of stream matches the given type (usually 'rtmp_custom' or 'rtmp_common'). If the currently configured stream type does not match the given stream type, all settings must be specified in the `settings` object or an error will occur when starting the stream.
- * @param {Object (optional)} `metadata` Adds the given object parameters as encoded query string parameters to the 'key' of the RTMP stream. Used to pass data to the RTMP service about the streaming. May be any String, Numeric, or Boolean field. 
- * @param {Object (optional)} `settings` Settings for the stream.
- * @param {String (optional)} `settings.server` The publish URL.
- * @param {String (optional)} `settings.key` The publish key of the stream.
- * @param {boolean (optional)} `settings.use-auth` Indicates whether authentication should be used when connecting to the streaming server.
- * @param {String (optional)} `settings.username` If authentication is enabled, the username for the streaming server. Ignored if `use-auth` is not set to `true`.
- * @param {String (optional)} `settings.password` If authentication is enabled, the password for the streaming server. Ignored if `use-auth` is not set to `true`.
+ * @param {String (optional)} `stream.type` If specified ensures the type of stream matches the given type (usually 'rtmp_custom' or 'rtmp_common'). If the currently configured stream type does not match the given stream type, all settings must be specified in the `settings` object or an error will occur when starting the stream.
+ * @param {Object (optional)} `stream.metadata` Adds the given object parameters as encoded query string parameters to the 'key' of the RTMP stream. Used to pass data to the RTMP service about the streaming. May be any String, Numeric, or Boolean field. 
+ * @param {Object (optional)} `stream.settings` Settings for the stream.
+ * @param {String (optional)} `stream.settings.server` The publish URL.
+ * @param {String (optional)} `stream.settings.key` The publish key of the stream.
+ * @param {boolean (optional)} `stream.settings.use-auth` Indicates whether authentication should be used when connecting to the streaming server.
+ * @param {String (optional)} `stream.settings.username` If authentication is enabled, the username for the streaming server. Ignored if `use-auth` is not set to `true`.
+ * @param {String (optional)} `stream.settings.password` If authentication is enabled, the password for the streaming server. Ignored if `use-auth` is not set to `true`.
  *
  * @api requests
  * @name StartStreaming
@@ -549,13 +549,17 @@ void WSRequestHandler::HandleStartStreaming(WSRequestHandler* req)
     if (obs_frontend_streaming_active() == false) {
         obs_service_t* currentService = obs_frontend_get_streaming_service();
         obs_service_addref(currentService);
-        obs_data_t* currentServiceHotkeys =
-            obs_hotkeys_save_service(currentService);
 
         if (req->hasField("stream")) {
             obs_data_t* streamData = obs_data_get_obj(req->data, "stream");
             obs_data_t* newSettings = obs_data_get_obj(streamData, "settings");
             obs_data_t* newMetadata = obs_data_get_obj(streamData, "metadata");
+
+            QString currentType = obs_service_get_type(currentService);
+            QString newType = obs_data_get_string(streamData, "type");
+            if (newType.isEmpty() || newType.isNull()) {
+                newType = currentType;
+            }
 
             //Supporting adding metadata parameters to key query string
             QString query = Utils::ParseDataToQueryString(newMetadata);
@@ -583,12 +587,6 @@ void WSRequestHandler::HandleStartStreaming(WSRequestHandler* req)
                 obs_data_set_string(newSettings, "key", query.toUtf8());
             }
 
-            QString currentType = obs_service_get_type(currentService);
-            QString newType = obs_data_get_string(streamData, "type");
-            if (newType.isEmpty() || newType.isNull()) {
-                newType = currentType;
-            }
-
             if (newType == currentType) {
                 // Service type doesn't change: apply settings to current service
                 obs_data_t* currentSettings = obs_service_get_settings(currentService);
@@ -604,10 +602,16 @@ void WSRequestHandler::HandleStartStreaming(WSRequestHandler* req)
             }
             else {
                 // Service type changed: create new service
+                obs_data_t* hotkeys =
+                    obs_hotkeys_save_service(currentService);
+
                 obs_service_t* newService = obs_service_create(
                     newType.toUtf8(), "websocket_custom_service",
-                    newSettings, currentServiceHotkeys);
+                    newSettings, hotkeys);
+
                 obs_frontend_set_streaming_service(newService);
+
+                obs_data_release(hotkeys);
             }
 
             obs_data_release(newMetadata);
@@ -618,7 +622,6 @@ void WSRequestHandler::HandleStartStreaming(WSRequestHandler* req)
         obs_frontend_streaming_start();
         req->SendOKResponse();
 
-        obs_data_release(currentServiceHotkeys);
         obs_service_release(currentService);
     } else {
         req->SendErrorResponse("streaming already active");
