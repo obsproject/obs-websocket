@@ -30,8 +30,6 @@
 
 #include "WSRequestHandler.h"
 
-OBSService WSRequestHandler::_service = nullptr;
-
 WSRequestHandler::WSRequestHandler(QWebSocket* client) :
     _messageId(0),
     _requestType(""),
@@ -1317,8 +1315,8 @@ void WSRequestHandler::HandleGetSceneItemProperties(WSRequestHandler* req) {
         return;
     }
 
-    const char* item_name = obs_data_get_string(req->data, "item");
-    if (!str_valid(item_name)) {
+    QString item_name = obs_data_get_string(req->data, "item");
+    if (item_name.isEmpty()) {
         req->SendErrorResponse("invalid request parameters");
         return;
     }
@@ -1339,7 +1337,7 @@ void WSRequestHandler::HandleGetSceneItemProperties(WSRequestHandler* req) {
 
     obs_data_t* data = obs_data_create();
 
-    obs_data_set_string(data, "name", item_name);
+    obs_data_set_string(data, "name", item_name.toUtf8());
 
     obs_data_t* pos_data = obs_data_create();
     vec2 pos;
@@ -1446,8 +1444,8 @@ void WSRequestHandler::HandleSetSceneItemProperties(WSRequestHandler* req) {
         return;
     }
 
-    const char* item_name = obs_data_get_string(req->data, "item");
-    if (!str_valid(item_name)) {
+    QString item_name = obs_data_get_string(req->data, "item");
+    if (item_name.isEmpty()) {
         req->SendErrorResponse("invalid request parameters");
         return;
     }

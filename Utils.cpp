@@ -163,8 +163,8 @@ bool Utils::IsValidAlignment(const uint32_t alignment) {
     return false;
 }
 
-obs_source_t* Utils::GetTransitionFromName(const char* search_name) {
-    obs_source_t* found_transition = NULL;
+obs_source_t* Utils::GetTransitionFromName(QString searchName) {
+    obs_source_t* foundTransition = nullptr;
 
     obs_frontend_source_list transition_list = {};
     obs_frontend_get_transitions(&transition_list);
@@ -509,7 +509,7 @@ void Utils::StartReplayBuffer() {
 }
 
 bool Utils::IsRPHotkeySet() {
-
+    OBSOutputAutoRelease rpOutput = obs_frontend_get_replay_buffer_output();
     OBSDataAutoRelease hotkeys = obs_hotkeys_save_output(rpOutput);
     OBSDataArrayAutoRelease bindings = obs_data_get_array(hotkeys,
         "ReplayBuffer.Save");
