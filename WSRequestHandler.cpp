@@ -89,6 +89,7 @@ WSRequestHandler::WSRequestHandler(QWebSocket* client) :
     messageMap["SetSyncOffset"] = WSRequestHandler::HandleSetSyncOffset;
     messageMap["GetSyncOffset"] = WSRequestHandler::HandleGetSyncOffset;
     messageMap["GetSpecialSources"] = WSRequestHandler::HandleGetSpecialSources;
+    messageMap["GetSourcesList"] = WSRequestHandler::HandleGetSourcesList;
     messageMap["GetSourceSettings"] = WSRequestHandler::HandleGetSourceSettings;
     messageMap["SetSourceSettings"] = WSRequestHandler::HandleSetSourceSettings;
 
@@ -2699,6 +2700,50 @@ void WSRequestHandler::HandleResetSceneItem(WSRequestHandler* req) {
 
     obs_source_release(scene);
 }
+
+/**
+* List all sources available in the running OBS instance
+*
+* @return {Array of Objects} `sources` Array of sources as objects
+* @return {String} `sources.*.name` Source name
+* @return {String} `sources.*.type` Source type
+*
+* @api requests
+* @name GetSourcesList
+* @category sources
+* @since unreleased
+*/
+void WSRequestHandler::HandleGetSourcesList(WSRequestHandler* req) {
+    obs_data_array_t* sourcesArray = obs_data_array_create();
+
+    auto source_enum = [](void* privateData, obs_source_t* source) -> bool {
+        obs_data_array_t* sourcesArray = (obs_data_array_t*)privateData;
+
+        obs_data_t* sourceSettings = obs_source_get_settings(source);
+
+        obs_data_t* sourceData = obs_data_create();
+        obs_data_set_string(sourceData, "name", obs_source_get_name(source));
+        obs_data_set_string(sourceData, "type", obs_source_get_id(source));
+
+        obs_data_array_push_back(sourcesArray, sourceData);
+
+        obs_data_release(sourceSettings);
+        obs_data_release(sourceData);
+
+        return true;
+    };
+    obs_enum_sources(source_enum, sourcesArray);
+
+
+    obs_data_t* response = obs_data_create();
+    obs_data_set_array(response, "sources", sourcesArray);
+    req->SendOKResponse(response);
+
+    obs_data_release(response);
+    obs_data_array_release(sourcesArray);
+}
+
+/**
 * Get settings of the specified source
 *
 * @param {String} `sourceName` Name of the source item.
