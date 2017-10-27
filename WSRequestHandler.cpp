@@ -420,6 +420,7 @@ void WSRequestHandler::HandleGetSceneList(WSRequestHandler* req) {
  * @name SetSourceRender
  * @category sources
  * @since 0.3
+ * @deprecated Since unreleased. Prefer the use of SetSceneItemProperties.
  */
 void WSRequestHandler::HandleSetSceneItemRender(WSRequestHandler* req) {
     if (!req->hasField("source") ||
@@ -1180,6 +1181,7 @@ void WSRequestHandler::HandleGetSyncOffset(WSRequestHandler* req) {
  * @name SetSceneItemPosition
  * @category sources
  * @since 4.0.0
+ * @deprecated Since unreleased. Prefer the use of SetSceneItemProperties.
  */
 void WSRequestHandler::HandleSetSceneItemPosition(WSRequestHandler* req) {
     if (!req->hasField("item") ||
@@ -1231,6 +1233,7 @@ void WSRequestHandler::HandleSetSceneItemPosition(WSRequestHandler* req) {
  * @name SetSceneItemTransform
  * @category sources
  * @since 4.0.0
+ * @deprecated Since unreleased. Prefer the use of SetSceneItemProperties.
  */
 void WSRequestHandler::HandleSetSceneItemTransform(WSRequestHandler* req) {
     if (!req->hasField("item") ||
@@ -1287,6 +1290,7 @@ void WSRequestHandler::HandleSetSceneItemTransform(WSRequestHandler* req) {
  * @name SetSceneItemCrop
  * @category sources
  * @since 4.1.0
+ * @deprecated Since unreleased. Prefer the use of SetSceneItemProperties.
  */
 void WSRequestHandler::HandleSetSceneItemCrop(WSRequestHandler* req) {
     if (!req->hasField("item")) {
