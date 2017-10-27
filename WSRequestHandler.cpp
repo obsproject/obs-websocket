@@ -2702,17 +2702,17 @@ void WSRequestHandler::HandleResetSceneItem(WSRequestHandler* req) {
 }
 
 /**
-* List all sources available in the running OBS instance
-*
-* @return {Array of Objects} `sources` Array of sources as objects
-* @return {String} `sources.*.name` Source name
-* @return {String} `sources.*.type` Source type
-*
-* @api requests
-* @name GetSourcesList
-* @category sources
-* @since unreleased
-*/
+ * List all sources available in the running OBS instance
+ *
+ * @return {Array of Objects} `sources` Array of sources as objects
+ * @return {String} `sources.*.name` Source name
+ * @return {String} `sources.*.type` Source type
+ *
+ * @api requests
+ * @name GetSourcesList
+ * @category sources
+ * @since unreleased
+ */
 void WSRequestHandler::HandleGetSourcesList(WSRequestHandler* req) {
     obs_data_array_t* sourcesArray = obs_data_array_create();
 
@@ -2744,20 +2744,20 @@ void WSRequestHandler::HandleGetSourcesList(WSRequestHandler* req) {
 }
 
 /**
-* Get settings of the specified source
-*
-* @param {String} `sourceName` Name of the source item.
-* @param {String (optional) `sourceType` Type of the specified source. Useful for type-checking if you expect a specific settings schema.
-*
-* @return {String} `sourceName` Source name
-* @return {String} `sourceType` Type of the specified source
-* @return {Object} `sourceSettings` Source settings. Varying between source types.
-*
-* @api requests
-* @name GetSourceSettings
-* @category sources
-* @since unreleased
-*/
+ * Get settings of the specified source
+ *
+ * @param {String} `sourceName` Name of the source item.
+ * @param {String (optional) `sourceType` Type of the specified source. Useful for type-checking if you expect a specific settings schema.
+ *
+ * @return {String} `sourceName` Source name
+ * @return {String} `sourceType` Type of the specified source
+ * @return {Object} `sourceSettings` Source settings. Varying between source types.
+ *
+ * @api requests
+ * @name GetSourceSettings
+ * @category sources
+ * @since unreleased
+ */
 void WSRequestHandler::HandleGetSourceSettings(WSRequestHandler* req) {
     if (!req->hasField("sourceName")) {
         req->SendErrorResponse("missing request parameters");
@@ -2796,21 +2796,21 @@ void WSRequestHandler::HandleGetSourceSettings(WSRequestHandler* req) {
 }
 
 /**
-* Set settings of the specified source.
-*
-* @param {String} `sourceName` Name of the source item.
-* @param {String (optional)} `sourceType` Type of the specified source. Useful for type-checking to avoid settings a set of settings incompatible with the actual source's type.
-* @param {Object} `sourceSettings` Source settings. Varying between source types.
-*
-* @return {String} `sourceName` Source name
-* @return {String} `sourceType` Type of the specified source
-* @return {Object} `sourceSettings` Source settings. Varying between source types.
-*
-* @api requests
-* @name SetSourceSettings
-* @category sources
-* @since unreleased
-*/
+ * Set settings of the specified source.
+ *
+ * @param {String} `sourceName` Name of the source item.
+ * @param {String (optional)} `sourceType` Type of the specified source. Useful for type-checking to avoid settings a set of settings incompatible with the actual source's type.
+ * @param {Object} `sourceSettings` Source settings. Varying between source types.
+ *
+ * @return {String} `sourceName` Source name
+ * @return {String} `sourceType` Type of the specified source
+ * @return {Object} `sourceSettings` Source settings. Varying between source types.
+ *
+ * @api requests
+ * @name SetSourceSettings
+ * @category sources
+ * @since unreleased
+ */
 void WSRequestHandler::HandleSetSourceSettings(WSRequestHandler* req) {
     if (!req->hasField("sourceName") || !req->hasField("sourceSettings")) {
         req->SendErrorResponse("missing request parameters");
