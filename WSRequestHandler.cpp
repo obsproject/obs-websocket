@@ -548,6 +548,7 @@ void WSRequestHandler::HandleStartStreaming(WSRequestHandler* req)
 {
     if (obs_frontend_streaming_active() == false) {
         obs_service_t* currentService = obs_frontend_get_streaming_service();
+        // get_streaming_service doesn't addref, so let's do it ourselves
         obs_service_addref(currentService);
 
         if (req->hasField("stream")) {
