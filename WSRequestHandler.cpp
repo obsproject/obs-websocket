@@ -30,6 +30,8 @@
 
 #include "WSRequestHandler.h"
 
+#define STREAM_SERVICE_ID "websocket_custom_service"
+
 bool str_valid(const char* str) {
     return (str != nullptr && strlen(str) > 0);
 }
@@ -546,7 +548,7 @@ void WSRequestHandler::HandleStartStopRecording(WSRequestHandler* req)
  * Start streaming.
  * Will return an `error` if streaming is already active.
  *
- * @param {Object (optional)} `stream` Special stream configuration.
+ * @param {Object (optional)} `stream` Special stream configuration. Please note: these won't be saved to OBS' configuration.
  * @param {String (optional)} `stream.type` If specified ensures the type of stream matches the given type (usually 'rtmp_custom' or 'rtmp_common'). If the currently configured stream type does not match the given stream type, all settings must be specified in the `settings` object or an error will occur when starting the stream.
  * @param {Object (optional)} `stream.metadata` Adds the given object parameters as encoded query string parameters to the 'key' of the RTMP stream. Used to pass data to the RTMP service about the streaming. May be any String, Numeric, or Boolean field. 
  * @param {Object (optional)} `stream.settings` Settings for the stream.
@@ -564,16 +566,21 @@ void WSRequestHandler::HandleStartStopRecording(WSRequestHandler* req)
 void WSRequestHandler::HandleStartStreaming(WSRequestHandler* req)
 {
     if (obs_frontend_streaming_active() == false) {
-        obs_service_t* currentService = obs_frontend_get_streaming_service();
+        obs_service_t* configuredService = obs_frontend_get_streaming_service();
         // get_streaming_service doesn't addref, so let's do it ourselves
-        obs_service_addref(currentService);
+        obs_service_addref(configuredService);
+
+        obs_service_t* newService = nullptr;
 
         if (req->hasField("stream")) {
             obs_data_t* streamData = obs_data_get_obj(req->data, "stream");
             obs_data_t* newSettings = obs_data_get_obj(streamData, "settings");
             obs_data_t* newMetadata = obs_data_get_obj(streamData, "metadata");
 
-            QString currentType = obs_service_get_type(currentService);
+            obs_data_t* csHotkeys =
+                obs_hotkeys_save_service(configuredService);
+
+            QString currentType = obs_service_get_type(configuredService);
             QString newType = obs_data_get_string(streamData, "type");
             if (newType.isEmpty() || newType.isNull()) {
                 newType = currentType;
@@ -606,41 +613,53 @@ void WSRequestHandler::HandleStartStreaming(WSRequestHandler* req)
             }
 
             if (newType == currentType) {
-                // Service type doesn't change: apply settings to current service
-                obs_data_t* currentSettings = obs_service_get_settings(currentService);
-                obs_data_t* updatedSettings = obs_data_create(); //by doing this you can send a request to the websocket that only contains a setting you want to change instead of having to do a get and then change them
+                // Service type doesn't change: merge settings to current (previous) service.
+
+                // By doing this, you can send a request to the websocket
+                // that only contains settings you want to change, instead of
+                // having to do a get and then change them
+
+                obs_data_t* currentSettings = obs_service_get_settings(configuredService);
+                obs_data_t* updatedSettings = obs_data_create();
 
                 obs_data_apply(updatedSettings, currentSettings); //first apply the existing settings
                 obs_data_apply(updatedSettings, newSettings); //then apply the settings from the request should they exist
 
-                obs_service_update(currentService, updatedSettings);
+                newService = obs_service_create(
+                    newType.toUtf8(), STREAM_SERVICE_ID,
+                    updatedSettings, csHotkeys);
 
                 obs_data_release(updatedSettings);
                 obs_data_release(currentSettings);
             }
             else {
-                // Service type changed: create new service
-                obs_data_t* hotkeys =
-                    obs_hotkeys_save_service(currentService);
-
-                obs_service_t* newService = obs_service_create(
-                    newType.toUtf8(), "websocket_custom_service",
-                    newSettings, hotkeys);
-
-                obs_frontend_set_streaming_service(newService);
-
-                obs_data_release(hotkeys);
+                // Service type changed: override service settings
+                newService = obs_service_create(
+                    newType.toUtf8(), STREAM_SERVICE_ID,
+                    newSettings, csHotkeys);
             }
 
+            obs_frontend_set_streaming_service(newService);
+
+            obs_data_release(csHotkeys);
             obs_data_release(newMetadata);
             obs_data_release(newSettings);
             obs_data_release(streamData);
         }
 
         obs_frontend_streaming_start();
+
+        // Stream settings provided in StartStreaming are not persisted to disk
+        if (newService != nullptr) {
+            obs_frontend_set_streaming_service(configuredService);
+        }
+
         req->SendOKResponse();
 
-        obs_service_release(currentService);
+        obs_service_release(configuredService);
+
+        // No need to release newService: it would destroy it immediately, because
+        // obs_service_create inits the instance's refcount to 0
     } else {
         req->SendErrorResponse("streaming already active");
     }
@@ -1803,7 +1822,7 @@ void WSRequestHandler::HandleSetStreamSettings(WSRequestHandler* req) {
         obs_service_release(service);
 
         service = obs_service_create(
-            requestedType.toUtf8(), "websocket_custom_service", requestSettings, hotkeys);
+            requestedType.toUtf8(), STREAM_SERVICE_ID, requestSettings, hotkeys);
 
         obs_service_addref(service);
 
