@@ -31,94 +31,99 @@
 
 #define STREAM_SERVICE_ID "websocket_custom_service"
 
+QHash<QString, void(*)(WSRequestHandler*)> WSRequestHandler::messageMap {
+    { "GetVersion", WSRequestHandler::HandleGetVersion },
+    { "GetAuthRequired", WSRequestHandler::HandleGetAuthRequired },
+    { "Authenticate", WSRequestHandler::HandleAuthenticate },
+
+    { "SetHeartbeat", WSRequestHandler::HandleSetHeartbeat },
+
+    { "SetCurrentScene", WSRequestHandler::HandleSetCurrentScene },
+    { "GetCurrentScene", WSRequestHandler::HandleGetCurrentScene },
+    { "GetSceneList", WSRequestHandler::HandleGetSceneList },
+
+    { "SetSourceRender", WSRequestHandler::HandleSetSceneItemRender }, // Retrocompat
+    { "SetSceneItemRender", WSRequestHandler::HandleSetSceneItemRender },
+    { "SetSceneItemPosition", WSRequestHandler::HandleSetSceneItemPosition },
+    { "SetSceneItemTransform", WSRequestHandler::HandleSetSceneItemTransform },
+    { "SetSceneItemCrop", WSRequestHandler::HandleSetSceneItemCrop },
+    { "GetSceneItemProperties", WSRequestHandler::HandleGetSceneItemProperties },
+    { "SetSceneItemProperties", WSRequestHandler::HandleSetSceneItemProperties },
+    { "ResetSceneItem", WSRequestHandler::HandleResetSceneItem },
+
+    { "GetStreamingStatus", WSRequestHandler::HandleGetStreamingStatus },
+    { "StartStopStreaming", WSRequestHandler::HandleStartStopStreaming },
+    { "StartStopRecording", WSRequestHandler::HandleStartStopRecording },
+    { "StartStreaming", WSRequestHandler::HandleStartStreaming },
+    { "StopStreaming", WSRequestHandler::HandleStopStreaming },
+    { "StartRecording", WSRequestHandler::HandleStartRecording },
+    { "StopRecording", WSRequestHandler::HandleStopRecording },
+
+    { "StartStopReplayBuffer", WSRequestHandler::HandleStartStopReplayBuffer },
+    { "StartReplayBuffer", WSRequestHandler::HandleStartReplayBuffer },
+    { "StopReplayBuffer", WSRequestHandler::HandleStopReplayBuffer },
+    { "SaveReplayBuffer", WSRequestHandler::HandleSaveReplayBuffer },
+
+    { "SetRecordingFolder", WSRequestHandler::HandleSetRecordingFolder },
+    { "GetRecordingFolder", WSRequestHandler::HandleGetRecordingFolder },
+
+    { "GetTransitionList", WSRequestHandler::HandleGetTransitionList },
+    { "GetCurrentTransition", WSRequestHandler::HandleGetCurrentTransition },
+    { "SetCurrentTransition", WSRequestHandler::HandleSetCurrentTransition },
+    { "SetTransitionDuration", WSRequestHandler::HandleSetTransitionDuration },
+    { "GetTransitionDuration", WSRequestHandler::HandleGetTransitionDuration },
+
+    { "SetVolume", WSRequestHandler::HandleSetVolume },
+    { "GetVolume", WSRequestHandler::HandleGetVolume },
+    { "ToggleMute", WSRequestHandler::HandleToggleMute },
+    { "SetMute", WSRequestHandler::HandleSetMute },
+    { "GetMute", WSRequestHandler::HandleGetMute },
+    { "SetSyncOffset", WSRequestHandler::HandleSetSyncOffset },
+    { "GetSyncOffset", WSRequestHandler::HandleGetSyncOffset },
+    { "GetSpecialSources", WSRequestHandler::HandleGetSpecialSources },
+    { "GetSourcesList", WSRequestHandler::HandleGetSourcesList },
+    { "GetSourceSettings", WSRequestHandler::HandleGetSourceSettings },
+    { "SetSourceSettings", WSRequestHandler::HandleSetSourceSettings },
+
+    { "SetCurrentSceneCollection", WSRequestHandler::HandleSetCurrentSceneCollection },
+    { "GetCurrentSceneCollection", WSRequestHandler::HandleGetCurrentSceneCollection },
+    { "ListSceneCollections", WSRequestHandler::HandleListSceneCollections },
+
+    { "SetCurrentProfile", WSRequestHandler::HandleSetCurrentProfile },
+    { "GetCurrentProfile", WSRequestHandler::HandleGetCurrentProfile },
+    { "ListProfiles", WSRequestHandler::HandleListProfiles },
+
+    { "SetStreamSettings", WSRequestHandler::HandleSetStreamSettings },
+    { "GetStreamSettings", WSRequestHandler::HandleGetStreamSettings },
+    { "SaveStreamSettings", WSRequestHandler::HandleSaveStreamSettings },
+
+    { "GetStudioModeStatus", WSRequestHandler::HandleGetStudioModeStatus },
+    { "GetPreviewScene", WSRequestHandler::HandleGetPreviewScene },
+    { "SetPreviewScene", WSRequestHandler::HandleSetPreviewScene },
+    { "TransitionToProgram", WSRequestHandler::HandleTransitionToProgram },
+    { "EnableStudioMode", WSRequestHandler::HandleEnableStudioMode },
+    { "DisableStudioMode", WSRequestHandler::HandleDisableStudioMode },
+    { "ToggleStudioMode", WSRequestHandler::HandleToggleStudioMode },
+
+    { "SetTextGDIPlusProperties", WSRequestHandler::HandleSetTextGDIPlusProperties },
+    { "GetTextGDIPlusProperties", WSRequestHandler::HandleGetTextGDIPlusProperties },
+
+    { "GetBrowserSourceProperties", WSRequestHandler::HandleGetBrowserSourceProperties },
+    { "SetBrowserSourceProperties", WSRequestHandler::HandleSetBrowserSourceProperties }
+};
+
+QSet<QString> WSRequestHandler::authNotRequired {
+    "GetVersion",
+    "GetAuthRequired",
+    "Authenticate"
+};
+
 WSRequestHandler::WSRequestHandler(QWebSocket* client) :
     _messageId(0),
     _requestType(""),
     data(nullptr),
     _client(client)
 {
-    messageMap["GetVersion"] = WSRequestHandler::HandleGetVersion;
-    messageMap["GetAuthRequired"] = WSRequestHandler::HandleGetAuthRequired;
-    messageMap["Authenticate"] = WSRequestHandler::HandleAuthenticate;
-
-    messageMap["SetHeartbeat"] = WSRequestHandler::HandleSetHeartbeat;
-
-    messageMap["SetCurrentScene"] = WSRequestHandler::HandleSetCurrentScene;
-    messageMap["GetCurrentScene"] = WSRequestHandler::HandleGetCurrentScene;
-    messageMap["GetSceneList"] = WSRequestHandler::HandleGetSceneList;
-
-    messageMap["SetSourceRender"] = WSRequestHandler::HandleSetSceneItemRender; // Retrocompat
-    messageMap["SetSceneItemRender"] = WSRequestHandler::HandleSetSceneItemRender;
-    messageMap["SetSceneItemPosition"] = WSRequestHandler::HandleSetSceneItemPosition;
-    messageMap["SetSceneItemTransform"] = WSRequestHandler::HandleSetSceneItemTransform;
-    messageMap["SetSceneItemCrop"] = WSRequestHandler::HandleSetSceneItemCrop;
-    messageMap["GetSceneItemProperties"] = WSRequestHandler::HandleGetSceneItemProperties;
-    messageMap["SetSceneItemProperties"] = WSRequestHandler::HandleSetSceneItemProperties;
-    messageMap["ResetSceneItem"] = WSRequestHandler::HandleResetSceneItem;
-
-    messageMap["GetStreamingStatus"] = WSRequestHandler::HandleGetStreamingStatus;
-    messageMap["StartStopStreaming"] = WSRequestHandler::HandleStartStopStreaming;
-    messageMap["StartStopRecording"] = WSRequestHandler::HandleStartStopRecording;
-    messageMap["StartStreaming"] = WSRequestHandler::HandleStartStreaming;
-    messageMap["StopStreaming"] = WSRequestHandler::HandleStopStreaming;
-    messageMap["StartRecording"] = WSRequestHandler::HandleStartRecording;
-    messageMap["StopRecording"] = WSRequestHandler::HandleStopRecording;
-
-    messageMap["StartStopReplayBuffer"] = WSRequestHandler::HandleStartStopReplayBuffer;
-    messageMap["StartReplayBuffer"] = WSRequestHandler::HandleStartReplayBuffer;
-    messageMap["StopReplayBuffer"] = WSRequestHandler::HandleStopReplayBuffer;
-    messageMap["SaveReplayBuffer"] = WSRequestHandler::HandleSaveReplayBuffer;
-
-    messageMap["SetRecordingFolder"] = WSRequestHandler::HandleSetRecordingFolder;
-    messageMap["GetRecordingFolder"] = WSRequestHandler::HandleGetRecordingFolder;
-
-    messageMap["GetTransitionList"] = WSRequestHandler::HandleGetTransitionList;
-    messageMap["GetCurrentTransition"] = WSRequestHandler::HandleGetCurrentTransition;
-    messageMap["SetCurrentTransition"] = WSRequestHandler::HandleSetCurrentTransition;
-    messageMap["SetTransitionDuration"] = WSRequestHandler::HandleSetTransitionDuration;
-    messageMap["GetTransitionDuration"] = WSRequestHandler::HandleGetTransitionDuration;
-
-    messageMap["SetVolume"] = WSRequestHandler::HandleSetVolume;
-    messageMap["GetVolume"] = WSRequestHandler::HandleGetVolume;
-    messageMap["ToggleMute"] = WSRequestHandler::HandleToggleMute;
-    messageMap["SetMute"] = WSRequestHandler::HandleSetMute;
-    messageMap["GetMute"] = WSRequestHandler::HandleGetMute;
-    messageMap["SetSyncOffset"] = WSRequestHandler::HandleSetSyncOffset;
-    messageMap["GetSyncOffset"] = WSRequestHandler::HandleGetSyncOffset;
-    messageMap["GetSpecialSources"] = WSRequestHandler::HandleGetSpecialSources;
-    messageMap["GetSourcesList"] = WSRequestHandler::HandleGetSourcesList;
-    messageMap["GetSourceSettings"] = WSRequestHandler::HandleGetSourceSettings;
-    messageMap["SetSourceSettings"] = WSRequestHandler::HandleSetSourceSettings;
-
-    messageMap["SetCurrentSceneCollection"] = WSRequestHandler::HandleSetCurrentSceneCollection;
-    messageMap["GetCurrentSceneCollection"] = WSRequestHandler::HandleGetCurrentSceneCollection;
-    messageMap["ListSceneCollections"] = WSRequestHandler::HandleListSceneCollections;
-
-    messageMap["SetCurrentProfile"] = WSRequestHandler::HandleSetCurrentProfile;
-    messageMap["GetCurrentProfile"] = WSRequestHandler::HandleGetCurrentProfile;
-    messageMap["ListProfiles"] = WSRequestHandler::HandleListProfiles;
-
-    messageMap["SetStreamSettings"] = WSRequestHandler::HandleSetStreamSettings;
-    messageMap["GetStreamSettings"] = WSRequestHandler::HandleGetStreamSettings;
-    messageMap["SaveStreamSettings"] = WSRequestHandler::HandleSaveStreamSettings;
-
-    messageMap["GetStudioModeStatus"] = WSRequestHandler::HandleGetStudioModeStatus;
-    messageMap["GetPreviewScene"] = WSRequestHandler::HandleGetPreviewScene;
-    messageMap["SetPreviewScene"] = WSRequestHandler::HandleSetPreviewScene;
-    messageMap["TransitionToProgram"] = WSRequestHandler::HandleTransitionToProgram;
-    messageMap["EnableStudioMode"] = WSRequestHandler::HandleEnableStudioMode;
-    messageMap["DisableStudioMode"] = WSRequestHandler::HandleDisableStudioMode;
-    messageMap["ToggleStudioMode"] = WSRequestHandler::HandleToggleStudioMode;
-
-    messageMap["SetTextGDIPlusProperties"] = WSRequestHandler::HandleSetTextGDIPlusProperties;
-    messageMap["GetTextGDIPlusProperties"] = WSRequestHandler::HandleGetTextGDIPlusProperties;
-
-    messageMap["GetBrowserSourceProperties"] = WSRequestHandler::HandleGetBrowserSourceProperties;
-    messageMap["SetBrowserSourceProperties"] = WSRequestHandler::HandleSetBrowserSourceProperties;
-
-    authNotRequired.insert("GetVersion");
-    authNotRequired.insert("GetAuthRequired");
-    authNotRequired.insert("Authenticate");
 }
 
 void WSRequestHandler::processIncomingMessage(QString textMessage) {
