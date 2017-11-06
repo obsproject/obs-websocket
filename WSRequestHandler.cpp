@@ -189,7 +189,7 @@ void WSRequestHandler::SendErrorResponse(const char* errorMessage) {
 }
 
 void WSRequestHandler::SendErrorResponse(obs_data_t* additionalFields) {
-    obs_data_t* response = obs_data_create();
+    OBSDataAutoRelease response = obs_data_create();
     obs_data_set_string(response, "status", "error");
     obs_data_set_string(response, "message-id", _messageId);
 
@@ -548,7 +548,7 @@ void WSRequestHandler::HandleStartStreaming(WSRequestHandler* req) {
             OBSDataAutoRelease newSettings = obs_data_get_obj(streamData, "settings");
             OBSDataAutoRelease newMetadata = obs_data_get_obj(streamData, "metadata");
 
-            obs_data_t* csHotkeys =
+            OBSDataAutoRelease csHotkeys =
                 obs_hotkeys_save_service(configuredService);
 
             QString currentType = obs_service_get_type(configuredService);
@@ -1501,7 +1501,7 @@ void WSRequestHandler::HandleSetSceneItemProperties(WSRequestHandler* req) {
     if (req->hasField("scale")) {
         vec2 oldScale;
         obs_sceneitem_get_scale(sceneItem, &oldScale);
-        obs_data_t* reqScale = obs_data_get_obj(req->data, "scale");
+        OBSDataAutoRelease reqScale = obs_data_get_obj(req->data, "scale");
         vec2 newScale = oldScale;
         if (obs_data_has_user_value(reqScale, "x")) {
             newScale.x = obs_data_get_double(reqScale, "x");
@@ -1515,7 +1515,7 @@ void WSRequestHandler::HandleSetSceneItemProperties(WSRequestHandler* req) {
     if (req->hasField("crop")) {
         obs_sceneitem_crop oldCrop;
         obs_sceneitem_get_crop(sceneItem, &oldCrop);
-        obs_data_t* reqCrop = obs_data_get_obj(req->data, "crop");
+        OBSDataAutoRelease reqCrop = obs_data_get_obj(req->data, "crop");
         obs_sceneitem_crop newCrop = oldCrop;
         if (obs_data_has_user_value(reqCrop, "top")) {
             newCrop.top = obs_data_get_int(reqCrop, "top");
@@ -1538,8 +1538,8 @@ void WSRequestHandler::HandleSetSceneItemProperties(WSRequestHandler* req) {
 
     if (req->hasField("bounds")) {
         bool badBounds = false;
-        obs_data_t* boundsError = obs_data_create();
-        obs_data_t* reqBounds = obs_data_get_obj(req->data, "bounds");
+        OBSDataAutoRelease boundsError = obs_data_create();
+        OBSDataAutoRelease reqBounds = obs_data_get_obj(req->data, "bounds");
         if (obs_data_has_user_value(reqBounds, "type")) {
             const char* newBoundsType = obs_data_get_string(reqBounds, "type");
             if (newBoundsType == "OBS_BOUNDS_NONE") {
