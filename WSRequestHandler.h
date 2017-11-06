@@ -41,13 +41,13 @@ class WSRequestHandler : public QObject {
     const char* _requestType;
     obs_data_t* data;
 
-    QHash<QString, void(*)(WSRequestHandler*)> messageMap;
-    QSet<QString> authNotRequired;
-
     void SendOKResponse(obs_data_t* additionalFields = NULL);
     void SendErrorResponse(const char* errorMessage);
     void SendErrorResponse(obs_data_t* additionalFields = NULL);
     void SendResponse(obs_data_t* response);
+
+    static QHash<QString, void(*)(WSRequestHandler*)> messageMap;
+    static QSet<QString> authNotRequired;
 
     static void HandleGetVersion(WSRequestHandler* req);
     static void HandleGetAuthRequired(WSRequestHandler* req);
