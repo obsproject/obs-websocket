@@ -3587,7 +3587,7 @@
         "subheads": [],
         "description": "Start streaming.\nWill return an `error` if streaming is already active.",
         "param": [
-          "{Object (optional)} `stream` Special stream configuration.",
+          "{Object (optional)} `stream` Special stream configuration. Please note: these won't be saved to OBS' configuration.",
           "{String (optional)} `stream.type` If specified ensures the type of stream matches the given type (usually 'rtmp_custom' or 'rtmp_common'). If the currently configured stream type does not match the given stream type, all settings must be specified in the `settings` object or an error will occur when starting the stream.",
           "{Object (optional)} `stream.metadata` Adds the given object parameters as encoded query string parameters to the 'key' of the RTMP stream. Used to pass data to the RTMP service about the streaming. May be any String, Numeric, or Boolean field.",
           "{Object (optional)} `stream.settings` Settings for the stream.",
@@ -3605,7 +3605,7 @@
           {
             "type": "Object (optional)",
             "name": "stream",
-            "description": "Special stream configuration."
+            "description": "Special stream configuration. Please note: these won't be saved to OBS' configuration."
           },
           {
             "type": "String (optional)",
