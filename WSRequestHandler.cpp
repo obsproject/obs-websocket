@@ -1337,7 +1337,6 @@ void WSRequestHandler::HandleGetSceneItemProperties(WSRequestHandler* req) {
         Utils::GetSceneItemFromName(scene, itemName);
     if (!sceneItem) {
         req->SendErrorResponse("specified scene item doesn't exist");
-        obs_source_release(scene);
         return;
     }
 
@@ -1464,7 +1463,6 @@ void WSRequestHandler::HandleSetSceneItemProperties(WSRequestHandler* req) {
         Utils::GetSceneItemFromName(scene, itemName);
     if (!sceneItem) {
         req->SendErrorResponse("specified scene item doesn't exist");
-        obs_source_release(scene);
         return;
     }
 
