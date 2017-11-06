@@ -29,6 +29,8 @@
 
 #include "WSRequestHandler.h"
 
+#define STREAM_SERVICE_ID "websocket_custom_service"
+
 WSRequestHandler::WSRequestHandler(QWebSocket* client) :
     _messageId(0),
     _requestType(""),
@@ -521,7 +523,7 @@ void WSRequestHandler::HandleStartStopRecording(WSRequestHandler* req) {
  * Start streaming.
  * Will return an `error` if streaming is already active.
  *
- * @param {Object (optional)} `stream` Special stream configuration.
+ * @param {Object (optional)} `stream` Special stream configuration. Please note: these won't be saved to OBS' configuration.
  * @param {String (optional)} `stream.type` If specified ensures the type of stream matches the given type (usually 'rtmp_custom' or 'rtmp_common'). If the currently configured stream type does not match the given stream type, all settings must be specified in the `settings` object or an error will occur when starting the stream.
  * @param {Object (optional)} `stream.metadata` Adds the given object parameters as encoded query string parameters to the 'key' of the RTMP stream. Used to pass data to the RTMP service about the streaming. May be any String, Numeric, or Boolean field. 
  * @param {Object (optional)} `stream.settings` Settings for the stream.
@@ -538,14 +540,18 @@ void WSRequestHandler::HandleStartStopRecording(WSRequestHandler* req) {
  */
 void WSRequestHandler::HandleStartStreaming(WSRequestHandler* req) {
     if (obs_frontend_streaming_active() == false) {
-        OBSService currentService = obs_frontend_get_streaming_service();
+        OBSService configuredService = obs_frontend_get_streaming_service();
+        OBSService newService = nullptr;
 
         if (req->hasField("stream")) {
             OBSDataAutoRelease streamData = obs_data_get_obj(req->data, "stream");
             OBSDataAutoRelease newSettings = obs_data_get_obj(streamData, "settings");
             OBSDataAutoRelease newMetadata = obs_data_get_obj(streamData, "metadata");
 
-            QString currentType = obs_service_get_type(currentService);
+            obs_data_t* csHotkeys =
+                obs_hotkeys_save_service(configuredService);
+
+            QString currentType = obs_service_get_type(configuredService);
             QString newType = obs_data_get_string(streamData, "type");
             if (newType.isEmpty() || newType.isNull()) {
                 newType = currentType;
@@ -579,28 +585,38 @@ void WSRequestHandler::HandleStartStreaming(WSRequestHandler* req) {
 
             if (newType == currentType) {
                 // Service type doesn't change: apply settings to current service
-                OBSDataAutoRelease currentSettings = obs_service_get_settings(currentService);
-                OBSDataAutoRelease updatedSettings = obs_data_create(); //by doing this you can send a request to the websocket that only contains a setting you want to change instead of having to do a get and then change them
+
+                // By doing this, you can send a request to the websocket
+                // that only contains settings you want to change, instead of
+                // having to do a get and then change them
+
+                OBSDataAutoRelease currentSettings = obs_service_get_settings(configuredService);
+                OBSDataAutoRelease updatedSettings = obs_data_create();
 
                 obs_data_apply(updatedSettings, currentSettings); //first apply the existing settings
                 obs_data_apply(updatedSettings, newSettings); //then apply the settings from the request should they exist
 
-                obs_service_update(currentService, updatedSettings);
+                newService = obs_service_create(
+                    newType.toUtf8(), STREAM_SERVICE_ID,
+                    updatedSettings, csHotkeys);
             }
             else {
-                // Service type changed: create new service
-                OBSDataAutoRelease hotkeys =
-                    obs_hotkeys_save_service(currentService);
-
-                OBSService newService = obs_service_create(
-                    newType.toUtf8(), "websocket_custom_service",
-                    newSettings, hotkeys);
-
-                obs_frontend_set_streaming_service(newService);
+                // Service type changed: override service settings
+                newService = obs_service_create(
+                    newType.toUtf8(), STREAM_SERVICE_ID,
+                    newSettings, csHotkeys);
             }
+
+            obs_frontend_set_streaming_service(newService);
         }
 
         obs_frontend_streaming_start();
+
+        // Stream settings provided in StartStreaming are not persisted to disk
+        if (newService != nullptr) {
+            obs_frontend_set_streaming_service(configuredService);
+        }
+
         req->SendOKResponse();
     } else {
         req->SendErrorResponse("streaming already active");
@@ -1294,7 +1310,7 @@ void WSRequestHandler::HandleSetSceneItemCrop(WSRequestHandler* req) {
  * @return {double} `bounds.y` Height of the bounding box.
  *
  * @api requests
- * @name GetSceneItemSceneProperties
+ * @name GetSceneItemProperties
  * @category sources
  * @since unreleased
  */
@@ -1714,7 +1730,7 @@ void WSRequestHandler::HandleSetStreamSettings(WSRequestHandler* req) {
     if (requestedType != nullptr && requestedType != serviceType) {
         OBSDataAutoRelease hotkeys = obs_hotkeys_save_service(service);
         service = obs_service_create(
-            requestedType.toUtf8(), "websocket_custom_service", requestSettings, hotkeys);
+            requestedType.toUtf8(), STREAM_SERVICE_ID, requestSettings, hotkeys);
     } else {
         // If type isn't changing, we should overlay the settings we got
         // to the existing settings. By doing so, you can send a request that
@@ -2557,17 +2573,17 @@ void WSRequestHandler::HandleResetSceneItem(WSRequestHandler* req) {
 }
 
 /**
-* List all sources available in the running OBS instance
-*
-* @return {Array of Objects} `sources` Array of sources as objects
-* @return {String} `sources.*.name` Source name
-* @return {String} `sources.*.type` Source type
-*
-* @api requests
-* @name GetSourcesList
-* @category sources
-* @since unreleased
-*/
+ * List all sources available in the running OBS instance
+ *
+ * @return {Array of Objects} `sources` Array of sources as objects
+ * @return {String} `sources.*.name` Source name
+ * @return {String} `sources.*.type` Source type
+ *
+ * @api requests
+ * @name GetSourcesList
+ * @category sources
+ * @since unreleased
+ */
 void WSRequestHandler::HandleGetSourcesList(WSRequestHandler* req) {
     OBSDataArrayAutoRelease sourcesArray = obs_data_array_create();
 
@@ -2591,20 +2607,20 @@ void WSRequestHandler::HandleGetSourcesList(WSRequestHandler* req) {
 }
 
 /**
-* Get settings of the specified source
-*
-* @param {String} `sourceName` Name of the source item.
-* @param {String (optional) `sourceType` Type of the specified source. Useful for type-checking if you expect a specific settings schema.
-*
-* @return {String} `sourceName` Source name
-* @return {String} `sourceType` Type of the specified source
-* @return {Object} `sourceSettings` Source settings. Varying between source types.
-*
-* @api requests
-* @name GetSourceSettings
-* @category sources
-* @since unreleased
-*/
+ * Get settings of the specified source
+ *
+ * @param {String} `sourceName` Name of the source item.
+ * @param {String (optional) `sourceType` Type of the specified source. Useful for type-checking if you expect a specific settings schema.
+ *
+ * @return {String} `sourceName` Source name
+ * @return {String} `sourceType` Type of the specified source
+ * @return {Object} `sourceSettings` Source settings. Varying between source types.
+ *
+ * @api requests
+ * @name GetSourceSettings
+ * @category sources
+ * @since unreleased
+ */
 void WSRequestHandler::HandleGetSourceSettings(WSRequestHandler* req) {
     if (!req->hasField("sourceName")) {
         req->SendErrorResponse("missing request parameters");
@@ -2638,21 +2654,21 @@ void WSRequestHandler::HandleGetSourceSettings(WSRequestHandler* req) {
 }
 
 /**
-* Set settings of the specified source.
-*
-* @param {String} `sourceName` Name of the source item.
-* @param {String (optional)} `sourceType` Type of the specified source. Useful for type-checking to avoid settings a set of settings incompatible with the actual source's type.
-* @param {Object} `sourceSettings` Source settings. Varying between source types.
-*
-* @return {String} `sourceName` Source name
-* @return {String} `sourceType` Type of the specified source
-* @return {Object} `sourceSettings` Source settings. Varying between source types.
-*
-* @api requests
-* @name SetSourceSettings
-* @category sources
-* @since unreleased
-*/
+ * Set settings of the specified source.
+ *
+ * @param {String} `sourceName` Name of the source item.
+ * @param {String (optional)} `sourceType` Type of the specified source. Useful for type-checking to avoid settings a set of settings incompatible with the actual source's type.
+ * @param {Object} `sourceSettings` Source settings. Varying between source types.
+ *
+ * @return {String} `sourceName` Source name
+ * @return {String} `sourceType` Type of the specified source
+ * @return {Object} `sourceSettings` Source settings. Varying between source types.
+ *
+ * @api requests
+ * @name SetSourceSettings
+ * @category sources
+ * @since unreleased
+ */
 void WSRequestHandler::HandleSetSourceSettings(WSRequestHandler* req) {
     if (!req->hasField("sourceName") || !req->hasField("sourceSettings")) {
         req->SendErrorResponse("missing request parameters");
