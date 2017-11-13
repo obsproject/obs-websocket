@@ -19,6 +19,8 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <QtWebSockets/QWebSocket>
 #include <QtCore/QThread>
 #include <QtCore/QByteArray>
+#include <QMainWindow>
+#include <QMessageBox>
 #include <obs-frontend-api.h>
 
 #include "WSServer.h"
@@ -54,8 +56,25 @@ void WSServer::Start(quint16 port) {
 
     bool serverStarted = _wsServer->listen(QHostAddress::Any, port);
     if (serverStarted) {
+        blog(LOG_INFO, "server started successfully on TCP port %d", port);
+
         connect(_wsServer, SIGNAL(newConnection()),
             this, SLOT(onNewConnection()));
+    }
+    else {
+        QString errorString = _wsServer->errorString();
+        blog(LOG_ERROR,
+            "error: failed to start server on TCP port %d: %s",
+            port, errorString.toUtf8().constData());
+
+        QMainWindow* mainWindow = (QMainWindow*)obs_frontend_get_main_window();
+
+        obs_frontend_push_ui_translation(obs_module_get_string);
+        QString title = tr("OBSWebsocket.Server.StartFailed.Title");
+        QString msg = tr("OBSWebsocket.Server.StartFailed.Message").arg(port);
+        obs_frontend_pop_ui_translation();
+
+        QMessageBox::warning(mainWindow, title, msg);
     }
 }
 
@@ -67,6 +86,8 @@ void WSServer::Stop() {
     locker.unlock();
 
     _wsServer->close();
+
+    blog(LOG_INFO, "server stopped successfully");
 }
 
 void WSServer::broadcast(QString message) {
@@ -102,14 +123,12 @@ void WSServer::onNewConnection() {
             clientIp.toUtf8().constData(), pSocket->peerPort());
 
         obs_frontend_push_ui_translation(obs_module_get_string);
-
         QString title = tr("OBSWebsocket.NotifyConnect.Title");
         QString msg = tr("OBSWebsocket.NotifyConnect.Message")
             .arg(Utils::FormatIPAddress(clientAddr));
+        obs_frontend_pop_ui_translation();
 
         Utils::SysTrayNotify(msg, QSystemTrayIcon::Information, title);
-
-        obs_frontend_pop_ui_translation();
     }
 }
 
@@ -139,13 +158,11 @@ void WSServer::onSocketDisconnected() {
             clientIp.toUtf8().constData(), pSocket->peerPort());
 
         obs_frontend_push_ui_translation(obs_module_get_string);
-
         QString title = tr("OBSWebsocket.NotifyDisconnect.Title");
         QString msg = tr("OBSWebsocket.NotifyDisconnect.Message")
             .arg(Utils::FormatIPAddress(clientAddr));
+        obs_frontend_pop_ui_translation();
 
         Utils::SysTrayNotify(msg, QSystemTrayIcon::Information, title);
-
-        obs_frontend_pop_ui_translation();
     }
 }
