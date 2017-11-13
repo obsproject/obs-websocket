@@ -1399,7 +1399,7 @@ void WSRequestHandler::HandleGetSourceTypesList(WSRequestHandler* req) {
  * Get settings of the specified source
  *
  * @param {String} `sourceName` Name of the source item.
- * @param {String (optional) `sourceType` Type of the specified source. Useful for type-checking if you expect a specific settings schema.
+ * @param {String (optional)} `sourceType` Type of the specified source. Useful for type-checking if you expect a specific settings schema.
  *
  * @return {String} `sourceName` Source name
  * @return {String} `sourceType` Type of the specified source
