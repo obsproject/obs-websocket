@@ -20,6 +20,16 @@ set(obs-websocket_SOURCES
 	src/obs-websocket.cpp
 	src/WSServer.cpp
 	src/WSRequestHandler.cpp
+	src/WSRequestHandler_General.cpp
+	src/WSRequestHandler_Profiles.cpp
+	src/WSRequestHandler_Recording.cpp
+	src/WSRequestHandler_ReplayBuffer.cpp
+	src/WSRequestHandler_SceneCollections.cpp
+	src/WSRequestHandler_Scenes.cpp
+	src/WSRequestHandler_Sources.cpp
+	src/WSRequestHandler_Streaming.cpp
+	src/WSRequestHandler_StudioMode.cpp
+	src/WSRequestHandler_Transitions.cpp
 	src/WSEvents.cpp
 	src/Config.cpp
 	src/Utils.cpp

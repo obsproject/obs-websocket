@@ -21,6 +21,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #define WSREQUESTHANDLER_H
 
 #include <QHash>
+#include <QSet>
 #include <QWebSocket>
 #include <QWebSocketServer>
 

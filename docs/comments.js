@@ -47,6 +47,6 @@ const processComments = comments => {
     return sorted;
 };
 
-const files = glob.sync("./../*.@(cpp|h)");
+const files = glob.sync("./../src/*.@(cpp|h)");
 const comments = processComments(parseFiles(files));
 fs.writeFileSync('./generated/comments.json', JSON.stringify(comments, null, 2));
