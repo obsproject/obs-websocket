@@ -3,11 +3,14 @@ const toc = require('markdown-toc');
 const handlebars = require('handlebars');
 
 const helpers = require('handlebars-helpers')({
-  handlebars: handlebars
+    handlebars: handlebars
 });
 
 // Allows pipe characters to be used within markdown tables.
 handlebars.registerHelper('depipe', (text) => {
+    if (!text) {
+        return text;
+    }
     return text.replace('|', `\\|`);
 });
 
