@@ -5,7 +5,7 @@
 
 /**
  * Show or hide a specified source item in a specified scene.
- * 
+ *
  * @param {String} `source` Name of the source in the specified scene.
  * @param {boolean} `render` Desired visibility.
  * @param {String (optional)} `scene-name` Name of the scene where the source resides. Defaults to the currently active scene.
@@ -230,10 +230,10 @@ void WSRequestHandler::HandleGetMute(WSRequestHandler* req) {
 
 /**
  * Set the audio sync offset of a specified source.
- * 
+ *
  * @param {String} `source` The name of the source.
  * @param {int} `offset` The desired audio sync offset (in nanoseconds).
- * 
+ *
  * @api requests
  * @name SetSyncOffset
  * @category sources
@@ -265,12 +265,12 @@ void WSRequestHandler::HandleSetSyncOffset(WSRequestHandler* req) {
 
 /**
  * Get the audio sync offset of a specified source.
- * 
+ *
  * @param {String} `source` The name of the source.
- * 
+ *
  * @return {String} `name` The name of the source.
  * @return {int} `offset` The audio sync offset (in nanoseconds).
- * 
+ *
  * @api requests
  * @name GetSyncOffset
  * @category sources
@@ -303,7 +303,7 @@ void WSRequestHandler::HandleGetSyncOffset(WSRequestHandler* req) {
  * @param {String} `item` The name of the source item.
  * @param {double} `x` X coordinate.
  * @param {double} `y` Y coordinate.
- 
+
  *
  * @api requests
  * @name SetSceneItemPosition
@@ -351,7 +351,7 @@ void WSRequestHandler::HandleGetSyncOffset(WSRequestHandler* req) {
  * @param {String} `item` The name of the source item.
  * @param {double} `x-scale` Width scale factor.
  * @param {double} `y-scale` Height scale factor.
- * @param {double} `rotation` Source item rotation (in degrees). 
+ * @param {double} `rotation` Source item rotation (in degrees).
  *
  * @api requests
  * @name SetSceneItemTransform
@@ -595,7 +595,7 @@ void WSRequestHandler::HandleGetSceneItemProperties(WSRequestHandler* req) {
  * @param {String} `bounds.type` The new bounds type of the source.
  * @param {int} `bounds.alignment` The new alignment of the bounding box. (0-2, 4-6, 8-10)
  * @param {double} `bounds.x` The new width of the bounding box.
- * @param {double} `bounds.y' The new height of the bounding box.
+ * @param {double} `bounds.y` The new height of the bounding box.
  *
  * @api requests
  * @name SetSceneItemProperties
