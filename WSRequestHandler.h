@@ -99,6 +99,7 @@ class WSRequestHandler : public QObject {
     static void HandleGetSyncOffset(WSRequestHandler* req);
     static void HandleGetSpecialSources(WSRequestHandler* req);
     static void HandleGetSourcesList(WSRequestHandler* req);
+    static void HandleGetSourceTypesList(WSRequestHandler* req);
     static void HandleGetSourceSettings(WSRequestHandler* req);
     static void HandleSetSourceSettings(WSRequestHandler* req);
 
