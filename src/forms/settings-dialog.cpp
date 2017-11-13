@@ -18,9 +18,9 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include <obs-frontend-api.h>
 
-#include "obs-websocket.h"
-#include "Config.h"
-#include "WSServer.h"
+#include "../obs-websocket.h"
+#include "../Config.h"
+#include "../WSServer.h"
 #include "settings-dialog.h"
 #include "ui_settings-dialog.h"
 

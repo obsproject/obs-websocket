@@ -17,22 +17,22 @@ add_subdirectory(deps/mbedtls EXCLUDE_FROM_ALL)
 set(ENABLE_PROGRAMS false)
 
 set(obs-websocket_SOURCES 
-	obs-websocket.cpp
-	WSServer.cpp
-	WSRequestHandler.cpp
-	WSEvents.cpp
-	Config.cpp
-	Utils.cpp
-	forms/settings-dialog.cpp)
+	src/obs-websocket.cpp
+	src/WSServer.cpp
+	src/WSRequestHandler.cpp
+	src/WSEvents.cpp
+	src/Config.cpp
+	src/Utils.cpp
+	src/forms/settings-dialog.cpp)
 
 set(obs-websocket_HEADERS
-	obs-websocket.h
-	WSServer.h
-	WSRequestHandler.h
-	WSEvents.h
-	Config.h
-	Utils.h
-	forms/settings-dialog.h)
+	src/obs-websocket.h
+	src/WSServer.h
+	src/WSRequestHandler.h
+	src/WSEvents.h
+	src/Config.h
+	src/Utils.h
+	src/forms/settings-dialog.h)
 
 # --- Platform-independent build settings ---
 add_library(obs-websocket MODULE 
