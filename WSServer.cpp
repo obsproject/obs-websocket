@@ -101,13 +101,15 @@ void WSServer::onNewConnection() {
         blog(LOG_INFO, "new client connection from %s:%d",
             clientIp.toUtf8().constData(), pSocket->peerPort());
 
-        QString msg = QString(obs_module_text("OBSWebsocket.ConnectNotify.ClientIP"))
-            + QString(" ")
-            + Utils::FormatIPAddress(clientAddr);
+        obs_frontend_push_ui_translation(obs_module_get_string);
 
-        Utils::SysTrayNotify(msg,
-            QSystemTrayIcon::Information,
-            QString(obs_module_text("OBSWebsocket.ConnectNotify.Connected")));
+        QString title = tr("OBSWebsocket.NotifyConnect.Title");
+        QString msg = tr("OBSWebsocket.NotifyConnect.Message")
+            .arg(Utils::FormatIPAddress(clientAddr));
+
+        Utils::SysTrayNotify(msg, QSystemTrayIcon::Information, title);
+
+        obs_frontend_pop_ui_translation();
     }
 }
 
@@ -136,12 +138,14 @@ void WSServer::onSocketDisconnected() {
         blog(LOG_INFO, "client %s:%d disconnected",
             clientIp.toUtf8().constData(), pSocket->peerPort());
 
-        QString msg = QString(obs_module_text("OBSWebsocket.ConnectNotify.ClientIP"))
-            + QString(" ")
-            + Utils::FormatIPAddress(clientAddr);
+        obs_frontend_push_ui_translation(obs_module_get_string);
 
-        Utils::SysTrayNotify(msg,
-            QSystemTrayIcon::Information,
-            QString(obs_module_text("OBSWebsocket.ConnectNotify.Disconnected")));
+        QString title = tr("OBSWebsocket.NotifyDisconnect.Title");
+        QString msg = tr("OBSWebsocket.NotifyDisconnect.Message")
+            .arg(Utils::FormatIPAddress(clientAddr));
+
+        Utils::SysTrayNotify(msg, QSystemTrayIcon::Information, title);
+
+        obs_frontend_pop_ui_translation();
     }
 }
