@@ -3001,7 +3001,7 @@
           "{String} `bounds.type` The new bounds type of the source.",
           "{int} `bounds.alignment` The new alignment of the bounding box. (0-2, 4-6, 8-10)",
           "{double} `bounds.x` The new width of the bounding box.",
-          "{double} `bounds.y' The new height of the bounding box."
+          "{double} `bounds.y` The new height of the bounding box."
         ],
         "api": "requests",
         "name": "SetSceneItemProperties",
@@ -3090,8 +3090,8 @@
           },
           {
             "type": "double",
-            "name": "",
-            "description": "`bounds.y' The new height of the bounding box."
+            "name": "bounds.y",
+            "description": "The new height of the bounding box."
           }
         ],
         "names": [
@@ -3986,7 +3986,7 @@
         "description": "Get settings of the specified source",
         "param": [
           "{String} `sourceName` Name of the source item.",
-          "{String (optional) `sourceType` Type of the specified source. Useful for type-checking if you expect a specific settings schema."
+          "{String (optional)} `sourceType` Type of the specified source. Useful for type-checking if you expect a specific settings schema."
         ],
         "return": [
           "{String} `sourceName` Source name",
@@ -4021,8 +4021,9 @@
             "description": "Name of the source item."
           },
           {
-            "name": "",
-            "description": "{String (optional) `sourceType` Type of the specified source. Useful for type-checking if you expect a specific settings schema."
+            "type": "String (optional)",
+            "name": "sourceType",
+            "description": "Type of the specified source. Useful for type-checking if you expect a specific settings schema."
           }
         ],
         "names": [
