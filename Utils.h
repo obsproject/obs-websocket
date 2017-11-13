@@ -19,6 +19,8 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #ifndef UTILS_H
 #define UTILS_H
 
+#include <stdio.h>
+
 #include <QSpinBox>
 #include <QPushButton>
 #include <QLayout>
@@ -26,23 +28,25 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <QSystemTrayIcon>
 #include <QHostAddress>
 
-#include <stdio.h>
+#include <obs.hpp>
 #include <obs-module.h>
 #include <util/config-file.h>
+
+const char* qstring_data_copy(QString value);
 
 class Utils {
   public:
     static obs_data_array_t* GetSceneItems(obs_source_t* source);
-    static obs_data_t* GetSceneItemData(obs_scene_item* item);
+    static obs_data_t* GetSceneItemData(obs_sceneitem_t* item);
     static obs_sceneitem_t* GetSceneItemFromName(
-        obs_source_t* source, const char* name);
-    static obs_source_t* GetTransitionFromName(const char* search_name);
-    static obs_source_t* GetSceneFromNameOrCurrent(const char* scene_name);
+        obs_source_t* source, QString name);
+    static obs_source_t* GetTransitionFromName(QString transitionName);
+    static obs_source_t* GetSceneFromNameOrCurrent(QString sceneName);
 
     static bool IsValidAlignment(const uint32_t alignment);
 
     static obs_data_array_t* GetScenes();
-    static obs_data_t* GetSceneData(obs_source* source);
+    static obs_data_t* GetSceneData(obs_source_t* source);
 
     static obs_data_array_t* GetSceneCollections();
     static obs_data_array_t* GetProfiles();
@@ -51,7 +55,7 @@ class Utils {
     static int GetTransitionDuration();
     static void SetTransitionDuration(int ms);
 
-    static bool SetTransitionByName(const char* transition_name);
+    static bool SetTransitionByName(QString transitionName);
 
     static QPushButton* GetPreviewModeButtonControl();
     static QLayout* GetPreviewLayout();
@@ -72,8 +76,8 @@ class Utils {
     static const char* GetRecordingFolder();
     static bool SetRecordingFolder(const char* path);
 
-    static QString ParseDataToQueryString(obs_data_t * data);
-    static obs_hotkey_t* FindHotkeyByName(const char* name);
+    static QString ParseDataToQueryString(obs_data_t* data);
+    static obs_hotkey_t* FindHotkeyByName(QString name);
     static bool ReplayBufferEnabled();
     static void StartReplayBuffer();
     static bool IsRPHotkeySet();

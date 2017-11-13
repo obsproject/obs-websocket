@@ -19,6 +19,8 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #ifndef CONFIG_H
 #define CONFIG_H
 
+#include <QString>
+
 #include <mbedtls/entropy.h>
 #include <mbedtls/ctr_drbg.h>
 
@@ -29,11 +31,11 @@ class Config {
     void Load();
     void Save();
 
-    void SetPassword(const char* password);
-    bool CheckAuth(const char* userChallenge);
-    const char* GenerateSalt();
-    static const char* GenerateSecret(
-        const char* password, const char* salt);
+    void SetPassword(QString password);
+    bool CheckAuth(QString userChallenge);
+    QString GenerateSalt();
+    static QString GenerateSecret(
+        QString password, QString salt);
 
     bool ServerEnabled;
     uint64_t ServerPort;
@@ -42,9 +44,9 @@ class Config {
     bool AlertsEnabled;
 
     bool AuthRequired;
-    const char* Secret;
-    const char* Salt;
-    const char* SessionChallenge;
+    QString Secret;
+    QString Salt;
+    QString SessionChallenge;
     bool SettingsLoaded;
 
     static Config* Current();

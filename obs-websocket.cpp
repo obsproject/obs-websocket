@@ -28,6 +28,12 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include "Config.h"
 #include "forms/settings-dialog.h"
 
+void ___source_dummy_addref(obs_source_t*) {}
+void ___sceneitem_dummy_addref(obs_sceneitem_t*) {}
+void ___data_dummy_addref(obs_data_t*) {}
+void ___data_array_dummy_addref(obs_data_array_t*) {}
+void ___output_dummy_addref(obs_output_t*) {}
+
 OBS_DECLARE_MODULE()
 OBS_MODULE_USE_DEFAULT_LOCALE("obs-websocket", "en-US")
 

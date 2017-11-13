@@ -20,6 +20,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #ifndef WSEVENTS_H
 #define WSEVENTS_H
 
+#include <obs.hpp>
 #include <obs-frontend-api.h>
 #include <QListWidgetItem>
 #include "WSServer.h"
@@ -30,7 +31,7 @@ class WSEvents : public QObject {
     explicit WSEvents(WSServer* srv);
     ~WSEvents();
     static void FrontendEventHandler(
-        enum obs_frontend_event event, void* private_data);
+        enum obs_frontend_event event, void* privateData);
     static WSEvents* Instance;
     void connectTransitionSignals(obs_source_t* transition);
     void connectSceneSignals(obs_source_t* scene);
@@ -40,7 +41,7 @@ class WSEvents : public QObject {
     uint64_t GetRecordingTime();
     const char* GetRecordingTimecode();
 
-    bool Heartbeat_active;
+    bool HeartbeatIsActive;
 
   private slots:
     void deferredInitOperations();
@@ -52,16 +53,16 @@ class WSEvents : public QObject {
 
   private:
     WSServer* _srv;
-    signal_handler_t* transition_handler;
-    signal_handler_t* scene_handler;
+    signal_handler_t* transitionHandler;
+    signal_handler_t* sceneHandler;
 
     bool pulse;
 
-    bool _streaming_active;
-    bool _recording_active;
+    bool _streamingActive;
+    bool _recordingActive;
 
-    uint64_t _stream_starttime;
-    uint64_t _rec_starttime;
+    uint64_t _streamStarttime;
+    uint64_t _recStarttime;
 
     uint64_t _lastBytesSent;
     uint64_t _lastBytesSentTime;
