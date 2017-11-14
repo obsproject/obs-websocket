@@ -519,31 +519,13 @@ bool Utils::IsRPHotkeySet() {
 }
 
 const char* Utils::GetFilenameFormatting() {
-    config_t* profile = obs_frontend_get_profile_config();
-    QString outputMode = config_get_string(profile, "Output", "Mode");
-
-    if (outputMode == "Advanced") {
-        // Advanced mode
-        return config_get_string(profile, "AdvOut", "RecFilePath");
-    } else {
-        // Simple mode
-        return config_get_string(profile, "SimpleOutput", "FilePath");
-    }
+    config_t* globalConfig = obs_frontend_get_global_config();
+    return config_get_string(globalConfig, "Output", "FilenameFormatting")
 }
 
-bool Utils::SetFilenameFormatting(const char* path) {
-    if (!QDir(path).exists())
-        return false;
-
-    config_t* profile = obs_frontend_get_profile_config();
-    QString outputMode = config_get_string(profile, "Output", "Mode");
-
-    if (outputMode == "Advanced") {
-        config_set_string(profile, "AdvOut", "RecFilePath", path);
-    } else {
-        config_set_string(profile, "SimpleOutput", "FilePath", path);
-    }
-
-    config_save(profile);
+bool Utils::SetFilenameFormatting(const char* filenameFormatting) {
+    config_t* globalConfig = obs_frontend_get_global_config();
+    config_set_string(globalConfig, "Output", "FilenameFormatting", filenameFormatting);
+    config_save(globalConfig);
     return true;
 }
