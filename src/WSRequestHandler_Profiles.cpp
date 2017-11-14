@@ -58,10 +58,13 @@ void WSRequestHandler::HandleGetCurrentProfile(WSRequestHandler* req) {
  * @since 4.0.0
  */
 void WSRequestHandler::HandleListProfiles(WSRequestHandler* req) {
-    OBSDataArrayAutoRelease profiles = Utils::GetProfiles();
+    char** profiles = obs_frontend_get_profiles();
+    OBSDataArrayAutoRelease list =
+        Utils::StringListToArray(profiles, "profile-name");
+    bfree(profiles);
 
     OBSDataAutoRelease response = obs_data_create();
-    obs_data_set_array(response, "profiles", profiles);
+    obs_data_set_array(response, "profiles", list);
 
     req->SendOKResponse(response);
 }

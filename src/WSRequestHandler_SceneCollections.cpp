@@ -47,11 +47,25 @@ void WSRequestHandler::HandleGetCurrentSceneCollection(WSRequestHandler* req) {
     req->SendOKResponse(response);
 }
 
+/**
+ * List available scene collections
+ *
+ * @return {Object|Array} `scene-collections` Scene collections list
+ * @return {String} `scene-collections.*.`
+ *
+ * @api requests
+ * @name ListSceneCollections
+ * @category scene collections
+ * @since 4.0.0
+ */
 void WSRequestHandler::HandleListSceneCollections(WSRequestHandler* req) {
-    OBSDataArrayAutoRelease sceneCollections = Utils::GetSceneCollections();
+    char** sceneCollections = obs_frontend_get_scene_collections();
+    OBSDataArrayAutoRelease list =
+        Utils::StringListToArray(sceneCollections, "sc-name");
+    bfree(sceneCollections);
 
     OBSDataAutoRelease response = obs_data_create();
-    obs_data_set_array(response, "scene-collections", sceneCollections);
+    obs_data_set_array(response, "scene-collections", list);
 
     req->SendOKResponse(response);
 }
