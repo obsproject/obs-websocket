@@ -519,13 +519,13 @@ bool Utils::IsRPHotkeySet() {
 }
 
 const char* Utils::GetFilenameFormatting() {
-    config_t* globalConfig = obs_frontend_get_global_config();
-    return config_get_string(globalConfig, "Output", "FilenameFormatting")
+    config_t* profile = obs_frontend_get_profile_config();
+    return config_get_string(profile, "Output", "FilenameFormatting");
 }
 
 bool Utils::SetFilenameFormatting(const char* filenameFormatting) {
-    config_t* globalConfig = obs_frontend_get_global_config();
-    config_set_string(globalConfig, "Output", "FilenameFormatting", filenameFormatting);
-    config_save(globalConfig);
+    config_t* profile = obs_frontend_get_profile_config();
+    config_set_string(profile, "Output", "FilenameFormatting", filenameFormatting);
+    config_save(profile);
     return true;
 }

@@ -135,12 +135,12 @@ void WSRequestHandler::HandleAuthenticate(WSRequestHandler* req) {
  * @category general
  */
 void WSRequestHandler::HandleSetFilenameFormatting(WSRequestHandler* req) {
-    if (!req->hasField("filename-fomatting")) {
-        req->SendErrorResponse("<filename-fomatting> parameter missing");
+    if (!req->hasField("filename-formatting")) {
+        req->SendErrorResponse("<filename-formatting> parameter missing");
         return;
     }
 
-    QString filenameFormatting = obs_data_get_string(req->data, "filename-fomatting");
+    QString filenameFormatting = obs_data_get_string(req->data, "filename-formatting");
     if (!filenameFormatting.isEmpty()) {
         Utils::SetFilenameFormatting(filenameFormatting.toUtf8());
         req->SendOKResponse();
@@ -160,6 +160,6 @@ void WSRequestHandler::HandleSetFilenameFormatting(WSRequestHandler* req) {
  */
 void WSRequestHandler::HandleGetFilenameFormatting(WSRequestHandler* req) {
     OBSDataAutoRelease response = obs_data_create();
-    obs_data_set_string(response, "filename-fomatting", Utils::GetFilenameFormatting());
+    obs_data_set_string(response, "filename-formatting", Utils::GetFilenameFormatting());
     req->SendOKResponse(response);
 }
