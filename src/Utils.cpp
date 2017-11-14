@@ -367,9 +367,8 @@ const char* Utils::GetRecordingFolder() {
 }
 
 bool Utils::SetRecordingFolder(const char* path) {
-    QDir dir(path);
-    if (!dir.exists())
-        dir.mkpath(".");
+    if (!QDir(path).exists())
+        return false;
 
     config_t* profile = obs_frontend_get_profile_config();
     QString outputMode = config_get_string(profile, "Output", "Mode");
