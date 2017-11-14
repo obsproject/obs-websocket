@@ -801,7 +801,8 @@ void WSRequestHandler::HandleSetTextGDIPlusProperties(WSRequestHandler* req) {
  * @param {String} `source` Name of the source.
  *
  * @return {boolean} `is_local_file` Indicates that a local file is in use.
- * @return {String} `url` Url or file path.
+ * @return {String} `local_file` file path.
+ * @return {String} `url` Url.
  * @return {String} `css` CSS to inject.
  * @return {int} `width` Width.
  * @return {int} `height` Height.
@@ -858,7 +859,8 @@ void WSRequestHandler::HandleGetBrowserSourceProperties(WSRequestHandler* req) {
  * @param {String (optional)} `scene-name` Name of the scene that the source belongs to. Defaults to the current scene.
  * @param {String} `source` Name of the source.
  * @param {boolean (optional)} `is_local_file` Indicates that a local file is in use.
- * @param {String (optional)} `url` Url or file path.
+ * @param {String (optional)} `local_file` file path.
+ * @param {String (optional)} `url` Url.
  * @param {String (optional)} `css` CSS to inject.
  * @param {int (optional)} `width` Width.
  * @param {int (optional)} `height` Height.
@@ -914,6 +916,11 @@ void WSRequestHandler::HandleSetBrowserSourceProperties(WSRequestHandler* req) {
             if (req->hasField("is_local_file")) {
                 obs_data_set_bool(settings, "is_local_file",
                     obs_data_get_bool(req->data, "is_local_file"));
+            }
+
+            if (req->hasField("local_file")) {
+                obs_data_set_string(settings, "local_file",
+                    obs_data_get_string(req->data, "local_file"));
             }
 
             if (req->hasField("url")) {
