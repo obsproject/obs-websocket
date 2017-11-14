@@ -517,3 +517,33 @@ bool Utils::IsRPHotkeySet() {
     size_t count = obs_data_array_count(bindings);
     return (count > 0);
 }
+
+const char* Utils::GetFilenameFormatting() {
+    config_t* profile = obs_frontend_get_profile_config();
+    QString outputMode = config_get_string(profile, "Output", "Mode");
+
+    if (outputMode == "Advanced") {
+        // Advanced mode
+        return config_get_string(profile, "AdvOut", "RecFilePath");
+    } else {
+        // Simple mode
+        return config_get_string(profile, "SimpleOutput", "FilePath");
+    }
+}
+
+bool Utils::SetFilenameFormatting(const char* path) {
+    if (!QDir(path).exists())
+        return false;
+
+    config_t* profile = obs_frontend_get_profile_config();
+    QString outputMode = config_get_string(profile, "Output", "Mode");
+
+    if (outputMode == "Advanced") {
+        config_set_string(profile, "AdvOut", "RecFilePath", path);
+    } else {
+        config_set_string(profile, "SimpleOutput", "FilePath", path);
+    }
+
+    config_save(profile);
+    return true;
+}

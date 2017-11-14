@@ -124,3 +124,48 @@ void WSRequestHandler::HandleAuthenticate(WSRequestHandler* req) {
         WSEvents::Instance->HeartbeatIsActive);
     req->SendOKResponse(response);
 }
+
+/**
+ * Enable/disable sending of the Heartbeat event
+ *
+ * @param {boolean} `enable` Starts/Stops emitting heartbeat messages
+ *
+ * @api requests
+ * @name SetHeartbeat
+ * @category general
+ */
+ void WSRequestHandler::HandleSetFilenameFormatting(WSRequestHandler* req) {
+    if (!req->hasField("filename-fomatting")) {
+        req->SendErrorResponse("Ffilename formatting parameter missing");
+        return;
+    }
+
+    WSEvents::Instance->HeartbeatIsActive =
+        obs_data_get_string(req->data, "filename-fomatting");
+
+    config_get_string(main->Config(), "Output", "FilenameFormatting");
+
+    OBSDataAutoRelease response = obs_data_create();
+    req->SendOKResponse();
+    obs_data_set_bool(response, "enable",
+        WSEvents::Instance->HeartbeatIsActive);
+    req->SendOKResponse(response);
+}
+
+/**
+ * Enable/disable sending of the Heartbeat event
+ *
+ * @param {boolean} `enable` Starts/Stops emitting heartbeat messages
+ *
+ * @api requests
+ * @name SetHeartbeat
+ * @category general
+ */
+ void WSRequestHandler::HandleGetFilenameFormatting(WSRequestHandler* req) {
+    OBSDataAutoRelease response = obs_data_create();
+    obs_data_set_string(
+        data,
+        "filename-fomatting",
+        config_get_string(main->Config(), "Output", "FilenameFormatting"));
+    req->SendOKResponse(response);
+}
