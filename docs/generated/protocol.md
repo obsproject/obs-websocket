@@ -1722,7 +1722,8 @@ Get current properties for a Browser Source.
 | Name | Type  | Description |
 | ---- | :---: | ------------|
 | `is_local_file` | _boolean_ | Indicates that a local file is in use. |
-| `url` | _String_ | Url or file path. |
+| `local_file` | _String_ | file path. |
+| `url` | _String_ | Url. |
 | `css` | _String_ | CSS to inject. |
 | `width` | _int_ | Width. |
 | `height` | _int_ | Height. |
@@ -1747,7 +1748,8 @@ Set current properties for a Browser Source.
 | `scene-name` | _String (optional)_ | Name of the scene that the source belongs to. Defaults to the current scene. |
 | `source` | _String_ | Name of the source. |
 | `is_local_file` | _boolean (optional)_ | Indicates that a local file is in use. |
-| `url` | _String (optional)_ | Url or file path. |
+| `local_file` | _String (optional)_ | file path. |
+| `url` | _String (optional)_ | Url. |
 | `css` | _String (optional)_ | CSS to inject. |
 | `width` | _int (optional)_ | Width. |
 | `height` | _int (optional)_ | Height. |

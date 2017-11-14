@@ -3998,7 +3998,8 @@
         ],
         "return": [
           "{boolean} `is_local_file` Indicates that a local file is in use.",
-          "{String} `url` Url or file path.",
+          "{String} `local_file` file path.",
+          "{String} `url` Url.",
           "{String} `css` CSS to inject.",
           "{int} `width` Width.",
           "{int} `height` Height.",
@@ -4018,8 +4019,13 @@
           },
           {
             "type": "String",
+            "name": "local_file",
+            "description": "file path."
+          },
+          {
+            "type": "String",
             "name": "url",
-            "description": "Url or file path."
+            "description": "Url."
           },
           {
             "type": "String",
@@ -4097,7 +4103,8 @@
           "{String (optional)} `scene-name` Name of the scene that the source belongs to. Defaults to the current scene.",
           "{String} `source` Name of the source.",
           "{boolean (optional)} `is_local_file` Indicates that a local file is in use.",
-          "{String (optional)} `url` Url or file path.",
+          "{String (optional)} `local_file` file path.",
+          "{String (optional)} `url` Url.",
           "{String (optional)} `css` CSS to inject.",
           "{int (optional)} `width` Width.",
           "{int (optional)} `height` Height.",
@@ -4127,8 +4134,13 @@
           },
           {
             "type": "String (optional)",
+            "name": "local_file",
+            "description": "file path."
+          },
+          {
+            "type": "String (optional)",
             "name": "url",
-            "description": "Url or file path."
+            "description": "Url."
           },
           {
             "type": "String (optional)",
