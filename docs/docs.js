@@ -1,6 +1,8 @@
 const fs = require('fs');
+const path = require('path');
 const toc = require('markdown-toc');
 const handlebars = require('handlebars');
+const config = require('./config.json');
 
 const helpers = require('handlebars-helpers')({
     handlebars: handlebars
@@ -8,10 +10,7 @@ const helpers = require('handlebars-helpers')({
 
 // Allows pipe characters to be used within markdown tables.
 handlebars.registerHelper('depipe', (text) => {
-    if (!text) {
-        return text;
-    }
-    return text.replace('|', `\\|`);
+    return typeof text === 'string' ? text.replace('|', '\\|') : text;
 });
 
 const insertHeader = (text) => {
@@ -29,6 +28,10 @@ const generateProtocol = (templatePath, data) => {
     return insertHeader(toc.insert(generated));
 };
 
-const comments = fs.readFileSync('./generated/comments.json', 'utf8');
-const markdown = generateProtocol('./protocol.hbs', JSON.parse(comments));
-fs.writeFileSync('./generated/protocol.md', markdown);
+if (!fs.existsSync(config.outDirectory)){
+    fs.mkdirSync(config.outDirectory);
+}
+
+const comments = fs.readFileSync(path.join(config.outDirectory, 'comments.json'), 'utf8');
+const markdown = generateProtocol(config.srcTemplate, JSON.parse(comments));
+fs.writeFileSync(path.join(config.outDirectory, 'protocol.md'), markdown);
