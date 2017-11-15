@@ -66,7 +66,7 @@ void WSRequestHandler::HandleStopReplayBuffer(WSRequestHandler* req) {
 }
 
 /**
-* Save and flush the contents of the Replay Buffer to disk. This is
+* Flush and save the contents of the Replay Buffer to disk. This is
 * basically the same as triggering the "Save Replay Buffer" hotkey.
 * Will return an `error` if the Replay Buffer is not active.
 *
