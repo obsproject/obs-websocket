@@ -74,3 +74,71 @@ void WSRequestHandler::HandleGetSceneList(WSRequestHandler* req) {
 
     req->SendOKResponse(data);
 }
+
+/**
+* Changes the order of scene items in the requested scene.
+*
+* @param {String} `scene-name (optional)` Name of the scene to reorder (defaults to current).
+* @param {Scene|Array} `items` Ordered list of objects with name and/or id specified. Id prefered due to uniqueness per scene
+* @param {int} `items[].id (optional)` Id of a specific scene item. Unique on a scene by scene basis.
+* @param {String} `items[].name (optional)` Name of a scene item. Sufficiently unique if no scene items share sources within the scene.
+*
+* @api requests
+* @name SetSceneItemOrder
+* @category scenes
+* @since unreleased
+*/
+void WSRequestHandler::HandleSetSceneItemOrder(WSRequestHandler* req) {
+    QString sceneName = obs_data_get_string(req->data, "scene-name");
+    OBSSourceAutoRelease scene = Utils::GetSceneFromNameOrCurrent(sceneName);
+    if (!scene) {
+        req->SendErrorResponse("requested scene doesn't exist");
+        return;
+    }
+
+    OBSDataArrayAutoRelease items = obs_data_get_array(req->data, "items");
+    if (!items) {
+        req->SendErrorResponse("sceneItem order not specified");
+        return;
+    }
+
+    size_t count = obs_data_array_count(items);
+
+    std::vector<obs_sceneitem_t*> newOrder;
+    newOrder.reserve(count);
+    for (size_t i = 0; i < count; i++) {
+        OBSDataAutoRelease item = obs_data_array_item(items, i);
+        OBSSceneItemAutoRelease *sceneItem;
+        if (obs_data_has_user_value(item, "id")) {
+            sceneItem = (OBSSceneItemAutoRelease *)Utils::GetSceneItemFromId(scene, obs_data_get_int(item, "id"));
+            if (obs_data_has_user_value(item, "name") &&
+                obs_source_get_name(obs_sceneitem_get_source((obs_sceneitem_t*)sceneItem)) !=
+                obs_data_get_string(item, "name")) {
+                req->SendErrorResponse("Invalid sceneItem id/name combination");
+                return;
+            }
+        }
+        else if (obs_data_has_user_value(item, "name")) {
+            sceneItem = (OBSSceneItemAutoRelease *)Utils::GetSceneItemFromName(scene, obs_data_get_string(item, "name"));
+        }
+        if (!sceneItem) {
+            req->SendErrorResponse("Invalid sceneItem id or name in order");
+            return;
+        }
+        for (size_t j = 0; j < i; j++) {
+            if ((obs_sceneitem_t*)sceneItem == newOrder[j]) {
+                req->SendErrorResponse("Duplicate sceneItem in specified order");
+                return;
+            }
+        }
+        newOrder.push_back((obs_sceneitem_t*)sceneItem);
+    }
+
+    if (obs_scene_reorder_items(obs_scene_from_source(scene), newOrder.data(), count)) {
+        req->SendOKResponse();
+    }
+    else {
+        req->SendErrorResponse("Invalid sceneItem order");
+    }
+    // Will the vector of scene items clear properly or do we have a memory leak here and on early returns?
+}
