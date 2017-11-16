@@ -41,16 +41,21 @@ See the [build instructions](BUILDING.md).
 In order of appearance:
 - [Brendan H.](https://github.com/haganbmj) : Code contributions and gooder English in the Protocol specification
 - [Mikhail Swift](https://github.com/mikhailswift) : Code contributions
-- [Tobias Frahmer](https://github.com/Frahmer) : German translation
-- [Genture](https://github.com/Genteure) : Simplified Chinese and Traditional Chinese translations
-- [Larissa Gabilan](https://github.com/laris151) : Portuguese translation
-- [Andy Asquelt](https://github.com/asquelt) : Polish translation
-- [Marcel Haazen](https://github.com/inpothet) : Dutch translation
+- [Tobias Frahmer](https://github.com/Frahmer) : German localization
+- [Genture](https://github.com/Genteure) : Simplified Chinese and Traditional Chinese localizations
+- [Larissa Gabilan](https://github.com/laris151) : Portuguese localization
+- [Andy Asquelt](https://github.com/asquelt) : Polish localization
+- [Marcel Haazen](https://github.com/inpothet) : Dutch localization
 - [Peter Antonvich](https://github.com/pantonvich) : Code contributions
 - [yinzara](https://github.com/yinzara) : Code contributions
 - [Chris Angelico](https://github.com/Rosuav) : Code contributions
 - [Guillaume "Elektordi" Genty](https://github.com/Elektordi) : Code contributions
 - [Marwin M](https://github.com/dragonbane0) : Code contributions
+- [Logan S.](https://github.com/lsdaniel) : Code contributions
+- [RainbowEK](https://github.com/RainbowEK) : Code contributions
+- [RytoEX](https://github.com/RytoEX) : CI script and code contributions
+- [Theodore Stoddard](https://github.com/TStod) : Code contributions
+- [Philip Loche](https://github.com/PicoCentauri) : Code contributions
 
 And also: special thanks to supporters of the project!
 

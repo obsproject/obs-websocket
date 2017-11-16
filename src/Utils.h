@@ -36,6 +36,7 @@ const char* qstring_data_copy(QString value);
 
 class Utils {
   public:
+    static obs_data_array_t* StringListToArray(char** strings, char* key);
     static obs_data_array_t* GetSceneItems(obs_source_t* source);
     static obs_data_t* GetSceneItemData(obs_sceneitem_t* item);
     static obs_sceneitem_t* GetSceneItemFromName(
@@ -49,7 +50,6 @@ class Utils {
     static obs_data_array_t* GetScenes();
     static obs_data_t* GetSceneData(obs_source_t* source);
 
-    static obs_data_array_t* GetSceneCollections();
     static obs_data_array_t* GetProfiles();
 
     static QSpinBox* GetTransitionDurationControl();
@@ -65,7 +65,7 @@ class Utils {
 
     static void TransitionToProgram();
 
-    static const char* OBSVersionString();
+    static QString OBSVersionString();
 
     static QSystemTrayIcon* GetTrayIcon();
     static void SysTrayNotify(
@@ -74,6 +74,7 @@ class Utils {
         QString title = QString("obs-websocket"));
 
     static QString FormatIPAddress(QHostAddress &addr);
+
     static const char* GetRecordingFolder();
     static bool SetRecordingFolder(const char* path);
 

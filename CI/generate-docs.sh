@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 echo "-- Generating documentation."
 echo "-- Node version: $(node -v)"
 echo "-- NPM version: $(npm -v)"
