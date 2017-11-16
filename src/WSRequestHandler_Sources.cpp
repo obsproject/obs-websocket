@@ -1114,3 +1114,41 @@ void WSRequestHandler::HandleResetSceneItem(WSRequestHandler* req) {
         req->SendErrorResponse("specified scene item doesn't exist");
     }
 }
+
+/**
+ * Get configured special sources like Desktop Audio and Mic/Aux sources.
+ *
+ * @return {String (optional)} `desktop-1` Name of the first Desktop Audio capture source.
+ * @return {String (optional)} `desktop-2` Name of the second Desktop Audio capture source.
+ * @return {String (optional)} `mic-1` Name of the first Mic/Aux input source.
+ * @return {String (optional)} `mic-2` Name of the second Mic/Aux input source.
+ * @return {String (optional)} `mic-3` NAme of the third Mic/Aux input source.
+ *
+ * @api requests
+ * @name GetSpecialSources
+ * @category sources
+ * @since 4.1.0
+ */
+void WSRequestHandler::HandleGetSpecialSources(WSRequestHandler* req) {
+    OBSDataAutoRelease response = obs_data_create();
+
+    QMap<const char*, int> sources;
+    sources["desktop-1"] = 1;
+    sources["desktop-2"] = 2;
+    sources["mic-1"] = 3;
+    sources["mic-2"] = 4;
+    sources["mic-3"] = 5;
+
+    QMapIterator<const char*, int> i(sources);
+    while (i.hasNext()) {
+        i.next();
+
+        const char* id = i.key();
+        OBSSourceAutoRelease source = obs_get_output_source(i.value());
+        if (source) {
+            obs_data_set_string(response, id, obs_source_get_name(source));
+        }
+    }
+
+    req->SendOKResponse(response);
+}
