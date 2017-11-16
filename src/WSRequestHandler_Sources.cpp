@@ -978,35 +978,35 @@ void WSRequestHandler::HandleSetBrowserSourceProperties(WSRequestHandler* req) {
  * @since unreleased
  */
 void WSRequestHandler::HandleDeleteSceneItem(WSRequestHandler* req) {
-  if (!req->hasField("item")) {
-    req->SendErrorResponse("missing request parameters");
-    return;
-  }
-
-  const char* sceneName = obs_data_get_string(req->data, "scene-name");
-  OBSSourceAutoRelease scene = Utils::GetSceneFromNameOrCurrent(sceneName);
-  if (!scene) {
-    req->SendErrorResponse("requested scene doesn't exist");
-    return;
-  }
-
-  OBSDataAutoRelease item = obs_data_get_obj(req->data, "item");
-  OBSSceneItemAutoRelease *sceneItem;
-  if (obs_data_has_user_value(item, "id")) {
-    sceneItem = (OBSSceneItemAutoRelease *)Utils::GetSceneItemFromId(scene, obs_data_get_int(item, "id"));
-    if (obs_data_has_user_value(item, "name") &&
-      obs_source_get_name(obs_sceneitem_get_source((obs_sceneitem_t*)sceneItem)) !=
-      obs_data_get_string(item, "name")) {
-      req->SendErrorResponse("Invalid sceneItem id/name combination");
-      return;
+    if (!req->hasField("item")) {
+        req->SendErrorResponse("missing request parameters");
+        return;
     }
-  }
-  else if (obs_data_has_user_value(item, "name")) {
-    sceneItem = (OBSSceneItemAutoRelease *)Utils::GetSceneItemFromName(scene, obs_data_get_string(item, "name"));
-  }
 
-  obs_sceneitem_remove((obs_sceneitem_t *)sceneItem);
-  req->SendOKResponse();
+    const char* sceneName = obs_data_get_string(req->data, "scene-name");
+    OBSSourceAutoRelease scene = Utils::GetSceneFromNameOrCurrent(sceneName);
+    if (!scene) {
+        req->SendErrorResponse("requested scene doesn't exist");
+        return;
+    }
+
+    OBSDataAutoRelease item = obs_data_get_obj(req->data, "item");
+    OBSSceneItemAutoRelease *sceneItem;
+    if (obs_data_has_user_value(item, "id")) {
+        sceneItem = (OBSSceneItemAutoRelease *)Utils::GetSceneItemFromId(scene, obs_data_get_int(item, "id"));
+        if (obs_data_has_user_value(item, "name") &&
+            obs_source_get_name(obs_sceneitem_get_source((obs_sceneitem_t*)sceneItem)) !=
+            obs_data_get_string(item, "name")) {
+            req->SendErrorResponse("Invalid sceneItem id/name combination");
+            return;
+        }
+    }
+    else if (obs_data_has_user_value(item, "name")) {
+        sceneItem = (OBSSceneItemAutoRelease *)Utils::GetSceneItemFromName(scene, obs_data_get_string(item, "name"));
+    }
+
+    obs_sceneitem_remove((obs_sceneitem_t *)sceneItem);
+    req->SendOKResponse();
 }
 
 /**
@@ -1024,51 +1024,51 @@ void WSRequestHandler::HandleDeleteSceneItem(WSRequestHandler* req) {
  * @since unreleased
  */
 void WSRequestHandler::HandleDuplicateSceneItem(WSRequestHandler* req) {
-  if (!req->hasField("item")) {
-    req->SendErrorResponse("missing request parameters");
-    return;
-  }
-
-  const char* fromSceneName = obs_data_get_string(req->data, "from-scene-name");
-  OBSSourceAutoRelease fromScene = Utils::GetSceneFromNameOrCurrent(fromSceneName);
-  if (!fromScene) {
-    req->SendErrorResponse("requested fromScene doesn't exist");
-    return;
-  }
-
-  const char* toSceneName = obs_data_get_string(req->data, "to-scene-name");
-  OBSSourceAutoRelease toScene = Utils::GetSceneFromNameOrCurrent(toSceneName);
-  if (!toScene) {
-    req->SendErrorResponse("requested toScene doesn't exist");
-    return;
-  }
-
-  OBSDataAutoRelease item = obs_data_get_obj(req->data, "item");
-  OBSSceneItemAutoRelease *referenceItem;
-  if (obs_data_has_user_value(item, "id")) {
-    referenceItem = (OBSSceneItemAutoRelease *)Utils::GetSceneItemFromId(fromScene, obs_data_get_int(item, "id"));
-    if (obs_data_has_user_value(item, "name") &&
-      obs_source_get_name(obs_sceneitem_get_source((obs_sceneitem_t *)referenceItem)) !=
-      obs_data_get_string(item, "name")) {
-      req->SendErrorResponse("Invalid sceneItem id/name combination");
-      return;
+    if (!req->hasField("item")) {
+        req->SendErrorResponse("missing request parameters");
+        return;
     }
-  }
-  else if (obs_data_has_user_value(item, "name")) {
-    referenceItem = (OBSSceneItemAutoRelease *)Utils::GetSceneItemFromName(fromScene, obs_data_get_string(item, "name"));
-  }
 
-  OBSSourceAutoRelease fromSource = (obs_source_t *)obs_sceneitem_get_source((obs_sceneitem_t*)referenceItem);
-  OBSSourceAutoRelease *newSource = (OBSSourceAutoRelease *)obs_source_duplicate(fromSource, obs_source_get_name(fromSource), false);
+    const char* fromSceneName = obs_data_get_string(req->data, "from-scene-name");
+    OBSSourceAutoRelease fromScene = Utils::GetSceneFromNameOrCurrent(fromSceneName);
+    if (!fromScene) {
+        req->SendErrorResponse("requested fromScene doesn't exist");
+        return;
+    }
 
-  OBSSceneItemAutoRelease newItem = obs_scene_add(obs_scene_from_source(toScene), (obs_source_t *)newSource);
-  obs_sceneitem_set_visible(newItem, obs_sceneitem_visible((obs_sceneitem_t *)referenceItem));
+    const char* toSceneName = obs_data_get_string(req->data, "to-scene-name");
+    OBSSourceAutoRelease toScene = Utils::GetSceneFromNameOrCurrent(toSceneName);
+    if (!toScene) {
+        req->SendErrorResponse("requested toScene doesn't exist");
+        return;
+    }
 
-  if (!newItem) {
-    req->SendErrorResponse("Error duplicating scenee item");
-  }
-  // consider returning the new item and scene name
-  req->SendOKResponse();
+    OBSDataAutoRelease item = obs_data_get_obj(req->data, "item");
+    OBSSceneItemAutoRelease *referenceItem;
+    if (obs_data_has_user_value(item, "id")) {
+        referenceItem = (OBSSceneItemAutoRelease *)Utils::GetSceneItemFromId(fromScene, obs_data_get_int(item, "id"));
+        if (obs_data_has_user_value(item, "name") &&
+            obs_source_get_name(obs_sceneitem_get_source((obs_sceneitem_t *)referenceItem)) !=
+            obs_data_get_string(item, "name")) {
+            req->SendErrorResponse("Invalid sceneItem id/name combination");
+            return;
+        }
+    }
+    else if (obs_data_has_user_value(item, "name")) {
+        referenceItem = (OBSSceneItemAutoRelease *)Utils::GetSceneItemFromName(fromScene, obs_data_get_string(item, "name"));
+    }
+
+    OBSSourceAutoRelease fromSource = (obs_source_t *)obs_sceneitem_get_source((obs_sceneitem_t*)referenceItem);
+    OBSSourceAutoRelease *newSource = (OBSSourceAutoRelease *)obs_source_duplicate(fromSource, obs_source_get_name(fromSource), false);
+
+    OBSSceneItemAutoRelease newItem = obs_scene_add(obs_scene_from_source(toScene), (obs_source_t *)newSource);
+    obs_sceneitem_set_visible(newItem, obs_sceneitem_visible((obs_sceneitem_t *)referenceItem));
+
+    if (!newItem) {
+        req->SendErrorResponse("Error duplicating scenee item");
+    }
+    // consider returning the new item and scene name
+    req->SendOKResponse();
 }
 
 /**
