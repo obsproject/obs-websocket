@@ -1072,50 +1072,6 @@ void WSRequestHandler::HandleDuplicateSceneItem(WSRequestHandler* req) {
 }
 
 /**
- * Reset a source item.
- *
- * @param {String (optional)} `scene-name` Name of the scene the source belogns to. Defaults to the current scene.
- * @param {String} `item` Name of the source item.
- *
- * @api requests
- * @name ResetSceneItem
- * @category sources
- * @since 4.2.0
- */
-void WSRequestHandler::HandleResetSceneItem(WSRequestHandler* req) {
-    if (!req->hasField("item")) {
-        req->SendErrorResponse("missing request parameters");
-        return;
-    }
-
-    const char* itemName = obs_data_get_string(req->data, "item");
-    if (!itemName) {
-        req->SendErrorResponse("invalid request parameters");
-        return;
-    }
-
-    const char* sceneName = obs_data_get_string(req->data, "scene-name");
-    OBSSourceAutoRelease scene = Utils::GetSceneFromNameOrCurrent(sceneName);
-    if (!scene) {
-        req->SendErrorResponse("requested scene doesn't exist");
-        return;
-    }
-
-    OBSSceneItemAutoRelease sceneItem = Utils::GetSceneItemFromName(scene, itemName);
-    if (sceneItem) {
-        OBSSource sceneItemSource = obs_sceneitem_get_source(sceneItem);
-
-        OBSDataAutoRelease settings = obs_source_get_settings(sceneItemSource);
-        obs_source_update(sceneItemSource, settings);
-
-        req->SendOKResponse();
-    }
-    else {
-        req->SendErrorResponse("specified scene item doesn't exist");
-    }
-}
-
-/**
  * Get configured special sources like Desktop Audio and Mic/Aux sources.
  *
  * @return {String (optional)} `desktop-1` Name of the first Desktop Audio capture source.
