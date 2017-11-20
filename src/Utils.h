@@ -36,7 +36,7 @@ const char* qstring_data_copy(QString value);
 
 class Utils {
   public:
-    static obs_data_array_t* StringListToArray(char** strings, char* key);
+    static obs_data_array_t* StringListToArray(char** strings, const char* key);
     static obs_data_array_t* GetSceneItems(obs_source_t* source);
     static obs_data_t* GetSceneItemData(obs_sceneitem_t* item);
     static obs_sceneitem_t* GetSceneItemFromName(
@@ -72,6 +72,11 @@ class Utils {
         QSystemTrayIcon::MessageIcon n,
         QString title = QString("obs-websocket"));
 
+    static void WampSysTrayNotify(
+        QString &text,
+        QSystemTrayIcon::MessageIcon n,
+        QString title = QString("WAMP"));
+
     static QString FormatIPAddress(QHostAddress &addr);
 
     static const char* GetRecordingFolder();
@@ -82,6 +87,14 @@ class Utils {
     static bool ReplayBufferEnabled();
     static void StartReplayBuffer();
     static bool IsRPHotkeySet();
+
+    static QString WampUrlFix(QString str);
+
+    static obs_data_t* DataFromList(QVariantList list);
+    static obs_data_t* DataFromMap(QVariantMap map);
+
+    static QVariantMap MapFromData(obs_data_t* data);
+    static QVariantList ListFromData(obs_data_t* data);
 };
 
 #endif // UTILS_H

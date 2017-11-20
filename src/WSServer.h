@@ -23,6 +23,8 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <QList>
 #include <QMutex>
 
+#include <wampconnection.h>
+
 #include "WSRequestHandler.h"
 
 QT_FORWARD_DECLARE_CLASS(QWebSocketServer)
@@ -31,22 +33,64 @@ QT_FORWARD_DECLARE_CLASS(QWebSocket)
 class WSServer : public QObject {
   Q_OBJECT
   public:
+    enum WampConnectionStatus {
+        Disconnected = 0,
+        Connecting = 1,
+        Connected = 2,
+        Error = 3
+    };
+
     explicit WSServer(QObject* parent = Q_NULLPTR);
     virtual ~WSServer();
     void Start(quint16 port);
     void Stop();
-    void broadcast(QString message);
+    void Broadcast(const char* type, obs_data_t* message);
+
+    void StopWamp();
+
+    WampConnectionStatus GetWampStatus();
+    QString GetWampErrorMessage();
+    QString GetWampErrorUri();
+    OBSDataAutoRelease GetWampErrorData();
+
     static WSServer* Instance;
+	
+  public slots:
+    void StartWamp(QUrl url, QString realm, QString wampBaseUri, QString wampId, QString user = QString(), QString password = QString());
 
   private slots:
     void onNewConnection();
     void onTextMessageReceived(QString message);
     void onSocketDisconnected();
 
+    void RegisterWampProcedures();
+    void RegisterWamp();
+    void CompleteWampRegistration(QVariant v);
+
+    void onWampConnected();
+    void onWampDisconnected();
+    void onWampError(const WampError& error);
+
   private:
+	
+
+    QString WampTopic(QString value);
+    QString WampProcedure(QString value);
+
     QWebSocketServer* _wsServer;
     QList<QWebSocket*> _clients;
     QMutex _clMutex;
+    WampConnection* _wampConnection;
+    WampConnectionStatus _wampStatus;
+    QUrl _wampUrl;
+    QString _wampId;
+    QString _wampBaseUri;
+    QString _wampRealm;
+    QString _wampUser;
+    QString _wampErrorUri;
+    QString _wampErrorMessage;
+    bool _canPublish;
+    OBSDataAutoRelease _wampErrorData;
 };
 
 #endif // WSSERVER_H

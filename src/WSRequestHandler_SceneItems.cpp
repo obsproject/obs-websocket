@@ -90,42 +90,35 @@ void WSRequestHandler::HandleGetSceneItemProperties(WSRequestHandler* req) {
 
 	OBSDataAutoRelease boundsData = obs_data_create();
 	obs_bounds_type boundsType = obs_sceneitem_get_bounds_type(sceneItem);
-	if (boundsType == OBS_BOUNDS_NONE) {
-		obs_data_set_string(boundsData, "type", "OBS_BOUNDS_NONE");
-	}
-	else {
-		switch (boundsType) {
-		case OBS_BOUNDS_STRETCH: {
+	
+	switch (boundsType) {
+		case OBS_BOUNDS_STRETCH:
 			obs_data_set_string(boundsData, "type", "OBS_BOUNDS_STRETCH");
 			break;
-		}
-		case OBS_BOUNDS_SCALE_INNER: {
+		case OBS_BOUNDS_SCALE_INNER:
 			obs_data_set_string(boundsData, "type", "OBS_BOUNDS_SCALE_INNER");
 			break;
-		}
-		case OBS_BOUNDS_SCALE_OUTER: {
+		case OBS_BOUNDS_SCALE_OUTER:
 			obs_data_set_string(boundsData, "type", "OBS_BOUNDS_SCALE_OUTER");
-			break;
-		}
-		case OBS_BOUNDS_SCALE_TO_WIDTH: {
+				break;
+		case OBS_BOUNDS_SCALE_TO_WIDTH:
 			obs_data_set_string(boundsData, "type", "OBS_BOUNDS_SCALE_TO_WIDTH");
 			break;
-		}
-		case OBS_BOUNDS_SCALE_TO_HEIGHT: {
+		case OBS_BOUNDS_SCALE_TO_HEIGHT:
 			obs_data_set_string(boundsData, "type", "OBS_BOUNDS_SCALE_TO_HEIGHT");
 			break;
-		}
-		case OBS_BOUNDS_MAX_ONLY: {
+		case OBS_BOUNDS_MAX_ONLY:
 			obs_data_set_string(boundsData, "type", "OBS_BOUNDS_MAX_ONLY");
 			break;
-		}
-		}
-		obs_data_set_int(boundsData, "alignment", obs_sceneitem_get_bounds_alignment(sceneItem));
-		vec2 bounds;
-		obs_sceneitem_get_bounds(sceneItem, &bounds);
-		obs_data_set_double(boundsData, "x", bounds.x);
-		obs_data_set_double(boundsData, "y", bounds.y);
+		default:
+			obs_data_set_string(boundsData, "type", "OBS_BOUNDS_NONE");
 	}
+	obs_data_set_int(boundsData, "alignment", obs_sceneitem_get_bounds_alignment(sceneItem));
+	vec2 bounds;
+	obs_sceneitem_get_bounds(sceneItem, &bounds);
+	obs_data_set_double(boundsData, "x", bounds.x);
+	obs_data_set_double(boundsData, "y", bounds.y);
+	
 	obs_data_set_obj(data, "bounds", boundsData);
 
 	req->SendOKResponse(data);
@@ -183,8 +176,8 @@ void WSRequestHandler::HandleSetSceneItemProperties(WSRequestHandler* req) {
 		return;
 	}
 
-	bool badRequest = false;
-	OBSDataAutoRelease errorMessage = obs_data_create();
+	OBSDataAutoRelease errorData = obs_data_create();
+	QString errorMessage = QString();
 
 	if (req->hasField("position")) {
 		vec2 oldPosition;
@@ -204,9 +197,9 @@ void WSRequestHandler::HandleSetSceneItemProperties(WSRequestHandler* req) {
 				obs_sceneitem_set_alignment(sceneItem, alignment);
 			}
 			else {
-				badRequest = true;
 				obs_data_set_string(positionError, "alignment", "invalid");
-				obs_data_set_obj(errorMessage, "position", positionError);
+				obs_data_set_obj(errorData, "position", positionError);
+				errorMessage += "bad position";
 			}
 		}
 		obs_sceneitem_set_pos(sceneItem, &newPosition);
@@ -259,7 +252,7 @@ void WSRequestHandler::HandleSetSceneItemProperties(WSRequestHandler* req) {
 		OBSDataAutoRelease boundsError = obs_data_create();
 		OBSDataAutoRelease reqBounds = obs_data_get_obj(req->data, "bounds");
 		if (obs_data_has_user_value(reqBounds, "type")) {
-			const char* newBoundsType = obs_data_get_string(reqBounds, "type");
+			QString newBoundsType = obs_data_get_string(reqBounds, "type");
 			if (newBoundsType == "OBS_BOUNDS_NONE") {
 				obs_sceneitem_set_bounds_type(sceneItem, OBS_BOUNDS_NONE);
 			}
@@ -282,8 +275,12 @@ void WSRequestHandler::HandleSetSceneItemProperties(WSRequestHandler* req) {
 				obs_sceneitem_set_bounds_type(sceneItem, OBS_BOUNDS_MAX_ONLY);
 			}
 			else {
-				badRequest = badBounds = true;
+				badBounds = true;
 				obs_data_set_string(boundsError, "type", "invalid");
+				
+				if (!errorMessage.isEmpty())
+					errorMessage += " and ";
+				errorMessage += "bad bounds type";
 			}
 		}
 		vec2 oldBounds;
@@ -302,17 +299,20 @@ void WSRequestHandler::HandleSetSceneItemProperties(WSRequestHandler* req) {
 				obs_sceneitem_set_bounds_alignment(sceneItem, bounds_alignment);
 			}
 			else {
-				badRequest = badBounds = true;
+				badBounds = true;
 				obs_data_set_string(boundsError, "alignment", "invalid");
+				if (!errorMessage.isEmpty())
+					errorMessage += " and ";
+				errorMessage += "bad bounds alignment";
 			}
 		}
 		if (badBounds) {
-			obs_data_set_obj(errorMessage, "bounds", boundsError);
+			obs_data_set_obj(errorData, "bounds", boundsError);
 		}
 	}
 
-	if (badRequest) {
-		req->SendErrorResponse(errorMessage);
+	if (!errorMessage.isEmpty()) {
+		req->SendErrorResponse(errorMessage.toUtf8().constData(), errorData);
 	}
 	else {
 		req->SendOKResponse();
