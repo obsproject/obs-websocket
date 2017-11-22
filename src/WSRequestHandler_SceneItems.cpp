@@ -138,11 +138,12 @@ void WSRequestHandler::HandleGetSceneItemProperties(WSRequestHandler* req) {
 /**
 * Sets the scene specific properties of a source. Unspecified properties will remain unchanged.
 *
-* @param {String (optional)} `scene-name` the name of the scene that the source item belongs to. Defaults to the current scene.
-* @param {String} `item.name` The name of the source.
-* @param {int} `item.position.x` The new x position of the source.
-* @param {int} `item.position.y` The new y position of the source.
-* @param {int} `item.position.alignment` The new alignment of the source.
+* @param {String (optional)} `scene` the name of the scene that the source item belongs to. Defaults to the current scene.
+* @param {String} `item.name` The name of the item.
+* @param {int} `item.id` The id of the item.
+* @param {int} `item.position.x` The new x position of the item.
+* @param {int} `item.position.y` The new y position of the item.
+* @param {int} `item.position.alignment` The new alignment of the item.
 * @param {double} `item.rotation` The new clockwise rotation of the item in degrees.
 * @param {double} `item.scale.x` The new x scale of the item.
 * @param {double} `item.scale.y` The new y scale of the item.
@@ -150,8 +151,8 @@ void WSRequestHandler::HandleGetSceneItemProperties(WSRequestHandler* req) {
 * @param {int} `item.crop.bottom` The new amount of pixels cropped off the bottom of the source before scaling.
 * @param {int} `item.crop.left` The new amount of pixels cropped off the left of the source before scaling.
 * @param {int} `item.crop.right` The new amount of pixels cropped off the right of the source before scaling.
-* @param {bool} `item.visible` The new visibility of the source. 'true' shows source, 'false' hides source.
-* @param {String} `item.bounds.type` The new bounds type of the source.
+* @param {bool} `item.visible` The new visibility of the item. 'true' shows source, 'false' hides source.
+* @param {String} `item.bounds.type` The new bounds type of the item.
 * @param {int} `item.bounds.alignment` The new alignment of the bounding box. (0-2, 4-6, 8-10)
 * @param {double} `item.bounds.x` The new width of the bounding box.
 * @param {double} `item.bounds.y` The new height of the bounding box.
@@ -167,21 +168,20 @@ void WSRequestHandler::HandleSetSceneItemProperties(WSRequestHandler* req) {
 		return;
 	}
 
-	QString itemName = obs_data_get_string(req->data, "item");
-	if (itemName.isEmpty()) {
+	OBSDataAutoRelease reqItem = obs_data_get_obj(req->data, "item");
+	if (!reqItem) {
 		req->SendErrorResponse("invalid request parameters");
 		return;
 	}
 
-	QString sceneName = obs_data_get_string(req->data, "scene-name");
+	QString sceneName = obs_data_get_string(req->data, "scene");
 	OBSSourceAutoRelease scene = Utils::GetSceneFromNameOrCurrent(sceneName);
 	if (!scene) {
 		req->SendErrorResponse("requested scene doesn't exist");
 		return;
 	}
 
-	OBSSceneItemAutoRelease sceneItem =
-		Utils::GetSceneItemFromName(scene, itemName);
+	OBSSceneItemAutoRelease sceneItem = Utils::GetSceneItemFromItem(scene, reqItem);
 	if (!sceneItem) {
 		req->SendErrorResponse("specified scene item doesn't exist");
 		return;
@@ -190,11 +190,11 @@ void WSRequestHandler::HandleSetSceneItemProperties(WSRequestHandler* req) {
 	bool badRequest = false;
 	OBSDataAutoRelease errorMessage = obs_data_create();
 
-	if (req->hasField("position")) {
+	if (obs_data_has_user_value(reqItem, "position")) {
 		vec2 oldPosition;
 		OBSDataAutoRelease positionError = obs_data_create();
 		obs_sceneitem_get_pos(sceneItem, &oldPosition);
-		OBSDataAutoRelease reqPosition = obs_data_get_obj(req->data, "position");
+		OBSDataAutoRelease reqPosition = obs_data_get_obj(reqItem, "position");
 		vec2 newPosition = oldPosition;
 		if (obs_data_has_user_value(reqPosition, "x")) {
 			newPosition.x = obs_data_get_int(reqPosition, "x");
@@ -216,14 +216,14 @@ void WSRequestHandler::HandleSetSceneItemProperties(WSRequestHandler* req) {
 		obs_sceneitem_set_pos(sceneItem, &newPosition);
 	}
 
-	if (req->hasField("rotation")) {
-		obs_sceneitem_set_rot(sceneItem, (float)obs_data_get_double(req->data, "rotation"));
+  if (obs_data_has_user_value(reqItem, "rotation")) {
+		obs_sceneitem_set_rot(sceneItem, (float)obs_data_get_double(reqItem, "rotation"));
 	}
 
-	if (req->hasField("scale")) {
+  if (obs_data_has_user_value(reqItem, "scale")) {
 		vec2 oldScale;
 		obs_sceneitem_get_scale(sceneItem, &oldScale);
-		OBSDataAutoRelease reqScale = obs_data_get_obj(req->data, "scale");
+		OBSDataAutoRelease reqScale = obs_data_get_obj(reqItem, "scale");
 		vec2 newScale = oldScale;
 		if (obs_data_has_user_value(reqScale, "x")) {
 			newScale.x = obs_data_get_double(reqScale, "x");
@@ -234,10 +234,10 @@ void WSRequestHandler::HandleSetSceneItemProperties(WSRequestHandler* req) {
 		obs_sceneitem_set_scale(sceneItem, &newScale);
 	}
 
-	if (req->hasField("crop")) {
+  if (obs_data_has_user_value(reqItem, "crop")) {
 		obs_sceneitem_crop oldCrop;
 		obs_sceneitem_get_crop(sceneItem, &oldCrop);
-		OBSDataAutoRelease reqCrop = obs_data_get_obj(req->data, "crop");
+		OBSDataAutoRelease reqCrop = obs_data_get_obj(reqItem, "crop");
 		obs_sceneitem_crop newCrop = oldCrop;
 		if (obs_data_has_user_value(reqCrop, "top")) {
 			newCrop.top = obs_data_get_int(reqCrop, "top");
@@ -254,14 +254,14 @@ void WSRequestHandler::HandleSetSceneItemProperties(WSRequestHandler* req) {
 		obs_sceneitem_set_crop(sceneItem, &newCrop);
 	}
 
-	if (req->hasField("visible")) {
-		obs_sceneitem_set_visible(sceneItem, obs_data_get_bool(req->data, "visible"));
+  if (obs_data_has_user_value(reqItem, "visible")) {
+		obs_sceneitem_set_visible(sceneItem, obs_data_get_bool(reqItem, "visible"));
 	}
 
-	if (req->hasField("bounds")) {
+  if (obs_data_has_user_value(reqItem, "bounds")) {
 		bool badBounds = false;
 		OBSDataAutoRelease boundsError = obs_data_create();
-		OBSDataAutoRelease reqBounds = obs_data_get_obj(req->data, "bounds");
+		OBSDataAutoRelease reqBounds = obs_data_get_obj(reqItem, "bounds");
 		if (obs_data_has_user_value(reqBounds, "type")) {
 			const char* newBoundsType = obs_data_get_string(reqBounds, "type");
 			if (newBoundsType == "OBS_BOUNDS_NONE") {
