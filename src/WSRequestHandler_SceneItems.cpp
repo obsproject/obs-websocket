@@ -59,9 +59,9 @@ void WSRequestHandler::HandleGetSceneItemProperties(WSRequestHandler* req) {
 		return;
 	}
 
-  OBSDataAutoRelease responseData;
-  OBSDataAutoRelease data;
-	obs_data_set_string(data, "name", obs_source_get_name(obs_sceneitem_get_source((obs_sceneitem_t *)sceneItem)));
+  OBSDataAutoRelease resData;
+  OBSDataAutoRelease resItem;
+	obs_data_set_string(resItem, "name", obs_source_get_name(obs_sceneitem_get_source((obs_sceneitem_t *)sceneItem)));
 
 	OBSDataAutoRelease posData = obs_data_create();
 	vec2 pos;
@@ -69,16 +69,16 @@ void WSRequestHandler::HandleGetSceneItemProperties(WSRequestHandler* req) {
 	obs_data_set_double(posData, "x", pos.x);
 	obs_data_set_double(posData, "y", pos.y);
 	obs_data_set_int(posData, "alignment", obs_sceneitem_get_alignment(sceneItem));
-	obs_data_set_obj(data, "position", posData);
+	obs_data_set_obj(resItem, "position", posData);
 
-	obs_data_set_double(data, "rotation", obs_sceneitem_get_rot(sceneItem));
+	obs_data_set_double(resItem, "rotation", obs_sceneitem_get_rot(sceneItem));
 
 	OBSDataAutoRelease scaleData = obs_data_create();
 	vec2 scale;
 	obs_sceneitem_get_scale(sceneItem, &scale);
 	obs_data_set_double(scaleData, "x", scale.x);
 	obs_data_set_double(scaleData, "y", scale.y);
-	obs_data_set_obj(data, "scale", scaleData);
+	obs_data_set_obj(resItem, "scale", scaleData);
 
 	OBSDataAutoRelease cropData = obs_data_create();
 	obs_sceneitem_crop crop;
@@ -87,9 +87,9 @@ void WSRequestHandler::HandleGetSceneItemProperties(WSRequestHandler* req) {
 	obs_data_set_int(cropData, "top", crop.top);
 	obs_data_set_int(cropData, "right", crop.right);
 	obs_data_set_int(cropData, "bottom", crop.bottom);
-	obs_data_set_obj(data, "crop", cropData);
+	obs_data_set_obj(resItem, "crop", cropData);
 
-	obs_data_set_bool(data, "visible", obs_sceneitem_visible(sceneItem));
+	obs_data_set_bool(resItem, "visible", obs_sceneitem_visible(sceneItem));
 
 	OBSDataAutoRelease boundsData = obs_data_create();
 	obs_bounds_type boundsType = obs_sceneitem_get_bounds_type(sceneItem);
@@ -129,10 +129,10 @@ void WSRequestHandler::HandleGetSceneItemProperties(WSRequestHandler* req) {
 		obs_data_set_double(boundsData, "x", bounds.x);
 		obs_data_set_double(boundsData, "y", bounds.y);
 	}
-	obs_data_set_obj(data, "bounds", boundsData);
-  obs_data_set_obj(responseData, "item", data);
-  obs_data_set_string(responseData, "scene", obs_source_get_name(scene));
-	req->SendOKResponse(responseData);
+	obs_data_set_obj(resItem, "bounds", boundsData);
+  obs_data_set_obj(resData, "item", resItem);
+  obs_data_set_string(resData, "scene", obs_source_get_name(scene));
+	req->SendOKResponse(resData);
 }
 
 /**
