@@ -112,6 +112,22 @@ obs_data_t* Utils::GetSceneItemData(obs_sceneitem_t* item) {
     return data;
 }
 
+obs_sceneitem_t* Utils::GetSceneItemFromItem(obs_source_t* source, obs_data_t* item) {
+  OBSSceneItemAutoRelease sceneItem;
+  if (obs_data_has_user_value(item, "id")) {
+    sceneItem = GetSceneItemFromId(source, obs_data_get_int(item, "id"));
+    if (obs_data_has_user_value(item, "name") &&
+      obs_source_get_name(obs_sceneitem_get_source(sceneItem)) !=
+      obs_data_get_string(item, "name")) {
+      return nullptr;
+    }
+  }
+  else if (obs_data_has_user_value(item, "name")) {
+    sceneItem = GetSceneItemFromName(source, obs_data_get_string(item, "name"));
+  }
+  return sceneItem;
+}
+
 obs_sceneitem_t* Utils::GetSceneItemFromName(obs_source_t* source, QString name) {
     struct current_search {
         QString query;

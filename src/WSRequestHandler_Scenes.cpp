@@ -78,7 +78,7 @@ void WSRequestHandler::HandleGetSceneList(WSRequestHandler* req) {
 /**
 * Changes the order of scene items in the requested scene.
 *
-* @param {String (optional)} `scene-name` Name of the scene to reorder (defaults to current).
+* @param {String (optional)} `scene` Name of the scene to reorder (defaults to current).
 * @param {Scene|Array} `items` Ordered list of objects with name and/or id specified. Id prefered due to uniqueness per scene
 * @param {int (optional)} `items[].id` Id of a specific scene item. Unique on a scene by scene basis.
 * @param {String (optional)} `items[].name` Name of a scene item. Sufficiently unique if no scene items share sources within the scene.
@@ -89,7 +89,7 @@ void WSRequestHandler::HandleGetSceneList(WSRequestHandler* req) {
 * @since unreleased
 */
 void WSRequestHandler::HandleSetSceneItemOrder(WSRequestHandler* req) {
-    QString sceneName = obs_data_get_string(req->data, "scene-name");
+    QString sceneName = obs_data_get_string(req->data, "scene");
     OBSSourceAutoRelease scene = Utils::GetSceneFromNameOrCurrent(sceneName);
     if (!scene) {
         req->SendErrorResponse("requested scene doesn't exist");
@@ -108,30 +108,18 @@ void WSRequestHandler::HandleSetSceneItemOrder(WSRequestHandler* req) {
     newOrder.reserve(count);
     for (size_t i = 0; i < count; i++) {
         OBSDataAutoRelease item = obs_data_array_item(items, i);
-        OBSSceneItemAutoRelease *sceneItem;
-        if (obs_data_has_user_value(item, "id")) {
-            sceneItem = (OBSSceneItemAutoRelease *)Utils::GetSceneItemFromId(scene, obs_data_get_int(item, "id"));
-            if (obs_data_has_user_value(item, "name") &&
-                obs_source_get_name(obs_sceneitem_get_source((obs_sceneitem_t*)sceneItem)) !=
-                obs_data_get_string(item, "name")) {
-                req->SendErrorResponse("Invalid sceneItem id/name combination");
-                return;
-            }
-        }
-        else if (obs_data_has_user_value(item, "name")) {
-            sceneItem = (OBSSceneItemAutoRelease *)Utils::GetSceneItemFromName(scene, obs_data_get_string(item, "name"));
-        }
+        OBSSceneItemAutoRelease sceneItem = Utils::GetSceneItemFromItem(scene, item);
         if (!sceneItem) {
             req->SendErrorResponse("Invalid sceneItem id or name in order");
             return;
         }
         for (size_t j = 0; j < i; j++) {
-            if ((obs_sceneitem_t*)sceneItem == newOrder[j]) {
+            if (sceneItem == newOrder[j]) {
                 req->SendErrorResponse("Duplicate sceneItem in specified order");
                 return;
             }
         }
-        newOrder.push_back((obs_sceneitem_t*)sceneItem);
+        newOrder.push_back(sceneItem);
     }
 
     if (obs_scene_reorder_items(obs_scene_from_source(scene), newOrder.data(), count)) {

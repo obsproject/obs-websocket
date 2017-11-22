@@ -6,25 +6,28 @@
 /**
 * Gets the scene specific properties of the specified source item.
 *
-* @param {String (optional)} `scene-name` the name of the scene that the source item belongs to. Defaults to the current scene.
-* @param {String} `item` The name of the source.
+* @param {String (optional)} `scene` the name of the scene that the source item belongs to. Defaults to the current scene.
+* @param {String} `item.id` The name of the source.
+* @param {String} `item.name` The name of the source.
 *
-* @return {String} `name` The name of the source.
-* @return {int} `position.x` The x position of the source from the left.
-* @return {int} `position.y` The y position of the source from the top.
-* @return {int} `position.alignment` The point on the source that the item is manipulated from.
-* @return {double} `rotation` The clockwise rotation of the item in degrees around the point of alignment.
-* @return {double} `scale.x` The x-scale factor of the source.
-* @return {double} `scale.y` The y-scale factor of the source.
-* @return {int} `crop.top` The number of pixels cropped off the top of the source before scaling.
-* @return {int} `crop.right` The number of pixels cropped off the right of the source before scaling.
-* @return {int} `crop.bottom` The number of pixels cropped off the bottom of the source before scaling.
-* @return {int} `crop.left` The number of pixels cropped off the left of the source before scaling.
-* @return {bool} `visible` If the source is visible.
-* @return {String} `bounds.type` Type of bounding box.
-* @return {int} `bounds.alignment` Alignment of the bounding box.
-* @return {double} `bounds.x` Width of the bounding box.
-* @return {double} `bounds.y` Height of the bounding box.
+* @return {String} `scene` The name of the scene.
+* @return {String} `item.name` The name of the source.
+* @return {String} `item.id` The id of the scene item.
+* @return {int} `item.position.x` The x position of the source from the left.
+* @return {int} `item.position.y` The y position of the source from the top.
+* @return {int} `item.position.alignment` The point on the source that the item is manipulated from.
+* @return {double} `item.rotation` The clockwise rotation of the item in degrees around the point of alignment.
+* @return {double} `item.scale.x` The x-scale factor of the source.
+* @return {double} `item.scale.y` The y-scale factor of the source.
+* @return {int} `item.crop.top` The number of pixels cropped off the top of the source before scaling.
+* @return {int} `item.crop.right` The number of pixels cropped off the right of the source before scaling.
+* @return {int} `item.crop.bottom` The number of pixels cropped off the bottom of the source before scaling.
+* @return {int} `item.crop.left` The number of pixels cropped off the left of the source before scaling.
+* @return {bool} `item.visible` If the source is visible.
+* @return {String} `item.bounds.type` Type of bounding box.
+* @return {int} `item.bounds.alignment` Alignment of the bounding box.
+* @return {double} `item.bounds.x` Width of the bounding box.
+* @return {double} `item.bounds.y` Height of the bounding box.
 *
 * @api requests
 * @name GetSceneItemProperties
@@ -37,28 +40,28 @@ void WSRequestHandler::HandleGetSceneItemProperties(WSRequestHandler* req) {
 		return;
 	}
 
-	QString itemName = obs_data_get_string(req->data, "item");
-	if (itemName.isEmpty()) {
+	OBSDataAutoRelease *item = (OBSDataAutoRelease *)obs_data_get_obj(req->data, "item");
+	if (!item) {
 		req->SendErrorResponse("invalid request parameters");
 		return;
 	}
 
-	QString sceneName = obs_data_get_string(req->data, "scene-name");
+	QString sceneName = obs_data_get_string(req->data, "scene");
 	OBSSourceAutoRelease scene = Utils::GetSceneFromNameOrCurrent(sceneName);
 	if (!scene) {
 		req->SendErrorResponse("requested scene doesn't exist");
 		return;
 	}
 
-	OBSSceneItemAutoRelease sceneItem =
-		Utils::GetSceneItemFromName(scene, itemName);
+	OBSSceneItemAutoRelease sceneItem = Utils::GetSceneItemFromItem(scene, (obs_data_t *)item);
 	if (!sceneItem) {
 		req->SendErrorResponse("specified scene item doesn't exist");
 		return;
 	}
 
-	OBSDataAutoRelease data = obs_data_create();
-	obs_data_set_string(data, "name", itemName.toUtf8());
+  OBSDataAutoRelease responseData;
+  OBSDataAutoRelease data;
+	obs_data_set_string(data, "name", obs_source_get_name(obs_sceneitem_get_source((obs_sceneitem_t *)sceneItem)));
 
 	OBSDataAutoRelease posData = obs_data_create();
 	vec2 pos;
@@ -127,30 +130,31 @@ void WSRequestHandler::HandleGetSceneItemProperties(WSRequestHandler* req) {
 		obs_data_set_double(boundsData, "y", bounds.y);
 	}
 	obs_data_set_obj(data, "bounds", boundsData);
-
-	req->SendOKResponse(data);
+  obs_data_set_obj(responseData, "item", data);
+  obs_data_set_string(responseData, "scene", obs_source_get_name(scene));
+	req->SendOKResponse(responseData);
 }
 
 /**
 * Sets the scene specific properties of a source. Unspecified properties will remain unchanged.
 *
 * @param {String (optional)} `scene-name` the name of the scene that the source item belongs to. Defaults to the current scene.
-* @param {String} `item` The name of the source.
-* @param {int} `position.x` The new x position of the source.
-* @param {int} `position.y` The new y position of the source.
-* @param {int} `position.alignment` The new alignment of the source.
-* @param {double} `rotation` The new clockwise rotation of the item in degrees.
-* @param {double} `scale.x` The new x scale of the item.
-* @param {double} `scale.y` The new y scale of the item.
-* @param {int} `crop.top` The new amount of pixels cropped off the top of the source before scaling.
-* @param {int} `crop.bottom` The new amount of pixels cropped off the bottom of the source before scaling.
-* @param {int} `crop.left` The new amount of pixels cropped off the left of the source before scaling.
-* @param {int} `crop.right` The new amount of pixels cropped off the right of the source before scaling.
-* @param {bool} `visible` The new visibility of the source. 'true' shows source, 'false' hides source.
-* @param {String} `bounds.type` The new bounds type of the source.
-* @param {int} `bounds.alignment` The new alignment of the bounding box. (0-2, 4-6, 8-10)
-* @param {double} `bounds.x` The new width of the bounding box.
-* @param {double} `bounds.y` The new height of the bounding box.
+* @param {String} `item.name` The name of the source.
+* @param {int} `item.position.x` The new x position of the source.
+* @param {int} `item.position.y` The new y position of the source.
+* @param {int} `item.position.alignment` The new alignment of the source.
+* @param {double} `item.rotation` The new clockwise rotation of the item in degrees.
+* @param {double} `item.scale.x` The new x scale of the item.
+* @param {double} `item.scale.y` The new y scale of the item.
+* @param {int} `item.crop.top` The new amount of pixels cropped off the top of the source before scaling.
+* @param {int} `item.crop.bottom` The new amount of pixels cropped off the bottom of the source before scaling.
+* @param {int} `item.crop.left` The new amount of pixels cropped off the left of the source before scaling.
+* @param {int} `item.crop.right` The new amount of pixels cropped off the right of the source before scaling.
+* @param {bool} `item.visible` The new visibility of the source. 'true' shows source, 'false' hides source.
+* @param {String} `item.bounds.type` The new bounds type of the source.
+* @param {int} `item.bounds.alignment` The new alignment of the bounding box. (0-2, 4-6, 8-10)
+* @param {double} `item.bounds.x` The new width of the bounding box.
+* @param {double} `item.bounds.y` The new height of the bounding box.
 *
 * @api requests
 * @name SetSceneItemProperties
