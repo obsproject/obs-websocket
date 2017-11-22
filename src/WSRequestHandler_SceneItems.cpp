@@ -24,6 +24,7 @@
 * @return {int} `item.crop.bottom` The number of pixels cropped off the bottom of the source before scaling.
 * @return {int} `item.crop.left` The number of pixels cropped off the left of the source before scaling.
 * @return {bool} `item.visible` If the source is visible.
+* @return {bool} `item.locked` If the source is locked.
 * @return {String} `item.bounds.type` Type of bounding box.
 * @return {int} `item.bounds.alignment` Alignment of the bounding box.
 * @return {double} `item.bounds.x` Width of the bounding box.
@@ -89,7 +90,9 @@ void WSRequestHandler::HandleGetSceneItemProperties(WSRequestHandler* req) {
 	obs_data_set_int(cropData, "bottom", crop.bottom);
 	obs_data_set_obj(resItem, "crop", cropData);
 
-	obs_data_set_bool(resItem, "visible", obs_sceneitem_visible(sceneItem));
+  obs_data_set_bool(resItem, "visible", obs_sceneitem_visible(sceneItem));
+
+  obs_data_set_bool(resItem, "locked", obs_sceneitem_locked(sceneItem));
 
 	OBSDataAutoRelease boundsData = obs_data_create();
 	obs_bounds_type boundsType = obs_sceneitem_get_bounds_type(sceneItem);
@@ -152,6 +155,7 @@ void WSRequestHandler::HandleGetSceneItemProperties(WSRequestHandler* req) {
 * @param {int} `item.crop.left` The new amount of pixels cropped off the left of the source before scaling.
 * @param {int} `item.crop.right` The new amount of pixels cropped off the right of the source before scaling.
 * @param {bool} `item.visible` The new visibility of the item. 'true' shows source, 'false' hides source.
+* @param {bool} `item.locked` The new locked of the item. 'true' is locked, 'false' is unlocked.
 * @param {String} `item.bounds.type` The new bounds type of the item.
 * @param {int} `item.bounds.alignment` The new alignment of the bounding box. (0-2, 4-6, 8-10)
 * @param {double} `item.bounds.x` The new width of the bounding box.
@@ -255,8 +259,12 @@ void WSRequestHandler::HandleSetSceneItemProperties(WSRequestHandler* req) {
 	}
 
   if (obs_data_has_user_value(reqItem, "visible")) {
-		obs_sceneitem_set_visible(sceneItem, obs_data_get_bool(reqItem, "visible"));
-	}
+    obs_sceneitem_set_visible(sceneItem, obs_data_get_bool(reqItem, "visible"));
+  }
+
+  if (obs_data_has_user_value(reqItem, "locked")) {
+    obs_sceneitem_set_locked(sceneItem, obs_data_get_bool(reqItem, "locked"));
+  }
 
   if (obs_data_has_user_value(reqItem, "bounds")) {
 		bool badBounds = false;
