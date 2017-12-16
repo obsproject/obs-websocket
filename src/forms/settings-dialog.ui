@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>407</width>
-    <height>195</height>
+    <width>731</width>
+    <height>449</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -27,79 +27,322 @@
     <enum>QLayout::SetDefaultConstraint</enum>
    </property>
    <item>
-    <layout class="QFormLayout" name="formLayout">
-     <item row="3" column="1">
-      <widget class="QCheckBox" name="authRequired">
-       <property name="text">
-        <string>OBSWebsocket.Settings.AuthRequired</string>
+    <widget class="QTabWidget" name="tabWidget">
+     <property name="currentIndex">
+      <number>1</number>
+     </property>
+     <widget class="QWidget" name="webSocketTab">
+      <attribute name="title">
+       <string>OBSWebsocket.Settings.WebSocketTab</string>
+      </attribute>
+      <widget class="QWidget" name="layoutWidget">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>694</width>
+         <height>182</height>
+        </rect>
        </property>
-      </widget>
-     </item>
-     <item row="4" column="0">
-      <widget class="QLabel" name="lbl_password">
-       <property name="text">
-        <string>OBSWebsocket.Settings.Password</string>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="1">
-      <widget class="QLineEdit" name="password">
-       <property name="echoMode">
-        <enum>QLineEdit::Password</enum>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="QCheckBox" name="serverEnabled">
-       <property name="text">
-        <string>OBSWebsocket.Settings.ServerEnable</string>
-       </property>
-       <property name="checked">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="0">
-      <widget class="QLabel" name="lbl_serverPort">
-       <property name="text">
-        <string>OBSWebsocket.Settings.ServerPort</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="1">
-      <widget class="QSpinBox" name="serverPort">
-       <property name="minimum">
-        <number>1024</number>
-       </property>
-       <property name="maximum">
-        <number>65535</number>
-       </property>
-       <property name="value">
-        <number>4444</number>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="1">
-       <widget class="QCheckBox" name="alertsEnabled">
-         <property name="text">
-           <string>OBSWebsocket.Settings.AlertsEnable</string>
-         </property>
-         <property name="checked">
+       <layout class="QFormLayout" name="formLayout">
+        <item row="4" column="1">
+         <widget class="QCheckBox" name="authRequired">
+          <property name="text">
+           <string>OBSWebsocket.Settings.AuthRequired</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="0">
+         <widget class="QLabel" name="lbl_password">
+          <property name="text">
+           <string>OBSWebsocket.Settings.Password</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="1">
+         <widget class="QLineEdit" name="password">
+          <property name="echoMode">
+           <enum>QLineEdit::Password</enum>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QCheckBox" name="serverEnabled">
+          <property name="text">
+           <string>OBSWebsocket.Settings.ServerEnable</string>
+          </property>
+          <property name="checked">
            <bool>true</bool>
-         </property>
-       </widget>
-     </item>
-     <item row="6" column="1">
-       <widget class="QCheckBox" name="debugEnabled">
-         <property name="text">
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="0">
+         <widget class="QLabel" name="lbl_serverPort">
+          <property name="text">
+           <string>OBSWebsocket.Settings.ServerPort</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1">
+         <widget class="QSpinBox" name="serverPort">
+          <property name="minimum">
+           <number>1024</number>
+          </property>
+          <property name="maximum">
+           <number>65535</number>
+          </property>
+          <property name="value">
+           <number>4444</number>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="1">
+         <widget class="QCheckBox" name="alertsEnabled">
+          <property name="text">
+           <string>OBSWebsocket.Settings.AlertsEnable</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="7" column="1">
+         <widget class="QCheckBox" name="debugEnabled">
+          <property name="text">
            <string>OBSWebsocket.Settings.DebugEnable</string>
-         </property>
-         <property name="checked">
+          </property>
+          <property name="checked">
            <bool>false</bool>
-         </property>
-       </widget>
-     </item>
-    </layout>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QCheckBox" name="notificationsEnabled">
+          <property name="text">
+           <string>OBSWebsocket.Settings.TrayNotificationsEnabled</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+     <widget class="QWidget" name="wampTab">
+      <attribute name="title">
+       <string>OBSWebsocket.Settings.WampTab</string>
+      </attribute>
+      <widget class="QWidget" name="formLayoutWidget">
+       <property name="geometry">
+        <rect>
+         <x>9</x>
+         <y>9</y>
+         <width>691</width>
+         <height>341</height>
+        </rect>
+       </property>
+       <layout class="QFormLayout" name="wampFormLayout">
+        <item row="2" column="0">
+         <widget class="QLabel" name="lbl_wampUrl">
+          <property name="toolTip">
+           <string>OBSWebsocket.Settings.Wamp.Url.Tooltip</string>
+          </property>
+          <property name="text">
+           <string>OBSWebsocket.Settings.Wamp.Url</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QLineEdit" name="wampUrl">
+          <property name="minimumSize">
+           <size>
+            <width>250</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="toolTip">
+           <string>OBSWebsocket.Settings.Wamp.Url.Tooltip</string>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="1">
+         <widget class="QLineEdit" name="wampId">
+          <property name="minimumSize">
+           <size>
+            <width>250</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="toolTip">
+           <string>OBSWebsocket.Settings.Wamp.Id.Tooltip</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QCheckBox" name="wampEnabled">
+          <property name="toolTip">
+           <string>OBSWebsocket.Settings.Wamp.Enabled.Tooltip</string>
+          </property>
+          <property name="text">
+           <string>OBSWebsocket.Settings.Wamp.Enabled</string>
+          </property>
+         </widget>
+        </item>
+        <item row="9" column="1">
+         <widget class="QCheckBox" name="wampAuthEnabled">
+          <property name="toolTip">
+           <string>OBSWebsocket.Settings.Wamp.AuthEnabled.Tooltip</string>
+          </property>
+          <property name="text">
+           <string>OBSWebsocket.Settings.Wamp.AuthEnabled</string>
+          </property>
+         </widget>
+        </item>
+        <item row="11" column="0">
+         <widget class="QLabel" name="lbl_wampUser">
+          <property name="text">
+           <string>OBSWebsocket.Settings.Wamp.User</string>
+          </property>
+         </widget>
+        </item>
+        <item row="11" column="1">
+         <widget class="QLineEdit" name="wampUser">
+          <property name="minimumSize">
+           <size>
+            <width>250</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="toolTip">
+           <string>OBSWebsocket.Settings.Wamp.AuthEnabled.Tooltip</string>
+          </property>
+         </widget>
+        </item>
+        <item row="12" column="0">
+         <widget class="QLabel" name="lbl_wampPassword">
+          <property name="text">
+           <string>OBSWebsocket.Settings.Wamp.Password</string>
+          </property>
+         </widget>
+        </item>
+        <item row="12" column="1">
+         <widget class="QLineEdit" name="wampPassword">
+          <property name="minimumSize">
+           <size>
+            <width>250</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="echoMode">
+           <enum>QLineEdit::PasswordEchoOnEdit</enum>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="0">
+         <widget class="QLabel" name="lbl_wampRealm">
+          <property name="text">
+           <string>OBSWebsocket.Settings.Wamp.Realm</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1">
+         <widget class="QLineEdit" name="wampRealm">
+          <property name="minimumSize">
+           <size>
+            <width>250</width>
+            <height>0</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="0">
+         <widget class="QLabel" name="lbl_wampId">
+          <property name="toolTip">
+           <string>OBSWebsocket.Settings.Wamp.Id.Tooltip</string>
+          </property>
+          <property name="text">
+           <string>OBSWebsocket.Settings.Wamp.Id</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="1">
+         <widget class="QCheckBox" name="wampIdEnabled">
+          <property name="text">
+           <string>OBSWebsocket.Settings.Wamp.IdEnabled</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QCheckBox" name="wampAlertsEnabled">
+          <property name="text">
+           <string>OBSWebsocket.Settings.Wamp.AlertsEnabled</string>
+          </property>
+         </widget>
+        </item>
+        <item row="10" column="1">
+         <widget class="QCheckBox" name="wampAnonFB">
+          <property name="toolTip">
+           <string>OBSWebsocket.Settings.Wamp.AnonymousFallback.Tooltip</string>
+          </property>
+          <property name="text">
+           <string>OBSWebsocket.Settings.Wamp.AnonymousFallback</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="8" column="1">
+         <widget class="QLineEdit" name="wampRegProc">
+          <property name="minimumSize">
+           <size>
+            <width>400</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="toolTip">
+           <string>OBSWebsocket.Settings.Wamp.RegProc.Tooltip</string>
+          </property>
+         </widget>
+        </item>
+        <item row="8" column="0">
+         <widget class="QLabel" name="lbl_wampRegProc">
+          <property name="toolTip">
+           <string>OBSWebsocket.Settings.Wamp.RegProc.Tooltip</string>
+          </property>
+          <property name="text">
+           <string>OBSWebsocket.Settings.Wamp.RegProc</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="1">
+         <widget class="QLineEdit" name="wampBaseUri">
+          <property name="minimumSize">
+           <size>
+            <width>400</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="toolTip">
+           <string>OBSWebsocket.Settings.Wamp.BaseUri.Tooltip</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="0">
+         <widget class="QLabel" name="lbl_wampBaseUri">
+          <property name="toolTip">
+           <string>OBSWebsocket.Settings.Wamp.BaseUri.Tooltip</string>
+          </property>
+          <property name="text">
+           <string>OBSWebsocket.Settings.Wamp.BaseUri</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </widget>
    </item>
    <item>
     <widget class="QDialogButtonBox" name="buttonBox">

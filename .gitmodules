@@ -1,3 +1,6 @@
 [submodule "deps/mbedtls"]
 	path = deps/mbedtls
 	url = https://github.com/ARMmbed/mbedtls
+[submodule "deps/wamp"]
+	path = deps/wamp
+	url = git@github.com:qflow/wamp.git

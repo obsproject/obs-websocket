@@ -5205,6 +5205,263 @@
         "type": "class",
         "examples": []
       }
+    ],
+    "wamp": [
+      {
+        "subheads": [],
+        "description": "Sets the current WAMP settings. Requires authentication.",
+        "return": [
+          "{String} `url` The WAMP web socket connection url",
+          "{String} `realm` The WAMP realm",
+          "{String} `id` The suffix added to all wamp procedure names and publish topics. Used to uniquely identify a given OBS Studio instance. Can be unspecified if no suffix is added",
+          "{String} `baseuri` The prefix added to all wamp procedure names and publish topics. Generalled used for WAMP path based authentication.",
+          "{bool} `alerts-enabled` Are desktop tray alerts shown on wamp connection events?",
+          "{bool} `auth-enabled` Should authentication be used when connecting to the WAMP server.",
+          "{bool} `anonymous-fallback` If authentication fails, should an unauthenticated connection be attempted.",
+          "{String} `user` The username for authentication",
+          "{String} `password` The password (i.e.secret) used for authentication",
+          "{String} `register-procedure` If specified, this procedure is called after the WAMP connection that allows the WAMP server to update the same configuration parameters as available here before the OBS proedures are registered"
+        ],
+        "api": "requests",
+        "name": "SetWampSettings",
+        "category": "wamp",
+        "since": "4.3",
+        "returns": [
+          {
+            "type": "String",
+            "name": "url",
+            "description": "The WAMP web socket connection url"
+          },
+          {
+            "type": "String",
+            "name": "realm",
+            "description": "The WAMP realm"
+          },
+          {
+            "type": "String",
+            "name": "id",
+            "description": "The suffix added to all wamp procedure names and publish topics. Used to uniquely identify a given OBS Studio instance. Can be unspecified if no suffix is added"
+          },
+          {
+            "type": "String",
+            "name": "baseuri",
+            "description": "The prefix added to all wamp procedure names and publish topics. Generalled used for WAMP path based authentication."
+          },
+          {
+            "type": "bool",
+            "name": "alerts-enabled",
+            "description": "Are desktop tray alerts shown on wamp connection events?"
+          },
+          {
+            "type": "bool",
+            "name": "auth-enabled",
+            "description": "Should authentication be used when connecting to the WAMP server."
+          },
+          {
+            "type": "bool",
+            "name": "anonymous-fallback",
+            "description": "If authentication fails, should an unauthenticated connection be attempted."
+          },
+          {
+            "type": "String",
+            "name": "user",
+            "description": "The username for authentication"
+          },
+          {
+            "type": "String",
+            "name": "password",
+            "description": "The password (i.e.secret) used for authentication"
+          },
+          {
+            "type": "String",
+            "name": "register-procedure",
+            "description": "If specified, this procedure is called after the WAMP connection that allows the WAMP server to update the same configuration parameters as available here before the OBS proedures are registered"
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "SetWampSettings"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "wamp"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.3"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "SetWampSettings"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Gets the current WAMP settings.  Can be called unauthenticated but then only returns 'url', 'realm', and 'id'",
+        "return": [
+          "{String} `url` The WAMP web socket connection url",
+          "{String} `realm` The WAMP realm",
+          "{String} `id` The suffix added to all wamp procedure names and publish topics. Used to uniquely identify a given OBS Studio instance. Can be unspecified if no suffix is added",
+          "{String} `baseuri` The prefix added to all wamp procedure names and publish topics. Generalled used for WAMP path based authentication.",
+          "{bool} `alerts-enabled` Are desktop tray alerts shown on wamp connection events?",
+          "{bool} `auth-enabled` Should authentication be used when connecting to the WAMP server.",
+          "{bool} `anonymous-fallback` If authentication fails, should an unauthenticated connection be attempted.",
+          "{String} `user` The username for authentication",
+          "{String} `password` The password (i.e.secret) used for authentication",
+          "{String} `register-procedure` If specified, this procedure is called after the WAMP connection that allows the WAMP server to update the same configuration parameters as available here before the OBS proedures are registered"
+        ],
+        "api": "requests",
+        "name": "GetWampSettings",
+        "category": "wamp",
+        "since": "4.3",
+        "returns": [
+          {
+            "type": "String",
+            "name": "url",
+            "description": "The WAMP web socket connection url"
+          },
+          {
+            "type": "String",
+            "name": "realm",
+            "description": "The WAMP realm"
+          },
+          {
+            "type": "String",
+            "name": "id",
+            "description": "The suffix added to all wamp procedure names and publish topics. Used to uniquely identify a given OBS Studio instance. Can be unspecified if no suffix is added"
+          },
+          {
+            "type": "String",
+            "name": "baseuri",
+            "description": "The prefix added to all wamp procedure names and publish topics. Generalled used for WAMP path based authentication."
+          },
+          {
+            "type": "bool",
+            "name": "alerts-enabled",
+            "description": "Are desktop tray alerts shown on wamp connection events?"
+          },
+          {
+            "type": "bool",
+            "name": "auth-enabled",
+            "description": "Should authentication be used when connecting to the WAMP server."
+          },
+          {
+            "type": "bool",
+            "name": "anonymous-fallback",
+            "description": "If authentication fails, should an unauthenticated connection be attempted."
+          },
+          {
+            "type": "String",
+            "name": "user",
+            "description": "The username for authentication"
+          },
+          {
+            "type": "String",
+            "name": "password",
+            "description": "The password (i.e.secret) used for authentication"
+          },
+          {
+            "type": "String",
+            "name": "register-procedure",
+            "description": "If specified, this procedure is called after the WAMP connection that allows the WAMP server to update the same configuration parameters as available here before the OBS proedures are registered"
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "GetWampSettings"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "wamp"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.3"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "GetWampSettings"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Gets the current WAMP status.  Can be called unauthenticated",
+        "return": [
+          "{String} `status` Either DISCONNECTED, CONNECTING, CONNECTED or ERROR",
+          "{String} `error-uri` The WAMP uri of the error that occured",
+          "{String} `error-message` If the status is ERROR, a human readable message describing the error or the 'error-uri' if not present.",
+          "{Object} `error-data` If the status is ERROR and additional information about the error is present, this can contain additional data fields."
+        ],
+        "api": "requests",
+        "name": "GetWampSettings",
+        "category": "wamp",
+        "since": "4.3",
+        "returns": [
+          {
+            "type": "String",
+            "name": "status",
+            "description": "Either DISCONNECTED, CONNECTING, CONNECTED or ERROR"
+          },
+          {
+            "type": "String",
+            "name": "error-uri",
+            "description": "The WAMP uri of the error that occured"
+          },
+          {
+            "type": "String",
+            "name": "error-message",
+            "description": "If the status is ERROR, a human readable message describing the error or the 'error-uri' if not present."
+          },
+          {
+            "type": "Object",
+            "name": "error-data",
+            "description": "If the status is ERROR and additional information about the error is present, this can contain additional data fields."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "GetWampSettings"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "wamp"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.3"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "GetWampSettings"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      }
     ]
   }
 }

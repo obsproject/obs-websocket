@@ -50,7 +50,7 @@ const char* nsToTimestamp(uint64_t ns) {
     uint64_t msPart = ms % 1000;
 
     char* ts = (char*)bmalloc(64);
-    sprintf(ts, "%02d:%02d:%02d.%03d",
+	sprintf(ts, "%02llu:%02llu:%02llu.%03llu",
         hoursPart, minutesPart, secsPart, msPart);
 
     return ts;
@@ -64,7 +64,7 @@ void* calldata_get_ptr(const calldata_t* data, const char* name) {
 
 WSEvents* WSEvents::Instance = nullptr;
 
-WSEvents::WSEvents(WSServer* srv) {
+WSEvents::WSEvents(WSServer* srv) : QObject(srv) {
     _srv = srv;
     obs_frontend_add_event_callback(WSEvents::FrontendEventHandler, this);
 
@@ -195,7 +195,6 @@ void WSEvents::broadcastUpdate(const char* updateType,
     obs_data_t* additionalFields = nullptr)
 {
     OBSDataAutoRelease update = obs_data_create();
-    obs_data_set_string(update, "update-type", updateType);
 
     const char* ts = nullptr;
     if (_streamingActive) {
@@ -213,11 +212,7 @@ void WSEvents::broadcastUpdate(const char* updateType,
     if (additionalFields)
         obs_data_apply(update, additionalFields);
 
-    QString json = obs_data_get_json(update);
-    _srv->broadcast(json);
-
-    if (Config::Current()->DebugEnabled)
-        blog(LOG_DEBUG, "Update << '%s'", json.toUtf8().constData());
+    _srv->Broadcast(updateType, update);
 }
 
 void WSEvents::connectTransitionSignals(obs_source_t* transition) {
@@ -890,6 +885,8 @@ void WSEvents::OnSceneItemVisibilityChanged(void* param, calldata_t* data) {
  * @since 4.1.0
  */
 void WSEvents::SelectedSceneChanged(QListWidgetItem* current, QListWidgetItem* prev) {
+	UNUSED_PARAMETER(prev);
+	
     if (obs_frontend_preview_program_mode_active()) {
         OBSScene scene = Utils::SceneListItemToScene(current);
         if (!scene)

@@ -166,6 +166,10 @@ auth_response = base64_encode(auth_response_hash)
     + [SetCurrentTransition](#setcurrenttransition)
     + [SetTransitionDuration](#settransitionduration)
     + [GetTransitionDuration](#gettransitionduration)
+  * [Wamp](#wamp)
+    + [SetWampSettings](#setwampsettings)
+    + [GetWampSettings](#getwampsettings)
+    + [GetWampSettings](#getwampsettings-1)
 
 <!-- tocstop -->
 
@@ -2188,6 +2192,89 @@ _No specified parameters._
 | Name | Type  | Description |
 | ---- | :---: | ------------|
 | `transition-duration` | _int_ | Duration of the current transition (in milliseconds). |
+
+
+---
+
+## Wamp
+
+### SetWampSettings
+
+
+- Added in v4.3
+
+Sets the current WAMP settings. Requires authentication.
+
+**Request Fields:**
+
+_No specified parameters._
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `url` | _String_ | The WAMP web socket connection url |
+| `realm` | _String_ | The WAMP realm |
+| `id` | _String_ | The suffix added to all wamp procedure names and publish topics. Used to uniquely identify a given OBS Studio instance. Can be unspecified if no suffix is added |
+| `baseuri` | _String_ | The prefix added to all wamp procedure names and publish topics. Generalled used for WAMP path based authentication. |
+| `alerts-enabled` | _bool_ | Are desktop tray alerts shown on wamp connection events? |
+| `auth-enabled` | _bool_ | Should authentication be used when connecting to the WAMP server. |
+| `anonymous-fallback` | _bool_ | If authentication fails, should an unauthenticated connection be attempted. |
+| `user` | _String_ | The username for authentication |
+| `password` | _String_ | The password (i.e.secret) used for authentication |
+| `register-procedure` | _String_ | If specified, this procedure is called after the WAMP connection that allows the WAMP server to update the same configuration parameters as available here before the OBS proedures are registered |
+
+
+---
+
+### GetWampSettings
+
+
+- Added in v4.3
+
+Gets the current WAMP settings.  Can be called unauthenticated but then only returns 'url', 'realm', and 'id'
+
+**Request Fields:**
+
+_No specified parameters._
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `url` | _String_ | The WAMP web socket connection url |
+| `realm` | _String_ | The WAMP realm |
+| `id` | _String_ | The suffix added to all wamp procedure names and publish topics. Used to uniquely identify a given OBS Studio instance. Can be unspecified if no suffix is added |
+| `baseuri` | _String_ | The prefix added to all wamp procedure names and publish topics. Generalled used for WAMP path based authentication. |
+| `alerts-enabled` | _bool_ | Are desktop tray alerts shown on wamp connection events? |
+| `auth-enabled` | _bool_ | Should authentication be used when connecting to the WAMP server. |
+| `anonymous-fallback` | _bool_ | If authentication fails, should an unauthenticated connection be attempted. |
+| `user` | _String_ | The username for authentication |
+| `password` | _String_ | The password (i.e.secret) used for authentication |
+| `register-procedure` | _String_ | If specified, this procedure is called after the WAMP connection that allows the WAMP server to update the same configuration parameters as available here before the OBS proedures are registered |
+
+
+---
+
+### GetWampSettings
+
+
+- Added in v4.3
+
+Gets the current WAMP status.  Can be called unauthenticated
+
+**Request Fields:**
+
+_No specified parameters._
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `status` | _String_ | Either DISCONNECTED, CONNECTING, CONNECTED or ERROR |
+| `error-uri` | _String_ | The WAMP uri of the error that occured |
+| `error-message` | _String_ | If the status is ERROR, a human readable message describing the error or the 'error-uri' if not present. |
+| `error-data` | _Object_ | If the status is ERROR and additional information about the error is present, this can contain additional data fields. |
 
 
 ---

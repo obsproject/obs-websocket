@@ -80,13 +80,15 @@
     if (obs_frontend_streaming_active() == false) {
         OBSService configuredService = obs_frontend_get_streaming_service();
         OBSService newService = nullptr;
-
-        // TODO: fix service memory leak
+        bool saveStreamSettings = false;
+        bool hasMetadata = false;
 
         if (req->hasField("stream")) {
             OBSDataAutoRelease streamData = obs_data_get_obj(req->data, "stream");
             OBSDataAutoRelease newSettings = obs_data_get_obj(streamData, "settings");
             OBSDataAutoRelease newMetadata = obs_data_get_obj(streamData, "metadata");
+
+            saveStreamSettings = obs_data_get_bool(streamData, "save");
 
             OBSDataAutoRelease csHotkeys =
                 obs_hotkeys_save_service(configuredService);
@@ -118,7 +120,7 @@
                 } else {
                     query.prepend('?');
                 }
-
+                hasMetadata = true;
                 query.prepend(key);
                 obs_data_set_string(newSettings, "key", query.toUtf8());
             }
@@ -146,14 +148,23 @@
                     newType.toUtf8(), STREAM_SERVICE_ID,
                     newSettings, csHotkeys);
             }
-
-            obs_frontend_set_streaming_service(newService);
+            obs_service_release(newService); // obs_service_create adds a ref which means you need to
+            // immediately release it.  Your reference will still be held by the OBSService stuct through it's addref
+            obs_frontend_set_streaming_service(newService); //this will also add a
+            //reference but you want that reference maintained anyway
         }
 
-        obs_frontend_streaming_start();
+        obs_frontend_streaming_start();  //this will then use your new service configuration -
+        // there is some concern if the current thread is different than the API thread the call my not be synchronous
+        // and resetting the configuration after this may actually be used as the configuration of the stream.
+        // once this pull request (https://github.com/jp9000/obs-studio/pull/1062) has been accepted into the OBS source,
+        //  we can update this to call start_streaming with the obs_service_t we just created
+        if (saveStreamSettings) { //save settings
+            obs_frontend_save_streaming_service();
+        }
 
-        // Stream settings provided in StartStreaming are not persisted to disk
-        if (newService != nullptr) {
+        // Stream settings provided in StartStreaming are not persisted to disk unless 'save' is specifed
+        if (newService != nullptr && !saveStreamSettings) {
             obs_frontend_set_streaming_service(configuredService);
         }
 
@@ -214,21 +225,12 @@ void WSRequestHandler::HandleStopStreaming(WSRequestHandler* req) {
         OBSDataAutoRelease hotkeys = obs_hotkeys_save_service(service);
         service = obs_service_create(
             requestedType.toUtf8(), STREAM_SERVICE_ID, requestSettings, hotkeys);
+        obs_service_release(service);  // obs_service_create adds a ref which means you need
+        // remove here
     } else {
         // If type isn't changing, we should overlay the settings we got
-        // to the existing settings. By doing so, you can send a request that
-        // only contains the settings you want to change, instead of having to
-        // do a get and then change them
-
-        OBSDataAutoRelease existingSettings = obs_service_get_settings(service);
-        OBSDataAutoRelease newSettings = obs_data_create();
-
-        // Apply existing settings
-        obs_data_apply(newSettings, existingSettings);
-        // Then apply the settings from the request
-        obs_data_apply(newSettings, requestSettings);
-
-        obs_service_update(service, newSettings);
+        // to the existing settings. The default obs_service_update does this
+        obs_service_update(service, requestSettings);
     }
 
     //if save is specified we should immediately save the streaming service
@@ -236,6 +238,7 @@ void WSRequestHandler::HandleStopStreaming(WSRequestHandler* req) {
         obs_frontend_save_streaming_service();
     }
 
+    //we get the full updated settings from the service
     OBSDataAutoRelease serviceSettings = obs_service_get_settings(service);
 
     OBSDataAutoRelease response = obs_data_create();

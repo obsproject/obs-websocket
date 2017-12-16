@@ -42,7 +42,7 @@ class WSEvents : public QObject {
     const char* GetRecordingTimecode();
 
     bool HeartbeatIsActive;
-
+	
   private slots:
     void deferredInitOperations();
     void StreamStatus();

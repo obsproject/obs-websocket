@@ -37,6 +37,12 @@ public:
 
 private Q_SLOTS:
     void AuthCheckboxChanged();
+    void WampCheckboxChanged();
+    void WampAuthCheckboxChanged();
+    void WampIdCheckboxChanged();
+    void WampUrlChanged(QString newUrl);
+    void WampIdChanged(QString wampId);
+    void WampBaseUriChanged(QString newUri);
     void FormAccepted();
 
 private:

@@ -24,33 +24,37 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <QSet>
 #include <QWebSocket>
 #include <QWebSocketServer>
+#include <QMutex>
 
 #include <obs.hpp>
 #include <obs-frontend-api.h>
 
 #include "obs-websocket.h"
 
+#include <wampconnection.h>
+using namespace QFlow;
+
+
 class WSRequestHandler : public QObject {
   Q_OBJECT
 
   public:
-    explicit WSRequestHandler(QWebSocket* client);
+    explicit WSRequestHandler();
     ~WSRequestHandler();
-    void processIncomingMessage(QString textMessage);
     bool hasField(QString name);
+    bool hasField(const char* name);
 
-  private:
-    QWebSocket* _client;
-    const char* _messageId;
-    const char* _requestType;
-    OBSDataAutoRelease data;
-
-    void SendOKResponse(obs_data_t* additionalFields = NULL);
-    void SendErrorResponse(const char* errorMessage);
-    void SendErrorResponse(obs_data_t* additionalFields = NULL);
-    void SendResponse(obs_data_t* response);
-
-    static QHash<QString, void(*)(WSRequestHandler*)> messageMap;
+    virtual void SendOKResponse(obs_data_t* additionalFields = NULL) = 0;
+    virtual void SendErrorResponse(const char* errorMessage, obs_data_t* additionalFields = NULL) = 0;
+    virtual bool isAuthenticated() = 0;
+    virtual void setAuthenticated(bool authenticated) = 0;
+	
+	static QHash<QString, void(*)(WSRequestHandler*)> messageMap;
+	
+  protected:
+	OBSDataAutoRelease data;
+	static QMutex _requestMutex;
+	
     static QSet<QString> authNotRequired;
 
     static void HandleGetVersion(WSRequestHandler* req);
@@ -131,6 +135,51 @@ class WSRequestHandler : public QObject {
     static void HandleGetTextGDIPlusProperties(WSRequestHandler* req);
     static void HandleSetBrowserSourceProperties(WSRequestHandler* req);
     static void HandleGetBrowserSourceProperties(WSRequestHandler* req);
+	
+    static void HandleGetWampSettings(WSRequestHandler* req);
+    static void HandleSetWampSettings(WSRequestHandler* req);
+    static void HandleGetWampStatus(WSRequestHandler* req);
+};
+
+class WSWebSocketRequestHandler : WSRequestHandler {
+  Q_OBJECT
+	
+  public:
+    explicit WSWebSocketRequestHandler(QWebSocket* client);
+    ~WSWebSocketRequestHandler();
+
+    void processIncomingMessage(QString textMessage);
+
+    void SendOKResponse(obs_data_t* additionalFields = NULL) override;
+    void SendErrorResponse(const char* errorMessage, obs_data_t* additionalFields = NULL) override;
+    bool isAuthenticated() override;
+    void setAuthenticated(bool auth) override;
+	
+  private:
+    QWebSocket* _client;
+
+    const char* _messageId;
+    const char* _requestType;
+    void SendResponse(obs_data_t* response);
+};
+
+class WSWampRequestHandler : WSRequestHandler {
+  Q_OBJECT
+
+  public:
+    explicit WSWampRequestHandler(void(*_requestMethod)(WSRequestHandler*));
+    ~WSWampRequestHandler();
+
+    WampResult processIncomingMessage(QVariantList args);
+    void SendOKResponse(obs_data_t* additionalFields = NULL) override;
+    void SendErrorResponse(const char* errorMessage, obs_data_t* additionalFields = NULL) override;
+    bool isAuthenticated() override;
+    void setAuthenticated(bool auth) override;
+    
+  private:
+    void(*_requestMethod)(WSRequestHandler*);
+    QVariantMap _response;
+    QString _error;
 };
 
 #endif // WSPROTOCOL_H

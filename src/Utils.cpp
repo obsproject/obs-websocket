@@ -23,25 +23,26 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <obs.hpp>
 #include "obs-websocket.h"
 
+
 #include "Utils.h"
 #include "Config.h"
+
+#define DEFAULT_LIST_NAME "list"
+#define DEFAULT_VALUE_NAME "value"
 
 Q_DECLARE_METATYPE(OBSScene);
 
 const char* qstring_data_copy(QString value) {
-    QByteArray stringData = value.toUtf8();
-    const char* constStringData = new const char[stringData.size()]();
-    memcpy((void*)constStringData, stringData.constData(), stringData.size());
-    return constStringData;
+	return bstrdup(value.toUtf8().constData());
 }
 
-obs_data_array_t* Utils::StringListToArray(char** strings, char* key) {
+obs_data_array_t* Utils::StringListToArray(char** strings, const char* key) {
     if (!strings)
         return obs_data_array_create();
 
     obs_data_array_t* list = obs_data_array_create();
 
-    char* value = "";
+    char* value = (char*) "";
     for (int i = 0; value != nullptr; i++) {
         value = strings[i];
 
@@ -67,6 +68,7 @@ obs_data_array_t* Utils::GetSceneItems(obs_source_t* source) {
             obs_sceneitem_t* currentItem,
             void* param)
     {
+		UNUSED_PARAMETER(scene);
         obs_data_array_t* data = static_cast<obs_data_array_t*>(param);
 
         OBSDataAutoRelease itemData = GetSceneItemData(currentItem);
@@ -129,6 +131,7 @@ obs_sceneitem_t* Utils::GetSceneItemFromName(obs_source_t* source, QString name)
             obs_sceneitem_t* currentItem,
             void* param)
     {
+		UNUSED_PARAMETER(scene);
         current_search* search = static_cast<current_search*>(param);
 
         QString currentItemName =
@@ -282,7 +285,7 @@ void Utils::TransitionToProgram() {
     // WARNING : if the layout created in OBS' CreateProgramOptions() changes
     // then this won't work as expected
 
-    QMainWindow* main = (QMainWindow*)obs_frontend_get_main_window();
+   // QMainWindow* main = (QMainWindow*)obs_frontend_get_main_window();
 
     // The program options widget is the second item in the left-to-right layout
     QWidget* programOptions = GetPreviewLayout()->itemAt(1)->widget();
@@ -321,6 +324,16 @@ QSystemTrayIcon* Utils::GetTrayIcon() {
 void Utils::SysTrayNotify(QString &text,
     QSystemTrayIcon::MessageIcon icon, QString title) {
     if (!Config::Current()->AlertsEnabled || !QSystemTrayIcon::supportsMessages())
+        return;
+
+    QSystemTrayIcon* trayIcon = GetTrayIcon();
+    if (trayIcon)
+        trayIcon->showMessage(title, text, icon);
+}
+
+void Utils::WampSysTrayNotify(QString &text,
+    QSystemTrayIcon::MessageIcon icon, QString title) {
+    if (!Config::Current()->WampAlertsEnabled || !QSystemTrayIcon::supportsMessages())
         return;
 
     QSystemTrayIcon* trayIcon = GetTrayIcon();
@@ -436,6 +449,8 @@ obs_hotkey_t* Utils::FindHotkeyByName(QString name) {
     search.result = nullptr;
 
     obs_enum_hotkeys([](void* data, obs_hotkey_id id, obs_hotkey_t* hotkey) {
+		UNUSED_PARAMETER(id);
+		
         current_search* search = static_cast<current_search*>(data);
 
         const char* hk_name = obs_hotkey_get_name(hotkey);
@@ -502,3 +517,229 @@ bool Utils::IsRPHotkeySet() {
     size_t count = obs_data_array_count(bindings);
     return (count > 0);
 }
+
+
+
+//because of the disconnect between the basic protocols in which all OBS WebSocket messages are some kind of object (i.e. properties with values)
+//   and wamp messages are a list of arguments in which the first is usually an object with properties, we use an abstraction of naming convension
+QStringList resultsNames {
+    DEFAULT_LIST_NAME,
+    DEFAULT_VALUE_NAME,
+    "results",
+    "events"
+};
+
+QVariantList ListFromArray(obs_data_array_t* array)
+{
+    size_t array_size = obs_data_array_count(array);
+    QVariantList list = QVariantList();
+    for (size_t i = 0; i < array_size; i++) {
+        OBSDataAutoRelease array_item = obs_data_array_item(array, i);
+        list.append(Utils::MapFromData(array_item));
+    }
+    return list;
+}
+
+QVariantList Utils::ListFromData(obs_data_t* data)
+{
+    QVariantList list = QVariantList();
+    for (QList<QString>::iterator i = resultsNames.begin(); i != resultsNames.end(); i++)
+    {
+        const char* name = i->toUtf8();
+        if (obs_data_has_user_value(data, name))
+        {
+            OBSDataItemAutoRelease item = obs_data_item_byname(data, name);
+            obs_data_type type = obs_data_item_gettype(item);
+            
+            if (type == obs_data_type::OBS_DATA_ARRAY)
+            {
+                OBSDataArrayAutoRelease array = obs_data_item_get_array(item);
+                list = ListFromArray(array);
+            }
+            else if (type == obs_data_type::OBS_DATA_OBJECT)
+            {
+                if (strcmp(name, DEFAULT_VALUE_NAME) == 0)
+                {
+                    OBSDataAutoRelease value = obs_data_item_get_obj(item);
+                    list.append(MapFromData(value));
+                }
+            }
+        }
+    }
+
+    if (list.isEmpty()) {
+        list.append(MapFromData(data));
+    }
+    return list;
+}
+
+QVariantMap Utils::MapFromData(obs_data_t* data)
+{
+    QVariantMap map = QVariantMap();
+
+    obs_data_item_t* item = obs_data_first(data);
+    if (item) {
+        do {
+            if (!obs_data_item_has_user_value(item))
+                continue;
+            
+            QString attrName = obs_data_item_get_name(item);
+            
+            switch (obs_data_item_gettype(item))
+            {
+                case OBS_DATA_BOOLEAN:
+                    map.insert(attrName, QVariant(obs_data_item_get_bool(item) ? true : false));
+                    break;
+                    
+                case OBS_DATA_NUMBER:
+                    switch (obs_data_item_numtype(item))
+                    {
+                        case OBS_DATA_NUM_DOUBLE:
+                            map.insert(attrName, QVariant(obs_data_item_get_double(item)));
+                            break;
+                        case OBS_DATA_NUM_INT:
+                            map.insert(attrName, QVariant(obs_data_item_get_int(item)));
+                            break;
+                        case OBS_DATA_NUM_INVALID:
+                            break;
+                    }
+                    break;
+                    
+                case OBS_DATA_STRING:
+                    map.insert(attrName, QString(obs_data_item_get_string(item)));
+                    break;
+                    
+                case OBS_DATA_ARRAY:
+                {
+                    OBSDataArrayAutoRelease array = obs_data_item_get_array(item);
+                    map.insert(attrName, ListFromArray(array));
+                    break;
+                }
+                case OBS_DATA_OBJECT:
+                {
+                    OBSDataAutoRelease item_data = obs_data_item_get_obj(item);
+                    map.insert(attrName, MapFromData(item_data));
+                    break;
+                }
+                case OBS_DATA_NULL:
+                    //do nothing
+                    break;
+            }
+        } while (obs_data_item_next(&item));
+    }
+
+    return map;
+}
+
+obs_data_t* SetDataFromQVariantMap(obs_data_t* data, QVariantMap map)
+{
+    for ( QMap<QString, QVariant>::iterator i = map.begin(); i != map.end() ; i++ )
+    {
+        QString key = i.key();
+        QVariant value = i.value();
+        if (!value.isNull())
+        {
+            switch (value.type())
+            {
+                case QVariant::String:
+                case QVariant::Date:
+                case QVariant::DateTime:
+                case QVariant::Uuid:
+                case QVariant::Url:
+                    obs_data_set_string(data, key.toUtf8().constData(), value.toString().toUtf8().constData());
+                    break;
+                case QVariant::Int:
+                    obs_data_set_int(data, key.toUtf8().constData(), value.toInt());
+                    break;
+                case QVariant::Double:
+                    obs_data_set_double(data, key.toUtf8().constData(), value.toDouble());
+                    break;
+                case QVariant::Bool:
+                    obs_data_set_bool(data, key.toUtf8().constData(), value.toBool());
+                    break;
+                case QVariant::Map:
+                {
+                    OBSDataAutoRelease item_data = SetDataFromQVariantMap(obs_data_create(), value.toMap());
+                    obs_data_set_obj(data, key.toUtf8().constData(), item_data);
+                    break;
+                }
+                case QVariant::List:
+                {
+                    OBSDataArrayAutoRelease array = obs_data_array_create();
+                    QVariantList list = value.toList();
+                    size_t index = 0;
+                    for (QList<QVariant>::iterator j = list.begin(); j != list.end() ; j++ )
+                    {
+                        switch(j->type())
+                        {
+                            case QVariant::Map:
+                            {
+                                OBSDataAutoRelease item = SetDataFromQVariantMap(obs_data_create(), j->toMap());
+                                obs_data_array_insert(array, index++, item);
+                                break;
+                            }
+                            default:
+                                //do nothing as we can't deserialize lists of things that aren't maps
+                                break;
+                        }
+                    }
+                    obs_data_set_array(data, key.toUtf8().constData(), array);
+                    break;
+                }
+                default:
+                    //do nothing
+                    break;
+            }
+        }
+    }
+    return data;
+}
+
+obs_data_t* Utils::DataFromMap(QVariantMap map)
+{
+	return SetDataFromQVariantMap(obs_data_create(), map);
+}
+
+obs_data_t* Utils::DataFromList(QVariantList list)
+{
+    OBSDataAutoRelease data = obs_data_create();
+    int count = list.count();
+    if (count == 1)
+    {
+        QVariant first = list.first();
+        QVariant::Type type = first.type();
+        if (type == QVariant::Type::Map)
+        {
+            SetDataFromQVariantMap(data, first.toMap());
+        }
+    }
+    else if (count > 1)
+    {
+        OBSDataArrayAutoRelease array = obs_data_array_create();
+        
+        size_t index = 0;
+        for (QList<QVariant>::iterator i = list.begin();i != list.end();i++)
+        {
+            if (i->type() == QVariant::Type::Map)
+            {
+                OBSDataAutoRelease item = SetDataFromQVariantMap(obs_data_create(), i->toMap());
+                obs_data_array_insert(array, index++, item);
+            }
+            else
+            {
+                //we don't have the ability to seralize this but we could probably
+            }
+        }
+        
+        obs_data_set_array(data, "args", array);
+    }
+    return data;
+}
+
+QString Utils::WampUrlFix(QString str) {
+    return str
+    .toLower()
+    .replace('-','_');
+}
+
+

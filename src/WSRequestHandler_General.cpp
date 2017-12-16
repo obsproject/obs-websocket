@@ -91,10 +91,10 @@ void WSRequestHandler::HandleAuthenticate(WSRequestHandler* req) {
         return;
     }
 
-    if ((req->_client->property(PROP_AUTHENTICATED).toBool() == false)
+    if ((req->isAuthenticated() == false)
         && Config::Current()->CheckAuth(auth))
     {
-        req->_client->setProperty(PROP_AUTHENTICATED, true);
+        req->setAuthenticated(true);
         req->SendOKResponse();
     } else {
         req->SendErrorResponse("Authentication Failed.");

@@ -103,24 +103,107 @@ QHash<QString, void(*)(WSRequestHandler*)> WSRequestHandler::messageMap {
     { "GetTextGDIPlusProperties", WSRequestHandler::HandleGetTextGDIPlusProperties },
 
     { "GetBrowserSourceProperties", WSRequestHandler::HandleGetBrowserSourceProperties },
-    { "SetBrowserSourceProperties", WSRequestHandler::HandleSetBrowserSourceProperties }
+    { "SetBrowserSourceProperties", WSRequestHandler::HandleSetBrowserSourceProperties },
+
+    { "SetWampSettings", WSRequestHandler::HandleSetWampSettings },
+    { "GetWampSettings", WSRequestHandler::HandleGetWampSettings },
+    { "GetWampStatus", WSRequestHandler::HandleGetWampStatus },
+	
 };
 
 QSet<QString> WSRequestHandler::authNotRequired {
     "GetVersion",
     "GetAuthRequired",
-    "Authenticate"
+    "Authenticate",
+    "GetWampSettings",
+    "GetWampStatus"
 };
 
-WSRequestHandler::WSRequestHandler(QWebSocket* client) :
-    _messageId(0),
-    _requestType(""),
-    data(nullptr),
-    _client(client)
+QMutex WSRequestHandler::_requestMutex(QMutex::Recursive);
+
+
+WSRequestHandler::WSRequestHandler() : data(nullptr)
+{
+	
+}
+
+WSRequestHandler::~WSRequestHandler() {
+}
+
+
+bool WSRequestHandler::hasField(QString name) {
+    if (!data || name.isEmpty() || name.isNull())
+        return false;
+
+    return obs_data_has_user_value(data, name.toUtf8());
+}
+
+bool WSRequestHandler::hasField(const char* name) {
+    if (!data || !name)
+        return false;
+
+    return obs_data_has_user_value(data, name);
+}
+
+WSWebSocketRequestHandler::WSWebSocketRequestHandler(QWebSocket* client) : WSRequestHandler(),
+_client(client),
+_messageId(0),
+_requestType("")
 {
 }
 
-void WSRequestHandler::processIncomingMessage(QString textMessage) {
+WSWebSocketRequestHandler::~WSWebSocketRequestHandler() {
+}
+
+
+bool WSWebSocketRequestHandler::isAuthenticated()
+{
+    return _client->property(PROP_AUTHENTICATED).toBool();
+}
+
+void WSWebSocketRequestHandler::setAuthenticated(bool auth)
+{
+    _client->setProperty(PROP_AUTHENTICATED, auth);
+}
+
+void WSWebSocketRequestHandler::SendOKResponse(obs_data_t* additionalFields) {
+    OBSDataAutoRelease response = obs_data_create();
+    obs_data_set_string(response, "status", "ok");
+    obs_data_set_string(response, "message-id", _messageId);
+
+    if (additionalFields)
+        obs_data_apply(response, additionalFields);
+
+    SendResponse(response);
+}
+
+void WSWebSocketRequestHandler::SendErrorResponse(const char* errorMessage, obs_data_t* additionalFields) {
+    OBSDataAutoRelease response = obs_data_create();
+    obs_data_set_string(response, "status", "error");
+    if (additionalFields)
+    {
+        obs_data_set_obj(response, "error", additionalFields);
+        obs_data_set_string(response, "reason", errorMessage);
+    }
+    else
+    {
+        obs_data_set_string(response, "error", errorMessage);
+    }
+
+    obs_data_set_string(response, "message-id", _messageId);
+
+    SendResponse(response);
+}
+
+void WSWebSocketRequestHandler::SendResponse(obs_data_t* response)  {
+    QString json = obs_data_get_json(response);
+    _client->sendTextMessage(json);
+
+    if (Config::Current()->DebugEnabled)
+        blog(LOG_DEBUG, "Response << '%s'", json.toUtf8().constData());
+}
+
+void WSWebSocketRequestHandler::processIncomingMessage(QString textMessage) {
     QByteArray msgData = textMessage.toUtf8();
     const char* msg = msgData.constData();
 
@@ -128,7 +211,7 @@ void WSRequestHandler::processIncomingMessage(QString textMessage) {
     if (!data) {
         if (!msg)
             msg = "<null pointer>";
-
+        
         blog(LOG_ERROR, "invalid JSON payload received for '%s'", msg);
         SendErrorResponse("invalid JSON payload");
         return;
@@ -157,58 +240,48 @@ void WSRequestHandler::processIncomingMessage(QString textMessage) {
     }
 
     void (*handlerFunc)(WSRequestHandler*) = (messageMap[_requestType]);
-
+    QMutexLocker locker(&_requestMutex);//prevents two concurrent requests
     if (handlerFunc != nullptr)
         handlerFunc(this);
     else
         SendErrorResponse("invalid request type");
 }
 
-WSRequestHandler::~WSRequestHandler() {
+WSWampRequestHandler::WSWampRequestHandler(void(*_requestMethod)(WSRequestHandler*)) : WSRequestHandler(),
+_requestMethod(_requestMethod),
+_response(QVariantMap()),
+_error(QString())
+{
 }
 
-void WSRequestHandler::SendOKResponse(obs_data_t* additionalFields) {
-    OBSDataAutoRelease response = obs_data_create();
-    obs_data_set_string(response, "status", "ok");
-    obs_data_set_string(response, "message-id", _messageId);
+WSWampRequestHandler::~WSWampRequestHandler() {
+}
 
+
+bool WSWampRequestHandler::isAuthenticated()
+{
+    return true;
+}
+
+void WSWampRequestHandler::setAuthenticated(bool auth)
+{
+    UNUSED_PARAMETER(auth);
+    //do nothing as all Wamp connections are considered authenticated
+}
+
+void WSWampRequestHandler::SendOKResponse(obs_data_t* additionalFields) {
+    _response = Utils::MapFromData(additionalFields);
+}
+
+void WSWampRequestHandler::SendErrorResponse(const char* errorMessage, obs_data_t* additionalFields) {
+    _error = QString(errorMessage);
     if (additionalFields)
-        obs_data_apply(response, additionalFields);
-
-    SendResponse(response);
+        _response = Utils::MapFromData(additionalFields);
 }
 
-void WSRequestHandler::SendErrorResponse(const char* errorMessage) {
-    OBSDataAutoRelease response = obs_data_create();
-    obs_data_set_string(response, "status", "error");
-    obs_data_set_string(response, "error", errorMessage);
-    obs_data_set_string(response, "message-id", _messageId);
-
-    SendResponse(response);
-}
-
-void WSRequestHandler::SendErrorResponse(obs_data_t* additionalFields) {
-    OBSDataAutoRelease response = obs_data_create();
-    obs_data_set_string(response, "status", "error");
-    obs_data_set_string(response, "message-id", _messageId);
-
-    if (additionalFields)
-        obs_data_set_obj(response, "error", additionalFields);
-
-    SendResponse(response);
-}
-
-void WSRequestHandler::SendResponse(obs_data_t* response)  {
-    QString json = obs_data_get_json(response);
-    _client->sendTextMessage(json);
-
-    if (Config::Current()->DebugEnabled)
-        blog(LOG_DEBUG, "Response << '%s'", json.toUtf8().constData());
-}
-
-bool WSRequestHandler::hasField(QString name) {
-    if (!data || name.isEmpty() || name.isNull())
-        return false;
-
-    return obs_data_has_user_value(data, name.toUtf8());
+WampResult WSWampRequestHandler::processIncomingMessage(QVariantList args) {
+    data = Utils::DataFromList(args);
+    QMutexLocker locker(&_requestMutex);
+    _requestMethod(this); //prevents two concurrent requests
+    return WampResult(_response, _error);
 }
