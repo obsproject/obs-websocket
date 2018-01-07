@@ -116,6 +116,9 @@ void WSRequestHandler::HandleSetSceneItemOrder(WSRequestHandler* req) {
         for (size_t j = 0; j < i; j++) {
             if (sceneItem == newOrder[j]) {
                 req->SendErrorResponse("Duplicate sceneItem in specified order");
+                for (size_t i = 0; i < count; i++) {
+                   obs_sceneitem_release(newOrder[i]);
+                }
                 return;
             }
         }
@@ -128,5 +131,7 @@ void WSRequestHandler::HandleSetSceneItemOrder(WSRequestHandler* req) {
     else {
         req->SendErrorResponse("Invalid sceneItem order");
     }
-    // Will the vector of scene items clear properly or do we have a memory leak here and on early returns?
+    for (size_t i = 0; i < count; i++) {
+        obs_sceneitem_release(newOrder[i]);
+    }
 }
