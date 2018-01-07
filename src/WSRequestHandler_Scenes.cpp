@@ -117,7 +117,7 @@ void WSRequestHandler::HandleSetSceneItemOrder(WSRequestHandler* req) {
             if (sceneItem == newOrder[j]) {
                 req->SendErrorResponse("Duplicate sceneItem in specified order");
                 for (size_t i = 0; i < count; i++) {
-                   obs_sceneitem_release(newOrder[i]);
+                    obs_sceneitem_release(newOrder[i]);
                 }
                 return;
             }
