@@ -772,7 +772,7 @@ void WSEvents::OnSceneReordered(void* param, calldata_t* data) {
     calldata_get_ptr(data, "scene", &scene);
 
     OBSDataAutoRelease fields = Utils::GetSceneData(obs_scene_get_source(scene));
-    obs_data_set_string(fields, "scene-name",
+    obs_data_set_string(fields, "name",
         obs_source_get_name(obs_scene_get_source(scene)));
 
     instance->broadcastUpdate("SourceOrderChanged", fields);
