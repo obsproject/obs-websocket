@@ -8,12 +8,12 @@
 
 /**
  * Returns the latest version of the plugin and the API.
- * 
+ *
  * @return {double} `version` OBSRemote compatible API version. Fixed to 1.1 for retrocompatibility.
  * @return {String} `obs-websocket-version` obs-websocket plugin version.
  * @return {String} `obs-studio-version` OBS Studio program version.
  * @return {String|Array} `available-requests` List of available request types.
- * 
+ *
  * @api requests
  * @name GetVersion
  * @category general
@@ -43,11 +43,11 @@
 /**
  * Tells the client if authentication is required. If so, returns authentication parameters `challenge`
  * and `salt` (see "Authentication" for more information).
- * 
+ *
  * @return {boolean} `authRequired` Indicates whether authentication is required.
  * @return {String (optional)} `challenge`
  * @return {String (optional)} `salt`
- * 
+ *
  * @api requests
  * @name GetAuthRequired
  * @category general
@@ -71,7 +71,7 @@ void WSRequestHandler::HandleGetAuthRequired(WSRequestHandler* req) {
 
 /**
  * Attempt to authenticate the client to the server.
- * 
+ *
  * @param {String} `auth` Response to the auth challenge (see "Authentication" for more information).
  *
  * @api requests
@@ -133,6 +133,7 @@ void WSRequestHandler::HandleAuthenticate(WSRequestHandler* req) {
  * @api requests
  * @name SetFilenameFormatting
  * @category general
+ * @since unreleased
  */
 void WSRequestHandler::HandleSetFilenameFormatting(WSRequestHandler* req) {
     if (!req->hasField("filename-formatting")) {
@@ -157,6 +158,7 @@ void WSRequestHandler::HandleSetFilenameFormatting(WSRequestHandler* req) {
  * @api requests
  * @name GetFilenameFormatting
  * @category general
+ * @since unreleased
  */
 void WSRequestHandler::HandleGetFilenameFormatting(WSRequestHandler* req) {
     OBSDataAutoRelease response = obs_data_create();
