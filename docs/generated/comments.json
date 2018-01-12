@@ -1487,7 +1487,7 @@
         "api": "requests",
         "name": "SetHeartbeat",
         "category": "general",
-        "since": "unreleased",
+        "since": "4.3.0",
         "params": [
           {
             "type": "boolean",
@@ -1510,7 +1510,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "unreleased"
+            "description": "4.3.0"
           }
         ],
         "heading": {
@@ -1528,7 +1528,7 @@
         "api": "requests",
         "name": "SetFilenameFormatting",
         "category": "general",
-        "since": "unreleased",
+        "since": "4.3.0",
         "params": [
           {
             "type": "String",
@@ -1551,7 +1551,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "unreleased"
+            "description": "4.3.0"
           }
         ],
         "heading": {
@@ -1569,7 +1569,7 @@
         "api": "requests",
         "name": "GetFilenameFormatting",
         "category": "general",
-        "since": "unreleased",
+        "since": "4.3.0",
         "returns": [
           {
             "type": "String",
@@ -1592,7 +1592,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "unreleased"
+            "description": "4.3.0"
           }
         ],
         "heading": {
@@ -2208,7 +2208,7 @@
         "api": "requests",
         "name": "GetSceneItemProperties",
         "category": "scene items",
-        "since": "unreleased",
+        "since": "4.3.0",
         "returns": [
           {
             "type": "String",
@@ -2318,7 +2318,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "unreleased"
+            "description": "4.3.0"
           }
         ],
         "heading": {
@@ -2354,7 +2354,7 @@
         "api": "requests",
         "name": "SetSceneItemProperties",
         "category": "scene items",
-        "since": "unreleased",
+        "since": "4.3.0",
         "params": [
           {
             "type": "String (optional)",
@@ -2457,7 +2457,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "unreleased"
+            "description": "4.3.0"
           }
         ],
         "heading": {
@@ -2529,7 +2529,7 @@
         "name": "SetSceneItemRender",
         "category": "scene items",
         "since": "0.3",
-        "deprecated": "Since unreleased. Prefer the use of SetSceneItemProperties.",
+        "deprecated": "Since 4.3.0. Prefer the use of SetSceneItemProperties.",
         "params": [
           {
             "type": "String",
@@ -2568,7 +2568,7 @@
         "deprecateds": [
           {
             "name": "",
-            "description": "Since unreleased. Prefer the use of SetSceneItemProperties."
+            "description": "Since 4.3.0. Prefer the use of SetSceneItemProperties."
           }
         ],
         "heading": {
@@ -2592,7 +2592,7 @@
         "name": "SetSceneItemPosition",
         "category": "scene items",
         "since": "4.0.0",
-        "deprecated": "Since unreleased. Prefer the use of SetSceneItemProperties.",
+        "deprecated": "Since 4.3.0. Prefer the use of SetSceneItemProperties.",
         "params": [
           {
             "type": "String (optional)",
@@ -2636,7 +2636,7 @@
         "deprecateds": [
           {
             "name": "",
-            "description": "Since unreleased. Prefer the use of SetSceneItemProperties."
+            "description": "Since 4.3.0. Prefer the use of SetSceneItemProperties."
           }
         ],
         "heading": {
@@ -2661,7 +2661,7 @@
         "name": "SetSceneItemTransform",
         "category": "scene items",
         "since": "4.0.0",
-        "deprecated": "Since unreleased. Prefer the use of SetSceneItemProperties.",
+        "deprecated": "Since 4.3.0. Prefer the use of SetSceneItemProperties.",
         "params": [
           {
             "type": "String (optional)",
@@ -2710,7 +2710,7 @@
         "deprecateds": [
           {
             "name": "",
-            "description": "Since unreleased. Prefer the use of SetSceneItemProperties."
+            "description": "Since 4.3.0. Prefer the use of SetSceneItemProperties."
           }
         ],
         "heading": {
@@ -2736,7 +2736,7 @@
         "name": "SetSceneItemCrop",
         "category": "scene items",
         "since": "4.1.0",
-        "deprecated": "Since unreleased. Prefer the use of SetSceneItemProperties.",
+        "deprecated": "Since 4.3.0. Prefer the use of SetSceneItemProperties.",
         "params": [
           {
             "type": "String (optional)",
@@ -2790,7 +2790,7 @@
         "deprecateds": [
           {
             "name": "",
-            "description": "Since unreleased. Prefer the use of SetSceneItemProperties."
+            "description": "Since 4.3.0. Prefer the use of SetSceneItemProperties."
           }
         ],
         "heading": {
@@ -2956,7 +2956,7 @@
         "api": "requests",
         "name": "GetSourcesList",
         "category": "sources",
-        "since": "unreleased",
+        "since": "4.3.0",
         "returns": [
           {
             "type": "Array of Objects",
@@ -2994,7 +2994,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "unreleased"
+            "description": "4.3.0"
           }
         ],
         "heading": {
@@ -3026,7 +3026,7 @@
         "api": "requests",
         "name": "GetSourcesTypesList",
         "category": "sources",
-        "since": "unreleased",
+        "since": "4.3.0",
         "returns": [
           {
             "type": "Array of Objects",
@@ -3109,7 +3109,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "unreleased"
+            "description": "4.3.0"
           }
         ],
         "heading": {
@@ -3500,7 +3500,7 @@
         "api": "requests",
         "name": "GetSourceSettings",
         "category": "sources",
-        "since": "unreleased",
+        "since": "4.3.0",
         "returns": [
           {
             "type": "String",
@@ -3545,7 +3545,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "unreleased"
+            "description": "4.3.0"
           }
         ],
         "heading": {
@@ -3572,7 +3572,7 @@
         "api": "requests",
         "name": "SetSourceSettings",
         "category": "sources",
-        "since": "unreleased",
+        "since": "4.3.0",
         "returns": [
           {
             "type": "String",
@@ -3622,7 +3622,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "unreleased"
+            "description": "4.3.0"
           }
         ],
         "heading": {

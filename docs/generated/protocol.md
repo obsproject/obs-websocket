@@ -764,7 +764,7 @@ _No additional response items._
 ### SetHeartbeat
 
 
-- Unreleased
+- Added in v4.3.0
 
 Enable/disable sending of the Heartbeat event
 
@@ -784,7 +784,7 @@ _No additional response items._
 ### SetFilenameFormatting
 
 
-- Unreleased
+- Added in v4.3.0
 
 Set the filename formatting string
 
@@ -804,7 +804,7 @@ _No additional response items._
 ### GetFilenameFormatting
 
 
-- Unreleased
+- Added in v4.3.0
 
 Get the filename formatting string
 
@@ -1123,7 +1123,7 @@ _No specified parameters._
 ### GetSceneItemProperties
 
 
-- Unreleased
+- Added in v4.3.0
 
 Gets the scene specific properties of the specified source item.
 
@@ -1162,7 +1162,7 @@ Gets the scene specific properties of the specified source item.
 ### SetSceneItemProperties
 
 
-- Unreleased
+- Added in v4.3.0
 
 Sets the scene specific properties of a source. Unspecified properties will remain unchanged.
 
@@ -1218,7 +1218,7 @@ _No additional response items._
 
 ### SetSceneItemRender
 
-- **⚠️ Deprecated. Since unreleased. Prefer the use of SetSceneItemProperties. ⚠️**
+- **⚠️ Deprecated. Since 4.3.0. Prefer the use of SetSceneItemProperties. ⚠️**
 
 - Added in v0.3
 
@@ -1241,7 +1241,7 @@ _No additional response items._
 
 ### SetSceneItemPosition
 
-- **⚠️ Deprecated. Since unreleased. Prefer the use of SetSceneItemProperties. ⚠️**
+- **⚠️ Deprecated. Since 4.3.0. Prefer the use of SetSceneItemProperties. ⚠️**
 
 - Added in v4.0.0
 
@@ -1265,7 +1265,7 @@ _No additional response items._
 
 ### SetSceneItemTransform
 
-- **⚠️ Deprecated. Since unreleased. Prefer the use of SetSceneItemProperties. ⚠️**
+- **⚠️ Deprecated. Since 4.3.0. Prefer the use of SetSceneItemProperties. ⚠️**
 
 - Added in v4.0.0
 
@@ -1290,7 +1290,7 @@ _No additional response items._
 
 ### SetSceneItemCrop
 
-- **⚠️ Deprecated. Since unreleased. Prefer the use of SetSceneItemProperties. ⚠️**
+- **⚠️ Deprecated. Since 4.3.0. Prefer the use of SetSceneItemProperties. ⚠️**
 
 - Added in v4.1.0
 
@@ -1383,7 +1383,7 @@ _No specified parameters._
 ### GetSourcesList
 
 
-- Unreleased
+- Added in v4.3.0
 
 List all sources available in the running OBS instance
 
@@ -1406,7 +1406,7 @@ _No specified parameters._
 ### GetSourcesTypesList
 
 
-- Unreleased
+- Added in v4.3.0
 
 Get a list of all available sources types
 
@@ -1594,7 +1594,7 @@ Get the audio sync offset of a specified source.
 ### GetSourceSettings
 
 
-- Unreleased
+- Added in v4.3.0
 
 Get settings of the specified source
 
@@ -1620,7 +1620,7 @@ Get settings of the specified source
 ### SetSourceSettings
 
 
-- Unreleased
+- Added in v4.3.0
 
 Set settings of the specified source.
 
