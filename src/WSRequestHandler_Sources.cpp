@@ -14,7 +14,7 @@
 * @api requests
 * @name GetSourcesList
 * @category sources
-* @since unreleased
+* @since 4.3.0
 */
 void WSRequestHandler::HandleGetSourcesList(WSRequestHandler* req) {
     OBSDataArrayAutoRelease sourcesArray = obs_data_array_create();
@@ -81,7 +81,7 @@ void WSRequestHandler::HandleGetSourcesList(WSRequestHandler* req) {
 * @api requests
 * @name GetSourcesTypesList
 * @category sources
-* @since unreleased
+* @since 4.3.0
 */
 void WSRequestHandler::HandleGetSourceTypesList(WSRequestHandler* req) {
     OBSDataArrayAutoRelease idsArray = obs_data_array_create();
@@ -399,7 +399,7 @@ void WSRequestHandler::HandleGetSyncOffset(WSRequestHandler* req) {
 * @api requests
 * @name GetSourceSettings
 * @category sources
-* @since unreleased
+* @since 4.3.0
 */
 void WSRequestHandler::HandleGetSourceSettings(WSRequestHandler* req) {
     if (!req->hasField("sourceName")) {
@@ -447,7 +447,7 @@ void WSRequestHandler::HandleGetSourceSettings(WSRequestHandler* req) {
 * @api requests
 * @name SetSourceSettings
 * @category sources
-* @since unreleased
+* @since 4.3.0
 */
 void WSRequestHandler::HandleSetSourceSettings(WSRequestHandler* req) {
     if (!req->hasField("sourceName") || !req->hasField("sourceSettings")) {

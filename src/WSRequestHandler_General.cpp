@@ -13,7 +13,7 @@
  * @return {String} `obs-websocket-version` obs-websocket plugin version.
  * @return {String} `obs-studio-version` OBS Studio program version.
  * @return {String} `available-requests` List of available request types, formatted as a comma-separated list string (e.g. : "Method1,Method2,Method3").
- * 
+ *
  * @api requests
  * @name GetVersion
  * @category general
@@ -109,7 +109,7 @@ void WSRequestHandler::HandleAuthenticate(WSRequestHandler* req) {
  * @api requests
  * @name SetHeartbeat
  * @category general
- * @since unreleased
+ * @since 4.3.0
  */
  void WSRequestHandler::HandleSetHeartbeat(WSRequestHandler* req) {
     if (!req->hasField("enable")) {
@@ -134,7 +134,7 @@ void WSRequestHandler::HandleAuthenticate(WSRequestHandler* req) {
  * @api requests
  * @name SetFilenameFormatting
  * @category general
- * @since unreleased
+ * @since 4.3.0
  */
 void WSRequestHandler::HandleSetFilenameFormatting(WSRequestHandler* req) {
     if (!req->hasField("filename-formatting")) {
@@ -159,7 +159,7 @@ void WSRequestHandler::HandleSetFilenameFormatting(WSRequestHandler* req) {
  * @api requests
  * @name GetFilenameFormatting
  * @category general
- * @since unreleased
+ * @since 4.3.0
  */
 void WSRequestHandler::HandleGetFilenameFormatting(WSRequestHandler* req) {
     OBSDataAutoRelease response = obs_data_create();

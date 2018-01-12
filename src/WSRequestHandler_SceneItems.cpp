@@ -29,7 +29,7 @@
 * @api requests
 * @name GetSceneItemProperties
 * @category scene items
-* @since unreleased
+* @since 4.3.0
 */
 void WSRequestHandler::HandleGetSceneItemProperties(WSRequestHandler* req) {
 	if (!req->hasField("item")) {
@@ -155,7 +155,7 @@ void WSRequestHandler::HandleGetSceneItemProperties(WSRequestHandler* req) {
 * @api requests
 * @name SetSceneItemProperties
 * @category scene items
-* @since unreleased
+* @since 4.3.0
 */
 void WSRequestHandler::HandleSetSceneItemProperties(WSRequestHandler* req) {
 	if (!req->hasField("item")) {
@@ -376,7 +376,7 @@ void WSRequestHandler::HandleResetSceneItem(WSRequestHandler* req) {
 * @name SetSceneItemRender
 * @category scene items
 * @since 0.3
-* @deprecated Since unreleased. Prefer the use of SetSceneItemProperties.
+* @deprecated Since 4.3.0. Prefer the use of SetSceneItemProperties.
 */
 void WSRequestHandler::HandleSetSceneItemRender(WSRequestHandler* req) {
 	if (!req->hasField("source") ||
@@ -425,7 +425,7 @@ void WSRequestHandler::HandleSetSceneItemRender(WSRequestHandler* req) {
 * @name SetSceneItemPosition
 * @category scene items
 * @since 4.0.0
-* @deprecated Since unreleased. Prefer the use of SetSceneItemProperties.
+* @deprecated Since 4.3.0. Prefer the use of SetSceneItemProperties.
 */
 void WSRequestHandler::HandleSetSceneItemPosition(WSRequestHandler* req) {
 	if (!req->hasField("item") ||
@@ -474,7 +474,7 @@ void WSRequestHandler::HandleSetSceneItemPosition(WSRequestHandler* req) {
 * @name SetSceneItemTransform
 * @category scene items
 * @since 4.0.0
-* @deprecated Since unreleased. Prefer the use of SetSceneItemProperties.
+* @deprecated Since 4.3.0. Prefer the use of SetSceneItemProperties.
 */
 void WSRequestHandler::HandleSetSceneItemTransform(WSRequestHandler* req) {
 	if (!req->hasField("item") ||
@@ -529,7 +529,7 @@ void WSRequestHandler::HandleSetSceneItemTransform(WSRequestHandler* req) {
 * @name SetSceneItemCrop
 * @category scene items
 * @since 4.1.0
-* @deprecated Since unreleased. Prefer the use of SetSceneItemProperties.
+* @deprecated Since 4.3.0. Prefer the use of SetSceneItemProperties.
 */
 void WSRequestHandler::HandleSetSceneItemCrop(WSRequestHandler* req) {
 	if (!req->hasField("item")) {
