@@ -96,6 +96,8 @@ auth_response = base64_encode(auth_response_hash)
     + [GetAuthRequired](#getauthrequired)
     + [Authenticate](#authenticate)
     + [SetHeartbeat](#setheartbeat)
+    + [SetFilenameFormatting](#setfilenameformatting)
+    + [GetFilenameFormatting](#getfilenameformatting)
   * [Profiles](#profiles-1)
     + [SetCurrentProfile](#setcurrentprofile)
     + [GetCurrentProfile](#getcurrentprofile)
@@ -776,6 +778,46 @@ Enable/disable sending of the Heartbeat event
 **Response Items:**
 
 _No additional response items._
+
+---
+
+### SetFilenameFormatting
+
+
+- Unreleased
+
+Set the filename formatting string
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `filename-formatting` | _String_ | Filename formatting string to set. |
+
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+### GetFilenameFormatting
+
+
+- Unreleased
+
+Get the filename formatting string
+
+**Request Fields:**
+
+_No specified parameters._
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `filename-formatting` | _String_ | Current filename formatting string. |
+
 
 ---
 

@@ -1520,6 +1520,88 @@
         "lead": "",
         "type": "class",
         "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Set the filename formatting string",
+        "param": "{String} `filename-formatting` Filename formatting string to set.",
+        "api": "requests",
+        "name": "SetFilenameFormatting",
+        "category": "general",
+        "since": "unreleased",
+        "params": [
+          {
+            "type": "String",
+            "name": "filename-formatting",
+            "description": "Filename formatting string to set."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "SetFilenameFormatting"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "general"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "unreleased"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "SetFilenameFormatting"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Get the filename formatting string",
+        "return": "{String} `filename-formatting` Current filename formatting string.",
+        "api": "requests",
+        "name": "GetFilenameFormatting",
+        "category": "general",
+        "since": "unreleased",
+        "returns": [
+          {
+            "type": "String",
+            "name": "filename-formatting",
+            "description": "Current filename formatting string."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "GetFilenameFormatting"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "general"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "unreleased"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "GetFilenameFormatting"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
       }
     ],
     "profiles": [
