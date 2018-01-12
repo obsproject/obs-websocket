@@ -12,8 +12,8 @@
  * @return {double} `version` OBSRemote compatible API version. Fixed to 1.1 for retrocompatibility.
  * @return {String} `obs-websocket-version` obs-websocket plugin version.
  * @return {String} `obs-studio-version` OBS Studio program version.
- * @return {String|Array} `available-requests` List of available request types.
- *
+ * @return {String} `available-requests` List of available request types, formatted as a comma-separated list string (e.g. : "Method1,Method2,Method3").
+ * 
  * @api requests
  * @name GetVersion
  * @category general
@@ -109,6 +109,7 @@ void WSRequestHandler::HandleAuthenticate(WSRequestHandler* req) {
  * @api requests
  * @name SetHeartbeat
  * @category general
+ * @since unreleased
  */
  void WSRequestHandler::HandleSetHeartbeat(WSRequestHandler* req) {
     if (!req->hasField("enable")) {

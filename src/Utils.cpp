@@ -35,7 +35,7 @@ const char* qstring_data_copy(QString value) {
     return constStringData;
 }
 
-obs_data_array_t* stringListToArray(char** strings, char* key) {
+obs_data_array_t* Utils::StringListToArray(char** strings, char* key) {
     if (!strings)
         return obs_data_array_create();
 
@@ -222,22 +222,6 @@ obs_data_t* Utils::GetSceneData(obs_source_t* source) {
     return sceneData;
 }
 
-obs_data_array_t* Utils::GetSceneCollections() {
-    char** sceneCollections = obs_frontend_get_scene_collections();
-    obs_data_array_t* list = stringListToArray(sceneCollections, "sc-name");
-
-    bfree(sceneCollections);
-    return list;
-}
-
-obs_data_array_t* Utils::GetProfiles() {
-    char** profiles = obs_frontend_get_profiles();
-    obs_data_array_t* list = stringListToArray(profiles, "profile-name");
-
-    bfree(profiles);
-    return list;
-}
-
 QSpinBox* Utils::GetTransitionDurationControl() {
     QMainWindow* window = (QMainWindow*)obs_frontend_get_main_window();
     return window->findChild<QSpinBox*>("transitionDuration");
@@ -315,7 +299,7 @@ void Utils::TransitionToProgram() {
     transitionBtn->click();
 }
 
-const char* Utils::OBSVersionString() {
+QString Utils::OBSVersionString() {
     uint32_t version = obs_get_version();
 
     uint8_t major, minor, patch;
@@ -323,8 +307,8 @@ const char* Utils::OBSVersionString() {
     minor = (version >> 16) & 0xFF;
     patch = version & 0xFF;
 
-    char* result = (char*)bmalloc(sizeof(char) * 12);
-    sprintf(result, "%d.%d.%d", major, minor, patch);
+    QString result = QString("%1.%2.%3")
+        .arg(major).arg(minor).arg(patch);
 
     return result;
 }
@@ -367,8 +351,9 @@ const char* Utils::GetRecordingFolder() {
 }
 
 bool Utils::SetRecordingFolder(const char* path) {
-    if (!QDir(path).exists())
-        return false;
+    QDir dir(path);
+    if (!dir.exists())
+        dir.mkpath(".");
 
     config_t* profile = obs_frontend_get_profile_config();
     QString outputMode = config_get_string(profile, "Output", "Mode");

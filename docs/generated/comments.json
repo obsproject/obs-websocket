@@ -1330,7 +1330,7 @@
           "{double} `version` OBSRemote compatible API version. Fixed to 1.1 for retrocompatibility.",
           "{String} `obs-websocket-version` obs-websocket plugin version.",
           "{String} `obs-studio-version` OBS Studio program version.",
-          "{String|Array} `available-requests` List of available request types."
+          "{String} `available-requests` List of available request types, formatted as a comma-separated list string (e.g. : \"Method1,Method2,Method3\")."
         ],
         "api": "requests",
         "name": "GetVersion",
@@ -1353,9 +1353,9 @@
             "description": "OBS Studio program version."
           },
           {
-            "type": "String|Array",
+            "type": "String",
             "name": "available-requests",
-            "description": "List of available request types."
+            "description": "List of available request types, formatted as a comma-separated list string (e.g. : \"Method1,Method2,Method3\")."
           }
         ],
         "names": [
@@ -1487,6 +1487,7 @@
         "api": "requests",
         "name": "SetHeartbeat",
         "category": "general",
+        "since": "unreleased",
         "params": [
           {
             "type": "boolean",
@@ -1504,6 +1505,12 @@
           {
             "name": "",
             "description": "general"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "unreleased"
           }
         ],
         "heading": {
@@ -1925,7 +1932,7 @@
       },
       {
         "subheads": [],
-        "description": "Save and flush the contents of the Replay Buffer to disk. This is\nbasically the same as triggering the \"Save Replay Buffer\" hotkey.\nWill return an `error` if the Replay Buffer is not active.",
+        "description": "Flush and save the contents of the Replay Buffer to disk. This is\nbasically the same as triggering the \"Save Replay Buffer\" hotkey.\nWill return an `error` if the Replay Buffer is not active.",
         "api": "requests",
         "name": "SaveReplayBuffer",
         "category": "replay buffer",
@@ -2035,6 +2042,678 @@
         "heading": {
           "level": 2,
           "text": "GetCurrentSceneCollection"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "List available scene collections",
+        "return": [
+          "{Object|Array} `scene-collections` Scene collections list",
+          "{String} `scene-collections.*.`"
+        ],
+        "api": "requests",
+        "name": "ListSceneCollections",
+        "category": "scene collections",
+        "since": "4.0.0",
+        "returns": [
+          {
+            "type": "Object|Array",
+            "name": "scene-collections",
+            "description": "Scene collections list"
+          },
+          {
+            "type": "String",
+            "name": "scene-collections.*.",
+            "description": ""
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "ListSceneCollections"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "scene collections"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.0.0"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "ListSceneCollections"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      }
+    ],
+    "scene items": [
+      {
+        "subheads": [],
+        "description": "Gets the scene specific properties of the specified source item.",
+        "param": [
+          "{String (optional)} `scene-name` the name of the scene that the source item belongs to. Defaults to the current scene.",
+          "{String} `item` The name of the source."
+        ],
+        "return": [
+          "{String} `name` The name of the source.",
+          "{int} `position.x` The x position of the source from the left.",
+          "{int} `position.y` The y position of the source from the top.",
+          "{int} `position.alignment` The point on the source that the item is manipulated from.",
+          "{double} `rotation` The clockwise rotation of the item in degrees around the point of alignment.",
+          "{double} `scale.x` The x-scale factor of the source.",
+          "{double} `scale.y` The y-scale factor of the source.",
+          "{int} `crop.top` The number of pixels cropped off the top of the source before scaling.",
+          "{int} `crop.right` The number of pixels cropped off the right of the source before scaling.",
+          "{int} `crop.bottom` The number of pixels cropped off the bottom of the source before scaling.",
+          "{int} `crop.left` The number of pixels cropped off the left of the source before scaling.",
+          "{bool} `visible` If the source is visible.",
+          "{String} `bounds.type` Type of bounding box.",
+          "{int} `bounds.alignment` Alignment of the bounding box.",
+          "{double} `bounds.x` Width of the bounding box.",
+          "{double} `bounds.y` Height of the bounding box."
+        ],
+        "api": "requests",
+        "name": "GetSceneItemProperties",
+        "category": "scene items",
+        "since": "unreleased",
+        "returns": [
+          {
+            "type": "String",
+            "name": "name",
+            "description": "The name of the source."
+          },
+          {
+            "type": "int",
+            "name": "position.x",
+            "description": "The x position of the source from the left."
+          },
+          {
+            "type": "int",
+            "name": "position.y",
+            "description": "The y position of the source from the top."
+          },
+          {
+            "type": "int",
+            "name": "position.alignment",
+            "description": "The point on the source that the item is manipulated from."
+          },
+          {
+            "type": "double",
+            "name": "rotation",
+            "description": "The clockwise rotation of the item in degrees around the point of alignment."
+          },
+          {
+            "type": "double",
+            "name": "scale.x",
+            "description": "The x-scale factor of the source."
+          },
+          {
+            "type": "double",
+            "name": "scale.y",
+            "description": "The y-scale factor of the source."
+          },
+          {
+            "type": "int",
+            "name": "crop.top",
+            "description": "The number of pixels cropped off the top of the source before scaling."
+          },
+          {
+            "type": "int",
+            "name": "crop.right",
+            "description": "The number of pixels cropped off the right of the source before scaling."
+          },
+          {
+            "type": "int",
+            "name": "crop.bottom",
+            "description": "The number of pixels cropped off the bottom of the source before scaling."
+          },
+          {
+            "type": "int",
+            "name": "crop.left",
+            "description": "The number of pixels cropped off the left of the source before scaling."
+          },
+          {
+            "type": "bool",
+            "name": "visible",
+            "description": "If the source is visible."
+          },
+          {
+            "type": "String",
+            "name": "bounds.type",
+            "description": "Type of bounding box."
+          },
+          {
+            "type": "int",
+            "name": "bounds.alignment",
+            "description": "Alignment of the bounding box."
+          },
+          {
+            "type": "double",
+            "name": "bounds.x",
+            "description": "Width of the bounding box."
+          },
+          {
+            "type": "double",
+            "name": "bounds.y",
+            "description": "Height of the bounding box."
+          }
+        ],
+        "params": [
+          {
+            "type": "String (optional)",
+            "name": "scene-name",
+            "description": "the name of the scene that the source item belongs to. Defaults to the current scene."
+          },
+          {
+            "type": "String",
+            "name": "item",
+            "description": "The name of the source."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "GetSceneItemProperties"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "scene items"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "unreleased"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "GetSceneItemProperties"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Sets the scene specific properties of a source. Unspecified properties will remain unchanged.",
+        "param": [
+          "{String (optional)} `scene-name` the name of the scene that the source item belongs to. Defaults to the current scene.",
+          "{String} `item` The name of the source.",
+          "{int} `position.x` The new x position of the source.",
+          "{int} `position.y` The new y position of the source.",
+          "{int} `position.alignment` The new alignment of the source.",
+          "{double} `rotation` The new clockwise rotation of the item in degrees.",
+          "{double} `scale.x` The new x scale of the item.",
+          "{double} `scale.y` The new y scale of the item.",
+          "{int} `crop.top` The new amount of pixels cropped off the top of the source before scaling.",
+          "{int} `crop.bottom` The new amount of pixels cropped off the bottom of the source before scaling.",
+          "{int} `crop.left` The new amount of pixels cropped off the left of the source before scaling.",
+          "{int} `crop.right` The new amount of pixels cropped off the right of the source before scaling.",
+          "{bool} `visible` The new visibility of the source. 'true' shows source, 'false' hides source.",
+          "{String} `bounds.type` The new bounds type of the source.",
+          "{int} `bounds.alignment` The new alignment of the bounding box. (0-2, 4-6, 8-10)",
+          "{double} `bounds.x` The new width of the bounding box.",
+          "{double} `bounds.y` The new height of the bounding box."
+        ],
+        "api": "requests",
+        "name": "SetSceneItemProperties",
+        "category": "scene items",
+        "since": "unreleased",
+        "params": [
+          {
+            "type": "String (optional)",
+            "name": "scene-name",
+            "description": "the name of the scene that the source item belongs to. Defaults to the current scene."
+          },
+          {
+            "type": "String",
+            "name": "item",
+            "description": "The name of the source."
+          },
+          {
+            "type": "int",
+            "name": "position.x",
+            "description": "The new x position of the source."
+          },
+          {
+            "type": "int",
+            "name": "position.y",
+            "description": "The new y position of the source."
+          },
+          {
+            "type": "int",
+            "name": "position.alignment",
+            "description": "The new alignment of the source."
+          },
+          {
+            "type": "double",
+            "name": "rotation",
+            "description": "The new clockwise rotation of the item in degrees."
+          },
+          {
+            "type": "double",
+            "name": "scale.x",
+            "description": "The new x scale of the item."
+          },
+          {
+            "type": "double",
+            "name": "scale.y",
+            "description": "The new y scale of the item."
+          },
+          {
+            "type": "int",
+            "name": "crop.top",
+            "description": "The new amount of pixels cropped off the top of the source before scaling."
+          },
+          {
+            "type": "int",
+            "name": "crop.bottom",
+            "description": "The new amount of pixels cropped off the bottom of the source before scaling."
+          },
+          {
+            "type": "int",
+            "name": "crop.left",
+            "description": "The new amount of pixels cropped off the left of the source before scaling."
+          },
+          {
+            "type": "int",
+            "name": "crop.right",
+            "description": "The new amount of pixels cropped off the right of the source before scaling."
+          },
+          {
+            "type": "bool",
+            "name": "visible",
+            "description": "The new visibility of the source. 'true' shows source, 'false' hides source."
+          },
+          {
+            "type": "String",
+            "name": "bounds.type",
+            "description": "The new bounds type of the source."
+          },
+          {
+            "type": "int",
+            "name": "bounds.alignment",
+            "description": "The new alignment of the bounding box. (0-2, 4-6, 8-10)"
+          },
+          {
+            "type": "double",
+            "name": "bounds.x",
+            "description": "The new width of the bounding box."
+          },
+          {
+            "type": "double",
+            "name": "bounds.y",
+            "description": "The new height of the bounding box."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "SetSceneItemProperties"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "scene items"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "unreleased"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "SetSceneItemProperties"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Reset a scene item.",
+        "param": [
+          "{String (optional)} `scene-name` Name of the scene the source belogns to. Defaults to the current scene.",
+          "{String} `item` Name of the source item."
+        ],
+        "api": "requests",
+        "name": "ResetSceneItem",
+        "category": "scene items",
+        "since": "4.2.0",
+        "params": [
+          {
+            "type": "String (optional)",
+            "name": "scene-name",
+            "description": "Name of the scene the source belogns to. Defaults to the current scene."
+          },
+          {
+            "type": "String",
+            "name": "item",
+            "description": "Name of the source item."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "ResetSceneItem"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "scene items"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.2.0"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "ResetSceneItem"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Show or hide a specified source item in a specified scene.",
+        "param": [
+          "{String} `source` Scene item name in the specified scene.",
+          "{boolean} `render` true = shown ; false = hidden",
+          "{String (optional)} `scene-name` Name of the scene where the source resides. Defaults to the currently active scene."
+        ],
+        "api": "requests",
+        "name": "SetSceneItemRender",
+        "category": "scene items",
+        "since": "0.3",
+        "deprecated": "Since unreleased. Prefer the use of SetSceneItemProperties.",
+        "params": [
+          {
+            "type": "String",
+            "name": "source",
+            "description": "Scene item name in the specified scene."
+          },
+          {
+            "type": "boolean",
+            "name": "render",
+            "description": "true = shown ; false = hidden"
+          },
+          {
+            "type": "String (optional)",
+            "name": "scene-name",
+            "description": "Name of the scene where the source resides. Defaults to the currently active scene."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "SetSceneItemRender"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "scene items"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "0.3"
+          }
+        ],
+        "deprecateds": [
+          {
+            "name": "",
+            "description": "Since unreleased. Prefer the use of SetSceneItemProperties."
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "SetSceneItemRender"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Sets the coordinates of a specified source item.",
+        "param": [
+          "{String (optional)} `scene-name` The name of the scene that the source item belongs to. Defaults to the current scene.",
+          "{String} `item` The name of the source item.",
+          "{double} `x` X coordinate.",
+          "{double} `y` Y coordinate."
+        ],
+        "api": "requests",
+        "name": "SetSceneItemPosition",
+        "category": "scene items",
+        "since": "4.0.0",
+        "deprecated": "Since unreleased. Prefer the use of SetSceneItemProperties.",
+        "params": [
+          {
+            "type": "String (optional)",
+            "name": "scene-name",
+            "description": "The name of the scene that the source item belongs to. Defaults to the current scene."
+          },
+          {
+            "type": "String",
+            "name": "item",
+            "description": "The name of the source item."
+          },
+          {
+            "type": "double",
+            "name": "x",
+            "description": "X coordinate."
+          },
+          {
+            "type": "double",
+            "name": "y",
+            "description": "Y coordinate."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "SetSceneItemPosition"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "scene items"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.0.0"
+          }
+        ],
+        "deprecateds": [
+          {
+            "name": "",
+            "description": "Since unreleased. Prefer the use of SetSceneItemProperties."
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "SetSceneItemPosition"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Set the transform of the specified source item.",
+        "param": [
+          "{String (optional)} `scene-name` The name of the scene that the source item belongs to. Defaults to the current scene.",
+          "{String} `item` The name of the source item.",
+          "{double} `x-scale` Width scale factor.",
+          "{double} `y-scale` Height scale factor.",
+          "{double} `rotation` Source item rotation (in degrees)."
+        ],
+        "api": "requests",
+        "name": "SetSceneItemTransform",
+        "category": "scene items",
+        "since": "4.0.0",
+        "deprecated": "Since unreleased. Prefer the use of SetSceneItemProperties.",
+        "params": [
+          {
+            "type": "String (optional)",
+            "name": "scene-name",
+            "description": "The name of the scene that the source item belongs to. Defaults to the current scene."
+          },
+          {
+            "type": "String",
+            "name": "item",
+            "description": "The name of the source item."
+          },
+          {
+            "type": "double",
+            "name": "x-scale",
+            "description": "Width scale factor."
+          },
+          {
+            "type": "double",
+            "name": "y-scale",
+            "description": "Height scale factor."
+          },
+          {
+            "type": "double",
+            "name": "rotation",
+            "description": "Source item rotation (in degrees)."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "SetSceneItemTransform"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "scene items"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.0.0"
+          }
+        ],
+        "deprecateds": [
+          {
+            "name": "",
+            "description": "Since unreleased. Prefer the use of SetSceneItemProperties."
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "SetSceneItemTransform"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Sets the crop coordinates of the specified source item.",
+        "param": [
+          "{String (optional)} `scene-name` the name of the scene that the source item belongs to. Defaults to the current scene.",
+          "{String} `item` The name of the source.",
+          "{int} `top` Pixel position of the top of the source item.",
+          "{int} `bottom` Pixel position of the bottom of the source item.",
+          "{int} `left` Pixel position of the left of the source item.",
+          "{int} `right` Pixel position of the right of the source item."
+        ],
+        "api": "requests",
+        "name": "SetSceneItemCrop",
+        "category": "scene items",
+        "since": "4.1.0",
+        "deprecated": "Since unreleased. Prefer the use of SetSceneItemProperties.",
+        "params": [
+          {
+            "type": "String (optional)",
+            "name": "scene-name",
+            "description": "the name of the scene that the source item belongs to. Defaults to the current scene."
+          },
+          {
+            "type": "String",
+            "name": "item",
+            "description": "The name of the source."
+          },
+          {
+            "type": "int",
+            "name": "top",
+            "description": "Pixel position of the top of the source item."
+          },
+          {
+            "type": "int",
+            "name": "bottom",
+            "description": "Pixel position of the bottom of the source item."
+          },
+          {
+            "type": "int",
+            "name": "left",
+            "description": "Pixel position of the left of the source item."
+          },
+          {
+            "type": "int",
+            "name": "right",
+            "description": "Pixel position of the right of the source item."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "SetSceneItemCrop"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "scene items"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.1.0"
+          }
+        ],
+        "deprecateds": [
+          {
+            "name": "",
+            "description": "Since unreleased. Prefer the use of SetSceneItemProperties."
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "SetSceneItemCrop"
         },
         "lead": "",
         "type": "class",
@@ -2185,38 +2864,43 @@
     "sources": [
       {
         "subheads": [],
-        "description": "Show or hide a specified source item in a specified scene.",
-        "param": [
-          "{String} `source` Name of the source in the specified scene.",
-          "{boolean} `render` Desired visibility.",
-          "{String (optional)} `scene-name` Name of the scene where the source resides. Defaults to the currently active scene."
+        "description": "List all sources available in the running OBS instance",
+        "return": [
+          "{Array of Objects} `sources` Array of sources as objects",
+          "{String} `sources.*.name` Unique source name",
+          "{String} `sources.*.typeId` Non-unique source internal type (a.k.a type id)",
+          "{String} `sources.*.type` Source type. Value is one of the following: \"input\", \"filter\", \"transition\", \"scene\" or \"unknown\""
         ],
         "api": "requests",
-        "name": "SetSourceRender",
+        "name": "GetSourcesList",
         "category": "sources",
-        "since": "0.3",
-        "deprecated": "Since unreleased. Prefer the use of SetSceneItemProperties.",
-        "params": [
+        "since": "unreleased",
+        "returns": [
+          {
+            "type": "Array of Objects",
+            "name": "sources",
+            "description": "Array of sources as objects"
+          },
           {
             "type": "String",
-            "name": "source",
-            "description": "Name of the source in the specified scene."
+            "name": "sources.*.name",
+            "description": "Unique source name"
           },
           {
-            "type": "boolean",
-            "name": "render",
-            "description": "Desired visibility."
+            "type": "String",
+            "name": "sources.*.typeId",
+            "description": "Non-unique source internal type (a.k.a type id)"
           },
           {
-            "type": "String (optional)",
-            "name": "scene-name",
-            "description": "Name of the scene where the source resides. Defaults to the currently active scene."
+            "type": "String",
+            "name": "sources.*.type",
+            "description": "Source type. Value is one of the following: \"input\", \"filter\", \"transition\", \"scene\" or \"unknown\""
           }
         ],
         "names": [
           {
             "name": "",
-            "description": "SetSourceRender"
+            "description": "GetSourcesList"
           }
         ],
         "categories": [
@@ -2228,18 +2912,12 @@
         "sinces": [
           {
             "name": "",
-            "description": "0.3"
-          }
-        ],
-        "deprecateds": [
-          {
-            "name": "",
-            "description": "Since unreleased. Prefer the use of SetSceneItemProperties."
+            "description": "unreleased"
           }
         ],
         "heading": {
           "level": 2,
-          "text": "SetSourceRender"
+          "text": "GetSourcesList"
         },
         "lead": "",
         "type": "class",
@@ -2247,31 +2925,97 @@
       },
       {
         "subheads": [],
-        "description": "Set the volume of the specified source.",
-        "param": [
-          "{String} `source` Name of the source.",
-          "{double} `volume` Desired volume. Must be between `0.0` and `1.0`."
+        "description": "Get a list of all available sources types",
+        "return": [
+          "{Array of Objects} `ids` Array of sources as objects",
+          "{String} `ids.*.typeId` Non-unique internal source type ID",
+          "{String} `ids.*.displayName` Display name of the source type",
+          "{String} `ids.*.type` Type. Value is one of the following: \"input\", \"filter\", \"transition\" or \"other\"",
+          "{Object} `ids.*.defaultSettings` Default settings of this source type",
+          "{Object} `ids.*.caps` Source type capabilities",
+          "{Boolean} `ids.*.caps.isAsync` True if source of this type provide frames asynchronously",
+          "{Boolean} `ids.*.caps.hasVideo` True if sources of this type provide video",
+          "{Boolean} `ids.*.caps.hasAudio` True if sources of this type provide audio",
+          "{Boolean} `ids.*.caps.canInteract` True if interaction with this sources of this type is possible",
+          "{Boolean} `ids.*.caps.isComposite` True if sources of this type composite one or more sub-sources",
+          "{Boolean} `ids.*.caps.doNotDuplicate` True if sources of this type should not be fully duplicated",
+          "{Boolean} `ids.*.caps.doNotSelfMonitor` True if sources of this type may cause a feedback loop if it's audio is monitored and shouldn't be"
         ],
         "api": "requests",
-        "name": "SetVolume",
+        "name": "GetSourcesTypesList",
         "category": "sources",
-        "since": "4.0.0",
-        "params": [
+        "since": "unreleased",
+        "returns": [
           {
-            "type": "String",
-            "name": "source",
-            "description": "Name of the source."
+            "type": "Array of Objects",
+            "name": "ids",
+            "description": "Array of sources as objects"
           },
           {
-            "type": "double",
-            "name": "volume",
-            "description": "Desired volume. Must be between `0.0` and `1.0`."
+            "type": "String",
+            "name": "ids.*.typeId",
+            "description": "Non-unique internal source type ID"
+          },
+          {
+            "type": "String",
+            "name": "ids.*.displayName",
+            "description": "Display name of the source type"
+          },
+          {
+            "type": "String",
+            "name": "ids.*.type",
+            "description": "Type. Value is one of the following: \"input\", \"filter\", \"transition\" or \"other\""
+          },
+          {
+            "type": "Object",
+            "name": "ids.*.defaultSettings",
+            "description": "Default settings of this source type"
+          },
+          {
+            "type": "Object",
+            "name": "ids.*.caps",
+            "description": "Source type capabilities"
+          },
+          {
+            "type": "Boolean",
+            "name": "ids.*.caps.isAsync",
+            "description": "True if source of this type provide frames asynchronously"
+          },
+          {
+            "type": "Boolean",
+            "name": "ids.*.caps.hasVideo",
+            "description": "True if sources of this type provide video"
+          },
+          {
+            "type": "Boolean",
+            "name": "ids.*.caps.hasAudio",
+            "description": "True if sources of this type provide audio"
+          },
+          {
+            "type": "Boolean",
+            "name": "ids.*.caps.canInteract",
+            "description": "True if interaction with this sources of this type is possible"
+          },
+          {
+            "type": "Boolean",
+            "name": "ids.*.caps.isComposite",
+            "description": "True if sources of this type composite one or more sub-sources"
+          },
+          {
+            "type": "Boolean",
+            "name": "ids.*.caps.doNotDuplicate",
+            "description": "True if sources of this type should not be fully duplicated"
+          },
+          {
+            "type": "Boolean",
+            "name": "ids.*.caps.doNotSelfMonitor",
+            "description": "True if sources of this type may cause a feedback loop if it's audio is monitored and shouldn't be"
           }
         ],
         "names": [
           {
             "name": "",
-            "description": "SetVolume"
+            "description": "GetSourcesTypesList"
           }
         ],
         "categories": [
@@ -2283,12 +3027,12 @@
         "sinces": [
           {
             "name": "",
-            "description": "4.0.0"
+            "description": "unreleased"
           }
         ],
         "heading": {
           "level": 2,
-          "text": "SetVolume"
+          "text": "GetSourcesTypesList"
         },
         "lead": "",
         "type": "class",
@@ -2359,72 +3103,31 @@
       },
       {
         "subheads": [],
-        "description": "Inverts the mute status of a specified source.",
-        "param": "{String} `source` The name of the source.",
-        "api": "requests",
-        "name": "ToggleMute",
-        "category": "sources",
-        "since": "4.0.0",
-        "params": [
-          {
-            "type": "String",
-            "name": "source",
-            "description": "The name of the source."
-          }
-        ],
-        "names": [
-          {
-            "name": "",
-            "description": "ToggleMute"
-          }
-        ],
-        "categories": [
-          {
-            "name": "",
-            "description": "sources"
-          }
-        ],
-        "sinces": [
-          {
-            "name": "",
-            "description": "4.0.0"
-          }
-        ],
-        "heading": {
-          "level": 2,
-          "text": "ToggleMute"
-        },
-        "lead": "",
-        "type": "class",
-        "examples": []
-      },
-      {
-        "subheads": [],
-        "description": "Sets the mute status of a specified source.",
+        "description": "Set the volume of the specified source.",
         "param": [
-          "{String} `source` The name of the source.",
-          "{boolean} `mute` Desired mute status."
+          "{String} `source` Name of the source.",
+          "{double} `volume` Desired volume. Must be between `0.0` and `1.0`."
         ],
         "api": "requests",
-        "name": "SetMute",
+        "name": "SetVolume",
         "category": "sources",
         "since": "4.0.0",
         "params": [
           {
             "type": "String",
             "name": "source",
-            "description": "The name of the source."
+            "description": "Name of the source."
           },
           {
-            "type": "boolean",
-            "name": "mute",
-            "description": "Desired mute status."
+            "type": "double",
+            "name": "volume",
+            "description": "Desired volume. Must be between `0.0` and `1.0`."
           }
         ],
         "names": [
           {
             "name": "",
-            "description": "SetMute"
+            "description": "SetVolume"
           }
         ],
         "categories": [
@@ -2441,7 +3144,7 @@
         ],
         "heading": {
           "level": 2,
-          "text": "SetMute"
+          "text": "SetVolume"
         },
         "lead": "",
         "type": "class",
@@ -2499,6 +3202,96 @@
         "heading": {
           "level": 2,
           "text": "GetMute"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Sets the mute status of a specified source.",
+        "param": [
+          "{String} `source` The name of the source.",
+          "{boolean} `mute` Desired mute status."
+        ],
+        "api": "requests",
+        "name": "SetMute",
+        "category": "sources",
+        "since": "4.0.0",
+        "params": [
+          {
+            "type": "String",
+            "name": "source",
+            "description": "The name of the source."
+          },
+          {
+            "type": "boolean",
+            "name": "mute",
+            "description": "Desired mute status."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "SetMute"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "sources"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.0.0"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "SetMute"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Inverts the mute status of a specified source.",
+        "param": "{String} `source` The name of the source.",
+        "api": "requests",
+        "name": "ToggleMute",
+        "category": "sources",
+        "since": "4.0.0",
+        "params": [
+          {
+            "type": "String",
+            "name": "source",
+            "description": "The name of the source."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "ToggleMute"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "sources"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.0.0"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "ToggleMute"
         },
         "lead": "",
         "type": "class",
@@ -2612,353 +3405,53 @@
       },
       {
         "subheads": [],
-        "description": "Sets the coordinates of a specified source item.",
+        "description": "Get settings of the specified source",
         "param": [
-          "{String (optional)} `scene-name` The name of the scene that the source item belongs to. Defaults to the current scene.",
-          "{String} `item` The name of the source item.",
-          "{double} `x` X coordinate.",
-          "{double} `y` Y coordinate."
-        ],
-        "api": "requests",
-        "name": "SetSceneItemPosition",
-        "category": "sources",
-        "since": "4.0.0",
-        "deprecated": "Since unreleased. Prefer the use of SetSceneItemProperties.",
-        "params": [
-          {
-            "type": "String (optional)",
-            "name": "scene-name",
-            "description": "The name of the scene that the source item belongs to. Defaults to the current scene."
-          },
-          {
-            "type": "String",
-            "name": "item",
-            "description": "The name of the source item."
-          },
-          {
-            "type": "double",
-            "name": "x",
-            "description": "X coordinate."
-          },
-          {
-            "type": "double",
-            "name": "y",
-            "description": "Y coordinate."
-          }
-        ],
-        "names": [
-          {
-            "name": "",
-            "description": "SetSceneItemPosition"
-          }
-        ],
-        "categories": [
-          {
-            "name": "",
-            "description": "sources"
-          }
-        ],
-        "sinces": [
-          {
-            "name": "",
-            "description": "4.0.0"
-          }
-        ],
-        "deprecateds": [
-          {
-            "name": "",
-            "description": "Since unreleased. Prefer the use of SetSceneItemProperties."
-          }
-        ],
-        "heading": {
-          "level": 2,
-          "text": "SetSceneItemPosition"
-        },
-        "lead": "",
-        "type": "class",
-        "examples": []
-      },
-      {
-        "subheads": [],
-        "description": "Set the transform of the specified source item.",
-        "param": [
-          "{String (optional)} `scene-name` The name of the scene that the source item belongs to. Defaults to the current scene.",
-          "{String} `item` The name of the source item.",
-          "{double} `x-scale` Width scale factor.",
-          "{double} `y-scale` Height scale factor.",
-          "{double} `rotation` Source item rotation (in degrees)."
-        ],
-        "api": "requests",
-        "name": "SetSceneItemTransform",
-        "category": "sources",
-        "since": "4.0.0",
-        "deprecated": "Since unreleased. Prefer the use of SetSceneItemProperties.",
-        "params": [
-          {
-            "type": "String (optional)",
-            "name": "scene-name",
-            "description": "The name of the scene that the source item belongs to. Defaults to the current scene."
-          },
-          {
-            "type": "String",
-            "name": "item",
-            "description": "The name of the source item."
-          },
-          {
-            "type": "double",
-            "name": "x-scale",
-            "description": "Width scale factor."
-          },
-          {
-            "type": "double",
-            "name": "y-scale",
-            "description": "Height scale factor."
-          },
-          {
-            "type": "double",
-            "name": "rotation",
-            "description": "Source item rotation (in degrees)."
-          }
-        ],
-        "names": [
-          {
-            "name": "",
-            "description": "SetSceneItemTransform"
-          }
-        ],
-        "categories": [
-          {
-            "name": "",
-            "description": "sources"
-          }
-        ],
-        "sinces": [
-          {
-            "name": "",
-            "description": "4.0.0"
-          }
-        ],
-        "deprecateds": [
-          {
-            "name": "",
-            "description": "Since unreleased. Prefer the use of SetSceneItemProperties."
-          }
-        ],
-        "heading": {
-          "level": 2,
-          "text": "SetSceneItemTransform"
-        },
-        "lead": "",
-        "type": "class",
-        "examples": []
-      },
-      {
-        "subheads": [],
-        "description": "Sets the crop coordinates of the specified source item.",
-        "param": [
-          "{String (optional)} `scene-name` the name of the scene that the source item belongs to. Defaults to the current scene.",
-          "{String} `item` The name of the source.",
-          "{int} `top` Pixel position of the top of the source item.",
-          "{int} `bottom` Pixel position of the bottom of the source item.",
-          "{int} `left` Pixel position of the left of the source item.",
-          "{int} `right` Pixel position of the right of the source item."
-        ],
-        "api": "requests",
-        "name": "SetSceneItemCrop",
-        "category": "sources",
-        "since": "4.1.0",
-        "deprecated": "Since unreleased. Prefer the use of SetSceneItemProperties.",
-        "params": [
-          {
-            "type": "String (optional)",
-            "name": "scene-name",
-            "description": "the name of the scene that the source item belongs to. Defaults to the current scene."
-          },
-          {
-            "type": "String",
-            "name": "item",
-            "description": "The name of the source."
-          },
-          {
-            "type": "int",
-            "name": "top",
-            "description": "Pixel position of the top of the source item."
-          },
-          {
-            "type": "int",
-            "name": "bottom",
-            "description": "Pixel position of the bottom of the source item."
-          },
-          {
-            "type": "int",
-            "name": "left",
-            "description": "Pixel position of the left of the source item."
-          },
-          {
-            "type": "int",
-            "name": "right",
-            "description": "Pixel position of the right of the source item."
-          }
-        ],
-        "names": [
-          {
-            "name": "",
-            "description": "SetSceneItemCrop"
-          }
-        ],
-        "categories": [
-          {
-            "name": "",
-            "description": "sources"
-          }
-        ],
-        "sinces": [
-          {
-            "name": "",
-            "description": "4.1.0"
-          }
-        ],
-        "deprecateds": [
-          {
-            "name": "",
-            "description": "Since unreleased. Prefer the use of SetSceneItemProperties."
-          }
-        ],
-        "heading": {
-          "level": 2,
-          "text": "SetSceneItemCrop"
-        },
-        "lead": "",
-        "type": "class",
-        "examples": []
-      },
-      {
-        "subheads": [],
-        "description": "Gets the scene specific properties of the specified source item.",
-        "param": [
-          "{String (optional)} `scene-name` the name of the scene that the source item belongs to. Defaults to the current scene.",
-          "{String} `item` The name of the source."
+          "{String} `sourceName` Name of the source item.",
+          "{String (optional)} `sourceType` Type of the specified source. Useful for type-checking if you expect a specific settings schema."
         ],
         "return": [
-          "{String} `name` The name of the source.",
-          "{int} `position.x` The x position of the source from the left.",
-          "{int} `position.y` The y position of the source from the top.",
-          "{int} `position.alignment` The point on the source that the item is manipulated from.",
-          "{double} `rotation` The clockwise rotation of the item in degrees around the point of alignment.",
-          "{double} `scale.x` The x-scale factor of the source.",
-          "{double} `scale.y` The y-scale factor of the source.",
-          "{int} `crop.top` The number of pixels cropped off the top of the source before scaling.",
-          "{int} `crop.right` The number of pixels cropped off the right of the source before scaling.",
-          "{int} `crop.bottom` The number of pixels cropped off the bottom of the source before scaling.",
-          "{int} `crop.left` The number of pixels cropped off the left of the source before scaling.",
-          "{bool} `visible` If the source is visible.",
-          "{String} `bounds.type` Type of bounding box.",
-          "{int} `bounds.alignment` Alignment of the bounding box.",
-          "{double} `bounds.x` Width of the bounding box.",
-          "{double} `bounds.y` Height of the bounding box."
+          "{String} `sourceName` Source name",
+          "{String} `sourceType` Type of the specified source",
+          "{Object} `sourceSettings` Source settings. Varying between source types."
         ],
         "api": "requests",
-        "name": "GetSceneItemProperties",
+        "name": "GetSourceSettings",
         "category": "sources",
         "since": "unreleased",
         "returns": [
           {
             "type": "String",
-            "name": "name",
-            "description": "The name of the source."
-          },
-          {
-            "type": "int",
-            "name": "position.x",
-            "description": "The x position of the source from the left."
-          },
-          {
-            "type": "int",
-            "name": "position.y",
-            "description": "The y position of the source from the top."
-          },
-          {
-            "type": "int",
-            "name": "position.alignment",
-            "description": "The point on the source that the item is manipulated from."
-          },
-          {
-            "type": "double",
-            "name": "rotation",
-            "description": "The clockwise rotation of the item in degrees around the point of alignment."
-          },
-          {
-            "type": "double",
-            "name": "scale.x",
-            "description": "The x-scale factor of the source."
-          },
-          {
-            "type": "double",
-            "name": "scale.y",
-            "description": "The y-scale factor of the source."
-          },
-          {
-            "type": "int",
-            "name": "crop.top",
-            "description": "The number of pixels cropped off the top of the source before scaling."
-          },
-          {
-            "type": "int",
-            "name": "crop.right",
-            "description": "The number of pixels cropped off the right of the source before scaling."
-          },
-          {
-            "type": "int",
-            "name": "crop.bottom",
-            "description": "The number of pixels cropped off the bottom of the source before scaling."
-          },
-          {
-            "type": "int",
-            "name": "crop.left",
-            "description": "The number of pixels cropped off the left of the source before scaling."
-          },
-          {
-            "type": "bool",
-            "name": "visible",
-            "description": "If the source is visible."
+            "name": "sourceName",
+            "description": "Source name"
           },
           {
             "type": "String",
-            "name": "bounds.type",
-            "description": "Type of bounding box."
+            "name": "sourceType",
+            "description": "Type of the specified source"
           },
           {
-            "type": "int",
-            "name": "bounds.alignment",
-            "description": "Alignment of the bounding box."
-          },
-          {
-            "type": "double",
-            "name": "bounds.x",
-            "description": "Width of the bounding box."
-          },
-          {
-            "type": "double",
-            "name": "bounds.y",
-            "description": "Height of the bounding box."
+            "type": "Object",
+            "name": "sourceSettings",
+            "description": "Source settings. Varying between source types."
           }
         ],
         "params": [
           {
-            "type": "String (optional)",
-            "name": "scene-name",
-            "description": "the name of the scene that the source item belongs to. Defaults to the current scene."
+            "type": "String",
+            "name": "sourceName",
+            "description": "Name of the source item."
           },
           {
-            "type": "String",
-            "name": "item",
-            "description": "The name of the source."
+            "type": "String (optional)",
+            "name": "sourceType",
+            "description": "Type of the specified source. Useful for type-checking if you expect a specific settings schema."
           }
         ],
         "names": [
           {
             "name": "",
-            "description": "GetSceneItemProperties"
+            "description": "GetSourceSettings"
           }
         ],
         "categories": [
@@ -2975,7 +3468,7 @@
         ],
         "heading": {
           "level": 2,
-          "text": "GetSceneItemProperties"
+          "text": "GetSourceSettings"
         },
         "lead": "",
         "type": "class",
@@ -2983,121 +3476,59 @@
       },
       {
         "subheads": [],
-        "description": "Sets the scene specific properties of a source. Unspecified properties will remain unchanged.",
+        "description": "Set settings of the specified source.",
         "param": [
-          "{String (optional)} `scene-name` the name of the scene that the source item belongs to. Defaults to the current scene.",
-          "{String} `item` The name of the source.",
-          "{int} `position.x` The new x position of the source.",
-          "{int} `position.y` The new y position of the source.",
-          "{int} `position.alignment` The new alignment of the source.",
-          "{double} `rotation` The new clockwise rotation of the item in degrees.",
-          "{double} `scale.x` The new x scale of the item.",
-          "{double} `scale.y` The new y scale of the item.",
-          "{int} `crop.top` The new amount of pixels cropped off the top of the source before scaling.",
-          "{int} `crop.bottom` The new amount of pixels cropped off the bottom of the source before scaling.",
-          "{int} `crop.left` The new amount of pixels cropped off the left of the source before scaling.",
-          "{int} `crop.right` The new amount of pixels cropped off the right of the source before scaling.",
-          "{bool} `visible` The new visibility of the source. 'true' shows source, 'false' hides source.",
-          "{String} `bounds.type` The new bounds type of the source.",
-          "{int} `bounds.alignment` The new alignment of the bounding box. (0-2, 4-6, 8-10)",
-          "{double} `bounds.x` The new width of the bounding box.",
-          "{double} `bounds.y` The new height of the bounding box."
+          "{String} `sourceName` Name of the source item.",
+          "{String (optional)} `sourceType` Type of the specified source. Useful for type-checking to avoid settings a set of settings incompatible with the actual source's type.",
+          "{Object} `sourceSettings` Source settings. Varying between source types."
+        ],
+        "return": [
+          "{String} `sourceName` Source name",
+          "{String} `sourceType` Type of the specified source",
+          "{Object} `sourceSettings` Source settings. Varying between source types."
         ],
         "api": "requests",
-        "name": "SetSceneItemProperties",
+        "name": "SetSourceSettings",
         "category": "sources",
         "since": "unreleased",
+        "returns": [
+          {
+            "type": "String",
+            "name": "sourceName",
+            "description": "Source name"
+          },
+          {
+            "type": "String",
+            "name": "sourceType",
+            "description": "Type of the specified source"
+          },
+          {
+            "type": "Object",
+            "name": "sourceSettings",
+            "description": "Source settings. Varying between source types."
+          }
+        ],
         "params": [
           {
+            "type": "String",
+            "name": "sourceName",
+            "description": "Name of the source item."
+          },
+          {
             "type": "String (optional)",
-            "name": "scene-name",
-            "description": "the name of the scene that the source item belongs to. Defaults to the current scene."
+            "name": "sourceType",
+            "description": "Type of the specified source. Useful for type-checking to avoid settings a set of settings incompatible with the actual source's type."
           },
           {
-            "type": "String",
-            "name": "item",
-            "description": "The name of the source."
-          },
-          {
-            "type": "int",
-            "name": "position.x",
-            "description": "The new x position of the source."
-          },
-          {
-            "type": "int",
-            "name": "position.y",
-            "description": "The new y position of the source."
-          },
-          {
-            "type": "int",
-            "name": "position.alignment",
-            "description": "The new alignment of the source."
-          },
-          {
-            "type": "double",
-            "name": "rotation",
-            "description": "The new clockwise rotation of the item in degrees."
-          },
-          {
-            "type": "double",
-            "name": "scale.x",
-            "description": "The new x scale of the item."
-          },
-          {
-            "type": "double",
-            "name": "scale.y",
-            "description": "The new y scale of the item."
-          },
-          {
-            "type": "int",
-            "name": "crop.top",
-            "description": "The new amount of pixels cropped off the top of the source before scaling."
-          },
-          {
-            "type": "int",
-            "name": "crop.bottom",
-            "description": "The new amount of pixels cropped off the bottom of the source before scaling."
-          },
-          {
-            "type": "int",
-            "name": "crop.left",
-            "description": "The new amount of pixels cropped off the left of the source before scaling."
-          },
-          {
-            "type": "int",
-            "name": "crop.right",
-            "description": "The new amount of pixels cropped off the right of the source before scaling."
-          },
-          {
-            "type": "bool",
-            "name": "visible",
-            "description": "The new visibility of the source. 'true' shows source, 'false' hides source."
-          },
-          {
-            "type": "String",
-            "name": "bounds.type",
-            "description": "The new bounds type of the source."
-          },
-          {
-            "type": "int",
-            "name": "bounds.alignment",
-            "description": "The new alignment of the bounding box. (0-2, 4-6, 8-10)"
-          },
-          {
-            "type": "double",
-            "name": "bounds.x",
-            "description": "The new width of the bounding box."
-          },
-          {
-            "type": "double",
-            "name": "bounds.y",
-            "description": "The new height of the bounding box."
+            "type": "Object",
+            "name": "sourceSettings",
+            "description": "Source settings. Varying between source types."
           }
         ],
         "names": [
           {
             "name": "",
-            "description": "SetSceneItemProperties"
+            "description": "SetSourceSettings"
           }
         ],
         "categories": [
@@ -3114,7 +3545,7 @@
         ],
         "heading": {
           "level": 2,
-          "text": "SetSceneItemProperties"
+          "text": "SetSourceSettings"
         },
         "lead": "",
         "type": "class",
@@ -3567,7 +3998,8 @@
         ],
         "return": [
           "{boolean} `is_local_file` Indicates that a local file is in use.",
-          "{String} `url` Url or file path.",
+          "{String} `local_file` file path.",
+          "{String} `url` Url.",
           "{String} `css` CSS to inject.",
           "{int} `width` Width.",
           "{int} `height` Height.",
@@ -3587,8 +4019,13 @@
           },
           {
             "type": "String",
+            "name": "local_file",
+            "description": "file path."
+          },
+          {
+            "type": "String",
             "name": "url",
-            "description": "Url or file path."
+            "description": "Url."
           },
           {
             "type": "String",
@@ -3666,7 +4103,8 @@
           "{String (optional)} `scene-name` Name of the scene that the source belongs to. Defaults to the current scene.",
           "{String} `source` Name of the source.",
           "{boolean (optional)} `is_local_file` Indicates that a local file is in use.",
-          "{String (optional)} `url` Url or file path.",
+          "{String (optional)} `local_file` file path.",
+          "{String (optional)} `url` Url.",
           "{String (optional)} `css` CSS to inject.",
           "{int (optional)} `width` Width.",
           "{int (optional)} `height` Height.",
@@ -3696,8 +4134,13 @@
           },
           {
             "type": "String (optional)",
+            "name": "local_file",
+            "description": "file path."
+          },
+          {
+            "type": "String (optional)",
             "name": "url",
-            "description": "Url or file path."
+            "description": "Url."
           },
           {
             "type": "String (optional)",
@@ -3751,379 +4194,6 @@
         "heading": {
           "level": 2,
           "text": "SetBrowserSourceProperties"
-        },
-        "lead": "",
-        "type": "class",
-        "examples": []
-      },
-      {
-        "subheads": [],
-        "description": "Reset a source item.",
-        "param": [
-          "{String (optional)} `scene-name` Name of the scene the source belogns to. Defaults to the current scene.",
-          "{String} `item` Name of the source item."
-        ],
-        "api": "requests",
-        "name": "ResetSceneItem",
-        "category": "sources",
-        "since": "4.2.0",
-        "params": [
-          {
-            "type": "String (optional)",
-            "name": "scene-name",
-            "description": "Name of the scene the source belogns to. Defaults to the current scene."
-          },
-          {
-            "type": "String",
-            "name": "item",
-            "description": "Name of the source item."
-          }
-        ],
-        "names": [
-          {
-            "name": "",
-            "description": "ResetSceneItem"
-          }
-        ],
-        "categories": [
-          {
-            "name": "",
-            "description": "sources"
-          }
-        ],
-        "sinces": [
-          {
-            "name": "",
-            "description": "4.2.0"
-          }
-        ],
-        "heading": {
-          "level": 2,
-          "text": "ResetSceneItem"
-        },
-        "lead": "",
-        "type": "class",
-        "examples": []
-      },
-      {
-        "subheads": [],
-        "description": "List all sources available in the running OBS instance",
-        "return": [
-          "{Array of Objects} `sources` Array of sources as objects",
-          "{String} `sources.*.name` Unique source name",
-          "{String} `sources.*.typeId` Non-unique source internal type (a.k.a type id)",
-          "{String} `sources.*.type` Source type. Value is one of the following: \"input\", \"filter\", \"transition\", \"scene\" or \"unknown\""
-        ],
-        "api": "requests",
-        "name": "GetSourcesList",
-        "category": "sources",
-        "since": "unreleased",
-        "returns": [
-          {
-            "type": "Array of Objects",
-            "name": "sources",
-            "description": "Array of sources as objects"
-          },
-          {
-            "type": "String",
-            "name": "sources.*.name",
-            "description": "Unique source name"
-          },
-          {
-            "type": "String",
-            "name": "sources.*.typeId",
-            "description": "Non-unique source internal type (a.k.a type id)"
-          },
-          {
-            "type": "String",
-            "name": "sources.*.type",
-            "description": "Source type. Value is one of the following: \"input\", \"filter\", \"transition\", \"scene\" or \"unknown\""
-          }
-        ],
-        "names": [
-          {
-            "name": "",
-            "description": "GetSourcesList"
-          }
-        ],
-        "categories": [
-          {
-            "name": "",
-            "description": "sources"
-          }
-        ],
-        "sinces": [
-          {
-            "name": "",
-            "description": "unreleased"
-          }
-        ],
-        "heading": {
-          "level": 2,
-          "text": "GetSourcesList"
-        },
-        "lead": "",
-        "type": "class",
-        "examples": []
-      },
-      {
-        "subheads": [],
-        "description": "Get a list of all available sources types",
-        "return": [
-          "{Array of Objects} `ids` Array of sources as objects",
-          "{String} `ids.*.typeId` Non-unique internal source type ID",
-          "{String} `ids.*.displayName` Display name of the source type",
-          "{String} `ids.*.type` Type. Value is one of the following: \"input\", \"filter\", \"transition\" or \"other\"",
-          "{Object} `ids.*.defaultSettings` Default settings of this source type",
-          "{Object} `ids.*.caps` Source type capabilities",
-          "{Boolean} `ids.*.caps.isAsync` True if source of this type provide frames asynchronously",
-          "{Boolean} `ids.*.caps.hasVideo` True if sources of this type provide video",
-          "{Boolean} `ids.*.caps.hasAudio` True if sources of this type provide audio",
-          "{Boolean} `ids.*.caps.canInteract` True if interaction with this sources of this type is possible",
-          "{Boolean} `ids.*.caps.isComposite` True if sources of this type composite one or more sub-sources",
-          "{Boolean} `ids.*.caps.doNotDuplicate` True if sources of this type should not be fully duplicated",
-          "{Boolean} `ids.*.caps.doNotSelfMonitor` True if sources of this type may cause a feedback loop if it's audio is monitored and shouldn't be"
-        ],
-        "api": "requests",
-        "name": "GetSourcesTypesList",
-        "category": "sources",
-        "since": "unreleased",
-        "returns": [
-          {
-            "type": "Array of Objects",
-            "name": "ids",
-            "description": "Array of sources as objects"
-          },
-          {
-            "type": "String",
-            "name": "ids.*.typeId",
-            "description": "Non-unique internal source type ID"
-          },
-          {
-            "type": "String",
-            "name": "ids.*.displayName",
-            "description": "Display name of the source type"
-          },
-          {
-            "type": "String",
-            "name": "ids.*.type",
-            "description": "Type. Value is one of the following: \"input\", \"filter\", \"transition\" or \"other\""
-          },
-          {
-            "type": "Object",
-            "name": "ids.*.defaultSettings",
-            "description": "Default settings of this source type"
-          },
-          {
-            "type": "Object",
-            "name": "ids.*.caps",
-            "description": "Source type capabilities"
-          },
-          {
-            "type": "Boolean",
-            "name": "ids.*.caps.isAsync",
-            "description": "True if source of this type provide frames asynchronously"
-          },
-          {
-            "type": "Boolean",
-            "name": "ids.*.caps.hasVideo",
-            "description": "True if sources of this type provide video"
-          },
-          {
-            "type": "Boolean",
-            "name": "ids.*.caps.hasAudio",
-            "description": "True if sources of this type provide audio"
-          },
-          {
-            "type": "Boolean",
-            "name": "ids.*.caps.canInteract",
-            "description": "True if interaction with this sources of this type is possible"
-          },
-          {
-            "type": "Boolean",
-            "name": "ids.*.caps.isComposite",
-            "description": "True if sources of this type composite one or more sub-sources"
-          },
-          {
-            "type": "Boolean",
-            "name": "ids.*.caps.doNotDuplicate",
-            "description": "True if sources of this type should not be fully duplicated"
-          },
-          {
-            "type": "Boolean",
-            "name": "ids.*.caps.doNotSelfMonitor",
-            "description": "True if sources of this type may cause a feedback loop if it's audio is monitored and shouldn't be"
-          }
-        ],
-        "names": [
-          {
-            "name": "",
-            "description": "GetSourcesTypesList"
-          }
-        ],
-        "categories": [
-          {
-            "name": "",
-            "description": "sources"
-          }
-        ],
-        "sinces": [
-          {
-            "name": "",
-            "description": "unreleased"
-          }
-        ],
-        "heading": {
-          "level": 2,
-          "text": "GetSourcesTypesList"
-        },
-        "lead": "",
-        "type": "class",
-        "examples": []
-      },
-      {
-        "subheads": [],
-        "description": "Get settings of the specified source",
-        "param": [
-          "{String} `sourceName` Name of the source item.",
-          "{String (optional)} `sourceType` Type of the specified source. Useful for type-checking if you expect a specific settings schema."
-        ],
-        "return": [
-          "{String} `sourceName` Source name",
-          "{String} `sourceType` Type of the specified source",
-          "{Object} `sourceSettings` Source settings. Varying between source types."
-        ],
-        "api": "requests",
-        "name": "GetSourceSettings",
-        "category": "sources",
-        "since": "unreleased",
-        "returns": [
-          {
-            "type": "String",
-            "name": "sourceName",
-            "description": "Source name"
-          },
-          {
-            "type": "String",
-            "name": "sourceType",
-            "description": "Type of the specified source"
-          },
-          {
-            "type": "Object",
-            "name": "sourceSettings",
-            "description": "Source settings. Varying between source types."
-          }
-        ],
-        "params": [
-          {
-            "type": "String",
-            "name": "sourceName",
-            "description": "Name of the source item."
-          },
-          {
-            "type": "String (optional)",
-            "name": "sourceType",
-            "description": "Type of the specified source. Useful for type-checking if you expect a specific settings schema."
-          }
-        ],
-        "names": [
-          {
-            "name": "",
-            "description": "GetSourceSettings"
-          }
-        ],
-        "categories": [
-          {
-            "name": "",
-            "description": "sources"
-          }
-        ],
-        "sinces": [
-          {
-            "name": "",
-            "description": "unreleased"
-          }
-        ],
-        "heading": {
-          "level": 2,
-          "text": "GetSourceSettings"
-        },
-        "lead": "",
-        "type": "class",
-        "examples": []
-      },
-      {
-        "subheads": [],
-        "description": "Set settings of the specified source.",
-        "param": [
-          "{String} `sourceName` Name of the source item.",
-          "{String (optional)} `sourceType` Type of the specified source. Useful for type-checking to avoid settings a set of settings incompatible with the actual source's type.",
-          "{Object} `sourceSettings` Source settings. Varying between source types."
-        ],
-        "return": [
-          "{String} `sourceName` Source name",
-          "{String} `sourceType` Type of the specified source",
-          "{Object} `sourceSettings` Source settings. Varying between source types."
-        ],
-        "api": "requests",
-        "name": "SetSourceSettings",
-        "category": "sources",
-        "since": "unreleased",
-        "returns": [
-          {
-            "type": "String",
-            "name": "sourceName",
-            "description": "Source name"
-          },
-          {
-            "type": "String",
-            "name": "sourceType",
-            "description": "Type of the specified source"
-          },
-          {
-            "type": "Object",
-            "name": "sourceSettings",
-            "description": "Source settings. Varying between source types."
-          }
-        ],
-        "params": [
-          {
-            "type": "String",
-            "name": "sourceName",
-            "description": "Name of the source item."
-          },
-          {
-            "type": "String (optional)",
-            "name": "sourceType",
-            "description": "Type of the specified source. Useful for type-checking to avoid settings a set of settings incompatible with the actual source's type."
-          },
-          {
-            "type": "Object",
-            "name": "sourceSettings",
-            "description": "Source settings. Varying between source types."
-          }
-        ],
-        "names": [
-          {
-            "name": "",
-            "description": "SetSourceSettings"
-          }
-        ],
-        "categories": [
-          {
-            "name": "",
-            "description": "sources"
-          }
-        ],
-        "sinces": [
-          {
-            "name": "",
-            "description": "unreleased"
-          }
-        ],
-        "heading": {
-          "level": 2,
-          "text": "SetSourceSettings"
         },
         "lead": "",
         "type": "class",

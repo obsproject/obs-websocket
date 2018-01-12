@@ -114,33 +114,35 @@ auth_response = base64_encode(auth_response_hash)
   * [Scene Collections](#scene-collections)
     + [SetCurrentSceneCollection](#setcurrentscenecollection)
     + [GetCurrentSceneCollection](#getcurrentscenecollection)
+    + [ListSceneCollections](#listscenecollections)
+  * [Scene Items](#scene-items)
+    + [GetSceneItemProperties](#getsceneitemproperties)
+    + [SetSceneItemProperties](#setsceneitemproperties)
+    + [ResetSceneItem](#resetsceneitem)
+    + [SetSceneItemRender](#setsceneitemrender)
+    + [SetSceneItemPosition](#setsceneitemposition)
+    + [SetSceneItemTransform](#setsceneitemtransform)
+    + [SetSceneItemCrop](#setsceneitemcrop)
   * [Scenes](#scenes-1)
     + [SetCurrentScene](#setcurrentscene)
     + [GetCurrentScene](#getcurrentscene)
     + [GetSceneList](#getscenelist)
   * [Sources](#sources-1)
-    + [SetSourceRender](#setsourcerender)
-    + [SetVolume](#setvolume)
+    + [GetSourcesList](#getsourceslist)
+    + [GetSourcesTypesList](#getsourcestypeslist)
     + [GetVolume](#getvolume)
-    + [ToggleMute](#togglemute)
-    + [SetMute](#setmute)
+    + [SetVolume](#setvolume)
     + [GetMute](#getmute)
+    + [SetMute](#setmute)
+    + [ToggleMute](#togglemute)
     + [SetSyncOffset](#setsyncoffset)
     + [GetSyncOffset](#getsyncoffset)
-    + [SetSceneItemPosition](#setsceneitemposition)
-    + [SetSceneItemTransform](#setsceneitemtransform)
-    + [SetSceneItemCrop](#setsceneitemcrop)
-    + [GetSceneItemProperties](#getsceneitemproperties)
-    + [SetSceneItemProperties](#setsceneitemproperties)
+    + [GetSourceSettings](#getsourcesettings)
+    + [SetSourceSettings](#setsourcesettings)
     + [GetTextGDIPlusProperties](#gettextgdiplusproperties)
     + [SetTextGDIPlusProperties](#settextgdiplusproperties)
     + [GetBrowserSourceProperties](#getbrowsersourceproperties)
     + [SetBrowserSourceProperties](#setbrowsersourceproperties)
-    + [ResetSceneItem](#resetsceneitem)
-    + [GetSourcesList](#getsourceslist)
-    + [GetSourcesTypesList](#getsourcestypeslist)
-    + [GetSourceSettings](#getsourcesettings)
-    + [SetSourceSettings](#setsourcesettings)
     + [GetSpecialSources](#getspecialsources)
   * [Streaming](#streaming-1)
     + [GetStreamingStatus](#getstreamingstatus)
@@ -709,7 +711,7 @@ _No specified parameters._
 | `version` | _double_ | OBSRemote compatible API version. Fixed to 1.1 for retrocompatibility. |
 | `obs-websocket-version` | _String_ | obs-websocket plugin version. |
 | `obs-studio-version` | _String_ | OBS Studio program version. |
-| `available-requests` | _String\|Array_ | List of available request types. |
+| `available-requests` | _String_ | List of available request types, formatted as a comma-separated list string (e.g. : "Method1,Method2,Method3"). |
 
 
 ---
@@ -760,7 +762,7 @@ _No additional response items._
 ### SetHeartbeat
 
 
-- Added in v
+- Unreleased
 
 Enable/disable sending of the Heartbeat event
 
@@ -997,7 +999,7 @@ _No additional response items._
 
 - Added in v4.2.0
 
-Save and flush the contents of the Replay Buffer to disk. This is
+Flush and save the contents of the Replay Buffer to disk. This is
 basically the same as triggering the "Save Replay Buffer" hotkey.
 Will return an `error` if the Replay Buffer is not active.
 
@@ -1053,20 +1055,96 @@ _No specified parameters._
 
 ---
 
-## Scenes
-
-### SetCurrentScene
+### ListSceneCollections
 
 
-- Added in v0.3
+- Added in v4.0.0
 
-Switch to the specified scene.
+List available scene collections
+
+**Request Fields:**
+
+_No specified parameters._
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `scene-collections` | _Object\|Array_ | Scene collections list |
+| `scene-collections.*.` | _String_ |  |
+
+
+---
+
+## Scene Items
+
+### GetSceneItemProperties
+
+
+- Unreleased
+
+Gets the scene specific properties of the specified source item.
 
 **Request Fields:**
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
-| `scene-name` | _String_ | Name of the scene to switch to. |
+| `scene-name` | _String (optional)_ | the name of the scene that the source item belongs to. Defaults to the current scene. |
+| `item` | _String_ | The name of the source. |
+
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `name` | _String_ | The name of the source. |
+| `position.x` | _int_ | The x position of the source from the left. |
+| `position.y` | _int_ | The y position of the source from the top. |
+| `position.alignment` | _int_ | The point on the source that the item is manipulated from. |
+| `rotation` | _double_ | The clockwise rotation of the item in degrees around the point of alignment. |
+| `scale.x` | _double_ | The x-scale factor of the source. |
+| `scale.y` | _double_ | The y-scale factor of the source. |
+| `crop.top` | _int_ | The number of pixels cropped off the top of the source before scaling. |
+| `crop.right` | _int_ | The number of pixels cropped off the right of the source before scaling. |
+| `crop.bottom` | _int_ | The number of pixels cropped off the bottom of the source before scaling. |
+| `crop.left` | _int_ | The number of pixels cropped off the left of the source before scaling. |
+| `visible` | _bool_ | If the source is visible. |
+| `bounds.type` | _String_ | Type of bounding box. |
+| `bounds.alignment` | _int_ | Alignment of the bounding box. |
+| `bounds.x` | _double_ | Width of the bounding box. |
+| `bounds.y` | _double_ | Height of the bounding box. |
+
+
+---
+
+### SetSceneItemProperties
+
+
+- Unreleased
+
+Sets the scene specific properties of a source. Unspecified properties will remain unchanged.
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `scene-name` | _String (optional)_ | the name of the scene that the source item belongs to. Defaults to the current scene. |
+| `item` | _String_ | The name of the source. |
+| `position.x` | _int_ | The new x position of the source. |
+| `position.y` | _int_ | The new y position of the source. |
+| `position.alignment` | _int_ | The new alignment of the source. |
+| `rotation` | _double_ | The new clockwise rotation of the item in degrees. |
+| `scale.x` | _double_ | The new x scale of the item. |
+| `scale.y` | _double_ | The new y scale of the item. |
+| `crop.top` | _int_ | The new amount of pixels cropped off the top of the source before scaling. |
+| `crop.bottom` | _int_ | The new amount of pixels cropped off the bottom of the source before scaling. |
+| `crop.left` | _int_ | The new amount of pixels cropped off the left of the source before scaling. |
+| `crop.right` | _int_ | The new amount of pixels cropped off the right of the source before scaling. |
+| `visible` | _bool_ | The new visibility of the source. 'true' shows source, 'false' hides source. |
+| `bounds.type` | _String_ | The new bounds type of the source. |
+| `bounds.alignment` | _int_ | The new alignment of the bounding box. (0-2, 4-6, 8-10) |
+| `bounds.x` | _double_ | The new width of the bounding box. |
+| `bounds.y` | _double_ | The new height of the bounding box. |
 
 
 **Response Items:**
@@ -1075,51 +1153,28 @@ _No additional response items._
 
 ---
 
-### GetCurrentScene
+### ResetSceneItem
 
 
-- Added in v0.3
+- Added in v4.2.0
 
-Get the current scene's name and source items.
-
-**Request Fields:**
-
-_No specified parameters._
-
-**Response Items:**
-
-| Name | Type  | Description |
-| ---- | :---: | ------------|
-| `name` | _String_ | Name of the currently active scene. |
-| `sources` | _Source\|Array_ | Ordered list of the current scene's source items. |
-
-
----
-
-### GetSceneList
-
-
-- Added in v0.3
-
-Get a list of scenes in the currently active profile.
+Reset a scene item.
 
 **Request Fields:**
 
-_No specified parameters._
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `scene-name` | _String (optional)_ | Name of the scene the source belogns to. Defaults to the current scene. |
+| `item` | _String_ | Name of the source item. |
+
 
 **Response Items:**
 
-| Name | Type  | Description |
-| ---- | :---: | ------------|
-| `current-scene` | _String_ | Name of the currently active scene. |
-| `scenes` | _Scene\|Array_ | Ordered list of the current profile's scenes (See `[GetCurrentScene](#getcurrentscene)` for more information). |
-
+_No additional response items._
 
 ---
 
-## Sources
-
-### SetSourceRender
+### SetSceneItemRender
 
 - **⚠️ Deprecated. Since unreleased. Prefer the use of SetSceneItemProperties. ⚠️**
 
@@ -1131,170 +1186,14 @@ Show or hide a specified source item in a specified scene.
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
-| `source` | _String_ | Name of the source in the specified scene. |
-| `render` | _boolean_ | Desired visibility. |
+| `source` | _String_ | Scene item name in the specified scene. |
+| `render` | _boolean_ | true = shown ; false = hidden |
 | `scene-name` | _String (optional)_ | Name of the scene where the source resides. Defaults to the currently active scene. |
 
 
 **Response Items:**
 
 _No additional response items._
-
----
-
-### SetVolume
-
-
-- Added in v4.0.0
-
-Set the volume of the specified source.
-
-**Request Fields:**
-
-| Name | Type  | Description |
-| ---- | :---: | ------------|
-| `source` | _String_ | Name of the source. |
-| `volume` | _double_ | Desired volume. Must be between `0.0` and `1.0`. |
-
-
-**Response Items:**
-
-_No additional response items._
-
----
-
-### GetVolume
-
-
-- Added in v4.0.0
-
-Get the volume of the specified source.
-
-**Request Fields:**
-
-| Name | Type  | Description |
-| ---- | :---: | ------------|
-| `source` | _String_ | Name of the source. |
-
-
-**Response Items:**
-
-| Name | Type  | Description |
-| ---- | :---: | ------------|
-| `name` | _String_ | Name of the source. |
-| `volume` | _double_ | Volume of the source. Between `0.0` and `1.0`. |
-| `mute` | _boolean_ | Indicates whether the source is muted. |
-
-
----
-
-### ToggleMute
-
-
-- Added in v4.0.0
-
-Inverts the mute status of a specified source.
-
-**Request Fields:**
-
-| Name | Type  | Description |
-| ---- | :---: | ------------|
-| `source` | _String_ | The name of the source. |
-
-
-**Response Items:**
-
-_No additional response items._
-
----
-
-### SetMute
-
-
-- Added in v4.0.0
-
-Sets the mute status of a specified source.
-
-**Request Fields:**
-
-| Name | Type  | Description |
-| ---- | :---: | ------------|
-| `source` | _String_ | The name of the source. |
-| `mute` | _boolean_ | Desired mute status. |
-
-
-**Response Items:**
-
-_No additional response items._
-
----
-
-### GetMute
-
-
-- Added in v4.0.0
-
-Get the mute status of a specified source.
-
-**Request Fields:**
-
-| Name | Type  | Description |
-| ---- | :---: | ------------|
-| `source` | _String_ | The name of the source. |
-
-
-**Response Items:**
-
-| Name | Type  | Description |
-| ---- | :---: | ------------|
-| `name` | _String_ | The name of the source. |
-| `muted` | _boolean_ | Mute status of the source. |
-
-
----
-
-### SetSyncOffset
-
-
-- Added in v4.2.0
-
-Set the audio sync offset of a specified source.
-
-**Request Fields:**
-
-| Name | Type  | Description |
-| ---- | :---: | ------------|
-| `source` | _String_ | The name of the source. |
-| `offset` | _int_ | The desired audio sync offset (in nanoseconds). |
-
-
-**Response Items:**
-
-_No additional response items._
-
----
-
-### GetSyncOffset
-
-
-- Added in v4.2.0
-
-Get the audio sync offset of a specified source.
-
-**Request Fields:**
-
-| Name | Type  | Description |
-| ---- | :---: | ------------|
-| `source` | _String_ | The name of the source. |
-
-
-**Response Items:**
-
-| Name | Type  | Description |
-| ---- | :---: | ------------|
-| `name` | _String_ | The name of the source. |
-| `offset` | _int_ | The audio sync offset (in nanoseconds). |
-
 
 ---
 
@@ -1373,19 +1272,185 @@ _No additional response items._
 
 ---
 
-### GetSceneItemProperties
+## Scenes
+
+### SetCurrentScene
 
 
-- Unreleased
+- Added in v0.3
 
-Gets the scene specific properties of the specified source item.
+Switch to the specified scene.
 
 **Request Fields:**
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
-| `scene-name` | _String (optional)_ | the name of the scene that the source item belongs to. Defaults to the current scene. |
-| `item` | _String_ | The name of the source. |
+| `scene-name` | _String_ | Name of the scene to switch to. |
+
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+### GetCurrentScene
+
+
+- Added in v0.3
+
+Get the current scene's name and source items.
+
+**Request Fields:**
+
+_No specified parameters._
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `name` | _String_ | Name of the currently active scene. |
+| `sources` | _Source\|Array_ | Ordered list of the current scene's source items. |
+
+
+---
+
+### GetSceneList
+
+
+- Added in v0.3
+
+Get a list of scenes in the currently active profile.
+
+**Request Fields:**
+
+_No specified parameters._
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `current-scene` | _String_ | Name of the currently active scene. |
+| `scenes` | _Scene\|Array_ | Ordered list of the current profile's scenes (See `[GetCurrentScene](#getcurrentscene)` for more information). |
+
+
+---
+
+## Sources
+
+### GetSourcesList
+
+
+- Unreleased
+
+List all sources available in the running OBS instance
+
+**Request Fields:**
+
+_No specified parameters._
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sources` | _Array of Objects_ | Array of sources as objects |
+| `sources.*.name` | _String_ | Unique source name |
+| `sources.*.typeId` | _String_ | Non-unique source internal type (a.k.a type id) |
+| `sources.*.type` | _String_ | Source type. Value is one of the following: "input", "filter", "transition", "scene" or "unknown" |
+
+
+---
+
+### GetSourcesTypesList
+
+
+- Unreleased
+
+Get a list of all available sources types
+
+**Request Fields:**
+
+_No specified parameters._
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `ids` | _Array of Objects_ | Array of sources as objects |
+| `ids.*.typeId` | _String_ | Non-unique internal source type ID |
+| `ids.*.displayName` | _String_ | Display name of the source type |
+| `ids.*.type` | _String_ | Type. Value is one of the following: "input", "filter", "transition" or "other" |
+| `ids.*.defaultSettings` | _Object_ | Default settings of this source type |
+| `ids.*.caps` | _Object_ | Source type capabilities |
+| `ids.*.caps.isAsync` | _Boolean_ | True if source of this type provide frames asynchronously |
+| `ids.*.caps.hasVideo` | _Boolean_ | True if sources of this type provide video |
+| `ids.*.caps.hasAudio` | _Boolean_ | True if sources of this type provide audio |
+| `ids.*.caps.canInteract` | _Boolean_ | True if interaction with this sources of this type is possible |
+| `ids.*.caps.isComposite` | _Boolean_ | True if sources of this type composite one or more sub-sources |
+| `ids.*.caps.doNotDuplicate` | _Boolean_ | True if sources of this type should not be fully duplicated |
+| `ids.*.caps.doNotSelfMonitor` | _Boolean_ | True if sources of this type may cause a feedback loop if it's audio is monitored and shouldn't be |
+
+
+---
+
+### GetVolume
+
+
+- Added in v4.0.0
+
+Get the volume of the specified source.
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `source` | _String_ | Name of the source. |
+
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `name` | _String_ | Name of the source. |
+| `volume` | _double_ | Volume of the source. Between `0.0` and `1.0`. |
+| `mute` | _boolean_ | Indicates whether the source is muted. |
+
+
+---
+
+### SetVolume
+
+
+- Added in v4.0.0
+
+Set the volume of the specified source.
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `source` | _String_ | Name of the source. |
+| `volume` | _double_ | Desired volume. Must be between `0.0` and `1.0`. |
+
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+### GetMute
+
+
+- Added in v4.0.0
+
+Get the mute status of a specified source.
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `source` | _String_ | The name of the source. |
 
 
 **Response Items:**
@@ -1393,58 +1458,147 @@ Gets the scene specific properties of the specified source item.
 | Name | Type  | Description |
 | ---- | :---: | ------------|
 | `name` | _String_ | The name of the source. |
-| `position.x` | _int_ | The x position of the source from the left. |
-| `position.y` | _int_ | The y position of the source from the top. |
-| `position.alignment` | _int_ | The point on the source that the item is manipulated from. |
-| `rotation` | _double_ | The clockwise rotation of the item in degrees around the point of alignment. |
-| `scale.x` | _double_ | The x-scale factor of the source. |
-| `scale.y` | _double_ | The y-scale factor of the source. |
-| `crop.top` | _int_ | The number of pixels cropped off the top of the source before scaling. |
-| `crop.right` | _int_ | The number of pixels cropped off the right of the source before scaling. |
-| `crop.bottom` | _int_ | The number of pixels cropped off the bottom of the source before scaling. |
-| `crop.left` | _int_ | The number of pixels cropped off the left of the source before scaling. |
-| `visible` | _bool_ | If the source is visible. |
-| `bounds.type` | _String_ | Type of bounding box. |
-| `bounds.alignment` | _int_ | Alignment of the bounding box. |
-| `bounds.x` | _double_ | Width of the bounding box. |
-| `bounds.y` | _double_ | Height of the bounding box. |
+| `muted` | _boolean_ | Mute status of the source. |
 
 
 ---
 
-### SetSceneItemProperties
+### SetMute
 
 
-- Unreleased
+- Added in v4.0.0
 
-Sets the scene specific properties of a source. Unspecified properties will remain unchanged.
+Sets the mute status of a specified source.
 
 **Request Fields:**
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
-| `scene-name` | _String (optional)_ | the name of the scene that the source item belongs to. Defaults to the current scene. |
-| `item` | _String_ | The name of the source. |
-| `position.x` | _int_ | The new x position of the source. |
-| `position.y` | _int_ | The new y position of the source. |
-| `position.alignment` | _int_ | The new alignment of the source. |
-| `rotation` | _double_ | The new clockwise rotation of the item in degrees. |
-| `scale.x` | _double_ | The new x scale of the item. |
-| `scale.y` | _double_ | The new y scale of the item. |
-| `crop.top` | _int_ | The new amount of pixels cropped off the top of the source before scaling. |
-| `crop.bottom` | _int_ | The new amount of pixels cropped off the bottom of the source before scaling. |
-| `crop.left` | _int_ | The new amount of pixels cropped off the left of the source before scaling. |
-| `crop.right` | _int_ | The new amount of pixels cropped off the right of the source before scaling. |
-| `visible` | _bool_ | The new visibility of the source. 'true' shows source, 'false' hides source. |
-| `bounds.type` | _String_ | The new bounds type of the source. |
-| `bounds.alignment` | _int_ | The new alignment of the bounding box. (0-2, 4-6, 8-10) |
-| `bounds.x` | _double_ | The new width of the bounding box. |
-| `bounds.y` | _double_ | The new height of the bounding box. |
+| `source` | _String_ | The name of the source. |
+| `mute` | _boolean_ | Desired mute status. |
 
 
 **Response Items:**
 
 _No additional response items._
+
+---
+
+### ToggleMute
+
+
+- Added in v4.0.0
+
+Inverts the mute status of a specified source.
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `source` | _String_ | The name of the source. |
+
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+### SetSyncOffset
+
+
+- Added in v4.2.0
+
+Set the audio sync offset of a specified source.
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `source` | _String_ | The name of the source. |
+| `offset` | _int_ | The desired audio sync offset (in nanoseconds). |
+
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+### GetSyncOffset
+
+
+- Added in v4.2.0
+
+Get the audio sync offset of a specified source.
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `source` | _String_ | The name of the source. |
+
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `name` | _String_ | The name of the source. |
+| `offset` | _int_ | The audio sync offset (in nanoseconds). |
+
+
+---
+
+### GetSourceSettings
+
+
+- Unreleased
+
+Get settings of the specified source
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sourceName` | _String_ | Name of the source item. |
+| `sourceType` | _String (optional)_ | Type of the specified source. Useful for type-checking if you expect a specific settings schema. |
+
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sourceName` | _String_ | Source name |
+| `sourceType` | _String_ | Type of the specified source |
+| `sourceSettings` | _Object_ | Source settings. Varying between source types. |
+
+
+---
+
+### SetSourceSettings
+
+
+- Unreleased
+
+Set settings of the specified source.
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sourceName` | _String_ | Name of the source item. |
+| `sourceType` | _String (optional)_ | Type of the specified source. Useful for type-checking to avoid settings a set of settings incompatible with the actual source's type. |
+| `sourceSettings` | _Object_ | Source settings. Varying between source types. |
+
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sourceName` | _String_ | Source name |
+| `sourceType` | _String_ | Type of the specified source |
+| `sourceSettings` | _Object_ | Source settings. Varying between source types. |
+
 
 ---
 
@@ -1568,7 +1722,8 @@ Get current properties for a Browser Source.
 | Name | Type  | Description |
 | ---- | :---: | ------------|
 | `is_local_file` | _boolean_ | Indicates that a local file is in use. |
-| `url` | _String_ | Url or file path. |
+| `local_file` | _String_ | file path. |
+| `url` | _String_ | Url. |
 | `css` | _String_ | CSS to inject. |
 | `width` | _int_ | Width. |
 | `height` | _int_ | Height. |
@@ -1593,7 +1748,8 @@ Set current properties for a Browser Source.
 | `scene-name` | _String (optional)_ | Name of the scene that the source belongs to. Defaults to the current scene. |
 | `source` | _String_ | Name of the source. |
 | `is_local_file` | _boolean (optional)_ | Indicates that a local file is in use. |
-| `url` | _String (optional)_ | Url or file path. |
+| `local_file` | _String (optional)_ | file path. |
+| `url` | _String (optional)_ | Url. |
 | `css` | _String (optional)_ | CSS to inject. |
 | `width` | _int (optional)_ | Width. |
 | `height` | _int (optional)_ | Height. |
@@ -1605,135 +1761,6 @@ Set current properties for a Browser Source.
 **Response Items:**
 
 _No additional response items._
-
----
-
-### ResetSceneItem
-
-
-- Added in v4.2.0
-
-Reset a source item.
-
-**Request Fields:**
-
-| Name | Type  | Description |
-| ---- | :---: | ------------|
-| `scene-name` | _String (optional)_ | Name of the scene the source belogns to. Defaults to the current scene. |
-| `item` | _String_ | Name of the source item. |
-
-
-**Response Items:**
-
-_No additional response items._
-
----
-
-### GetSourcesList
-
-
-- Unreleased
-
-List all sources available in the running OBS instance
-
-**Request Fields:**
-
-_No specified parameters._
-
-**Response Items:**
-
-| Name | Type  | Description |
-| ---- | :---: | ------------|
-| `sources` | _Array of Objects_ | Array of sources as objects |
-| `sources.*.name` | _String_ | Unique source name |
-| `sources.*.typeId` | _String_ | Non-unique source internal type (a.k.a type id) |
-| `sources.*.type` | _String_ | Source type. Value is one of the following: "input", "filter", "transition", "scene" or "unknown" |
-
-
----
-
-### GetSourcesTypesList
-
-
-- Unreleased
-
-Get a list of all available sources types
-
-**Request Fields:**
-
-_No specified parameters._
-
-**Response Items:**
-
-| Name | Type  | Description |
-| ---- | :---: | ------------|
-| `ids` | _Array of Objects_ | Array of sources as objects |
-| `ids.*.typeId` | _String_ | Non-unique internal source type ID |
-| `ids.*.displayName` | _String_ | Display name of the source type |
-| `ids.*.type` | _String_ | Type. Value is one of the following: "input", "filter", "transition" or "other" |
-| `ids.*.defaultSettings` | _Object_ | Default settings of this source type |
-| `ids.*.caps` | _Object_ | Source type capabilities |
-| `ids.*.caps.isAsync` | _Boolean_ | True if source of this type provide frames asynchronously |
-| `ids.*.caps.hasVideo` | _Boolean_ | True if sources of this type provide video |
-| `ids.*.caps.hasAudio` | _Boolean_ | True if sources of this type provide audio |
-| `ids.*.caps.canInteract` | _Boolean_ | True if interaction with this sources of this type is possible |
-| `ids.*.caps.isComposite` | _Boolean_ | True if sources of this type composite one or more sub-sources |
-| `ids.*.caps.doNotDuplicate` | _Boolean_ | True if sources of this type should not be fully duplicated |
-| `ids.*.caps.doNotSelfMonitor` | _Boolean_ | True if sources of this type may cause a feedback loop if it's audio is monitored and shouldn't be |
-
-
----
-
-### GetSourceSettings
-
-
-- Unreleased
-
-Get settings of the specified source
-
-**Request Fields:**
-
-| Name | Type  | Description |
-| ---- | :---: | ------------|
-| `sourceName` | _String_ | Name of the source item. |
-| `sourceType` | _String (optional)_ | Type of the specified source. Useful for type-checking if you expect a specific settings schema. |
-
-
-**Response Items:**
-
-| Name | Type  | Description |
-| ---- | :---: | ------------|
-| `sourceName` | _String_ | Source name |
-| `sourceType` | _String_ | Type of the specified source |
-| `sourceSettings` | _Object_ | Source settings. Varying between source types. |
-
-
----
-
-### SetSourceSettings
-
-
-- Unreleased
-
-Set settings of the specified source.
-
-**Request Fields:**
-
-| Name | Type  | Description |
-| ---- | :---: | ------------|
-| `sourceName` | _String_ | Name of the source item. |
-| `sourceType` | _String (optional)_ | Type of the specified source. Useful for type-checking to avoid settings a set of settings incompatible with the actual source's type. |
-| `sourceSettings` | _Object_ | Source settings. Varying between source types. |
-
-
-**Response Items:**
-
-| Name | Type  | Description |
-| ---- | :---: | ------------|
-| `sourceName` | _String_ | Source name |
-| `sourceType` | _String_ | Type of the specified source |
-| `sourceSettings` | _Object_ | Source settings. Varying between source types. |
-
 
 ---
 
