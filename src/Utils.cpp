@@ -502,3 +502,15 @@ bool Utils::IsRPHotkeySet() {
     size_t count = obs_data_array_count(bindings);
     return (count > 0);
 }
+
+const char* Utils::GetFilenameFormatting() {
+    config_t* profile = obs_frontend_get_profile_config();
+    return config_get_string(profile, "Output", "FilenameFormatting");
+}
+
+bool Utils::SetFilenameFormatting(const char* filenameFormatting) {
+    config_t* profile = obs_frontend_get_profile_config();
+    config_set_string(profile, "Output", "FilenameFormatting", filenameFormatting);
+    config_save(profile);
+    return true;
+}

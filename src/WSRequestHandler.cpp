@@ -31,6 +31,9 @@ QHash<QString, void(*)(WSRequestHandler*)> WSRequestHandler::messageMap {
 
     { "SetHeartbeat", WSRequestHandler::HandleSetHeartbeat },
 
+    { "SetFilenameFormatting", WSRequestHandler::HandleSetFilenameFormatting },
+    { "GetFilenameFormatting", WSRequestHandler::HandleGetFilenameFormatting },
+
     { "SetCurrentScene", WSRequestHandler::HandleSetCurrentScene },
     { "GetCurrentScene", WSRequestHandler::HandleGetCurrentScene },
     { "GetSceneList", WSRequestHandler::HandleGetSceneList },

@@ -82,6 +82,8 @@ class Utils {
     static bool ReplayBufferEnabled();
     static void StartReplayBuffer();
     static bool IsRPHotkeySet();
+    static const char* GetFilenameFormatting();
+    static bool SetFilenameFormatting(const char* filenameFormatting);
 };
 
 #endif // UTILS_H
