@@ -84,8 +84,8 @@ WSEvents::WSEvents(WSServer* srv) {
     connect(sceneList, SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)),
         this, SLOT(SelectedSceneChanged(QListWidgetItem*, QListWidgetItem*)));
 
-    transitionHandler = nullptr;
-    sceneHandler = nullptr;
+    currentScene = nullptr;
+    currentTransition = nullptr;
 
     QTimer::singleShot(1000, this, SLOT(deferredInitOperations()));
 
@@ -221,41 +221,52 @@ void WSEvents::broadcastUpdate(const char* updateType,
 }
 
 void WSEvents::connectTransitionSignals(obs_source_t* transition) {
-    if (transitionHandler) {
-        signal_handler_disconnect(transitionHandler,
+    signal_handler_t* sh = nullptr;
+
+    if (currentTransition) {
+        sh = obs_source_get_signal_handler(currentTransition);
+        signal_handler_disconnect(sh,
             "transition_start", OnTransitionBegin, this);
     }
 
     if (!transitionIsCut(transition)) {
-        transitionHandler = obs_source_get_signal_handler(transition);
-        signal_handler_connect(transitionHandler,
+        currentTransition = transition;
+
+        sh = obs_source_get_signal_handler(currentTransition);
+        signal_handler_connect(sh,
             "transition_start", OnTransitionBegin, this);
     } else {
-        transitionHandler = nullptr;
+        currentTransition = nullptr;
     }
 }
 
 void WSEvents::connectSceneSignals(obs_source_t* scene) {
-    if (sceneHandler) {
-        signal_handler_disconnect(sceneHandler,
+    signal_handler_t* sh = nullptr;
+
+    if (currentScene) {
+        sh = obs_source_get_signal_handler(currentScene);
+
+        signal_handler_disconnect(sh,
             "reorder", OnSceneReordered, this);
-        signal_handler_disconnect(sceneHandler,
+        signal_handler_disconnect(sh,
             "item_add", OnSceneItemAdd, this);
-        signal_handler_disconnect(sceneHandler,
+        signal_handler_disconnect(sh,
             "item_remove", OnSceneItemDelete, this);
-        signal_handler_disconnect(sceneHandler,
+        signal_handler_disconnect(sh,
             "item_visible", OnSceneItemVisibilityChanged, this);
     }
 
+    currentScene = scene;
+
     // TODO : connect to all scenes, not just the current one.
-    sceneHandler = obs_source_get_signal_handler(scene);
-    signal_handler_connect(sceneHandler,
+    sh = obs_source_get_signal_handler(currentScene);
+    signal_handler_connect(sh,
         "reorder", OnSceneReordered, this);
-    signal_handler_connect(sceneHandler,
+    signal_handler_connect(sh,
         "item_add", OnSceneItemAdd, this);
-    signal_handler_connect(sceneHandler,
+    signal_handler_connect(sh,
         "item_remove", OnSceneItemDelete, this);
-    signal_handler_connect(sceneHandler,
+    signal_handler_connect(sh,
         "item_visible", OnSceneItemVisibilityChanged, this);
 }
 
@@ -335,8 +346,8 @@ void WSEvents::OnSceneListChange() {
 void WSEvents::OnSceneCollectionChange() {
     broadcastUpdate("SceneCollectionChanged");
 
-    sceneHandler = nullptr;
-    transitionHandler = nullptr;
+    currentScene = nullptr;
+    currentTransition = nullptr;
 
     OnTransitionListChange();
     OnTransitionChange();
