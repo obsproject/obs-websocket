@@ -187,6 +187,8 @@ void WSEvents::FrontendEventHandler(enum obs_frontend_event event, void* private
         owner->OnStudioModeSwitched(false);
     }
     else if (event == OBS_FRONTEND_EVENT_EXIT) {
+        owner->connectSceneSignals(nullptr);
+        owner->connectTransitionSignals(nullptr);
         owner->OnExit();
     }
 }
@@ -229,14 +231,19 @@ void WSEvents::connectTransitionSignals(obs_source_t* transition) {
             "transition_start", OnTransitionBegin, this);
     }
 
-    if (!transitionIsCut(transition)) {
-        currentTransition = transition;
+    currentTransition = transition;
 
-        sh = obs_source_get_signal_handler(currentTransition);
-        signal_handler_connect(sh,
-            "transition_start", OnTransitionBegin, this);
-    } else {
-        currentTransition = nullptr;
+    if (currentTransition) {
+        if (!transitionIsCut(transition)) {
+            currentTransition = transition;
+
+            sh = obs_source_get_signal_handler(currentTransition);
+            signal_handler_connect(sh,
+                "transition_start", OnTransitionBegin, this);
+        }
+        else {
+            currentTransition = nullptr;
+        }
     }
 }
 
@@ -258,16 +265,18 @@ void WSEvents::connectSceneSignals(obs_source_t* scene) {
 
     currentScene = scene;
 
-    // TODO : connect to all scenes, not just the current one.
-    sh = obs_source_get_signal_handler(currentScene);
-    signal_handler_connect(sh,
-        "reorder", OnSceneReordered, this);
-    signal_handler_connect(sh,
-        "item_add", OnSceneItemAdd, this);
-    signal_handler_connect(sh,
-        "item_remove", OnSceneItemDelete, this);
-    signal_handler_connect(sh,
-        "item_visible", OnSceneItemVisibilityChanged, this);
+    if (currentScene) {
+        // TODO : connect to all scenes, not just the current one.
+        sh = obs_source_get_signal_handler(currentScene);
+        signal_handler_connect(sh,
+            "reorder", OnSceneReordered, this);
+        signal_handler_connect(sh,
+            "item_add", OnSceneItemAdd, this);
+        signal_handler_connect(sh,
+            "item_remove", OnSceneItemDelete, this);
+        signal_handler_connect(sh,
+            "item_visible", OnSceneItemVisibilityChanged, this);
+    }
 }
 
 uint64_t WSEvents::GetStreamingTime() {
