@@ -53,8 +53,8 @@ class WSEvents : public QObject {
 
   private:
     WSServer* _srv;
-    signal_handler_t* transitionHandler;
-    signal_handler_t* sceneHandler;
+    OBSSource currentScene;
+    OBSSource currentTransition;
 
     bool pulse;
 
