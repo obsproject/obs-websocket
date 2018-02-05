@@ -568,7 +568,7 @@ void WSRequestHandler::HandleSetSourceSettings(WSRequestHandler* req) {
 }
 
 /**
- * Get the current properties of a Text GDI Plus source.
+ * Set the current properties of a Text GDI Plus source.
  *
  * @param {String (optional)} `scene-name` Name of the scene to retrieve. Defaults to the current scene.
  * @param {String} `source` Name of the source.
