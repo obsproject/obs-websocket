@@ -800,7 +800,6 @@ void WSRequestHandler::HandleSetTextGDIPlusProperties(WSRequestHandler* req) {
  * @param {String (optional)} `scene-name` Name of the scene to retrieve. Defaults to the current scene.
  * @param {String} `source` Name of the source.
  *
- * @return {int} `chatlog_lines` Chat log lines.
  * @return {int} `color1` Gradient top color.
  * @return {int} `color2` Gradient bottom color.
  * @return {int} `custom_width` Custom width (0 to disable).
