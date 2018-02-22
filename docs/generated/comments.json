@@ -1036,7 +1036,10 @@
       {
         "subheads": [],
         "description": "Scene items have been reordered.",
-        "return": "{String} `scene-name` Name of the scene where items have been reordered.",
+        "return": [
+          "{String} `name` Name of the scene where items have been reordered.",
+          "{Array} `sources` Array of sources."
+        ],
         "api": "events",
         "name": "SourceOrderChanged",
         "category": "sources",
@@ -1044,8 +1047,13 @@
         "returns": [
           {
             "type": "String",
-            "name": "scene-name",
+            "name": "name",
             "description": "Name of the scene where items have been reordered."
+          },
+          {
+            "type": "Array",
+            "name": "sources",
+            "description": "Array of sources."
           }
         ],
         "names": [
@@ -2184,26 +2192,30 @@
         "subheads": [],
         "description": "Gets the scene specific properties of the specified source item.",
         "param": [
-          "{String (optional)} `scene-name` the name of the scene that the source item belongs to. Defaults to the current scene.",
-          "{String} `item` The name of the source."
+          "{String (optional)} `scene` the name of the scene that the source item belongs to. Defaults to the current scene.",
+          "{String} `item.id` The name of the source.",
+          "{String} `item.name` The name of the source."
         ],
         "return": [
-          "{String} `name` The name of the source.",
-          "{int} `position.x` The x position of the source from the left.",
-          "{int} `position.y` The y position of the source from the top.",
-          "{int} `position.alignment` The point on the source that the item is manipulated from.",
-          "{double} `rotation` The clockwise rotation of the item in degrees around the point of alignment.",
-          "{double} `scale.x` The x-scale factor of the source.",
-          "{double} `scale.y` The y-scale factor of the source.",
-          "{int} `crop.top` The number of pixels cropped off the top of the source before scaling.",
-          "{int} `crop.right` The number of pixels cropped off the right of the source before scaling.",
-          "{int} `crop.bottom` The number of pixels cropped off the bottom of the source before scaling.",
-          "{int} `crop.left` The number of pixels cropped off the left of the source before scaling.",
-          "{bool} `visible` If the source is visible.",
-          "{String} `bounds.type` Type of bounding box.",
-          "{int} `bounds.alignment` Alignment of the bounding box.",
-          "{double} `bounds.x` Width of the bounding box.",
-          "{double} `bounds.y` Height of the bounding box."
+          "{String} `scene` The name of the scene.",
+          "{String} `item.name` The name of the source.",
+          "{String} `item.id` The id of the scene item.",
+          "{int} `item.position.x` The x position of the source from the left.",
+          "{int} `item.position.y` The y position of the source from the top.",
+          "{int} `item.position.alignment` The point on the source that the item is manipulated from.",
+          "{double} `item.rotation` The clockwise rotation of the item in degrees around the point of alignment.",
+          "{double} `item.scale.x` The x-scale factor of the source.",
+          "{double} `item.scale.y` The y-scale factor of the source.",
+          "{int} `item.crop.top` The number of pixels cropped off the top of the source before scaling.",
+          "{int} `item.crop.right` The number of pixels cropped off the right of the source before scaling.",
+          "{int} `item.crop.bottom` The number of pixels cropped off the bottom of the source before scaling.",
+          "{int} `item.crop.left` The number of pixels cropped off the left of the source before scaling.",
+          "{bool} `item.visible` If the source is visible.",
+          "{bool} `item.locked` If the source is locked.",
+          "{String} `item.bounds.type` Type of bounding box.",
+          "{int} `item.bounds.alignment` Alignment of the bounding box.",
+          "{double} `item.bounds.x` Width of the bounding box.",
+          "{double} `item.bounds.y` Height of the bounding box."
         ],
         "api": "requests",
         "name": "GetSceneItemProperties",
@@ -2212,94 +2224,114 @@
         "returns": [
           {
             "type": "String",
-            "name": "name",
+            "name": "scene",
+            "description": "The name of the scene."
+          },
+          {
+            "type": "String",
+            "name": "item.name",
             "description": "The name of the source."
           },
           {
+            "type": "String",
+            "name": "item.id",
+            "description": "The id of the scene item."
+          },
+          {
             "type": "int",
-            "name": "position.x",
+            "name": "item.position.x",
             "description": "The x position of the source from the left."
           },
           {
             "type": "int",
-            "name": "position.y",
+            "name": "item.position.y",
             "description": "The y position of the source from the top."
           },
           {
             "type": "int",
-            "name": "position.alignment",
+            "name": "item.position.alignment",
             "description": "The point on the source that the item is manipulated from."
           },
           {
             "type": "double",
-            "name": "rotation",
+            "name": "item.rotation",
             "description": "The clockwise rotation of the item in degrees around the point of alignment."
           },
           {
             "type": "double",
-            "name": "scale.x",
+            "name": "item.scale.x",
             "description": "The x-scale factor of the source."
           },
           {
             "type": "double",
-            "name": "scale.y",
+            "name": "item.scale.y",
             "description": "The y-scale factor of the source."
           },
           {
             "type": "int",
-            "name": "crop.top",
+            "name": "item.crop.top",
             "description": "The number of pixels cropped off the top of the source before scaling."
           },
           {
             "type": "int",
-            "name": "crop.right",
+            "name": "item.crop.right",
             "description": "The number of pixels cropped off the right of the source before scaling."
           },
           {
             "type": "int",
-            "name": "crop.bottom",
+            "name": "item.crop.bottom",
             "description": "The number of pixels cropped off the bottom of the source before scaling."
           },
           {
             "type": "int",
-            "name": "crop.left",
+            "name": "item.crop.left",
             "description": "The number of pixels cropped off the left of the source before scaling."
           },
           {
             "type": "bool",
-            "name": "visible",
+            "name": "item.visible",
             "description": "If the source is visible."
           },
           {
+            "type": "bool",
+            "name": "item.locked",
+            "description": "If the source is locked."
+          },
+          {
             "type": "String",
-            "name": "bounds.type",
+            "name": "item.bounds.type",
             "description": "Type of bounding box."
           },
           {
             "type": "int",
-            "name": "bounds.alignment",
+            "name": "item.bounds.alignment",
             "description": "Alignment of the bounding box."
           },
           {
             "type": "double",
-            "name": "bounds.x",
+            "name": "item.bounds.x",
             "description": "Width of the bounding box."
           },
           {
             "type": "double",
-            "name": "bounds.y",
+            "name": "item.bounds.y",
             "description": "Height of the bounding box."
           }
         ],
         "params": [
           {
             "type": "String (optional)",
-            "name": "scene-name",
+            "name": "scene",
             "description": "the name of the scene that the source item belongs to. Defaults to the current scene."
           },
           {
             "type": "String",
-            "name": "item",
+            "name": "item.id",
+            "description": "The name of the source."
+          },
+          {
+            "type": "String",
+            "name": "item.name",
             "description": "The name of the source."
           }
         ],
@@ -2333,23 +2365,25 @@
         "subheads": [],
         "description": "Sets the scene specific properties of a source. Unspecified properties will remain unchanged.",
         "param": [
-          "{String (optional)} `scene-name` the name of the scene that the source item belongs to. Defaults to the current scene.",
-          "{String} `item` The name of the source.",
-          "{int} `position.x` The new x position of the source.",
-          "{int} `position.y` The new y position of the source.",
-          "{int} `position.alignment` The new alignment of the source.",
-          "{double} `rotation` The new clockwise rotation of the item in degrees.",
-          "{double} `scale.x` The new x scale of the item.",
-          "{double} `scale.y` The new y scale of the item.",
-          "{int} `crop.top` The new amount of pixels cropped off the top of the source before scaling.",
-          "{int} `crop.bottom` The new amount of pixels cropped off the bottom of the source before scaling.",
-          "{int} `crop.left` The new amount of pixels cropped off the left of the source before scaling.",
-          "{int} `crop.right` The new amount of pixels cropped off the right of the source before scaling.",
-          "{bool} `visible` The new visibility of the source. 'true' shows source, 'false' hides source.",
-          "{String} `bounds.type` The new bounds type of the source.",
-          "{int} `bounds.alignment` The new alignment of the bounding box. (0-2, 4-6, 8-10)",
-          "{double} `bounds.x` The new width of the bounding box.",
-          "{double} `bounds.y` The new height of the bounding box."
+          "{String (optional)} `scene` the name of the scene that the source item belongs to. Defaults to the current scene.",
+          "{String} `item.name` The name of the item.",
+          "{int} `item.id` The id of the item.",
+          "{int} `item.position.x` The new x position of the item.",
+          "{int} `item.position.y` The new y position of the item.",
+          "{int} `item.position.alignment` The new alignment of the item.",
+          "{double} `item.rotation` The new clockwise rotation of the item in degrees.",
+          "{double} `item.scale.x` The new x scale of the item.",
+          "{double} `item.scale.y` The new y scale of the item.",
+          "{int} `item.crop.top` The new amount of pixels cropped off the top of the source before scaling.",
+          "{int} `item.crop.bottom` The new amount of pixels cropped off the bottom of the source before scaling.",
+          "{int} `item.crop.left` The new amount of pixels cropped off the left of the source before scaling.",
+          "{int} `item.crop.right` The new amount of pixels cropped off the right of the source before scaling.",
+          "{bool} `item.visible` The new visibility of the item. 'true' shows source, 'false' hides source.",
+          "{bool} `item.locked` The new locked of the item. 'true' is locked, 'false' is unlocked.",
+          "{String} `item.bounds.type` The new bounds type of the item.",
+          "{int} `item.bounds.alignment` The new alignment of the bounding box. (0-2, 4-6, 8-10)",
+          "{double} `item.bounds.x` The new width of the bounding box.",
+          "{double} `item.bounds.y` The new height of the bounding box."
         ],
         "api": "requests",
         "name": "SetSceneItemProperties",
@@ -2358,87 +2392,97 @@
         "params": [
           {
             "type": "String (optional)",
-            "name": "scene-name",
+            "name": "scene",
             "description": "the name of the scene that the source item belongs to. Defaults to the current scene."
           },
           {
             "type": "String",
-            "name": "item",
-            "description": "The name of the source."
+            "name": "item.name",
+            "description": "The name of the item."
           },
           {
             "type": "int",
-            "name": "position.x",
-            "description": "The new x position of the source."
+            "name": "item.id",
+            "description": "The id of the item."
           },
           {
             "type": "int",
-            "name": "position.y",
-            "description": "The new y position of the source."
+            "name": "item.position.x",
+            "description": "The new x position of the item."
           },
           {
             "type": "int",
-            "name": "position.alignment",
-            "description": "The new alignment of the source."
+            "name": "item.position.y",
+            "description": "The new y position of the item."
+          },
+          {
+            "type": "int",
+            "name": "item.position.alignment",
+            "description": "The new alignment of the item."
           },
           {
             "type": "double",
-            "name": "rotation",
+            "name": "item.rotation",
             "description": "The new clockwise rotation of the item in degrees."
           },
           {
             "type": "double",
-            "name": "scale.x",
+            "name": "item.scale.x",
             "description": "The new x scale of the item."
           },
           {
             "type": "double",
-            "name": "scale.y",
+            "name": "item.scale.y",
             "description": "The new y scale of the item."
           },
           {
             "type": "int",
-            "name": "crop.top",
+            "name": "item.crop.top",
             "description": "The new amount of pixels cropped off the top of the source before scaling."
           },
           {
             "type": "int",
-            "name": "crop.bottom",
+            "name": "item.crop.bottom",
             "description": "The new amount of pixels cropped off the bottom of the source before scaling."
           },
           {
             "type": "int",
-            "name": "crop.left",
+            "name": "item.crop.left",
             "description": "The new amount of pixels cropped off the left of the source before scaling."
           },
           {
             "type": "int",
-            "name": "crop.right",
+            "name": "item.crop.right",
             "description": "The new amount of pixels cropped off the right of the source before scaling."
           },
           {
             "type": "bool",
-            "name": "visible",
-            "description": "The new visibility of the source. 'true' shows source, 'false' hides source."
+            "name": "item.visible",
+            "description": "The new visibility of the item. 'true' shows source, 'false' hides source."
+          },
+          {
+            "type": "bool",
+            "name": "item.locked",
+            "description": "The new locked of the item. 'true' is locked, 'false' is unlocked."
           },
           {
             "type": "String",
-            "name": "bounds.type",
-            "description": "The new bounds type of the source."
+            "name": "item.bounds.type",
+            "description": "The new bounds type of the item."
           },
           {
             "type": "int",
-            "name": "bounds.alignment",
+            "name": "item.bounds.alignment",
             "description": "The new alignment of the bounding box. (0-2, 4-6, 8-10)"
           },
           {
             "type": "double",
-            "name": "bounds.x",
+            "name": "item.bounds.x",
             "description": "The new width of the bounding box."
           },
           {
             "type": "double",
-            "name": "bounds.y",
+            "name": "item.bounds.y",
             "description": "The new height of the bounding box."
           }
         ],
@@ -2937,6 +2981,67 @@
         "heading": {
           "level": 2,
           "text": "GetSceneList"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Changes the order of scene items in the requested scene.",
+        "param": [
+          "{String (optional)} `scene` Name of the scene to reorder (defaults to current).",
+          "{Scene|Array} `items` Ordered list of objects with name and/or id specified. Id prefered due to uniqueness per scene",
+          "{int (optional)} `items[].id` Id of a specific scene item. Unique on a scene by scene basis.",
+          "{String (optional)} `items[].name` Name of a scene item. Sufficiently unique if no scene items share sources within the scene."
+        ],
+        "api": "requests",
+        "name": "SetSceneItemOrder",
+        "category": "scenes",
+        "since": "unreleased",
+        "params": [
+          {
+            "type": "String (optional)",
+            "name": "scene",
+            "description": "Name of the scene to reorder (defaults to current)."
+          },
+          {
+            "type": "Scene|Array",
+            "name": "items",
+            "description": "Ordered list of objects with name and/or id specified. Id prefered due to uniqueness per scene"
+          },
+          {
+            "type": "int (optional)",
+            "name": "items[].id",
+            "description": "Id of a specific scene item. Unique on a scene by scene basis."
+          },
+          {
+            "type": "String (optional)",
+            "name": "items[].name",
+            "description": "Name of a scene item. Sufficiently unique if no scene items share sources within the scene."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "SetSceneItemOrder"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "scenes"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "unreleased"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "SetSceneItemOrder"
         },
         "lead": "",
         "type": "class",
@@ -4276,6 +4381,134 @@
         "heading": {
           "level": 2,
           "text": "SetBrowserSourceProperties"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Deletes a scene item.",
+        "param": [
+          "{String (optional)} `scene` Name of the scene the source belogns to. Defaults to the current scene.",
+          "{Object} `item` item to delete (required)",
+          "{String} `item.name` name of the scene item (prefer `id`, including both is acceptable).",
+          "{int} `item.id` id of the scene item."
+        ],
+        "api": "requests",
+        "name": "DeleteSceneItem",
+        "category": "sources",
+        "since": "unreleased",
+        "params": [
+          {
+            "type": "String (optional)",
+            "name": "scene",
+            "description": "Name of the scene the source belogns to. Defaults to the current scene."
+          },
+          {
+            "type": "Object",
+            "name": "item",
+            "description": "item to delete (required)"
+          },
+          {
+            "type": "String",
+            "name": "item.name",
+            "description": "name of the scene item (prefer `id`, including both is acceptable)."
+          },
+          {
+            "type": "int",
+            "name": "item.id",
+            "description": "id of the scene item."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "DeleteSceneItem"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "sources"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "unreleased"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "DeleteSceneItem"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Duplicates a scene item.",
+        "param": [
+          "{String (optional)} `fromScene` Name of the scene to copy the item from. Defaults to the current scene.",
+          "{String (optional)} `toScene` Name of the scene to create the item in. Defaults to the current scene.",
+          "{Object} `item` item to delete (required)",
+          "{String} `item.name` name of the scene item (prefer `id`, including both is acceptable).",
+          "{int} `item.id` id of the scene item."
+        ],
+        "api": "requests",
+        "name": "DuplicateSceneItem",
+        "category": "sources",
+        "since": "unreleased",
+        "params": [
+          {
+            "type": "String (optional)",
+            "name": "fromScene",
+            "description": "Name of the scene to copy the item from. Defaults to the current scene."
+          },
+          {
+            "type": "String (optional)",
+            "name": "toScene",
+            "description": "Name of the scene to create the item in. Defaults to the current scene."
+          },
+          {
+            "type": "Object",
+            "name": "item",
+            "description": "item to delete (required)"
+          },
+          {
+            "type": "String",
+            "name": "item.name",
+            "description": "name of the scene item (prefer `id`, including both is acceptable)."
+          },
+          {
+            "type": "int",
+            "name": "item.id",
+            "description": "id of the scene item."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "DuplicateSceneItem"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "sources"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "unreleased"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "DuplicateSceneItem"
         },
         "lead": "",
         "type": "class",

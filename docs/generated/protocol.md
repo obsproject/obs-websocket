@@ -129,6 +129,7 @@ auth_response = base64_encode(auth_response_hash)
     + [SetCurrentScene](#setcurrentscene)
     + [GetCurrentScene](#getcurrentscene)
     + [GetSceneList](#getscenelist)
+    + [SetSceneItemOrder](#setsceneitemorder)
   * [Sources](#sources-1)
     + [GetSourcesList](#getsourceslist)
     + [GetSourcesTypesList](#getsourcestypeslist)
@@ -145,6 +146,8 @@ auth_response = base64_encode(auth_response_hash)
     + [SetTextGDIPlusProperties](#settextgdiplusproperties)
     + [GetBrowserSourceProperties](#getbrowsersourceproperties)
     + [SetBrowserSourceProperties](#setbrowsersourceproperties)
+    + [DeleteSceneItem](#deletesceneitem)
+    + [DuplicateSceneItem](#duplicatesceneitem)
     + [GetSpecialSources](#getspecialsources)
   * [Streaming](#streaming-1)
     + [GetStreamingStatus](#getstreamingstatus)
@@ -585,7 +588,8 @@ Scene items have been reordered.
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
-| `scene-name` | _String_ | Name of the scene where items have been reordered. |
+| `name` | _String_ | Name of the scene where items have been reordered. |
+| `sources` | _Array_ | Array of sources. |
 
 
 ---
@@ -1131,30 +1135,34 @@ Gets the scene specific properties of the specified source item.
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
-| `scene-name` | _String (optional)_ | the name of the scene that the source item belongs to. Defaults to the current scene. |
-| `item` | _String_ | The name of the source. |
+| `scene` | _String (optional)_ | the name of the scene that the source item belongs to. Defaults to the current scene. |
+| `item.id` | _String_ | The name of the source. |
+| `item.name` | _String_ | The name of the source. |
 
 
 **Response Items:**
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
-| `name` | _String_ | The name of the source. |
-| `position.x` | _int_ | The x position of the source from the left. |
-| `position.y` | _int_ | The y position of the source from the top. |
-| `position.alignment` | _int_ | The point on the source that the item is manipulated from. |
-| `rotation` | _double_ | The clockwise rotation of the item in degrees around the point of alignment. |
-| `scale.x` | _double_ | The x-scale factor of the source. |
-| `scale.y` | _double_ | The y-scale factor of the source. |
-| `crop.top` | _int_ | The number of pixels cropped off the top of the source before scaling. |
-| `crop.right` | _int_ | The number of pixels cropped off the right of the source before scaling. |
-| `crop.bottom` | _int_ | The number of pixels cropped off the bottom of the source before scaling. |
-| `crop.left` | _int_ | The number of pixels cropped off the left of the source before scaling. |
-| `visible` | _bool_ | If the source is visible. |
-| `bounds.type` | _String_ | Type of bounding box. |
-| `bounds.alignment` | _int_ | Alignment of the bounding box. |
-| `bounds.x` | _double_ | Width of the bounding box. |
-| `bounds.y` | _double_ | Height of the bounding box. |
+| `scene` | _String_ | The name of the scene. |
+| `item.name` | _String_ | The name of the source. |
+| `item.id` | _String_ | The id of the scene item. |
+| `item.position.x` | _int_ | The x position of the source from the left. |
+| `item.position.y` | _int_ | The y position of the source from the top. |
+| `item.position.alignment` | _int_ | The point on the source that the item is manipulated from. |
+| `item.rotation` | _double_ | The clockwise rotation of the item in degrees around the point of alignment. |
+| `item.scale.x` | _double_ | The x-scale factor of the source. |
+| `item.scale.y` | _double_ | The y-scale factor of the source. |
+| `item.crop.top` | _int_ | The number of pixels cropped off the top of the source before scaling. |
+| `item.crop.right` | _int_ | The number of pixels cropped off the right of the source before scaling. |
+| `item.crop.bottom` | _int_ | The number of pixels cropped off the bottom of the source before scaling. |
+| `item.crop.left` | _int_ | The number of pixels cropped off the left of the source before scaling. |
+| `item.visible` | _bool_ | If the source is visible. |
+| `item.locked` | _bool_ | If the source is locked. |
+| `item.bounds.type` | _String_ | Type of bounding box. |
+| `item.bounds.alignment` | _int_ | Alignment of the bounding box. |
+| `item.bounds.x` | _double_ | Width of the bounding box. |
+| `item.bounds.y` | _double_ | Height of the bounding box. |
 
 
 ---
@@ -1170,23 +1178,25 @@ Sets the scene specific properties of a source. Unspecified properties will rema
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
-| `scene-name` | _String (optional)_ | the name of the scene that the source item belongs to. Defaults to the current scene. |
-| `item` | _String_ | The name of the source. |
-| `position.x` | _int_ | The new x position of the source. |
-| `position.y` | _int_ | The new y position of the source. |
-| `position.alignment` | _int_ | The new alignment of the source. |
-| `rotation` | _double_ | The new clockwise rotation of the item in degrees. |
-| `scale.x` | _double_ | The new x scale of the item. |
-| `scale.y` | _double_ | The new y scale of the item. |
-| `crop.top` | _int_ | The new amount of pixels cropped off the top of the source before scaling. |
-| `crop.bottom` | _int_ | The new amount of pixels cropped off the bottom of the source before scaling. |
-| `crop.left` | _int_ | The new amount of pixels cropped off the left of the source before scaling. |
-| `crop.right` | _int_ | The new amount of pixels cropped off the right of the source before scaling. |
-| `visible` | _bool_ | The new visibility of the source. 'true' shows source, 'false' hides source. |
-| `bounds.type` | _String_ | The new bounds type of the source. |
-| `bounds.alignment` | _int_ | The new alignment of the bounding box. (0-2, 4-6, 8-10) |
-| `bounds.x` | _double_ | The new width of the bounding box. |
-| `bounds.y` | _double_ | The new height of the bounding box. |
+| `scene` | _String (optional)_ | the name of the scene that the source item belongs to. Defaults to the current scene. |
+| `item.name` | _String_ | The name of the item. |
+| `item.id` | _int_ | The id of the item. |
+| `item.position.x` | _int_ | The new x position of the item. |
+| `item.position.y` | _int_ | The new y position of the item. |
+| `item.position.alignment` | _int_ | The new alignment of the item. |
+| `item.rotation` | _double_ | The new clockwise rotation of the item in degrees. |
+| `item.scale.x` | _double_ | The new x scale of the item. |
+| `item.scale.y` | _double_ | The new y scale of the item. |
+| `item.crop.top` | _int_ | The new amount of pixels cropped off the top of the source before scaling. |
+| `item.crop.bottom` | _int_ | The new amount of pixels cropped off the bottom of the source before scaling. |
+| `item.crop.left` | _int_ | The new amount of pixels cropped off the left of the source before scaling. |
+| `item.crop.right` | _int_ | The new amount of pixels cropped off the right of the source before scaling. |
+| `item.visible` | _bool_ | The new visibility of the item. 'true' shows source, 'false' hides source. |
+| `item.locked` | _bool_ | The new locked of the item. 'true' is locked, 'false' is unlocked. |
+| `item.bounds.type` | _String_ | The new bounds type of the item. |
+| `item.bounds.alignment` | _int_ | The new alignment of the bounding box. (0-2, 4-6, 8-10) |
+| `item.bounds.x` | _double_ | The new width of the bounding box. |
+| `item.bounds.y` | _double_ | The new height of the bounding box. |
 
 
 **Response Items:**
@@ -1375,6 +1385,29 @@ _No specified parameters._
 | `current-scene` | _String_ | Name of the currently active scene. |
 | `scenes` | _Scene\|Array_ | Ordered list of the current profile's scenes (See `[GetCurrentScene](#getcurrentscene)` for more information). |
 
+
+---
+
+### SetSceneItemOrder
+
+
+- Unreleased
+
+Changes the order of scene items in the requested scene.
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `scene` | _String (optional)_ | Name of the scene to reorder (defaults to current). |
+| `items` | _Scene\|Array_ | Ordered list of objects with name and/or id specified. Id prefered due to uniqueness per scene |
+| `items[].id` | _int (optional)_ | Id of a specific scene item. Unique on a scene by scene basis. |
+| `items[].name` | _String (optional)_ | Name of a scene item. Sufficiently unique if no scene items share sources within the scene. |
+
+
+**Response Items:**
+
+_No additional response items._
 
 ---
 
@@ -1798,6 +1831,53 @@ Set current properties for a Browser Source.
 | `fps` | _int (optional)_ | Framerate. |
 | `shutdown` | _boolean (optional)_ | Indicates whether the source should be shutdown when not visible. |
 | `render` | _boolean (optional)_ | Visibility of the scene item. |
+
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+### DeleteSceneItem
+
+
+- Unreleased
+
+Deletes a scene item.
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `scene` | _String (optional)_ | Name of the scene the source belogns to. Defaults to the current scene. |
+| `item` | _Object_ | item to delete (required) |
+| `item.name` | _String_ | name of the scene item (prefer `id`, including both is acceptable). |
+| `item.id` | _int_ | id of the scene item. |
+
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+### DuplicateSceneItem
+
+
+- Unreleased
+
+Duplicates a scene item.
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `fromScene` | _String (optional)_ | Name of the scene to copy the item from. Defaults to the current scene. |
+| `toScene` | _String (optional)_ | Name of the scene to create the item in. Defaults to the current scene. |
+| `item` | _Object_ | item to delete (required) |
+| `item.name` | _String_ | name of the scene item (prefer `id`, including both is acceptable). |
+| `item.id` | _int_ | id of the scene item. |
 
 
 **Response Items:**
