@@ -41,6 +41,8 @@ class Utils {
     static obs_data_t* GetSceneItemData(obs_sceneitem_t* item);
     static obs_sceneitem_t* GetSceneItemFromName(
         obs_source_t* source, QString name);
+    static obs_sceneitem_t* GetSceneItemFromId(obs_source_t* source, size_t id);
+    static obs_sceneitem_t* GetSceneItemFromItem(obs_source_t* source, obs_data_t* item);
     static obs_source_t* GetTransitionFromName(QString transitionName);
     static obs_source_t* GetSceneFromNameOrCurrent(QString sceneName);
 

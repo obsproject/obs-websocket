@@ -777,7 +777,8 @@ void WSEvents::OnTransitionBegin(void* param, calldata_t* data) {
 /**
  * Scene items have been reordered.
  *
- * @return {String} `scene-name` Name of the scene where items have been reordered.
+ * @return {String} `name` Name of the scene where items have been reordered.
+ * @return {Array} `sources` Array of sources.
  *
  * @api events
  * @name SourceOrderChanged
@@ -790,8 +791,8 @@ void WSEvents::OnSceneReordered(void* param, calldata_t* data) {
     obs_scene_t* scene = nullptr;
     calldata_get_ptr(data, "scene", &scene);
 
-    OBSDataAutoRelease fields = obs_data_create();
-    obs_data_set_string(fields, "scene-name",
+    OBSDataAutoRelease fields = Utils::GetSceneData(obs_scene_get_source(scene));
+    obs_data_set_string(fields, "name",
         obs_source_get_name(obs_scene_get_source(scene)));
 
     instance->broadcastUpdate("SourceOrderChanged", fields);

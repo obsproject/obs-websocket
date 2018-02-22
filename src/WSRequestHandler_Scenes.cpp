@@ -74,3 +74,64 @@ void WSRequestHandler::HandleGetSceneList(WSRequestHandler* req) {
 
     req->SendOKResponse(data);
 }
+
+/**
+* Changes the order of scene items in the requested scene.
+*
+* @param {String (optional)} `scene` Name of the scene to reorder (defaults to current).
+* @param {Scene|Array} `items` Ordered list of objects with name and/or id specified. Id prefered due to uniqueness per scene
+* @param {int (optional)} `items[].id` Id of a specific scene item. Unique on a scene by scene basis.
+* @param {String (optional)} `items[].name` Name of a scene item. Sufficiently unique if no scene items share sources within the scene.
+*
+* @api requests
+* @name SetSceneItemOrder
+* @category scenes
+* @since unreleased
+*/
+void WSRequestHandler::HandleSetSceneItemOrder(WSRequestHandler* req) {
+    QString sceneName = obs_data_get_string(req->data, "scene");
+    OBSSourceAutoRelease scene = Utils::GetSceneFromNameOrCurrent(sceneName);
+    if (!scene) {
+        req->SendErrorResponse("requested scene doesn't exist");
+        return;
+    }
+
+    OBSDataArrayAutoRelease items = obs_data_get_array(req->data, "items");
+    if (!items) {
+        req->SendErrorResponse("sceneItem order not specified");
+        return;
+    }
+
+    size_t count = obs_data_array_count(items);
+
+    std::vector<obs_sceneitem_t*> newOrder;
+    newOrder.reserve(count);
+    for (size_t i = 0; i < count; i++) {
+        OBSDataAutoRelease item = obs_data_array_item(items, i);
+        OBSSceneItemAutoRelease sceneItem = Utils::GetSceneItemFromItem(scene, item);
+        if (!sceneItem) {
+            req->SendErrorResponse("Invalid sceneItem id or name in order");
+            return;
+        }
+        for (size_t j = 0; j < i; j++) {
+            if (sceneItem == newOrder[j]) {
+                req->SendErrorResponse("Duplicate sceneItem in specified order");
+                for (size_t i = 0; i < count; i++) {
+                    obs_sceneitem_release(newOrder[i]);
+                }
+                return;
+            }
+        }
+        newOrder.push_back(sceneItem);
+    }
+
+    if (obs_scene_reorder_items(obs_scene_from_source(scene), newOrder.data(), count)) {
+        req->SendOKResponse();
+    }
+    else {
+        req->SendErrorResponse("Invalid sceneItem order");
+    }
+    for (size_t i = 0; i < count; i++) {
+        obs_sceneitem_release(newOrder[i]);
+    }
+}

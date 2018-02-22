@@ -38,6 +38,7 @@ QHash<QString, void(*)(WSRequestHandler*)> WSRequestHandler::messageMap {
     { "GetCurrentScene", WSRequestHandler::HandleGetCurrentScene },
     { "GetSceneList", WSRequestHandler::HandleGetSceneList },
 
+    { "SetSceneItemOrder", WSRequestHandler::HandleSetSceneItemOrder },
     { "SetSourceRender", WSRequestHandler::HandleSetSceneItemRender }, // Retrocompat
     { "SetSceneItemRender", WSRequestHandler::HandleSetSceneItemRender },
     { "SetSceneItemPosition", WSRequestHandler::HandleSetSceneItemPosition },
@@ -45,6 +46,8 @@ QHash<QString, void(*)(WSRequestHandler*)> WSRequestHandler::messageMap {
     { "SetSceneItemCrop", WSRequestHandler::HandleSetSceneItemCrop },
     { "GetSceneItemProperties", WSRequestHandler::HandleGetSceneItemProperties },
     { "SetSceneItemProperties", WSRequestHandler::HandleSetSceneItemProperties },
+    { "DuplicateSceneItem", WSRequestHandler::HandleDuplicateSceneItem },
+    { "DeleteSceneItem", WSRequestHandler::HandleDeleteSceneItem },
     { "ResetSceneItem", WSRequestHandler::HandleResetSceneItem },
 
     { "GetStreamingStatus", WSRequestHandler::HandleGetStreamingStatus },
