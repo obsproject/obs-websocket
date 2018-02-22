@@ -40,7 +40,6 @@ void WSRequestHandler::HandleGetSceneItemProperties(WSRequestHandler* req) {
         req->SendErrorResponse("missing request parameters");
         return;
     }
-
     OBSDataAutoRelease *item = (OBSDataAutoRelease *)obs_data_get_obj(req->data, "item");
     if (!item) {
         req->SendErrorResponse("invalid request parameters");
@@ -55,13 +54,14 @@ void WSRequestHandler::HandleGetSceneItemProperties(WSRequestHandler* req) {
     }
 
     OBSSceneItemAutoRelease sceneItem = Utils::GetSceneItemFromItem(scene, (obs_data_t *)item);
+
     if (!sceneItem) {
         req->SendErrorResponse("specified scene item doesn't exist");
         return;
     }
 
-    OBSDataAutoRelease resData;
-    OBSDataAutoRelease resItem;
+    OBSDataAutoRelease resData = obs_data_create();
+    OBSDataAutoRelease resItem = obs_data_create();
     obs_data_set_string(resItem, "name", obs_source_get_name(obs_sceneitem_get_source((obs_sceneitem_t *)sceneItem)));
 
     OBSDataAutoRelease posData = obs_data_create();
