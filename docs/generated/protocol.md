@@ -144,6 +144,8 @@ auth_response = base64_encode(auth_response_hash)
     + [SetSourceSettings](#setsourcesettings)
     + [GetTextGDIPlusProperties](#gettextgdiplusproperties)
     + [SetTextGDIPlusProperties](#settextgdiplusproperties)
+    + [GetTextFreetype2Properties](#gettextfreetype2properties)
+    + [SetTextFreetype2Properties](#settextfreetype2properties)
     + [GetBrowserSourceProperties](#getbrowsersourceproperties)
     + [SetBrowserSourceProperties](#setbrowsersourceproperties)
     + [DeleteSceneItem](#deletesceneitem)
@@ -1733,7 +1735,7 @@ Get the current properties of a Text GDI Plus source.
 
 - Added in v4.1.0
 
-Get the current properties of a Text GDI Plus source.
+Set the current properties of a Text GDI Plus source.
 
 **Request Fields:**
 
@@ -1768,6 +1770,82 @@ Get the current properties of a Text GDI Plus source.
 | `text` | _String (optional)_ | Text content to be displayed. |
 | `valign` | _String (optional)_ | Text vertical alignment ("top", "center", "bottom"). |
 | `vertical` | _boolean (optional)_ | Vertical text enabled. |
+| `render` | _boolean (optional)_ | Visibility of the scene item. |
+
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+### GetTextFreetype2Properties
+
+
+- Added in v4.x.x
+
+Get the current properties of a Text Freetype 2 source.
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `scene-name` | _String (optional)_ | Name of the scene to retrieve. Defaults to the current scene. |
+| `source` | _String_ | Name of the source. |
+
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `color1` | _int_ | Gradient top color. |
+| `color2` | _int_ | Gradient bottom color. |
+| `custom_width` | _int_ | Custom width (0 to disable). |
+| `drop_shadow` | _boolean_ | Drop shadow. |
+| `font` | _Object_ | Holds data for the font. Ex: `"font": { "face": "Arial", "flags": 0, "size": 150, "style": "" }` |
+| `font.face` | _String_ | Font face. |
+| `font.flags` | _int_ | Font text styling flag. `Bold=1, Italic=2, Bold Italic=3, Underline=5, Strikeout=8` |
+| `font.size` | _int_ | Font text size. |
+| `font.style` | _String_ | Font Style (unknown function). |
+| `from_file` | _boolean_ | Read text from the specified file. |
+| `log_mode` | _boolean_ | Chat log. |
+| `outline` | _boolean_ | Outline. |
+| `text` | _String_ | Text content to be displayed. |
+| `text_file` | _String_ | File path. |
+| `word_wrap` | _boolean_ | Word wrap. |
+| `render` | _boolean_ | Visibility of the scene item. |
+
+
+---
+
+### SetTextFreetype2Properties
+
+
+- Added in v4.x.x
+
+Set the current properties of a Text Freetype 2 source.
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `scene-name` | _String (optional)_ | Name of the scene to retrieve. Defaults to the current scene. |
+| `source` | _String_ | Name of the source. |
+| `color1` | _int (optional)_ | Gradient top color. |
+| `color2` | _int (optional)_ | Gradient bottom color. |
+| `custom_width` | _int (optional)_ | Custom width (0 to disable). |
+| `drop_shadow` | _boolean (optional)_ | Drop shadow. |
+| `font` | _Object (optional)_ | Holds data for the font. Ex: `"font": { "face": "Arial", "flags": 0, "size": 150, "style": "" }` |
+| `font.face` | _String (optional)_ | Font face. |
+| `font.flags` | _int (optional)_ | Font text styling flag. `Bold=1, Italic=2, Bold Italic=3, Underline=5, Strikeout=8` |
+| `font.size` | _int (optional)_ | Font text size. |
+| `font.style` | _String (optional)_ | Font Style (unknown function). |
+| `from_file` | _boolean (optional)_ | Read text from the specified file. |
+| `log_mode` | _boolean (optional)_ | Chat log. |
+| `outline` | _boolean (optional)_ | Outline. |
+| `text` | _String (optional)_ | Text content to be displayed. |
+| `text_file` | _String (optional)_ | File path. |
+| `word_wrap` | _boolean (optional)_ | Word wrap. |
 | `render` | _boolean (optional)_ | Visibility of the scene item. |
 
 

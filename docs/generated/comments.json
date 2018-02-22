@@ -3961,7 +3961,7 @@
       },
       {
         "subheads": [],
-        "description": "Get the current properties of a Text GDI Plus source.",
+        "description": "Set the current properties of a Text GDI Plus source.",
         "param": [
           "{String (optional)} `scene-name` Name of the scene to retrieve. Defaults to the current scene.",
           "{String} `source` Name of the source.",
@@ -4171,6 +4171,300 @@
         "heading": {
           "level": 2,
           "text": "SetTextGDIPlusProperties"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Get the current properties of a Text Freetype 2 source.",
+        "param": [
+          "{String (optional)} `scene-name` Name of the scene to retrieve. Defaults to the current scene.",
+          "{String} `source` Name of the source."
+        ],
+        "return": [
+          "{int} `color1` Gradient top color.",
+          "{int} `color2` Gradient bottom color.",
+          "{int} `custom_width` Custom width (0 to disable).",
+          "{boolean} `drop_shadow` Drop shadow.",
+          "{Object} `font` Holds data for the font. Ex: `\"font\": { \"face\": \"Arial\", \"flags\": 0, \"size\": 150, \"style\": \"\" }`",
+          "{String} `font.face` Font face.",
+          "{int} `font.flags` Font text styling flag. `Bold=1, Italic=2, Bold Italic=3, Underline=5, Strikeout=8`",
+          "{int} `font.size` Font text size.",
+          "{String} `font.style` Font Style (unknown function).",
+          "{boolean} `from_file` Read text from the specified file.",
+          "{boolean} `log_mode` Chat log.",
+          "{boolean} `outline` Outline.",
+          "{String} `text` Text content to be displayed.",
+          "{String} `text_file` File path.",
+          "{boolean} `word_wrap` Word wrap.",
+          "{boolean} `render` Visibility of the scene item."
+        ],
+        "api": "requests",
+        "name": "GetTextFreetype2Properties",
+        "category": "sources",
+        "since": "4.x.x",
+        "returns": [
+          {
+            "type": "int",
+            "name": "color1",
+            "description": "Gradient top color."
+          },
+          {
+            "type": "int",
+            "name": "color2",
+            "description": "Gradient bottom color."
+          },
+          {
+            "type": "int",
+            "name": "custom_width",
+            "description": "Custom width (0 to disable)."
+          },
+          {
+            "type": "boolean",
+            "name": "drop_shadow",
+            "description": "Drop shadow."
+          },
+          {
+            "type": "Object",
+            "name": "font",
+            "description": "Holds data for the font. Ex: `\"font\": { \"face\": \"Arial\", \"flags\": 0, \"size\": 150, \"style\": \"\" }`"
+          },
+          {
+            "type": "String",
+            "name": "font.face",
+            "description": "Font face."
+          },
+          {
+            "type": "int",
+            "name": "font.flags",
+            "description": "Font text styling flag. `Bold=1, Italic=2, Bold Italic=3, Underline=5, Strikeout=8`"
+          },
+          {
+            "type": "int",
+            "name": "font.size",
+            "description": "Font text size."
+          },
+          {
+            "type": "String",
+            "name": "font.style",
+            "description": "Font Style (unknown function)."
+          },
+          {
+            "type": "boolean",
+            "name": "from_file",
+            "description": "Read text from the specified file."
+          },
+          {
+            "type": "boolean",
+            "name": "log_mode",
+            "description": "Chat log."
+          },
+          {
+            "type": "boolean",
+            "name": "outline",
+            "description": "Outline."
+          },
+          {
+            "type": "String",
+            "name": "text",
+            "description": "Text content to be displayed."
+          },
+          {
+            "type": "String",
+            "name": "text_file",
+            "description": "File path."
+          },
+          {
+            "type": "boolean",
+            "name": "word_wrap",
+            "description": "Word wrap."
+          },
+          {
+            "type": "boolean",
+            "name": "render",
+            "description": "Visibility of the scene item."
+          }
+        ],
+        "params": [
+          {
+            "type": "String (optional)",
+            "name": "scene-name",
+            "description": "Name of the scene to retrieve. Defaults to the current scene."
+          },
+          {
+            "type": "String",
+            "name": "source",
+            "description": "Name of the source."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "GetTextFreetype2Properties"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "sources"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.x.x"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "GetTextFreetype2Properties"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Set the current properties of a Text Freetype 2 source.",
+        "param": [
+          "{String (optional)} `scene-name` Name of the scene to retrieve. Defaults to the current scene.",
+          "{String} `source` Name of the source.",
+          "{int (optional)} `color1` Gradient top color.",
+          "{int (optional)} `color2` Gradient bottom color.",
+          "{int (optional)} `custom_width` Custom width (0 to disable).",
+          "{boolean (optional)} `drop_shadow` Drop shadow.",
+          "{Object (optional)} `font` Holds data for the font. Ex: `\"font\": { \"face\": \"Arial\", \"flags\": 0, \"size\": 150, \"style\": \"\" }`",
+          "{String (optional)} `font.face` Font face.",
+          "{int (optional)} `font.flags` Font text styling flag. `Bold=1, Italic=2, Bold Italic=3, Underline=5, Strikeout=8`",
+          "{int (optional)} `font.size` Font text size.",
+          "{String (optional)} `font.style` Font Style (unknown function).",
+          "{boolean (optional)} `from_file` Read text from the specified file.",
+          "{boolean (optional)} `log_mode` Chat log.",
+          "{boolean (optional)} `outline` Outline.",
+          "{String (optional)} `text` Text content to be displayed.",
+          "{String (optional)} `text_file` File path.",
+          "{boolean (optional)} `word_wrap` Word wrap.",
+          "{boolean (optional)} `render` Visibility of the scene item."
+        ],
+        "api": "requests",
+        "name": "SetTextFreetype2Properties",
+        "category": "sources",
+        "since": "4.x.x",
+        "params": [
+          {
+            "type": "String (optional)",
+            "name": "scene-name",
+            "description": "Name of the scene to retrieve. Defaults to the current scene."
+          },
+          {
+            "type": "String",
+            "name": "source",
+            "description": "Name of the source."
+          },
+          {
+            "type": "int (optional)",
+            "name": "color1",
+            "description": "Gradient top color."
+          },
+          {
+            "type": "int (optional)",
+            "name": "color2",
+            "description": "Gradient bottom color."
+          },
+          {
+            "type": "int (optional)",
+            "name": "custom_width",
+            "description": "Custom width (0 to disable)."
+          },
+          {
+            "type": "boolean (optional)",
+            "name": "drop_shadow",
+            "description": "Drop shadow."
+          },
+          {
+            "type": "Object (optional)",
+            "name": "font",
+            "description": "Holds data for the font. Ex: `\"font\": { \"face\": \"Arial\", \"flags\": 0, \"size\": 150, \"style\": \"\" }`"
+          },
+          {
+            "type": "String (optional)",
+            "name": "font.face",
+            "description": "Font face."
+          },
+          {
+            "type": "int (optional)",
+            "name": "font.flags",
+            "description": "Font text styling flag. `Bold=1, Italic=2, Bold Italic=3, Underline=5, Strikeout=8`"
+          },
+          {
+            "type": "int (optional)",
+            "name": "font.size",
+            "description": "Font text size."
+          },
+          {
+            "type": "String (optional)",
+            "name": "font.style",
+            "description": "Font Style (unknown function)."
+          },
+          {
+            "type": "boolean (optional)",
+            "name": "from_file",
+            "description": "Read text from the specified file."
+          },
+          {
+            "type": "boolean (optional)",
+            "name": "log_mode",
+            "description": "Chat log."
+          },
+          {
+            "type": "boolean (optional)",
+            "name": "outline",
+            "description": "Outline."
+          },
+          {
+            "type": "String (optional)",
+            "name": "text",
+            "description": "Text content to be displayed."
+          },
+          {
+            "type": "String (optional)",
+            "name": "text_file",
+            "description": "File path."
+          },
+          {
+            "type": "boolean (optional)",
+            "name": "word_wrap",
+            "description": "Word wrap."
+          },
+          {
+            "type": "boolean (optional)",
+            "name": "render",
+            "description": "Visibility of the scene item."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "SetTextFreetype2Properties"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "sources"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.x.x"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "SetTextFreetype2Properties"
         },
         "lead": "",
         "type": "class",
