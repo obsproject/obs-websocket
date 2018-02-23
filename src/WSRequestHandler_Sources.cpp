@@ -1259,16 +1259,16 @@ void WSRequestHandler::HandleDuplicateSceneItem(WSRequestHandler* req) {
     }
 
     OBSSourceAutoRelease fromSource = obs_sceneitem_get_source(referenceItem);
-    OBSSourceAutoRelease newSource = obs_source_duplicate(fromSource, obs_source_get_name(fromSource), false);
+    obs_source_t *newSource = obs_source_duplicate(fromSource, obs_source_get_name(fromSource), false);
 
-    OBSSceneItemAutoRelease newItem = obs_scene_add(obs_scene_from_source(toScene), newSource);
+    obs_sceneitem_t *newItem = obs_scene_add(obs_scene_from_source(toScene), newSource);
     obs_sceneitem_set_visible(newItem, obs_sceneitem_visible(referenceItem));
 
     if (!newItem) {
         req->SendErrorResponse("Error duplicating scenee item");
     }
-    OBSDataAutoRelease responseData;
-    OBSDataAutoRelease itemData;
+    OBSDataAutoRelease responseData = obs_data_create();
+    OBSDataAutoRelease itemData = obs_data_create();
     obs_data_set_int(itemData, "id", obs_sceneitem_get_id(newItem));
     obs_data_set_string(itemData, "name", obs_source_get_name(obs_sceneitem_get_source(newItem)));
     obs_data_set_obj(responseData, "item", itemData);
