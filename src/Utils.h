@@ -49,8 +49,6 @@ class Utils {
     static obs_data_array_t* GetScenes();
     static obs_data_t* GetSceneData(obs_source_t* source);
 
-    static obs_data_array_t* GetProfiles();
-
     static QSpinBox* GetTransitionDurationControl();
     static int GetTransitionDuration();
     static void SetTransitionDuration(int ms);

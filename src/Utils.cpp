@@ -358,13 +358,19 @@ QString Utils::OBSVersionString() {
 
 QSystemTrayIcon* Utils::GetTrayIcon() {
     QMainWindow* main = (QMainWindow*)obs_frontend_get_main_window();
+    if (!main) return nullptr;
+
     return main->findChildren<QSystemTrayIcon*>().first();
 }
 
 void Utils::SysTrayNotify(QString &text,
     QSystemTrayIcon::MessageIcon icon, QString title) {
-    if (!Config::Current()->AlertsEnabled || !QSystemTrayIcon::supportsMessages())
+    if (!Config::Current()->AlertsEnabled ||
+        !QSystemTrayIcon::isSystemTrayAvailable() ||
+        !QSystemTrayIcon::supportsMessages())
+    {
         return;
+    }
 
     QSystemTrayIcon* trayIcon = GetTrayIcon();
     if (trayIcon)
