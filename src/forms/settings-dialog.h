@@ -21,9 +21,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include <QDialog>
 
-namespace Ui {
-class SettingsDialog;
-}
+#include "ui_settings-dialog.h"
 
 class SettingsDialog : public QDialog
 {
