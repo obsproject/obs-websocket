@@ -32,8 +32,6 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <obs-module.h>
 #include <util/config-file.h>
 
-const char* qstring_data_copy(QString value);
-
 class Utils {
   public:
     static obs_data_array_t* StringListToArray(char** strings, char* key);

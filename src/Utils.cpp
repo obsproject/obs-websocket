@@ -28,13 +28,6 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 Q_DECLARE_METATYPE(OBSScene);
 
-const char* qstring_data_copy(QString value) {
-    QByteArray stringData = value.toUtf8();
-    const char* constStringData = new const char[stringData.size()]();
-    memcpy((void*)constStringData, stringData.constData(), stringData.size());
-    return constStringData;
-}
-
 obs_data_array_t* Utils::StringListToArray(char** strings, char* key) {
     if (!strings)
         return obs_data_array_create();

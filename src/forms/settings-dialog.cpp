@@ -22,7 +22,6 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include "../Config.h"
 #include "../WSServer.h"
 #include "settings-dialog.h"
-#include "ui_settings-dialog.h"
 
 #define CHANGE_ME "changeme"
 

@@ -34,6 +34,8 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include "Config.h"
 #include "Utils.h"
 
+#define QT_TO_UTF8(str) str.toUtf8().constData()
+
 Config* Config::_instance = new Config();
 
 Config::Config() :
@@ -62,9 +64,9 @@ Config::Config() :
         config_set_default_bool(obsConfig,
             SECTION_NAME, PARAM_AUTHREQUIRED, AuthRequired);
         config_set_default_string(obsConfig,
-            SECTION_NAME, PARAM_SECRET, qstring_data_copy(Secret));
+            SECTION_NAME, PARAM_SECRET, QT_TO_UTF8(Secret));
         config_set_default_string(obsConfig,
-            SECTION_NAME, PARAM_SALT, qstring_data_copy(Salt));
+            SECTION_NAME, PARAM_SALT, QT_TO_UTF8(Salt));
     }
 
     mbedtls_entropy_init(&entropy);
@@ -104,9 +106,9 @@ void Config::Save() {
 
     config_set_bool(obsConfig, SECTION_NAME, PARAM_AUTHREQUIRED, AuthRequired);
     config_set_string(obsConfig, SECTION_NAME, PARAM_SECRET,
-        qstring_data_copy(Secret));
+        QT_TO_UTF8(Secret));
     config_set_string(obsConfig, SECTION_NAME, PARAM_SALT,
-        qstring_data_copy(Salt));
+        QT_TO_UTF8(Salt));
 
     config_save(obsConfig);
 }
