@@ -25,7 +25,8 @@ build_script:
 
 before_deploy:
   - 7z a "C:\projects\obs-websocket\build.zip" C:\projects\obs-websocket\release\*
-  - "C:\\Program Files (x86)\\Inno Setup 5\\ISCC.exe" installer\installer.iss
+  - set PATH=%PATH%;"C:\\Program Files (x86)\\Inno Setup 5"
+  - iscc installer\installer.iss
 
 deploy_script:
   - ps: Push-AppveyorArtifact "C:\projects\obs-websocket\build.zip" -FileName "obs-websocket-$(git log --pretty=format:'%h' -n 1)-Windows.zip"
