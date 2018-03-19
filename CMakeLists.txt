@@ -48,13 +48,13 @@ set(obs-websocket_HEADERS
 	src/forms/settings-dialog.h)
 
 # --- Platform-independent build settings ---
-add_library(obs-websocket MODULE 
+add_library(obs-websocket MODULE
 	${obs-websocket_SOURCES}
 	${obs-websocket_HEADERS})
 
 add_dependencies(obs-websocket mbedcrypto)
 
-include_directories( 
+include_directories(
 	"${LIBOBS_INCLUDE_DIR}/../UI/obs-frontend-api"
 	${Qt5Core_INCLUDES}
 	${Qt5WebSockets_INCLUDES}
@@ -62,7 +62,7 @@ include_directories(
 	${mbedcrypto_INCLUDES}
 	"${CMAKE_SOURCE_DIR}/deps/mbedtls/include")
 
-target_link_libraries(obs-websocket 
+target_link_libraries(obs-websocket
 	libobs
 	Qt5::Core
 	Qt5::WebSockets
