@@ -6,7 +6,9 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 
+if (WIN32 OR APPLE)
 include(external/FindLibObs.cmake)
+endif()
 
 find_package(LibObs REQUIRED)
 find_package(Qt5Core REQUIRED)
@@ -16,7 +18,7 @@ find_package(Qt5Widgets REQUIRED)
 add_subdirectory(deps/mbedtls EXCLUDE_FROM_ALL)
 set(ENABLE_PROGRAMS false)
 
-set(obs-websocket_SOURCES 
+set(obs-websocket_SOURCES
 	src/obs-websocket.cpp
 	src/WSServer.cpp
 	src/WSRequestHandler.cpp
@@ -112,15 +114,15 @@ if(WIN32)
 			"${CMAKE_COMMAND}" -E make_directory
 			"${RELEASE_DIR}/data/obs-plugins/obs-websocket"
 			"${RELEASE_DIR}/obs-plugins/${ARCH_NAME}")
-			
+
 		COMMAND if $<CONFIG:Release>==1 ("${CMAKE_COMMAND}" -E copy_directory
 			"${PROJECT_SOURCE_DIR}/data"
 			"${RELEASE_DIR}/data/obs-plugins/obs-websocket")
 
-		COMMAND if $<CONFIG:Release>==1 ("${CMAKE_COMMAND}" -E copy 
+		COMMAND if $<CONFIG:Release>==1 ("${CMAKE_COMMAND}" -E copy
 			"$<TARGET_FILE:obs-websocket>"
-			"${QTDIR}/bin/Qt5WebSockets.dll" 
-			"${QTDIR}/bin/Qt5Network.dll" 
+			"${QTDIR}/bin/Qt5WebSockets.dll"
+			"${QTDIR}/bin/Qt5Network.dll"
 			"${RELEASE_DIR}/obs-plugins/${ARCH_NAME}")
 
 		# Copy to obs-studio dev environment for immediate testing
