@@ -8,6 +8,7 @@ apt-get install -y \
 	libc-dev-bin \
 	libc6-dev git \
 	build-essential \
+	checkinstall \
 	cmake \
 	obs-studio \
 	libqt5websockets5-dev
