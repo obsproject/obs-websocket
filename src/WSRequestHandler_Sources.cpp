@@ -1273,7 +1273,7 @@ void WSRequestHandler::HandleDuplicateSceneItem(WSRequestHandler* req) {
     obs_data_set_string(itemData, "name", obs_source_get_name(obs_sceneitem_get_source(newItem)));
     obs_data_set_obj(responseData, "item", itemData);
     obs_data_set_string(responseData, "scene", obs_source_get_name(toScene));
-    req->SendResponse(responseData);
+    req->SendOKResponse(responseData);
 }
 
 /**
