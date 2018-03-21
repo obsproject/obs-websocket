@@ -22,11 +22,11 @@
 #include <QTimer>
 #include <QPushButton>
 
-#include "Config.h"
-#include "Utils.h"
+#include "../Config.h"
+#include "src/Utils.h"
 #include "WSEvents.h"
 
-#include "obs-websocket.h"
+#include "src/obs-websocket.h"
 
 bool transitionIsCut(obs_source_t* transition) {
     if (!transition)

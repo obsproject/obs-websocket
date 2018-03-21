@@ -1,7 +1,7 @@
 #include <QString>
 
-#include "Config.h"
-#include "Utils.h"
+#include "../Config.h"
+#include "src/Utils.h"
 #include "WSEvents.h"
 
 #include "WSRequestHandler.h"

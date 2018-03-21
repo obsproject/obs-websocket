@@ -1,5 +1,5 @@
 #include <QString>
-#include "Utils.h"
+#include "src/Utils.h"
 #include "WSEvents.h"
 
 #include "WSRequestHandler.h"

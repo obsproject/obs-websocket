@@ -13,51 +13,69 @@ endif()
 
 find_package(LibObs REQUIRED)
 find_package(Qt5Core REQUIRED)
+find_package(Qt5WebSockets REQUIRED)
 find_package(Qt5Widgets REQUIRED)
 find_package(Boost COMPONENTS system date_time regex REQUIRED)
 
 set(obs-websocket_SOURCES
 	src/obs-websocket.cpp
 	src/WSServer.cpp
-	src/WSRequestHandler.cpp
-	src/WSRequestHandler_General.cpp
-	src/WSRequestHandler_Profiles.cpp
-	src/WSRequestHandler_Recording.cpp
-	src/WSRequestHandler_ReplayBuffer.cpp
-	src/WSRequestHandler_SceneCollections.cpp
-	src/WSRequestHandler_Scenes.cpp
-	src/WSRequestHandler_SceneItems.cpp
-	src/WSRequestHandler_Sources.cpp
-	src/WSRequestHandler_Streaming.cpp
-	src/WSRequestHandler_StudioMode.cpp
-	src/WSRequestHandler_Transitions.cpp
-	src/WSEvents.cpp
+	src/legacy/WSRequestHandler.cpp
+	src/legacy/WSRequestHandler_General.cpp
+	src/legacy/WSRequestHandler_Profiles.cpp
+	src/legacy/WSRequestHandler_Recording.cpp
+	src/legacy/WSRequestHandler_ReplayBuffer.cpp
+	src/legacy/WSRequestHandler_SceneCollections.cpp
+	src/legacy/WSRequestHandler_Scenes.cpp
+	src/legacy/WSRequestHandler_SceneItems.cpp
+	src/legacy/WSRequestHandler_Sources.cpp
+	src/legacy/WSRequestHandler_Streaming.cpp
+	src/legacy/WSRequestHandler_StudioMode.cpp
+	src/legacy/WSRequestHandler_Transitions.cpp
+	src/legacy/WSEvents.cpp
 	src/Config.cpp
 	src/Utils.cpp
-	src/forms/settings-dialog.cpp)
+	src/forms/settings-dialog.cpp
+	src/Rpc/RpcHandler.cpp
+	src/Rpc/RpcRequest.cpp
+	src/Rpc/RpcResponse.cpp
+		src/Rpc/JsonRpc.cpp
+		src/Rpc/RpcError.cpp
+		src/Clients/RemoteClientInfo.cpp
+		src/Rpc/Methods/GetVersion.cpp)
 
 set(obs-websocket_HEADERS
 	src/obs-websocket.h
 	src/WSServer.h
-	src/WSRequestHandler.h
-	src/WSEvents.h
+	src/legacy/WSRequestHandler.h
+	src/legacy/WSEvents.h
 	src/Config.h
 	src/Utils.h
-	src/forms/settings-dialog.h)
+	src/forms/settings-dialog.h
+	src/Rpc/RpcHandler.h
+	src/Rpc/RpcRequest.h
+	src/Rpc/RpcResponse.h
+	src/Rpc/RpcMethod.h
+		src/Rpc/JsonRpc.h
+		src/Rpc/Methods/RpcMethods.h
+		src/Rpc/RpcError.h
+		src/Clients/RemoteClient.h
+		src/Clients/RemoteClientInfo.h)
 
 # --- Platform-independent build settings ---
-add_library(obs-websocket MODULE 
+add_library(obs-websocket MODULE
 	${obs-websocket_SOURCES}
 	${obs-websocket_HEADERS})
 
-include_directories( 
+include_directories(
 	"${LIBOBS_INCLUDE_DIR}/../UI/obs-frontend-api"
 	${Qt5Core_INCLUDES}
+	${Qt5WebSockets_INCLUDES}
 	${Qt5Widgets_INCLUDES}
 	${Boost_INCLUDE_DIRS}
 	"${CMAKE_SOURCE_DIR}/deps/websocketpp")
 
-target_link_libraries(obs-websocket 
+target_link_libraries(obs-websocket
 	libobs
 	Qt5::Core
 	Qt5::Widgets

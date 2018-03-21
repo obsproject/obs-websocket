@@ -19,8 +19,8 @@
 
 #include <obs-data.h>
 
-#include "Config.h"
-#include "Utils.h"
+#include "../Config.h"
+#include "src/Utils.h"
 
 #include "WSRequestHandler.h"
 

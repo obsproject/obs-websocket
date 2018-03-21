@@ -23,7 +23,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <obs.hpp>
 #include <obs-frontend-api.h>
 #include <QListWidgetItem>
-#include "WSServer.h"
+#include "src/WSServer.h"
 
 class WSEvents : public QObject {
   Q_OBJECT

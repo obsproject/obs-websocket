@@ -20,7 +20,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include "../obs-websocket.h"
 #include "../Config.h"
-#include "../WSServer.h"
+#include "src/WSServer.h"
 #include "settings-dialog.h"
 
 #define CHANGE_ME "changeme"

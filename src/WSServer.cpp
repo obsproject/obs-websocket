@@ -48,7 +48,8 @@ QString decodeBase64(const QString& source)
 WSServer::WSServer(QObject* parent)
 	: QObject(parent),
 	  _connections(),
-	  _clMutex(QMutex::Recursive)
+	  _clMutex(QMutex::Recursive),
+	  _jsonRpc(&_rpcHandler)
 {
     _server.init_asio();
 

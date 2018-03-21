@@ -26,7 +26,8 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <websocketpp/config/asio_no_tls.hpp>
 #include <websocketpp/server.hpp>
 
-#include "WSRequestHandler.h"
+#include "Rpc/RpcHandler.h"
+#include "src/Rpc/JsonRpc.h"
 
 QT_FORWARD_DECLARE_CLASS(QWebSocketServer)
 QT_FORWARD_DECLARE_CLASS(QWebSocket)

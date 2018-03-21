@@ -23,8 +23,8 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <QTimer>
 
 #include "obs-websocket.h"
-#include "WSServer.h"
-#include "WSEvents.h"
+#include "src/WSServer.h"
+#include "src/legacy/WSEvents.h"
 #include "Config.h"
 #include "forms/settings-dialog.h"
 
@@ -37,7 +37,7 @@ void ___output_dummy_addref(obs_output_t*) {}
 OBS_DECLARE_MODULE()
 OBS_MODULE_USE_DEFAULT_LOCALE("obs-websocket", "en-US")
 
-SettingsDialog* settings_dialog;
+SettingsDialog* settings_dialog = nullptr;
 
 bool obs_module_load(void) {
     blog(LOG_INFO, "you can haz websockets (version %s)", OBS_WEBSOCKET_VERSION);
