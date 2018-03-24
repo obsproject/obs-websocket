@@ -1219,13 +1219,13 @@ void WSRequestHandler::HandleDeleteSceneItem(WSRequestHandler* req) {
 
 struct DuplicateSceneItemData {
     obs_sceneitem_t *referenceItem;
-    obs_source_t *newSource;
+    obs_source_t *fromSource;
     obs_sceneitem_t *newItem;
 };
 
 static void DuplicateSceneItem(void *_data, obs_scene_t *scene) {
     DuplicateSceneItemData *data = (DuplicateSceneItemData *)_data;
-    data->newItem = obs_scene_add(scene, data->newSource);
+    data->newItem = obs_scene_add(scene, data->fromSource);
     obs_sceneitem_set_visible(data->newItem, obs_sceneitem_visible(data->referenceItem));
 }
 
@@ -1270,11 +1270,8 @@ void WSRequestHandler::HandleDuplicateSceneItem(WSRequestHandler* req) {
         return;
     }
 
-    OBSSourceAutoRelease fromSource = obs_sceneitem_get_source(referenceItem);
-    obs_source_t *newSource = obs_source_duplicate(fromSource, obs_source_get_name(fromSource), false);
-
     DuplicateSceneItemData data;
-    data.newSource = newSource;
+    data.fromSource = obs_sceneitem_get_source(referenceItem);
     data.referenceItem = referenceItem;
 
     obs_enter_graphics();
