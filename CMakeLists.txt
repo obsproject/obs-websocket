@@ -134,6 +134,11 @@ if(WIN32)
 				"${LIBOBS_INCLUDE_DIR}/../${OBS_BUILDDIR_ARCH}/rundir/$<CONFIG>/obs-plugins/${ARCH_NAME}")
 
 		COMMAND if $<CONFIG:Debug>==1 (
+			"${CMAKE_COMMAND}" -E copy
+				"$<TARGET_PDB_FILE:obs-websocket>"
+				"${LIBOBS_INCLUDE_DIR}/../${OBS_BUILDDIR_ARCH}/rundir/$<CONFIG>/obs-plugins/${ARCH_NAME}")
+
+		COMMAND if $<CONFIG:Debug>==1 (
 			"${CMAKE_COMMAND}" -E make_directory
 				"${LIBOBS_INCLUDE_DIR}/../${OBS_BUILDDIR_ARCH}/rundir/$<CONFIG>/data/obs-plugins/obs-websocket")
 
