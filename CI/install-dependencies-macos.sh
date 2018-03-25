@@ -22,6 +22,7 @@ cd obs-studio
 git checkout 21.0.0
 mkdir build && cd build
 cmake .. \
+  -DDISABLE_PLUGINS=true \
   -DCMAKE_PREFIX_PATH=/usr/local/opt/qt/lib/cmake \
 && make -j4
 
