@@ -67,6 +67,17 @@ if not exist C:\projects\obs-studio (
   set BuildOBS=true
 )
 
+REM If the needed obs-studio libs for this build_config do not exist,
+REM set the build flag.
+if not exist C:\projects\obs-studio\build32\libobs\%build_config%\obs.lib (
+  echo obs-studio\build32\libobs\%build_config%\obs.lib does not exist
+  set BuildOBS=true
+)
+if not exist C:\projects\obs-studio\build32\UI\obs-frontend-api\%build_config%\obs-frontend-api.lib (
+  echo obs-studio\build32\UI\obs-frontend-api\%build_config%\obs-frontend-api.lib does not exist
+  set BuildOBS=true
+)
+
 REM Some debug info
 echo:
 echo Latest tag pre-pull: %OBSLatestTagPrePull%
