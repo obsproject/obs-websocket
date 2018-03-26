@@ -11,7 +11,7 @@ install:
   - set DepsPath32=%CD%\dependencies2015\win32
   - set DepsPath64=%CD%\dependencies2015\win64
   - call C:\projects\obs-websocket\CI\install-setup-qt.cmd
-  - set build_config=Release
+  - set build_config=RelWithDebInfo
   - call C:\projects\obs-websocket\CI\install-build-obs.cmd
   - cd C:\projects\obs-websocket\
   - mkdir build32

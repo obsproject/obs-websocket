@@ -60,10 +60,21 @@ REM If obs-studio directory does not exist, clone the git repo, get the latest
 REM tag number, and set the build flag.
 if not exist C:\projects\obs-studio (
   echo obs-studio directory does not exist
-  git clone --recursive https://github.com/jp9000/obs-studio
+  git clone https://github.com/obsproject/obs-studio
   cd C:\projects\obs-studio\
   git describe --tags --abbrev=0 > C:\projects\obs-studio-latest-tag.txt
   set /p OBSLatestTag=<C:\projects\obs-studio-latest-tag.txt
+  set BuildOBS=true
+)
+
+REM If the needed obs-studio libs for this build_config do not exist,
+REM set the build flag.
+if not exist C:\projects\obs-studio\build32\libobs\%build_config%\obs.lib (
+  echo obs-studio\build32\libobs\%build_config%\obs.lib does not exist
+  set BuildOBS=true
+)
+if not exist C:\projects\obs-studio\build32\UI\obs-frontend-api\%build_config%\obs-frontend-api.lib (
+  echo obs-studio\build32\UI\obs-frontend-api\%build_config%\obs-frontend-api.lib does not exist
   set BuildOBS=true
 )
 
@@ -97,12 +108,12 @@ if defined BuildOBS (
   mkdir build64
   echo   Running cmake for obs-studio %OBSLatestTag% 32-bit...
   cd ./build32
-  cmake -G "Visual Studio 15 2017" -DCOPIED_DEPENDENCIES=false -DCOPY_DEPENDENCIES=true ..
+  cmake -G "Visual Studio 15 2017" -DDISABLE_PLUGINS=true -DCOPIED_DEPENDENCIES=false -DCOPY_DEPENDENCIES=true ..
   echo:
   echo:
   echo   Running cmake for obs-studio %OBSLatestTag% 64-bit...
   cd ../build64
-  cmake -G "Visual Studio 15 2017 Win64" -DCOPIED_DEPENDENCIES=false -DCOPY_DEPENDENCIES=true ..
+  cmake -G "Visual Studio 15 2017 Win64" -DDISABLE_PLUGINS=true -DCOPIED_DEPENDENCIES=false -DCOPY_DEPENDENCIES=true ..
   echo:
   echo:
   echo   Building obs-studio %OBSLatestTag% 32-bit ^(Build Config: %build_config%^)...
