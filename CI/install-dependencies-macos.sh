@@ -30,4 +30,4 @@ cmake .. \
 cd ..
 curl -L -O  http://s.sudre.free.fr/Software/files/Packages.dmg -f --retry 5 -C -
 hdiutil attach ./Packages.dmg
-sudo installer -pkg /Volumes/Packages\ 1.2.2/packages/Packages.pkg -target /
+sudo installer -pkg /Volumes/Packages\ 1.2.3/packages/Packages.pkg -target /
