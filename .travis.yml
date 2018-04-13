@@ -35,7 +35,9 @@ matrix:
   - os: osx
     env: _macos_build
     osx_image: xcode8.3
-    before_install: "./CI/install-dependencies-macos.sh"
+    before_install:
+    - "./CI/install-dependencies-macos.sh"
+    - "./CI/install-build-obs-macos.sh"
     script: "./CI/build-macos.sh"
     after_success: 
     - ./CI/package-macos.sh
