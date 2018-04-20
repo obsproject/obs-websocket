@@ -2,12 +2,10 @@ obs-websocket
 ==============
 Remote control of OBS Studio made easy.
 
-Follow the project on Twitter for news & updates : [@obswebsocket](https://twitter.com/obswebsocket)
-
-[![Gitter chat](https://badges.gitter.im/obs-websocket/obs-websocket.png)](https://gitter.im/obs-websocket/obs-websocket) [![Build Status - Windows](https://ci.appveyor.com/api/projects/status/github/Palakis/obs-websocket)](https://ci.appveyor.com/project/Palakis/obs-websocket/history) [![Build Status - Linux & OS X](https://travis-ci.org/Palakis/obs-websocket.svg?branch=master)](https://travis-ci.org/Palakis/obs-websocket)
+[![Build Status - Windows](https://ci.appveyor.com/api/projects/status/github/Palakis/obs-websocket)](https://ci.appveyor.com/project/Palakis/obs-websocket/history) [![Build Status - Linux & OS X](https://travis-ci.org/Palakis/obs-websocket.svg?branch=master)](https://travis-ci.org/Palakis/obs-websocket)
 
 ## Downloads
-Binaries for Windows and Linux are available in the [Releases](https://github.com/Palakis/obs-websocket/releases) section.
+Binaries for Windows, macOS and Linux are available in the [Releases](https://github.com/Palakis/obs-websocket/releases) section.
 
 ## Using obs-websocket
 A web client and frontend made by [t2t2](https://github.com/t2t2/obs-tablet-remote) (compatible with tablets and other touch interfaces) is available here : http://t2t2.github.io/obs-tablet-remote/
@@ -16,11 +14,11 @@ It is **highly recommended** to protect obs-websocket with a password against un
 
 ### Possible use cases
 - Remote control OBS from a phone or tablet on the same local network
-- Change your stream overlay/graphics based on the current scene (like the AGDQ overlay does)
+- Change your stream overlay/graphics based on the current scene
 - Automate scene switching with a third-party program (e.g. : auto-pilot, foot pedal, ...)
 
 ### For developers
-The server is a typical Websockets server running by default on port 4444 (the port number can be changed in the Settings dialog). 
+The server is a typical WebSockets server running by default on port 4444 (the port number can be changed in the Settings dialog). 
 The protocol understood by the server is documented in [PROTOCOL.md](docs/generated/protocol.md).  
 
 Here's a list of available language APIs for obs-websocket :
@@ -56,6 +54,7 @@ In order of appearance:
 - [RytoEX](https://github.com/RytoEX) : CI script and code contributions
 - [Theodore Stoddard](https://github.com/TStod) : Code contributions
 - [Philip Loche](https://github.com/PicoCentauri) : Code contributions
+- Everyone contributing localizations on Crowdin!
 
 And also: special thanks to supporters of the project!
 
