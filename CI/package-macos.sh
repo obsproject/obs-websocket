@@ -28,12 +28,14 @@ chmod +rw ./build/QtWebSockets ./build/QtNetwork
 
 echo "-- Modifying QtNetwork"
 install_name_tool \
+	-id @rpath/QtNetwork \
 	-change /usr/local/opt/qt/lib/QtNetwork.framework/Versions/5/QtNetwork @rpath/QtNetwork \
 	-change $QT_CELLAR_PREFIX/lib/QtCore.framework/Versions/5/QtCore @rpath/QtCore \
 	./build/QtNetwork
 
 echo "-- Modifying QtWebSockets"
 install_name_tool \
+	-id @rpath/QtWebSockets \
 	-change /usr/local/opt/qt/lib/QtWebSockets.framework/Versions/5/QtWebSockets @rpath/QtWebSockets \
 	-change $QT_CELLAR_PREFIX/lib/QtNetwork.framework/Versions/5/QtNetwork @rpath/QtNetwork \
 	-change $QT_CELLAR_PREFIX/lib/QtCore.framework/Versions/5/QtCore @rpath/QtCore \
