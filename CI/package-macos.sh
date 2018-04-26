@@ -21,8 +21,8 @@ export FILENAME="obs-websocket-$VERSION.pkg"
 export LATEST_FILENAME="obs-websocket-latest-$LATEST_VERSION.pkg"
 
 echo "-- Copying Qt dependencies"
-cp $WS_LIB ./build
-cp $NET_LIB ./build
+if [ ! -f ./build/$(basename $WS_LIB) ]; then cp $WS_LIB ./build; fi
+if [ ! -f ./build/$(basename $NET_LIB) ]; then cp $NET_LIB ./build; fi
 
 chmod +rw ./build/QtWebSockets ./build/QtNetwork
 
