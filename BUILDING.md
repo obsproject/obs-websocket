@@ -1,6 +1,9 @@
 # Compiling obs-websocket
 ## Prerequisites
-You'll need [Qt 5.10.x](https://download.qt.io/official_releases/qt/5.10/), [CMake](https://cmake.org/download/), and a working [development environment for OBS Studio](https://obsproject.com/wiki/install-instructions) installed on your computer.
+You'll need [Qt 5.10.x](https://download.qt.io/official_releases/qt/5.10/),
+[CMake](https://cmake.org/download/), and a working [development environment for
+OBS Studio](https://obsproject.com/wiki/install-instructions) installed on your
+computer.
 
 ## Windows
 In cmake-gui, you'll have to set the following variables :
@@ -22,8 +25,15 @@ sudo make install
 ```
 
 ## OS X
-Use of the Travis macOS CI scripts is recommended. Please note that these scripts install new software and can change several settings on your system. An existing obs-studio development environment is not required, as `install-build-obs-macos.sh` will install it for you.  If you already have a working obs-studio development environment and have built obs-studio, you can skip that script.
-Of course, you're encouraged to dig through the contents of these scripts to look for issues or specificities.
+Use of the Travis macOS CI scripts is recommended. Please note that these
+scripts install new software and can change several settings on your system. An
+existing obs-studio development environment is not required, as
+`install-build-obs-macos.sh` will install it for you. If you already have a
+working obs-studio development environment and have built obs-studio, you can
+skip that script.
+
+Of course, you're encouraged to dig through the contents of these scripts to
+look for issues or specificities.
 ```
 git clone --recursive https://github.com/Palakis/obs-websocket.git
 cd obs-websocket
