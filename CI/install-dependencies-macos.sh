@@ -10,10 +10,6 @@ brew install libav
 # qt latest
 brew install qt5
 
-#echo "Qt path: $(find /usr/local/Cellar/qt5 -d 1 | tail -n 1)"
-
-
 # Packages app
-curl -L -O  http://s.sudre.free.fr/Software/files/Packages.dmg -f --retry 5 -C -
-hdiutil attach ./Packages.dmg
-sudo installer -pkg /Volumes/Packages\ 1.2.3/packages/Packages.pkg -target /
+wget --quiet --retry-connrefused --waitretry=1 https://s3-us-west-2.amazonaws.com/obs-nightly/Packages.pkg
+sudo installer -pkg ./Packages.pkg -target /
