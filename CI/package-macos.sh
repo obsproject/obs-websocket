@@ -3,7 +3,7 @@
 set -e
 
 echo "-- Preparing package build"
-export QT_CELLAR_PREFIX="$(find /usr/local/Cellar/qt -d 1 | tail -n 1)"
+export QT_CELLAR_PREFIX="$(find /usr/local/Cellar/qt -d 1 | sort -t '.' -k 1,1n -k 2,2n -k 3,3n | tail -n 1)"
 
 export WS_LIB="/usr/local/opt/qt/lib/QtWebSockets.framework/QtWebSockets"
 export NET_LIB="/usr/local/opt/qt/lib/QtNetwork.framework/QtNetwork"
