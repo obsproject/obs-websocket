@@ -1332,3 +1332,71 @@ HandlerResponse WSRequestHandler::HandleSetSourceFilterSettings(WSRequestHandler
 
 	return req->SendOKResponse();
 }
+
+void WSRequestHandler::HandleGetSourceImage(WSRequestHandler* req) {
+	if (!req->hasField("sourceName")) {
+		req->SendErrorResponse("missing request parameters");
+		return;
+	}
+
+	const char* sourceName = obs_data_get_string(req->data, "sourceName");
+	OBSSourceAutoRelease source = obs_get_source_by_name(sourceName);
+	if (!source) {
+		req->SendErrorResponse("specified source doesn't exist");
+		return;
+	}
+
+	const uint32_t imgWidth = obs_source_get_base_width(source);
+	const uint32_t imgHeight = obs_source_get_base_height(source);
+	const uint32_t imgBufSize = imgWidth * imgHeight * 4;
+	QByteArray imgSourceBuf(imgBufSize, '\0');
+
+	uint8_t* videoData = nullptr;
+	uint32_t videoLinesize = 0;
+
+	obs_enter_graphics();
+
+	gs_texrender_t* texrender = gs_texrender_create(GS_RGBA, GS_ZS_NONE);
+	gs_stagesurf_t* stagesurface = gs_stagesurface_create(imgWidth, imgHeight, GS_RGBA);
+	
+	bool renderSuccess = false;
+	gs_texrender_reset(texrender);
+	if (gs_texrender_begin(texrender, imgWidth, imgHeight)) {
+		struct vec4 background;
+		vec4_zero(&background);
+
+		gs_clear(GS_CLEAR_COLOR, &background, 0.0f, 0);
+		gs_ortho(0.0f, (float)imgWidth, 0.0f, (float)imgHeight, -100.0f, 100.0f);
+
+		gs_blend_state_push();
+		gs_blend_function(GS_BLEND_ONE, GS_BLEND_ZERO);
+
+		obs_source_video_render(source);
+
+		gs_blend_state_pop();
+		gs_texrender_end(texrender);
+
+		gs_stage_texture(stagesurface, gs_texrender_get_texture(texrender));
+		if (gs_stagesurface_map(stagesurface, &videoData, &videoLinesize)) {
+			memcpy((void*)imgSourceBuf.constData(), videoData, videoLinesize * imgHeight);
+			gs_stagesurface_unmap(stagesurface);
+			renderSuccess = true;
+		}
+	}
+
+	gs_stagesurface_destroy(stagesurface);
+	gs_texrender_destroy(texrender);
+
+	obs_leave_graphics();
+
+	if (renderSuccess) {
+		QString imgDataB64(imgSourceBuf.toBase64());
+
+		OBSDataAutoRelease response = obs_data_create();
+		obs_data_set_string(response, "sourceName", obs_source_get_name(source));
+		obs_data_set_string(response, "img_base64", imgDataB64.toUtf8().constData());
+		req->SendOKResponse(response);
+	} else {
+		req->SendErrorResponse("Source render failed.");
+	}
+}
