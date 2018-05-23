@@ -1,3 +1,6 @@
+#include <QString>
+#include <QImage>
+#include <QBuffer>
 #include "Utils.h"
 
 #include "WSRequestHandler.h"
@@ -1349,7 +1352,7 @@ void WSRequestHandler::HandleGetSourceImage(WSRequestHandler* req) {
 	const uint32_t imgWidth = obs_source_get_base_width(source);
 	const uint32_t imgHeight = obs_source_get_base_height(source);
 	const uint32_t imgBufSize = imgWidth * imgHeight * 4;
-	QByteArray imgSourceBuf(imgBufSize, '\0');
+	uint8_t* imgBuf = new uint8_t[imgBufSize];
 
 	uint8_t* videoData = nullptr;
 	uint32_t videoLinesize = 0;
@@ -1378,7 +1381,7 @@ void WSRequestHandler::HandleGetSourceImage(WSRequestHandler* req) {
 
 		gs_stage_texture(stagesurface, gs_texrender_get_texture(texrender));
 		if (gs_stagesurface_map(stagesurface, &videoData, &videoLinesize)) {
-			memcpy((void*)imgSourceBuf.constData(), videoData, videoLinesize * imgHeight);
+			memcpy(imgBuf, videoData, videoLinesize * imgHeight);
 			gs_stagesurface_unmap(stagesurface);
 			renderSuccess = true;
 		}
@@ -1390,13 +1393,24 @@ void WSRequestHandler::HandleGetSourceImage(WSRequestHandler* req) {
 	obs_leave_graphics();
 
 	if (renderSuccess) {
-		QString imgDataB64(imgSourceBuf.toBase64());
+		QImage sourceImage(imgBuf, imgWidth, imgHeight, QImage::Format::Format_RGBA8888);
+		
+		QByteArray pngBytes;
+		QBuffer pngBytesBuf(&pngBytes);
+		pngBytesBuf.open(QBuffer::ReadWrite);
+		sourceImage.save(&pngBytesBuf, "PNG");
+		pngBytesBuf.close();
+
+		QString pngBase64(pngBytes.toBase64());
+		pngBase64.prepend("data:image/png;base64,");
 
 		OBSDataAutoRelease response = obs_data_create();
 		obs_data_set_string(response, "sourceName", obs_source_get_name(source));
-		obs_data_set_string(response, "img_base64", imgDataB64.toUtf8().constData());
+		obs_data_set_string(response, "img", pngBase64.toUtf8().constData());
 		req->SendOKResponse(response);
 	} else {
 		req->SendErrorResponse("Source render failed.");
 	}
+
+	delete imgBuf;
 }
