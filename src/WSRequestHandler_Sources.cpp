@@ -1395,18 +1395,18 @@ void WSRequestHandler::HandleGetSourceImage(WSRequestHandler* req) {
 	if (renderSuccess) {
 		QImage sourceImage(imgBuf, imgWidth, imgHeight, QImage::Format::Format_RGBA8888);
 		
-		QByteArray pngBytes;
-		QBuffer pngBytesBuf(&pngBytes);
-		pngBytesBuf.open(QBuffer::ReadWrite);
-		sourceImage.save(&pngBytesBuf, "PNG");
-		pngBytesBuf.close();
+		QByteArray encodedImgBytes;
+		QBuffer buffer(&encodedImgBytes);
+		buffer.open(QBuffer::WriteOnly);
+		sourceImage.save(&buffer, "WEBP", 0);
+		buffer.close();
 
-		QString pngBase64(pngBytes.toBase64());
-		pngBase64.prepend("data:image/png;base64,");
+		QString imgBase64(encodedImgBytes.toBase64());
+		imgBase64.prepend("data:image/webp;base64,");
 
 		OBSDataAutoRelease response = obs_data_create();
 		obs_data_set_string(response, "sourceName", obs_source_get_name(source));
-		obs_data_set_string(response, "img", pngBase64.toUtf8().constData());
+		obs_data_set_string(response, "img", imgBase64.toUtf8().constData());
 		req->SendOKResponse(response);
 	} else {
 		req->SendErrorResponse("Source render failed.");
