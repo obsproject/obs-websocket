@@ -3,7 +3,7 @@ set -ex
 
 #export QT_PREFIX="$(find /usr/local/Cellar/qt5 -d 1 | tail -n 1)"
 
-mkdir build && cd build
+mkdir -p build && cd build
 cmake .. \
   -DQTDIR=/usr/local/opt/qt \
   -DLIBOBS_INCLUDE_DIR=../../obs-studio/libobs \

@@ -3,7 +3,7 @@
 set -e
 
 echo "-- Preparing package build"
-export QT_CELLAR_PREFIX="$(find /usr/local/Cellar/qt -d 1 | tail -n 1)"
+export QT_CELLAR_PREFIX="$(find /usr/local/Cellar/qt -d 1 | sort -t '.' -k 1,1n -k 2,2n -k 3,3n | tail -n 1)"
 
 export WS_LIB="/usr/local/opt/qt/lib/QtWebSockets.framework/QtWebSockets"
 export NET_LIB="/usr/local/opt/qt/lib/QtNetwork.framework/QtNetwork"
@@ -21,19 +21,21 @@ export FILENAME="obs-websocket-$VERSION.pkg"
 export LATEST_FILENAME="obs-websocket-latest-$LATEST_VERSION.pkg"
 
 echo "-- Copying Qt dependencies"
-cp $WS_LIB ./build
-cp $NET_LIB ./build
+if [ ! -f ./build/$(basename $WS_LIB) ]; then cp $WS_LIB ./build; fi
+if [ ! -f ./build/$(basename $NET_LIB) ]; then cp $NET_LIB ./build; fi
 
 chmod +rw ./build/QtWebSockets ./build/QtNetwork
 
 echo "-- Modifying QtNetwork"
 install_name_tool \
+	-id @rpath/QtNetwork \
 	-change /usr/local/opt/qt/lib/QtNetwork.framework/Versions/5/QtNetwork @rpath/QtNetwork \
 	-change $QT_CELLAR_PREFIX/lib/QtCore.framework/Versions/5/QtCore @rpath/QtCore \
 	./build/QtNetwork
 
 echo "-- Modifying QtWebSockets"
 install_name_tool \
+	-id @rpath/QtWebSockets \
 	-change /usr/local/opt/qt/lib/QtWebSockets.framework/Versions/5/QtWebSockets @rpath/QtWebSockets \
 	-change $QT_CELLAR_PREFIX/lib/QtNetwork.framework/Versions/5/QtNetwork @rpath/QtNetwork \
 	-change $QT_CELLAR_PREFIX/lib/QtCore.framework/Versions/5/QtCore @rpath/QtCore \
