@@ -834,7 +834,7 @@
       },
       {
         "subheads": [],
-        "description": "A request to start the replay buffer has been issued.",
+        "description": "A request to stop the replay buffer has been issued.",
         "api": "events",
         "name": "ReplayStopping",
         "category": "replay buffer",
