@@ -25,6 +25,9 @@ sudo make install
 ```
 
 ## OS X
+As a prerequisite, you will need Xcode for your current OSX version, the command line tools, and [Homebrew](https://brew.sh/).
+Homebrew's setup will guide you in getting your system set up, you should be good to go once Homebrew is successfully up and running.
+
 Use of the Travis macOS CI scripts is recommended. Please note that these
 scripts install new software and can change several settings on your system. An
 existing obs-studio development environment is not required, as
@@ -34,6 +37,7 @@ skip that script.
 
 Of course, you're encouraged to dig through the contents of these scripts to
 look for issues or specificities.
+
 ```
 git clone --recursive https://github.com/Palakis/obs-websocket.git
 cd obs-websocket
