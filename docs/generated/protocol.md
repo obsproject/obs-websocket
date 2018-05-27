@@ -514,7 +514,7 @@ _No additional response items._
 
 - Added in v4.2.0
 
-A request to start the replay buffer has been issued.
+A request to stop the replay buffer has been issued.
 
 **Response Items:**
 
