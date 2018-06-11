@@ -1283,7 +1283,7 @@ void WSRequestHandler::HandleDuplicateSceneItem(WSRequestHandler* req) {
  * @return {String (optional)} `desktop-2` Name of the second Desktop Audio capture source.
  * @return {String (optional)} `mic-1` Name of the first Mic/Aux input source.
  * @return {String (optional)} `mic-2` Name of the second Mic/Aux input source.
- * @return {String (optional)} `mic-3` NAme of the third Mic/Aux input source.
+ * @return {String (optional)} `mic-3` Name of the third Mic/Aux input source.
  *
  * @api requests
  * @name GetSpecialSources
