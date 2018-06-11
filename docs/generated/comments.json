@@ -4816,7 +4816,7 @@
           "{String (optional)} `desktop-2` Name of the second Desktop Audio capture source.",
           "{String (optional)} `mic-1` Name of the first Mic/Aux input source.",
           "{String (optional)} `mic-2` Name of the second Mic/Aux input source.",
-          "{String (optional)} `mic-3` NAme of the third Mic/Aux input source."
+          "{String (optional)} `mic-3` Name of the third Mic/Aux input source."
         ],
         "api": "requests",
         "name": "GetSpecialSources",
@@ -4846,7 +4846,7 @@
           {
             "type": "String (optional)",
             "name": "mic-3",
-            "description": "NAme of the third Mic/Aux input source."
+            "description": "Name of the third Mic/Aux input source."
           }
         ],
         "names": [

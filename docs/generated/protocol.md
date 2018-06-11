@@ -1984,7 +1984,7 @@ _No specified parameters._
 | `desktop-2` | _String (optional)_ | Name of the second Desktop Audio capture source. |
 | `mic-1` | _String (optional)_ | Name of the first Mic/Aux input source. |
 | `mic-2` | _String (optional)_ | Name of the second Mic/Aux input source. |
-| `mic-3` | _String (optional)_ | NAme of the third Mic/Aux input source. |
+| `mic-3` | _String (optional)_ | Name of the third Mic/Aux input source. |
 
 
 ---
