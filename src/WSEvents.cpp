@@ -741,6 +741,8 @@ void WSEvents::TransitionDurationChanged(int ms) {
  *
  * @return {String} `name` Transition name.
  * @return {int} `duration` Transition duration (in milliseconds).
+ * @return {String} `from-scene` Source scene of the transition
+ * @return {String} `to-scene` Destination scene of the transition
  *
  * @api events
  * @name TransitionBegin
@@ -755,8 +757,9 @@ void WSEvents::OnTransitionBegin(void* param, calldata_t* data) {
 
 	// Detect if transition is the global transition or a transition override.
 	// Fetching the duration is different depending on the case.
-	OBSSourceAutoRelease destination = obs_transition_get_active_source(transition);
-	OBSDataAutoRelease destinationSettings = obs_source_get_private_settings(destination);
+	OBSSourceAutoRelease sourceScene = obs_transition_get_source(transition, OBS_TRANSITION_SOURCE_A);
+	OBSSourceAutoRelease destinationScene = obs_transition_get_active_source(transition);
+	OBSDataAutoRelease destinationSettings = obs_source_get_private_settings(destinationScene);
 	int duration = -1;
 	if (obs_data_has_default_value(destinationSettings, "transition_duration") ||
 		obs_data_has_user_value(destinationSettings, "transition_duration"))
@@ -772,6 +775,13 @@ void WSEvents::OnTransitionBegin(void* param, calldata_t* data) {
 		obs_data_set_int(fields, "duration", duration);
 	} else {
 		blog(LOG_WARNING, "OnTransitionBegin: duration is negative !");
+	}
+
+	if (sourceScene) {
+		obs_data_set_string(fields, "from-scene", obs_source_get_name(sourceScene));
+	}
+	if (destinationScene) {
+		obs_data_set_string(fields, "to-scene", obs_source_get_name(destinationScene));
 	}
 
     instance->broadcastUpdate("TransitionBegin", fields);
