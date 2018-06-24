@@ -310,6 +310,8 @@ A transition (other than "cut") has begun.
 | ---- | :---: | ------------|
 | `name` | _String_ | Transition name. |
 | `duration` | _int_ | Transition duration (in milliseconds). |
+| `from-scene` | _String_ | Source scene of the transition |
+| `to-scene` | _String_ | Destination scene of the transition |
 
 
 ---
