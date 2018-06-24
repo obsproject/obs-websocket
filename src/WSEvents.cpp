@@ -85,7 +85,6 @@ WSEvents::WSEvents(WSServer* srv) {
         this, SLOT(SelectedSceneChanged(QListWidgetItem*, QListWidgetItem*)));
 
     currentScene = nullptr;
-    currentTransition = nullptr;
 
     QTimer::singleShot(1000, this, SLOT(deferredInitOperations()));
 
@@ -104,7 +103,7 @@ WSEvents::~WSEvents() {
 
 void WSEvents::deferredInitOperations() {
     OBSSourceAutoRelease transition = obs_frontend_get_current_transition();
-    connectTransitionSignals(transition);
+	hookTransitionBeginEvent();
 
     OBSSourceAutoRelease scene = obs_frontend_get_current_scene();
     connectSceneSignals(scene);
@@ -132,6 +131,7 @@ void WSEvents::FrontendEventHandler(enum obs_frontend_event event, void* private
         owner->OnTransitionChange();
     }
     else if (event == OBS_FRONTEND_EVENT_TRANSITION_LIST_CHANGED) {
+		owner->hookTransitionBeginEvent();
         owner->OnTransitionListChange();
     }
     else if (event == OBS_FRONTEND_EVENT_PROFILE_CHANGED) {
@@ -188,7 +188,6 @@ void WSEvents::FrontendEventHandler(enum obs_frontend_event event, void* private
     }
     else if (event == OBS_FRONTEND_EVENT_EXIT) {
         owner->connectSceneSignals(nullptr);
-        owner->connectTransitionSignals(nullptr);
         owner->OnExit();
     }
 }
@@ -222,29 +221,18 @@ void WSEvents::broadcastUpdate(const char* updateType,
         blog(LOG_DEBUG, "Update << '%s'", json.toUtf8().constData());
 }
 
-void WSEvents::connectTransitionSignals(obs_source_t* transition) {
-    signal_handler_t* sh = nullptr;
+void WSEvents::hookTransitionBeginEvent() {
+	obs_frontend_source_list transitions = {};
+	obs_frontend_get_transitions(&transitions);
 
-    if (currentTransition) {
-        sh = obs_source_get_signal_handler(currentTransition);
-        signal_handler_disconnect(sh,
-            "transition_start", OnTransitionBegin, this);
-    }
+	for (int i = 0; i < transitions.sources.num; i++) {
+		obs_source_t* transition = transitions.sources.array[i];
+		signal_handler_t* sh = obs_source_get_signal_handler(transition);
+		signal_handler_disconnect(sh, "transition_start", OnTransitionBegin, this);
+		signal_handler_connect(sh, "transition_start", OnTransitionBegin, this);
+	}
 
-    currentTransition = transition;
-
-    if (currentTransition) {
-        if (!transitionIsCut(transition)) {
-            currentTransition = transition;
-
-            sh = obs_source_get_signal_handler(currentTransition);
-            signal_handler_connect(sh,
-                "transition_start", OnTransitionBegin, this);
-        }
-        else {
-            currentTransition = nullptr;
-        }
-    }
+	obs_frontend_source_list_free(&transitions);
 }
 
 void WSEvents::connectSceneSignals(obs_source_t* scene) {
@@ -356,7 +344,6 @@ void WSEvents::OnSceneCollectionChange() {
     broadcastUpdate("SceneCollectionChanged");
 
     currentScene = nullptr;
-    currentTransition = nullptr;
 
     OnTransitionListChange();
     OnTransitionChange();
@@ -389,7 +376,6 @@ void WSEvents::OnSceneCollectionListChange() {
  */
 void WSEvents::OnTransitionChange() {
     OBSSourceAutoRelease currentTransition = obs_frontend_get_current_transition();
-    connectTransitionSignals(currentTransition);
 
     OBSDataAutoRelease data = obs_data_create();
     obs_data_set_string(data, "transition-name",
@@ -762,14 +748,31 @@ void WSEvents::TransitionDurationChanged(int ms) {
  * @since 4.0.0
  */
 void WSEvents::OnTransitionBegin(void* param, calldata_t* data) {
-    UNUSED_PARAMETER(data);
     WSEvents* instance = static_cast<WSEvents*>(param);
 
-    OBSSourceAutoRelease currentTransition = obs_frontend_get_current_transition();
+	OBSSource transition = (obs_source_t*)calldata_get_ptr(data, "source");
+	if (!transition) return;
+
+	// Detect if transition is the global transition or a transition override.
+	// Fetching the duration is different depending on the case.
+	OBSSourceAutoRelease destination = obs_transition_get_active_source(transition);
+	OBSDataAutoRelease destinationSettings = obs_source_get_private_settings(destination);
+	int duration = -1;
+	if (obs_data_has_default_value(destinationSettings, "transition_duration") ||
+		obs_data_has_user_value(destinationSettings, "transition_duration"))
+	{
+		duration = obs_data_get_int(destinationSettings, "transition_duration");
+	} else {
+		duration = Utils::GetTransitionDuration();
+	}
 
     OBSDataAutoRelease fields = obs_data_create();
-    obs_data_set_string(fields, "name", obs_source_get_name(currentTransition));
-    obs_data_set_int(fields, "duration", Utils::GetTransitionDuration());
+    obs_data_set_string(fields, "name", obs_source_get_name(transition));
+	if (duration >= 0) {
+		obs_data_set_int(fields, "duration", duration);
+	} else {
+		blog(LOG_WARNING, "OnTransitionBegin: duration is negative !");
+	}
 
     instance->broadcastUpdate("TransitionBegin", fields);
 }
