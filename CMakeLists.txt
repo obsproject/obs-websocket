@@ -75,7 +75,7 @@ target_link_libraries(obs-websocket
 if(WIN32)
 	if(NOT DEFINED OBS_FRONTEND_LIB)
 		set(OBS_FRONTEND_LIB "OBS_FRONTEND_LIB-NOTFOUND" CACHE FILEPATH "OBS frontend library")
-		message(FATAL_ERROR "Could not find OBS Frontend API\'s library !")
+		message(FATAL_ERROR "Could not find OBS Frontend API's library !")
 	endif()
 
 	if(CMAKE_SIZEOF_VOID_P EQUAL 8)
@@ -92,23 +92,6 @@ if(WIN32)
 
 	target_link_libraries(obs-websocket
 		"${OBS_FRONTEND_LIB}")
-
-	add_custom_command(TARGET obs-websocket POST_BUILD
-		COMMAND if $<CONFIG:Release>==1 ("${CMAKE_COMMAND}" -E copy
-			"${QTDIR}/bin/Qt5WebSockets.dll"
-			"${QTDIR}/bin/Qt5Network.dll"
-			"${CMAKE_BINARY_DIR}/$<CONFIG>")
-
-		COMMAND if $<CONFIG:RelWithDebInfo>==1 ("${CMAKE_COMMAND}" -E copy
-			"${QTDIR}/bin/Qt5WebSockets.dll"
-			"${QTDIR}/bin/Qt5Network.dll"
-			"${CMAKE_BINARY_DIR}/$<CONFIG>")
-
-		COMMAND if $<CONFIG:Debug>==1 ("${CMAKE_COMMAND}" -E copy
-			"${QTDIR}/bin/Qt5WebSocketsd.dll"
-			"${QTDIR}/bin/Qt5Networkd.dll"
-			"${CMAKE_BINARY_DIR}/$<CONFIG>")
-	)
 
 	# --- Release package helper ---
 	# The "release" folder has a structure similar OBS' one on Windows
