@@ -21,9 +21,6 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include <QString>
 
-#include <mbedtls/entropy.h>
-#include <mbedtls/ctr_drbg.h>
-
 class Config {
   public:
     Config();
@@ -31,11 +28,11 @@ class Config {
     void Load();
     void Save();
 
-    void SetPassword(QString password);
-    bool CheckAuth(QString userChallenge);
+    void SetPassword(const QString& password);
+    bool CheckAuth(const QString &userChallenge);
     QString GenerateSalt();
     static QString GenerateSecret(
-        QString password, QString salt);
+        const QString& password, const QString& salt);
 
     bool ServerEnabled;
     uint64_t ServerPort;
@@ -53,8 +50,6 @@ class Config {
 
   private:
     static Config* _instance;
-    mbedtls_entropy_context entropy;
-    mbedtls_ctr_drbg_context rng;
 };
 
 #endif // CONFIG_H
