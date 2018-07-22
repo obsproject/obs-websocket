@@ -49,7 +49,7 @@ bool obs_module_load(void) {
     config->Load();
 
     WSServer::Instance = new WSServer();
-    WSEvents::Instance = new WSEvents(WSServer::Instance);
+    WSEvents::Instance = new WSEvents(WSServer::Instance); // TODO refactor WSEvents
 
     if (config->ServerEnabled)
         WSServer::Instance->start(config->ServerPort);

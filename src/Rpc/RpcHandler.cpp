@@ -9,13 +9,11 @@ RpcHandler::RpcHandler()
 	this->builtinMethods.ADD_METHOD(GetVersion);
 }
 
-RpcHandler::~RpcHandler()
-{
-}
+RpcHandler::~RpcHandler() = default;
 
 const RpcResponse RpcHandler::processCall(const RpcRequest& request)
 {
-	QString methodName = request.getMethodName();
+	const QString& methodName = request.getMethodName();
 
 	// Try to resolve the method from the built-in ones
 	RpcMethod* method = this->builtinMethods.value(methodName, nullptr);

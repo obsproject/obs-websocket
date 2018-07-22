@@ -49,13 +49,13 @@ WSServer::WSServer(QObject* parent)
 	: QObject(parent),
 	  _connections(),
 	  _clMutex(QMutex::Recursive),
-	  _jsonRpc(&_rpcHandler)
+	  _jsonRpc(_rpcHandler)
 {
-    _server.init_asio();
+	_server.init_asio();
 
 	_server.set_validate_handler(bind(&WSServer::validateConnection, this, ::_1));
 	_server.set_open_handler(bind(&WSServer::onOpen, this, ::_1));
-    _server.set_close_handler(bind(&WSServer::onClose, this, ::_1));
+	_server.set_close_handler(bind(&WSServer::onClose, this, ::_1));
 	_server.set_message_handler(bind(&WSServer::onMessage, this, ::_1, ::_2));
 }
 
@@ -162,19 +162,15 @@ void WSServer::onMessage(connection_hdl hdl, server::message_ptr message)
 
 	QString payload = QString::fromStdString(message->get_payload());
 
-	// TODO refactor handler
-	WSRequestHandler handler;
-	handler.processIncomingMessage(payload);
-	std::string response = handler.getResponse().toStdString();
-
-	_server.send(hdl, response, websocketpp::frame::opcode::text);
+	QString response = _jsonRpc.handleTextMessage(payload);
+	_server.send(hdl, response.toStdString(), websocketpp::frame::opcode::text);
 }
 
 void WSServer::onClose(connection_hdl hdl)
 {
-    QMutexLocker locker(&_clMutex);
-    _connections.erase(hdl);
-    locker.unlock();
+	QMutexLocker locker(&_clMutex);
+	_connections.erase(hdl);
+	locker.unlock();
 
 	QString clientIp = getRemoteEndpoint(hdl);
 	notifyDisconnection(clientIp);

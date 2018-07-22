@@ -27,7 +27,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <websocketpp/server.hpp>
 
 #include "Rpc/RpcHandler.h"
-#include "src/Rpc/JsonRpc.h"
+#include "Rpc/JsonRpc.h"
 
 QT_FORWARD_DECLARE_CLASS(QWebSocketServer)
 QT_FORWARD_DECLARE_CLASS(QWebSocket)
@@ -63,6 +63,8 @@ private:
 	quint16 _serverPort;
 	con_list _connections;
 	QMutex _clMutex;
+	RpcHandler _rpcHandler;
+	JsonRpc _jsonRpc;
 };
 
 #endif // WSSERVER_H
