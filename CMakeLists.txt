@@ -6,10 +6,9 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 
-set(Boost_USE_STATIC_LIBS ON)
-
 if (WIN32 OR APPLE)
-include(external/FindLibObs.cmake)
+	set(Boost_USE_STATIC_LIBS ON)
+	include(external/FindLibObs.cmake)
 endif()
 
 find_package(LibObs REQUIRED)
