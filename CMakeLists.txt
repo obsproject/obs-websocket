@@ -13,7 +13,6 @@ endif()
 
 find_package(LibObs REQUIRED)
 find_package(Qt5Core REQUIRED)
-find_package(Qt5WebSockets REQUIRED)
 find_package(Qt5Widgets REQUIRED)
 find_package(Boost COMPONENTS system date_time regex REQUIRED)
 
@@ -67,7 +66,6 @@ add_library(obs-websocket MODULE
 include_directories(
 	"${LIBOBS_INCLUDE_DIR}/../UI/obs-frontend-api"
 	${Qt5Core_INCLUDES}
-	${Qt5WebSockets_INCLUDES}
 	${Qt5Widgets_INCLUDES}
 	${Boost_INCLUDE_DIRS}
 	"${CMAKE_SOURCE_DIR}/deps/websocketpp")
