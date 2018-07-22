@@ -6,8 +6,7 @@ brew update
 brew install ffmpeg
 brew install libav
 
-# qtwebsockets deps
-# qt latest
+# obs-websocket deps
 brew install qt5
 
 # Packages app

@@ -76,27 +76,18 @@ void SettingsDialog::FormAccepted() {
     conf->DebugEnabled = ui->debugEnabled->isChecked();
     conf->AlertsEnabled = ui->alertsEnabled->isChecked();
 
-    if (ui->authRequired->isChecked()) {
-        if (ui->password->text() != CHANGE_ME) {
-            conf->SetPassword(ui->password->text());
-        }
+    conf->AuthRequired = ui->authRequired->isChecked();
 
-        if (!Config::Current()->Secret.isEmpty())
-            conf->AuthRequired = true;
-        else
-            conf->AuthRequired = false;
-    }
-    else
-    {
-        conf->AuthRequired = false;
+    if (conf->AuthPassword != CHANGE_ME) {
+		conf->AuthPassword = ui->password->text();
     }
 
     conf->Save();
 
     if (conf->ServerEnabled)
-        WSServer::Instance->Start(conf->ServerPort);
+        WSServer::Instance->start(conf->ServerPort);
     else
-        WSServer::Instance->Stop();
+        WSServer::Instance->stop();
 }
 
 SettingsDialog::~SettingsDialog() {

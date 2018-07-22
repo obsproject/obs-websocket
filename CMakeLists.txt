@@ -6,14 +6,16 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 
+set(Boost_USE_STATIC_LIBS ON)
+
 if (WIN32 OR APPLE)
 include(external/FindLibObs.cmake)
 endif()
 
 find_package(LibObs REQUIRED)
 find_package(Qt5Core REQUIRED)
-find_package(Qt5WebSockets REQUIRED)
 find_package(Qt5Widgets REQUIRED)
+find_package(Boost COMPONENTS system date_time regex REQUIRED)
 
 set(obs-websocket_SOURCES
 	src/obs-websocket.cpp
@@ -52,16 +54,17 @@ add_library(obs-websocket MODULE
 include_directories( 
 	"${LIBOBS_INCLUDE_DIR}/../UI/obs-frontend-api"
 	${Qt5Core_INCLUDES}
-	${Qt5WebSockets_INCLUDES}
 	${Qt5Widgets_INCLUDES}
-	${mbedcrypto_INCLUDES}
-	"${CMAKE_SOURCE_DIR}/deps/mbedtls/include")
+	${Boost_INCLUDE_DIRS}
+	"${CMAKE_SOURCE_DIR}/deps/websocketpp")
 
 target_link_libraries(obs-websocket 
 	libobs
 	Qt5::Core
-	Qt5::WebSockets
-	Qt5::Widgets)
+	Qt5::Widgets
+	${Boost_SYSTEM_LIBRARY}
+	${Boost_DATE_TIME_LIBRARY}
+	${Boost_REGEX_LIBRARY})
 
 # --- End of section ---
 
@@ -104,8 +107,6 @@ if(WIN32)
 
 		COMMAND if $<CONFIG:Release>==1 ("${CMAKE_COMMAND}" -E copy
 			"$<TARGET_FILE:obs-websocket>"
-			"${QTDIR}/bin/Qt5WebSockets.dll"
-			"${QTDIR}/bin/Qt5Network.dll"
 			"${RELEASE_DIR}/obs-plugins/${ARCH_NAME}")
 
 		# If config is RelWithDebInfo, package release files
@@ -120,8 +121,6 @@ if(WIN32)
 
 		COMMAND if $<CONFIG:RelWithDebInfo>==1 ("${CMAKE_COMMAND}" -E copy
 			"$<TARGET_FILE:obs-websocket>"
-			"${QTDIR}/bin/Qt5WebSockets.dll"
-			"${QTDIR}/bin/Qt5Network.dll"
 			"${RELEASE_DIR}/obs-plugins/${ARCH_NAME}")
 
 		COMMAND if $<CONFIG:RelWithDebInfo>==1 ("${CMAKE_COMMAND}" -E copy
@@ -132,8 +131,6 @@ if(WIN32)
 		COMMAND if $<CONFIG:Debug>==1 (
 			"${CMAKE_COMMAND}" -E copy
 				"$<TARGET_FILE:obs-websocket>"
-				"${QTDIR}/bin/Qt5WebSocketsd.dll"
-				"${QTDIR}/bin/Qt5Networkd.dll"
 				"${LIBOBS_INCLUDE_DIR}/../${OBS_BUILDDIR_ARCH}/rundir/$<CONFIG>/obs-plugins/${ARCH_NAME}")
 
 		COMMAND if $<CONFIG:Debug>==1 (

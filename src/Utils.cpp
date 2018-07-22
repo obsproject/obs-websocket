@@ -377,15 +377,6 @@ void Utils::SysTrayNotify(QString &text,
         trayIcon->showMessage(title, text, icon);
 }
 
-QString Utils::FormatIPAddress(QHostAddress &addr) {
-    QRegExp v4regex("(::ffff:)(((\\d).){3})", Qt::CaseInsensitive);
-    QString addrString = addr.toString();
-    if (addrString.contains(v4regex)) {
-        addrString = QHostAddress(addr.toIPv4Address()).toString();
-    }
-    return addrString;
-}
-
 const char* Utils::GetRecordingFolder() {
     config_t* profile = obs_frontend_get_profile_config();
     QString outputMode = config_get_string(profile, "Output", "Mode");

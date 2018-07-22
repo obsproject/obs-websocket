@@ -18,8 +18,6 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include <obs-frontend-api.h>
 #include <util/config-file.h>
-#include <QRandomGenerator>
-#include <QCryptographicHash>
 
 #include "Config.h"
 #include "Utils.h"
@@ -30,8 +28,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #define PARAM_DEBUG "DebugEnabled"
 #define PARAM_ALERT "AlertsEnabled"
 #define PARAM_AUTHREQUIRED "AuthRequired"
-#define PARAM_SECRET "AuthSecret"
-#define PARAM_SALT "AuthSalt"
+#define PARAM_PASSWORD "AuthPassword"
 
 #define QT_TO_UTF8(str) str.toUtf8().constData()
 
@@ -43,8 +40,7 @@ Config::Config() :
     DebugEnabled(false),
     AlertsEnabled(true),
     AuthRequired(false),
-    Secret(""),
-    Salt(""),
+    AuthPassword(),
     SettingsLoaded(false)
 {
     // OBS Config defaults
@@ -63,12 +59,8 @@ Config::Config() :
         config_set_default_bool(obsConfig,
             SECTION_NAME, PARAM_AUTHREQUIRED, AuthRequired);
         config_set_default_string(obsConfig,
-            SECTION_NAME, PARAM_SECRET, QT_TO_UTF8(Secret));
-        config_set_default_string(obsConfig,
-            SECTION_NAME, PARAM_SALT, QT_TO_UTF8(Salt));
+            SECTION_NAME, PARAM_PASSWORD, QT_TO_UTF8(AuthPassword));
     }
-
-    SessionChallenge = GenerateSalt();
 }
 
 Config::~Config() = default;
@@ -83,8 +75,7 @@ void Config::Load() {
     AlertsEnabled = config_get_bool(obsConfig, SECTION_NAME, PARAM_ALERT);
 
     AuthRequired = config_get_bool(obsConfig, SECTION_NAME, PARAM_AUTHREQUIRED);
-    Secret = config_get_string(obsConfig, SECTION_NAME, PARAM_SECRET);
-    Salt = config_get_string(obsConfig, SECTION_NAME, PARAM_SALT);
+    AuthPassword = config_get_string(obsConfig, SECTION_NAME, PARAM_PASSWORD);
 }
 
 void Config::Save() {
@@ -97,70 +88,9 @@ void Config::Save() {
     config_set_bool(obsConfig, SECTION_NAME, PARAM_ALERT, AlertsEnabled);
 
     config_set_bool(obsConfig, SECTION_NAME, PARAM_AUTHREQUIRED, AuthRequired);
-    config_set_string(obsConfig, SECTION_NAME, PARAM_SECRET,
-        QT_TO_UTF8(Secret));
-    config_set_string(obsConfig, SECTION_NAME, PARAM_SALT,
-        QT_TO_UTF8(Salt));
+    config_set_string(obsConfig, SECTION_NAME, PARAM_PASSWORD, QT_TO_UTF8(AuthPassword));
 
     config_save(obsConfig);
-}
-
-QString Config::GenerateSalt() {
-    // Generate 32 random chars
-    QByteArray randomChars;
-    for (size_t i = 0; i < 32; ++i) {
-        randomChars.append((char)QRandomGenerator::system()->bounded(0, 255));
-    }
-    // Convert the 32 random chars to a base64 string
-    return randomChars.toBase64();
-}
-
-QString Config::GenerateSecret(const QString& password, const QString& salt) {
-    // Concatenate the password and the salt
-    QString passAndSalt = "";
-    passAndSalt += password;
-    passAndSalt += salt;
-
-    // Generate a SHA256 hash of the password
-    QCryptographicHash sha256(QCryptographicHash::Algorithm::Sha256);
-    sha256.reset();
-    sha256.addData(passAndSalt.toUtf8());
-    QByteArray challengeHash = sha256.result();
-
-    // Encode SHA256 hash to Base64
-    return challengeHash.toBase64();
-}
-
-void Config::SetPassword(const QString& password) {
-    QString newSalt = GenerateSalt();
-    QString newChallenge = GenerateSecret(password, newSalt);
-
-    this->Salt = newSalt;
-    this->Secret = newChallenge;
-}
-
-bool Config::CheckAuth(const QString& response) {
-    // Concatenate auth secret with the challenge sent to the user
-    QString challengeAndResponse = "";
-    challengeAndResponse += Secret;
-    challengeAndResponse += SessionChallenge;
-
-    // Generate a SHA256 hash of challengeAndResponse
-    QCryptographicHash sha256(QCryptographicHash::Algorithm::Sha256);
-    sha256.reset();
-    sha256.addData(challengeAndResponse.toUtf8());
-    QByteArray hash = sha256.result();
-
-    // Encode the SHA256 hash to Base64
-    QString expectedResponse = hash.toBase64();
-
-    bool authSuccess = false;
-    if (response == expectedResponse) {
-        SessionChallenge = GenerateSalt();
-        authSuccess = true;
-    }
-
-    return authSuccess;
 }
 
 Config* Config::Current() {
