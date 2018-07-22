@@ -53,9 +53,7 @@ include_directories(
 	"${LIBOBS_INCLUDE_DIR}/../UI/obs-frontend-api"
 	${Qt5Core_INCLUDES}
 	${Qt5WebSockets_INCLUDES}
-	${Qt5Widgets_INCLUDES}
-	${mbedcrypto_INCLUDES}
-	"${CMAKE_SOURCE_DIR}/deps/mbedtls/include")
+	${Qt5Widgets_INCLUDES})
 
 target_link_libraries(obs-websocket 
 	libobs
