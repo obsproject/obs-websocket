@@ -52,7 +52,7 @@ bool obs_module_load(void) {
     WSEvents::Instance = new WSEvents(WSServer::Instance);
 
     if (config->ServerEnabled)
-        WSServer::Instance->Start(config->ServerPort);
+        WSServer::Instance->start(config->ServerPort);
 
     // UI setup
     QAction* menu_action = (QAction*)obs_frontend_add_tools_menu_qaction(
@@ -75,6 +75,7 @@ bool obs_module_load(void) {
 }
 
 void obs_module_unload() {
+    WSServer::Instance->stop();
     blog(LOG_INFO, "goodbye!");
 }
 

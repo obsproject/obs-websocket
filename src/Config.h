@@ -28,12 +28,6 @@ class Config {
     void Load();
     void Save();
 
-    void SetPassword(const QString& password);
-    bool CheckAuth(const QString &userChallenge);
-    QString GenerateSalt();
-    static QString GenerateSecret(
-        const QString& password, const QString& salt);
-
     bool ServerEnabled;
     uint64_t ServerPort;
 
@@ -41,9 +35,8 @@ class Config {
     bool AlertsEnabled;
 
     bool AuthRequired;
-    QString Secret;
-    QString Salt;
-    QString SessionChallenge;
+	QString AuthPassword;
+
     bool SettingsLoaded;
 
     static Config* Current();

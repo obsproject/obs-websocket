@@ -26,8 +26,6 @@
 
 QHash<QString, void(*)(WSRequestHandler*)> WSRequestHandler::messageMap {
     { "GetVersion", WSRequestHandler::HandleGetVersion },
-    { "GetAuthRequired", WSRequestHandler::HandleGetAuthRequired },
-    { "Authenticate", WSRequestHandler::HandleAuthenticate },
 
     { "SetHeartbeat", WSRequestHandler::HandleSetHeartbeat },
 
@@ -120,11 +118,10 @@ QSet<QString> WSRequestHandler::authNotRequired {
     "Authenticate"
 };
 
-WSRequestHandler::WSRequestHandler(QWebSocket* client) :
+WSRequestHandler::WSRequestHandler() :
     _messageId(0),
     _requestType(""),
-    data(nullptr),
-    _client(client)
+    data(nullptr)
 {
 }
 
@@ -155,14 +152,6 @@ void WSRequestHandler::processIncomingMessage(QString textMessage) {
 
     _requestType = obs_data_get_string(data, "request-type");
     _messageId = obs_data_get_string(data, "message-id");
-
-    if (Config::Current()->AuthRequired
-        && (_client->property(PROP_AUTHENTICATED).toBool() == false)
-        && (authNotRequired.find(_requestType) == authNotRequired.end()))
-    {
-        SendErrorResponse("Not Authenticated");
-        return;
-    }
 
     void (*handlerFunc)(WSRequestHandler*) = (messageMap[_requestType]);
 
@@ -207,11 +196,11 @@ void WSRequestHandler::SendErrorResponse(obs_data_t* additionalFields) {
 }
 
 void WSRequestHandler::SendResponse(obs_data_t* response)  {
-    QString json = obs_data_get_json(response);
-    _client->sendTextMessage(json);
+    assert(_response.isNull());
+    _response = obs_data_get_json(response);
 
     if (Config::Current()->DebugEnabled)
-        blog(LOG_DEBUG, "Response << '%s'", json.toUtf8().constData());
+        blog(LOG_DEBUG, "Response << '%s'", _response.toUtf8().constData());
 }
 
 bool WSRequestHandler::hasField(QString name) {

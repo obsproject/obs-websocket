@@ -17,7 +17,7 @@ PAGER=cat checkinstall -y --type=debian --fstrans=no --nodoc \
 	--backup=no --deldoc=yes --install=no \
 	--pkgname=obs-websocket --pkgversion="$PKG_VERSION" \
 	--pkglicense="GPLv2.0" --maintainer="contact@slepin.fr" \
-	--requires="libqt5websockets5" --pkggroup="video" \
+	--pkggroup="video" \
 	--pkgsource="https://github.com/Palakis/obs-websocket" \
 	--pakdir="/package"
 

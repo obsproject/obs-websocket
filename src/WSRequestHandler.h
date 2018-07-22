@@ -22,27 +22,32 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include <QHash>
 #include <QSet>
-#include <QWebSocket>
-#include <QWebSocketServer>
 
 #include <obs.hpp>
 #include <obs-frontend-api.h>
 
 #include "obs-websocket.h"
+#include "WSServer.h"
 
+using websocketpp::connection_hdl;
+
+// TODO get rid of this mess
 class WSRequestHandler : public QObject {
   Q_OBJECT
 
   public:
-    explicit WSRequestHandler(QWebSocket* client);
+    explicit WSRequestHandler();
     ~WSRequestHandler();
     void processIncomingMessage(QString textMessage);
     bool hasField(QString name);
+    QString getResponse() {
+    	return _response;
+    }
 
-  private:
-    QWebSocket* _client;
+private:
     const char* _messageId;
     const char* _requestType;
+    QString _response;
     OBSDataAutoRelease data;
 
     void SendOKResponse(obs_data_t* additionalFields = NULL);
@@ -54,8 +59,6 @@ class WSRequestHandler : public QObject {
     static QSet<QString> authNotRequired;
 
     static void HandleGetVersion(WSRequestHandler* req);
-    static void HandleGetAuthRequired(WSRequestHandler* req);
-    static void HandleAuthenticate(WSRequestHandler* req);
 
     static void HandleSetHeartbeat(WSRequestHandler* req);
 

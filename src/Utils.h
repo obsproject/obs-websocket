@@ -26,7 +26,6 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <QLayout>
 #include <QListWidget>
 #include <QSystemTrayIcon>
-#include <QHostAddress>
 
 #include <obs.hpp>
 #include <obs-module.h>
@@ -69,8 +68,6 @@ class Utils {
         QString &text,
         QSystemTrayIcon::MessageIcon n,
         QString title = QString("obs-websocket"));
-
-    static QString FormatIPAddress(QHostAddress &addr);
 
     static const char* GetRecordingFolder();
     static bool SetRecordingFolder(const char* path);
