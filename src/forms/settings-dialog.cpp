@@ -26,70 +26,71 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #define CHANGE_ME "changeme"
 
 SettingsDialog::SettingsDialog(QWidget* parent) :
-    QDialog(parent, Qt::Dialog),
-    ui(new Ui::SettingsDialog)
+	QDialog(parent, Qt::Dialog),
+	ui(new Ui::SettingsDialog)
 {
-    ui->setupUi(this);
+	ui->setupUi(this);
 
-    connect(ui->authRequired, &QCheckBox::stateChanged,
-        this, &SettingsDialog::AuthCheckboxChanged);
-    connect(ui->buttonBox, &QDialogButtonBox::accepted,
-        this, &SettingsDialog::FormAccepted);
+	connect(ui->authRequired, &QCheckBox::stateChanged,
+		this, &SettingsDialog::AuthCheckboxChanged);
+	connect(ui->buttonBox, &QDialogButtonBox::accepted,
+		this, &SettingsDialog::FormAccepted);
 
-
-    AuthCheckboxChanged();
+	AuthCheckboxChanged();
 }
 
-void SettingsDialog::showEvent(QShowEvent* event) {
-    Config* conf = Config::Current();
+void SettingsDialog::showEvent(QShowEvent* event)
+{
+	Config* conf = Config::Current();
 
-    ui->serverEnabled->setChecked(conf->ServerEnabled);
-    ui->serverPort->setValue(conf->ServerPort);
+	ui->serverEnabled->setChecked(conf->ServerEnabled);
+	ui->serverPort->setValue(conf->ServerPort);
 
-    ui->debugEnabled->setChecked(conf->DebugEnabled);
-    ui->alertsEnabled->setChecked(conf->AlertsEnabled);
+	ui->debugEnabled->setChecked(conf->DebugEnabled);
+	ui->alertsEnabled->setChecked(conf->AlertsEnabled);
 
-    ui->authRequired->setChecked(conf->AuthRequired);
-    ui->password->setText(CHANGE_ME);
+	ui->authRequired->setChecked(conf->AuthRequired);
+	ui->password->setText(conf->AuthPassword);
 }
 
-void SettingsDialog::ToggleShowHide() {
-    if (!isVisible())
-        setVisible(true);
-    else
-        setVisible(false);
+void SettingsDialog::ToggleShowHide()
+{
+	if (!isVisible())
+		setVisible(true);
+	else
+		setVisible(false);
 }
 
-void SettingsDialog::AuthCheckboxChanged() {
-    if (ui->authRequired->isChecked())
-        ui->password->setEnabled(true);
-    else
-        ui->password->setEnabled(false);
+void SettingsDialog::AuthCheckboxChanged()
+{
+	if (ui->authRequired->isChecked())
+		ui->password->setEnabled(true);
+	else
+		ui->password->setEnabled(false);
 }
 
-void SettingsDialog::FormAccepted() {
-    Config* conf = Config::Current();
+void SettingsDialog::FormAccepted()
+{
+	Config* conf = Config::Current();
 
-    conf->ServerEnabled = ui->serverEnabled->isChecked();
-    conf->ServerPort = ui->serverPort->value();
+	conf->ServerEnabled = ui->serverEnabled->isChecked();
+	conf->ServerPort = ui->serverPort->value();
 
-    conf->DebugEnabled = ui->debugEnabled->isChecked();
-    conf->AlertsEnabled = ui->alertsEnabled->isChecked();
+	conf->DebugEnabled = ui->debugEnabled->isChecked();
+	conf->AlertsEnabled = ui->alertsEnabled->isChecked();
 
-    conf->AuthRequired = ui->authRequired->isChecked();
+	conf->AuthRequired = ui->authRequired->isChecked();
+	conf->AuthPassword = ui->password->text();
 
-    if (conf->AuthPassword != CHANGE_ME) {
-		conf->AuthPassword = ui->password->text();
-    }
+	conf->Save();
 
-    conf->Save();
-
-    if (conf->ServerEnabled)
-        WSServer::Instance->start(conf->ServerPort);
-    else
-        WSServer::Instance->stop();
+	if (conf->ServerEnabled)
+		WSServer::Instance->start(conf->ServerPort);
+	else
+		WSServer::Instance->stop();
 }
 
-SettingsDialog::~SettingsDialog() {
-    delete ui;
+SettingsDialog::~SettingsDialog()
+{
+	delete ui;
 }

@@ -40,7 +40,7 @@ Config::Config() :
     DebugEnabled(false),
     AlertsEnabled(true),
     AuthRequired(false),
-    AuthPassword(),
+    AuthPassword(""),
     SettingsLoaded(false)
 {
     // OBS Config defaults
