@@ -94,8 +94,6 @@ auth_response = base64_encode(auth_response_hash)
 - [Requests](#requests)
   * [General](#general-1)
     + [GetVersion](#getversion)
-    + [GetAuthRequired](#getauthrequired)
-    + [Authenticate](#authenticate)
     + [SetHeartbeat](#setheartbeat)
     + [SetFilenameFormatting](#setfilenameformatting)
     + [GetFilenameFormatting](#getfilenameformatting)
@@ -724,49 +722,6 @@ _No specified parameters._
 | `obs-studio-version` | _String_ | OBS Studio program version. |
 | `available-requests` | _String_ | List of available request types, formatted as a comma-separated list string (e.g. : "Method1,Method2,Method3"). |
 
-
----
-
-### GetAuthRequired
-
-
-- Added in v0.3
-
-Tells the client if authentication is required. If so, returns authentication parameters `challenge`
-and `salt` (see "Authentication" for more information).
-
-**Request Fields:**
-
-_No specified parameters._
-
-**Response Items:**
-
-| Name | Type  | Description |
-| ---- | :---: | ------------|
-| `authRequired` | _boolean_ | Indicates whether authentication is required. |
-| `challenge` | _String (optional)_ |  |
-| `salt` | _String (optional)_ |  |
-
-
----
-
-### Authenticate
-
-
-- Added in v0.3
-
-Attempt to authenticate the client to the server.
-
-**Request Fields:**
-
-| Name | Type  | Description |
-| ---- | :---: | ------------|
-| `auth` | _String_ | Response to the auth challenge (see "Authentication" for more information). |
-
-
-**Response Items:**
-
-_No additional response items._
 
 ---
 
