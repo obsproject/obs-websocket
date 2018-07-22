@@ -75,6 +75,7 @@ bool obs_module_load(void) {
 }
 
 void obs_module_unload() {
+    WSServer::Instance->stop();
     blog(LOG_INFO, "goodbye!");
 }
 
