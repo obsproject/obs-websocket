@@ -8,7 +8,7 @@ RpcRequest::RpcRequest(const QString &id, const QString &methodName,
 {
 }
 
-QVariantHash RpcRequest::immutableParams()
+const QVariantHash RpcRequest::immutableParams() const
 {
     return QVariantHash(parameters);
 }
@@ -21,4 +21,9 @@ const QString& RpcRequest::getId() const
 const QString& RpcRequest::getMethodName() const
 {
     return this->methodName;
+}
+
+const QVariant& RpcRequest::param(QString name) const
+{
+    return this->parameters.value(name);
 }

@@ -30,6 +30,11 @@ const RpcResponse RpcResponse::fail(const RpcRequest& request,
     return response;
 }
 
+const RpcResponse RpcResponse::invalidParams(const RpcRequest &request, const QString &errorMessage)
+{
+    return RpcResponse::fail(request, errorMessage, RpcErrorCode::InvalidParams);
+}
+
 const QString& RpcResponse::getId() const
 {
     return id;

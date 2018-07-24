@@ -16,13 +16,13 @@ const RpcResponse RpcHandler::processCall(const RpcRequest& request)
 	const QString& methodName = request.getMethodName();
 
 	// Try to resolve the method from the built-in ones
-	RpcMethod* method = this->builtinMethods.value(methodName, nullptr);
+	RpcMethod* method = this->_builtinMethods.value(methodName, nullptr);
 	if (method) {
 		return method->handle(request);
 	} else {
 		// Otherwise let's try from the 3rd party ones
 		RpcMethod* thirdPartyMethod =
-			this->thirdPartyMethods.value(methodName, nullptr);
+			this->_thirdPartyMethods.value(methodName, nullptr);
 		if (thirdPartyMethod) {
 			return thirdPartyMethod->handle(request);
 		}

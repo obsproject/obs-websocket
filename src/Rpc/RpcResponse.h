@@ -12,9 +12,13 @@ public:
 	static RpcResponse ofRequest(const RpcRequest& request);
 	static const RpcResponse ok(const RpcRequest& request, const QVariant& result = QVariant());
 	static const RpcResponse fail(
-			const RpcRequest& request,
-			const QString& errorMessage,
-			int errorCode = RpcErrorCode::InternalError
+		const RpcRequest& request,
+		const QString& errorMessage,
+		int errorCode = RpcErrorCode::InternalError
+	);
+	static const RpcResponse invalidParams(
+		const RpcRequest& request,
+		const QString& errorMessage
 	);
 
 	RpcResponse(const QString& id, const QString& methodName);

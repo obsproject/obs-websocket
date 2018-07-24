@@ -7,6 +7,8 @@
 #include "RpcResponse.h"
 #include "RpcMethod.h"
 
+typedef QHash<QString, RpcMethod*> QRpcMethodHash;
+
 class RpcHandler : public QObject
 {
 Q_OBJECT
@@ -17,6 +19,6 @@ public:
 	const RpcResponse processCall(const RpcRequest& request);
 
 private:
-	QHash<QString, RpcMethod*> builtinMethods;
-	QHash<QString, RpcMethod*> thirdPartyMethods;
+	QRpcMethodHash _builtinMethods;
+	QRpcMethodHash _thirdPartyMethods;
 };

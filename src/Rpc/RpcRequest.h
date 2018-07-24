@@ -9,9 +9,10 @@ class RpcRequest
 public:
 	RpcRequest(const QString &id, const QString &methodName,
 		const QVariantHash& params);
-	QHash<QString, QVariant> immutableParams();
+	const QVariantHash immutableParams() const;
 	const QString& getId() const;
 	const QString& getMethodName() const;
+	const QVariant& param(QString name) const;
 
 private:
 	QString id;
