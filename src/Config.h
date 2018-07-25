@@ -20,6 +20,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #define CONFIG_H
 
 #include <QString>
+#include <QtCore/QtCore>
 
 class Config {
   public:
@@ -29,7 +30,7 @@ class Config {
     void Save();
 
     bool ServerEnabled;
-    uint64_t ServerPort;
+    quint16 ServerPort;
 
     bool DebugEnabled;
     bool AlertsEnabled;
@@ -39,10 +40,15 @@ class Config {
 
     bool SettingsLoaded;
 
-    static Config* Current();
+    static QSharedPointer<Config> Current() {
+    	if (!_instance) {
+    		_instance = QSharedPointer<Config>(new Config());
+    	}
+		return _instance;
+	}
 
-  private:
-    static Config* _instance;
+private:
+    static QSharedPointer<Config> _instance;
 };
 
 #endif // CONFIG_H

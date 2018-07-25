@@ -3,8 +3,8 @@
 #include <QByteArray>
 #include <QJsonObject>
 
-JsonRpc::JsonRpc(RpcHandler& handler)
-	: rpcHandler(handler)
+JsonRpc::JsonRpc(QSharedPointer<RpcHandler> handler)
+	: _rpcHandler(handler)
 {
 }
 
@@ -28,7 +28,7 @@ QString JsonRpc::handleTextMessage(const QString& messageBody)
 	}
 
 	const RpcRequest request = jsonToRequest(requestJson);
-	const RpcResponse response = rpcHandler.processCall(request);
+	const RpcResponse response = _rpcHandler->processCall(request);
 	return responseToJson(response);
 }
 

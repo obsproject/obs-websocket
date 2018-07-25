@@ -32,16 +32,14 @@ SettingsDialog::SettingsDialog(QWidget* parent) :
 	ui->setupUi(this);
 
 	connect(ui->authRequired, &QCheckBox::stateChanged,
-		this, &SettingsDialog::AuthCheckboxChanged);
+			ui->password, &QLineEdit::setEnabled);
 	connect(ui->buttonBox, &QDialogButtonBox::accepted,
-		this, &SettingsDialog::FormAccepted);
-
-	AuthCheckboxChanged();
+			this, &SettingsDialog::FormAccepted);
 }
 
 void SettingsDialog::showEvent(QShowEvent* event)
 {
-	Config* conf = Config::Current();
+	QSharedPointer<Config> conf = Config::Current();
 
 	ui->serverEnabled->setChecked(conf->ServerEnabled);
 	ui->serverPort->setValue(conf->ServerPort);
@@ -51,30 +49,21 @@ void SettingsDialog::showEvent(QShowEvent* event)
 
 	ui->authRequired->setChecked(conf->AuthRequired);
 	ui->password->setText(conf->AuthPassword);
+
+	ui->password->setEnabled(ui->authRequired->isChecked());
 }
 
 void SettingsDialog::ToggleShowHide()
 {
-	if (!isVisible())
-		setVisible(true);
-	else
-		setVisible(false);
-}
-
-void SettingsDialog::AuthCheckboxChanged()
-{
-	if (ui->authRequired->isChecked())
-		ui->password->setEnabled(true);
-	else
-		ui->password->setEnabled(false);
+	setVisible(!isVisible());
 }
 
 void SettingsDialog::FormAccepted()
 {
-	Config* conf = Config::Current();
+	QSharedPointer<Config> conf = Config::Current();
 
 	conf->ServerEnabled = ui->serverEnabled->isChecked();
-	conf->ServerPort = ui->serverPort->value();
+	conf->ServerPort = (quint16)ui->serverPort->value();
 
 	conf->DebugEnabled = ui->debugEnabled->isChecked();
 	conf->AlertsEnabled = ui->alertsEnabled->isChecked();
@@ -85,9 +74,9 @@ void SettingsDialog::FormAccepted()
 	conf->Save();
 
 	if (conf->ServerEnabled)
-		WSServer::Instance->start(conf->ServerPort);
+		WSServer::Current()->start(conf->ServerPort);
 	else
-		WSServer::Instance->stop();
+		WSServer::Current()->stop();
 }
 
 SettingsDialog::~SettingsDialog()

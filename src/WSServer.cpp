@@ -34,7 +34,7 @@ using websocketpp::lib::placeholders::_1;
 using websocketpp::lib::placeholders::_2;
 using websocketpp::lib::bind;
 
-WSServer* WSServer::Instance = nullptr;
+QSharedPointer<WSServer> WSServer::_instance = nullptr;
 
 QString decodeBase64(const QString& source)
 {
@@ -45,11 +45,11 @@ QString decodeBase64(const QString& source)
 	);
 }
 
-WSServer::WSServer(QObject* parent)
+WSServer::WSServer(QSharedPointer<JsonRpc> jsonRpc, QObject* parent)
 	: QObject(parent),
 	  _connections(),
 	  _clMutex(QMutex::Recursive),
-	  _jsonRpc(_rpcHandler)
+	  _jsonRpc(jsonRpc)
 {
 	_server.init_asio();
 
@@ -106,7 +106,7 @@ bool WSServer::validateConnection(connection_hdl hdl)
 {
 	// TODO enforce subprotocol
 
-	Config* config = Config::Current();
+	QSharedPointer<Config> config = Config::Current();
 	if (config->AuthRequired) {
 		auto conn = _server.get_con_from_hdl(hdl);
 
@@ -162,7 +162,7 @@ void WSServer::onMessage(connection_hdl hdl, server::message_ptr message)
 
 	QString payload = QString::fromStdString(message->get_payload());
 
-	QString response = _jsonRpc.handleTextMessage(payload);
+	QString response = _jsonRpc->handleTextMessage(payload);
 	_server.send(hdl, response.toStdString(), websocketpp::frame::opcode::text);
 }
 

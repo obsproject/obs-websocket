@@ -32,7 +32,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #define QT_TO_UTF8(str) str.toUtf8().constData()
 
-Config* Config::_instance = new Config();
+QSharedPointer<Config> Config::_instance = nullptr;
 
 Config::Config() :
     ServerEnabled(true),
@@ -91,8 +91,4 @@ void Config::Save() {
     config_set_string(obsConfig, SECTION_NAME, PARAM_PASSWORD, QT_TO_UTF8(AuthPassword));
 
     config_save(obsConfig);
-}
-
-Config* Config::Current() {
-    return _instance;
 }

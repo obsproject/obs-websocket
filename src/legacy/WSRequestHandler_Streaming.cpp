@@ -28,13 +28,13 @@
 
     const char* tc = nullptr;
     if (obs_frontend_streaming_active()) {
-        tc = WSEvents::Instance->GetStreamingTimecode();
+        tc = WSEvents::Current()->GetStreamingTimecode();
         obs_data_set_string(data, "stream-timecode", tc);
         bfree((void*)tc);
     }
 
     if (obs_frontend_recording_active()) {
-        tc = WSEvents::Instance->GetRecordingTimecode();
+        tc = WSEvents::Current()->GetRecordingTimecode();
         obs_data_set_string(data, "rec-timecode", tc);
         bfree((void*)tc);
     }

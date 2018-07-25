@@ -28,11 +28,17 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 class WSEvents : public QObject {
   Q_OBJECT
   public:
-    explicit WSEvents(WSServer* srv);
-    ~WSEvents();
+	static QSharedPointer<WSEvents> Current() {
+		return _instance;
+	}
+	static void Reset(QSharedPointer<WSServer> server) {
+		_instance = QSharedPointer<WSEvents>(new WSEvents(server));
+	}
+
+	explicit WSEvents(QSharedPointer<WSServer> srv);
+    ~WSEvents() override;
     static void FrontendEventHandler(
         enum obs_frontend_event event, void* privateData);
-    static WSEvents* Instance;
     void connectSceneSignals(obs_source_t* scene);
 
 	void hookTransitionBeginEvent();
@@ -53,7 +59,9 @@ class WSEvents : public QObject {
         QListWidgetItem* current, QListWidgetItem* prev);
 
   private:
-    WSServer* _srv;
+	static QSharedPointer<WSEvents> _instance;
+
+    QSharedPointer<WSServer> _srv;
     OBSSource currentScene;
 
     bool pulse;

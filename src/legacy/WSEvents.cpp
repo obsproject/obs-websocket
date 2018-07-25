@@ -62,9 +62,9 @@ void* calldata_get_ptr(const calldata_t* data, const char* name) {
     return ptr;
 }
 
-WSEvents* WSEvents::Instance = nullptr;
+QSharedPointer<WSEvents> WSEvents::_instance = nullptr;
 
-WSEvents::WSEvents(WSServer* srv) {
+WSEvents::WSEvents(QSharedPointer<WSServer> srv) {
     _srv = srv;
     obs_frontend_add_event_callback(WSEvents::FrontendEventHandler, this);
 

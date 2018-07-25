@@ -6,7 +6,7 @@
 
 RpcHandler::RpcHandler()
 {
-	this->builtinMethods.ADD_METHOD(GetVersion);
+	this->_builtinMethods.ADD_METHOD(GetVersion);
 }
 
 RpcHandler::~RpcHandler() = default;

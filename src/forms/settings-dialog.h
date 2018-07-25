@@ -29,12 +29,11 @@ class SettingsDialog : public QDialog
 
 public:
 	explicit SettingsDialog(QWidget* parent = 0);
-	~SettingsDialog();
-	void showEvent(QShowEvent* event);
+	~SettingsDialog() override;
+	void showEvent(QShowEvent* event) override;
 	void ToggleShowHide();
 
 private Q_SLOTS:
-	void AuthCheckboxChanged();
 	void FormAccepted();
 
 private:

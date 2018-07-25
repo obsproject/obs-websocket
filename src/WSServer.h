@@ -42,14 +42,23 @@ class WSServer : public QObject
 Q_OBJECT
 
 public:
-	explicit WSServer(QObject* parent = Q_NULLPTR);
-	virtual ~WSServer();
+	static QSharedPointer<WSServer> Current() {
+		return _instance;
+	}
+	static void Reset(QSharedPointer<JsonRpc> jsonRpc) {
+		_instance = QSharedPointer<WSServer>(new WSServer(jsonRpc));
+	}
+
+	explicit WSServer(QSharedPointer<JsonRpc> jsonRpc, QObject* parent = Q_NULLPTR);
+	~WSServer() override;
+
 	void start(quint16 port);
 	void stop();
 	void broadcast(QString message);
-	static WSServer* Instance;
 
 private:
+	static QSharedPointer<WSServer> _instance;
+
 	bool validateConnection(connection_hdl hdl);
 	void onOpen(connection_hdl hdl);
 	void onMessage(connection_hdl hdl, server::message_ptr message);
@@ -63,8 +72,7 @@ private:
 	quint16 _serverPort;
 	con_list _connections;
 	QMutex _clMutex;
-	RpcHandler _rpcHandler;
-	JsonRpc _jsonRpc;
+	QSharedPointer<JsonRpc> _jsonRpc;
 };
 
 #endif // WSSERVER_H

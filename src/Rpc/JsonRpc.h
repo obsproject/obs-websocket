@@ -2,6 +2,7 @@
 
 #include <QJsonDocument>
 #include <QString>
+#include <QtCore/QtCore>
 
 #include "RpcResponse.h"
 #include "RpcRequest.h"
@@ -10,7 +11,7 @@
 class JsonRpc
 {
 public:
-	JsonRpc(RpcHandler& handler);
+	JsonRpc(QSharedPointer<RpcHandler> handler);
 	QString handleTextMessage(const QString& messageBody);
 private:
 	static const RpcRequest jsonToRequest(const QJsonDocument& requestBody);
@@ -20,5 +21,5 @@ private:
 	static QJsonObject errorToJson(const RpcError& error);
     static QString anonymousErrorResponse(const RpcError& error);
 
-	RpcHandler& rpcHandler;
+	QSharedPointer<RpcHandler> _rpcHandler;
 };

@@ -40,7 +40,7 @@ set(obs-websocket_SOURCES
 	src/Rpc/RpcResponse.cpp
 	src/Rpc/JsonRpc.cpp
 	src/Rpc/RpcError.cpp
-	src/Rpc/Methods/GetVersion.cpp src/Rpc/Methods/SetHeartbeat.cpp src/Rpc/Methods/SetFilenameFormatting.cpp src/Rpc/Methods/GetFilenameFormatting.cpp)
+	src/Rpc/Methods/GetVersion.cpp)
 
 set(obs-websocket_HEADERS
 	src/obs-websocket.h
