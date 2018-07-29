@@ -1176,7 +1176,7 @@ Reset a scene item.
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
-| `scene-name` | _String (optional)_ | Name of the scene the source belogns to. Defaults to the current scene. |
+| `scene-name` | _String (optional)_ | Name of the scene the source belongs to. Defaults to the current scene. |
 | `item` | _String_ | Name of the source item. |
 
 

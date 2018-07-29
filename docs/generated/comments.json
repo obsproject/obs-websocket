@@ -2432,7 +2432,7 @@
         "subheads": [],
         "description": "Reset a scene item.",
         "param": [
-          "{String (optional)} `scene-name` Name of the scene the source belogns to. Defaults to the current scene.",
+          "{String (optional)} `scene-name` Name of the scene the source belongs to. Defaults to the current scene.",
           "{String} `item` Name of the source item."
         ],
         "api": "requests",
@@ -2443,7 +2443,7 @@
           {
             "type": "String (optional)",
             "name": "scene-name",
-            "description": "Name of the scene the source belogns to. Defaults to the current scene."
+            "description": "Name of the scene the source belongs to. Defaults to the current scene."
           },
           {
             "type": "String",
