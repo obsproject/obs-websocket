@@ -46,7 +46,7 @@ set(obs-websocket_HEADERS
 	src/forms/settings-dialog.h)
 
 # --- Platform-independent build settings ---
-add_library(obs-websocket MODULE 
+add_library(obs-websocket MODULE
 	${obs-websocket_SOURCES}
 	${obs-websocket_HEADERS})
 
@@ -57,7 +57,7 @@ include_directories(
 	${Boost_INCLUDE_DIRS}
 	"${CMAKE_SOURCE_DIR}/deps/websocketpp")
 
-target_link_libraries(obs-websocket 
+target_link_libraries(obs-websocket
 	libobs
 	Qt5::Core
 	Qt5::Widgets
