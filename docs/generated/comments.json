@@ -271,7 +271,9 @@
         "description": "A transition (other than \"cut\") has begun.",
         "return": [
           "{String} `name` Transition name.",
-          "{int} `duration` Transition duration (in milliseconds)."
+          "{int} `duration` Transition duration (in milliseconds).",
+          "{String} `from-scene` Source scene of the transition",
+          "{String} `to-scene` Destination scene of the transition"
         ],
         "api": "events",
         "name": "TransitionBegin",
@@ -287,6 +289,16 @@
             "type": "int",
             "name": "duration",
             "description": "Transition duration (in milliseconds)."
+          },
+          {
+            "type": "String",
+            "name": "from-scene",
+            "description": "Source scene of the transition"
+          },
+          {
+            "type": "String",
+            "name": "to-scene",
+            "description": "Destination scene of the transition"
           }
         ],
         "names": [
@@ -834,7 +846,7 @@
       },
       {
         "subheads": [],
-        "description": "A request to start the replay buffer has been issued.",
+        "description": "A request to stop the replay buffer has been issued.",
         "api": "events",
         "name": "ReplayStopping",
         "category": "replay buffer",

@@ -1,11 +1,6 @@
 <!-- This file was generated based on handlebars templates. Do not edit directly! -->
 
-# obs-websocket 4.2.1 protocol reference
-
-**This is the reference for the unreleased obs-websocket 4.2.1. See the list below for older versions.**
-- [4.2.0 protocol reference](https://github.com/Palakis/obs-websocket/blob/4.2.0/docs/generated/protocol.md)
-- [4.1.0 protocol reference](https://github.com/Palakis/obs-websocket/blob/4.1.0/PROTOCOL.md)
-- [4.0.0 protocol reference](https://github.com/Palakis/obs-websocket/blob/4.0.0/PROTOCOL.md)
+# obs-websocket 4.3.2 protocol reference
 
 # General Introduction
 Messages are exchanged between the client and the server as JSON objects.
@@ -304,6 +299,8 @@ A transition (other than "cut") has begun.
 | ---- | :---: | ------------|
 | `name` | _String_ | Transition name. |
 | `duration` | _int_ | Transition duration (in milliseconds). |
+| `from-scene` | _String_ | Source scene of the transition |
+| `to-scene` | _String_ | Destination scene of the transition |
 
 
 ---
@@ -508,7 +505,7 @@ _No additional response items._
 
 - Added in v4.2.0
 
-A request to start the replay buffer has been issued.
+A request to stop the replay buffer has been issued.
 
 **Response Items:**
 
