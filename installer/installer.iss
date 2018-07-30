@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "obs-websocket"
-#define MyAppVersion "git"
+#define MyAppVersion "4.4.0"
 #define MyAppPublisher "Stephane Lepin"
 #define MyAppURL "http://github.com/Palakis/obs-websocket"
 
@@ -20,7 +20,7 @@ AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
 DefaultDirName={code:GetDirName}
 DefaultGroupName={#MyAppName}
-OutputBaseFilename=obs-websocket-{#MyAppVersion}-Windows-Installer
+OutputBaseFilename=obs-websocket-Windows-Installer
 Compression=lzma
 SolidCompression=yes
 LicenseFile=..\LICENSE
