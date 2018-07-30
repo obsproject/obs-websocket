@@ -15,7 +15,7 @@ if git diff --quiet; then
     exit 0
 fi
 
-if [ "$TRAVIS_PULL_REQUEST" != "false" -o "$TRAVIS_BRANCH" != "master" -o "$TRAVIS_BRANCH" != "4.3-maintenance" ]; then
+if [ "$TRAVIS_PULL_REQUEST" != "false" -o "$TRAVIS_BRANCH" != "4.3-maintenance" ]; then
     echo "-- Skipping documentation deployment because this is either a pull request or a non-master branch."
     exit 0
 fi
