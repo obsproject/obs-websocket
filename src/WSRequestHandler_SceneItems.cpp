@@ -260,25 +260,25 @@ void WSRequestHandler::HandleSetSceneItemProperties(WSRequestHandler* req) {
 		OBSDataAutoRelease reqBounds = obs_data_get_obj(req->data, "bounds");
 		if (obs_data_has_user_value(reqBounds, "type")) {
 			const char* newBoundsType = obs_data_get_string(reqBounds, "type");
-			if (newBoundsType == "OBS_BOUNDS_NONE") {
+			if (strcmp(newBoundsType,"OBS_BOUNDS_NONE") == 0) {
 				obs_sceneitem_set_bounds_type(sceneItem, OBS_BOUNDS_NONE);
 			}
-			else if (newBoundsType == "OBS_BOUNDS_STRETCH") {
+			else if (strcmp(newBoundsType,"OBS_BOUNDS_STRETCH")==0) {
 				obs_sceneitem_set_bounds_type(sceneItem, OBS_BOUNDS_STRETCH);
 			}
-			else if (newBoundsType == "OBS_BOUNDS_SCALE_INNER") {
+			else if (strcmp(newBoundsType, "OBS_BOUNDS_SCALE_INNER")==0) {
 				obs_sceneitem_set_bounds_type(sceneItem, OBS_BOUNDS_SCALE_INNER);
 			}
-			else if (newBoundsType == "OBS_BOUNDS_SCALE_OUTER") {
+			else if (strcmp(newBoundsType,"OBS_BOUNDS_SCALE_OUTER")==0) {
 				obs_sceneitem_set_bounds_type(sceneItem, OBS_BOUNDS_SCALE_OUTER);
 			}
-			else if (newBoundsType == "OBS_BOUNDS_SCALE_TO_WIDTH") {
+			else if (strcmp(newBoundsType,"OBS_BOUNDS_SCALE_TO_WIDTH")==0) {
 				obs_sceneitem_set_bounds_type(sceneItem, OBS_BOUNDS_SCALE_TO_WIDTH);
 			}
-			else if (newBoundsType == "OBS_BOUNDS_SCALE_TO_HEIGHT") {
+			else if (strcmp(newBoundsType,"OBS_BOUNDS_SCALE_TO_HEIGHT")==0) {
 				obs_sceneitem_set_bounds_type(sceneItem, OBS_BOUNDS_SCALE_TO_HEIGHT);
 			}
-			else if (newBoundsType == "OBS_BOUNDS_MAX_ONLY") {
+			else if (strcmp(newBoundsType,"OBS_BOUNDS_MAX_ONLY")==0) {
 				obs_sceneitem_set_bounds_type(sceneItem, OBS_BOUNDS_MAX_ONLY);
 			}
 			else {
