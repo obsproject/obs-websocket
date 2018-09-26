@@ -138,8 +138,6 @@ private:
 	static void HandleGetSourceTypeDefaults(WSRequestHandler* req);
 	static void HandleAddNewSourceToScene(WSRequestHandler* req);
 	static void HandleRemoveSourceFromScene(WSRequestHandler* req);
-	/*static void HandleAddVideoSourceToScene(WSRequestHandler* req);
-	static void HandleRemoveVideoSource(WSRequestHandler* req);*/
 };
 
 #endif // WSPROTOCOL_H
