@@ -8,7 +8,7 @@ brew install libav
 
 # qtwebsockets deps
 # qt latest
-brew install qt5
+brew install ./CI/macos/qt.rb
 
 # Packages app
 wget --quiet --retry-connrefused --waitretry=1 https://s3-us-west-2.amazonaws.com/obs-nightly/Packages.pkg
