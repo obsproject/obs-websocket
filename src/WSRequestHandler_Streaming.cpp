@@ -21,25 +21,25 @@
  * @since 0.3
  */
  void WSRequestHandler::HandleGetStreamingStatus(WSRequestHandler* req) {
-    OBSDataAutoRelease data = obs_data_create();
-    obs_data_set_bool(data, "streaming", obs_frontend_streaming_active());
-    obs_data_set_bool(data, "recording", obs_frontend_recording_active());
-    obs_data_set_bool(data, "preview-only", false);
+	OBSDataAutoRelease data = obs_data_create();
+	obs_data_set_bool(data, "streaming", obs_frontend_streaming_active());
+	obs_data_set_bool(data, "recording", obs_frontend_recording_active());
+	obs_data_set_bool(data, "preview-only", false);
 
-    const char* tc = nullptr;
-    if (obs_frontend_streaming_active()) {
-        tc = WSEvents::Instance->GetStreamingTimecode();
-        obs_data_set_string(data, "stream-timecode", tc);
-        bfree((void*)tc);
-    }
+	const char* tc = nullptr;
+	if (obs_frontend_streaming_active()) {
+		tc = WSEvents::Instance->GetStreamingTimecode();
+		obs_data_set_string(data, "stream-timecode", tc);
+		bfree((void*)tc);
+	}
 
-    if (obs_frontend_recording_active()) {
-        tc = WSEvents::Instance->GetRecordingTimecode();
-        obs_data_set_string(data, "rec-timecode", tc);
-        bfree((void*)tc);
-    }
+	if (obs_frontend_recording_active()) {
+		tc = WSEvents::Instance->GetRecordingTimecode();
+		obs_data_set_string(data, "rec-timecode", tc);
+		bfree((void*)tc);
+	}
 
-    req->SendOKResponse(data);
+	req->SendOKResponse(data);
 }
 
 /**
@@ -51,10 +51,10 @@
  * @since 0.3
  */
  void WSRequestHandler::HandleStartStopStreaming(WSRequestHandler* req) {
-    if (obs_frontend_streaming_active())
-        HandleStopStreaming(req);
-    else
-        HandleStartStreaming(req);
+	if (obs_frontend_streaming_active())
+		HandleStopStreaming(req);
+	else
+		HandleStartStreaming(req);
 }
 
 /**
@@ -77,90 +77,90 @@
  * @since 4.1.0
  */
  void WSRequestHandler::HandleStartStreaming(WSRequestHandler* req) {
-    if (obs_frontend_streaming_active() == false) {
-        OBSService configuredService = obs_frontend_get_streaming_service();
-        OBSService newService = nullptr;
+	if (obs_frontend_streaming_active() == false) {
+		OBSService configuredService = obs_frontend_get_streaming_service();
+		OBSService newService = nullptr;
 
-        // TODO: fix service memory leak
+		// TODO: fix service memory leak
 
-        if (req->hasField("stream")) {
-            OBSDataAutoRelease streamData = obs_data_get_obj(req->data, "stream");
-            OBSDataAutoRelease newSettings = obs_data_get_obj(streamData, "settings");
-            OBSDataAutoRelease newMetadata = obs_data_get_obj(streamData, "metadata");
+		if (req->hasField("stream")) {
+			OBSDataAutoRelease streamData = obs_data_get_obj(req->data, "stream");
+			OBSDataAutoRelease newSettings = obs_data_get_obj(streamData, "settings");
+			OBSDataAutoRelease newMetadata = obs_data_get_obj(streamData, "metadata");
 
-            OBSDataAutoRelease csHotkeys =
-                obs_hotkeys_save_service(configuredService);
+			OBSDataAutoRelease csHotkeys =
+				obs_hotkeys_save_service(configuredService);
 
-            QString currentType = obs_service_get_type(configuredService);
-            QString newType = obs_data_get_string(streamData, "type");
-            if (newType.isEmpty() || newType.isNull()) {
-                newType = currentType;
-            }
+			QString currentType = obs_service_get_type(configuredService);
+			QString newType = obs_data_get_string(streamData, "type");
+			if (newType.isEmpty() || newType.isNull()) {
+				newType = currentType;
+			}
 
-            //Supporting adding metadata parameters to key query string
-            QString query = Utils::ParseDataToQueryString(newMetadata);
-            if (!query.isEmpty()
-                    && obs_data_has_user_value(newSettings, "key"))
-            {
-                const char* key = obs_data_get_string(newSettings, "key");
-                int keylen = strlen(key);
+			//Supporting adding metadata parameters to key query string
+			QString query = Utils::ParseDataToQueryString(newMetadata);
+			if (!query.isEmpty()
+					&& obs_data_has_user_value(newSettings, "key"))
+			{
+				const char* key = obs_data_get_string(newSettings, "key");
+				int keylen = strlen(key);
 
-                bool hasQuestionMark = false;
-                for (int i = 0; i < keylen; i++) {
-                    if (key[i] == '?') {
-                        hasQuestionMark = true;
-                        break;
-                    }
-                }
+				bool hasQuestionMark = false;
+				for (int i = 0; i < keylen; i++) {
+					if (key[i] == '?') {
+						hasQuestionMark = true;
+						break;
+					}
+				}
 
-                if (hasQuestionMark) {
-                    query.prepend('&');
-                } else {
-                    query.prepend('?');
-                }
+				if (hasQuestionMark) {
+					query.prepend('&');
+				} else {
+					query.prepend('?');
+				}
 
-                query.prepend(key);
-                obs_data_set_string(newSettings, "key", query.toUtf8());
-            }
+				query.prepend(key);
+				obs_data_set_string(newSettings, "key", query.toUtf8());
+			}
 
-            if (newType == currentType) {
-                // Service type doesn't change: apply settings to current service
+			if (newType == currentType) {
+				// Service type doesn't change: apply settings to current service
 
-                // By doing this, you can send a request to the websocket
-                // that only contains settings you want to change, instead of
-                // having to do a get and then change them
+				// By doing this, you can send a request to the websocket
+				// that only contains settings you want to change, instead of
+				// having to do a get and then change them
 
-                OBSDataAutoRelease currentSettings = obs_service_get_settings(configuredService);
-                OBSDataAutoRelease updatedSettings = obs_data_create();
+				OBSDataAutoRelease currentSettings = obs_service_get_settings(configuredService);
+				OBSDataAutoRelease updatedSettings = obs_data_create();
 
-                obs_data_apply(updatedSettings, currentSettings); //first apply the existing settings
-                obs_data_apply(updatedSettings, newSettings); //then apply the settings from the request should they exist
+				obs_data_apply(updatedSettings, currentSettings); //first apply the existing settings
+				obs_data_apply(updatedSettings, newSettings); //then apply the settings from the request should they exist
 
-                newService = obs_service_create(
-                    newType.toUtf8(), STREAM_SERVICE_ID,
-                    updatedSettings, csHotkeys);
-            }
-            else {
-                // Service type changed: override service settings
-                newService = obs_service_create(
-                    newType.toUtf8(), STREAM_SERVICE_ID,
-                    newSettings, csHotkeys);
-            }
+				newService = obs_service_create(
+					newType.toUtf8(), STREAM_SERVICE_ID,
+					updatedSettings, csHotkeys);
+			}
+			else {
+				// Service type changed: override service settings
+				newService = obs_service_create(
+					newType.toUtf8(), STREAM_SERVICE_ID,
+					newSettings, csHotkeys);
+			}
 
-            obs_frontend_set_streaming_service(newService);
-        }
+			obs_frontend_set_streaming_service(newService);
+		}
 
-        obs_frontend_streaming_start();
+		obs_frontend_streaming_start();
 
-        // Stream settings provided in StartStreaming are not persisted to disk
-        if (newService != nullptr) {
-            obs_frontend_set_streaming_service(configuredService);
-        }
+		// Stream settings provided in StartStreaming are not persisted to disk
+		if (newService != nullptr) {
+			obs_frontend_set_streaming_service(configuredService);
+		}
 
-        req->SendOKResponse();
-    } else {
-        req->SendErrorResponse("streaming already active");
-    }
+		req->SendOKResponse();
+	} else {
+		req->SendErrorResponse("streaming already active");
+	}
 }
 
 /**
@@ -173,12 +173,12 @@
  * @since 4.1.0
  */
 void WSRequestHandler::HandleStopStreaming(WSRequestHandler* req) {
-    if (obs_frontend_streaming_active() == true) {
-        obs_frontend_streaming_stop();
-        req->SendOKResponse();
-    } else {
-        req->SendErrorResponse("streaming not active");
-    }
+	if (obs_frontend_streaming_active() == true) {
+		obs_frontend_streaming_stop();
+		req->SendOKResponse();
+	} else {
+		req->SendErrorResponse("streaming not active");
+	}
 }
 
 /**
@@ -199,50 +199,50 @@ void WSRequestHandler::HandleStopStreaming(WSRequestHandler* req) {
  * @since 4.1.0
  */
  void WSRequestHandler::HandleSetStreamSettings(WSRequestHandler* req) {
-    OBSService service = obs_frontend_get_streaming_service();
+	OBSService service = obs_frontend_get_streaming_service();
 
-    OBSDataAutoRelease requestSettings = obs_data_get_obj(req->data, "settings");
-    if (!requestSettings) {
-        req->SendErrorResponse("'settings' are required'");
-        return;
-    }
+	OBSDataAutoRelease requestSettings = obs_data_get_obj(req->data, "settings");
+	if (!requestSettings) {
+		req->SendErrorResponse("'settings' are required'");
+		return;
+	}
 
-    QString serviceType = obs_service_get_type(service);
-    QString requestedType = obs_data_get_string(req->data, "type");
+	QString serviceType = obs_service_get_type(service);
+	QString requestedType = obs_data_get_string(req->data, "type");
 
-    if (requestedType != nullptr && requestedType != serviceType) {
-        OBSDataAutoRelease hotkeys = obs_hotkeys_save_service(service);
-        service = obs_service_create(
-            requestedType.toUtf8(), STREAM_SERVICE_ID, requestSettings, hotkeys);
-    } else {
-        // If type isn't changing, we should overlay the settings we got
-        // to the existing settings. By doing so, you can send a request that
-        // only contains the settings you want to change, instead of having to
-        // do a get and then change them
+	if (requestedType != nullptr && requestedType != serviceType) {
+		OBSDataAutoRelease hotkeys = obs_hotkeys_save_service(service);
+		service = obs_service_create(
+			requestedType.toUtf8(), STREAM_SERVICE_ID, requestSettings, hotkeys);
+	} else {
+		// If type isn't changing, we should overlay the settings we got
+		// to the existing settings. By doing so, you can send a request that
+		// only contains the settings you want to change, instead of having to
+		// do a get and then change them
 
-        OBSDataAutoRelease existingSettings = obs_service_get_settings(service);
-        OBSDataAutoRelease newSettings = obs_data_create();
+		OBSDataAutoRelease existingSettings = obs_service_get_settings(service);
+		OBSDataAutoRelease newSettings = obs_data_create();
 
-        // Apply existing settings
-        obs_data_apply(newSettings, existingSettings);
-        // Then apply the settings from the request
-        obs_data_apply(newSettings, requestSettings);
+		// Apply existing settings
+		obs_data_apply(newSettings, existingSettings);
+		// Then apply the settings from the request
+		obs_data_apply(newSettings, requestSettings);
 
-        obs_service_update(service, newSettings);
-    }
+		obs_service_update(service, newSettings);
+	}
 
-    //if save is specified we should immediately save the streaming service
-    if (obs_data_get_bool(req->data, "save")) {
-        obs_frontend_save_streaming_service();
-    }
+	//if save is specified we should immediately save the streaming service
+	if (obs_data_get_bool(req->data, "save")) {
+		obs_frontend_save_streaming_service();
+	}
 
-    OBSDataAutoRelease serviceSettings = obs_service_get_settings(service);
+	OBSDataAutoRelease serviceSettings = obs_service_get_settings(service);
 
-    OBSDataAutoRelease response = obs_data_create();
-    obs_data_set_string(response, "type", requestedType.toUtf8());
-    obs_data_set_obj(response, "settings", serviceSettings);
+	OBSDataAutoRelease response = obs_data_create();
+	obs_data_set_string(response, "type", requestedType.toUtf8());
+	obs_data_set_obj(response, "settings", serviceSettings);
 
-    req->SendOKResponse(response);
+	req->SendOKResponse(response);
 }
 
 /**
@@ -262,16 +262,16 @@ void WSRequestHandler::HandleStopStreaming(WSRequestHandler* req) {
  * @since 4.1.0
  */
 void WSRequestHandler::HandleGetStreamSettings(WSRequestHandler* req) {
-    OBSService service = obs_frontend_get_streaming_service();
+	OBSService service = obs_frontend_get_streaming_service();
 
-    const char* serviceType = obs_service_get_type(service);
-    OBSDataAutoRelease settings = obs_service_get_settings(service);
+	const char* serviceType = obs_service_get_type(service);
+	OBSDataAutoRelease settings = obs_service_get_settings(service);
 
-    OBSDataAutoRelease response = obs_data_create();
-    obs_data_set_string(response, "type", serviceType);
-    obs_data_set_obj(response, "settings", settings);
+	OBSDataAutoRelease response = obs_data_create();
+	obs_data_set_string(response, "type", serviceType);
+	obs_data_set_obj(response, "settings", settings);
 
-    req->SendOKResponse(response);
+	req->SendOKResponse(response);
 }
 
 /**
@@ -283,6 +283,6 @@ void WSRequestHandler::HandleGetStreamSettings(WSRequestHandler* req) {
  * @since 4.1.0
  */
 void WSRequestHandler::HandleSaveStreamSettings(WSRequestHandler* req) {
-    obs_frontend_save_streaming_service();
-    req->SendOKResponse();
+	obs_frontend_save_streaming_service();
+	req->SendOKResponse();
 }

@@ -29,24 +29,24 @@ QT_FORWARD_DECLARE_CLASS(QWebSocketServer)
 QT_FORWARD_DECLARE_CLASS(QWebSocket)
 
 class WSServer : public QObject {
-  Q_OBJECT
-  public:
-    explicit WSServer(QObject* parent = Q_NULLPTR);
-    virtual ~WSServer();
-    void Start(quint16 port);
-    void Stop();
-    void broadcast(QString message);
-    static WSServer* Instance;
+	Q_OBJECT
+	public:
+		explicit WSServer(QObject* parent = Q_NULLPTR);
+		virtual ~WSServer();
+		void Start(quint16 port);
+		void Stop();
+		void broadcast(QString message);
+		static WSServer* Instance;
 
-  private slots:
-    void onNewConnection();
-    void onTextMessageReceived(QString message);
-    void onSocketDisconnected();
+	private slots:
+		void onNewConnection();
+		void onTextMessageReceived(QString message);
+		void onSocketDisconnected();
 
-  private:
-    QWebSocketServer* _wsServer;
-    QList<QWebSocket*> _clients;
-    QMutex _clMutex;
+	private:
+		QWebSocketServer* _wsServer;
+		QList<QWebSocket*> _clients;
+		QMutex _clMutex;
 };
 
 #endif // WSSERVER_H

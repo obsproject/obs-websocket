@@ -9,6 +9,6 @@ OBSLatestTag=$(git describe --tags --abbrev=0)
 git checkout $OBSLatestTag
 mkdir build && cd build
 cmake .. \
-  -DDISABLE_PLUGINS=true \
-  -DCMAKE_PREFIX_PATH=/usr/local/opt/qt/lib/cmake \
+	-DDISABLE_PLUGINS=true \
+	-DCMAKE_PREFIX_PATH=/usr/local/opt/qt/lib/cmake \
 && make -j4

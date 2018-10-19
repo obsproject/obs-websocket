@@ -11,13 +11,13 @@ npm run build
 echo "-- Documentation successfully generated."
 
 if git diff --quiet; then
-    echo "-- No documentation changes to commit."
-    exit 0
+	echo "-- No documentation changes to commit."
+	exit 0
 fi
 
 if [ "$TRAVIS_PULL_REQUEST" != "false" -o "$TRAVIS_BRANCH" != "4.3-maintenance" ]; then
-    echo "-- Skipping documentation deployment because this is either a pull request or a non-master branch."
-    exit 0
+	echo "-- Skipping documentation deployment because this is either a pull request or a non-master branch."
+	exit 0
 fi
 
 REMOTE_URL="$(git config remote.origin.url)"

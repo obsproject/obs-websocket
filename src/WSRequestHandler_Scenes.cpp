@@ -14,20 +14,20 @@
  * @since 0.3
  */
  void WSRequestHandler::HandleSetCurrentScene(WSRequestHandler* req) {
-    if (!req->hasField("scene-name")) {
-        req->SendErrorResponse("missing request parameters");
-        return;
-    }
+	if (!req->hasField("scene-name")) {
+		req->SendErrorResponse("missing request parameters");
+		return;
+	}
 
-    const char* sceneName = obs_data_get_string(req->data, "scene-name");
-    OBSSourceAutoRelease source = obs_get_source_by_name(sceneName);
+	const char* sceneName = obs_data_get_string(req->data, "scene-name");
+	OBSSourceAutoRelease source = obs_get_source_by_name(sceneName);
 
-    if (source) {
-        obs_frontend_set_current_scene(source);
-        req->SendOKResponse();
-    } else {
-        req->SendErrorResponse("requested scene does not exist");
-    }
+	if (source) {
+		obs_frontend_set_current_scene(source);
+		req->SendOKResponse();
+	} else {
+		req->SendErrorResponse("requested scene does not exist");
+	}
 }
 
 /**
@@ -42,14 +42,14 @@
  * @since 0.3
  */
 void WSRequestHandler::HandleGetCurrentScene(WSRequestHandler* req) {
-    OBSSourceAutoRelease currentScene = obs_frontend_get_current_scene();
-    OBSDataArrayAutoRelease sceneItems = Utils::GetSceneItems(currentScene);
+	OBSSourceAutoRelease currentScene = obs_frontend_get_current_scene();
+	OBSDataArrayAutoRelease sceneItems = Utils::GetSceneItems(currentScene);
 
-    OBSDataAutoRelease data = obs_data_create();
-    obs_data_set_string(data, "name", obs_source_get_name(currentScene));
-    obs_data_set_array(data, "sources", sceneItems);
+	OBSDataAutoRelease data = obs_data_create();
+	obs_data_set_string(data, "name", obs_source_get_name(currentScene));
+	obs_data_set_array(data, "sources", sceneItems);
 
-    req->SendOKResponse(data);
+	req->SendOKResponse(data);
 }
 
 /**
@@ -64,13 +64,13 @@ void WSRequestHandler::HandleGetCurrentScene(WSRequestHandler* req) {
  * @since 0.3
  */
 void WSRequestHandler::HandleGetSceneList(WSRequestHandler* req) {
-    OBSSourceAutoRelease currentScene = obs_frontend_get_current_scene();
-    OBSDataArrayAutoRelease scenes = Utils::GetScenes();
+	OBSSourceAutoRelease currentScene = obs_frontend_get_current_scene();
+	OBSDataArrayAutoRelease scenes = Utils::GetScenes();
 
-    OBSDataAutoRelease data = obs_data_create();
-    obs_data_set_string(data, "current-scene",
-        obs_source_get_name(currentScene));
-    obs_data_set_array(data, "scenes", scenes);
+	OBSDataAutoRelease data = obs_data_create();
+	obs_data_set_string(data, "current-scene",
+		obs_source_get_name(currentScene));
+	obs_data_set_array(data, "scenes", scenes);
 
-    req->SendOKResponse(data);
+	req->SendOKResponse(data);
 }

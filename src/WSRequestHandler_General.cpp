@@ -20,24 +20,24 @@
  * @since 0.3
  */
  void WSRequestHandler::HandleGetVersion(WSRequestHandler* req) {
-    QString obsVersion = Utils::OBSVersionString();
+	QString obsVersion = Utils::OBSVersionString();
 
-    QList<QString> names = req->messageMap.keys();
-    names.sort(Qt::CaseInsensitive);
+	QList<QString> names = req->messageMap.keys();
+	names.sort(Qt::CaseInsensitive);
 
-    // (Palakis) OBS' data arrays only support object arrays, so I improvised.
-    QString requests;
-    requests += names.takeFirst();
-    for (QString reqName : names) {
-        requests += ("," + reqName);
-    }
+	// (Palakis) OBS' data arrays only support object arrays, so I improvised.
+	QString requests;
+	requests += names.takeFirst();
+	for (QString reqName : names) {
+		requests += ("," + reqName);
+	}
 
-    OBSDataAutoRelease data = obs_data_create();
-    obs_data_set_string(data, "obs-websocket-version", OBS_WEBSOCKET_VERSION);
-    obs_data_set_string(data, "obs-studio-version", obsVersion.toUtf8());
-    obs_data_set_string(data, "available-requests", requests.toUtf8());
+	OBSDataAutoRelease data = obs_data_create();
+	obs_data_set_string(data, "obs-websocket-version", OBS_WEBSOCKET_VERSION);
+	obs_data_set_string(data, "obs-studio-version", obsVersion.toUtf8());
+	obs_data_set_string(data, "available-requests", requests.toUtf8());
 
-    req->SendOKResponse(data);
+	req->SendOKResponse(data);
 }
 
 /**
@@ -54,19 +54,19 @@
  * @since 0.3
  */
 void WSRequestHandler::HandleGetAuthRequired(WSRequestHandler* req) {
-    bool authRequired = Config::Current()->AuthRequired;
+	bool authRequired = Config::Current()->AuthRequired;
 
-    OBSDataAutoRelease data = obs_data_create();
-    obs_data_set_bool(data, "authRequired", authRequired);
+	OBSDataAutoRelease data = obs_data_create();
+	obs_data_set_bool(data, "authRequired", authRequired);
 
-    if (authRequired) {
-        obs_data_set_string(data, "challenge",
-            Config::Current()->SessionChallenge.toUtf8());
-        obs_data_set_string(data, "salt",
-            Config::Current()->Salt.toUtf8());
-    }
+	if (authRequired) {
+		obs_data_set_string(data, "challenge",
+			Config::Current()->SessionChallenge.toUtf8());
+		obs_data_set_string(data, "salt",
+			Config::Current()->Salt.toUtf8());
+	}
 
-    req->SendOKResponse(data);
+	req->SendOKResponse(data);
 }
 
 /**
@@ -80,25 +80,25 @@ void WSRequestHandler::HandleGetAuthRequired(WSRequestHandler* req) {
  * @since 0.3
  */
 void WSRequestHandler::HandleAuthenticate(WSRequestHandler* req) {
-    if (!req->hasField("auth")) {
-        req->SendErrorResponse("missing request parameters");
-        return;
-    }
+	if (!req->hasField("auth")) {
+		req->SendErrorResponse("missing request parameters");
+		return;
+	}
 
-    QString auth = obs_data_get_string(req->data, "auth");
-    if (auth.isEmpty()) {
-        req->SendErrorResponse("auth not specified!");
-        return;
-    }
+	QString auth = obs_data_get_string(req->data, "auth");
+	if (auth.isEmpty()) {
+		req->SendErrorResponse("auth not specified!");
+		return;
+	}
 
-    if ((req->_client->property(PROP_AUTHENTICATED).toBool() == false)
-        && Config::Current()->CheckAuth(auth))
-    {
-        req->_client->setProperty(PROP_AUTHENTICATED, true);
-        req->SendOKResponse();
-    } else {
-        req->SendErrorResponse("Authentication Failed.");
-    }
+	if ((req->_client->property(PROP_AUTHENTICATED).toBool() == false)
+		&& Config::Current()->CheckAuth(auth))
+	{
+		req->_client->setProperty(PROP_AUTHENTICATED, true);
+		req->SendOKResponse();
+	} else {
+		req->SendErrorResponse("Authentication Failed.");
+	}
 }
 
 /**
@@ -112,18 +112,18 @@ void WSRequestHandler::HandleAuthenticate(WSRequestHandler* req) {
  * @since 4.3.0
  */
  void WSRequestHandler::HandleSetHeartbeat(WSRequestHandler* req) {
-    if (!req->hasField("enable")) {
-        req->SendErrorResponse("Heartbeat <enable> parameter missing");
-        return;
-    }
+	if (!req->hasField("enable")) {
+		req->SendErrorResponse("Heartbeat <enable> parameter missing");
+		return;
+	}
 
-    WSEvents::Instance->HeartbeatIsActive =
-        obs_data_get_bool(req->data, "enable");
+	WSEvents::Instance->HeartbeatIsActive =
+		obs_data_get_bool(req->data, "enable");
 
-    OBSDataAutoRelease response = obs_data_create();
-    obs_data_set_bool(response, "enable",
-        WSEvents::Instance->HeartbeatIsActive);
-    req->SendOKResponse(response);
+	OBSDataAutoRelease response = obs_data_create();
+	obs_data_set_bool(response, "enable",
+		WSEvents::Instance->HeartbeatIsActive);
+	req->SendOKResponse(response);
 }
 
 /**
@@ -137,18 +137,18 @@ void WSRequestHandler::HandleAuthenticate(WSRequestHandler* req) {
  * @since 4.3.0
  */
 void WSRequestHandler::HandleSetFilenameFormatting(WSRequestHandler* req) {
-    if (!req->hasField("filename-formatting")) {
-        req->SendErrorResponse("<filename-formatting> parameter missing");
-        return;
-    }
+	if (!req->hasField("filename-formatting")) {
+		req->SendErrorResponse("<filename-formatting> parameter missing");
+		return;
+	}
 
-    QString filenameFormatting = obs_data_get_string(req->data, "filename-formatting");
-    if (!filenameFormatting.isEmpty()) {
-        Utils::SetFilenameFormatting(filenameFormatting.toUtf8());
-        req->SendOKResponse();
-    } else {
-        req->SendErrorResponse("invalid request parameters");
-    }
+	QString filenameFormatting = obs_data_get_string(req->data, "filename-formatting");
+	if (!filenameFormatting.isEmpty()) {
+		Utils::SetFilenameFormatting(filenameFormatting.toUtf8());
+		req->SendOKResponse();
+	} else {
+		req->SendErrorResponse("invalid request parameters");
+	}
 }
 
 /**
@@ -162,7 +162,7 @@ void WSRequestHandler::HandleSetFilenameFormatting(WSRequestHandler* req) {
  * @since 4.3.0
  */
 void WSRequestHandler::HandleGetFilenameFormatting(WSRequestHandler* req) {
-    OBSDataAutoRelease response = obs_data_create();
-    obs_data_set_string(response, "filename-formatting", Utils::GetFilenameFormatting());
-    req->SendOKResponse(response);
+	OBSDataAutoRelease response = obs_data_create();
+	obs_data_set_string(response, "filename-formatting", Utils::GetFilenameFormatting());
+	req->SendOKResponse(response);
 }

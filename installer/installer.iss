@@ -42,13 +42,13 @@ Name: "{group}\{cm:UninstallProgram,{#MyAppName}}"; Filename: "{uninstallexe}"
 // following function come from https://github.com/Xaymar/obs-studio_amf-encoder-plugin/blob/master/%23Resources/Installer.in.iss#L45
 function GetDirName(Value: string): string;
 var
-  InstallPath: string;
+	InstallPath: string;
 begin
-  // initialize default path, which will be returned when the following registry
-  // key queries fail due to missing keys or for some different reason
-  Result := '{pf}\obs-studio';
-  // query the first registry value; if this succeeds, return the obtained value
-  if RegQueryStringValue(HKLM32, 'SOFTWARE\OBS Studio', '', InstallPath) then
-    Result := InstallPath
+	// initialize default path, which will be returned when the following registry
+	// key queries fail due to missing keys or for some different reason
+	Result := '{pf}\obs-studio';
+	// query the first registry value; if this succeeds, return the obtained value
+	if RegQueryStringValue(HKLM32, 'SOFTWARE\OBS Studio', '', InstallPath) then
+		Result := InstallPath
 end;
 

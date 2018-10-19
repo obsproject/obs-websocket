@@ -25,36 +25,36 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <mbedtls/ctr_drbg.h>
 
 class Config {
-  public:
-    Config();
-    ~Config();
-    void Load();
-    void Save();
+	public:
+		Config();
+		~Config();
+		void Load();
+		void Save();
 
-    void SetPassword(QString password);
-    bool CheckAuth(QString userChallenge);
-    QString GenerateSalt();
-    static QString GenerateSecret(
-        QString password, QString salt);
+		void SetPassword(QString password);
+		bool CheckAuth(QString userChallenge);
+		QString GenerateSalt();
+		static QString GenerateSecret(
+				QString password, QString salt);
 
-    bool ServerEnabled;
-    uint64_t ServerPort;
+		bool ServerEnabled;
+		uint64_t ServerPort;
 
-    bool DebugEnabled;
-    bool AlertsEnabled;
+		bool DebugEnabled;
+		bool AlertsEnabled;
 
-    bool AuthRequired;
-    QString Secret;
-    QString Salt;
-    QString SessionChallenge;
-    bool SettingsLoaded;
+		bool AuthRequired;
+		QString Secret;
+		QString Salt;
+		QString SessionChallenge;
+		bool SettingsLoaded;
 
-    static Config* Current();
+		static Config* Current();
 
-  private:
-    static Config* _instance;
-    mbedtls_entropy_context entropy;
-    mbedtls_ctr_drbg_context rng;
+	private:
+		static Config* _instance;
+		mbedtls_entropy_context entropy;
+		mbedtls_ctr_drbg_context rng;
 };
 
 #endif // CONFIG_H
