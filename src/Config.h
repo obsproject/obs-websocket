@@ -22,27 +22,27 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <QString>
 
 class Config {
-  public:
-    Config();
-    ~Config();
-    void Load();
-    void Save();
+	public:
+		Config();
+		~Config();
+		void Load();
+		void Save();
 
-    bool ServerEnabled;
-    uint64_t ServerPort;
+		bool ServerEnabled;
+		uint64_t ServerPort;
 
-    bool DebugEnabled;
-    bool AlertsEnabled;
+		bool DebugEnabled;
+		bool AlertsEnabled;
 
-    bool AuthRequired;
+		bool AuthRequired;
 	QString AuthPassword;
 
-    bool SettingsLoaded;
+		bool SettingsLoaded;
 
-    static Config* Current();
+		static Config* Current();
 
-  private:
-    static Config* _instance;
+	private:
+		static Config* _instance;
 };
 
 #endif // CONFIG_H

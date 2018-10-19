@@ -40,42 +40,42 @@ OBS_MODULE_USE_DEFAULT_LOCALE("obs-websocket", "en-US")
 SettingsDialog* settings_dialog;
 
 bool obs_module_load(void) {
-    blog(LOG_INFO, "you can haz websockets (version %s)", OBS_WEBSOCKET_VERSION);
-    blog(LOG_INFO, "qt version (compile-time): %s ; qt version (run-time): %s",
-        QT_VERSION_STR, qVersion());
+	blog(LOG_INFO, "you can haz websockets (version %s)", OBS_WEBSOCKET_VERSION);
+	blog(LOG_INFO, "qt version (compile-time): %s ; qt version (run-time): %s",
+		QT_VERSION_STR, qVersion());
 
-    // Core setup
-    Config* config = Config::Current();
-    config->Load();
+	// Core setup
+	Config* config = Config::Current();
+	config->Load();
 
-    WSServer::Instance = new WSServer();
-    WSEvents::Instance = new WSEvents(WSServer::Instance);
+	WSServer::Instance = new WSServer();
+	WSEvents::Instance = new WSEvents(WSServer::Instance);
 
-    if (config->ServerEnabled)
-        WSServer::Instance->start(config->ServerPort);
+	if (config->ServerEnabled)
+		WSServer::Instance->start(config->ServerPort);
 
-    // UI setup
-    QAction* menu_action = (QAction*)obs_frontend_add_tools_menu_qaction(
-        obs_module_text("OBSWebsocket.Menu.SettingsItem"));
+	// UI setup
+	QAction* menu_action = (QAction*)obs_frontend_add_tools_menu_qaction(
+		obs_module_text("OBSWebsocket.Menu.SettingsItem"));
 
-    obs_frontend_push_ui_translation(obs_module_get_string);
-    QMainWindow* main_window = (QMainWindow*)obs_frontend_get_main_window();
-    settings_dialog = new SettingsDialog(main_window);
-    obs_frontend_pop_ui_translation();
+	obs_frontend_push_ui_translation(obs_module_get_string);
+	QMainWindow* main_window = (QMainWindow*)obs_frontend_get_main_window();
+	settings_dialog = new SettingsDialog(main_window);
+	obs_frontend_pop_ui_translation();
 
-    auto menu_cb = [] {
-        settings_dialog->ToggleShowHide();
-    };
-    menu_action->connect(menu_action, &QAction::triggered, menu_cb);
+	auto menu_cb = [] {
+		settings_dialog->ToggleShowHide();
+	};
+	menu_action->connect(menu_action, &QAction::triggered, menu_cb);
 
-    // Loading finished
-    blog(LOG_INFO, "module loaded!");
+	// Loading finished
+	blog(LOG_INFO, "module loaded!");
 
-    return true;
+	return true;
 }
 
 void obs_module_unload() {
-    WSServer::Instance->stop();
-    blog(LOG_INFO, "goodbye!");
+	WSServer::Instance->stop();
+	blog(LOG_INFO, "goodbye!");
 }
 

@@ -35,64 +35,64 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 Config* Config::_instance = new Config();
 
 Config::Config() :
-    ServerEnabled(true),
-    ServerPort(4444),
-    DebugEnabled(false),
-    AlertsEnabled(true),
-    AuthRequired(false),
-    AuthPassword(""),
-    SettingsLoaded(false)
+	ServerEnabled(true),
+	ServerPort(4444),
+	DebugEnabled(false),
+	AlertsEnabled(true),
+	AuthRequired(false),
+	AuthPassword(""),
+	SettingsLoaded(false)
 {
-    // OBS Config defaults
-    config_t* obsConfig = obs_frontend_get_global_config();
-    if (obsConfig) {
-        config_set_default_bool(obsConfig,
-            SECTION_NAME, PARAM_ENABLE, ServerEnabled);
-        config_set_default_uint(obsConfig,
-            SECTION_NAME, PARAM_PORT, ServerPort);
+	// OBS Config defaults
+	config_t* obsConfig = obs_frontend_get_global_config();
+	if (obsConfig) {
+		config_set_default_bool(obsConfig,
+			SECTION_NAME, PARAM_ENABLE, ServerEnabled);
+		config_set_default_uint(obsConfig,
+			SECTION_NAME, PARAM_PORT, ServerPort);
 
-        config_set_default_bool(obsConfig,
-            SECTION_NAME, PARAM_DEBUG, DebugEnabled);
-        config_set_default_bool(obsConfig,
-            SECTION_NAME, PARAM_ALERT, AlertsEnabled);
+		config_set_default_bool(obsConfig,
+			SECTION_NAME, PARAM_DEBUG, DebugEnabled);
+		config_set_default_bool(obsConfig,
+			SECTION_NAME, PARAM_ALERT, AlertsEnabled);
 
-        config_set_default_bool(obsConfig,
-            SECTION_NAME, PARAM_AUTHREQUIRED, AuthRequired);
-        config_set_default_string(obsConfig,
-            SECTION_NAME, PARAM_PASSWORD, QT_TO_UTF8(AuthPassword));
-    }
+		config_set_default_bool(obsConfig,
+			SECTION_NAME, PARAM_AUTHREQUIRED, AuthRequired);
+		config_set_default_string(obsConfig,
+			SECTION_NAME, PARAM_PASSWORD, QT_TO_UTF8(AuthPassword));
+	}
 }
 
 Config::~Config() = default;
 
 void Config::Load() {
-    config_t* obsConfig = obs_frontend_get_global_config();
+	config_t* obsConfig = obs_frontend_get_global_config();
 
-    ServerEnabled = config_get_bool(obsConfig, SECTION_NAME, PARAM_ENABLE);
-    ServerPort = config_get_uint(obsConfig, SECTION_NAME, PARAM_PORT);
+	ServerEnabled = config_get_bool(obsConfig, SECTION_NAME, PARAM_ENABLE);
+	ServerPort = config_get_uint(obsConfig, SECTION_NAME, PARAM_PORT);
 
-    DebugEnabled = config_get_bool(obsConfig, SECTION_NAME, PARAM_DEBUG);
-    AlertsEnabled = config_get_bool(obsConfig, SECTION_NAME, PARAM_ALERT);
+	DebugEnabled = config_get_bool(obsConfig, SECTION_NAME, PARAM_DEBUG);
+	AlertsEnabled = config_get_bool(obsConfig, SECTION_NAME, PARAM_ALERT);
 
-    AuthRequired = config_get_bool(obsConfig, SECTION_NAME, PARAM_AUTHREQUIRED);
-    AuthPassword = config_get_string(obsConfig, SECTION_NAME, PARAM_PASSWORD);
+	AuthRequired = config_get_bool(obsConfig, SECTION_NAME, PARAM_AUTHREQUIRED);
+	AuthPassword = config_get_string(obsConfig, SECTION_NAME, PARAM_PASSWORD);
 }
 
 void Config::Save() {
-    config_t* obsConfig = obs_frontend_get_global_config();
+	config_t* obsConfig = obs_frontend_get_global_config();
 
-    config_set_bool(obsConfig, SECTION_NAME, PARAM_ENABLE, ServerEnabled);
-    config_set_uint(obsConfig, SECTION_NAME, PARAM_PORT, ServerPort);
+	config_set_bool(obsConfig, SECTION_NAME, PARAM_ENABLE, ServerEnabled);
+	config_set_uint(obsConfig, SECTION_NAME, PARAM_PORT, ServerPort);
 
-    config_set_bool(obsConfig, SECTION_NAME, PARAM_DEBUG, DebugEnabled);
-    config_set_bool(obsConfig, SECTION_NAME, PARAM_ALERT, AlertsEnabled);
+	config_set_bool(obsConfig, SECTION_NAME, PARAM_DEBUG, DebugEnabled);
+	config_set_bool(obsConfig, SECTION_NAME, PARAM_ALERT, AlertsEnabled);
 
-    config_set_bool(obsConfig, SECTION_NAME, PARAM_AUTHREQUIRED, AuthRequired);
-    config_set_string(obsConfig, SECTION_NAME, PARAM_PASSWORD, QT_TO_UTF8(AuthPassword));
+	config_set_bool(obsConfig, SECTION_NAME, PARAM_AUTHREQUIRED, AuthRequired);
+	config_set_string(obsConfig, SECTION_NAME, PARAM_PASSWORD, QT_TO_UTF8(AuthPassword));
 
-    config_save(obsConfig);
+	config_save(obsConfig);
 }
 
 Config* Config::Current() {
-    return _instance;
+	return _instance;
 }

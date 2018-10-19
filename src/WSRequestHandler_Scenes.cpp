@@ -14,20 +14,20 @@
  * @since 0.3
  */
  void WSRequestHandler::HandleSetCurrentScene(WSRequestHandler* req) {
-    if (!req->hasField("scene-name")) {
-        req->SendErrorResponse("missing request parameters");
-        return;
-    }
+	if (!req->hasField("scene-name")) {
+		req->SendErrorResponse("missing request parameters");
+		return;
+	}
 
-    const char* sceneName = obs_data_get_string(req->data, "scene-name");
-    OBSSourceAutoRelease source = obs_get_source_by_name(sceneName);
+	const char* sceneName = obs_data_get_string(req->data, "scene-name");
+	OBSSourceAutoRelease source = obs_get_source_by_name(sceneName);
 
-    if (source) {
-        obs_frontend_set_current_scene(source);
-        req->SendOKResponse();
-    } else {
-        req->SendErrorResponse("requested scene does not exist");
-    }
+	if (source) {
+		obs_frontend_set_current_scene(source);
+		req->SendOKResponse();
+	} else {
+		req->SendErrorResponse("requested scene does not exist");
+	}
 }
 
 /**
@@ -42,14 +42,14 @@
  * @since 0.3
  */
 void WSRequestHandler::HandleGetCurrentScene(WSRequestHandler* req) {
-    OBSSourceAutoRelease currentScene = obs_frontend_get_current_scene();
-    OBSDataArrayAutoRelease sceneItems = Utils::GetSceneItems(currentScene);
+	OBSSourceAutoRelease currentScene = obs_frontend_get_current_scene();
+	OBSDataArrayAutoRelease sceneItems = Utils::GetSceneItems(currentScene);
 
-    OBSDataAutoRelease data = obs_data_create();
-    obs_data_set_string(data, "name", obs_source_get_name(currentScene));
-    obs_data_set_array(data, "sources", sceneItems);
+	OBSDataAutoRelease data = obs_data_create();
+	obs_data_set_string(data, "name", obs_source_get_name(currentScene));
+	obs_data_set_array(data, "sources", sceneItems);
 
-    req->SendOKResponse(data);
+	req->SendOKResponse(data);
 }
 
 /**
@@ -64,15 +64,15 @@ void WSRequestHandler::HandleGetCurrentScene(WSRequestHandler* req) {
  * @since 0.3
  */
 void WSRequestHandler::HandleGetSceneList(WSRequestHandler* req) {
-    OBSSourceAutoRelease currentScene = obs_frontend_get_current_scene();
-    OBSDataArrayAutoRelease scenes = Utils::GetScenes();
+	OBSSourceAutoRelease currentScene = obs_frontend_get_current_scene();
+	OBSDataArrayAutoRelease scenes = Utils::GetScenes();
 
-    OBSDataAutoRelease data = obs_data_create();
-    obs_data_set_string(data, "current-scene",
-        obs_source_get_name(currentScene));
-    obs_data_set_array(data, "scenes", scenes);
+	OBSDataAutoRelease data = obs_data_create();
+	obs_data_set_string(data, "current-scene",
+		obs_source_get_name(currentScene));
+	obs_data_set_array(data, "scenes", scenes);
 
-    req->SendOKResponse(data);
+	req->SendOKResponse(data);
 }
 
 /**
@@ -89,49 +89,49 @@ void WSRequestHandler::HandleGetSceneList(WSRequestHandler* req) {
 * @since unreleased
 */
 void WSRequestHandler::HandleSetSceneItemOrder(WSRequestHandler* req) {
-    QString sceneName = obs_data_get_string(req->data, "scene");
-    OBSSourceAutoRelease scene = Utils::GetSceneFromNameOrCurrent(sceneName);
-    if (!scene) {
-        req->SendErrorResponse("requested scene doesn't exist");
-        return;
-    }
+	QString sceneName = obs_data_get_string(req->data, "scene");
+	OBSSourceAutoRelease scene = Utils::GetSceneFromNameOrCurrent(sceneName);
+	if (!scene) {
+		req->SendErrorResponse("requested scene doesn't exist");
+		return;
+	}
 
-    OBSDataArrayAutoRelease items = obs_data_get_array(req->data, "items");
-    if (!items) {
-        req->SendErrorResponse("sceneItem order not specified");
-        return;
-    }
+	OBSDataArrayAutoRelease items = obs_data_get_array(req->data, "items");
+	if (!items) {
+		req->SendErrorResponse("sceneItem order not specified");
+		return;
+	}
 
-    size_t count = obs_data_array_count(items);
+	size_t count = obs_data_array_count(items);
 
-    std::vector<obs_sceneitem_t*> newOrder;
-    newOrder.reserve(count);
-    for (size_t i = 0; i < count; i++) {
-        OBSDataAutoRelease item = obs_data_array_item(items, i);
-        OBSSceneItemAutoRelease sceneItem = Utils::GetSceneItemFromItem(scene, item);
-        if (!sceneItem) {
-            req->SendErrorResponse("Invalid sceneItem id or name in order");
-            return;
-        }
-        for (size_t j = 0; j < i; j++) {
-            if (sceneItem == newOrder[j]) {
-                req->SendErrorResponse("Duplicate sceneItem in specified order");
-                for (size_t i = 0; i < count; i++) {
-                    obs_sceneitem_release(newOrder[i]);
-                }
-                return;
-            }
-        }
-        newOrder.push_back(sceneItem);
-    }
+	std::vector<obs_sceneitem_t*> newOrder;
+	newOrder.reserve(count);
+	for (size_t i = 0; i < count; i++) {
+		OBSDataAutoRelease item = obs_data_array_item(items, i);
+		OBSSceneItemAutoRelease sceneItem = Utils::GetSceneItemFromItem(scene, item);
+		if (!sceneItem) {
+			req->SendErrorResponse("Invalid sceneItem id or name in order");
+			return;
+		}
+		for (size_t j = 0; j < i; j++) {
+			if (sceneItem == newOrder[j]) {
+				req->SendErrorResponse("Duplicate sceneItem in specified order");
+				for (size_t i = 0; i < count; i++) {
+					obs_sceneitem_release(newOrder[i]);
+				}
+				return;
+			}
+		}
+		newOrder.push_back(sceneItem);
+	}
 
-    if (obs_scene_reorder_items(obs_scene_from_source(scene), newOrder.data(), count)) {
-        req->SendOKResponse();
-    }
-    else {
-        req->SendErrorResponse("Invalid sceneItem order");
-    }
-    for (size_t i = 0; i < count; i++) {
-        obs_sceneitem_release(newOrder[i]);
-    }
+	if (obs_scene_reorder_items(obs_scene_from_source(scene), newOrder.data(), count)) {
+		req->SendOKResponse();
+	}
+	else {
+		req->SendErrorResponse("Invalid sceneItem order");
+	}
+	for (size_t i = 0; i < count; i++) {
+		obs_sceneitem_release(newOrder[i]);
+	}
 }
