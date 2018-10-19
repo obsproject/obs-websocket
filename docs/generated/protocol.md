@@ -140,7 +140,15 @@ auth_response = base64_encode(auth_response_hash)
     + [SetTextGDIPlusProperties](#settextgdiplusproperties)
     + [GetBrowserSourceProperties](#getbrowsersourceproperties)
     + [SetBrowserSourceProperties](#setbrowsersourceproperties)
+    + [DeleteSceneItem](#deletesceneitem)
+    + [DuplicateSceneItem](#duplicatesceneitem)
     + [GetSpecialSources](#getspecialsources)
+    + [GetSourceFilters](#getsourcefilters)
+    + [AddFilterToSource](#addfiltertosource)
+    + [RemoveFilterFromSource](#removefilterfromsource)
+    + [ReorderSourceFilter](#reordersourcefilter)
+    + [MoveSourceFilter](#movesourcefilter)
+    + [SetSourceFilterSettings](#setsourcefiltersettings)
   * [Streaming](#streaming-1)
     + [GetStreamingStatus](#getstreamingstatus)
     + [StartStopStreaming](#startstopstreaming)
@@ -1803,6 +1811,53 @@ _No additional response items._
 
 ---
 
+### DeleteSceneItem
+
+
+- Unreleased
+
+Deletes a scene item.
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `scene` | _String (optional)_ | Name of the scene the source belogns to. Defaults to the current scene. |
+| `item` | _Object_ | item to delete (required) |
+| `item.name` | _String_ | name of the scene item (prefer `id`, including both is acceptable). |
+| `item.id` | _int_ | id of the scene item. |
+
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+### DuplicateSceneItem
+
+
+- Unreleased
+
+Duplicates a scene item.
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `fromScene` | _String (optional)_ | Name of the scene to copy the item from. Defaults to the current scene. |
+| `toScene` | _String (optional)_ | Name of the scene to create the item in. Defaults to the current scene. |
+| `item` | _Object_ | item to delete (required) |
+| `item.name` | _String_ | name of the scene item (prefer `id`, including both is acceptable). |
+| `item.id` | _int_ | id of the scene item. |
+
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
 ### GetSpecialSources
 
 
@@ -1824,6 +1879,142 @@ _No specified parameters._
 | `mic-2` | _String (optional)_ | Name of the second Mic/Aux input source. |
 | `mic-3` | _String (optional)_ | NAme of the third Mic/Aux input source. |
 
+
+---
+
+### GetSourceFilters
+
+
+- Unreleased
+
+List filters applied to a source
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sourceName` | _String_ | Source name |
+
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `filters` | _Array of Objects_ | List of filters for the specified source |
+| `filters.*.type` | _String_ | Filter type |
+| `filters.*.name` | _String_ | Filter name |
+| `filters.*.settings` | _Object_ | Filter settings |
+
+
+---
+
+### AddFilterToSource
+
+
+- Unreleased
+
+Add a new filter to a source. Available source types along with their settings properties are available from `GetSourceTypesList`.
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sourceName` | _String_ | Name of the source on which the filter is added |
+| `filterName` | _String_ | Name of the new filter |
+| `filterType` | _String_ | Filter type |
+| `filterSettings` | _Object_ | Filter settings |
+
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+### RemoveFilterFromSource
+
+
+- Unreleased
+
+Remove a filter from a source
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sourceName` | _String_ | Name of the source from which the specified filter is removed |
+| `filterName` | _String_ | Name of the filter to remove |
+
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+### ReorderSourceFilter
+
+
+- Unreleased
+
+Move a filter in the chain (absolute index positioning)
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sourceName` | _String_ | Name of the source to which the filter belongs |
+| `filterName` | _String_ | Name of the filter to reorder |
+| `newIndex` | _Integer_ | Desired position of the filter in the chain |
+
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+### MoveSourceFilter
+
+
+- Unreleased
+
+Move a filter in the chain (relative positioning)
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sourceName` | _String_ | Name of the source to which the filter belongs |
+| `filterName` | _String_ | Name of the filter to reorder |
+| `movementType` | _String_ | How to move the filter around in the source's filter chain. Either "up", "down", "top" or "bottom". |
+
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+### SetSourceFilterSettings
+
+
+- Unreleased
+
+Update settings of a filter
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sourceName` | _String_ | Name of the source to which the filter belongs |
+| `filterName` | _String_ | Name of the filter to reconfigure |
+| `filterSettings` | _Object_ | New settings. These will be merged to the current filter settings. |
+
+
+**Response Items:**
+
+_No additional response items._
 
 ---
 

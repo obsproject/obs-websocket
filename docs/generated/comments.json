@@ -4295,6 +4295,134 @@
       },
       {
         "subheads": [],
+        "description": "Deletes a scene item.",
+        "param": [
+          "{String (optional)} `scene` Name of the scene the source belogns to. Defaults to the current scene.",
+          "{Object} `item` item to delete (required)",
+          "{String} `item.name` name of the scene item (prefer `id`, including both is acceptable).",
+          "{int} `item.id` id of the scene item."
+        ],
+        "api": "requests",
+        "name": "DeleteSceneItem",
+        "category": "sources",
+        "since": "unreleased",
+        "params": [
+          {
+            "type": "String (optional)",
+            "name": "scene",
+            "description": "Name of the scene the source belogns to. Defaults to the current scene."
+          },
+          {
+            "type": "Object",
+            "name": "item",
+            "description": "item to delete (required)"
+          },
+          {
+            "type": "String",
+            "name": "item.name",
+            "description": "name of the scene item (prefer `id`, including both is acceptable)."
+          },
+          {
+            "type": "int",
+            "name": "item.id",
+            "description": "id of the scene item."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "DeleteSceneItem"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "sources"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "unreleased"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "DeleteSceneItem"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Duplicates a scene item.",
+        "param": [
+          "{String (optional)} `fromScene` Name of the scene to copy the item from. Defaults to the current scene.",
+          "{String (optional)} `toScene` Name of the scene to create the item in. Defaults to the current scene.",
+          "{Object} `item` item to delete (required)",
+          "{String} `item.name` name of the scene item (prefer `id`, including both is acceptable).",
+          "{int} `item.id` id of the scene item."
+        ],
+        "api": "requests",
+        "name": "DuplicateSceneItem",
+        "category": "sources",
+        "since": "unreleased",
+        "params": [
+          {
+            "type": "String (optional)",
+            "name": "fromScene",
+            "description": "Name of the scene to copy the item from. Defaults to the current scene."
+          },
+          {
+            "type": "String (optional)",
+            "name": "toScene",
+            "description": "Name of the scene to create the item in. Defaults to the current scene."
+          },
+          {
+            "type": "Object",
+            "name": "item",
+            "description": "item to delete (required)"
+          },
+          {
+            "type": "String",
+            "name": "item.name",
+            "description": "name of the scene item (prefer `id`, including both is acceptable)."
+          },
+          {
+            "type": "int",
+            "name": "item.id",
+            "description": "id of the scene item."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "DuplicateSceneItem"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "sources"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "unreleased"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "DuplicateSceneItem"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
         "description": "Get configured special sources like Desktop Audio and Mic/Aux sources.",
         "return": [
           "{String (optional)} `desktop-1` Name of the first Desktop Audio capture source.",
@@ -4355,6 +4483,350 @@
         "heading": {
           "level": 2,
           "text": "GetSpecialSources"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "List filters applied to a source",
+        "param": "{String} `sourceName` Source name",
+        "return": [
+          "{Array of Objects} `filters` List of filters for the specified source",
+          "{String} `filters.*.type` Filter type",
+          "{String} `filters.*.name` Filter name",
+          "{Object} `filters.*.settings` Filter settings"
+        ],
+        "api": "requests",
+        "name": "GetSourceFilters",
+        "category": "sources",
+        "since": "unreleased",
+        "returns": [
+          {
+            "type": "Array of Objects",
+            "name": "filters",
+            "description": "List of filters for the specified source"
+          },
+          {
+            "type": "String",
+            "name": "filters.*.type",
+            "description": "Filter type"
+          },
+          {
+            "type": "String",
+            "name": "filters.*.name",
+            "description": "Filter name"
+          },
+          {
+            "type": "Object",
+            "name": "filters.*.settings",
+            "description": "Filter settings"
+          }
+        ],
+        "params": [
+          {
+            "type": "String",
+            "name": "sourceName",
+            "description": "Source name"
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "GetSourceFilters"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "sources"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "unreleased"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "GetSourceFilters"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Add a new filter to a source. Available source types along with their settings properties are available from `GetSourceTypesList`.",
+        "param": [
+          "{String} `sourceName` Name of the source on which the filter is added",
+          "{String} `filterName` Name of the new filter",
+          "{String} `filterType` Filter type",
+          "{Object} `filterSettings` Filter settings"
+        ],
+        "api": "requests",
+        "name": "AddFilterToSource",
+        "category": "sources",
+        "since": "unreleased",
+        "params": [
+          {
+            "type": "String",
+            "name": "sourceName",
+            "description": "Name of the source on which the filter is added"
+          },
+          {
+            "type": "String",
+            "name": "filterName",
+            "description": "Name of the new filter"
+          },
+          {
+            "type": "String",
+            "name": "filterType",
+            "description": "Filter type"
+          },
+          {
+            "type": "Object",
+            "name": "filterSettings",
+            "description": "Filter settings"
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "AddFilterToSource"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "sources"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "unreleased"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "AddFilterToSource"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Remove a filter from a source",
+        "param": [
+          "{String} `sourceName` Name of the source from which the specified filter is removed",
+          "{String} `filterName` Name of the filter to remove"
+        ],
+        "api": "requests",
+        "name": "RemoveFilterFromSource",
+        "category": "sources",
+        "since": "unreleased",
+        "params": [
+          {
+            "type": "String",
+            "name": "sourceName",
+            "description": "Name of the source from which the specified filter is removed"
+          },
+          {
+            "type": "String",
+            "name": "filterName",
+            "description": "Name of the filter to remove"
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "RemoveFilterFromSource"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "sources"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "unreleased"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "RemoveFilterFromSource"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Move a filter in the chain (absolute index positioning)",
+        "param": [
+          "{String} `sourceName` Name of the source to which the filter belongs",
+          "{String} `filterName` Name of the filter to reorder",
+          "{Integer} `newIndex` Desired position of the filter in the chain"
+        ],
+        "api": "requests",
+        "name": "ReorderSourceFilter",
+        "category": "sources",
+        "since": "unreleased",
+        "params": [
+          {
+            "type": "String",
+            "name": "sourceName",
+            "description": "Name of the source to which the filter belongs"
+          },
+          {
+            "type": "String",
+            "name": "filterName",
+            "description": "Name of the filter to reorder"
+          },
+          {
+            "type": "Integer",
+            "name": "newIndex",
+            "description": "Desired position of the filter in the chain"
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "ReorderSourceFilter"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "sources"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "unreleased"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "ReorderSourceFilter"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Move a filter in the chain (relative positioning)",
+        "param": [
+          "{String} `sourceName` Name of the source to which the filter belongs",
+          "{String} `filterName` Name of the filter to reorder",
+          "{String} `movementType` How to move the filter around in the source's filter chain. Either \"up\", \"down\", \"top\" or \"bottom\"."
+        ],
+        "api": "requests",
+        "name": "MoveSourceFilter",
+        "category": "sources",
+        "since": "unreleased",
+        "params": [
+          {
+            "type": "String",
+            "name": "sourceName",
+            "description": "Name of the source to which the filter belongs"
+          },
+          {
+            "type": "String",
+            "name": "filterName",
+            "description": "Name of the filter to reorder"
+          },
+          {
+            "type": "String",
+            "name": "movementType",
+            "description": "How to move the filter around in the source's filter chain. Either \"up\", \"down\", \"top\" or \"bottom\"."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "MoveSourceFilter"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "sources"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "unreleased"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "MoveSourceFilter"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Update settings of a filter",
+        "param": [
+          "{String} `sourceName` Name of the source to which the filter belongs",
+          "{String} `filterName` Name of the filter to reconfigure",
+          "{Object} `filterSettings` New settings. These will be merged to the current filter settings."
+        ],
+        "api": "requests",
+        "name": "SetSourceFilterSettings",
+        "category": "sources",
+        "since": "unreleased",
+        "params": [
+          {
+            "type": "String",
+            "name": "sourceName",
+            "description": "Name of the source to which the filter belongs"
+          },
+          {
+            "type": "String",
+            "name": "filterName",
+            "description": "Name of the filter to reconfigure"
+          },
+          {
+            "type": "Object",
+            "name": "filterSettings",
+            "description": "New settings. These will be merged to the current filter settings."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "SetSourceFilterSettings"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "sources"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "unreleased"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "SetSourceFilterSettings"
         },
         "lead": "",
         "type": "class",
