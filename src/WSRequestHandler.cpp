@@ -83,6 +83,13 @@ QHash<QString, void(*)(WSRequestHandler*)> WSRequestHandler::messageMap {
     { "GetSourceSettings", WSRequestHandler::HandleGetSourceSettings },
     { "SetSourceSettings", WSRequestHandler::HandleSetSourceSettings },
 
+	{ "GetSourceFilters", WSRequestHandler::HandleGetSourceFilters },
+	{ "AddFilterToSource", WSRequestHandler::HandleAddFilterToSource },
+	{ "RemoveFilterFromSource", WSRequestHandler::HandleRemoveFilterFromSource },
+	{ "ReorderSourceFilter", WSRequestHandler::HandleReorderSourceFilter },
+	{ "MoveSourceFilter", WSRequestHandler::HandleMoveSourceFilter },
+	{ "SetSourceFilterSettings", WSRequestHandler::HandleSetSourceFilterSettings },
+
     { "SetCurrentSceneCollection", WSRequestHandler::HandleSetCurrentSceneCollection },
     { "GetCurrentSceneCollection", WSRequestHandler::HandleGetCurrentSceneCollection },
     { "ListSceneCollections", WSRequestHandler::HandleListSceneCollections },
