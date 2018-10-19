@@ -20,24 +20,24 @@
  * @since 0.3
  */
  void WSRequestHandler::HandleGetVersion(WSRequestHandler* req) {
-    QString obsVersion = Utils::OBSVersionString();
+	QString obsVersion = Utils::OBSVersionString();
 
-    QList<QString> names = req->messageMap.keys();
-    names.sort(Qt::CaseInsensitive);
+	QList<QString> names = req->messageMap.keys();
+	names.sort(Qt::CaseInsensitive);
 
-    // (Palakis) OBS' data arrays only support object arrays, so I improvised.
-    QString requests;
-    requests += names.takeFirst();
-    for (QString reqName : names) {
-        requests += ("," + reqName);
-    }
+	// (Palakis) OBS' data arrays only support object arrays, so I improvised.
+	QString requests;
+	requests += names.takeFirst();
+	for (QString reqName : names) {
+		requests += ("," + reqName);
+	}
 
-    OBSDataAutoRelease data = obs_data_create();
-    obs_data_set_string(data, "obs-websocket-version", OBS_WEBSOCKET_VERSION);
-    obs_data_set_string(data, "obs-studio-version", obsVersion.toUtf8());
-    obs_data_set_string(data, "available-requests", requests.toUtf8());
+	OBSDataAutoRelease data = obs_data_create();
+	obs_data_set_string(data, "obs-websocket-version", OBS_WEBSOCKET_VERSION);
+	obs_data_set_string(data, "obs-studio-version", obsVersion.toUtf8());
+	obs_data_set_string(data, "available-requests", requests.toUtf8());
 
-    req->SendOKResponse(data);
+	req->SendOKResponse(data);
 }
 
 /**
@@ -51,18 +51,18 @@
  * @since 4.3.0
  */
  void WSRequestHandler::HandleSetHeartbeat(WSRequestHandler* req) {
-    if (!req->hasField("enable")) {
-        req->SendErrorResponse("Heartbeat <enable> parameter missing");
-        return;
-    }
+	if (!req->hasField("enable")) {
+		req->SendErrorResponse("Heartbeat <enable> parameter missing");
+		return;
+	}
 
-    WSEvents::Current()->HeartbeatIsActive =
-        obs_data_get_bool(req->data, "enable");
+	WSEvents::Current()->HeartbeatIsActive =
+		obs_data_get_bool(req->data, "enable");
 
-    OBSDataAutoRelease response = obs_data_create();
-    obs_data_set_bool(response, "enable",
-        WSEvents::Current()->HeartbeatIsActive);
-    req->SendOKResponse(response);
+	OBSDataAutoRelease response = obs_data_create();
+	obs_data_set_bool(response, "enable",
+		WSEvents::Current()->HeartbeatIsActive);
+	req->SendOKResponse(response);
 }
 
 /**
@@ -76,18 +76,18 @@
  * @since 4.3.0
  */
 void WSRequestHandler::HandleSetFilenameFormatting(WSRequestHandler* req) {
-    if (!req->hasField("filename-formatting")) {
-        req->SendErrorResponse("<filename-formatting> parameter missing");
-        return;
-    }
+	if (!req->hasField("filename-formatting")) {
+		req->SendErrorResponse("<filename-formatting> parameter missing");
+		return;
+	}
 
-    QString filenameFormatting = obs_data_get_string(req->data, "filename-formatting");
-    if (!filenameFormatting.isEmpty()) {
-        Utils::SetFilenameFormatting(filenameFormatting.toUtf8());
-        req->SendOKResponse();
-    } else {
-        req->SendErrorResponse("invalid request parameters");
-    }
+	QString filenameFormatting = obs_data_get_string(req->data, "filename-formatting");
+	if (!filenameFormatting.isEmpty()) {
+		Utils::SetFilenameFormatting(filenameFormatting.toUtf8());
+		req->SendOKResponse();
+	} else {
+		req->SendErrorResponse("invalid request parameters");
+	}
 }
 
 /**
@@ -101,7 +101,7 @@ void WSRequestHandler::HandleSetFilenameFormatting(WSRequestHandler* req) {
  * @since 4.3.0
  */
 void WSRequestHandler::HandleGetFilenameFormatting(WSRequestHandler* req) {
-    OBSDataAutoRelease response = obs_data_create();
-    obs_data_set_string(response, "filename-formatting", Utils::GetFilenameFormatting());
-    req->SendOKResponse(response);
+	OBSDataAutoRelease response = obs_data_create();
+	obs_data_set_string(response, "filename-formatting", Utils::GetFilenameFormatting());
+	req->SendOKResponse(response);
 }

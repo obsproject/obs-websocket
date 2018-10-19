@@ -25,187 +25,194 @@
 #include "WSRequestHandler.h"
 
 QHash<QString, void(*)(WSRequestHandler*)> WSRequestHandler::messageMap {
-    { "GetVersion", WSRequestHandler::HandleGetVersion },
+	{ "GetVersion", WSRequestHandler::HandleGetVersion },
 
-    { "SetHeartbeat", WSRequestHandler::HandleSetHeartbeat },
+	{ "SetHeartbeat", WSRequestHandler::HandleSetHeartbeat },
 
-    { "SetFilenameFormatting", WSRequestHandler::HandleSetFilenameFormatting },
-    { "GetFilenameFormatting", WSRequestHandler::HandleGetFilenameFormatting },
+	{ "SetFilenameFormatting", WSRequestHandler::HandleSetFilenameFormatting },
+	{ "GetFilenameFormatting", WSRequestHandler::HandleGetFilenameFormatting },
 
-    { "SetCurrentScene", WSRequestHandler::HandleSetCurrentScene },
-    { "GetCurrentScene", WSRequestHandler::HandleGetCurrentScene },
-    { "GetSceneList", WSRequestHandler::HandleGetSceneList },
+	{ "SetCurrentScene", WSRequestHandler::HandleSetCurrentScene },
+	{ "GetCurrentScene", WSRequestHandler::HandleGetCurrentScene },
+	{ "GetSceneList", WSRequestHandler::HandleGetSceneList },
 
-    { "SetSceneItemOrder", WSRequestHandler::HandleSetSceneItemOrder },
-    { "SetSourceRender", WSRequestHandler::HandleSetSceneItemRender }, // Retrocompat
-    { "SetSceneItemRender", WSRequestHandler::HandleSetSceneItemRender },
-    { "SetSceneItemPosition", WSRequestHandler::HandleSetSceneItemPosition },
-    { "SetSceneItemTransform", WSRequestHandler::HandleSetSceneItemTransform },
-    { "SetSceneItemCrop", WSRequestHandler::HandleSetSceneItemCrop },
-    { "GetSceneItemProperties", WSRequestHandler::HandleGetSceneItemProperties },
-    { "SetSceneItemProperties", WSRequestHandler::HandleSetSceneItemProperties },
-    { "DuplicateSceneItem", WSRequestHandler::HandleDuplicateSceneItem },
-    { "DeleteSceneItem", WSRequestHandler::HandleDeleteSceneItem },
-    { "ResetSceneItem", WSRequestHandler::HandleResetSceneItem },
+	{ "SetSceneItemOrder", WSRequestHandler::HandleSetSceneItemOrder },
+	{ "SetSourceRender", WSRequestHandler::HandleSetSceneItemRender }, // Retrocompat
+	{ "SetSceneItemRender", WSRequestHandler::HandleSetSceneItemRender },
+	{ "SetSceneItemPosition", WSRequestHandler::HandleSetSceneItemPosition },
+	{ "SetSceneItemTransform", WSRequestHandler::HandleSetSceneItemTransform },
+	{ "SetSceneItemCrop", WSRequestHandler::HandleSetSceneItemCrop },
+	{ "GetSceneItemProperties", WSRequestHandler::HandleGetSceneItemProperties },
+	{ "SetSceneItemProperties", WSRequestHandler::HandleSetSceneItemProperties },
+	{ "DuplicateSceneItem", WSRequestHandler::HandleDuplicateSceneItem },
+	{ "DeleteSceneItem", WSRequestHandler::HandleDeleteSceneItem },
+	{ "ResetSceneItem", WSRequestHandler::HandleResetSceneItem },
 
-    { "GetStreamingStatus", WSRequestHandler::HandleGetStreamingStatus },
-    { "StartStopStreaming", WSRequestHandler::HandleStartStopStreaming },
-    { "StartStopRecording", WSRequestHandler::HandleStartStopRecording },
-    { "StartStreaming", WSRequestHandler::HandleStartStreaming },
-    { "StopStreaming", WSRequestHandler::HandleStopStreaming },
-    { "StartRecording", WSRequestHandler::HandleStartRecording },
-    { "StopRecording", WSRequestHandler::HandleStopRecording },
+	{ "GetStreamingStatus", WSRequestHandler::HandleGetStreamingStatus },
+	{ "StartStopStreaming", WSRequestHandler::HandleStartStopStreaming },
+	{ "StartStopRecording", WSRequestHandler::HandleStartStopRecording },
+	{ "StartStreaming", WSRequestHandler::HandleStartStreaming },
+	{ "StopStreaming", WSRequestHandler::HandleStopStreaming },
+	{ "StartRecording", WSRequestHandler::HandleStartRecording },
+	{ "StopRecording", WSRequestHandler::HandleStopRecording },
 
-    { "StartStopReplayBuffer", WSRequestHandler::HandleStartStopReplayBuffer },
-    { "StartReplayBuffer", WSRequestHandler::HandleStartReplayBuffer },
-    { "StopReplayBuffer", WSRequestHandler::HandleStopReplayBuffer },
-    { "SaveReplayBuffer", WSRequestHandler::HandleSaveReplayBuffer },
+	{ "StartStopReplayBuffer", WSRequestHandler::HandleStartStopReplayBuffer },
+	{ "StartReplayBuffer", WSRequestHandler::HandleStartReplayBuffer },
+	{ "StopReplayBuffer", WSRequestHandler::HandleStopReplayBuffer },
+	{ "SaveReplayBuffer", WSRequestHandler::HandleSaveReplayBuffer },
 
-    { "SetRecordingFolder", WSRequestHandler::HandleSetRecordingFolder },
-    { "GetRecordingFolder", WSRequestHandler::HandleGetRecordingFolder },
+	{ "SetRecordingFolder", WSRequestHandler::HandleSetRecordingFolder },
+	{ "GetRecordingFolder", WSRequestHandler::HandleGetRecordingFolder },
 
-    { "GetTransitionList", WSRequestHandler::HandleGetTransitionList },
-    { "GetCurrentTransition", WSRequestHandler::HandleGetCurrentTransition },
-    { "SetCurrentTransition", WSRequestHandler::HandleSetCurrentTransition },
-    { "SetTransitionDuration", WSRequestHandler::HandleSetTransitionDuration },
-    { "GetTransitionDuration", WSRequestHandler::HandleGetTransitionDuration },
+	{ "GetTransitionList", WSRequestHandler::HandleGetTransitionList },
+	{ "GetCurrentTransition", WSRequestHandler::HandleGetCurrentTransition },
+	{ "SetCurrentTransition", WSRequestHandler::HandleSetCurrentTransition },
+	{ "SetTransitionDuration", WSRequestHandler::HandleSetTransitionDuration },
+	{ "GetTransitionDuration", WSRequestHandler::HandleGetTransitionDuration },
 
-    { "SetVolume", WSRequestHandler::HandleSetVolume },
-    { "GetVolume", WSRequestHandler::HandleGetVolume },
-    { "ToggleMute", WSRequestHandler::HandleToggleMute },
-    { "SetMute", WSRequestHandler::HandleSetMute },
-    { "GetMute", WSRequestHandler::HandleGetMute },
-    { "SetSyncOffset", WSRequestHandler::HandleSetSyncOffset },
-    { "GetSyncOffset", WSRequestHandler::HandleGetSyncOffset },
-    { "GetSpecialSources", WSRequestHandler::HandleGetSpecialSources },
-    { "GetSourcesList", WSRequestHandler::HandleGetSourcesList },
-    { "GetSourceTypesList", WSRequestHandler::HandleGetSourceTypesList },
-    { "GetSourceSettings", WSRequestHandler::HandleGetSourceSettings },
-    { "SetSourceSettings", WSRequestHandler::HandleSetSourceSettings },
+	{ "SetVolume", WSRequestHandler::HandleSetVolume },
+	{ "GetVolume", WSRequestHandler::HandleGetVolume },
+	{ "ToggleMute", WSRequestHandler::HandleToggleMute },
+	{ "SetMute", WSRequestHandler::HandleSetMute },
+	{ "GetMute", WSRequestHandler::HandleGetMute },
+	{ "SetSyncOffset", WSRequestHandler::HandleSetSyncOffset },
+	{ "GetSyncOffset", WSRequestHandler::HandleGetSyncOffset },
+	{ "GetSpecialSources", WSRequestHandler::HandleGetSpecialSources },
+	{ "GetSourcesList", WSRequestHandler::HandleGetSourcesList },
+	{ "GetSourceTypesList", WSRequestHandler::HandleGetSourceTypesList },
+	{ "GetSourceSettings", WSRequestHandler::HandleGetSourceSettings },
+	{ "SetSourceSettings", WSRequestHandler::HandleSetSourceSettings },
 
-    { "SetCurrentSceneCollection", WSRequestHandler::HandleSetCurrentSceneCollection },
-    { "GetCurrentSceneCollection", WSRequestHandler::HandleGetCurrentSceneCollection },
-    { "ListSceneCollections", WSRequestHandler::HandleListSceneCollections },
+	{ "GetSourceFilters", WSRequestHandler::HandleGetSourceFilters },
+	{ "AddFilterToSource", WSRequestHandler::HandleAddFilterToSource },
+	{ "RemoveFilterFromSource", WSRequestHandler::HandleRemoveFilterFromSource },
+	{ "ReorderSourceFilter", WSRequestHandler::HandleReorderSourceFilter },
+	{ "MoveSourceFilter", WSRequestHandler::HandleMoveSourceFilter },
+	{ "SetSourceFilterSettings", WSRequestHandler::HandleSetSourceFilterSettings },
 
-    { "SetCurrentProfile", WSRequestHandler::HandleSetCurrentProfile },
-    { "GetCurrentProfile", WSRequestHandler::HandleGetCurrentProfile },
-    { "ListProfiles", WSRequestHandler::HandleListProfiles },
+	{ "SetCurrentSceneCollection", WSRequestHandler::HandleSetCurrentSceneCollection },
+	{ "GetCurrentSceneCollection", WSRequestHandler::HandleGetCurrentSceneCollection },
+	{ "ListSceneCollections", WSRequestHandler::HandleListSceneCollections },
 
-    { "SetStreamSettings", WSRequestHandler::HandleSetStreamSettings },
-    { "GetStreamSettings", WSRequestHandler::HandleGetStreamSettings },
-    { "SaveStreamSettings", WSRequestHandler::HandleSaveStreamSettings },
+	{ "SetCurrentProfile", WSRequestHandler::HandleSetCurrentProfile },
+	{ "GetCurrentProfile", WSRequestHandler::HandleGetCurrentProfile },
+	{ "ListProfiles", WSRequestHandler::HandleListProfiles },
 
-    { "GetStudioModeStatus", WSRequestHandler::HandleGetStudioModeStatus },
-    { "GetPreviewScene", WSRequestHandler::HandleGetPreviewScene },
-    { "SetPreviewScene", WSRequestHandler::HandleSetPreviewScene },
-    { "TransitionToProgram", WSRequestHandler::HandleTransitionToProgram },
-    { "EnableStudioMode", WSRequestHandler::HandleEnableStudioMode },
-    { "DisableStudioMode", WSRequestHandler::HandleDisableStudioMode },
-    { "ToggleStudioMode", WSRequestHandler::HandleToggleStudioMode },
+	{ "SetStreamSettings", WSRequestHandler::HandleSetStreamSettings },
+	{ "GetStreamSettings", WSRequestHandler::HandleGetStreamSettings },
+	{ "SaveStreamSettings", WSRequestHandler::HandleSaveStreamSettings },
 
-    { "SetTextGDIPlusProperties", WSRequestHandler::HandleSetTextGDIPlusProperties },
-    { "GetTextGDIPlusProperties", WSRequestHandler::HandleGetTextGDIPlusProperties },
-    { "SetTextFreetype2Properties", WSRequestHandler::HandleSetTextFreetype2Properties },
-    { "GetTextFreetype2Properties", WSRequestHandler::HandleGetTextFreetype2Properties },
+	{ "GetStudioModeStatus", WSRequestHandler::HandleGetStudioModeStatus },
+	{ "GetPreviewScene", WSRequestHandler::HandleGetPreviewScene },
+	{ "SetPreviewScene", WSRequestHandler::HandleSetPreviewScene },
+	{ "TransitionToProgram", WSRequestHandler::HandleTransitionToProgram },
+	{ "EnableStudioMode", WSRequestHandler::HandleEnableStudioMode },
+	{ "DisableStudioMode", WSRequestHandler::HandleDisableStudioMode },
+	{ "ToggleStudioMode", WSRequestHandler::HandleToggleStudioMode },
 
-    { "GetBrowserSourceProperties", WSRequestHandler::HandleGetBrowserSourceProperties },
-    { "SetBrowserSourceProperties", WSRequestHandler::HandleSetBrowserSourceProperties }
+	{ "SetTextGDIPlusProperties", WSRequestHandler::HandleSetTextGDIPlusProperties },
+	{ "GetTextGDIPlusProperties", WSRequestHandler::HandleGetTextGDIPlusProperties },
+	{ "SetTextFreetype2Properties", WSRequestHandler::HandleSetTextFreetype2Properties },
+	{ "GetTextFreetype2Properties", WSRequestHandler::HandleGetTextFreetype2Properties },
+
+	{ "GetBrowserSourceProperties", WSRequestHandler::HandleGetBrowserSourceProperties },
+	{ "SetBrowserSourceProperties", WSRequestHandler::HandleSetBrowserSourceProperties }
 };
 
 QSet<QString> WSRequestHandler::authNotRequired {
-    "GetVersion",
-    "GetAuthRequired",
-    "Authenticate"
+	"GetVersion",
+	"GetAuthRequired",
+	"Authenticate"
 };
 
 WSRequestHandler::WSRequestHandler() :
-    _messageId(0),
-    _requestType(""),
-    data(nullptr)
+	_messageId(0),
+	_requestType(""),
+	data(nullptr)
 {
 }
 
 void WSRequestHandler::processIncomingMessage(QString textMessage) {
-    QByteArray msgData = textMessage.toUtf8();
-    const char* msg = msgData.constData();
+	QByteArray msgData = textMessage.toUtf8();
+	const char* msg = msgData.constData();
 
-    data = obs_data_create_from_json(msg);
-    if (!data) {
-        if (!msg)
-            msg = "<null pointer>";
+	data = obs_data_create_from_json(msg);
+	if (!data) {
+		if (!msg)
+			msg = "<null pointer>";
 
-        blog(LOG_ERROR, "invalid JSON payload received for '%s'", msg);
-        SendErrorResponse("invalid JSON payload");
-        return;
-    }
+		blog(LOG_ERROR, "invalid JSON payload received for '%s'", msg);
+		SendErrorResponse("invalid JSON payload");
+		return;
+	}
 
-    if (Config::Current()->DebugEnabled) {
-        blog(LOG_DEBUG, "Request >> '%s'", msg);
-    }
+	if (Config::Current()->DebugEnabled) {
+		blog(LOG_DEBUG, "Request >> '%s'", msg);
+	}
 
-    if (!hasField("request-type")
-        || !hasField("message-id"))
-    {
-        SendErrorResponse("missing request parameters");
-        return;
-    }
+	if (!hasField("request-type")
+		|| !hasField("message-id"))
+	{
+		SendErrorResponse("missing request parameters");
+		return;
+	}
 
-    _requestType = obs_data_get_string(data, "request-type");
-    _messageId = obs_data_get_string(data, "message-id");
+	_requestType = obs_data_get_string(data, "request-type");
+	_messageId = obs_data_get_string(data, "message-id");
 
-    void (*handlerFunc)(WSRequestHandler*) = (messageMap[_requestType]);
+	void (*handlerFunc)(WSRequestHandler*) = (messageMap[_requestType]);
 
-    if (handlerFunc != nullptr)
-        handlerFunc(this);
-    else
-        SendErrorResponse("invalid request type");
+	if (handlerFunc != nullptr)
+		handlerFunc(this);
+	else
+		SendErrorResponse("invalid request type");
 }
 
 WSRequestHandler::~WSRequestHandler() {
 }
 
 void WSRequestHandler::SendOKResponse(obs_data_t* additionalFields) {
-    OBSDataAutoRelease response = obs_data_create();
-    obs_data_set_string(response, "status", "ok");
-    obs_data_set_string(response, "message-id", _messageId);
+	OBSDataAutoRelease response = obs_data_create();
+	obs_data_set_string(response, "status", "ok");
+	obs_data_set_string(response, "message-id", _messageId);
 
-    if (additionalFields)
-        obs_data_apply(response, additionalFields);
+	if (additionalFields)
+		obs_data_apply(response, additionalFields);
 
-    SendResponse(response);
+	SendResponse(response);
 }
 
 void WSRequestHandler::SendErrorResponse(const char* errorMessage) {
-    OBSDataAutoRelease response = obs_data_create();
-    obs_data_set_string(response, "status", "error");
-    obs_data_set_string(response, "error", errorMessage);
-    obs_data_set_string(response, "message-id", _messageId);
+	OBSDataAutoRelease response = obs_data_create();
+	obs_data_set_string(response, "status", "error");
+	obs_data_set_string(response, "error", errorMessage);
+	obs_data_set_string(response, "message-id", _messageId);
 
-    SendResponse(response);
+	SendResponse(response);
 }
 
 void WSRequestHandler::SendErrorResponse(obs_data_t* additionalFields) {
-    OBSDataAutoRelease response = obs_data_create();
-    obs_data_set_string(response, "status", "error");
-    obs_data_set_string(response, "message-id", _messageId);
+	OBSDataAutoRelease response = obs_data_create();
+	obs_data_set_string(response, "status", "error");
+	obs_data_set_string(response, "message-id", _messageId);
 
-    if (additionalFields)
-        obs_data_set_obj(response, "error", additionalFields);
+	if (additionalFields)
+		obs_data_set_obj(response, "error", additionalFields);
 
-    SendResponse(response);
+	SendResponse(response);
 }
 
 void WSRequestHandler::SendResponse(obs_data_t* response)  {
-    assert(_response.isNull());
-    _response = obs_data_get_json(response);
+	assert(_response.isNull());
+	_response = obs_data_get_json(response);
 
-    if (Config::Current()->DebugEnabled)
-        blog(LOG_DEBUG, "Response << '%s'", _response.toUtf8().constData());
+	if (Config::Current()->DebugEnabled)
+		blog(LOG_DEBUG, "Response << '%s'", _response.toUtf8().constData());
 }
 
 bool WSRequestHandler::hasField(QString name) {
-    if (!data || name.isEmpty() || name.isNull())
-        return false;
+	if (!data || name.isEmpty() || name.isNull())
+		return false;
 
-    return obs_data_has_user_value(data, name.toUtf8());
+	return obs_data_has_user_value(data, name.toUtf8());
 }

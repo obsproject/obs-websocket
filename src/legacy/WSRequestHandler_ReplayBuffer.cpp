@@ -12,12 +12,12 @@
 * @since 4.2.0
 */
 void WSRequestHandler::HandleStartStopReplayBuffer(WSRequestHandler* req) {
-    if (obs_frontend_replay_buffer_active()) {
-        obs_frontend_replay_buffer_stop();
-    } else {
-        Utils::StartReplayBuffer();
-    }
-    req->SendOKResponse();
+	if (obs_frontend_replay_buffer_active()) {
+		obs_frontend_replay_buffer_stop();
+	} else {
+		Utils::StartReplayBuffer();
+	}
+	req->SendOKResponse();
 }
 
 /**
@@ -33,18 +33,18 @@ void WSRequestHandler::HandleStartStopReplayBuffer(WSRequestHandler* req) {
 * @since 4.2.0
 */
 void WSRequestHandler::HandleStartReplayBuffer(WSRequestHandler* req) {
-    if (!Utils::ReplayBufferEnabled()) {
-        req->SendErrorResponse("replay buffer disabled in settings");
-        return;
-    }
+	if (!Utils::ReplayBufferEnabled()) {
+		req->SendErrorResponse("replay buffer disabled in settings");
+		return;
+	}
 
-    if (obs_frontend_replay_buffer_active() == true) {
-        req->SendErrorResponse("replay buffer already active");
-        return;
-    }
+	if (obs_frontend_replay_buffer_active() == true) {
+		req->SendErrorResponse("replay buffer already active");
+		return;
+	}
 
-    Utils::StartReplayBuffer();
-    req->SendOKResponse();
+	Utils::StartReplayBuffer();
+	req->SendOKResponse();
 }
 
 /**
@@ -57,12 +57,12 @@ void WSRequestHandler::HandleStartReplayBuffer(WSRequestHandler* req) {
 * @since 4.2.0
 */
 void WSRequestHandler::HandleStopReplayBuffer(WSRequestHandler* req) {
-    if (obs_frontend_replay_buffer_active() == true) {
-        obs_frontend_replay_buffer_stop();
-        req->SendOKResponse();
-    } else {
-        req->SendErrorResponse("replay buffer not active");
-    }
+	if (obs_frontend_replay_buffer_active() == true) {
+		obs_frontend_replay_buffer_stop();
+		req->SendOKResponse();
+	} else {
+		req->SendErrorResponse("replay buffer not active");
+	}
 }
 
 /**
@@ -76,17 +76,17 @@ void WSRequestHandler::HandleStopReplayBuffer(WSRequestHandler* req) {
 * @since 4.2.0
 */
 void WSRequestHandler::HandleSaveReplayBuffer(WSRequestHandler* req) {
-    if (!obs_frontend_replay_buffer_active()) {
-        req->SendErrorResponse("replay buffer not active");
-        return;
-    }
+	if (!obs_frontend_replay_buffer_active()) {
+		req->SendErrorResponse("replay buffer not active");
+		return;
+	}
 
-    OBSOutputAutoRelease replayOutput = obs_frontend_get_replay_buffer_output();
+	OBSOutputAutoRelease replayOutput = obs_frontend_get_replay_buffer_output();
 
-    calldata_t cd = { 0 };
-    proc_handler_t* ph = obs_output_get_proc_handler(replayOutput);
-    proc_handler_call(ph, "save", &cd);
-    calldata_free(&cd);
+	calldata_t cd = { 0 };
+	proc_handler_t* ph = obs_output_get_proc_handler(replayOutput);
+	proc_handler_call(ph, "save", &cd);
+	calldata_free(&cd);
 
-    req->SendOKResponse();
+	req->SendOKResponse();
 }

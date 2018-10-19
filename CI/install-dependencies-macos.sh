@@ -6,9 +6,11 @@ brew update
 brew install ffmpeg
 brew install libav
 
-# obs-websocket deps
-brew install qt5
+# qtwebsockets deps
+# qt latest
+brew install ./CI/macos/qt.rb
 
 # Packages app
+brew install wget
 wget --quiet --retry-connrefused --waitretry=1 https://s3-us-west-2.amazonaws.com/obs-nightly/Packages.pkg
 sudo installer -pkg ./Packages.pkg -target /

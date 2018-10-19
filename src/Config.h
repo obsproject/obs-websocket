@@ -22,33 +22,34 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <QString>
 #include <QtCore/QtCore>
 
-class Config {
-  public:
-    Config();
-    ~Config();
-    void Load();
-    void Save();
+class Config
+{
+public:
+	Config();
+	~Config();
+	void Load();
+	void Save();
 
-    bool ServerEnabled;
-    quint16 ServerPort;
+	bool ServerEnabled;
+	uint64_t ServerPort;
 
-    bool DebugEnabled;
-    bool AlertsEnabled;
+	bool DebugEnabled;
+	bool AlertsEnabled;
 
-    bool AuthRequired;
+	bool AuthRequired;
 	QString AuthPassword;
 
-    bool SettingsLoaded;
+	bool SettingsLoaded;
 
-    static QSharedPointer<Config> Current() {
-    	if (!_instance) {
-    		_instance = QSharedPointer<Config>(new Config());
-    	}
+	static QSharedPointer<Config> Current() {
+		if (!_instance) {
+			_instance = QSharedPointer<Config>(new Config());
+		}
 		return _instance;
 	}
 
 private:
-    static QSharedPointer<Config> _instance;
+	static QSharedPointer<Config> _instance;
 };
 
 #endif // CONFIG_H

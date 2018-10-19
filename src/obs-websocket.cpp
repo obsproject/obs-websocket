@@ -43,44 +43,44 @@ QSharedPointer<JsonRpc> jsonRpc = nullptr;
 QSharedPointer<SettingsDialog> settingsDialog = nullptr;
 
 bool obs_module_load(void) {
-    blog(LOG_INFO, "you can haz websockets (version %s)", OBS_WEBSOCKET_VERSION);
-    blog(LOG_INFO, "qt version (compile-time): %s ; qt version (run-time): %s",
-        QT_VERSION_STR, qVersion());
+	blog(LOG_INFO, "you can haz websockets (version %s)", OBS_WEBSOCKET_VERSION);
+	blog(LOG_INFO, "qt version (compile-time): %s ; qt version (run-time): %s",
+		QT_VERSION_STR, qVersion());
 
-    // Core setup
-    QSharedPointer<Config> config = Config::Current();
-    config->Load();
+	// Core setup
+	QSharedPointer<Config> config = Config::Current();
+	config->Load();
 
-    rpcHandler = QSharedPointer<RpcHandler>(new RpcHandler());
-    jsonRpc = QSharedPointer<JsonRpc>(new JsonRpc(rpcHandler));
-    WSServer::Reset(jsonRpc);
-    WSEvents::Reset(WSServer::Current());
+	rpcHandler = QSharedPointer<RpcHandler>(new RpcHandler());
+	jsonRpc = QSharedPointer<JsonRpc>(new JsonRpc(rpcHandler));
+	WSServer::Reset(jsonRpc);
+	WSEvents::Reset(WSServer::Current());
 
-    if (config->ServerEnabled)
-        WSServer::Current()->start((quint16)config->ServerPort);
+	if (config->ServerEnabled)
+		WSServer::Current()->start((quint16)config->ServerPort);
 
-    // UI setup
-    QAction* menu_action = (QAction*)obs_frontend_add_tools_menu_qaction(
-        obs_module_text("OBSWebsocket.Menu.SettingsItem"));
+	// UI setup
+	QAction* menu_action = (QAction*)obs_frontend_add_tools_menu_qaction(
+		obs_module_text("OBSWebsocket.Menu.SettingsItem"));
 
-    obs_frontend_push_ui_translation(obs_module_get_string);
-    QMainWindow* mainWindow = (QMainWindow*)obs_frontend_get_main_window();
-    settingsDialog = QSharedPointer<SettingsDialog>(new SettingsDialog(mainWindow));
-    obs_frontend_pop_ui_translation();
+	obs_frontend_push_ui_translation(obs_module_get_string);
+	QMainWindow* mainWindow = (QMainWindow*)obs_frontend_get_main_window();
+	settingsDialog = QSharedPointer<SettingsDialog>(new SettingsDialog(mainWindow));
+	obs_frontend_pop_ui_translation();
 
-    auto menu_cb = [] {
-        settingsDialog->ToggleShowHide();
-    };
-    menu_action->connect(menu_action, &QAction::triggered, menu_cb);
+	auto menu_cb = [] {
+		settingsDialog->ToggleShowHide();
+	};
+	menu_action->connect(menu_action, &QAction::triggered, menu_cb);
 
-    // Loading finished
-    blog(LOG_INFO, "module loaded!");
+	// Loading finished
+	blog(LOG_INFO, "module loaded!");
 
-    return true;
+	return true;
 }
 
 void obs_module_unload() {
-    WSServer::Current()->stop();
-    blog(LOG_INFO, "goodbye!");
+	WSServer::Instance->stop();
+	blog(LOG_INFO, "goodbye!");
 }
 
