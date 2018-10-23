@@ -113,12 +113,12 @@ private:
 	static void HandleGetSourceSettings(WSRequestHandler* req);
 	static void HandleSetSourceSettings(WSRequestHandler* req);
 
-	static void HandleGetSourceFilters(WSRequestHandler* req);
-	static void HandleAddFilterToSource(WSRequestHandler* req);
-	static void HandleRemoveFilterFromSource(WSRequestHandler* req);
-	static void HandleReorderSourceFilter(WSRequestHandler* req);
-	static void HandleMoveSourceFilter(WSRequestHandler* req);
-	static void HandleSetSourceFilterSettings(WSRequestHandler* req);
+		static void HandleGetSourceFilters(WSRequestHandler* req);
+		static void HandleAddFilterToSource(WSRequestHandler* req);
+		static void HandleRemoveFilterFromSource(WSRequestHandler* req);
+		static void HandleReorderSourceFilter(WSRequestHandler* req);
+		static void HandleMoveSourceFilter(WSRequestHandler* req);
+		static void HandleSetSourceFilterSettings(WSRequestHandler* req);
 
 	static void HandleSetCurrentSceneCollection(WSRequestHandler* req);
 	static void HandleGetCurrentSceneCollection(WSRequestHandler* req);
