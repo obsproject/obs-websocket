@@ -15,8 +15,8 @@ if [ "${HAS_BREW}" = "" ]; then
 fi
 
 # OBS Studio deps
-echo "[obs-websocket] Updating Homebrew formulas.."
-brew update
+echo "[obs-websocket] Updating Homebrew.."
+brew update >/dev/null
 echo "[obs-websocket] Checking installed Homebrew formulas.."
 BREW_PACKAGES=$(brew list)
 BREW_DEPENDENCIES="ffmpeg libav cmake"
