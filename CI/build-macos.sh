@@ -8,7 +8,6 @@ if [ "${OSTYPE}" != "Darwin" ]; then
 fi
 
 HAS_CMAKE=$(type cmake 2>/dev/null)
-HAS_GIT=$(type git 2>/dev/null)
 
 if [ "${HAS_CMAKE}" = "" ]; then
     echo "[obs-websocket - Error] CMake not installed - please run 'install-dependencies-macos.sh' first."
