@@ -22,12 +22,12 @@ BREW_PACKAGES=$(brew list)
 BREW_DEPENDENCIES="ffmpeg libav cmake"
 
 for DEPENDENCY in ${BREW_DEPENDENCIES}; do
-    if echo ${BREW_PACKAGES} | grep -q "^${DEPENDENCY}\$"; then
-        echo "[obs-websocket] Installing OBS-Studio dependency '${DEPENDENCY}'.."
-        brew install ${DEPENDENCY} 2>/dev/null
-    else
+    if echo "${BREW_PACKAGES}" | grep -q "^${DEPENDENCY}\$"; then
         echo "[obs-websocket] Upgrading OBS-Studio dependency '${DEPENDENCY}'.."
         brew upgrade ${DEPENDENCY} 2>/dev/null
+    else
+        echo "[obs-websocket] Installing OBS-Studio dependency '${DEPENDENCY}'.."
+        brew install ${DEPENDENCY} 2>/dev/null
     fi
 done
 
