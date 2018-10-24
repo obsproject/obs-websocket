@@ -39,11 +39,11 @@ echo "[obs-websocket] Installing obs-websocket dependency 'QT 5.10.1'.."
 # Pouring from the bottle is much quicker though, so use bottle for now.
 # =!= NOTICE =!=
 
-brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/9a70413d137839de0054571e5f85fd07ee400955/Formula/qt.rb 2>/dev/null
+brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/9a70413d137839de0054571e5f85fd07ee400955/Formula/qt.rb
 
 # Pin this version of QT5 to avoid `brew upgrade`
 # upgrading it to incompatible version
-brew pin qt 2>/dev/null
+brew pin qt
 
 # Fetch and install Packages app
 # =!= NOTICE =!=
