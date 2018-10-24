@@ -3,7 +3,7 @@
 OSTYPE=$(uname)
 
 if [ "${OSTYPE}" != "Darwin" ]; then
-    echo "[obs-websocket - Error] macOS build script can be run on Darwin-type OS only."
+    echo "[obs-websocket - Error] macOS obs-studio build script can be run on Darwin-type OS only."
     exit 1
 fi
 
