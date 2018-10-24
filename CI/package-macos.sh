@@ -2,6 +2,11 @@
 
 set -e
 
+if [[ "${OSTYPE}" != "darwin"* ]]; then
+    echo "[obs-websocket - Error] macOS build script can be run on Darwin-type OS only."
+    return 1
+fi
+
 echo "[obs-websocket] Preparing package build"
 export QT_CELLAR_PREFIX="$(/usr/bin/find /usr/local/Cellar/qt -d 1 | sort -t '.' -k 1,1n -k 2,2n -k 3,3n | tail -n 1)"
 
