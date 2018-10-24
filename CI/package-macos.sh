@@ -2,9 +2,11 @@
 
 set -e
 
-if [[ "${OSTYPE}" != "darwin"* ]]; then
+OSTYPE=$(uname)
+
+if [ "${OSTYPE}" != "Darwin" ]; then
     echo "[obs-websocket - Error] macOS build script can be run on Darwin-type OS only."
-    return 1
+    exit 1
 fi
 
 echo "[obs-websocket] Preparing package build"

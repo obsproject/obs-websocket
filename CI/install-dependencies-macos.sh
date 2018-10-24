@@ -1,14 +1,17 @@
 #!/bin/sh
-if [[ "${OSTYPE}" != "darwin"* ]]; then
+
+OSTYPE=$(uname)
+
+if [ "${OSTYPE}" != "Darwin" ]; then
     echo "[obs-websocket - Error] macOS build script can be run on Darwin-type OS only."
-    return 1
+    exit 1
 fi
 
 HAS_BREW=$(type brew 2>/dev/null)
 
 if [[ "${HAS_BREW}" == "" ]]; then
     echo "[obs-websocket - Error] Please install Homebrew (https://www.brew.sh/) to build obs-websocket on macOS."
-    return 1
+    exit 1
 fi
 
 # OBS Studio deps
