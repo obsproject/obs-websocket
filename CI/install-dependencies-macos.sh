@@ -9,7 +9,7 @@ fi
 
 HAS_BREW=$(type brew 2>/dev/null)
 
-if [[ "${HAS_BREW}" == "" ]]; then
+if [ "${HAS_BREW}" = "" ]; then
     echo "[obs-websocket - Error] Please install Homebrew (https://www.brew.sh/) to build obs-websocket on macOS."
     exit 1
 fi
