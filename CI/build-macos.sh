@@ -1,8 +1,22 @@
 #!/bin/sh
-set -ex
+
+OSTYPE=$(uname)
+
+if [ "${OSTYPE}" != "Darwin" ]; then
+    echo "[obs-websocket - Error] macOS build script can be run on Darwin-type OS only."
+    exit 1
+fi
+
+HAS_CMAKE=$(type cmake 2>/dev/null)
+
+if [ "${HAS_CMAKE}" = "" ]; then
+    echo "[obs-websocket - Error] CMake not installed - please run 'install-dependencies-macos.sh' first."
+    exit 1
+fi
 
 #export QT_PREFIX="$(find /usr/local/Cellar/qt5 -d 1 | tail -n 1)"
 
+echo "[obs-websocket] Building 'obs-websocket' for macOS."
 mkdir -p build && cd build
 cmake .. \
 	-DQTDIR=/usr/local/opt/qt \

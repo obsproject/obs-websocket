@@ -34,12 +34,12 @@ matrix:
 
   - os: osx
     env: _macos_build
-    osx_image: xcode8.3
+    osx_image: xcode9.4
     before_install:
     - "./CI/install-dependencies-macos.sh"
     - "./CI/install-build-obs-macos.sh"
     script: "./CI/build-macos.sh"
-    after_success: 
+    after_success:
     - ./CI/package-macos.sh
 
 deploy:
@@ -53,7 +53,7 @@ deploy:
   acl: public_read
   on:
     repo: Palakis/obs-websocket
-    condition: 
+    condition:
     - "$TRAVIS_OS_NAME = linux"
     - "-d /home/travis/package"
     all_branches: true
