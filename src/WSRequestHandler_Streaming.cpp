@@ -252,7 +252,7 @@ void WSRequestHandler::HandleStopStreaming(WSRequestHandler* req) {
  * @return {Object} `settings` Stream settings object.
  * @return {String} `settings.server` The publish URL.
  * @return {String} `settings.key` The publish key of the stream.
- * @return {boolean} `settings.use-auth` Indicates whether audentication should be used when connecting to the streaming server.
+ * @return {boolean} `settings.use-auth` Indicates whether authentication should be used when connecting to the streaming server.
  * @return {String} `settings.username` The username to use when accessing the streaming server. Only present if `use-auth` is `true`.
  * @return {String} `settings.password` The password to use when accessing the streaming server. Only present if `use-auth` is `true`.
  *

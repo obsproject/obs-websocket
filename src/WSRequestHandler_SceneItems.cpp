@@ -322,7 +322,7 @@ void WSRequestHandler::HandleSetSceneItemProperties(WSRequestHandler* req) {
 /**
 * Reset a scene item.
 *
-* @param {String (optional)} `scene-name` Name of the scene the source belogns to. Defaults to the current scene.
+* @param {String (optional)} `scene-name` Name of the scene the source belongs to. Defaults to the current scene.
 * @param {String} `item` Name of the source item.
 *
 * @api requests
