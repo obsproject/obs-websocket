@@ -227,7 +227,7 @@ void WSRequestHandler::HandleGetVolume(WSRequestHandler* req) {
 */
 void WSRequestHandler::HandleGetMute(WSRequestHandler* req) {
 	if (!req->hasField("source")) {
-		req->SendErrorResponse("mssing request parameters");
+		req->SendErrorResponse("missing request parameters");
 		return;
 	}
 
@@ -264,7 +264,7 @@ void WSRequestHandler::HandleGetMute(WSRequestHandler* req) {
 void WSRequestHandler::HandleSetMute(WSRequestHandler* req) {
 	if (!req->hasField("source") ||
 		!req->hasField("mute")) {
-		req->SendErrorResponse("mssing request parameters");
+		req->SendErrorResponse("missing request parameters");
 		return;
 	}
 
@@ -967,7 +967,7 @@ void WSRequestHandler::HandleSetBrowserSourceProperties(WSRequestHandler* req) {
 /**
  * Deletes a scene item.
  *
- * @param {String (optional)} `scene` Name of the scene the source belogns to. Defaults to the current scene.
+ * @param {String (optional)} `scene` Name of the scene the source belongs to. Defaults to the current scene.
  * @param {Object} `item` item to delete (required)
  * @param {String} `item.name` name of the scene item (prefer `id`, including both is acceptable).
  * @param {int} `item.id` id of the scene item.
@@ -1065,7 +1065,7 @@ void WSRequestHandler::HandleDuplicateSceneItem(WSRequestHandler* req) {
 	obs_sceneitem_t *newItem = data.newItem;
 
 	if (!newItem) {
-		req->SendErrorResponse("Error duplicating scenee item");
+		req->SendErrorResponse("Error duplicating scene item");
 	}
 	OBSDataAutoRelease responseData = obs_data_create();
 	OBSDataAutoRelease itemData = obs_data_create();
