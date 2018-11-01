@@ -657,7 +657,7 @@ void WSEvents::StreamStatus() {
 /**
  * Emitted every 2 seconds after enabling it by calling SetHeartbeat.
  *
- * @return {boolean} `pulse` Toggles between every JSON meassage as an "I am alive" indicator.
+ * @return {boolean} `pulse` Toggles between every JSON message as an "I am alive" indicator.
  * @return {string (optional)} `current-profile` Current active profile.
  * @return {string (optional)} `current-scene` Current active scene.
  * @return {boolean (optional)} `streaming` Current streaming state.
