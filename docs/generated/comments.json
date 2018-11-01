@@ -951,7 +951,7 @@
         "subheads": [],
         "description": "Emitted every 2 seconds after enabling it by calling SetHeartbeat.",
         "return": [
-          "{boolean} `pulse` Toggles between every JSON meassage as an \"I am alive\" indicator.",
+          "{boolean} `pulse` Toggles between every JSON message as an \"I am alive\" indicator.",
           "{string (optional)} `current-profile` Current active profile.",
           "{string (optional)} `current-scene` Current active scene.",
           "{boolean (optional)} `streaming` Current streaming state.",
@@ -970,7 +970,7 @@
           {
             "type": "boolean",
             "name": "pulse",
-            "description": "Toggles between every JSON meassage as an \"I am alive\" indicator."
+            "description": "Toggles between every JSON message as an \"I am alive\" indicator."
           },
           {
             "type": "string (optional)",
@@ -2907,7 +2907,7 @@
         "description": "Changes the order of scene items in the requested scene.",
         "param": [
           "{String (optional)} `scene` Name of the scene to reorder (defaults to current).",
-          "{Scene|Array} `items` Ordered list of objects with name and/or id specified. Id prefered due to uniqueness per scene",
+          "{Scene|Array} `items` Ordered list of objects with name and/or id specified. Id preferred due to uniqueness per scene",
           "{int (optional)} `items[].id` Id of a specific scene item. Unique on a scene by scene basis.",
           "{String (optional)} `items[].name` Name of a scene item. Sufficiently unique if no scene items share sources within the scene."
         ],
@@ -2924,7 +2924,7 @@
           {
             "type": "Scene|Array",
             "name": "items",
-            "description": "Ordered list of objects with name and/or id specified. Id prefered due to uniqueness per scene"
+            "description": "Ordered list of objects with name and/or id specified. Id preferred due to uniqueness per scene"
           },
           {
             "type": "int (optional)",
@@ -4600,7 +4600,7 @@
         "subheads": [],
         "description": "Deletes a scene item.",
         "param": [
-          "{String (optional)} `scene` Name of the scene the source belogns to. Defaults to the current scene.",
+          "{String (optional)} `scene` Name of the scene the source belongs to. Defaults to the current scene.",
           "{Object} `item` item to delete (required)",
           "{String} `item.name` name of the scene item (prefer `id`, including both is acceptable).",
           "{int} `item.id` id of the scene item."
@@ -4613,7 +4613,7 @@
           {
             "type": "String (optional)",
             "name": "scene",
-            "description": "Name of the scene the source belogns to. Defaults to the current scene."
+            "description": "Name of the scene the source belongs to. Defaults to the current scene."
           },
           {
             "type": "Object",
@@ -5454,7 +5454,7 @@
           "{Object} `settings` Stream settings object.",
           "{String} `settings.server` The publish URL.",
           "{String} `settings.key` The publish key of the stream.",
-          "{boolean} `settings.use-auth` Indicates whether audentication should be used when connecting to the streaming server.",
+          "{boolean} `settings.use-auth` Indicates whether authentication should be used when connecting to the streaming server.",
           "{String} `settings.username` The username to use when accessing the streaming server. Only present if `use-auth` is `true`.",
           "{String} `settings.password` The password to use when accessing the streaming server. Only present if `use-auth` is `true`."
         ],
@@ -5486,7 +5486,7 @@
           {
             "type": "boolean",
             "name": "settings.use-auth",
-            "description": "Indicates whether audentication should be used when connecting to the streaming server."
+            "description": "Indicates whether authentication should be used when connecting to the streaming server."
           },
           {
             "type": "String",
