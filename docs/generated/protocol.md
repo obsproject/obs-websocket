@@ -562,7 +562,7 @@ Emitted every 2 seconds after enabling it by calling SetHeartbeat.
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
-| `pulse` | _boolean_ | Toggles between every JSON meassage as an "I am alive" indicator. |
+| `pulse` | _boolean_ | Toggles between every JSON message as an "I am alive" indicator. |
 | `current-profile` | _string (optional)_ | Current active profile. |
 | `current-scene` | _string (optional)_ | Current active scene. |
 | `streaming` | _boolean (optional)_ | Current streaming state. |
@@ -1211,7 +1211,7 @@ Reset a scene item.
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
-| `scene-name` | _String (optional)_ | Name of the scene the source belogns to. Defaults to the current scene. |
+| `scene-name` | _String (optional)_ | Name of the scene the source belongs to. Defaults to the current scene. |
 | `item` | _String_ | Name of the source item. |
 
 
@@ -1822,7 +1822,7 @@ Deletes a scene item.
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
-| `scene` | _String (optional)_ | Name of the scene the source belogns to. Defaults to the current scene. |
+| `scene` | _String (optional)_ | Name of the scene the source belongs to. Defaults to the current scene. |
 | `item` | _Object_ | item to delete (required) |
 | `item.name` | _String_ | name of the scene item (prefer `id`, including both is acceptable). |
 | `item.id` | _int_ | id of the scene item. |
@@ -2154,7 +2154,7 @@ _No specified parameters._
 | `settings` | _Object_ | Stream settings object. |
 | `settings.server` | _String_ | The publish URL. |
 | `settings.key` | _String_ | The publish key of the stream. |
-| `settings.use-auth` | _boolean_ | Indicates whether audentication should be used when connecting to the streaming server. |
+| `settings.use-auth` | _boolean_ | Indicates whether authentication should be used when connecting to the streaming server. |
 | `settings.username` | _String_ | The username to use when accessing the streaming server. Only present if `use-auth` is `true`. |
 | `settings.password` | _String_ | The password to use when accessing the streaming server. Only present if `use-auth` is `true`. |
 
