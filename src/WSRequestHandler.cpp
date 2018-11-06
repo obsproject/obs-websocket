@@ -47,7 +47,7 @@ QHash<QString, void(*)(WSRequestHandler*)> WSRequestHandler::messageMap {
 	{ "SetSceneItemProperties", WSRequestHandler::HandleSetSceneItemProperties },
 	{ "ResetSceneItem", WSRequestHandler::HandleResetSceneItem },
 	{ "DeleteSceneItem", WSRequestHandler::HandleDeleteSceneItem },
-	{ "DuplicateSceneItem", WSRequestHandler::HandleDuplicateSceneItem }
+	{ "DuplicateSceneItem", WSRequestHandler::HandleDuplicateSceneItem },
 
 	{ "GetStreamingStatus", WSRequestHandler::HandleGetStreamingStatus },
 	{ "StartStopStreaming", WSRequestHandler::HandleStartStopStreaming },
