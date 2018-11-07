@@ -98,7 +98,6 @@ WSEvents::~WSEvents() {
 }
 
 void WSEvents::deferredInitOperations() {
-	OBSSourceAutoRelease transition = obs_frontend_get_current_transition();
 	hookTransitionBeginEvent();
 
 	OBSSourceAutoRelease scene = obs_frontend_get_current_scene();
@@ -121,6 +120,7 @@ void WSEvents::FrontendEventHandler(enum obs_frontend_event event, void* private
 		owner->OnSceneCollectionChange();
 	}
 	else if (event == OBS_FRONTEND_EVENT_SCENE_COLLECTION_LIST_CHANGED) {
+		owner->hookTransitionBeginEvent();
 		owner->OnSceneCollectionListChange();
 	}
 	else if (event == OBS_FRONTEND_EVENT_TRANSITION_CHANGED) {
