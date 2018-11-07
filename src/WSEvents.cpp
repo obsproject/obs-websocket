@@ -117,10 +117,10 @@ void WSEvents::FrontendEventHandler(enum obs_frontend_event event, void* private
 		owner->OnSceneListChange();
 	}
 	else if (event == OBS_FRONTEND_EVENT_SCENE_COLLECTION_CHANGED) {
+		owner->hookTransitionBeginEvent();
 		owner->OnSceneCollectionChange();
 	}
 	else if (event == OBS_FRONTEND_EVENT_SCENE_COLLECTION_LIST_CHANGED) {
-		owner->hookTransitionBeginEvent();
 		owner->OnSceneCollectionListChange();
 	}
 	else if (event == OBS_FRONTEND_EVENT_TRANSITION_CHANGED) {
