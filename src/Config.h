@@ -21,9 +21,6 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include <QString>
 
-#include <mbedtls/entropy.h>
-#include <mbedtls/ctr_drbg.h>
-
 class Config {
 	public:
 		Config();
@@ -53,8 +50,6 @@ class Config {
 
 	private:
 		static Config* _instance;
-		mbedtls_entropy_context entropy;
-		mbedtls_ctr_drbg_context rng;
 };
 
 #endif // CONFIG_H

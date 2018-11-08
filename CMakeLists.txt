@@ -15,9 +15,6 @@ find_package(Qt5Core REQUIRED)
 find_package(Qt5WebSockets REQUIRED)
 find_package(Qt5Widgets REQUIRED)
 
-add_subdirectory(deps/mbedtls EXCLUDE_FROM_ALL)
-set(ENABLE_PROGRAMS false)
-
 set(obs-websocket_SOURCES
 	src/obs-websocket.cpp
 	src/WSServer.cpp
@@ -52,22 +49,17 @@ add_library(obs-websocket MODULE
 	${obs-websocket_SOURCES}
 	${obs-websocket_HEADERS})
 
-add_dependencies(obs-websocket mbedcrypto)
-
 include_directories(
 	"${LIBOBS_INCLUDE_DIR}/../UI/obs-frontend-api"
 	${Qt5Core_INCLUDES}
 	${Qt5WebSockets_INCLUDES}
-	${Qt5Widgets_INCLUDES}
-	${mbedcrypto_INCLUDES}
-	"${CMAKE_SOURCE_DIR}/deps/mbedtls/include")
+	${Qt5Widgets_INCLUDES})
 
 target_link_libraries(obs-websocket
 	libobs
 	Qt5::Core
 	Qt5::WebSockets
-	Qt5::Widgets
-	mbedcrypto)
+	Qt5::Widgets)
 
 # --- End of section ---
 
@@ -165,7 +157,6 @@ endif()
 if(UNIX AND NOT APPLE)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
-	target_compile_options(mbedcrypto PRIVATE -fPIC)
 	set_target_properties(obs-websocket PROPERTIES PREFIX "")
 	target_link_libraries(obs-websocket
 		obs-frontend-api)
