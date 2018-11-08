@@ -20,7 +20,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <util/config-file.h>
 
 #include <QCryptographicHash>
-#include <QRandomGenerator>
+#include <QTime>
 
 #define SECTION_NAME "WebsocketAPI"
 #define PARAM_ENABLE "ServerEnabled"
@@ -48,6 +48,8 @@ Config::Config() :
 	Salt(""),
 	SettingsLoaded(false)
 {
+	qsrand(QTime::currentTime().msec());
+
 	// OBS Config defaults
 	config_t* obsConfig = obs_frontend_get_global_config();
 	if (obsConfig) {
@@ -112,11 +114,12 @@ void Config::Save()
 
 QString Config::GenerateSalt()
 {
-	auto random = QRandomGenerator::global();
-
 	// Generate 32 random chars
-	QByteArray randomChars(32, '\0');
-	random->fillRange((quint32*)randomChars.data(), randomChars.size() / 4);
+	const size_t randomCount = 32;
+	QByteArray randomChars;
+	for (size_t i = 0; i < randomCount; i++) {
+		randomChars.append((char)qrand());
+	}
 
 	// Convert the 32 random chars to a base64 string
 	QString salt = randomChars.toBase64();
