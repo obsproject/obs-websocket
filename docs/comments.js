@@ -30,6 +30,14 @@ const processComments = comments => {
     let errors = [];
 
     comments.forEach(comment => {
+        if (comment.typedef) {
+            comment.comment = undefined;
+            comment.context = undefined;
+            sorted['typedefs'] = sorted['typedefs'] || [];
+            sorted['typedefs'].push(comment);
+            return;
+        }
+
         if (typeof comment.api === 'undefined') return;
         let validationFailures = validateComment(comment);
 
@@ -84,9 +92,7 @@ const validateComment = comment => {
             fullContext: Object.assign({}, comment)
         };
     }
-
-    return;
-}
+};
 
 const files = glob.sync(config.srcGlob);
 const comments = processComments(parseFiles(files));

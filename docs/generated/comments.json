@@ -6,7 +6,7 @@
         "description": "Indicates a scene change.",
         "return": [
           "{String} `scene-name` The new scene.",
-          "{Array} `sources` List of sources in the new scene."
+          "{Array<Source>} `sources` List of sources in the new scene. Same specification as [`GetCurrentScene`](#getcurrentscene)."
         ],
         "api": "events",
         "name": "SwitchScenes",
@@ -19,9 +19,9 @@
             "description": "The new scene."
           },
           {
-            "type": "Array",
+            "type": "Array<Source>",
             "name": "sources",
-            "description": "List of sources in the new scene."
+            "description": "List of sources in the new scene. Same specification as [`GetCurrentScene`](#getcurrentscene)."
           }
         ],
         "names": [
@@ -1246,7 +1246,7 @@
         "description": "The selected preview scene has changed (only available in Studio Mode).",
         "return": [
           "{String} `scene-name` Name of the scene being previewed.",
-          "{Source|Array} `sources` List of sources composing the scene. Same specification as [`GetCurrentScene`](#getcurrentscene)."
+          "{Array<Source>} `sources` List of sources composing the scene. Same specification as [`GetCurrentScene`](#getcurrentscene)."
         ],
         "api": "events",
         "name": "PreviewSceneChanged",
@@ -1259,7 +1259,7 @@
             "description": "Name of the scene being previewed."
           },
           {
-            "type": "Source|Array",
+            "type": "Array<Source>",
             "name": "sources",
             "description": "List of sources composing the scene. Same specification as [`GetCurrentScene`](#getcurrentscene)."
           }
@@ -1702,14 +1702,14 @@
       {
         "subheads": [],
         "description": "Get a list of available profiles.",
-        "return": "{Object|Array} `profiles` List of available profiles.",
+        "return": "{Array<Object>} `profiles` List of available profiles.",
         "api": "requests",
         "name": "ListProfiles",
         "category": "profiles",
         "since": "4.0.0",
         "returns": [
           {
-            "type": "Object|Array",
+            "type": "Array<Object>",
             "name": "profiles",
             "description": "List of available profiles."
           }
@@ -2144,24 +2144,16 @@
       {
         "subheads": [],
         "description": "List available scene collections",
-        "return": [
-          "{Object|Array} `scene-collections` Scene collections list",
-          "{String} `scene-collections.*.`"
-        ],
+        "return": "{Array<String>} `scene-collections` Scene collections list",
         "api": "requests",
         "name": "ListSceneCollections",
         "category": "scene collections",
         "since": "4.0.0",
         "returns": [
           {
-            "type": "Object|Array",
+            "type": "Array<String>",
             "name": "scene-collections",
             "description": "Scene collections list"
-          },
-          {
-            "type": "String",
-            "name": "scene-collections.*.",
-            "description": ""
           }
         ],
         "names": [
@@ -2861,7 +2853,7 @@
         "description": "Get the current scene's name and source items.",
         "return": [
           "{String} `name` Name of the currently active scene.",
-          "{Source|Array} `sources` Ordered list of the current scene's source items."
+          "{Array<Source>} `sources` Ordered list of the current scene's source items."
         ],
         "api": "requests",
         "name": "GetCurrentScene",
@@ -2874,7 +2866,7 @@
             "description": "Name of the currently active scene."
           },
           {
-            "type": "Source|Array",
+            "type": "Array<Source>",
             "name": "sources",
             "description": "Ordered list of the current scene's source items."
           }
@@ -2910,7 +2902,7 @@
         "description": "Get a list of scenes in the currently active profile.",
         "return": [
           "{String} `current-scene` Name of the currently active scene.",
-          "{Scene|Array} `scenes` Ordered list of the current profile's scenes (See `[GetCurrentScene](#getcurrentscene)` for more information)."
+          "{Array<Scene>} `scenes` Ordered list of the current profile's scenes (See `[GetCurrentScene](#getcurrentscene)` for more information)."
         ],
         "api": "requests",
         "name": "GetSceneList",
@@ -2923,7 +2915,7 @@
             "description": "Name of the currently active scene."
           },
           {
-            "type": "Scene|Array",
+            "type": "Array<Scene>",
             "name": "scenes",
             "description": "Ordered list of the current profile's scenes (See `[GetCurrentScene](#getcurrentscene)` for more information)."
           }
@@ -2960,7 +2952,7 @@
         "subheads": [],
         "description": "List all sources available in the running OBS instance",
         "return": [
-          "{Array of Objects} `sources` Array of sources as objects",
+          "{Array<Object>} `sources` Array of sources as objects",
           "{String} `sources.*.name` Unique source name",
           "{String} `sources.*.typeId` Non-unique source internal type (a.k.a type id)",
           "{String} `sources.*.type` Source type. Value is one of the following: \"input\", \"filter\", \"transition\", \"scene\" or \"unknown\""
@@ -2971,7 +2963,7 @@
         "since": "4.3.0",
         "returns": [
           {
-            "type": "Array of Objects",
+            "type": "Array<Object>",
             "name": "sources",
             "description": "Array of sources as objects"
           },
@@ -3021,7 +3013,7 @@
         "subheads": [],
         "description": "Get a list of all available sources types",
         "return": [
-          "{Array of Objects} `ids` Array of sources as objects",
+          "{Array<Object>} `ids` Array of source types as objects",
           "{String} `ids.*.typeId` Non-unique internal source type ID",
           "{String} `ids.*.displayName` Display name of the source type",
           "{String} `ids.*.type` Type. Value is one of the following: \"input\", \"filter\", \"transition\" or \"other\"",
@@ -3041,9 +3033,9 @@
         "since": "4.3.0",
         "returns": [
           {
-            "type": "Array of Objects",
+            "type": "Array<Object>",
             "name": "ids",
-            "description": "Array of sources as objects"
+            "description": "Array of source types as objects"
           },
           {
             "type": "String",
@@ -4493,7 +4485,7 @@
         "description": "List filters applied to a source",
         "param": "{String} `sourceName` Source name",
         "return": [
-          "{Array of Objects} `filters` List of filters for the specified source",
+          "{Array<Object>} `filters` List of filters for the specified source",
           "{String} `filters.*.type` Filter type",
           "{String} `filters.*.name` Filter name",
           "{Object} `filters.*.settings` Filter settings"
@@ -4504,7 +4496,7 @@
         "since": "unreleased",
         "returns": [
           {
-            "type": "Array of Objects",
+            "type": "Array<Object>",
             "name": "filters",
             "description": "List of filters for the specified source"
           },
@@ -5303,7 +5295,7 @@
         "description": "Get the name of the currently previewed scene and its list of sources.\nWill return an `error` if Studio Mode is not enabled.",
         "return": [
           "{String} `name` The name of the active preview scene.",
-          "{Source|Array} `sources`"
+          "{Array<Source>} `sources`"
         ],
         "api": "requests",
         "name": "GetPreviewScene",
@@ -5316,7 +5308,7 @@
             "description": "The name of the active preview scene."
           },
           {
-            "type": "Source|Array",
+            "type": "Array<Source>",
             "name": "sources",
             "description": ""
           }
@@ -5549,8 +5541,8 @@
         "description": "List of all transitions available in the frontend's dropdown menu.",
         "return": [
           "{String} `current-transition` Name of the currently active transition.",
-          "{Object|Array} `transitions` List of transitions.",
-          "{String} `transitions[].name` Name of the transition."
+          "{Array<Object>} `transitions` List of transitions.",
+          "{String} `transitions.*.name` Name of the transition."
         ],
         "api": "requests",
         "name": "GetTransitionList",
@@ -5563,13 +5555,13 @@
             "description": "Name of the currently active transition."
           },
           {
-            "type": "Object|Array",
+            "type": "Array<Object>",
             "name": "transitions",
             "description": "List of transitions."
           },
           {
             "type": "String",
-            "name": "transitions[].name",
+            "name": "transitions.*.name",
             "description": "Name of the transition."
           }
         ],
@@ -5772,5 +5764,121 @@
         "examples": []
       }
     ]
-  }
+  },
+  "typedefs": [
+    {
+      "subheads": [],
+      "typedef": "{Object} `Scene`",
+      "property": [
+        "{String} `name` Name of the currently active scene.",
+        "{Array<Source>} `sources` Ordered list of the current scene's source items."
+      ],
+      "properties": [
+        {
+          "type": "String",
+          "name": "name",
+          "description": "Name of the currently active scene."
+        },
+        {
+          "type": "Array<Source>",
+          "name": "sources",
+          "description": "Ordered list of the current scene's source items."
+        }
+      ],
+      "typedefs": [
+        {
+          "type": "Object",
+          "name": "Scene",
+          "description": ""
+        }
+      ],
+      "name": "",
+      "heading": {
+        "level": 2,
+        "text": ""
+      },
+      "examples": []
+    },
+    {
+      "subheads": [],
+      "typedef": "{Object} `Source` An OBS Scene Item.",
+      "property": [
+        "{Number} `cy` -",
+        "{Number} `cx`",
+        "{String} `name` The name of this Scene Item.",
+        "{Boolean} `render` Whether or not this Scene Item is set to \"visible\".",
+        "{Number} `source_cx`",
+        "{Number} `source_cy`",
+        "{String} `type` Source type. Value is one of the following: \"input\", \"filter\", \"transition\", \"scene\" or \"unknown\"",
+        "{Number} `volume`",
+        "{Number} `x`",
+        "{Number} `y`"
+      ],
+      "properties": [
+        {
+          "type": "Number",
+          "name": "cy",
+          "description": ""
+        },
+        {
+          "type": "Number",
+          "name": "cx",
+          "description": ""
+        },
+        {
+          "type": "String",
+          "name": "name",
+          "description": "The name of this Scene Item."
+        },
+        {
+          "type": "Boolean",
+          "name": "render",
+          "description": "Whether or not this Scene Item is set to \"visible\"."
+        },
+        {
+          "type": "Number",
+          "name": "source_cx",
+          "description": ""
+        },
+        {
+          "type": "Number",
+          "name": "source_cy",
+          "description": ""
+        },
+        {
+          "type": "String",
+          "name": "type",
+          "description": "Source type. Value is one of the following: \"input\", \"filter\", \"transition\", \"scene\" or \"unknown\""
+        },
+        {
+          "type": "Number",
+          "name": "volume",
+          "description": ""
+        },
+        {
+          "type": "Number",
+          "name": "x",
+          "description": ""
+        },
+        {
+          "type": "Number",
+          "name": "y",
+          "description": ""
+        }
+      ],
+      "typedefs": [
+        {
+          "type": "Object",
+          "name": "Source",
+          "description": "An OBS Scene Item."
+        }
+      ],
+      "name": "",
+      "heading": {
+        "level": 2,
+        "text": ""
+      },
+      "examples": []
+    }
+  ]
 }
