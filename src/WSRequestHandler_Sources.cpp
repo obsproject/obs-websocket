@@ -5,7 +5,7 @@
 
 /**
 * @typedef {Object} `Source` An OBS Scene Item.
-* @property {Number} `cy` -
+* @property {Number} `cy`
 * @property {Number} `cx`
 * @property {String} `name` The name of this Scene Item.
 * @property {Boolean} `render` Whether or not this Scene Item is set to "visible".
