@@ -6,13 +6,19 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 add_definitions(-DASIO_STANDALONE)
+
+if (UNIX)
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -stdlib=libc++")
+endif()
 
 if (WIN32 OR APPLE)
 	include(external/FindLibObs.cmake)
 endif()
 
-find_package(CXX11 REQUIRED)
 find_package(LibObs REQUIRED)
 find_package(Qt5Core REQUIRED)
 find_package(Qt5Widgets REQUIRED)
@@ -64,8 +70,6 @@ target_link_libraries(obs-websocket
 	libobs
 	Qt5::Core
 	Qt5::Widgets)
-
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CXX11_FLAGS}")
 
 # --- End of section ---
 
