@@ -12,7 +12,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 add_definitions(-DASIO_STANDALONE)
 
 if (UNIX)
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -stdlib=libc++")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 endif()
 
 if (WIN32 OR APPLE)
@@ -175,7 +175,7 @@ endif()
 
 # -- OS X specific build settings and tasks --
 if(APPLE)
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=default")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++ -fvisibility=default")
 
 	set(CMAKE_SKIP_RPATH TRUE)
 	set_target_properties(obs-websocket PROPERTIES PREFIX "")
