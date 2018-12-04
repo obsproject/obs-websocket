@@ -16,7 +16,7 @@ endif()
 find_package(LibObs REQUIRED)
 find_package(Qt5Core REQUIRED)
 find_package(Qt5Widgets REQUIRED)
-find_package(Boost COMPONENTS type_traits REQUIRED)
+find_package(Boost REQUIRED)
 
 set(obs-websocket_SOURCES
 	src/obs-websocket.cpp
