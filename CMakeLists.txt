@@ -1,6 +1,5 @@
 cmake_minimum_required(VERSION 3.2)
 project(obs-websocket)
-set(CMAKE_CXX_STANDARD 11)
 
 set(CMAKE_PREFIX_PATH "${QTDIR}")
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -13,6 +12,7 @@ if (WIN32 OR APPLE)
 	include(external/FindLibObs.cmake)
 endif()
 
+find_package(CXX11 REQUIRED)
 find_package(LibObs REQUIRED)
 find_package(Qt5Core REQUIRED)
 find_package(Qt5Widgets REQUIRED)
@@ -65,6 +65,8 @@ target_link_libraries(obs-websocket
 	Qt5::Core
 	Qt5::Widgets)
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CXX11_FLAGS}")
+
 # --- End of section ---
 
 # --- Windows-specific build settings and tasks ---
@@ -73,6 +75,8 @@ if(WIN32)
 		set(OBS_FRONTEND_LIB "OBS_FRONTEND_LIB-NOTFOUND" CACHE FILEPATH "OBS frontend library")
 		message(FATAL_ERROR "Could not find OBS Frontend API's library !")
 	endif()
+
+	add_definitions(-D_WEBSOCKETPP_CPP11_STL_)
 
 	if(CMAKE_SIZEOF_VOID_P EQUAL 8)
 		set(ARCH_NAME "64bit")
@@ -153,8 +157,6 @@ endif()
 
 # --- Linux-specific build settings and tasks ---
 if(UNIX AND NOT APPLE)
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-
 	set_target_properties(obs-websocket PROPERTIES PREFIX "")
 	target_link_libraries(obs-websocket obs-frontend-api)
 
@@ -169,7 +171,7 @@ endif()
 
 # -- OS X specific build settings and tasks --
 if(APPLE)
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++ -fvisibility=default")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=default")
 
 	set(CMAKE_SKIP_RPATH TRUE)
 	set_target_properties(obs-websocket PROPERTIES PREFIX "")
