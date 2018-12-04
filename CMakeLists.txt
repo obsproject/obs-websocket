@@ -15,6 +15,7 @@ endif()
 find_package(LibObs REQUIRED)
 find_package(Qt5Core REQUIRED)
 find_package(Qt5Widgets REQUIRED)
+find_package(Boost REQUIRED)
 
 set(obs-websocket_SOURCES
 	src/obs-websocket.cpp
@@ -54,6 +55,7 @@ include_directories(
 	"${LIBOBS_INCLUDE_DIR}/../UI/obs-frontend-api"
 	${Qt5Core_INCLUDES}
 	${Qt5Widgets_INCLUDES}
+	${Boost_INCLUDE_DIRS}
 	"${CMAKE_SOURCE_DIR}/deps/asio/asio/include"
 	"${CMAKE_SOURCE_DIR}/deps/websocketpp")
 

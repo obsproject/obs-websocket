@@ -11,7 +11,8 @@ apt-get install -y \
 	checkinstall \
 	cmake \
 	obs-studio \
-	qtbase5-dev
+	qtbase5-dev \
+	libboost-all-dev
 
 # Dirty hack
 wget -O /usr/include/obs/obs-frontend-api.h https://raw.githubusercontent.com/obsproject/obs-studio/master/UI/obs-frontend-api/obs-frontend-api.h
