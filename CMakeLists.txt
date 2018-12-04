@@ -6,15 +6,15 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 
+add_definitions(-DASIO_STANDALONE)
+
 if (WIN32 OR APPLE)
-	set(Boost_USE_STATIC_LIBS ON)
 	include(external/FindLibObs.cmake)
 endif()
 
 find_package(LibObs REQUIRED)
 find_package(Qt5Core REQUIRED)
 find_package(Qt5Widgets REQUIRED)
-find_package(Boost COMPONENTS system date_time regex REQUIRED)
 
 set(obs-websocket_SOURCES
 	src/obs-websocket.cpp
@@ -54,16 +54,13 @@ include_directories(
 	"${LIBOBS_INCLUDE_DIR}/../UI/obs-frontend-api"
 	${Qt5Core_INCLUDES}
 	${Qt5Widgets_INCLUDES}
-	${Boost_INCLUDE_DIRS}
+        "${CMAKE_SOURCE_DIR}/deps/asio/asio/include"
 	"${CMAKE_SOURCE_DIR}/deps/websocketpp")
 
 target_link_libraries(obs-websocket
 	libobs
 	Qt5::Core
-	Qt5::Widgets
-	${Boost_SYSTEM_LIBRARY}
-	${Boost_DATE_TIME_LIBRARY}
-	${Boost_REGEX_LIBRARY})
+	Qt5::Widgets)
 
 # --- End of section ---
 
@@ -156,8 +153,7 @@ if(UNIX AND NOT APPLE)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 	set_target_properties(obs-websocket PROPERTIES PREFIX "")
-	target_link_libraries(obs-websocket
-		obs-frontend-api)
+	target_link_libraries(obs-websocket obs-frontend-api)
 
 	file(GLOB locale_files data/locale/*.ini)
 

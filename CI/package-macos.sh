@@ -24,27 +24,6 @@ fi
 export FILENAME="obs-websocket-$VERSION.pkg"
 export LATEST_FILENAME="obs-websocket-latest-$LATEST_VERSION.pkg"
 
-echo "[obs-websocket] Copying Qt dependencies"
-if [ ! -f ./build/$(basename $WS_LIB) ]; then cp $WS_LIB ./build; fi
-if [ ! -f ./build/$(basename $NET_LIB) ]; then cp $NET_LIB ./build; fi
-
-chmod +rw ./build/QtWebSockets ./build/QtNetwork
-
-echo "[obs-websocket] Modifying QtNetwork"
-install_name_tool \
-	-id @rpath/QtNetwork \
-	-change /usr/local/opt/qt/lib/QtNetwork.framework/Versions/5/QtNetwork @rpath/QtNetwork \
-	-change $QT_CELLAR_PREFIX/lib/QtCore.framework/Versions/5/QtCore @rpath/QtCore \
-	./build/QtNetwork
-
-echo "[obs-websocket] Modifying QtWebSockets"
-install_name_tool \
-	-id @rpath/QtWebSockets \
-	-change /usr/local/opt/qt/lib/QtWebSockets.framework/Versions/5/QtWebSockets @rpath/QtWebSockets \
-	-change $QT_CELLAR_PREFIX/lib/QtNetwork.framework/Versions/5/QtNetwork @rpath/QtNetwork \
-	-change $QT_CELLAR_PREFIX/lib/QtCore.framework/Versions/5/QtCore @rpath/QtCore \
-	./build/QtWebSockets
-
 echo "[obs-websocket] Modifying obs-websocket.so"
 install_name_tool \
 	-change /usr/local/opt/qt/lib/QtWidgets.framework/Versions/5/QtWidgets @rpath/QtWidgets \
@@ -53,14 +32,8 @@ install_name_tool \
 	./build/obs-websocket.so
 
 # Check if replacement worked
-echo "[obs-websocket] Dependencies for QtNetwork"
-otool -L ./build/QtNetwork
-echo "[obs-websocket] Dependencies for QtWebSockets"
-otool -L ./build/QtWebSockets
 echo "[obs-websocket] Dependencies for obs-websocket"
 otool -L ./build/obs-websocket.so
-
-chmod -w ./build/QtWebSockets ./build/QtNetwork
 
 echo "[obs-websocket] Actual package build"
 packagesbuild ./CI/macos/obs-websocket.pkgproj
