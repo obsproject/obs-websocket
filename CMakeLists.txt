@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.2)
 project(obs-websocket)
+set(CMAKE_CXX_STANDARD 11)
 
 set(CMAKE_PREFIX_PATH "${QTDIR}")
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -15,7 +16,7 @@ endif()
 find_package(LibObs REQUIRED)
 find_package(Qt5Core REQUIRED)
 find_package(Qt5Widgets REQUIRED)
-find_package(Boost REQUIRED)
+find_package(Boost COMPONENTS type_traits REQUIRED)
 
 set(obs-websocket_SOURCES
 	src/obs-websocket.cpp
