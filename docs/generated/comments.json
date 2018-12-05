@@ -2952,7 +2952,7 @@
         "subheads": [],
         "description": "List all sources available in the running OBS instance",
         "return": [
-          "{Array<Object>} `sources` Array of sources as objects",
+          "{Array<Object>} `sources` Array of sources",
           "{String} `sources.*.name` Unique source name",
           "{String} `sources.*.typeId` Non-unique source internal type (a.k.a type id)",
           "{String} `sources.*.type` Source type. Value is one of the following: \"input\", \"filter\", \"transition\", \"scene\" or \"unknown\""
@@ -2965,7 +2965,7 @@
           {
             "type": "Array<Object>",
             "name": "sources",
-            "description": "Array of sources as objects"
+            "description": "Array of sources"
           },
           {
             "type": "String",
@@ -3013,7 +3013,7 @@
         "subheads": [],
         "description": "Get a list of all available sources types",
         "return": [
-          "{Array<Object>} `ids` Array of source types as objects",
+          "{Array<Object>} `ids` Array of source types",
           "{String} `ids.*.typeId` Non-unique internal source type ID",
           "{String} `ids.*.displayName` Display name of the source type",
           "{String} `ids.*.type` Type. Value is one of the following: \"input\", \"filter\", \"transition\" or \"other\"",
@@ -3035,7 +3035,7 @@
           {
             "type": "Array<Object>",
             "name": "ids",
-            "description": "Array of source types as objects"
+            "description": "Array of source types"
           },
           {
             "type": "String",
@@ -5803,7 +5803,7 @@
       "subheads": [],
       "typedef": "{Object} `Source` An OBS Scene Item.",
       "property": [
-        "{Number} `cy` -",
+        "{Number} `cy`",
         "{Number} `cx`",
         "{String} `name` The name of this Scene Item.",
         "{Boolean} `render` Whether or not this Scene Item is set to \"visible\".",

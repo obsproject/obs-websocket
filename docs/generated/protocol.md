@@ -1427,7 +1427,7 @@ _No specified parameters._
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
-| `sources` | _Array&lt;Object&gt;_ | Array of sources as objects |
+| `sources` | _Array&lt;Object&gt;_ | Array of sources |
 | `sources.*.name` | _String_ | Unique source name |
 | `sources.*.typeId` | _String_ | Non-unique source internal type (a.k.a type id) |
 | `sources.*.type` | _String_ | Source type. Value is one of the following: "input", "filter", "transition", "scene" or "unknown" |
@@ -1450,7 +1450,7 @@ _No specified parameters._
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
-| `ids` | _Array&lt;Object&gt;_ | Array of source types as objects |
+| `ids` | _Array&lt;Object&gt;_ | Array of source types |
 | `ids.*.typeId` | _String_ | Non-unique internal source type ID |
 | `ids.*.displayName` | _String_ | Display name of the source type |
 | `ids.*.type` | _String_ | Type. Value is one of the following: "input", "filter", "transition" or "other" |

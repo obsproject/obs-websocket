@@ -20,7 +20,7 @@
 /**
 * List all sources available in the running OBS instance
 *
-* @return {Array<Object>} `sources` Array of sources as objects
+* @return {Array<Object>} `sources` Array of sources
 * @return {String} `sources.*.name` Unique source name
 * @return {String} `sources.*.typeId` Non-unique source internal type (a.k.a type id)
 * @return {String} `sources.*.type` Source type. Value is one of the following: "input", "filter", "transition", "scene" or "unknown"
@@ -78,7 +78,7 @@ void WSRequestHandler::HandleGetSourcesList(WSRequestHandler* req) {
 /**
 * Get a list of all available sources types
 *
-* @return {Array<Object>} `ids` Array of source types as objects
+* @return {Array<Object>} `ids` Array of source types
 * @return {String} `ids.*.typeId` Non-unique internal source type ID
 * @return {String} `ids.*.displayName` Display name of the source type
 * @return {String} `ids.*.type` Type. Value is one of the following: "input", "filter", "transition" or "other"
