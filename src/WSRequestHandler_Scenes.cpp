@@ -4,6 +4,12 @@
 #include "WSRequestHandler.h"
 
 /**
+* @typedef {Object} `Scene`
+* @property {String} `name` Name of the currently active scene.
+* @property {Array<Source>} `sources` Ordered list of the current scene's source items.
+*/
+
+/**
  * Switch to the specified scene.
  *
  * @param {String} `scene-name` Name of the scene to switch to.
@@ -34,7 +40,7 @@
  * Get the current scene's name and source items.
  * 
  * @return {String} `name` Name of the currently active scene.
- * @return {Source|Array} `sources` Ordered list of the current scene's source items.
+ * @return {Array<Source>} `sources` Ordered list of the current scene's source items.
  *
  * @api requests
  * @name GetCurrentScene
@@ -56,7 +62,7 @@ void WSRequestHandler::HandleGetCurrentScene(WSRequestHandler* req) {
  * Get a list of scenes in the currently active profile.
  * 
  * @return {String} `current-scene` Name of the currently active scene.
- * @return {Scene|Array} `scenes` Ordered list of the current profile's scenes (See `[GetCurrentScene](#getcurrentscene)` for more information).
+ * @return {Array<Scene>} `scenes` Ordered list of the current profile's scenes (See `[GetCurrentScene](#getcurrentscene)` for more information).
  *
  * @api requests
  * @name GetSceneList

@@ -292,7 +292,7 @@ const char* WSEvents::GetRecordingTimecode() {
  * Indicates a scene change.
  *
  * @return {String} `scene-name` The new scene.
- * @return {Array} `sources` List of sources in the new scene.
+ * @return {Array<Source>} `sources` List of sources in the new scene. Same specification as [`GetCurrentScene`](#getcurrentscene).
  *
  * @api events
  * @name SwitchScenes
@@ -907,7 +907,7 @@ void WSEvents::OnSceneItemVisibilityChanged(void* param, calldata_t* data) {
  * The selected preview scene has changed (only available in Studio Mode).
  *
  * @return {String} `scene-name` Name of the scene being previewed.
- * @return {Source|Array} `sources` List of sources composing the scene. Same specification as [`GetCurrentScene`](#getcurrentscene).
+ * @return {Array<Source>} `sources` List of sources composing the scene. Same specification as [`GetCurrentScene`](#getcurrentscene).
  *
  * @api events
  * @name PreviewSceneChanged

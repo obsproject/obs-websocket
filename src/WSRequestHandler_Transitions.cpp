@@ -7,8 +7,8 @@
  * List of all transitions available in the frontend's dropdown menu.
  *
  * @return {String} `current-transition` Name of the currently active transition.
- * @return {Object|Array} `transitions` List of transitions.
- * @return {String} `transitions[].name` Name of the transition.
+ * @return {Array<Object>} `transitions` List of transitions.
+ * @return {String} `transitions.*.name` Name of the transition.
  *
  * @api requests
  * @name GetTransitionList

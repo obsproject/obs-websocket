@@ -4,9 +4,23 @@
 #include "WSRequestHandler.h"
 
 /**
+* @typedef {Object} `Source` An OBS Scene Item.
+* @property {Number} `cy`
+* @property {Number} `cx`
+* @property {String} `name` The name of this Scene Item.
+* @property {Boolean} `render` Whether or not this Scene Item is set to "visible".
+* @property {Number} `source_cx`
+* @property {Number} `source_cy`
+* @property {String} `type` Source type. Value is one of the following: "input", "filter", "transition", "scene" or "unknown"
+* @property {Number} `volume`
+* @property {Number} `x`
+* @property {Number} `y`
+*/
+
+/**
 * List all sources available in the running OBS instance
 *
-* @return {Array of Objects} `sources` Array of sources as objects
+* @return {Array<Object>} `sources` Array of sources
 * @return {String} `sources.*.name` Unique source name
 * @return {String} `sources.*.typeId` Non-unique source internal type (a.k.a type id)
 * @return {String} `sources.*.type` Source type. Value is one of the following: "input", "filter", "transition", "scene" or "unknown"
@@ -64,7 +78,7 @@ void WSRequestHandler::HandleGetSourcesList(WSRequestHandler* req) {
 /**
 * Get a list of all available sources types
 *
-* @return {Array of Objects} `ids` Array of sources as objects
+* @return {Array<Object>} `ids` Array of source types
 * @return {String} `ids.*.typeId` Non-unique internal source type ID
 * @return {String} `ids.*.displayName` Display name of the source type
 * @return {String} `ids.*.type` Type. Value is one of the following: "input", "filter", "transition" or "other"
@@ -1119,7 +1133,7 @@ void WSRequestHandler::HandleDuplicateSceneItem(WSRequestHandler* req) {
 *
 * @param {String} `sourceName` Source name
 *
-* @return {Array of Objects} `filters` List of filters for the specified source
+* @return {Array<Object>} `filters` List of filters for the specified source
 * @return {String} `filters.*.type` Filter type
 * @return {String} `filters.*.name` Filter name
 * @return {Object} `filters.*.settings` Filter settings
