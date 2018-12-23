@@ -115,7 +115,7 @@ QHash<QString, void(*)(WSRequestHandler*)> WSRequestHandler::messageMap {
 	{ "GetTextGDIPlusProperties", WSRequestHandler::HandleGetTextGDIPlusProperties },
 
 	{ "SetTextFreetype2Properties", WSRequestHandler::HandleSetTextFreetype2Properties },
-    { "GetTextFreetype2Properties", WSRequestHandler::HandleGetTextFreetype2Properties },
+	{ "GetTextFreetype2Properties", WSRequestHandler::HandleGetTextFreetype2Properties },
 
 	{ "GetBrowserSourceProperties", WSRequestHandler::HandleGetBrowserSourceProperties },
 	{ "SetBrowserSourceProperties", WSRequestHandler::HandleSetBrowserSourceProperties }
