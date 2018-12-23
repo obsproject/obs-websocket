@@ -30,7 +30,8 @@
 * @category sources
 * @since 4.3.0
 */
-void WSRequestHandler::HandleGetSourcesList(WSRequestHandler* req) {
+void WSRequestHandler::HandleGetSourcesList(WSRequestHandler* req)
+{
 	OBSDataArrayAutoRelease sourcesArray = obs_data_array_create();
 
 	auto sourceEnumProc = [](void* privateData, obs_source_t* source) -> bool {
@@ -97,7 +98,8 @@ void WSRequestHandler::HandleGetSourcesList(WSRequestHandler* req) {
 * @category sources
 * @since 4.3.0
 */
-void WSRequestHandler::HandleGetSourceTypesList(WSRequestHandler* req) {
+void WSRequestHandler::HandleGetSourceTypesList(WSRequestHandler* req)
+{
 	OBSDataArrayAutoRelease idsArray = obs_data_array_create();
 
 	const char* id;
@@ -155,43 +157,48 @@ void WSRequestHandler::HandleGetSourceTypesList(WSRequestHandler* req) {
 /**
 * Get the volume of the specified source.
 *
-* @param {String} `source` Name of the source.
+* @param {String} `source` Source name.
 *
-* @return {String} `name` Name of the source.
+* @return {String} `name` Source name.
 * @return {double} `volume` Volume of the source. Between `0.0` and `1.0`.
-* @return {boolean} `mute` Indicates whether the source is muted.
+* @return {boolean} `muted` Indicates whether the source is muted.
 *
 * @api requests
 * @name GetVolume
 * @category sources
 * @since 4.0.0
 */
-void WSRequestHandler::HandleGetVolume(WSRequestHandler* req) {
+void WSRequestHandler::HandleGetVolume(WSRequestHandler* req)
+{
 	if (!req->hasField("source")) {
 		req->SendErrorResponse("missing request parameters");
 		return;
 	}
 
 	QString sourceName = obs_data_get_string(req->data, "source");
-	if (!sourceName.isEmpty()) {
-		OBSSourceAutoRelease source = obs_get_source_by_name(sourceName.toUtf8());
-
-		OBSDataAutoRelease response = obs_data_create();
-		obs_data_set_string(response, "name", sourceName.toUtf8());
-		obs_data_set_double(response, "volume", obs_source_get_volume(source));
-		obs_data_set_bool(response, "muted", obs_source_muted(source));
-
-		req->SendOKResponse(response);
-	}
-	else {
+	if (sourceName.isEmpty()) {
 		req->SendErrorResponse("invalid request parameters");
+		return;
 	}
+
+	OBSSourceAutoRelease source = obs_get_source_by_name(sourceName.toUtf8());
+	if (!source) {
+		req->SendErrorResponse("specified source doesn't exist");
+		return;
+	}
+
+	OBSDataAutoRelease response = obs_data_create();
+	obs_data_set_string(response, "name", obs_source_get_name(source));
+	obs_data_set_double(response, "volume", obs_source_get_volume(source));
+	obs_data_set_bool(response, "muted", obs_source_muted(source));
+
+	req->SendOKResponse(response);
 }
 
 /**
  * Set the volume of the specified source.
  *
- * @param {String} `source` Name of the source.
+ * @param {String} `source` Source name.
  * @param {double} `volume` Desired volume. Must be between `0.0` and `1.0`.
  *
  * @api requests
@@ -199,9 +206,9 @@ void WSRequestHandler::HandleGetVolume(WSRequestHandler* req) {
  * @category sources
  * @since 4.0.0
  */
- void WSRequestHandler::HandleSetVolume(WSRequestHandler* req) {
-	if (!req->hasField("source") ||
-		!req->hasField("volume"))
+ void WSRequestHandler::HandleSetVolume(WSRequestHandler* req)
+ {
+	if (!req->hasField("source") || !req->hasField("volume"))
 	{
 		req->SendErrorResponse("missing request parameters");
 		return;
@@ -210,8 +217,7 @@ void WSRequestHandler::HandleGetVolume(WSRequestHandler* req) {
 	QString sourceName = obs_data_get_string(req->data, "source");
 	float sourceVolume = obs_data_get_double(req->data, "volume");
 
-	if (sourceName.isEmpty() ||
-		sourceVolume < 0.0 || sourceVolume > 1.0) {
+	if (sourceName.isEmpty() || sourceVolume < 0.0 || sourceVolume > 1.0) {
 		req->SendErrorResponse("invalid request parameters");
 		return;
 	}
@@ -229,9 +235,9 @@ void WSRequestHandler::HandleGetVolume(WSRequestHandler* req) {
 /**
 * Get the mute status of a specified source.
 *
-* @param {String} `source` The name of the source.
+* @param {String} `source` Source name.
 *
-* @return {String} `name` The name of the source.
+* @return {String} `name` Source name.
 * @return {boolean} `muted` Mute status of the source.
 *
 * @api requests
@@ -239,7 +245,8 @@ void WSRequestHandler::HandleGetVolume(WSRequestHandler* req) {
 * @category sources
 * @since 4.0.0
 */
-void WSRequestHandler::HandleGetMute(WSRequestHandler* req) {
+void WSRequestHandler::HandleGetMute(WSRequestHandler* req)
+{
 	if (!req->hasField("source")) {
 		req->SendErrorResponse("missing request parameters");
 		return;
@@ -267,7 +274,7 @@ void WSRequestHandler::HandleGetMute(WSRequestHandler* req) {
 /**
  * Sets the mute status of a specified source.
  *
- * @param {String} `source` The name of the source.
+ * @param {String} `source` Source name.
  * @param {boolean} `mute` Desired mute status.
  *
  * @api requests
@@ -275,9 +282,9 @@ void WSRequestHandler::HandleGetMute(WSRequestHandler* req) {
  * @category sources
  * @since 4.0.0
  */
-void WSRequestHandler::HandleSetMute(WSRequestHandler* req) {
-	if (!req->hasField("source") ||
-		!req->hasField("mute")) {
+void WSRequestHandler::HandleSetMute(WSRequestHandler* req)
+{
+	if (!req->hasField("source") || !req->hasField("mute")) {
 		req->SendErrorResponse("missing request parameters");
 		return;
 	}
@@ -303,14 +310,15 @@ void WSRequestHandler::HandleSetMute(WSRequestHandler* req) {
 /**
 * Inverts the mute status of a specified source.
 *
-* @param {String} `source` The name of the source.
+* @param {String} `source` Source name.
 *
 * @api requests
 * @name ToggleMute
 * @category sources
 * @since 4.0.0
 */
-void WSRequestHandler::HandleToggleMute(WSRequestHandler* req) {
+void WSRequestHandler::HandleToggleMute(WSRequestHandler* req)
+{
 	if (!req->hasField("source")) {
 		req->SendErrorResponse("missing request parameters");
 		return;
@@ -335,7 +343,7 @@ void WSRequestHandler::HandleToggleMute(WSRequestHandler* req) {
 /**
  * Set the audio sync offset of a specified source.
  *
- * @param {String} `source` The name of the source.
+ * @param {String} `source` Source name.
  * @param {int} `offset` The desired audio sync offset (in nanoseconds).
  *
  * @api requests
@@ -343,7 +351,8 @@ void WSRequestHandler::HandleToggleMute(WSRequestHandler* req) {
  * @category sources
  * @since 4.2.0
  */
-void WSRequestHandler::HandleSetSyncOffset(WSRequestHandler* req) {
+void WSRequestHandler::HandleSetSyncOffset(WSRequestHandler* req)
+{
 	if (!req->hasField("source") || !req->hasField("offset")) {
 		req->SendErrorResponse("missing request parameters");
 		return;
@@ -370,9 +379,9 @@ void WSRequestHandler::HandleSetSyncOffset(WSRequestHandler* req) {
 /**
  * Get the audio sync offset of a specified source.
  *
- * @param {String} `source` The name of the source.
+ * @param {String} `source` Source name.
  *
- * @return {String} `name` The name of the source.
+ * @return {String} `name` Source name.
  * @return {int} `offset` The audio sync offset (in nanoseconds).
  *
  * @api requests
@@ -380,42 +389,49 @@ void WSRequestHandler::HandleSetSyncOffset(WSRequestHandler* req) {
  * @category sources
  * @since 4.2.0
  */
-void WSRequestHandler::HandleGetSyncOffset(WSRequestHandler* req) {
+void WSRequestHandler::HandleGetSyncOffset(WSRequestHandler* req)
+{
 	if (!req->hasField("source")) {
 		req->SendErrorResponse("missing request parameters");
 		return;
 	}
 
 	QString sourceName = obs_data_get_string(req->data, "source");
-	if (!sourceName.isEmpty()) {
-		OBSSourceAutoRelease source = obs_get_source_by_name(sourceName.toUtf8());
-
-		OBSDataAutoRelease response = obs_data_create();
-		obs_data_set_string(response, "name", sourceName.toUtf8());
-		obs_data_set_int(response, "offset", obs_source_get_sync_offset(source));
-
-		req->SendOKResponse(response);
-	} else {
+	if (sourceName.isEmpty()) {
 		req->SendErrorResponse("invalid request parameters");
+		return;
 	}
+
+	OBSSourceAutoRelease source = obs_get_source_by_name(sourceName.toUtf8());
+	if (!source) {
+		req->SendErrorResponse("specified source doesn't exist");
+		return;
+	}
+
+	OBSDataAutoRelease response = obs_data_create();
+	obs_data_set_string(response, "name", obs_source_get_name(source));
+	obs_data_set_int(response, "offset", obs_source_get_sync_offset(source));
+
+	req->SendOKResponse(response);
 }
 
 /**
 * Get settings of the specified source
 *
-* @param {String} `sourceName` Name of the source item.
+* @param {String} `sourceName` Source name.
 * @param {String (optional)} `sourceType` Type of the specified source. Useful for type-checking if you expect a specific settings schema.
 *
 * @return {String} `sourceName` Source name
 * @return {String} `sourceType` Type of the specified source
-* @return {Object} `sourceSettings` Source settings. Varying between source types.
+* @return {Object} `sourceSettings` Source settings (varies between source types, may require some probing around).
 *
 * @api requests
 * @name GetSourceSettings
 * @category sources
 * @since 4.3.0
 */
-void WSRequestHandler::HandleGetSourceSettings(WSRequestHandler* req) {
+void WSRequestHandler::HandleGetSourceSettings(WSRequestHandler* req)
+{
 	if (!req->hasField("sourceName")) {
 		req->SendErrorResponse("missing request parameters");
 		return;
@@ -444,26 +460,28 @@ void WSRequestHandler::HandleGetSourceSettings(WSRequestHandler* req) {
 	obs_data_set_string(response, "sourceName", obs_source_get_name(source));
 	obs_data_set_string(response, "sourceType", obs_source_get_id(source));
 	obs_data_set_obj(response, "sourceSettings", sourceSettings);
+
 	req->SendOKResponse(response);
 }
 
 /**
 * Set settings of the specified source.
 *
-* @param {String} `sourceName` Name of the source item.
+* @param {String} `sourceName` Source name.
 * @param {String (optional)} `sourceType` Type of the specified source. Useful for type-checking to avoid settings a set of settings incompatible with the actual source's type.
-* @param {Object} `sourceSettings` Source settings. Varying between source types.
+* @param {Object} `sourceSettings` Source settings (varies between source types, may require some probing around).
 *
 * @return {String} `sourceName` Source name
 * @return {String} `sourceType` Type of the specified source
-* @return {Object} `sourceSettings` Source settings. Varying between source types.
+* @return {Object} `sourceSettings` Updated source settings
 *
 * @api requests
 * @name SetSourceSettings
 * @category sources
 * @since 4.3.0
 */
-void WSRequestHandler::HandleSetSourceSettings(WSRequestHandler* req) {
+void WSRequestHandler::HandleSetSourceSettings(WSRequestHandler* req)
+{
 	if (!req->hasField("sourceName") || !req->hasField("sourceSettings")) {
 		req->SendErrorResponse("missing request parameters");
 		return;
@@ -500,15 +518,16 @@ void WSRequestHandler::HandleSetSourceSettings(WSRequestHandler* req) {
 	obs_data_set_string(response, "sourceName", obs_source_get_name(source));
 	obs_data_set_string(response, "sourceType", obs_source_get_id(source));
 	obs_data_set_obj(response, "sourceSettings", sourceSettings);
+
 	req->SendOKResponse(response);
 }
 
 /**
  * Get the current properties of a Text GDI Plus source.
  *
- * @param {String (optional)} `scene-name` Name of the scene to retrieve. Defaults to the current scene.
- * @param {String} `source` Name of the source.
+ * @param {String} `source` Source name.
  *
+ * @return {String} `source` Source name.
  * @return {String} `align` Text Alignment ("left", "center", "right").
  * @return {int} `bk-color` Background color.
  * @return {int} `bk-opacity` Background opacity (0-100).
@@ -536,55 +555,41 @@ void WSRequestHandler::HandleSetSourceSettings(WSRequestHandler* req) {
  * @return {String} `text` Text content to be displayed.
  * @return {String} `valign` Text vertical alignment ("top", "center", "bottom").
  * @return {boolean} `vertical` Vertical text enabled.
- * @return {boolean} `render` Visibility of the scene item.
  *
  * @api requests
  * @name GetTextGDIPlusProperties
  * @category sources
  * @since 4.1.0
  */
- void WSRequestHandler::HandleGetTextGDIPlusProperties(WSRequestHandler* req) {
-	// TODO: source settings are independent of any scene, so there's no need
-	// to target a specific scene
-
-	const char* itemName = obs_data_get_string(req->data, "source");
-	if (!itemName) {
+ void WSRequestHandler::HandleGetTextGDIPlusProperties(WSRequestHandler* req)
+ {
+	const char* sourceName = obs_data_get_string(req->data, "source");
+	if (!sourceName) {
 		req->SendErrorResponse("invalid request parameters");
 		return;
 	}
 
-	const char* sceneName = obs_data_get_string(req->data, "scene-name");
-	OBSSourceAutoRelease scene = Utils::GetSceneFromNameOrCurrent(sceneName);
-	if (!scene) {
-		req->SendErrorResponse("requested scene doesn't exist");
+	OBSSourceAutoRelease source = obs_get_source_by_name(sourceName);
+	if (!source) {
+		req->SendErrorResponse("specified source doesn't exist");
 		return;
 	}
 
-	OBSSceneItemAutoRelease sceneItem = Utils::GetSceneItemFromName(scene, itemName);
-	if (sceneItem) {
-		OBSSource sceneItemSource = obs_sceneitem_get_source(sceneItem);
-		const char* sceneItemSourceId = obs_source_get_id(sceneItemSource);
-
-		if (strcmp(sceneItemSourceId, "text_gdiplus") == 0) {
-			OBSDataAutoRelease response = obs_source_get_settings(sceneItemSource);
-			obs_data_set_string(response, "source", itemName);
-			obs_data_set_string(response, "scene-name", sceneName);
-			obs_data_set_bool(response, "render",
-				obs_sceneitem_visible(sceneItem));
-
-			req->SendOKResponse(response);
-		} else {
-			req->SendErrorResponse("not text gdi plus source");
-		}
-	} else {
-		req->SendErrorResponse("specified scene item doesn't exist");
+	QString sourceId = obs_source_get_id(source);
+	if (sourceId != "text_gdiplus") {
+		req->SendErrorResponse("not a text gdi plus source");
+		return;
 	}
+
+	OBSDataAutoRelease response = obs_source_get_settings(source);
+	obs_data_set_string(response, "source", obs_source_get_name(source));
+
+	req->SendOKResponse(response);
 }
 
 /**
  * Set the current properties of a Text GDI Plus source.
  *
- * @param {String (optional)} `scene-name` Name of the scene to retrieve. Defaults to the current scene.
  * @param {String} `source` Name of the source.
  * @param {String (optional)} `align` Text Alignment ("left", "center", "right").
  * @param {int (optional)} `bk-color` Background color.
@@ -620,192 +625,151 @@ void WSRequestHandler::HandleSetSourceSettings(WSRequestHandler* req) {
  * @category sources
  * @since 4.1.0
  */
-void WSRequestHandler::HandleSetTextGDIPlusProperties(WSRequestHandler* req) {
-	// TODO: source settings are independent of any scene, so there's no need
-	// to target a specific scene
-
+void WSRequestHandler::HandleSetTextGDIPlusProperties(WSRequestHandler* req)
+{
 	if (!req->hasField("source")) {
 		req->SendErrorResponse("missing request parameters");
 		return;
 	}
 
-	const char* itemName = obs_data_get_string(req->data, "source");
-	if (!itemName) {
+	const char* sourceName = obs_data_get_string(req->data, "source");
+	if (!sourceName) {
 		req->SendErrorResponse("invalid request parameters");
 		return;
 	}
 
-	const char* sceneName = obs_data_get_string(req->data, "scene-name");
-	OBSSourceAutoRelease scene = Utils::GetSceneFromNameOrCurrent(sceneName);
-	if (!scene) {
-		req->SendErrorResponse("requested scene doesn't exist");
+	OBSSourceAutoRelease source = obs_get_source_by_name(sourceName);
+	if (!source) {
+		req->SendErrorResponse("specified source doesn't exist");
 		return;
 	}
 
-	OBSSceneItemAutoRelease sceneItem = Utils::GetSceneItemFromName(scene, itemName);
-	if (sceneItem) {
-		OBSSource sceneItemSource = obs_sceneitem_get_source(sceneItem);
-		const char* sceneItemSourceId = obs_source_get_id(sceneItemSource);
-
-		if (strcmp(sceneItemSourceId, "text_gdiplus") == 0) {
-			OBSDataAutoRelease settings = obs_source_get_settings(sceneItemSource);
-
-			if (req->hasField("align")) {
-				obs_data_set_string(settings, "align",
-					obs_data_get_string(req->data, "align"));
-			}
-
-			if (req->hasField("bk_color")) {
-				obs_data_set_int(settings, "bk_color",
-					obs_data_get_int(req->data, "bk_color"));
-			}
-
-			if (req->hasField("bk-opacity")) {
-				obs_data_set_int(settings, "bk_opacity",
-					obs_data_get_int(req->data, "bk_opacity"));
-			}
-
-			if (req->hasField("chatlog")) {
-				obs_data_set_bool(settings, "chatlog",
-					obs_data_get_bool(req->data, "chatlog"));
-			}
-
-			if (req->hasField("chatlog_lines")) {
-				obs_data_set_int(settings, "chatlog_lines",
-					obs_data_get_int(req->data, "chatlog_lines"));
-			}
-
-			if (req->hasField("color")) {
-				obs_data_set_int(settings, "color",
-					obs_data_get_int(req->data, "color"));
-			}
-
-			if (req->hasField("extents")) {
-				obs_data_set_bool(settings, "extents",
-					obs_data_get_bool(req->data, "extents"));
-			}
-
-			if (req->hasField("extents_wrap")) {
-				obs_data_set_bool(settings, "extents_wrap",
-					obs_data_get_bool(req->data, "extents_wrap"));
-			}
-
-			if (req->hasField("extents_cx")) {
-				obs_data_set_int(settings, "extents_cx",
-					obs_data_get_int(req->data, "extents_cx"));
-			}
-
-			if (req->hasField("extents_cy")) {
-				obs_data_set_int(settings, "extents_cy",
-					obs_data_get_int(req->data, "extents_cy"));
-			}
-
-			if (req->hasField("file")) {
-				obs_data_set_string(settings, "file",
-					obs_data_get_string(req->data, "file"));
-			}
-
-			if (req->hasField("font")) {
-				OBSDataAutoRelease font_obj = obs_data_get_obj(settings, "font");
-				if (font_obj) {
-					OBSDataAutoRelease req_font_obj = obs_data_get_obj(req->data, "font");
-
-					if (obs_data_has_user_value(req_font_obj, "face")) {
-						obs_data_set_string(font_obj, "face",
-							obs_data_get_string(req_font_obj, "face"));
-					}
-
-					if (obs_data_has_user_value(req_font_obj, "flags")) {
-						obs_data_set_int(font_obj, "flags",
-							obs_data_get_int(req_font_obj, "flags"));
-					}
-
-					if (obs_data_has_user_value(req_font_obj, "size")) {
-						obs_data_set_int(font_obj, "size",
-							obs_data_get_int(req_font_obj, "size"));
-					}
-
-					if (obs_data_has_user_value(req_font_obj, "style")) {
-						obs_data_set_string(font_obj, "style",
-							obs_data_get_string(req_font_obj, "style"));
-					}
-				}
-			}
-
-			if (req->hasField("gradient")) {
-				obs_data_set_bool(settings, "gradient",
-					obs_data_get_bool(req->data, "gradient"));
-			}
-
-			if (req->hasField("gradient_color")) {
-				obs_data_set_int(settings, "gradient_color",
-					obs_data_get_int(req->data, "gradient_color"));
-			}
-
-			if (req->hasField("gradient_dir")) {
-				obs_data_set_double(settings, "gradient_dir",
-					obs_data_get_double(req->data, "gradient_dir"));
-			}
-
-			if (req->hasField("gradient_opacity")) {
-				obs_data_set_int(settings, "gradient_opacity",
-					obs_data_get_int(req->data, "gradient_opacity"));
-			}
-
-			if (req->hasField("outline")) {
-				obs_data_set_bool(settings, "outline",
-					obs_data_get_bool(req->data, "outline"));
-			}
-
-			if (req->hasField("outline_size")) {
-				obs_data_set_int(settings, "outline_size",
-					obs_data_get_int(req->data, "outline_size"));
-			}
-
-			if (req->hasField("outline_color")) {
-				obs_data_set_int(settings, "outline_color",
-					obs_data_get_int(req->data, "outline_color"));
-			}
-
-			if (req->hasField("outline_opacity")) {
-				obs_data_set_int(settings, "outline_opacity",
-					obs_data_get_int(req->data, "outline_opacity"));
-			}
-
-			if (req->hasField("read_from_file")) {
-				obs_data_set_bool(settings, "read_from_file",
-					obs_data_get_bool(req->data, "read_from_file"));
-			}
-
-			if (req->hasField("text")) {
-				obs_data_set_string(settings, "text",
-					obs_data_get_string(req->data, "text"));
-			}
-
-			if (req->hasField("valign")) {
-				obs_data_set_string(settings, "valign",
-					obs_data_get_string(req->data, "valign"));
-			}
-
-			if (req->hasField("vertical")) {
-				obs_data_set_bool(settings, "vertical",
-					obs_data_get_bool(req->data, "vertical"));
-			}
-
-			obs_source_update(sceneItemSource, settings);
-
-			if (req->hasField("render")) {
-				obs_sceneitem_set_visible(sceneItem,
-					obs_data_get_bool(req->data, "render"));
-			}
-
-			req->SendOKResponse();
-		} else {
-			req->SendErrorResponse("not text gdi plus source");
-		}
-	} else {
-		req->SendErrorResponse("specified scene item doesn't exist");
+	QString sourceId = obs_source_get_id(source);
+	if (sourceId != "text_gdiplus") {
+		req->SendErrorResponse("not a text gdi plus source");
+		return;
 	}
+
+	OBSDataAutoRelease settings = obs_source_get_settings(source);
+
+	if (req->hasField("align")) {
+		obs_data_set_string(settings, "align", obs_data_get_string(req->data, "align"));
+	}
+
+	if (req->hasField("bk_color")) {
+		obs_data_set_int(settings, "bk_color", obs_data_get_int(req->data, "bk_color"));
+	}
+
+	if (req->hasField("bk-opacity")) {
+		obs_data_set_int(settings, "bk_opacity", obs_data_get_int(req->data, "bk_opacity"));
+	}
+
+	if (req->hasField("chatlog")) {
+		obs_data_set_bool(settings, "chatlog", obs_data_get_bool(req->data, "chatlog"));
+	}
+
+	if (req->hasField("chatlog_lines")) {
+		obs_data_set_int(settings, "chatlog_lines", obs_data_get_int(req->data, "chatlog_lines"));
+	}
+
+	if (req->hasField("color")) {
+		obs_data_set_int(settings, "color", obs_data_get_int(req->data, "color"));
+	}
+
+	if (req->hasField("extents")) {
+		obs_data_set_bool(settings, "extents", obs_data_get_bool(req->data, "extents"));
+	}
+
+	if (req->hasField("extents_wrap")) {
+		obs_data_set_bool(settings, "extents_wrap", obs_data_get_bool(req->data, "extents_wrap"));
+	}
+
+	if (req->hasField("extents_cx")) {
+		obs_data_set_int(settings, "extents_cx", obs_data_get_int(req->data, "extents_cx"));
+	}
+
+	if (req->hasField("extents_cy")) {
+		obs_data_set_int(settings, "extents_cy", obs_data_get_int(req->data, "extents_cy"));
+	}
+
+	if (req->hasField("file")) {
+		obs_data_set_string(settings, "file", obs_data_get_string(req->data, "file"));
+	}
+
+	if (req->hasField("font")) {
+		OBSDataAutoRelease font_obj = obs_data_get_obj(settings, "font");
+		if (font_obj) {
+			OBSDataAutoRelease req_font_obj = obs_data_get_obj(req->data, "font");
+
+			if (obs_data_has_user_value(req_font_obj, "face")) {
+				obs_data_set_string(font_obj, "face", obs_data_get_string(req_font_obj, "face"));
+			}
+
+			if (obs_data_has_user_value(req_font_obj, "flags")) {
+				obs_data_set_int(font_obj, "flags", obs_data_get_int(req_font_obj, "flags"));
+			}
+
+			if (obs_data_has_user_value(req_font_obj, "size")) {
+				obs_data_set_int(font_obj, "size", obs_data_get_int(req_font_obj, "size"));
+			}
+
+			if (obs_data_has_user_value(req_font_obj, "style")) {
+				obs_data_set_string(font_obj, "style", obs_data_get_string(req_font_obj, "style"));
+			}
+		}
+	}
+
+	if (req->hasField("gradient")) {
+		obs_data_set_bool(settings, "gradient", obs_data_get_bool(req->data, "gradient"));
+	}
+
+	if (req->hasField("gradient_color")) {
+		obs_data_set_int(settings, "gradient_color", obs_data_get_int(req->data, "gradient_color"));
+	}
+
+	if (req->hasField("gradient_dir")) {
+		obs_data_set_double(settings, "gradient_dir", obs_data_get_double(req->data, "gradient_dir"));
+	}
+
+	if (req->hasField("gradient_opacity")) {
+		obs_data_set_int(settings, "gradient_opacity", obs_data_get_int(req->data, "gradient_opacity"));
+	}
+
+	if (req->hasField("outline")) {
+		obs_data_set_bool(settings, "outline", obs_data_get_bool(req->data, "outline"));
+	}
+
+	if (req->hasField("outline_size")) {
+		obs_data_set_int(settings, "outline_size", obs_data_get_int(req->data, "outline_size"));
+	}
+
+	if (req->hasField("outline_color")) {
+		obs_data_set_int(settings, "outline_color", obs_data_get_int(req->data, "outline_color"));
+	}
+
+	if (req->hasField("outline_opacity")) {
+		obs_data_set_int(settings, "outline_opacity", obs_data_get_int(req->data, "outline_opacity"));
+	}
+
+	if (req->hasField("read_from_file")) {
+		obs_data_set_bool(settings, "read_from_file", obs_data_get_bool(req->data, "read_from_file"));
+	}
+
+	if (req->hasField("text")) {
+		obs_data_set_string(settings, "text", obs_data_get_string(req->data, "text"));
+	}
+
+	if (req->hasField("valign")) {
+		obs_data_set_string(settings, "valign", obs_data_get_string(req->data, "valign"));
+	}
+
+	if (req->hasField("vertical")) {
+		obs_data_set_bool(settings, "vertical", obs_data_get_bool(req->data, "vertical"));
+	}
+
+	obs_source_update(source, settings);
+
+	req->SendOKResponse();
 }
 
 /**
@@ -833,9 +797,10 @@ void WSRequestHandler::HandleSetTextGDIPlusProperties(WSRequestHandler* req) {
  * @api requests
  * @name GetTextFreetype2Properties
  * @category sources
- * @since 4.x.x
+ * @since 4.5.0
  */
-void WSRequestHandler::HandleGetTextFreetype2Properties(WSRequestHandler* req) {
+void WSRequestHandler::HandleGetTextFreetype2Properties(WSRequestHandler* req)
+{
 	const char* sourceName = obs_data_get_string(req->data, "source");
 	if (!sourceName) {
 		req->SendErrorResponse("invalid request parameters");
@@ -883,9 +848,10 @@ void WSRequestHandler::HandleGetTextFreetype2Properties(WSRequestHandler* req) {
  * @api requests
  * @name SetTextFreetype2Properties
  * @category sources
- * @since 4.x.x
+ * @since 4.5.0
  */
-void WSRequestHandler::HandleSetTextFreetype2Properties(WSRequestHandler* req) {
+void WSRequestHandler::HandleSetTextFreetype2Properties(WSRequestHandler* req)
+{
     const char* sourceName = obs_data_get_string(req->data, "source");
     if (!sourceName) {
         req->SendErrorResponse("invalid request parameters");
@@ -977,9 +943,9 @@ void WSRequestHandler::HandleSetTextFreetype2Properties(WSRequestHandler* req) {
 /**
  * Get current properties for a Browser Source.
  *
- * @param {String (optional)} `scene-name` Name of the scene that the source belongs to. Defaults to the current scene.
- * @param {String} `source` Name of the source.
+ * @param {String} `source` Source name.
  *
+ * @return {String} `source` Source name.
  * @return {boolean} `is_local_file` Indicates that a local file is in use.
  * @return {String} `local_file` file path.
  * @return {String} `url` Url.
@@ -988,55 +954,41 @@ void WSRequestHandler::HandleSetTextFreetype2Properties(WSRequestHandler* req) {
  * @return {int} `height` Height.
  * @return {int} `fps` Framerate.
  * @return {boolean} `shutdown` Indicates whether the source should be shutdown when not visible.
- * @return {boolean (optional)} `render` Visibility of the scene item.
  *
  * @api requests
  * @name GetBrowserSourceProperties
  * @category sources
  * @since 4.1.0
  */
-void WSRequestHandler::HandleGetBrowserSourceProperties(WSRequestHandler* req) {
-	// TODO: source settings are independent of any scene, so there's no need
-	// to target a specific scene
-
-	const char* itemName = obs_data_get_string(req->data, "source");
-	if (!itemName) {
+void WSRequestHandler::HandleGetBrowserSourceProperties(WSRequestHandler* req)
+{
+	const char* sourceName = obs_data_get_string(req->data, "source");
+	if (!sourceName) {
 		req->SendErrorResponse("invalid request parameters");
 		return;
 	}
 
-	const char* sceneName = obs_data_get_string(req->data, "scene-name");
-	OBSSourceAutoRelease scene = Utils::GetSceneFromNameOrCurrent(sceneName);
-	if (!scene) {
-		req->SendErrorResponse("requested scene doesn't exist");
+	OBSSourceAutoRelease source = obs_get_source_by_name(sourceName);
+	if (!source) {
+		req->SendErrorResponse("specified source doesn't exist");
 		return;
 	}
 
-	OBSSceneItemAutoRelease sceneItem = Utils::GetSceneItemFromName(scene, itemName);
-	if (sceneItem) {
-		OBSSource sceneItemSource = obs_sceneitem_get_source(sceneItem);
-		const char* sceneItemSourceId = obs_source_get_id(sceneItemSource);
-
-		if (strcmp(sceneItemSourceId, "browser_source") == 0) {
-			OBSDataAutoRelease response = obs_source_get_settings(sceneItemSource);
-			obs_data_set_string(response, "source", itemName);
-			obs_data_set_string(response, "scene-name", sceneName);
-			obs_data_set_bool(response, "render",
-				obs_sceneitem_visible(sceneItem));
-
-			req->SendOKResponse(response);
-		} else {
-			req->SendErrorResponse("not browser source");
-		}
-	} else {
-		req->SendErrorResponse("specified scene item doesn't exist");
+	QString sourceId = obs_source_get_id(source);
+	if (sourceId != "browser_source") {
+		req->SendErrorResponse("not a browser source");
+		return;
 	}
+
+	OBSDataAutoRelease response = obs_source_get_settings(source);
+	obs_data_set_string(response, "source", obs_source_get_name(source));
+
+	req->SendOKResponse(response);
 }
 
 /**
  * Set current properties for a Browser Source.
  *
- * @param {String (optional)} `scene-name` Name of the scene that the source belongs to. Defaults to the current scene.
  * @param {String} `source` Name of the source.
  * @param {boolean (optional)} `is_local_file` Indicates that a local file is in use.
  * @param {String (optional)} `local_file` file path.
@@ -1053,207 +1005,72 @@ void WSRequestHandler::HandleGetBrowserSourceProperties(WSRequestHandler* req) {
  * @category sources
  * @since 4.1.0
  */
-void WSRequestHandler::HandleSetBrowserSourceProperties(WSRequestHandler* req) {
-	// TODO: source settings are independent of any scene, so there's no need
-	// to target a specific scene
-
+void WSRequestHandler::HandleSetBrowserSourceProperties(WSRequestHandler* req)
+{
 	if (!req->hasField("source")) {
 		req->SendErrorResponse("missing request parameters");
 		return;
 	}
 
-	const char* itemName = obs_data_get_string(req->data, "source");
-	if (!itemName) {
+	const char* sourceName = obs_data_get_string(req->data, "source");
+	if (!sourceName) {
 		req->SendErrorResponse("invalid request parameters");
 		return;
 	}
 
-	const char* sceneName = obs_data_get_string(req->data, "scene-name");
-	OBSSourceAutoRelease scene = Utils::GetSceneFromNameOrCurrent(sceneName);
-	if (!scene) {
-		req->SendErrorResponse("requested scene doesn't exist");
+	OBSSourceAutoRelease source = obs_get_source_by_name(sourceName);
+	if (!source) {
+		req->SendErrorResponse("specified source doesn't exist");
 		return;
 	}
 
-	OBSSceneItemAutoRelease sceneItem = Utils::GetSceneItemFromName(scene, itemName);
-	if (sceneItem) {
-		OBSSource sceneItemSource = obs_sceneitem_get_source(sceneItem);
-		const char* sceneItemSourceId = obs_source_get_id(sceneItemSource);
-
-		if (strcmp(sceneItemSourceId, "browser_source") == 0) {
-			OBSDataAutoRelease settings = obs_source_get_settings(sceneItemSource);
-
-			if (req->hasField("restart_when_active")) {
-				obs_data_set_bool(settings, "restart_when_active",
-					obs_data_get_bool(req->data, "restart_when_active"));
-			}
-
-			if (req->hasField("shutdown")) {
-				obs_data_set_bool(settings, "shutdown",
-					obs_data_get_bool(req->data, "shutdown"));
-			}
-
-			if (req->hasField("is_local_file")) {
-				obs_data_set_bool(settings, "is_local_file",
-					obs_data_get_bool(req->data, "is_local_file"));
-			}
-
-			if (req->hasField("local_file")) {
-				obs_data_set_string(settings, "local_file",
-					obs_data_get_string(req->data, "local_file"));
-			}
-
-			if (req->hasField("url")) {
-				obs_data_set_string(settings, "url",
-					obs_data_get_string(req->data, "url"));
-			}
-
-			if (req->hasField("css")) {
-				obs_data_set_string(settings, "css",
-					obs_data_get_string(req->data, "css"));
-			}
-
-			if (req->hasField("width")) {
-				obs_data_set_int(settings, "width",
-					obs_data_get_int(req->data, "width"));
-			}
-
-			if (req->hasField("height")) {
-				obs_data_set_int(settings, "height",
-					obs_data_get_int(req->data, "height"));
-			}
-
-			if (req->hasField("fps")) {
-				obs_data_set_int(settings, "fps",
-					obs_data_get_int(req->data, "fps"));
-			}
-
-			obs_source_update(sceneItemSource, settings);
-
-			if (req->hasField("render")) {
-				obs_sceneitem_set_visible(sceneItem,
-					obs_data_get_bool(req->data, "render"));
-			}
-
-			req->SendOKResponse();
-		} else {
-			req->SendErrorResponse("not browser source");
-		}
-	} else {
-		req->SendErrorResponse("specified scene item doesn't exist");
-	}
-}
-
-/**
- * Deletes a scene item.
- *
- * @param {String (optional)} `scene` Name of the scene the source belongs to. Defaults to the current scene.
- * @param {Object} `item` item to delete (required)
- * @param {String} `item.name` name of the scene item (prefer `id`, including both is acceptable).
- * @param {int} `item.id` id of the scene item.
- *
- * @api requests
- * @name DeleteSceneItem
- * @category sources
- * @since unreleased
- */
-void WSRequestHandler::HandleDeleteSceneItem(WSRequestHandler* req) {
-	if (!req->hasField("item")) {
-		req->SendErrorResponse("missing request parameters");
+	QString sourceId = obs_source_get_id(source);
+	if(sourceId != "browser_source") {
+		req->SendErrorResponse("not a browser source");
 		return;
 	}
 
-	const char* sceneName = obs_data_get_string(req->data, "scene");
-	OBSSourceAutoRelease scene = Utils::GetSceneFromNameOrCurrent(sceneName);
-	if (!scene) {
-		req->SendErrorResponse("requested scene doesn't exist");
-		return;
+	OBSDataAutoRelease settings = obs_source_get_settings(source);
+
+	if (req->hasField("restart_when_active")) {
+		obs_data_set_bool(settings, "restart_when_active", obs_data_get_bool(req->data, "restart_when_active"));
 	}
 
-	OBSDataAutoRelease item = obs_data_get_obj(req->data, "item");
-	OBSSceneItemAutoRelease sceneItem = Utils::GetSceneItemFromItem(scene, item);
-	if (!sceneItem) {
-		req->SendErrorResponse("item with id/name combination not found in specified scene");
-		return;
+	if (req->hasField("shutdown")) {
+		obs_data_set_bool(settings, "shutdown", obs_data_get_bool(req->data, "shutdown"));
 	}
 
-	obs_sceneitem_remove(sceneItem);
+	if (req->hasField("is_local_file")) {
+		obs_data_set_bool(settings, "is_local_file", obs_data_get_bool(req->data, "is_local_file"));
+	}
+
+	if (req->hasField("local_file")) {
+		obs_data_set_string(settings, "local_file", obs_data_get_string(req->data, "local_file"));
+	}
+
+	if (req->hasField("url")) {
+		obs_data_set_string(settings, "url", obs_data_get_string(req->data, "url"));
+	}
+
+	if (req->hasField("css")) {
+		obs_data_set_string(settings, "css", obs_data_get_string(req->data, "css"));
+	}
+
+	if (req->hasField("width")) {
+		obs_data_set_int(settings, "width", obs_data_get_int(req->data, "width"));
+	}
+
+	if (req->hasField("height")) {
+		obs_data_set_int(settings, "height", obs_data_get_int(req->data, "height"));
+	}
+
+	if (req->hasField("fps")) {
+		obs_data_set_int(settings, "fps", obs_data_get_int(req->data, "fps"));
+	}
+
+	obs_source_update(source, settings);
+
 	req->SendOKResponse();
-}
-
-struct DuplicateSceneItemData {
-	obs_sceneitem_t *referenceItem;
-	obs_source_t *fromSource;
-	obs_sceneitem_t *newItem;
-};
-
-static void DuplicateSceneItem(void *_data, obs_scene_t *scene) {
-	DuplicateSceneItemData *data = (DuplicateSceneItemData *)_data;
-	data->newItem = obs_scene_add(scene, data->fromSource);
-	obs_sceneitem_set_visible(data->newItem, obs_sceneitem_visible(data->referenceItem));
-}
-
-/**
- * Duplicates a scene item.
- *
- * @param {String (optional)} `fromScene` Name of the scene to copy the item from. Defaults to the current scene.
- * @param {String (optional)} `toScene` Name of the scene to create the item in. Defaults to the current scene.
- * @param {Object} `item` item to delete (required)
- * @param {String} `item.name` name of the scene item (prefer `id`, including both is acceptable).
- * @param {int} `item.id` id of the scene item.
- *
- * @api requests
- * @name DuplicateSceneItem
- * @category sources
- * @since unreleased
- */
-void WSRequestHandler::HandleDuplicateSceneItem(WSRequestHandler* req) {
-	if (!req->hasField("item")) {
-		req->SendErrorResponse("missing request parameters");
-		return;
-	}
-
-	const char* fromSceneName = obs_data_get_string(req->data, "fromScene");
-	OBSSourceAutoRelease fromScene = Utils::GetSceneFromNameOrCurrent(fromSceneName);
-	if (!fromScene) {
-		req->SendErrorResponse("requested fromScene doesn't exist");
-		return;
-	}
-
-	const char* toSceneName = obs_data_get_string(req->data, "toScene");
-	OBSSourceAutoRelease toScene = Utils::GetSceneFromNameOrCurrent(toSceneName);
-	if (!toScene) {
-		req->SendErrorResponse("requested toScene doesn't exist");
-		return;
-	}
-
-	OBSDataAutoRelease item = obs_data_get_obj(req->data, "item");
-	OBSSceneItemAutoRelease referenceItem = Utils::GetSceneItemFromItem(fromScene, item);
-	if (!referenceItem) {
-		req->SendErrorResponse("item with id/name combination not found in specified scene");
-		return;
-	}
-
-	DuplicateSceneItemData data;
-	data.fromSource = obs_sceneitem_get_source(referenceItem);
-	data.referenceItem = referenceItem;
-
-	obs_enter_graphics();
-	obs_scene_atomic_update(obs_scene_from_source(toScene), DuplicateSceneItem, &data);
-	obs_leave_graphics();
-
-	obs_sceneitem_t *newItem = data.newItem;
-
-	if (!newItem) {
-		req->SendErrorResponse("Error duplicating scene item");
-	}
-	OBSDataAutoRelease responseData = obs_data_create();
-	OBSDataAutoRelease itemData = obs_data_create();
-	obs_data_set_int(itemData, "id", obs_sceneitem_get_id(newItem));
-	obs_data_set_string(itemData, "name", obs_source_get_name(obs_sceneitem_get_source(newItem)));
-	obs_data_set_obj(responseData, "item", itemData);
-	obs_data_set_string(responseData, "scene", obs_source_get_name(toScene));
-	req->SendOKResponse(responseData);
 }
 
 /**
@@ -1270,7 +1087,8 @@ void WSRequestHandler::HandleDuplicateSceneItem(WSRequestHandler* req) {
  * @category sources
  * @since 4.1.0
  */
- void WSRequestHandler::HandleGetSpecialSources(WSRequestHandler* req) {
+ void WSRequestHandler::HandleGetSpecialSources(WSRequestHandler* req)
+ {
 	OBSDataAutoRelease response = obs_data_create();
 
 	QMap<const char*, int> sources;
@@ -1307,7 +1125,7 @@ void WSRequestHandler::HandleDuplicateSceneItem(WSRequestHandler* req) {
 * @api requests
 * @name GetSourceFilters
 * @category sources
-* @since unreleased
+* @since 4.5.0
 */
 void WSRequestHandler::HandleGetSourceFilters(WSRequestHandler* req)
 {
@@ -1350,7 +1168,7 @@ void WSRequestHandler::HandleGetSourceFilters(WSRequestHandler* req)
 * @api requests
 * @name AddFilterToSource
 * @category sources
-* @since unreleased
+* @since 4.5.0
 */
 void WSRequestHandler::HandleAddFilterToSource(WSRequestHandler* req)
 {
@@ -1402,7 +1220,7 @@ void WSRequestHandler::HandleAddFilterToSource(WSRequestHandler* req)
 * @api requests
 * @name RemoveFilterFromSource
 * @category sources
-* @since unreleased
+* @since 4.5.0
 */
 void WSRequestHandler::HandleRemoveFilterFromSource(WSRequestHandler* req)
 {
@@ -1440,7 +1258,7 @@ void WSRequestHandler::HandleRemoveFilterFromSource(WSRequestHandler* req)
 * @api requests
 * @name ReorderSourceFilter
 * @category sources
-* @since unreleased
+* @since 4.5.0
 */
 void WSRequestHandler::HandleReorderSourceFilter(WSRequestHandler* req)
 {
@@ -1517,7 +1335,7 @@ void WSRequestHandler::HandleReorderSourceFilter(WSRequestHandler* req)
 * @api requests
 * @name MoveSourceFilter
 * @category sources
-* @since unreleased
+* @since 4.5.0
 */
 void WSRequestHandler::HandleMoveSourceFilter(WSRequestHandler* req)
 {
@@ -1574,7 +1392,7 @@ void WSRequestHandler::HandleMoveSourceFilter(WSRequestHandler* req)
 * @api requests
 * @name SetSourceFilterSettings
 * @category sources
-* @since unreleased
+* @since 4.5.0
 */
 void WSRequestHandler::HandleSetSourceFilterSettings(WSRequestHandler* req)
 {
