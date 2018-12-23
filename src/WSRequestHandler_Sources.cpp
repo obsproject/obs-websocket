@@ -582,7 +582,7 @@ void WSRequestHandler::HandleSetSourceSettings(WSRequestHandler* req) {
 }
 
 /**
- * Get the current properties of a Text GDI Plus source.
+ * Set the current properties of a Text GDI Plus source.
  *
  * @param {String (optional)} `scene-name` Name of the scene to retrieve. Defaults to the current scene.
  * @param {String} `source` Name of the source.
@@ -806,6 +806,186 @@ void WSRequestHandler::HandleSetTextGDIPlusProperties(WSRequestHandler* req) {
 	} else {
 		req->SendErrorResponse("specified scene item doesn't exist");
 	}
+}
+
+/**
+ * Get the current properties of a Text Freetype 2 source.
+ *
+ * @param {String} `source` Name of the source.
+ *
+ * @return {String} `source` Source name
+ * @return {int} `color1` Gradient top color.
+ * @return {int} `color2` Gradient bottom color.
+ * @return {int} `custom_width` Custom width (0 to disable).
+ * @return {boolean} `drop_shadow` Drop shadow.
+ * @return {Object} `font` Holds data for the font. Ex: `"font": { "face": "Arial", "flags": 0, "size": 150, "style": "" }`
+ * @return {String} `font.face` Font face.
+ * @return {int} `font.flags` Font text styling flag. `Bold=1, Italic=2, Bold Italic=3, Underline=5, Strikeout=8`
+ * @return {int} `font.size` Font text size.
+ * @return {String} `font.style` Font Style (unknown function).
+ * @return {boolean} `from_file` Read text from the specified file.
+ * @return {boolean} `log_mode` Chat log.
+ * @return {boolean} `outline` Outline.
+ * @return {String} `text` Text content to be displayed.
+ * @return {String} `text_file` File path.
+ * @return {boolean} `word_wrap` Word wrap.
+ *
+ * @api requests
+ * @name GetTextFreetype2Properties
+ * @category sources
+ * @since 4.x.x
+ */
+void WSRequestHandler::HandleGetTextFreetype2Properties(WSRequestHandler* req) {
+	const char* sourceName = obs_data_get_string(req->data, "source");
+	if (!sourceName) {
+		req->SendErrorResponse("invalid request parameters");
+		return;
+	}
+
+	OBSSourceAutoRelease source = obs_get_source_by_name(sourceName);
+	if (!source) {
+		req->SendErrorResponse("specified source doesn't exist");
+		return;
+	}
+
+	QString sourceId = obs_source_get_id(source);
+	if (!source.equals("text_ft2_source")) {
+		req->SendErrorResponse("not a freetype 2 source");
+		return;
+	}
+
+	OBSDataAutoRelease response = obs_source_get_settings(source);
+	obs_data_set_string(response, "source", itemName);
+
+	req->SendOKResponse(response);
+}
+
+/**
+ * Set the current properties of a Text Freetype 2 source.
+ *
+ * @param {String} `source` Name of the source.
+ * @param {int (optional)} `color1` Gradient top color.
+ * @param {int (optional)} `color2` Gradient bottom color.
+ * @param {int (optional)} `custom_width` Custom width (0 to disable).
+ * @param {boolean (optional)} `drop_shadow` Drop shadow.
+ * @param {Object (optional)} `font` Holds data for the font. Ex: `"font": { "face": "Arial", "flags": 0, "size": 150, "style": "" }`
+ * @param {String (optional)} `font.face` Font face.
+ * @param {int (optional)} `font.flags` Font text styling flag. `Bold=1, Italic=2, Bold Italic=3, Underline=5, Strikeout=8`
+ * @param {int (optional)} `font.size` Font text size.
+ * @param {String (optional)} `font.style` Font Style (unknown function).
+ * @param {boolean (optional)} `from_file` Read text from the specified file.
+ * @param {boolean (optional)} `log_mode` Chat log.
+ * @param {boolean (optional)} `outline` Outline.
+ * @param {String (optional)} `text` Text content to be displayed.
+ * @param {String (optional)} `text_file` File path.
+ * @param {boolean (optional)} `word_wrap` Word wrap.
+ *
+ * @api requests
+ * @name SetTextFreetype2Properties
+ * @category sources
+ * @since 4.x.x
+ */
+void WSRequestHandler::HandleSetTextFreetype2Properties(WSRequestHandler* req) {
+    const char* sourceName = obs_data_get_string(req->data, "source");
+    if (!sourceName) {
+        req->SendErrorResponse("invalid request parameters");
+        return;
+    }
+
+	OBSSourceAutoRelease source = obs_get_source_by_name(sourceName);
+	if (!source) {
+		req->SendErrorResponse("specified source doesn't exist");
+		return;
+	}
+
+	QString sourceId = obs_source_get_id(source);
+	if (!sourceId.equals("text_ft2_source")) {
+		req->SendErrorResponse("not text freetype 2 source");
+		return;
+	}
+
+	OBSDataAutoRelease settings = obs_source_get_settings(sceneItemSource);
+
+	if (req->hasField("color1")) {
+		obs_data_set_int(settings, "color1",
+			obs_data_get_int(req->data, "color1"));
+	}
+
+	if (req->hasField("color2")) {
+		obs_data_set_int(settings, "color2",
+			obs_data_get_int(req->data, "color2"));
+	}
+
+	if (req->hasField("custom_width")) {
+		obs_data_set_int(settings, "custom_width",
+			obs_data_get_int(req->data, "custom_width"));
+	}
+
+	if (req->hasField("drop_shadow")) {
+		obs_data_set_bool(settings, "drop_shadow",
+			obs_data_get_bool(req->data, "drop_shadow"));
+	}
+
+	if (req->hasField("font")) {
+		OBSDataAutoRelease font_obj = obs_data_get_obj(settings, "font");
+		if (font_obj) {
+			OBSDataAutoRelease req_font_obj = obs_data_get_obj(req->data, "font");
+
+			if (obs_data_has_user_value(req_font_obj, "face")) {
+				obs_data_set_string(font_obj, "face",
+					obs_data_get_string(req_font_obj, "face"));
+			}
+
+			if (obs_data_has_user_value(req_font_obj, "flags")) {
+				obs_data_set_int(font_obj, "flags",
+					obs_data_get_int(req_font_obj, "flags"));
+			}
+
+			if (obs_data_has_user_value(req_font_obj, "size")) {
+				obs_data_set_int(font_obj, "size",
+					obs_data_get_int(req_font_obj, "size"));
+			}
+
+			if (obs_data_has_user_value(req_font_obj, "style")) {
+				obs_data_set_string(font_obj, "style",
+					obs_data_get_string(req_font_obj, "style"));
+			}
+		}
+	}
+
+	if (req->hasField("from_file")) {
+		obs_data_set_bool(settings, "from_file",
+			obs_data_get_bool(req->data, "from_file"));
+	}
+
+	if (req->hasField("log_mode")) {
+		obs_data_set_bool(settings, "log_mode",
+			obs_data_get_bool(req->data, "log_mode"));
+	}
+
+	if (req->hasField("outline")) {
+		obs_data_set_bool(settings, "outline",
+			obs_data_get_bool(req->data, "outline"));
+	}
+
+	if (req->hasField("text")) {
+		obs_data_set_string(settings, "text",
+			obs_data_get_string(req->data, "text"));
+	}
+
+	if (req->hasField("text_file")) {
+		obs_data_set_string(settings, "text_file",
+			obs_data_get_string(req->data, "text_file"));
+	}
+
+	if (req->hasField("word_wrap")) {
+		obs_data_set_bool(settings, "word_wrap",
+			obs_data_get_bool(req->data, "word_wrap"));
+	}
+
+	obs_source_update(source, settings);
+
+	req->SendOKResponse();
 }
 
 /**
