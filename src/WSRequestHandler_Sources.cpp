@@ -811,7 +811,7 @@ void WSRequestHandler::HandleSetTextGDIPlusProperties(WSRequestHandler* req) {
 /**
  * Get the current properties of a Text Freetype 2 source.
  *
- * @param {String} `source` Name of the source.
+ * @param {String} `source` Source name.
  *
  * @return {String} `source` Source name
  * @return {int} `color1` Gradient top color.
@@ -863,7 +863,7 @@ void WSRequestHandler::HandleGetTextFreetype2Properties(WSRequestHandler* req) {
 /**
  * Set the current properties of a Text Freetype 2 source.
  *
- * @param {String} `source` Name of the source.
+ * @param {String} `source` Source name.
  * @param {int (optional)} `color1` Gradient top color.
  * @param {int (optional)} `color2` Gradient bottom color.
  * @param {int (optional)} `custom_width` Custom width (0 to disable).
