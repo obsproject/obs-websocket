@@ -161,7 +161,7 @@ void WSRequestHandler::HandleGetSourceTypesList(WSRequestHandler* req)
 *
 * @return {String} `name` Source name.
 * @return {double} `volume` Volume of the source. Between `0.0` and `1.0`.
-* @return {boolean} `mute` Indicates whether the source is muted.
+* @return {boolean} `muted` Indicates whether the source is muted.
 *
 * @api requests
 * @name GetVolume
@@ -403,6 +403,10 @@ void WSRequestHandler::HandleGetSyncOffset(WSRequestHandler* req)
 	}
 
 	OBSSourceAutoRelease source = obs_get_source_by_name(sourceName.toUtf8());
+	if (!source) {
+		req->SendErrorResponse("specified source doesn't exist");
+		return;
+	}
 
 	OBSDataAutoRelease response = obs_data_create();
 	obs_data_set_string(response, "name", obs_source_get_name(source));
