@@ -849,7 +849,7 @@ void WSRequestHandler::HandleGetTextFreetype2Properties(WSRequestHandler* req) {
 	}
 
 	QString sourceId = obs_source_get_id(source);
-	if (sourceId != QString("text_ft2_source")) {
+	if (sourceId != "text_ft2_source") {
 		req->SendErrorResponse("not a freetype 2 source");
 		return;
 	}
@@ -899,7 +899,7 @@ void WSRequestHandler::HandleSetTextFreetype2Properties(WSRequestHandler* req) {
 	}
 
 	QString sourceId = obs_source_get_id(source);
-	if (sourceId != QString("text_ft2_source")) {
+	if (sourceId != "text_ft2_source") {
 		req->SendErrorResponse("not text freetype 2 source");
 		return;
 	}
