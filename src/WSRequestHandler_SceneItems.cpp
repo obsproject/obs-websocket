@@ -566,3 +566,124 @@ void WSRequestHandler::HandleSetSceneItemCrop(WSRequestHandler* req) {
 		req->SendErrorResponse("specified scene item doesn't exist");
 	}
 }
+
+/**
+ * Deletes a scene item.
+ *
+ * @param {String (optional)} `scene` Name of the scene the source belongs to. Defaults to the current scene.
+ * @param {Object} `item` item to delete (required)
+ * @param {String} `item.name` name of the scene item (prefer `id`, including both is acceptable).
+ * @param {int} `item.id` id of the scene item.
+ *
+ * @api requests
+ * @name DeleteSceneItem
+ * @category scene items
+ * @since 4.5.0
+ */
+void WSRequestHandler::HandleDeleteSceneItem(WSRequestHandler* req) {
+	if (!req->hasField("item")) {
+		req->SendErrorResponse("missing request parameters");
+		return;
+	}
+
+	const char* sceneName = obs_data_get_string(req->data, "scene");
+	OBSSourceAutoRelease scene = Utils::GetSceneFromNameOrCurrent(sceneName);
+	if (!scene) {
+		req->SendErrorResponse("requested scene doesn't exist");
+		return;
+	}
+
+	OBSDataAutoRelease item = obs_data_get_obj(req->data, "item");
+	OBSSceneItemAutoRelease sceneItem = Utils::GetSceneItemFromItem(scene, item);
+	if (!sceneItem) {
+		req->SendErrorResponse("item with id/name combination not found in specified scene");
+		return;
+	}
+
+	obs_sceneitem_remove(sceneItem);
+
+	req->SendOKResponse();
+}
+
+struct DuplicateSceneItemData {
+	obs_sceneitem_t *referenceItem;
+	obs_source_t *fromSource;
+	obs_sceneitem_t *newItem;
+};
+
+static void DuplicateSceneItem(void *_data, obs_scene_t *scene) {
+	DuplicateSceneItemData *data = (DuplicateSceneItemData *)_data;
+	data->newItem = obs_scene_add(scene, data->fromSource);
+	obs_sceneitem_set_visible(data->newItem, obs_sceneitem_visible(data->referenceItem));
+}
+
+/**
+ * Duplicates a scene item.
+ *
+ * @param {String (optional)} `fromScene` Name of the scene to copy the item from. Defaults to the current scene.
+ * @param {String (optional)} `toScene` Name of the scene to create the item in. Defaults to the current scene.
+ * @param {Object} `item` item to duplicate (required)
+ * @param {String} `item.name` name of the scene item (prefer `id`, including both is acceptable).
+ * @param {int} `item.id` id of the scene item.
+ *
+ * @return {String} `scene`
+ * @return {Object} `item`
+ * @return {int} `̀item.id`
+ * @return {String} `item.name`
+ * 
+ * @api requests
+ * @name DuplicateSceneItem
+ * @category scene items
+ * @since 4.5.0
+ */
+void WSRequestHandler::HandleDuplicateSceneItem(WSRequestHandler* req) {
+	if (!req->hasField("item")) {
+		req->SendErrorResponse("missing request parameters");
+		return;
+	}
+
+	const char* fromSceneName = obs_data_get_string(req->data, "fromScene");
+	OBSSourceAutoRelease fromScene = Utils::GetSceneFromNameOrCurrent(fromSceneName);
+	if (!fromScene) {
+		req->SendErrorResponse("requested fromScene doesn't exist");
+		return;
+	}
+
+	const char* toSceneName = obs_data_get_string(req->data, "toScene");
+	OBSSourceAutoRelease toScene = Utils::GetSceneFromNameOrCurrent(toSceneName);
+	if (!toScene) {
+		req->SendErrorResponse("requested toScene doesn't exist");
+		return;
+	}
+
+	OBSDataAutoRelease item = obs_data_get_obj(req->data, "item");
+	OBSSceneItemAutoRelease referenceItem = Utils::GetSceneItemFromItem(fromScene, item);
+	if (!referenceItem) {
+		req->SendErrorResponse("item with id/name combination not found in specified scene");
+		return;
+	}
+
+	DuplicateSceneItemData data;
+	data.fromSource = obs_sceneitem_get_source(referenceItem);
+	data.referenceItem = referenceItem;
+
+	obs_enter_graphics();
+	obs_scene_atomic_update(obs_scene_from_source(toScene), DuplicateSceneItem, &data);
+	obs_leave_graphics();
+
+	obs_sceneitem_t *newItem = data.newItem;
+	if (!newItem) {
+		req->SendErrorResponse("Error duplicating scene item");
+		return;
+	}
+
+	OBSDataAutoRelease itemData = obs_data_create();
+	obs_data_set_int(itemData, "id", obs_sceneitem_get_id(newItem));
+	obs_data_set_string(itemData, "name", obs_source_get_name(obs_sceneitem_get_source(newItem)));
+
+	OBSDataAutoRelease responseData = obs_data_create();
+	obs_data_set_obj(responseData, "item", itemData);
+	obs_data_set_string(responseData, "scene", obs_source_get_name(toScene));
+
+	req->SendOKResponse(responseData);
+}
