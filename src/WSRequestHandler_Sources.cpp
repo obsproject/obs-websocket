@@ -849,13 +849,13 @@ void WSRequestHandler::HandleGetTextFreetype2Properties(WSRequestHandler* req) {
 	}
 
 	QString sourceId = obs_source_get_id(source);
-	if (!source.equals("text_ft2_source")) {
+	if (sourceId != QString("text_ft2_source")) {
 		req->SendErrorResponse("not a freetype 2 source");
 		return;
 	}
 
 	OBSDataAutoRelease response = obs_source_get_settings(source);
-	obs_data_set_string(response, "source", itemName);
+	obs_data_set_string(response, "source", sourceName);
 
 	req->SendOKResponse(response);
 }
@@ -899,12 +899,12 @@ void WSRequestHandler::HandleSetTextFreetype2Properties(WSRequestHandler* req) {
 	}
 
 	QString sourceId = obs_source_get_id(source);
-	if (!sourceId.equals("text_ft2_source")) {
+	if (sourceId != QString("text_ft2_source")) {
 		req->SendErrorResponse("not text freetype 2 source");
 		return;
 	}
 
-	OBSDataAutoRelease settings = obs_source_get_settings(sceneItemSource);
+	OBSDataAutoRelease settings = obs_source_get_settings(source);
 
 	if (req->hasField("color1")) {
 		obs_data_set_int(settings, "color1", obs_data_get_int(req->data, "color1"));
