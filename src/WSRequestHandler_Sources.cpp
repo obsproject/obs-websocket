@@ -907,23 +907,19 @@ void WSRequestHandler::HandleSetTextFreetype2Properties(WSRequestHandler* req) {
 	OBSDataAutoRelease settings = obs_source_get_settings(sceneItemSource);
 
 	if (req->hasField("color1")) {
-		obs_data_set_int(settings, "color1",
-			obs_data_get_int(req->data, "color1"));
+		obs_data_set_int(settings, "color1", obs_data_get_int(req->data, "color1"));
 	}
 
 	if (req->hasField("color2")) {
-		obs_data_set_int(settings, "color2",
-			obs_data_get_int(req->data, "color2"));
+		obs_data_set_int(settings, "color2", obs_data_get_int(req->data, "color2"));
 	}
 
 	if (req->hasField("custom_width")) {
-		obs_data_set_int(settings, "custom_width",
-			obs_data_get_int(req->data, "custom_width"));
+		obs_data_set_int(settings, "custom_width", obs_data_get_int(req->data, "custom_width"));
 	}
 
 	if (req->hasField("drop_shadow")) {
-		obs_data_set_bool(settings, "drop_shadow",
-			obs_data_get_bool(req->data, "drop_shadow"));
+		obs_data_set_bool(settings, "drop_shadow", obs_data_get_bool(req->data, "drop_shadow"));
 	}
 
 	if (req->hasField("font")) {
@@ -932,55 +928,45 @@ void WSRequestHandler::HandleSetTextFreetype2Properties(WSRequestHandler* req) {
 			OBSDataAutoRelease req_font_obj = obs_data_get_obj(req->data, "font");
 
 			if (obs_data_has_user_value(req_font_obj, "face")) {
-				obs_data_set_string(font_obj, "face",
-					obs_data_get_string(req_font_obj, "face"));
+				obs_data_set_string(font_obj, "face", obs_data_get_string(req_font_obj, "face"));
 			}
 
 			if (obs_data_has_user_value(req_font_obj, "flags")) {
-				obs_data_set_int(font_obj, "flags",
-					obs_data_get_int(req_font_obj, "flags"));
+				obs_data_set_int(font_obj, "flags", obs_data_get_int(req_font_obj, "flags"));
 			}
 
 			if (obs_data_has_user_value(req_font_obj, "size")) {
-				obs_data_set_int(font_obj, "size",
-					obs_data_get_int(req_font_obj, "size"));
+				obs_data_set_int(font_obj, "size", obs_data_get_int(req_font_obj, "size"));
 			}
 
 			if (obs_data_has_user_value(req_font_obj, "style")) {
-				obs_data_set_string(font_obj, "style",
-					obs_data_get_string(req_font_obj, "style"));
+				obs_data_set_string(font_obj, "style", obs_data_get_string(req_font_obj, "style"));
 			}
 		}
 	}
 
 	if (req->hasField("from_file")) {
-		obs_data_set_bool(settings, "from_file",
-			obs_data_get_bool(req->data, "from_file"));
+		obs_data_set_bool(settings, "from_file", obs_data_get_bool(req->data, "from_file"));
 	}
 
 	if (req->hasField("log_mode")) {
-		obs_data_set_bool(settings, "log_mode",
-			obs_data_get_bool(req->data, "log_mode"));
+		obs_data_set_bool(settings, "log_mode", obs_data_get_bool(req->data, "log_mode"));
 	}
 
 	if (req->hasField("outline")) {
-		obs_data_set_bool(settings, "outline",
-			obs_data_get_bool(req->data, "outline"));
+		obs_data_set_bool(settings, "outline", obs_data_get_bool(req->data, "outline"));
 	}
 
 	if (req->hasField("text")) {
-		obs_data_set_string(settings, "text",
-			obs_data_get_string(req->data, "text"));
+		obs_data_set_string(settings, "text", obs_data_get_string(req->data, "text"));
 	}
 
 	if (req->hasField("text_file")) {
-		obs_data_set_string(settings, "text_file",
-			obs_data_get_string(req->data, "text_file"));
+		obs_data_set_string(settings, "text_file", obs_data_get_string(req->data, "text_file"));
 	}
 
 	if (req->hasField("word_wrap")) {
-		obs_data_set_bool(settings, "word_wrap",
-			obs_data_get_bool(req->data, "word_wrap"));
+		obs_data_set_bool(settings, "word_wrap", obs_data_get_bool(req->data, "word_wrap"));
 	}
 
 	obs_source_update(source, settings);
