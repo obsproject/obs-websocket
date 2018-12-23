@@ -30,7 +30,8 @@
 * @category sources
 * @since 4.3.0
 */
-void WSRequestHandler::HandleGetSourcesList(WSRequestHandler* req) {
+void WSRequestHandler::HandleGetSourcesList(WSRequestHandler* req)
+{
 	OBSDataArrayAutoRelease sourcesArray = obs_data_array_create();
 
 	auto sourceEnumProc = [](void* privateData, obs_source_t* source) -> bool {
@@ -97,7 +98,8 @@ void WSRequestHandler::HandleGetSourcesList(WSRequestHandler* req) {
 * @category sources
 * @since 4.3.0
 */
-void WSRequestHandler::HandleGetSourceTypesList(WSRequestHandler* req) {
+void WSRequestHandler::HandleGetSourceTypesList(WSRequestHandler* req)
+{
 	OBSDataArrayAutoRelease idsArray = obs_data_array_create();
 
 	const char* id;
@@ -166,7 +168,8 @@ void WSRequestHandler::HandleGetSourceTypesList(WSRequestHandler* req) {
 * @category sources
 * @since 4.0.0
 */
-void WSRequestHandler::HandleGetVolume(WSRequestHandler* req) {
+void WSRequestHandler::HandleGetVolume(WSRequestHandler* req)
+{
 	if (!req->hasField("source")) {
 		req->SendErrorResponse("missing request parameters");
 		return;
@@ -203,7 +206,8 @@ void WSRequestHandler::HandleGetVolume(WSRequestHandler* req) {
  * @category sources
  * @since 4.0.0
  */
- void WSRequestHandler::HandleSetVolume(WSRequestHandler* req) {
+ void WSRequestHandler::HandleSetVolume(WSRequestHandler* req)
+ {
 	if (!req->hasField("source") || !req->hasField("volume"))
 	{
 		req->SendErrorResponse("missing request parameters");
@@ -241,7 +245,8 @@ void WSRequestHandler::HandleGetVolume(WSRequestHandler* req) {
 * @category sources
 * @since 4.0.0
 */
-void WSRequestHandler::HandleGetMute(WSRequestHandler* req) {
+void WSRequestHandler::HandleGetMute(WSRequestHandler* req)
+{
 	if (!req->hasField("source")) {
 		req->SendErrorResponse("missing request parameters");
 		return;
@@ -277,7 +282,8 @@ void WSRequestHandler::HandleGetMute(WSRequestHandler* req) {
  * @category sources
  * @since 4.0.0
  */
-void WSRequestHandler::HandleSetMute(WSRequestHandler* req) {
+void WSRequestHandler::HandleSetMute(WSRequestHandler* req)
+{
 	if (!req->hasField("source") || !req->hasField("mute")) {
 		req->SendErrorResponse("missing request parameters");
 		return;
@@ -311,7 +317,8 @@ void WSRequestHandler::HandleSetMute(WSRequestHandler* req) {
 * @category sources
 * @since 4.0.0
 */
-void WSRequestHandler::HandleToggleMute(WSRequestHandler* req) {
+void WSRequestHandler::HandleToggleMute(WSRequestHandler* req)
+{
 	if (!req->hasField("source")) {
 		req->SendErrorResponse("missing request parameters");
 		return;
@@ -344,7 +351,8 @@ void WSRequestHandler::HandleToggleMute(WSRequestHandler* req) {
  * @category sources
  * @since 4.2.0
  */
-void WSRequestHandler::HandleSetSyncOffset(WSRequestHandler* req) {
+void WSRequestHandler::HandleSetSyncOffset(WSRequestHandler* req)
+{
 	if (!req->hasField("source") || !req->hasField("offset")) {
 		req->SendErrorResponse("missing request parameters");
 		return;
@@ -381,7 +389,8 @@ void WSRequestHandler::HandleSetSyncOffset(WSRequestHandler* req) {
  * @category sources
  * @since 4.2.0
  */
-void WSRequestHandler::HandleGetSyncOffset(WSRequestHandler* req) {
+void WSRequestHandler::HandleGetSyncOffset(WSRequestHandler* req)
+{
 	if (!req->hasField("source")) {
 		req->SendErrorResponse("missing request parameters");
 		return;
@@ -417,7 +426,8 @@ void WSRequestHandler::HandleGetSyncOffset(WSRequestHandler* req) {
 * @category sources
 * @since 4.3.0
 */
-void WSRequestHandler::HandleGetSourceSettings(WSRequestHandler* req) {
+void WSRequestHandler::HandleGetSourceSettings(WSRequestHandler* req)
+{
 	if (!req->hasField("sourceName")) {
 		req->SendErrorResponse("missing request parameters");
 		return;
@@ -466,7 +476,8 @@ void WSRequestHandler::HandleGetSourceSettings(WSRequestHandler* req) {
 * @category sources
 * @since 4.3.0
 */
-void WSRequestHandler::HandleSetSourceSettings(WSRequestHandler* req) {
+void WSRequestHandler::HandleSetSourceSettings(WSRequestHandler* req)
+{
 	if (!req->hasField("sourceName") || !req->hasField("sourceSettings")) {
 		req->SendErrorResponse("missing request parameters");
 		return;
@@ -546,7 +557,8 @@ void WSRequestHandler::HandleSetSourceSettings(WSRequestHandler* req) {
  * @category sources
  * @since 4.1.0
  */
- void WSRequestHandler::HandleGetTextGDIPlusProperties(WSRequestHandler* req) {
+ void WSRequestHandler::HandleGetTextGDIPlusProperties(WSRequestHandler* req)
+ {
 	const char* sourceName = obs_data_get_string(req->data, "source");
 	if (!sourceName) {
 		req->SendErrorResponse("invalid request parameters");
@@ -609,7 +621,8 @@ void WSRequestHandler::HandleSetSourceSettings(WSRequestHandler* req) {
  * @category sources
  * @since 4.1.0
  */
-void WSRequestHandler::HandleSetTextGDIPlusProperties(WSRequestHandler* req) {
+void WSRequestHandler::HandleSetTextGDIPlusProperties(WSRequestHandler* req)
+{
 	if (!req->hasField("source")) {
 		req->SendErrorResponse("missing request parameters");
 		return;
@@ -782,7 +795,8 @@ void WSRequestHandler::HandleSetTextGDIPlusProperties(WSRequestHandler* req) {
  * @category sources
  * @since 4.5.0
  */
-void WSRequestHandler::HandleGetTextFreetype2Properties(WSRequestHandler* req) {
+void WSRequestHandler::HandleGetTextFreetype2Properties(WSRequestHandler* req)
+{
 	const char* sourceName = obs_data_get_string(req->data, "source");
 	if (!sourceName) {
 		req->SendErrorResponse("invalid request parameters");
@@ -832,7 +846,8 @@ void WSRequestHandler::HandleGetTextFreetype2Properties(WSRequestHandler* req) {
  * @category sources
  * @since 4.5.0
  */
-void WSRequestHandler::HandleSetTextFreetype2Properties(WSRequestHandler* req) {
+void WSRequestHandler::HandleSetTextFreetype2Properties(WSRequestHandler* req)
+{
     const char* sourceName = obs_data_get_string(req->data, "source");
     if (!sourceName) {
         req->SendErrorResponse("invalid request parameters");
@@ -941,7 +956,8 @@ void WSRequestHandler::HandleSetTextFreetype2Properties(WSRequestHandler* req) {
  * @category sources
  * @since 4.1.0
  */
-void WSRequestHandler::HandleGetBrowserSourceProperties(WSRequestHandler* req) {
+void WSRequestHandler::HandleGetBrowserSourceProperties(WSRequestHandler* req)
+{
 	const char* sourceName = obs_data_get_string(req->data, "source");
 	if (!sourceName) {
 		req->SendErrorResponse("invalid request parameters");
@@ -985,7 +1001,8 @@ void WSRequestHandler::HandleGetBrowserSourceProperties(WSRequestHandler* req) {
  * @category sources
  * @since 4.1.0
  */
-void WSRequestHandler::HandleSetBrowserSourceProperties(WSRequestHandler* req) {
+void WSRequestHandler::HandleSetBrowserSourceProperties(WSRequestHandler* req)
+{
 	if (!req->hasField("source")) {
 		req->SendErrorResponse("missing request parameters");
 		return;
@@ -1066,7 +1083,8 @@ void WSRequestHandler::HandleSetBrowserSourceProperties(WSRequestHandler* req) {
  * @category sources
  * @since 4.1.0
  */
- void WSRequestHandler::HandleGetSpecialSources(WSRequestHandler* req) {
+ void WSRequestHandler::HandleGetSpecialSources(WSRequestHandler* req)
+ {
 	OBSDataAutoRelease response = obs_data_create();
 
 	QMap<const char*, int> sources;
