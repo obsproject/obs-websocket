@@ -31,7 +31,7 @@ before_deploy:
 
 deploy_script:
   - ps: Push-AppveyorArtifact "C:\projects\obs-websocket\build.zip" -FileName "obs-websocket-$(git log --pretty=format:'%h' -n 1)-Windows.zip"
-  - ps: Push-AppveyorArtifact "C:\projects\obs-websocket\installer\Output\obs-websocket-git-Windows-Installer.exe" -FileName "obs-websocket-$(git log --pretty=format:'%h' -n 1)-Windows-Installer.exe"
+  - ps: Push-AppveyorArtifact "C:\projects\obs-websocket\installer\Output\obs-websocket-Windows-Installer.exe" -FileName "obs-websocket-$(git log --pretty=format:'%h' -n 1)-Windows-Installer.exe"
 
 test: off
 

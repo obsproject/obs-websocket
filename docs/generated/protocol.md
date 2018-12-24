@@ -49,6 +49,9 @@ auth_response = base64_encode(auth_response_hash)
 
 <!-- toc -->
 
+- [Typedefs](#typedefs)
+  * [Scene](#scene)
+  * [Source](#source)
 - [Events](#events)
   * [Scenes](#scenes)
     + [SwitchScenes](#switchscenes)
@@ -181,6 +184,31 @@ auth_response = base64_encode(auth_response_hash)
 
 <!-- tocstop -->
 
+# Typedefs
+These are complex types, such as `Source` and `Scene`, which are used as arguments or return values in multiple requests and/or events. 
+
+
+## Scene
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `name` | _String_ | Name of the currently active scene. |
+| `sources` | _Array&lt;Source&gt;_ | Ordered list of the current scene's source items. |
+## Source
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `cy` | _Number_ |  |
+| `cx` | _Number_ |  |
+| `name` | _String_ | The name of this Scene Item. |
+| `render` | _Boolean_ | Whether or not this Scene Item is set to "visible". |
+| `source_cx` | _Number_ |  |
+| `source_cy` | _Number_ |  |
+| `type` | _String_ | Source type. Value is one of the following: "input", "filter", "transition", "scene" or "unknown" |
+| `volume` | _Number_ |  |
+| `x` | _Number_ |  |
+| `y` | _Number_ |  |
+
+
+
 # Events
 Events are broadcast by the server to each connected client when a recognized action occurs within OBS.
 
@@ -208,7 +236,7 @@ Indicates a scene change.
 | Name | Type  | Description |
 | ---- | :---: | ------------|
 | `scene-name` | _String_ | The new scene. |
-| `sources` | _Array_ | List of sources in the new scene. |
+| `sources` | _Array&lt;Source&gt;_ | List of sources in the new scene. Same specification as [`GetCurrentScene`](#getcurrentscene). |
 
 
 ---
@@ -669,7 +697,7 @@ The selected preview scene has changed (only available in Studio Mode).
 | Name | Type  | Description |
 | ---- | :---: | ------------|
 | `scene-name` | _String_ | Name of the scene being previewed. |
-| `sources` | _Source\|Array_ | List of sources composing the scene. Same specification as [`GetCurrentScene`](#getcurrentscene). |
+| `sources` | _Array&lt;Source&gt;_ | List of sources composing the scene. Same specification as [`GetCurrentScene`](#getcurrentscene). |
 
 
 ---
@@ -848,7 +876,7 @@ _No specified parameters._
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
-| `profiles` | _Object\|Array_ | List of available profiles. |
+| `profiles` | _Array&lt;Object&gt;_ | List of available profiles. |
 
 
 ---
@@ -1082,8 +1110,7 @@ _No specified parameters._
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
-| `scene-collections` | _Object\|Array_ | Scene collections list |
-| `scene-collections.*.` | _String_ |  |
+| `scene-collections` | _Array&lt;String&gt;_ | Scene collections list |
 
 
 ---
@@ -1328,7 +1355,7 @@ _No specified parameters._
 | Name | Type  | Description |
 | ---- | :---: | ------------|
 | `name` | _String_ | Name of the currently active scene. |
-| `sources` | _Source\|Array_ | Ordered list of the current scene's source items. |
+| `sources` | _Array&lt;Source&gt;_ | Ordered list of the current scene's source items. |
 
 
 ---
@@ -1349,7 +1376,7 @@ _No specified parameters._
 | Name | Type  | Description |
 | ---- | :---: | ------------|
 | `current-scene` | _String_ | Name of the currently active scene. |
-| `scenes` | _Scene\|Array_ | Ordered list of the current profile's scenes (See `[GetCurrentScene](#getcurrentscene)` for more information). |
+| `scenes` | _Array&lt;Scene&gt;_ | Ordered list of the current profile's scenes (See `[GetCurrentScene](#getcurrentscene)` for more information). |
 
 
 ---
@@ -1394,7 +1421,7 @@ _No specified parameters._
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
-| `sources` | _Array of Objects_ | Array of sources as objects |
+| `sources` | _Array&lt;Object&gt;_ | Array of sources |
 | `sources.*.name` | _String_ | Unique source name |
 | `sources.*.typeId` | _String_ | Non-unique source internal type (a.k.a type id) |
 | `sources.*.type` | _String_ | Source type. Value is one of the following: "input", "filter", "transition", "scene" or "unknown" |
@@ -1417,7 +1444,7 @@ _No specified parameters._
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
-| `ids` | _Array of Objects_ | Array of sources as objects |
+| `ids` | _Array&lt;Object&gt;_ | Array of source types |
 | `ids.*.typeId` | _String_ | Non-unique internal source type ID |
 | `ids.*.displayName` | _String_ | Display name of the source type |
 | `ids.*.type` | _String_ | Type. Value is one of the following: "input", "filter", "transition" or "other" |
@@ -2287,7 +2314,7 @@ _No specified parameters._
 | Name | Type  | Description |
 | ---- | :---: | ------------|
 | `name` | _String_ | The name of the active preview scene. |
-| `sources` | _Source\|Array_ |  |
+| `sources` | _Array&lt;Source&gt;_ |  |
 
 
 ---
@@ -2405,8 +2432,8 @@ _No specified parameters._
 | Name | Type  | Description |
 | ---- | :---: | ------------|
 | `current-transition` | _String_ | Name of the currently active transition. |
-| `transitions` | _Object\|Array_ | List of transitions. |
-| `transitions[].name` | _String_ | Name of the transition. |
+| `transitions` | _Array&lt;Object&gt;_ | List of transitions. |
+| `transitions.*.name` | _String_ | Name of the transition. |
 
 
 ---

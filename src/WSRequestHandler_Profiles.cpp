@@ -50,7 +50,7 @@ void WSRequestHandler::HandleGetCurrentProfile(WSRequestHandler* req) {
 /**
  * Get a list of available profiles.
  *
- * @return {Object|Array} `profiles` List of available profiles.
+ * @return {Array<Object>} `profiles` List of available profiles.
  *
  * @api requests
  * @name ListProfiles

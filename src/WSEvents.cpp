@@ -98,7 +98,6 @@ WSEvents::~WSEvents() {
 }
 
 void WSEvents::deferredInitOperations() {
-	OBSSourceAutoRelease transition = obs_frontend_get_current_transition();
 	hookTransitionBeginEvent();
 
 	OBSSourceAutoRelease scene = obs_frontend_get_current_scene();
@@ -118,6 +117,7 @@ void WSEvents::FrontendEventHandler(enum obs_frontend_event event, void* private
 		owner->OnSceneListChange();
 	}
 	else if (event == OBS_FRONTEND_EVENT_SCENE_COLLECTION_CHANGED) {
+		owner->hookTransitionBeginEvent();
 		owner->OnSceneCollectionChange();
 	}
 	else if (event == OBS_FRONTEND_EVENT_SCENE_COLLECTION_LIST_CHANGED) {
@@ -292,7 +292,7 @@ const char* WSEvents::GetRecordingTimecode() {
  * Indicates a scene change.
  *
  * @return {String} `scene-name` The new scene.
- * @return {Array} `sources` List of sources in the new scene.
+ * @return {Array<Source>} `sources` List of sources in the new scene. Same specification as [`GetCurrentScene`](#getcurrentscene).
  *
  * @api events
  * @name SwitchScenes
@@ -796,8 +796,8 @@ void WSEvents::OnSceneReordered(void* param, calldata_t* data) {
 	obs_scene_t* scene = nullptr;
 	calldata_get_ptr(data, "scene", &scene);
 
-	OBSDataAutoRelease fields = Utils::GetSceneData(obs_scene_get_source(scene));
-	obs_data_set_string(fields, "name",
+	OBSDataAutoRelease fields = obs_data_create();
+	obs_data_set_string(fields, "scene-name",
 		obs_source_get_name(obs_scene_get_source(scene)));
 
 	instance->broadcastUpdate("SourceOrderChanged", fields);
@@ -908,7 +908,7 @@ void WSEvents::OnSceneItemVisibilityChanged(void* param, calldata_t* data) {
  * The selected preview scene has changed (only available in Studio Mode).
  *
  * @return {String} `scene-name` Name of the scene being previewed.
- * @return {Source|Array} `sources` List of sources composing the scene. Same specification as [`GetCurrentScene`](#getcurrentscene).
+ * @return {Array<Source>} `sources` List of sources composing the scene. Same specification as [`GetCurrentScene`](#getcurrentscene).
  *
  * @api events
  * @name PreviewSceneChanged

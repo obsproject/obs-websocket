@@ -36,7 +36,6 @@ QHash<QString, void(*)(WSRequestHandler*)> WSRequestHandler::messageMap {
 	{ "GetCurrentScene", WSRequestHandler::HandleGetCurrentScene },
 	{ "GetSceneList", WSRequestHandler::HandleGetSceneList },
 
-	{ "SetSceneItemOrder", WSRequestHandler::HandleSetSceneItemOrder },
 	{ "SetSourceRender", WSRequestHandler::HandleSetSceneItemRender }, // Retrocompat
 	{ "SetSceneItemRender", WSRequestHandler::HandleSetSceneItemRender },
 	{ "SetSceneItemPosition", WSRequestHandler::HandleSetSceneItemPosition },
@@ -44,8 +43,6 @@ QHash<QString, void(*)(WSRequestHandler*)> WSRequestHandler::messageMap {
 	{ "SetSceneItemCrop", WSRequestHandler::HandleSetSceneItemCrop },
 	{ "GetSceneItemProperties", WSRequestHandler::HandleGetSceneItemProperties },
 	{ "SetSceneItemProperties", WSRequestHandler::HandleSetSceneItemProperties },
-	{ "DuplicateSceneItem", WSRequestHandler::HandleDuplicateSceneItem },
-	{ "DeleteSceneItem", WSRequestHandler::HandleDeleteSceneItem },
 	{ "ResetSceneItem", WSRequestHandler::HandleResetSceneItem },
 	{ "DeleteSceneItem", WSRequestHandler::HandleDeleteSceneItem },
 	{ "DuplicateSceneItem", WSRequestHandler::HandleDuplicateSceneItem },
@@ -114,6 +111,7 @@ QHash<QString, void(*)(WSRequestHandler*)> WSRequestHandler::messageMap {
 
 	{ "SetTextGDIPlusProperties", WSRequestHandler::HandleSetTextGDIPlusProperties },
 	{ "GetTextGDIPlusProperties", WSRequestHandler::HandleGetTextGDIPlusProperties },
+
 	{ "SetTextFreetype2Properties", WSRequestHandler::HandleSetTextFreetype2Properties },
 	{ "GetTextFreetype2Properties", WSRequestHandler::HandleGetTextFreetype2Properties },
 
@@ -130,7 +128,7 @@ QSet<QString> WSRequestHandler::authNotRequired {
 WSRequestHandler::WSRequestHandler() :
 	_messageId(0),
 	_requestType(""),
-	data(nullptr)
+	data(nullptr),
 {
 }
 
