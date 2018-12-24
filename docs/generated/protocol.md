@@ -123,6 +123,8 @@ auth_response = base64_encode(auth_response_hash)
     + [SetSceneItemPosition](#setsceneitemposition)
     + [SetSceneItemTransform](#setsceneitemtransform)
     + [SetSceneItemCrop](#setsceneitemcrop)
+    + [DeleteSceneItem](#deletesceneitem)
+    + [DuplicateSceneItem](#duplicatesceneitem)
   * [Scenes](#scenes-1)
     + [SetCurrentScene](#setcurrentscene)
     + [GetCurrentScene](#getcurrentscene)
@@ -141,10 +143,10 @@ auth_response = base64_encode(auth_response_hash)
     + [SetSourceSettings](#setsourcesettings)
     + [GetTextGDIPlusProperties](#gettextgdiplusproperties)
     + [SetTextGDIPlusProperties](#settextgdiplusproperties)
+    + [GetTextFreetype2Properties](#gettextfreetype2properties)
+    + [SetTextFreetype2Properties](#settextfreetype2properties)
     + [GetBrowserSourceProperties](#getbrowsersourceproperties)
     + [SetBrowserSourceProperties](#setbrowsersourceproperties)
-    + [DeleteSceneItem](#deletesceneitem)
-    + [DuplicateSceneItem](#duplicatesceneitem)
     + [GetSpecialSources](#getspecialsources)
     + [GetSourceFilters](#getsourcefilters)
     + [AddFilterToSource](#addfiltertosource)
@@ -1346,6 +1348,59 @@ _No additional response items._
 
 ---
 
+### DeleteSceneItem
+
+
+- Added in v4.5.0
+
+Deletes a scene item.
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `scene` | _String (optional)_ | Name of the scene the source belongs to. Defaults to the current scene. |
+| `item` | _Object_ | item to delete (required) |
+| `item.name` | _String_ | name of the scene item (prefer `id`, including both is acceptable). |
+| `item.id` | _int_ | id of the scene item. |
+
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+### DuplicateSceneItem
+
+
+- Added in v4.5.0
+
+Duplicates a scene item.
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `fromScene` | _String (optional)_ | Name of the scene to copy the item from. Defaults to the current scene. |
+| `toScene` | _String (optional)_ | Name of the scene to create the item in. Defaults to the current scene. |
+| `item` | _Object_ | item to duplicate (required) |
+| `item.name` | _String_ | name of the scene item (prefer `id`, including both is acceptable). |
+| `item.id` | _int_ | id of the scene item. |
+
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `scene` | _String_ | Name of the scene where the new item was created |
+| `item` | _Object_ | New item info |
+| `̀item.id` | _int_ | New item ID |
+| `item.name` | _String_ | New item name |
+
+
+---
+
 ## Scenes
 
 ### SetCurrentScene
@@ -1478,16 +1533,16 @@ Get the volume of the specified source.
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
-| `source` | _String_ | Name of the source. |
+| `source` | _String_ | Source name. |
 
 
 **Response Items:**
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
-| `name` | _String_ | Name of the source. |
+| `name` | _String_ | Source name. |
 | `volume` | _double_ | Volume of the source. Between `0.0` and `1.0`. |
-| `mute` | _boolean_ | Indicates whether the source is muted. |
+| `muted` | _boolean_ | Indicates whether the source is muted. |
 
 
 ---
@@ -1503,7 +1558,7 @@ Set the volume of the specified source.
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
-| `source` | _String_ | Name of the source. |
+| `source` | _String_ | Source name. |
 | `volume` | _double_ | Desired volume. Must be between `0.0` and `1.0`. |
 
 
@@ -1524,14 +1579,14 @@ Get the mute status of a specified source.
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
-| `source` | _String_ | The name of the source. |
+| `source` | _String_ | Source name. |
 
 
 **Response Items:**
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
-| `name` | _String_ | The name of the source. |
+| `name` | _String_ | Source name. |
 | `muted` | _boolean_ | Mute status of the source. |
 
 
@@ -1548,7 +1603,7 @@ Sets the mute status of a specified source.
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
-| `source` | _String_ | The name of the source. |
+| `source` | _String_ | Source name. |
 | `mute` | _boolean_ | Desired mute status. |
 
 
@@ -1569,7 +1624,7 @@ Inverts the mute status of a specified source.
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
-| `source` | _String_ | The name of the source. |
+| `source` | _String_ | Source name. |
 
 
 **Response Items:**
@@ -1589,7 +1644,7 @@ Set the audio sync offset of a specified source.
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
-| `source` | _String_ | The name of the source. |
+| `source` | _String_ | Source name. |
 | `offset` | _int_ | The desired audio sync offset (in nanoseconds). |
 
 
@@ -1610,14 +1665,14 @@ Get the audio sync offset of a specified source.
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
-| `source` | _String_ | The name of the source. |
+| `source` | _String_ | Source name. |
 
 
 **Response Items:**
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
-| `name` | _String_ | The name of the source. |
+| `name` | _String_ | Source name. |
 | `offset` | _int_ | The audio sync offset (in nanoseconds). |
 
 
@@ -1634,7 +1689,7 @@ Get settings of the specified source
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
-| `sourceName` | _String_ | Name of the source item. |
+| `sourceName` | _String_ | Source name. |
 | `sourceType` | _String (optional)_ | Type of the specified source. Useful for type-checking if you expect a specific settings schema. |
 
 
@@ -1644,7 +1699,7 @@ Get settings of the specified source
 | ---- | :---: | ------------|
 | `sourceName` | _String_ | Source name |
 | `sourceType` | _String_ | Type of the specified source |
-| `sourceSettings` | _Object_ | Source settings. Varying between source types. |
+| `sourceSettings` | _Object_ | Source settings (varies between source types, may require some probing around). |
 
 
 ---
@@ -1660,9 +1715,9 @@ Set settings of the specified source.
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
-| `sourceName` | _String_ | Name of the source item. |
+| `sourceName` | _String_ | Source name. |
 | `sourceType` | _String (optional)_ | Type of the specified source. Useful for type-checking to avoid settings a set of settings incompatible with the actual source's type. |
-| `sourceSettings` | _Object_ | Source settings. Varying between source types. |
+| `sourceSettings` | _Object_ | Source settings (varies between source types, may require some probing around). |
 
 
 **Response Items:**
@@ -1671,7 +1726,7 @@ Set settings of the specified source.
 | ---- | :---: | ------------|
 | `sourceName` | _String_ | Source name |
 | `sourceType` | _String_ | Type of the specified source |
-| `sourceSettings` | _Object_ | Source settings. Varying between source types. |
+| `sourceSettings` | _Object_ | Updated source settings |
 
 
 ---
@@ -1687,14 +1742,14 @@ Get the current properties of a Text GDI Plus source.
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
-| `scene-name` | _String (optional)_ | Name of the scene to retrieve. Defaults to the current scene. |
-| `source` | _String_ | Name of the source. |
+| `source` | _String_ | Source name. |
 
 
 **Response Items:**
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
+| `source` | _String_ | Source name. |
 | `align` | _String_ | Text Alignment ("left", "center", "right"). |
 | `bk-color` | _int_ | Background color. |
 | `bk-opacity` | _int_ | Background opacity (0-100). |
@@ -1722,7 +1777,6 @@ Get the current properties of a Text GDI Plus source.
 | `text` | _String_ | Text content to be displayed. |
 | `valign` | _String_ | Text vertical alignment ("top", "center", "bottom"). |
 | `vertical` | _boolean_ | Vertical text enabled. |
-| `render` | _boolean_ | Visibility of the scene item. |
 
 
 ---
@@ -1732,13 +1786,12 @@ Get the current properties of a Text GDI Plus source.
 
 - Added in v4.1.0
 
-Get the current properties of a Text GDI Plus source.
+Set the current properties of a Text GDI Plus source.
 
 **Request Fields:**
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
-| `scene-name` | _String (optional)_ | Name of the scene to retrieve. Defaults to the current scene. |
 | `source` | _String_ | Name of the source. |
 | `align` | _String (optional)_ | Text Alignment ("left", "center", "right"). |
 | `bk-color` | _int (optional)_ | Background color. |
@@ -1776,6 +1829,79 @@ _No additional response items._
 
 ---
 
+### GetTextFreetype2Properties
+
+
+- Added in v4.5.0
+
+Get the current properties of a Text Freetype 2 source.
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `source` | _String_ | Source name. |
+
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `source` | _String_ | Source name |
+| `color1` | _int_ | Gradient top color. |
+| `color2` | _int_ | Gradient bottom color. |
+| `custom_width` | _int_ | Custom width (0 to disable). |
+| `drop_shadow` | _boolean_ | Drop shadow. |
+| `font` | _Object_ | Holds data for the font. Ex: `"font": { "face": "Arial", "flags": 0, "size": 150, "style": "" }` |
+| `font.face` | _String_ | Font face. |
+| `font.flags` | _int_ | Font text styling flag. `Bold=1, Italic=2, Bold Italic=3, Underline=5, Strikeout=8` |
+| `font.size` | _int_ | Font text size. |
+| `font.style` | _String_ | Font Style (unknown function). |
+| `from_file` | _boolean_ | Read text from the specified file. |
+| `log_mode` | _boolean_ | Chat log. |
+| `outline` | _boolean_ | Outline. |
+| `text` | _String_ | Text content to be displayed. |
+| `text_file` | _String_ | File path. |
+| `word_wrap` | _boolean_ | Word wrap. |
+
+
+---
+
+### SetTextFreetype2Properties
+
+
+- Added in v4.5.0
+
+Set the current properties of a Text Freetype 2 source.
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `source` | _String_ | Source name. |
+| `color1` | _int (optional)_ | Gradient top color. |
+| `color2` | _int (optional)_ | Gradient bottom color. |
+| `custom_width` | _int (optional)_ | Custom width (0 to disable). |
+| `drop_shadow` | _boolean (optional)_ | Drop shadow. |
+| `font` | _Object (optional)_ | Holds data for the font. Ex: `"font": { "face": "Arial", "flags": 0, "size": 150, "style": "" }` |
+| `font.face` | _String (optional)_ | Font face. |
+| `font.flags` | _int (optional)_ | Font text styling flag. `Bold=1, Italic=2, Bold Italic=3, Underline=5, Strikeout=8` |
+| `font.size` | _int (optional)_ | Font text size. |
+| `font.style` | _String (optional)_ | Font Style (unknown function). |
+| `from_file` | _boolean (optional)_ | Read text from the specified file. |
+| `log_mode` | _boolean (optional)_ | Chat log. |
+| `outline` | _boolean (optional)_ | Outline. |
+| `text` | _String (optional)_ | Text content to be displayed. |
+| `text_file` | _String (optional)_ | File path. |
+| `word_wrap` | _boolean (optional)_ | Word wrap. |
+
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
 ### GetBrowserSourceProperties
 
 
@@ -1787,14 +1913,14 @@ Get current properties for a Browser Source.
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
-| `scene-name` | _String (optional)_ | Name of the scene that the source belongs to. Defaults to the current scene. |
-| `source` | _String_ | Name of the source. |
+| `source` | _String_ | Source name. |
 
 
 **Response Items:**
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
+| `source` | _String_ | Source name. |
 | `is_local_file` | _boolean_ | Indicates that a local file is in use. |
 | `local_file` | _String_ | file path. |
 | `url` | _String_ | Url. |
@@ -1803,7 +1929,6 @@ Get current properties for a Browser Source.
 | `height` | _int_ | Height. |
 | `fps` | _int_ | Framerate. |
 | `shutdown` | _boolean_ | Indicates whether the source should be shutdown when not visible. |
-| `render` | _boolean (optional)_ | Visibility of the scene item. |
 
 
 ---
@@ -1819,7 +1944,6 @@ Set current properties for a Browser Source.
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
-| `scene-name` | _String (optional)_ | Name of the scene that the source belongs to. Defaults to the current scene. |
 | `source` | _String_ | Name of the source. |
 | `is_local_file` | _boolean (optional)_ | Indicates that a local file is in use. |
 | `local_file` | _String (optional)_ | file path. |
@@ -1830,53 +1954,6 @@ Set current properties for a Browser Source.
 | `fps` | _int (optional)_ | Framerate. |
 | `shutdown` | _boolean (optional)_ | Indicates whether the source should be shutdown when not visible. |
 | `render` | _boolean (optional)_ | Visibility of the scene item. |
-
-
-**Response Items:**
-
-_No additional response items._
-
----
-
-### DeleteSceneItem
-
-
-- Unreleased
-
-Deletes a scene item.
-
-**Request Fields:**
-
-| Name | Type  | Description |
-| ---- | :---: | ------------|
-| `scene` | _String (optional)_ | Name of the scene the source belongs to. Defaults to the current scene. |
-| `item` | _Object_ | item to delete (required) |
-| `item.name` | _String_ | name of the scene item (prefer `id`, including both is acceptable). |
-| `item.id` | _int_ | id of the scene item. |
-
-
-**Response Items:**
-
-_No additional response items._
-
----
-
-### DuplicateSceneItem
-
-
-- Unreleased
-
-Duplicates a scene item.
-
-**Request Fields:**
-
-| Name | Type  | Description |
-| ---- | :---: | ------------|
-| `fromScene` | _String (optional)_ | Name of the scene to copy the item from. Defaults to the current scene. |
-| `toScene` | _String (optional)_ | Name of the scene to create the item in. Defaults to the current scene. |
-| `item` | _Object_ | item to delete (required) |
-| `item.name` | _String_ | name of the scene item (prefer `id`, including both is acceptable). |
-| `item.id` | _int_ | id of the scene item. |
 
 
 **Response Items:**
@@ -1912,7 +1989,7 @@ _No specified parameters._
 ### GetSourceFilters
 
 
-- Unreleased
+- Added in v4.5.0
 
 List filters applied to a source
 
@@ -1938,7 +2015,7 @@ List filters applied to a source
 ### AddFilterToSource
 
 
-- Unreleased
+- Added in v4.5.0
 
 Add a new filter to a source. Available source types along with their settings properties are available from `GetSourceTypesList`.
 
@@ -1961,7 +2038,7 @@ _No additional response items._
 ### RemoveFilterFromSource
 
 
-- Unreleased
+- Added in v4.5.0
 
 Remove a filter from a source
 
@@ -1982,7 +2059,7 @@ _No additional response items._
 ### ReorderSourceFilter
 
 
-- Unreleased
+- Added in v4.5.0
 
 Move a filter in the chain (absolute index positioning)
 
@@ -2004,7 +2081,7 @@ _No additional response items._
 ### MoveSourceFilter
 
 
-- Unreleased
+- Added in v4.5.0
 
 Move a filter in the chain (relative positioning)
 
@@ -2026,7 +2103,7 @@ _No additional response items._
 ### SetSourceFilterSettings
 
 
-- Unreleased
+- Added in v4.5.0
 
 Update settings of a filter
 
