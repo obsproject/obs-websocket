@@ -2752,6 +2752,162 @@
         "lead": "",
         "type": "class",
         "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Deletes a scene item.",
+        "param": [
+          "{String (optional)} `scene` Name of the scene the source belongs to. Defaults to the current scene.",
+          "{Object} `item` item to delete (required)",
+          "{String} `item.name` name of the scene item (prefer `id`, including both is acceptable).",
+          "{int} `item.id` id of the scene item."
+        ],
+        "api": "requests",
+        "name": "DeleteSceneItem",
+        "category": "scene items",
+        "since": "4.5.0",
+        "params": [
+          {
+            "type": "String (optional)",
+            "name": "scene",
+            "description": "Name of the scene the source belongs to. Defaults to the current scene."
+          },
+          {
+            "type": "Object",
+            "name": "item",
+            "description": "item to delete (required)"
+          },
+          {
+            "type": "String",
+            "name": "item.name",
+            "description": "name of the scene item (prefer `id`, including both is acceptable)."
+          },
+          {
+            "type": "int",
+            "name": "item.id",
+            "description": "id of the scene item."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "DeleteSceneItem"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "scene items"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.5.0"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "DeleteSceneItem"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Duplicates a scene item.",
+        "param": [
+          "{String (optional)} `fromScene` Name of the scene to copy the item from. Defaults to the current scene.",
+          "{String (optional)} `toScene` Name of the scene to create the item in. Defaults to the current scene.",
+          "{Object} `item` item to duplicate (required)",
+          "{String} `item.name` name of the scene item (prefer `id`, including both is acceptable).",
+          "{int} `item.id` id of the scene item."
+        ],
+        "return": [
+          "{String} `scene` Name of the scene where the new item was created",
+          "{Object} `item` New item info",
+          "{int} `̀item.id` New item ID",
+          "{String} `item.name` New item name"
+        ],
+        "api": "requests",
+        "name": "DuplicateSceneItem",
+        "category": "scene items",
+        "since": "4.5.0",
+        "returns": [
+          {
+            "type": "String",
+            "name": "scene",
+            "description": "Name of the scene where the new item was created"
+          },
+          {
+            "type": "Object",
+            "name": "item",
+            "description": "New item info"
+          },
+          {
+            "type": "int",
+            "name": "̀item.id",
+            "description": "New item ID"
+          },
+          {
+            "type": "String",
+            "name": "item.name",
+            "description": "New item name"
+          }
+        ],
+        "params": [
+          {
+            "type": "String (optional)",
+            "name": "fromScene",
+            "description": "Name of the scene to copy the item from. Defaults to the current scene."
+          },
+          {
+            "type": "String (optional)",
+            "name": "toScene",
+            "description": "Name of the scene to create the item in. Defaults to the current scene."
+          },
+          {
+            "type": "Object",
+            "name": "item",
+            "description": "item to duplicate (required)"
+          },
+          {
+            "type": "String",
+            "name": "item.name",
+            "description": "name of the scene item (prefer `id`, including both is acceptable)."
+          },
+          {
+            "type": "int",
+            "name": "item.id",
+            "description": "id of the scene item."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "DuplicateSceneItem"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "scene items"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.5.0"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "DuplicateSceneItem"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
       }
     ],
     "scenes": [
@@ -3136,11 +3292,11 @@
       {
         "subheads": [],
         "description": "Get the volume of the specified source.",
-        "param": "{String} `source` Name of the source.",
+        "param": "{String} `source` Source name.",
         "return": [
-          "{String} `name` Name of the source.",
+          "{String} `name` Source name.",
           "{double} `volume` Volume of the source. Between `0.0` and `1.0`.",
-          "{boolean} `mute` Indicates whether the source is muted."
+          "{boolean} `muted` Indicates whether the source is muted."
         ],
         "api": "requests",
         "name": "GetVolume",
@@ -3150,7 +3306,7 @@
           {
             "type": "String",
             "name": "name",
-            "description": "Name of the source."
+            "description": "Source name."
           },
           {
             "type": "double",
@@ -3159,7 +3315,7 @@
           },
           {
             "type": "boolean",
-            "name": "mute",
+            "name": "muted",
             "description": "Indicates whether the source is muted."
           }
         ],
@@ -3167,7 +3323,7 @@
           {
             "type": "String",
             "name": "source",
-            "description": "Name of the source."
+            "description": "Source name."
           }
         ],
         "names": [
@@ -3200,7 +3356,7 @@
         "subheads": [],
         "description": "Set the volume of the specified source.",
         "param": [
-          "{String} `source` Name of the source.",
+          "{String} `source` Source name.",
           "{double} `volume` Desired volume. Must be between `0.0` and `1.0`."
         ],
         "api": "requests",
@@ -3211,7 +3367,7 @@
           {
             "type": "String",
             "name": "source",
-            "description": "Name of the source."
+            "description": "Source name."
           },
           {
             "type": "double",
@@ -3248,9 +3404,9 @@
       {
         "subheads": [],
         "description": "Get the mute status of a specified source.",
-        "param": "{String} `source` The name of the source.",
+        "param": "{String} `source` Source name.",
         "return": [
-          "{String} `name` The name of the source.",
+          "{String} `name` Source name.",
           "{boolean} `muted` Mute status of the source."
         ],
         "api": "requests",
@@ -3261,7 +3417,7 @@
           {
             "type": "String",
             "name": "name",
-            "description": "The name of the source."
+            "description": "Source name."
           },
           {
             "type": "boolean",
@@ -3273,7 +3429,7 @@
           {
             "type": "String",
             "name": "source",
-            "description": "The name of the source."
+            "description": "Source name."
           }
         ],
         "names": [
@@ -3306,7 +3462,7 @@
         "subheads": [],
         "description": "Sets the mute status of a specified source.",
         "param": [
-          "{String} `source` The name of the source.",
+          "{String} `source` Source name.",
           "{boolean} `mute` Desired mute status."
         ],
         "api": "requests",
@@ -3317,7 +3473,7 @@
           {
             "type": "String",
             "name": "source",
-            "description": "The name of the source."
+            "description": "Source name."
           },
           {
             "type": "boolean",
@@ -3354,7 +3510,7 @@
       {
         "subheads": [],
         "description": "Inverts the mute status of a specified source.",
-        "param": "{String} `source` The name of the source.",
+        "param": "{String} `source` Source name.",
         "api": "requests",
         "name": "ToggleMute",
         "category": "sources",
@@ -3363,7 +3519,7 @@
           {
             "type": "String",
             "name": "source",
-            "description": "The name of the source."
+            "description": "Source name."
           }
         ],
         "names": [
@@ -3396,7 +3552,7 @@
         "subheads": [],
         "description": "Set the audio sync offset of a specified source.",
         "param": [
-          "{String} `source` The name of the source.",
+          "{String} `source` Source name.",
           "{int} `offset` The desired audio sync offset (in nanoseconds)."
         ],
         "api": "requests",
@@ -3407,7 +3563,7 @@
           {
             "type": "String",
             "name": "source",
-            "description": "The name of the source."
+            "description": "Source name."
           },
           {
             "type": "int",
@@ -3444,9 +3600,9 @@
       {
         "subheads": [],
         "description": "Get the audio sync offset of a specified source.",
-        "param": "{String} `source` The name of the source.",
+        "param": "{String} `source` Source name.",
         "return": [
-          "{String} `name` The name of the source.",
+          "{String} `name` Source name.",
           "{int} `offset` The audio sync offset (in nanoseconds)."
         ],
         "api": "requests",
@@ -3457,7 +3613,7 @@
           {
             "type": "String",
             "name": "name",
-            "description": "The name of the source."
+            "description": "Source name."
           },
           {
             "type": "int",
@@ -3469,7 +3625,7 @@
           {
             "type": "String",
             "name": "source",
-            "description": "The name of the source."
+            "description": "Source name."
           }
         ],
         "names": [
@@ -3502,13 +3658,13 @@
         "subheads": [],
         "description": "Get settings of the specified source",
         "param": [
-          "{String} `sourceName` Name of the source item.",
+          "{String} `sourceName` Source name.",
           "{String (optional)} `sourceType` Type of the specified source. Useful for type-checking if you expect a specific settings schema."
         ],
         "return": [
           "{String} `sourceName` Source name",
           "{String} `sourceType` Type of the specified source",
-          "{Object} `sourceSettings` Source settings. Varying between source types."
+          "{Object} `sourceSettings` Source settings (varies between source types, may require some probing around)."
         ],
         "api": "requests",
         "name": "GetSourceSettings",
@@ -3528,14 +3684,14 @@
           {
             "type": "Object",
             "name": "sourceSettings",
-            "description": "Source settings. Varying between source types."
+            "description": "Source settings (varies between source types, may require some probing around)."
           }
         ],
         "params": [
           {
             "type": "String",
             "name": "sourceName",
-            "description": "Name of the source item."
+            "description": "Source name."
           },
           {
             "type": "String (optional)",
@@ -3573,14 +3729,14 @@
         "subheads": [],
         "description": "Set settings of the specified source.",
         "param": [
-          "{String} `sourceName` Name of the source item.",
+          "{String} `sourceName` Source name.",
           "{String (optional)} `sourceType` Type of the specified source. Useful for type-checking to avoid settings a set of settings incompatible with the actual source's type.",
-          "{Object} `sourceSettings` Source settings. Varying between source types."
+          "{Object} `sourceSettings` Source settings (varies between source types, may require some probing around)."
         ],
         "return": [
           "{String} `sourceName` Source name",
           "{String} `sourceType` Type of the specified source",
-          "{Object} `sourceSettings` Source settings. Varying between source types."
+          "{Object} `sourceSettings` Updated source settings"
         ],
         "api": "requests",
         "name": "SetSourceSettings",
@@ -3600,14 +3756,14 @@
           {
             "type": "Object",
             "name": "sourceSettings",
-            "description": "Source settings. Varying between source types."
+            "description": "Updated source settings"
           }
         ],
         "params": [
           {
             "type": "String",
             "name": "sourceName",
-            "description": "Name of the source item."
+            "description": "Source name."
           },
           {
             "type": "String (optional)",
@@ -3617,7 +3773,7 @@
           {
             "type": "Object",
             "name": "sourceSettings",
-            "description": "Source settings. Varying between source types."
+            "description": "Source settings (varies between source types, may require some probing around)."
           }
         ],
         "names": [
@@ -3649,11 +3805,9 @@
       {
         "subheads": [],
         "description": "Get the current properties of a Text GDI Plus source.",
-        "param": [
-          "{String (optional)} `scene-name` Name of the scene to retrieve. Defaults to the current scene.",
-          "{String} `source` Name of the source."
-        ],
+        "param": "{String} `source` Source name.",
         "return": [
+          "{String} `source` Source name.",
           "{String} `align` Text Alignment (\"left\", \"center\", \"right\").",
           "{int} `bk-color` Background color.",
           "{int} `bk-opacity` Background opacity (0-100).",
@@ -3680,14 +3834,18 @@
           "{int} `outline_opacity` Outline opacity (0-100).",
           "{String} `text` Text content to be displayed.",
           "{String} `valign` Text vertical alignment (\"top\", \"center\", \"bottom\").",
-          "{boolean} `vertical` Vertical text enabled.",
-          "{boolean} `render` Visibility of the scene item."
+          "{boolean} `vertical` Vertical text enabled."
         ],
         "api": "requests",
         "name": "GetTextGDIPlusProperties",
         "category": "sources",
         "since": "4.1.0",
         "returns": [
+          {
+            "type": "String",
+            "name": "source",
+            "description": "Source name."
+          },
           {
             "type": "String",
             "name": "align",
@@ -3822,23 +3980,13 @@
             "type": "boolean",
             "name": "vertical",
             "description": "Vertical text enabled."
-          },
-          {
-            "type": "boolean",
-            "name": "render",
-            "description": "Visibility of the scene item."
           }
         ],
         "params": [
           {
-            "type": "String (optional)",
-            "name": "scene-name",
-            "description": "Name of the scene to retrieve. Defaults to the current scene."
-          },
-          {
             "type": "String",
             "name": "source",
-            "description": "Name of the source."
+            "description": "Source name."
           }
         ],
         "names": [
@@ -3871,7 +4019,6 @@
         "subheads": [],
         "description": "Set the current properties of a Text GDI Plus source.",
         "param": [
-          "{String (optional)} `scene-name` Name of the scene to retrieve. Defaults to the current scene.",
           "{String} `source` Name of the source.",
           "{String (optional)} `align` Text Alignment (\"left\", \"center\", \"right\").",
           "{int (optional)} `bk-color` Background color.",
@@ -3907,11 +4054,6 @@
         "category": "sources",
         "since": "4.1.0",
         "params": [
-          {
-            "type": "String (optional)",
-            "name": "scene-name",
-            "description": "Name of the scene to retrieve. Defaults to the current scene."
-          },
           {
             "type": "String",
             "name": "source",
@@ -4087,11 +4229,9 @@
       {
         "subheads": [],
         "description": "Get the current properties of a Text Freetype 2 source.",
-        "param": [
-          "{String (optional)} `scene-name` Name of the scene to retrieve. Defaults to the current scene.",
-          "{String} `source` Name of the source."
-        ],
+        "param": "{String} `source` Source name.",
         "return": [
+          "{String} `source` Source name",
           "{int} `color1` Gradient top color.",
           "{int} `color2` Gradient bottom color.",
           "{int} `custom_width` Custom width (0 to disable).",
@@ -4106,14 +4246,18 @@
           "{boolean} `outline` Outline.",
           "{String} `text` Text content to be displayed.",
           "{String} `text_file` File path.",
-          "{boolean} `word_wrap` Word wrap.",
-          "{boolean} `render` Visibility of the scene item."
+          "{boolean} `word_wrap` Word wrap."
         ],
         "api": "requests",
         "name": "GetTextFreetype2Properties",
         "category": "sources",
-        "since": "4.x.x",
+        "since": "4.5.0",
         "returns": [
+          {
+            "type": "String",
+            "name": "source",
+            "description": "Source name"
+          },
           {
             "type": "int",
             "name": "color1",
@@ -4188,23 +4332,13 @@
             "type": "boolean",
             "name": "word_wrap",
             "description": "Word wrap."
-          },
-          {
-            "type": "boolean",
-            "name": "render",
-            "description": "Visibility of the scene item."
           }
         ],
         "params": [
           {
-            "type": "String (optional)",
-            "name": "scene-name",
-            "description": "Name of the scene to retrieve. Defaults to the current scene."
-          },
-          {
             "type": "String",
             "name": "source",
-            "description": "Name of the source."
+            "description": "Source name."
           }
         ],
         "names": [
@@ -4222,7 +4356,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "4.x.x"
+            "description": "4.5.0"
           }
         ],
         "heading": {
@@ -4237,8 +4371,7 @@
         "subheads": [],
         "description": "Set the current properties of a Text Freetype 2 source.",
         "param": [
-          "{String (optional)} `scene-name` Name of the scene to retrieve. Defaults to the current scene.",
-          "{String} `source` Name of the source.",
+          "{String} `source` Source name.",
           "{int (optional)} `color1` Gradient top color.",
           "{int (optional)} `color2` Gradient bottom color.",
           "{int (optional)} `custom_width` Custom width (0 to disable).",
@@ -4253,23 +4386,17 @@
           "{boolean (optional)} `outline` Outline.",
           "{String (optional)} `text` Text content to be displayed.",
           "{String (optional)} `text_file` File path.",
-          "{boolean (optional)} `word_wrap` Word wrap.",
-          "{boolean (optional)} `render` Visibility of the scene item."
+          "{boolean (optional)} `word_wrap` Word wrap."
         ],
         "api": "requests",
         "name": "SetTextFreetype2Properties",
         "category": "sources",
-        "since": "4.x.x",
+        "since": "4.5.0",
         "params": [
-          {
-            "type": "String (optional)",
-            "name": "scene-name",
-            "description": "Name of the scene to retrieve. Defaults to the current scene."
-          },
           {
             "type": "String",
             "name": "source",
-            "description": "Name of the source."
+            "description": "Source name."
           },
           {
             "type": "int (optional)",
@@ -4345,11 +4472,6 @@
             "type": "boolean (optional)",
             "name": "word_wrap",
             "description": "Word wrap."
-          },
-          {
-            "type": "boolean (optional)",
-            "name": "render",
-            "description": "Visibility of the scene item."
           }
         ],
         "names": [
@@ -4367,7 +4489,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "4.x.x"
+            "description": "4.5.0"
           }
         ],
         "heading": {
@@ -4381,11 +4503,9 @@
       {
         "subheads": [],
         "description": "Get current properties for a Browser Source.",
-        "param": [
-          "{String (optional)} `scene-name` Name of the scene that the source belongs to. Defaults to the current scene.",
-          "{String} `source` Name of the source."
-        ],
+        "param": "{String} `source` Source name.",
         "return": [
+          "{String} `source` Source name.",
           "{boolean} `is_local_file` Indicates that a local file is in use.",
           "{String} `local_file` file path.",
           "{String} `url` Url.",
@@ -4393,14 +4513,18 @@
           "{int} `width` Width.",
           "{int} `height` Height.",
           "{int} `fps` Framerate.",
-          "{boolean} `shutdown` Indicates whether the source should be shutdown when not visible.",
-          "{boolean (optional)} `render` Visibility of the scene item."
+          "{boolean} `shutdown` Indicates whether the source should be shutdown when not visible."
         ],
         "api": "requests",
         "name": "GetBrowserSourceProperties",
         "category": "sources",
         "since": "4.1.0",
         "returns": [
+          {
+            "type": "String",
+            "name": "source",
+            "description": "Source name."
+          },
           {
             "type": "boolean",
             "name": "is_local_file",
@@ -4440,23 +4564,13 @@
             "type": "boolean",
             "name": "shutdown",
             "description": "Indicates whether the source should be shutdown when not visible."
-          },
-          {
-            "type": "boolean (optional)",
-            "name": "render",
-            "description": "Visibility of the scene item."
           }
         ],
         "params": [
           {
-            "type": "String (optional)",
-            "name": "scene-name",
-            "description": "Name of the scene that the source belongs to. Defaults to the current scene."
-          },
-          {
             "type": "String",
             "name": "source",
-            "description": "Name of the source."
+            "description": "Source name."
           }
         ],
         "names": [
@@ -4489,7 +4603,6 @@
         "subheads": [],
         "description": "Set current properties for a Browser Source.",
         "param": [
-          "{String (optional)} `scene-name` Name of the scene that the source belongs to. Defaults to the current scene.",
           "{String} `source` Name of the source.",
           "{boolean (optional)} `is_local_file` Indicates that a local file is in use.",
           "{String (optional)} `local_file` file path.",
@@ -4506,11 +4619,6 @@
         "category": "sources",
         "since": "4.1.0",
         "params": [
-          {
-            "type": "String (optional)",
-            "name": "scene-name",
-            "description": "Name of the scene that the source belongs to. Defaults to the current scene."
-          },
           {
             "type": "String",
             "name": "source",
@@ -4590,134 +4698,6 @@
       },
       {
         "subheads": [],
-        "description": "Deletes a scene item.",
-        "param": [
-          "{String (optional)} `scene` Name of the scene the source belongs to. Defaults to the current scene.",
-          "{Object} `item` item to delete (required)",
-          "{String} `item.name` name of the scene item (prefer `id`, including both is acceptable).",
-          "{int} `item.id` id of the scene item."
-        ],
-        "api": "requests",
-        "name": "DeleteSceneItem",
-        "category": "sources",
-        "since": "unreleased",
-        "params": [
-          {
-            "type": "String (optional)",
-            "name": "scene",
-            "description": "Name of the scene the source belongs to. Defaults to the current scene."
-          },
-          {
-            "type": "Object",
-            "name": "item",
-            "description": "item to delete (required)"
-          },
-          {
-            "type": "String",
-            "name": "item.name",
-            "description": "name of the scene item (prefer `id`, including both is acceptable)."
-          },
-          {
-            "type": "int",
-            "name": "item.id",
-            "description": "id of the scene item."
-          }
-        ],
-        "names": [
-          {
-            "name": "",
-            "description": "DeleteSceneItem"
-          }
-        ],
-        "categories": [
-          {
-            "name": "",
-            "description": "sources"
-          }
-        ],
-        "sinces": [
-          {
-            "name": "",
-            "description": "unreleased"
-          }
-        ],
-        "heading": {
-          "level": 2,
-          "text": "DeleteSceneItem"
-        },
-        "lead": "",
-        "type": "class",
-        "examples": []
-      },
-      {
-        "subheads": [],
-        "description": "Duplicates a scene item.",
-        "param": [
-          "{String (optional)} `fromScene` Name of the scene to copy the item from. Defaults to the current scene.",
-          "{String (optional)} `toScene` Name of the scene to create the item in. Defaults to the current scene.",
-          "{Object} `item` item to delete (required)",
-          "{String} `item.name` name of the scene item (prefer `id`, including both is acceptable).",
-          "{int} `item.id` id of the scene item."
-        ],
-        "api": "requests",
-        "name": "DuplicateSceneItem",
-        "category": "sources",
-        "since": "unreleased",
-        "params": [
-          {
-            "type": "String (optional)",
-            "name": "fromScene",
-            "description": "Name of the scene to copy the item from. Defaults to the current scene."
-          },
-          {
-            "type": "String (optional)",
-            "name": "toScene",
-            "description": "Name of the scene to create the item in. Defaults to the current scene."
-          },
-          {
-            "type": "Object",
-            "name": "item",
-            "description": "item to delete (required)"
-          },
-          {
-            "type": "String",
-            "name": "item.name",
-            "description": "name of the scene item (prefer `id`, including both is acceptable)."
-          },
-          {
-            "type": "int",
-            "name": "item.id",
-            "description": "id of the scene item."
-          }
-        ],
-        "names": [
-          {
-            "name": "",
-            "description": "DuplicateSceneItem"
-          }
-        ],
-        "categories": [
-          {
-            "name": "",
-            "description": "sources"
-          }
-        ],
-        "sinces": [
-          {
-            "name": "",
-            "description": "unreleased"
-          }
-        ],
-        "heading": {
-          "level": 2,
-          "text": "DuplicateSceneItem"
-        },
-        "lead": "",
-        "type": "class",
-        "examples": []
-      },
-      {
-        "subheads": [],
         "description": "Get configured special sources like Desktop Audio and Mic/Aux sources.",
         "return": [
           "{String (optional)} `desktop-1` Name of the first Desktop Audio capture source.",
@@ -4788,7 +4768,7 @@
         "description": "List filters applied to a source",
         "param": "{String} `sourceName` Source name",
         "return": [
-          "{Array of Objects} `filters` List of filters for the specified source",
+          "{Array<Object>} `filters` List of filters for the specified source",
           "{String} `filters.*.type` Filter type",
           "{String} `filters.*.name` Filter name",
           "{Object} `filters.*.settings` Filter settings"
@@ -4796,10 +4776,10 @@
         "api": "requests",
         "name": "GetSourceFilters",
         "category": "sources",
-        "since": "unreleased",
+        "since": "4.5.0",
         "returns": [
           {
-            "type": "Array of Objects",
+            "type": "Array<Object>",
             "name": "filters",
             "description": "List of filters for the specified source"
           },
@@ -4841,7 +4821,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "unreleased"
+            "description": "4.5.0"
           }
         ],
         "heading": {
@@ -4864,7 +4844,7 @@
         "api": "requests",
         "name": "AddFilterToSource",
         "category": "sources",
-        "since": "unreleased",
+        "since": "4.5.0",
         "params": [
           {
             "type": "String",
@@ -4902,7 +4882,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "unreleased"
+            "description": "4.5.0"
           }
         ],
         "heading": {
@@ -4923,7 +4903,7 @@
         "api": "requests",
         "name": "RemoveFilterFromSource",
         "category": "sources",
-        "since": "unreleased",
+        "since": "4.5.0",
         "params": [
           {
             "type": "String",
@@ -4951,7 +4931,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "unreleased"
+            "description": "4.5.0"
           }
         ],
         "heading": {
@@ -4973,7 +4953,7 @@
         "api": "requests",
         "name": "ReorderSourceFilter",
         "category": "sources",
-        "since": "unreleased",
+        "since": "4.5.0",
         "params": [
           {
             "type": "String",
@@ -5006,7 +4986,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "unreleased"
+            "description": "4.5.0"
           }
         ],
         "heading": {
@@ -5028,7 +5008,7 @@
         "api": "requests",
         "name": "MoveSourceFilter",
         "category": "sources",
-        "since": "unreleased",
+        "since": "4.5.0",
         "params": [
           {
             "type": "String",
@@ -5061,7 +5041,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "unreleased"
+            "description": "4.5.0"
           }
         ],
         "heading": {
@@ -5083,7 +5063,7 @@
         "api": "requests",
         "name": "SetSourceFilterSettings",
         "category": "sources",
-        "since": "unreleased",
+        "since": "4.5.0",
         "params": [
           {
             "type": "String",
@@ -5116,7 +5096,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "unreleased"
+            "description": "4.5.0"
           }
         ],
         "heading": {
