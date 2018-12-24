@@ -66,6 +66,7 @@ class WSRequestHandler : public QObject {
 		static void HandleGetCurrentScene(WSRequestHandler* req);
 		static void HandleGetSceneList(WSRequestHandler* req);
 
+		static void HandleSetSceneItemOrder(WSRequestHandler* req);
 		static void HandleSetSceneItemRender(WSRequestHandler* req);
 		static void HandleSetSceneItemPosition(WSRequestHandler* req);
 		static void HandleSetSceneItemTransform(WSRequestHandler* req);

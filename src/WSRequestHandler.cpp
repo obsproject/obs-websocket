@@ -38,6 +38,7 @@ QHash<QString, void(*)(WSRequestHandler*)> WSRequestHandler::messageMap {
 	{ "GetCurrentScene", WSRequestHandler::HandleGetCurrentScene },
 	{ "GetSceneList", WSRequestHandler::HandleGetSceneList },
 
+	{ "SetSceneItemOrder", WSRequestHandler::HandleSetSceneItemOrder },
 	{ "SetSourceRender", WSRequestHandler::HandleSetSceneItemRender }, // Retrocompat
 	{ "SetSceneItemRender", WSRequestHandler::HandleSetSceneItemRender },
 	{ "SetSceneItemPosition", WSRequestHandler::HandleSetSceneItemPosition },
