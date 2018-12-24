@@ -22,6 +22,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include <QHash>
 #include <QSet>
+#include <QString>
 
 #include <obs.hpp>
 #include <obs-frontend-api.h>
@@ -36,18 +37,18 @@ class WSRequestHandler : public QObject {
 	Q_OBJECT
 
 	public:
-	explicit WSRequestHandler();
-	~WSRequestHandler();
+		explicit WSRequestHandler();
+		~WSRequestHandler();
 		void processIncomingMessage(QString textMessage);
 		bool hasField(QString name);
-	QString getResponse() {
-		return _response;
-	}
+		QString getResponse() {
+			return _response;
+		}
 
 	private:
 		const char* _messageId;
 		const char* _requestType;
-	QString _response;
+		QString _response;
 		OBSDataAutoRelease data;
 
 		void SendOKResponse(obs_data_t* additionalFields = NULL);
@@ -69,6 +70,7 @@ class WSRequestHandler : public QObject {
 		static void HandleGetCurrentScene(WSRequestHandler* req);
 		static void HandleGetSceneList(WSRequestHandler* req);
 
+		static void HandleSetSceneItemOrder(WSRequestHandler* req);
 		static void HandleSetSceneItemRender(WSRequestHandler* req);
 		static void HandleSetSceneItemPosition(WSRequestHandler* req);
 		static void HandleSetSceneItemTransform(WSRequestHandler* req);

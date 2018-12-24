@@ -69,8 +69,6 @@ class Utils {
 		QSystemTrayIcon::MessageIcon n,
 		QString title = QString("obs-websocket"));
 
-	static QString FormatIPAddress(QHostAddress &addr);
-
 	static const char* GetRecordingFolder();
 	static bool SetRecordingFolder(const char* path);
 
