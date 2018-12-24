@@ -50,8 +50,7 @@ void WSRequestHandler::HandleGetCurrentSceneCollection(WSRequestHandler* req) {
 /**
  * List available scene collections
  *
- * @return {Object|Array} `scene-collections` Scene collections list
- * @return {String} `scene-collections.*.`
+ * @return {Array<String>} `scene-collections` Scene collections list
  *
  * @api requests
  * @name ListSceneCollections

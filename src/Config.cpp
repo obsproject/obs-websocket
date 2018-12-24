@@ -32,6 +32,8 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #define QT_TO_UTF8(str) str.toUtf8().constData()
 
+#define QT_TO_UTF8(str) str.toUtf8().constData()
+
 Config* Config::_instance = new Config();
 
 Config::Config() :

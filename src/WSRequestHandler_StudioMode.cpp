@@ -27,7 +27,7 @@
  * Will return an `error` if Studio Mode is not enabled.
  *
  * @return {String} `name` The name of the active preview scene.
- * @return {Source|Array} `sources`
+ * @return {Array<Source>} `sources`
  *
  * @api requests
  * @name GetPreviewScene
