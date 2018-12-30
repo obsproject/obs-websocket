@@ -128,6 +128,7 @@ auth_response = base64_encode(auth_response_hash)
     + [SetCurrentScene](#setcurrentscene)
     + [GetCurrentScene](#getcurrentscene)
     + [GetSceneList](#getscenelist)
+    + [ReorderSceneItems](#reordersceneitems)
   * [Sources](#sources-1)
     + [GetSourcesList](#getsourceslist)
     + [GetSourcesTypesList](#getsourcestypeslist)
@@ -1461,6 +1462,29 @@ _No specified parameters._
 | `current-scene` | _String_ | Name of the currently active scene. |
 | `scenes` | _Array&lt;Scene&gt;_ | Ordered list of the current profile's scenes (See `[GetCurrentScene](#getcurrentscene)` for more information). |
 
+
+---
+
+### ReorderSceneItems
+
+
+- Added in v4.5.0
+
+Changes the order of scene items in the requested scene.
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `scene` | _String (optional)_ | Name of the scene to reorder (defaults to current). |
+| `items` | _Scene\|Array_ | Ordered list of objects with name and/or id specified. Id preferred due to uniqueness per scene |
+| `items[].id` | _int (optional)_ | Id of a specific scene item. Unique on a scene by scene basis. |
+| `items[].name` | _String (optional)_ | Name of a scene item. Sufficiently unique if no scene items share sources within the scene. |
+
+
+**Response Items:**
+
+_No additional response items._
 
 ---
 

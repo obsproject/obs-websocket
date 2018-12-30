@@ -3101,6 +3101,67 @@
         "lead": "",
         "type": "class",
         "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Changes the order of scene items in the requested scene.",
+        "param": [
+          "{String (optional)} `scene` Name of the scene to reorder (defaults to current).",
+          "{Scene|Array} `items` Ordered list of objects with name and/or id specified. Id preferred due to uniqueness per scene",
+          "{int (optional)} `items[].id` Id of a specific scene item. Unique on a scene by scene basis.",
+          "{String (optional)} `items[].name` Name of a scene item. Sufficiently unique if no scene items share sources within the scene."
+        ],
+        "api": "requests",
+        "name": "ReorderSceneItems",
+        "category": "scenes",
+        "since": "4.5.0",
+        "params": [
+          {
+            "type": "String (optional)",
+            "name": "scene",
+            "description": "Name of the scene to reorder (defaults to current)."
+          },
+          {
+            "type": "Scene|Array",
+            "name": "items",
+            "description": "Ordered list of objects with name and/or id specified. Id preferred due to uniqueness per scene"
+          },
+          {
+            "type": "int (optional)",
+            "name": "items[].id",
+            "description": "Id of a specific scene item. Unique on a scene by scene basis."
+          },
+          {
+            "type": "String (optional)",
+            "name": "items[].name",
+            "description": "Name of a scene item. Sufficiently unique if no scene items share sources within the scene."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "ReorderSceneItems"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "scenes"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.5.0"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "ReorderSceneItems"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
       }
     ],
     "sources": [
