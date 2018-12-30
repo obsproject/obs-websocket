@@ -1,14 +1,13 @@
 <!-- This file was generated based on handlebars templates. Do not edit directly! -->
 
-# obs-websocket 4.3.2 protocol reference
+# obs-websocket 4.5.0 protocol reference
 
 # General Introduction
 Messages are exchanged between the client and the server as JSON objects.
 This protocol is based on the original OBS Remote protocol created by Bill Hamilton, with new commands specific to OBS Studio.
 
-
 # Authentication
-OBSWebSocket uses SHA256 to transmit credentials.
+`obs-websocket` uses SHA256 to transmit credentials.
 
 A request for [`GetAuthRequired`](#getauthrequired) returns two elements:
 - A `challenge`: a random string that will be used to generate the auth response.
