@@ -75,6 +75,7 @@ class WSRequestHandler : public QObject {
 		static void HandleResetSceneItem(WSRequestHandler* req);
 		static void HandleDuplicateSceneItem(WSRequestHandler* req);
 		static void HandleDeleteSceneItem(WSRequestHandler* req);
+		static void HandleReorderSceneItems(WSRequestHandler* req);
 
 		static void HandleGetStreamingStatus(WSRequestHandler* req);
 		static void HandleStartStopStreaming(WSRequestHandler* req);
