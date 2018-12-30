@@ -66,7 +66,6 @@ class WSRequestHandler : public QObject {
 		static void HandleGetCurrentScene(WSRequestHandler* req);
 		static void HandleGetSceneList(WSRequestHandler* req);
 
-		static void HandleSetSceneItemOrder(WSRequestHandler* req);
 		static void HandleSetSceneItemRender(WSRequestHandler* req);
 		static void HandleSetSceneItemPosition(WSRequestHandler* req);
 		static void HandleSetSceneItemTransform(WSRequestHandler* req);
@@ -76,6 +75,7 @@ class WSRequestHandler : public QObject {
 		static void HandleResetSceneItem(WSRequestHandler* req);
 		static void HandleDuplicateSceneItem(WSRequestHandler* req);
 		static void HandleDeleteSceneItem(WSRequestHandler* req);
+		static void HandleReorderSceneItems(WSRequestHandler* req);
 
 		static void HandleGetStreamingStatus(WSRequestHandler* req);
 		static void HandleStartStopStreaming(WSRequestHandler* req);

@@ -90,11 +90,11 @@ void WSRequestHandler::HandleGetSceneList(WSRequestHandler* req) {
 * @param {String (optional)} `items[].name` Name of a scene item. Sufficiently unique if no scene items share sources within the scene.
 *
 * @api requests
-* @name SetSceneItemOrder
+* @name ReorderSceneItems
 * @category scenes
 * @since 4.5.0
 */
-void WSRequestHandler::HandleSetSceneItemOrder(WSRequestHandler* req) {
+void WSRequestHandler::HandleReorderSceneItems(WSRequestHandler* req) {
 	QString sceneName = obs_data_get_string(req->data, "scene");
 	OBSSourceAutoRelease scene = Utils::GetSceneFromNameOrCurrent(sceneName);
 	if (!scene) {
@@ -113,7 +113,7 @@ void WSRequestHandler::HandleSetSceneItemOrder(WSRequestHandler* req) {
 	std::vector<obs_sceneitem_t*> newOrder;
 	newOrder.reserve(count);
 
-	for (size_t i = 0; i < count; i++) {
+	for (size_t i = 0; i < count; ++i) {
 		OBSDataAutoRelease item = obs_data_array_item(items, i);
 
 		OBSSceneItemAutoRelease sceneItem = Utils::GetSceneItemFromItem(scene, item);
@@ -124,7 +124,7 @@ void WSRequestHandler::HandleSetSceneItemOrder(WSRequestHandler* req) {
 			return;
 		}
 		
-		for (size_t j = 0; j <= i; j++) {
+		for (size_t j = 0; j <= i; ++j) {
 			if (sceneItem == newOrder[j]) {
 				req->SendErrorResponse("Duplicate sceneItem in specified order");
 				return;
@@ -138,6 +138,10 @@ void WSRequestHandler::HandleSetSceneItemOrder(WSRequestHandler* req) {
 	if (!success) {
 		req->SendErrorResponse("Invalid sceneItem order");
 		return;
+	}
+
+	for (auto const& item: newOrder) {
+		obs_sceneitem_release(item);
 	}
 
 	req->SendOKResponse();
