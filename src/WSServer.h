@@ -49,7 +49,6 @@ public:
 	static WSServer* Instance;
 
 private:
-	bool validateConnection(connection_hdl hdl);
 	void onOpen(connection_hdl hdl);
 	void onMessage(connection_hdl hdl, server::message_ptr message);
 	void onClose(connection_hdl hdl);

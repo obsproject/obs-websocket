@@ -52,7 +52,6 @@ WSServer::WSServer(QObject* parent)
 {
 	_server.init_asio();
 
-	_server.set_validate_handler(bind(&WSServer::validateConnection, this, ::_1));
 	_server.set_open_handler(bind(&WSServer::onOpen, this, ::_1));
 	_server.set_close_handler(bind(&WSServer::onClose, this, ::_1));
 	_server.set_message_handler(bind(&WSServer::onMessage, this, ::_1, ::_2));
@@ -99,46 +98,6 @@ void WSServer::broadcast(QString message)
 	for (connection_hdl hdl : _connections) {
 		_server.send(hdl, message.toStdString(), websocketpp::frame::opcode::text);
 	}
-}
-
-bool WSServer::validateConnection(connection_hdl hdl)
-{
-	// TODO enforce subprotocol
-
-	Config* config = Config::Current();
-	if (config->AuthRequired) {
-		auto conn = _server.get_con_from_hdl(hdl);
-
-		QString authorization =
-				QString::fromStdString(conn->get_request_header("Authorization"));
-		if (!authorization.isNull() && !authorization.isEmpty()) {
-			const QStringList& parts = authorization.split(" ", QString::SplitBehavior::SkipEmptyParts);
-			if (parts.length() >= 2) {
-				const QString& authType = parts.at(0);
-				const QString& authValue = parts.at(1);
-
-				if (authType == "Basic") {
-					const QStringList& decodedParts =
-							decodeBase64(authValue).split(":", QString::SplitBehavior::SkipEmptyParts);
-					if (decodedParts.length() >= 2) {
-						const QString& username = decodedParts.at(0);
-						const QString& password = decodedParts.at(1);
-
-						// TODO time-constant string comparison
-						if (password == config->AuthPassword) {
-							return true;
-						}
-					}
-				}
-			}
-		}
-
-		conn->set_status(websocketpp::http::status_code::unauthorized);
-		conn->append_header("WWW-Authenticate", "Basic charset=\"UTF-8\"");
-		return false;
-	}
-
-	return true;
 }
 
 void WSServer::onOpen(connection_hdl hdl)
