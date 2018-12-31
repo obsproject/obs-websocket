@@ -34,7 +34,6 @@ QT_FORWARD_DECLARE_CLASS(QWebSocket)
 using websocketpp::connection_hdl;
 
 typedef websocketpp::server<websocketpp::config::asio> server;
-typedef std::set<connection_hdl,std::owner_less<connection_hdl>> con_list;
 
 class WSServer : public QObject
 {
@@ -59,7 +58,7 @@ private:
 
 	server _server;
 	quint16 _serverPort;
-	con_list _connections;
+	std::set<connection_hdl, std::owner_less<connection_hdl>> _connections;
 	QMutex _clMutex;
 };
 

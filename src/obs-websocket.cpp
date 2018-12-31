@@ -51,12 +51,14 @@ bool obs_module_load(void) {
 	WSServer::Instance = new WSServer();
 	WSEvents::Instance = new WSEvents(WSServer::Instance);
 
-	if (config->ServerEnabled)
+	if (config->ServerEnabled) {
 		WSServer::Instance->start(config->ServerPort);
+	}
 
 	// UI setup
 	QAction* menu_action = (QAction*)obs_frontend_add_tools_menu_qaction(
-		obs_module_text("OBSWebsocket.Menu.SettingsItem"));
+		obs_module_text("OBSWebsocket.Menu.SettingsItem")
+	);
 
 	obs_frontend_push_ui_translation(obs_module_get_string);
 	QMainWindow* main_window = (QMainWindow*)obs_frontend_get_main_window();
@@ -75,6 +77,9 @@ bool obs_module_load(void) {
 }
 
 void obs_module_unload() {
+	if (WSServer::Instance) {
+		WSServer::Instance->stop();
+	}
 	blog(LOG_INFO, "goodbye!");
 }
 
