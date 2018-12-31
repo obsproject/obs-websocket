@@ -6,14 +6,26 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 if (WIN32 OR APPLE)
 include(external/FindLibObs.cmake)
 endif()
 
+add_definitions(-DASIO_STANDALONE)
+
+if (UNIX)
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+endif()
+
+if (WIN32 OR APPLE)
+	include(external/FindLibObs.cmake)
+endif()
+
 find_package(LibObs REQUIRED)
 find_package(Qt5Core REQUIRED)
-find_package(Qt5WebSockets REQUIRED)
 find_package(Qt5Widgets REQUIRED)
+find_package(Boost REQUIRED)
 
 set(obs-websocket_SOURCES
 	src/obs-websocket.cpp
@@ -52,13 +64,14 @@ add_library(obs-websocket MODULE
 include_directories(
 	"${LIBOBS_INCLUDE_DIR}/../UI/obs-frontend-api"
 	${Qt5Core_INCLUDES}
-	${Qt5WebSockets_INCLUDES}
-	${Qt5Widgets_INCLUDES})
+	${Qt5Widgets_INCLUDES}
+	${Boost_INCLUDE_DIRS}
+	"${CMAKE_SOURCE_DIR}/deps/asio/asio/include"
+	"${CMAKE_SOURCE_DIR}/deps/websocketpp")
 
 target_link_libraries(obs-websocket
 	libobs
 	Qt5::Core
-	Qt5::WebSockets
 	Qt5::Widgets)
 
 # --- End of section ---
@@ -69,6 +82,8 @@ if(WIN32)
 		set(OBS_FRONTEND_LIB "OBS_FRONTEND_LIB-NOTFOUND" CACHE FILEPATH "OBS frontend library")
 		message(FATAL_ERROR "Could not find OBS Frontend API's library !")
 	endif()
+
+	add_definitions(-D_WEBSOCKETPP_CPP11_STL_)
 
 	if(CMAKE_SIZEOF_VOID_P EQUAL 8)
 		set(ARCH_NAME "64bit")
@@ -102,8 +117,6 @@ if(WIN32)
 
 		COMMAND if $<CONFIG:Release>==1 ("${CMAKE_COMMAND}" -E copy
 			"$<TARGET_FILE:obs-websocket>"
-			"${QTDIR}/bin/Qt5WebSockets.dll"
-			"${QTDIR}/bin/Qt5Network.dll"
 			"${RELEASE_DIR}/obs-plugins/${ARCH_NAME}")
 
 		# If config is RelWithDebInfo, package release files
@@ -118,8 +131,6 @@ if(WIN32)
 
 		COMMAND if $<CONFIG:RelWithDebInfo>==1 ("${CMAKE_COMMAND}" -E copy
 			"$<TARGET_FILE:obs-websocket>"
-			"${QTDIR}/bin/Qt5WebSockets.dll"
-			"${QTDIR}/bin/Qt5Network.dll"
 			"${RELEASE_DIR}/obs-plugins/${ARCH_NAME}")
 
 		COMMAND if $<CONFIG:RelWithDebInfo>==1 ("${CMAKE_COMMAND}" -E copy
@@ -130,8 +141,6 @@ if(WIN32)
 		COMMAND if $<CONFIG:Debug>==1 (
 			"${CMAKE_COMMAND}" -E copy
 				"$<TARGET_FILE:obs-websocket>"
-				"${QTDIR}/bin/Qt5WebSocketsd.dll"
-				"${QTDIR}/bin/Qt5Networkd.dll"
 				"${LIBOBS_INCLUDE_DIR}/../${OBS_BUILDDIR_ARCH}/rundir/$<CONFIG>/obs-plugins/${ARCH_NAME}")
 
 		COMMAND if $<CONFIG:Debug>==1 (
@@ -155,11 +164,8 @@ endif()
 
 # --- Linux-specific build settings and tasks ---
 if(UNIX AND NOT APPLE)
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-
 	set_target_properties(obs-websocket PROPERTIES PREFIX "")
-	target_link_libraries(obs-websocket
-		obs-frontend-api)
+	target_link_libraries(obs-websocket obs-frontend-api)
 
 	file(GLOB locale_files data/locale/*.ini)
 

@@ -20,33 +20,48 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #define WSSERVER_H
 
 #include <QObject>
-#include <QList>
 #include <QMutex>
+
+#include <set>
+#include <websocketpp/config/asio_no_tls.hpp>
+#include <websocketpp/server.hpp>
 
 #include "WSRequestHandler.h"
 
 QT_FORWARD_DECLARE_CLASS(QWebSocketServer)
 QT_FORWARD_DECLARE_CLASS(QWebSocket)
 
-class WSServer : public QObject {
-	Q_OBJECT
-	public:
-		explicit WSServer(QObject* parent = Q_NULLPTR);
-		virtual ~WSServer();
-		void Start(quint16 port);
-		void Stop();
-		void broadcast(QString message);
-		static WSServer* Instance;
+using websocketpp::connection_hdl;
 
-	private slots:
-		void onNewConnection();
-		void onTextMessageReceived(QString message);
-		void onSocketDisconnected();
+typedef websocketpp::server<websocketpp::config::asio> server;
+typedef std::set<connection_hdl,std::owner_less<connection_hdl>> con_list;
 
-	private:
-		QWebSocketServer* _wsServer;
-		QList<QWebSocket*> _clients;
-		QMutex _clMutex;
+class WSServer : public QObject
+{
+Q_OBJECT
+
+public:
+	explicit WSServer(QObject* parent = Q_NULLPTR);
+	virtual ~WSServer();
+	void start(quint16 port);
+	void stop();
+	void broadcast(QString message);
+	static WSServer* Instance;
+
+private:
+	bool validateConnection(connection_hdl hdl);
+	void onOpen(connection_hdl hdl);
+	void onMessage(connection_hdl hdl, server::message_ptr message);
+	void onClose(connection_hdl hdl);
+
+	QString getRemoteEndpoint(connection_hdl hdl);
+	void notifyConnection(QString clientIp);
+	void notifyDisconnection(QString clientIp);
+
+	server _server;
+	quint16 _serverPort;
+	con_list _connections;
+	QMutex _clMutex;
 };
 
 #endif // WSSERVER_H
