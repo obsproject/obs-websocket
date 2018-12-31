@@ -22,8 +22,6 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include <QHash>
 #include <QSet>
-#include <QWebSocket>
-#include <QWebSocketServer>
 
 #include <obs.hpp>
 #include <obs-frontend-api.h>
@@ -34,15 +32,18 @@ class WSRequestHandler : public QObject {
 	Q_OBJECT
 
 	public:
-		explicit WSRequestHandler(QWebSocket* client);
+		explicit WSRequestHandler();
 		~WSRequestHandler();
 		void processIncomingMessage(QString textMessage);
 		bool hasField(QString name);
+		QString getResponse() {
+			return _response;
+		}
 
 	private:
-		QWebSocket* _client;
 		const char* _messageId;
 		const char* _requestType;
+		QString _response;
 		OBSDataAutoRelease data;
 
 		void SendOKResponse(obs_data_t* additionalFields = NULL);
