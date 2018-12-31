@@ -135,18 +135,15 @@ WSRequestHandler::WSRequestHandler() :
 {
 }
 
-void WSRequestHandler::processIncomingMessage(QString textMessage) {
-	QByteArray msgData = textMessage.toUtf8();
-	const char* msg = msgData.constData();
+std::string WSRequestHandler::processIncomingMessage(std::string& textMessage) {
+	std::string msgContainer(textMessage);
+	const char* msg = msgContainer.c_str();
 
 	data = obs_data_create_from_json(msg);
 	if (!data) {
-		if (!msg)
-			msg = "<null pointer>";
-
 		blog(LOG_ERROR, "invalid JSON payload received for '%s'", msg);
 		SendErrorResponse("invalid JSON payload");
-		return;
+		return _response;
 	}
 
 	if (Config::Current()->DebugEnabled) {
@@ -157,7 +154,7 @@ void WSRequestHandler::processIncomingMessage(QString textMessage) {
 		|| !hasField("message-id"))
 	{
 		SendErrorResponse("missing request parameters");
-		return;
+		return _response;
 	}
 
 	_requestType = obs_data_get_string(data, "request-type");
@@ -177,6 +174,8 @@ void WSRequestHandler::processIncomingMessage(QString textMessage) {
 		handlerFunc(this);
 	else
 		SendErrorResponse("invalid request type");
+
+	return _response;
 }
 
 WSRequestHandler::~WSRequestHandler() {
@@ -214,11 +213,10 @@ void WSRequestHandler::SendErrorResponse(obs_data_t* additionalFields) {
 }
 
 void WSRequestHandler::SendResponse(obs_data_t* response)  {
-	assert(_response.isNull());
 	_response = obs_data_get_json(response);
 
 	if (Config::Current()->DebugEnabled)
-		blog(LOG_DEBUG, "Response << '%s'", _response.toUtf8().constData());
+		blog(LOG_DEBUG, "Response << '%s'", _response.c_str());
 }
 
 bool WSRequestHandler::hasField(QString name) {

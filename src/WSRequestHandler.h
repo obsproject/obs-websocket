@@ -34,16 +34,13 @@ class WSRequestHandler : public QObject {
 	public:
 		explicit WSRequestHandler();
 		~WSRequestHandler();
-		void processIncomingMessage(QString textMessage);
+		std::string processIncomingMessage(std::string& textMessage);
 		bool hasField(QString name);
-		QString getResponse() {
-			return _response;
-		}
 
 	private:
 		const char* _messageId;
 		const char* _requestType;
-		QString _response;
+		std::string _response;
 		OBSDataAutoRelease data;
 
 		void SendOKResponse(obs_data_t* additionalFields = NULL);

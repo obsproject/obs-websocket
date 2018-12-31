@@ -118,12 +118,10 @@ void WSServer::onMessage(connection_hdl hdl, server::message_ptr message)
 		return;
 	}
 
-	QString payload = QString::fromStdString(message->get_payload());
+	std::string payload = message->get_payload();
 
-	// TODO refactor handler
 	WSRequestHandler handler;
-	handler.processIncomingMessage(payload);
-	std::string response = handler.getResponse().toStdString();
+	std::string response = handler.processIncomingMessage(payload);
 
 	_server.send(hdl, response, websocketpp::frame::opcode::text);
 }
