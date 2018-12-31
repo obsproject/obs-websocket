@@ -218,7 +218,7 @@ void WSRequestHandler::SendResponse(obs_data_t* response)  {
 	_response = obs_data_get_json(response);
 
 	if (Config::Current()->DebugEnabled)
-		blog(LOG_DEBUG, "Response << '%s'", json.toUtf8().constData());
+		blog(LOG_DEBUG, "Response << '%s'", _response.toUtf8().constData());
 }
 
 bool WSRequestHandler::hasField(QString name) {

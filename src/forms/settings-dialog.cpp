@@ -94,9 +94,9 @@ void SettingsDialog::FormAccepted() {
 	conf->Save();
 
 	if (conf->ServerEnabled)
-		WSServer::Instance->Start(conf->ServerPort);
+		WSServer::Instance->start(conf->ServerPort);
 	else
-		WSServer::Instance->Stop();
+		WSServer::Instance->stop();
 }
 
 SettingsDialog::~SettingsDialog() {
