@@ -29,7 +29,7 @@ HandlerResponse WSRequestHandler::HandleStartStopRecording(WSRequestHandler* req
  * @category recording
  * @since 4.1.0
  */
- HandlerResponse WSRequestHandler::HandleStartRecording(WSRequestHandler* req) {
+HandlerResponse WSRequestHandler::HandleStartRecording(WSRequestHandler* req) {
 	if (obs_frontend_recording_active() == false) {
 		obs_frontend_recording_start();
 		return req->SendOKResponse();
