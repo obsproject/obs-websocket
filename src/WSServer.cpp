@@ -96,6 +96,12 @@ void WSServer::broadcast(QString message)
 {
 	QMutexLocker locker(&_clMutex);
 	for (connection_hdl hdl : _connections) {
+		if (Config::Current()->AuthRequired) {
+			bool authenticated = _connectionProperties[hdl].value(PROP_AUTHENTICATED).toBool();
+			if (!authenticated) {
+				continue;
+			}
+		}
 		_server.send(hdl, message.toStdString(), websocketpp::frame::opcode::text);
 	}
 }
@@ -118,16 +124,20 @@ void WSServer::onMessage(connection_hdl hdl, server::message_ptr message)
 		return;
 	}
 
+	QMutexLocker locker(&_clMutex);
 	QVariantHash connProperties = _connectionProperties[hdl];
+	locker.unlock();
 
 	std::string payload = message->get_payload();
 
-	WSRequestHandler handler(&connProperties);
+	WSRequestHandler handler(connProperties);
 	std::string response = handler.processIncomingMessage(payload);
 
-	_connectionProperties[hdl] = connProperties;
-
 	_server.send(hdl, response, websocketpp::frame::opcode::text);
+
+	locker.relock();
+	_connectionProperties[hdl] = connProperties;
+	locker.unlock();
 }
 
 void WSServer::onClose(connection_hdl hdl)

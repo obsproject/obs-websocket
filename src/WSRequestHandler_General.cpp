@@ -85,7 +85,7 @@ void WSRequestHandler::HandleAuthenticate(WSRequestHandler* req) {
 		return;
 	}
 
-	if (req->_connProperties->value(PROP_AUTHENTICATED).toBool() == true) {
+	if (req->_connProperties.value(PROP_AUTHENTICATED).toBool() == true) {
 		req->SendErrorResponse("already authenticated");
 		return;
 	}
@@ -101,7 +101,7 @@ void WSRequestHandler::HandleAuthenticate(WSRequestHandler* req) {
 		return;
 	}
 
-	req->_connProperties->insert(PROP_AUTHENTICATED, true);
+	req->_connProperties.insert(PROP_AUTHENTICATED, true);
 	req->SendOKResponse();
 }
 
