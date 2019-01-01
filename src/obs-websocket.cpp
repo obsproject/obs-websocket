@@ -45,7 +45,7 @@ bool obs_module_load(void) {
 		QT_VERSION_STR, qVersion());
 
 	// Core setup
-	Config* config = Config::Current();
+	auto config = Config::Current();
 	config->Load();
 
 	WSEvents::Instance = new WSEvents(WSServer::Current());

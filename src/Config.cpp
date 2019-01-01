@@ -36,7 +36,12 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #define QT_TO_UTF8(str) str.toUtf8().constData()
 
-Config* Config::_instance = new Config();
+ConfigPtr Config::_instance = ConfigPtr(new Config());
+
+ConfigPtr Config::Current()
+{
+	return _instance;
+}
 
 Config::Config() :
 	ServerEnabled(true),
@@ -178,9 +183,4 @@ bool Config::CheckAuth(QString response)
 	}
 
 	return authSuccess;
-}
-
-Config* Config::Current()
-{
-	return _instance;
 }
