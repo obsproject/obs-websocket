@@ -24,7 +24,7 @@
 
 #include "WSRequestHandler.h"
 
-QHash<QString, std::string(*)(WSRequestHandler*)> WSRequestHandler::messageMap {
+QHash<QString, HandlerResponse(*)(WSRequestHandler*)> WSRequestHandler::messageMap {
 	{ "GetVersion", WSRequestHandler::HandleGetVersion },
 	{ "GetAuthRequired", WSRequestHandler::HandleGetAuthRequired },
 	{ "Authenticate", WSRequestHandler::HandleAuthenticate },
@@ -136,7 +136,7 @@ WSRequestHandler::WSRequestHandler(QVariantHash& connProperties) :
 {
 }
 
-std::string WSRequestHandler::processIncomingMessage(std::string& textMessage) {
+obs_data_t* WSRequestHandler::processIncomingMessage(std::string& textMessage) {
 	std::string msgContainer(textMessage);
 	const char* msg = msgContainer.c_str();
 
@@ -164,7 +164,7 @@ std::string WSRequestHandler::processIncomingMessage(std::string& textMessage) {
 		return SendErrorResponse("Not Authenticated");
 	}
 
-	std::string (*handlerFunc)(WSRequestHandler*) = (messageMap[_requestType]);
+	HandlerResponse (*handlerFunc)(WSRequestHandler*) = (messageMap[_requestType]);
 	if (!handlerFunc) {
 		return SendErrorResponse("invalid request type");
 	}
@@ -175,45 +175,31 @@ std::string WSRequestHandler::processIncomingMessage(std::string& textMessage) {
 WSRequestHandler::~WSRequestHandler() {
 }
 
-std::string WSRequestHandler::SendOKResponse(obs_data_t* additionalFields) {
-	OBSDataAutoRelease response = obs_data_create();
-	obs_data_set_string(response, "status", "ok");
-	obs_data_set_string(response, "message-id", _messageId);
-
-	if (additionalFields)
-		obs_data_apply(response, additionalFields);
-
-	return SendResponse(response);
+HandlerResponse WSRequestHandler::SendOKResponse(obs_data_t* additionalFields) {
+	return SendResponse("ok", additionalFields);
 }
 
-std::string WSRequestHandler::SendErrorResponse(const char* errorMessage) {
-	OBSDataAutoRelease response = obs_data_create();
-	obs_data_set_string(response, "status", "error");
-	obs_data_set_string(response, "error", errorMessage);
-	obs_data_set_string(response, "message-id", _messageId);
+HandlerResponse WSRequestHandler::SendErrorResponse(const char* errorMessage) {
+	OBSDataAutoRelease fields = obs_data_create();
+	obs_data_set_string(fields, "error", errorMessage);
 
-	return SendResponse(response);
+	return SendResponse("error", fields);
 }
 
-std::string WSRequestHandler::SendErrorResponse(obs_data_t* additionalFields) {
-	OBSDataAutoRelease response = obs_data_create();
-	obs_data_set_string(response, "status", "error");
-	obs_data_set_string(response, "message-id", _messageId);
-
-	if (additionalFields)
-		obs_data_set_obj(response, "error", additionalFields);
-
-	return SendResponse(response);
+HandlerResponse WSRequestHandler::SendErrorResponse(obs_data_t* additionalFields) {
+	return SendResponse("error", additionalFields);
 }
 
-std::string WSRequestHandler::SendResponse(obs_data_t* response)  {
-	std::string responseStr = obs_data_get_json(response);
+HandlerResponse WSRequestHandler::SendResponse(const char* status, obs_data_t* fields) {
+	obs_data_t* response = obs_data_create();
+	obs_data_set_string(response, "message-id", _messageId);
+	obs_data_set_string(response, "status", status);
 
-	if (Config::Current()->DebugEnabled) {
-		blog(LOG_DEBUG, "Response << '%s'", responseStr.c_str());
+	if (fields) {
+		obs_data_apply(response, fields);
 	}
 
-	return responseStr;
+	return response;
 }
 
 bool WSRequestHandler::hasField(QString name) {

@@ -11,7 +11,7 @@
  * @category recording
  * @since 0.3
  */
-std::string WSRequestHandler::HandleStartStopRecording(WSRequestHandler* req) {
+HandlerResponse WSRequestHandler::HandleStartStopRecording(WSRequestHandler* req) {
 	if (obs_frontend_recording_active())
 		obs_frontend_recording_stop();
 	else
@@ -29,7 +29,7 @@ std::string WSRequestHandler::HandleStartStopRecording(WSRequestHandler* req) {
  * @category recording
  * @since 4.1.0
  */
- std::string WSRequestHandler::HandleStartRecording(WSRequestHandler* req) {
+ HandlerResponse WSRequestHandler::HandleStartRecording(WSRequestHandler* req) {
 	if (obs_frontend_recording_active() == false) {
 		obs_frontend_recording_start();
 		return req->SendOKResponse();
@@ -47,7 +47,7 @@ std::string WSRequestHandler::HandleStartStopRecording(WSRequestHandler* req) {
  * @category recording
  * @since 4.1.0
  */
- std::string WSRequestHandler::HandleStopRecording(WSRequestHandler* req) {
+ HandlerResponse WSRequestHandler::HandleStopRecording(WSRequestHandler* req) {
 	if (obs_frontend_recording_active() == true) {
 		obs_frontend_recording_stop();
 		return req->SendOKResponse();
@@ -66,7 +66,7 @@ std::string WSRequestHandler::HandleStartStopRecording(WSRequestHandler* req) {
  * @category recording
  * @since 4.1.0
  */
-std::string WSRequestHandler::HandleSetRecordingFolder(WSRequestHandler* req) {
+HandlerResponse WSRequestHandler::HandleSetRecordingFolder(WSRequestHandler* req) {
 	if (!req->hasField("rec-folder")) {
 		return req->SendErrorResponse("missing request parameters");
 	}
@@ -90,7 +90,7 @@ std::string WSRequestHandler::HandleSetRecordingFolder(WSRequestHandler* req) {
  * @category recording
  * @since 4.1.0
  */
-std::string WSRequestHandler::HandleGetRecordingFolder(WSRequestHandler* req) {
+HandlerResponse WSRequestHandler::HandleGetRecordingFolder(WSRequestHandler* req) {
 	const char* recFolder = Utils::GetRecordingFolder();
 
 	OBSDataAutoRelease response = obs_data_create();

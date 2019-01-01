@@ -11,7 +11,7 @@
 * @category replay buffer
 * @since 4.2.0
 */
-std::string WSRequestHandler::HandleStartStopReplayBuffer(WSRequestHandler* req) {
+HandlerResponse WSRequestHandler::HandleStartStopReplayBuffer(WSRequestHandler* req) {
 	if (obs_frontend_replay_buffer_active()) {
 		obs_frontend_replay_buffer_stop();
 	} else {
@@ -32,7 +32,7 @@ std::string WSRequestHandler::HandleStartStopReplayBuffer(WSRequestHandler* req)
 * @category replay buffer
 * @since 4.2.0
 */
-std::string WSRequestHandler::HandleStartReplayBuffer(WSRequestHandler* req) {
+HandlerResponse WSRequestHandler::HandleStartReplayBuffer(WSRequestHandler* req) {
 	if (!Utils::ReplayBufferEnabled()) {
 		return req->SendErrorResponse("replay buffer disabled in settings");
 	}
@@ -54,7 +54,7 @@ std::string WSRequestHandler::HandleStartReplayBuffer(WSRequestHandler* req) {
 * @category replay buffer
 * @since 4.2.0
 */
-std::string WSRequestHandler::HandleStopReplayBuffer(WSRequestHandler* req) {
+HandlerResponse WSRequestHandler::HandleStopReplayBuffer(WSRequestHandler* req) {
 	if (obs_frontend_replay_buffer_active() == true) {
 		obs_frontend_replay_buffer_stop();
 		return req->SendOKResponse();
@@ -73,7 +73,7 @@ std::string WSRequestHandler::HandleStopReplayBuffer(WSRequestHandler* req) {
 * @category replay buffer
 * @since 4.2.0
 */
-std::string WSRequestHandler::HandleSaveReplayBuffer(WSRequestHandler* req) {
+HandlerResponse WSRequestHandler::HandleSaveReplayBuffer(WSRequestHandler* req) {
 	if (!obs_frontend_replay_buffer_active()) {
 		return req->SendErrorResponse("replay buffer not active");
 	}

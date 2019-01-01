@@ -15,7 +15,7 @@
  * @category transitions
  * @since 4.1.0
  */
-std::string WSRequestHandler::HandleGetTransitionList(WSRequestHandler* req) {
+HandlerResponse WSRequestHandler::HandleGetTransitionList(WSRequestHandler* req) {
 	OBSSourceAutoRelease currentTransition = obs_frontend_get_current_transition();
 	obs_frontend_source_list transitionList = {};
 	obs_frontend_get_transitions(&transitionList);
@@ -49,7 +49,7 @@ std::string WSRequestHandler::HandleGetTransitionList(WSRequestHandler* req) {
  * @category transitions
  * @since 0.3
  */
-std::string WSRequestHandler::HandleGetCurrentTransition(WSRequestHandler* req) {
+HandlerResponse WSRequestHandler::HandleGetCurrentTransition(WSRequestHandler* req) {
 	OBSSourceAutoRelease currentTransition = obs_frontend_get_current_transition();
 
 	OBSDataAutoRelease response = obs_data_create();
@@ -72,7 +72,7 @@ std::string WSRequestHandler::HandleGetCurrentTransition(WSRequestHandler* req) 
  * @category transitions
  * @since 0.3
  */
-std::string WSRequestHandler::HandleSetCurrentTransition(WSRequestHandler* req) {
+HandlerResponse WSRequestHandler::HandleSetCurrentTransition(WSRequestHandler* req) {
 	if (!req->hasField("transition-name")) {
 		return req->SendErrorResponse("missing request parameters");
 	}
@@ -96,7 +96,7 @@ std::string WSRequestHandler::HandleSetCurrentTransition(WSRequestHandler* req) 
  * @category transitions
  * @since 4.0.0
  */
-std::string WSRequestHandler::HandleSetTransitionDuration(WSRequestHandler* req) {
+HandlerResponse WSRequestHandler::HandleSetTransitionDuration(WSRequestHandler* req) {
 	if (!req->hasField("duration")) {
 		return req->SendErrorResponse("missing request parameters");
 	}
@@ -116,7 +116,7 @@ std::string WSRequestHandler::HandleSetTransitionDuration(WSRequestHandler* req)
  * @category transitions
  * @since 4.1.0
  */
-std::string WSRequestHandler::HandleGetTransitionDuration(WSRequestHandler* req) {
+HandlerResponse WSRequestHandler::HandleGetTransitionDuration(WSRequestHandler* req) {
 	OBSDataAutoRelease response = obs_data_create();
 	obs_data_set_int(response, "transition-duration", Utils::GetTransitionDuration());
 	return req->SendOKResponse(response);

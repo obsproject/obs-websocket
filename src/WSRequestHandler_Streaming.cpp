@@ -20,7 +20,7 @@
  * @category streaming
  * @since 0.3
  */
-std::string WSRequestHandler::HandleGetStreamingStatus(WSRequestHandler* req) {
+HandlerResponse WSRequestHandler::HandleGetStreamingStatus(WSRequestHandler* req) {
 	auto events = WSEvents::Current();
 	 
 	OBSDataAutoRelease data = obs_data_create();
@@ -52,7 +52,7 @@ std::string WSRequestHandler::HandleGetStreamingStatus(WSRequestHandler* req) {
  * @category streaming
  * @since 0.3
  */
-std::string WSRequestHandler::HandleStartStopStreaming(WSRequestHandler* req) {
+HandlerResponse WSRequestHandler::HandleStartStopStreaming(WSRequestHandler* req) {
 	if (obs_frontend_streaming_active())
 		return HandleStopStreaming(req);
 	else
@@ -78,7 +78,7 @@ std::string WSRequestHandler::HandleStartStopStreaming(WSRequestHandler* req) {
  * @category streaming
  * @since 4.1.0
  */
-std::string WSRequestHandler::HandleStartStreaming(WSRequestHandler* req) {
+HandlerResponse WSRequestHandler::HandleStartStreaming(WSRequestHandler* req) {
 	if (obs_frontend_streaming_active() == false) {
 		OBSService configuredService = obs_frontend_get_streaming_service();
 		OBSService newService = nullptr;
@@ -174,7 +174,7 @@ std::string WSRequestHandler::HandleStartStreaming(WSRequestHandler* req) {
  * @category streaming
  * @since 4.1.0
  */
-std::string WSRequestHandler::HandleStopStreaming(WSRequestHandler* req) {
+HandlerResponse WSRequestHandler::HandleStopStreaming(WSRequestHandler* req) {
 	if (obs_frontend_streaming_active() == true) {
 		obs_frontend_streaming_stop();
 		return req->SendOKResponse();
@@ -200,7 +200,7 @@ std::string WSRequestHandler::HandleStopStreaming(WSRequestHandler* req) {
  * @category streaming
  * @since 4.1.0
  */
-std::string WSRequestHandler::HandleSetStreamSettings(WSRequestHandler* req) {
+HandlerResponse WSRequestHandler::HandleSetStreamSettings(WSRequestHandler* req) {
 	OBSService service = obs_frontend_get_streaming_service();
 
 	OBSDataAutoRelease requestSettings = obs_data_get_obj(req->data, "settings");
@@ -262,7 +262,7 @@ std::string WSRequestHandler::HandleSetStreamSettings(WSRequestHandler* req) {
  * @category streaming
  * @since 4.1.0
  */
-std::string WSRequestHandler::HandleGetStreamSettings(WSRequestHandler* req) {
+HandlerResponse WSRequestHandler::HandleGetStreamSettings(WSRequestHandler* req) {
 	OBSService service = obs_frontend_get_streaming_service();
 
 	const char* serviceType = obs_service_get_type(service);
@@ -283,7 +283,7 @@ std::string WSRequestHandler::HandleGetStreamSettings(WSRequestHandler* req) {
  * @category streaming
  * @since 4.1.0
  */
-std::string WSRequestHandler::HandleSaveStreamSettings(WSRequestHandler* req) {
+HandlerResponse WSRequestHandler::HandleSaveStreamSettings(WSRequestHandler* req) {
 	obs_frontend_save_streaming_service();
 	return req->SendOKResponse();
 }

@@ -31,7 +31,7 @@
 * @category scene items
 * @since 4.3.0
 */
-std::string WSRequestHandler::HandleGetSceneItemProperties(WSRequestHandler* req) {
+HandlerResponse WSRequestHandler::HandleGetSceneItemProperties(WSRequestHandler* req) {
 	if (!req->hasField("item")) {
 		return req->SendErrorResponse("missing request parameters");
 	}
@@ -153,7 +153,7 @@ std::string WSRequestHandler::HandleGetSceneItemProperties(WSRequestHandler* req
 * @category scene items
 * @since 4.3.0
 */
-std::string WSRequestHandler::HandleSetSceneItemProperties(WSRequestHandler* req) {
+HandlerResponse WSRequestHandler::HandleSetSceneItemProperties(WSRequestHandler* req) {
 	if (!req->hasField("item")) {
 		return req->SendErrorResponse("missing request parameters");
 	}
@@ -321,7 +321,7 @@ std::string WSRequestHandler::HandleSetSceneItemProperties(WSRequestHandler* req
 * @category scene items
 * @since 4.2.0
 */
-std::string WSRequestHandler::HandleResetSceneItem(WSRequestHandler* req) {
+HandlerResponse WSRequestHandler::HandleResetSceneItem(WSRequestHandler* req) {
 	// TODO: remove this request, or refactor it to ResetSource
 
 	if (!req->hasField("item")) {
@@ -365,7 +365,7 @@ std::string WSRequestHandler::HandleResetSceneItem(WSRequestHandler* req) {
 * @since 0.3
 * @deprecated Since 4.3.0. Prefer the use of SetSceneItemProperties.
 */
-std::string WSRequestHandler::HandleSetSceneItemRender(WSRequestHandler* req) {
+HandlerResponse WSRequestHandler::HandleSetSceneItemRender(WSRequestHandler* req) {
 	if (!req->hasField("source") ||
 		!req->hasField("render"))
 	{
@@ -410,7 +410,7 @@ std::string WSRequestHandler::HandleSetSceneItemRender(WSRequestHandler* req) {
 * @since 4.0.0
 * @deprecated Since 4.3.0. Prefer the use of SetSceneItemProperties.
 */
-std::string WSRequestHandler::HandleSetSceneItemPosition(WSRequestHandler* req) {
+HandlerResponse WSRequestHandler::HandleSetSceneItemPosition(WSRequestHandler* req) {
 	if (!req->hasField("item") ||
 		!req->hasField("x") || !req->hasField("y")) {
 		return req->SendErrorResponse("missing request parameters");
@@ -455,7 +455,7 @@ std::string WSRequestHandler::HandleSetSceneItemPosition(WSRequestHandler* req) 
 * @since 4.0.0
 * @deprecated Since 4.3.0. Prefer the use of SetSceneItemProperties.
 */
-std::string WSRequestHandler::HandleSetSceneItemTransform(WSRequestHandler* req) {
+HandlerResponse WSRequestHandler::HandleSetSceneItemTransform(WSRequestHandler* req) {
 	if (!req->hasField("item") ||
 		!req->hasField("x-scale") ||
 		!req->hasField("y-scale") ||
@@ -506,7 +506,7 @@ std::string WSRequestHandler::HandleSetSceneItemTransform(WSRequestHandler* req)
 * @since 4.1.0
 * @deprecated Since 4.3.0. Prefer the use of SetSceneItemProperties.
 */
-std::string WSRequestHandler::HandleSetSceneItemCrop(WSRequestHandler* req) {
+HandlerResponse WSRequestHandler::HandleSetSceneItemCrop(WSRequestHandler* req) {
 	if (!req->hasField("item")) {
 		return req->SendErrorResponse("missing request parameters");
 	}
@@ -551,7 +551,7 @@ std::string WSRequestHandler::HandleSetSceneItemCrop(WSRequestHandler* req) {
  * @category scene items
  * @since 4.5.0
  */
-std::string WSRequestHandler::HandleDeleteSceneItem(WSRequestHandler* req) {
+HandlerResponse WSRequestHandler::HandleDeleteSceneItem(WSRequestHandler* req) {
 	if (!req->hasField("item")) {
 		return req->SendErrorResponse("missing request parameters");
 	}
@@ -604,7 +604,7 @@ static void DuplicateSceneItem(void *_data, obs_scene_t *scene) {
  * @category scene items
  * @since 4.5.0
  */
-std::string WSRequestHandler::HandleDuplicateSceneItem(WSRequestHandler* req) {
+HandlerResponse WSRequestHandler::HandleDuplicateSceneItem(WSRequestHandler* req) {
 	if (!req->hasField("item")) {
 		return req->SendErrorResponse("missing request parameters");
 	}

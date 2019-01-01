@@ -29,13 +29,15 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include "obs-websocket.h"
 
+typedef obs_data_t* HandlerResponse;
+
 class WSRequestHandler : public QObject {
 	Q_OBJECT
 
 	public:
 		explicit WSRequestHandler(QVariantHash& connProperties);
 		~WSRequestHandler();
-		std::string processIncomingMessage(std::string& textMessage);
+		obs_data_t* processIncomingMessage(std::string& textMessage);
 		bool hasField(QString name);
 
 	private:
@@ -44,109 +46,109 @@ class WSRequestHandler : public QObject {
 		QVariantHash& _connProperties;
 		OBSDataAutoRelease data;
 
-		std::string SendOKResponse(obs_data_t* additionalFields = NULL);
-		std::string SendErrorResponse(const char* errorMessage);
-		std::string SendErrorResponse(obs_data_t* additionalFields = NULL);
-		std::string SendResponse(obs_data_t* response);
+		HandlerResponse SendOKResponse(obs_data_t* additionalFields = nullptr);
+		HandlerResponse SendErrorResponse(const char* errorMessage);
+		HandlerResponse SendErrorResponse(obs_data_t* additionalFields = nullptr);
+		HandlerResponse SendResponse(const char* status, obs_data_t* additionalFields = nullptr);
 
-		static QHash<QString, std::string(*)(WSRequestHandler*)> messageMap;
+		static QHash<QString, HandlerResponse(*)(WSRequestHandler*)> messageMap;
 		static QSet<QString> authNotRequired;
 
-		static std::string HandleGetVersion(WSRequestHandler* req);
-		static std::string HandleGetAuthRequired(WSRequestHandler* req);
-		static std::string HandleAuthenticate(WSRequestHandler* req);
+		static HandlerResponse HandleGetVersion(WSRequestHandler* req);
+		static HandlerResponse HandleGetAuthRequired(WSRequestHandler* req);
+		static HandlerResponse HandleAuthenticate(WSRequestHandler* req);
 
-		static std::string HandleSetHeartbeat(WSRequestHandler* req);
+		static HandlerResponse HandleSetHeartbeat(WSRequestHandler* req);
 
-		static std::string HandleSetFilenameFormatting(WSRequestHandler* req);
-		static std::string HandleGetFilenameFormatting(WSRequestHandler* req);
+		static HandlerResponse HandleSetFilenameFormatting(WSRequestHandler* req);
+		static HandlerResponse HandleGetFilenameFormatting(WSRequestHandler* req);
 
-		static std::string HandleSetCurrentScene(WSRequestHandler* req);
-		static std::string HandleGetCurrentScene(WSRequestHandler* req);
-		static std::string HandleGetSceneList(WSRequestHandler* req);
+		static HandlerResponse HandleSetCurrentScene(WSRequestHandler* req);
+		static HandlerResponse HandleGetCurrentScene(WSRequestHandler* req);
+		static HandlerResponse HandleGetSceneList(WSRequestHandler* req);
 
-		static std::string HandleSetSceneItemRender(WSRequestHandler* req);
-		static std::string HandleSetSceneItemPosition(WSRequestHandler* req);
-		static std::string HandleSetSceneItemTransform(WSRequestHandler* req);
-		static std::string HandleSetSceneItemCrop(WSRequestHandler* req);
-		static std::string HandleGetSceneItemProperties(WSRequestHandler* req);
-		static std::string HandleSetSceneItemProperties(WSRequestHandler* req);
-		static std::string HandleResetSceneItem(WSRequestHandler* req);
-		static std::string HandleDuplicateSceneItem(WSRequestHandler* req);
-		static std::string HandleDeleteSceneItem(WSRequestHandler* req);
-		static std::string HandleReorderSceneItems(WSRequestHandler* req);
+		static HandlerResponse HandleSetSceneItemRender(WSRequestHandler* req);
+		static HandlerResponse HandleSetSceneItemPosition(WSRequestHandler* req);
+		static HandlerResponse HandleSetSceneItemTransform(WSRequestHandler* req);
+		static HandlerResponse HandleSetSceneItemCrop(WSRequestHandler* req);
+		static HandlerResponse HandleGetSceneItemProperties(WSRequestHandler* req);
+		static HandlerResponse HandleSetSceneItemProperties(WSRequestHandler* req);
+		static HandlerResponse HandleResetSceneItem(WSRequestHandler* req);
+		static HandlerResponse HandleDuplicateSceneItem(WSRequestHandler* req);
+		static HandlerResponse HandleDeleteSceneItem(WSRequestHandler* req);
+		static HandlerResponse HandleReorderSceneItems(WSRequestHandler* req);
 
-		static std::string HandleGetStreamingStatus(WSRequestHandler* req);
-		static std::string HandleStartStopStreaming(WSRequestHandler* req);
-		static std::string HandleStartStopRecording(WSRequestHandler* req);
-		static std::string HandleStartStreaming(WSRequestHandler* req);
-		static std::string HandleStopStreaming(WSRequestHandler* req);
-		static std::string HandleStartRecording(WSRequestHandler* req);
-		static std::string HandleStopRecording(WSRequestHandler* req);
+		static HandlerResponse HandleGetStreamingStatus(WSRequestHandler* req);
+		static HandlerResponse HandleStartStopStreaming(WSRequestHandler* req);
+		static HandlerResponse HandleStartStopRecording(WSRequestHandler* req);
+		static HandlerResponse HandleStartStreaming(WSRequestHandler* req);
+		static HandlerResponse HandleStopStreaming(WSRequestHandler* req);
+		static HandlerResponse HandleStartRecording(WSRequestHandler* req);
+		static HandlerResponse HandleStopRecording(WSRequestHandler* req);
 
-		static std::string HandleStartStopReplayBuffer(WSRequestHandler* req);
-		static std::string HandleStartReplayBuffer(WSRequestHandler* req);
-		static std::string HandleStopReplayBuffer(WSRequestHandler* req);
-		static std::string HandleSaveReplayBuffer(WSRequestHandler* req);
+		static HandlerResponse HandleStartStopReplayBuffer(WSRequestHandler* req);
+		static HandlerResponse HandleStartReplayBuffer(WSRequestHandler* req);
+		static HandlerResponse HandleStopReplayBuffer(WSRequestHandler* req);
+		static HandlerResponse HandleSaveReplayBuffer(WSRequestHandler* req);
 
-		static std::string HandleSetRecordingFolder(WSRequestHandler* req);
-		static std::string HandleGetRecordingFolder(WSRequestHandler* req);
+		static HandlerResponse HandleSetRecordingFolder(WSRequestHandler* req);
+		static HandlerResponse HandleGetRecordingFolder(WSRequestHandler* req);
 
-		static std::string HandleGetTransitionList(WSRequestHandler* req);
-		static std::string HandleGetCurrentTransition(WSRequestHandler* req);
-		static std::string HandleSetCurrentTransition(WSRequestHandler* req);
+		static HandlerResponse HandleGetTransitionList(WSRequestHandler* req);
+		static HandlerResponse HandleGetCurrentTransition(WSRequestHandler* req);
+		static HandlerResponse HandleSetCurrentTransition(WSRequestHandler* req);
 
-		static std::string HandleSetVolume(WSRequestHandler* req);
-		static std::string HandleGetVolume(WSRequestHandler* req);
-		static std::string HandleToggleMute(WSRequestHandler* req);
-		static std::string HandleSetMute(WSRequestHandler* req);
-		static std::string HandleGetMute(WSRequestHandler* req);
-		static std::string HandleSetSyncOffset(WSRequestHandler* req);
-		static std::string HandleGetSyncOffset(WSRequestHandler* req);
-		static std::string HandleGetSpecialSources(WSRequestHandler* req);
-		static std::string HandleGetSourcesList(WSRequestHandler* req);
-		static std::string HandleGetSourceTypesList(WSRequestHandler* req);
-		static std::string HandleGetSourceSettings(WSRequestHandler* req);
-		static std::string HandleSetSourceSettings(WSRequestHandler* req);
+		static HandlerResponse HandleSetVolume(WSRequestHandler* req);
+		static HandlerResponse HandleGetVolume(WSRequestHandler* req);
+		static HandlerResponse HandleToggleMute(WSRequestHandler* req);
+		static HandlerResponse HandleSetMute(WSRequestHandler* req);
+		static HandlerResponse HandleGetMute(WSRequestHandler* req);
+		static HandlerResponse HandleSetSyncOffset(WSRequestHandler* req);
+		static HandlerResponse HandleGetSyncOffset(WSRequestHandler* req);
+		static HandlerResponse HandleGetSpecialSources(WSRequestHandler* req);
+		static HandlerResponse HandleGetSourcesList(WSRequestHandler* req);
+		static HandlerResponse HandleGetSourceTypesList(WSRequestHandler* req);
+		static HandlerResponse HandleGetSourceSettings(WSRequestHandler* req);
+		static HandlerResponse HandleSetSourceSettings(WSRequestHandler* req);
 
-		static std::string HandleGetSourceFilters(WSRequestHandler* req);
-		static std::string HandleAddFilterToSource(WSRequestHandler* req);
-		static std::string HandleRemoveFilterFromSource(WSRequestHandler* req);
-		static std::string HandleReorderSourceFilter(WSRequestHandler* req);
-		static std::string HandleMoveSourceFilter(WSRequestHandler* req);
-		static std::string HandleSetSourceFilterSettings(WSRequestHandler* req);
+		static HandlerResponse HandleGetSourceFilters(WSRequestHandler* req);
+		static HandlerResponse HandleAddFilterToSource(WSRequestHandler* req);
+		static HandlerResponse HandleRemoveFilterFromSource(WSRequestHandler* req);
+		static HandlerResponse HandleReorderSourceFilter(WSRequestHandler* req);
+		static HandlerResponse HandleMoveSourceFilter(WSRequestHandler* req);
+		static HandlerResponse HandleSetSourceFilterSettings(WSRequestHandler* req);
 
-		static std::string HandleSetCurrentSceneCollection(WSRequestHandler* req);
-		static std::string HandleGetCurrentSceneCollection(WSRequestHandler* req);
-		static std::string HandleListSceneCollections(WSRequestHandler* req);
+		static HandlerResponse HandleSetCurrentSceneCollection(WSRequestHandler* req);
+		static HandlerResponse HandleGetCurrentSceneCollection(WSRequestHandler* req);
+		static HandlerResponse HandleListSceneCollections(WSRequestHandler* req);
 
-		static std::string HandleSetCurrentProfile(WSRequestHandler* req);
-		static std::string HandleGetCurrentProfile(WSRequestHandler* req);
-		static std::string HandleListProfiles(WSRequestHandler* req);
+		static HandlerResponse HandleSetCurrentProfile(WSRequestHandler* req);
+		static HandlerResponse HandleGetCurrentProfile(WSRequestHandler* req);
+		static HandlerResponse HandleListProfiles(WSRequestHandler* req);
 
-		static std::string HandleSetStreamSettings(WSRequestHandler* req);
-		static std::string HandleGetStreamSettings(WSRequestHandler* req);
-		static std::string HandleSaveStreamSettings(WSRequestHandler* req);
+		static HandlerResponse HandleSetStreamSettings(WSRequestHandler* req);
+		static HandlerResponse HandleGetStreamSettings(WSRequestHandler* req);
+		static HandlerResponse HandleSaveStreamSettings(WSRequestHandler* req);
 
-		static std::string HandleSetTransitionDuration(WSRequestHandler* req);
-		static std::string HandleGetTransitionDuration(WSRequestHandler* req);
+		static HandlerResponse HandleSetTransitionDuration(WSRequestHandler* req);
+		static HandlerResponse HandleGetTransitionDuration(WSRequestHandler* req);
 
-		static std::string HandleGetStudioModeStatus(WSRequestHandler* req);
-		static std::string HandleGetPreviewScene(WSRequestHandler* req);
-		static std::string HandleSetPreviewScene(WSRequestHandler* req);
-		static std::string HandleTransitionToProgram(WSRequestHandler* req);
-		static std::string HandleEnableStudioMode(WSRequestHandler* req);
-		static std::string HandleDisableStudioMode(WSRequestHandler* req);
-		static std::string HandleToggleStudioMode(WSRequestHandler* req);
+		static HandlerResponse HandleGetStudioModeStatus(WSRequestHandler* req);
+		static HandlerResponse HandleGetPreviewScene(WSRequestHandler* req);
+		static HandlerResponse HandleSetPreviewScene(WSRequestHandler* req);
+		static HandlerResponse HandleTransitionToProgram(WSRequestHandler* req);
+		static HandlerResponse HandleEnableStudioMode(WSRequestHandler* req);
+		static HandlerResponse HandleDisableStudioMode(WSRequestHandler* req);
+		static HandlerResponse HandleToggleStudioMode(WSRequestHandler* req);
 
-		static std::string HandleSetTextGDIPlusProperties(WSRequestHandler* req);
-		static std::string HandleGetTextGDIPlusProperties(WSRequestHandler* req);
+		static HandlerResponse HandleSetTextGDIPlusProperties(WSRequestHandler* req);
+		static HandlerResponse HandleGetTextGDIPlusProperties(WSRequestHandler* req);
 
-		static std::string HandleSetTextFreetype2Properties(WSRequestHandler* req);
-		static std::string HandleGetTextFreetype2Properties(WSRequestHandler* req);
+		static HandlerResponse HandleSetTextFreetype2Properties(WSRequestHandler* req);
+		static HandlerResponse HandleGetTextFreetype2Properties(WSRequestHandler* req);
 
-		static std::string HandleSetBrowserSourceProperties(WSRequestHandler* req);
-		static std::string HandleGetBrowserSourceProperties(WSRequestHandler* req);
+		static HandlerResponse HandleSetBrowserSourceProperties(WSRequestHandler* req);
+		static HandlerResponse HandleGetBrowserSourceProperties(WSRequestHandler* req);
 };
 
 #endif // WSPROTOCOL_H

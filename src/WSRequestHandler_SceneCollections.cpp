@@ -13,7 +13,7 @@
  * @category scene collections
  * @since 4.0.0
  */
-std::string WSRequestHandler::HandleSetCurrentSceneCollection(WSRequestHandler* req) {
+HandlerResponse WSRequestHandler::HandleSetCurrentSceneCollection(WSRequestHandler* req) {
 	if (!req->hasField("sc-name")) {
 		return req->SendErrorResponse("missing request parameters");
 	}
@@ -38,7 +38,7 @@ std::string WSRequestHandler::HandleSetCurrentSceneCollection(WSRequestHandler* 
  * @category scene collections
  * @since 4.0.0
  */
-std::string WSRequestHandler::HandleGetCurrentSceneCollection(WSRequestHandler* req) {
+HandlerResponse WSRequestHandler::HandleGetCurrentSceneCollection(WSRequestHandler* req) {
 	OBSDataAutoRelease response = obs_data_create();
 	obs_data_set_string(response, "sc-name",
 		obs_frontend_get_current_scene_collection());
@@ -56,7 +56,7 @@ std::string WSRequestHandler::HandleGetCurrentSceneCollection(WSRequestHandler* 
  * @category scene collections
  * @since 4.0.0
  */
-std::string WSRequestHandler::HandleListSceneCollections(WSRequestHandler* req) {
+HandlerResponse WSRequestHandler::HandleListSceneCollections(WSRequestHandler* req) {
 	char** sceneCollections = obs_frontend_get_scene_collections();
 	OBSDataArrayAutoRelease list =
 		Utils::StringListToArray(sceneCollections, "sc-name");

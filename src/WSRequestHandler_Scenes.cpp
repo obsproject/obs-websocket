@@ -19,7 +19,7 @@
  * @category scenes
  * @since 0.3
  */
-std::string WSRequestHandler::HandleSetCurrentScene(WSRequestHandler* req) {
+HandlerResponse WSRequestHandler::HandleSetCurrentScene(WSRequestHandler* req) {
 	if (!req->hasField("scene-name")) {
 		return req->SendErrorResponse("missing request parameters");
 	}
@@ -46,7 +46,7 @@ std::string WSRequestHandler::HandleSetCurrentScene(WSRequestHandler* req) {
  * @category scenes
  * @since 0.3
  */
-std::string WSRequestHandler::HandleGetCurrentScene(WSRequestHandler* req) {
+HandlerResponse WSRequestHandler::HandleGetCurrentScene(WSRequestHandler* req) {
 	OBSSourceAutoRelease currentScene = obs_frontend_get_current_scene();
 	OBSDataArrayAutoRelease sceneItems = Utils::GetSceneItems(currentScene);
 
@@ -68,7 +68,7 @@ std::string WSRequestHandler::HandleGetCurrentScene(WSRequestHandler* req) {
  * @category scenes
  * @since 0.3
  */
-std::string WSRequestHandler::HandleGetSceneList(WSRequestHandler* req) {
+HandlerResponse WSRequestHandler::HandleGetSceneList(WSRequestHandler* req) {
 	OBSSourceAutoRelease currentScene = obs_frontend_get_current_scene();
 	OBSDataArrayAutoRelease scenes = Utils::GetScenes();
 
@@ -93,7 +93,7 @@ std::string WSRequestHandler::HandleGetSceneList(WSRequestHandler* req) {
 * @category scenes
 * @since 4.5.0
 */
-std::string WSRequestHandler::HandleReorderSceneItems(WSRequestHandler* req) {
+HandlerResponse WSRequestHandler::HandleReorderSceneItems(WSRequestHandler* req) {
 	QString sceneName = obs_data_get_string(req->data, "scene");
 	OBSSourceAutoRelease scene = Utils::GetSceneFromNameOrCurrent(sceneName);
 	if (!scene) {
