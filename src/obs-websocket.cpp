@@ -48,11 +48,10 @@ bool obs_module_load(void) {
 	Config* config = Config::Current();
 	config->Load();
 
-	WSServer::Instance = new WSServer();
-	WSEvents::Instance = new WSEvents(WSServer::Instance);
+	WSEvents::Instance = new WSEvents(WSServer::Current());
 
 	if (config->ServerEnabled) {
-		WSServer::Instance->start(config->ServerPort);
+		WSServer::Current()->start(config->ServerPort);
 	}
 
 	// UI setup
@@ -77,9 +76,7 @@ bool obs_module_load(void) {
 }
 
 void obs_module_unload() {
-	if (WSServer::Instance) {
-		WSServer::Instance->stop();
-	}
+	WSServer::Current()->stop();
 	blog(LOG_INFO, "goodbye!");
 }
 

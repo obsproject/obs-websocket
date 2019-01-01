@@ -34,8 +34,6 @@ using websocketpp::lib::placeholders::_1;
 using websocketpp::lib::placeholders::_2;
 using websocketpp::lib::bind;
 
-WSServer* WSServer::Instance = nullptr;
-
 QString decodeBase64(const QString& source)
 {
 	return QString::fromUtf8(
@@ -45,8 +43,23 @@ QString decodeBase64(const QString& source)
 	);
 }
 
-WSServer::WSServer(QObject* parent)
-	: QObject(parent),
+WSServerPtr WSServer::_instance = WSServerPtr(nullptr);
+
+WSServerPtr WSServer::Current()
+{
+	if (!_instance) {
+		ResetCurrent();
+	}
+	return _instance;
+}
+
+void WSServer::ResetCurrent()
+{
+	_instance = WSServerPtr(new WSServer());
+}
+
+WSServer::WSServer()
+	: QObject(nullptr),
 	  _connections(),
 	  _clMutex(QMutex::Recursive)
 {

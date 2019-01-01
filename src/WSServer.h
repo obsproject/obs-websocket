@@ -21,6 +21,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include <QObject>
 #include <QMutex>
+#include <QSharedPointer>
 #include <QVariantHash>
 
 #include <map>
@@ -38,19 +39,26 @@ using websocketpp::connection_hdl;
 
 typedef websocketpp::server<websocketpp::config::asio> server;
 
+class WSServer;
+typedef QSharedPointer<WSServer> WSServerPtr;
+
 class WSServer : public QObject
 {
 Q_OBJECT
 
 public:
-	explicit WSServer(QObject* parent = Q_NULLPTR);
+	static WSServerPtr Current();
+	static void ResetCurrent();
+
+	explicit WSServer();
 	virtual ~WSServer();
 	void start(quint16 port);
 	void stop();
 	void broadcast(QString message);
-	static WSServer* Instance;
 
 private:
+	static WSServerPtr _instance;
+
 	void onOpen(connection_hdl hdl);
 	void onMessage(connection_hdl hdl, server::message_ptr message);
 	void onClose(connection_hdl hdl);

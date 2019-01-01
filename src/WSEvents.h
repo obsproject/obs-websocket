@@ -28,7 +28,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 class WSEvents : public QObject {
   Q_OBJECT
   public:
-	explicit WSEvents(WSServer* srv);
+	explicit WSEvents(WSServerPtr srv);
 	~WSEvents();
 	static void FrontendEventHandler(
 		enum obs_frontend_event event, void* privateData);
@@ -51,7 +51,7 @@ class WSEvents : public QObject {
 	void TransitionDurationChanged(int ms);
 
   private:
-	WSServer* _srv;
+	WSServerPtr _srv;
 	OBSSource currentScene;
 
 	bool pulse;
