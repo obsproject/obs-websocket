@@ -132,11 +132,11 @@ void WSServer::onMessage(connection_hdl hdl, server::message_ptr message)
 		return;
 	}
 
+	std::string payload = message->get_payload();
+
 	QMutexLocker locker(&_clMutex);
 	QVariantHash connProperties = _connectionProperties[hdl];
 	locker.unlock();
-
-	std::string payload = message->get_payload();
 
 	WSRequestHandler handler(connProperties);
 	std::string response = handler.processIncomingMessage(payload);
@@ -144,6 +144,10 @@ void WSServer::onMessage(connection_hdl hdl, server::message_ptr message)
 	_server.send(hdl, response, websocketpp::frame::opcode::text);
 
 	locker.relock();
+	// In multithreaded processing this would be problematic to put back
+	// a copy of the connection properties, because there might conflicts
+	// between several simultaneous handlers.
+	// In our case, it's fine because all messages are processed in one thread.
 	_connectionProperties[hdl] = connProperties;
 	locker.unlock();
 }
