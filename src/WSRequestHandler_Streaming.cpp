@@ -20,7 +20,7 @@
  * @category streaming
  * @since 0.3
  */
- void WSRequestHandler::HandleGetStreamingStatus(WSRequestHandler* req) {
+HandlerResponse WSRequestHandler::HandleGetStreamingStatus(WSRequestHandler* req) {
 	auto events = WSEvents::Current();
 	 
 	OBSDataAutoRelease data = obs_data_create();
@@ -41,7 +41,7 @@
 		bfree((void*)tc);
 	}
 
-	req->SendOKResponse(data);
+	return req->SendOKResponse(data);
 }
 
 /**
@@ -52,11 +52,11 @@
  * @category streaming
  * @since 0.3
  */
- void WSRequestHandler::HandleStartStopStreaming(WSRequestHandler* req) {
+HandlerResponse WSRequestHandler::HandleStartStopStreaming(WSRequestHandler* req) {
 	if (obs_frontend_streaming_active())
-		HandleStopStreaming(req);
+		return HandleStopStreaming(req);
 	else
-		HandleStartStreaming(req);
+		return HandleStartStreaming(req);
 }
 
 /**
@@ -78,7 +78,7 @@
  * @category streaming
  * @since 4.1.0
  */
- void WSRequestHandler::HandleStartStreaming(WSRequestHandler* req) {
+HandlerResponse WSRequestHandler::HandleStartStreaming(WSRequestHandler* req) {
 	if (obs_frontend_streaming_active() == false) {
 		OBSService configuredService = obs_frontend_get_streaming_service();
 		OBSService newService = nullptr;
@@ -159,9 +159,9 @@
 			obs_frontend_set_streaming_service(configuredService);
 		}
 
-		req->SendOKResponse();
+		return req->SendOKResponse();
 	} else {
-		req->SendErrorResponse("streaming already active");
+		return req->SendErrorResponse("streaming already active");
 	}
 }
 
@@ -174,12 +174,12 @@
  * @category streaming
  * @since 4.1.0
  */
-void WSRequestHandler::HandleStopStreaming(WSRequestHandler* req) {
+HandlerResponse WSRequestHandler::HandleStopStreaming(WSRequestHandler* req) {
 	if (obs_frontend_streaming_active() == true) {
 		obs_frontend_streaming_stop();
-		req->SendOKResponse();
+		return req->SendOKResponse();
 	} else {
-		req->SendErrorResponse("streaming not active");
+		return req->SendErrorResponse("streaming not active");
 	}
 }
 
@@ -200,13 +200,12 @@ void WSRequestHandler::HandleStopStreaming(WSRequestHandler* req) {
  * @category streaming
  * @since 4.1.0
  */
- void WSRequestHandler::HandleSetStreamSettings(WSRequestHandler* req) {
+HandlerResponse WSRequestHandler::HandleSetStreamSettings(WSRequestHandler* req) {
 	OBSService service = obs_frontend_get_streaming_service();
 
 	OBSDataAutoRelease requestSettings = obs_data_get_obj(req->data, "settings");
 	if (!requestSettings) {
-		req->SendErrorResponse("'settings' are required'");
-		return;
+		return req->SendErrorResponse("'settings' are required'");
 	}
 
 	QString serviceType = obs_service_get_type(service);
@@ -244,7 +243,7 @@ void WSRequestHandler::HandleStopStreaming(WSRequestHandler* req) {
 	obs_data_set_string(response, "type", requestedType.toUtf8());
 	obs_data_set_obj(response, "settings", serviceSettings);
 
-	req->SendOKResponse(response);
+	return req->SendOKResponse(response);
 }
 
 /**
@@ -263,7 +262,7 @@ void WSRequestHandler::HandleStopStreaming(WSRequestHandler* req) {
  * @category streaming
  * @since 4.1.0
  */
-void WSRequestHandler::HandleGetStreamSettings(WSRequestHandler* req) {
+HandlerResponse WSRequestHandler::HandleGetStreamSettings(WSRequestHandler* req) {
 	OBSService service = obs_frontend_get_streaming_service();
 
 	const char* serviceType = obs_service_get_type(service);
@@ -273,7 +272,7 @@ void WSRequestHandler::HandleGetStreamSettings(WSRequestHandler* req) {
 	obs_data_set_string(response, "type", serviceType);
 	obs_data_set_obj(response, "settings", settings);
 
-	req->SendOKResponse(response);
+	return req->SendOKResponse(response);
 }
 
 /**
@@ -284,7 +283,7 @@ void WSRequestHandler::HandleGetStreamSettings(WSRequestHandler* req) {
  * @category streaming
  * @since 4.1.0
  */
-void WSRequestHandler::HandleSaveStreamSettings(WSRequestHandler* req) {
+HandlerResponse WSRequestHandler::HandleSaveStreamSettings(WSRequestHandler* req) {
 	obs_frontend_save_streaming_service();
-	req->SendOKResponse();
+	return req->SendOKResponse();
 }

@@ -29,125 +29,126 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include "obs-websocket.h"
 
+typedef obs_data_t* HandlerResponse;
+
 class WSRequestHandler : public QObject {
 	Q_OBJECT
 
 	public:
 		explicit WSRequestHandler(QVariantHash& connProperties);
 		~WSRequestHandler();
-		std::string processIncomingMessage(std::string& textMessage);
+		obs_data_t* processIncomingMessage(std::string& textMessage);
 		bool hasField(QString name);
 
 	private:
 		const char* _messageId;
 		const char* _requestType;
-		std::string _response;
 		QVariantHash& _connProperties;
 		OBSDataAutoRelease data;
 
-		void SendOKResponse(obs_data_t* additionalFields = NULL);
-		void SendErrorResponse(const char* errorMessage);
-		void SendErrorResponse(obs_data_t* additionalFields = NULL);
-		void SendResponse(obs_data_t* response);
+		HandlerResponse SendOKResponse(obs_data_t* additionalFields = nullptr);
+		HandlerResponse SendErrorResponse(const char* errorMessage);
+		HandlerResponse SendErrorResponse(obs_data_t* additionalFields = nullptr);
+		HandlerResponse SendResponse(const char* status, obs_data_t* additionalFields = nullptr);
 
-		static QHash<QString, void(*)(WSRequestHandler*)> messageMap;
+		static QHash<QString, HandlerResponse(*)(WSRequestHandler*)> messageMap;
 		static QSet<QString> authNotRequired;
 
-		static void HandleGetVersion(WSRequestHandler* req);
-		static void HandleGetAuthRequired(WSRequestHandler* req);
-		static void HandleAuthenticate(WSRequestHandler* req);
+		static HandlerResponse HandleGetVersion(WSRequestHandler* req);
+		static HandlerResponse HandleGetAuthRequired(WSRequestHandler* req);
+		static HandlerResponse HandleAuthenticate(WSRequestHandler* req);
 
-		static void HandleSetHeartbeat(WSRequestHandler* req);
+		static HandlerResponse HandleSetHeartbeat(WSRequestHandler* req);
 
-		static void HandleSetFilenameFormatting(WSRequestHandler* req);
-		static void HandleGetFilenameFormatting(WSRequestHandler* req);
+		static HandlerResponse HandleSetFilenameFormatting(WSRequestHandler* req);
+		static HandlerResponse HandleGetFilenameFormatting(WSRequestHandler* req);
 
-		static void HandleSetCurrentScene(WSRequestHandler* req);
-		static void HandleGetCurrentScene(WSRequestHandler* req);
-		static void HandleGetSceneList(WSRequestHandler* req);
+		static HandlerResponse HandleSetCurrentScene(WSRequestHandler* req);
+		static HandlerResponse HandleGetCurrentScene(WSRequestHandler* req);
+		static HandlerResponse HandleGetSceneList(WSRequestHandler* req);
 
-		static void HandleSetSceneItemRender(WSRequestHandler* req);
-		static void HandleSetSceneItemPosition(WSRequestHandler* req);
-		static void HandleSetSceneItemTransform(WSRequestHandler* req);
-		static void HandleSetSceneItemCrop(WSRequestHandler* req);
-		static void HandleGetSceneItemProperties(WSRequestHandler* req);
-		static void HandleSetSceneItemProperties(WSRequestHandler* req);
-		static void HandleResetSceneItem(WSRequestHandler* req);
-		static void HandleDuplicateSceneItem(WSRequestHandler* req);
-		static void HandleDeleteSceneItem(WSRequestHandler* req);
-		static void HandleReorderSceneItems(WSRequestHandler* req);
+		static HandlerResponse HandleSetSceneItemRender(WSRequestHandler* req);
+		static HandlerResponse HandleSetSceneItemPosition(WSRequestHandler* req);
+		static HandlerResponse HandleSetSceneItemTransform(WSRequestHandler* req);
+		static HandlerResponse HandleSetSceneItemCrop(WSRequestHandler* req);
+		static HandlerResponse HandleGetSceneItemProperties(WSRequestHandler* req);
+		static HandlerResponse HandleSetSceneItemProperties(WSRequestHandler* req);
+		static HandlerResponse HandleResetSceneItem(WSRequestHandler* req);
+		static HandlerResponse HandleDuplicateSceneItem(WSRequestHandler* req);
+		static HandlerResponse HandleDeleteSceneItem(WSRequestHandler* req);
+		static HandlerResponse HandleReorderSceneItems(WSRequestHandler* req);
 
-		static void HandleGetStreamingStatus(WSRequestHandler* req);
-		static void HandleStartStopStreaming(WSRequestHandler* req);
-		static void HandleStartStopRecording(WSRequestHandler* req);
-		static void HandleStartStreaming(WSRequestHandler* req);
-		static void HandleStopStreaming(WSRequestHandler* req);
-		static void HandleStartRecording(WSRequestHandler* req);
-		static void HandleStopRecording(WSRequestHandler* req);
+		static HandlerResponse HandleGetStreamingStatus(WSRequestHandler* req);
+		static HandlerResponse HandleStartStopStreaming(WSRequestHandler* req);
+		static HandlerResponse HandleStartStopRecording(WSRequestHandler* req);
+		static HandlerResponse HandleStartStreaming(WSRequestHandler* req);
+		static HandlerResponse HandleStopStreaming(WSRequestHandler* req);
+		static HandlerResponse HandleStartRecording(WSRequestHandler* req);
+		static HandlerResponse HandleStopRecording(WSRequestHandler* req);
 
-		static void HandleStartStopReplayBuffer(WSRequestHandler* req);
-		static void HandleStartReplayBuffer(WSRequestHandler* req);
-		static void HandleStopReplayBuffer(WSRequestHandler* req);
-		static void HandleSaveReplayBuffer(WSRequestHandler* req);
+		static HandlerResponse HandleStartStopReplayBuffer(WSRequestHandler* req);
+		static HandlerResponse HandleStartReplayBuffer(WSRequestHandler* req);
+		static HandlerResponse HandleStopReplayBuffer(WSRequestHandler* req);
+		static HandlerResponse HandleSaveReplayBuffer(WSRequestHandler* req);
 
-		static void HandleSetRecordingFolder(WSRequestHandler* req);
-		static void HandleGetRecordingFolder(WSRequestHandler* req);
+		static HandlerResponse HandleSetRecordingFolder(WSRequestHandler* req);
+		static HandlerResponse HandleGetRecordingFolder(WSRequestHandler* req);
 
-		static void HandleGetTransitionList(WSRequestHandler* req);
-		static void HandleGetCurrentTransition(WSRequestHandler* req);
-		static void HandleSetCurrentTransition(WSRequestHandler* req);
+		static HandlerResponse HandleGetTransitionList(WSRequestHandler* req);
+		static HandlerResponse HandleGetCurrentTransition(WSRequestHandler* req);
+		static HandlerResponse HandleSetCurrentTransition(WSRequestHandler* req);
 
-		static void HandleSetVolume(WSRequestHandler* req);
-		static void HandleGetVolume(WSRequestHandler* req);
-		static void HandleToggleMute(WSRequestHandler* req);
-		static void HandleSetMute(WSRequestHandler* req);
-		static void HandleGetMute(WSRequestHandler* req);
-		static void HandleSetSyncOffset(WSRequestHandler* req);
-		static void HandleGetSyncOffset(WSRequestHandler* req);
-		static void HandleGetSpecialSources(WSRequestHandler* req);
-		static void HandleGetSourcesList(WSRequestHandler* req);
-		static void HandleGetSourceTypesList(WSRequestHandler* req);
-		static void HandleGetSourceSettings(WSRequestHandler* req);
-		static void HandleSetSourceSettings(WSRequestHandler* req);
+		static HandlerResponse HandleSetVolume(WSRequestHandler* req);
+		static HandlerResponse HandleGetVolume(WSRequestHandler* req);
+		static HandlerResponse HandleToggleMute(WSRequestHandler* req);
+		static HandlerResponse HandleSetMute(WSRequestHandler* req);
+		static HandlerResponse HandleGetMute(WSRequestHandler* req);
+		static HandlerResponse HandleSetSyncOffset(WSRequestHandler* req);
+		static HandlerResponse HandleGetSyncOffset(WSRequestHandler* req);
+		static HandlerResponse HandleGetSpecialSources(WSRequestHandler* req);
+		static HandlerResponse HandleGetSourcesList(WSRequestHandler* req);
+		static HandlerResponse HandleGetSourceTypesList(WSRequestHandler* req);
+		static HandlerResponse HandleGetSourceSettings(WSRequestHandler* req);
+		static HandlerResponse HandleSetSourceSettings(WSRequestHandler* req);
 
-		static void HandleGetSourceFilters(WSRequestHandler* req);
-		static void HandleAddFilterToSource(WSRequestHandler* req);
-		static void HandleRemoveFilterFromSource(WSRequestHandler* req);
-		static void HandleReorderSourceFilter(WSRequestHandler* req);
-		static void HandleMoveSourceFilter(WSRequestHandler* req);
-		static void HandleSetSourceFilterSettings(WSRequestHandler* req);
+		static HandlerResponse HandleGetSourceFilters(WSRequestHandler* req);
+		static HandlerResponse HandleAddFilterToSource(WSRequestHandler* req);
+		static HandlerResponse HandleRemoveFilterFromSource(WSRequestHandler* req);
+		static HandlerResponse HandleReorderSourceFilter(WSRequestHandler* req);
+		static HandlerResponse HandleMoveSourceFilter(WSRequestHandler* req);
+		static HandlerResponse HandleSetSourceFilterSettings(WSRequestHandler* req);
 
-		static void HandleSetCurrentSceneCollection(WSRequestHandler* req);
-		static void HandleGetCurrentSceneCollection(WSRequestHandler* req);
-		static void HandleListSceneCollections(WSRequestHandler* req);
+		static HandlerResponse HandleSetCurrentSceneCollection(WSRequestHandler* req);
+		static HandlerResponse HandleGetCurrentSceneCollection(WSRequestHandler* req);
+		static HandlerResponse HandleListSceneCollections(WSRequestHandler* req);
 
-		static void HandleSetCurrentProfile(WSRequestHandler* req);
-		static void HandleGetCurrentProfile(WSRequestHandler* req);
-		static void HandleListProfiles(WSRequestHandler* req);
+		static HandlerResponse HandleSetCurrentProfile(WSRequestHandler* req);
+		static HandlerResponse HandleGetCurrentProfile(WSRequestHandler* req);
+		static HandlerResponse HandleListProfiles(WSRequestHandler* req);
 
-		static void HandleSetStreamSettings(WSRequestHandler* req);
-		static void HandleGetStreamSettings(WSRequestHandler* req);
-		static void HandleSaveStreamSettings(WSRequestHandler* req);
+		static HandlerResponse HandleSetStreamSettings(WSRequestHandler* req);
+		static HandlerResponse HandleGetStreamSettings(WSRequestHandler* req);
+		static HandlerResponse HandleSaveStreamSettings(WSRequestHandler* req);
 
-		static void HandleSetTransitionDuration(WSRequestHandler* req);
-		static void HandleGetTransitionDuration(WSRequestHandler* req);
+		static HandlerResponse HandleSetTransitionDuration(WSRequestHandler* req);
+		static HandlerResponse HandleGetTransitionDuration(WSRequestHandler* req);
 
-		static void HandleGetStudioModeStatus(WSRequestHandler* req);
-		static void HandleGetPreviewScene(WSRequestHandler* req);
-		static void HandleSetPreviewScene(WSRequestHandler* req);
-		static void HandleTransitionToProgram(WSRequestHandler* req);
-		static void HandleEnableStudioMode(WSRequestHandler* req);
-		static void HandleDisableStudioMode(WSRequestHandler* req);
-		static void HandleToggleStudioMode(WSRequestHandler* req);
+		static HandlerResponse HandleGetStudioModeStatus(WSRequestHandler* req);
+		static HandlerResponse HandleGetPreviewScene(WSRequestHandler* req);
+		static HandlerResponse HandleSetPreviewScene(WSRequestHandler* req);
+		static HandlerResponse HandleTransitionToProgram(WSRequestHandler* req);
+		static HandlerResponse HandleEnableStudioMode(WSRequestHandler* req);
+		static HandlerResponse HandleDisableStudioMode(WSRequestHandler* req);
+		static HandlerResponse HandleToggleStudioMode(WSRequestHandler* req);
 
-		static void HandleSetTextGDIPlusProperties(WSRequestHandler* req);
-		static void HandleGetTextGDIPlusProperties(WSRequestHandler* req);
+		static HandlerResponse HandleSetTextGDIPlusProperties(WSRequestHandler* req);
+		static HandlerResponse HandleGetTextGDIPlusProperties(WSRequestHandler* req);
 
-		static void HandleSetTextFreetype2Properties(WSRequestHandler* req);
-		static void HandleGetTextFreetype2Properties(WSRequestHandler* req);
+		static HandlerResponse HandleSetTextFreetype2Properties(WSRequestHandler* req);
+		static HandlerResponse HandleGetTextFreetype2Properties(WSRequestHandler* req);
 
-		static void HandleSetBrowserSourceProperties(WSRequestHandler* req);
-		static void HandleGetBrowserSourceProperties(WSRequestHandler* req);
+		static HandlerResponse HandleSetBrowserSourceProperties(WSRequestHandler* req);
+		static HandlerResponse HandleGetBrowserSourceProperties(WSRequestHandler* req);
 };
 
 #endif // WSPROTOCOL_H

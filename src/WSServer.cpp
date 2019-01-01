@@ -139,7 +139,13 @@ void WSServer::onMessage(connection_hdl hdl, server::message_ptr message)
 	locker.unlock();
 
 	WSRequestHandler handler(connProperties);
-	std::string response = handler.processIncomingMessage(payload);
+	OBSDataAutoRelease responseData = handler.processIncomingMessage(payload);
+
+	std::string response = obs_data_get_json(responseData);
+
+	if (Config::Current()->DebugEnabled) {
+		blog(LOG_DEBUG, "Response << '%s'", response.c_str());
+	}
 
 	_server.send(hdl, response, websocketpp::frame::opcode::text);
 

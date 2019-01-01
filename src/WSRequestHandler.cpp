@@ -24,7 +24,7 @@
 
 #include "WSRequestHandler.h"
 
-QHash<QString, void(*)(WSRequestHandler*)> WSRequestHandler::messageMap {
+QHash<QString, HandlerResponse(*)(WSRequestHandler*)> WSRequestHandler::messageMap {
 	{ "GetVersion", WSRequestHandler::HandleGetVersion },
 	{ "GetAuthRequired", WSRequestHandler::HandleGetAuthRequired },
 	{ "Authenticate", WSRequestHandler::HandleAuthenticate },
@@ -136,26 +136,22 @@ WSRequestHandler::WSRequestHandler(QVariantHash& connProperties) :
 {
 }
 
-std::string WSRequestHandler::processIncomingMessage(std::string& textMessage) {
+obs_data_t* WSRequestHandler::processIncomingMessage(std::string& textMessage) {
 	std::string msgContainer(textMessage);
 	const char* msg = msgContainer.c_str();
 
 	data = obs_data_create_from_json(msg);
 	if (!data) {
 		blog(LOG_ERROR, "invalid JSON payload received for '%s'", msg);
-		SendErrorResponse("invalid JSON payload");
-		return _response;
+		return SendErrorResponse("invalid JSON payload");
 	}
 
 	if (Config::Current()->DebugEnabled) {
 		blog(LOG_DEBUG, "Request >> '%s'", msg);
 	}
 
-	if (!hasField("request-type")
-		|| !hasField("message-id"))
-	{
-		SendErrorResponse("missing request parameters");
-		return _response;
+	if (!hasField("request-type") || !hasField("message-id")) {
+		return SendErrorResponse("missing request parameters");
 	}
 
 	_requestType = obs_data_get_string(data, "request-type");
@@ -165,59 +161,45 @@ std::string WSRequestHandler::processIncomingMessage(std::string& textMessage) {
 		&& (!authNotRequired.contains(_requestType))
 		&& (_connProperties.value(PROP_AUTHENTICATED).toBool() == false))
 	{
-		SendErrorResponse("Not Authenticated");
-		return _response;
+		return SendErrorResponse("Not Authenticated");
 	}
 
-	void (*handlerFunc)(WSRequestHandler*) = (messageMap[_requestType]);
+	HandlerResponse (*handlerFunc)(WSRequestHandler*) = (messageMap[_requestType]);
+	if (!handlerFunc) {
+		return SendErrorResponse("invalid request type");
+	}
 
-	if (handlerFunc != nullptr)
-		handlerFunc(this);
-	else
-		SendErrorResponse("invalid request type");
-
-	return _response;
+	return handlerFunc(this);
 }
 
 WSRequestHandler::~WSRequestHandler() {
 }
 
-void WSRequestHandler::SendOKResponse(obs_data_t* additionalFields) {
-	OBSDataAutoRelease response = obs_data_create();
-	obs_data_set_string(response, "status", "ok");
-	obs_data_set_string(response, "message-id", _messageId);
-
-	if (additionalFields)
-		obs_data_apply(response, additionalFields);
-
-	SendResponse(response);
+HandlerResponse WSRequestHandler::SendOKResponse(obs_data_t* additionalFields) {
+	return SendResponse("ok", additionalFields);
 }
 
-void WSRequestHandler::SendErrorResponse(const char* errorMessage) {
-	OBSDataAutoRelease response = obs_data_create();
-	obs_data_set_string(response, "status", "error");
-	obs_data_set_string(response, "error", errorMessage);
-	obs_data_set_string(response, "message-id", _messageId);
+HandlerResponse WSRequestHandler::SendErrorResponse(const char* errorMessage) {
+	OBSDataAutoRelease fields = obs_data_create();
+	obs_data_set_string(fields, "error", errorMessage);
 
-	SendResponse(response);
+	return SendResponse("error", fields);
 }
 
-void WSRequestHandler::SendErrorResponse(obs_data_t* additionalFields) {
-	OBSDataAutoRelease response = obs_data_create();
-	obs_data_set_string(response, "status", "error");
-	obs_data_set_string(response, "message-id", _messageId);
-
-	if (additionalFields)
-		obs_data_set_obj(response, "error", additionalFields);
-
-	SendResponse(response);
+HandlerResponse WSRequestHandler::SendErrorResponse(obs_data_t* additionalFields) {
+	return SendResponse("error", additionalFields);
 }
 
-void WSRequestHandler::SendResponse(obs_data_t* response)  {
-	_response = obs_data_get_json(response);
+HandlerResponse WSRequestHandler::SendResponse(const char* status, obs_data_t* fields) {
+	obs_data_t* response = obs_data_create();
+	obs_data_set_string(response, "message-id", _messageId);
+	obs_data_set_string(response, "status", status);
 
-	if (Config::Current()->DebugEnabled)
-		blog(LOG_DEBUG, "Response << '%s'", _response.c_str());
+	if (fields) {
+		obs_data_apply(response, fields);
+	}
+
+	return response;
 }
 
 bool WSRequestHandler::hasField(QString name) {
