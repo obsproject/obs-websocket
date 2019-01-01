@@ -100,6 +100,10 @@ void WSServer::start(quint16 port)
 
 void WSServer::stop()
 {
+	if (!_server.is_listening()) {
+		return;
+	}
+
 	_server.stop_listening();
 	_server.stop();
 	blog(LOG_INFO, "server stopped successfully");
