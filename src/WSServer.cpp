@@ -34,15 +34,6 @@ using websocketpp::lib::placeholders::_1;
 using websocketpp::lib::placeholders::_2;
 using websocketpp::lib::bind;
 
-QString decodeBase64(const QString& source)
-{
-	return QString::fromUtf8(
-		QByteArray::fromBase64(
-			source.toUtf8()
-		)
-	);
-}
-
 WSServerPtr WSServer::_instance = WSServerPtr(nullptr);
 
 WSServerPtr WSServer::Current()
