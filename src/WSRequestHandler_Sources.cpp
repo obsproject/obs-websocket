@@ -1241,6 +1241,7 @@ void WSRequestHandler::HandleRemoveFilterFromSource(WSRequestHandler* req)
 	OBSSourceAutoRelease filter = obs_source_get_filter_by_name(source, filterName);
 	if (!filter) {
 		req->SendErrorResponse("specified filter doesn't exist");
+		return;
 	}
 
 	obs_source_filter_remove(source, filter);
@@ -1285,6 +1286,7 @@ void WSRequestHandler::HandleReorderSourceFilter(WSRequestHandler* req)
 	OBSSourceAutoRelease filter = obs_source_get_filter_by_name(source, filterName);
 	if (!filter) {
 		req->SendErrorResponse("specified filter doesn't exist");
+		return;
 	}
 
 	struct filterSearch {
@@ -1357,6 +1359,7 @@ void WSRequestHandler::HandleMoveSourceFilter(WSRequestHandler* req)
 	OBSSourceAutoRelease filter = obs_source_get_filter_by_name(source, filterName);
 	if (!filter) {
 		req->SendErrorResponse("specified filter doesn't exist");
+		return;
 	}
 
 	obs_order_movement movement;
@@ -1414,6 +1417,7 @@ void WSRequestHandler::HandleSetSourceFilterSettings(WSRequestHandler* req)
 	OBSSourceAutoRelease filter = obs_source_get_filter_by_name(source, filterName);
 	if (!filter) {
 		req->SendErrorResponse("specified filter doesn't exist");
+		return;
 	}
 
 	OBSDataAutoRelease settings = obs_source_get_settings(filter);
