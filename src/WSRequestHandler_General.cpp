@@ -85,20 +85,24 @@ void WSRequestHandler::HandleAuthenticate(WSRequestHandler* req) {
 		return;
 	}
 
+	if (req->_connProperties.value(PROP_AUTHENTICATED).toBool() == true) {
+		req->SendErrorResponse("already authenticated");
+		return;
+	}
+
 	QString auth = obs_data_get_string(req->data, "auth");
 	if (auth.isEmpty()) {
 		req->SendErrorResponse("auth not specified!");
 		return;
 	}
 
-	if ((req->_client->property(PROP_AUTHENTICATED).toBool() == false)
-		&& Config::Current()->CheckAuth(auth))
-	{
-		req->_client->setProperty(PROP_AUTHENTICATED, true);
-		req->SendOKResponse();
-	} else {
+	if (Config::Current()->CheckAuth(auth) == false) {
 		req->SendErrorResponse("Authentication Failed.");
+		return;
 	}
+
+	req->_connProperties.insert(PROP_AUTHENTICATED, true);
+	req->SendOKResponse();
 }
 
 /**
@@ -117,12 +121,12 @@ void WSRequestHandler::HandleAuthenticate(WSRequestHandler* req) {
 		return;
 	}
 
-	WSEvents::Instance->HeartbeatIsActive =
-		obs_data_get_bool(req->data, "enable");
+	auto events = WSEvents::Current();
+
+	events->HeartbeatIsActive = obs_data_get_bool(req->data, "enable");
 
 	OBSDataAutoRelease response = obs_data_create();
-	obs_data_set_bool(response, "enable",
-		WSEvents::Instance->HeartbeatIsActive);
+	obs_data_set_bool(response, "enable", events->HeartbeatIsActive);
 	req->SendOKResponse(response);
 }
 

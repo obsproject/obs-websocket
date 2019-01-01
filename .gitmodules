@@ -1,0 +1,6 @@
+[submodule "deps/websocketpp"]
+	path = deps/websocketpp
+	url = https://github.com/zaphoyd/websocketpp.git
+[submodule "deps/asio"]
+	path = deps/asio
+	url = https://github.com/chriskohlhoff/asio.git

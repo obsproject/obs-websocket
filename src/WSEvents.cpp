@@ -62,9 +62,17 @@ void* calldata_get_ptr(const calldata_t* data, const char* name) {
 	return ptr;
 }
 
-WSEvents* WSEvents::Instance = nullptr;
+WSEventsPtr WSEvents::_instance = WSEventsPtr(nullptr);
 
-WSEvents::WSEvents(WSServer* srv) {
+WSEventsPtr WSEvents::Current() {
+	return _instance;
+}
+
+void WSEvents::ResetCurrent(WSServerPtr srv) {
+	_instance = WSEventsPtr(new WSEvents(srv));
+}
+
+WSEvents::WSEvents(WSServerPtr srv) {
 	_srv = srv;
 	obs_frontend_add_event_callback(WSEvents::FrontendEventHandler, this);
 
@@ -214,7 +222,7 @@ void WSEvents::broadcastUpdate(const char* updateType,
 		obs_data_apply(update, additionalFields);
 
 	QString json = obs_data_get_json(update);
-	_srv->broadcast(json);
+	_srv->broadcast(json.toStdString());
 
 	if (Config::Current()->DebugEnabled)
 		blog(LOG_DEBUG, "Update << '%s'", json.toUtf8().constData());
