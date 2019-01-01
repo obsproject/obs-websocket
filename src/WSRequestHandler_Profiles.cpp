@@ -13,20 +13,19 @@
  * @category profiles
  * @since 4.0.0
  */
- void WSRequestHandler::HandleSetCurrentProfile(WSRequestHandler* req) {
+std::string WSRequestHandler::HandleSetCurrentProfile(WSRequestHandler* req) {
 	if (!req->hasField("profile-name")) {
-		req->SendErrorResponse("missing request parameters");
-		return;
+		return req->SendErrorResponse("missing request parameters");
 	}
 
 	QString profileName = obs_data_get_string(req->data, "profile-name");
-	if (!profileName.isEmpty()) {
-		// TODO : check if profile exists
-		obs_frontend_set_current_profile(profileName.toUtf8());
-		req->SendOKResponse();
-	} else {
-		req->SendErrorResponse("invalid request parameters");
+	if (profileName.isEmpty()) {
+		return req->SendErrorResponse("invalid request parameters");
 	}
+
+	// TODO : check if profile exists
+	obs_frontend_set_current_profile(profileName.toUtf8());
+	return req->SendOKResponse();
 }
 
  /**
@@ -39,12 +38,10 @@
  * @category profiles
  * @since 4.0.0
  */
-void WSRequestHandler::HandleGetCurrentProfile(WSRequestHandler* req) {
+std::string WSRequestHandler::HandleGetCurrentProfile(WSRequestHandler* req) {
 	OBSDataAutoRelease response = obs_data_create();
-	obs_data_set_string(response, "profile-name",
-		obs_frontend_get_current_profile());
-
-	req->SendOKResponse(response);
+	obs_data_set_string(response, "profile-name", obs_frontend_get_current_profile());
+	return req->SendOKResponse(response);
 }
 
 /**
@@ -57,14 +54,13 @@ void WSRequestHandler::HandleGetCurrentProfile(WSRequestHandler* req) {
  * @category profiles
  * @since 4.0.0
  */
-void WSRequestHandler::HandleListProfiles(WSRequestHandler* req) {
+std::string WSRequestHandler::HandleListProfiles(WSRequestHandler* req) {
 	char** profiles = obs_frontend_get_profiles();
-	OBSDataArrayAutoRelease list =
-		Utils::StringListToArray(profiles, "profile-name");
+	OBSDataArrayAutoRelease list = Utils::StringListToArray(profiles, "profile-name");
 	bfree(profiles);
 
 	OBSDataAutoRelease response = obs_data_create();
 	obs_data_set_array(response, "profiles", list);
 
-	req->SendOKResponse(response);
+	return req->SendOKResponse(response);
 }

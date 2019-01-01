@@ -15,7 +15,7 @@
  * @category transitions
  * @since 4.1.0
  */
- void WSRequestHandler::HandleGetTransitionList(WSRequestHandler* req) {
+std::string WSRequestHandler::HandleGetTransitionList(WSRequestHandler* req) {
 	OBSSourceAutoRelease currentTransition = obs_frontend_get_current_transition();
 	obs_frontend_source_list transitionList = {};
 	obs_frontend_get_transitions(&transitionList);
@@ -35,7 +35,7 @@
 		obs_source_get_name(currentTransition));
 	obs_data_set_array(response, "transitions", transitions);
 
-	req->SendOKResponse(response);
+	return req->SendOKResponse(response);
 }
 
 /**
@@ -49,7 +49,7 @@
  * @category transitions
  * @since 0.3
  */
-void WSRequestHandler::HandleGetCurrentTransition(WSRequestHandler* req) {
+std::string WSRequestHandler::HandleGetCurrentTransition(WSRequestHandler* req) {
 	OBSSourceAutoRelease currentTransition = obs_frontend_get_current_transition();
 
 	OBSDataAutoRelease response = obs_data_create();
@@ -59,7 +59,7 @@ void WSRequestHandler::HandleGetCurrentTransition(WSRequestHandler* req) {
 	if (!obs_transition_fixed(currentTransition))
 		obs_data_set_int(response, "duration", Utils::GetTransitionDuration());
 
-	req->SendOKResponse(response);
+	return req->SendOKResponse(response);
 }
 
 /**
@@ -72,18 +72,18 @@ void WSRequestHandler::HandleGetCurrentTransition(WSRequestHandler* req) {
  * @category transitions
  * @since 0.3
  */
-void WSRequestHandler::HandleSetCurrentTransition(WSRequestHandler* req) {
+std::string WSRequestHandler::HandleSetCurrentTransition(WSRequestHandler* req) {
 	if (!req->hasField("transition-name")) {
-		req->SendErrorResponse("missing request parameters");
-		return;
+		return req->SendErrorResponse("missing request parameters");
 	}
 
 	QString name = obs_data_get_string(req->data, "transition-name");
 	bool success = Utils::SetTransitionByName(name);
-	if (success)
-		req->SendOKResponse();
-	else
-		req->SendErrorResponse("requested transition does not exist");
+	if (!success) {
+		return req->SendErrorResponse("requested transition does not exist");
+	}
+	
+	return req->SendOKResponse();
 }
 
 /**
@@ -96,15 +96,14 @@ void WSRequestHandler::HandleSetCurrentTransition(WSRequestHandler* req) {
  * @category transitions
  * @since 4.0.0
  */
-void WSRequestHandler::HandleSetTransitionDuration(WSRequestHandler* req) {
+std::string WSRequestHandler::HandleSetTransitionDuration(WSRequestHandler* req) {
 	if (!req->hasField("duration")) {
-		req->SendErrorResponse("missing request parameters");
-		return;
+		return req->SendErrorResponse("missing request parameters");
 	}
 
 	int ms = obs_data_get_int(req->data, "duration");
 	Utils::SetTransitionDuration(ms);
-	req->SendOKResponse();
+	return req->SendOKResponse();
 }
 
 /**
@@ -117,10 +116,8 @@ void WSRequestHandler::HandleSetTransitionDuration(WSRequestHandler* req) {
  * @category transitions
  * @since 4.1.0
  */
-void WSRequestHandler::HandleGetTransitionDuration(WSRequestHandler* req) {
+std::string WSRequestHandler::HandleGetTransitionDuration(WSRequestHandler* req) {
 	OBSDataAutoRelease response = obs_data_create();
-	obs_data_set_int(response, "transition-duration",
-		Utils::GetTransitionDuration());
-
-	req->SendOKResponse(response);
+	obs_data_set_int(response, "transition-duration", Utils::GetTransitionDuration());
+	return req->SendOKResponse(response);
 }

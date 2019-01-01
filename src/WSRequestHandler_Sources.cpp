@@ -30,7 +30,7 @@
 * @category sources
 * @since 4.3.0
 */
-void WSRequestHandler::HandleGetSourcesList(WSRequestHandler* req)
+std::string WSRequestHandler::HandleGetSourcesList(WSRequestHandler* req)
 {
 	OBSDataArrayAutoRelease sourcesArray = obs_data_array_create();
 
@@ -73,7 +73,7 @@ void WSRequestHandler::HandleGetSourcesList(WSRequestHandler* req)
 
 	OBSDataAutoRelease response = obs_data_create();
 	obs_data_set_array(response, "sources", sourcesArray);
-	req->SendOKResponse(response);
+	return req->SendOKResponse(response);
 }
 
 /**
@@ -98,7 +98,7 @@ void WSRequestHandler::HandleGetSourcesList(WSRequestHandler* req)
 * @category sources
 * @since 4.3.0
 */
-void WSRequestHandler::HandleGetSourceTypesList(WSRequestHandler* req)
+std::string WSRequestHandler::HandleGetSourceTypesList(WSRequestHandler* req)
 {
 	OBSDataArrayAutoRelease idsArray = obs_data_array_create();
 
@@ -151,7 +151,7 @@ void WSRequestHandler::HandleGetSourceTypesList(WSRequestHandler* req)
 
 	OBSDataAutoRelease response = obs_data_create();
 	obs_data_set_array(response, "types", idsArray);
-	req->SendOKResponse(response);
+	return req->SendOKResponse(response);
 }
 
 /**
@@ -168,23 +168,20 @@ void WSRequestHandler::HandleGetSourceTypesList(WSRequestHandler* req)
 * @category sources
 * @since 4.0.0
 */
-void WSRequestHandler::HandleGetVolume(WSRequestHandler* req)
+std::string WSRequestHandler::HandleGetVolume(WSRequestHandler* req)
 {
 	if (!req->hasField("source")) {
-		req->SendErrorResponse("missing request parameters");
-		return;
+		return req->SendErrorResponse("missing request parameters");
 	}
 
 	QString sourceName = obs_data_get_string(req->data, "source");
 	if (sourceName.isEmpty()) {
-		req->SendErrorResponse("invalid request parameters");
-		return;
+		return req->SendErrorResponse("invalid request parameters");
 	}
 
 	OBSSourceAutoRelease source = obs_get_source_by_name(sourceName.toUtf8());
 	if (!source) {
-		req->SendErrorResponse("specified source doesn't exist");
-		return;
+		return req->SendErrorResponse("specified source doesn't exist");
 	}
 
 	OBSDataAutoRelease response = obs_data_create();
@@ -192,7 +189,7 @@ void WSRequestHandler::HandleGetVolume(WSRequestHandler* req)
 	obs_data_set_double(response, "volume", obs_source_get_volume(source));
 	obs_data_set_bool(response, "muted", obs_source_muted(source));
 
-	req->SendOKResponse(response);
+	return req->SendOKResponse(response);
 }
 
 /**
@@ -206,30 +203,26 @@ void WSRequestHandler::HandleGetVolume(WSRequestHandler* req)
  * @category sources
  * @since 4.0.0
  */
- void WSRequestHandler::HandleSetVolume(WSRequestHandler* req)
+std::string WSRequestHandler::HandleSetVolume(WSRequestHandler* req)
  {
-	if (!req->hasField("source") || !req->hasField("volume"))
-	{
-		req->SendErrorResponse("missing request parameters");
-		return;
+	if (!req->hasField("source") || !req->hasField("volume")) {
+		return req->SendErrorResponse("missing request parameters");
 	}
 
 	QString sourceName = obs_data_get_string(req->data, "source");
 	float sourceVolume = obs_data_get_double(req->data, "volume");
 
 	if (sourceName.isEmpty() || sourceVolume < 0.0 || sourceVolume > 1.0) {
-		req->SendErrorResponse("invalid request parameters");
-		return;
+		return req->SendErrorResponse("invalid request parameters");
 	}
 
 	OBSSourceAutoRelease source = obs_get_source_by_name(sourceName.toUtf8());
 	if (!source) {
-		req->SendErrorResponse("specified source doesn't exist");
-		return;
+		return req->SendErrorResponse("specified source doesn't exist");
 	}
 
 	obs_source_set_volume(source, sourceVolume);
-	req->SendOKResponse();
+	return req->SendOKResponse();
 }
 
 /**
@@ -245,30 +238,27 @@ void WSRequestHandler::HandleGetVolume(WSRequestHandler* req)
 * @category sources
 * @since 4.0.0
 */
-void WSRequestHandler::HandleGetMute(WSRequestHandler* req)
+std::string WSRequestHandler::HandleGetMute(WSRequestHandler* req)
 {
 	if (!req->hasField("source")) {
-		req->SendErrorResponse("missing request parameters");
-		return;
+		return req->SendErrorResponse("missing request parameters");
 	}
 
 	QString sourceName = obs_data_get_string(req->data, "source");
 	if (sourceName.isEmpty()) {
-		req->SendErrorResponse("invalid request parameters");
-		return;
+		return req->SendErrorResponse("invalid request parameters");
 	}
 
 	OBSSourceAutoRelease source = obs_get_source_by_name(sourceName.toUtf8());
 	if (!source) {
-		req->SendErrorResponse("specified source doesn't exist");
-		return;
+		return req->SendErrorResponse("specified source doesn't exist");
 	}
 
 	OBSDataAutoRelease response = obs_data_create();
 	obs_data_set_string(response, "name", obs_source_get_name(source));
 	obs_data_set_bool(response, "muted", obs_source_muted(source));
 
-	req->SendOKResponse(response);
+	return req->SendOKResponse(response);
 }
 
 /**
@@ -282,29 +272,26 @@ void WSRequestHandler::HandleGetMute(WSRequestHandler* req)
  * @category sources
  * @since 4.0.0
  */
-void WSRequestHandler::HandleSetMute(WSRequestHandler* req)
+std::string WSRequestHandler::HandleSetMute(WSRequestHandler* req)
 {
 	if (!req->hasField("source") || !req->hasField("mute")) {
-		req->SendErrorResponse("missing request parameters");
-		return;
+		return req->SendErrorResponse("missing request parameters");
 	}
 
 	QString sourceName = obs_data_get_string(req->data, "source");
 	bool mute = obs_data_get_bool(req->data, "mute");
 
 	if (sourceName.isEmpty()) {
-		req->SendErrorResponse("invalid request parameters");
-		return;
+		return req->SendErrorResponse("invalid request parameters");
 	}
 
 	OBSSourceAutoRelease source = obs_get_source_by_name(sourceName.toUtf8());
 	if (!source) {
-		req->SendErrorResponse("specified source doesn't exist");
-		return;
+		return req->SendErrorResponse("specified source doesn't exist");
 	}
 
 	obs_source_set_muted(source, mute);
-	req->SendOKResponse();
+	return req->SendOKResponse();
 }
 
 /**
@@ -317,27 +304,24 @@ void WSRequestHandler::HandleSetMute(WSRequestHandler* req)
 * @category sources
 * @since 4.0.0
 */
-void WSRequestHandler::HandleToggleMute(WSRequestHandler* req)
+std::string WSRequestHandler::HandleToggleMute(WSRequestHandler* req)
 {
 	if (!req->hasField("source")) {
-		req->SendErrorResponse("missing request parameters");
-		return;
+		return req->SendErrorResponse("missing request parameters");
 	}
 
 	QString sourceName = obs_data_get_string(req->data, "source");
 	if (sourceName.isEmpty()) {
-		req->SendErrorResponse("invalid request parameters");
-		return;
+		return req->SendErrorResponse("invalid request parameters");
 	}
 
 	OBSSourceAutoRelease source = obs_get_source_by_name(sourceName.toUtf8());
 	if (!source) {
-		req->SendErrorResponse("invalid request parameters");
-		return;
+		return req->SendErrorResponse("invalid request parameters");
 	}
 
 	obs_source_set_muted(source, !obs_source_muted(source));
-	req->SendOKResponse();
+	return req->SendOKResponse();
 }
 
 /**
@@ -351,29 +335,26 @@ void WSRequestHandler::HandleToggleMute(WSRequestHandler* req)
  * @category sources
  * @since 4.2.0
  */
-void WSRequestHandler::HandleSetSyncOffset(WSRequestHandler* req)
+std::string WSRequestHandler::HandleSetSyncOffset(WSRequestHandler* req)
 {
 	if (!req->hasField("source") || !req->hasField("offset")) {
-		req->SendErrorResponse("missing request parameters");
-		return;
+		return req->SendErrorResponse("missing request parameters");
 	}
 
 	QString sourceName = obs_data_get_string(req->data, "source");
 	int64_t sourceSyncOffset = (int64_t)obs_data_get_int(req->data, "offset");
 
 	if (sourceName.isEmpty() || sourceSyncOffset < 0) {
-		req->SendErrorResponse("invalid request parameters");
-		return;
+		return req->SendErrorResponse("invalid request parameters");
 	}
 
 	OBSSourceAutoRelease source = obs_get_source_by_name(sourceName.toUtf8());
 	if (!source) {
-		req->SendErrorResponse("specified source doesn't exist");
-		return;
+		return req->SendErrorResponse("specified source doesn't exist");
 	}
 
 	obs_source_set_sync_offset(source, sourceSyncOffset);
-	req->SendOKResponse();
+	return req->SendOKResponse();
 }
 
 /**
@@ -389,30 +370,27 @@ void WSRequestHandler::HandleSetSyncOffset(WSRequestHandler* req)
  * @category sources
  * @since 4.2.0
  */
-void WSRequestHandler::HandleGetSyncOffset(WSRequestHandler* req)
+std::string WSRequestHandler::HandleGetSyncOffset(WSRequestHandler* req)
 {
 	if (!req->hasField("source")) {
-		req->SendErrorResponse("missing request parameters");
-		return;
+		return req->SendErrorResponse("missing request parameters");
 	}
 
 	QString sourceName = obs_data_get_string(req->data, "source");
 	if (sourceName.isEmpty()) {
-		req->SendErrorResponse("invalid request parameters");
-		return;
+		return req->SendErrorResponse("invalid request parameters");
 	}
 
 	OBSSourceAutoRelease source = obs_get_source_by_name(sourceName.toUtf8());
 	if (!source) {
-		req->SendErrorResponse("specified source doesn't exist");
-		return;
+		return req->SendErrorResponse("specified source doesn't exist");
 	}
 
 	OBSDataAutoRelease response = obs_data_create();
 	obs_data_set_string(response, "name", obs_source_get_name(source));
 	obs_data_set_int(response, "offset", obs_source_get_sync_offset(source));
 
-	req->SendOKResponse(response);
+	return req->SendOKResponse(response);
 }
 
 /**
@@ -430,18 +408,16 @@ void WSRequestHandler::HandleGetSyncOffset(WSRequestHandler* req)
 * @category sources
 * @since 4.3.0
 */
-void WSRequestHandler::HandleGetSourceSettings(WSRequestHandler* req)
+std::string WSRequestHandler::HandleGetSourceSettings(WSRequestHandler* req)
 {
 	if (!req->hasField("sourceName")) {
-		req->SendErrorResponse("missing request parameters");
-		return;
+		return req->SendErrorResponse("missing request parameters");
 	}
 
 	const char* sourceName = obs_data_get_string(req->data, "sourceName");
 	OBSSourceAutoRelease source = obs_get_source_by_name(sourceName);
 	if (!source) {
-		req->SendErrorResponse("specified source doesn't exist");
-		return;
+		return req->SendErrorResponse("specified source doesn't exist");
 	}
 
 	if (req->hasField("sourceType")) {
@@ -449,8 +425,7 @@ void WSRequestHandler::HandleGetSourceSettings(WSRequestHandler* req)
 		QString requestedType = obs_data_get_string(req->data, "sourceType");
 
 		if (actualSourceType != requestedType) {
-			req->SendErrorResponse("specified source exists but is not of expected type");
-			return;
+			return req->SendErrorResponse("specified source exists but is not of expected type");
 		}
 	}
 
@@ -461,7 +436,7 @@ void WSRequestHandler::HandleGetSourceSettings(WSRequestHandler* req)
 	obs_data_set_string(response, "sourceType", obs_source_get_id(source));
 	obs_data_set_obj(response, "sourceSettings", sourceSettings);
 
-	req->SendOKResponse(response);
+	return req->SendOKResponse(response);
 }
 
 /**
@@ -480,18 +455,16 @@ void WSRequestHandler::HandleGetSourceSettings(WSRequestHandler* req)
 * @category sources
 * @since 4.3.0
 */
-void WSRequestHandler::HandleSetSourceSettings(WSRequestHandler* req)
+std::string WSRequestHandler::HandleSetSourceSettings(WSRequestHandler* req)
 {
 	if (!req->hasField("sourceName") || !req->hasField("sourceSettings")) {
-		req->SendErrorResponse("missing request parameters");
-		return;
+		return req->SendErrorResponse("missing request parameters");
 	}
 
 	const char* sourceName = obs_data_get_string(req->data, "sourceName");
 	OBSSourceAutoRelease source = obs_get_source_by_name(sourceName);
 	if (!source) {
-		req->SendErrorResponse("specified source doesn't exist");
-		return;
+		return req->SendErrorResponse("specified source doesn't exist");
 	}
 
 	if (req->hasField("sourceType")) {
@@ -499,8 +472,7 @@ void WSRequestHandler::HandleSetSourceSettings(WSRequestHandler* req)
 		QString requestedType = obs_data_get_string(req->data, "sourceType");
 
 		if (actualSourceType != requestedType) {
-			req->SendErrorResponse("specified source exists but is not of expected type");
-			return;
+			return req->SendErrorResponse("specified source exists but is not of expected type");
 		}
 	}
 
@@ -519,7 +491,7 @@ void WSRequestHandler::HandleSetSourceSettings(WSRequestHandler* req)
 	obs_data_set_string(response, "sourceType", obs_source_get_id(source));
 	obs_data_set_obj(response, "sourceSettings", sourceSettings);
 
-	req->SendOKResponse(response);
+	return req->SendOKResponse(response);
 }
 
 /**
@@ -561,30 +533,27 @@ void WSRequestHandler::HandleSetSourceSettings(WSRequestHandler* req)
  * @category sources
  * @since 4.1.0
  */
- void WSRequestHandler::HandleGetTextGDIPlusProperties(WSRequestHandler* req)
+std::string WSRequestHandler::HandleGetTextGDIPlusProperties(WSRequestHandler* req)
  {
 	const char* sourceName = obs_data_get_string(req->data, "source");
 	if (!sourceName) {
-		req->SendErrorResponse("invalid request parameters");
-		return;
+		return req->SendErrorResponse("invalid request parameters");
 	}
 
 	OBSSourceAutoRelease source = obs_get_source_by_name(sourceName);
 	if (!source) {
-		req->SendErrorResponse("specified source doesn't exist");
-		return;
+		return req->SendErrorResponse("specified source doesn't exist");
 	}
 
 	QString sourceId = obs_source_get_id(source);
 	if (sourceId != "text_gdiplus") {
-		req->SendErrorResponse("not a text gdi plus source");
-		return;
+		return req->SendErrorResponse("not a text gdi plus source");
 	}
 
 	OBSDataAutoRelease response = obs_source_get_settings(source);
 	obs_data_set_string(response, "source", obs_source_get_name(source));
 
-	req->SendOKResponse(response);
+	return req->SendOKResponse(response);
 }
 
 /**
@@ -625,29 +594,25 @@ void WSRequestHandler::HandleSetSourceSettings(WSRequestHandler* req)
  * @category sources
  * @since 4.1.0
  */
-void WSRequestHandler::HandleSetTextGDIPlusProperties(WSRequestHandler* req)
+std::string WSRequestHandler::HandleSetTextGDIPlusProperties(WSRequestHandler* req)
 {
 	if (!req->hasField("source")) {
-		req->SendErrorResponse("missing request parameters");
-		return;
+		return req->SendErrorResponse("missing request parameters");
 	}
 
 	const char* sourceName = obs_data_get_string(req->data, "source");
 	if (!sourceName) {
-		req->SendErrorResponse("invalid request parameters");
-		return;
+		return req->SendErrorResponse("invalid request parameters");
 	}
 
 	OBSSourceAutoRelease source = obs_get_source_by_name(sourceName);
 	if (!source) {
-		req->SendErrorResponse("specified source doesn't exist");
-		return;
+		return req->SendErrorResponse("specified source doesn't exist");
 	}
 
 	QString sourceId = obs_source_get_id(source);
 	if (sourceId != "text_gdiplus") {
-		req->SendErrorResponse("not a text gdi plus source");
-		return;
+		return req->SendErrorResponse("not a text gdi plus source");
 	}
 
 	OBSDataAutoRelease settings = obs_source_get_settings(source);
@@ -769,7 +734,7 @@ void WSRequestHandler::HandleSetTextGDIPlusProperties(WSRequestHandler* req)
 
 	obs_source_update(source, settings);
 
-	req->SendOKResponse();
+	return req->SendOKResponse();
 }
 
 /**
@@ -799,30 +764,27 @@ void WSRequestHandler::HandleSetTextGDIPlusProperties(WSRequestHandler* req)
  * @category sources
  * @since 4.5.0
  */
-void WSRequestHandler::HandleGetTextFreetype2Properties(WSRequestHandler* req)
+std::string WSRequestHandler::HandleGetTextFreetype2Properties(WSRequestHandler* req)
 {
 	const char* sourceName = obs_data_get_string(req->data, "source");
 	if (!sourceName) {
-		req->SendErrorResponse("invalid request parameters");
-		return;
+		return req->SendErrorResponse("invalid request parameters");
 	}
 
 	OBSSourceAutoRelease source = obs_get_source_by_name(sourceName);
 	if (!source) {
-		req->SendErrorResponse("specified source doesn't exist");
-		return;
+		return req->SendErrorResponse("specified source doesn't exist");
 	}
 
 	QString sourceId = obs_source_get_id(source);
 	if (sourceId != "text_ft2_source") {
-		req->SendErrorResponse("not a freetype 2 source");
-		return;
+		return req->SendErrorResponse("not a freetype 2 source");
 	}
 
 	OBSDataAutoRelease response = obs_source_get_settings(source);
 	obs_data_set_string(response, "source", sourceName);
 
-	req->SendOKResponse(response);
+	return req->SendOKResponse(response);
 }
 
 /**
@@ -850,24 +812,21 @@ void WSRequestHandler::HandleGetTextFreetype2Properties(WSRequestHandler* req)
  * @category sources
  * @since 4.5.0
  */
-void WSRequestHandler::HandleSetTextFreetype2Properties(WSRequestHandler* req)
+std::string WSRequestHandler::HandleSetTextFreetype2Properties(WSRequestHandler* req)
 {
     const char* sourceName = obs_data_get_string(req->data, "source");
     if (!sourceName) {
-        req->SendErrorResponse("invalid request parameters");
-        return;
+		return req->SendErrorResponse("invalid request parameters");
     }
 
 	OBSSourceAutoRelease source = obs_get_source_by_name(sourceName);
 	if (!source) {
-		req->SendErrorResponse("specified source doesn't exist");
-		return;
+		return req->SendErrorResponse("specified source doesn't exist");
 	}
 
 	QString sourceId = obs_source_get_id(source);
 	if (sourceId != "text_ft2_source") {
-		req->SendErrorResponse("not text freetype 2 source");
-		return;
+		return req->SendErrorResponse("not text freetype 2 source");
 	}
 
 	OBSDataAutoRelease settings = obs_source_get_settings(source);
@@ -937,7 +896,7 @@ void WSRequestHandler::HandleSetTextFreetype2Properties(WSRequestHandler* req)
 
 	obs_source_update(source, settings);
 
-	req->SendOKResponse();
+	return req->SendOKResponse();
 }
 
 /**
@@ -960,30 +919,27 @@ void WSRequestHandler::HandleSetTextFreetype2Properties(WSRequestHandler* req)
  * @category sources
  * @since 4.1.0
  */
-void WSRequestHandler::HandleGetBrowserSourceProperties(WSRequestHandler* req)
+std::string WSRequestHandler::HandleGetBrowserSourceProperties(WSRequestHandler* req)
 {
 	const char* sourceName = obs_data_get_string(req->data, "source");
 	if (!sourceName) {
-		req->SendErrorResponse("invalid request parameters");
-		return;
+		return req->SendErrorResponse("invalid request parameters");
 	}
 
 	OBSSourceAutoRelease source = obs_get_source_by_name(sourceName);
 	if (!source) {
-		req->SendErrorResponse("specified source doesn't exist");
-		return;
+		return req->SendErrorResponse("specified source doesn't exist");
 	}
 
 	QString sourceId = obs_source_get_id(source);
 	if (sourceId != "browser_source") {
-		req->SendErrorResponse("not a browser source");
-		return;
+		return req->SendErrorResponse("not a browser source");
 	}
 
 	OBSDataAutoRelease response = obs_source_get_settings(source);
 	obs_data_set_string(response, "source", obs_source_get_name(source));
 
-	req->SendOKResponse(response);
+	return req->SendOKResponse(response);
 }
 
 /**
@@ -1005,29 +961,25 @@ void WSRequestHandler::HandleGetBrowserSourceProperties(WSRequestHandler* req)
  * @category sources
  * @since 4.1.0
  */
-void WSRequestHandler::HandleSetBrowserSourceProperties(WSRequestHandler* req)
+std::string WSRequestHandler::HandleSetBrowserSourceProperties(WSRequestHandler* req)
 {
 	if (!req->hasField("source")) {
-		req->SendErrorResponse("missing request parameters");
-		return;
+		return req->SendErrorResponse("missing request parameters");
 	}
 
 	const char* sourceName = obs_data_get_string(req->data, "source");
 	if (!sourceName) {
-		req->SendErrorResponse("invalid request parameters");
-		return;
+		return req->SendErrorResponse("invalid request parameters");
 	}
 
 	OBSSourceAutoRelease source = obs_get_source_by_name(sourceName);
 	if (!source) {
-		req->SendErrorResponse("specified source doesn't exist");
-		return;
+		return req->SendErrorResponse("specified source doesn't exist");
 	}
 
 	QString sourceId = obs_source_get_id(source);
 	if(sourceId != "browser_source") {
-		req->SendErrorResponse("not a browser source");
-		return;
+		return req->SendErrorResponse("not a browser source");
 	}
 
 	OBSDataAutoRelease settings = obs_source_get_settings(source);
@@ -1070,7 +1022,7 @@ void WSRequestHandler::HandleSetBrowserSourceProperties(WSRequestHandler* req)
 
 	obs_source_update(source, settings);
 
-	req->SendOKResponse();
+	return req->SendOKResponse();
 }
 
 /**
@@ -1087,7 +1039,7 @@ void WSRequestHandler::HandleSetBrowserSourceProperties(WSRequestHandler* req)
  * @category sources
  * @since 4.1.0
  */
- void WSRequestHandler::HandleGetSpecialSources(WSRequestHandler* req)
+std::string WSRequestHandler::HandleGetSpecialSources(WSRequestHandler* req)
  {
 	OBSDataAutoRelease response = obs_data_create();
 
@@ -1109,7 +1061,7 @@ void WSRequestHandler::HandleSetBrowserSourceProperties(WSRequestHandler* req)
 		}
 	}
 
-	req->SendOKResponse(response);
+	return req->SendOKResponse(response);
 }
 
 /**
@@ -1127,18 +1079,16 @@ void WSRequestHandler::HandleSetBrowserSourceProperties(WSRequestHandler* req)
 * @category sources
 * @since 4.5.0
 */
-void WSRequestHandler::HandleGetSourceFilters(WSRequestHandler* req)
+std::string WSRequestHandler::HandleGetSourceFilters(WSRequestHandler* req)
 {
 	if (!req->hasField("sourceName")) {
-		req->SendErrorResponse("missing request parameters");
-		return;
+		return req->SendErrorResponse("missing request parameters");
 	}
 
 	const char* sourceName = obs_data_get_string(req->data, "sourceName");
 	OBSSourceAutoRelease source = obs_get_source_by_name(sourceName);
 	if (!source) {
-		req->SendErrorResponse("specified source doesn't exist");
-		return;
+		return req->SendErrorResponse("specified source doesn't exist");
 	}
 
 	OBSDataArrayAutoRelease filters = obs_data_array_create();
@@ -1154,7 +1104,7 @@ void WSRequestHandler::HandleGetSourceFilters(WSRequestHandler* req)
 
 	OBSDataAutoRelease response = obs_data_create();
 	obs_data_set_array(response, "filters", filters);
-	req->SendOKResponse(response);
+	return req->SendOKResponse(response);
 }
 
 /**
@@ -1170,13 +1120,12 @@ void WSRequestHandler::HandleGetSourceFilters(WSRequestHandler* req)
 * @category sources
 * @since 4.5.0
 */
-void WSRequestHandler::HandleAddFilterToSource(WSRequestHandler* req)
+std::string WSRequestHandler::HandleAddFilterToSource(WSRequestHandler* req)
 {
 	if (!req->hasField("sourceName") || !req->hasField("filterName") ||
 		!req->hasField("filterType") || !req->hasField("filterSettings"))
 	{
-		req->SendErrorResponse("missing request parameters");
-		return;
+		return req->SendErrorResponse("missing request parameters");
 	}
 
 	const char* sourceName = obs_data_get_string(req->data, "sourceName");
@@ -1186,29 +1135,25 @@ void WSRequestHandler::HandleAddFilterToSource(WSRequestHandler* req)
 
 	OBSSourceAutoRelease source = obs_get_source_by_name(sourceName);
 	if (!source) {
-		req->SendErrorResponse("specified source doesn't exist");
-		return;
+		return req->SendErrorResponse("specified source doesn't exist");
 	}
 
 	OBSSourceAutoRelease existingFilter = obs_source_get_filter_by_name(source, filterName);
 	if (existingFilter) {
-		req->SendErrorResponse("filter name already taken");
-		return;
+		return req->SendErrorResponse("filter name already taken");
 	}
 
 	OBSSourceAutoRelease filter = obs_source_create_private(filterType, filterName, filterSettings);
 	if (!filter) {
-		req->SendErrorResponse("filter creation failed");
-		return;
+		return req->SendErrorResponse("filter creation failed");
 	}
 	if (obs_source_get_type(filter) != OBS_SOURCE_TYPE_FILTER) {
-		req->SendErrorResponse("invalid filter type");
-		return;
+		return req->SendErrorResponse("invalid filter type");
 	}
 
 	obs_source_filter_add(source, filter);
 
-	req->SendOKResponse();
+	return req->SendOKResponse();
 }
 
 /**
@@ -1222,11 +1167,10 @@ void WSRequestHandler::HandleAddFilterToSource(WSRequestHandler* req)
 * @category sources
 * @since 4.5.0
 */
-void WSRequestHandler::HandleRemoveFilterFromSource(WSRequestHandler* req)
+std::string WSRequestHandler::HandleRemoveFilterFromSource(WSRequestHandler* req)
 {
 	if (!req->hasField("sourceName") || !req->hasField("filterName")) {
-		req->SendErrorResponse("missing request parameters");
-		return;
+		return req->SendErrorResponse("missing request parameters");
 	}
 
 	const char* sourceName = obs_data_get_string(req->data, "sourceName");
@@ -1234,19 +1178,17 @@ void WSRequestHandler::HandleRemoveFilterFromSource(WSRequestHandler* req)
 
 	OBSSourceAutoRelease source = obs_get_source_by_name(sourceName);
 	if (!source) {
-		req->SendErrorResponse("specified source doesn't exist");
-		return;
+		return req->SendErrorResponse("specified source doesn't exist");
 	}
 
 	OBSSourceAutoRelease filter = obs_source_get_filter_by_name(source, filterName);
 	if (!filter) {
-		req->SendErrorResponse("specified filter doesn't exist");
-		return;
+		return req->SendErrorResponse("specified filter doesn't exist");
 	}
 
 	obs_source_filter_remove(source, filter);
 
-	req->SendOKResponse();
+	return req->SendOKResponse();
 }
 
 /**
@@ -1261,11 +1203,10 @@ void WSRequestHandler::HandleRemoveFilterFromSource(WSRequestHandler* req)
 * @category sources
 * @since 4.5.0
 */
-void WSRequestHandler::HandleReorderSourceFilter(WSRequestHandler* req)
+std::string WSRequestHandler::HandleReorderSourceFilter(WSRequestHandler* req)
 {
 	if (!req->hasField("sourceName") || !req->hasField("filterName") || !req->hasField("newIndex")) {
-		req->SendErrorResponse("missing request parameters");
-		return;
+		return req->SendErrorResponse("missing request parameters");
 	}
 
 	const char* sourceName = obs_data_get_string(req->data, "sourceName");
@@ -1273,20 +1214,17 @@ void WSRequestHandler::HandleReorderSourceFilter(WSRequestHandler* req)
 	int newIndex = obs_data_get_int(req->data, "newIndex");
 
 	if (newIndex < 0) {
-		req->SendErrorResponse("invalid index");
-		return;
+		return req->SendErrorResponse("invalid index");
 	}
 
 	OBSSourceAutoRelease source = obs_get_source_by_name(sourceName);
 	if (!source) {
-		req->SendErrorResponse("specified source doesn't exist");
-		return;
+		return req->SendErrorResponse("specified source doesn't exist");
 	}
 
 	OBSSourceAutoRelease filter = obs_source_get_filter_by_name(source, filterName);
 	if (!filter) {
-		req->SendErrorResponse("specified filter doesn't exist");
-		return;
+		return req->SendErrorResponse("specified filter doesn't exist");
 	}
 
 	struct filterSearch {
@@ -1306,8 +1244,7 @@ void WSRequestHandler::HandleReorderSourceFilter(WSRequestHandler* req)
 
 	int lastFilterIndex = ctx.i + 1;
 	if (newIndex > lastFilterIndex) {
-		req->SendErrorResponse("index out of bounds");
-		return;
+		return req->SendErrorResponse("index out of bounds");
 	}
 
 	int currentIndex = ctx.filterIndex;
@@ -1324,7 +1261,7 @@ void WSRequestHandler::HandleReorderSourceFilter(WSRequestHandler* req)
 		}
 	}
 
-	req->SendOKResponse();
+	return req->SendOKResponse();
 }
 
 /**
@@ -1339,11 +1276,10 @@ void WSRequestHandler::HandleReorderSourceFilter(WSRequestHandler* req)
 * @category sources
 * @since 4.5.0
 */
-void WSRequestHandler::HandleMoveSourceFilter(WSRequestHandler* req)
+std::string WSRequestHandler::HandleMoveSourceFilter(WSRequestHandler* req)
 {
 	if (!req->hasField("sourceName") || !req->hasField("filterName") || !req->hasField("movementType")) {
-		req->SendErrorResponse("missing request parameters");
-		return;
+		return req->SendErrorResponse("missing request parameters");
 	}
 
 	const char* sourceName = obs_data_get_string(req->data, "sourceName");
@@ -1352,14 +1288,12 @@ void WSRequestHandler::HandleMoveSourceFilter(WSRequestHandler* req)
 
 	OBSSourceAutoRelease source = obs_get_source_by_name(sourceName);
 	if (!source) {
-		req->SendErrorResponse("specified source doesn't exist");
-		return;
+		return req->SendErrorResponse("specified source doesn't exist");
 	}
 
 	OBSSourceAutoRelease filter = obs_source_get_filter_by_name(source, filterName);
 	if (!filter) {
-		req->SendErrorResponse("specified filter doesn't exist");
-		return;
+		return req->SendErrorResponse("specified filter doesn't exist");
 	}
 
 	obs_order_movement movement;
@@ -1376,13 +1310,12 @@ void WSRequestHandler::HandleMoveSourceFilter(WSRequestHandler* req)
 		movement = OBS_ORDER_MOVE_BOTTOM;
 	}
 	else {
-		req->SendErrorResponse("invalid value for movementType: must be either 'up', 'down', 'top' or 'bottom'.");
-		return;
+		return req->SendErrorResponse("invalid value for movementType: must be either 'up', 'down', 'top' or 'bottom'.");
 	}
 
 	obs_source_filter_set_order(source, filter, movement);
 
-	req->SendOKResponse();
+	return req->SendOKResponse();
 }
 
 /**
@@ -1397,11 +1330,10 @@ void WSRequestHandler::HandleMoveSourceFilter(WSRequestHandler* req)
 * @category sources
 * @since 4.5.0
 */
-void WSRequestHandler::HandleSetSourceFilterSettings(WSRequestHandler* req)
+std::string WSRequestHandler::HandleSetSourceFilterSettings(WSRequestHandler* req)
 {
 	if (!req->hasField("sourceName") || !req->hasField("filterName") || !req->hasField("filterSettings")) {
-		req->SendErrorResponse("missing request parameters");
-		return;
+		return req->SendErrorResponse("missing request parameters");
 	}
 
 	const char* sourceName = obs_data_get_string(req->data, "sourceName");
@@ -1410,19 +1342,17 @@ void WSRequestHandler::HandleSetSourceFilterSettings(WSRequestHandler* req)
 
 	OBSSourceAutoRelease source = obs_get_source_by_name(sourceName);
 	if (!source) {
-		req->SendErrorResponse("specified source doesn't exist");
-		return;
+		return req->SendErrorResponse("specified source doesn't exist");
 	}
 
 	OBSSourceAutoRelease filter = obs_source_get_filter_by_name(source, filterName);
 	if (!filter) {
-		req->SendErrorResponse("specified filter doesn't exist");
-		return;
+		return req->SendErrorResponse("specified filter doesn't exist");
 	}
 
 	OBSDataAutoRelease settings = obs_source_get_settings(filter);
 	obs_data_apply(settings, newFilterSettings);
 	obs_source_update(filter, settings);
 
-	req->SendOKResponse();
+	return req->SendOKResponse();
 }

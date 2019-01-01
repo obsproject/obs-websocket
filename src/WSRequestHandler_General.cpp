@@ -19,7 +19,7 @@
  * @category general
  * @since 0.3
  */
- void WSRequestHandler::HandleGetVersion(WSRequestHandler* req) {
+std::string WSRequestHandler::HandleGetVersion(WSRequestHandler* req) {
 	QString obsVersion = Utils::OBSVersionString();
 
 	QList<QString> names = req->messageMap.keys();
@@ -37,7 +37,7 @@
 	obs_data_set_string(data, "obs-studio-version", obsVersion.toUtf8());
 	obs_data_set_string(data, "available-requests", requests.toUtf8());
 
-	req->SendOKResponse(data);
+	return req->SendOKResponse(data);
 }
 
 /**
@@ -53,7 +53,7 @@
  * @category general
  * @since 0.3
  */
-void WSRequestHandler::HandleGetAuthRequired(WSRequestHandler* req) {
+std::string WSRequestHandler::HandleGetAuthRequired(WSRequestHandler* req) {
 	bool authRequired = Config::Current()->AuthRequired;
 
 	OBSDataAutoRelease data = obs_data_create();
@@ -66,7 +66,7 @@ void WSRequestHandler::HandleGetAuthRequired(WSRequestHandler* req) {
 			Config::Current()->Salt.toUtf8());
 	}
 
-	req->SendOKResponse(data);
+	return req->SendOKResponse(data);
 }
 
 /**
@@ -79,30 +79,26 @@ void WSRequestHandler::HandleGetAuthRequired(WSRequestHandler* req) {
  * @category general
  * @since 0.3
  */
-void WSRequestHandler::HandleAuthenticate(WSRequestHandler* req) {
+std::string WSRequestHandler::HandleAuthenticate(WSRequestHandler* req) {
 	if (!req->hasField("auth")) {
-		req->SendErrorResponse("missing request parameters");
-		return;
+		return req->SendErrorResponse("missing request parameters");
 	}
 
 	if (req->_connProperties.value(PROP_AUTHENTICATED).toBool() == true) {
-		req->SendErrorResponse("already authenticated");
-		return;
+		return req->SendErrorResponse("already authenticated");
 	}
 
 	QString auth = obs_data_get_string(req->data, "auth");
 	if (auth.isEmpty()) {
-		req->SendErrorResponse("auth not specified!");
-		return;
+		return req->SendErrorResponse("auth not specified!");
 	}
 
 	if (Config::Current()->CheckAuth(auth) == false) {
-		req->SendErrorResponse("Authentication Failed.");
-		return;
+		return req->SendErrorResponse("Authentication Failed.");
 	}
 
 	req->_connProperties.insert(PROP_AUTHENTICATED, true);
-	req->SendOKResponse();
+	return req->SendOKResponse();
 }
 
 /**
@@ -115,19 +111,17 @@ void WSRequestHandler::HandleAuthenticate(WSRequestHandler* req) {
  * @category general
  * @since 4.3.0
  */
- void WSRequestHandler::HandleSetHeartbeat(WSRequestHandler* req) {
+std::string WSRequestHandler::HandleSetHeartbeat(WSRequestHandler* req) {
 	if (!req->hasField("enable")) {
-		req->SendErrorResponse("Heartbeat <enable> parameter missing");
-		return;
+		return req->SendErrorResponse("Heartbeat <enable> parameter missing");
 	}
 
 	auto events = WSEvents::Current();
-
 	events->HeartbeatIsActive = obs_data_get_bool(req->data, "enable");
 
 	OBSDataAutoRelease response = obs_data_create();
 	obs_data_set_bool(response, "enable", events->HeartbeatIsActive);
-	req->SendOKResponse(response);
+	return req->SendOKResponse(response);
 }
 
 /**
@@ -140,19 +134,18 @@ void WSRequestHandler::HandleAuthenticate(WSRequestHandler* req) {
  * @category general
  * @since 4.3.0
  */
-void WSRequestHandler::HandleSetFilenameFormatting(WSRequestHandler* req) {
+std::string WSRequestHandler::HandleSetFilenameFormatting(WSRequestHandler* req) {
 	if (!req->hasField("filename-formatting")) {
-		req->SendErrorResponse("<filename-formatting> parameter missing");
-		return;
+		return req->SendErrorResponse("<filename-formatting> parameter missing");
 	}
 
 	QString filenameFormatting = obs_data_get_string(req->data, "filename-formatting");
-	if (!filenameFormatting.isEmpty()) {
-		Utils::SetFilenameFormatting(filenameFormatting.toUtf8());
-		req->SendOKResponse();
-	} else {
-		req->SendErrorResponse("invalid request parameters");
+	if (filenameFormatting.isEmpty()) {
+		return req->SendErrorResponse("invalid request parameters");
 	}
+
+	Utils::SetFilenameFormatting(filenameFormatting.toUtf8());
+	return req->SendOKResponse();
 }
 
 /**
@@ -165,8 +158,8 @@ void WSRequestHandler::HandleSetFilenameFormatting(WSRequestHandler* req) {
  * @category general
  * @since 4.3.0
  */
-void WSRequestHandler::HandleGetFilenameFormatting(WSRequestHandler* req) {
+std::string WSRequestHandler::HandleGetFilenameFormatting(WSRequestHandler* req) {
 	OBSDataAutoRelease response = obs_data_create();
 	obs_data_set_string(response, "filename-formatting", Utils::GetFilenameFormatting());
-	req->SendOKResponse(response);
+	return req->SendOKResponse(response);
 }

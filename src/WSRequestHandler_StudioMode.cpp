@@ -13,13 +13,13 @@
  * @category studio mode
  * @since 4.1.0
  */
- void WSRequestHandler::HandleGetStudioModeStatus(WSRequestHandler* req) {
+std::string WSRequestHandler::HandleGetStudioModeStatus(WSRequestHandler* req) {
 	bool previewActive = obs_frontend_preview_program_mode_active();
 
 	OBSDataAutoRelease response = obs_data_create();
 	obs_data_set_bool(response, "studio-mode", previewActive);
 
-	req->SendOKResponse(response);
+	return req->SendOKResponse(response);
 }
 
 /**
@@ -34,10 +34,9 @@
  * @category studio mode
  * @since 4.1.0
  */
-void WSRequestHandler::HandleGetPreviewScene(WSRequestHandler* req) {
+std::string WSRequestHandler::HandleGetPreviewScene(WSRequestHandler* req) {
 	if (!obs_frontend_preview_program_mode_active()) {
-		req->SendErrorResponse("studio mode not enabled");
-		return;
+		return req->SendErrorResponse("studio mode not enabled");
 	}
 
 	OBSSourceAutoRelease scene = obs_frontend_get_current_preview_scene();
@@ -47,7 +46,7 @@ void WSRequestHandler::HandleGetPreviewScene(WSRequestHandler* req) {
 	obs_data_set_string(data, "name", obs_source_get_name(scene));
 	obs_data_set_array(data, "sources", sceneItems);
 
-	req->SendOKResponse(data);
+	return req->SendOKResponse(data);
 }
 
 /**
@@ -61,26 +60,23 @@ void WSRequestHandler::HandleGetPreviewScene(WSRequestHandler* req) {
  * @category studio mode
  * @since 4.1.0
  */
-void WSRequestHandler::HandleSetPreviewScene(WSRequestHandler* req) {
+std::string WSRequestHandler::HandleSetPreviewScene(WSRequestHandler* req) {
 	if (!obs_frontend_preview_program_mode_active()) {
-		req->SendErrorResponse("studio mode not enabled");
-		return;
+		return req->SendErrorResponse("studio mode not enabled");
 	}
 
 	if (!req->hasField("scene-name")) {
-		req->SendErrorResponse("missing request parameters");
-		return;
+		return req->SendErrorResponse("missing request parameters");
 	}
 
 	const char* scene_name = obs_data_get_string(req->data, "scene-name");
 	OBSSourceAutoRelease scene = Utils::GetSceneFromNameOrCurrent(scene_name);
-
-	if (scene) {
-		obs_frontend_set_current_preview_scene(scene);
-		req->SendOKResponse();
-	} else {
-		req->SendErrorResponse("specified scene doesn't exist");
+	if (!scene) {
+		return req->SendErrorResponse("specified scene doesn't exist");
 	}
+
+	obs_frontend_set_current_preview_scene(scene);
+	return req->SendOKResponse();
 }
 
 /**
@@ -96,10 +92,9 @@ void WSRequestHandler::HandleSetPreviewScene(WSRequestHandler* req) {
  * @category studio mode
  * @since 4.1.0
  */
-void WSRequestHandler::HandleTransitionToProgram(WSRequestHandler* req) {
+std::string WSRequestHandler::HandleTransitionToProgram(WSRequestHandler* req) {
 	if (!obs_frontend_preview_program_mode_active()) {
-		req->SendErrorResponse("studio mode not enabled");
-		return;
+		return req->SendErrorResponse("studio mode not enabled");
 	}
 
 	if (req->hasField("with-transition")) {
@@ -110,14 +105,12 @@ void WSRequestHandler::HandleTransitionToProgram(WSRequestHandler* req) {
 			QString transitionName =
 				obs_data_get_string(transitionInfo, "name");
 			if (transitionName.isEmpty()) {
-				req->SendErrorResponse("invalid request parameters");
-				return;
+				return req->SendErrorResponse("invalid request parameters");
 			}
 
 			bool success = Utils::SetTransitionByName(transitionName);
 			if (!success) {
-				req->SendErrorResponse("specified transition doesn't exist");
-				return;
+				return req->SendErrorResponse("specified transition doesn't exist");
 			}
 		}
 
@@ -129,7 +122,7 @@ void WSRequestHandler::HandleTransitionToProgram(WSRequestHandler* req) {
 	}
 
 	Utils::TransitionToProgram();
-	req->SendOKResponse();
+	return req->SendOKResponse();
 }
 
 /**
@@ -140,9 +133,9 @@ void WSRequestHandler::HandleTransitionToProgram(WSRequestHandler* req) {
  * @category studio mode
  * @since 4.1.0
  */
-void WSRequestHandler::HandleEnableStudioMode(WSRequestHandler* req) {
+std::string WSRequestHandler::HandleEnableStudioMode(WSRequestHandler* req) {
 	obs_frontend_set_preview_program_mode(true);
-	req->SendOKResponse();
+	return req->SendOKResponse();
 }
 
 /**
@@ -153,9 +146,9 @@ void WSRequestHandler::HandleEnableStudioMode(WSRequestHandler* req) {
  * @category studio mode
  * @since 4.1.0
  */
-void WSRequestHandler::HandleDisableStudioMode(WSRequestHandler* req) {
+std::string WSRequestHandler::HandleDisableStudioMode(WSRequestHandler* req) {
 	obs_frontend_set_preview_program_mode(false);
-	req->SendOKResponse();
+	return req->SendOKResponse();
 }
 
 /**
@@ -166,8 +159,8 @@ void WSRequestHandler::HandleDisableStudioMode(WSRequestHandler* req) {
  * @category studio mode
  * @since 4.1.0
  */
-void WSRequestHandler::HandleToggleStudioMode(WSRequestHandler* req) {
+std::string WSRequestHandler::HandleToggleStudioMode(WSRequestHandler* req) {
 	bool previewProgramMode = obs_frontend_preview_program_mode_active();
 	obs_frontend_set_preview_program_mode(!previewProgramMode);
-	req->SendOKResponse();
+	return req->SendOKResponse();
 }
