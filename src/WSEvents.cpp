@@ -62,7 +62,15 @@ void* calldata_get_ptr(const calldata_t* data, const char* name) {
 	return ptr;
 }
 
-WSEvents* WSEvents::Instance = nullptr;
+WSEventsPtr WSEvents::_instance = WSEventsPtr(nullptr);
+
+WSEventsPtr WSEvents::Current() {
+	return _instance;
+}
+
+void WSEvents::ResetCurrent(WSServerPtr srv) {
+	_instance = WSEventsPtr(new WSEvents(srv));
+}
 
 WSEvents::WSEvents(WSServerPtr srv) {
 	_srv = srv;

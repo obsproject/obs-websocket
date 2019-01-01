@@ -22,17 +22,27 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include <obs.hpp>
 #include <obs-frontend-api.h>
+
 #include <QListWidgetItem>
+#include <QSharedPointer>
+
 #include "WSServer.h"
 
-class WSEvents : public QObject {
-  Q_OBJECT
-  public:
+class WSEvents;
+typedef QSharedPointer<WSEvents> WSEventsPtr;
+
+class WSEvents : public QObject
+{
+Q_OBJECT
+
+public:
+	static WSEventsPtr Current();
+	static void ResetCurrent(WSServerPtr srv);
+
 	explicit WSEvents(WSServerPtr srv);
 	~WSEvents();
 	static void FrontendEventHandler(
 		enum obs_frontend_event event, void* privateData);
-	static WSEvents* Instance;
 	void connectSceneSignals(obs_source_t* scene);
 
 	void hookTransitionBeginEvent();
@@ -44,13 +54,15 @@ class WSEvents : public QObject {
 
 	bool HeartbeatIsActive;
 
-  private slots:
+private slots:
 	void deferredInitOperations();
 	void StreamStatus();
 	void Heartbeat();
 	void TransitionDurationChanged(int ms);
 
-  private:
+private:
+	static WSEventsPtr _instance;
+
 	WSServerPtr _srv;
 	OBSSource currentScene;
 

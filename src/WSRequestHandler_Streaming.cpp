@@ -21,6 +21,8 @@
  * @since 0.3
  */
  void WSRequestHandler::HandleGetStreamingStatus(WSRequestHandler* req) {
+	auto events = WSEvents::Current();
+	 
 	OBSDataAutoRelease data = obs_data_create();
 	obs_data_set_bool(data, "streaming", obs_frontend_streaming_active());
 	obs_data_set_bool(data, "recording", obs_frontend_recording_active());
@@ -28,13 +30,13 @@
 
 	const char* tc = nullptr;
 	if (obs_frontend_streaming_active()) {
-		tc = WSEvents::Instance->GetStreamingTimecode();
+		tc = events->GetStreamingTimecode();
 		obs_data_set_string(data, "stream-timecode", tc);
 		bfree((void*)tc);
 	}
 
 	if (obs_frontend_recording_active()) {
-		tc = WSEvents::Instance->GetRecordingTimecode();
+		tc = events->GetRecordingTimecode();
 		obs_data_set_string(data, "rec-timecode", tc);
 		bfree((void*)tc);
 	}
