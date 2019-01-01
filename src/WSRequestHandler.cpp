@@ -128,10 +128,11 @@ QSet<QString> WSRequestHandler::authNotRequired {
 	"Authenticate"
 };
 
-WSRequestHandler::WSRequestHandler() :
+WSRequestHandler::WSRequestHandler(QVariantHash* connProperties) :
 	_messageId(0),
 	_requestType(""),
-	data(nullptr)
+	data(nullptr),
+	_connProperties(connProperties)
 {
 }
 
@@ -160,13 +161,13 @@ std::string WSRequestHandler::processIncomingMessage(std::string& textMessage) {
 	_requestType = obs_data_get_string(data, "request-type");
 	_messageId = obs_data_get_string(data, "message-id");
 
-	// if (Config::Current()->AuthRequired
-	// 	&& (_client->property(PROP_AUTHENTICATED).toBool() == false)
-	// 	&& (authNotRequired.find(_requestType) == authNotRequired.end()))
-	// {
-	// 	SendErrorResponse("Not Authenticated");
-	// 	return;
-	// }
+	if (Config::Current()->AuthRequired
+		&& (!authNotRequired.contains(_requestType))
+		&& (_connProperties->value(PROP_AUTHENTICATED).toBool() == false))
+	{
+		SendErrorResponse("Not Authenticated");
+		return _response;
+	}
 
 	void (*handlerFunc)(WSRequestHandler*) = (messageMap[_requestType]);
 

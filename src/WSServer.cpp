@@ -118,10 +118,14 @@ void WSServer::onMessage(connection_hdl hdl, server::message_ptr message)
 		return;
 	}
 
+	QVariantHash connProperties = _connectionProperties[hdl];
+
 	std::string payload = message->get_payload();
 
-	WSRequestHandler handler;
+	WSRequestHandler handler(&connProperties);
 	std::string response = handler.processIncomingMessage(payload);
+
+	_connectionProperties[hdl] = connProperties;
 
 	_server.send(hdl, response, websocketpp::frame::opcode::text);
 }
@@ -130,6 +134,7 @@ void WSServer::onClose(connection_hdl hdl)
 {
 	QMutexLocker locker(&_clMutex);
 	_connections.erase(hdl);
+	_connectionProperties.erase(hdl);
 	locker.unlock();
 
 	QString clientIp = getRemoteEndpoint(hdl);
