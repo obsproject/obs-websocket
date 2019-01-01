@@ -1,6 +1,6 @@
 /*
 obs-websocket
-Copyright (C) 2016-2017	Stéphane Lepin <stephane.lepin@gmail.com>
+Copyright (C) 2016-2019	Stéphane Lepin <stephane.lepin@gmail.com>
 Copyright (C) 2017	Mikhail Swift <https://github.com/mikhailswift>
 
 This program is free software; you can redistribute it and/or modify
@@ -17,8 +17,7 @@ You should have received a copy of the GNU General Public License along
 with this program. If not, see <https://www.gnu.org/licenses/>
 */
 
-#ifndef WSREQUESTHANDLER_H
-#define WSREQUESTHANDLER_H
+#pragma once
 
 #include <QHash>
 #include <QSet>
@@ -150,5 +149,3 @@ class WSRequestHandler : public QObject {
 		static HandlerResponse HandleSetBrowserSourceProperties(WSRequestHandler* req);
 		static HandlerResponse HandleGetBrowserSourceProperties(WSRequestHandler* req);
 };
-
-#endif // WSPROTOCOL_H

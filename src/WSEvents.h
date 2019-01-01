@@ -1,6 +1,6 @@
 /*
 obs-websocket
-Copyright (C) 2016-2017	Stéphane Lepin <stephane.lepin@gmail.com>
+Copyright (C) 2016-2019	Stéphane Lepin <stephane.lepin@gmail.com>
 Copyright (C) 2017	Brendan Hagan <https://github.com/haganbmj>
 
 This program is free software; you can redistribute it and/or modify
@@ -17,8 +17,7 @@ You should have received a copy of the GNU General Public License along
 with this program. If not, see <https://www.gnu.org/licenses/>
 */
 
-#ifndef WSEVENTS_H
-#define WSEVENTS_H
+#pragma once
 
 #include <obs.hpp>
 #include <obs-frontend-api.h>
@@ -118,5 +117,3 @@ private:
 	static void OnSceneItemDelete(void* param, calldata_t* data);
 	static void OnSceneItemVisibilityChanged(void* param, calldata_t* data);
 };
-
-#endif // WSEVENTS_H
