@@ -54,7 +54,7 @@ public:
 	virtual ~WSServer();
 	void start(quint16 port);
 	void stop();
-	void broadcast(QString message);
+	void broadcast(std::string message);
 
 private:
 	static WSServerPtr _instance;

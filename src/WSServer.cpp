@@ -100,7 +100,7 @@ void WSServer::stop()
 	blog(LOG_INFO, "server stopped successfully");
 }
 
-void WSServer::broadcast(QString message)
+void WSServer::broadcast(std::string message)
 {
 	QMutexLocker locker(&_clMutex);
 	for (connection_hdl hdl : _connections) {
@@ -110,7 +110,7 @@ void WSServer::broadcast(QString message)
 				continue;
 			}
 		}
-		_server.send(hdl, message.toStdString(), websocketpp::frame::opcode::text);
+		_server.send(hdl, message, websocketpp::frame::opcode::text);
 	}
 }
 
