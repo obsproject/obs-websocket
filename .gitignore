@@ -7,3 +7,6 @@
 /installer/Output/
 
 .vscode
+
+test/node_modules/
+test/dist/

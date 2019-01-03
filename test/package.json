@@ -1,0 +1,29 @@
+{
+  "name": "obs-websocket-test",
+  "version": "4.6.0",
+  "description": "obs-websocket test suite",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha --require ts-node/register tests/**/*.spec.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Palakis/obs-websocket.git"
+  },
+  "author": "Stéphane Lepin <stephane.lepin@gmail.com>",
+  "license": "GPL-2.0",
+  "bugs": {
+    "url": "https://github.com/Palakis/obs-websocket/issues"
+  },
+  "homepage": "https://github.com/Palakis/obs-websocket#readme",
+  "dependencies": {
+    "@types/chai": "^4.1.7",
+    "@types/mocha": "^5.2.5",
+    "chai": "^4.2.0",
+    "mocha": "^5.2.0",
+    "obs-websocket-js": "^1.2.0",
+    "obs-websocket-js-types": "^4.4.0",
+    "ts-node": "^7.0.1",
+    "typescript": "^3.2.2"
+  }
+}
