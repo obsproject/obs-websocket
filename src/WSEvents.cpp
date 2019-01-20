@@ -922,7 +922,7 @@ void WSEvents::OnSceneItemVisibilityChanged(void* param, calldata_t* data) {
  * @return {String} `item-name` Name of the item in the scene.
  *
  * @api events
- * @name OnSceneItemTransform
+ * @name SourceItemChanged
  * @category sources
  * @since 4.5.1
  */
