@@ -922,9 +922,9 @@ void WSEvents::OnSceneItemVisibilityChanged(void* param, calldata_t* data) {
  * @return {String} `item-name` Name of the item in the scene.
  *
  * @api events
- * @name SourceItemChanged
+ * @name SceneItemTransformChanged
  * @category sources
- * @since 4.5.1
+ * @since unreleased
  */
 void WSEvents::OnSceneItemTransform(void* param, calldata_t* data) {
 	WSEvents* instance = static_cast<WSEvents*>(param);
@@ -944,7 +944,75 @@ void WSEvents::OnSceneItemTransform(void* param, calldata_t* data) {
 	obs_data_set_string(fields, "scene-name", sceneName);
 	obs_data_set_string(fields, "item-name", sceneItemName);
 
-	instance->broadcastUpdate("SourceItemChanged", fields);
+	OBSDataAutoRelease posData = obs_data_create();
+	vec2 pos;
+	obs_sceneitem_get_pos(sceneItem, &pos);
+	obs_data_set_double(posData, "x", pos.x);
+	obs_data_set_double(posData, "y", pos.y);
+	obs_data_set_int(posData, "alignment", obs_sceneitem_get_alignment(sceneItem));
+	obs_data_set_obj(fields, "position", posData);
+
+	obs_data_set_double(fields, "rotation", obs_sceneitem_get_rot(sceneItem));
+
+	OBSDataAutoRelease scaleData = obs_data_create();
+	vec2 scale;
+	obs_sceneitem_get_scale(sceneItem, &scale);
+	obs_data_set_double(scaleData, "x", scale.x);
+	obs_data_set_double(scaleData, "y", scale.y);
+	obs_data_set_obj(fields, "scale", scaleData);
+
+	OBSDataAutoRelease cropData = obs_data_create();
+	obs_sceneitem_crop crop;
+	obs_sceneitem_get_crop(sceneItem, &crop);
+	obs_data_set_int(cropData, "left", crop.left);
+	obs_data_set_int(cropData, "top", crop.top);
+	obs_data_set_int(cropData, "right", crop.right);
+	obs_data_set_int(cropData, "bottom", crop.bottom);
+	obs_data_set_obj(fields, "crop", cropData);
+
+	obs_data_set_bool(fields, "visible", obs_sceneitem_visible(sceneItem));
+
+	OBSDataAutoRelease boundsData = obs_data_create();
+	obs_bounds_type boundsType = obs_sceneitem_get_bounds_type(sceneItem);
+	if (boundsType == OBS_BOUNDS_NONE) {
+		obs_data_set_string(boundsData, "type", "OBS_BOUNDS_NONE");
+	}
+	else {
+		switch (boundsType) {
+		case OBS_BOUNDS_STRETCH: {
+			obs_data_set_string(boundsData, "type", "OBS_BOUNDS_STRETCH");
+			break;
+		}
+		case OBS_BOUNDS_SCALE_INNER: {
+			obs_data_set_string(boundsData, "type", "OBS_BOUNDS_SCALE_INNER");
+			break;
+		}
+		case OBS_BOUNDS_SCALE_OUTER: {
+			obs_data_set_string(boundsData, "type", "OBS_BOUNDS_SCALE_OUTER");
+			break;
+		}
+		case OBS_BOUNDS_SCALE_TO_WIDTH: {
+			obs_data_set_string(boundsData, "type", "OBS_BOUNDS_SCALE_TO_WIDTH");
+			break;
+		}
+		case OBS_BOUNDS_SCALE_TO_HEIGHT: {
+			obs_data_set_string(boundsData, "type", "OBS_BOUNDS_SCALE_TO_HEIGHT");
+			break;
+		}
+		case OBS_BOUNDS_MAX_ONLY: {
+			obs_data_set_string(boundsData, "type", "OBS_BOUNDS_MAX_ONLY");
+			break;
+		}
+		}
+		obs_data_set_int(boundsData, "alignment", obs_sceneitem_get_bounds_alignment(sceneItem));
+		vec2 bounds;
+		obs_sceneitem_get_bounds(sceneItem, &bounds);
+		obs_data_set_double(boundsData, "x", bounds.x);
+		obs_data_set_double(boundsData, "y", bounds.y);
+	}
+	obs_data_set_obj(fields, "bounds", boundsData);
+
+	instance->broadcastUpdate("SceneItemTransformChanged", fields);
 }
 
 /**
