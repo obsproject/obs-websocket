@@ -103,6 +103,7 @@ QHash<QString, HandlerResponse(*)(WSRequestHandler*)> WSRequestHandler::messageM
 	{ "SetStreamSettings", WSRequestHandler::HandleSetStreamSettings },
 	{ "GetStreamSettings", WSRequestHandler::HandleGetStreamSettings },
 	{ "SaveStreamSettings", WSRequestHandler::HandleSaveStreamSettings },
+	{ "SendCaptions", WSRequestHandler::HandleSendCaptions },
 
 	{ "GetStudioModeStatus", WSRequestHandler::HandleGetStudioModeStatus },
 	{ "GetPreviewScene", WSRequestHandler::HandleGetPreviewScene },

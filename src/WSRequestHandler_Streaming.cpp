@@ -287,3 +287,26 @@ HandlerResponse WSRequestHandler::HandleSaveStreamSettings(WSRequestHandler* req
 	obs_frontend_save_streaming_service();
 	return req->SendOKResponse();
 }
+
+
+/**
+ * Send the provided text as embedded CEA-608 caption data
+ * 
+ * @api requests
+ * @name SendCaptions
+ * @category streaming
+ */
+HandlerResponse WSRequestHandler::HandleSendCaptions(WSRequestHandler* req) {
+	if (!req->hasField("text")) {
+		return req->SendErrorResponse("missing request parameters");
+	}
+
+	OBSOutputAutoRelease output = obs_frontend_get_streaming_output();
+	if (output) {
+		const char* caption = obs_data_get_string(req->data, "text");
+		obs_output_output_caption_text1(output, caption);
+	}
+
+	return req->SendOKResponse();
+}
+
