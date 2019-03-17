@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -ev
+
 OSTYPE=$(uname)
 
 if [ "${OSTYPE}" != "Darwin" ]; then
@@ -39,7 +41,7 @@ echo "[obs-websocket] Installing obs-websocket dependency 'QT 5.10.1'.."
 # Pouring from the bottle is much quicker though, so use bottle for now.
 # =!= NOTICE =!=
 
-brew install brew install https://gist.githubusercontent.com/DDRBoxman/b3956fab6073335a4bf151db0dcbd4ad/raw/ed1342a8a86793ea8c10d8b4d712a654da121ace/qt.rb
+brew install https://gist.githubusercontent.com/DDRBoxman/b3956fab6073335a4bf151db0dcbd4ad/raw/ed1342a8a86793ea8c10d8b4d712a654da121ace/qt.rb
 
 # Pin this version of QT5 to avoid `brew upgrade`
 # upgrading it to incompatible version
