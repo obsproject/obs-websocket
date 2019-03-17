@@ -1,6 +1,6 @@
 #!/bin/sh
 
-set -ev
+
 
 OSTYPE=$(uname)
 
