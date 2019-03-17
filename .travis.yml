@@ -32,16 +32,6 @@ matrix:
     after_success:
     - docker exec -it xenial /root/obs-websocket/CI/package-xenial.sh
 
-  - os: osx
-    env: _macos_build
-    osx_image: xcode9.4
-    before_install:
-    - "./CI/install-dependencies-macos.sh"
-    - "./CI/install-build-obs-macos.sh"
-    script: "./CI/build-macos.sh"
-    after_success:
-    - ./CI/package-macos.sh
-
 deploy:
 - provider: s3
   region: eu-central-1
@@ -56,16 +46,4 @@ deploy:
     condition:
     - "$TRAVIS_OS_NAME = linux"
     - "-d /home/travis/package"
-    all_branches: true
-- provider: s3
-  region: eu-central-1
-  bucket: obs-websocket-osx-builds
-  access_key_id: "$AWS_ID"
-  secret_access_key: "$AWS_SECRET"
-  local_dir: release
-  skip_cleanup: true
-  acl: public_read
-  on:
-    repo: Palakis/obs-websocket
-    condition: "$TRAVIS_OS_NAME = osx"
     all_branches: true
