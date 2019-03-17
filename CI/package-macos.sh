@@ -16,13 +16,10 @@ export WS_LIB="/usr/local/opt/qt/lib/QtWebSockets.framework/QtWebSockets"
 export NET_LIB="/usr/local/opt/qt/lib/QtNetwork.framework/QtNetwork"
 
 export GIT_HASH=$(git rev-parse --short HEAD)
+export GIT_BRANCH_OR_TAG=$(git name-rev --name-only HEAD | awk -F/ '{print $NF}')
 
-export VERSION="$GIT_HASH-$TRAVIS_BRANCH"
-export LATEST_VERSION="$TRAVIS_BRANCH"
-if [ -n "${TRAVIS_TAG}" ]; then
-	export VERSION="$TRAVIS_TAG"
-	export LATEST_VERSION="$TRAVIS_TAG"
-fi
+export VERSION="$GIT_HASH-$GIT_BRANCH_OR_TAG"
+export LATEST_VERSION="$GIT_BRANCH_OR_TAG"
 
 export FILENAME="obs-websocket-$VERSION.pkg"
 export LATEST_FILENAME="obs-websocket-latest-$LATEST_VERSION.pkg"
