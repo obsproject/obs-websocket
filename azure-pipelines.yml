@@ -1,0 +1,23 @@
+pool:
+  vmImage: 'macOS-10.13'
+
+steps:
+- checkout: self
+  submodules: true
+
+- script: ./CI/install-dependencies-macos.sh
+  displayName: 'Install Dependencies'
+
+- script: ./CI/install-build-obs-macos.sh
+  displayName: 'Build OBS'
+
+- script: ./CI/build-macos.sh
+  displayName: 'Build obs-websocket'
+
+- script: ./CI/package-macos.sh
+  displayName: 'Package'
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    pathtoPublish: './release'
+    artifactName: 'build'

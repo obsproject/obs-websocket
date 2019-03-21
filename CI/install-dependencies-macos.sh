@@ -1,5 +1,7 @@
 #!/bin/sh
 
+
+
 OSTYPE=$(uname)
 
 if [ "${OSTYPE}" != "Darwin" ]; then
@@ -19,7 +21,7 @@ echo "[obs-websocket] Updating Homebrew.."
 brew update >/dev/null
 echo "[obs-websocket] Checking installed Homebrew formulas.."
 BREW_PACKAGES=$(brew list)
-BREW_DEPENDENCIES="ffmpeg libav cmake"
+BREW_DEPENDENCIES="jack speexdsp ccache swig mbedtls boost"
 
 for DEPENDENCY in ${BREW_DEPENDENCIES}; do
     if echo "${BREW_PACKAGES}" | grep -q "^${DEPENDENCY}\$"; then
@@ -39,7 +41,7 @@ echo "[obs-websocket] Installing obs-websocket dependency 'QT 5.10.1'.."
 # Pouring from the bottle is much quicker though, so use bottle for now.
 # =!= NOTICE =!=
 
-brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/9a70413d137839de0054571e5f85fd07ee400955/Formula/qt.rb
+brew install https://gist.githubusercontent.com/DDRBoxman/b3956fab6073335a4bf151db0dcbd4ad/raw/ed1342a8a86793ea8c10d8b4d712a654da121ace/qt.rb
 
 # Pin this version of QT5 to avoid `brew upgrade`
 # upgrading it to incompatible version
