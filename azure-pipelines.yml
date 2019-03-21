@@ -2,6 +2,9 @@ pool:
   vmImage: 'macOS-10.13'
 
 steps:
+- checkout: self
+  submodules: true
+
 - script: ./CI/install-dependencies-macos.sh
   displayName: 'Install Dependencies'
 
