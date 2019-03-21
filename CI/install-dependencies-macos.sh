@@ -21,7 +21,7 @@ echo "[obs-websocket] Updating Homebrew.."
 brew update >/dev/null
 echo "[obs-websocket] Checking installed Homebrew formulas.."
 BREW_PACKAGES=$(brew list)
-BREW_DEPENDENCIES="jack speexdsp ccache swig mbedtls"
+BREW_DEPENDENCIES="jack speexdsp ccache swig mbedtls boost"
 
 for DEPENDENCY in ${BREW_DEPENDENCIES}; do
     if echo "${BREW_PACKAGES}" | grep -q "^${DEPENDENCY}\$"; then
