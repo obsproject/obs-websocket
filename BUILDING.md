@@ -57,6 +57,6 @@ This will result in a ready-to-use `obs-websocket.pkg` installer in the `release
 
 ## Automated Builds
 
-  - Windows: [![Automated Build status for Windows](https://ci.appveyor.com/api/projects/status/github/Palakis/obs-websocket)](https://ci.appveyor.com/project/Palakis/obs-websocket/history)
-  - Linux: [![Automated Build status for Linux](https://travis-ci.org/Palakis/obs-websocket.svg?branch=master)](https://travis-ci.org/Palakis/obs-websocket)
-  - macOS: [![Automated Build status for macOS](https://img.shields.io/azure-devops/build/Palakis/obs-websocket/Palakis.obs-websocket.svg)](https://dev.azure.com/Palakis/obs-websocket/_build)
+- Windows: [![Automated Build status for Windows](https://ci.appveyor.com/api/projects/status/github/Palakis/obs-websocket)](https://ci.appveyor.com/project/Palakis/obs-websocket/history)
+- Linux: [![Automated Build status for Linux](https://travis-ci.org/Palakis/obs-websocket.svg?branch=master)](https://travis-ci.org/Palakis/obs-websocket)
+- macOS: [![Automated Build status for macOS](https://img.shields.io/azure-devops/build/Palakis/obs-websocket/Palakis.obs-websocket.svg)](https://dev.azure.com/Palakis/obs-websocket/_build)
