@@ -85,7 +85,7 @@ void WSRequestHandler::HandleGetSceneList(WSRequestHandler* req) {
 * Changes the order of scene items in the requested scene.
 *
 * @param {String (optional)} `scene` Name of the scene to reorder (defaults to current).
-* @param {Scene|Array} `items` Ordered list of objects with name and/or id specified. Id preferred due to uniqueness per scene
+* @param {Array<Scene>} `items` Ordered list of objects with name and/or id specified. Id preferred due to uniqueness per scene
 * @param {int (optional)} `items[].id` Id of a specific scene item. Unique on a scene by scene basis.
 * @param {String (optional)} `items[].name` Name of a scene item. Sufficiently unique if no scene items share sources within the scene.
 *

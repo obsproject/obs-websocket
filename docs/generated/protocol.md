@@ -1477,7 +1477,7 @@ Changes the order of scene items in the requested scene.
 | Name | Type  | Description |
 | ---- | :---: | ------------|
 | `scene` | _String (optional)_ | Name of the scene to reorder (defaults to current). |
-| `items` | _Scene\|Array_ | Ordered list of objects with name and/or id specified. Id preferred due to uniqueness per scene |
+| `items` | _Array&lt;Scene&gt;_ | Ordered list of objects with name and/or id specified. Id preferred due to uniqueness per scene |
 | `items[].id` | _int (optional)_ | Id of a specific scene item. Unique on a scene by scene basis. |
 | `items[].name` | _String (optional)_ | Name of a scene item. Sufficiently unique if no scene items share sources within the scene. |
 
