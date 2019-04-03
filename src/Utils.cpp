@@ -592,30 +592,30 @@ obs_data_t* Utils::GetSceneItemPropertiesData(obs_sceneitem_t* sceneItem) {
 	}
 	else {
 		switch (boundsType) {
-		case OBS_BOUNDS_STRETCH: {
-			obs_data_set_string(boundsData, "type", "OBS_BOUNDS_STRETCH");
-			break;
-		}
-		case OBS_BOUNDS_SCALE_INNER: {
-			obs_data_set_string(boundsData, "type", "OBS_BOUNDS_SCALE_INNER");
-			break;
-		}
-		case OBS_BOUNDS_SCALE_OUTER: {
-			obs_data_set_string(boundsData, "type", "OBS_BOUNDS_SCALE_OUTER");
-			break;
-		}
-		case OBS_BOUNDS_SCALE_TO_WIDTH: {
-			obs_data_set_string(boundsData, "type", "OBS_BOUNDS_SCALE_TO_WIDTH");
-			break;
-		}
-		case OBS_BOUNDS_SCALE_TO_HEIGHT: {
-			obs_data_set_string(boundsData, "type", "OBS_BOUNDS_SCALE_TO_HEIGHT");
-			break;
-		}
-		case OBS_BOUNDS_MAX_ONLY: {
-			obs_data_set_string(boundsData, "type", "OBS_BOUNDS_MAX_ONLY");
-			break;
-		}
+			case OBS_BOUNDS_STRETCH: {
+				obs_data_set_string(boundsData, "type", "OBS_BOUNDS_STRETCH");
+				break;
+			}
+			case OBS_BOUNDS_SCALE_INNER: {
+				obs_data_set_string(boundsData, "type", "OBS_BOUNDS_SCALE_INNER");
+				break;
+			}
+			case OBS_BOUNDS_SCALE_OUTER: {
+				obs_data_set_string(boundsData, "type", "OBS_BOUNDS_SCALE_OUTER");
+				break;
+			}
+			case OBS_BOUNDS_SCALE_TO_WIDTH: {
+				obs_data_set_string(boundsData, "type", "OBS_BOUNDS_SCALE_TO_WIDTH");
+				break;
+			}
+			case OBS_BOUNDS_SCALE_TO_HEIGHT: {
+				obs_data_set_string(boundsData, "type", "OBS_BOUNDS_SCALE_TO_HEIGHT");
+				break;
+			}
+			case OBS_BOUNDS_MAX_ONLY: {
+				obs_data_set_string(boundsData, "type", "OBS_BOUNDS_MAX_ONLY");
+				break;
+			}
 		}
 		obs_data_set_int(boundsData, "alignment", obs_sceneitem_get_bounds_alignment(sceneItem));
 		vec2 bounds;
