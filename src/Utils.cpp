@@ -555,7 +555,7 @@ bool Utils::SetFilenameFormatting(const char* filenameFormatting) {
 }
 
 obs_data_t* Utils::GetSceneItemPropertiesData(obs_sceneitem_t* sceneItem) {
-	OBSDataAutoRelease data = obs_data_create();
+	obs_data_t* data = obs_data_create();
 
 	OBSDataAutoRelease posData = obs_data_create();
 	vec2 pos;
