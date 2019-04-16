@@ -291,7 +291,9 @@ HandlerResponse WSRequestHandler::HandleSaveStreamSettings(WSRequestHandler* req
 
 /**
  * Send the provided text as embedded CEA-608 caption data
- * 
+ *
+ * @param {String} `text` Captions text
+ *
  * @api requests
  * @name SendCaptions
  * @category streaming
