@@ -256,6 +256,8 @@ void WSEvents::connectSceneSignals(obs_source_t* scene) {
 			"item_remove", OnSceneItemDelete, this);
 		signal_handler_disconnect(sh,
 			"item_visible", OnSceneItemVisibilityChanged, this);
+		signal_handler_disconnect(sh,
+			"item_transform", OnSceneItemTransform, this);
 	}
 
 	currentScene = scene;
@@ -271,6 +273,8 @@ void WSEvents::connectSceneSignals(obs_source_t* scene) {
 			"item_remove", OnSceneItemDelete, this);
 		signal_handler_connect(sh,
 			"item_visible", OnSceneItemVisibilityChanged, this);
+		signal_handler_connect(sh,
+			"item_transform", OnSceneItemTransform, this);
 	}
 }
 
@@ -909,6 +913,42 @@ void WSEvents::OnSceneItemVisibilityChanged(void* param, calldata_t* data) {
 	obs_data_set_bool(fields, "item-visible", visible);
 
 	instance->broadcastUpdate("SceneItemVisibilityChanged", fields);
+}
+
+/**
+ * An item's transfrom has been changed.
+ *
+ * @return {String} `scene-name` Name of the scene.
+ * @return {String} `item-name` Name of the item in the scene.
+ * @return {SceneItemProperties} `transform` Scene item transform properties
+ *
+ * @api events
+ * @name SceneItemTransformChanged
+ * @category sources
+ * @since unreleased
+ */
+void WSEvents::OnSceneItemTransform(void* param, calldata_t* data) {
+	WSEvents* instance = static_cast<WSEvents*>(param);
+
+	obs_scene_t* scene = nullptr;
+	calldata_get_ptr(data, "scene", &scene);
+
+	obs_sceneitem_t* sceneItem = nullptr;
+	calldata_get_ptr(data, "item", &sceneItem);
+
+	const char* sceneName =
+		obs_source_get_name(obs_scene_get_source(scene));
+	const char* sceneItemName =
+		obs_source_get_name(obs_sceneitem_get_source(sceneItem));
+
+	OBSDataAutoRelease transform = Utils::GetSceneItemPropertiesData(sceneItem);
+
+	OBSDataAutoRelease fields = obs_data_create();
+	obs_data_set_string(fields, "scene-name", sceneName);
+	obs_data_set_string(fields, "item-name", sceneItemName);
+	obs_data_set_obj(fields, "transform", transform);
+
+	instance->broadcastUpdate("SceneItemTransformChanged", fields);
 }
 
 /**

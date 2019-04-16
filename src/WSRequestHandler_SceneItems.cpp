@@ -21,7 +21,7 @@
 * @return {int} `crop.bottom` The number of pixels cropped off the bottom of the source before scaling.
 * @return {int} `crop.left` The number of pixels cropped off the left of the source before scaling.
 * @return {bool} `visible` If the source is visible.
-* @return {String} `bounds.type` Type of bounding box.
+* @return {String} `bounds.type` Type of bounding box. Can be "OBS_BOUNDS_STRETCH", "OBS_BOUNDS_SCALE_INNER", "OBS_BOUNDS_SCALE_OUTER", "OBS_BOUNDS_SCALE_TO_WIDTH", "OBS_BOUNDS_SCALE_TO_HEIGHT", "OBS_BOUNDS_MAX_ONLY" or "OBS_BOUNDS_NONE".
 * @return {int} `bounds.alignment` Alignment of the bounding box.
 * @return {double} `bounds.x` Width of the bounding box.
 * @return {double} `bounds.y` Height of the bounding box.
@@ -53,76 +53,8 @@ HandlerResponse WSRequestHandler::HandleGetSceneItemProperties(WSRequestHandler*
 		return req->SendErrorResponse("specified scene item doesn't exist");
 	}
 
-	OBSDataAutoRelease data = obs_data_create();
+	OBSDataAutoRelease data = Utils::GetSceneItemPropertiesData(sceneItem);
 	obs_data_set_string(data, "name", itemName.toUtf8());
-
-	OBSDataAutoRelease posData = obs_data_create();
-	vec2 pos;
-	obs_sceneitem_get_pos(sceneItem, &pos);
-	obs_data_set_double(posData, "x", pos.x);
-	obs_data_set_double(posData, "y", pos.y);
-	obs_data_set_int(posData, "alignment", obs_sceneitem_get_alignment(sceneItem));
-	obs_data_set_obj(data, "position", posData);
-
-	obs_data_set_double(data, "rotation", obs_sceneitem_get_rot(sceneItem));
-
-	OBSDataAutoRelease scaleData = obs_data_create();
-	vec2 scale;
-	obs_sceneitem_get_scale(sceneItem, &scale);
-	obs_data_set_double(scaleData, "x", scale.x);
-	obs_data_set_double(scaleData, "y", scale.y);
-	obs_data_set_obj(data, "scale", scaleData);
-
-	OBSDataAutoRelease cropData = obs_data_create();
-	obs_sceneitem_crop crop;
-	obs_sceneitem_get_crop(sceneItem, &crop);
-	obs_data_set_int(cropData, "left", crop.left);
-	obs_data_set_int(cropData, "top", crop.top);
-	obs_data_set_int(cropData, "right", crop.right);
-	obs_data_set_int(cropData, "bottom", crop.bottom);
-	obs_data_set_obj(data, "crop", cropData);
-
-	obs_data_set_bool(data, "visible", obs_sceneitem_visible(sceneItem));
-
-	OBSDataAutoRelease boundsData = obs_data_create();
-	obs_bounds_type boundsType = obs_sceneitem_get_bounds_type(sceneItem);
-	if (boundsType == OBS_BOUNDS_NONE) {
-		obs_data_set_string(boundsData, "type", "OBS_BOUNDS_NONE");
-	}
-	else {
-		switch (boundsType) {
-		case OBS_BOUNDS_STRETCH: {
-			obs_data_set_string(boundsData, "type", "OBS_BOUNDS_STRETCH");
-			break;
-		}
-		case OBS_BOUNDS_SCALE_INNER: {
-			obs_data_set_string(boundsData, "type", "OBS_BOUNDS_SCALE_INNER");
-			break;
-		}
-		case OBS_BOUNDS_SCALE_OUTER: {
-			obs_data_set_string(boundsData, "type", "OBS_BOUNDS_SCALE_OUTER");
-			break;
-		}
-		case OBS_BOUNDS_SCALE_TO_WIDTH: {
-			obs_data_set_string(boundsData, "type", "OBS_BOUNDS_SCALE_TO_WIDTH");
-			break;
-		}
-		case OBS_BOUNDS_SCALE_TO_HEIGHT: {
-			obs_data_set_string(boundsData, "type", "OBS_BOUNDS_SCALE_TO_HEIGHT");
-			break;
-		}
-		case OBS_BOUNDS_MAX_ONLY: {
-			obs_data_set_string(boundsData, "type", "OBS_BOUNDS_MAX_ONLY");
-			break;
-		}
-		}
-		obs_data_set_int(boundsData, "alignment", obs_sceneitem_get_bounds_alignment(sceneItem));
-		vec2 bounds;
-		obs_sceneitem_get_bounds(sceneItem, &bounds);
-		obs_data_set_double(boundsData, "x", bounds.x);
-		obs_data_set_double(boundsData, "y", bounds.y);
-	}
-	obs_data_set_obj(data, "bounds", boundsData);
 
 	return req->SendOKResponse(data);
 }
@@ -143,7 +75,7 @@ HandlerResponse WSRequestHandler::HandleGetSceneItemProperties(WSRequestHandler*
 * @param {int} `crop.left` The new amount of pixels cropped off the left of the source before scaling.
 * @param {int} `crop.right` The new amount of pixels cropped off the right of the source before scaling.
 * @param {bool} `visible` The new visibility of the source. 'true' shows source, 'false' hides source.
-* @param {String} `bounds.type` The new bounds type of the source.
+* @param {String} `bounds.type` The new bounds type of the source. Can be "OBS_BOUNDS_STRETCH", "OBS_BOUNDS_SCALE_INNER", "OBS_BOUNDS_SCALE_OUTER", "OBS_BOUNDS_SCALE_TO_WIDTH", "OBS_BOUNDS_SCALE_TO_HEIGHT", "OBS_BOUNDS_MAX_ONLY" or "OBS_BOUNDS_NONE".
 * @param {int} `bounds.alignment` The new alignment of the bounding box. (0-2, 4-6, 8-10)
 * @param {double} `bounds.x` The new width of the bounding box.
 * @param {double} `bounds.y` The new height of the bounding box.
@@ -306,7 +238,7 @@ HandlerResponse WSRequestHandler::HandleSetSceneItemProperties(WSRequestHandler*
 	if (badRequest) {
 		return req->SendErrorResponse(errorMessage);
 	}
-	
+
 	return req->SendOKResponse();
 }
 
@@ -431,7 +363,7 @@ HandlerResponse WSRequestHandler::HandleSetSceneItemPosition(WSRequestHandler* r
 	if (!sceneItem) {
 		return req->SendErrorResponse("specified scene item doesn't exist");
 	}
-	
+
 	vec2 item_position = { 0 };
 	item_position.x = obs_data_get_double(req->data, "x");
 	item_position.y = obs_data_get_double(req->data, "y");
@@ -598,7 +530,7 @@ static void DuplicateSceneItem(void *_data, obs_scene_t *scene) {
  * @return {Object} `item` New item info
  * @return {int} `̀item.id` New item ID
  * @return {String} `item.name` New item name
- * 
+ *
  * @api requests
  * @name DuplicateSceneItem
  * @category scene items
