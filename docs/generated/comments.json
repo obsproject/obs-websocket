@@ -1,4 +1,231 @@
 {
+  "typedefs": [
+    {
+      "subheads": [],
+      "typedef": "{Object} `SceneItemTransform`",
+      "property": [
+        "{int} `position.x` The x position of the scene item from the left.",
+        "{int} `position.y` The y position of the scene item from the top.",
+        "{int} `position.alignment` The point on the scene item that the item is manipulated from.",
+        "{double} `rotation` The clockwise rotation of the scene item in degrees around the point of alignment.",
+        "{double} `scale.x` The x-scale factor of the scene item.",
+        "{double} `scale.y` The y-scale factor of the scene item.",
+        "{int} `crop.top` The number of pixels cropped off the top of the scene item before scaling.",
+        "{int} `crop.right` The number of pixels cropped off the right of the scene item before scaling.",
+        "{int} `crop.bottom` The number of pixels cropped off the bottom of the scene item before scaling.",
+        "{int} `crop.left` The number of pixels cropped off the left of the scene item before scaling.",
+        "{bool} `visible` If the scene item is visible.",
+        "{String} `bounds.type` Type of bounding box. Can be \"OBS_BOUNDS_STRETCH\", \"OBS_BOUNDS_SCALE_INNER\", \"OBS_BOUNDS_SCALE_OUTER\", \"OBS_BOUNDS_SCALE_TO_WIDTH\", \"OBS_BOUNDS_SCALE_TO_HEIGHT\", \"OBS_BOUNDS_MAX_ONLY\" or \"OBS_BOUNDS_NONE\".",
+        "{int} `bounds.alignment` Alignment of the bounding box.",
+        "{double} `bounds.x` Width of the bounding box.",
+        "{double} `bounds.y` Height of the bounding box."
+      ],
+      "properties": [
+        {
+          "type": "int",
+          "name": "position.x",
+          "description": "The x position of the scene item from the left."
+        },
+        {
+          "type": "int",
+          "name": "position.y",
+          "description": "The y position of the scene item from the top."
+        },
+        {
+          "type": "int",
+          "name": "position.alignment",
+          "description": "The point on the scene item that the item is manipulated from."
+        },
+        {
+          "type": "double",
+          "name": "rotation",
+          "description": "The clockwise rotation of the scene item in degrees around the point of alignment."
+        },
+        {
+          "type": "double",
+          "name": "scale.x",
+          "description": "The x-scale factor of the scene item."
+        },
+        {
+          "type": "double",
+          "name": "scale.y",
+          "description": "The y-scale factor of the scene item."
+        },
+        {
+          "type": "int",
+          "name": "crop.top",
+          "description": "The number of pixels cropped off the top of the scene item before scaling."
+        },
+        {
+          "type": "int",
+          "name": "crop.right",
+          "description": "The number of pixels cropped off the right of the scene item before scaling."
+        },
+        {
+          "type": "int",
+          "name": "crop.bottom",
+          "description": "The number of pixels cropped off the bottom of the scene item before scaling."
+        },
+        {
+          "type": "int",
+          "name": "crop.left",
+          "description": "The number of pixels cropped off the left of the scene item before scaling."
+        },
+        {
+          "type": "bool",
+          "name": "visible",
+          "description": "If the scene item is visible."
+        },
+        {
+          "type": "String",
+          "name": "bounds.type",
+          "description": "Type of bounding box. Can be \"OBS_BOUNDS_STRETCH\", \"OBS_BOUNDS_SCALE_INNER\", \"OBS_BOUNDS_SCALE_OUTER\", \"OBS_BOUNDS_SCALE_TO_WIDTH\", \"OBS_BOUNDS_SCALE_TO_HEIGHT\", \"OBS_BOUNDS_MAX_ONLY\" or \"OBS_BOUNDS_NONE\"."
+        },
+        {
+          "type": "int",
+          "name": "bounds.alignment",
+          "description": "Alignment of the bounding box."
+        },
+        {
+          "type": "double",
+          "name": "bounds.x",
+          "description": "Width of the bounding box."
+        },
+        {
+          "type": "double",
+          "name": "bounds.y",
+          "description": "Height of the bounding box."
+        }
+      ],
+      "typedefs": [
+        {
+          "type": "Object",
+          "name": "SceneItemTransform",
+          "description": ""
+        }
+      ],
+      "name": "",
+      "heading": {
+        "level": 2,
+        "text": ""
+      },
+      "examples": []
+    },
+    {
+      "subheads": [],
+      "typedef": "{Object} `Scene`",
+      "property": [
+        "{String} `name` Name of the currently active scene.",
+        "{Array<Source>} `sources` Ordered list of the current scene's source items."
+      ],
+      "properties": [
+        {
+          "type": "String",
+          "name": "name",
+          "description": "Name of the currently active scene."
+        },
+        {
+          "type": "Array<Source>",
+          "name": "sources",
+          "description": "Ordered list of the current scene's source items."
+        }
+      ],
+      "typedefs": [
+        {
+          "type": "Object",
+          "name": "Scene",
+          "description": ""
+        }
+      ],
+      "name": "",
+      "heading": {
+        "level": 2,
+        "text": ""
+      },
+      "examples": []
+    },
+    {
+      "subheads": [],
+      "typedef": "{Object} `Source` An OBS Scene Item.",
+      "property": [
+        "{Number} `cy`",
+        "{Number} `cx`",
+        "{String} `name` The name of this Scene Item.",
+        "{Boolean} `render` Whether or not this Scene Item is set to \"visible\".",
+        "{Number} `source_cx`",
+        "{Number} `source_cy`",
+        "{String} `type` Source type. Value is one of the following: \"input\", \"filter\", \"transition\", \"scene\" or \"unknown\"",
+        "{Number} `volume`",
+        "{Number} `x`",
+        "{Number} `y`"
+      ],
+      "properties": [
+        {
+          "type": "Number",
+          "name": "cy",
+          "description": ""
+        },
+        {
+          "type": "Number",
+          "name": "cx",
+          "description": ""
+        },
+        {
+          "type": "String",
+          "name": "name",
+          "description": "The name of this Scene Item."
+        },
+        {
+          "type": "Boolean",
+          "name": "render",
+          "description": "Whether or not this Scene Item is set to \"visible\"."
+        },
+        {
+          "type": "Number",
+          "name": "source_cx",
+          "description": ""
+        },
+        {
+          "type": "Number",
+          "name": "source_cy",
+          "description": ""
+        },
+        {
+          "type": "String",
+          "name": "type",
+          "description": "Source type. Value is one of the following: \"input\", \"filter\", \"transition\", \"scene\" or \"unknown\""
+        },
+        {
+          "type": "Number",
+          "name": "volume",
+          "description": ""
+        },
+        {
+          "type": "Number",
+          "name": "x",
+          "description": ""
+        },
+        {
+          "type": "Number",
+          "name": "y",
+          "description": ""
+        }
+      ],
+      "typedefs": [
+        {
+          "type": "Object",
+          "name": "Source",
+          "description": "An OBS Scene Item."
+        }
+      ],
+      "name": "",
+      "heading": {
+        "level": 2,
+        "text": ""
+      },
+      "examples": []
+    }
+  ],
   "events": {
     "scenes": [
       {
@@ -1238,6 +1465,61 @@
         "lead": "",
         "type": "class",
         "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "An item's transfrom has been changed.",
+        "return": [
+          "{String} `scene-name` Name of the scene.",
+          "{String} `item-name` Name of the item in the scene.",
+          "{SceneItemProperties} `transform` Scene item transform properties"
+        ],
+        "api": "events",
+        "name": "SceneItemTransformChanged",
+        "category": "sources",
+        "since": "unreleased",
+        "returns": [
+          {
+            "type": "String",
+            "name": "scene-name",
+            "description": "Name of the scene."
+          },
+          {
+            "type": "String",
+            "name": "item-name",
+            "description": "Name of the item in the scene."
+          },
+          {
+            "type": "SceneItemProperties",
+            "name": "transform",
+            "description": "Scene item transform properties"
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "SceneItemTransformChanged"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "sources"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "unreleased"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "SceneItemTransformChanged"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
       }
     ],
     "studio mode": [
@@ -2204,7 +2486,7 @@
           "{int} `crop.bottom` The number of pixels cropped off the bottom of the source before scaling.",
           "{int} `crop.left` The number of pixels cropped off the left of the source before scaling.",
           "{bool} `visible` If the source is visible.",
-          "{String} `bounds.type` Type of bounding box.",
+          "{String} `bounds.type` Type of bounding box. Can be \"OBS_BOUNDS_STRETCH\", \"OBS_BOUNDS_SCALE_INNER\", \"OBS_BOUNDS_SCALE_OUTER\", \"OBS_BOUNDS_SCALE_TO_WIDTH\", \"OBS_BOUNDS_SCALE_TO_HEIGHT\", \"OBS_BOUNDS_MAX_ONLY\" or \"OBS_BOUNDS_NONE\".",
           "{int} `bounds.alignment` Alignment of the bounding box.",
           "{double} `bounds.x` Width of the bounding box.",
           "{double} `bounds.y` Height of the bounding box."
@@ -2277,7 +2559,7 @@
           {
             "type": "String",
             "name": "bounds.type",
-            "description": "Type of bounding box."
+            "description": "Type of bounding box. Can be \"OBS_BOUNDS_STRETCH\", \"OBS_BOUNDS_SCALE_INNER\", \"OBS_BOUNDS_SCALE_OUTER\", \"OBS_BOUNDS_SCALE_TO_WIDTH\", \"OBS_BOUNDS_SCALE_TO_HEIGHT\", \"OBS_BOUNDS_MAX_ONLY\" or \"OBS_BOUNDS_NONE\"."
           },
           {
             "type": "int",
@@ -2350,7 +2632,7 @@
           "{int} `crop.left` The new amount of pixels cropped off the left of the source before scaling.",
           "{int} `crop.right` The new amount of pixels cropped off the right of the source before scaling.",
           "{bool} `visible` The new visibility of the source. 'true' shows source, 'false' hides source.",
-          "{String} `bounds.type` The new bounds type of the source.",
+          "{String} `bounds.type` The new bounds type of the source. Can be \"OBS_BOUNDS_STRETCH\", \"OBS_BOUNDS_SCALE_INNER\", \"OBS_BOUNDS_SCALE_OUTER\", \"OBS_BOUNDS_SCALE_TO_WIDTH\", \"OBS_BOUNDS_SCALE_TO_HEIGHT\", \"OBS_BOUNDS_MAX_ONLY\" or \"OBS_BOUNDS_NONE\".",
           "{int} `bounds.alignment` The new alignment of the bounding box. (0-2, 4-6, 8-10)",
           "{double} `bounds.x` The new width of the bounding box.",
           "{double} `bounds.y` The new height of the bounding box."
@@ -2428,7 +2710,7 @@
           {
             "type": "String",
             "name": "bounds.type",
-            "description": "The new bounds type of the source."
+            "description": "The new bounds type of the source. Can be \"OBS_BOUNDS_STRETCH\", \"OBS_BOUNDS_SCALE_INNER\", \"OBS_BOUNDS_SCALE_OUTER\", \"OBS_BOUNDS_SCALE_TO_WIDTH\", \"OBS_BOUNDS_SCALE_TO_HEIGHT\", \"OBS_BOUNDS_MAX_ONLY\" or \"OBS_BOUNDS_NONE\"."
           },
           {
             "type": "int",
@@ -6133,121 +6415,5 @@
         "examples": []
       }
     ]
-  },
-  "typedefs": [
-    {
-      "subheads": [],
-      "typedef": "{Object} `Scene`",
-      "property": [
-        "{String} `name` Name of the currently active scene.",
-        "{Array<Source>} `sources` Ordered list of the current scene's source items."
-      ],
-      "properties": [
-        {
-          "type": "String",
-          "name": "name",
-          "description": "Name of the currently active scene."
-        },
-        {
-          "type": "Array<Source>",
-          "name": "sources",
-          "description": "Ordered list of the current scene's source items."
-        }
-      ],
-      "typedefs": [
-        {
-          "type": "Object",
-          "name": "Scene",
-          "description": ""
-        }
-      ],
-      "name": "",
-      "heading": {
-        "level": 2,
-        "text": ""
-      },
-      "examples": []
-    },
-    {
-      "subheads": [],
-      "typedef": "{Object} `Source` An OBS Scene Item.",
-      "property": [
-        "{Number} `cy`",
-        "{Number} `cx`",
-        "{String} `name` The name of this Scene Item.",
-        "{Boolean} `render` Whether or not this Scene Item is set to \"visible\".",
-        "{Number} `source_cx`",
-        "{Number} `source_cy`",
-        "{String} `type` Source type. Value is one of the following: \"input\", \"filter\", \"transition\", \"scene\" or \"unknown\"",
-        "{Number} `volume`",
-        "{Number} `x`",
-        "{Number} `y`"
-      ],
-      "properties": [
-        {
-          "type": "Number",
-          "name": "cy",
-          "description": ""
-        },
-        {
-          "type": "Number",
-          "name": "cx",
-          "description": ""
-        },
-        {
-          "type": "String",
-          "name": "name",
-          "description": "The name of this Scene Item."
-        },
-        {
-          "type": "Boolean",
-          "name": "render",
-          "description": "Whether or not this Scene Item is set to \"visible\"."
-        },
-        {
-          "type": "Number",
-          "name": "source_cx",
-          "description": ""
-        },
-        {
-          "type": "Number",
-          "name": "source_cy",
-          "description": ""
-        },
-        {
-          "type": "String",
-          "name": "type",
-          "description": "Source type. Value is one of the following: \"input\", \"filter\", \"transition\", \"scene\" or \"unknown\""
-        },
-        {
-          "type": "Number",
-          "name": "volume",
-          "description": ""
-        },
-        {
-          "type": "Number",
-          "name": "x",
-          "description": ""
-        },
-        {
-          "type": "Number",
-          "name": "y",
-          "description": ""
-        }
-      ],
-      "typedefs": [
-        {
-          "type": "Object",
-          "name": "Source",
-          "description": "An OBS Scene Item."
-        }
-      ],
-      "name": "",
-      "heading": {
-        "level": 2,
-        "text": ""
-      },
-      "examples": []
-    }
-  ]
+  }
 }

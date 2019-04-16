@@ -43,6 +43,7 @@ auth_response = base64_encode(auth_response_hash)
 <!-- toc -->
 
 - [Typedefs](#typedefs)
+  * [SceneItemTransform](#sceneitemtransform)
   * [Scene](#scene)
   * [Source](#source)
 - [Events](#events)
@@ -84,6 +85,7 @@ auth_response = base64_encode(auth_response_hash)
     + [SceneItemAdded](#sceneitemadded)
     + [SceneItemRemoved](#sceneitemremoved)
     + [SceneItemVisibilityChanged](#sceneitemvisibilitychanged)
+    + [SceneItemTransformChanged](#sceneitemtransformchanged)
   * [Studio Mode](#studio-mode)
     + [PreviewSceneChanged](#previewscenechanged)
     + [StudioModeSwitched](#studiomodeswitched)
@@ -184,6 +186,24 @@ auth_response = base64_encode(auth_response_hash)
 These are complex types, such as `Source` and `Scene`, which are used as arguments or return values in multiple requests and/or events. 
 
 
+## SceneItemTransform
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `position.x` | _int_ | The x position of the scene item from the left. |
+| `position.y` | _int_ | The y position of the scene item from the top. |
+| `position.alignment` | _int_ | The point on the scene item that the item is manipulated from. |
+| `rotation` | _double_ | The clockwise rotation of the scene item in degrees around the point of alignment. |
+| `scale.x` | _double_ | The x-scale factor of the scene item. |
+| `scale.y` | _double_ | The y-scale factor of the scene item. |
+| `crop.top` | _int_ | The number of pixels cropped off the top of the scene item before scaling. |
+| `crop.right` | _int_ | The number of pixels cropped off the right of the scene item before scaling. |
+| `crop.bottom` | _int_ | The number of pixels cropped off the bottom of the scene item before scaling. |
+| `crop.left` | _int_ | The number of pixels cropped off the left of the scene item before scaling. |
+| `visible` | _bool_ | If the scene item is visible. |
+| `bounds.type` | _String_ | Type of bounding box. Can be "OBS_BOUNDS_STRETCH", "OBS_BOUNDS_SCALE_INNER", "OBS_BOUNDS_SCALE_OUTER", "OBS_BOUNDS_SCALE_TO_WIDTH", "OBS_BOUNDS_SCALE_TO_HEIGHT", "OBS_BOUNDS_MAX_ONLY" or "OBS_BOUNDS_NONE". |
+| `bounds.alignment` | _int_ | Alignment of the bounding box. |
+| `bounds.x` | _double_ | Width of the bounding box. |
+| `bounds.y` | _double_ | Height of the bounding box. |
 ## Scene
 | Name | Type  | Description |
 | ---- | :---: | ------------|
@@ -674,6 +694,24 @@ An item's visibility has been toggled.
 | `scene-name` | _String_ | Name of the scene. |
 | `item-name` | _String_ | Name of the item in the scene. |
 | `item-visible` | _boolean_ | New visibility state of the item. |
+
+
+---
+
+### SceneItemTransformChanged
+
+
+- Unreleased
+
+An item's transfrom has been changed.
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `scene-name` | _String_ | Name of the scene. |
+| `item-name` | _String_ | Name of the item in the scene. |
+| `transform` | _SceneItemProperties_ | Scene item transform properties |
 
 
 ---
@@ -1186,7 +1224,7 @@ Gets the scene specific properties of the specified source item.
 | `crop.bottom` | _int_ | The number of pixels cropped off the bottom of the source before scaling. |
 | `crop.left` | _int_ | The number of pixels cropped off the left of the source before scaling. |
 | `visible` | _bool_ | If the source is visible. |
-| `bounds.type` | _String_ | Type of bounding box. |
+| `bounds.type` | _String_ | Type of bounding box. Can be "OBS_BOUNDS_STRETCH", "OBS_BOUNDS_SCALE_INNER", "OBS_BOUNDS_SCALE_OUTER", "OBS_BOUNDS_SCALE_TO_WIDTH", "OBS_BOUNDS_SCALE_TO_HEIGHT", "OBS_BOUNDS_MAX_ONLY" or "OBS_BOUNDS_NONE". |
 | `bounds.alignment` | _int_ | Alignment of the bounding box. |
 | `bounds.x` | _double_ | Width of the bounding box. |
 | `bounds.y` | _double_ | Height of the bounding box. |
@@ -1218,7 +1256,7 @@ Sets the scene specific properties of a source. Unspecified properties will rema
 | `crop.left` | _int_ | The new amount of pixels cropped off the left of the source before scaling. |
 | `crop.right` | _int_ | The new amount of pixels cropped off the right of the source before scaling. |
 | `visible` | _bool_ | The new visibility of the source. 'true' shows source, 'false' hides source. |
-| `bounds.type` | _String_ | The new bounds type of the source. |
+| `bounds.type` | _String_ | The new bounds type of the source. Can be "OBS_BOUNDS_STRETCH", "OBS_BOUNDS_SCALE_INNER", "OBS_BOUNDS_SCALE_OUTER", "OBS_BOUNDS_SCALE_TO_WIDTH", "OBS_BOUNDS_SCALE_TO_HEIGHT", "OBS_BOUNDS_MAX_ONLY" or "OBS_BOUNDS_NONE". |
 | `bounds.alignment` | _int_ | The new alignment of the bounding box. (0-2, 4-6, 8-10) |
 | `bounds.x` | _double_ | The new width of the bounding box. |
 | `bounds.y` | _double_ | The new height of the bounding box. |
