@@ -920,6 +920,7 @@ void WSEvents::OnSceneItemVisibilityChanged(void* param, calldata_t* data) {
  *
  * @return {String} `scene-name` Name of the scene.
  * @return {String} `item-name` Name of the item in the scene.
+ * @return {SceneItemProperties} `transform` Scene item transform properties
  *
  * @api events
  * @name SceneItemTransformChanged
@@ -940,9 +941,12 @@ void WSEvents::OnSceneItemTransform(void* param, calldata_t* data) {
 	const char* sceneItemName =
 		obs_source_get_name(obs_sceneitem_get_source(sceneItem));
 
-	OBSDataAutoRelease fields = Utils::GetSceneItemPropertiesData(sceneItem);
+	OBSDataAutoRelease transform = Utils::GetSceneItemPropertiesData(sceneItem);
+
+	OBSDataAutoRelease fields = obs_data_create();
 	obs_data_set_string(fields, "scene-name", sceneName);
 	obs_data_set_string(fields, "item-name", sceneItemName);
+	obs_data_set_obj(fields, "transform", transform);
 
 	instance->broadcastUpdate("SceneItemTransformChanged", fields);
 }

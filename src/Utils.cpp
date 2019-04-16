@@ -28,6 +28,25 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 Q_DECLARE_METATYPE(OBSScene);
 
+const QHash<obs_bounds_type, QString> boundTypeNames = {
+	{ OBS_BOUNDS_STRETCH, "OBS_BOUNDS_STRETCH" },
+	{ OBS_BOUNDS_SCALE_INNER, "OBS_BOUNDS_SCALE_INNER" },
+	{ OBS_BOUNDS_SCALE_OUTER, "OBS_BOUNDS_SCALE_OUTER" },
+	{ OBS_BOUNDS_SCALE_TO_WIDTH, "OBS_BOUNDS_SCALE_TO_WIDTH" },
+	{ OBS_BOUNDS_SCALE_TO_HEIGHT, "OBS_BOUNDS_SCALE_TO_HEIGHT" },
+	{ OBS_BOUNDS_MAX_ONLY, "OBS_BOUNDS_MAX_ONLY" },
+	{ OBS_BOUNDS_NONE, "OBS_BOUNDS_NONE" },
+};
+
+QString getBoundsNameFromType(obs_bounds_type type) {
+	QString fallback = boundTypeNames.value(OBS_BOUNDS_NONE);
+	return boundTypeNames.value(type, fallback);
+}
+
+obs_bounds_type getBoundsTypeFromName(QString name) {
+	return boundTypeNames.key(name);
+}
+
 obs_data_array_t* Utils::StringListToArray(char** strings, char* key) {
 	if (!strings)
 		return obs_data_array_create();
@@ -110,7 +129,7 @@ obs_sceneitem_t* Utils::GetSceneItemFromItem(obs_source_t* source, obs_data_t* i
                 if (obs_data_has_user_value(item, "name") &&
                    (QString)obs_source_get_name(obs_sceneitem_get_source(sceneItem)) !=
                    (QString)obs_data_get_string(item, "name")) {
-                        return nullptr; 
+                        return nullptr;
                 }
         }
         else if (obs_data_has_user_value(item, "name")) {
@@ -554,75 +573,70 @@ bool Utils::SetFilenameFormatting(const char* filenameFormatting) {
 	return true;
 }
 
+// Transform properties copy-pasted from WSRequestHandler_SceneItems.cpp because typedefs can't be extended yet
+
+/**
+ * @typedef {Object} `SceneItemTransform`
+ * @property {int} `position.x` The x position of the scene item from the left.
+ * @property {int} `position.y` The y position of the scene item from the top.
+ * @property {int} `position.alignment` The point on the scene item that the item is manipulated from.
+ * @property {double} `rotation` The clockwise rotation of the scene item in degrees around the point of alignment.
+ * @property {double} `scale.x` The x-scale factor of the scene item.
+ * @property {double} `scale.y` The y-scale factor of the scene item.
+ * @property {int} `crop.top` The number of pixels cropped off the top of the scene item before scaling.
+ * @property {int} `crop.right` The number of pixels cropped off the right of the scene item before scaling.
+ * @property {int} `crop.bottom` The number of pixels cropped off the bottom of the scene item before scaling.
+ * @property {int} `crop.left` The number of pixels cropped off the left of the scene item before scaling.
+ * @property {bool} `visible` If the scene item is visible.
+ * @property {String} `bounds.type` Type of bounding box. Can be "OBS_BOUNDS_STRETCH", "OBS_BOUNDS_SCALE_INNER", "OBS_BOUNDS_SCALE_OUTER", "OBS_BOUNDS_SCALE_TO_WIDTH", "OBS_BOUNDS_SCALE_TO_HEIGHT", "OBS_BOUNDS_MAX_ONLY" or "OBS_BOUNDS_NONE".
+ * @property {int} `bounds.alignment` Alignment of the bounding box.
+ * @property {double} `bounds.x` Width of the bounding box.
+ * @property {double} `bounds.y` Height of the bounding box.
+ */
 obs_data_t* Utils::GetSceneItemPropertiesData(obs_sceneitem_t* sceneItem) {
-	obs_data_t* data = obs_data_create();
+	vec2 pos, scale, bounds;
+	obs_sceneitem_crop crop;
+
+	obs_sceneitem_get_pos(sceneItem, &pos);
+	obs_sceneitem_get_scale(sceneItem, &scale);
+	obs_sceneitem_get_crop(sceneItem, &crop);
+	obs_sceneitem_get_bounds(sceneItem, &bounds);
+
+	uint32_t alignment = obs_sceneitem_get_alignment(sceneItem);
+	float rotation = obs_sceneitem_get_rot(sceneItem);
+	bool isVisible = obs_sceneitem_visible(sceneItem);
+
+	obs_bounds_type boundsType = obs_sceneitem_get_bounds_type(sceneItem);
+	uint32_t boundsAlignment = obs_sceneitem_get_bounds_alignment(sceneItem);
+	QString boundsTypeName = getBoundsNameFromType(boundsType);
 
 	OBSDataAutoRelease posData = obs_data_create();
-	vec2 pos;
-	obs_sceneitem_get_pos(sceneItem, &pos);
 	obs_data_set_double(posData, "x", pos.x);
 	obs_data_set_double(posData, "y", pos.y);
-	obs_data_set_int(posData, "alignment", obs_sceneitem_get_alignment(sceneItem));
-	obs_data_set_obj(data, "position", posData);
-
-	obs_data_set_double(data, "rotation", obs_sceneitem_get_rot(sceneItem));
+	obs_data_set_int(posData, "alignment", alignment);
 
 	OBSDataAutoRelease scaleData = obs_data_create();
-	vec2 scale;
-	obs_sceneitem_get_scale(sceneItem, &scale);
 	obs_data_set_double(scaleData, "x", scale.x);
 	obs_data_set_double(scaleData, "y", scale.y);
-	obs_data_set_obj(data, "scale", scaleData);
 
 	OBSDataAutoRelease cropData = obs_data_create();
-	obs_sceneitem_crop crop;
-	obs_sceneitem_get_crop(sceneItem, &crop);
 	obs_data_set_int(cropData, "left", crop.left);
 	obs_data_set_int(cropData, "top", crop.top);
 	obs_data_set_int(cropData, "right", crop.right);
 	obs_data_set_int(cropData, "bottom", crop.bottom);
-	obs_data_set_obj(data, "crop", cropData);
-
-	obs_data_set_bool(data, "visible", obs_sceneitem_visible(sceneItem));
 
 	OBSDataAutoRelease boundsData = obs_data_create();
-	obs_bounds_type boundsType = obs_sceneitem_get_bounds_type(sceneItem);
-	if (boundsType == OBS_BOUNDS_NONE) {
-		obs_data_set_string(boundsData, "type", "OBS_BOUNDS_NONE");
-	}
-	else {
-		switch (boundsType) {
-			case OBS_BOUNDS_STRETCH: {
-				obs_data_set_string(boundsData, "type", "OBS_BOUNDS_STRETCH");
-				break;
-			}
-			case OBS_BOUNDS_SCALE_INNER: {
-				obs_data_set_string(boundsData, "type", "OBS_BOUNDS_SCALE_INNER");
-				break;
-			}
-			case OBS_BOUNDS_SCALE_OUTER: {
-				obs_data_set_string(boundsData, "type", "OBS_BOUNDS_SCALE_OUTER");
-				break;
-			}
-			case OBS_BOUNDS_SCALE_TO_WIDTH: {
-				obs_data_set_string(boundsData, "type", "OBS_BOUNDS_SCALE_TO_WIDTH");
-				break;
-			}
-			case OBS_BOUNDS_SCALE_TO_HEIGHT: {
-				obs_data_set_string(boundsData, "type", "OBS_BOUNDS_SCALE_TO_HEIGHT");
-				break;
-			}
-			case OBS_BOUNDS_MAX_ONLY: {
-				obs_data_set_string(boundsData, "type", "OBS_BOUNDS_MAX_ONLY");
-				break;
-			}
-		}
-		obs_data_set_int(boundsData, "alignment", obs_sceneitem_get_bounds_alignment(sceneItem));
-		vec2 bounds;
-		obs_sceneitem_get_bounds(sceneItem, &bounds);
-		obs_data_set_double(boundsData, "x", bounds.x);
-		obs_data_set_double(boundsData, "y", bounds.y);
-	}
+	obs_data_set_string(boundsData, "type", boundsTypeName.toUtf8());
+	obs_data_set_int(boundsData, "alignment", boundsAlignment);
+	obs_data_set_double(boundsData, "x", bounds.x);
+	obs_data_set_double(boundsData, "y", bounds.y);
+
+	obs_data_t* data = obs_data_create();
+	obs_data_set_obj(data, "position", posData);
+	obs_data_set_double(data, "rotation", rotation);
+	obs_data_set_obj(data, "scale", scaleData);
+	obs_data_set_obj(data, "crop", cropData);
+	obs_data_set_bool(data, "visible", isVisible);
 	obs_data_set_obj(data, "bounds", boundsData);
 
 	return data;
