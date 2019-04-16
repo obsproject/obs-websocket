@@ -128,7 +128,9 @@ class WSRequestHandler : public QObject {
 		static HandlerResponse HandleSetStreamSettings(WSRequestHandler* req);
 		static HandlerResponse HandleGetStreamSettings(WSRequestHandler* req);
 		static HandlerResponse HandleSaveStreamSettings(WSRequestHandler* req);
+#if BUILD_CAPTIONS
 		static HandlerResponse HandleSendCaptions(WSRequestHandler * req);
+#endif
 
 		static HandlerResponse HandleSetTransitionDuration(WSRequestHandler* req);
 		static HandlerResponse HandleGetTransitionDuration(WSRequestHandler* req);
