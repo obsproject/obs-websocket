@@ -274,7 +274,7 @@ void WSEvents::connectSceneSignals(obs_source_t* scene) {
 		signal_handler_connect(sh,
 			"item_visible", OnSceneItemVisibilityChanged, this);
 		signal_handler_connect(sh,
-			"item_transform ", OnSceneItemTransform, this);
+			"item_transform", OnSceneItemTransform, this);
 	}
 }
 
