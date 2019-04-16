@@ -5581,6 +5581,40 @@
         "lead": "",
         "type": "class",
         "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Send the provided text as embedded CEA-608 caption data.\nAs of OBS Studio 23.1, captions are not yet available on Linux.",
+        "param": "{String} `text` Captions text",
+        "api": "requests",
+        "name": "SendCaptions",
+        "category": "streaming",
+        "params": [
+          {
+            "type": "String",
+            "name": "text",
+            "description": "Captions text"
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "SendCaptions"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "streaming"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "SendCaptions"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
       }
     ],
     "studio mode": [

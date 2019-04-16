@@ -162,6 +162,7 @@ auth_response = base64_encode(auth_response_hash)
     + [SetStreamSettings](#setstreamsettings)
     + [GetStreamSettings](#getstreamsettings)
     + [SaveStreamSettings](#savestreamsettings)
+    + [SendCaptions](#sendcaptions)
   * [Studio Mode](#studio-mode-1)
     + [GetStudioModeStatus](#getstudiomodestatus)
     + [GetPreviewScene](#getpreviewscene)
@@ -2298,6 +2299,27 @@ Save the current streaming server settings to disk.
 **Request Fields:**
 
 _No specified parameters._
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+### SendCaptions
+
+
+- Added in v
+
+Send the provided text as embedded CEA-608 caption data.
+As of OBS Studio 23.1, captions are not yet available on Linux.
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `text` | _String_ | Captions text |
+
 
 **Response Items:**
 
