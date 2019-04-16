@@ -8,7 +8,7 @@
 
  /**
  * Get current streaming and recording status.
- * 
+ *
  * @return {boolean} `streaming` Current streaming status.
  * @return {boolean} `recording` Current recording status.
  * @return {String (optional)} `stream-timecode` Time elapsed since streaming started (only present if currently streaming).
@@ -22,7 +22,7 @@
  */
 HandlerResponse WSRequestHandler::HandleGetStreamingStatus(WSRequestHandler* req) {
 	auto events = WSEvents::Current();
-	 
+
 	OBSDataAutoRelease data = obs_data_create();
 	obs_data_set_bool(data, "streaming", obs_frontend_streaming_active());
 	obs_data_set_bool(data, "recording", obs_frontend_recording_active());
@@ -65,7 +65,7 @@ HandlerResponse WSRequestHandler::HandleStartStopStreaming(WSRequestHandler* req
  *
  * @param {Object (optional)} `stream` Special stream configuration. Please note: these won't be saved to OBS' configuration.
  * @param {String (optional)} `stream.type` If specified ensures the type of stream matches the given type (usually 'rtmp_custom' or 'rtmp_common'). If the currently configured stream type does not match the given stream type, all settings must be specified in the `settings` object or an error will occur when starting the stream.
- * @param {Object (optional)} `stream.metadata` Adds the given object parameters as encoded query string parameters to the 'key' of the RTMP stream. Used to pass data to the RTMP service about the streaming. May be any String, Numeric, or Boolean field. 
+ * @param {Object (optional)} `stream.metadata` Adds the given object parameters as encoded query string parameters to the 'key' of the RTMP stream. Used to pass data to the RTMP service about the streaming. May be any String, Numeric, or Boolean field.
  * @param {Object (optional)} `stream.settings` Settings for the stream.
  * @param {String (optional)} `stream.settings.server` The publish URL.
  * @param {String (optional)} `stream.settings.key` The publish key of the stream.
@@ -185,7 +185,7 @@ HandlerResponse WSRequestHandler::HandleStopStreaming(WSRequestHandler* req) {
 
 /**
  * Sets one or more attributes of the current streaming server settings. Any options not passed will remain unchanged. Returns the updated settings in response. If 'type' is different than the current streaming service type, all settings are required. Returns the full settings of the stream (the same as GetStreamSettings).
- * 
+ *
  * @param {String} `type` The type of streaming service configuration, usually `rtmp_custom` or `rtmp_common`.
  * @param {Object} `settings` The actual settings of the stream.
  * @param {String (optional)} `settings.server` The publish URL.
@@ -287,3 +287,31 @@ HandlerResponse WSRequestHandler::HandleSaveStreamSettings(WSRequestHandler* req
 	obs_frontend_save_streaming_service();
 	return req->SendOKResponse();
 }
+
+
+/**
+ * Send the provided text as embedded CEA-608 caption data.
+ * As of OBS Studio 23.1, captions are not yet available on Linux.
+ *
+ * @param {String} `text` Captions text
+ *
+ * @api requests
+ * @name SendCaptions
+ * @category streaming
+ */
+#if BUILD_CAPTIONS
+HandlerResponse WSRequestHandler::HandleSendCaptions(WSRequestHandler* req) {
+	if (!req->hasField("text")) {
+		return req->SendErrorResponse("missing request parameters");
+	}
+
+	OBSOutputAutoRelease output = obs_frontend_get_streaming_output();
+	if (output) {
+		const char* caption = obs_data_get_string(req->data, "text");
+		obs_output_output_caption_text1(output, caption);
+	}
+
+	return req->SendOKResponse();
+}
+#endif
+
