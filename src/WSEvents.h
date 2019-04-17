@@ -43,7 +43,6 @@ public:
 	~WSEvents();
 	static void FrontendEventHandler(
 		enum obs_frontend_event event, void* privateData);
-	void connectSceneSignals(obs_source_t* scene);
 
 	void hookTransitionBeginEvent();
 
@@ -55,7 +54,6 @@ public:
 	bool HeartbeatIsActive;
 
 private slots:
-	void deferredInitOperations();
 	void StreamStatus();
 	void Heartbeat();
 	void TransitionDurationChanged(int ms);
@@ -111,6 +109,8 @@ private:
 	void OnExit();
 
 	static void OnTransitionBegin(void* param, calldata_t* data);
+
+	static void OnSourceCreate(void* param, calldata_t* data);
 
 	static void OnSceneReordered(void* param, calldata_t* data);
 	static void OnSceneItemAdd(void* param, calldata_t* data);

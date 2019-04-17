@@ -57,10 +57,10 @@ const char* nsToTimestamp(uint64_t ns) {
 	return ts;
 }
 
-void* calldata_get_ptr(const calldata_t* data, const char* name) {
+template <typename T> T* calldata_get_pointer(const calldata_t* data, const char* name) {
 	void* ptr = nullptr;
 	calldata_get_ptr(data, name, &ptr);
-	return ptr;
+	return reinterpret_cast<T*>(ptr);
 }
 
 WSEventsPtr WSEvents::_instance = WSEventsPtr(nullptr);
@@ -75,11 +75,11 @@ void WSEvents::ResetCurrent(WSServerPtr srv) {
 
 WSEvents::WSEvents(WSServerPtr srv) :
 	_srv(srv),
-	streamStatusTimer(),
-	currentScene(nullptr),
-	HeartbeatIsActive(false),
+	_streamingActive(false),
+	_recordingActive(false),
 	_streamStarttime(0),
 	_recStarttime(0),
+	HeartbeatIsActive(false),
 	pulse(false)
 {
 	obs_frontend_add_event_callback(WSEvents::FrontendEventHandler, this);
@@ -95,25 +95,26 @@ WSEvents::WSEvents(WSServerPtr srv) :
 
 	heartbeatTimer.start(STATUS_INTERVAL);
 
-	QTimer::singleShot(1000, this, SLOT(deferredInitOperations()));
+	QTimer::singleShot(1000, this, [=]() {
+		hookTransitionBeginEvent();
+	});
+
+	signal_handler_t* coreSignalHandler = obs_get_signal_handler();
+	if (coreSignalHandler) {
+		signal_handler_connect(coreSignalHandler, "source_create", OnSourceCreate, this);
+	}
 }
 
 WSEvents::~WSEvents() {
 	obs_frontend_remove_event_callback(WSEvents::FrontendEventHandler, this);
 }
 
-void WSEvents::deferredInitOperations() {
-	hookTransitionBeginEvent();
-
-	OBSSourceAutoRelease scene = obs_frontend_get_current_scene();
-	connectSceneSignals(scene);
-}
-
 void WSEvents::FrontendEventHandler(enum obs_frontend_event event, void* private_data) {
 	WSEvents* owner = static_cast<WSEvents*>(private_data);
 
-	if (!owner->_srv)
+	if (!owner->_srv) {
 		return;
+	}
 
 	if (event == OBS_FRONTEND_EVENT_SCENE_CHANGED) {
 		owner->OnSceneChange();
@@ -191,7 +192,6 @@ void WSEvents::FrontendEventHandler(enum obs_frontend_event event, void* private
 		owner->OnPreviewSceneChanged();
 	}
 	else if (event == OBS_FRONTEND_EVENT_EXIT) {
-		owner->connectSceneSignals(nullptr);
 		owner->OnExit();
 	}
 }
@@ -240,42 +240,6 @@ void WSEvents::hookTransitionBeginEvent() {
 	obs_frontend_source_list_free(&transitions);
 }
 
-void WSEvents::connectSceneSignals(obs_source_t* scene) {
-	signal_handler_t* sh = nullptr;
-
-	if (currentScene) {
-		sh = obs_source_get_signal_handler(currentScene);
-
-		signal_handler_disconnect(sh,
-			"reorder", OnSceneReordered, this);
-		signal_handler_disconnect(sh,
-			"item_add", OnSceneItemAdd, this);
-		signal_handler_disconnect(sh,
-			"item_remove", OnSceneItemDelete, this);
-		signal_handler_disconnect(sh,
-			"item_visible", OnSceneItemVisibilityChanged, this);
-		signal_handler_disconnect(sh,
-			"item_transform", OnSceneItemTransform, this);
-	}
-
-	currentScene = scene;
-
-	if (currentScene) {
-		// TODO : connect to all scenes, not just the current one.
-		sh = obs_source_get_signal_handler(currentScene);
-		signal_handler_connect(sh,
-			"reorder", OnSceneReordered, this);
-		signal_handler_connect(sh,
-			"item_add", OnSceneItemAdd, this);
-		signal_handler_connect(sh,
-			"item_remove", OnSceneItemDelete, this);
-		signal_handler_connect(sh,
-			"item_visible", OnSceneItemVisibilityChanged, this);
-		signal_handler_connect(sh,
-			"item_transform", OnSceneItemTransform, this);
-	}
-}
-
 uint64_t WSEvents::GetStreamingTime() {
 	if (obs_frontend_streaming_active())
 		return (os_gettime_ns() - _streamStarttime);
@@ -312,7 +276,6 @@ const char* WSEvents::GetRecordingTimecode() {
 void WSEvents::OnSceneChange() {
 	OBSSourceAutoRelease currentScene = obs_frontend_get_current_scene();
 	OBSDataArrayAutoRelease sceneItems = Utils::GetSceneItems(currentScene);
-	connectSceneSignals(currentScene);
 
 	OBSDataAutoRelease data = obs_data_create();
 	obs_data_set_string(data, "scene-name", obs_source_get_name(currentScene));
@@ -344,8 +307,6 @@ void WSEvents::OnSceneListChange() {
  */
 void WSEvents::OnSceneCollectionChange() {
 	broadcastUpdate("SceneCollectionChanged");
-
-	currentScene = nullptr;
 
 	OnTransitionListChange();
 	OnTransitionChange();
@@ -755,9 +716,9 @@ void WSEvents::TransitionDurationChanged(int ms) {
  * @since 4.0.0
  */
 void WSEvents::OnTransitionBegin(void* param, calldata_t* data) {
-	WSEvents* instance = static_cast<WSEvents*>(param);
+	auto instance = reinterpret_cast<WSEvents*>(param);
 
-	OBSSource transition = (obs_source_t*)calldata_get_ptr(data, "source");
+	OBSSource transition = calldata_get_pointer<obs_source_t>(data, "source");
 	if (!transition) return;
 
 	// Detect if transition is the global transition or a transition override.
@@ -792,6 +753,26 @@ void WSEvents::OnTransitionBegin(void* param, calldata_t* data) {
 	instance->broadcastUpdate("TransitionBegin", fields);
 }
 
+void WSEvents::OnSourceCreate(void* param, calldata_t* data) {
+	auto self = reinterpret_cast<WSEvents*>(param);
+
+	OBSSource source = calldata_get_pointer<obs_source_t>(data, "source");
+	if (!source) {
+		return;
+	}
+
+	obs_source_type sourceType = obs_source_get_type(source);
+	if (sourceType == OBS_SOURCE_TYPE_SCENE) {
+		signal_handler_t* sh = obs_source_get_signal_handler(source);
+		signal_handler_connect(sh, "reorder", OnSceneReordered, self);
+		signal_handler_connect(sh, "item_add", OnSceneItemAdd, self);
+		signal_handler_connect(sh, "item_remove", OnSceneItemDelete, self);
+		signal_handler_connect(sh,
+			"item_visible", OnSceneItemVisibilityChanged, self);
+		signal_handler_connect(sh, "item_transform", OnSceneItemTransform, self);
+	}
+}
+
 /**
  * Scene items have been reordered.
  *
@@ -803,7 +784,7 @@ void WSEvents::OnTransitionBegin(void* param, calldata_t* data) {
  * @since 4.0.0
  */
 void WSEvents::OnSceneReordered(void* param, calldata_t* data) {
-	WSEvents* instance = static_cast<WSEvents*>(param);
+	auto instance = reinterpret_cast<WSEvents*>(param);
 
 	obs_scene_t* scene = nullptr;
 	calldata_get_ptr(data, "scene", &scene);
@@ -827,7 +808,7 @@ void WSEvents::OnSceneReordered(void* param, calldata_t* data) {
  * @since 4.0.0
  */
 void WSEvents::OnSceneItemAdd(void* param, calldata_t* data) {
-	WSEvents* instance = static_cast<WSEvents*>(param);
+	auto instance = reinterpret_cast<WSEvents*>(param);
 
 	obs_scene_t* scene = nullptr;
 	calldata_get_ptr(data, "scene", &scene);
@@ -859,7 +840,7 @@ void WSEvents::OnSceneItemAdd(void* param, calldata_t* data) {
  * @since 4.0.0
  */
 void WSEvents::OnSceneItemDelete(void* param, calldata_t* data) {
-	WSEvents* instance = static_cast<WSEvents*>(param);
+	auto instance = reinterpret_cast<WSEvents*>(param);
 
 	obs_scene_t* scene = nullptr;
 	calldata_get_ptr(data, "scene", &scene);
@@ -892,7 +873,7 @@ void WSEvents::OnSceneItemDelete(void* param, calldata_t* data) {
  * @since 4.0.0
  */
 void WSEvents::OnSceneItemVisibilityChanged(void* param, calldata_t* data) {
-	WSEvents* instance = static_cast<WSEvents*>(param);
+	auto instance = reinterpret_cast<WSEvents*>(param);
 
 	obs_scene_t* scene = nullptr;
 	calldata_get_ptr(data, "scene", &scene);
@@ -929,7 +910,7 @@ void WSEvents::OnSceneItemVisibilityChanged(void* param, calldata_t* data) {
  * @since unreleased
  */
 void WSEvents::OnSceneItemTransform(void* param, calldata_t* data) {
-	WSEvents* instance = static_cast<WSEvents*>(param);
+	auto instance = reinterpret_cast<WSEvents*>(param);
 
 	obs_scene_t* scene = nullptr;
 	calldata_get_ptr(data, "scene", &scene);
