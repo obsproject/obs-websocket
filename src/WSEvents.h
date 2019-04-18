@@ -111,6 +111,18 @@ private:
 	static void OnSourceCreate(void* param, calldata_t* data);
 	static void OnSourceDestroy(void* param, calldata_t* data);
 
+	static void OnSourceVolumeChange(void* param, calldata_t* data);
+	static void OnSourceMuteStateChange(void* param, calldata_t* data);
+	static void OnSourceAudioSyncOffsetChanged(void* param, calldata_t* data);
+	static void OnSourceAudioMixersChanged(void* param, calldata_t* data);
+
+	static void OnSourceRename(void* param, calldata_t* data);
+	static void OnSourcePropertiesChanged(void* param, calldata_t* data);
+
+	static void OnSourceFilterAdded(void* param, calldata_t* data);
+	static void OnSourceFilterRemoved(void* param, calldata_t* data);
+	static void OnSourceFilterOrderChanged(void* param, calldata_t* data);
+
 	static void OnSceneReordered(void* param, calldata_t* data);
 	static void OnSceneItemAdd(void* param, calldata_t* data);
 	static void OnSceneItemDelete(void* param, calldata_t* data);

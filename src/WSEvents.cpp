@@ -77,6 +77,12 @@ template <typename T> T* calldata_get_pointer(const calldata_t* data, const char
 	return reinterpret_cast<T*>(ptr);
 }
 
+const char* calldata_get_string(const calldata_t* data, const char* name) {
+	const char* value = nullptr;
+	calldata_get_string(data, name, &value);
+	return value;
+}
+
 WSEventsPtr WSEvents::_instance = WSEventsPtr(nullptr);
 
 WSEventsPtr WSEvents::Current() {
@@ -770,17 +776,17 @@ void WSEvents::OnSourceCreate(void* param, calldata_t* data) {
 	obs_source_type sourceType = obs_source_get_type(source);
 	signal_handler_t* sh = obs_source_get_signal_handler(source);
 
-	// TODO "mute" signal
-	// TODO "volume" signal
-	// TODO "audio_sync" signal
-	// TODO "audio_mixers" signal
+	signal_handler_connect(sh, "rename", OnSourceRename, self);
+	signal_handler_connect(sh, "update_properties", OnSourcePropertiesChanged, self);
 
-	// TODO "rename" signal
-	// TODO "update_properties"
+	signal_handler_connect(sh, "mute", OnSourceMuteStateChange, self);
+	signal_handler_connect(sh, "volume", OnSourceVolumeChange, self);
+	signal_handler_connect(sh, "audio_sync", OnSourceAudioSyncOffsetChanged, self);
+	signal_handler_connect(sh, "audio_mixers", OnSourceAudioMixersChanged, self);
 
-	// TODO "filter_add" signal
-	// TODO "filter_remove" signal
-	// TODO "reorder_filters" signal
+	signal_handler_connect(sh, "filter_add", OnSourceFilterAdded, self);
+	signal_handler_connect(sh, "filter_remove", OnSourceFilterRemoved, self);
+	signal_handler_connect(sh, "reorder_filters", OnSourceFilterOrderChanged, self);
 
 	if (sourceType == OBS_SOURCE_TYPE_SCENE) {
 		signal_handler_connect(sh, "reorder", OnSceneReordered, self);
@@ -828,6 +834,138 @@ void WSEvents::OnSourceDestroy(void* param, calldata_t* data) {
 	obs_data_set_string(fields, "sourceName", obs_source_get_name(source));
 	obs_data_set_string(fields, "sourceType", sourceTypeToString(sourceType));
 	self->broadcastUpdate("SourceDestroyed", fields);
+}
+
+void WSEvents::OnSourceVolumeChange(void* param, calldata_t* data) {
+	auto self = reinterpret_cast<WSEvents*>(param);
+
+	OBSSource source = calldata_get_pointer<obs_source_t>(data, "source");
+	if (!source) {
+		return;
+	}
+
+	double volume;
+	if (!calldata_get_float(data, "volume", &volume)) {
+		return;
+	}
+
+	// TODO
+}
+
+void WSEvents::OnSourceMuteStateChange(void* param, calldata_t* data) {
+	auto self = reinterpret_cast<WSEvents*>(param);
+
+	OBSSource source = calldata_get_pointer<obs_source_t>(data, "source");
+	if (!source) {
+		return;
+	}
+
+	bool mute;
+	if (!calldata_get_bool(data, "mute", &mute)) {
+		return;
+	}
+}
+
+void WSEvents::OnSourceAudioSyncOffsetChanged(void* param, calldata_t* data) {
+	auto self = reinterpret_cast<WSEvents*>(param);
+
+	OBSSource source = calldata_get_pointer<obs_source_t>(data, "source");
+	if (!source) {
+		return;
+	}
+
+	long long syncOffset;
+	if (!calldata_get_int(data, "offset", &syncOffset)) {
+		return;
+	}
+
+	// TODO
+}
+
+void WSEvents::OnSourceAudioMixersChanged(void* param, calldata_t* data) {
+	auto self = reinterpret_cast<WSEvents*>(param);
+
+	OBSSource source = calldata_get_pointer<obs_source_t>(data, "source");
+	if (!source) {
+		return;
+	}
+
+	long long audioMixers;
+	if (!calldata_get_int(data, "mixers", &audioMixers)) {
+		return;
+	}
+
+	// TODO
+}
+
+void WSEvents::OnSourceRename(void* param, calldata_t* data) {
+	auto self = reinterpret_cast<WSEvents*>(param);
+
+	OBSSource source = calldata_get_pointer<obs_source_t>(data, "source");
+	if (!source) {
+		return;
+	}
+
+	const char* newName = calldata_get_string(data, "new_name");
+	if (!newName) {
+		return;
+	}
+
+	const char* previousName = calldata_get_string(data, "prev_name");
+	// TODO check?
+
+	// TODO
+}
+
+void WSEvents::OnSourcePropertiesChanged(void* param, calldata_t* data) {
+	auto self = reinterpret_cast<WSEvents*>(param);
+
+	OBSSource source = calldata_get_pointer<obs_source_t>(data, "source");
+	if (!source) {
+		return;
+	}
+
+	// TODO
+}
+
+void WSEvents::OnSourceFilterAdded(void* param, calldata_t* data) {
+	auto self = reinterpret_cast<WSEvents*>(param);
+
+	OBSSource source = calldata_get_pointer<obs_source_t>(data, "source");
+	if (!source) {
+		return;
+	}
+
+	OBSSource filter = calldata_get_pointer<obs_source_t>(data, "filter");
+	if (!filter) {
+		return;
+	}
+
+	// TODO
+}
+
+void WSEvents::OnSourceFilterRemoved(void* param, calldata_t* data) {
+	auto self = reinterpret_cast<WSEvents*>(param);
+
+	OBSSource source = calldata_get_pointer<obs_source_t>(data, "source");
+	if (!source) {
+		return;
+	}
+
+	obs_source_t* filter = calldata_get_pointer<obs_source_t>(data, "filter");
+
+	// TODO
+}
+
+void WSEvents::OnSourceFilterOrderChanged(void* param, calldata_t* data) {
+	auto self = reinterpret_cast<WSEvents*>(param);
+
+	OBSSource source = calldata_get_pointer<obs_source_t>(data, "source");
+	if (!source) {
+		return;
+	}
+
+	// TODO
 }
 
 /**
