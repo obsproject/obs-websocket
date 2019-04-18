@@ -836,6 +836,17 @@ void WSEvents::OnSourceDestroy(void* param, calldata_t* data) {
 	self->broadcastUpdate("SourceDestroyed", fields);
 }
 
+/**
+ * The volume of a source has changed.
+ *
+ * @return {String} `sourceName` Source name
+ * @return {float} `volume` Source volume
+ *
+ * @api events
+ * @name SourceVolumeChanged
+ * @category sources
+ * @since 4.6.0
+ */
 void WSEvents::OnSourceVolumeChange(void* param, calldata_t* data) {
 	auto self = reinterpret_cast<WSEvents*>(param);
 
@@ -844,14 +855,28 @@ void WSEvents::OnSourceVolumeChange(void* param, calldata_t* data) {
 		return;
 	}
 
-	double volume;
+	double volume = 0;
 	if (!calldata_get_float(data, "volume", &volume)) {
 		return;
 	}
 
-	// TODO
+	OBSDataAutoRelease fields = obs_data_create();
+	obs_data_set_string(fields, "sourceName", obs_source_get_name(source));
+	obs_data_set_double(fields, "volume", volume);
+	self->broadcastUpdate("SourceVolumeChanged", fields);
 }
 
+/**
+ * A source has been muted or unmuted.
+ *
+ * @return {String} `sourceName` Source name
+ * @return {boolean} `mute` Mute status of the source
+ *
+ * @api events
+ * @name SourceMuteStateChanged
+ * @category sources
+ * @since 4.6.0
+ */
 void WSEvents::OnSourceMuteStateChange(void* param, calldata_t* data) {
 	auto self = reinterpret_cast<WSEvents*>(param);
 
@@ -860,12 +885,28 @@ void WSEvents::OnSourceMuteStateChange(void* param, calldata_t* data) {
 		return;
 	}
 
-	bool mute;
+	bool mute = false;
 	if (!calldata_get_bool(data, "mute", &mute)) {
 		return;
 	}
+
+	OBSDataAutoRelease fields = obs_data_create();
+	obs_data_set_string(fields, "sourceName", obs_source_get_name(source));
+	obs_data_set_bool(fields, "mute", mute);
+	self->broadcastUpdate("SourceMuteStateChanged", fields);
 }
 
+/**
+ * The audio sync offset of a source has changed.
+ *
+ * @return {String} `sourceName` Source name
+ * @return {int} `syncOffset` Audio sync offset of the source
+ *
+ * @api events
+ * @name SourceAudioSyncOffsetChanged
+ * @category sources
+ * @since 4.6.0
+ */
 void WSEvents::OnSourceAudioSyncOffsetChanged(void* param, calldata_t* data) {
 	auto self = reinterpret_cast<WSEvents*>(param);
 
@@ -879,9 +920,22 @@ void WSEvents::OnSourceAudioSyncOffsetChanged(void* param, calldata_t* data) {
 		return;
 	}
 
-	// TODO
+	OBSDataAutoRelease fields = obs_data_create();
+	obs_data_set_string(fields, "sourceName", obs_source_get_name(source));
+	obs_data_set_int(fields, "syncOffset", (int)syncOffset);
+	self->broadcastUpdate("SourceAudioSyncOffsetChanged", fields);
 }
 
+/**
+ * CHANGEME.
+ *
+ * @return {String} `sourceName` Source name
+ *
+ * @api events
+ * @name CHANGEME
+ * @category sources
+ * @since 4.6.0
+ */
 void WSEvents::OnSourceAudioMixersChanged(void* param, calldata_t* data) {
 	auto self = reinterpret_cast<WSEvents*>(param);
 
@@ -898,6 +952,19 @@ void WSEvents::OnSourceAudioMixersChanged(void* param, calldata_t* data) {
 	// TODO
 }
 
+/**
+ * A source has been renamed.
+ *
+ * @return {String} `previousName` Previous source name
+ * @return {String} `newName` New source name
+ * 
+ * TODO which one is current?
+ * 
+ * @api events
+ * @name SourceRenamed
+ * @category sources
+ * @since 4.6.0
+ */
 void WSEvents::OnSourceRename(void* param, calldata_t* data) {
 	auto self = reinterpret_cast<WSEvents*>(param);
 
@@ -914,9 +981,22 @@ void WSEvents::OnSourceRename(void* param, calldata_t* data) {
 	const char* previousName = calldata_get_string(data, "prev_name");
 	// TODO check?
 
-	// TODO
+	OBSDataAutoRelease fields = obs_data_create();
+	obs_data_set_string(fields, "previousName", previousName);
+	obs_data_set_string(fields, "newName", newName);
+	self->broadcastUpdate("SourceRenamed", fields);
 }
 
+/**
+ * The properties of a source have changed.
+ *
+ * @return {String} `sourceName` Source name
+ *
+ * @api events
+ * @name SourcePropertiesChanged
+ * @category sources
+ * @since 4.6.0
+ */
 void WSEvents::OnSourcePropertiesChanged(void* param, calldata_t* data) {
 	auto self = reinterpret_cast<WSEvents*>(param);
 
@@ -925,9 +1005,22 @@ void WSEvents::OnSourcePropertiesChanged(void* param, calldata_t* data) {
 		return;
 	}
 
-	// TODO
+	OBSDataAutoRelease fields = obs_data_create();
+	obs_data_set_string(fields, "sourceName", obs_source_get_name(source));
+	// TODO provide properties?
+	self->broadcastUpdate("SourcePropertiesChanged", fields);
 }
 
+/**
+ * A filter was added to a source.
+ *
+ * @return {String} `sourceName` Source name
+ *
+ * @api events
+ * @name SourceFilterAdded
+ * @category sources
+ * @since 4.6.0
+ */
 void WSEvents::OnSourceFilterAdded(void* param, calldata_t* data) {
 	auto self = reinterpret_cast<WSEvents*>(param);
 
@@ -941,9 +1034,25 @@ void WSEvents::OnSourceFilterAdded(void* param, calldata_t* data) {
 		return;
 	}
 
-	// TODO
+	OBSDataAutoRelease filterSettings = obs_source_get_settings(filter);
+
+	OBSDataAutoRelease fields = obs_data_create();
+	obs_data_set_string(fields, "sourceName", obs_source_get_name(source));
+	obs_data_set_string(fields, "filterName", obs_source_get_name(filter));
+	obs_data_set_obj(fields, "filterSettings", filterSettings);
+	self->broadcastUpdate("SourceFilterAdded", fields);
 }
 
+/**
+ * A filter was removed from a source.
+ *
+ * @return {String} `sourceName` Source name
+ *
+ * @api events
+ * @name SourceFilterRemoved
+ * @category sources
+ * @since 4.6.0
+ */
 void WSEvents::OnSourceFilterRemoved(void* param, calldata_t* data) {
 	auto self = reinterpret_cast<WSEvents*>(param);
 
@@ -954,9 +1063,22 @@ void WSEvents::OnSourceFilterRemoved(void* param, calldata_t* data) {
 
 	obs_source_t* filter = calldata_get_pointer<obs_source_t>(data, "filter");
 
-	// TODO
+	OBSDataAutoRelease fields = obs_data_create();
+	obs_data_set_string(fields, "sourceName", obs_source_get_name(source));
+	obs_data_set_string(fields, "filterName", obs_source_get_name(filter));
+	self->broadcastUpdate("SourceFilterRemoved", fields);
 }
 
+/**
+ * Filters in a source have been reordered.
+ *
+ * @return {String} `sourceName` Source name
+ *
+ * @api events
+ * @name SourceFiltersReordered
+ * @category sources
+ * @since 4.6.0
+ */
 void WSEvents::OnSourceFilterOrderChanged(void* param, calldata_t* data) {
 	auto self = reinterpret_cast<WSEvents*>(param);
 
@@ -965,7 +1087,10 @@ void WSEvents::OnSourceFilterOrderChanged(void* param, calldata_t* data) {
 		return;
 	}
 
-	// TODO
+	OBSDataAutoRelease fields = obs_data_create();
+	obs_data_set_string(fields, "sourceName", obs_source_get_name(source));
+	// TODO filters list
+	self->broadcastUpdate("SourceFiltersReordered", fields);
 }
 
 /**
