@@ -116,7 +116,7 @@ class WSRequestHandler : public QObject {
 		static HandlerResponse HandleGetSourceTypesList(WSRequestHandler* req);
 		static HandlerResponse HandleGetSourceSettings(WSRequestHandler* req);
 		static HandlerResponse HandleSetSourceSettings(WSRequestHandler* req);
-		static void HandleGetSourceImage(WSRequestHandler* req);
+		static HandlerResponse HandleGetSourceImage(WSRequestHandler* req);
 
 		static HandlerResponse HandleGetSourceFilters(WSRequestHandler* req);
 		static HandlerResponse HandleAddFilterToSource(WSRequestHandler* req);

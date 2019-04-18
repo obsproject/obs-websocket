@@ -1336,17 +1336,15 @@ HandlerResponse WSRequestHandler::HandleSetSourceFilterSettings(WSRequestHandler
 	return req->SendOKResponse();
 }
 
-void WSRequestHandler::HandleGetSourceImage(WSRequestHandler* req) {
+HandlerResponse WSRequestHandler::HandleGetSourceImage(WSRequestHandler* req) {
 	if (!req->hasField("sourceName")) {
-		req->SendErrorResponse("missing request parameters");
-		return;
+		return req->SendErrorResponse("missing request parameters");
 	}
 
 	const char* sourceName = obs_data_get_string(req->data, "sourceName");
 	OBSSourceAutoRelease source = obs_get_source_by_name(sourceName);
 	if (!source) {
-		req->SendErrorResponse("specified source doesn't exist");
-		return;
+		return req->SendErrorResponse("specified source doesn't exist");;
 	}
 
 	const uint32_t imgWidth = obs_source_get_base_width(source);
@@ -1392,21 +1390,21 @@ void WSRequestHandler::HandleGetSourceImage(WSRequestHandler* req) {
 
 	obs_leave_graphics();
 
-	if (renderSuccess) {
-		QByteArray encodedImgBytes;
-		QBuffer buffer(&encodedImgBytes);
-		buffer.open(QBuffer::WriteOnly);
-		sourceImage.save(&buffer, "WEBP", 50);
-		buffer.close();
-
-		QString imgBase64(encodedImgBytes.toBase64());
-		imgBase64.prepend("data:image/webp;base64,");
-
-		OBSDataAutoRelease response = obs_data_create();
-		obs_data_set_string(response, "sourceName", obs_source_get_name(source));
-		obs_data_set_string(response, "img", imgBase64.toUtf8().constData());
-		req->SendOKResponse(response);
-	} else {
-		req->SendErrorResponse("Source render failed.");
+	if (!renderSuccess) {
+		return req->SendErrorResponse("Source render failed.");
 	}
+
+	QByteArray encodedImgBytes;
+	QBuffer buffer(&encodedImgBytes);
+	buffer.open(QBuffer::WriteOnly);
+	sourceImage.save(&buffer, "WEBP", 50);
+	buffer.close();
+
+	QString imgBase64(encodedImgBytes.toBase64());
+	imgBase64.prepend("data:image/webp;base64,");
+
+	OBSDataAutoRelease response = obs_data_create();
+	obs_data_set_string(response, "sourceName", obs_source_get_name(source));
+	obs_data_set_string(response, "img", imgBase64.toUtf8().constData());
+	return req->SendOKResponse(response);
 }
