@@ -94,10 +94,6 @@ WSEvents::WSEvents(WSServerPtr srv) :
 
 	heartbeatTimer.start(STATUS_INTERVAL);
 
-	QTimer::singleShot(1000, this, [=]() {
-		hookTransitionBeginEvent();
-	});
-
 	signal_handler_t* coreSignalHandler = obs_get_signal_handler();
 	if (coreSignalHandler) {
 		signal_handler_connect(coreSignalHandler, "source_create", OnSourceCreate, this);
@@ -122,7 +118,6 @@ void WSEvents::FrontendEventHandler(enum obs_frontend_event event, void* private
 		owner->OnSceneListChange();
 	}
 	else if (event == OBS_FRONTEND_EVENT_SCENE_COLLECTION_CHANGED) {
-		owner->hookTransitionBeginEvent();
 		owner->OnSceneCollectionChange();
 	}
 	else if (event == OBS_FRONTEND_EVENT_SCENE_COLLECTION_LIST_CHANGED) {
@@ -132,7 +127,6 @@ void WSEvents::FrontendEventHandler(enum obs_frontend_event event, void* private
 		owner->OnTransitionChange();
 	}
 	else if (event == OBS_FRONTEND_EVENT_TRANSITION_LIST_CHANGED) {
-		owner->hookTransitionBeginEvent();
 		owner->OnTransitionListChange();
 	}
 	else if (event == OBS_FRONTEND_EVENT_PROFILE_CHANGED) {
@@ -223,20 +217,6 @@ void WSEvents::broadcastUpdate(const char* updateType,
 	if (Config::Current()->DebugEnabled) {
 		blog(LOG_INFO, "Update << '%s'", json.toUtf8().constData());
 	}
-}
-
-void WSEvents::hookTransitionBeginEvent() {
-	obs_frontend_source_list transitions = {};
-	obs_frontend_get_transitions(&transitions);
-
-	for (int i = 0; i < transitions.sources.num; i++) {
-		obs_source_t* transition = transitions.sources.array[i];
-		signal_handler_t* sh = obs_source_get_signal_handler(transition);
-		signal_handler_disconnect(sh, "transition_start", OnTransitionBegin, this);
-		signal_handler_connect(sh, "transition_start", OnTransitionBegin, this);
-	}
-
-	obs_frontend_source_list_free(&transitions);
 }
 
 uint64_t WSEvents::GetStreamingTime() {
@@ -761,14 +741,18 @@ void WSEvents::OnSourceCreate(void* param, calldata_t* data) {
 	}
 
 	obs_source_type sourceType = obs_source_get_type(source);
+	signal_handler_t* sh = obs_source_get_signal_handler(source);
+
 	if (sourceType == OBS_SOURCE_TYPE_SCENE) {
-		signal_handler_t* sh = obs_source_get_signal_handler(source);
 		signal_handler_connect(sh, "reorder", OnSceneReordered, self);
 		signal_handler_connect(sh, "item_add", OnSceneItemAdd, self);
 		signal_handler_connect(sh, "item_remove", OnSceneItemDelete, self);
 		signal_handler_connect(sh,
 			"item_visible", OnSceneItemVisibilityChanged, self);
 		signal_handler_connect(sh, "item_transform", OnSceneItemTransform, self);
+	}
+	if (sourceType == OBS_SOURCE_TYPE_TRANSITION) {
+		signal_handler_connect(sh, "transition_start", OnTransitionBegin, self);
 	}
 }
 

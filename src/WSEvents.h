@@ -44,8 +44,6 @@ public:
 	static void FrontendEventHandler(
 		enum obs_frontend_event event, void* privateData);
 
-	void hookTransitionBeginEvent();
-
 	uint64_t GetStreamingTime();
 	const char* GetStreamingTimecode();
 	uint64_t GetRecordingTime();
