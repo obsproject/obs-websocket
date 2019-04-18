@@ -109,6 +109,7 @@ private:
 	static void OnTransitionBegin(void* param, calldata_t* data);
 
 	static void OnSourceCreate(void* param, calldata_t* data);
+	static void OnSourceDestroy(void* param, calldata_t* data);
 
 	static void OnSceneReordered(void* param, calldata_t* data);
 	static void OnSceneItemAdd(void* param, calldata_t* data);

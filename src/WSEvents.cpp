@@ -56,6 +56,21 @@ const char* nsToTimestamp(uint64_t ns) {
 	return ts;
 }
 
+const char* sourceTypeToString(obs_source_type type) {
+	switch (type) {
+		case OBS_SOURCE_TYPE_INPUT:
+			return "input";
+		case OBS_SOURCE_TYPE_SCENE:
+			return "scene";
+		case OBS_SOURCE_TYPE_TRANSITION:
+			return "transition";
+		case OBS_SOURCE_TYPE_FILTER:
+			return "filter";
+		default:
+			return "unknown";
+	}
+}
+
 template <typename T> T* calldata_get_pointer(const calldata_t* data, const char* name) {
 	void* ptr = nullptr;
 	calldata_get_ptr(data, name, &ptr);
@@ -732,6 +747,18 @@ void WSEvents::OnTransitionBegin(void* param, calldata_t* data) {
 	instance->broadcastUpdate("TransitionBegin", fields);
 }
 
+/**
+ * A source has been created. A source can be an input, a scene or a transition.
+ *
+ * @return {String} `sourceName` Source name
+ * @return {String} `sourceType` Source type. Can be "input", "scene", "transition" or "filter".
+ * @return {Object} `sourceSettings` Source settings
+ *
+ * @api events
+ * @name SourceCreated
+ * @category sources
+ * @since 4.6.0
+ */
 void WSEvents::OnSourceCreate(void* param, calldata_t* data) {
 	auto self = reinterpret_cast<WSEvents*>(param);
 
@@ -754,6 +781,41 @@ void WSEvents::OnSourceCreate(void* param, calldata_t* data) {
 	if (sourceType == OBS_SOURCE_TYPE_TRANSITION) {
 		signal_handler_connect(sh, "transition_start", OnTransitionBegin, self);
 	}
+
+	OBSDataAutoRelease sourceSettings = obs_source_get_settings(source);
+
+	OBSDataAutoRelease fields = obs_data_create();
+	obs_data_set_string(fields, "sourceName", obs_source_get_name(source));
+	obs_data_set_string(fields, "sourceType", sourceTypeToString(sourceType));
+	obs_data_set_obj(fields, "sourceSettings", sourceSettings);
+	self->broadcastUpdate("SourceCreated", fields);
+}
+
+/**
+ * A source has been destroyed/removed. A source can be an input, a scene or a transition.
+ *
+ * @return {String} `sourceName` Source name
+ * @return {String} `sourceType` Source type. Can be "input", "scene", "transition" or "filter".
+ *
+ * @api events
+ * @name SourceDestroyed
+ * @category sources
+ * @since 4.6.0
+ */
+void WSEvents::OnSourceDestroy(void* param, calldata_t* data) {
+	auto self = reinterpret_cast<WSEvents*>(param);
+
+	obs_source_t* source = calldata_get_pointer<obs_source_t>(data, "source");
+	if (!source) {
+		return;
+	}
+
+	obs_source_type sourceType = obs_source_get_type(source);
+
+	OBSDataAutoRelease fields = obs_data_create();
+	obs_data_set_string(fields, "sourceName", obs_source_get_name(source));
+	obs_data_set_string(fields, "sourceType", sourceTypeToString(sourceType));
+	self->broadcastUpdate("SourceDestroyed", fields);
 }
 
 /**
