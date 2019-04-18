@@ -1,5 +1,3 @@
-#include <QString>
-
 #include "Config.h"
 #include "Utils.h"
 #include "WSEvents.h"

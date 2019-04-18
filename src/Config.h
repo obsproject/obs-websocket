@@ -18,8 +18,8 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #pragma once
 
-#include <QString>
-#include <QSharedPointer>
+#include <QtCore/QString>
+#include <QtCore/QSharedPointer>
 
 class Config;
 typedef QSharedPointer<Config> ConfigPtr;

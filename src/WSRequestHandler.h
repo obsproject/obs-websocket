@@ -19,9 +19,10 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #pragma once
 
-#include <QHash>
-#include <QSet>
-#include <QVariantHash>
+#include <QtCore/QHash>
+#include <QtCore/QSet>
+#include <QtCore/QVariantHash>
+#include <QtCore/QString>
 
 #include <obs.hpp>
 #include <obs-frontend-api.h>

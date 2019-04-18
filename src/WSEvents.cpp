@@ -19,7 +19,7 @@
 
 #include <util/platform.h>
 
-#include <QPushButton>
+#include <QtWidgets/QPushButton>
 
 #include "Config.h"
 #include "Utils.h"

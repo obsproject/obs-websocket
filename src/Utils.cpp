@@ -16,9 +16,10 @@ You should have received a copy of the GNU General Public License along
 with this program. If not, see <https://www.gnu.org/licenses/>
 */
 
-#include <QMainWindow>
-#include <QDir>
-#include <QUrl>
+#include <QtWidgets/QMainWindow>
+#include <QtCore/QDir>
+#include <QtCore/QUrl>
+
 #include <obs-frontend-api.h>
 #include <obs.hpp>
 #include "obs-websocket.h"

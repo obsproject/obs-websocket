@@ -18,8 +18,8 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include <QtCore/QThread>
 #include <QtCore/QByteArray>
-#include <QMainWindow>
-#include <QMessageBox>
+#include <QtWidgets/QMainWindow>
+#include <QtWidgets/QMessageBox>
 #include <QtConcurrent/QtConcurrent>
 #include <obs-frontend-api.h>
 
