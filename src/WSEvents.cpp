@@ -770,6 +770,18 @@ void WSEvents::OnSourceCreate(void* param, calldata_t* data) {
 	obs_source_type sourceType = obs_source_get_type(source);
 	signal_handler_t* sh = obs_source_get_signal_handler(source);
 
+	// TODO "mute" signal
+	// TODO "volume" signal
+	// TODO "audio_sync" signal
+	// TODO "audio_mixers" signal
+
+	// TODO "rename" signal
+	// TODO "update_properties"
+
+	// TODO "filter_add" signal
+	// TODO "filter_remove" signal
+	// TODO "reorder_filters" signal
+
 	if (sourceType == OBS_SOURCE_TYPE_SCENE) {
 		signal_handler_connect(sh, "reorder", OnSceneReordered, self);
 		signal_handler_connect(sh, "item_add", OnSceneItemAdd, self);
