@@ -36,7 +36,7 @@ class WSRequestHandler : public QObject {
 	public:
 		explicit WSRequestHandler(QVariantHash& connProperties);
 		~WSRequestHandler();
-		obs_data_t* processIncomingMessage(std::string& textMessage);
+		std::string processIncomingMessage(std::string& textMessage);
 		bool hasField(QString name);
 
 	private:
@@ -44,6 +44,8 @@ class WSRequestHandler : public QObject {
 		const char* _requestType;
 		QVariantHash& _connProperties;
 		OBSDataAutoRelease data;
+
+		HandlerResponse processRequest(std::string& textMessage);
 
 		HandlerResponse SendOKResponse(obs_data_t* additionalFields = nullptr);
 		HandlerResponse SendErrorResponse(const char* errorMessage);
