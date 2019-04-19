@@ -94,9 +94,6 @@ WSEvents::WSEvents(WSServerPtr srv) {
 
 	HeartbeatIsActive = false;
 
-	_streamingActive = false;
-	_recordingActive = false;
-
 	_streamStarttime = 0;
 	_recStarttime = 0;
 }
@@ -148,28 +145,24 @@ void WSEvents::FrontendEventHandler(enum obs_frontend_event event, void* private
 		owner->OnStreamStarting();
 	}
 	else if (event == OBS_FRONTEND_EVENT_STREAMING_STARTED) {
-		owner->_streamingActive = true;
 		owner->OnStreamStarted();
 	}
 	else if (event == OBS_FRONTEND_EVENT_STREAMING_STOPPING) {
 		owner->OnStreamStopping();
 	}
 	else if (event == OBS_FRONTEND_EVENT_STREAMING_STOPPED) {
-		owner->_streamingActive = false;
 		owner->OnStreamStopped();
 	}
 	else if (event == OBS_FRONTEND_EVENT_RECORDING_STARTING) {
 		owner->OnRecordingStarting();
 	}
 	else if (event == OBS_FRONTEND_EVENT_RECORDING_STARTED) {
-		owner->_recordingActive = true;
 		owner->OnRecordingStarted();
 	}
 	else if (event == OBS_FRONTEND_EVENT_RECORDING_STOPPING) {
 		owner->OnRecordingStopping();
 	}
 	else if (event == OBS_FRONTEND_EVENT_RECORDING_STOPPED) {
-		owner->_recordingActive = false;
 		owner->OnRecordingStopped();
 	}
 	else if (event == OBS_FRONTEND_EVENT_REPLAY_BUFFER_STARTING) {
@@ -206,13 +199,13 @@ void WSEvents::broadcastUpdate(const char* updateType,
 	obs_data_set_string(update, "update-type", updateType);
 
 	const char* ts = nullptr;
-	if (_streamingActive) {
+	if (obs_frontend_streaming_active()) {
 		ts = nsToTimestamp(os_gettime_ns() - _streamStarttime);
 		obs_data_set_string(update, "stream-timecode", ts);
 		bfree((void*)ts);
 	}
 
-	if (_recordingActive) {
+	if (obs_frontend_recording_active()) {
 		ts = nsToTimestamp(os_gettime_ns() - _recStarttime);
 		obs_data_set_string(update, "rec-timecode", ts);
 		bfree((void*)ts);
@@ -280,7 +273,7 @@ void WSEvents::connectSceneSignals(obs_source_t* scene) {
 }
 
 uint64_t WSEvents::GetStreamingTime() {
-	if (_streamingActive)
+	if (obs_frontend_streaming_active())
 		return (os_gettime_ns() - _streamStarttime);
 	else
 		return 0;
@@ -291,7 +284,7 @@ const char* WSEvents::GetStreamingTimecode() {
 }
 
 uint64_t WSEvents::GetRecordingTime() {
-	if (_recordingActive)
+	if (obs_frontend_recording_active())
 		return (os_gettime_ns() - _recStarttime);
 	else
 		return 0;
@@ -602,6 +595,7 @@ void WSEvents::OnExit() {
  *
  * @return {boolean} `streaming` Current streaming state.
  * @return {boolean} `recording` Current recording state.
+ * @return {boolean} `replay-buffer-active` Replay Buffer status
  * @return {boolean} `preview-only` Always false (retrocompatibility).
  * @return {int} `bytes-per-sec` Amount of data per second (in bytes) transmitted by the stream encoder.
  * @return {int} `kbits-per-sec` Amount of data per second (in kilobits) transmitted by the stream encoder.
@@ -619,6 +613,7 @@ void WSEvents::OnExit() {
 void WSEvents::StreamStatus() {
 	bool streamingActive = obs_frontend_streaming_active();
 	bool recordingActive = obs_frontend_recording_active();
+	bool replayBufferActive = obs_frontend_replay_buffer_active();
 
 	OBSOutputAutoRelease streamOutput = obs_frontend_get_streaming_output();
 
@@ -655,6 +650,7 @@ void WSEvents::StreamStatus() {
 	OBSDataAutoRelease data = obs_data_create();
 	obs_data_set_bool(data, "streaming", streamingActive);
 	obs_data_set_bool(data, "recording", recordingActive);
+	obs_data_set_bool(data, "replay-buffer-active", replayBufferActive);
 	obs_data_set_int(data, "bytes-per-sec", bytesPerSec);
 	obs_data_set_int(data, "kbits-per-sec", (bytesPerSec * 8) / 1024);
 	obs_data_set_int(data, "total-stream-time", totalStreamTime);
