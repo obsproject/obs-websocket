@@ -19,7 +19,6 @@
 
 #include <util/platform.h>
 
-#include <QTimer>
 #include <QPushButton>
 
 #include "Config.h"
@@ -27,6 +26,8 @@
 #include "WSEvents.h"
 
 #include "obs-websocket.h"
+
+#define STATUS_INTERVAL 2000
 
 bool transitionIsCut(obs_source_t* transition) {
 	if (!transition)
@@ -72,30 +73,29 @@ void WSEvents::ResetCurrent(WSServerPtr srv) {
 	_instance = WSEventsPtr(new WSEvents(srv));
 }
 
-WSEvents::WSEvents(WSServerPtr srv) {
-	_srv = srv;
+WSEvents::WSEvents(WSServerPtr srv) :
+	_srv(srv),
+	streamStatusTimer(),
+	currentScene(nullptr),
+	HeartbeatIsActive(false),
+	_streamStarttime(0),
+	_recStarttime(0),
+	pulse(false)
+{
 	obs_frontend_add_event_callback(WSEvents::FrontendEventHandler, this);
 
 	QSpinBox* durationControl = Utils::GetTransitionDurationControl();
 	connect(durationControl, SIGNAL(valueChanged(int)),
 		this, SLOT(TransitionDurationChanged(int)));
 
-	QTimer* statusTimer = new QTimer();
-	connect(statusTimer, SIGNAL(timeout()),
+	connect(&streamStatusTimer, SIGNAL(timeout()),
 		this, SLOT(StreamStatus()));
-	pulse = false;
-	connect(statusTimer, SIGNAL(timeout()),
+	connect(&heartbeatTimer, SIGNAL(timeout()),
 		this, SLOT(Heartbeat()));
-	statusTimer->start(2000); // equal to frontend's constant BITRATE_UPDATE_SECONDS
 
-	currentScene = nullptr;
+	heartbeatTimer.start(STATUS_INTERVAL);
 
 	QTimer::singleShot(1000, this, SLOT(deferredInitOperations()));
-
-	HeartbeatIsActive = false;
-
-	_streamStarttime = 0;
-	_recStarttime = 0;
 }
 
 WSEvents::~WSEvents() {
@@ -145,9 +145,13 @@ void WSEvents::FrontendEventHandler(enum obs_frontend_event event, void* private
 		owner->OnStreamStarting();
 	}
 	else if (event == OBS_FRONTEND_EVENT_STREAMING_STARTED) {
+		owner->streamStatusTimer.start(STATUS_INTERVAL);
+		owner->StreamStatus();
+
 		owner->OnStreamStarted();
 	}
 	else if (event == OBS_FRONTEND_EVENT_STREAMING_STOPPING) {
+		owner->streamStatusTimer.stop();
 		owner->OnStreamStopping();
 	}
 	else if (event == OBS_FRONTEND_EVENT_STREAMING_STOPPED) {

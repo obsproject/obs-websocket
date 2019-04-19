@@ -24,6 +24,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include <QListWidgetItem>
 #include <QSharedPointer>
+#include <QtCore/QTimer>
 
 #include "WSServer.h"
 
@@ -63,6 +64,8 @@ private:
 	static WSEventsPtr _instance;
 
 	WSServerPtr _srv;
+	QTimer streamStatusTimer;
+	QTimer heartbeatTimer;
 	OBSSource currentScene;
 
 	bool pulse;
