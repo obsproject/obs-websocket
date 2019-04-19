@@ -777,7 +777,6 @@ void WSEvents::OnSourceCreate(void* param, calldata_t* data) {
 	signal_handler_t* sh = obs_source_get_signal_handler(source);
 
 	signal_handler_connect(sh, "rename", OnSourceRename, self);
-	signal_handler_connect(sh, "update_properties", OnSourcePropertiesChanged, self);
 
 	signal_handler_connect(sh, "mute", OnSourceMuteStateChange, self);
 	signal_handler_connect(sh, "volume", OnSourceVolumeChange, self);
@@ -985,30 +984,6 @@ void WSEvents::OnSourceRename(void* param, calldata_t* data) {
 	obs_data_set_string(fields, "previousName", previousName);
 	obs_data_set_string(fields, "newName", newName);
 	self->broadcastUpdate("SourceRenamed", fields);
-}
-
-/**
- * The properties of a source have changed.
- *
- * @return {String} `sourceName` Source name
- *
- * @api events
- * @name SourcePropertiesChanged
- * @category sources
- * @since 4.6.0
- */
-void WSEvents::OnSourcePropertiesChanged(void* param, calldata_t* data) {
-	auto self = reinterpret_cast<WSEvents*>(param);
-
-	OBSSource source = calldata_get_pointer<obs_source_t>(data, "source");
-	if (!source) {
-		return;
-	}
-
-	OBSDataAutoRelease fields = obs_data_create();
-	obs_data_set_string(fields, "sourceName", obs_source_get_name(source));
-	// TODO provide properties?
-	self->broadcastUpdate("SourcePropertiesChanged", fields);
 }
 
 /**

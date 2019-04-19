@@ -117,7 +117,6 @@ private:
 	static void OnSourceAudioMixersChanged(void* param, calldata_t* data);
 
 	static void OnSourceRename(void* param, calldata_t* data);
-	static void OnSourcePropertiesChanged(void* param, calldata_t* data);
 
 	static void OnSourceFilterAdded(void* param, calldata_t* data);
 	static void OnSourceFilterRemoved(void* param, calldata_t* data);
