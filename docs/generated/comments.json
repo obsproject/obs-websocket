@@ -802,6 +802,7 @@
         "return": [
           "{boolean} `streaming` Current streaming state.",
           "{boolean} `recording` Current recording state.",
+          "{boolean} `replay-buffer-active` Replay Buffer status",
           "{boolean} `preview-only` Always false (retrocompatibility).",
           "{int} `bytes-per-sec` Amount of data per second (in bytes) transmitted by the stream encoder.",
           "{int} `kbits-per-sec` Amount of data per second (in kilobits) transmitted by the stream encoder.",
@@ -825,6 +826,11 @@
             "type": "boolean",
             "name": "recording",
             "description": "Current recording state."
+          },
+          {
+            "type": "boolean",
+            "name": "replay-buffer-active",
+            "description": "Replay Buffer status"
           },
           {
             "type": "boolean",

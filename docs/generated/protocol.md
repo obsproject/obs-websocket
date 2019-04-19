@@ -469,6 +469,7 @@ Emit every 2 seconds.
 | ---- | :---: | ------------|
 | `streaming` | _boolean_ | Current streaming state. |
 | `recording` | _boolean_ | Current recording state. |
+| `replay-buffer-active` | _boolean_ | Replay Buffer status |
 | `preview-only` | _boolean_ | Always false (retrocompatibility). |
 | `bytes-per-sec` | _int_ | Amount of data per second (in bytes) transmitted by the stream encoder. |
 | `kbits-per-sec` | _int_ | Amount of data per second (in kilobits) transmitted by the stream encoder. |
