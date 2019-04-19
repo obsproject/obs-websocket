@@ -69,7 +69,7 @@ WSServer::~WSServer()
 void WSServer::start(quint16 port)
 {
 	if (_server.is_listening() && port == _serverPort) {
-		blog(LOG_INFO, "WebSocketsServer::start: server already on this port. no restart needed");
+		blog(LOG_INFO, "WSServer::start: server already on this port. no restart needed");
 		return;
 	}
 
@@ -79,7 +79,19 @@ void WSServer::start(quint16 port)
 
 	_serverPort = port;
 
-	_server.listen(_serverPort);
+	websocketpp::lib::error_code errorCode;
+	_server.listen(_serverPort, errorCode);
+
+	if (errorCode) {
+		QString errorTitle = tr("OBSWebsocket.Server.StartFailed.Title");
+		QString errorMessage = tr("OBSWebsocket.Server.StartFailed.Message").arg(_serverPort);
+
+		QMainWindow* mainWindow = reinterpret_cast<QMainWindow*>(obs_frontend_get_main_window());
+		QMessageBox::warning(mainWindow, errorTitle, errorMessage);
+
+		return;
+	}
+
 	_server.start_accept();
 
 	QtConcurrent::run([=]() {
