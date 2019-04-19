@@ -204,6 +204,10 @@ These are complex types, such as `Source` and `Scene`, which are used as argumen
 | `bounds.alignment` | _int_ | Alignment of the bounding box. |
 | `bounds.x` | _double_ | Width of the bounding box. |
 | `bounds.y` | _double_ | Height of the bounding box. |
+| `sourceWidth` | _int_ | Base width (without scaling) of the source |
+| `sourceHeight` | _int_ | Base source (without scaling) of the source |
+| `width` | _double_ | Scene item width (base source width multiplied by the horizontal scaling factor) |
+| `height` | _double_ | Scene item height (base source height multiplied by the vertical scaling factor) |
 ## Scene
 | Name | Type  | Description |
 | ---- | :---: | ------------|
@@ -1228,6 +1232,10 @@ Gets the scene specific properties of the specified source item.
 | `bounds.alignment` | _int_ | Alignment of the bounding box. |
 | `bounds.x` | _double_ | Width of the bounding box. |
 | `bounds.y` | _double_ | Height of the bounding box. |
+| `sourceWidth` | _int_ | Base width (without scaling) of the source |
+| `sourceHeight` | _int_ | Base source (without scaling) of the source |
+| `width` | _double_ | Scene item width (base source width multiplied by the horizontal scaling factor) |
+| `height` | _double_ | Scene item height (base source height multiplied by the vertical scaling factor) |
 
 
 ---

@@ -18,7 +18,11 @@
         "{String} `bounds.type` Type of bounding box. Can be \"OBS_BOUNDS_STRETCH\", \"OBS_BOUNDS_SCALE_INNER\", \"OBS_BOUNDS_SCALE_OUTER\", \"OBS_BOUNDS_SCALE_TO_WIDTH\", \"OBS_BOUNDS_SCALE_TO_HEIGHT\", \"OBS_BOUNDS_MAX_ONLY\" or \"OBS_BOUNDS_NONE\".",
         "{int} `bounds.alignment` Alignment of the bounding box.",
         "{double} `bounds.x` Width of the bounding box.",
-        "{double} `bounds.y` Height of the bounding box."
+        "{double} `bounds.y` Height of the bounding box.",
+        "{int} `sourceWidth` Base width (without scaling) of the source",
+        "{int} `sourceHeight` Base source (without scaling) of the source",
+        "{double} `width` Scene item width (base source width multiplied by the horizontal scaling factor)",
+        "{double} `height` Scene item height (base source height multiplied by the vertical scaling factor)"
       ],
       "properties": [
         {
@@ -95,6 +99,26 @@
           "type": "double",
           "name": "bounds.y",
           "description": "Height of the bounding box."
+        },
+        {
+          "type": "int",
+          "name": "sourceWidth",
+          "description": "Base width (without scaling) of the source"
+        },
+        {
+          "type": "int",
+          "name": "sourceHeight",
+          "description": "Base source (without scaling) of the source"
+        },
+        {
+          "type": "double",
+          "name": "width",
+          "description": "Scene item width (base source width multiplied by the horizontal scaling factor)"
+        },
+        {
+          "type": "double",
+          "name": "height",
+          "description": "Scene item height (base source height multiplied by the vertical scaling factor)"
         }
       ],
       "typedefs": [
@@ -2489,7 +2513,11 @@
           "{String} `bounds.type` Type of bounding box. Can be \"OBS_BOUNDS_STRETCH\", \"OBS_BOUNDS_SCALE_INNER\", \"OBS_BOUNDS_SCALE_OUTER\", \"OBS_BOUNDS_SCALE_TO_WIDTH\", \"OBS_BOUNDS_SCALE_TO_HEIGHT\", \"OBS_BOUNDS_MAX_ONLY\" or \"OBS_BOUNDS_NONE\".",
           "{int} `bounds.alignment` Alignment of the bounding box.",
           "{double} `bounds.x` Width of the bounding box.",
-          "{double} `bounds.y` Height of the bounding box."
+          "{double} `bounds.y` Height of the bounding box.",
+          "{int} `sourceWidth` Base width (without scaling) of the source",
+          "{int} `sourceHeight` Base source (without scaling) of the source",
+          "{double} `width` Scene item width (base source width multiplied by the horizontal scaling factor)",
+          "{double} `height` Scene item height (base source height multiplied by the vertical scaling factor)"
         ],
         "api": "requests",
         "name": "GetSceneItemProperties",
@@ -2575,6 +2603,26 @@
             "type": "double",
             "name": "bounds.y",
             "description": "Height of the bounding box."
+          },
+          {
+            "type": "int",
+            "name": "sourceWidth",
+            "description": "Base width (without scaling) of the source"
+          },
+          {
+            "type": "int",
+            "name": "sourceHeight",
+            "description": "Base source (without scaling) of the source"
+          },
+          {
+            "type": "double",
+            "name": "width",
+            "description": "Scene item width (base source width multiplied by the horizontal scaling factor)"
+          },
+          {
+            "type": "double",
+            "name": "height",
+            "description": "Scene item height (base source height multiplied by the vertical scaling factor)"
           }
         ],
         "params": [
