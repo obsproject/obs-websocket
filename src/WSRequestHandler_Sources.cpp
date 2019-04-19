@@ -94,7 +94,7 @@ HandlerResponse WSRequestHandler::HandleGetSourcesList(WSRequestHandler* req)
 * @return {Boolean} `ids.*.caps.doNotSelfMonitor` True if sources of this type may cause a feedback loop if it's audio is monitored and shouldn't be
 *
 * @api requests
-* @name GetSourcesTypesList
+* @name GetSourceTypesList
 * @category sources
 * @since 4.3.0
 */

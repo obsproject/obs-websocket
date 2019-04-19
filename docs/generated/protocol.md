@@ -133,7 +133,7 @@ auth_response = base64_encode(auth_response_hash)
     + [ReorderSceneItems](#reordersceneitems)
   * [Sources](#sources-1)
     + [GetSourcesList](#getsourceslist)
-    + [GetSourcesTypesList](#getsourcestypeslist)
+    + [GetSourceTypesList](#getsourcetypeslist)
     + [GetVolume](#getvolume)
     + [SetVolume](#setvolume)
     + [GetMute](#getmute)
@@ -1552,7 +1552,7 @@ _No specified parameters._
 
 ---
 
-### GetSourcesTypesList
+### GetSourceTypesList
 
 
 - Added in v4.3.0
