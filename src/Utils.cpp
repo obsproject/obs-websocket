@@ -115,8 +115,8 @@ obs_data_t* Utils::GetSceneItemData(obs_sceneitem_t* item) {
 	obs_data_set_double(data, "y", pos.y);
 	obs_data_set_int(data, "source_cx", (int)item_width);
 	obs_data_set_int(data, "source_cy", (int)item_height);
-	obs_data_set_double(data, "cx", item_width*  scale.x);
-	obs_data_set_double(data, "cy", item_height*  scale.y);
+	obs_data_set_double(data, "cx", item_width * scale.x);
+	obs_data_set_double(data, "cy", item_height * scale.y);
 	obs_data_set_bool(data, "render", obs_sceneitem_visible(item));
 
 	return data;
@@ -592,8 +592,20 @@ bool Utils::SetFilenameFormatting(const char* filenameFormatting) {
  * @property {int} `bounds.alignment` Alignment of the bounding box.
  * @property {double} `bounds.x` Width of the bounding box.
  * @property {double} `bounds.y` Height of the bounding box.
+ * @property {int} `sourceWidth` Base width (without scaling) of the source
+ * @property {int} `sourceHeight` Base source (without scaling) of the source
+ * @property {double} `width` Scene item width (base source width multiplied by the horizontal scaling factor)
+ * @property {double} `height` Scene item height (base source height multiplied by the vertical scaling factor)
  */
 obs_data_t* Utils::GetSceneItemPropertiesData(obs_sceneitem_t* sceneItem) {
+	if (!sceneItem) {
+		return nullptr;
+	}
+	
+	OBSSource source = obs_sceneitem_get_source(sceneItem);
+	uint32_t baseSourceWidth = obs_source_get_width(source);
+	uint32_t baseSourceHeight = obs_source_get_height(source);
+
 	vec2 pos, scale, bounds;
 	obs_sceneitem_crop crop;
 
@@ -638,6 +650,11 @@ obs_data_t* Utils::GetSceneItemPropertiesData(obs_sceneitem_t* sceneItem) {
 	obs_data_set_obj(data, "crop", cropData);
 	obs_data_set_bool(data, "visible", isVisible);
 	obs_data_set_obj(data, "bounds", boundsData);
+
+	obs_data_set_int(data, "sourceWidth", baseSourceWidth);
+	obs_data_set_int(data, "sourceHeight", baseSourceHeight);
+	obs_data_set_double(data, "width", baseSourceWidth * scale.x);
+	obs_data_set_double(data, "height", baseSourceHeight * scale.y);
 
 	return data;
 }
