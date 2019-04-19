@@ -25,7 +25,11 @@
 * @return {int} `bounds.alignment` Alignment of the bounding box.
 * @return {double} `bounds.x` Width of the bounding box.
 * @return {double} `bounds.y` Height of the bounding box.
-*
+* @return {int} `sourceWidth` Base width (without scaling) of the source
+* @return {int} `sourceHeight` Base source (without scaling) of the source
+* @return {double} `width` Scene item width (base source width multiplied by the horizontal scaling factor)
+* @return {double} `height` Scene item height (base source height multiplied by the vertical scaling factor)
+* 
 * @api requests
 * @name GetSceneItemProperties
 * @category scene items
