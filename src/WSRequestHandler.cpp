@@ -139,7 +139,22 @@ WSRequestHandler::WSRequestHandler(QVariantHash& connProperties) :
 {
 }
 
-obs_data_t* WSRequestHandler::processIncomingMessage(std::string& textMessage) {
+std::string WSRequestHandler::processIncomingMessage(std::string& textMessage) {
+	if (Config::Current()->DebugEnabled) {
+		blog(LOG_INFO, "Request >> '%s'", textMessage.c_str());
+	}
+
+	OBSDataAutoRelease responseData = processRequest(textMessage);
+	std::string response = obs_data_get_json(responseData);
+
+	if (Config::Current()->DebugEnabled) {
+		blog(LOG_INFO, "Response << '%s'", response.c_str());
+	}
+
+	return response;
+}
+
+HandlerResponse WSRequestHandler::processRequest(std::string& textMessage){
 	std::string msgContainer(textMessage);
 	const char* msg = msgContainer.c_str();
 
@@ -147,10 +162,6 @@ obs_data_t* WSRequestHandler::processIncomingMessage(std::string& textMessage) {
 	if (!data) {
 		blog(LOG_ERROR, "invalid JSON payload received for '%s'", msg);
 		return SendErrorResponse("invalid JSON payload");
-	}
-
-	if (Config::Current()->DebugEnabled) {
-		blog(LOG_DEBUG, "Request >> '%s'", msg);
 	}
 
 	if (!hasField("request-type") || !hasField("message-id")) {

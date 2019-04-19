@@ -224,8 +224,9 @@ void WSEvents::broadcastUpdate(const char* updateType,
 	QString json = obs_data_get_json(update);
 	_srv->broadcast(json.toStdString());
 
-	if (Config::Current()->DebugEnabled)
-		blog(LOG_DEBUG, "Update << '%s'", json.toUtf8().constData());
+	if (Config::Current()->DebugEnabled) {
+		blog(LOG_INFO, "Update << '%s'", json.toUtf8().constData());
+	}
 }
 
 void WSEvents::hookTransitionBeginEvent() {
