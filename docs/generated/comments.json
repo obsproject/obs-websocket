@@ -1304,6 +1304,562 @@
     "sources": [
       {
         "subheads": [],
+        "description": "A source has been created. A source can be an input, a scene or a transition.",
+        "return": [
+          "{String} `sourceName` Source name",
+          "{String} `sourceType` Source type. Can be \"input\", \"scene\", \"transition\" or \"filter\".",
+          "{String} `sourceKind` Source kind.",
+          "{Object} `sourceSettings` Source settings"
+        ],
+        "api": "events",
+        "name": "SourceCreated",
+        "category": "sources",
+        "since": "4.6.0",
+        "returns": [
+          {
+            "type": "String",
+            "name": "sourceName",
+            "description": "Source name"
+          },
+          {
+            "type": "String",
+            "name": "sourceType",
+            "description": "Source type. Can be \"input\", \"scene\", \"transition\" or \"filter\"."
+          },
+          {
+            "type": "String",
+            "name": "sourceKind",
+            "description": "Source kind."
+          },
+          {
+            "type": "Object",
+            "name": "sourceSettings",
+            "description": "Source settings"
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "SourceCreated"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "sources"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.6.0"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "SourceCreated"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "A source has been destroyed/removed. A source can be an input, a scene or a transition.",
+        "return": [
+          "{String} `sourceName` Source name",
+          "{String} `sourceType` Source type. Can be \"input\", \"scene\", \"transition\" or \"filter\".",
+          "{String} `sourceKind` Source kind."
+        ],
+        "api": "events",
+        "name": "SourceDestroyed",
+        "category": "sources",
+        "since": "4.6.0",
+        "returns": [
+          {
+            "type": "String",
+            "name": "sourceName",
+            "description": "Source name"
+          },
+          {
+            "type": "String",
+            "name": "sourceType",
+            "description": "Source type. Can be \"input\", \"scene\", \"transition\" or \"filter\"."
+          },
+          {
+            "type": "String",
+            "name": "sourceKind",
+            "description": "Source kind."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "SourceDestroyed"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "sources"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.6.0"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "SourceDestroyed"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "The volume of a source has changed.",
+        "return": [
+          "{String} `sourceName` Source name",
+          "{float} `volume` Source volume"
+        ],
+        "api": "events",
+        "name": "SourceVolumeChanged",
+        "category": "sources",
+        "since": "4.6.0",
+        "returns": [
+          {
+            "type": "String",
+            "name": "sourceName",
+            "description": "Source name"
+          },
+          {
+            "type": "float",
+            "name": "volume",
+            "description": "Source volume"
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "SourceVolumeChanged"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "sources"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.6.0"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "SourceVolumeChanged"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "A source has been muted or unmuted.",
+        "return": [
+          "{String} `sourceName` Source name",
+          "{boolean} `muted` Mute status of the source"
+        ],
+        "api": "events",
+        "name": "SourceMuteStateChanged",
+        "category": "sources",
+        "since": "4.6.0",
+        "returns": [
+          {
+            "type": "String",
+            "name": "sourceName",
+            "description": "Source name"
+          },
+          {
+            "type": "boolean",
+            "name": "muted",
+            "description": "Mute status of the source"
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "SourceMuteStateChanged"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "sources"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.6.0"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "SourceMuteStateChanged"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "The audio sync offset of a source has changed.",
+        "return": [
+          "{String} `sourceName` Source name",
+          "{int} `syncOffset` Audio sync offset of the source (in nanoseconds)"
+        ],
+        "api": "events",
+        "name": "SourceAudioSyncOffsetChanged",
+        "category": "sources",
+        "since": "4.6.0",
+        "returns": [
+          {
+            "type": "String",
+            "name": "sourceName",
+            "description": "Source name"
+          },
+          {
+            "type": "int",
+            "name": "syncOffset",
+            "description": "Audio sync offset of the source (in nanoseconds)"
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "SourceAudioSyncOffsetChanged"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "sources"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.6.0"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "SourceAudioSyncOffsetChanged"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Audio mixer routing changed on a source.",
+        "return": [
+          "{String} `sourceName` Source name",
+          "{Array<Object>} `routingStatus` Routing status of the source for each audio mixer (array of 6 values)",
+          "{int} `routingStatus.*.id` Mixer number",
+          "{boolean} `routingStatus.*.enabled` Routing status",
+          "{String} `hexMixersValue` Raw mixer flags (little-endian, one bit per mixer) as an hexadecimal value"
+        ],
+        "api": "events",
+        "name": "OnSourceAudioMixersChanged",
+        "category": "sources",
+        "since": "4.6.0",
+        "returns": [
+          {
+            "type": "String",
+            "name": "sourceName",
+            "description": "Source name"
+          },
+          {
+            "type": "Array<Object>",
+            "name": "routingStatus",
+            "description": "Routing status of the source for each audio mixer (array of 6 values)"
+          },
+          {
+            "type": "int",
+            "name": "routingStatus.*.id",
+            "description": "Mixer number"
+          },
+          {
+            "type": "boolean",
+            "name": "routingStatus.*.enabled",
+            "description": "Routing status"
+          },
+          {
+            "type": "String",
+            "name": "hexMixersValue",
+            "description": "Raw mixer flags (little-endian, one bit per mixer) as an hexadecimal value"
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "OnSourceAudioMixersChanged"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "sources"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.6.0"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "OnSourceAudioMixersChanged"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "A source has been renamed.",
+        "return": [
+          "{String} `previousName` Previous source name",
+          "{String} `newName` New source name"
+        ],
+        "api": "events",
+        "name": "SourceRenamed",
+        "category": "sources",
+        "since": "4.6.0",
+        "returns": [
+          {
+            "type": "String",
+            "name": "previousName",
+            "description": "Previous source name"
+          },
+          {
+            "type": "String",
+            "name": "newName",
+            "description": "New source name"
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "SourceRenamed"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "sources"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.6.0"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "SourceRenamed"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "A filter was added to a source.",
+        "return": [
+          "{String} `sourceName` Source name",
+          "{String} `filterName` Filter name",
+          "{String} `filterType` Filter type",
+          "{Object} `filterSettings` Filter settings"
+        ],
+        "api": "events",
+        "name": "SourceFilterAdded",
+        "category": "sources",
+        "since": "4.6.0",
+        "returns": [
+          {
+            "type": "String",
+            "name": "sourceName",
+            "description": "Source name"
+          },
+          {
+            "type": "String",
+            "name": "filterName",
+            "description": "Filter name"
+          },
+          {
+            "type": "String",
+            "name": "filterType",
+            "description": "Filter type"
+          },
+          {
+            "type": "Object",
+            "name": "filterSettings",
+            "description": "Filter settings"
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "SourceFilterAdded"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "sources"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.6.0"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "SourceFilterAdded"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "A filter was removed from a source.",
+        "return": [
+          "{String} `sourceName` Source name",
+          "{String} `filterName` Filter name",
+          "{String} `filterType` Filter type"
+        ],
+        "api": "events",
+        "name": "SourceFilterRemoved",
+        "category": "sources",
+        "since": "4.6.0",
+        "returns": [
+          {
+            "type": "String",
+            "name": "sourceName",
+            "description": "Source name"
+          },
+          {
+            "type": "String",
+            "name": "filterName",
+            "description": "Filter name"
+          },
+          {
+            "type": "String",
+            "name": "filterType",
+            "description": "Filter type"
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "SourceFilterRemoved"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "sources"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.6.0"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "SourceFilterRemoved"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Filters in a source have been reordered.",
+        "return": [
+          "{String} `sourceName` Source name",
+          "{Array<Object>} `filters` Ordered Filters list",
+          "{String} `filters.*.name` Filter name",
+          "{String} `filters.*.type` Filter type"
+        ],
+        "api": "events",
+        "name": "SourceFiltersReordered",
+        "category": "sources",
+        "since": "4.6.0",
+        "returns": [
+          {
+            "type": "String",
+            "name": "sourceName",
+            "description": "Source name"
+          },
+          {
+            "type": "Array<Object>",
+            "name": "filters",
+            "description": "Ordered Filters list"
+          },
+          {
+            "type": "String",
+            "name": "filters.*.name",
+            "description": "Filter name"
+          },
+          {
+            "type": "String",
+            "name": "filters.*.type",
+            "description": "Filter type"
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "SourceFiltersReordered"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "sources"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.6.0"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "SourceFiltersReordered"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
         "description": "Scene items have been reordered.",
         "return": "{String} `scene-name` Name of the scene where items have been reordered.",
         "api": "events",

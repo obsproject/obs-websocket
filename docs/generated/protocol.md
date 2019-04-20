@@ -81,6 +81,16 @@ auth_response = base64_encode(auth_response_hash)
   * [General](#general)
     + [Heartbeat](#heartbeat)
   * [Sources](#sources)
+    + [SourceCreated](#sourcecreated)
+    + [SourceDestroyed](#sourcedestroyed)
+    + [SourceVolumeChanged](#sourcevolumechanged)
+    + [SourceMuteStateChanged](#sourcemutestatechanged)
+    + [SourceAudioSyncOffsetChanged](#sourceaudiosyncoffsetchanged)
+    + [OnSourceAudioMixersChanged](#onsourceaudiomixerschanged)
+    + [SourceRenamed](#sourcerenamed)
+    + [SourceFilterAdded](#sourcefilteradded)
+    + [SourceFilterRemoved](#sourcefilterremoved)
+    + [SourceFiltersReordered](#sourcefiltersreordered)
     + [SourceOrderChanged](#sourceorderchanged)
     + [SceneItemAdded](#sceneitemadded)
     + [SceneItemRemoved](#sceneitemremoved)
@@ -634,6 +644,187 @@ Emitted every 2 seconds after enabling it by calling SetHeartbeat.
 ---
 
 ## Sources
+
+### SourceCreated
+
+
+- Added in v4.6.0
+
+A source has been created. A source can be an input, a scene or a transition.
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sourceName` | _String_ | Source name |
+| `sourceType` | _String_ | Source type. Can be "input", "scene", "transition" or "filter". |
+| `sourceKind` | _String_ | Source kind. |
+| `sourceSettings` | _Object_ | Source settings |
+
+
+---
+
+### SourceDestroyed
+
+
+- Added in v4.6.0
+
+A source has been destroyed/removed. A source can be an input, a scene or a transition.
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sourceName` | _String_ | Source name |
+| `sourceType` | _String_ | Source type. Can be "input", "scene", "transition" or "filter". |
+| `sourceKind` | _String_ | Source kind. |
+
+
+---
+
+### SourceVolumeChanged
+
+
+- Added in v4.6.0
+
+The volume of a source has changed.
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sourceName` | _String_ | Source name |
+| `volume` | _float_ | Source volume |
+
+
+---
+
+### SourceMuteStateChanged
+
+
+- Added in v4.6.0
+
+A source has been muted or unmuted.
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sourceName` | _String_ | Source name |
+| `muted` | _boolean_ | Mute status of the source |
+
+
+---
+
+### SourceAudioSyncOffsetChanged
+
+
+- Added in v4.6.0
+
+The audio sync offset of a source has changed.
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sourceName` | _String_ | Source name |
+| `syncOffset` | _int_ | Audio sync offset of the source (in nanoseconds) |
+
+
+---
+
+### OnSourceAudioMixersChanged
+
+
+- Added in v4.6.0
+
+Audio mixer routing changed on a source.
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sourceName` | _String_ | Source name |
+| `routingStatus` | _Array&lt;Object&gt;_ | Routing status of the source for each audio mixer (array of 6 values) |
+| `routingStatus.*.id` | _int_ | Mixer number |
+| `routingStatus.*.enabled` | _boolean_ | Routing status |
+| `hexMixersValue` | _String_ | Raw mixer flags (little-endian, one bit per mixer) as an hexadecimal value |
+
+
+---
+
+### SourceRenamed
+
+
+- Added in v4.6.0
+
+A source has been renamed.
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `previousName` | _String_ | Previous source name |
+| `newName` | _String_ | New source name |
+
+
+---
+
+### SourceFilterAdded
+
+
+- Added in v4.6.0
+
+A filter was added to a source.
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sourceName` | _String_ | Source name |
+| `filterName` | _String_ | Filter name |
+| `filterType` | _String_ | Filter type |
+| `filterSettings` | _Object_ | Filter settings |
+
+
+---
+
+### SourceFilterRemoved
+
+
+- Added in v4.6.0
+
+A filter was removed from a source.
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sourceName` | _String_ | Source name |
+| `filterName` | _String_ | Filter name |
+| `filterType` | _String_ | Filter type |
+
+
+---
+
+### SourceFiltersReordered
+
+
+- Added in v4.6.0
+
+Filters in a source have been reordered.
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sourceName` | _String_ | Source name |
+| `filters` | _Array&lt;Object&gt;_ | Ordered Filters list |
+| `filters.*.name` | _String_ | Filter name |
+| `filters.*.type` | _String_ | Filter type |
+
+
+---
 
 ### SourceOrderChanged
 
