@@ -873,7 +873,7 @@ void WSEvents::OnSourceVolumeChange(void* param, calldata_t* data) {
  * A source has been muted or unmuted.
  *
  * @return {String} `sourceName` Source name
- * @return {boolean} `mute` Mute status of the source
+ * @return {boolean} `muted` Mute status of the source
  *
  * @api events
  * @name SourceMuteStateChanged
@@ -888,14 +888,14 @@ void WSEvents::OnSourceMuteStateChange(void* param, calldata_t* data) {
 		return;
 	}
 
-	bool mute = false;
-	if (!calldata_get_bool(data, "mute", &mute)) {
+	bool muted = false;
+	if (!calldata_get_bool(data, "muted", &muted)) {
 		return;
 	}
 
 	OBSDataAutoRelease fields = obs_data_create();
 	obs_data_set_string(fields, "sourceName", obs_source_get_name(source));
-	obs_data_set_bool(fields, "mute", mute);
+	obs_data_set_bool(fields, "muted", muted);
 	self->broadcastUpdate("SourceMuteStateChanged", fields);
 }
 
