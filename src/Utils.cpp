@@ -667,3 +667,35 @@ obs_data_t* Utils::GetSceneItemPropertiesData(obs_sceneitem_t* sceneItem) {
 
 	return data;
 }
+
+obs_data_array_t* Utils::GetSourceFiltersList(obs_source_t* source, bool includeSettings)
+{
+	struct enum_params {
+		obs_data_array_t* filters;
+		bool includeSettings;
+	};
+
+	if (!source) {
+		return nullptr;
+	}
+
+	struct enum_params enumParams;
+
+	enumParams.filters = obs_data_array_create();
+	enumParams.includeSettings = includeSettings;
+
+	obs_source_enum_filters(source, [](obs_source_t* parent, obs_source_t* child, void* param)
+	{
+		auto enumParams = reinterpret_cast<struct enum_params*>(param);
+
+		OBSDataAutoRelease filter = obs_data_create();
+		obs_data_set_string(filter, "type", obs_source_get_id(child));
+		obs_data_set_string(filter, "name", obs_source_get_name(child));
+		if (enumParams->includeSettings) {
+			obs_data_set_obj(filter, "settings", obs_source_get_settings(child));
+		}
+		obs_data_array_push_back(enumParams->filters, filter);
+	}, &enumParams);
+
+	return enumParams.filters;
+}

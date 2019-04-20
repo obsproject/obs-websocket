@@ -998,7 +998,6 @@ void WSEvents::OnSourceRename(void* param, calldata_t* data) {
 	}
 
 	const char* previousName = calldata_get_string(data, "prev_name");
-	// TODO check?
 
 	OBSDataAutoRelease fields = obs_data_create();
 	obs_data_set_string(fields, "previousName", previousName);
@@ -1010,6 +1009,9 @@ void WSEvents::OnSourceRename(void* param, calldata_t* data) {
  * A filter was added to a source.
  *
  * @return {String} `sourceName` Source name
+ * @return {String} `filterName` Filter name
+ * @return {String} `filterType` Filter type
+ * @return {Object} `filterSettings` Filter settings
  *
  * @api events
  * @name SourceFilterAdded
@@ -1034,6 +1036,7 @@ void WSEvents::OnSourceFilterAdded(void* param, calldata_t* data) {
 	OBSDataAutoRelease fields = obs_data_create();
 	obs_data_set_string(fields, "sourceName", obs_source_get_name(source));
 	obs_data_set_string(fields, "filterName", obs_source_get_name(filter));
+	obs_data_set_string(fields, "filterType", obs_source_get_id(filter));
 	obs_data_set_obj(fields, "filterSettings", filterSettings);
 	self->broadcastUpdate("SourceFilterAdded", fields);
 }
@@ -1042,6 +1045,8 @@ void WSEvents::OnSourceFilterAdded(void* param, calldata_t* data) {
  * A filter was removed from a source.
  *
  * @return {String} `sourceName` Source name
+ * @return {String} `filterName` Filter name
+ * @return {String} `filterType` Filter type
  *
  * @api events
  * @name SourceFilterRemoved
@@ -1061,6 +1066,7 @@ void WSEvents::OnSourceFilterRemoved(void* param, calldata_t* data) {
 	OBSDataAutoRelease fields = obs_data_create();
 	obs_data_set_string(fields, "sourceName", obs_source_get_name(source));
 	obs_data_set_string(fields, "filterName", obs_source_get_name(filter));
+	obs_data_set_string(fields, "filterType", obs_source_get_id(filter));
 	self->broadcastUpdate("SourceFilterRemoved", fields);
 }
 
@@ -1068,6 +1074,9 @@ void WSEvents::OnSourceFilterRemoved(void* param, calldata_t* data) {
  * Filters in a source have been reordered.
  *
  * @return {String} `sourceName` Source name
+ * @return {Array<Object>} `filters` Ordered Filters list
+ * @return {String} `filters.*.name` Filter name
+ * @return {String} `filters.*.type` Filter type
  *
  * @api events
  * @name SourceFiltersReordered
@@ -1082,9 +1091,11 @@ void WSEvents::OnSourceFilterOrderChanged(void* param, calldata_t* data) {
 		return;
 	}
 
+	OBSDataArrayAutoRelease filters = Utils::GetSourceFiltersList(source, false);
+
 	OBSDataAutoRelease fields = obs_data_create();
 	obs_data_set_string(fields, "sourceName", obs_source_get_name(source));
-	// TODO filters list
+	obs_data_set_array(fields, "filters", filters);
 	self->broadcastUpdate("SourceFiltersReordered", fields);
 }
 

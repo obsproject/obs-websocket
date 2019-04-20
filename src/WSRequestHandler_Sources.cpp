@@ -1090,16 +1090,7 @@ HandlerResponse WSRequestHandler::HandleGetSourceFilters(WSRequestHandler* req)
 		return req->SendErrorResponse("specified source doesn't exist");
 	}
 
-	OBSDataArrayAutoRelease filters = obs_data_array_create();
-	obs_source_enum_filters(source, [](obs_source_t *parent, obs_source_t *child, void *param)
-	{
-		OBSDataAutoRelease filter = obs_data_create();
-		obs_data_set_string(filter, "type", obs_source_get_id(child));
-		obs_data_set_string(filter, "name", obs_source_get_name(child));
-		obs_data_set_obj(filter, "settings", obs_source_get_settings(child));
-		obs_data_array_push_back((obs_data_array_t*)param, filter);
-
-	}, filters);
+	OBSDataArrayAutoRelease filters = Utils::GetSourceFiltersList(source, true);
 
 	OBSDataAutoRelease response = obs_data_create();
 	obs_data_set_array(response, "filters", filters);
