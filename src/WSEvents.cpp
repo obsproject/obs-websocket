@@ -95,8 +95,6 @@ void WSEvents::ResetCurrent(WSServerPtr srv) {
 
 WSEvents::WSEvents(WSServerPtr srv) :
 	_srv(srv),
-	_streamingActive(false),
-	_recordingActive(false),
 	_streamStarttime(0),
 	_recStarttime(0),
 	HeartbeatIsActive(false),
