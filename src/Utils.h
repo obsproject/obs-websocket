@@ -51,6 +51,7 @@ class Utils {
 	static obs_data_array_t* GetScenes();
 	static obs_data_t* GetSceneData(obs_source_t* source);
 
+	// TODO contribute a proper frontend API method for this to OBS and remove this hack
 	static QSpinBox* GetTransitionDurationControl();
 	static int GetTransitionDuration();
 	static void SetTransitionDuration(int ms);
@@ -60,8 +61,10 @@ class Utils {
 	static QPushButton* GetPreviewModeButtonControl();
 	static QLayout* GetPreviewLayout();
 	static QListWidget* GetSceneListControl();
+	// TODO remove this hack
 	static obs_scene_t* SceneListItemToScene(QListWidgetItem* item);
 
+	// TODO contribute a proper frontend API method for this to OBS and remove this hack
 	static void TransitionToProgram();
 
 	static QString OBSVersionString();
