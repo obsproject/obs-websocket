@@ -903,7 +903,7 @@ void WSEvents::OnSourceMuteStateChange(void* param, calldata_t* data) {
  * The audio sync offset of a source has changed.
  *
  * @return {String} `sourceName` Source name
- * @return {int} `syncOffset` Audio sync offset of the source
+ * @return {int} `syncOffset` Audio sync offset of the source (in nanoseconds)
  *
  * @api events
  * @name SourceAudioSyncOffsetChanged
