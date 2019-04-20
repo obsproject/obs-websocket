@@ -18,10 +18,10 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #pragma once
 
-#include <QObject>
-#include <QMutex>
-#include <QSharedPointer>
-#include <QVariantHash>
+#include <QtCore/QObject>
+#include <QtCore/QMutex>
+#include <QtCore/QSharedPointer>
+#include <QtCore/QVariantHash>
 
 #include <map>
 #include <set>

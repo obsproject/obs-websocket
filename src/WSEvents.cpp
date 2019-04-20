@@ -19,7 +19,7 @@
 
 #include <util/platform.h>
 
-#include <QPushButton>
+#include <QtWidgets/QPushButton>
 
 #include "Config.h"
 #include "Utils.h"
@@ -51,16 +51,36 @@ const char* nsToTimestamp(uint64_t ns) {
 	uint64_t msPart = ms % 1000;
 
 	char* ts = (char*)bmalloc(64);
-	sprintf(ts, "%02d:%02d:%02d.%03d",
-		hoursPart, minutesPart, secsPart, msPart);
+	sprintf(ts, "%02lu:%02lu:%02lu.%03lu", hoursPart, minutesPart, secsPart, msPart);
 
 	return ts;
 }
 
-void* calldata_get_ptr(const calldata_t* data, const char* name) {
+const char* sourceTypeToString(obs_source_type type) {
+	switch (type) {
+		case OBS_SOURCE_TYPE_INPUT:
+			return "input";
+		case OBS_SOURCE_TYPE_SCENE:
+			return "scene";
+		case OBS_SOURCE_TYPE_TRANSITION:
+			return "transition";
+		case OBS_SOURCE_TYPE_FILTER:
+			return "filter";
+		default:
+			return "unknown";
+	}
+}
+
+template <typename T> T* calldata_get_pointer(const calldata_t* data, const char* name) {
 	void* ptr = nullptr;
 	calldata_get_ptr(data, name, &ptr);
-	return ptr;
+	return reinterpret_cast<T*>(ptr);
+}
+
+const char* calldata_get_string(const calldata_t* data, const char* name) {
+	const char* value = nullptr;
+	calldata_get_string(data, name, &value);
+	return value;
 }
 
 WSEventsPtr WSEvents::_instance = WSEventsPtr(nullptr);
@@ -75,11 +95,9 @@ void WSEvents::ResetCurrent(WSServerPtr srv) {
 
 WSEvents::WSEvents(WSServerPtr srv) :
 	_srv(srv),
-	streamStatusTimer(),
-	currentScene(nullptr),
-	HeartbeatIsActive(false),
 	_streamStarttime(0),
 	_recStarttime(0),
+	HeartbeatIsActive(false),
 	pulse(false)
 {
 	obs_frontend_add_event_callback(WSEvents::FrontendEventHandler, this);
@@ -95,25 +113,22 @@ WSEvents::WSEvents(WSServerPtr srv) :
 
 	heartbeatTimer.start(STATUS_INTERVAL);
 
-	QTimer::singleShot(1000, this, SLOT(deferredInitOperations()));
+	signal_handler_t* coreSignalHandler = obs_get_signal_handler();
+	if (coreSignalHandler) {
+		signal_handler_connect(coreSignalHandler, "source_create", OnSourceCreate, this);
+	}
 }
 
 WSEvents::~WSEvents() {
 	obs_frontend_remove_event_callback(WSEvents::FrontendEventHandler, this);
 }
 
-void WSEvents::deferredInitOperations() {
-	hookTransitionBeginEvent();
-
-	OBSSourceAutoRelease scene = obs_frontend_get_current_scene();
-	connectSceneSignals(scene);
-}
-
 void WSEvents::FrontendEventHandler(enum obs_frontend_event event, void* private_data) {
-	WSEvents* owner = static_cast<WSEvents*>(private_data);
+	auto owner = reinterpret_cast<WSEvents*>(private_data);
 
-	if (!owner->_srv)
+	if (!owner->_srv) {
 		return;
+	}
 
 	if (event == OBS_FRONTEND_EVENT_SCENE_CHANGED) {
 		owner->OnSceneChange();
@@ -122,7 +137,6 @@ void WSEvents::FrontendEventHandler(enum obs_frontend_event event, void* private
 		owner->OnSceneListChange();
 	}
 	else if (event == OBS_FRONTEND_EVENT_SCENE_COLLECTION_CHANGED) {
-		owner->hookTransitionBeginEvent();
 		owner->OnSceneCollectionChange();
 	}
 	else if (event == OBS_FRONTEND_EVENT_SCENE_COLLECTION_LIST_CHANGED) {
@@ -132,7 +146,6 @@ void WSEvents::FrontendEventHandler(enum obs_frontend_event event, void* private
 		owner->OnTransitionChange();
 	}
 	else if (event == OBS_FRONTEND_EVENT_TRANSITION_LIST_CHANGED) {
-		owner->hookTransitionBeginEvent();
 		owner->OnTransitionListChange();
 	}
 	else if (event == OBS_FRONTEND_EVENT_PROFILE_CHANGED) {
@@ -191,7 +204,6 @@ void WSEvents::FrontendEventHandler(enum obs_frontend_event event, void* private
 		owner->OnPreviewSceneChanged();
 	}
 	else if (event == OBS_FRONTEND_EVENT_EXIT) {
-		owner->connectSceneSignals(nullptr);
 		owner->OnExit();
 	}
 }
@@ -223,56 +235,6 @@ void WSEvents::broadcastUpdate(const char* updateType,
 
 	if (Config::Current()->DebugEnabled) {
 		blog(LOG_INFO, "Update << '%s'", json.toUtf8().constData());
-	}
-}
-
-void WSEvents::hookTransitionBeginEvent() {
-	obs_frontend_source_list transitions = {};
-	obs_frontend_get_transitions(&transitions);
-
-	for (int i = 0; i < transitions.sources.num; i++) {
-		obs_source_t* transition = transitions.sources.array[i];
-		signal_handler_t* sh = obs_source_get_signal_handler(transition);
-		signal_handler_disconnect(sh, "transition_start", OnTransitionBegin, this);
-		signal_handler_connect(sh, "transition_start", OnTransitionBegin, this);
-	}
-
-	obs_frontend_source_list_free(&transitions);
-}
-
-void WSEvents::connectSceneSignals(obs_source_t* scene) {
-	signal_handler_t* sh = nullptr;
-
-	if (currentScene) {
-		sh = obs_source_get_signal_handler(currentScene);
-
-		signal_handler_disconnect(sh,
-			"reorder", OnSceneReordered, this);
-		signal_handler_disconnect(sh,
-			"item_add", OnSceneItemAdd, this);
-		signal_handler_disconnect(sh,
-			"item_remove", OnSceneItemDelete, this);
-		signal_handler_disconnect(sh,
-			"item_visible", OnSceneItemVisibilityChanged, this);
-		signal_handler_disconnect(sh,
-			"item_transform", OnSceneItemTransform, this);
-	}
-
-	currentScene = scene;
-
-	if (currentScene) {
-		// TODO : connect to all scenes, not just the current one.
-		sh = obs_source_get_signal_handler(currentScene);
-		signal_handler_connect(sh,
-			"reorder", OnSceneReordered, this);
-		signal_handler_connect(sh,
-			"item_add", OnSceneItemAdd, this);
-		signal_handler_connect(sh,
-			"item_remove", OnSceneItemDelete, this);
-		signal_handler_connect(sh,
-			"item_visible", OnSceneItemVisibilityChanged, this);
-		signal_handler_connect(sh,
-			"item_transform", OnSceneItemTransform, this);
 	}
 }
 
@@ -312,7 +274,6 @@ const char* WSEvents::GetRecordingTimecode() {
 void WSEvents::OnSceneChange() {
 	OBSSourceAutoRelease currentScene = obs_frontend_get_current_scene();
 	OBSDataArrayAutoRelease sceneItems = Utils::GetSceneItems(currentScene);
-	connectSceneSignals(currentScene);
 
 	OBSDataAutoRelease data = obs_data_create();
 	obs_data_set_string(data, "scene-name", obs_source_get_name(currentScene));
@@ -344,8 +305,6 @@ void WSEvents::OnSceneListChange() {
  */
 void WSEvents::OnSceneCollectionChange() {
 	broadcastUpdate("SceneCollectionChanged");
-
-	currentScene = nullptr;
 
 	OnTransitionListChange();
 	OnTransitionChange();
@@ -755,9 +714,9 @@ void WSEvents::TransitionDurationChanged(int ms) {
  * @since 4.0.0
  */
 void WSEvents::OnTransitionBegin(void* param, calldata_t* data) {
-	WSEvents* instance = static_cast<WSEvents*>(param);
+	auto instance = reinterpret_cast<WSEvents*>(param);
 
-	OBSSource transition = (obs_source_t*)calldata_get_ptr(data, "source");
+	OBSSource transition = calldata_get_pointer<obs_source_t>(data, "source");
 	if (!transition) return;
 
 	// Detect if transition is the global transition or a transition override.
@@ -793,6 +752,352 @@ void WSEvents::OnTransitionBegin(void* param, calldata_t* data) {
 }
 
 /**
+ * A source has been created. A source can be an input, a scene or a transition.
+ *
+ * @return {String} `sourceName` Source name
+ * @return {String} `sourceType` Source type. Can be "input", "scene", "transition" or "filter".
+ * @return {String} `sourceKind` Source kind.
+ * @return {Object} `sourceSettings` Source settings
+ *
+ * @api events
+ * @name SourceCreated
+ * @category sources
+ * @since 4.6.0
+ */
+void WSEvents::OnSourceCreate(void* param, calldata_t* data) {
+	auto self = reinterpret_cast<WSEvents*>(param);
+
+	OBSSource source = calldata_get_pointer<obs_source_t>(data, "source");
+	if (!source) {
+		return;
+	}
+
+	obs_source_type sourceType = obs_source_get_type(source);
+	signal_handler_t* sh = obs_source_get_signal_handler(source);
+
+	signal_handler_connect(sh, "rename", OnSourceRename, self);
+
+	signal_handler_connect(sh, "mute", OnSourceMuteStateChange, self);
+	signal_handler_connect(sh, "volume", OnSourceVolumeChange, self);
+	signal_handler_connect(sh, "audio_sync", OnSourceAudioSyncOffsetChanged, self);
+	signal_handler_connect(sh, "audio_mixers", OnSourceAudioMixersChanged, self);
+
+	signal_handler_connect(sh, "filter_add", OnSourceFilterAdded, self);
+	signal_handler_connect(sh, "filter_remove", OnSourceFilterRemoved, self);
+	signal_handler_connect(sh, "reorder_filters", OnSourceFilterOrderChanged, self);
+
+	if (sourceType == OBS_SOURCE_TYPE_SCENE) {
+		signal_handler_connect(sh, "reorder", OnSceneReordered, self);
+		signal_handler_connect(sh, "item_add", OnSceneItemAdd, self);
+		signal_handler_connect(sh, "item_remove", OnSceneItemDelete, self);
+		signal_handler_connect(sh,
+			"item_visible", OnSceneItemVisibilityChanged, self);
+		signal_handler_connect(sh, "item_transform", OnSceneItemTransform, self);
+	}
+	if (sourceType == OBS_SOURCE_TYPE_TRANSITION) {
+		signal_handler_connect(sh, "transition_start", OnTransitionBegin, self);
+	}
+
+	OBSDataAutoRelease sourceSettings = obs_source_get_settings(source);
+
+	OBSDataAutoRelease fields = obs_data_create();
+	obs_data_set_string(fields, "sourceName", obs_source_get_name(source));
+	obs_data_set_string(fields, "sourceType", sourceTypeToString(sourceType));
+	obs_data_set_string(fields, "sourceKind", obs_source_get_id(source));
+	obs_data_set_obj(fields, "sourceSettings", sourceSettings);
+	self->broadcastUpdate("SourceCreated", fields);
+}
+
+/**
+ * A source has been destroyed/removed. A source can be an input, a scene or a transition.
+ *
+ * @return {String} `sourceName` Source name
+ * @return {String} `sourceType` Source type. Can be "input", "scene", "transition" or "filter".
+ * @return {String} `sourceKind` Source kind.
+ *
+ * @api events
+ * @name SourceDestroyed
+ * @category sources
+ * @since 4.6.0
+ */
+void WSEvents::OnSourceDestroy(void* param, calldata_t* data) {
+	auto self = reinterpret_cast<WSEvents*>(param);
+
+	obs_source_t* source = calldata_get_pointer<obs_source_t>(data, "source");
+	if (!source) {
+		return;
+	}
+
+	obs_source_type sourceType = obs_source_get_type(source);
+
+	OBSDataAutoRelease fields = obs_data_create();
+	obs_data_set_string(fields, "sourceName", obs_source_get_name(source));
+	obs_data_set_string(fields, "sourceType", sourceTypeToString(sourceType));
+	obs_data_set_string(fields, "sourceKind", obs_source_get_id(source));
+	self->broadcastUpdate("SourceDestroyed", fields);
+}
+
+/**
+ * The volume of a source has changed.
+ *
+ * @return {String} `sourceName` Source name
+ * @return {float} `volume` Source volume
+ *
+ * @api events
+ * @name SourceVolumeChanged
+ * @category sources
+ * @since 4.6.0
+ */
+void WSEvents::OnSourceVolumeChange(void* param, calldata_t* data) {
+	auto self = reinterpret_cast<WSEvents*>(param);
+
+	OBSSource source = calldata_get_pointer<obs_source_t>(data, "source");
+	if (!source) {
+		return;
+	}
+
+	double volume = 0;
+	if (!calldata_get_float(data, "volume", &volume)) {
+		return;
+	}
+
+	OBSDataAutoRelease fields = obs_data_create();
+	obs_data_set_string(fields, "sourceName", obs_source_get_name(source));
+	obs_data_set_double(fields, "volume", volume);
+	self->broadcastUpdate("SourceVolumeChanged", fields);
+}
+
+/**
+ * A source has been muted or unmuted.
+ *
+ * @return {String} `sourceName` Source name
+ * @return {boolean} `muted` Mute status of the source
+ *
+ * @api events
+ * @name SourceMuteStateChanged
+ * @category sources
+ * @since 4.6.0
+ */
+void WSEvents::OnSourceMuteStateChange(void* param, calldata_t* data) {
+	auto self = reinterpret_cast<WSEvents*>(param);
+
+	OBSSource source = calldata_get_pointer<obs_source_t>(data, "source");
+	if (!source) {
+		return;
+	}
+
+	bool muted = false;
+	if (!calldata_get_bool(data, "muted", &muted)) {
+		return;
+	}
+
+	OBSDataAutoRelease fields = obs_data_create();
+	obs_data_set_string(fields, "sourceName", obs_source_get_name(source));
+	obs_data_set_bool(fields, "muted", muted);
+	self->broadcastUpdate("SourceMuteStateChanged", fields);
+}
+
+/**
+ * The audio sync offset of a source has changed.
+ *
+ * @return {String} `sourceName` Source name
+ * @return {int} `syncOffset` Audio sync offset of the source (in nanoseconds)
+ *
+ * @api events
+ * @name SourceAudioSyncOffsetChanged
+ * @category sources
+ * @since 4.6.0
+ */
+void WSEvents::OnSourceAudioSyncOffsetChanged(void* param, calldata_t* data) {
+	auto self = reinterpret_cast<WSEvents*>(param);
+
+	OBSSource source = calldata_get_pointer<obs_source_t>(data, "source");
+	if (!source) {
+		return;
+	}
+
+	long long syncOffset;
+	if (!calldata_get_int(data, "offset", &syncOffset)) {
+		return;
+	}
+
+	OBSDataAutoRelease fields = obs_data_create();
+	obs_data_set_string(fields, "sourceName", obs_source_get_name(source));
+	obs_data_set_int(fields, "syncOffset", (int)syncOffset);
+	self->broadcastUpdate("SourceAudioSyncOffsetChanged", fields);
+}
+
+/**
+ * Audio mixer routing changed on a source.
+ *
+ * @return {String} `sourceName` Source name
+ * @return {Array<Object>} `routingStatus` Routing status of the source for each audio mixer (array of 6 values)
+ * @return {int} `routingStatus.*.id` Mixer number
+ * @return {boolean} `routingStatus.*.enabled` Routing status
+ * @return {String} `hexMixersValue` Raw mixer flags (little-endian, one bit per mixer) as an hexadecimal value 
+ *
+ * @api events
+ * @name OnSourceAudioMixersChanged
+ * @category sources
+ * @since 4.6.0
+ */
+void WSEvents::OnSourceAudioMixersChanged(void* param, calldata_t* data) {
+	auto self = reinterpret_cast<WSEvents*>(param);
+
+	OBSSource source = calldata_get_pointer<obs_source_t>(data, "source");
+	if (!source) {
+		return;
+	}
+
+	long long audioMixers;
+	if (!calldata_get_int(data, "mixers", &audioMixers)) {
+		return;
+	}
+
+	OBSDataArrayAutoRelease mixers = obs_data_array_create();
+	for (size_t i = 0; i < MAX_AUDIO_MIXES; i++) {
+		OBSDataAutoRelease item = obs_data_create();
+		obs_data_set_int(item, "id", i + 1);
+		obs_data_set_bool(item, "enabled", (1 << i) & audioMixers);
+		obs_data_array_push_back(mixers, item);
+	}
+
+	const QString hexValue = QString::number(audioMixers, 16).toUpper().prepend("0x");
+
+	OBSDataAutoRelease fields = obs_data_create();
+	obs_data_set_string(fields, "sourceName", obs_source_get_name(source));
+	obs_data_set_array(fields, "mixers", mixers);
+	obs_data_set_string(fields, "hexMixersValue", hexValue.toUtf8());
+	self->broadcastUpdate("SourceAudioMixersChanged", fields);
+}
+
+/**
+ * A source has been renamed.
+ *
+ * @return {String} `previousName` Previous source name
+ * @return {String} `newName` New source name
+ * 
+ * @api events
+ * @name SourceRenamed
+ * @category sources
+ * @since 4.6.0
+ */
+void WSEvents::OnSourceRename(void* param, calldata_t* data) {
+	auto self = reinterpret_cast<WSEvents*>(param);
+
+	OBSSource source = calldata_get_pointer<obs_source_t>(data, "source");
+	if (!source) {
+		return;
+	}
+
+	const char* newName = calldata_get_string(data, "new_name");
+	if (!newName) {
+		return;
+	}
+
+	const char* previousName = calldata_get_string(data, "prev_name");
+
+	OBSDataAutoRelease fields = obs_data_create();
+	obs_data_set_string(fields, "previousName", previousName);
+	obs_data_set_string(fields, "newName", newName);
+	self->broadcastUpdate("SourceRenamed", fields);
+}
+
+/**
+ * A filter was added to a source.
+ *
+ * @return {String} `sourceName` Source name
+ * @return {String} `filterName` Filter name
+ * @return {String} `filterType` Filter type
+ * @return {Object} `filterSettings` Filter settings
+ *
+ * @api events
+ * @name SourceFilterAdded
+ * @category sources
+ * @since 4.6.0
+ */
+void WSEvents::OnSourceFilterAdded(void* param, calldata_t* data) {
+	auto self = reinterpret_cast<WSEvents*>(param);
+
+	OBSSource source = calldata_get_pointer<obs_source_t>(data, "source");
+	if (!source) {
+		return;
+	}
+
+	OBSSource filter = calldata_get_pointer<obs_source_t>(data, "filter");
+	if (!filter) {
+		return;
+	}
+
+	OBSDataAutoRelease filterSettings = obs_source_get_settings(filter);
+
+	OBSDataAutoRelease fields = obs_data_create();
+	obs_data_set_string(fields, "sourceName", obs_source_get_name(source));
+	obs_data_set_string(fields, "filterName", obs_source_get_name(filter));
+	obs_data_set_string(fields, "filterType", obs_source_get_id(filter));
+	obs_data_set_obj(fields, "filterSettings", filterSettings);
+	self->broadcastUpdate("SourceFilterAdded", fields);
+}
+
+/**
+ * A filter was removed from a source.
+ *
+ * @return {String} `sourceName` Source name
+ * @return {String} `filterName` Filter name
+ * @return {String} `filterType` Filter type
+ *
+ * @api events
+ * @name SourceFilterRemoved
+ * @category sources
+ * @since 4.6.0
+ */
+void WSEvents::OnSourceFilterRemoved(void* param, calldata_t* data) {
+	auto self = reinterpret_cast<WSEvents*>(param);
+
+	obs_source_t* source = calldata_get_pointer<obs_source_t>(data, "source");
+	if (!source) {
+		return;
+	}
+
+	obs_source_t* filter = calldata_get_pointer<obs_source_t>(data, "filter");
+
+	OBSDataAutoRelease fields = obs_data_create();
+	obs_data_set_string(fields, "sourceName", obs_source_get_name(source));
+	obs_data_set_string(fields, "filterName", obs_source_get_name(filter));
+	obs_data_set_string(fields, "filterType", obs_source_get_id(filter));
+	self->broadcastUpdate("SourceFilterRemoved", fields);
+}
+
+/**
+ * Filters in a source have been reordered.
+ *
+ * @return {String} `sourceName` Source name
+ * @return {Array<Object>} `filters` Ordered Filters list
+ * @return {String} `filters.*.name` Filter name
+ * @return {String} `filters.*.type` Filter type
+ *
+ * @api events
+ * @name SourceFiltersReordered
+ * @category sources
+ * @since 4.6.0
+ */
+void WSEvents::OnSourceFilterOrderChanged(void* param, calldata_t* data) {
+	auto self = reinterpret_cast<WSEvents*>(param);
+
+	OBSSource source = calldata_get_pointer<obs_source_t>(data, "source");
+	if (!source) {
+		return;
+	}
+
+	OBSDataArrayAutoRelease filters = Utils::GetSourceFiltersList(source, false);
+
+	OBSDataAutoRelease fields = obs_data_create();
+	obs_data_set_string(fields, "sourceName", obs_source_get_name(source));
+	obs_data_set_array(fields, "filters", filters);
+	self->broadcastUpdate("SourceFiltersReordered", fields);
+}
+
+/**
  * Scene items have been reordered.
  *
  * @return {String} `scene-name` Name of the scene where items have been reordered.
@@ -803,7 +1108,7 @@ void WSEvents::OnTransitionBegin(void* param, calldata_t* data) {
  * @since 4.0.0
  */
 void WSEvents::OnSceneReordered(void* param, calldata_t* data) {
-	WSEvents* instance = static_cast<WSEvents*>(param);
+	auto instance = reinterpret_cast<WSEvents*>(param);
 
 	obs_scene_t* scene = nullptr;
 	calldata_get_ptr(data, "scene", &scene);
@@ -827,7 +1132,7 @@ void WSEvents::OnSceneReordered(void* param, calldata_t* data) {
  * @since 4.0.0
  */
 void WSEvents::OnSceneItemAdd(void* param, calldata_t* data) {
-	WSEvents* instance = static_cast<WSEvents*>(param);
+	auto instance = reinterpret_cast<WSEvents*>(param);
 
 	obs_scene_t* scene = nullptr;
 	calldata_get_ptr(data, "scene", &scene);
@@ -859,7 +1164,7 @@ void WSEvents::OnSceneItemAdd(void* param, calldata_t* data) {
  * @since 4.0.0
  */
 void WSEvents::OnSceneItemDelete(void* param, calldata_t* data) {
-	WSEvents* instance = static_cast<WSEvents*>(param);
+	auto instance = reinterpret_cast<WSEvents*>(param);
 
 	obs_scene_t* scene = nullptr;
 	calldata_get_ptr(data, "scene", &scene);
@@ -892,7 +1197,7 @@ void WSEvents::OnSceneItemDelete(void* param, calldata_t* data) {
  * @since 4.0.0
  */
 void WSEvents::OnSceneItemVisibilityChanged(void* param, calldata_t* data) {
-	WSEvents* instance = static_cast<WSEvents*>(param);
+	auto instance = reinterpret_cast<WSEvents*>(param);
 
 	obs_scene_t* scene = nullptr;
 	calldata_get_ptr(data, "scene", &scene);
@@ -929,7 +1234,7 @@ void WSEvents::OnSceneItemVisibilityChanged(void* param, calldata_t* data) {
  * @since unreleased
  */
 void WSEvents::OnSceneItemTransform(void* param, calldata_t* data) {
-	WSEvents* instance = static_cast<WSEvents*>(param);
+	auto instance = reinterpret_cast<WSEvents*>(param);
 
 	obs_scene_t* scene = nullptr;
 	calldata_get_ptr(data, "scene", &scene);

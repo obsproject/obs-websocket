@@ -1,4 +1,3 @@
-#include <QString>
 #include "Utils.h"
 
 #include "WSRequestHandler.h"

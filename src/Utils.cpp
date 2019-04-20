@@ -16,9 +16,10 @@ You should have received a copy of the GNU General Public License along
 with this program. If not, see <https://www.gnu.org/licenses/>
 */
 
-#include <QMainWindow>
-#include <QDir>
-#include <QUrl>
+#include <QtWidgets/QMainWindow>
+#include <QtCore/QDir>
+#include <QtCore/QUrl>
+
 #include <obs-frontend-api.h>
 #include <obs.hpp>
 #include "obs-websocket.h"
@@ -47,22 +48,28 @@ obs_bounds_type getBoundsTypeFromName(QString name) {
 	return boundTypeNames.key(name);
 }
 
-obs_data_array_t* Utils::StringListToArray(char** strings, char* key) {
-	if (!strings)
-		return obs_data_array_create();
-
+obs_data_array_t* Utils::StringListToArray(char** strings, const char* key) {
 	obs_data_array_t* list = obs_data_array_create();
 
-	char* value = "";
-	for (int i = 0; value != nullptr; i++) {
-		value = strings[i];
+	if (!strings || !key) {
+		return list; // empty list
+	}
+
+	size_t index = 0;
+	char* value = nullptr;
+
+	do {
+		value = strings[index];
 
 		OBSDataAutoRelease item = obs_data_create();
 		obs_data_set_string(item, key, value);
 
-		if (value)
+		if (value) {
 			obs_data_array_push_back(list, item);
-	}
+		}
+
+		index++;
+	} while (value != nullptr);
 
 	return list;
 }
@@ -71,8 +78,9 @@ obs_data_array_t* Utils::GetSceneItems(obs_source_t* source) {
 	obs_data_array_t* items = obs_data_array_create();
 	OBSScene scene = obs_scene_from_source(source);
 
-	if (!scene)
+	if (!scene) {
 		return nullptr;
+	}
 
 	obs_scene_enum_items(scene, [](
 			obs_scene_t* scene,
@@ -90,8 +98,9 @@ obs_data_array_t* Utils::GetSceneItems(obs_source_t* source) {
 }
 
 obs_data_t* Utils::GetSceneItemData(obs_sceneitem_t* item) {
-	if (!item)
+	if (!item) {
 		return nullptr;
+	}
 
 	vec2 pos;
 	obs_sceneitem_get_pos(item, &pos);
@@ -657,4 +666,36 @@ obs_data_t* Utils::GetSceneItemPropertiesData(obs_sceneitem_t* sceneItem) {
 	obs_data_set_double(data, "height", baseSourceHeight * scale.y);
 
 	return data;
+}
+
+obs_data_array_t* Utils::GetSourceFiltersList(obs_source_t* source, bool includeSettings)
+{
+	struct enum_params {
+		obs_data_array_t* filters;
+		bool includeSettings;
+	};
+
+	if (!source) {
+		return nullptr;
+	}
+
+	struct enum_params enumParams;
+
+	enumParams.filters = obs_data_array_create();
+	enumParams.includeSettings = includeSettings;
+
+	obs_source_enum_filters(source, [](obs_source_t* parent, obs_source_t* child, void* param)
+	{
+		auto enumParams = reinterpret_cast<struct enum_params*>(param);
+
+		OBSDataAutoRelease filter = obs_data_create();
+		obs_data_set_string(filter, "type", obs_source_get_id(child));
+		obs_data_set_string(filter, "name", obs_source_get_name(child));
+		if (enumParams->includeSettings) {
+			obs_data_set_obj(filter, "settings", obs_source_get_settings(child));
+		}
+		obs_data_array_push_back(enumParams->filters, filter);
+	}, &enumParams);
+
+	return enumParams.filters;
 }

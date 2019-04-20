@@ -20,11 +20,12 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include <stdio.h>
 
-#include <QSpinBox>
-#include <QPushButton>
-#include <QLayout>
-#include <QListWidget>
-#include <QSystemTrayIcon>
+#include <QtCore/QString>
+#include <QtWidgets/QSpinBox>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QLayout>
+#include <QtWidgets/QListWidget>
+#include <QtWidgets/QSystemTrayIcon>
 
 #include <obs.hpp>
 #include <obs-module.h>
@@ -32,7 +33,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 class Utils {
   public:
-	static obs_data_array_t* StringListToArray(char** strings, char* key);
+	static obs_data_array_t* StringListToArray(char** strings, const char* key);
 	static obs_data_array_t* GetSceneItems(obs_source_t* source);
 	static obs_data_t* GetSceneItemData(obs_sceneitem_t* item);
 	static obs_sceneitem_t* GetSceneItemFromName(
@@ -42,12 +43,15 @@ class Utils {
 	static obs_source_t* GetTransitionFromName(QString transitionName);
 	static obs_source_t* GetSceneFromNameOrCurrent(QString sceneName);
 	static obs_data_t* GetSceneItemPropertiesData(obs_sceneitem_t* item);
+	
+	static obs_data_array_t* GetSourceFiltersList(obs_source_t* source, bool includeSettings);
 
 	static bool IsValidAlignment(const uint32_t alignment);
 
 	static obs_data_array_t* GetScenes();
 	static obs_data_t* GetSceneData(obs_source_t* source);
 
+	// TODO contribute a proper frontend API method for this to OBS and remove this hack
 	static QSpinBox* GetTransitionDurationControl();
 	static int GetTransitionDuration();
 	static void SetTransitionDuration(int ms);
@@ -57,8 +61,10 @@ class Utils {
 	static QPushButton* GetPreviewModeButtonControl();
 	static QLayout* GetPreviewLayout();
 	static QListWidget* GetSceneListControl();
+	// TODO remove this hack
 	static obs_scene_t* SceneListItemToScene(QListWidgetItem* item);
 
+	// TODO contribute a proper frontend API method for this to OBS and remove this hack
 	static void TransitionToProgram();
 
 	static QString OBSVersionString();

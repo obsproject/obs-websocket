@@ -18,7 +18,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #pragma once
 
-#include <QDialog>
+#include <QtWidgets/QDialog>
 
 #include "ui_settings-dialog.h"
 

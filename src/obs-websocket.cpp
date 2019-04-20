@@ -18,9 +18,10 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include <obs-module.h>
 #include <obs-frontend-api.h>
-#include <QAction>
-#include <QMainWindow>
-#include <QTimer>
+
+#include <QtCore/QTimer>
+#include <QtWidgets/QAction>
+#include <QtWidgets/QMainWindow>
 
 #include "obs-websocket.h"
 #include "WSServer.h"

@@ -22,8 +22,8 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <obs.hpp>
 #include <obs-frontend-api.h>
 
-#include <QListWidgetItem>
-#include <QSharedPointer>
+#include <QtWidgets/QListWidgetItem>
+#include <QtCore/QSharedPointer>
 #include <QtCore/QTimer>
 
 #include "WSServer.h"
@@ -43,9 +43,6 @@ public:
 	~WSEvents();
 	static void FrontendEventHandler(
 		enum obs_frontend_event event, void* privateData);
-	void connectSceneSignals(obs_source_t* scene);
-
-	void hookTransitionBeginEvent();
 
 	uint64_t GetStreamingTime();
 	const char* GetStreamingTimecode();
@@ -55,7 +52,6 @@ public:
 	bool HeartbeatIsActive;
 
 private slots:
-	void deferredInitOperations();
 	void StreamStatus();
 	void Heartbeat();
 	void TransitionDurationChanged(int ms);
@@ -111,6 +107,20 @@ private:
 	void OnExit();
 
 	static void OnTransitionBegin(void* param, calldata_t* data);
+
+	static void OnSourceCreate(void* param, calldata_t* data);
+	static void OnSourceDestroy(void* param, calldata_t* data);
+
+	static void OnSourceVolumeChange(void* param, calldata_t* data);
+	static void OnSourceMuteStateChange(void* param, calldata_t* data);
+	static void OnSourceAudioSyncOffsetChanged(void* param, calldata_t* data);
+	static void OnSourceAudioMixersChanged(void* param, calldata_t* data);
+
+	static void OnSourceRename(void* param, calldata_t* data);
+
+	static void OnSourceFilterAdded(void* param, calldata_t* data);
+	static void OnSourceFilterRemoved(void* param, calldata_t* data);
+	static void OnSourceFilterOrderChanged(void* param, calldata_t* data);
 
 	static void OnSceneReordered(void* param, calldata_t* data);
 	static void OnSceneItemAdd(void* param, calldata_t* data);
