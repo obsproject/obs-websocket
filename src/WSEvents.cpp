@@ -29,6 +29,12 @@
 
 #define STATUS_INTERVAL 2000
 
+/**
+* @typedef {Object} `SourceRoutingStatus`
+* @property {int} `id` Mixer number
+* @property {boolean} `enabled` Routing status
+*/
+
 bool transitionIsCut(obs_source_t* transition) {
 	if (!transition)
 		return false;
@@ -924,12 +930,14 @@ void WSEvents::OnSourceAudioSyncOffsetChanged(void* param, calldata_t* data) {
 }
 
 /**
- * CHANGEME.
+ * Audio mixer routing changed on a source.
  *
  * @return {String} `sourceName` Source name
+ * @return {Array<SourceRoutingStatus>} `routingStatus` Routing status of the source for each audio mixer (array of 6 values)
+ * @return {String} `hexMixersValue` Mixers 
  *
  * @api events
- * @name CHANGEME
+ * @name OnSourceAudioMixersChanged
  * @category sources
  * @since 4.6.0
  */
@@ -946,7 +954,21 @@ void WSEvents::OnSourceAudioMixersChanged(void* param, calldata_t* data) {
 		return;
 	}
 
-	// TODO
+	OBSDataArrayAutoRelease mixers = obs_data_array_create();
+	for (size_t i = 0; i < 6; i++) {
+		OBSDataAutoRelease item = obs_data_create();
+		obs_data_set_int(item, "id", i + 1);
+		obs_data_set_bool(item, "enabled", (1 << i) & audioMixers);
+		obs_data_array_push_back(mixers, item);
+	}
+
+	const QString hexValue = QString::number(audioMixers, 16).toUpper().prepend("0x");
+
+	OBSDataAutoRelease fields = obs_data_create();
+	obs_data_set_string(fields, "sourceName", obs_source_get_name(source));
+	obs_data_set_array(fields, "mixers", mixers);
+	obs_data_set_string(fields, "hexMixersValue", hexValue.toUtf8());
+	self->broadcastUpdate("SourceAudioMixersChanged", fields);
 }
 
 /**
