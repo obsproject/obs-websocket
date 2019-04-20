@@ -762,6 +762,7 @@ void WSEvents::OnTransitionBegin(void* param, calldata_t* data) {
  *
  * @return {String} `sourceName` Source name
  * @return {String} `sourceType` Source type. Can be "input", "scene", "transition" or "filter".
+ * @return {String} `sourceKind` Source kind.
  * @return {Object} `sourceSettings` Source settings
  *
  * @api events
@@ -808,6 +809,7 @@ void WSEvents::OnSourceCreate(void* param, calldata_t* data) {
 	OBSDataAutoRelease fields = obs_data_create();
 	obs_data_set_string(fields, "sourceName", obs_source_get_name(source));
 	obs_data_set_string(fields, "sourceType", sourceTypeToString(sourceType));
+	obs_data_set_string(fields, "sourceKind", obs_source_get_id(source));
 	obs_data_set_obj(fields, "sourceSettings", sourceSettings);
 	self->broadcastUpdate("SourceCreated", fields);
 }
@@ -817,6 +819,7 @@ void WSEvents::OnSourceCreate(void* param, calldata_t* data) {
  *
  * @return {String} `sourceName` Source name
  * @return {String} `sourceType` Source type. Can be "input", "scene", "transition" or "filter".
+ * @return {String} `sourceKind` Source kind.
  *
  * @api events
  * @name SourceDestroyed
@@ -836,6 +839,7 @@ void WSEvents::OnSourceDestroy(void* param, calldata_t* data) {
 	OBSDataAutoRelease fields = obs_data_create();
 	obs_data_set_string(fields, "sourceName", obs_source_get_name(source));
 	obs_data_set_string(fields, "sourceType", sourceTypeToString(sourceType));
+	obs_data_set_string(fields, "sourceKind", obs_source_get_id(source));
 	self->broadcastUpdate("SourceDestroyed", fields);
 }
 
@@ -934,7 +938,7 @@ void WSEvents::OnSourceAudioSyncOffsetChanged(void* param, calldata_t* data) {
  *
  * @return {String} `sourceName` Source name
  * @return {Array<SourceRoutingStatus>} `routingStatus` Routing status of the source for each audio mixer (array of 6 values)
- * @return {String} `hexMixersValue` Mixers 
+ * @return {String} `hexMixersValue` Raw mixer flags (little-endian, one bit per mixer) as an hexadecimal value 
  *
  * @api events
  * @name OnSourceAudioMixersChanged
@@ -955,7 +959,7 @@ void WSEvents::OnSourceAudioMixersChanged(void* param, calldata_t* data) {
 	}
 
 	OBSDataArrayAutoRelease mixers = obs_data_array_create();
-	for (size_t i = 0; i < 6; i++) {
+	for (size_t i = 0; i < MAX_AUDIO_MIXES; i++) {
 		OBSDataAutoRelease item = obs_data_create();
 		obs_data_set_int(item, "id", i + 1);
 		obs_data_set_bool(item, "enabled", (1 << i) & audioMixers);
@@ -976,8 +980,6 @@ void WSEvents::OnSourceAudioMixersChanged(void* param, calldata_t* data) {
  *
  * @return {String} `previousName` Previous source name
  * @return {String} `newName` New source name
- * 
- * TODO which one is current?
  * 
  * @api events
  * @name SourceRenamed
