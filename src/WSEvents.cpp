@@ -1058,7 +1058,7 @@ void WSEvents::OnSourceFilterAdded(void* param, calldata_t* data) {
 void WSEvents::OnSourceFilterRemoved(void* param, calldata_t* data) {
 	auto self = reinterpret_cast<WSEvents*>(param);
 
-	OBSSource source = calldata_get_pointer<obs_source_t>(data, "source");
+	obs_source_t* source = calldata_get_pointer<obs_source_t>(data, "source");
 	if (!source) {
 		return;
 	}
