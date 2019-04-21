@@ -60,6 +60,7 @@ class WSRequestHandler : public QObject {
 		static HandlerResponse HandleGetAuthRequired(WSRequestHandler* req);
 		static HandlerResponse HandleAuthenticate(WSRequestHandler* req);
 
+		static HandlerResponse HandleGetStats(WSRequestHandler* req);
 		static HandlerResponse HandleSetHeartbeat(WSRequestHandler* req);
 
 		static HandlerResponse HandleSetFilenameFormatting(WSRequestHandler* req);
