@@ -2711,7 +2711,7 @@
       },
       {
         "subheads": [],
-        "description": "Change the current recording folder.",
+        "description": "\n\nPlease note: if `SetRecordingFolder` is called while a recording is\nin progress, the change won't be applied immediately and will be\neffective on the next recording.",
         "param": "{String} `rec-folder` Path of the recording folder.",
         "api": "requests",
         "name": "SetRecordingFolder",
@@ -2746,7 +2746,7 @@
           "level": 2,
           "text": "SetRecordingFolder"
         },
-        "lead": "",
+        "lead": "In the current profile, sets the recording folder of the Simple and Advanced output modes to the specified value.",
         "type": "class",
         "examples": []
       },

@@ -1213,7 +1213,11 @@ _No additional response items._
 
 - Added in v4.1.0
 
-Change the current recording folder.
+
+
+Please note: if `SetRecordingFolder` is called while a recording is
+in progress, the change won't be applied immediately and will be
+effective on the next recording.
 
 **Request Fields:**
 
