@@ -1350,7 +1350,7 @@ void WSEvents::OnStudioModeSwitched(bool checked) {
  * @property {int} `render-missed-frames` Number of frames missed due to rendering lag
  * @property {int} `output-total-frames` Number of frames outputted
  * @property {int} `output-skipped-frames` Number of frames skipped due to encoding lag
- * @property {double} `average-frame-time` Average frame time (in milliseconds)
+ * @property {double} `average-frame-time` Average frame render time (in milliseconds)
  * @property {double} `cpu-usage` Current CPU usage (percentage)
  * @property {double} `memory-usage` Current RAM usage (in megabytes)
  * @property {double} `free-disk-space` Free recording disk space (in megabytes)
