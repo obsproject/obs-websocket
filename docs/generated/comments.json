@@ -137,6 +137,81 @@
     },
     {
       "subheads": [],
+      "typedef": "{Object} `OBSStats`",
+      "property": [
+        "{double} `fps` Current framerate.",
+        "{int} `render-total-frames` Number of frames rendered",
+        "{int} `render-missed-frames` Number of frames missed due to rendering lag",
+        "{int} `output-total-frames` Number of frames outputted",
+        "{int} `output-skipped-frames` Number of frames skipped due to encoding lag",
+        "{double} `average-frame-time` Average frame render time (in milliseconds)",
+        "{double} `cpu-usage` Current CPU usage (percentage)",
+        "{double} `memory-usage` Current RAM usage (in megabytes)",
+        "{double} `free-disk-space` Free recording disk space (in megabytes)"
+      ],
+      "properties": [
+        {
+          "type": "double",
+          "name": "fps",
+          "description": "Current framerate."
+        },
+        {
+          "type": "int",
+          "name": "render-total-frames",
+          "description": "Number of frames rendered"
+        },
+        {
+          "type": "int",
+          "name": "render-missed-frames",
+          "description": "Number of frames missed due to rendering lag"
+        },
+        {
+          "type": "int",
+          "name": "output-total-frames",
+          "description": "Number of frames outputted"
+        },
+        {
+          "type": "int",
+          "name": "output-skipped-frames",
+          "description": "Number of frames skipped due to encoding lag"
+        },
+        {
+          "type": "double",
+          "name": "average-frame-time",
+          "description": "Average frame render time (in milliseconds)"
+        },
+        {
+          "type": "double",
+          "name": "cpu-usage",
+          "description": "Current CPU usage (percentage)"
+        },
+        {
+          "type": "double",
+          "name": "memory-usage",
+          "description": "Current RAM usage (in megabytes)"
+        },
+        {
+          "type": "double",
+          "name": "free-disk-space",
+          "description": "Free recording disk space (in megabytes)"
+        }
+      ],
+      "typedefs": [
+        {
+          "type": "Object",
+          "name": "OBSStats",
+          "description": ""
+        }
+      ],
+      "name": "",
+      "heading": {
+        "level": 2,
+        "text": ""
+      },
+      "examples": []
+    },
+    {
+      "subheads": [],
       "typedef": "{Object} `Scene`",
       "property": [
         "{String} `name` Name of the currently active scene.",
@@ -803,14 +878,22 @@
           "{boolean} `streaming` Current streaming state.",
           "{boolean} `recording` Current recording state.",
           "{boolean} `replay-buffer-active` Replay Buffer status",
-          "{boolean} `preview-only` Always false (retrocompatibility).",
           "{int} `bytes-per-sec` Amount of data per second (in bytes) transmitted by the stream encoder.",
           "{int} `kbits-per-sec` Amount of data per second (in kilobits) transmitted by the stream encoder.",
           "{double} `strain` Percentage of dropped frames.",
           "{int} `total-stream-time` Total time (in seconds) since the stream started.",
           "{int} `num-total-frames` Total number of frames transmitted since the stream started.",
           "{int} `num-dropped-frames` Number of frames dropped by the encoder since the stream started.",
-          "{double} `fps` Current framerate."
+          "{double} `fps` Current framerate.",
+          "{int} `render-total-frames` Number of frames rendered",
+          "{int} `render-missed-frames` Number of frames missed due to rendering lag",
+          "{int} `output-total-frames` Number of frames outputted",
+          "{int} `output-skipped-frames` Number of frames skipped due to encoding lag",
+          "{double} `average-frame-time` Average frame time (in milliseconds)",
+          "{double} `cpu-usage` Current CPU usage (percentage)",
+          "{double} `memory-usage` Current RAM usage (in megabytes)",
+          "{double} `free-disk-space` Free recording disk space (in megabytes)",
+          "{boolean} `preview-only` Always false (retrocompatibility)."
         ],
         "api": "events",
         "name": "StreamStatus",
@@ -831,11 +914,6 @@
             "type": "boolean",
             "name": "replay-buffer-active",
             "description": "Replay Buffer status"
-          },
-          {
-            "type": "boolean",
-            "name": "preview-only",
-            "description": "Always false (retrocompatibility)."
           },
           {
             "type": "int",
@@ -871,6 +949,51 @@
             "type": "double",
             "name": "fps",
             "description": "Current framerate."
+          },
+          {
+            "type": "int",
+            "name": "render-total-frames",
+            "description": "Number of frames rendered"
+          },
+          {
+            "type": "int",
+            "name": "render-missed-frames",
+            "description": "Number of frames missed due to rendering lag"
+          },
+          {
+            "type": "int",
+            "name": "output-total-frames",
+            "description": "Number of frames outputted"
+          },
+          {
+            "type": "int",
+            "name": "output-skipped-frames",
+            "description": "Number of frames skipped due to encoding lag"
+          },
+          {
+            "type": "double",
+            "name": "average-frame-time",
+            "description": "Average frame time (in milliseconds)"
+          },
+          {
+            "type": "double",
+            "name": "cpu-usage",
+            "description": "Current CPU usage (percentage)"
+          },
+          {
+            "type": "double",
+            "name": "memory-usage",
+            "description": "Current RAM usage (in megabytes)"
+          },
+          {
+            "type": "double",
+            "name": "free-disk-space",
+            "description": "Free recording disk space (in megabytes)"
+          },
+          {
+            "type": "boolean",
+            "name": "preview-only",
+            "description": "Always false (retrocompatibility)."
           }
         ],
         "names": [
@@ -1218,7 +1341,8 @@
           "{boolean (optional)} `recording` Current recording state.",
           "{int (optional)} `total-record-time` Total time (in seconds) since recording started.",
           "{int (optional)} `total-record-bytes` Total bytes recorded since the recording started.",
-          "{int (optional)} `total-record-frames` Total frames recorded since the recording started."
+          "{int (optional)} `total-record-frames` Total frames recorded since the recording started.",
+          "{Stats} `stats` OBS Stats"
         ],
         "api": "events",
         "name": "Heartbeat",
@@ -1278,6 +1402,11 @@
             "type": "int (optional)",
             "name": "total-record-frames",
             "description": "Total frames recorded since the recording started."
+          },
+          {
+            "type": "Stats",
+            "name": "stats",
+            "description": "OBS Stats"
           }
         ],
         "names": [
@@ -2498,6 +2627,47 @@
         "heading": {
           "level": 2,
           "text": "GetFilenameFormatting"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Get OBS stats (almost the same info as provided in OBS' stats window)",
+        "return": "{OBSStats} `stats` OBS stats",
+        "api": "requests",
+        "name": "GetStats",
+        "category": "general",
+        "since": "4.6.0",
+        "returns": [
+          {
+            "type": "OBSStats",
+            "name": "stats",
+            "description": "OBS stats"
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "GetStats"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "general"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.6.0"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "GetStats"
         },
         "lead": "",
         "type": "class",

@@ -44,6 +44,7 @@ auth_response = base64_encode(auth_response_hash)
 
 - [Typedefs](#typedefs)
   * [SceneItemTransform](#sceneitemtransform)
+  * [OBSStats](#obsstats)
   * [Scene](#scene)
   * [Source](#source)
 - [Events](#events)
@@ -107,6 +108,7 @@ auth_response = base64_encode(auth_response_hash)
     + [SetHeartbeat](#setheartbeat)
     + [SetFilenameFormatting](#setfilenameformatting)
     + [GetFilenameFormatting](#getfilenameformatting)
+    + [GetStats](#getstats)
   * [Profiles](#profiles-1)
     + [SetCurrentProfile](#setcurrentprofile)
     + [GetCurrentProfile](#getcurrentprofile)
@@ -218,6 +220,18 @@ These are complex types, such as `Source` and `Scene`, which are used as argumen
 | `sourceHeight` | _int_ | Base source (without scaling) of the source |
 | `width` | _double_ | Scene item width (base source width multiplied by the horizontal scaling factor) |
 | `height` | _double_ | Scene item height (base source height multiplied by the vertical scaling factor) |
+## OBSStats
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `fps` | _double_ | Current framerate. |
+| `render-total-frames` | _int_ | Number of frames rendered |
+| `render-missed-frames` | _int_ | Number of frames missed due to rendering lag |
+| `output-total-frames` | _int_ | Number of frames outputted |
+| `output-skipped-frames` | _int_ | Number of frames skipped due to encoding lag |
+| `average-frame-time` | _double_ | Average frame render time (in milliseconds) |
+| `cpu-usage` | _double_ | Current CPU usage (percentage) |
+| `memory-usage` | _double_ | Current RAM usage (in megabytes) |
+| `free-disk-space` | _double_ | Free recording disk space (in megabytes) |
 ## Scene
 | Name | Type  | Description |
 | ---- | :---: | ------------|
@@ -480,7 +494,6 @@ Emit every 2 seconds.
 | `streaming` | _boolean_ | Current streaming state. |
 | `recording` | _boolean_ | Current recording state. |
 | `replay-buffer-active` | _boolean_ | Replay Buffer status |
-| `preview-only` | _boolean_ | Always false (retrocompatibility). |
 | `bytes-per-sec` | _int_ | Amount of data per second (in bytes) transmitted by the stream encoder. |
 | `kbits-per-sec` | _int_ | Amount of data per second (in kilobits) transmitted by the stream encoder. |
 | `strain` | _double_ | Percentage of dropped frames. |
@@ -488,6 +501,15 @@ Emit every 2 seconds.
 | `num-total-frames` | _int_ | Total number of frames transmitted since the stream started. |
 | `num-dropped-frames` | _int_ | Number of frames dropped by the encoder since the stream started. |
 | `fps` | _double_ | Current framerate. |
+| `render-total-frames` | _int_ | Number of frames rendered |
+| `render-missed-frames` | _int_ | Number of frames missed due to rendering lag |
+| `output-total-frames` | _int_ | Number of frames outputted |
+| `output-skipped-frames` | _int_ | Number of frames skipped due to encoding lag |
+| `average-frame-time` | _double_ | Average frame time (in milliseconds) |
+| `cpu-usage` | _double_ | Current CPU usage (percentage) |
+| `memory-usage` | _double_ | Current RAM usage (in megabytes) |
+| `free-disk-space` | _double_ | Free recording disk space (in megabytes) |
+| `preview-only` | _boolean_ | Always false (retrocompatibility). |
 
 
 ---
@@ -639,6 +661,7 @@ Emitted every 2 seconds after enabling it by calling SetHeartbeat.
 | `total-record-time` | _int (optional)_ | Total time (in seconds) since recording started. |
 | `total-record-bytes` | _int (optional)_ | Total bytes recorded since the recording started. |
 | `total-record-frames` | _int (optional)_ | Total frames recorded since the recording started. |
+| `stats` | _Stats_ | OBS Stats |
 
 
 ---
@@ -1090,6 +1113,26 @@ _No specified parameters._
 | Name | Type  | Description |
 | ---- | :---: | ------------|
 | `filename-formatting` | _String_ | Current filename formatting string. |
+
+
+---
+
+### GetStats
+
+
+- Added in v4.6.0
+
+Get OBS stats (almost the same info as provided in OBS' stats window)
+
+**Request Fields:**
+
+_No specified parameters._
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `stats` | _OBSStats_ | OBS stats |
 
 
 ---
