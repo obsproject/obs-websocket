@@ -56,8 +56,14 @@ HandlerResponse WSRequestHandler::HandleStartRecording(WSRequestHandler* req) {
 }
 
 /**
- * Change the current recording folder.
- *
+ * In the current profile, sets the recording folder of the Simple and Advanced
+ * output modes to the specified value.
+ * 
+ * Please note: if `SetRecordingFolder` is called while a recording is
+ * in progress, the change won't be applied immediately and will be
+ * effective on the next recording.
+ * 
+ * 
  * @param {String} `rec-folder` Path of the recording folder.
  *
  * @api requests
