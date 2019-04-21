@@ -17,10 +17,10 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 */
 
 #include <obs-frontend-api.h>
-#include <util/config-file.h>
 
 #include <QtCore/QCryptographicHash>
 #include <QtCore/QTime>
+#include <QtWidgets/QSystemTrayIcon>
 
 #define SECTION_NAME "WebsocketAPI"
 #define PARAM_ENABLE "ServerEnabled"
@@ -31,8 +31,10 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #define PARAM_SECRET "AuthSecret"
 #define PARAM_SALT "AuthSalt"
 
-#include "Config.h"
 #include "Utils.h"
+#include "WSServer.h"
+
+#include "Config.h"
 
 #define QT_TO_UTF8(str) str.toUtf8().constData()
 
@@ -55,8 +57,55 @@ Config::Config() :
 {
 	qsrand(QTime::currentTime().msec());
 
+	SetDefaults();
+	SessionChallenge = GenerateSalt();
+
+	obs_frontend_add_event_callback(OnFrontendEvent, this);
+}
+
+Config::~Config()
+{
+	obs_frontend_remove_event_callback(OnFrontendEvent, this);
+}
+
+void Config::Load()
+{
+	config_t* obsConfig = GetConfigStore();
+
+	ServerEnabled = config_get_bool(obsConfig, SECTION_NAME, PARAM_ENABLE);
+	ServerPort = config_get_uint(obsConfig, SECTION_NAME, PARAM_PORT);
+
+	DebugEnabled = config_get_bool(obsConfig, SECTION_NAME, PARAM_DEBUG);
+	AlertsEnabled = config_get_bool(obsConfig, SECTION_NAME, PARAM_ALERT);
+
+	AuthRequired = config_get_bool(obsConfig, SECTION_NAME, PARAM_AUTHREQUIRED);
+	Secret = config_get_string(obsConfig, SECTION_NAME, PARAM_SECRET);
+	Salt = config_get_string(obsConfig, SECTION_NAME, PARAM_SALT);
+}
+
+void Config::Save() 
+{
+	config_t* obsConfig = GetConfigStore();
+
+	config_set_bool(obsConfig, SECTION_NAME, PARAM_ENABLE, ServerEnabled);
+	config_set_uint(obsConfig, SECTION_NAME, PARAM_PORT, ServerPort);
+
+	config_set_bool(obsConfig, SECTION_NAME, PARAM_DEBUG, DebugEnabled);
+	config_set_bool(obsConfig, SECTION_NAME, PARAM_ALERT, AlertsEnabled);
+
+	config_set_bool(obsConfig, SECTION_NAME, PARAM_AUTHREQUIRED, AuthRequired);
+	config_set_string(obsConfig, SECTION_NAME, PARAM_SECRET,
+		QT_TO_UTF8(Secret));
+	config_set_string(obsConfig, SECTION_NAME, PARAM_SALT,
+		QT_TO_UTF8(Salt));
+
+	config_save(obsConfig);
+}
+
+void Config::SetDefaults()
+{
 	// OBS Config defaults
-	config_t* obsConfig = obs_frontend_get_global_config();
+	config_t* obsConfig = GetConfigStore();
 	if (obsConfig) {
 		config_set_default_bool(obsConfig,
 			SECTION_NAME, PARAM_ENABLE, ServerEnabled);
@@ -75,46 +124,11 @@ Config::Config() :
 		config_set_default_string(obsConfig,
 			SECTION_NAME, PARAM_SALT, QT_TO_UTF8(Salt));
 	}
-
-	SessionChallenge = GenerateSalt();
 }
 
-Config::~Config()
+config_t* Config::GetConfigStore()
 {
-}
-
-void Config::Load()
-{
-	config_t* obsConfig = obs_frontend_get_global_config();
-
-	ServerEnabled = config_get_bool(obsConfig, SECTION_NAME, PARAM_ENABLE);
-	ServerPort = config_get_uint(obsConfig, SECTION_NAME, PARAM_PORT);
-
-	DebugEnabled = config_get_bool(obsConfig, SECTION_NAME, PARAM_DEBUG);
-	AlertsEnabled = config_get_bool(obsConfig, SECTION_NAME, PARAM_ALERT);
-
-	AuthRequired = config_get_bool(obsConfig, SECTION_NAME, PARAM_AUTHREQUIRED);
-	Secret = config_get_string(obsConfig, SECTION_NAME, PARAM_SECRET);
-	Salt = config_get_string(obsConfig, SECTION_NAME, PARAM_SALT);
-}
-
-void Config::Save() 
-{
-	config_t* obsConfig = obs_frontend_get_global_config();
-
-	config_set_bool(obsConfig, SECTION_NAME, PARAM_ENABLE, ServerEnabled);
-	config_set_uint(obsConfig, SECTION_NAME, PARAM_PORT, ServerPort);
-
-	config_set_bool(obsConfig, SECTION_NAME, PARAM_DEBUG, DebugEnabled);
-	config_set_bool(obsConfig, SECTION_NAME, PARAM_ALERT, AlertsEnabled);
-
-	config_set_bool(obsConfig, SECTION_NAME, PARAM_AUTHREQUIRED, AuthRequired);
-	config_set_string(obsConfig, SECTION_NAME, PARAM_SECRET,
-		QT_TO_UTF8(Secret));
-	config_set_string(obsConfig, SECTION_NAME, PARAM_SALT,
-		QT_TO_UTF8(Salt));
-
-	config_save(obsConfig);
+	return obs_frontend_get_profile_config();
 }
 
 QString Config::GenerateSalt()
@@ -183,4 +197,79 @@ bool Config::CheckAuth(QString response)
 	}
 
 	return authSuccess;
+}
+
+void Config::OnFrontendEvent(enum obs_frontend_event event, void* param)
+{
+	auto config = reinterpret_cast<Config*>(param);
+
+	if (event == OBS_FRONTEND_EVENT_PROFILE_CHANGED) {
+		auto server = WSServer::Current();
+		server->stop();
+
+		config->Load();
+		if (config->ServerEnabled) {
+			server->start(config->ServerPort);
+
+			QString message = "Profile changed, WebSockets server restarted";
+			Utils::SysTrayNotify(message, QSystemTrayIcon::MessageIcon::Information);
+		}
+	}	
+}
+
+void Config::MigrateFromGlobalSettings()
+{	
+	config_t* source = obs_frontend_get_global_config();
+	config_t* destination = obs_frontend_get_profile_config();
+
+	if(config_has_user_value(source, SECTION_NAME, PARAM_ENABLE)) {
+		bool value = config_get_bool(source, SECTION_NAME, PARAM_ENABLE);
+		config_set_bool(destination, SECTION_NAME, PARAM_ENABLE, value);
+	
+		config_remove_value(source, SECTION_NAME, PARAM_ENABLE);
+	}
+
+	if(config_has_user_value(source, SECTION_NAME, PARAM_PORT)) {
+		uint64_t value = config_get_uint(source, SECTION_NAME, PARAM_PORT);
+		config_set_uint(destination, SECTION_NAME, PARAM_PORT, value);
+
+		config_remove_value(source, SECTION_NAME, PARAM_PORT);
+	}
+
+	if(config_has_user_value(source, SECTION_NAME, PARAM_DEBUG)) {
+		bool value = config_get_bool(source, SECTION_NAME, PARAM_DEBUG);
+		config_set_bool(destination, SECTION_NAME, PARAM_DEBUG, value);
+		
+		config_remove_value(source, SECTION_NAME, PARAM_DEBUG);
+	}
+
+	if(config_has_user_value(source, SECTION_NAME, PARAM_ALERT)) {
+		bool value = config_get_bool(source, SECTION_NAME, PARAM_ALERT);
+		config_set_bool(destination, SECTION_NAME, PARAM_ALERT, value);
+
+		config_remove_value(source, SECTION_NAME, PARAM_ALERT);
+	}
+
+	if(config_has_user_value(source, SECTION_NAME, PARAM_AUTHREQUIRED)) {
+		bool value = config_get_bool(source, SECTION_NAME, PARAM_AUTHREQUIRED);
+		config_set_bool(destination, SECTION_NAME, PARAM_AUTHREQUIRED, value);
+
+		config_remove_value(source, SECTION_NAME, PARAM_AUTHREQUIRED);
+	}
+
+	if(config_has_user_value(source, SECTION_NAME, PARAM_SECRET)) {
+		const char* value = config_get_string(source, SECTION_NAME, PARAM_SECRET);
+		config_set_string(destination, SECTION_NAME, PARAM_SECRET, value);
+
+		config_remove_value(source, SECTION_NAME, PARAM_SECRET);
+	}
+
+	if(config_has_user_value(source, SECTION_NAME, PARAM_SALT)) {
+		const char* value = config_get_string(source, SECTION_NAME, PARAM_SALT);
+		config_set_string(destination, SECTION_NAME, PARAM_SALT, value);
+
+		config_remove_value(source, SECTION_NAME, PARAM_SALT);
+	}
+
+	config_save(destination);
 }

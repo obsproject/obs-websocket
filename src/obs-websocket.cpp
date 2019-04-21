@@ -47,6 +47,7 @@ bool obs_module_load(void) {
 
 	// Core setup
 	auto config = Config::Current();
+	// config->MigrateFromGlobalSettings();
 	config->Load();
 
 	WSEvents::ResetCurrent(WSServer::Current());
