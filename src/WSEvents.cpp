@@ -1101,6 +1101,9 @@ void WSEvents::OnSourceFilterOrderChanged(void* param, calldata_t* data) {
  * Scene items have been reordered.
  *
  * @return {String} `scene-name` Name of the scene where items have been reordered.
+ * @return {Array<Object>} `scene-items` Ordered list of scene items
+ * @return {String} `scene-items.*.source-name` Item source name
+ * @return {int} `scene-items.*.item-id` Scene item unique ID
  *
  * @api events
  * @name SourceOrderChanged
@@ -1110,12 +1113,29 @@ void WSEvents::OnSourceFilterOrderChanged(void* param, calldata_t* data) {
 void WSEvents::OnSceneReordered(void* param, calldata_t* data) {
 	auto instance = reinterpret_cast<WSEvents*>(param);
 
-	obs_scene_t* scene = nullptr;
-	calldata_get_ptr(data, "scene", &scene);
+	OBSScene scene = calldata_get_pointer<obs_scene_t>(data, "scene");
+	if (!scene) {
+		return;
+	}
+
+	OBSDataArrayAutoRelease sceneItems = obs_data_array_create();
+	obs_scene_enum_items(scene, [](obs_scene_t* scene, obs_sceneitem_t* sceneItem, void* param) {
+		obs_data_array_t* sceneItems = reinterpret_cast<obs_data_array_t*>(param);
+
+		OBSSource itemSource = obs_sceneitem_get_source(sceneItem);
+
+		OBSDataAutoRelease item = obs_data_create();
+		obs_data_set_string(item, "source-name", obs_source_get_name(itemSource));
+		obs_data_set_int(item, "item-id", obs_sceneitem_get_id(sceneItem));
+		obs_data_array_push_back(sceneItems, item);
+
+		return true;
+	}, sceneItems);
 
 	OBSDataAutoRelease fields = obs_data_create();
 	obs_data_set_string(fields, "scene-name",
 		obs_source_get_name(obs_scene_get_source(scene)));
+	obs_data_set_array(fields, "scene-items", sceneItems);
 
 	instance->broadcastUpdate("SourceOrderChanged", fields);
 }
