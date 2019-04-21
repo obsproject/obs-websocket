@@ -211,8 +211,15 @@ void Config::OnFrontendEvent(enum obs_frontend_event event, void* param)
 		if (config->ServerEnabled) {
 			server->start(config->ServerPort);
 
-			QString message = "Profile changed, WebSockets server restarted";
-			Utils::SysTrayNotify(message, QSystemTrayIcon::MessageIcon::Information);
+			Utils::SysTrayNotify(
+				QString("Profile changed, WebSockets server restarted"),
+				QSystemTrayIcon::MessageIcon::Information
+			);
+		} else {
+			Utils::SysTrayNotify(
+				QString("Profile changed, WebSockets server stopped"),
+				QSystemTrayIcon::MessageIcon::Information
+			);
 		}
 	}	
 }
