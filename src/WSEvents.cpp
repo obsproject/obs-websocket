@@ -1370,6 +1370,7 @@ obs_data_t* WSEvents::GetStats() {
 	obs_data_set_int(stats, "render-missed-frames", obs_get_lagged_frames());
 	obs_data_set_int(stats, "output-total-frames", outputTotalFrames);
 	obs_data_set_int(stats, "output-skipped-frames", outputSkippedFrames);
+	obs_data_set_double(stats, "average-frame-time", averageFrameTime);
 	obs_data_set_double(stats, "cpu-usage", cpuUsage);
 	obs_data_set_double(stats, "memory-usage", memoryUsage);
 
