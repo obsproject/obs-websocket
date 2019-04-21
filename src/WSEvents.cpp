@@ -575,6 +575,7 @@ void WSEvents::OnExit() {
  * @return {double} `average-frame-time` Average frame time (in milliseconds)
  * @return {double} `cpu-usage` Current CPU usage (percentage)
  * @return {double} `memory-usage` Current RAM usage (in megabytes)
+ * @return {double} `free-disk-space` Free recording disk space (in megabytes)
  * @return {boolean} `preview-only` Always false (retrocompatibility).
  *
  * @api events
@@ -1344,14 +1345,15 @@ void WSEvents::OnStudioModeSwitched(bool checked) {
 
 /**
  * @typedef {Object} `OBSStats`
- * @return {double} `fps` Current framerate.
- * @return {int} `render-total-frames` Number of frames rendered
- * @return {int} `render-missed-frames` Number of frames missed due to rendering lag
- * @return {int} `output-total-frames` Number of frames outputted
- * @return {int} `output-skipped-frames` Number of frames skipped due to encoding lag
- * @return {double} `average-frame-time` Average frame time (in milliseconds)
- * @return {double} `cpu-usage` Current CPU usage (percentage)
- * @return {double} `memory-usage` Current RAM usage (in megabytes) 
+ * @property {double} `fps` Current framerate.
+ * @property {int} `render-total-frames` Number of frames rendered
+ * @property {int} `render-missed-frames` Number of frames missed due to rendering lag
+ * @property {int} `output-total-frames` Number of frames outputted
+ * @property {int} `output-skipped-frames` Number of frames skipped due to encoding lag
+ * @property {double} `average-frame-time` Average frame time (in milliseconds)
+ * @property {double} `cpu-usage` Current CPU usage (percentage)
+ * @property {double} `memory-usage` Current RAM usage (in megabytes)
+ * @property {double} `free-disk-space` Free recording disk space (in megabytes)
  */
 obs_data_t* WSEvents::GetStats() {
 	obs_data_t* stats = obs_data_create();
@@ -1365,6 +1367,14 @@ obs_data_t* WSEvents::GetStats() {
 
 	double averageFrameTime = (double)obs_get_average_frame_time_ns() / 1000000.0;
 
+	config_t* currentProfile = obs_frontend_get_profile_config();
+	QString outputMode = config_get_string(currentProfile, "Output", "Mode");
+	QString path = (outputMode == "Advanced") ?
+		config_get_string(currentProfile, "SimpleOutput", "FilePath") :
+		config_get_string(currentProfile, "AdvOut", "RecFilePath");
+
+	double freeDiskSpace = (double)os_get_free_disk_space(path.toUtf8()) / (1024.0 * 1024.0);
+
 	obs_data_set_double(stats, "fps", obs_get_active_fps());
 	obs_data_set_int(stats, "render-total-frames", obs_get_total_frames());
 	obs_data_set_int(stats, "render-missed-frames", obs_get_lagged_frames());
@@ -1373,8 +1383,7 @@ obs_data_t* WSEvents::GetStats() {
 	obs_data_set_double(stats, "average-frame-time", averageFrameTime);
 	obs_data_set_double(stats, "cpu-usage", cpuUsage);
 	obs_data_set_double(stats, "memory-usage", memoryUsage);
-
-	// TODO free disk space
+	obs_data_set_double(stats, "free-disk-space", freeDiskSpace);
 
 	return stats;
 }
