@@ -21,6 +21,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include <obs.hpp>
 #include <obs-frontend-api.h>
+#include <util/platform.h>
 
 #include <QtWidgets/QListWidgetItem>
 #include <QtCore/QSharedPointer>
@@ -48,6 +49,7 @@ public:
 	const char* GetStreamingTimecode();
 	uint64_t GetRecordingTime();
 	const char* GetRecordingTimecode();
+	obs_data_t* GetStats();
 
 	bool HeartbeatIsActive;
 
@@ -62,6 +64,7 @@ private:
 	WSServerPtr _srv;
 	QTimer streamStatusTimer;
 	QTimer heartbeatTimer;
+	os_cpu_usage_info_t* cpuUsageInfo;
 
 	bool pulse;
 

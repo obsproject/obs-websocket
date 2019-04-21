@@ -100,6 +100,7 @@ WSEvents::WSEvents(WSServerPtr srv) :
 	HeartbeatIsActive(false),
 	pulse(false)
 {
+	cpuUsageInfo = os_cpu_usage_info_start();
 	obs_frontend_add_event_callback(WSEvents::FrontendEventHandler, this);
 
 	QSpinBox* durationControl = Utils::GetTransitionDurationControl();
@@ -121,6 +122,7 @@ WSEvents::WSEvents(WSServerPtr srv) :
 
 WSEvents::~WSEvents() {
 	obs_frontend_remove_event_callback(WSEvents::FrontendEventHandler, this);
+	os_cpu_usage_info_destroy(cpuUsageInfo);
 }
 
 void WSEvents::FrontendEventHandler(enum obs_frontend_event event, void* private_data) {
@@ -559,7 +561,6 @@ void WSEvents::OnExit() {
  * @return {boolean} `streaming` Current streaming state.
  * @return {boolean} `recording` Current recording state.
  * @return {boolean} `replay-buffer-active` Replay Buffer status
- * @return {boolean} `preview-only` Always false (retrocompatibility).
  * @return {int} `bytes-per-sec` Amount of data per second (in bytes) transmitted by the stream encoder.
  * @return {int} `kbits-per-sec` Amount of data per second (in kilobits) transmitted by the stream encoder.
  * @return {double} `strain` Percentage of dropped frames.
@@ -567,6 +568,15 @@ void WSEvents::OnExit() {
  * @return {int} `num-total-frames` Total number of frames transmitted since the stream started.
  * @return {int} `num-dropped-frames` Number of frames dropped by the encoder since the stream started.
  * @return {double} `fps` Current framerate.
+ * @return {int} `render-total-frames` Number of frames rendered
+ * @return {int} `render-missed-frames` Number of frames missed due to rendering lag
+ * @return {int} `output-total-frames` Number of frames outputted
+ * @return {int} `output-skipped-frames` Number of frames skipped due to encoding lag
+ * @return {double} `average-frame-time` Average frame time (in milliseconds)
+ * @return {double} `cpu-usage` Current CPU usage (percentage)
+ * @return {double} `memory-usage` Current RAM usage (in megabytes)
+ * @return {double} `free-disk-space` Free recording disk space (in megabytes)
+ * @return {boolean} `preview-only` Always false (retrocompatibility).
  *
  * @api events
  * @name StreamStatus
@@ -611,16 +621,24 @@ void WSEvents::StreamStatus() {
 	float strain = obs_output_get_congestion(streamOutput);
 
 	OBSDataAutoRelease data = obs_data_create();
+	
 	obs_data_set_bool(data, "streaming", streamingActive);
 	obs_data_set_bool(data, "recording", recordingActive);
 	obs_data_set_bool(data, "replay-buffer-active", replayBufferActive);
+	
 	obs_data_set_int(data, "bytes-per-sec", bytesPerSec);
 	obs_data_set_int(data, "kbits-per-sec", (bytesPerSec * 8) / 1024);
+	
 	obs_data_set_int(data, "total-stream-time", totalStreamTime);
+	
 	obs_data_set_int(data, "num-total-frames", totalFrames);
 	obs_data_set_int(data, "num-dropped-frames", droppedFrames);
-	obs_data_set_double(data, "fps", obs_get_active_fps());
 	obs_data_set_double(data, "strain", strain);
+
+	// `stats` contains fps, cpu usage, memory usage, render missed frames, ...
+	OBSDataAutoRelease stats = GetStats();
+	obs_data_apply(data, stats);
+
 	obs_data_set_bool(data, "preview-only", false); // Retrocompat with OBSRemote
 
 	broadcastUpdate("StreamStatus", data);
@@ -640,6 +658,7 @@ void WSEvents::StreamStatus() {
  * @return {int (optional)} `total-record-time` Total time (in seconds) since recording started.
  * @return {int (optional)} `total-record-bytes` Total bytes recorded since the recording started.
  * @return {int (optional)} `total-record-frames` Total frames recorded since the recording started.
+ * @return {Stats} `stats` OBS Stats
  *
  * @api events
  * @name Heartbeat
@@ -679,6 +698,9 @@ void WSEvents::Heartbeat() {
 		obs_data_set_int(data, "total-record-bytes", (uint64_t)obs_output_get_total_bytes(recordOutput));
 		obs_data_set_int(data, "total-record-frames", obs_output_get_total_frames(recordOutput));
 	}
+
+	OBSDataAutoRelease stats = GetStats();
+	obs_data_set_obj(data, "stats", stats);
 
 	broadcastUpdate("Heartbeat", data);
 }
@@ -1319,4 +1341,49 @@ void WSEvents::OnStudioModeSwitched(bool checked) {
 	obs_data_set_bool(data, "new-state", checked);
 
 	broadcastUpdate("StudioModeSwitched", data);
+}
+
+/**
+ * @typedef {Object} `OBSStats`
+ * @property {double} `fps` Current framerate.
+ * @property {int} `render-total-frames` Number of frames rendered
+ * @property {int} `render-missed-frames` Number of frames missed due to rendering lag
+ * @property {int} `output-total-frames` Number of frames outputted
+ * @property {int} `output-skipped-frames` Number of frames skipped due to encoding lag
+ * @property {double} `average-frame-time` Average frame render time (in milliseconds)
+ * @property {double} `cpu-usage` Current CPU usage (percentage)
+ * @property {double} `memory-usage` Current RAM usage (in megabytes)
+ * @property {double} `free-disk-space` Free recording disk space (in megabytes)
+ */
+obs_data_t* WSEvents::GetStats() {
+	obs_data_t* stats = obs_data_create();
+
+	double cpuUsage = os_cpu_usage_info_query(cpuUsageInfo);
+	double memoryUsage = (double)os_get_proc_resident_size() / (1024.0 * 1024.0);
+
+	video_t* mainVideo = obs_get_video();
+	uint32_t outputTotalFrames = video_output_get_total_frames(mainVideo);
+	uint32_t outputSkippedFrames = video_output_get_skipped_frames(mainVideo);
+
+	double averageFrameTime = (double)obs_get_average_frame_time_ns() / 1000000.0;
+
+	config_t* currentProfile = obs_frontend_get_profile_config();
+	QString outputMode = config_get_string(currentProfile, "Output", "Mode");
+	QString path = (outputMode == "Advanced") ?
+		config_get_string(currentProfile, "SimpleOutput", "FilePath") :
+		config_get_string(currentProfile, "AdvOut", "RecFilePath");
+
+	double freeDiskSpace = (double)os_get_free_disk_space(path.toUtf8()) / (1024.0 * 1024.0);
+
+	obs_data_set_double(stats, "fps", obs_get_active_fps());
+	obs_data_set_int(stats, "render-total-frames", obs_get_total_frames());
+	obs_data_set_int(stats, "render-missed-frames", obs_get_lagged_frames());
+	obs_data_set_int(stats, "output-total-frames", outputTotalFrames);
+	obs_data_set_int(stats, "output-skipped-frames", outputSkippedFrames);
+	obs_data_set_double(stats, "average-frame-time", averageFrameTime);
+	obs_data_set_double(stats, "cpu-usage", cpuUsage);
+	obs_data_set_double(stats, "memory-usage", memoryUsage);
+	obs_data_set_double(stats, "free-disk-space", freeDiskSpace);
+
+	return stats;
 }

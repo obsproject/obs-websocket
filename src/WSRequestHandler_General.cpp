@@ -161,3 +161,21 @@ HandlerResponse WSRequestHandler::HandleGetFilenameFormatting(WSRequestHandler* 
 	obs_data_set_string(response, "filename-formatting", Utils::GetFilenameFormatting());
 	return req->SendOKResponse(response);
 }
+
+/**
+ * Get OBS stats (almost the same info as provided in OBS' stats window)
+ * 
+ * @return {OBSStats} `stats` OBS stats
+ * 
+ * @api requests
+ * @name GetStats
+ * @category general
+ * @since 4.6.0 
+ */
+HandlerResponse WSRequestHandler::HandleGetStats(WSRequestHandler* req) {
+	OBSDataAutoRelease stats = WSEvents::Current()->GetStats();
+
+	OBSDataAutoRelease response = obs_data_create();
+	obs_data_set_obj(response, "stats", stats);
+	return req->SendOKResponse(response);
+}
