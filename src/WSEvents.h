@@ -62,7 +62,6 @@ private:
 	WSServerPtr _srv;
 	QTimer streamStatusTimer;
 	QTimer heartbeatTimer;
-	OBSSource currentScene;
 
 	bool pulse;
 
