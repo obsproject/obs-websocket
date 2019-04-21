@@ -87,7 +87,7 @@ obs_data_array_t* Utils::GetSceneItems(obs_source_t* source) {
 			obs_sceneitem_t* currentItem,
 			void* param)
 	{
-		obs_data_array_t* data = static_cast<obs_data_array_t*>(param);
+		obs_data_array_t* data = reinterpret_cast<obs_data_array_t*>(param);
 
 		OBSDataAutoRelease itemData = GetSceneItemData(currentItem);
 		obs_data_array_insert(data, 0, itemData);
@@ -166,7 +166,7 @@ obs_sceneitem_t* Utils::GetSceneItemFromName(obs_source_t* source, QString name)
 			obs_sceneitem_t* currentItem,
 			void* param)
 	{
-		current_search* search = static_cast<current_search*>(param);
+		current_search* search = reinterpret_cast<current_search*>(param);
 
 		QString currentItemName =
 			obs_source_get_name(obs_sceneitem_get_source(currentItem));
@@ -202,7 +202,7 @@ obs_sceneitem_t* Utils::GetSceneItemFromId(obs_source_t* source, size_t id) {
 			obs_sceneitem_t* currentItem,
 			void* param)
 	{
-		current_search* search = static_cast<current_search*>(param);
+		current_search* search = reinterpret_cast<current_search*>(param);
 
 		if (obs_sceneitem_get_id(currentItem) == search->query) {
 			search->result = currentItem;
@@ -499,7 +499,7 @@ obs_hotkey_t* Utils::FindHotkeyByName(QString name) {
 	search.result = nullptr;
 
 	obs_enum_hotkeys([](void* data, obs_hotkey_id id, obs_hotkey_t* hotkey) {
-		current_search* search = static_cast<current_search*>(data);
+		current_search* search = reinterpret_cast<current_search*>(data);
 
 		const char* hk_name = obs_hotkey_get_name(hotkey);
 		if (hk_name == search->query) {
