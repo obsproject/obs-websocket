@@ -1861,7 +1861,12 @@
       {
         "subheads": [],
         "description": "Scene items have been reordered.",
-        "return": "{String} `scene-name` Name of the scene where items have been reordered.",
+        "return": [
+          "{String} `scene-name` Name of the scene where items have been reordered.",
+          "{Array<Object>} `scene-items` Ordered list of scene items",
+          "{String} `scene-items.*.source-name` Item source name",
+          "{int} `scene-items.*.item-id` Scene item unique ID"
+        ],
         "api": "events",
         "name": "SourceOrderChanged",
         "category": "sources",
@@ -1871,6 +1876,21 @@
             "type": "String",
             "name": "scene-name",
             "description": "Name of the scene where items have been reordered."
+          },
+          {
+            "type": "Array<Object>",
+            "name": "scene-items",
+            "description": "Ordered list of scene items"
+          },
+          {
+            "type": "String",
+            "name": "scene-items.*.source-name",
+            "description": "Item source name"
+          },
+          {
+            "type": "int",
+            "name": "scene-items.*.item-id",
+            "description": "Scene item unique ID"
           }
         ],
         "names": [

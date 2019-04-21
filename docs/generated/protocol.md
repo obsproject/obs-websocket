@@ -838,6 +838,9 @@ Scene items have been reordered.
 | Name | Type  | Description |
 | ---- | :---: | ------------|
 | `scene-name` | _String_ | Name of the scene where items have been reordered. |
+| `scene-items` | _Array&lt;Object&gt;_ | Ordered list of scene items |
+| `scene-items.*.source-name` | _String_ | Item source name |
+| `scene-items.*.item-id` | _int_ | Scene item unique ID |
 
 
 ---
