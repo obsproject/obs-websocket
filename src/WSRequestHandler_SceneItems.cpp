@@ -531,7 +531,7 @@ static void DuplicateSceneItem(void *_data, obs_scene_t *scene) {
  *
  * @return {String} `scene` Name of the scene where the new item was created
  * @return {Object} `item` New item info
- * @return {int} `̀item.id` New item ID
+ * @return {int} `item.id` New item ID
  * @return {String} `item.name` New item name
  *
  * @api requests

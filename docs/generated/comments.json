@@ -3961,7 +3961,7 @@
         "return": [
           "{String} `scene` Name of the scene where the new item was created",
           "{Object} `item` New item info",
-          "{int} `̀item.id` New item ID",
+          "{int} `item.id` New item ID",
           "{String} `item.name` New item name"
         ],
         "api": "requests",
@@ -3981,7 +3981,7 @@
           },
           {
             "type": "int",
-            "name": "̀item.id",
+            "name": "item.id",
             "description": "New item ID"
           },
           {
