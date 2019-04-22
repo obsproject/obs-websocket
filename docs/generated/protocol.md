@@ -45,8 +45,8 @@ auth_response = base64_encode(auth_response_hash)
 - [Typedefs](#typedefs)
   * [SceneItemTransform](#sceneitemtransform)
   * [OBSStats](#obsstats)
-  * [Scene](#scene)
   * [Source](#source)
+  * [Scene](#scene)
 - [Events](#events)
   * [Scenes](#scenes)
     + [SwitchScenes](#switchscenes)
@@ -235,24 +235,26 @@ These are complex types, such as `Source` and `Scene`, which are used as argumen
 | `cpu-usage` | _double_ | Current CPU usage (percentage) |
 | `memory-usage` | _double_ | Current RAM usage (in megabytes) |
 | `free-disk-space` | _double_ | Free recording disk space (in megabytes) |
-## Scene
-| Name | Type  | Description |
-| ---- | :---: | ------------|
-| `name` | _String_ | Name of the currently active scene. |
-| `sources` | _Array&lt;Source&gt;_ | Ordered list of the current scene's source items. |
 ## Source
 | Name | Type  | Description |
 | ---- | :---: | ------------|
 | `cy` | _Number_ |  |
 | `cx` | _Number_ |  |
 | `name` | _String_ | The name of this Scene Item. |
+| `id` | _int_ | Scene item ID |
 | `render` | _Boolean_ | Whether or not this Scene Item is set to "visible". |
+| `locked` | _Boolean_ | Whether or not this Scene Item is locked and can't be moved around |
 | `source_cx` | _Number_ |  |
 | `source_cy` | _Number_ |  |
 | `type` | _String_ | Source type. Value is one of the following: "input", "filter", "transition", "scene" or "unknown" |
 | `volume` | _Number_ |  |
 | `x` | _Number_ |  |
 | `y` | _Number_ |  |
+## Scene
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `name` | _String_ | Name of the currently active scene. |
+| `sources` | _Array&lt;Source&gt;_ | Ordered list of the current scene's source items. |
 
 
 
@@ -884,6 +886,7 @@ An item has been added to the current scene.
 | ---- | :---: | ------------|
 | `scene-name` | _String_ | Name of the scene. |
 | `item-name` | _String_ | Name of the item added to the scene. |
+| `item-id` | _int_ | Scene item ID |
 
 
 ---
@@ -901,6 +904,7 @@ An item has been removed from the current scene.
 | ---- | :---: | ------------|
 | `scene-name` | _String_ | Name of the scene. |
 | `item-name` | _String_ | Name of the item removed from the scene. |
+| `item-id` | _int_ | Scene item ID |
 
 
 ---
@@ -918,6 +922,7 @@ An item's visibility has been toggled.
 | ---- | :---: | ------------|
 | `scene-name` | _String_ | Name of the scene. |
 | `item-name` | _String_ | Name of the item in the scene. |
+| `item-id` | _int_ | Scene item ID |
 | `item-visible` | _boolean_ | New visibility state of the item. |
 
 
@@ -936,6 +941,7 @@ An item's transform has been changed.
 | ---- | :---: | ------------|
 | `scene-name` | _String_ | Name of the scene. |
 | `item-name` | _String_ | Name of the item in the scene. |
+| `item-id` | _int_ | Scene item ID |
 | `transform` | _SceneItemProperties_ | Scene item transform properties |
 
 
@@ -952,9 +958,9 @@ A scene item is selected.
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
-| `sceneName` | _String_ | Name of the scene. |
-| `itemName` | _String_ | Name of the item in the scene. |
-| `itemId` | _int_ | Name of the item in the scene. |
+| `scene-name` | _String_ | Name of the scene. |
+| `item-name` | _String_ | Name of the item in the scene. |
+| `item-id` | _int_ | Name of the item in the scene. |
 
 
 ---
@@ -970,9 +976,9 @@ A scene item is deselected.
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
-| `sceneName` | _String_ | Name of the scene. |
-| `itemName` | _String_ | Name of the item in the scene. |
-| `itemId` | _int_ | Name of the item in the scene. |
+| `scene-name` | _String_ | Name of the scene. |
+| `item-name` | _String_ | Name of the item in the scene. |
+| `item-id` | _int_ | Name of the item in the scene. |
 
 
 ---

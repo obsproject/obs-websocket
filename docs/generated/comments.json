@@ -218,45 +218,14 @@
     },
     {
       "subheads": [],
-      "typedef": "{Object} `Scene`",
-      "property": [
-        "{String} `name` Name of the currently active scene.",
-        "{Array<Source>} `sources` Ordered list of the current scene's source items."
-      ],
-      "properties": [
-        {
-          "type": "String",
-          "name": "name",
-          "description": "Name of the currently active scene."
-        },
-        {
-          "type": "Array<Source>",
-          "name": "sources",
-          "description": "Ordered list of the current scene's source items."
-        }
-      ],
-      "typedefs": [
-        {
-          "type": "Object",
-          "name": "Scene",
-          "description": ""
-        }
-      ],
-      "name": "",
-      "heading": {
-        "level": 2,
-        "text": ""
-      },
-      "examples": []
-    },
-    {
-      "subheads": [],
       "typedef": "{Object} `Source` An OBS Scene Item.",
       "property": [
         "{Number} `cy`",
         "{Number} `cx`",
         "{String} `name` The name of this Scene Item.",
+        "{int} `id` Scene item ID",
         "{Boolean} `render` Whether or not this Scene Item is set to \"visible\".",
+        "{Boolean} `locked` Whether or not this Scene Item is locked and can't be moved around",
         "{Number} `source_cx`",
         "{Number} `source_cy`",
         "{String} `type` Source type. Value is one of the following: \"input\", \"filter\", \"transition\", \"scene\" or \"unknown\"",
@@ -281,9 +250,19 @@
           "description": "The name of this Scene Item."
         },
         {
+          "type": "int",
+          "name": "id",
+          "description": "Scene item ID"
+        },
+        {
           "type": "Boolean",
           "name": "render",
           "description": "Whether or not this Scene Item is set to \"visible\"."
+        },
+        {
+          "type": "Boolean",
+          "name": "locked",
+          "description": "Whether or not this Scene Item is locked and can't be moved around"
         },
         {
           "type": "Number",
@@ -321,6 +300,39 @@
           "type": "Object",
           "name": "Source",
           "description": "An OBS Scene Item."
+        }
+      ],
+      "name": "",
+      "heading": {
+        "level": 2,
+        "text": ""
+      },
+      "examples": []
+    },
+    {
+      "subheads": [],
+      "typedef": "{Object} `Scene`",
+      "property": [
+        "{String} `name` Name of the currently active scene.",
+        "{Array<Source>} `sources` Ordered list of the current scene's source items."
+      ],
+      "properties": [
+        {
+          "type": "String",
+          "name": "name",
+          "description": "Name of the currently active scene."
+        },
+        {
+          "type": "Array<Source>",
+          "name": "sources",
+          "description": "Ordered list of the current scene's source items."
+        }
+      ],
+      "typedefs": [
+        {
+          "type": "Object",
+          "name": "Scene",
+          "description": ""
         }
       ],
       "name": "",
@@ -2059,7 +2071,8 @@
         "description": "An item has been added to the current scene.",
         "return": [
           "{String} `scene-name` Name of the scene.",
-          "{String} `item-name` Name of the item added to the scene."
+          "{String} `item-name` Name of the item added to the scene.",
+          "{int} `item-id` Scene item ID"
         ],
         "api": "events",
         "name": "SceneItemAdded",
@@ -2075,6 +2088,11 @@
             "type": "String",
             "name": "item-name",
             "description": "Name of the item added to the scene."
+          },
+          {
+            "type": "int",
+            "name": "item-id",
+            "description": "Scene item ID"
           }
         ],
         "names": [
@@ -2108,7 +2126,8 @@
         "description": "An item has been removed from the current scene.",
         "return": [
           "{String} `scene-name` Name of the scene.",
-          "{String} `item-name` Name of the item removed from the scene."
+          "{String} `item-name` Name of the item removed from the scene.",
+          "{int} `item-id` Scene item ID"
         ],
         "api": "events",
         "name": "SceneItemRemoved",
@@ -2124,6 +2143,11 @@
             "type": "String",
             "name": "item-name",
             "description": "Name of the item removed from the scene."
+          },
+          {
+            "type": "int",
+            "name": "item-id",
+            "description": "Scene item ID"
           }
         ],
         "names": [
@@ -2158,6 +2182,7 @@
         "return": [
           "{String} `scene-name` Name of the scene.",
           "{String} `item-name` Name of the item in the scene.",
+          "{int} `item-id` Scene item ID",
           "{boolean} `item-visible` New visibility state of the item."
         ],
         "api": "events",
@@ -2174,6 +2199,11 @@
             "type": "String",
             "name": "item-name",
             "description": "Name of the item in the scene."
+          },
+          {
+            "type": "int",
+            "name": "item-id",
+            "description": "Scene item ID"
           },
           {
             "type": "boolean",
@@ -2213,6 +2243,7 @@
         "return": [
           "{String} `scene-name` Name of the scene.",
           "{String} `item-name` Name of the item in the scene.",
+          "{int} `item-id` Scene item ID",
           "{SceneItemProperties} `transform` Scene item transform properties"
         ],
         "api": "events",
@@ -2229,6 +2260,11 @@
             "type": "String",
             "name": "item-name",
             "description": "Name of the item in the scene."
+          },
+          {
+            "type": "int",
+            "name": "item-id",
+            "description": "Scene item ID"
           },
           {
             "type": "SceneItemProperties",
@@ -2266,9 +2302,9 @@
         "subheads": [],
         "description": "A scene item is selected.",
         "return": [
-          "{String} `sceneName` Name of the scene.",
-          "{String} `itemName` Name of the item in the scene.",
-          "{int} `itemId` Name of the item in the scene."
+          "{String} `scene-name` Name of the scene.",
+          "{String} `item-name` Name of the item in the scene.",
+          "{int} `item-id` Name of the item in the scene."
         ],
         "api": "events",
         "name": "SceneItemSelected",
@@ -2277,17 +2313,17 @@
         "returns": [
           {
             "type": "String",
-            "name": "sceneName",
+            "name": "scene-name",
             "description": "Name of the scene."
           },
           {
             "type": "String",
-            "name": "itemName",
+            "name": "item-name",
             "description": "Name of the item in the scene."
           },
           {
             "type": "int",
-            "name": "itemId",
+            "name": "item-id",
             "description": "Name of the item in the scene."
           }
         ],
@@ -2321,9 +2357,9 @@
         "subheads": [],
         "description": "A scene item is deselected.",
         "return": [
-          "{String} `sceneName` Name of the scene.",
-          "{String} `itemName` Name of the item in the scene.",
-          "{int} `itemId` Name of the item in the scene."
+          "{String} `scene-name` Name of the scene.",
+          "{String} `item-name` Name of the item in the scene.",
+          "{int} `item-id` Name of the item in the scene."
         ],
         "api": "events",
         "name": "SceneItemDeselected",
@@ -2332,17 +2368,17 @@
         "returns": [
           {
             "type": "String",
-            "name": "sceneName",
+            "name": "scene-name",
             "description": "Name of the scene."
           },
           {
             "type": "String",
-            "name": "itemName",
+            "name": "item-name",
             "description": "Name of the item in the scene."
           },
           {
             "type": "int",
-            "name": "itemId",
+            "name": "item-id",
             "description": "Name of the item in the scene."
           }
         ],
