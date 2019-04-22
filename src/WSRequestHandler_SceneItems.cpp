@@ -78,6 +78,7 @@ HandlerResponse WSRequestHandler::HandleGetSceneItemProperties(WSRequestHandler*
 * @param {int} `crop.left` The new amount of pixels cropped off the left of the source before scaling.
 * @param {int} `crop.right` The new amount of pixels cropped off the right of the source before scaling.
 * @param {bool} `visible` The new visibility of the source. 'true' shows source, 'false' hides source.
+* @param {bool} `locked` The new locked status of the source. 'true' keeps it in its current position, 'false' allows movement.
 * @param {String} `bounds.type` The new bounds type of the source. Can be "OBS_BOUNDS_STRETCH", "OBS_BOUNDS_SCALE_INNER", "OBS_BOUNDS_SCALE_OUTER", "OBS_BOUNDS_SCALE_TO_WIDTH", "OBS_BOUNDS_SCALE_TO_HEIGHT", "OBS_BOUNDS_MAX_ONLY" or "OBS_BOUNDS_NONE".
 * @param {int} `bounds.alignment` The new alignment of the bounding box. (0-2, 4-6, 8-10)
 * @param {double} `bounds.x` The new width of the bounding box.
@@ -179,6 +180,10 @@ HandlerResponse WSRequestHandler::HandleSetSceneItemProperties(WSRequestHandler*
 
 	if (req->hasField("visible")) {
 		obs_sceneitem_set_visible(sceneItem, obs_data_get_bool(req->data, "visible"));
+	}
+
+	if (req->hasField("locked")) {
+		obs_sceneitem_set_locked(sceneItem, obs_data_get_bool(req->data, "locked"));
 	}
 
 	if (req->hasField("bounds")) {

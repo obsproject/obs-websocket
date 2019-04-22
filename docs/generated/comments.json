@@ -15,6 +15,7 @@
         "{int} `crop.bottom` The number of pixels cropped off the bottom of the scene item before scaling.",
         "{int} `crop.left` The number of pixels cropped off the left of the scene item before scaling.",
         "{bool} `visible` If the scene item is visible.",
+        "{bool} `locked` If the scene item is locked in position.",
         "{String} `bounds.type` Type of bounding box. Can be \"OBS_BOUNDS_STRETCH\", \"OBS_BOUNDS_SCALE_INNER\", \"OBS_BOUNDS_SCALE_OUTER\", \"OBS_BOUNDS_SCALE_TO_WIDTH\", \"OBS_BOUNDS_SCALE_TO_HEIGHT\", \"OBS_BOUNDS_MAX_ONLY\" or \"OBS_BOUNDS_NONE\".",
         "{int} `bounds.alignment` Alignment of the bounding box.",
         "{double} `bounds.x` Width of the bounding box.",
@@ -79,6 +80,11 @@
           "type": "bool",
           "name": "visible",
           "description": "If the scene item is visible."
+        },
+        {
+          "type": "bool",
+          "name": "locked",
+          "description": "If the scene item is locked in position."
         },
         {
           "type": "String",
@@ -3432,6 +3438,7 @@
           "{int} `crop.left` The new amount of pixels cropped off the left of the source before scaling.",
           "{int} `crop.right` The new amount of pixels cropped off the right of the source before scaling.",
           "{bool} `visible` The new visibility of the source. 'true' shows source, 'false' hides source.",
+          "{bool} `locked` The new locked status of the source. 'true' keeps it in its current position, 'false' allows movement.",
           "{String} `bounds.type` The new bounds type of the source. Can be \"OBS_BOUNDS_STRETCH\", \"OBS_BOUNDS_SCALE_INNER\", \"OBS_BOUNDS_SCALE_OUTER\", \"OBS_BOUNDS_SCALE_TO_WIDTH\", \"OBS_BOUNDS_SCALE_TO_HEIGHT\", \"OBS_BOUNDS_MAX_ONLY\" or \"OBS_BOUNDS_NONE\".",
           "{int} `bounds.alignment` The new alignment of the bounding box. (0-2, 4-6, 8-10)",
           "{double} `bounds.x` The new width of the bounding box.",
@@ -3506,6 +3513,11 @@
             "type": "bool",
             "name": "visible",
             "description": "The new visibility of the source. 'true' shows source, 'false' hides source."
+          },
+          {
+            "type": "bool",
+            "name": "locked",
+            "description": "The new locked status of the source. 'true' keeps it in its current position, 'false' allows movement."
           },
           {
             "type": "String",
