@@ -390,7 +390,7 @@ QSystemTrayIcon* Utils::GetTrayIcon() {
 	return main->findChildren<QSystemTrayIcon*>().first();
 }
 
-void Utils::SysTrayNotify(QString &text,
+void Utils::SysTrayNotify(QString text,
 	QSystemTrayIcon::MessageIcon icon, QString title) {
 	if (!Config::Current()->AlertsEnabled ||
 		!QSystemTrayIcon::isSystemTrayAvailable() ||

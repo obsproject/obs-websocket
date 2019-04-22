@@ -71,7 +71,7 @@ class Utils {
 
 	static QSystemTrayIcon* GetTrayIcon();
 	static void SysTrayNotify(
-		QString &text,
+		QString text,
 		QSystemTrayIcon::MessageIcon n,
 		QString title = QString("obs-websocket"));
 
