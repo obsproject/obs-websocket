@@ -58,6 +58,7 @@ WSServer::WSServer()
 	  _clMutex(QMutex::Recursive)
 {
 	_server.init_asio();
+	_server.set_reuse_addr(true);
 
 	_server.set_open_handler(bind(&WSServer::onOpen, this, ::_1));
 	_server.set_close_handler(bind(&WSServer::onClose, this, ::_1));
