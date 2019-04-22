@@ -203,13 +203,13 @@ void Config::OnFrontendEvent(enum obs_frontend_event event, void* param)
 {
 	auto config = reinterpret_cast<Config*>(param);
 
-	obs_frontend_push_ui_translation(obs_module_get_string);
-	QString startMessage = QObject::tr("OBSWebsocket.ProfileChanged.Started");
-	QString stopMessage = QObject::tr("OBSWebsocket.ProfileChanged.Stopped");
-	QString restartMessage = QObject::tr("OBSWebsocket.ProfileChanged.Restarted");
-	obs_frontend_pop_ui_translation();
-
 	if (event == OBS_FRONTEND_EVENT_PROFILE_CHANGED) {
+		obs_frontend_push_ui_translation(obs_module_get_string);
+		QString startMessage = QObject::tr("OBSWebsocket.ProfileChanged.Started");
+		QString stopMessage = QObject::tr("OBSWebsocket.ProfileChanged.Stopped");
+		QString restartMessage = QObject::tr("OBSWebsocket.ProfileChanged.Restarted");
+		obs_frontend_pop_ui_translation();
+
 		auto previousEnabled = config->ServerEnabled;
 		auto previousPort = config->ServerPort;
 
