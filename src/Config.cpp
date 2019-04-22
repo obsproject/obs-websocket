@@ -204,23 +204,36 @@ void Config::OnFrontendEvent(enum obs_frontend_event event, void* param)
 	auto config = reinterpret_cast<Config*>(param);
 
 	if (event == OBS_FRONTEND_EVENT_PROFILE_CHANGED) {
-		auto server = WSServer::Current();
-		server->stop();
+		auto previousEnabled = config->ServerEnabled;
+		auto previousPort = config->ServerPort;
 
 		config->SetDefaults();
 		config->Load();
-		if (config->ServerEnabled) {
-			server->start(config->ServerPort);
 
-			Utils::SysTrayNotify(
-				QString("Profile changed, WebSockets server restarted"),
-				QSystemTrayIcon::MessageIcon::Information
-			);
-		} else {
-			Utils::SysTrayNotify(
-				QString("Profile changed, WebSockets server stopped"),
-				QSystemTrayIcon::MessageIcon::Information
-			);
+		if (config->ServerEnabled != previousEnabled || config->ServerPort != previousPort) {
+			auto server = WSServer::Current();
+			server->stop();
+
+			if (config->ServerEnabled) {
+				server->start(config->ServerPort);
+
+				if (previousEnabled != config->ServerEnabled) {
+					Utils::SysTrayNotify(
+						QString("WebSockets server enabled in this profile. Server started."),
+						QSystemTrayIcon::MessageIcon::Information
+					);
+				} else {
+					Utils::SysTrayNotify(
+						QString("WebSockets server port changed in this profile. Server restarted."),
+						QSystemTrayIcon::MessageIcon::Information
+					);
+				}
+			} else {
+				Utils::SysTrayNotify(
+					QString("WebSockets server disabled in this profile. Server stopped."),
+					QSystemTrayIcon::MessageIcon::Information
+				);
+			}
 		}
 	}	
 }
