@@ -924,9 +924,9 @@ An item's visibility has been toggled.
 ### SceneItemTransformChanged
 
 
-- Unreleased
+- Added in v4.6.0
 
-An item's transfrom has been changed.
+An item's transform has been changed.
 
 **Response Items:**
 

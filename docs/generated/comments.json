@@ -2209,7 +2209,7 @@
       },
       {
         "subheads": [],
-        "description": "An item's transfrom has been changed.",
+        "description": "An item's transform has been changed.",
         "return": [
           "{String} `scene-name` Name of the scene.",
           "{String} `item-name` Name of the item in the scene.",
@@ -2218,7 +2218,7 @@
         "api": "events",
         "name": "SceneItemTransformChanged",
         "category": "sources",
-        "since": "unreleased",
+        "since": "4.6.0",
         "returns": [
           {
             "type": "String",
@@ -2251,7 +2251,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "unreleased"
+            "description": "4.6.0"
           }
         ],
         "heading": {
