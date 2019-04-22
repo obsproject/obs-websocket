@@ -2261,6 +2261,116 @@
         "lead": "",
         "type": "class",
         "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "A scene item is selected.",
+        "return": [
+          "{String} `sceneName` Name of the scene.",
+          "{String} `itemName` Name of the item in the scene.",
+          "{int} `itemId` Name of the item in the scene."
+        ],
+        "api": "events",
+        "name": "SceneItemSelected",
+        "category": "sources",
+        "since": "4.6.0",
+        "returns": [
+          {
+            "type": "String",
+            "name": "sceneName",
+            "description": "Name of the scene."
+          },
+          {
+            "type": "String",
+            "name": "itemName",
+            "description": "Name of the item in the scene."
+          },
+          {
+            "type": "int",
+            "name": "itemId",
+            "description": "Name of the item in the scene."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "SceneItemSelected"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "sources"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.6.0"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "SceneItemSelected"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "A scene item is deselected.",
+        "return": [
+          "{String} `sceneName` Name of the scene.",
+          "{String} `itemName` Name of the item in the scene.",
+          "{int} `itemId` Name of the item in the scene."
+        ],
+        "api": "events",
+        "name": "SceneItemDeselected",
+        "category": "sources",
+        "since": "4.6.0",
+        "returns": [
+          {
+            "type": "String",
+            "name": "sceneName",
+            "description": "Name of the scene."
+          },
+          {
+            "type": "String",
+            "name": "itemName",
+            "description": "Name of the item in the scene."
+          },
+          {
+            "type": "int",
+            "name": "itemId",
+            "description": "Name of the item in the scene."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "SceneItemDeselected"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "sources"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.6.0"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "SceneItemDeselected"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
       }
     ],
     "studio mode": [

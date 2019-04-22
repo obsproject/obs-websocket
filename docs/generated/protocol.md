@@ -97,6 +97,8 @@ auth_response = base64_encode(auth_response_hash)
     + [SceneItemRemoved](#sceneitemremoved)
     + [SceneItemVisibilityChanged](#sceneitemvisibilitychanged)
     + [SceneItemTransformChanged](#sceneitemtransformchanged)
+    + [SceneItemSelected](#sceneitemselected)
+    + [SceneItemDeselected](#sceneitemdeselected)
   * [Studio Mode](#studio-mode)
     + [PreviewSceneChanged](#previewscenechanged)
     + [StudioModeSwitched](#studiomodeswitched)
@@ -935,6 +937,42 @@ An item's transform has been changed.
 | `scene-name` | _String_ | Name of the scene. |
 | `item-name` | _String_ | Name of the item in the scene. |
 | `transform` | _SceneItemProperties_ | Scene item transform properties |
+
+
+---
+
+### SceneItemSelected
+
+
+- Added in v4.6.0
+
+A scene item is selected.
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sceneName` | _String_ | Name of the scene. |
+| `itemName` | _String_ | Name of the item in the scene. |
+| `itemId` | _int_ | Name of the item in the scene. |
+
+
+---
+
+### SceneItemDeselected
+
+
+- Added in v4.6.0
+
+A scene item is deselected.
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sceneName` | _String_ | Name of the scene. |
+| `itemName` | _String_ | Name of the item in the scene. |
+| `itemId` | _int_ | Name of the item in the scene. |
 
 
 ---
