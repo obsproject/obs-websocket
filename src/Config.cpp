@@ -207,6 +207,7 @@ void Config::OnFrontendEvent(enum obs_frontend_event event, void* param)
 		auto server = WSServer::Current();
 		server->stop();
 
+		config->SetDefaults();
 		config->Load();
 		if (config->ServerEnabled) {
 			server->start(config->ServerPort);
