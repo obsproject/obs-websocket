@@ -3,20 +3,6 @@
 #include "WSRequestHandler.h"
 
 /**
-* @typedef {Object} `Source` An OBS Scene Item.
-* @property {Number} `cy`
-* @property {Number} `cx`
-* @property {String} `name` The name of this Scene Item.
-* @property {Boolean} `render` Whether or not this Scene Item is set to "visible".
-* @property {Number} `source_cx`
-* @property {Number} `source_cy`
-* @property {String} `type` Source type. Value is one of the following: "input", "filter", "transition", "scene" or "unknown"
-* @property {Number} `volume`
-* @property {Number} `x`
-* @property {Number} `y`
-*/
-
-/**
 * List all sources available in the running OBS instance
 *
 * @return {Array<Object>} `sources` Array of sources

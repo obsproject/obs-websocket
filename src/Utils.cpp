@@ -115,11 +115,13 @@ obs_data_t* Utils::GetSceneItemData(obs_sceneitem_t* item) {
 
 	obs_data_t* data = obs_data_create();
 	obs_data_set_string(data, "name",
-		obs_source_get_name(obs_sceneitem_get_source(item)));
+		obs_source_get_name(itemSource));
+	obs_data_set_int(data, "id",
+		obs_sceneitem_get_id(item));
 	obs_data_set_string(data, "type",
-		obs_source_get_id(obs_sceneitem_get_source(item)));
+		obs_source_get_id(itemSource));
 	obs_data_set_double(data, "volume",
-		obs_source_get_volume(obs_sceneitem_get_source(item)));
+		obs_source_get_volume(itemSource));
 	obs_data_set_double(data, "x", pos.x);
 	obs_data_set_double(data, "y", pos.y);
 	obs_data_set_int(data, "source_cx", (int)item_width);
