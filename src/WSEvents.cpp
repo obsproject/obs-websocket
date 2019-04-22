@@ -1169,6 +1169,7 @@ void WSEvents::OnSceneReordered(void* param, calldata_t* data) {
  *
  * @return {String} `scene-name` Name of the scene.
  * @return {String} `item-name` Name of the item added to the scene.
+ * @return {int} `item-id` Scene item ID
  *
  * @api events
  * @name SceneItemAdded
@@ -1192,7 +1193,7 @@ void WSEvents::OnSceneItemAdd(void* param, calldata_t* data) {
 	OBSDataAutoRelease fields = obs_data_create();
 	obs_data_set_string(fields, "scene-name", sceneName);
 	obs_data_set_string(fields, "item-name", sceneItemName);
-
+	obs_data_set_int(fields, "item-id", obs_sceneitem_get_id(sceneItem));
 	instance->broadcastUpdate("SceneItemAdded", fields);
 }
 
@@ -1201,6 +1202,7 @@ void WSEvents::OnSceneItemAdd(void* param, calldata_t* data) {
  *
  * @return {String} `scene-name` Name of the scene.
  * @return {String} `item-name` Name of the item removed from the scene.
+ * @return {int} `item-id` Scene item ID
  *
  * @api events
  * @name SceneItemRemoved
@@ -1224,7 +1226,7 @@ void WSEvents::OnSceneItemDelete(void* param, calldata_t* data) {
 	OBSDataAutoRelease fields = obs_data_create();
 	obs_data_set_string(fields, "scene-name", sceneName);
 	obs_data_set_string(fields, "item-name", sceneItemName);
-
+	obs_data_set_int(fields, "item-id", obs_sceneitem_get_id(sceneItem));
 	instance->broadcastUpdate("SceneItemRemoved", fields);
 }
 
@@ -1233,6 +1235,7 @@ void WSEvents::OnSceneItemDelete(void* param, calldata_t* data) {
  *
  * @return {String} `scene-name` Name of the scene.
  * @return {String} `item-name` Name of the item in the scene.
+ * @return {int} `item-id` Scene item ID
  * @return {boolean} `item-visible` New visibility state of the item.
  *
  * @api events
@@ -1260,8 +1263,8 @@ void WSEvents::OnSceneItemVisibilityChanged(void* param, calldata_t* data) {
 	OBSDataAutoRelease fields = obs_data_create();
 	obs_data_set_string(fields, "scene-name", sceneName);
 	obs_data_set_string(fields, "item-name", sceneItemName);
+	obs_data_set_int(fields, "item-id", obs_sceneitem_get_id(sceneItem));
 	obs_data_set_bool(fields, "item-visible", visible);
-
 	instance->broadcastUpdate("SceneItemVisibilityChanged", fields);
 }
 
@@ -1270,6 +1273,7 @@ void WSEvents::OnSceneItemVisibilityChanged(void* param, calldata_t* data) {
  *
  * @return {String} `scene-name` Name of the scene.
  * @return {String} `item-name` Name of the item in the scene.
+ * @return {int} `item-id` Scene item ID
  * @return {SceneItemProperties} `transform` Scene item transform properties
  *
  * @api events
@@ -1296,17 +1300,17 @@ void WSEvents::OnSceneItemTransform(void* param, calldata_t* data) {
 	OBSDataAutoRelease fields = obs_data_create();
 	obs_data_set_string(fields, "scene-name", sceneName);
 	obs_data_set_string(fields, "item-name", sceneItemName);
+	obs_data_set_int(fields, "item-id", obs_sceneitem_get_id(sceneItem));
 	obs_data_set_obj(fields, "transform", transform);
-
 	instance->broadcastUpdate("SceneItemTransformChanged", fields);
 }
 
 /**
  * A scene item is selected.
  *
- * @return {String} `sceneName` Name of the scene.
- * @return {String} `itemName` Name of the item in the scene.
- * @return {int} `itemId` Name of the item in the scene.
+ * @return {String} `scene-name` Name of the scene.
+ * @return {String} `item-name` Name of the item in the scene.
+ * @return {int} `item-id` Name of the item in the scene.
  *
  * @api events
  * @name SceneItemSelected
@@ -1330,18 +1334,18 @@ void WSEvents::OnSceneItemSelected(void* param, calldata_t* data) {
 	OBSSource itemSource = obs_sceneitem_get_source(item);
 
 	OBSDataAutoRelease fields = obs_data_create();
-	obs_data_set_string(fields, "sceneName", obs_source_get_name(sceneSource));
-	obs_data_set_string(fields, "itemName", obs_source_get_name(itemSource));
-	obs_data_set_int(fields, "itemId", obs_sceneitem_get_id(item));
+	obs_data_set_string(fields, "scene-name", obs_source_get_name(sceneSource));
+	obs_data_set_string(fields, "item-name", obs_source_get_name(itemSource));
+	obs_data_set_int(fields, "item-id", obs_sceneitem_get_id(item));
 	self->broadcastUpdate("SceneItemSelected", fields);
 }
 
 /**
  * A scene item is deselected.
  *
- * @return {String} `sceneName` Name of the scene.
- * @return {String} `itemName` Name of the item in the scene.
- * @return {int} `itemId` Name of the item in the scene.
+ * @return {String} `scene-name` Name of the scene.
+ * @return {String} `item-name` Name of the item in the scene.
+ * @return {int} `item-id` Name of the item in the scene.
  *
  * @api events
  * @name SceneItemDeselected
@@ -1365,9 +1369,9 @@ void WSEvents::OnSceneItemDeselected(void* param, calldata_t* data) {
 	OBSSource itemSource = obs_sceneitem_get_source(item);
 
 	OBSDataAutoRelease fields = obs_data_create();
-	obs_data_set_string(fields, "sceneName", obs_source_get_name(sceneSource));
-	obs_data_set_string(fields, "itemName", obs_source_get_name(itemSource));
-	obs_data_set_int(fields, "itemId", obs_sceneitem_get_id(item));
+	obs_data_set_string(fields, "scene-name", obs_source_get_name(sceneSource));
+	obs_data_set_string(fields, "item-name", obs_source_get_name(itemSource));
+	obs_data_set_int(fields, "item-id", obs_sceneitem_get_id(item));
 	self->broadcastUpdate("SceneItemDeselected", fields);
 }
 
