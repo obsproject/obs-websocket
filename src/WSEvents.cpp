@@ -1264,7 +1264,7 @@ void WSEvents::OnSceneItemVisibilityChanged(void* param, calldata_t* data) {
 }
 
 /**
- * An item's transfrom has been changed.
+ * An item's transform has been changed.
  *
  * @return {String} `scene-name` Name of the scene.
  * @return {String} `item-name` Name of the item in the scene.
@@ -1273,7 +1273,7 @@ void WSEvents::OnSceneItemVisibilityChanged(void* param, calldata_t* data) {
  * @api events
  * @name SceneItemTransformChanged
  * @category sources
- * @since unreleased
+ * @since 4.6.0
  */
 void WSEvents::OnSceneItemTransform(void* param, calldata_t* data) {
 	auto instance = reinterpret_cast<WSEvents*>(param);
