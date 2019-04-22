@@ -81,6 +81,8 @@ void WSServer::start(quint16 port)
 		stop();
 	}
 
+	_server.reset();
+
 	_serverPort = port;
 
 	websocketpp::lib::error_code errorCode;
