@@ -1686,7 +1686,7 @@ Duplicates a scene item.
 | ---- | :---: | ------------|
 | `scene` | _String_ | Name of the scene where the new item was created |
 | `item` | _Object_ | New item info |
-| `̀item.id` | _int_ | New item ID |
+| `item.id` | _int_ | New item ID |
 | `item.name` | _String_ | New item name |
 
 
