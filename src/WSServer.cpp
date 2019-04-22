@@ -16,6 +16,9 @@ You should have received a copy of the GNU General Public License along
 with this program. If not, see <https://www.gnu.org/licenses/>
 */
 
+#include <chrono>
+#include <thread>
+
 #include <QtCore/QThread>
 #include <QtCore/QByteArray>
 #include <QtWidgets/QMainWindow>
@@ -83,6 +86,9 @@ void WSServer::start(quint16 port)
 	_server.listen(_serverPort, errorCode);
 
 	if (errorCode) {
+		std::string errorCodeMessage = errorCode.message();
+		blog(LOG_INFO, "server: listen failed: %s", errorCodeMessage.c_str());
+
 		obs_frontend_push_ui_translation(obs_module_get_string);
 		QString errorTitle = tr("OBSWebsocket.Server.StartFailed.Title");
 		QString errorMessage = tr("OBSWebsocket.Server.StartFailed.Message").arg(_serverPort);
@@ -97,7 +103,9 @@ void WSServer::start(quint16 port)
 	_server.start_accept();
 
 	QtConcurrent::run([=]() {
+		blog(LOG_INFO, "io thread started");
 		_server.run();
+		blog(LOG_INFO, "io thread exited");
 	});
 
 	blog(LOG_INFO, "server started successfully on port %d", _serverPort);
@@ -110,7 +118,16 @@ void WSServer::stop()
 	}
 
 	_server.stop_listening();
-	_server.stop();
+	for (connection_hdl hdl : _connections) {
+		_server.close(hdl, websocketpp::close::status::going_away, "Server stopping");
+	}
+	_connections.clear();
+	_connectionProperties.clear();
+	
+	while (!_server.stopped()) {
+		std::this_thread::sleep_for(std::chrono::milliseconds(1));
+	}
+
 	blog(LOG_INFO, "server stopped successfully");
 }
 
