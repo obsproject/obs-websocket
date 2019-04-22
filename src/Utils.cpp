@@ -127,6 +127,7 @@ obs_data_t* Utils::GetSceneItemData(obs_sceneitem_t* item) {
 	obs_data_set_double(data, "cx", item_width * scale.x);
 	obs_data_set_double(data, "cy", item_height * scale.y);
 	obs_data_set_bool(data, "render", obs_sceneitem_visible(item));
+	obs_data_set_bool(data, "locked", obs_sceneitem_locked(item));
 
 	return data;
 }
@@ -593,6 +594,7 @@ bool Utils::SetFilenameFormatting(const char* filenameFormatting) {
  * @property {int} `crop.bottom` The number of pixels cropped off the bottom of the scene item before scaling.
  * @property {int} `crop.left` The number of pixels cropped off the left of the scene item before scaling.
  * @property {bool} `visible` If the scene item is visible.
+ * @property {bool} `locked` If the scene item is locked in position.
  * @property {String} `bounds.type` Type of bounding box. Can be "OBS_BOUNDS_STRETCH", "OBS_BOUNDS_SCALE_INNER", "OBS_BOUNDS_SCALE_OUTER", "OBS_BOUNDS_SCALE_TO_WIDTH", "OBS_BOUNDS_SCALE_TO_HEIGHT", "OBS_BOUNDS_MAX_ONLY" or "OBS_BOUNDS_NONE".
  * @property {int} `bounds.alignment` Alignment of the bounding box.
  * @property {double} `bounds.x` Width of the bounding box.
@@ -622,6 +624,7 @@ obs_data_t* Utils::GetSceneItemPropertiesData(obs_sceneitem_t* sceneItem) {
 	uint32_t alignment = obs_sceneitem_get_alignment(sceneItem);
 	float rotation = obs_sceneitem_get_rot(sceneItem);
 	bool isVisible = obs_sceneitem_visible(sceneItem);
+	bool isLocked = obs_sceneitem_locked(sceneItem);
 
 	obs_bounds_type boundsType = obs_sceneitem_get_bounds_type(sceneItem);
 	uint32_t boundsAlignment = obs_sceneitem_get_bounds_alignment(sceneItem);
@@ -654,6 +657,7 @@ obs_data_t* Utils::GetSceneItemPropertiesData(obs_sceneitem_t* sceneItem) {
 	obs_data_set_obj(data, "scale", scaleData);
 	obs_data_set_obj(data, "crop", cropData);
 	obs_data_set_bool(data, "visible", isVisible);
+	obs_data_set_bool(data, "locked", isLocked);
 	obs_data_set_obj(data, "bounds", boundsData);
 
 	obs_data_set_int(data, "sourceWidth", baseSourceWidth);

@@ -212,6 +212,7 @@ These are complex types, such as `Source` and `Scene`, which are used as argumen
 | `crop.bottom` | _int_ | The number of pixels cropped off the bottom of the scene item before scaling. |
 | `crop.left` | _int_ | The number of pixels cropped off the left of the scene item before scaling. |
 | `visible` | _bool_ | If the scene item is visible. |
+| `locked` | _bool_ | If the scene item is locked in position. |
 | `bounds.type` | _String_ | Type of bounding box. Can be "OBS_BOUNDS_STRETCH", "OBS_BOUNDS_SCALE_INNER", "OBS_BOUNDS_SCALE_OUTER", "OBS_BOUNDS_SCALE_TO_WIDTH", "OBS_BOUNDS_SCALE_TO_HEIGHT", "OBS_BOUNDS_MAX_ONLY" or "OBS_BOUNDS_NONE". |
 | `bounds.alignment` | _int_ | Alignment of the bounding box. |
 | `bounds.x` | _double_ | Width of the bounding box. |
@@ -1506,6 +1507,7 @@ Sets the scene specific properties of a source. Unspecified properties will rema
 | `crop.left` | _int_ | The new amount of pixels cropped off the left of the source before scaling. |
 | `crop.right` | _int_ | The new amount of pixels cropped off the right of the source before scaling. |
 | `visible` | _bool_ | The new visibility of the source. 'true' shows source, 'false' hides source. |
+| `locked` | _bool_ | The new locked status of the source. 'true' keeps it in its current position, 'false' allows movement. |
 | `bounds.type` | _String_ | The new bounds type of the source. Can be "OBS_BOUNDS_STRETCH", "OBS_BOUNDS_SCALE_INNER", "OBS_BOUNDS_SCALE_OUTER", "OBS_BOUNDS_SCALE_TO_WIDTH", "OBS_BOUNDS_SCALE_TO_HEIGHT", "OBS_BOUNDS_MAX_ONLY" or "OBS_BOUNDS_NONE". |
 | `bounds.alignment` | _int_ | The new alignment of the bounding box. (0-2, 4-6, 8-10) |
 | `bounds.x` | _double_ | The new width of the bounding box. |
