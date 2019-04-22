@@ -210,8 +210,8 @@ void Config::OnFrontendEvent(enum obs_frontend_event event, void* param)
 		QString restartMessage = QObject::tr("OBSWebsocket.ProfileChanged.Restarted");
 		obs_frontend_pop_ui_translation();
 
-		auto previousEnabled = config->ServerEnabled;
-		auto previousPort = config->ServerPort;
+		bool previousEnabled = config->ServerEnabled;
+		uint64_t previousPort = config->ServerPort;
 
 		config->SetDefaults();
 		config->Load();
