@@ -193,9 +193,14 @@ void WSServer::onClose(connection_hdl hdl)
 	_connectionProperties.erase(hdl);
 	locker.unlock();
 
-	QString clientIp = getRemoteEndpoint(hdl);
-	notifyDisconnection(clientIp);
-	blog(LOG_INFO, "client %s disconnected", clientIp.toUtf8().constData());
+	auto conn = _server.get_con_from_hdl(hdl);
+	auto localCloseCode = conn->get_local_close_code();
+
+	if (localCloseCode != websocketpp::close::status::going_away) {
+		QString clientIp = getRemoteEndpoint(hdl);
+		notifyDisconnection(clientIp);
+		blog(LOG_INFO, "client %s disconnected", clientIp.toUtf8().constData());
+	}
 }
 
 QString WSServer::getRemoteEndpoint(connection_hdl hdl)
