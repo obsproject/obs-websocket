@@ -815,6 +815,8 @@ void WSEvents::OnSourceCreate(void* param, calldata_t* data) {
 		signal_handler_connect(sh,
 			"item_visible", OnSceneItemVisibilityChanged, self);
 		signal_handler_connect(sh, "item_transform", OnSceneItemTransform, self);
+		signal_handler_connect(sh, "item_select", OnSceneItemSelected, self);
+		signal_handler_connect(sh, "item_deselect", OnSceneItemDeselected, self);
 	}
 	if (sourceType == OBS_SOURCE_TYPE_TRANSITION) {
 		signal_handler_connect(sh, "transition_start", OnTransitionBegin, self);
@@ -1297,6 +1299,76 @@ void WSEvents::OnSceneItemTransform(void* param, calldata_t* data) {
 	obs_data_set_obj(fields, "transform", transform);
 
 	instance->broadcastUpdate("SceneItemTransformChanged", fields);
+}
+
+/**
+ * A scene item is selected.
+ *
+ * @return {String} `sceneName` Name of the scene.
+ * @return {String} `itemName` Name of the item in the scene.
+ * @return {int} `itemId` Name of the item in the scene.
+ *
+ * @api events
+ * @name SceneItemSelected
+ * @category sources
+ * @since 4.6.0
+ */
+void WSEvents::OnSceneItemSelected(void* param, calldata_t* data) {
+	auto self = reinterpret_cast<WSEvents*>(param);
+
+	OBSScene scene = calldata_get_pointer<obs_scene_t>(data, "scene");
+	if (!scene) {
+		return;
+	}
+
+	OBSSceneItem item = calldata_get_pointer<obs_sceneitem_t>(data, "item");
+	if (!item) {
+		return;
+	}
+
+	OBSSource sceneSource = obs_scene_get_source(scene);
+	OBSSource itemSource = obs_sceneitem_get_source(item);
+
+	OBSDataAutoRelease fields = obs_data_create();
+	obs_data_set_string(fields, "sceneName", obs_source_get_name(sceneSource));
+	obs_data_set_string(fields, "itemName", obs_source_get_name(itemSource));
+	obs_data_set_int(fields, "itemId", obs_sceneitem_get_id(item));
+	self->broadcastUpdate("SceneItemSelected", fields);
+}
+
+/**
+ * A scene item is deselected.
+ *
+ * @return {String} `sceneName` Name of the scene.
+ * @return {String} `itemName` Name of the item in the scene.
+ * @return {int} `itemId` Name of the item in the scene.
+ *
+ * @api events
+ * @name SceneItemDeselected
+ * @category sources
+ * @since 4.6.0
+ */
+void WSEvents::OnSceneItemDeselected(void* param, calldata_t* data) {
+	auto self = reinterpret_cast<WSEvents*>(param);
+
+	OBSScene scene = calldata_get_pointer<obs_scene_t>(data, "scene");
+	if (!scene) {
+		return;
+	}
+
+	OBSSceneItem item = calldata_get_pointer<obs_sceneitem_t>(data, "item");
+	if (!item) {
+		return;
+	}
+
+	OBSSource sceneSource = obs_scene_get_source(scene);
+	OBSSource itemSource = obs_sceneitem_get_source(item);
+
+	OBSDataAutoRelease fields = obs_data_create();
+	obs_data_set_string(fields, "sceneName", obs_source_get_name(sceneSource));
+	obs_data_set_string(fields, "itemName", obs_source_get_name(itemSource));
+	obs_data_set_int(fields, "itemId", obs_sceneitem_get_id(item));
+	self->broadcastUpdate("SceneItemDeselected", fields);
 }
 
 /**
