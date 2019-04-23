@@ -207,7 +207,7 @@ HandlerResponse WSRequestHandler::HandleSetSceneItemProperties(WSRequestHandler*
 		OBSDataAutoRelease boundsError = obs_data_create();
 		OBSDataAutoRelease reqBounds = obs_data_get_obj(req->data, "bounds");
 		if (obs_data_has_user_value(reqBounds, "type")) {
-			const char* newBoundsType = obs_data_get_string(reqBounds, "type");
+			QString newBoundsType = obs_data_get_string(reqBounds, "type");
 			if (newBoundsType == "OBS_BOUNDS_NONE") {
 				obs_sceneitem_set_bounds_type(sceneItem, OBS_BOUNDS_NONE);
 			}
