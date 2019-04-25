@@ -297,6 +297,7 @@ HandlerResponse WSRequestHandler::HandleSaveStreamSettings(WSRequestHandler* req
  * @api requests
  * @name SendCaptions
  * @category streaming
+ * @since 4.6.0
  */
 #if BUILD_CAPTIONS
 HandlerResponse WSRequestHandler::HandleSendCaptions(WSRequestHandler* req) {
