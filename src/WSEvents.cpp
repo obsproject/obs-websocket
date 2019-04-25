@@ -961,7 +961,7 @@ void WSEvents::OnSourceAudioSyncOffsetChanged(void* param, calldata_t* data) {
  * @return {String} `hexMixersValue` Raw mixer flags (little-endian, one bit per mixer) as an hexadecimal value 
  *
  * @api events
- * @name OnSourceAudioMixersChanged
+ * @name SourceAudioMixersChanged
  * @category sources
  * @since 4.6.0
  */
