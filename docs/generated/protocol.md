@@ -87,7 +87,7 @@ auth_response = base64_encode(auth_response_hash)
     + [SourceVolumeChanged](#sourcevolumechanged)
     + [SourceMuteStateChanged](#sourcemutestatechanged)
     + [SourceAudioSyncOffsetChanged](#sourceaudiosyncoffsetchanged)
-    + [OnSourceAudioMixersChanged](#onsourceaudiomixerschanged)
+    + [SourceAudioMixersChanged](#sourceaudiomixerschanged)
     + [SourceRenamed](#sourcerenamed)
     + [SourceFilterAdded](#sourcefilteradded)
     + [SourceFilterRemoved](#sourcefilterremoved)
@@ -761,7 +761,7 @@ The audio sync offset of a source has changed.
 
 ---
 
-### OnSourceAudioMixersChanged
+### SourceAudioMixersChanged
 
 
 - Added in v4.6.0

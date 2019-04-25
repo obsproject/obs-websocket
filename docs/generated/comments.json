@@ -1723,7 +1723,7 @@
           "{String} `hexMixersValue` Raw mixer flags (little-endian, one bit per mixer) as an hexadecimal value"
         ],
         "api": "events",
-        "name": "OnSourceAudioMixersChanged",
+        "name": "SourceAudioMixersChanged",
         "category": "sources",
         "since": "4.6.0",
         "returns": [
@@ -1756,7 +1756,7 @@
         "names": [
           {
             "name": "",
-            "description": "OnSourceAudioMixersChanged"
+            "description": "SourceAudioMixersChanged"
           }
         ],
         "categories": [
@@ -1773,7 +1773,7 @@
         ],
         "heading": {
           "level": 2,
-          "text": "OnSourceAudioMixersChanged"
+          "text": "SourceAudioMixersChanged"
         },
         "lead": "",
         "type": "class",
