@@ -2643,7 +2643,7 @@ _No additional response items._
 ### SendCaptions
 
 
-- Added in v
+- Added in v4.6.0
 
 Send the provided text as embedded CEA-608 caption data.
 As of OBS Studio 23.1, captions are not yet available on Linux.

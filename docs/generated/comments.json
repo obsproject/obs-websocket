@@ -6829,6 +6829,7 @@
         "api": "requests",
         "name": "SendCaptions",
         "category": "streaming",
+        "since": "4.6.0",
         "params": [
           {
             "type": "String",
@@ -6846,6 +6847,12 @@
           {
             "name": "",
             "description": "streaming"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.6.0"
           }
         ],
         "heading": {
