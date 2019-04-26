@@ -1398,7 +1398,7 @@ HandlerResponse WSRequestHandler::HandleGetSourceImage(WSRequestHandler* req) {
 	QByteArray encodedImgBytes;
 	QBuffer buffer(&encodedImgBytes);
 	buffer.open(QBuffer::WriteOnly);
-	sourceImage.save(&buffer, "WEBP", 50);
+	sourceImage.save(&buffer, "PNG", 50);
 	buffer.close();
 
 	QString imgBase64(encodedImgBytes.toBase64());
@@ -1406,6 +1406,6 @@ HandlerResponse WSRequestHandler::HandleGetSourceImage(WSRequestHandler* req) {
 
 	OBSDataAutoRelease response = obs_data_create();
 	obs_data_set_string(response, "sourceName", obs_source_get_name(source));
-	obs_data_set_string(response, "img", imgBase64.toUtf8().constData());
+	obs_data_set_string(response, "img", imgBase64.toUtf8());
 	return req->SendOKResponse(response);
 }
