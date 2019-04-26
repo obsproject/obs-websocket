@@ -1,6 +1,7 @@
 #include <QtCore/QString>
 #include <QtCore/QBuffer>
 #include <QtGui/QImage>
+#include <QtGui/QImageWriter>
 
 #include "Utils.h"
 
@@ -1337,8 +1338,22 @@ HandlerResponse WSRequestHandler::HandleSetSourceFilterSettings(WSRequestHandler
 	return req->SendOKResponse();
 }
 
+/**
+* Take a picture snapshot of a source and sends it in the response a Data URI (base64-encoded data)
+*
+* @param {String} `sourceName` Source name
+* @param {String} `pictureFormat` Format of the encoded picture. Can be "png", "jpg", "jpeg" or "bmp" (or any other value supported by Qt's Image module)
+*
+* @return {String} `sourceName` Source name
+* @return {String} `img` Image Data URI
+*
+* @api requests
+* @name GetSourceImage
+* @category sources
+* @since 4.6.0
+*/
 HandlerResponse WSRequestHandler::HandleGetSourceImage(WSRequestHandler* req) {
-	if (!req->hasField("sourceName")) {
+	if (!req->hasField("sourceName") || !req->hasField("pictureFormat")) {
 		return req->SendErrorResponse("missing request parameters");
 	}
 
@@ -1346,6 +1361,14 @@ HandlerResponse WSRequestHandler::HandleGetSourceImage(WSRequestHandler* req) {
 	OBSSourceAutoRelease source = obs_get_source_by_name(sourceName);
 	if (!source) {
 		return req->SendErrorResponse("specified source doesn't exist");;
+	}
+
+	const char* pictureFormat = obs_data_get_string(req->data, "pictureFormat");
+
+	auto supportedFormats = QImageWriter::supportedImageFormats();
+	if (!supportedFormats.contains(pictureFormat)) {
+		QString errorMessage = QString("Unsupported picture format: %1").arg(pictureFormat);
+		return req->SendErrorResponse(errorMessage.toUtf8());
 	}
 
 	const uint32_t imgWidth = obs_source_get_base_width(source);
@@ -1399,11 +1422,13 @@ HandlerResponse WSRequestHandler::HandleGetSourceImage(WSRequestHandler* req) {
 	QByteArray encodedImgBytes;
 	QBuffer buffer(&encodedImgBytes);
 	buffer.open(QBuffer::WriteOnly);
-	sourceImage.save(&buffer, "PNG", 50);
+	sourceImage.save(&buffer, pictureFormat, 50);
 	buffer.close();
 
 	QString imgBase64(encodedImgBytes.toBase64());
-	imgBase64.prepend("data:image/png;base64,");
+	imgBase64.prepend(
+		QString("data:image/%1;base64,").arg(pictureFormat)
+	);
 
 	OBSDataAutoRelease response = obs_data_create();
 	obs_data_set_string(response, "sourceName", obs_source_get_name(source));
