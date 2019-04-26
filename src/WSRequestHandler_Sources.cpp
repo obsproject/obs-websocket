@@ -1403,7 +1403,7 @@ HandlerResponse WSRequestHandler::HandleGetSourceImage(WSRequestHandler* req) {
 	buffer.close();
 
 	QString imgBase64(encodedImgBytes.toBase64());
-	imgBase64.prepend("data:image/webp;base64,");
+	imgBase64.prepend("data:image/png;base64,");
 
 	OBSDataAutoRelease response = obs_data_create();
 	obs_data_set_string(response, "sourceName", obs_source_get_name(source));
