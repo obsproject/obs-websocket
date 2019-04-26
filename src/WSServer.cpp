@@ -25,6 +25,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <QtWidgets/QMessageBox>
 #include <QtConcurrent/QtConcurrent>
 #include <obs-frontend-api.h>
+#include <util/platform.h>
 
 #include "WSServer.h"
 #include "obs-websocket.h"
@@ -127,6 +128,8 @@ void WSServer::stop()
 	_connections.clear();
 	_connectionProperties.clear();
 	
+	_threadPool.waitForDone();
+
 	while (!_server.stopped()) {
 		std::this_thread::sleep_for(std::chrono::milliseconds(1));
 	}
@@ -166,7 +169,7 @@ void WSServer::onMessage(connection_hdl hdl, server::message_ptr message)
 		return;
 	}
 
-	QtConcurrent::run([=]() {
+	QtConcurrent::run(&_threadPool, [=]() {
 		std::string payload = message->get_payload();
 
 		QMutexLocker locker(&_clMutex);

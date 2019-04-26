@@ -22,6 +22,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <QtCore/QMutex>
 #include <QtCore/QSharedPointer>
 #include <QtCore/QVariantHash>
+#include <QtCore/QThreadPool>
 
 #include <map>
 #include <set>
@@ -54,6 +55,9 @@ public:
 	void start(quint16 port);
 	void stop();
 	void broadcast(std::string message);
+	QThreadPool* threadPool() {
+		return &_threadPool;
+	}
 
 private:
 	static WSServerPtr _instance;
@@ -71,4 +75,5 @@ private:
 	std::set<connection_hdl, std::owner_less<connection_hdl>> _connections;
 	std::map<connection_hdl, QVariantHash, std::owner_less<connection_hdl>> _connectionProperties;
 	QMutex _clMutex;
+	QThreadPool _threadPool;
 };
