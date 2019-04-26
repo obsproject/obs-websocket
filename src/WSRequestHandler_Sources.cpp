@@ -1343,6 +1343,8 @@ HandlerResponse WSRequestHandler::HandleSetSourceFilterSettings(WSRequestHandler
 *
 * @param {String} `sourceName` Source name
 * @param {String} `pictureFormat` Format of the encoded picture. Can be "png", "jpg", "jpeg" or "bmp" (or any other value supported by Qt's Image module)
+* @param {int (optional)} `width` Screenshot width. Defaults to the source's base width.
+* @param {int (optional)} `height` Screenshot height. Defaults to the source's base heigh.
 *
 * @return {String} `sourceName` Source name
 * @return {String} `img` Image Data URI
@@ -1371,8 +1373,29 @@ HandlerResponse WSRequestHandler::HandleTakeSourceScreenshot(WSRequestHandler* r
 		return req->SendErrorResponse(errorMessage.toUtf8());
 	}
 
-	const uint32_t imgWidth = obs_source_get_base_width(source);
-	const uint32_t imgHeight = obs_source_get_base_height(source);
+	const uint32_t sourceWidth = obs_source_get_base_width(source);
+	const uint32_t sourceHeight = obs_source_get_base_height(source);
+	const double sourceAspectRatio = ((double)sourceWidth / (double)sourceHeight);
+
+	uint32_t imgWidth = sourceWidth;
+	uint32_t imgHeight = sourceHeight;
+
+	if (req->hasField("width")) {
+		imgWidth = obs_data_get_int(req->data, "width");
+
+		if (!req->hasField("height")) {
+			imgHeight = ((double)imgWidth / sourceAspectRatio);
+		}
+	}
+
+	if (req->hasField("height")) {
+		imgHeight = obs_data_get_int(req->data, "height");
+
+		if (!req->hasField("width")) {
+			imgWidth = ((double)imgHeight * sourceAspectRatio);
+		}
+	}
+
 	QImage sourceImage(imgWidth, imgHeight, QImage::Format::Format_RGBA8888);
 	sourceImage.fill(0);
 
@@ -1392,7 +1415,7 @@ HandlerResponse WSRequestHandler::HandleTakeSourceScreenshot(WSRequestHandler* r
 		vec4_zero(&background);
 
 		gs_clear(GS_CLEAR_COLOR, &background, 0.0f, 0);
-		gs_ortho(0.0f, (float)imgWidth, 0.0f, (float)imgHeight, -100.0f, 100.0f);
+		gs_ortho(0.0f, (float)sourceWidth, 0.0f, (float)sourceHeight, -100.0f, 100.0f);
 
 		gs_blend_state_push();
 		gs_blend_function(GS_BLEND_ONE, GS_BLEND_ZERO);
