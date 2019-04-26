@@ -182,10 +182,10 @@ void WSServer::onMessage(connection_hdl hdl, server::message_ptr message)
 		_server.send(hdl, response, websocketpp::frame::opcode::text);
 
 		locker.relock();
-		// In multithreaded processing this would be problematic to put back
+		// In multithreaded processing this is be problematic to put back
 		// a copy of the connection properties, because there might conflicts
 		// between several simultaneous handlers.
-		// In our case, it's fine because all messages are processed in one thread.
+		// TODO conflicts handling
 		_connectionProperties[hdl] = connProperties;
 		locker.unlock();
 	});
