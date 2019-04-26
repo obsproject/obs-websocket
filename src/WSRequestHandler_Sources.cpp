@@ -1,6 +1,7 @@
-#include <QString>
-#include <QImage>
-#include <QBuffer>
+#include <QtCore/QString>
+#include <QtCore/QBuffer>
+#include <QtGui/QImage>
+
 #include "Utils.h"
 
 #include "WSRequestHandler.h"
