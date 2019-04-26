@@ -1356,11 +1356,12 @@ HandlerResponse WSRequestHandler::HandleGetSourceImage(WSRequestHandler* req) {
 	uint8_t* videoData = nullptr;
 	uint32_t videoLinesize = 0;
 
+	// TODO asynchronous rendering and encoding
 	obs_enter_graphics();
 
 	gs_texrender_t* texrender = gs_texrender_create(GS_RGBA, GS_ZS_NONE);
 	gs_stagesurf_t* stagesurface = gs_stagesurface_create(imgWidth, imgHeight, GS_RGBA);
-	
+
 	bool renderSuccess = false;
 	gs_texrender_reset(texrender);
 	if (gs_texrender_begin(texrender, imgWidth, imgHeight)) {
