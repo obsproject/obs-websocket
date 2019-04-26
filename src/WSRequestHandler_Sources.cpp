@@ -1339,12 +1339,14 @@ HandlerResponse WSRequestHandler::HandleSetSourceFilterSettings(WSRequestHandler
 }
 
 /**
-* Take a picture snapshot of a source and sends it in the response a Data URI (base64-encoded data)
+* Takes a picture snapshot of a source and sends it in the response a Data URI (base64-encoded data)
+* Clients can specify `width` and `height` parameters to receive scaled pictures. Aspect ratio is
+* preserved if only one of these two parameters is specified.
 *
 * @param {String} `sourceName` Source name
 * @param {String} `pictureFormat` Format of the encoded picture. Can be "png", "jpg", "jpeg" or "bmp" (or any other value supported by Qt's Image module)
-* @param {int (optional)} `width` Screenshot width. Defaults to the source's base width.
-* @param {int (optional)} `height` Screenshot height. Defaults to the source's base heigh.
+* @param {int (optional)} `width` Screenshot width. Defaults to the source's base width. 
+* @param {int (optional)} `height` Screenshot height. Defaults to the source's base height.
 *
 * @return {String} `sourceName` Source name
 * @return {String} `img` Image Data URI
