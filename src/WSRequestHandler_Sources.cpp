@@ -1348,11 +1348,11 @@ HandlerResponse WSRequestHandler::HandleSetSourceFilterSettings(WSRequestHandler
 * @return {String} `img` Image Data URI
 *
 * @api requests
-* @name GetSourceImage
+* @name TakeSourceScreenshot
 * @category sources
 * @since 4.6.0
 */
-HandlerResponse WSRequestHandler::HandleGetSourceImage(WSRequestHandler* req) {
+HandlerResponse WSRequestHandler::HandleTakeSourceScreenshot(WSRequestHandler* req) {
 	if (!req->hasField("sourceName") || !req->hasField("pictureFormat")) {
 		return req->SendErrorResponse("missing request parameters");
 	}
