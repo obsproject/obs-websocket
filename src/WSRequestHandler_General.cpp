@@ -82,7 +82,7 @@ HandlerResponse WSRequestHandler::HandleAuthenticate(WSRequestHandler* req) {
 		return req->SendErrorResponse("missing request parameters");
 	}
 
-	if (req->_connProperties.value(PROP_AUTHENTICATED).toBool() == true) {
+	if (req->_connProperties->value(PROP_AUTHENTICATED).toBool() == true) {
 		return req->SendErrorResponse("already authenticated");
 	}
 
@@ -95,7 +95,7 @@ HandlerResponse WSRequestHandler::HandleAuthenticate(WSRequestHandler* req) {
 		return req->SendErrorResponse("Authentication Failed.");
 	}
 
-	req->_connProperties.insert(PROP_AUTHENTICATED, true);
+	req->_connProperties->insert(PROP_AUTHENTICATED, true);
 	return req->SendOKResponse();
 }
 

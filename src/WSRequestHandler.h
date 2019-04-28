@@ -23,6 +23,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <QtCore/QSet>
 #include <QtCore/QVariantHash>
 #include <QtCore/QString>
+#include <QtCore/QSharedPointer>
 
 #include <obs.hpp>
 #include <obs-frontend-api.h>
@@ -35,7 +36,7 @@ class WSRequestHandler : public QObject {
 	Q_OBJECT
 
 	public:
-		explicit WSRequestHandler(QVariantHash& connProperties);
+		explicit WSRequestHandler(QSharedPointer<QVariantHash> connProperties);
 		~WSRequestHandler();
 		std::string processIncomingMessage(std::string& textMessage);
 		bool hasField(QString name);
@@ -43,7 +44,7 @@ class WSRequestHandler : public QObject {
 	private:
 		const char* _messageId;
 		const char* _requestType;
-		QVariantHash& _connProperties;
+		QSharedPointer<QVariantHash> _connProperties;
 		OBSDataAutoRelease data;
 
 		HandlerResponse processRequest(std::string& textMessage);
