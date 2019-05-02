@@ -18,14 +18,14 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #pragma once
 
+#include <map>
+#include <set>
 #include <QtCore/QObject>
 #include <QtCore/QMutex>
 #include <QtCore/QSharedPointer>
 #include <QtCore/QVariantHash>
 #include <QtCore/QThreadPool>
-
-#include <map>
-#include <set>
+#include <boost/atomic.hpp>
 
 #include <websocketpp/config/asio_no_tls.hpp>
 #include <websocketpp/server.hpp>
@@ -73,7 +73,7 @@ private:
 	server _server;
 	quint16 _serverPort;
 	std::set<connection_hdl, std::owner_less<connection_hdl>> _connections;
-	std::map<connection_hdl, QSharedPointer<QVariantHash>, std::owner_less<connection_hdl>> _connectionProperties;
+	std::map<connection_hdl, QVariantHash, std::owner_less<connection_hdl>> _connectionProperties;
 	QMutex _clMutex;
 	QThreadPool _threadPool;
 };

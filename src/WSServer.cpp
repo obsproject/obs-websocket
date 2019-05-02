@@ -142,7 +142,7 @@ void WSServer::broadcast(std::string message)
 	QMutexLocker locker(&_clMutex);
 	for (connection_hdl hdl : _connections) {
 		if (Config::Current()->AuthRequired) {
-			bool authenticated = _connectionProperties[hdl]->value(PROP_AUTHENTICATED).toBool();
+			bool authenticated = _connectionProperties[hdl].value(PROP_AUTHENTICATED).toBool();
 			if (!authenticated) {
 				continue;
 			}
@@ -155,7 +155,7 @@ void WSServer::onOpen(connection_hdl hdl)
 {
 	QMutexLocker locker(&_clMutex);
 	_connections.insert(hdl);
-	_connectionProperties[hdl] = QSharedPointer<QVariantHash>(new QVariantHash());
+	_connectionProperties[hdl] = QVariantHash();
 	locker.unlock();
 
 	QString clientIp = getRemoteEndpoint(hdl);
@@ -174,13 +174,16 @@ void WSServer::onMessage(connection_hdl hdl, server::message_ptr message)
 		std::string payload = message->get_payload();
 
 		QMutexLocker locker(&_clMutex);
-		auto connProperties = _connectionProperties[hdl];
+		QVariantHash& connProperties = _connectionProperties[hdl];
 		locker.unlock();
 
 		WSRequestHandler handler(connProperties);
 		std::string response = handler.processIncomingMessage(payload);
 
 		_server.send(hdl, response, websocketpp::frame::opcode::text);
+
+		boost::atomic<QVariantHash> atomicTest;
+		atomicTest.load().insert("jambon", true);
 	});
 }
 
