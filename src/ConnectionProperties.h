@@ -18,7 +18,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #pragma once
 
-#include <boost/atomic.hpp>
+#include <atomic>
 
 class ConnectionProperties
 {
@@ -27,5 +27,5 @@ public:
     bool isAuthenticated();
     void setAuthenticated(bool authenticated);
 private:
-    boost::atomic<bool> _authenticated;
+    std::atomic<bool> _authenticated;
 };
