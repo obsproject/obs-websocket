@@ -1345,7 +1345,7 @@ HandlerResponse WSRequestHandler::HandleSetSourceFilterSettings(WSRequestHandler
 *
 * @param {String} `sourceName` Source name
 * @param {String} `pictureFormat` Format of the encoded picture. Can be "png", "jpg", "jpeg" or "bmp" (or any other value supported by Qt's Image module)
-* @param {int (optional)} `width` Screenshot width. Defaults to the source's base width. 
+* @param {int (optional)} `width` Screenshot width. Defaults to the source's base width.
 * @param {int (optional)} `height` Screenshot height. Defaults to the source's base height.
 *
 * @return {String} `sourceName` Source name
@@ -1404,7 +1404,6 @@ HandlerResponse WSRequestHandler::HandleTakeSourceScreenshot(WSRequestHandler* r
 	uint8_t* videoData = nullptr;
 	uint32_t videoLinesize = 0;
 
-	// TODO asynchronous rendering and encoding
 	obs_enter_graphics();
 
 	gs_texrender_t* texrender = gs_texrender_create(GS_RGBA, GS_ZS_NONE);
@@ -1447,7 +1446,7 @@ HandlerResponse WSRequestHandler::HandleTakeSourceScreenshot(WSRequestHandler* r
 	QByteArray encodedImgBytes;
 	QBuffer buffer(&encodedImgBytes);
 	buffer.open(QBuffer::WriteOnly);
-	sourceImage.save(&buffer, pictureFormat, 50);
+	sourceImage.save(&buffer, pictureFormat);
 	buffer.close();
 
 	QString imgBase64(encodedImgBytes.toBase64());
