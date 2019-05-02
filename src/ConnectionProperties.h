@@ -18,11 +18,14 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #pragma once
 
+#include <boost/atomic.hpp>
+
 class ConnectionProperties
 {
 public:
+    explicit ConnectionProperties();
     bool isAuthenticated();
     void setAuthenticated(bool authenticated);
 private:
-    bool _authenticated;
+    boost::atomic<bool> _authenticated;
 };

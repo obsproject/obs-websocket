@@ -155,7 +155,6 @@ void WSServer::onOpen(connection_hdl hdl)
 {
 	QMutexLocker locker(&_clMutex);
 	_connections.insert(hdl);
-	_connectionProperties[hdl] = ConnectionProperties();
 	locker.unlock();
 
 	QString clientIp = getRemoteEndpoint(hdl);

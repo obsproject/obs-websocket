@@ -18,12 +18,17 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include "ConnectionProperties.h"
 
+ConnectionProperties::ConnectionProperties()
+    : _authenticated(false)
+{
+}
+
 bool ConnectionProperties::isAuthenticated()
 {
-    return _authenticated;
+    return _authenticated.load();
 }
 
 void ConnectionProperties::setAuthenticated(bool authenticated)
 {
-    _authenticated = authenticated;
+    _authenticated.store(authenticated);
 }
