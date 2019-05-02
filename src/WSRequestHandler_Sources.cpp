@@ -1421,7 +1421,9 @@ HandlerResponse WSRequestHandler::HandleTakeSourceScreenshot(WSRequestHandler* r
 		gs_blend_state_push();
 		gs_blend_function(GS_BLEND_ONE, GS_BLEND_ZERO);
 
+		obs_source_inc_showing(source);
 		obs_source_video_render(source);
+		obs_source_dec_showing(source);
 
 		gs_blend_state_pop();
 		gs_texrender_end(texrender);
