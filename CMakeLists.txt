@@ -30,6 +30,7 @@ find_package(Boost REQUIRED)
 set(obs-websocket_SOURCES
 	src/obs-websocket.cpp
 	src/WSServer.cpp
+	src/ConnectionProperties.cpp
 	src/WSRequestHandler.cpp
 	src/WSRequestHandler_General.cpp
 	src/WSRequestHandler_Profiles.cpp
@@ -50,6 +51,7 @@ set(obs-websocket_SOURCES
 set(obs-websocket_HEADERS
 	src/obs-websocket.h
 	src/WSServer.h
+	src/ConnectionProperties.h
 	src/WSRequestHandler.h
 	src/WSEvents.h
 	src/Config.h

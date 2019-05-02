@@ -25,6 +25,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <QtWidgets/QMessageBox>
 #include <QtConcurrent/QtConcurrent>
 #include <obs-frontend-api.h>
+#include <util/platform.h>
 
 #include "WSServer.h"
 #include "obs-websocket.h"
@@ -127,6 +128,8 @@ void WSServer::stop()
 	_connections.clear();
 	_connectionProperties.clear();
 	
+	_threadPool.waitForDone();
+
 	while (!_server.stopped()) {
 		std::this_thread::sleep_for(std::chrono::milliseconds(1));
 	}
@@ -139,7 +142,7 @@ void WSServer::broadcast(std::string message)
 	QMutexLocker locker(&_clMutex);
 	for (connection_hdl hdl : _connections) {
 		if (Config::Current()->AuthRequired) {
-			bool authenticated = _connectionProperties[hdl].value(PROP_AUTHENTICATED).toBool();
+			bool authenticated = _connectionProperties[hdl].isAuthenticated();
 			if (!authenticated) {
 				continue;
 			}
@@ -166,24 +169,18 @@ void WSServer::onMessage(connection_hdl hdl, server::message_ptr message)
 		return;
 	}
 
-	std::string payload = message->get_payload();
+	QtConcurrent::run(&_threadPool, [=]() {
+		std::string payload = message->get_payload();
 
-	QMutexLocker locker(&_clMutex);
-	QVariantHash connProperties = _connectionProperties[hdl];
-	locker.unlock();
+		QMutexLocker locker(&_clMutex);
+		ConnectionProperties& connProperties = _connectionProperties[hdl];
+		locker.unlock();
 
-	WSRequestHandler handler(connProperties);
-	std::string response = handler.processIncomingMessage(payload);
+		WSRequestHandler handler(connProperties);
+		std::string response = handler.processIncomingMessage(payload);
 
-	_server.send(hdl, response, websocketpp::frame::opcode::text);
-
-	locker.relock();
-	// In multithreaded processing this would be problematic to put back
-	// a copy of the connection properties, because there might conflicts
-	// between several simultaneous handlers.
-	// In our case, it's fine because all messages are processed in one thread.
-	_connectionProperties[hdl] = connProperties;
-	locker.unlock();
+		_server.send(hdl, response, websocketpp::frame::opcode::text);
+	});
 }
 
 void WSServer::onClose(connection_hdl hdl)

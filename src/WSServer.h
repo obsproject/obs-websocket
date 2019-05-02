@@ -18,16 +18,18 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #pragma once
 
+#include <map>
+#include <set>
 #include <QtCore/QObject>
 #include <QtCore/QMutex>
 #include <QtCore/QSharedPointer>
 #include <QtCore/QVariantHash>
-
-#include <map>
-#include <set>
+#include <QtCore/QThreadPool>
 
 #include <websocketpp/config/asio_no_tls.hpp>
 #include <websocketpp/server.hpp>
+
+#include "ConnectionProperties.h"
 
 #include "WSRequestHandler.h"
 
@@ -54,6 +56,9 @@ public:
 	void start(quint16 port);
 	void stop();
 	void broadcast(std::string message);
+	QThreadPool* threadPool() {
+		return &_threadPool;
+	}
 
 private:
 	static WSServerPtr _instance;
@@ -69,6 +74,7 @@ private:
 	server _server;
 	quint16 _serverPort;
 	std::set<connection_hdl, std::owner_less<connection_hdl>> _connections;
-	std::map<connection_hdl, QVariantHash, std::owner_less<connection_hdl>> _connectionProperties;
+	std::map<connection_hdl, ConnectionProperties, std::owner_less<connection_hdl>> _connectionProperties;
 	QMutex _clMutex;
+	QThreadPool _threadPool;
 };

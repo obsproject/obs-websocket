@@ -132,7 +132,7 @@ QSet<QString> WSRequestHandler::authNotRequired {
 	"Authenticate"
 };
 
-WSRequestHandler::WSRequestHandler(QVariantHash& connProperties) :
+WSRequestHandler::WSRequestHandler(ConnectionProperties& connProperties) :
 	_messageId(0),
 	_requestType(""),
 	data(nullptr),
@@ -174,7 +174,7 @@ HandlerResponse WSRequestHandler::processRequest(std::string& textMessage){
 
 	if (Config::Current()->AuthRequired
 		&& (!authNotRequired.contains(_requestType))
-		&& (_connProperties.value(PROP_AUTHENTICATED).toBool() == false))
+		&& (!_connProperties.isAuthenticated()))
 	{
 		return SendErrorResponse("Not Authenticated");
 	}
