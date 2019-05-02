@@ -180,9 +180,6 @@ void WSServer::onMessage(connection_hdl hdl, server::message_ptr message)
 		std::string response = handler.processIncomingMessage(payload);
 
 		_server.send(hdl, response, websocketpp::frame::opcode::text);
-
-		boost::atomic<QVariantHash> atomicTest;
-		atomicTest.load().insert("jambon", true);
 	});
 }
 
