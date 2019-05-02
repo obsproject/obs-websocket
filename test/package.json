@@ -22,9 +22,8 @@
     "@types/node": "^10.12.18",
     "chai": "^4.2.0",
     "mocha": "^5.2.0",
-    "obs-websocket-js": "^1.2.0",
-    "obs-websocket-js-types": "^4.4.0",
-    "ts-node": "^7.0.1",
-    "typescript": "^2.2.2"
+    "obs-websocket-js": "^3.0.0",
+    "ts-node": "^8.1.0",
+    "typescript": "^3.4.5"
   }
 }
