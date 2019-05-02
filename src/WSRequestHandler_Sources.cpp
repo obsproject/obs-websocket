@@ -1369,7 +1369,7 @@ HandlerResponse WSRequestHandler::HandleTakeSourceScreenshot(WSRequestHandler* r
 
 	const char* pictureFormat = obs_data_get_string(req->data, "pictureFormat");
 
-	auto supportedFormats = QImageWriter::supportedImageFormats();
+	QByteArrayList supportedFormats = QImageWriter::supportedImageFormats();
 	if (!supportedFormats.contains(pictureFormat)) {
 		QString errorMessage = QString("Unsupported picture format: %1").arg(pictureFormat);
 		return req->SendErrorResponse(errorMessage.toUtf8());
@@ -1412,7 +1412,7 @@ HandlerResponse WSRequestHandler::HandleTakeSourceScreenshot(WSRequestHandler* r
 	bool renderSuccess = false;
 	gs_texrender_reset(texrender);
 	if (gs_texrender_begin(texrender, imgWidth, imgHeight)) {
-		struct vec4 background;
+		vec4 background;
 		vec4_zero(&background);
 
 		gs_clear(GS_CLEAR_COLOR, &background, 0.0f, 0);
@@ -1428,7 +1428,10 @@ HandlerResponse WSRequestHandler::HandleTakeSourceScreenshot(WSRequestHandler* r
 
 		gs_stage_texture(stagesurface, gs_texrender_get_texture(texrender));
 		if (gs_stagesurface_map(stagesurface, &videoData, &videoLinesize)) {
-			memcpy(sourceImage.bits(), videoData, videoLinesize * imgHeight);
+			int linesize = sourceImage.bytesPerLine();
+			for (int y = 0; y < imgHeight; y++) {
+				memcpy(sourceImage.scanLine(y), videoData + (y * linesize), linesize);
+			}
 			gs_stagesurface_unmap(stagesurface);
 			renderSuccess = true;
 		}
