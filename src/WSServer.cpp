@@ -142,7 +142,7 @@ void WSServer::broadcast(std::string message)
 	QMutexLocker locker(&_clMutex);
 	for (connection_hdl hdl : _connections) {
 		if (Config::Current()->AuthRequired) {
-			bool authenticated = _connectionProperties[hdl].value(PROP_AUTHENTICATED).toBool();
+			bool authenticated = _connectionProperties[hdl].isAuthenticated();
 			if (!authenticated) {
 				continue;
 			}
@@ -155,7 +155,7 @@ void WSServer::onOpen(connection_hdl hdl)
 {
 	QMutexLocker locker(&_clMutex);
 	_connections.insert(hdl);
-	_connectionProperties[hdl] = QVariantHash();
+	_connectionProperties[hdl] = ConnectionProperties();
 	locker.unlock();
 
 	QString clientIp = getRemoteEndpoint(hdl);
@@ -174,7 +174,7 @@ void WSServer::onMessage(connection_hdl hdl, server::message_ptr message)
 		std::string payload = message->get_payload();
 
 		QMutexLocker locker(&_clMutex);
-		QVariantHash& connProperties = _connectionProperties[hdl];
+		ConnectionProperties& connProperties = _connectionProperties[hdl];
 		locker.unlock();
 
 		WSRequestHandler handler(connProperties);

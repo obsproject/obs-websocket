@@ -28,6 +28,8 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <obs.hpp>
 #include <obs-frontend-api.h>
 
+#include "ConnectionProperties.h"
+
 #include "obs-websocket.h"
 
 typedef obs_data_t* HandlerResponse;
@@ -36,7 +38,7 @@ class WSRequestHandler : public QObject {
 	Q_OBJECT
 
 	public:
-		explicit WSRequestHandler(QVariantHash& connProperties);
+		explicit WSRequestHandler(ConnectionProperties& connProperties);
 		~WSRequestHandler();
 		std::string processIncomingMessage(std::string& textMessage);
 		bool hasField(QString name);
@@ -44,7 +46,7 @@ class WSRequestHandler : public QObject {
 	private:
 		const char* _messageId;
 		const char* _requestType;
-		QVariantHash& _connProperties;
+		ConnectionProperties& _connProperties;
 		OBSDataAutoRelease data;
 
 		HandlerResponse processRequest(std::string& textMessage);

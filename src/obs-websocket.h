@@ -37,7 +37,6 @@ using OBSDataArrayAutoRelease =
 using OBSOutputAutoRelease =
 	OBSRef<obs_output_t*, ___output_dummy_addref, obs_output_release>;
 
-#define PROP_AUTHENTICATED "wsclient_authenticated"
 #define OBS_WEBSOCKET_VERSION "4.6.0"
 
 #define blog(level, msg, ...) blog(level, "[obs-websocket] " msg, ##__VA_ARGS__)
