@@ -1339,18 +1339,25 @@ HandlerResponse WSRequestHandler::HandleSetSourceFilterSettings(WSRequestHandler
 }
 
 /**
-* Takes a picture snapshot of a source and sends it in the response a Data URI (base64-encoded data)
+* Takes a picture snapshot of a source and then can either or both:
+*    - Send it over as a Data URI (base64-encoded data) in the response (by specifying `embedPictureFormat` in the request)
+*    - Save it to disk (by specifying `saveToFilePath` in the request)
+*
+* At least `embedPictureFormat` or `saveToFilePath` must be specified.
+*
 * Clients can specify `width` and `height` parameters to receive scaled pictures. Aspect ratio is
 * preserved if only one of these two parameters is specified.
 *
+*
 * @param {String} `sourceName` Source name
-* @param {String} `pictureFormat` Format of the encoded picture. Can be "png", "jpg", "jpeg" or "bmp" (or any other value supported by Qt's Image module)
+* @param {String (optional)} `embedPictureFormat` Format of the Data URI encoded picture. Can be "png", "jpg", "jpeg" or "bmp" (or any other value supported by Qt's Image module)
 * @param {String (optional)} `saveToFilePath` Full file path (file extension included) where the captured image is to be saved. Can be in a format different from `pictureFormat`.
 * @param {int (optional)} `width` Screenshot width. Defaults to the source's base width.
 * @param {int (optional)} `height` Screenshot height. Defaults to the source's base height.
 *
 * @return {String} `sourceName` Source name
-* @return {String} `img` Image Data URI
+* @return {String} `img` Image Data URI (if `embedPictureFormat` was specified in the request)
+* @return {String} `imageFile` Image file path (if `saveToFilePath` was specified in the request)
 *
 * @api requests
 * @name TakeSourceScreenshot
@@ -1358,22 +1365,18 @@ HandlerResponse WSRequestHandler::HandleSetSourceFilterSettings(WSRequestHandler
 * @since 4.6.0
 */
 HandlerResponse WSRequestHandler::HandleTakeSourceScreenshot(WSRequestHandler* req) {
-	if (!req->hasField("sourceName") || !req->hasField("pictureFormat")) {
+	if (!req->hasField("sourceName")) {
 		return req->SendErrorResponse("missing request parameters");
+	}
+
+	if (!req->hasField("embedPictureFormat") && !req->hasField("saveToFilePath")) {
+		return req->SendErrorResponse("At least 'embedPictureFormat' or 'saveToFilePath' must be specified");
 	}
 
 	const char* sourceName = obs_data_get_string(req->data, "sourceName");
 	OBSSourceAutoRelease source = obs_get_source_by_name(sourceName);
 	if (!source) {
 		return req->SendErrorResponse("specified source doesn't exist");;
-	}
-
-	const char* pictureFormat = obs_data_get_string(req->data, "pictureFormat");
-
-	QByteArrayList supportedFormats = QImageWriter::supportedImageFormats();
-	if (!supportedFormats.contains(pictureFormat)) {
-		QString errorMessage = QString("Unsupported picture format: %1").arg(pictureFormat);
-		return req->SendErrorResponse(errorMessage.toUtf8());
 	}
 
 	const uint32_t sourceWidth = obs_source_get_base_width(source);
@@ -1446,27 +1449,44 @@ HandlerResponse WSRequestHandler::HandleTakeSourceScreenshot(WSRequestHandler* r
 	obs_leave_graphics();
 
 	if (!renderSuccess) {
-		return req->SendErrorResponse("Source render failed.");
+		return req->SendErrorResponse("Source render failed");
 	}
 
-	QByteArray encodedImgBytes;
-	QBuffer buffer(&encodedImgBytes);
-	buffer.open(QBuffer::WriteOnly);
-	sourceImage.save(&buffer, pictureFormat);
-	buffer.close();
+	OBSDataAutoRelease response = obs_data_create();
+
+	if (req->hasField("embedPictureFormat")) {
+		const char* pictureFormat = obs_data_get_string(req->data, "embedPictureFormat");
+
+		QByteArrayList supportedFormats = QImageWriter::supportedImageFormats();
+		if (!supportedFormats.contains(pictureFormat)) {
+			QString errorMessage = QString("Unsupported picture format: %1").arg(pictureFormat);
+			return req->SendErrorResponse(errorMessage.toUtf8());
+		}
+
+		QByteArray encodedImgBytes;
+		QBuffer buffer(&encodedImgBytes);
+		buffer.open(QBuffer::WriteOnly);
+		if (!sourceImage.save(&buffer, pictureFormat)) {
+			return req->SendErrorResponse("Embed image encoding failed");
+		}
+		buffer.close();
+
+		QString imgBase64(encodedImgBytes.toBase64());
+		imgBase64.prepend(
+			QString("data:image/%1;base64,").arg(pictureFormat)
+		);
+
+		obs_data_set_string(response, "img", imgBase64.toUtf8());
+	}
 
 	if (req->hasField("saveToFilePath")) {
 		QString imageFilePath = obs_data_get_string(req->data, "saveToFilePath");
-		sourceImage.save(imageFilePath);
+		if (!sourceImage.save(imageFilePath)) {
+			return req->SendErrorResponse("Image save failed");
+		}
+		obs_data_set_string(response, "imageFile", imageFilePath.toUtf8());
 	}
 
-	QString imgBase64(encodedImgBytes.toBase64());
-	imgBase64.prepend(
-		QString("data:image/%1;base64,").arg(pictureFormat)
-	);
-
-	OBSDataAutoRelease response = obs_data_create();
 	obs_data_set_string(response, "sourceName", obs_source_get_name(source));
-	obs_data_set_string(response, "img", imgBase64.toUtf8());
 	return req->SendOKResponse(response);
 }
