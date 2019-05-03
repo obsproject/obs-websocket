@@ -390,7 +390,8 @@ QSystemTrayIcon* Utils::GetTrayIcon() {
 	QMainWindow* main = (QMainWindow*)obs_frontend_get_main_window();
 	if (!main) return nullptr;
 
-	return main->findChildren<QSystemTrayIcon*>().first();
+	QList<QSystemTrayIcon*> trays = main->findChildren<QSystemTrayIcon*>();
+	return trays.isEmpty() ? nullptr : trays.first();
 }
 
 void Utils::SysTrayNotify(QString text,
