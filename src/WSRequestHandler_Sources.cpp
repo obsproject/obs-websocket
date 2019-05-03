@@ -1345,6 +1345,7 @@ HandlerResponse WSRequestHandler::HandleSetSourceFilterSettings(WSRequestHandler
 *
 * @param {String} `sourceName` Source name
 * @param {String} `pictureFormat` Format of the encoded picture. Can be "png", "jpg", "jpeg" or "bmp" (or any other value supported by Qt's Image module)
+* @param {String (optional)} `saveToFilePath` Full file path (file extension included) where the captured image is to be saved. Can be in a format different from `pictureFormat`.
 * @param {int (optional)} `width` Screenshot width. Defaults to the source's base width.
 * @param {int (optional)} `height` Screenshot height. Defaults to the source's base height.
 *
@@ -1453,6 +1454,11 @@ HandlerResponse WSRequestHandler::HandleTakeSourceScreenshot(WSRequestHandler* r
 	buffer.open(QBuffer::WriteOnly);
 	sourceImage.save(&buffer, pictureFormat);
 	buffer.close();
+
+	if (req->hasField("saveToFilePath")) {
+		QString imageFilePath = obs_data_get_string(req->data, "saveToFilePath");
+		sourceImage.save(imageFilePath);
+	}
 
 	QString imgBase64(encodedImgBytes.toBase64());
 	imgBase64.prepend(
