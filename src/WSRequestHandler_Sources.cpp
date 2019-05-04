@@ -1,5 +1,6 @@
 #include <QtCore/QString>
 #include <QtCore/QBuffer>
+#include <QtCore/QFileInfo>
 #include <QtGui/QImage>
 #include <QtGui/QImageWriter>
 
@@ -1351,13 +1352,13 @@ HandlerResponse WSRequestHandler::HandleSetSourceFilterSettings(WSRequestHandler
 *
 * @param {String} `sourceName` Source name
 * @param {String (optional)} `embedPictureFormat` Format of the Data URI encoded picture. Can be "png", "jpg", "jpeg" or "bmp" (or any other value supported by Qt's Image module)
-* @param {String (optional)} `saveToFilePath` Full file path (file extension included) where the captured image is to be saved. Can be in a format different from `pictureFormat`.
+* @param {String (optional)} `saveToFilePath` Full file path (file extension included) where the captured image is to be saved. Can be in a format different from `pictureFormat`. Can be a relative path.
 * @param {int (optional)} `width` Screenshot width. Defaults to the source's base width.
 * @param {int (optional)} `height` Screenshot height. Defaults to the source's base height.
 *
 * @return {String} `sourceName` Source name
 * @return {String} `img` Image Data URI (if `embedPictureFormat` was specified in the request)
-* @return {String} `imageFile` Image file path (if `saveToFilePath` was specified in the request)
+* @return {String} `imageFile` Absolute path to the saved image file (if `saveToFilePath` was specified in the request)
 *
 * @api requests
 * @name TakeSourceScreenshot
@@ -1480,11 +1481,14 @@ HandlerResponse WSRequestHandler::HandleTakeSourceScreenshot(WSRequestHandler* r
 	}
 
 	if (req->hasField("saveToFilePath")) {
-		QString imageFilePath = obs_data_get_string(req->data, "saveToFilePath");
-		if (!sourceImage.save(imageFilePath)) {
+		QString filePathStr = obs_data_get_string(req->data, "saveToFilePath");
+		QFileInfo filePathInfo(filePathStr);
+		QString absoluteFilePath = filePathInfo.absoluteFilePath();
+
+		if (!sourceImage.save(absoluteFilePath)) {
 			return req->SendErrorResponse("Image save failed");
 		}
-		obs_data_set_string(response, "imageFile", imageFilePath.toUtf8());
+		obs_data_set_string(response, "imageFile", absoluteFilePath.toUtf8());
 	}
 
 	obs_data_set_string(response, "sourceName", obs_source_get_name(source));
