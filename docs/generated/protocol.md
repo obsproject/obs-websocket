@@ -170,6 +170,7 @@ auth_response = base64_encode(auth_response_hash)
     + [ReorderSourceFilter](#reordersourcefilter)
     + [MoveSourceFilter](#movesourcefilter)
     + [SetSourceFilterSettings](#setsourcefiltersettings)
+    + [TakeSourceScreenshot](#takesourcescreenshot)
   * [Streaming](#streaming-1)
     + [GetStreamingStatus](#getstreamingstatus)
     + [StartStopStreaming](#startstopstreaming)
@@ -2477,6 +2478,40 @@ Update settings of a filter
 **Response Items:**
 
 _No additional response items._
+
+---
+
+### TakeSourceScreenshot
+
+
+- Added in v4.6.0
+
+
+
+At least `embedPictureFormat` or `saveToFilePath` must be specified.
+
+Clients can specify `width` and `height` parameters to receive scaled pictures. Aspect ratio is
+preserved if only one of these two parameters is specified.
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sourceName` | _String_ | Source name |
+| `embedPictureFormat` | _String (optional)_ | Format of the Data URI encoded picture. Can be "png", "jpg", "jpeg" or "bmp" (or any other value supported by Qt's Image module) |
+| `saveToFilePath` | _String (optional)_ | Full file path (file extension included) where the captured image is to be saved. Can be in a format different from `pictureFormat`. Can be a relative path. |
+| `width` | _int (optional)_ | Screenshot width. Defaults to the source's base width. |
+| `height` | _int (optional)_ | Screenshot height. Defaults to the source's base height. |
+
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sourceName` | _String_ | Source name |
+| `img` | _String_ | Image Data URI (if `embedPictureFormat` was specified in the request) |
+| `imageFile` | _String_ | Absolute path to the saved image file (if `saveToFilePath` was specified in the request) |
+
 
 ---
 

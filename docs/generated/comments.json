@@ -6398,6 +6398,95 @@
         "lead": "",
         "type": "class",
         "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "\n\nAt least `embedPictureFormat` or `saveToFilePath` must be specified.\n\nClients can specify `width` and `height` parameters to receive scaled pictures. Aspect ratio is\npreserved if only one of these two parameters is specified.",
+        "param": [
+          "{String} `sourceName` Source name",
+          "{String (optional)} `embedPictureFormat` Format of the Data URI encoded picture. Can be \"png\", \"jpg\", \"jpeg\" or \"bmp\" (or any other value supported by Qt's Image module)",
+          "{String (optional)} `saveToFilePath` Full file path (file extension included) where the captured image is to be saved. Can be in a format different from `pictureFormat`. Can be a relative path.",
+          "{int (optional)} `width` Screenshot width. Defaults to the source's base width.",
+          "{int (optional)} `height` Screenshot height. Defaults to the source's base height."
+        ],
+        "return": [
+          "{String} `sourceName` Source name",
+          "{String} `img` Image Data URI (if `embedPictureFormat` was specified in the request)",
+          "{String} `imageFile` Absolute path to the saved image file (if `saveToFilePath` was specified in the request)"
+        ],
+        "api": "requests",
+        "name": "TakeSourceScreenshot",
+        "category": "sources",
+        "since": "4.6.0",
+        "returns": [
+          {
+            "type": "String",
+            "name": "sourceName",
+            "description": "Source name"
+          },
+          {
+            "type": "String",
+            "name": "img",
+            "description": "Image Data URI (if `embedPictureFormat` was specified in the request)"
+          },
+          {
+            "type": "String",
+            "name": "imageFile",
+            "description": "Absolute path to the saved image file (if `saveToFilePath` was specified in the request)"
+          }
+        ],
+        "params": [
+          {
+            "type": "String",
+            "name": "sourceName",
+            "description": "Source name"
+          },
+          {
+            "type": "String (optional)",
+            "name": "embedPictureFormat",
+            "description": "Format of the Data URI encoded picture. Can be \"png\", \"jpg\", \"jpeg\" or \"bmp\" (or any other value supported by Qt's Image module)"
+          },
+          {
+            "type": "String (optional)",
+            "name": "saveToFilePath",
+            "description": "Full file path (file extension included) where the captured image is to be saved. Can be in a format different from `pictureFormat`. Can be a relative path."
+          },
+          {
+            "type": "int (optional)",
+            "name": "width",
+            "description": "Screenshot width. Defaults to the source's base width."
+          },
+          {
+            "type": "int (optional)",
+            "name": "height",
+            "description": "Screenshot height. Defaults to the source's base height."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "TakeSourceScreenshot"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "sources"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.6.0"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "TakeSourceScreenshot"
+        },
+        "lead": "Takes a picture snapshot of a source and then can either or both:    - Send it over as a Data URI (base64-encoded data) in the response (by specifying `embedPictureFormat` in the request)    - Save it to disk (by specifying `saveToFilePath` in the request)",
+        "type": "class",
+        "examples": []
       }
     ],
     "streaming": [
