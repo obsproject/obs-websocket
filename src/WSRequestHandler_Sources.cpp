@@ -1,3 +1,9 @@
+#include <QtCore/QString>
+#include <QtCore/QBuffer>
+#include <QtCore/QFileInfo>
+#include <QtGui/QImage>
+#include <QtGui/QImageWriter>
+
 #include "Utils.h"
 
 #include "WSRequestHandler.h"
@@ -1331,4 +1337,159 @@ HandlerResponse WSRequestHandler::HandleSetSourceFilterSettings(WSRequestHandler
 	obs_source_update(filter, settings);
 
 	return req->SendOKResponse();
+}
+
+/**
+* Takes a picture snapshot of a source and then can either or both:
+*    - Send it over as a Data URI (base64-encoded data) in the response (by specifying `embedPictureFormat` in the request)
+*    - Save it to disk (by specifying `saveToFilePath` in the request)
+*
+* At least `embedPictureFormat` or `saveToFilePath` must be specified.
+*
+* Clients can specify `width` and `height` parameters to receive scaled pictures. Aspect ratio is
+* preserved if only one of these two parameters is specified.
+*
+* @param {String} `sourceName` Source name
+* @param {String (optional)} `embedPictureFormat` Format of the Data URI encoded picture. Can be "png", "jpg", "jpeg" or "bmp" (or any other value supported by Qt's Image module)
+* @param {String (optional)} `saveToFilePath` Full file path (file extension included) where the captured image is to be saved. Can be in a format different from `pictureFormat`. Can be a relative path.
+* @param {int (optional)} `width` Screenshot width. Defaults to the source's base width.
+* @param {int (optional)} `height` Screenshot height. Defaults to the source's base height.
+*
+* @return {String} `sourceName` Source name
+* @return {String} `img` Image Data URI (if `embedPictureFormat` was specified in the request)
+* @return {String} `imageFile` Absolute path to the saved image file (if `saveToFilePath` was specified in the request)
+*
+* @api requests
+* @name TakeSourceScreenshot
+* @category sources
+* @since 4.6.0
+*/
+HandlerResponse WSRequestHandler::HandleTakeSourceScreenshot(WSRequestHandler* req) {
+	if (!req->hasField("sourceName")) {
+		return req->SendErrorResponse("missing request parameters");
+	}
+
+	if (!req->hasField("embedPictureFormat") && !req->hasField("saveToFilePath")) {
+		return req->SendErrorResponse("At least 'embedPictureFormat' or 'saveToFilePath' must be specified");
+	}
+
+	const char* sourceName = obs_data_get_string(req->data, "sourceName");
+	OBSSourceAutoRelease source = obs_get_source_by_name(sourceName);
+	if (!source) {
+		return req->SendErrorResponse("specified source doesn't exist");;
+	}
+
+	const uint32_t sourceWidth = obs_source_get_base_width(source);
+	const uint32_t sourceHeight = obs_source_get_base_height(source);
+	const double sourceAspectRatio = ((double)sourceWidth / (double)sourceHeight);
+
+	uint32_t imgWidth = sourceWidth;
+	uint32_t imgHeight = sourceHeight;
+
+	if (req->hasField("width")) {
+		imgWidth = obs_data_get_int(req->data, "width");
+
+		if (!req->hasField("height")) {
+			imgHeight = ((double)imgWidth / sourceAspectRatio);
+		}
+	}
+
+	if (req->hasField("height")) {
+		imgHeight = obs_data_get_int(req->data, "height");
+
+		if (!req->hasField("width")) {
+			imgWidth = ((double)imgHeight * sourceAspectRatio);
+		}
+	}
+
+	QImage sourceImage(imgWidth, imgHeight, QImage::Format::Format_RGBA8888);
+	sourceImage.fill(0);
+
+	uint8_t* videoData = nullptr;
+	uint32_t videoLinesize = 0;
+
+	obs_enter_graphics();
+
+	gs_texrender_t* texrender = gs_texrender_create(GS_RGBA, GS_ZS_NONE);
+	gs_stagesurf_t* stagesurface = gs_stagesurface_create(imgWidth, imgHeight, GS_RGBA);
+
+	bool renderSuccess = false;
+	gs_texrender_reset(texrender);
+	if (gs_texrender_begin(texrender, imgWidth, imgHeight)) {
+		vec4 background;
+		vec4_zero(&background);
+
+		gs_clear(GS_CLEAR_COLOR, &background, 0.0f, 0);
+		gs_ortho(0.0f, (float)sourceWidth, 0.0f, (float)sourceHeight, -100.0f, 100.0f);
+
+		gs_blend_state_push();
+		gs_blend_function(GS_BLEND_ONE, GS_BLEND_ZERO);
+
+		obs_source_inc_showing(source);
+		obs_source_video_render(source);
+		obs_source_dec_showing(source);
+
+		gs_blend_state_pop();
+		gs_texrender_end(texrender);
+
+		gs_stage_texture(stagesurface, gs_texrender_get_texture(texrender));
+		if (gs_stagesurface_map(stagesurface, &videoData, &videoLinesize)) {
+			int linesize = sourceImage.bytesPerLine();
+			for (int y = 0; y < imgHeight; y++) {
+			 	memcpy(sourceImage.scanLine(y), videoData + (y * videoLinesize), linesize);
+			}
+			gs_stagesurface_unmap(stagesurface);
+			renderSuccess = true;
+		}
+	}
+
+	gs_stagesurface_destroy(stagesurface);
+	gs_texrender_destroy(texrender);
+
+	obs_leave_graphics();
+
+	if (!renderSuccess) {
+		return req->SendErrorResponse("Source render failed");
+	}
+
+	OBSDataAutoRelease response = obs_data_create();
+
+	if (req->hasField("embedPictureFormat")) {
+		const char* pictureFormat = obs_data_get_string(req->data, "embedPictureFormat");
+
+		QByteArrayList supportedFormats = QImageWriter::supportedImageFormats();
+		if (!supportedFormats.contains(pictureFormat)) {
+			QString errorMessage = QString("Unsupported picture format: %1").arg(pictureFormat);
+			return req->SendErrorResponse(errorMessage.toUtf8());
+		}
+
+		QByteArray encodedImgBytes;
+		QBuffer buffer(&encodedImgBytes);
+		buffer.open(QBuffer::WriteOnly);
+		if (!sourceImage.save(&buffer, pictureFormat)) {
+			return req->SendErrorResponse("Embed image encoding failed");
+		}
+		buffer.close();
+
+		QString imgBase64(encodedImgBytes.toBase64());
+		imgBase64.prepend(
+			QString("data:image/%1;base64,").arg(pictureFormat)
+		);
+
+		obs_data_set_string(response, "img", imgBase64.toUtf8());
+	}
+
+	if (req->hasField("saveToFilePath")) {
+		QString filePathStr = obs_data_get_string(req->data, "saveToFilePath");
+		QFileInfo filePathInfo(filePathStr);
+		QString absoluteFilePath = filePathInfo.absoluteFilePath();
+
+		if (!sourceImage.save(absoluteFilePath)) {
+			return req->SendErrorResponse("Image save failed");
+		}
+		obs_data_set_string(response, "imageFile", absoluteFilePath.toUtf8());
+	}
+
+	obs_data_set_string(response, "sourceName", obs_source_get_name(source));
+	return req->SendOKResponse(response);
 }
