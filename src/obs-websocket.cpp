@@ -40,8 +40,6 @@ OBS_MODULE_USE_DEFAULT_LOCALE("obs-websocket", "en-US")
 
 WSEventsPtr _eventsSystem;
 
-std::unique_ptr<SettingsDialog> _settingsDialog;
-
 bool obs_module_load(void) {
 	blog(LOG_INFO, "you can haz websockets (version %s)", OBS_WEBSOCKET_VERSION);
 	blog(LOG_INFO, "qt version (compile-time): %s ; qt version (run-time): %s",
@@ -61,17 +59,17 @@ bool obs_module_load(void) {
 	// UI setup
 	obs_frontend_push_ui_translation(obs_module_get_string);
 	QMainWindow* mainWindow = (QMainWindow*)obs_frontend_get_main_window();
-	_settingsDialog = std::unique_ptr<SettingsDialog>(
-		new SettingsDialog(mainWindow)
-	);
+	SettingsDialog* settingsDialog = new SettingsDialog(mainWindow);
 	obs_frontend_pop_ui_translation();
 
 	const char* menuActionText =
 		obs_module_text("OBSWebsocket.Menu.SettingsItem");
 	QAction* menuAction =
 		(QAction*)obs_frontend_add_tools_menu_qaction(menuActionText);
-	QObject::connect(menuAction, &QAction::triggered, [] {
-		_settingsDialog->ToggleShowHide();
+	QObject::connect(menuAction, &QAction::triggered, [settingsDialog] {
+		// The settings dialog belongs to the main window. Should be ok
+		// to pass the pointer to this QAction belonging to the main window
+		settingsDialog->ToggleShowHide();
 	});
 
 	// Loading finished
