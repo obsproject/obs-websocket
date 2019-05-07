@@ -29,17 +29,11 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include "WSServer.h"
 
-class WSEvents;
-typedef QSharedPointer<WSEvents> WSEventsPtr;
-
 class WSEvents : public QObject
 {
 Q_OBJECT
 
 public:
-	static WSEventsPtr Current();
-	static void ResetCurrent(WSServerPtr srv);
-
 	explicit WSEvents(WSServerPtr srv);
 	~WSEvents();
 
@@ -60,8 +54,6 @@ private slots:
 	void TransitionDurationChanged(int ms);
 
 private:
-	static WSEventsPtr _instance;
-
 	WSServerPtr _srv;
 	QTimer streamStatusTimer;
 	QTimer heartbeatTimer;

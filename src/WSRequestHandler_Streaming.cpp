@@ -1,3 +1,4 @@
+#include "obs-websocket.h"
 #include "Utils.h"
 #include "WSEvents.h"
 
@@ -20,7 +21,7 @@
  * @since 0.3
  */
 HandlerResponse WSRequestHandler::HandleGetStreamingStatus(WSRequestHandler* req) {
-	auto events = WSEvents::Current();
+	auto events = GetEventsSystem();
 
 	OBSDataAutoRelease data = obs_data_create();
 	obs_data_set_bool(data, "streaming", obs_frontend_streaming_active());

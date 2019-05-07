@@ -83,16 +83,6 @@ const char* calldata_get_string(const calldata_t* data, const char* name) {
 	return value;
 }
 
-WSEventsPtr WSEvents::_instance = WSEventsPtr(nullptr);
-
-WSEventsPtr WSEvents::Current() {
-	return _instance;
-}
-
-void WSEvents::ResetCurrent(WSServerPtr srv) {
-	_instance = WSEventsPtr(new WSEvents(srv));
-}
-
 WSEvents::WSEvents(WSServerPtr srv) :
 	_srv(srv),
 	_streamStarttime(0),
@@ -144,6 +134,8 @@ WSEvents::~WSEvents() {
 
 	obs_frontend_remove_event_callback(WSEvents::FrontendEventHandler, this);
 	os_cpu_usage_info_destroy(cpuUsageInfo);
+
+	blog(LOG_INFO, "wsevents destroyed");
 }
 
 void WSEvents::FrontendEventHandler(enum obs_frontend_event event, void* private_data) {

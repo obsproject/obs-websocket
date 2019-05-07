@@ -1,3 +1,4 @@
+#include "obs-websocket.h"
 #include "Config.h"
 #include "Utils.h"
 #include "WSEvents.h"
@@ -114,7 +115,7 @@ HandlerResponse WSRequestHandler::HandleSetHeartbeat(WSRequestHandler* req) {
 		return req->SendErrorResponse("Heartbeat <enable> parameter missing");
 	}
 
-	auto events = WSEvents::Current();
+	auto events = GetEventsSystem();
 	events->HeartbeatIsActive = obs_data_get_bool(req->data, "enable");
 
 	OBSDataAutoRelease response = obs_data_create();
@@ -164,16 +165,16 @@ HandlerResponse WSRequestHandler::HandleGetFilenameFormatting(WSRequestHandler* 
 
 /**
  * Get OBS stats (almost the same info as provided in OBS' stats window)
- * 
+ *
  * @return {OBSStats} `stats` OBS stats
- * 
+ *
  * @api requests
  * @name GetStats
  * @category general
- * @since 4.6.0 
+ * @since 4.6.0
  */
 HandlerResponse WSRequestHandler::HandleGetStats(WSRequestHandler* req) {
-	OBSDataAutoRelease stats = WSEvents::Current()->GetStats();
+	OBSDataAutoRelease stats = GetEventsSystem()->GetStats();
 
 	OBSDataAutoRelease response = obs_data_create();
 	obs_data_set_obj(response, "stats", stats);

@@ -38,7 +38,9 @@ void ___output_dummy_addref(obs_output_t*) {}
 OBS_DECLARE_MODULE()
 OBS_MODULE_USE_DEFAULT_LOCALE("obs-websocket", "en-US")
 
-SettingsDialog* settings_dialog;
+WSEventsPtr _eventsSystem;
+
+std::unique_ptr<SettingsDialog> _settingsDialog;
 
 bool obs_module_load(void) {
 	blog(LOG_INFO, "you can haz websockets (version %s)", OBS_WEBSOCKET_VERSION);
@@ -50,26 +52,27 @@ bool obs_module_load(void) {
 	config->MigrateFromGlobalSettings(); // TODO remove this on the next minor jump
 	config->Load();
 
-	WSEvents::ResetCurrent(WSServer::Current());
+	_eventsSystem = WSEventsPtr(new WSEvents(WSServer::Current()));
 
 	if (config->ServerEnabled) {
 		WSServer::Current()->start(config->ServerPort);
 	}
 
 	// UI setup
-	QAction* menu_action = (QAction*)obs_frontend_add_tools_menu_qaction(
-		obs_module_text("OBSWebsocket.Menu.SettingsItem")
-	);
-
 	obs_frontend_push_ui_translation(obs_module_get_string);
-	QMainWindow* main_window = (QMainWindow*)obs_frontend_get_main_window();
-	settings_dialog = new SettingsDialog(main_window);
+	QMainWindow* mainWindow = (QMainWindow*)obs_frontend_get_main_window();
+	_settingsDialog = std::unique_ptr<SettingsDialog>(
+		new SettingsDialog(mainWindow)
+	);
 	obs_frontend_pop_ui_translation();
 
-	auto menu_cb = [] {
-		settings_dialog->ToggleShowHide();
-	};
-	menu_action->connect(menu_action, &QAction::triggered, menu_cb);
+	const char* menuActionText =
+		obs_module_text("OBSWebsocket.Menu.SettingsItem");
+	QAction* menuAction =
+		(QAction*)obs_frontend_add_tools_menu_qaction(menuActionText);
+	QObject::connect(menuAction, &QAction::triggered, [] {
+		_settingsDialog->ToggleShowHide();
+	});
 
 	// Loading finished
 	blog(LOG_INFO, "module loaded!");
@@ -82,3 +85,6 @@ void obs_module_unload() {
 	blog(LOG_INFO, "goodbye!");
 }
 
+WSEventsPtr GetEventsSystem() {
+	return _eventsSystem;
+}
