@@ -134,8 +134,6 @@ WSEvents::~WSEvents() {
 
 	obs_frontend_remove_event_callback(WSEvents::FrontendEventHandler, this);
 	os_cpu_usage_info_destroy(cpuUsageInfo);
-
-	blog(LOG_INFO, "wsevents destroyed");
 }
 
 void WSEvents::FrontendEventHandler(enum obs_frontend_event event, void* private_data) {

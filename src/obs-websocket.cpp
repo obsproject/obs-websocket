@@ -83,6 +83,11 @@ bool obs_module_load(void) {
 
 void obs_module_unload() {
 	_server->stop();
+
+	_eventsSystem.reset();
+	_server.reset();
+	_config.reset();
+
 	blog(LOG_INFO, "goodbye!");
 }
 
