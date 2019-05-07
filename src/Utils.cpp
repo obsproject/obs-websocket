@@ -611,7 +611,7 @@ obs_data_t* Utils::GetSceneItemPropertiesData(obs_sceneitem_t* sceneItem) {
 	if (!sceneItem) {
 		return nullptr;
 	}
-	
+
 	OBSSource source = obs_sceneitem_get_source(sceneItem);
 	uint32_t baseSourceWidth = obs_source_get_width(source);
 	uint32_t baseSourceHeight = obs_source_get_height(source);
