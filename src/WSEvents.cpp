@@ -117,10 +117,17 @@ WSEvents::WSEvents(WSServerPtr srv) :
 	signal_handler_t* coreSignalHandler = obs_get_signal_handler();
 	if (coreSignalHandler) {
 		signal_handler_connect(coreSignalHandler, "source_create", OnSourceCreate, this);
+		signal_handler_connect(coreSignalHandler, "source_destroy", OnSourceDestroy, this);
 	}
 }
 
 WSEvents::~WSEvents() {
+	signal_handler_t* coreSignalHandler = obs_get_signal_handler();
+	if (coreSignalHandler) {
+		signal_handler_disconnect(coreSignalHandler, "source_destroy", OnSourceDestroy, this);
+		signal_handler_disconnect(coreSignalHandler, "source_create", OnSourceCreate, this);
+	}
+
 	obs_frontend_remove_event_callback(WSEvents::FrontendEventHandler, this);
 	os_cpu_usage_info_destroy(cpuUsageInfo);
 }
@@ -621,16 +628,16 @@ void WSEvents::StreamStatus() {
 	float strain = obs_output_get_congestion(streamOutput);
 
 	OBSDataAutoRelease data = obs_data_create();
-	
+
 	obs_data_set_bool(data, "streaming", streamingActive);
 	obs_data_set_bool(data, "recording", recordingActive);
 	obs_data_set_bool(data, "replay-buffer-active", replayBufferActive);
-	
+
 	obs_data_set_int(data, "bytes-per-sec", bytesPerSec);
 	obs_data_set_int(data, "kbits-per-sec", (bytesPerSec * 8) / 1024);
-	
+
 	obs_data_set_int(data, "total-stream-time", totalStreamTime);
-	
+
 	obs_data_set_int(data, "num-total-frames", totalFrames);
 	obs_data_set_int(data, "num-dropped-frames", droppedFrames);
 	obs_data_set_double(data, "strain", strain);
@@ -958,7 +965,7 @@ void WSEvents::OnSourceAudioSyncOffsetChanged(void* param, calldata_t* data) {
  * @return {Array<Object>} `routingStatus` Routing status of the source for each audio mixer (array of 6 values)
  * @return {int} `routingStatus.*.id` Mixer number
  * @return {boolean} `routingStatus.*.enabled` Routing status
- * @return {String} `hexMixersValue` Raw mixer flags (little-endian, one bit per mixer) as an hexadecimal value 
+ * @return {String} `hexMixersValue` Raw mixer flags (little-endian, one bit per mixer) as an hexadecimal value
  *
  * @api events
  * @name SourceAudioMixersChanged
@@ -1000,7 +1007,7 @@ void WSEvents::OnSourceAudioMixersChanged(void* param, calldata_t* data) {
  *
  * @return {String} `previousName` Previous source name
  * @return {String} `newName` New source name
- * 
+ *
  * @api events
  * @name SourceRenamed
  * @category sources
