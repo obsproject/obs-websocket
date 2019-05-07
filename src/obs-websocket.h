@@ -19,6 +19,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #pragma once
 
 #include <obs.hpp>
+#include <memory>
 
 void ___source_dummy_addref(obs_source_t*);
 void ___sceneitem_dummy_addref(obs_sceneitem_t*);
@@ -36,6 +37,11 @@ using OBSDataArrayAutoRelease =
 	OBSRef<obs_data_array_t*, ___data_array_dummy_addref, obs_data_array_release>;
 using OBSOutputAutoRelease =
 	OBSRef<obs_output_t*, ___output_dummy_addref, obs_output_release>;
+
+class WSEvents;
+typedef std::shared_ptr<WSEvents> WSEventsPtr;
+
+std::shared_ptr<WSEvents> GetEventsSystem();
 
 #define OBS_WEBSOCKET_VERSION "4.6.0"
 

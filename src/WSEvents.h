@@ -29,21 +29,16 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include "WSServer.h"
 
-class WSEvents;
-typedef QSharedPointer<WSEvents> WSEventsPtr;
-
 class WSEvents : public QObject
 {
 Q_OBJECT
 
 public:
-	static WSEventsPtr Current();
-	static void ResetCurrent(WSServerPtr srv);
-
 	explicit WSEvents(WSServerPtr srv);
 	~WSEvents();
-	static void FrontendEventHandler(
-		enum obs_frontend_event event, void* privateData);
+
+	void connectSourceSignals(obs_source_t* source);
+	void disconnectSourceSignals(obs_source_t* source);
 
 	uint64_t GetStreamingTime();
 	const char* GetStreamingTimecode();
@@ -59,8 +54,6 @@ private slots:
 	void TransitionDurationChanged(int ms);
 
 private:
-	static WSEventsPtr _instance;
-
 	WSServerPtr _srv;
 	QTimer streamStatusTimer;
 	QTimer heartbeatTimer;
@@ -107,6 +100,9 @@ private:
 	void OnPreviewSceneChanged();
 
 	void OnExit();
+
+	static void FrontendEventHandler(
+		enum obs_frontend_event event, void* privateData);
 
 	static void OnTransitionBegin(void* param, calldata_t* data);
 

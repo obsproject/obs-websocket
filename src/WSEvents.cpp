@@ -83,16 +83,6 @@ const char* calldata_get_string(const calldata_t* data, const char* name) {
 	return value;
 }
 
-WSEventsPtr WSEvents::_instance = WSEventsPtr(nullptr);
-
-WSEventsPtr WSEvents::Current() {
-	return _instance;
-}
-
-void WSEvents::ResetCurrent(WSServerPtr srv) {
-	_instance = WSEventsPtr(new WSEvents(srv));
-}
-
 WSEvents::WSEvents(WSServerPtr srv) :
 	_srv(srv),
 	_streamStarttime(0),
@@ -114,6 +104,13 @@ WSEvents::WSEvents(WSServerPtr srv) :
 
 	heartbeatTimer.start(STATUS_INTERVAL);
 
+	// Connect to signals of all existing sources
+	obs_enum_sources([](void* param, obs_source_t* source) {
+		auto self = reinterpret_cast<WSEvents*>(param);
+		self->connectSourceSignals(source);
+		return true;
+	}, this);
+
 	signal_handler_t* coreSignalHandler = obs_get_signal_handler();
 	if (coreSignalHandler) {
 		signal_handler_connect(coreSignalHandler, "source_create", OnSourceCreate, this);
@@ -128,8 +125,17 @@ WSEvents::~WSEvents() {
 		signal_handler_disconnect(coreSignalHandler, "source_create", OnSourceCreate, this);
 	}
 
+	// Disconnect from signals of all existing sources
+	obs_enum_sources([](void* param, obs_source_t* source) {
+		auto self = reinterpret_cast<WSEvents*>(param);
+		self->disconnectSourceSignals(source);
+		return true;
+	}, this);
+
 	obs_frontend_remove_event_callback(WSEvents::FrontendEventHandler, this);
 	os_cpu_usage_info_destroy(cpuUsageInfo);
+
+	blog(LOG_INFO, "wsevents destroyed");
 }
 
 void WSEvents::FrontendEventHandler(enum obs_frontend_event event, void* private_data) {
@@ -245,6 +251,73 @@ void WSEvents::broadcastUpdate(const char* updateType,
 	if (Config::Current()->DebugEnabled) {
 		blog(LOG_INFO, "Update << '%s'", json.toUtf8().constData());
 	}
+}
+
+void WSEvents::connectSourceSignals(obs_source_t* source) {
+	if (!source) {
+		return;
+	}
+
+	// Disconnect everything first to avoid double-binding
+	disconnectSourceSignals(source);
+
+	obs_source_type sourceType = obs_source_get_type(source);
+	signal_handler_t* sh = obs_source_get_signal_handler(source);
+
+	signal_handler_connect(sh, "rename", OnSourceRename, this);
+
+	signal_handler_connect(sh, "mute", OnSourceMuteStateChange, this);
+	signal_handler_connect(sh, "volume", OnSourceVolumeChange, this);
+	signal_handler_connect(sh, "audio_sync", OnSourceAudioSyncOffsetChanged, this);
+	signal_handler_connect(sh, "audio_mixers", OnSourceAudioMixersChanged, this);
+
+	signal_handler_connect(sh, "filter_add", OnSourceFilterAdded, this);
+	signal_handler_connect(sh, "filter_remove", OnSourceFilterRemoved, this);
+	signal_handler_connect(sh, "reorder_filters", OnSourceFilterOrderChanged, this);
+
+	if (sourceType == OBS_SOURCE_TYPE_SCENE) {
+		signal_handler_connect(sh, "reorder", OnSceneReordered, this);
+		signal_handler_connect(sh, "item_add", OnSceneItemAdd, this);
+		signal_handler_connect(sh, "item_remove", OnSceneItemDelete, this);
+		signal_handler_connect(sh,
+			"item_visible", OnSceneItemVisibilityChanged, this);
+		signal_handler_connect(sh, "item_transform", OnSceneItemTransform, this);
+		signal_handler_connect(sh, "item_select", OnSceneItemSelected, this);
+		signal_handler_connect(sh, "item_deselect", OnSceneItemDeselected, this);
+	}
+	if (sourceType == OBS_SOURCE_TYPE_TRANSITION) {
+		signal_handler_connect(sh, "transition_start", OnTransitionBegin, this);
+	}
+}
+
+void WSEvents::disconnectSourceSignals(obs_source_t* source) {
+	if (!source) {
+		return;
+	}
+
+	signal_handler_t* sh = obs_source_get_signal_handler(source);
+
+	signal_handler_disconnect(sh, "rename", OnSourceRename, this);
+
+	signal_handler_disconnect(sh, "mute", OnSourceMuteStateChange, this);
+	signal_handler_disconnect(sh, "volume", OnSourceVolumeChange, this);
+	signal_handler_disconnect(sh, "audio_sync", OnSourceAudioSyncOffsetChanged, this);
+	signal_handler_disconnect(sh, "audio_mixers", OnSourceAudioMixersChanged, this);
+
+	signal_handler_disconnect(sh, "filter_add", OnSourceFilterAdded, this);
+	signal_handler_disconnect(sh, "filter_remove", OnSourceFilterRemoved, this);
+	signal_handler_disconnect(sh, "reorder_filters", OnSourceFilterOrderChanged, this);
+
+	signal_handler_disconnect(sh, "reorder", OnSceneReordered, this);
+	signal_handler_disconnect(sh, "item_add", OnSceneItemAdd, this);
+	signal_handler_disconnect(sh, "item_remove", OnSceneItemDelete, this);
+	signal_handler_disconnect(sh,
+		"item_visible", OnSceneItemVisibilityChanged, this);
+	signal_handler_disconnect(sh, "item_transform", OnSceneItemTransform, this);
+	signal_handler_disconnect(sh, "item_select", OnSceneItemSelected, this);
+	signal_handler_disconnect(sh, "item_deselect", OnSceneItemDeselected, this);
+
+	signal_handler_disconnect(sh, "transition_start", OnTransitionBegin, this);
 }
 
 uint64_t WSEvents::GetStreamingTime() {
@@ -801,39 +874,15 @@ void WSEvents::OnSourceCreate(void* param, calldata_t* data) {
 		return;
 	}
 
-	obs_source_type sourceType = obs_source_get_type(source);
-	signal_handler_t* sh = obs_source_get_signal_handler(source);
-
-	signal_handler_connect(sh, "rename", OnSourceRename, self);
-
-	signal_handler_connect(sh, "mute", OnSourceMuteStateChange, self);
-	signal_handler_connect(sh, "volume", OnSourceVolumeChange, self);
-	signal_handler_connect(sh, "audio_sync", OnSourceAudioSyncOffsetChanged, self);
-	signal_handler_connect(sh, "audio_mixers", OnSourceAudioMixersChanged, self);
-
-	signal_handler_connect(sh, "filter_add", OnSourceFilterAdded, self);
-	signal_handler_connect(sh, "filter_remove", OnSourceFilterRemoved, self);
-	signal_handler_connect(sh, "reorder_filters", OnSourceFilterOrderChanged, self);
-
-	if (sourceType == OBS_SOURCE_TYPE_SCENE) {
-		signal_handler_connect(sh, "reorder", OnSceneReordered, self);
-		signal_handler_connect(sh, "item_add", OnSceneItemAdd, self);
-		signal_handler_connect(sh, "item_remove", OnSceneItemDelete, self);
-		signal_handler_connect(sh,
-			"item_visible", OnSceneItemVisibilityChanged, self);
-		signal_handler_connect(sh, "item_transform", OnSceneItemTransform, self);
-		signal_handler_connect(sh, "item_select", OnSceneItemSelected, self);
-		signal_handler_connect(sh, "item_deselect", OnSceneItemDeselected, self);
-	}
-	if (sourceType == OBS_SOURCE_TYPE_TRANSITION) {
-		signal_handler_connect(sh, "transition_start", OnTransitionBegin, self);
-	}
+	self->connectSourceSignals(source);
 
 	OBSDataAutoRelease sourceSettings = obs_source_get_settings(source);
 
 	OBSDataAutoRelease fields = obs_data_create();
 	obs_data_set_string(fields, "sourceName", obs_source_get_name(source));
-	obs_data_set_string(fields, "sourceType", sourceTypeToString(sourceType));
+	obs_data_set_string(fields, "sourceType",
+		sourceTypeToString(obs_source_get_type(source))
+	);
 	obs_data_set_string(fields, "sourceKind", obs_source_get_id(source));
 	obs_data_set_obj(fields, "sourceSettings", sourceSettings);
 	self->broadcastUpdate("SourceCreated", fields);
@@ -858,6 +907,8 @@ void WSEvents::OnSourceDestroy(void* param, calldata_t* data) {
 	if (!source) {
 		return;
 	}
+
+	self->disconnectSourceSignals(source);
 
 	obs_source_type sourceType = obs_source_get_type(source);
 
