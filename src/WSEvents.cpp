@@ -114,6 +114,13 @@ WSEvents::WSEvents(WSServerPtr srv) :
 
 	heartbeatTimer.start(STATUS_INTERVAL);
 
+	// Connect to signals of all existing sources
+	obs_enum_sources([](void* param, obs_source_t* source) {
+		auto self = reinterpret_cast<WSEvents*>(param);
+		self->connectSourceSignals(source);
+		return true;
+	}, this);
+
 	signal_handler_t* coreSignalHandler = obs_get_signal_handler();
 	if (coreSignalHandler) {
 		signal_handler_connect(coreSignalHandler, "source_create", OnSourceCreate, this);
@@ -127,6 +134,13 @@ WSEvents::~WSEvents() {
 		signal_handler_disconnect(coreSignalHandler, "source_destroy", OnSourceDestroy, this);
 		signal_handler_disconnect(coreSignalHandler, "source_create", OnSourceCreate, this);
 	}
+
+	// Disconnect from signals of all existing sources
+	obs_enum_sources([](void* param, obs_source_t* source) {
+		auto self = reinterpret_cast<WSEvents*>(param);
+		self->disconnectSourceSignals(source);
+		return true;
+	}, this);
 
 	obs_frontend_remove_event_callback(WSEvents::FrontendEventHandler, this);
 	os_cpu_usage_info_destroy(cpuUsageInfo);
