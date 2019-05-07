@@ -1516,6 +1516,7 @@ Gets the scene specific properties of the specified source item.
 | `crop.bottom` | _int_ | The number of pixels cropped off the bottom of the source before scaling. |
 | `crop.left` | _int_ | The number of pixels cropped off the left of the source before scaling. |
 | `visible` | _bool_ | If the source is visible. |
+| `locked` | _bool_ | If the source's transform is locked. |
 | `bounds.type` | _String_ | Type of bounding box. Can be "OBS_BOUNDS_STRETCH", "OBS_BOUNDS_SCALE_INNER", "OBS_BOUNDS_SCALE_OUTER", "OBS_BOUNDS_SCALE_TO_WIDTH", "OBS_BOUNDS_SCALE_TO_HEIGHT", "OBS_BOUNDS_MAX_ONLY" or "OBS_BOUNDS_NONE". |
 | `bounds.alignment` | _int_ | Alignment of the bounding box. |
 | `bounds.x` | _double_ | Width of the bounding box. |
