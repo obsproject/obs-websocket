@@ -198,10 +198,6 @@ obs_sceneitem_t* Utils::GetSceneItemFromName(obs_source_t* source, QString name)
 			return false;
 		}
 
-		if (obs_sceneitem_is_group(currentItem)) {
-
-		}
-
 		return true;
 	}, &search);
 
