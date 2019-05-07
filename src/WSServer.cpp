@@ -38,21 +38,6 @@ using websocketpp::lib::placeholders::_1;
 using websocketpp::lib::placeholders::_2;
 using websocketpp::lib::bind;
 
-WSServerPtr WSServer::_instance = WSServerPtr(nullptr);
-
-WSServerPtr WSServer::Current()
-{
-	if (!_instance) {
-		ResetCurrent();
-	}
-	return _instance;
-}
-
-void WSServer::ResetCurrent()
-{
-	_instance = WSServerPtr(new WSServer());
-}
-
 WSServer::WSServer()
 	: QObject(nullptr),
 	  _connections(),
@@ -127,7 +112,7 @@ void WSServer::stop()
 	}
 	_connections.clear();
 	_connectionProperties.clear();
-	
+
 	_threadPool.waitForDone();
 
 	while (!_server.stopped()) {
@@ -141,7 +126,7 @@ void WSServer::broadcast(std::string message)
 {
 	QMutexLocker locker(&_clMutex);
 	for (connection_hdl hdl : _connections) {
-		if (Config::Current()->AuthRequired) {
+		if (GetConfig()->AuthRequired) {
 			bool authenticated = _connectionProperties[hdl].isAuthenticated();
 			if (!authenticated) {
 				continue;

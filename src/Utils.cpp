@@ -396,7 +396,7 @@ QSystemTrayIcon* Utils::GetTrayIcon() {
 
 void Utils::SysTrayNotify(QString text,
 	QSystemTrayIcon::MessageIcon icon, QString title) {
-	if (!Config::Current()->AlertsEnabled ||
+	if (!GetConfig()->AlertsEnabled ||
 		!QSystemTrayIcon::isSystemTrayAvailable() ||
 		!QSystemTrayIcon::supportsMessages())
 	{

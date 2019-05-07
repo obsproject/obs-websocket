@@ -38,10 +38,18 @@ using OBSDataArrayAutoRelease =
 using OBSOutputAutoRelease =
 	OBSRef<obs_output_t*, ___output_dummy_addref, obs_output_release>;
 
+class Config;
+typedef std::shared_ptr<Config> ConfigPtr;
+
+class WSServer;
+typedef std::shared_ptr<WSServer> WSServerPtr;
+
 class WSEvents;
 typedef std::shared_ptr<WSEvents> WSEventsPtr;
 
-std::shared_ptr<WSEvents> GetEventsSystem();
+ConfigPtr GetConfig();
+WSServerPtr GetServer();
+WSEventsPtr GetEventsSystem();
 
 #define OBS_WEBSOCKET_VERSION "4.6.0"
 

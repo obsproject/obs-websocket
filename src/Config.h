@@ -23,20 +23,15 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <QtCore/QString>
 #include <QtCore/QSharedPointer>
 
-class Config;
-typedef QSharedPointer<Config> ConfigPtr;
-
 class Config {
 	public:
-		static ConfigPtr Current();
-
 		Config();
 		~Config();
 		void Load();
 		void Save();
 		void SetDefaults();
 		config_t* GetConfigStore();
-	
+
 		void MigrateFromGlobalSettings();
 
 		void SetPassword(QString password);
@@ -59,5 +54,4 @@ class Config {
 
 	private:
 		static void OnFrontendEvent(enum obs_frontend_event event, void* param);
-		static ConfigPtr _instance;
 };

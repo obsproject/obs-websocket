@@ -38,6 +38,8 @@ void ___output_dummy_addref(obs_output_t*) {}
 OBS_DECLARE_MODULE()
 OBS_MODULE_USE_DEFAULT_LOCALE("obs-websocket", "en-US")
 
+ConfigPtr _config;
+WSServerPtr _server;
 WSEventsPtr _eventsSystem;
 
 bool obs_module_load(void) {
@@ -46,14 +48,15 @@ bool obs_module_load(void) {
 		QT_VERSION_STR, qVersion());
 
 	// Core setup
-	auto config = Config::Current();
-	config->MigrateFromGlobalSettings(); // TODO remove this on the next minor jump
-	config->Load();
+	_config = ConfigPtr(new Config());
+	_config->MigrateFromGlobalSettings(); // TODO remove this on the next minor jump
+	_config->Load();
 
-	_eventsSystem = WSEventsPtr(new WSEvents(WSServer::Current()));
+	_server = WSServerPtr(new WSServer());
+	_eventsSystem = WSEventsPtr(new WSEvents(_server));
 
-	if (config->ServerEnabled) {
-		WSServer::Current()->start(config->ServerPort);
+	if (_config->ServerEnabled) {
+		_server->start(_config->ServerPort);
 	}
 
 	// UI setup
@@ -79,8 +82,16 @@ bool obs_module_load(void) {
 }
 
 void obs_module_unload() {
-	WSServer::Current()->stop();
+	_server->stop();
 	blog(LOG_INFO, "goodbye!");
+}
+
+ConfigPtr GetConfig() {
+	return _config;
+}
+
+WSServerPtr GetServer() {
+	return _server;
 }
 
 WSEventsPtr GetEventsSystem() {

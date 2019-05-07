@@ -142,14 +142,14 @@ WSRequestHandler::WSRequestHandler(ConnectionProperties& connProperties) :
 }
 
 std::string WSRequestHandler::processIncomingMessage(std::string& textMessage) {
-	if (Config::Current()->DebugEnabled) {
+	if (GetConfig()->DebugEnabled) {
 		blog(LOG_INFO, "Request >> '%s'", textMessage.c_str());
 	}
 
 	OBSDataAutoRelease responseData = processRequest(textMessage);
 	std::string response = obs_data_get_json(responseData);
 
-	if (Config::Current()->DebugEnabled) {
+	if (GetConfig()->DebugEnabled) {
 		blog(LOG_INFO, "Response << '%s'", response.c_str());
 	}
 
@@ -173,7 +173,7 @@ HandlerResponse WSRequestHandler::processRequest(std::string& textMessage){
 	_requestType = obs_data_get_string(data, "request-type");
 	_messageId = obs_data_get_string(data, "message-id");
 
-	if (Config::Current()->AuthRequired
+	if (GetConfig()->AuthRequired
 		&& (!authNotRequired.contains(_requestType))
 		&& (!_connProperties.isAuthenticated()))
 	{

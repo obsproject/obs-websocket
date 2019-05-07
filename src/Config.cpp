@@ -38,13 +38,6 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #define QT_TO_UTF8(str) str.toUtf8().constData()
 
-ConfigPtr Config::_instance = ConfigPtr(new Config());
-
-ConfigPtr Config::Current()
-{
-	return _instance;
-}
-
 Config::Config() :
 	ServerEnabled(true),
 	ServerPort(4444),
@@ -83,7 +76,7 @@ void Config::Load()
 	Salt = config_get_string(obsConfig, SECTION_NAME, PARAM_SALT);
 }
 
-void Config::Save() 
+void Config::Save()
 {
 	config_t* obsConfig = GetConfigStore();
 
@@ -217,7 +210,7 @@ void Config::OnFrontendEvent(enum obs_frontend_event event, void* param)
 		config->Load();
 
 		if (config->ServerEnabled != previousEnabled || config->ServerPort != previousPort) {
-			auto server = WSServer::Current();
+			auto server = GetServer();
 			server->stop();
 
 			if (config->ServerEnabled) {
@@ -232,18 +225,18 @@ void Config::OnFrontendEvent(enum obs_frontend_event event, void* param)
 				Utils::SysTrayNotify(stopMessage, QSystemTrayIcon::MessageIcon::Information);
 			}
 		}
-	}	
+	}
 }
 
 void Config::MigrateFromGlobalSettings()
-{	
+{
 	config_t* source = obs_frontend_get_global_config();
 	config_t* destination = obs_frontend_get_profile_config();
 
 	if(config_has_user_value(source, SECTION_NAME, PARAM_ENABLE)) {
 		bool value = config_get_bool(source, SECTION_NAME, PARAM_ENABLE);
 		config_set_bool(destination, SECTION_NAME, PARAM_ENABLE, value);
-	
+
 		config_remove_value(source, SECTION_NAME, PARAM_ENABLE);
 	}
 
@@ -257,7 +250,7 @@ void Config::MigrateFromGlobalSettings()
 	if(config_has_user_value(source, SECTION_NAME, PARAM_DEBUG)) {
 		bool value = config_get_bool(source, SECTION_NAME, PARAM_DEBUG);
 		config_set_bool(destination, SECTION_NAME, PARAM_DEBUG, value);
-		
+
 		config_remove_value(source, SECTION_NAME, PARAM_DEBUG);
 	}
 

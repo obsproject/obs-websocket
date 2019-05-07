@@ -53,16 +53,17 @@ HandlerResponse WSRequestHandler::HandleGetVersion(WSRequestHandler* req) {
  * @since 0.3
  */
 HandlerResponse WSRequestHandler::HandleGetAuthRequired(WSRequestHandler* req) {
-	bool authRequired = Config::Current()->AuthRequired;
+	bool authRequired = GetConfig()->AuthRequired;
 
 	OBSDataAutoRelease data = obs_data_create();
 	obs_data_set_bool(data, "authRequired", authRequired);
 
 	if (authRequired) {
+		auto config = GetConfig();
 		obs_data_set_string(data, "challenge",
-			Config::Current()->SessionChallenge.toUtf8());
+			config->SessionChallenge.toUtf8());
 		obs_data_set_string(data, "salt",
-			Config::Current()->Salt.toUtf8());
+			config->Salt.toUtf8());
 	}
 
 	return req->SendOKResponse(data);
@@ -92,7 +93,7 @@ HandlerResponse WSRequestHandler::HandleAuthenticate(WSRequestHandler* req) {
 		return req->SendErrorResponse("auth not specified!");
 	}
 
-	if (Config::Current()->CheckAuth(auth) == false) {
+	if (GetConfig()->CheckAuth(auth) == false) {
 		return req->SendErrorResponse("Authentication Failed.");
 	}
 

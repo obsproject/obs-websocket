@@ -41,7 +41,7 @@ SettingsDialog::SettingsDialog(QWidget* parent) :
 }
 
 void SettingsDialog::showEvent(QShowEvent* event) {
-	auto conf = Config::Current();
+	auto conf = GetConfig();
 
 	ui->serverEnabled->setChecked(conf->ServerEnabled);
 	ui->serverPort->setValue(conf->ServerPort);
@@ -68,7 +68,7 @@ void SettingsDialog::AuthCheckboxChanged() {
 }
 
 void SettingsDialog::FormAccepted() {
-	auto conf = Config::Current();
+	auto conf = GetConfig();
 
 	conf->ServerEnabled = ui->serverEnabled->isChecked();
 	conf->ServerPort = ui->serverPort->value();
@@ -81,7 +81,7 @@ void SettingsDialog::FormAccepted() {
 			conf->SetPassword(ui->password->text());
 		}
 
-		if (!Config::Current()->Secret.isEmpty())
+		if (!GetConfig()->Secret.isEmpty())
 			conf->AuthRequired = true;
 		else
 			conf->AuthRequired = false;
@@ -93,10 +93,12 @@ void SettingsDialog::FormAccepted() {
 
 	conf->Save();
 
-	if (conf->ServerEnabled)
-		WSServer::Current()->start(conf->ServerPort);
-	else
-		WSServer::Current()->stop();
+	auto server = GetServer();
+	if (conf->ServerEnabled) {
+		server->start(conf->ServerPort);
+	} else {
+		server->stop();
+	}
 }
 
 SettingsDialog::~SettingsDialog() {
