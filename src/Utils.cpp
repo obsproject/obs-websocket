@@ -27,6 +27,23 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include "Utils.h"
 #include "Config.h"
 
+/**
+* @typedef {Object} `Source` An OBS Scene Item.
+* @property {Number} `cy`
+* @property {Number} `cx`
+* @property {String} `name` The name of this Scene Item.
+* @property {int} `id` Scene item ID
+* @property {Boolean} `render` Whether or not this Scene Item is set to "visible".
+* @property {Boolean} `locked` Whether or not this Scene Item is locked and can't be moved around
+* @property {Boolean} `isGroup` Whether or not this Scene Item is a group
+* @property {Number} `source_cx`
+* @property {Number} `source_cy`
+* @property {String} `type` Source type. Value is one of the following: "input", "filter", "transition", "scene" or "unknown"
+* @property {Number} `volume`
+* @property {Number} `x`
+* @property {Number} `y`
+*/
+
 Q_DECLARE_METATYPE(OBSScene);
 
 const QHash<obs_bounds_type, QString> boundTypeNames = {
@@ -130,6 +147,7 @@ obs_data_t* Utils::GetSceneItemData(obs_sceneitem_t* item) {
 	obs_data_set_double(data, "cy", item_height * scale.y);
 	obs_data_set_bool(data, "render", obs_sceneitem_visible(item));
 	obs_data_set_bool(data, "locked", obs_sceneitem_locked(item));
+	obs_data_set_bool(data, "isGroup", obs_sceneitem_is_group(item));
 
 	return data;
 }
@@ -178,6 +196,10 @@ obs_sceneitem_t* Utils::GetSceneItemFromName(obs_source_t* source, QString name)
 			search->result = currentItem;
 			obs_sceneitem_addref(search->result);
 			return false;
+		}
+
+		if (obs_sceneitem_is_group(currentItem)) {
+
 		}
 
 		return true;
