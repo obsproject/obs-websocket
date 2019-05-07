@@ -42,8 +42,9 @@ public:
 
 	explicit WSEvents(WSServerPtr srv);
 	~WSEvents();
-	static void FrontendEventHandler(
-		enum obs_frontend_event event, void* privateData);
+
+	void connectSourceSignals(obs_source_t* source);
+	void disconnectSourceSignals(obs_source_t* source);
 
 	uint64_t GetStreamingTime();
 	const char* GetStreamingTimecode();
@@ -107,6 +108,9 @@ private:
 	void OnPreviewSceneChanged();
 
 	void OnExit();
+
+	static void FrontendEventHandler(
+		enum obs_frontend_event event, void* privateData);
 
 	static void OnTransitionBegin(void* param, calldata_t* data);
 
