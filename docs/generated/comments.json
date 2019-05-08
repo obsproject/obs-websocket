@@ -2824,6 +2824,55 @@
         "lead": "",
         "type": "class",
         "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Get basic OBS video information",
+        "return": [
+          "{Number} `base_width` Base (canvas) width",
+          "{Number} `base_height` Base (canvas) height"
+        ],
+        "api": "requests",
+        "name": "GetVideoInfo",
+        "category": "general",
+        "since": "4.6.0",
+        "returns": [
+          {
+            "type": "Number",
+            "name": "base_width",
+            "description": "Base (canvas) width"
+          },
+          {
+            "type": "Number",
+            "name": "base_height",
+            "description": "Base (canvas) height"
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "GetVideoInfo"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "general"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.6.0"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "GetVideoInfo"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
       }
     ],
     "profiles": [

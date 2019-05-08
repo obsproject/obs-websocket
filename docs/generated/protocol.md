@@ -111,6 +111,7 @@ auth_response = base64_encode(auth_response_hash)
     + [SetFilenameFormatting](#setfilenameformatting)
     + [GetFilenameFormatting](#getfilenameformatting)
     + [GetStats](#getstats)
+    + [GetVideoInfo](#getvideoinfo)
   * [Profiles](#profiles-1)
     + [SetCurrentProfile](#setcurrentprofile)
     + [GetCurrentProfile](#getcurrentprofile)
@@ -1179,6 +1180,27 @@ _No specified parameters._
 | Name | Type  | Description |
 | ---- | :---: | ------------|
 | `stats` | _OBSStats_ | OBS stats |
+
+
+---
+
+### GetVideoInfo
+
+
+- Added in v4.6.0
+
+Get basic OBS video information
+
+**Request Fields:**
+
+_No specified parameters._
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `base_width` | _Number_ | Base (canvas) width |
+| `base_height` | _Number_ | Base (canvas) height |
 
 
 ---
