@@ -60,8 +60,6 @@ class Utils {
 
 	static QPushButton* GetPreviewModeButtonControl();
 	static QLayout* GetPreviewLayout();
-	// TODO remove this hack
-	static obs_scene_t* SceneListItemToScene(QListWidgetItem* item);
 
 	// TODO contribute a proper frontend API method for this to OBS and remove this hack
 	static void TransitionToProgram();

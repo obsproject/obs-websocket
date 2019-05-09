@@ -330,14 +330,6 @@ QPushButton* Utils::GetPreviewModeButtonControl() {
 	return main->findChild<QPushButton*>("modeSwitch");
 }
 
-obs_scene_t* Utils::SceneListItemToScene(QListWidgetItem* item) {
-	if (!item)
-		return nullptr;
-
-	QVariant itemData = item->data(static_cast<int>(Qt::UserRole));
-	return itemData.value<OBSScene>();
-}
-
 QLayout* Utils::GetPreviewLayout() {
 	QMainWindow* main = (QMainWindow*)obs_frontend_get_main_window();
 	return main->findChild<QLayout*>("previewLayout");
