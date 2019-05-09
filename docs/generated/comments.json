@@ -2829,8 +2829,15 @@
         "subheads": [],
         "description": "Get basic OBS video information",
         "return": [
-          "{Number} `base_width` Base (canvas) width",
-          "{Number} `base_height` Base (canvas) height"
+          "{Number} `baseWidth` Base (canvas) width",
+          "{Number} `baseHeight` Base (canvas) height",
+          "{Number} `outputWidth` Output width",
+          "{Number} `outputHeight` Output height",
+          "{String} `scaleType` Scaling method used if output size differs from base size",
+          "{double} `fps` Frames rendered per second",
+          "{String} `videoFormat` Video color format",
+          "{String} `colorSpace` Color space for YUV",
+          "{String} `colorRange` Color range (full or partial)"
         ],
         "api": "requests",
         "name": "GetVideoInfo",
@@ -2839,13 +2846,48 @@
         "returns": [
           {
             "type": "Number",
-            "name": "base_width",
+            "name": "baseWidth",
             "description": "Base (canvas) width"
           },
           {
             "type": "Number",
-            "name": "base_height",
+            "name": "baseHeight",
             "description": "Base (canvas) height"
+          },
+          {
+            "type": "Number",
+            "name": "outputWidth",
+            "description": "Output width"
+          },
+          {
+            "type": "Number",
+            "name": "outputHeight",
+            "description": "Output height"
+          },
+          {
+            "type": "String",
+            "name": "scaleType",
+            "description": "Scaling method used if output size differs from base size"
+          },
+          {
+            "type": "double",
+            "name": "fps",
+            "description": "Frames rendered per second"
+          },
+          {
+            "type": "String",
+            "name": "videoFormat",
+            "description": "Video color format"
+          },
+          {
+            "type": "String",
+            "name": "colorSpace",
+            "description": "Color space for YUV"
+          },
+          {
+            "type": "String",
+            "name": "colorRange",
+            "description": "Color range (full or partial)"
           }
         ],
         "names": [

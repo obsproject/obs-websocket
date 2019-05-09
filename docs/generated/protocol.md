@@ -1199,8 +1199,15 @@ _No specified parameters._
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
-| `base_width` | _Number_ | Base (canvas) width |
-| `base_height` | _Number_ | Base (canvas) height |
+| `baseWidth` | _Number_ | Base (canvas) width |
+| `baseHeight` | _Number_ | Base (canvas) height |
+| `outputWidth` | _Number_ | Output width |
+| `outputHeight` | _Number_ | Output height |
+| `scaleType` | _String_ | Scaling method used if output size differs from base size |
+| `fps` | _double_ | Frames rendered per second |
+| `videoFormat` | _String_ | Video color format |
+| `colorSpace` | _String_ | Color space for YUV |
+| `colorRange` | _String_ | Color range (full or partial) |
 
 
 ---
