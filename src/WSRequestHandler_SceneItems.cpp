@@ -84,22 +84,22 @@ HandlerResponse WSRequestHandler::HandleGetSceneItemProperties(WSRequestHandler*
 *
 * @param {String (optional)} `scene-name` the name of the scene that the source item belongs to. Defaults to the current scene.
 * @param {String} `item` The name of the source.
-* @param {int} `position.x` The new x position of the source.
-* @param {int} `position.y` The new y position of the source.
-* @param {int} `position.alignment` The new alignment of the source.
-* @param {double} `rotation` The new clockwise rotation of the item in degrees.
-* @param {double} `scale.x` The new x scale of the item.
-* @param {double} `scale.y` The new y scale of the item.
-* @param {int} `crop.top` The new amount of pixels cropped off the top of the source before scaling.
-* @param {int} `crop.bottom` The new amount of pixels cropped off the bottom of the source before scaling.
-* @param {int} `crop.left` The new amount of pixels cropped off the left of the source before scaling.
-* @param {int} `crop.right` The new amount of pixels cropped off the right of the source before scaling.
-* @param {bool} `visible` The new visibility of the source. 'true' shows source, 'false' hides source.
-* @param {bool} `locked` The new locked status of the source. 'true' keeps it in its current position, 'false' allows movement.
-* @param {String} `bounds.type` The new bounds type of the source. Can be "OBS_BOUNDS_STRETCH", "OBS_BOUNDS_SCALE_INNER", "OBS_BOUNDS_SCALE_OUTER", "OBS_BOUNDS_SCALE_TO_WIDTH", "OBS_BOUNDS_SCALE_TO_HEIGHT", "OBS_BOUNDS_MAX_ONLY" or "OBS_BOUNDS_NONE".
-* @param {int} `bounds.alignment` The new alignment of the bounding box. (0-2, 4-6, 8-10)
-* @param {double} `bounds.x` The new width of the bounding box.
-* @param {double} `bounds.y` The new height of the bounding box.
+* @param {int (optional)} `position.x` The new x position of the source.
+* @param {int (optional)} `position.y` The new y position of the source.
+* @param {int (optional)} `position.alignment` The new alignment of the source.
+* @param {double (optional)} `rotation` The new clockwise rotation of the item in degrees.
+* @param {double (optional)} `scale.x` The new x scale of the item.
+* @param {double (optional)} `scale.y` The new y scale of the item.
+* @param {int (optional)} `crop.top` The new amount of pixels cropped off the top of the source before scaling.
+* @param {int (optional)} `crop.bottom` The new amount of pixels cropped off the bottom of the source before scaling.
+* @param {int (optional)} `crop.left` The new amount of pixels cropped off the left of the source before scaling.
+* @param {int (optional)} `crop.right` The new amount of pixels cropped off the right of the source before scaling.
+* @param {bool (optional)} `visible` The new visibility of the source. 'true' shows source, 'false' hides source.
+* @param {bool (optional)} `locked` The new locked status of the source. 'true' keeps it in its current position, 'false' allows movement.
+* @param {String (optional)} `bounds.type` The new bounds type of the source. Can be "OBS_BOUNDS_STRETCH", "OBS_BOUNDS_SCALE_INNER", "OBS_BOUNDS_SCALE_OUTER", "OBS_BOUNDS_SCALE_TO_WIDTH", "OBS_BOUNDS_SCALE_TO_HEIGHT", "OBS_BOUNDS_MAX_ONLY" or "OBS_BOUNDS_NONE".
+* @param {int (optional)} `bounds.alignment` The new alignment of the bounding box. (0-2, 4-6, 8-10)
+* @param {double (optional)} `bounds.x` The new width of the bounding box.
+* @param {double (optional)} `bounds.y` The new height of the bounding box.
 *
 * @api requests
 * @name SetSceneItemProperties
