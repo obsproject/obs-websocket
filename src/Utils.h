@@ -43,7 +43,7 @@ class Utils {
 	static obs_source_t* GetTransitionFromName(QString transitionName);
 	static obs_source_t* GetSceneFromNameOrCurrent(QString sceneName);
 	static obs_data_t* GetSceneItemPropertiesData(obs_sceneitem_t* item);
-	
+
 	static obs_data_array_t* GetSourceFiltersList(obs_source_t* source, bool includeSettings);
 
 	static bool IsValidAlignment(const uint32_t alignment);
@@ -60,7 +60,6 @@ class Utils {
 
 	static QPushButton* GetPreviewModeButtonControl();
 	static QLayout* GetPreviewLayout();
-	static QListWidget* GetSceneListControl();
 	// TODO remove this hack
 	static obs_scene_t* SceneListItemToScene(QListWidgetItem* item);
 

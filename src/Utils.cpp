@@ -330,11 +330,6 @@ QPushButton* Utils::GetPreviewModeButtonControl() {
 	return main->findChild<QPushButton*>("modeSwitch");
 }
 
-QListWidget* Utils::GetSceneListControl() {
-	QMainWindow* main = (QMainWindow*)obs_frontend_get_main_window();
-	return main->findChild<QListWidget*>("scenes");
-}
-
 obs_scene_t* Utils::SceneListItemToScene(QListWidgetItem* item) {
 	if (!item)
 		return nullptr;
