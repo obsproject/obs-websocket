@@ -185,8 +185,11 @@ HandlerResponse WSRequestHandler::HandleGetStats(WSRequestHandler* req) {
 /**
  * Get basic OBS video information
  * 
- * @return {Number} `base_width` Base (canvas) width
- * @return {Number} `base_height` Base (canvas) height
+ * @return {Number} `baseWidth` Base (canvas) width
+ * @return {Number} `baseHeight` Base (canvas) height
+ * @return {Number} `outputWidth` Output width
+ * @return {Number} `outputHeight` Output height
+ * @return {double} `fps` Frames rendered per second
  * 
  * @api requests
  * @name GetVideoInfo
@@ -194,12 +197,13 @@ HandlerResponse WSRequestHandler::HandleGetStats(WSRequestHandler* req) {
  * @since 4.6.0 
  */
 HandlerResponse WSRequestHandler::HandleGetVideoInfo(WSRequestHandler* req) {
-	obs_video_info ovi; obs_get_video_info(&ovi);
+	obs_video_info ovi;
+	obs_get_video_info(&ovi);
 	OBSDataAutoRelease response = obs_data_create();
-	obs_data_set_int(response, "base_width", ovi.base_width);
-	obs_data_set_int(response, "base_height", ovi.base_height);
-	obs_data_set_int(response, "output_width", ovi.output_width);
-	obs_data_set_int(response, "output_height", ovi.output_height);
-	obs_data_set_double(response, "fps", (double)ovi.fps_num / ovi.fps_den); //TODO: Convert to floating-point FPS?
+	obs_data_set_int(response, "baseWidth", ovi.base_width);
+	obs_data_set_int(response, "baseHeight", ovi.base_height);
+	obs_data_set_int(response, "outputWidth", ovi.output_width);
+	obs_data_set_int(response, "outputHeight", ovi.output_height);
+	obs_data_set_double(response, "fps", (double)ovi.fps_num / ovi.fps_den);
 	return req->SendOKResponse(response);
 }
