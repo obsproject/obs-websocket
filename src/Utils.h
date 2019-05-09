@@ -53,16 +53,8 @@ class Utils {
 
 	// TODO contribute a proper frontend API method for this to OBS and remove this hack
 	static QSpinBox* GetTransitionDurationControl();
-	static int GetTransitionDuration();
-	static void SetTransitionDuration(int ms);
 
 	static bool SetTransitionByName(QString transitionName);
-
-	static QPushButton* GetPreviewModeButtonControl();
-	static QLayout* GetPreviewLayout();
-
-	// TODO contribute a proper frontend API method for this to OBS and remove this hack
-	static void TransitionToProgram();
 
 	static QString OBSVersionString();
 

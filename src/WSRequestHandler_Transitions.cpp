@@ -56,7 +56,7 @@ HandlerResponse WSRequestHandler::HandleGetCurrentTransition(WSRequestHandler* r
 		obs_source_get_name(currentTransition));
 
 	if (!obs_transition_fixed(currentTransition))
-		obs_data_set_int(response, "duration", Utils::GetTransitionDuration());
+		obs_data_set_int(response, "duration", obs_frontend_get_transition_duration());
 
 	return req->SendOKResponse(response);
 }
@@ -101,7 +101,7 @@ HandlerResponse WSRequestHandler::HandleSetTransitionDuration(WSRequestHandler* 
 	}
 
 	int ms = obs_data_get_int(req->data, "duration");
-	Utils::SetTransitionDuration(ms);
+	obs_frontend_set_transition_duration(ms);
 	return req->SendOKResponse();
 }
 
@@ -117,6 +117,6 @@ HandlerResponse WSRequestHandler::HandleSetTransitionDuration(WSRequestHandler* 
  */
 HandlerResponse WSRequestHandler::HandleGetTransitionDuration(WSRequestHandler* req) {
 	OBSDataAutoRelease response = obs_data_create();
-	obs_data_set_int(response, "transition-duration", Utils::GetTransitionDuration());
+	obs_data_set_int(response, "transition-duration", obs_frontend_get_transition_duration());
 	return req->SendOKResponse(response);
 }
