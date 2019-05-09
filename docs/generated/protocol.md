@@ -1542,22 +1542,22 @@ Sets the scene specific properties of a source. Unspecified properties will rema
 | ---- | :---: | ------------|
 | `scene-name` | _String (optional)_ | the name of the scene that the source item belongs to. Defaults to the current scene. |
 | `item` | _String_ | The name of the source. |
-| `position.x` | _int_ | The new x position of the source. |
-| `position.y` | _int_ | The new y position of the source. |
-| `position.alignment` | _int_ | The new alignment of the source. |
-| `rotation` | _double_ | The new clockwise rotation of the item in degrees. |
-| `scale.x` | _double_ | The new x scale of the item. |
-| `scale.y` | _double_ | The new y scale of the item. |
-| `crop.top` | _int_ | The new amount of pixels cropped off the top of the source before scaling. |
-| `crop.bottom` | _int_ | The new amount of pixels cropped off the bottom of the source before scaling. |
-| `crop.left` | _int_ | The new amount of pixels cropped off the left of the source before scaling. |
-| `crop.right` | _int_ | The new amount of pixels cropped off the right of the source before scaling. |
-| `visible` | _bool_ | The new visibility of the source. 'true' shows source, 'false' hides source. |
-| `locked` | _bool_ | The new locked status of the source. 'true' keeps it in its current position, 'false' allows movement. |
-| `bounds.type` | _String_ | The new bounds type of the source. Can be "OBS_BOUNDS_STRETCH", "OBS_BOUNDS_SCALE_INNER", "OBS_BOUNDS_SCALE_OUTER", "OBS_BOUNDS_SCALE_TO_WIDTH", "OBS_BOUNDS_SCALE_TO_HEIGHT", "OBS_BOUNDS_MAX_ONLY" or "OBS_BOUNDS_NONE". |
-| `bounds.alignment` | _int_ | The new alignment of the bounding box. (0-2, 4-6, 8-10) |
-| `bounds.x` | _double_ | The new width of the bounding box. |
-| `bounds.y` | _double_ | The new height of the bounding box. |
+| `position.x` | _int (optional)_ | The new x position of the source. |
+| `position.y` | _int (optional)_ | The new y position of the source. |
+| `position.alignment` | _int (optional)_ | The new alignment of the source. |
+| `rotation` | _double (optional)_ | The new clockwise rotation of the item in degrees. |
+| `scale.x` | _double (optional)_ | The new x scale of the item. |
+| `scale.y` | _double (optional)_ | The new y scale of the item. |
+| `crop.top` | _int (optional)_ | The new amount of pixels cropped off the top of the source before scaling. |
+| `crop.bottom` | _int (optional)_ | The new amount of pixels cropped off the bottom of the source before scaling. |
+| `crop.left` | _int (optional)_ | The new amount of pixels cropped off the left of the source before scaling. |
+| `crop.right` | _int (optional)_ | The new amount of pixels cropped off the right of the source before scaling. |
+| `visible` | _bool (optional)_ | The new visibility of the source. 'true' shows source, 'false' hides source. |
+| `locked` | _bool (optional)_ | The new locked status of the source. 'true' keeps it in its current position, 'false' allows movement. |
+| `bounds.type` | _String (optional)_ | The new bounds type of the source. Can be "OBS_BOUNDS_STRETCH", "OBS_BOUNDS_SCALE_INNER", "OBS_BOUNDS_SCALE_OUTER", "OBS_BOUNDS_SCALE_TO_WIDTH", "OBS_BOUNDS_SCALE_TO_HEIGHT", "OBS_BOUNDS_MAX_ONLY" or "OBS_BOUNDS_NONE". |
+| `bounds.alignment` | _int (optional)_ | The new alignment of the bounding box. (0-2, 4-6, 8-10) |
+| `bounds.x` | _double (optional)_ | The new width of the bounding box. |
+| `bounds.y` | _double (optional)_ | The new height of the bounding box. |
 
 
 **Response Items:**

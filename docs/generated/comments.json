@@ -3579,22 +3579,22 @@
         "param": [
           "{String (optional)} `scene-name` the name of the scene that the source item belongs to. Defaults to the current scene.",
           "{String} `item` The name of the source.",
-          "{int} `position.x` The new x position of the source.",
-          "{int} `position.y` The new y position of the source.",
-          "{int} `position.alignment` The new alignment of the source.",
-          "{double} `rotation` The new clockwise rotation of the item in degrees.",
-          "{double} `scale.x` The new x scale of the item.",
-          "{double} `scale.y` The new y scale of the item.",
-          "{int} `crop.top` The new amount of pixels cropped off the top of the source before scaling.",
-          "{int} `crop.bottom` The new amount of pixels cropped off the bottom of the source before scaling.",
-          "{int} `crop.left` The new amount of pixels cropped off the left of the source before scaling.",
-          "{int} `crop.right` The new amount of pixels cropped off the right of the source before scaling.",
-          "{bool} `visible` The new visibility of the source. 'true' shows source, 'false' hides source.",
-          "{bool} `locked` The new locked status of the source. 'true' keeps it in its current position, 'false' allows movement.",
-          "{String} `bounds.type` The new bounds type of the source. Can be \"OBS_BOUNDS_STRETCH\", \"OBS_BOUNDS_SCALE_INNER\", \"OBS_BOUNDS_SCALE_OUTER\", \"OBS_BOUNDS_SCALE_TO_WIDTH\", \"OBS_BOUNDS_SCALE_TO_HEIGHT\", \"OBS_BOUNDS_MAX_ONLY\" or \"OBS_BOUNDS_NONE\".",
-          "{int} `bounds.alignment` The new alignment of the bounding box. (0-2, 4-6, 8-10)",
-          "{double} `bounds.x` The new width of the bounding box.",
-          "{double} `bounds.y` The new height of the bounding box."
+          "{int (optional)} `position.x` The new x position of the source.",
+          "{int (optional)} `position.y` The new y position of the source.",
+          "{int (optional)} `position.alignment` The new alignment of the source.",
+          "{double (optional)} `rotation` The new clockwise rotation of the item in degrees.",
+          "{double (optional)} `scale.x` The new x scale of the item.",
+          "{double (optional)} `scale.y` The new y scale of the item.",
+          "{int (optional)} `crop.top` The new amount of pixels cropped off the top of the source before scaling.",
+          "{int (optional)} `crop.bottom` The new amount of pixels cropped off the bottom of the source before scaling.",
+          "{int (optional)} `crop.left` The new amount of pixels cropped off the left of the source before scaling.",
+          "{int (optional)} `crop.right` The new amount of pixels cropped off the right of the source before scaling.",
+          "{bool (optional)} `visible` The new visibility of the source. 'true' shows source, 'false' hides source.",
+          "{bool (optional)} `locked` The new locked status of the source. 'true' keeps it in its current position, 'false' allows movement.",
+          "{String (optional)} `bounds.type` The new bounds type of the source. Can be \"OBS_BOUNDS_STRETCH\", \"OBS_BOUNDS_SCALE_INNER\", \"OBS_BOUNDS_SCALE_OUTER\", \"OBS_BOUNDS_SCALE_TO_WIDTH\", \"OBS_BOUNDS_SCALE_TO_HEIGHT\", \"OBS_BOUNDS_MAX_ONLY\" or \"OBS_BOUNDS_NONE\".",
+          "{int (optional)} `bounds.alignment` The new alignment of the bounding box. (0-2, 4-6, 8-10)",
+          "{double (optional)} `bounds.x` The new width of the bounding box.",
+          "{double (optional)} `bounds.y` The new height of the bounding box."
         ],
         "api": "requests",
         "name": "SetSceneItemProperties",
@@ -3612,82 +3612,82 @@
             "description": "The name of the source."
           },
           {
-            "type": "int",
+            "type": "int (optional)",
             "name": "position.x",
             "description": "The new x position of the source."
           },
           {
-            "type": "int",
+            "type": "int (optional)",
             "name": "position.y",
             "description": "The new y position of the source."
           },
           {
-            "type": "int",
+            "type": "int (optional)",
             "name": "position.alignment",
             "description": "The new alignment of the source."
           },
           {
-            "type": "double",
+            "type": "double (optional)",
             "name": "rotation",
             "description": "The new clockwise rotation of the item in degrees."
           },
           {
-            "type": "double",
+            "type": "double (optional)",
             "name": "scale.x",
             "description": "The new x scale of the item."
           },
           {
-            "type": "double",
+            "type": "double (optional)",
             "name": "scale.y",
             "description": "The new y scale of the item."
           },
           {
-            "type": "int",
+            "type": "int (optional)",
             "name": "crop.top",
             "description": "The new amount of pixels cropped off the top of the source before scaling."
           },
           {
-            "type": "int",
+            "type": "int (optional)",
             "name": "crop.bottom",
             "description": "The new amount of pixels cropped off the bottom of the source before scaling."
           },
           {
-            "type": "int",
+            "type": "int (optional)",
             "name": "crop.left",
             "description": "The new amount of pixels cropped off the left of the source before scaling."
           },
           {
-            "type": "int",
+            "type": "int (optional)",
             "name": "crop.right",
             "description": "The new amount of pixels cropped off the right of the source before scaling."
           },
           {
-            "type": "bool",
+            "type": "bool (optional)",
             "name": "visible",
             "description": "The new visibility of the source. 'true' shows source, 'false' hides source."
           },
           {
-            "type": "bool",
+            "type": "bool (optional)",
             "name": "locked",
             "description": "The new locked status of the source. 'true' keeps it in its current position, 'false' allows movement."
           },
           {
-            "type": "String",
+            "type": "String (optional)",
             "name": "bounds.type",
             "description": "The new bounds type of the source. Can be \"OBS_BOUNDS_STRETCH\", \"OBS_BOUNDS_SCALE_INNER\", \"OBS_BOUNDS_SCALE_OUTER\", \"OBS_BOUNDS_SCALE_TO_WIDTH\", \"OBS_BOUNDS_SCALE_TO_HEIGHT\", \"OBS_BOUNDS_MAX_ONLY\" or \"OBS_BOUNDS_NONE\"."
           },
           {
-            "type": "int",
+            "type": "int (optional)",
             "name": "bounds.alignment",
             "description": "The new alignment of the bounding box. (0-2, 4-6, 8-10)"
           },
           {
-            "type": "double",
+            "type": "double (optional)",
             "name": "bounds.x",
             "description": "The new width of the bounding box."
           },
           {
-            "type": "double",
+            "type": "double (optional)",
             "name": "bounds.y",
             "description": "The new height of the bounding box."
           }
