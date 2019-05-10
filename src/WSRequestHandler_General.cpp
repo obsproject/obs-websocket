@@ -5,6 +5,54 @@
 
 #include "WSRequestHandler.h"
 
+#define CASE(x) case x: return #x;
+const char *describe_output_format(int format) {
+	switch (format) {
+		default:
+		CASE(VIDEO_FORMAT_NONE)
+		CASE(VIDEO_FORMAT_I420)
+		CASE(VIDEO_FORMAT_NV12)
+		CASE(VIDEO_FORMAT_YVYU)
+		CASE(VIDEO_FORMAT_YUY2)
+		CASE(VIDEO_FORMAT_UYVY)
+		CASE(VIDEO_FORMAT_RGBA)
+		CASE(VIDEO_FORMAT_BGRA)
+		CASE(VIDEO_FORMAT_BGRX)
+		CASE(VIDEO_FORMAT_Y800)
+		CASE(VIDEO_FORMAT_I444)
+	}
+}
+
+const char *describe_color_space(int cs) {
+	switch (cs) {
+		default:
+		CASE(VIDEO_CS_DEFAULT)
+		CASE(VIDEO_CS_601)
+		CASE(VIDEO_CS_709)
+	}
+}
+
+const char *describe_color_range(int range) {
+	switch (range) {
+		default:
+		CASE(VIDEO_RANGE_DEFAULT)
+		CASE(VIDEO_RANGE_PARTIAL)
+		CASE(VIDEO_RANGE_FULL)
+	}
+}
+
+const char *describe_scale_type(int scale) {
+	switch (scale) {
+		default:
+		CASE(VIDEO_SCALE_DEFAULT)
+		CASE(VIDEO_SCALE_POINT)
+		CASE(VIDEO_SCALE_FAST_BILINEAR)
+		CASE(VIDEO_SCALE_BILINEAR)
+		CASE(VIDEO_SCALE_BICUBIC)
+	}
+}
+#undef CASE
+
 /**
  * Returns the latest version of the plugin and the API.
  *
@@ -179,5 +227,39 @@ HandlerResponse WSRequestHandler::HandleGetStats(WSRequestHandler* req) {
 
 	OBSDataAutoRelease response = obs_data_create();
 	obs_data_set_obj(response, "stats", stats);
+	return req->SendOKResponse(response);
+}
+
+/**
+ * Get basic OBS video information
+ * 
+ * @return {int} `baseWidth` Base (canvas) width
+ * @return {int} `baseHeight` Base (canvas) height
+ * @return {int} `outputWidth` Output width
+ * @return {int} `outputHeight` Output height
+ * @return {String} `scaleType` Scaling method used if output size differs from base size
+ * @return {double} `fps` Frames rendered per second
+ * @return {String} `videoFormat` Video color format
+ * @return {String} `colorSpace` Color space for YUV
+ * @return {String} `colorRange` Color range (full or partial)
+ * 
+ * @api requests
+ * @name GetVideoInfo
+ * @category general
+ * @since 4.6.0 
+ */
+HandlerResponse WSRequestHandler::HandleGetVideoInfo(WSRequestHandler* req) {
+	obs_video_info ovi;
+	obs_get_video_info(&ovi);
+	OBSDataAutoRelease response = obs_data_create();
+	obs_data_set_int(response, "baseWidth", ovi.base_width);
+	obs_data_set_int(response, "baseHeight", ovi.base_height);
+	obs_data_set_int(response, "outputWidth", ovi.output_width);
+	obs_data_set_int(response, "outputHeight", ovi.output_height);
+	obs_data_set_double(response, "fps", (double)ovi.fps_num / ovi.fps_den);
+	obs_data_set_string(response, "videoFormat", describe_output_format(ovi.output_format));
+	obs_data_set_string(response, "colorSpace", describe_color_space(ovi.colorspace));
+	obs_data_set_string(response, "colorRange", describe_color_range(ovi.range));
+	obs_data_set_string(response, "scaleType", describe_scale_type(ovi.scale_type));
 	return req->SendOKResponse(response);
 }

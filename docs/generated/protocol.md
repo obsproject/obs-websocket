@@ -111,6 +111,7 @@ auth_response = base64_encode(auth_response_hash)
     + [SetFilenameFormatting](#setfilenameformatting)
     + [GetFilenameFormatting](#getfilenameformatting)
     + [GetStats](#getstats)
+    + [GetVideoInfo](#getvideoinfo)
   * [Profiles](#profiles-1)
     + [SetCurrentProfile](#setcurrentprofile)
     + [GetCurrentProfile](#getcurrentprofile)
@@ -1179,6 +1180,34 @@ _No specified parameters._
 | Name | Type  | Description |
 | ---- | :---: | ------------|
 | `stats` | _OBSStats_ | OBS stats |
+
+
+---
+
+### GetVideoInfo
+
+
+- Added in v4.6.0
+
+Get basic OBS video information
+
+**Request Fields:**
+
+_No specified parameters._
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `baseWidth` | _int_ | Base (canvas) width |
+| `baseHeight` | _int_ | Base (canvas) height |
+| `outputWidth` | _int_ | Output width |
+| `outputHeight` | _int_ | Output height |
+| `scaleType` | _String_ | Scaling method used if output size differs from base size |
+| `fps` | _double_ | Frames rendered per second |
+| `videoFormat` | _String_ | Video color format |
+| `colorSpace` | _String_ | Color space for YUV |
+| `colorRange` | _String_ | Color range (full or partial) |
 
 
 ---

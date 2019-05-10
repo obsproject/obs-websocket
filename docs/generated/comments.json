@@ -2824,6 +2824,97 @@
         "lead": "",
         "type": "class",
         "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Get basic OBS video information",
+        "return": [
+          "{int} `baseWidth` Base (canvas) width",
+          "{int} `baseHeight` Base (canvas) height",
+          "{int} `outputWidth` Output width",
+          "{int} `outputHeight` Output height",
+          "{String} `scaleType` Scaling method used if output size differs from base size",
+          "{double} `fps` Frames rendered per second",
+          "{String} `videoFormat` Video color format",
+          "{String} `colorSpace` Color space for YUV",
+          "{String} `colorRange` Color range (full or partial)"
+        ],
+        "api": "requests",
+        "name": "GetVideoInfo",
+        "category": "general",
+        "since": "4.6.0",
+        "returns": [
+          {
+            "type": "int",
+            "name": "baseWidth",
+            "description": "Base (canvas) width"
+          },
+          {
+            "type": "int",
+            "name": "baseHeight",
+            "description": "Base (canvas) height"
+          },
+          {
+            "type": "int",
+            "name": "outputWidth",
+            "description": "Output width"
+          },
+          {
+            "type": "int",
+            "name": "outputHeight",
+            "description": "Output height"
+          },
+          {
+            "type": "String",
+            "name": "scaleType",
+            "description": "Scaling method used if output size differs from base size"
+          },
+          {
+            "type": "double",
+            "name": "fps",
+            "description": "Frames rendered per second"
+          },
+          {
+            "type": "String",
+            "name": "videoFormat",
+            "description": "Video color format"
+          },
+          {
+            "type": "String",
+            "name": "colorSpace",
+            "description": "Color space for YUV"
+          },
+          {
+            "type": "String",
+            "name": "colorRange",
+            "description": "Color range (full or partial)"
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "GetVideoInfo"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "general"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.6.0"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "GetVideoInfo"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
       }
     ],
     "profiles": [
