@@ -185,10 +185,10 @@ HandlerResponse WSRequestHandler::HandleGetStats(WSRequestHandler* req) {
 /**
  * Get basic OBS video information
  * 
- * @return {Number} `baseWidth` Base (canvas) width
- * @return {Number} `baseHeight` Base (canvas) height
- * @return {Number} `outputWidth` Output width
- * @return {Number} `outputHeight` Output height
+ * @return {int} `baseWidth` Base (canvas) width
+ * @return {int} `baseHeight` Base (canvas) height
+ * @return {int} `outputWidth` Output width
+ * @return {int} `outputHeight` Output height
  * @return {String} `scaleType` Scaling method used if output size differs from base size
  * @return {double} `fps` Frames rendered per second
  * @return {String} `videoFormat` Video color format

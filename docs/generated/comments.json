@@ -2829,10 +2829,10 @@
         "subheads": [],
         "description": "Get basic OBS video information",
         "return": [
-          "{Number} `baseWidth` Base (canvas) width",
-          "{Number} `baseHeight` Base (canvas) height",
-          "{Number} `outputWidth` Output width",
-          "{Number} `outputHeight` Output height",
+          "{int} `baseWidth` Base (canvas) width",
+          "{int} `baseHeight` Base (canvas) height",
+          "{int} `outputWidth` Output width",
+          "{int} `outputHeight` Output height",
           "{String} `scaleType` Scaling method used if output size differs from base size",
           "{double} `fps` Frames rendered per second",
           "{String} `videoFormat` Video color format",
@@ -2845,22 +2845,22 @@
         "since": "4.6.0",
         "returns": [
           {
-            "type": "Number",
+            "type": "int",
             "name": "baseWidth",
             "description": "Base (canvas) width"
           },
           {
-            "type": "Number",
+            "type": "int",
             "name": "baseHeight",
             "description": "Base (canvas) height"
           },
           {
-            "type": "Number",
+            "type": "int",
             "name": "outputWidth",
             "description": "Output width"
           },
           {
-            "type": "Number",
+            "type": "int",
             "name": "outputHeight",
             "description": "Output height"
           },

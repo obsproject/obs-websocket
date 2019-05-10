@@ -1199,10 +1199,10 @@ _No specified parameters._
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
-| `baseWidth` | _Number_ | Base (canvas) width |
-| `baseHeight` | _Number_ | Base (canvas) height |
-| `outputWidth` | _Number_ | Output width |
-| `outputHeight` | _Number_ | Output height |
+| `baseWidth` | _int_ | Base (canvas) width |
+| `baseHeight` | _int_ | Base (canvas) height |
+| `outputWidth` | _int_ | Output width |
+| `outputHeight` | _int_ | Output height |
 | `scaleType` | _String_ | Scaling method used if output size differs from base size |
 | `fps` | _double_ | Frames rendered per second |
 | `videoFormat` | _String_ | Video color format |
