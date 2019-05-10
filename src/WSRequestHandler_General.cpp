@@ -5,6 +5,54 @@
 
 #include "WSRequestHandler.h"
 
+#define CASE(x) case x: return #x;
+const char *describe_output_format(int format) {
+	switch (format) {
+		default:
+		CASE(VIDEO_FORMAT_NONE)
+		CASE(VIDEO_FORMAT_I420)
+		CASE(VIDEO_FORMAT_NV12)
+		CASE(VIDEO_FORMAT_YVYU)
+		CASE(VIDEO_FORMAT_YUY2)
+		CASE(VIDEO_FORMAT_UYVY)
+		CASE(VIDEO_FORMAT_RGBA)
+		CASE(VIDEO_FORMAT_BGRA)
+		CASE(VIDEO_FORMAT_BGRX)
+		CASE(VIDEO_FORMAT_Y800)
+		CASE(VIDEO_FORMAT_I444)
+	}
+}
+
+const char *describe_color_space(int cs) {
+	switch (cs) {
+		default:
+		CASE(VIDEO_CS_DEFAULT)
+		CASE(VIDEO_CS_601)
+		CASE(VIDEO_CS_709)
+	}
+}
+
+const char *describe_color_range(int range) {
+	switch (range) {
+		default:
+		CASE(VIDEO_RANGE_DEFAULT)
+		CASE(VIDEO_RANGE_PARTIAL)
+		CASE(VIDEO_RANGE_FULL)
+	}
+}
+
+const char *describe_scale_type(int scale) {
+	switch (scale) {
+		default:
+		CASE(VIDEO_SCALE_DEFAULT)
+		CASE(VIDEO_SCALE_POINT)
+		CASE(VIDEO_SCALE_FAST_BILINEAR)
+		CASE(VIDEO_SCALE_BILINEAR)
+		CASE(VIDEO_SCALE_BICUBIC)
+	}
+}
+#undef CASE
+
 /**
  * Returns the latest version of the plugin and the API.
  *
@@ -209,56 +257,9 @@ HandlerResponse WSRequestHandler::HandleGetVideoInfo(WSRequestHandler* req) {
 	obs_data_set_int(response, "outputWidth", ovi.output_width);
 	obs_data_set_int(response, "outputHeight", ovi.output_height);
 	obs_data_set_double(response, "fps", (double)ovi.fps_num / ovi.fps_den);
-
-	switch (ovi.output_format) {
-		#define CASE(x) case x: obs_data_set_string(response, "videoFormat", #x); break;
-		CASE(VIDEO_FORMAT_NONE)
-		CASE(VIDEO_FORMAT_I420)
-		CASE(VIDEO_FORMAT_NV12)
-		CASE(VIDEO_FORMAT_YVYU)
-		CASE(VIDEO_FORMAT_YUY2)
-		CASE(VIDEO_FORMAT_UYVY)
-		CASE(VIDEO_FORMAT_RGBA)
-		CASE(VIDEO_FORMAT_BGRA)
-		CASE(VIDEO_FORMAT_BGRX)
-		CASE(VIDEO_FORMAT_Y800)
-		CASE(VIDEO_FORMAT_I444)
-		#undef CASE
-		default:
-			obs_data_set_int(response, "videoFormat", ovi.output_format);
-	}
-
-	switch (ovi.colorspace) {
-		#define CASE(x) case x: obs_data_set_string(response, "colorSpace", #x); break;
-		CASE(VIDEO_CS_DEFAULT)
-		CASE(VIDEO_CS_601)
-		CASE(VIDEO_CS_709)
-		#undef CASE
-		default:
-			obs_data_set_int(response, "colorSpace", ovi.colorspace);
-	}
-
-	switch (ovi.range) {
-		#define CASE(x) case x: obs_data_set_string(response, "colorRange", #x); break;
-		CASE(VIDEO_RANGE_DEFAULT)
-		CASE(VIDEO_RANGE_PARTIAL)
-		CASE(VIDEO_RANGE_FULL)
-		#undef CASE
-		default:
-			obs_data_set_int(response, "colorRange", ovi.range);
-	}
-
-	switch (ovi.scale_type) {
-		#define CASE(x) case x: obs_data_set_string(response, "scaleType", #x); break;
-		CASE(VIDEO_SCALE_DEFAULT)
-		CASE(VIDEO_SCALE_POINT)
-		CASE(VIDEO_SCALE_FAST_BILINEAR)
-		CASE(VIDEO_SCALE_BILINEAR)
-		CASE(VIDEO_SCALE_BICUBIC)
-		#undef CASE
-		default:
-			obs_data_set_int(response, "scaleType", ovi.scale_type);
-	}
-
+	obs_data_set_string(response, "videoFormat", describe_output_format(ovi.output_format));
+	obs_data_set_string(response, "colorSpace", describe_color_space(ovi.colorspace));
+	obs_data_set_string(response, "colorRange", describe_color_range(ovi.range));
+	obs_data_set_string(response, "scaleType", describe_scale_type(ovi.scale_type));
 	return req->SendOKResponse(response);
 }
