@@ -304,6 +304,8 @@ void WSEvents::connectSourceSignals(obs_source_t* source) {
 		signal_handler_connect(sh, "item_remove", OnSceneItemDelete, this);
 		signal_handler_connect(sh,
 			"item_visible", OnSceneItemVisibilityChanged, this);
+		signal_handler_connect(sh,
+			"item_locked", OnSceneItemLockedChanged, this);
 		signal_handler_connect(sh, "item_transform", OnSceneItemTransform, this);
 		signal_handler_connect(sh, "item_select", OnSceneItemSelected, this);
 		signal_handler_connect(sh, "item_deselect", OnSceneItemDeselected, this);
@@ -333,6 +335,8 @@ void WSEvents::disconnectSourceSignals(obs_source_t* source) {
 	signal_handler_disconnect(sh, "item_remove", OnSceneItemDelete, this);
 	signal_handler_disconnect(sh,
 		"item_visible", OnSceneItemVisibilityChanged, this);
+	signal_handler_disconnect(sh,
+		"item_locked", OnSceneItemLockedChanged, this);
 	signal_handler_disconnect(sh, "item_transform", OnSceneItemTransform, this);
 	signal_handler_disconnect(sh, "item_select", OnSceneItemSelected, this);
 	signal_handler_disconnect(sh, "item_deselect", OnSceneItemDeselected, this);
@@ -1451,6 +1455,44 @@ void WSEvents::OnSceneItemVisibilityChanged(void* param, calldata_t* data) {
 	obs_data_set_int(fields, "item-id", obs_sceneitem_get_id(sceneItem));
 	obs_data_set_bool(fields, "item-visible", visible);
 	instance->broadcastUpdate("SceneItemVisibilityChanged", fields);
+}
+
+/**
+ * An item's locked status has been toggled.
+ *
+ * @return {String} `scene-name` Name of the scene.
+ * @return {String} `item-name` Name of the item in the scene.
+ * @return {int} `item-id` Scene item ID
+ * @return {boolean} `item-locked` New locked state of the item.
+ *
+ * @api events
+ * @name SceneItemLockedChanged
+ * @category sources
+ * @since 4.7.0
+ */
+void WSEvents::OnSceneItemLockedChanged(void* param, calldata_t* data) {
+	auto instance = reinterpret_cast<WSEvents*>(param);
+
+	obs_scene_t* scene = nullptr;
+	calldata_get_ptr(data, "scene", &scene);
+
+	obs_sceneitem_t* sceneItem = nullptr;
+	calldata_get_ptr(data, "item", &sceneItem);
+
+	bool locked = false;
+	calldata_get_bool(data, "locked", &locked);
+
+	const char* sceneName =
+		obs_source_get_name(obs_scene_get_source(scene));
+	const char* sceneItemName =
+		obs_source_get_name(obs_sceneitem_get_source(sceneItem));
+
+	OBSDataAutoRelease fields = obs_data_create();
+	obs_data_set_string(fields, "scene-name", sceneName);
+	obs_data_set_string(fields, "item-name", sceneItemName);
+	obs_data_set_int(fields, "item-id", obs_sceneitem_get_id(sceneItem));
+	obs_data_set_bool(fields, "item-locked", locked);
+	instance->broadcastUpdate("SceneItemLockedChanged", fields);
 }
 
 /**
