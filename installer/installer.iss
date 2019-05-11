@@ -23,14 +23,13 @@ DefaultGroupName={#MyAppName}
 OutputBaseFilename=obs-websocket-Windows-Installer
 Compression=lzma
 SolidCompression=yes
-LicenseFile=..\LICENSE
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
-Name: "french"; MessagesFile: "compiler:Languages\French.isl"
 
 [Files]
 Source: "..\release\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "..\LICENSE"; Flags: dontcopy
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
@@ -38,6 +37,21 @@ Name: "{group}\{cm:ProgramOnTheWeb,{#MyAppName}}"; Filename: "{#MyAppURL}"
 Name: "{group}\{cm:UninstallProgram,{#MyAppName}}"; Filename: "{uninstallexe}"
 
 [Code]
+procedure InitializeWizard();
+var
+  GPLText: AnsiString;
+  Page: TOutputMsgMemoWizardPage;
+begin
+  ExtractTemporaryFile('LICENSE');
+  LoadStringFromFile(ExpandConstant('{tmp}\LICENSE'), GPLText);
+
+  Page := CreateOutputMsgMemoPage(wpWelcome,
+    'License Information', 'Please review the license terms before installing obs-websocket',
+    'Press Page Down to see the rest of the agreement. Once you are aware of your rights, click Next to continue.',
+    String(GPLText)
+  );
+end;
+
 // credit where it's due :
 // following function come from https://github.com/Xaymar/obs-studio_amf-encoder-plugin/blob/master/%23Resources/Installer.in.iss#L45
 function GetDirName(Value: string): string;
