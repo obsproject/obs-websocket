@@ -16,6 +16,7 @@
 * @property {Number} `volume`
 * @property {Number} `x`
 * @property {Number} `y`
+* @property {int} `alignment` The point on the source that the item is manipulated from.
 */
 
 /**

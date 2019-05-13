@@ -252,6 +252,7 @@ These are complex types, such as `Source` and `Scene`, which are used as argumen
 | `volume` | _Number_ |  |
 | `x` | _Number_ |  |
 | `y` | _Number_ |  |
+| `alignment` | _int_ | The point on the source that the item is manipulated from. |
 ## Scene
 | Name | Type  | Description |
 | ---- | :---: | ------------|

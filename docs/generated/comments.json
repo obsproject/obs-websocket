@@ -231,7 +231,8 @@
         "{String} `type` Source type. Value is one of the following: \"input\", \"filter\", \"transition\", \"scene\" or \"unknown\"",
         "{Number} `volume`",
         "{Number} `x`",
-        "{Number} `y`"
+        "{Number} `y`",
+        "{int} `alignment` The point on the source that the item is manipulated from."
       ],
       "properties": [
         {
@@ -293,6 +294,11 @@
           "type": "Number",
           "name": "y",
           "description": ""
+        },
+        {
+          "type": "int",
+          "name": "alignment",
+          "description": "The point on the source that the item is manipulated from."
         }
       ],
       "typedefs": [
