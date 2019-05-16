@@ -172,22 +172,31 @@ obs_sceneitem_t* Utils::GetSceneItemFromName(obs_source_t* source, QString name)
 	struct current_search {
 		QString query;
 		obs_sceneitem_t* result;
+		bool (*enumCallback)(obs_scene_t*, obs_sceneitem_t*, void*);
 	};
 
 	current_search search;
 	search.query = name;
 	search.result = nullptr;
+	search.enumCallback = nullptr;
 
 	OBSScene scene = obs_scene_from_source(source);
 	if (!scene)
 		return nullptr;
 
-	obs_scene_enum_items(scene, [](
+	search.enumCallback = [](
 			obs_scene_t* scene,
 			obs_sceneitem_t* currentItem,
 			void* param)
 	{
 		current_search* search = reinterpret_cast<current_search*>(param);
+
+		if (obs_sceneitem_is_group(currentItem)) {
+			obs_sceneitem_group_enum_items(currentItem, search->enumCallback, search);
+			if (search->result) {
+				return false;
+			}
+		}
 
 		QString currentItemName =
 			obs_source_get_name(obs_sceneitem_get_source(currentItem));
@@ -199,7 +208,9 @@ obs_sceneitem_t* Utils::GetSceneItemFromName(obs_source_t* source, QString name)
 		}
 
 		return true;
-	}, &search);
+	};
+
+	obs_scene_enum_items(scene, search.enumCallback, &search);
 
 	return search.result;
 }
