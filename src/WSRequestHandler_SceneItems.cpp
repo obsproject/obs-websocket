@@ -29,7 +29,6 @@
 * @return {int} `sourceHeight` Base source (without scaling) of the source
 * @return {double} `width` Scene item width (base source width multiplied by the horizontal scaling factor)
 * @return {double} `height` Scene item height (base source height multiplied by the vertical scaling factor)
-* @property {Boolean} `isGroup` Whether or not this Scene Item is a group
 * @property {String (optional)} `parentGroupName` Name of the item's parent (if this item belongs to a group)
 * @property {Array<SceneItemTransform> (optional)} `groupChildren` List of children (if this item is a group)
 * 

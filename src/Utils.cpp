@@ -111,7 +111,6 @@ obs_data_array_t* Utils::GetSceneItems(obs_source_t* source) {
  * @property {Number} `volume`
  * @property {Number} `x`
  * @property {Number} `y`
- * @property {Boolean} `isGroup` Whether or not this Scene Item is a group
  * @property {String (optional)} `parentGroupName` Name of the item's parent (if this item belongs to a group)
  * @property {Array<SceneItem> (optional)} `groupChildren` List of children (if this item is a group)
  */
@@ -148,7 +147,6 @@ obs_data_t* Utils::GetSceneItemData(obs_sceneitem_t* item) {
 	obs_data_set_double(data, "cy", item_height * scale.y);
 	obs_data_set_bool(data, "render", obs_sceneitem_visible(item));
 	obs_data_set_bool(data, "locked", obs_sceneitem_locked(item));
-	obs_data_set_bool(data, "isGroup", obs_sceneitem_is_group(item));
 
 	obs_scene_t* parent = obs_sceneitem_get_scene(item);
 	if (parent) {
