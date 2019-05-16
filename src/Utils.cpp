@@ -35,13 +35,14 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 * @property {int} `id` Scene item ID
 * @property {Boolean} `render` Whether or not this Scene Item is set to "visible".
 * @property {Boolean} `locked` Whether or not this Scene Item is locked and can't be moved around
-* @property {Boolean} `isGroup` Whether or not this Scene Item is a group 
 * @property {Number} `source_cx`
 * @property {Number} `source_cy`
 * @property {String} `type` Source type. Value is one of the following: "input", "filter", "transition", "scene" or "unknown"
 * @property {Number} `volume`
 * @property {Number} `x`
 * @property {Number} `y`
+* @property {Boolean} `isGroup` Whether or not this Scene Item is a group
+* @property {Array<SceneItem> (optional)} `children` List of children (if item is a group)
 */
 
 Q_DECLARE_METATYPE(OBSScene);
@@ -148,6 +149,19 @@ obs_data_t* Utils::GetSceneItemData(obs_sceneitem_t* item) {
 	obs_data_set_bool(data, "render", obs_sceneitem_visible(item));
 	obs_data_set_bool(data, "locked", obs_sceneitem_locked(item));
 	obs_data_set_bool(data, "isGroup", obs_sceneitem_is_group(item));
+
+	if (obs_sceneitem_is_group(item)) {
+		OBSDataArrayAutoRelease children = obs_data_array_create();
+		obs_sceneitem_group_enum_items(item, [](obs_scene_t*, obs_sceneitem_t* currentItem, void* param) {
+			obs_data_array_t* items = reinterpret_cast<obs_data_array_t*>(param);
+
+			OBSDataAutoRelease itemData = GetSceneItemData(currentItem);
+			obs_data_array_push_back(items, itemData);
+
+			return true;
+		}, children);
+		obs_data_set_array(data, "children", children);
+	}
 
 	return data;
 }
