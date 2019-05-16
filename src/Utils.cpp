@@ -215,26 +215,36 @@ obs_sceneitem_t* Utils::GetSceneItemFromName(obs_source_t* source, QString name)
 	return search.result;
 }
 
+// TODO refactor this to unify it with GetSceneItemFromName
 obs_sceneitem_t* Utils::GetSceneItemFromId(obs_source_t* source, size_t id) {
 	struct current_search {
 		size_t query;
 		obs_sceneitem_t* result;
+		bool (*enumCallback)(obs_scene_t*, obs_sceneitem_t*, void*);
 	};
 
 	current_search search;
 	search.query = id;
 	search.result = nullptr;
+	search.enumCallback = nullptr;
 
 	OBSScene scene = obs_scene_from_source(source);
 	if (!scene)
 		return nullptr;
 
-	obs_scene_enum_items(scene, [](
+	search.enumCallback = [](
 			obs_scene_t* scene,
 			obs_sceneitem_t* currentItem,
 			void* param)
 	{
 		current_search* search = reinterpret_cast<current_search*>(param);
+
+		if (obs_sceneitem_is_group(currentItem)) {
+			obs_sceneitem_group_enum_items(currentItem, search->enumCallback, param);
+			if (search->result) {
+				return false;
+			}
+		}
 
 		if (obs_sceneitem_get_id(currentItem) == search->query) {
 			search->result = currentItem;
@@ -243,7 +253,9 @@ obs_sceneitem_t* Utils::GetSceneItemFromId(obs_source_t* source, size_t id) {
 		}
 
 		return true;
-	}, &search);
+	};
+
+	obs_scene_enum_items(scene, search.enumCallback, &search);
 
 	return search.result;
 }
