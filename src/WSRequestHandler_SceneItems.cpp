@@ -4,6 +4,7 @@
 
 /**
 * Gets the scene specific properties of the specified source item.
+* Coordinates are relative to the item's parent (the scene or group it belongs to).
 *
 * @param {String (optional)} `scene-name` the name of the scene that the source item belongs to. Defaults to the current scene.
 * @param {String} `item` The name of the source.
@@ -67,6 +68,7 @@ HandlerResponse WSRequestHandler::HandleGetSceneItemProperties(WSRequestHandler*
 
 /**
 * Sets the scene specific properties of a source. Unspecified properties will remain unchanged.
+* Coordinates are relative to the item's parent (the scene or group it belongs to).
 *
 * @param {String (optional)} `scene-name` the name of the scene that the source item belongs to. Defaults to the current scene.
 * @param {String} `item` The name of the source.
