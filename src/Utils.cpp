@@ -28,14 +28,14 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include "Config.h"
 
 /**
-* @typedef {Object} `Source` An OBS Scene Item.
+* @typedef {Object} `SceneItem` An OBS Scene Item.
 * @property {Number} `cy`
 * @property {Number} `cx`
 * @property {String} `name` The name of this Scene Item.
 * @property {int} `id` Scene item ID
 * @property {Boolean} `render` Whether or not this Scene Item is set to "visible".
 * @property {Boolean} `locked` Whether or not this Scene Item is locked and can't be moved around
-* @property {Boolean} `isGroup` Whether or not this Scene Item is a group
+* @property {Boolean} `isGroup` Whether or not this Scene Item is a group 
 * @property {Number} `source_cx`
 * @property {Number} `source_cy`
 * @property {String} `type` Source type. Value is one of the following: "input", "filter", "transition", "scene" or "unknown"
