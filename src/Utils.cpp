@@ -658,7 +658,7 @@ bool Utils::SetFilenameFormatting(const char* filenameFormatting) {
  * @property {double} `width` Scene item width (base source width multiplied by the horizontal scaling factor)
  * @property {double} `height` Scene item height (base source height multiplied by the vertical scaling factor)
  * @property {String} `parentGroupName` Name of the item's parent (if this item belongs to a group)
- * @property {Array<SceneItemTransform>} `groupChildren` 
+ * @property {Array<SceneItemTransform>} `groupChildren` List of children (if this item is a group) 
  */
 obs_data_t* Utils::GetSceneItemPropertiesData(obs_sceneitem_t* sceneItem) {
 	if (!sceneItem) {
