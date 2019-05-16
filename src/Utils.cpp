@@ -27,24 +27,6 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include "Utils.h"
 #include "Config.h"
 
-/**
-* @typedef {Object} `SceneItem` An OBS Scene Item.
-* @property {Number} `cy`
-* @property {Number} `cx`
-* @property {String} `name` The name of this Scene Item.
-* @property {int} `id` Scene item ID
-* @property {Boolean} `render` Whether or not this Scene Item is set to "visible".
-* @property {Boolean} `locked` Whether or not this Scene Item is locked and can't be moved around
-* @property {Number} `source_cx`
-* @property {Number} `source_cy`
-* @property {String} `type` Source type. Value is one of the following: "input", "filter", "transition", "scene" or "unknown"
-* @property {Number} `volume`
-* @property {Number} `x`
-* @property {Number} `y`
-* @property {Boolean} `isGroup` Whether or not this Scene Item is a group
-* @property {Array<SceneItem> (optional)} `children` List of children (if item is a group)
-*/
-
 Q_DECLARE_METATYPE(OBSScene);
 
 const QHash<obs_bounds_type, QString> boundTypeNames = {
@@ -115,6 +97,24 @@ obs_data_array_t* Utils::GetSceneItems(obs_source_t* source) {
 	return items;
 }
 
+/**
+ * @typedef {Object} `SceneItem` An OBS Scene Item.
+ * @property {Number} `cy`
+ * @property {Number} `cx`
+ * @property {String} `name` The name of this Scene Item.
+ * @property {int} `id` Scene item ID
+ * @property {Boolean} `render` Whether or not this Scene Item is set to "visible".
+ * @property {Boolean} `locked` Whether or not this Scene Item is locked and can't be moved around
+ * @property {Number} `source_cx`
+ * @property {Number} `source_cy`
+ * @property {String} `type` Source type. Value is one of the following: "input", "filter", "transition", "scene" or "unknown"
+ * @property {Number} `volume`
+ * @property {Number} `x`
+ * @property {Number} `y`
+ * @property {Boolean} `isGroup` Whether or not this Scene Item is a group
+ * @property {String (optional)} `parentGroupName` Name of the item's parent (if this item belongs to a group)
+ * @property {Array<SceneItem> (optional)} `groupChildren` List of children (if this item is a group)
+ */
 obs_data_t* Utils::GetSceneItemData(obs_sceneitem_t* item) {
 	if (!item) {
 		return nullptr;
@@ -150,6 +150,15 @@ obs_data_t* Utils::GetSceneItemData(obs_sceneitem_t* item) {
 	obs_data_set_bool(data, "locked", obs_sceneitem_locked(item));
 	obs_data_set_bool(data, "isGroup", obs_sceneitem_is_group(item));
 
+	obs_scene_t* parent = obs_sceneitem_get_scene(item);
+	if (parent) {
+		OBSSource parentSource = obs_scene_get_source(parent);
+		QString parentKind = obs_source_get_id(parentSource);
+		if (parentKind == "group") {
+			obs_data_set_string(data, "parentGroupName", obs_source_get_name(parentSource));
+		}
+	}
+
 	if (obs_sceneitem_is_group(item)) {
 		OBSDataArrayAutoRelease children = obs_data_array_create();
 		obs_sceneitem_group_enum_items(item, [](obs_scene_t*, obs_sceneitem_t* currentItem, void* param) {
@@ -160,7 +169,7 @@ obs_data_t* Utils::GetSceneItemData(obs_sceneitem_t* item) {
 
 			return true;
 		}, children);
-		obs_data_set_array(data, "children", children);
+		obs_data_set_array(data, "groupChildren", children);
 	}
 
 	return data;
@@ -648,6 +657,8 @@ bool Utils::SetFilenameFormatting(const char* filenameFormatting) {
  * @property {int} `sourceHeight` Base source (without scaling) of the source
  * @property {double} `width` Scene item width (base source width multiplied by the horizontal scaling factor)
  * @property {double} `height` Scene item height (base source height multiplied by the vertical scaling factor)
+ * @property {String} `parentGroupName` Name of the item's parent (if this item belongs to a group)
+ * @property {Array<SceneItemTransform>} `groupChildren` 
  */
 obs_data_t* Utils::GetSceneItemPropertiesData(obs_sceneitem_t* sceneItem) {
 	if (!sceneItem) {
@@ -709,6 +720,28 @@ obs_data_t* Utils::GetSceneItemPropertiesData(obs_sceneitem_t* sceneItem) {
 	obs_data_set_int(data, "sourceHeight", baseSourceHeight);
 	obs_data_set_double(data, "width", baseSourceWidth * scale.x);
 	obs_data_set_double(data, "height", baseSourceHeight * scale.y);
+
+	obs_scene_t* parent = obs_sceneitem_get_scene(sceneItem);
+	if (parent) {
+		OBSSource parentSource = obs_scene_get_source(parent);
+		QString parentKind = obs_source_get_id(parentSource);
+		if (parentKind == "group") {
+			obs_data_set_string(data, "parentGroupName", obs_source_get_name(parentSource));
+		}
+	}
+
+	if (obs_sceneitem_is_group(sceneItem)) {
+		OBSDataArrayAutoRelease children = obs_data_array_create();
+		obs_sceneitem_group_enum_items(sceneItem, [](obs_scene_t*, obs_sceneitem_t* subItem, void* param) {
+			obs_data_array_t* items = reinterpret_cast<obs_data_array_t*>(param);
+
+			OBSDataAutoRelease itemData = GetSceneItemPropertiesData(subItem);
+			obs_data_array_push_back(items, itemData);
+
+			return true;
+		}, children);
+		obs_data_set_array(data, "groupChildren", children);
+	}
 
 	return data;
 }
