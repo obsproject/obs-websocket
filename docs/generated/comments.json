@@ -2,6 +2,111 @@
   "typedefs": [
     {
       "subheads": [],
+      "typedef": "{Object} `SceneItem` An OBS Scene Item.",
+      "property": [
+        "{Number} `cy`",
+        "{Number} `cx`",
+        "{String} `name` The name of this Scene Item.",
+        "{int} `id` Scene item ID",
+        "{Boolean} `render` Whether or not this Scene Item is set to \"visible\".",
+        "{Boolean} `locked` Whether or not this Scene Item is locked and can't be moved around",
+        "{Number} `source_cx`",
+        "{Number} `source_cy`",
+        "{String} `type` Source type. Value is one of the following: \"input\", \"filter\", \"transition\", \"scene\" or \"unknown\"",
+        "{Number} `volume`",
+        "{Number} `x`",
+        "{Number} `y`",
+        "{String (optional)} `parentGroupName` Name of the item's parent (if this item belongs to a group)",
+        "{Array<SceneItem> (optional)} `groupChildren` List of children (if this item is a group)"
+      ],
+      "properties": [
+        {
+          "type": "Number",
+          "name": "cy",
+          "description": ""
+        },
+        {
+          "type": "Number",
+          "name": "cx",
+          "description": ""
+        },
+        {
+          "type": "String",
+          "name": "name",
+          "description": "The name of this Scene Item."
+        },
+        {
+          "type": "int",
+          "name": "id",
+          "description": "Scene item ID"
+        },
+        {
+          "type": "Boolean",
+          "name": "render",
+          "description": "Whether or not this Scene Item is set to \"visible\"."
+        },
+        {
+          "type": "Boolean",
+          "name": "locked",
+          "description": "Whether or not this Scene Item is locked and can't be moved around"
+        },
+        {
+          "type": "Number",
+          "name": "source_cx",
+          "description": ""
+        },
+        {
+          "type": "Number",
+          "name": "source_cy",
+          "description": ""
+        },
+        {
+          "type": "String",
+          "name": "type",
+          "description": "Source type. Value is one of the following: \"input\", \"filter\", \"transition\", \"scene\" or \"unknown\""
+        },
+        {
+          "type": "Number",
+          "name": "volume",
+          "description": ""
+        },
+        {
+          "type": "Number",
+          "name": "x",
+          "description": ""
+        },
+        {
+          "type": "Number",
+          "name": "y",
+          "description": ""
+        },
+        {
+          "type": "String (optional)",
+          "name": "parentGroupName",
+          "description": "Name of the item's parent (if this item belongs to a group)"
+        },
+        {
+          "type": "Array<SceneItem> (optional)",
+          "name": "groupChildren",
+          "description": "List of children (if this item is a group)"
+        }
+      ],
+      "typedefs": [
+        {
+          "type": "Object",
+          "name": "SceneItem",
+          "description": "An OBS Scene Item."
+        }
+      ],
+      "name": "",
+      "heading": {
+        "level": 2,
+        "text": ""
+      },
+      "examples": []
+    },
+    {
+      "subheads": [],
       "typedef": "{Object} `SceneItemTransform`",
       "property": [
         "{int} `position.x` The x position of the scene item from the left.",
@@ -23,7 +128,9 @@
         "{int} `sourceWidth` Base width (without scaling) of the source",
         "{int} `sourceHeight` Base source (without scaling) of the source",
         "{double} `width` Scene item width (base source width multiplied by the horizontal scaling factor)",
-        "{double} `height` Scene item height (base source height multiplied by the vertical scaling factor)"
+        "{double} `height` Scene item height (base source height multiplied by the vertical scaling factor)",
+        "{String (optional)} `parentGroupName` Name of the item's parent (if this item belongs to a group)",
+        "{Array<SceneItemTransform> (optional)} `groupChildren` List of children (if this item is a group)"
       ],
       "properties": [
         {
@@ -125,6 +232,16 @@
           "type": "double",
           "name": "height",
           "description": "Scene item height (base source height multiplied by the vertical scaling factor)"
+        },
+        {
+          "type": "String (optional)",
+          "name": "parentGroupName",
+          "description": "Name of the item's parent (if this item belongs to a group)"
+        },
+        {
+          "type": "Array<SceneItemTransform> (optional)",
+          "name": "groupChildren",
+          "description": "List of children (if this item is a group)"
         }
       ],
       "typedefs": [
@@ -218,103 +335,10 @@
     },
     {
       "subheads": [],
-      "typedef": "{Object} `Source` An OBS Scene Item.",
-      "property": [
-        "{Number} `cy`",
-        "{Number} `cx`",
-        "{String} `name` The name of this Scene Item.",
-        "{int} `id` Scene item ID",
-        "{Boolean} `render` Whether or not this Scene Item is set to \"visible\".",
-        "{Boolean} `locked` Whether or not this Scene Item is locked and can't be moved around",
-        "{Number} `source_cx`",
-        "{Number} `source_cy`",
-        "{String} `type` Source type. Value is one of the following: \"input\", \"filter\", \"transition\", \"scene\" or \"unknown\"",
-        "{Number} `volume`",
-        "{Number} `x`",
-        "{Number} `y`"
-      ],
-      "properties": [
-        {
-          "type": "Number",
-          "name": "cy",
-          "description": ""
-        },
-        {
-          "type": "Number",
-          "name": "cx",
-          "description": ""
-        },
-        {
-          "type": "String",
-          "name": "name",
-          "description": "The name of this Scene Item."
-        },
-        {
-          "type": "int",
-          "name": "id",
-          "description": "Scene item ID"
-        },
-        {
-          "type": "Boolean",
-          "name": "render",
-          "description": "Whether or not this Scene Item is set to \"visible\"."
-        },
-        {
-          "type": "Boolean",
-          "name": "locked",
-          "description": "Whether or not this Scene Item is locked and can't be moved around"
-        },
-        {
-          "type": "Number",
-          "name": "source_cx",
-          "description": ""
-        },
-        {
-          "type": "Number",
-          "name": "source_cy",
-          "description": ""
-        },
-        {
-          "type": "String",
-          "name": "type",
-          "description": "Source type. Value is one of the following: \"input\", \"filter\", \"transition\", \"scene\" or \"unknown\""
-        },
-        {
-          "type": "Number",
-          "name": "volume",
-          "description": ""
-        },
-        {
-          "type": "Number",
-          "name": "x",
-          "description": ""
-        },
-        {
-          "type": "Number",
-          "name": "y",
-          "description": ""
-        }
-      ],
-      "typedefs": [
-        {
-          "type": "Object",
-          "name": "Source",
-          "description": "An OBS Scene Item."
-        }
-      ],
-      "name": "",
-      "heading": {
-        "level": 2,
-        "text": ""
-      },
-      "examples": []
-    },
-    {
-      "subheads": [],
       "typedef": "{Object} `Scene`",
       "property": [
         "{String} `name` Name of the currently active scene.",
-        "{Array<Source>} `sources` Ordered list of the current scene's source items."
+        "{Array<SceneItem>} `sources` Ordered list of the current scene's source items."
       ],
       "properties": [
         {
@@ -323,7 +347,7 @@
           "description": "Name of the currently active scene."
         },
         {
-          "type": "Array<Source>",
+          "type": "Array<SceneItem>",
           "name": "sources",
           "description": "Ordered list of the current scene's source items."
         }
@@ -350,7 +374,7 @@
         "description": "Indicates a scene change.",
         "return": [
           "{String} `scene-name` The new scene.",
-          "{Array<Source>} `sources` List of sources in the new scene. Same specification as [`GetCurrentScene`](#getcurrentscene)."
+          "{Array<SceneItem>} `sources` List of scene items in the new scene. Same specification as [`GetCurrentScene`](#getcurrentscene)."
         ],
         "api": "events",
         "name": "SwitchScenes",
@@ -363,9 +387,9 @@
             "description": "The new scene."
           },
           {
-            "type": "Array<Source>",
+            "type": "Array<SceneItem>",
             "name": "sources",
-            "description": "List of sources in the new scene. Same specification as [`GetCurrentScene`](#getcurrentscene)."
+            "description": "List of scene items in the new scene. Same specification as [`GetCurrentScene`](#getcurrentscene)."
           }
         ],
         "names": [
@@ -2415,7 +2439,7 @@
         "description": "The selected preview scene has changed (only available in Studio Mode).",
         "return": [
           "{String} `scene-name` Name of the scene being previewed.",
-          "{Array<Source>} `sources` List of sources composing the scene. Same specification as [`GetCurrentScene`](#getcurrentscene)."
+          "{Array<SceneItem>} `sources` List of sources composing the scene. Same specification as [`GetCurrentScene`](#getcurrentscene)."
         ],
         "api": "events",
         "name": "PreviewSceneChanged",
@@ -2428,7 +2452,7 @@
             "description": "Name of the scene being previewed."
           },
           {
-            "type": "Array<Source>",
+            "type": "Array<SceneItem>",
             "name": "sources",
             "description": "List of sources composing the scene. Same specification as [`GetCurrentScene`](#getcurrentscene)."
           }
@@ -3487,7 +3511,7 @@
     "scene items": [
       {
         "subheads": [],
-        "description": "Gets the scene specific properties of the specified source item.",
+        "description": "Gets the scene specific properties of the specified source item.\nCoordinates are relative to the item's parent (the scene or group it belongs to).",
         "param": [
           "{String (optional)} `scene-name` the name of the scene that the source item belongs to. Defaults to the current scene.",
           "{String} `item` The name of the source."
@@ -3514,6 +3538,10 @@
           "{int} `sourceHeight` Base source (without scaling) of the source",
           "{double} `width` Scene item width (base source width multiplied by the horizontal scaling factor)",
           "{double} `height` Scene item height (base source height multiplied by the vertical scaling factor)"
+        ],
+        "property": [
+          "{String (optional)} `parentGroupName` Name of the item's parent (if this item belongs to a group)",
+          "{Array<SceneItemTransform> (optional)} `groupChildren` List of children (if this item is a group)"
         ],
         "api": "requests",
         "name": "GetSceneItemProperties",
@@ -3638,6 +3666,18 @@
             "description": "The name of the source."
           }
         ],
+        "properties": [
+          {
+            "type": "String (optional)",
+            "name": "parentGroupName",
+            "description": "Name of the item's parent (if this item belongs to a group)"
+          },
+          {
+            "type": "Array<SceneItemTransform> (optional)",
+            "name": "groupChildren",
+            "description": "List of children (if this item is a group)"
+          }
+        ],
         "names": [
           {
             "name": "",
@@ -3666,7 +3706,7 @@
       },
       {
         "subheads": [],
-        "description": "Sets the scene specific properties of a source. Unspecified properties will remain unchanged.",
+        "description": "Sets the scene specific properties of a source. Unspecified properties will remain unchanged.\nCoordinates are relative to the item's parent (the scene or group it belongs to).",
         "param": [
           "{String (optional)} `scene-name` the name of the scene that the source item belongs to. Defaults to the current scene.",
           "{String} `item` The name of the source.",
@@ -4346,7 +4386,7 @@
         "description": "Get the current scene's name and source items.",
         "return": [
           "{String} `name` Name of the currently active scene.",
-          "{Array<Source>} `sources` Ordered list of the current scene's source items."
+          "{Array<SceneItem>} `sources` Ordered list of the current scene's source items."
         ],
         "api": "requests",
         "name": "GetCurrentScene",
@@ -4359,7 +4399,7 @@
             "description": "Name of the currently active scene."
           },
           {
-            "type": "Array<Source>",
+            "type": "Array<SceneItem>",
             "name": "sources",
             "description": "Ordered list of the current scene's source items."
           }
@@ -7097,7 +7137,7 @@
         "description": "Get the name of the currently previewed scene and its list of sources.\nWill return an `error` if Studio Mode is not enabled.",
         "return": [
           "{String} `name` The name of the active preview scene.",
-          "{Array<Source>} `sources`"
+          "{Array<SceneItem>} `sources`"
         ],
         "api": "requests",
         "name": "GetPreviewScene",
@@ -7110,7 +7150,7 @@
             "description": "The name of the active preview scene."
           },
           {
-            "type": "Array<Source>",
+            "type": "Array<SceneItem>",
             "name": "sources",
             "description": ""
           }

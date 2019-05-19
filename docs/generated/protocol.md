@@ -43,9 +43,9 @@ auth_response = base64_encode(auth_response_hash)
 <!-- toc -->
 
 - [Typedefs](#typedefs)
+  * [SceneItem](#sceneitem)
   * [SceneItemTransform](#sceneitemtransform)
   * [OBSStats](#obsstats)
-  * [Source](#source)
   * [Scene](#scene)
 - [Events](#events)
   * [Scenes](#scenes)
@@ -202,6 +202,23 @@ auth_response = base64_encode(auth_response_hash)
 These are complex types, such as `Source` and `Scene`, which are used as arguments or return values in multiple requests and/or events. 
 
 
+## SceneItem
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `cy` | _Number_ |  |
+| `cx` | _Number_ |  |
+| `name` | _String_ | The name of this Scene Item. |
+| `id` | _int_ | Scene item ID |
+| `render` | _Boolean_ | Whether or not this Scene Item is set to "visible". |
+| `locked` | _Boolean_ | Whether or not this Scene Item is locked and can't be moved around |
+| `source_cx` | _Number_ |  |
+| `source_cy` | _Number_ |  |
+| `type` | _String_ | Source type. Value is one of the following: "input", "filter", "transition", "scene" or "unknown" |
+| `volume` | _Number_ |  |
+| `x` | _Number_ |  |
+| `y` | _Number_ |  |
+| `parentGroupName` | _String (optional)_ | Name of the item's parent (if this item belongs to a group) |
+| `groupChildren` | _Array&lt;SceneItem&gt; (optional)_ | List of children (if this item is a group) |
 ## SceneItemTransform
 | Name | Type  | Description |
 | ---- | :---: | ------------|
@@ -225,6 +242,8 @@ These are complex types, such as `Source` and `Scene`, which are used as argumen
 | `sourceHeight` | _int_ | Base source (without scaling) of the source |
 | `width` | _double_ | Scene item width (base source width multiplied by the horizontal scaling factor) |
 | `height` | _double_ | Scene item height (base source height multiplied by the vertical scaling factor) |
+| `parentGroupName` | _String (optional)_ | Name of the item's parent (if this item belongs to a group) |
+| `groupChildren` | _Array&lt;SceneItemTransform&gt; (optional)_ | List of children (if this item is a group) |
 ## OBSStats
 | Name | Type  | Description |
 | ---- | :---: | ------------|
@@ -237,26 +256,11 @@ These are complex types, such as `Source` and `Scene`, which are used as argumen
 | `cpu-usage` | _double_ | Current CPU usage (percentage) |
 | `memory-usage` | _double_ | Current RAM usage (in megabytes) |
 | `free-disk-space` | _double_ | Free recording disk space (in megabytes) |
-## Source
-| Name | Type  | Description |
-| ---- | :---: | ------------|
-| `cy` | _Number_ |  |
-| `cx` | _Number_ |  |
-| `name` | _String_ | The name of this Scene Item. |
-| `id` | _int_ | Scene item ID |
-| `render` | _Boolean_ | Whether or not this Scene Item is set to "visible". |
-| `locked` | _Boolean_ | Whether or not this Scene Item is locked and can't be moved around |
-| `source_cx` | _Number_ |  |
-| `source_cy` | _Number_ |  |
-| `type` | _String_ | Source type. Value is one of the following: "input", "filter", "transition", "scene" or "unknown" |
-| `volume` | _Number_ |  |
-| `x` | _Number_ |  |
-| `y` | _Number_ |  |
 ## Scene
 | Name | Type  | Description |
 | ---- | :---: | ------------|
 | `name` | _String_ | Name of the currently active scene. |
-| `sources` | _Array&lt;Source&gt;_ | Ordered list of the current scene's source items. |
+| `sources` | _Array&lt;SceneItem&gt;_ | Ordered list of the current scene's source items. |
 
 
 
@@ -287,7 +291,7 @@ Indicates a scene change.
 | Name | Type  | Description |
 | ---- | :---: | ------------|
 | `scene-name` | _String_ | The new scene. |
-| `sources` | _Array&lt;Source&gt;_ | List of sources in the new scene. Same specification as [`GetCurrentScene`](#getcurrentscene). |
+| `sources` | _Array&lt;SceneItem&gt;_ | List of scene items in the new scene. Same specification as [`GetCurrentScene`](#getcurrentscene). |
 
 
 ---
@@ -999,7 +1003,7 @@ The selected preview scene has changed (only available in Studio Mode).
 | Name | Type  | Description |
 | ---- | :---: | ------------|
 | `scene-name` | _String_ | Name of the scene being previewed. |
-| `sources` | _Array&lt;Source&gt;_ | List of sources composing the scene. Same specification as [`GetCurrentScene`](#getcurrentscene). |
+| `sources` | _Array&lt;SceneItem&gt;_ | List of sources composing the scene. Same specification as [`GetCurrentScene`](#getcurrentscene). |
 
 
 ---
@@ -1520,6 +1524,7 @@ _No specified parameters._
 - Added in v4.3.0
 
 Gets the scene specific properties of the specified source item.
+Coordinates are relative to the item's parent (the scene or group it belongs to).
 
 **Request Fields:**
 
@@ -1564,6 +1569,7 @@ Gets the scene specific properties of the specified source item.
 - Added in v4.3.0
 
 Sets the scene specific properties of a source. Unspecified properties will remain unchanged.
+Coordinates are relative to the item's parent (the scene or group it belongs to).
 
 **Request Fields:**
 
@@ -1805,7 +1811,7 @@ _No specified parameters._
 | Name | Type  | Description |
 | ---- | :---: | ------------|
 | `name` | _String_ | Name of the currently active scene. |
-| `sources` | _Array&lt;Source&gt;_ | Ordered list of the current scene's source items. |
+| `sources` | _Array&lt;SceneItem&gt;_ | Ordered list of the current scene's source items. |
 
 
 ---
@@ -2765,7 +2771,7 @@ _No specified parameters._
 | Name | Type  | Description |
 | ---- | :---: | ------------|
 | `name` | _String_ | The name of the active preview scene. |
-| `sources` | _Array&lt;Source&gt;_ |  |
+| `sources` | _Array&lt;SceneItem&gt;_ |  |
 
 
 ---
