@@ -80,6 +80,7 @@ HandlerResponse WSRequestHandler::HandleGetVersion(WSRequestHandler* req) {
 	}
 
 	OBSDataAutoRelease data = obs_data_create();
+	obs_data_set_double(data, "version", 1.1);
 	obs_data_set_string(data, "obs-websocket-version", OBS_WEBSOCKET_VERSION);
 	obs_data_set_string(data, "obs-studio-version", obsVersion.toUtf8());
 	obs_data_set_string(data, "available-requests", requests.toUtf8());
