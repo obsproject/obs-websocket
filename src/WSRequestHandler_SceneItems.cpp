@@ -3,24 +3,8 @@
 #include "WSRequestHandler.h"
 
 /**
-* @typedef {Object} `Source` An OBS Scene Item.
-* @property {Number} `cy`
-* @property {Number} `cx`
-* @property {String} `name` The name of this Scene Item.
-* @property {int} `id` Scene item ID
-* @property {Boolean} `render` Whether or not this Scene Item is set to "visible".
-* @property {Boolean} `locked` Whether or not this Scene Item is locked and can't be moved around
-* @property {Number} `source_cx`
-* @property {Number} `source_cy`
-* @property {String} `type` Source type. Value is one of the following: "input", "filter", "transition", "scene" or "unknown"
-* @property {Number} `volume`
-* @property {Number} `x`
-* @property {Number} `y`
-* @property {int} `alignment` The point on the source that the item is manipulated from.
-*/
-
-/**
 * Gets the scene specific properties of the specified source item.
+* Coordinates are relative to the item's parent (the scene or group it belongs to).
 *
 * @param {String (optional)} `scene-name` the name of the scene that the source item belongs to. Defaults to the current scene.
 * @param {String} `item` The name of the source.
@@ -46,6 +30,9 @@
 * @return {int} `sourceHeight` Base source (without scaling) of the source
 * @return {double} `width` Scene item width (base source width multiplied by the horizontal scaling factor)
 * @return {double} `height` Scene item height (base source height multiplied by the vertical scaling factor)
+* @property {int} `alignment` The point on the source that the item is manipulated from.
+* @property {String (optional)} `parentGroupName` Name of the item's parent (if this item belongs to a group)
+* @property {Array<SceneItemTransform> (optional)} `groupChildren` List of children (if this item is a group)
 * 
 * @api requests
 * @name GetSceneItemProperties
@@ -82,6 +69,7 @@ HandlerResponse WSRequestHandler::HandleGetSceneItemProperties(WSRequestHandler*
 
 /**
 * Sets the scene specific properties of a source. Unspecified properties will remain unchanged.
+* Coordinates are relative to the item's parent (the scene or group it belongs to).
 *
 * @param {String (optional)} `scene-name` the name of the scene that the source item belongs to. Defaults to the current scene.
 * @param {String} `item` The name of the source.
@@ -131,6 +119,8 @@ HandlerResponse WSRequestHandler::HandleSetSceneItemProperties(WSRequestHandler*
 
 	bool badRequest = false;
 	OBSDataAutoRelease errorMessage = obs_data_create();
+
+	obs_sceneitem_defer_update_begin(sceneItem);
 
 	if (req->hasField("position")) {
 		vec2 oldPosition;
@@ -260,6 +250,8 @@ HandlerResponse WSRequestHandler::HandleSetSceneItemProperties(WSRequestHandler*
 			obs_data_set_obj(errorMessage, "bounds", boundsError);
 		}
 	}
+
+	obs_sceneitem_defer_update_end(sceneItem);
 
 	if (badRequest) {
 		return req->SendErrorResponse(errorMessage);
@@ -443,8 +435,13 @@ HandlerResponse WSRequestHandler::HandleSetSceneItemTransform(WSRequestHandler* 
 		return req->SendErrorResponse("specified scene item doesn't exist");
 	}
 
+	obs_sceneitem_defer_update_begin(sceneItem);
+
 	obs_sceneitem_set_scale(sceneItem, &scale);
 	obs_sceneitem_set_rot(sceneItem, rotation);
+	
+	obs_sceneitem_defer_update_end(sceneItem);
+
 	return req->SendOKResponse();
 }
 

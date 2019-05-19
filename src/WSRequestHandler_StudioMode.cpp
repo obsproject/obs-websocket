@@ -26,7 +26,7 @@ HandlerResponse WSRequestHandler::HandleGetStudioModeStatus(WSRequestHandler* re
  * Will return an `error` if Studio Mode is not enabled.
  *
  * @return {String} `name` The name of the active preview scene.
- * @return {Array<Source>} `sources`
+ * @return {Array<SceneItem>} `sources`
  *
  * @api requests
  * @name GetPreviewScene
