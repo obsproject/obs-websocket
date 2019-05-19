@@ -1057,7 +1057,6 @@ _No specified parameters._
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
-| `version` | _double_ | OBSRemote compatible API version. Fixed to 1.1 for retrocompatibility. |
 | `obs-websocket-version` | _String_ | obs-websocket plugin version. |
 | `obs-studio-version` | _String_ | OBS Studio program version. |
 | `available-requests` | _String_ | List of available request types, formatted as a comma-separated list string (e.g. : "Method1,Method2,Method3"). |
