@@ -5,7 +5,7 @@
 /**
 * @typedef {Object} `Scene`
 * @property {String} `name` Name of the currently active scene.
-* @property {Array<Source>} `sources` Ordered list of the current scene's source items.
+* @property {Array<SceneItem>} `sources` Ordered list of the current scene's source items.
 */
 
 /**
@@ -38,7 +38,7 @@ HandlerResponse WSRequestHandler::HandleSetCurrentScene(WSRequestHandler* req) {
  * Get the current scene's name and source items.
  * 
  * @return {String} `name` Name of the currently active scene.
- * @return {Array<Source>} `sources` Ordered list of the current scene's source items.
+ * @return {Array<SceneItem>} `sources` Ordered list of the current scene's source items.
  *
  * @api requests
  * @name GetCurrentScene
