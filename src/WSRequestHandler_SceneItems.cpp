@@ -119,6 +119,8 @@ HandlerResponse WSRequestHandler::HandleSetSceneItemProperties(WSRequestHandler*
 	bool badRequest = false;
 	OBSDataAutoRelease errorMessage = obs_data_create();
 
+	obs_sceneitem_defer_update_begin(sceneItem);
+
 	if (req->hasField("position")) {
 		vec2 oldPosition;
 		OBSDataAutoRelease positionError = obs_data_create();
@@ -247,6 +249,8 @@ HandlerResponse WSRequestHandler::HandleSetSceneItemProperties(WSRequestHandler*
 			obs_data_set_obj(errorMessage, "bounds", boundsError);
 		}
 	}
+
+	obs_sceneitem_defer_update_end(sceneItem);
 
 	if (badRequest) {
 		return req->SendErrorResponse(errorMessage);
@@ -430,8 +434,13 @@ HandlerResponse WSRequestHandler::HandleSetSceneItemTransform(WSRequestHandler* 
 		return req->SendErrorResponse("specified scene item doesn't exist");
 	}
 
+	obs_sceneitem_defer_update_begin(sceneItem);
+
 	obs_sceneitem_set_scale(sceneItem, &scale);
 	obs_sceneitem_set_rot(sceneItem, rotation);
+	
+	obs_sceneitem_defer_update_end(sceneItem);
+
 	return req->SendOKResponse();
 }
 
