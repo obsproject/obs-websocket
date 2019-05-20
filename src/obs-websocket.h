@@ -51,6 +51,6 @@ ConfigPtr GetConfig();
 WSServerPtr GetServer();
 WSEventsPtr GetEventsSystem();
 
-#define OBS_WEBSOCKET_VERSION "4.6.0"
+#define OBS_WEBSOCKET_VERSION "4.6.1"
 
 #define blog(level, msg, ...) blog(level, "[obs-websocket] " msg, ##__VA_ARGS__)
