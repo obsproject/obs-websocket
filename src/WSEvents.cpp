@@ -104,8 +104,6 @@ WSEvents::WSEvents(WSServerPtr srv) :
 
 	heartbeatTimer.start(STATUS_INTERVAL);
 
-	hookTransitionBeginEvent();
-
 	// Connect to signals of all existing sources
 	obs_enum_sources([](void* param, obs_source_t* source) {
 		auto self = reinterpret_cast<WSEvents*>(param);
@@ -134,8 +132,6 @@ WSEvents::~WSEvents() {
 		return true;
 	}, this);
 
-	unhookTransitionBeginEvent();
-
 	obs_frontend_remove_event_callback(WSEvents::FrontendEventHandler, this);
 	os_cpu_usage_info_destroy(cpuUsageInfo);
 }
@@ -147,13 +143,17 @@ void WSEvents::FrontendEventHandler(enum obs_frontend_event event, void* private
 		return;
 	}
 
-	if (event == OBS_FRONTEND_EVENT_SCENE_CHANGED) {
+	if (event == OBS_FRONTEND_EVENT_FINISHED_LOADING) {
+		owner->hookTransitionBeginEvent();
+	}
+	else if (event == OBS_FRONTEND_EVENT_SCENE_CHANGED) {
 		owner->OnSceneChange();
 	}
 	else if (event == OBS_FRONTEND_EVENT_SCENE_LIST_CHANGED) {
 		owner->OnSceneListChange();
 	}
 	else if (event == OBS_FRONTEND_EVENT_SCENE_COLLECTION_CHANGED) {
+		owner->hookTransitionBeginEvent();
 		owner->OnSceneCollectionChange();
 	}
 	else if (event == OBS_FRONTEND_EVENT_SCENE_COLLECTION_LIST_CHANGED) {
@@ -222,6 +222,7 @@ void WSEvents::FrontendEventHandler(enum obs_frontend_event event, void* private
 		owner->OnPreviewSceneChanged();
 	}
 	else if (event == OBS_FRONTEND_EVENT_EXIT) {
+		owner->unhookTransitionBeginEvent();
 		owner->OnExit();
 	}
 }
