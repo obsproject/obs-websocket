@@ -672,7 +672,7 @@ Emitted every 2 seconds after enabling it by calling SetHeartbeat.
 | `total-record-time` | _int (optional)_ | Total time (in seconds) since recording started. |
 | `total-record-bytes` | _int (optional)_ | Total bytes recorded since the recording started. |
 | `total-record-frames` | _int (optional)_ | Total frames recorded since the recording started. |
-| `stats` | _Stats_ | OBS Stats |
+| `stats` | _OBSStats_ | OBS Stats |
 
 
 ---
@@ -948,7 +948,7 @@ An item's transform has been changed.
 | `scene-name` | _String_ | Name of the scene. |
 | `item-name` | _String_ | Name of the item in the scene. |
 | `item-id` | _int_ | Scene item ID |
-| `transform` | _SceneItemProperties_ | Scene item transform properties |
+| `transform` | _SceneItemTransform_ | Scene item transform properties |
 
 
 ---

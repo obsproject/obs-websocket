@@ -1384,7 +1384,7 @@
           "{int (optional)} `total-record-time` Total time (in seconds) since recording started.",
           "{int (optional)} `total-record-bytes` Total bytes recorded since the recording started.",
           "{int (optional)} `total-record-frames` Total frames recorded since the recording started.",
-          "{Stats} `stats` OBS Stats"
+          "{OBSStats} `stats` OBS Stats"
         ],
         "api": "events",
         "name": "Heartbeat",
@@ -1446,7 +1446,7 @@
             "description": "Total frames recorded since the recording started."
           },
           {
-            "type": "Stats",
+            "type": "OBSStats",
             "name": "stats",
             "description": "OBS Stats"
           }
@@ -2268,7 +2268,7 @@
           "{String} `scene-name` Name of the scene.",
           "{String} `item-name` Name of the item in the scene.",
           "{int} `item-id` Scene item ID",
-          "{SceneItemProperties} `transform` Scene item transform properties"
+          "{SceneItemTransform} `transform` Scene item transform properties"
         ],
         "api": "events",
         "name": "SceneItemTransformChanged",
@@ -2291,7 +2291,7 @@
             "description": "Scene item ID"
           },
           {
-            "type": "SceneItemProperties",
+            "type": "SceneItemTransform",
             "name": "transform",
             "description": "Scene item transform properties"
           }
