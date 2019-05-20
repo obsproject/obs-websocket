@@ -40,6 +40,9 @@ public:
 	void connectSourceSignals(obs_source_t* source);
 	void disconnectSourceSignals(obs_source_t* source);
 
+	void hookTransitionBeginEvent();
+	void unhookTransitionBeginEvent();
+
 	uint64_t GetStreamingTime();
 	const char* GetStreamingTimecode();
 	uint64_t GetRecordingTime();
