@@ -736,7 +736,7 @@ void WSEvents::StreamStatus() {
  * @return {int (optional)} `total-record-time` Total time (in seconds) since recording started.
  * @return {int (optional)} `total-record-bytes` Total bytes recorded since the recording started.
  * @return {int (optional)} `total-record-frames` Total frames recorded since the recording started.
- * @return {Stats} `stats` OBS Stats
+ * @return {OBSStats} `stats` OBS Stats
  *
  * @api events
  * @name Heartbeat
@@ -1330,7 +1330,7 @@ void WSEvents::OnSceneItemVisibilityChanged(void* param, calldata_t* data) {
  * @return {String} `scene-name` Name of the scene.
  * @return {String} `item-name` Name of the item in the scene.
  * @return {int} `item-id` Scene item ID
- * @return {SceneItemProperties} `transform` Scene item transform properties
+ * @return {SceneItemTransform} `transform` Scene item transform properties
  *
  * @api events
  * @name SceneItemTransformChanged
