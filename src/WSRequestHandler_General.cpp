@@ -298,3 +298,28 @@ HandlerResponse WSRequestHandler::HandleGetVideoInfo(WSRequestHandler* req) {
 	obs_data_set_string(response, "scaleType", describe_scale_type(ovi.scale_type));
 	return req->SendOKResponse(response);
 }
+
+/**
+ * Open a projector window or create a projector on a monitor.
+ * 
+ * @param {String (Optional)} `type` Type of projector: Preview (default), Source, Scene, StudioProgram, or Multiview (case insensitive).
+ * @param {int (Optional)} `monitor` Monitor to open the projector on. If -1 or omitted, opens a window.
+ * @param {String (Optional)} `geometry` Size and position of the projector window (only if monitor is -1). Encoded in base 64.
+ * @param {String (Optional)} `name` Name of the source or scene to be displayed (ignored for other projector types).
+ * 
+ * @api requests
+ * @name OpenProjector
+ * @category general
+ * @since 4.7.0 
+ */
+HandlerResponse WSRequestHandler::HandleOpenProjector(WSRequestHandler* req) {
+	const char *type = obs_data_get_string(req->data, "type");
+	int monitor = -1;
+	if (req->hasField("monitor")) {
+		monitor = obs_data_get_int(req->data, "monitor");
+	}
+	const char *geometry = obs_data_get_string(req->data, "geometry");
+	const char *name = obs_data_get_string(req->data, "name");
+	obs_frontend_open_projector(type, monitor, geometry, name);
+	return req->SendOKResponse();
+}

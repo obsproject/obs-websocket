@@ -32,6 +32,7 @@ QHash<QString, HandlerResponse(*)(WSRequestHandler*)> WSRequestHandler::messageM
 	{ "GetStats", WSRequestHandler::HandleGetStats },
 	{ "SetHeartbeat", WSRequestHandler::HandleSetHeartbeat },
 	{ "GetVideoInfo", WSRequestHandler::HandleGetVideoInfo },
+	{ "OpenProjector", WSRequestHandler::HandleOpenProjector },
 
 	{ "SetFilenameFormatting", WSRequestHandler::HandleSetFilenameFormatting },
 	{ "GetFilenameFormatting", WSRequestHandler::HandleGetFilenameFormatting },
