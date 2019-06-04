@@ -1493,3 +1493,61 @@ HandlerResponse WSRequestHandler::HandleTakeSourceScreenshot(WSRequestHandler* r
 	obs_data_set_string(response, "sourceName", obs_source_get_name(source));
 	return req->SendOKResponse(response);
 }
+
+
+/**
+* Create a new source
+*
+* @param {String} `sourceName` Name of the source to be created
+* @param {String} `typeIDName` type of the source to be created
+* @param {Object} `sourceSettings` New settings. These will be merged to the new created source.
+* @param {Object}(optional) `hotkeyData` hotkeyData. These will be merged to the new created source.
+*
+* @api requests
+* @name SetSourceFilterSettings
+* @category sources
+*/
+HandlerResponse WSRequestHandler::HandleCreateNewSource(WSRequestHandler* req)
+{
+	
+	if (!req->hasField("sourceName") || !req->hasField("typeIDName") || !req->hasField("sourceSettings")) {
+		return req->SendErrorResponse("missing request parameters");
+	}
+	//const char* sceneName = obs_data_get_string(req->data, "sceneName");
+	const char* sourceName = obs_data_get_string(req->data, "sourceName");
+	const char* typeIDName = obs_data_get_string(req->data, "typeIDName");
+	
+	OBSDataAutoRelease newsourceSettings = obs_data_get_obj(req->data, "sourceSettings");
+	OBSDataAutoRelease hotkeyData = obs_data_get_obj(req->data, "hotkey_data");
+	/*
+	OBSSourceAutoRelease source = obs_get_source_by_name(sourceName);
+	if (!source) {
+		return req->SendErrorResponse("specified source doesn't exist");
+	}
+
+	OBSSourceAutoRelease typeID = obs_source_get_filter_by_name(source, typeIDName);
+	if (!typeID) {
+		return req->SendErrorResponse("specified typeID doesn't exist");
+	}
+	
+	OBSDataAutoRelease settings = obs_source_get_settings(filter);
+	
+	obs_data_apply(settings, newFilterSettings);
+	obs_source_update(filter, settings);
+	*/
+//obs_source_t* source = obs_source_create_private(typeIDName, sourceName, newsourceSettings);
+	obs_source_t* source = obs_source_create(typeIDName, sourceName, newsourceSettings, hotkeyData);
+	obs_source_t* CurrentScene = obs_frontend_get_current_scene();
+	obs_source_add_active_child(CurrentScene, source);
+	//obs_source_create(typeIDName, sourceName, newsourceSettings, hotkeyData);
+	obs_source_addref(source);
+	obs_source_set_enabled(source, true);
+	//obs_scene_t* sceneName = obs_scene_from_source(source);
+	//obs_source_t* sceneName = obs_frontend_get_current_scene();
+	//obs_scene_add(sceneName, source);
+	//obs_source_create(typeIDName, sourceName, newsourceSettings, hotkeyData);
+	//obs_source_create_private(typeIDName, sourceName, newsourceSettings);
+	
+	return req->SendOKResponse();
+	
+}

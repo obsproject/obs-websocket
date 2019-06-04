@@ -139,3 +139,28 @@ HandlerResponse WSRequestHandler::HandleReorderSceneItems(WSRequestHandler* req)
 
 	return req->SendOKResponse();
 }
+
+
+/**
+* Add New Scene
+*
+* @param {String} `sourceName` Name of the source to which the filter belongs
+* @param {String} `filterName` Name of the filter to reconfigure
+* @param {Object} `filterSettings` New settings. These will be merged to the current filter settings.
+*
+* @api requests
+* @name SetSourceFilterSettings
+* @category sources
+* @since 4.5.0
+*/
+HandlerResponse WSRequestHandler::HandleAddNewScene(WSRequestHandler* req)
+{
+
+	if (!req->hasField("sceneName")) {
+		return req->SendErrorResponse("missing request parameters");
+	}
+	const char* sceneName = obs_data_get_string(req->data, "sceneName");
+	obs_scene_create(sceneName);
+	return req->SendOKResponse();
+
+}
