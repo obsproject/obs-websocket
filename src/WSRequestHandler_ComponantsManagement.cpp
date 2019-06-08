@@ -30,16 +30,14 @@
 * @param {String} `sourceName` Name of the source to be created
 * @param {String} `typeIDName` type of the source to be created
 * @param {Object} `sourceSettings` New settings. These will be merged to the new created source.
-* @param {Object}(optional) `hotkeyData` hotkeyData. These will be merged to the new created source.
+* @param {Object} `hotkeyData` hotkeyData. These will be merged to the new created source.
 *
 * @api requests
 * @name AddNewSource
 * @category sources
-* Developed by Ilyes KAANICH
 */
 HandlerResponse WSRequestHandler::HandleCreateNewSource(WSRequestHandler* req)
 {
-	
 	if (!req->hasField("sourceName") || !req->hasField("typeIDName") || !req->hasField("sourceSettings")) {
 		return req->SendErrorResponse("missing request parameters");
 	}
@@ -58,7 +56,6 @@ HandlerResponse WSRequestHandler::HandleCreateNewSource(WSRequestHandler* req)
 	obs_data_set_obj(response, "sourceSettings", newsourceSettings);
 	obs_data_set_obj(response, "hotkeyData", hotkeyData);
 	return req->SendOKResponse(response);
-	
 }
 
 /**
@@ -69,11 +66,9 @@ HandlerResponse WSRequestHandler::HandleCreateNewSource(WSRequestHandler* req)
 * @api requests
 * @name AddNewScene
 * @category sources
-* Developed by Ilyes KAANICH
 */
 HandlerResponse WSRequestHandler::HandleAddNewScene(WSRequestHandler* req)
 {
-
 	if (!req->hasField("sourceName") || !req->hasField("typeIDName") || !req->hasField("sourceSettings")) {
 		return req->SendErrorResponse("missing request parameters");
 	}
@@ -82,7 +77,6 @@ HandlerResponse WSRequestHandler::HandleAddNewScene(WSRequestHandler* req)
 	OBSDataAutoRelease response = obs_data_create();
 	obs_data_set_string(response, "sceneName", sceneName);
 	return req->SendOKResponse(response);
-
 }
 
 /**
@@ -94,11 +88,9 @@ HandlerResponse WSRequestHandler::HandleAddNewScene(WSRequestHandler* req)
 * @api requests
 * @name AddActiveChild
 * @category sources
-* Developed by Ilyes KAANICH
 */
 HandlerResponse WSRequestHandler::HandleAddActiveChild(WSRequestHandler* req)
 {
-
 	if (!req->hasField("sourceParentName") || !req->hasField("sourceChildName")) {
 		return req->SendErrorResponse("missing request parameters");
 	}
@@ -109,5 +101,4 @@ HandlerResponse WSRequestHandler::HandleAddActiveChild(WSRequestHandler* req)
 	
 	obs_source_add_active_child(sourceParent, sourceChild);
 	return req->SendOKResponse();
-
 }
