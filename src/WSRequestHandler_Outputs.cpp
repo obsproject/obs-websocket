@@ -114,7 +114,10 @@ HandlerResponse WSRequestHandler::HandleGetOutputInfo(WSRequestHandler* req)
 HandlerResponse WSRequestHandler::HandleStartOutput(WSRequestHandler* req)
 {
 	return findOutputOrFail(req, [req](obs_output_t* output) {
-		// TODO check if already active
+		if (obs_output_active(output)) {
+			return req->SendErrorResponse("output already active");
+		}
+
 		if (!obs_output_start(output)) {
 			// TODO get last error message
 			return req->SendErrorResponse("output start failed");
@@ -137,7 +140,9 @@ HandlerResponse WSRequestHandler::HandleStartOutput(WSRequestHandler* req)
 HandlerResponse WSRequestHandler::HandleStopOutput(WSRequestHandler* req)
 {
 	return findOutputOrFail(req, [req](obs_output_t* output) {
-		// TODO check if output is already stopped
+		if (!obs_output_active(output)) {
+			return req->SendErrorResponse("output not active");
+		}
 		
 		bool forceStop = obs_data_get_bool(req->data, "force");
 		if (forceStop) {
