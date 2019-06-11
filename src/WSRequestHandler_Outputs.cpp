@@ -19,9 +19,19 @@ obs_data_t* getOutputInfo(obs_output_t* output)
 	obs_data_t* data = obs_data_create();
 	obs_data_set_string(data, "name", obs_output_get_name(output));
 	obs_data_set_string(data, "type", obs_output_get_id(output));
+	// TODO flags
 	obs_data_set_obj(data, "settings", settings);
 	obs_data_set_bool(data, "active", obs_output_active(output));
+	// TODO reconnecting
 	obs_data_set_double(data, "congestion", obs_output_get_congestion(output));
+	// TODO width
+	// TODO height
+	// TODO delay
+	// TODO active delay
+	// TODO connect time ms
+	// TODO total frames
+	// TODO frames dropped
+	// TODO total bytes
 	return data;
 }
 
@@ -106,6 +116,7 @@ HandlerResponse WSRequestHandler::HandleStartOutput(WSRequestHandler* req)
 	return findOutputOrFail(req, [req](obs_output_t* output) {
 		// TODO check if already active
 		if (!obs_output_start(output)) {
+			// TODO get last error message
 			return req->SendErrorResponse("output start failed");
 		}
 		return req->SendOKResponse();
