@@ -43,6 +43,15 @@ class WSRequestHandler : public QObject {
 		std::string processIncomingMessage(std::string& textMessage);
 		bool hasField(QString name);
 
+		HandlerResponse SendOKResponse(obs_data_t* additionalFields = nullptr);
+		HandlerResponse SendErrorResponse(const char* errorMessage);
+		HandlerResponse SendErrorResponse(obs_data_t* additionalFields = nullptr);
+		HandlerResponse SendResponse(const char* status, obs_data_t* additionalFields = nullptr);
+
+		obs_data_t* parameters() {
+			return this->data;
+		}
+
 	private:
 		const char* _messageId;
 		const char* _requestType;
@@ -50,11 +59,6 @@ class WSRequestHandler : public QObject {
 		OBSDataAutoRelease data;
 
 		HandlerResponse processRequest(std::string& textMessage);
-
-		HandlerResponse SendOKResponse(obs_data_t* additionalFields = nullptr);
-		HandlerResponse SendErrorResponse(const char* errorMessage);
-		HandlerResponse SendErrorResponse(obs_data_t* additionalFields = nullptr);
-		HandlerResponse SendResponse(const char* status, obs_data_t* additionalFields = nullptr);
 
 		static QHash<QString, HandlerResponse(*)(WSRequestHandler*)> messageMap;
 		static QSet<QString> authNotRequired;
@@ -160,4 +164,9 @@ class WSRequestHandler : public QObject {
 
 		static HandlerResponse HandleSetBrowserSourceProperties(WSRequestHandler* req);
 		static HandlerResponse HandleGetBrowserSourceProperties(WSRequestHandler* req);
+
+		static HandlerResponse HandleListOutputs(WSRequestHandler* req);
+		static HandlerResponse HandleGetOutputInfo(WSRequestHandler* req);
+		static HandlerResponse HandleStartOutput(WSRequestHandler* req);
+		static HandlerResponse HandleStopOutput(WSRequestHandler* req);
 };

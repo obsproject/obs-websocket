@@ -125,7 +125,12 @@ QHash<QString, HandlerResponse(*)(WSRequestHandler*)> WSRequestHandler::messageM
 	{ "GetTextFreetype2Properties", WSRequestHandler::HandleGetTextFreetype2Properties },
 
 	{ "GetBrowserSourceProperties", WSRequestHandler::HandleGetBrowserSourceProperties },
-	{ "SetBrowserSourceProperties", WSRequestHandler::HandleSetBrowserSourceProperties }
+	{ "SetBrowserSourceProperties", WSRequestHandler::HandleSetBrowserSourceProperties },
+
+	{ "ListOutputs", WSRequestHandler::HandleListOutputs },
+	{ "GetOutputInfo", WSRequestHandler::HandleGetOutputInfo },
+	{ "StartOutput", WSRequestHandler::HandleStartOutput },
+	{ "StopOutput", WSRequestHandler::HandleStopOutput }
 };
 
 QSet<QString> WSRequestHandler::authNotRequired {
