@@ -4,9 +4,22 @@
 * @typedef {Object} `Output`
 * @property {String} `name` Output name
 * @property {String} `type` Output type/kind
+* @property {int} `width` Video output width
+* @property {int} `height` Video output height
+* @property {Object} `flags` Output flags
+* @property {int} `flags.rawValue` Raw flags value
+* @property {boolean} `flags.audio` Output uses audio
+* @property {boolean} `flags.video` Output uses video
+* @property {boolean} `flags.encoded` Output is encoded
+* @property {boolean} `flags.multiTrack` Output uses several audio tracks
+* @property {boolean} `flags.service` Output uses a service
 * @property {Object} `settings` Output name
 * @property {boolean} `active` Output status (active or not)
+* @property {boolean} `reconnecting` Output reconnection status (reconnecting or not)
 * @property {double} `congestion` Output congestion
+* @property {int} `totalFrames` Number of frames sent
+* @property {int} `droppedFrames` Number of frames dropped
+* @property {int} `totalBytes` Total bytes sent
 */
 obs_data_t* getOutputInfo(obs_output_t* output)
 {
@@ -16,22 +29,34 @@ obs_data_t* getOutputInfo(obs_output_t* output)
 
 	OBSDataAutoRelease settings = obs_output_get_settings(output);
 
+	uint32_t rawFlags = obs_output_get_flags(output);
+	OBSDataAutoRelease flags = obs_data_create();
+	obs_data_set_int(flags, "rawValue", rawFlags);
+	obs_data_set_bool(flags, "audio", rawFlags & OBS_OUTPUT_AUDIO);
+	obs_data_set_bool(flags, "video", rawFlags & OBS_OUTPUT_VIDEO);
+	obs_data_set_bool(flags, "encoded", rawFlags & OBS_OUTPUT_ENCODED);
+	obs_data_set_bool(flags, "multiTrack", rawFlags & OBS_OUTPUT_MULTI_TRACK);
+	obs_data_set_bool(flags, "service",  rawFlags & OBS_OUTPUT_SERVICE);
+
 	obs_data_t* data = obs_data_create();
+
 	obs_data_set_string(data, "name", obs_output_get_name(output));
 	obs_data_set_string(data, "type", obs_output_get_id(output));
-	// TODO flags
+	obs_data_set_int(data, "width", obs_output_get_width(output));
+	obs_data_set_int(data, "height", obs_output_get_height(output));
+	obs_data_set_obj(data, "flags", flags);
 	obs_data_set_obj(data, "settings", settings);
+
 	obs_data_set_bool(data, "active", obs_output_active(output));
-	// TODO reconnecting
+	obs_data_set_bool(data, "reconnecting", obs_output_reconnecting(output));
 	obs_data_set_double(data, "congestion", obs_output_get_congestion(output));
-	// TODO width
-	// TODO height
+	obs_data_set_int(data, "totalFrames", obs_output_get_total_frames(output));
+	obs_data_set_int(data, "droppedFrames", obs_output_get_frames_dropped(output));
+	obs_data_set_int(data, "totalBytes", obs_output_get_total_bytes(output));
 	// TODO delay
 	// TODO active delay
+
 	// TODO connect time ms
-	// TODO total frames
-	// TODO frames dropped
-	// TODO total bytes
 	return data;
 }
 
