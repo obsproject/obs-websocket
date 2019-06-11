@@ -118,10 +118,13 @@ HandlerResponse WSRequestHandler::HandleStartOutput(WSRequestHandler* req)
 			return req->SendErrorResponse("output already active");
 		}
 
-		if (!obs_output_start(output)) {
-			// TODO get last error message
-			return req->SendErrorResponse("output start failed");
+		bool success = obs_output_start(output);
+		if (!success) {
+			QString lastError = obs_output_get_last_error(output);
+			QString errorMessage = QString("output start failed: %1").arg(lastError);
+			return req->SendErrorResponse(errorMessage);
 		}
+
 		return req->SendOKResponse();
 	});
 }

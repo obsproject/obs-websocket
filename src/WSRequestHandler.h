@@ -44,7 +44,7 @@ class WSRequestHandler : public QObject {
 		bool hasField(QString name);
 
 		HandlerResponse SendOKResponse(obs_data_t* additionalFields = nullptr);
-		HandlerResponse SendErrorResponse(const char* errorMessage);
+		HandlerResponse SendErrorResponse(QString errorMessage);
 		HandlerResponse SendErrorResponse(obs_data_t* additionalFields = nullptr);
 		HandlerResponse SendResponse(const char* status, obs_data_t* additionalFields = nullptr);
 
