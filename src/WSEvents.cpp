@@ -1041,7 +1041,7 @@ void WSEvents::OnSourceAudioSyncOffsetChanged(void* param, calldata_t* data) {
  * Audio mixer routing changed on a source.
  *
  * @return {String} `sourceName` Source name
- * @return {Array<Object>} `routingStatus` Routing status of the source for each audio mixer (array of 6 values)
+ * @return {Array<Object>} `mixers` Routing status of the source for each audio mixer (array of 6 values)
  * @return {int} `mixers.*.id` Mixer number
  * @return {boolean} `mixers.*.enabled` Routing status
  * @return {String} `hexMixersValue` Raw mixer flags (little-endian, one bit per mixer) as an hexadecimal value
