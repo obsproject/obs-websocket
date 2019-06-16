@@ -1742,8 +1742,8 @@
         "return": [
           "{String} `sourceName` Source name",
           "{Array<Object>} `routingStatus` Routing status of the source for each audio mixer (array of 6 values)",
-          "{int} `routingStatus.*.id` Mixer number",
-          "{boolean} `routingStatus.*.enabled` Routing status",
+          "{int} `mixers.*.id` Mixer number",
+          "{boolean} `mixers.*.enabled` Routing status",
           "{String} `hexMixersValue` Raw mixer flags (little-endian, one bit per mixer) as an hexadecimal value"
         ],
         "api": "events",
@@ -1763,12 +1763,12 @@
           },
           {
             "type": "int",
-            "name": "routingStatus.*.id",
+            "name": "mixers.*.id",
             "description": "Mixer number"
           },
           {
             "type": "boolean",
-            "name": "routingStatus.*.enabled",
+            "name": "mixers.*.enabled",
             "description": "Routing status"
           },
           {

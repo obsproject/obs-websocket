@@ -780,8 +780,8 @@ Audio mixer routing changed on a source.
 | ---- | :---: | ------------|
 | `sourceName` | _String_ | Source name |
 | `routingStatus` | _Array&lt;Object&gt;_ | Routing status of the source for each audio mixer (array of 6 values) |
-| `routingStatus.*.id` | _int_ | Mixer number |
-| `routingStatus.*.enabled` | _boolean_ | Routing status |
+| `mixers.*.id` | _int_ | Mixer number |
+| `mixers.*.enabled` | _boolean_ | Routing status |
 | `hexMixersValue` | _String_ | Raw mixer flags (little-endian, one bit per mixer) as an hexadecimal value |
 
 
