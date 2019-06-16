@@ -61,7 +61,7 @@ HandlerResponse WSRequestHandler::HandleCreateNewSource(WSRequestHandler* req)
 /**
 * Add New Scene
 *
-* @param {String} `sceneName` Name of the source to be created
+* @param {String} `sceneName` Name of the Scene to be created
 *
 * @api requests
 * @name AddNewScene
@@ -80,7 +80,7 @@ HandlerResponse WSRequestHandler::HandleAddNewScene(WSRequestHandler* req)
 }
 
 /**
-* Add New Scene
+* Add Active Child
 *
 * @param {String} `sourceParentName` Name of the parent source
 * @param {String} `sourceChildName` Name of the child source
@@ -100,5 +100,29 @@ HandlerResponse WSRequestHandler::HandleAddActiveChild(WSRequestHandler* req)
 	obs_source_t* sourceChild = obs_get_source_by_name(sourceChildName);
 	
 	obs_source_add_active_child(sourceParent, sourceChild);
+	return req->SendOKResponse();
+}
+
+/**
+* Add source to current Scene 
+*
+* @param {String} `sourceName` Name of the source to be added
+*
+* @api requests
+* @name AddtoScene 
+* @category sources
+*/
+HandlerResponse WSRequestHandler::HandleAddtoScene(WSRequestHandler* req)
+{
+	if (!req->hasField("sourceName")) {
+		return req->SendErrorResponse("missing request parameters");
+	}
+
+	const char* targetSource = obs_data_get_string(req->data, "sourceName");
+
+	obs_source_t *Source= obs_get_source_by_name(targetSource);
+	obs_source_t *Scenetarget = obs_frontend_get_current_preview_scene();
+	obs_scene_t  *Scene =obs_scene_from_source(Scenetarget);
+	obs_scene_add(Scene, Source);
 	return req->SendOKResponse();
 }

@@ -90,6 +90,8 @@ QHash<QString, HandlerResponse(*)(WSRequestHandler*)> WSRequestHandler::messageM
 	{ "AddNewSource", WSRequestHandler::HandleCreateNewSource },
 	{ "AddNewScene", WSRequestHandler::HandleAddNewScene },
 	{ "AddActiveChild", WSRequestHandler::HandleAddActiveChild },
+	{ "AddtoScene", WSRequestHandler::HandleAddtoScene },
+	
 	
 	{ "GetSourceFilters", WSRequestHandler::HandleGetSourceFilters },
 	{ "AddFilterToSource", WSRequestHandler::HandleAddFilterToSource },

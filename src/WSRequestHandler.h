@@ -87,6 +87,8 @@ class WSRequestHandler : public QObject {
 
 		static HandlerResponse HandleAddNewScene(WSRequestHandler * req);
 		static HandlerResponse HandleAddActiveChild(WSRequestHandler * req);
+		static HandlerResponse HandleAddtoScene(WSRequestHandler * req);
+		
 		
 		static HandlerResponse HandleGetStreamingStatus(WSRequestHandler* req);
 		static HandlerResponse HandleStartStopStreaming(WSRequestHandler* req);
