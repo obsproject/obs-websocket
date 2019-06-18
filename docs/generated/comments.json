@@ -4607,19 +4607,19 @@
         "subheads": [],
         "description": "Get a list of all available sources types",
         "return": [
-          "{Array<Object>} `ids` Array of source types",
-          "{String} `ids.*.typeId` Non-unique internal source type ID",
-          "{String} `ids.*.displayName` Display name of the source type",
-          "{String} `ids.*.type` Type. Value is one of the following: \"input\", \"filter\", \"transition\" or \"other\"",
-          "{Object} `ids.*.defaultSettings` Default settings of this source type",
-          "{Object} `ids.*.caps` Source type capabilities",
-          "{Boolean} `ids.*.caps.isAsync` True if source of this type provide frames asynchronously",
-          "{Boolean} `ids.*.caps.hasVideo` True if sources of this type provide video",
-          "{Boolean} `ids.*.caps.hasAudio` True if sources of this type provide audio",
-          "{Boolean} `ids.*.caps.canInteract` True if interaction with this sources of this type is possible",
-          "{Boolean} `ids.*.caps.isComposite` True if sources of this type composite one or more sub-sources",
-          "{Boolean} `ids.*.caps.doNotDuplicate` True if sources of this type should not be fully duplicated",
-          "{Boolean} `ids.*.caps.doNotSelfMonitor` True if sources of this type may cause a feedback loop if it's audio is monitored and shouldn't be"
+          "{Array<Object>} `types` Array of source types",
+          "{String} `types.*.typeId` Non-unique internal source type ID",
+          "{String} `types.*.displayName` Display name of the source type",
+          "{String} `types.*.type` Type. Value is one of the following: \"input\", \"filter\", \"transition\" or \"other\"",
+          "{Object} `types.*.defaultSettings` Default settings of this source type",
+          "{Object} `types.*.caps` Source type capabilities",
+          "{Boolean} `types.*.caps.isAsync` True if source of this type provide frames asynchronously",
+          "{Boolean} `types.*.caps.hasVideo` True if sources of this type provide video",
+          "{Boolean} `types.*.caps.hasAudio` True if sources of this type provide audio",
+          "{Boolean} `types.*.caps.canInteract` True if interaction with this sources of this type is possible",
+          "{Boolean} `types.*.caps.isComposite` True if sources of this type composite one or more sub-sources",
+          "{Boolean} `types.*.caps.doNotDuplicate` True if sources of this type should not be fully duplicated",
+          "{Boolean} `types.*.caps.doNotSelfMonitor` True if sources of this type may cause a feedback loop if it's audio is monitored and shouldn't be"
         ],
         "api": "requests",
         "name": "GetSourceTypesList",
@@ -4628,67 +4628,67 @@
         "returns": [
           {
             "type": "Array<Object>",
-            "name": "ids",
+            "name": "types",
             "description": "Array of source types"
           },
           {
             "type": "String",
-            "name": "ids.*.typeId",
+            "name": "types.*.typeId",
             "description": "Non-unique internal source type ID"
           },
           {
             "type": "String",
-            "name": "ids.*.displayName",
+            "name": "types.*.displayName",
             "description": "Display name of the source type"
           },
           {
             "type": "String",
-            "name": "ids.*.type",
+            "name": "types.*.type",
             "description": "Type. Value is one of the following: \"input\", \"filter\", \"transition\" or \"other\""
           },
           {
             "type": "Object",
-            "name": "ids.*.defaultSettings",
+            "name": "types.*.defaultSettings",
             "description": "Default settings of this source type"
           },
           {
             "type": "Object",
-            "name": "ids.*.caps",
+            "name": "types.*.caps",
             "description": "Source type capabilities"
           },
           {
             "type": "Boolean",
-            "name": "ids.*.caps.isAsync",
+            "name": "types.*.caps.isAsync",
             "description": "True if source of this type provide frames asynchronously"
           },
           {
             "type": "Boolean",
-            "name": "ids.*.caps.hasVideo",
+            "name": "types.*.caps.hasVideo",
             "description": "True if sources of this type provide video"
           },
           {
             "type": "Boolean",
-            "name": "ids.*.caps.hasAudio",
+            "name": "types.*.caps.hasAudio",
             "description": "True if sources of this type provide audio"
           },
           {
             "type": "Boolean",
-            "name": "ids.*.caps.canInteract",
+            "name": "types.*.caps.canInteract",
             "description": "True if interaction with this sources of this type is possible"
           },
           {
             "type": "Boolean",
-            "name": "ids.*.caps.isComposite",
+            "name": "types.*.caps.isComposite",
             "description": "True if sources of this type composite one or more sub-sources"
           },
           {
             "type": "Boolean",
-            "name": "ids.*.caps.doNotDuplicate",
+            "name": "types.*.caps.doNotDuplicate",
             "description": "True if sources of this type should not be fully duplicated"
           },
           {
             "type": "Boolean",
-            "name": "ids.*.caps.doNotSelfMonitor",
+            "name": "types.*.caps.doNotSelfMonitor",
             "description": "True if sources of this type may cause a feedback loop if it's audio is monitored and shouldn't be"
           }
         ],

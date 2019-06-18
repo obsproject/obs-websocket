@@ -1900,19 +1900,19 @@ _No specified parameters._
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
-| `ids` | _Array&lt;Object&gt;_ | Array of source types |
-| `ids.*.typeId` | _String_ | Non-unique internal source type ID |
-| `ids.*.displayName` | _String_ | Display name of the source type |
-| `ids.*.type` | _String_ | Type. Value is one of the following: "input", "filter", "transition" or "other" |
-| `ids.*.defaultSettings` | _Object_ | Default settings of this source type |
-| `ids.*.caps` | _Object_ | Source type capabilities |
-| `ids.*.caps.isAsync` | _Boolean_ | True if source of this type provide frames asynchronously |
-| `ids.*.caps.hasVideo` | _Boolean_ | True if sources of this type provide video |
-| `ids.*.caps.hasAudio` | _Boolean_ | True if sources of this type provide audio |
-| `ids.*.caps.canInteract` | _Boolean_ | True if interaction with this sources of this type is possible |
-| `ids.*.caps.isComposite` | _Boolean_ | True if sources of this type composite one or more sub-sources |
-| `ids.*.caps.doNotDuplicate` | _Boolean_ | True if sources of this type should not be fully duplicated |
-| `ids.*.caps.doNotSelfMonitor` | _Boolean_ | True if sources of this type may cause a feedback loop if it's audio is monitored and shouldn't be |
+| `types` | _Array&lt;Object&gt;_ | Array of source types |
+| `types.*.typeId` | _String_ | Non-unique internal source type ID |
+| `types.*.displayName` | _String_ | Display name of the source type |
+| `types.*.type` | _String_ | Type. Value is one of the following: "input", "filter", "transition" or "other" |
+| `types.*.defaultSettings` | _Object_ | Default settings of this source type |
+| `types.*.caps` | _Object_ | Source type capabilities |
+| `types.*.caps.isAsync` | _Boolean_ | True if source of this type provide frames asynchronously |
+| `types.*.caps.hasVideo` | _Boolean_ | True if sources of this type provide video |
+| `types.*.caps.hasAudio` | _Boolean_ | True if sources of this type provide audio |
+| `types.*.caps.canInteract` | _Boolean_ | True if interaction with this sources of this type is possible |
+| `types.*.caps.isComposite` | _Boolean_ | True if sources of this type composite one or more sub-sources |
+| `types.*.caps.doNotDuplicate` | _Boolean_ | True if sources of this type should not be fully duplicated |
+| `types.*.caps.doNotSelfMonitor` | _Boolean_ | True if sources of this type may cause a feedback loop if it's audio is monitored and shouldn't be |
 
 
 ---
