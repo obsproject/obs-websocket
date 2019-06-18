@@ -70,19 +70,19 @@ HandlerResponse WSRequestHandler::HandleGetSourcesList(WSRequestHandler* req)
 /**
 * Get a list of all available sources types
 *
-* @return {Array<Object>} `ids` Array of source types
-* @return {String} `ids.*.typeId` Non-unique internal source type ID
-* @return {String} `ids.*.displayName` Display name of the source type
-* @return {String} `ids.*.type` Type. Value is one of the following: "input", "filter", "transition" or "other"
-* @return {Object} `ids.*.defaultSettings` Default settings of this source type
-* @return {Object} `ids.*.caps` Source type capabilities
-* @return {Boolean} `ids.*.caps.isAsync` True if source of this type provide frames asynchronously
-* @return {Boolean} `ids.*.caps.hasVideo` True if sources of this type provide video
-* @return {Boolean} `ids.*.caps.hasAudio` True if sources of this type provide audio
-* @return {Boolean} `ids.*.caps.canInteract` True if interaction with this sources of this type is possible
-* @return {Boolean} `ids.*.caps.isComposite` True if sources of this type composite one or more sub-sources
-* @return {Boolean} `ids.*.caps.doNotDuplicate` True if sources of this type should not be fully duplicated
-* @return {Boolean} `ids.*.caps.doNotSelfMonitor` True if sources of this type may cause a feedback loop if it's audio is monitored and shouldn't be
+* @return {Array<Object>} `types` Array of source types
+* @return {String} `types.*.typeId` Non-unique internal source type ID
+* @return {String} `types.*.displayName` Display name of the source type
+* @return {String} `types.*.type` Type. Value is one of the following: "input", "filter", "transition" or "other"
+* @return {Object} `types.*.defaultSettings` Default settings of this source type
+* @return {Object} `types.*.caps` Source type capabilities
+* @return {Boolean} `types.*.caps.isAsync` True if source of this type provide frames asynchronously
+* @return {Boolean} `types.*.caps.hasVideo` True if sources of this type provide video
+* @return {Boolean} `types.*.caps.hasAudio` True if sources of this type provide audio
+* @return {Boolean} `types.*.caps.canInteract` True if interaction with this sources of this type is possible
+* @return {Boolean} `types.*.caps.isComposite` True if sources of this type composite one or more sub-sources
+* @return {Boolean} `types.*.caps.doNotDuplicate` True if sources of this type should not be fully duplicated
+* @return {Boolean} `types.*.caps.doNotSelfMonitor` True if sources of this type may cause a feedback loop if it's audio is monitored and shouldn't be
 *
 * @api requests
 * @name GetSourceTypesList
