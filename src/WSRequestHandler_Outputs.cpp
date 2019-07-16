@@ -53,10 +53,7 @@ obs_data_t* getOutputInfo(obs_output_t* output)
 	obs_data_set_int(data, "totalFrames", obs_output_get_total_frames(output));
 	obs_data_set_int(data, "droppedFrames", obs_output_get_frames_dropped(output));
 	obs_data_set_int(data, "totalBytes", obs_output_get_total_bytes(output));
-	// TODO delay
-	// TODO active delay
 
-	// TODO connect time ms
 	return data;
 }
 
