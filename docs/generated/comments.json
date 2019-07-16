@@ -335,6 +335,135 @@
     },
     {
       "subheads": [],
+      "typedef": "{Object} `Output`",
+      "property": [
+        "{String} `name` Output name",
+        "{String} `type` Output type/kind",
+        "{int} `width` Video output width",
+        "{int} `height` Video output height",
+        "{Object} `flags` Output flags",
+        "{int} `flags.rawValue` Raw flags value",
+        "{boolean} `flags.audio` Output uses audio",
+        "{boolean} `flags.video` Output uses video",
+        "{boolean} `flags.encoded` Output is encoded",
+        "{boolean} `flags.multiTrack` Output uses several audio tracks",
+        "{boolean} `flags.service` Output uses a service",
+        "{Object} `settings` Output name",
+        "{boolean} `active` Output status (active or not)",
+        "{boolean} `reconnecting` Output reconnection status (reconnecting or not)",
+        "{double} `congestion` Output congestion",
+        "{int} `totalFrames` Number of frames sent",
+        "{int} `droppedFrames` Number of frames dropped",
+        "{int} `totalBytes` Total bytes sent"
+      ],
+      "properties": [
+        {
+          "type": "String",
+          "name": "name",
+          "description": "Output name"
+        },
+        {
+          "type": "String",
+          "name": "type",
+          "description": "Output type/kind"
+        },
+        {
+          "type": "int",
+          "name": "width",
+          "description": "Video output width"
+        },
+        {
+          "type": "int",
+          "name": "height",
+          "description": "Video output height"
+        },
+        {
+          "type": "Object",
+          "name": "flags",
+          "description": "Output flags"
+        },
+        {
+          "type": "int",
+          "name": "flags.rawValue",
+          "description": "Raw flags value"
+        },
+        {
+          "type": "boolean",
+          "name": "flags.audio",
+          "description": "Output uses audio"
+        },
+        {
+          "type": "boolean",
+          "name": "flags.video",
+          "description": "Output uses video"
+        },
+        {
+          "type": "boolean",
+          "name": "flags.encoded",
+          "description": "Output is encoded"
+        },
+        {
+          "type": "boolean",
+          "name": "flags.multiTrack",
+          "description": "Output uses several audio tracks"
+        },
+        {
+          "type": "boolean",
+          "name": "flags.service",
+          "description": "Output uses a service"
+        },
+        {
+          "type": "Object",
+          "name": "settings",
+          "description": "Output name"
+        },
+        {
+          "type": "boolean",
+          "name": "active",
+          "description": "Output status (active or not)"
+        },
+        {
+          "type": "boolean",
+          "name": "reconnecting",
+          "description": "Output reconnection status (reconnecting or not)"
+        },
+        {
+          "type": "double",
+          "name": "congestion",
+          "description": "Output congestion"
+        },
+        {
+          "type": "int",
+          "name": "totalFrames",
+          "description": "Number of frames sent"
+        },
+        {
+          "type": "int",
+          "name": "droppedFrames",
+          "description": "Number of frames dropped"
+        },
+        {
+          "type": "int",
+          "name": "totalBytes",
+          "description": "Total bytes sent"
+        }
+      ],
+      "typedefs": [
+        {
+          "type": "Object",
+          "name": "Output",
+          "description": ""
+        }
+      ],
+      "name": "",
+      "heading": {
+        "level": 2,
+        "text": ""
+      },
+      "examples": []
+    },
+    {
+      "subheads": [],
       "typedef": "{Object} `Scene`",
       "property": [
         "{String} `name` Name of the currently active scene.",
@@ -2935,6 +3064,188 @@
         "heading": {
           "level": 2,
           "text": "GetVideoInfo"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      }
+    ],
+    "outputs": [
+      {
+        "subheads": [],
+        "description": "List existing outputs",
+        "return": "{Array<Output>} `outputs` Outputs list",
+        "api": "requests",
+        "name": "ListOutputs",
+        "category": "outputs",
+        "since": "4.7.0",
+        "returns": [
+          {
+            "type": "Array<Output>",
+            "name": "outputs",
+            "description": "Outputs list"
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "ListOutputs"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "outputs"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.7.0"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "ListOutputs"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Get information about a single output",
+        "param": "{String} `outputName` Output name",
+        "return": "{Output} `outputInfo` Output info",
+        "api": "requests",
+        "name": "GetOutputInfo",
+        "category": "outputs",
+        "since": "4.7.0",
+        "returns": [
+          {
+            "type": "Output",
+            "name": "outputInfo",
+            "description": "Output info"
+          }
+        ],
+        "params": [
+          {
+            "type": "String",
+            "name": "outputName",
+            "description": "Output name"
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "GetOutputInfo"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "outputs"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.7.0"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "GetOutputInfo"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Start an output",
+        "param": "{String} `outputName` Output name",
+        "api": "requests",
+        "name": "StartOutput",
+        "category": "outputs",
+        "since": "4.7.0",
+        "params": [
+          {
+            "type": "String",
+            "name": "outputName",
+            "description": "Output name"
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "StartOutput"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "outputs"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.7.0"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "StartOutput"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Stop an output",
+        "param": [
+          "{String} `outputName` Output name",
+          "{boolean (optional)} `force` Force stop (default: false)"
+        ],
+        "api": "requests",
+        "name": "StopOutput",
+        "category": "outputs",
+        "since": "4.7.0",
+        "params": [
+          {
+            "type": "String",
+            "name": "outputName",
+            "description": "Output name"
+          },
+          {
+            "type": "boolean (optional)",
+            "name": "force",
+            "description": "Force stop (default: false)"
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "StopOutput"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "outputs"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.7.0"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "StopOutput"
         },
         "lead": "",
         "type": "class",

@@ -46,6 +46,7 @@ auth_response = base64_encode(auth_response_hash)
   * [SceneItem](#sceneitem)
   * [SceneItemTransform](#sceneitemtransform)
   * [OBSStats](#obsstats)
+  * [Output](#output)
   * [Scene](#scene)
 - [Events](#events)
   * [Scenes](#scenes)
@@ -112,6 +113,11 @@ auth_response = base64_encode(auth_response_hash)
     + [GetFilenameFormatting](#getfilenameformatting)
     + [GetStats](#getstats)
     + [GetVideoInfo](#getvideoinfo)
+  * [Outputs](#outputs)
+    + [ListOutputs](#listoutputs)
+    + [GetOutputInfo](#getoutputinfo)
+    + [StartOutput](#startoutput)
+    + [StopOutput](#stopoutput)
   * [Profiles](#profiles-1)
     + [SetCurrentProfile](#setcurrentprofile)
     + [GetCurrentProfile](#getcurrentprofile)
@@ -256,6 +262,27 @@ These are complex types, such as `Source` and `Scene`, which are used as argumen
 | `cpu-usage` | _double_ | Current CPU usage (percentage) |
 | `memory-usage` | _double_ | Current RAM usage (in megabytes) |
 | `free-disk-space` | _double_ | Free recording disk space (in megabytes) |
+## Output
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `name` | _String_ | Output name |
+| `type` | _String_ | Output type/kind |
+| `width` | _int_ | Video output width |
+| `height` | _int_ | Video output height |
+| `flags` | _Object_ | Output flags |
+| `flags.rawValue` | _int_ | Raw flags value |
+| `flags.audio` | _boolean_ | Output uses audio |
+| `flags.video` | _boolean_ | Output uses video |
+| `flags.encoded` | _boolean_ | Output is encoded |
+| `flags.multiTrack` | _boolean_ | Output uses several audio tracks |
+| `flags.service` | _boolean_ | Output uses a service |
+| `settings` | _Object_ | Output name |
+| `active` | _boolean_ | Output status (active or not) |
+| `reconnecting` | _boolean_ | Output reconnection status (reconnecting or not) |
+| `congestion` | _double_ | Output congestion |
+| `totalFrames` | _int_ | Number of frames sent |
+| `droppedFrames` | _int_ | Number of frames dropped |
+| `totalBytes` | _int_ | Total bytes sent |
 ## Scene
 | Name | Type  | Description |
 | ---- | :---: | ------------|
@@ -1213,6 +1240,92 @@ _No specified parameters._
 | `colorSpace` | _String_ | Color space for YUV |
 | `colorRange` | _String_ | Color range (full or partial) |
 
+
+---
+
+## Outputs
+
+### ListOutputs
+
+
+- Added in v4.7.0
+
+List existing outputs
+
+**Request Fields:**
+
+_No specified parameters._
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `outputs` | _Array&lt;Output&gt;_ | Outputs list |
+
+
+---
+
+### GetOutputInfo
+
+
+- Added in v4.7.0
+
+Get information about a single output
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `outputName` | _String_ | Output name |
+
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `outputInfo` | _Output_ | Output info |
+
+
+---
+
+### StartOutput
+
+
+- Added in v4.7.0
+
+Start an output
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `outputName` | _String_ | Output name |
+
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+### StopOutput
+
+
+- Added in v4.7.0
+
+Stop an output
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `outputName` | _String_ | Output name |
+| `force` | _boolean (optional)_ | Force stop (default: false) |
+
+
+**Response Items:**
+
+_No additional response items._
 
 ---
 
