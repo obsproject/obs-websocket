@@ -125,7 +125,12 @@ QHash<QString, HandlerResponse(*)(WSRequestHandler*)> WSRequestHandler::messageM
 	{ "GetTextFreetype2Properties", WSRequestHandler::HandleGetTextFreetype2Properties },
 
 	{ "GetBrowserSourceProperties", WSRequestHandler::HandleGetBrowserSourceProperties },
-	{ "SetBrowserSourceProperties", WSRequestHandler::HandleSetBrowserSourceProperties }
+	{ "SetBrowserSourceProperties", WSRequestHandler::HandleSetBrowserSourceProperties },
+
+	{ "ListOutputs", WSRequestHandler::HandleListOutputs },
+	{ "GetOutputInfo", WSRequestHandler::HandleGetOutputInfo },
+	{ "StartOutput", WSRequestHandler::HandleStartOutput },
+	{ "StopOutput", WSRequestHandler::HandleStopOutput }
 };
 
 QSet<QString> WSRequestHandler::authNotRequired {
@@ -196,9 +201,9 @@ HandlerResponse WSRequestHandler::SendOKResponse(obs_data_t* additionalFields) {
 	return SendResponse("ok", additionalFields);
 }
 
-HandlerResponse WSRequestHandler::SendErrorResponse(const char* errorMessage) {
+HandlerResponse WSRequestHandler::SendErrorResponse(QString errorMessage) {
 	OBSDataAutoRelease fields = obs_data_create();
-	obs_data_set_string(fields, "error", errorMessage);
+	obs_data_set_string(fields, "error", errorMessage.toUtf8().constData());
 
 	return SendResponse("error", fields);
 }
