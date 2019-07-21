@@ -232,6 +232,45 @@ HandlerResponse WSRequestHandler::HandleGetStats(WSRequestHandler* req) {
 }
 
 /**
+ * Broadcast some Data (String) to all connected Websocket-Clients
+ *
+ * @param {String} `realm` Some Identifier to be choosen by the client
+ * @param {String} `data` User-defined data String
+ *
+ * @api requests
+ * @name Authenticate
+ * @category general
+ * @since 0.3
+ */
+HandlerResponse WSRequestHandler::HandleBroadcastWebSocketMessage(WSRequestHandler* req) {
+	if (!req->hasField("realm") || !req->hasField("data")) {
+		return req->SendErrorResponse("missing request parameters");
+	}
+
+	QString realm = obs_data_get_string(req->data, "realm");
+	QString data = obs_data_get_string(req->data, "data");
+
+	if (realm.isEmpty()) {
+		return req->SendErrorResponse("realm not specified!");
+	}
+
+	if (data.isEmpty()) {
+		return req->SendErrorResponse("data not specified!");
+	}
+
+	auto events = GetEventsSystem();
+
+	OBSDataAutoRelease broadcastData = obs_data_create();
+	obs_data_set_string(broadcastData, "realm", realm.toUtf8().constData());
+	obs_data_set_string(broadcastData, "data", data.toUtf8().constData());
+
+	events->broadcastUpdate("BroadcastWebSocketMessage", broadcastData);
+
+	return req->SendOKResponse();
+}
+
+
+/**
  * Get basic OBS video information
  * 
  * @return {int} `baseWidth` Base (canvas) width

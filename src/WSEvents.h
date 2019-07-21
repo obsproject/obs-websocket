@@ -49,6 +49,9 @@ public:
 	const char* GetRecordingTimecode();
 	obs_data_t* GetStats();
 
+	void broadcastUpdate(const char* updateType,
+		obs_data_t* additionalFields);
+
 	bool HeartbeatIsActive;
 
 private slots:
@@ -69,9 +72,6 @@ private:
 
 	uint64_t _lastBytesSent;
 	uint64_t _lastBytesSentTime;
-
-	void broadcastUpdate(const char* updateType,
-		obs_data_t* additionalFields);
 
 	void OnSceneChange();
 	void OnSceneListChange();

@@ -74,6 +74,8 @@ class WSRequestHandler : public QObject {
 		static HandlerResponse HandleSetFilenameFormatting(WSRequestHandler* req);
 		static HandlerResponse HandleGetFilenameFormatting(WSRequestHandler* req);
 
+		static HandlerResponse HandleBroadcastWebSocketMessage(WSRequestHandler* req);
+
 		static HandlerResponse HandleSetCurrentScene(WSRequestHandler* req);
 		static HandlerResponse HandleGetCurrentScene(WSRequestHandler* req);
 		static HandlerResponse HandleGetSceneList(WSRequestHandler* req);
