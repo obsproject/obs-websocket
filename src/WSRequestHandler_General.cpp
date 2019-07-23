@@ -235,12 +235,12 @@ HandlerResponse WSRequestHandler::HandleGetStats(WSRequestHandler* req) {
  * Broadcast some Data (String) to all connected Websocket-Clients
  *
  * @param {String} `realm` Some Identifier to be choosen by the client
- * @param {String} `data` User-defined data String
+ * @param {Object} `data` User-defined data String
  *
- * @api requests
- * @name Authenticate
+ * @api general
+ * @name BroadcastWebSocketMessage
  * @category general
- * @since 0.3
+ * @since 4.7.0
  */
 HandlerResponse WSRequestHandler::HandleBroadcastWebSocketMessage(WSRequestHandler* req) {
 	if (!req->hasField("realm") || !req->hasField("data")) {
@@ -248,13 +248,13 @@ HandlerResponse WSRequestHandler::HandleBroadcastWebSocketMessage(WSRequestHandl
 	}
 
 	QString realm = obs_data_get_string(req->data, "realm");
-	QString data = obs_data_get_string(req->data, "data");
+	OBSDataAutoRelease data = obs_data_get_obj(req->data, "data");
 
 	if (realm.isEmpty()) {
 		return req->SendErrorResponse("realm not specified!");
 	}
 
-	if (data.isEmpty()) {
+	if (!data) {
 		return req->SendErrorResponse("data not specified!");
 	}
 
@@ -262,7 +262,7 @@ HandlerResponse WSRequestHandler::HandleBroadcastWebSocketMessage(WSRequestHandl
 
 	OBSDataAutoRelease broadcastData = obs_data_create();
 	obs_data_set_string(broadcastData, "realm", realm.toUtf8().constData());
-	obs_data_set_string(broadcastData, "data", data.toUtf8().constData());
+	obs_data_set_obj(broadcastData, "data", data);
 
 	events->broadcastUpdate("BroadcastWebSocketMessage", broadcastData);
 
