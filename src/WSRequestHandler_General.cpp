@@ -232,7 +232,7 @@ HandlerResponse WSRequestHandler::HandleGetStats(WSRequestHandler* req) {
 }
 
 /**
- * Broadcast some Data (String) to all connected Websocket-Clients
+ * Broadcast some data to all connected WebSocket clients
  *
  * @param {String} `realm` Some Identifier to be choosen by the client
  * @param {Object} `data` User-defined data
