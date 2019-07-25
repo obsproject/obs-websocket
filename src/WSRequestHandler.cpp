@@ -36,7 +36,7 @@ QHash<QString, HandlerResponse(*)(WSRequestHandler*)> WSRequestHandler::messageM
 	{ "SetFilenameFormatting", WSRequestHandler::HandleSetFilenameFormatting },
 	{ "GetFilenameFormatting", WSRequestHandler::HandleGetFilenameFormatting },
 
-	{ "BroadcastWebSocketMessage", WSRequestHandler::HandleBroadcastWebSocketMessage },
+	{ "BroadcastCustomMessage", WSRequestHandler::HandleBroadcastCustomMessage },
 
 	{ "SetCurrentScene", WSRequestHandler::HandleSetCurrentScene },
 	{ "GetCurrentScene", WSRequestHandler::HandleGetCurrentScene },

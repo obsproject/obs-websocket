@@ -232,17 +232,17 @@ HandlerResponse WSRequestHandler::HandleGetStats(WSRequestHandler* req) {
 }
 
 /**
- * Broadcast some data to all connected WebSocket clients
+ * Broadcast custom message to all connected WebSocket clients
  *
- * @param {String} `realm` Some Identifier to be choosen by the client
+ * @param {String} `realm` Identifier to be choosen by the client
  * @param {Object} `data` User-defined data
  *
  * @api general
- * @name BroadcastWebSocketMessage
+ * @name BroadcastCustomMessage
  * @category general
  * @since 4.7.0
  */
-HandlerResponse WSRequestHandler::HandleBroadcastWebSocketMessage(WSRequestHandler* req) {
+HandlerResponse WSRequestHandler::HandleBroadcastCustomMessage(WSRequestHandler* req) {
 	if (!req->hasField("realm") || !req->hasField("data")) {
 		return req->SendErrorResponse("missing request parameters");
 	}
@@ -264,7 +264,7 @@ HandlerResponse WSRequestHandler::HandleBroadcastWebSocketMessage(WSRequestHandl
 	obs_data_set_string(broadcastData, "realm", realm.toUtf8().constData());
 	obs_data_set_obj(broadcastData, "data", data);
 
-	events->broadcastUpdate("BroadcastWebSocketMessage", broadcastData);
+	events->broadcastUpdate("CustomMessage", broadcastData);
 
 	return req->SendOKResponse();
 }
