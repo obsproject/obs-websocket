@@ -259,12 +259,7 @@ HandlerResponse WSRequestHandler::HandleBroadcastCustomMessage(WSRequestHandler*
 	}
 
 	auto events = GetEventsSystem();
-
-	OBSDataAutoRelease broadcastData = obs_data_create();
-	obs_data_set_string(broadcastData, "realm", realm.toUtf8().constData());
-	obs_data_set_obj(broadcastData, "data", data);
-
-	events->broadcastUpdate("CustomMessage", broadcastData);
+	events->OnBroadcastCustomMessage(realm, data);
 
 	return req->SendOKResponse();
 }
