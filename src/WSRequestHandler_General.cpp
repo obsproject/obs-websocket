@@ -234,8 +234,8 @@ HandlerResponse WSRequestHandler::HandleGetStats(WSRequestHandler* req) {
 /**
  * Broadcast custom message to all connected WebSocket clients
  *
- * @return {String} `realm` Identifier to be choosen by the client
- * @return {Object} `data` User-defined data
+ * @param {String} `realm` Identifier to be choosen by the client
+ * @param {Object} `data` User-defined data
  *
  * @api requests
  * @name BroadcastCustomMessage
