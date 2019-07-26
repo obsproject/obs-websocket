@@ -37,6 +37,7 @@ HandlerResponse WSRequestHandler::HandleSetCurrentScene(WSRequestHandler* req) {
 /**
  * Get the current scene's name and source items.
  * 
+ * @param {bool (optional)} `full` If true, extra information will be returned about each item
  * @return {String} `name` Name of the currently active scene.
  * @return {Array<SceneItem>} `sources` Ordered list of the current scene's source items.
  *
@@ -47,7 +48,8 @@ HandlerResponse WSRequestHandler::HandleSetCurrentScene(WSRequestHandler* req) {
  */
 HandlerResponse WSRequestHandler::HandleGetCurrentScene(WSRequestHandler* req) {
 	OBSSourceAutoRelease currentScene = obs_frontend_get_current_scene();
-	OBSDataArrayAutoRelease sceneItems = Utils::GetSceneItems(currentScene);
+	bool full = obs_data_get_bool(req->data, "full");
+	OBSDataArrayAutoRelease sceneItems = Utils::GetSceneItems(currentScene, full);
 
 	OBSDataAutoRelease data = obs_data_create();
 	obs_data_set_string(data, "name", obs_source_get_name(currentScene));
