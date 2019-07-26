@@ -82,6 +82,7 @@ auth_response = base64_encode(auth_response_hash)
     + [Exiting](#exiting)
   * [General](#general)
     + [Heartbeat](#heartbeat)
+    + [BroadcastCustomMessage](#broadcastcustommessage)
   * [Sources](#sources)
     + [SourceCreated](#sourcecreated)
     + [SourceDestroyed](#sourcedestroyed)
@@ -701,6 +702,19 @@ Emitted every 2 seconds after enabling it by calling SetHeartbeat.
 | `total-record-frames` | _int (optional)_ | Total frames recorded since the recording started. |
 | `stats` | _OBSStats_ | OBS Stats |
 
+
+---
+
+### BroadcastCustomMessage
+
+
+- Added in v4.7.0
+
+A custom broadcast message was received
+
+**Response Items:**
+
+_No additional response items._
 
 ---
 
