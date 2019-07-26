@@ -234,6 +234,8 @@ These are complex types, such as `Source` and `Scene`, which are used as argumen
 | `y` | _Number_ |  |
 | `parentGroupName` | _String (optional)_ | Name of the item's parent (if this item belongs to a group) |
 | `groupChildren` | _Array&lt;SceneItem&gt; (optional)_ | List of children (if this item is a group) |
+| `muted` | _Boolean (optional)_ | Whether the source has been muted (only included if full info was requested) |
+| `alignment` | _Number (optional)_ | The point on the source that the item is manipulated from. The sum of 1=Left or 2=Right, and 4=Top or 8=Bottom, or omit to center on that axis. (Only included if full info was requested.) |
 ## SceneItemTransform
 | Name | Type  | Description |
 | ---- | :---: | ------------|
@@ -2044,7 +2046,10 @@ Get the current scene's name and source items.
 
 **Request Fields:**
 
-_No specified parameters._
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `full` | _bool (optional)_ | If true, extra information will be returned about each item |
+
 
 **Response Items:**
 
