@@ -76,7 +76,7 @@ obs_data_array_t* Utils::StringListToArray(char** strings, const char* key) {
 	return list;
 }
 
-obs_data_array_t* Utils::GetSceneItems(obs_source_t* source) {
+obs_data_array_t* Utils::GetSceneItems(obs_source_t* source, bool full) {
 	obs_data_array_t* items = obs_data_array_create();
 	OBSScene scene = obs_scene_from_source(source);
 
@@ -84,17 +84,18 @@ obs_data_array_t* Utils::GetSceneItems(obs_source_t* source) {
 		return nullptr;
 	}
 
+	struct param_t {obs_data_array_t* arr; bool full;} params = {items, full};
 	obs_scene_enum_items(scene, [](
 			obs_scene_t* scene,
 			obs_sceneitem_t* currentItem,
 			void* param)
 	{
-		obs_data_array_t* data = reinterpret_cast<obs_data_array_t*>(param);
+		param_t* data = reinterpret_cast<param_t*>(param);
 
-		OBSDataAutoRelease itemData = GetSceneItemData(currentItem);
-		obs_data_array_insert(data, 0, itemData);
+		OBSDataAutoRelease itemData = GetSceneItemData(currentItem, data->full);
+		obs_data_array_insert(data->arr, 0, itemData);
 		return true;
-	}, items);
+	}, &params);
 
 	return items;
 }
@@ -115,8 +116,10 @@ obs_data_array_t* Utils::GetSceneItems(obs_source_t* source) {
  * @property {Number} `y`
  * @property {String (optional)} `parentGroupName` Name of the item's parent (if this item belongs to a group)
  * @property {Array<SceneItem> (optional)} `groupChildren` List of children (if this item is a group)
+ * @property {Boolean (optional)} `muted` Whether the source has been muted (only included if full info was requested)
+ * @property {Number (optional)} `alignment` The point on the source that the item is manipulated from. The sum of 1=Left or 2=Right, and 4=Top or 8=Bottom, or omit to center on that axis. (Only included if full info was requested.)
  */
-obs_data_t* Utils::GetSceneItemData(obs_sceneitem_t* item) {
+obs_data_t* Utils::GetSceneItemData(obs_sceneitem_t* item, bool full) {
 	if (!item) {
 		return nullptr;
 	}
@@ -150,6 +153,11 @@ obs_data_t* Utils::GetSceneItemData(obs_sceneitem_t* item) {
 	obs_data_set_bool(data, "render", obs_sceneitem_visible(item));
 	obs_data_set_bool(data, "locked", obs_sceneitem_locked(item));
 
+	if (full) {
+		obs_data_set_bool(data, "muted", obs_source_muted(itemSource));
+		obs_data_set_int(data, "alignment", obs_sceneitem_get_alignment(item));
+	}
+
 	obs_scene_t* parent = obs_sceneitem_get_scene(item);
 	if (parent) {
 		OBSSource parentSource = obs_scene_get_source(parent);
@@ -161,14 +169,15 @@ obs_data_t* Utils::GetSceneItemData(obs_sceneitem_t* item) {
 
 	if (obs_sceneitem_is_group(item)) {
 		OBSDataArrayAutoRelease children = obs_data_array_create();
+		struct param_t {obs_data_array_t* items; bool full;} params = {children, full};
 		obs_sceneitem_group_enum_items(item, [](obs_scene_t*, obs_sceneitem_t* currentItem, void* param) {
-			obs_data_array_t* items = reinterpret_cast<obs_data_array_t*>(param);
+			param_t* data = reinterpret_cast<param_t*>(param);
 
-			OBSDataAutoRelease itemData = GetSceneItemData(currentItem);
-			obs_data_array_push_back(items, itemData);
+			OBSDataAutoRelease itemData = GetSceneItemData(currentItem, data->full);
+			obs_data_array_push_back(data->items, itemData);
 
 			return true;
-		}, children);
+		}, &params);
 		obs_data_set_array(data, "groupChildren", children);
 	}
 

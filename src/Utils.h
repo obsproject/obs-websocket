@@ -37,8 +37,8 @@ typedef bool(*RecordingPausedFunction)();
 class Utils {
   public:
 	static obs_data_array_t* StringListToArray(char** strings, const char* key);
-	static obs_data_array_t* GetSceneItems(obs_source_t* source);
-	static obs_data_t* GetSceneItemData(obs_sceneitem_t* item);
+	static obs_data_array_t* GetSceneItems(obs_source_t* source, bool full=false);
+	static obs_data_t* GetSceneItemData(obs_sceneitem_t* item, bool full);
 
 	// These two functions support nested lookup into groups
 	static obs_sceneitem_t* GetSceneItemFromName(obs_scene_t* scene, QString name);
