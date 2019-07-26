@@ -1508,8 +1508,8 @@ void WSEvents::OnStudioModeSwitched(bool checked) {
 /**
  * A custom broadcast message was received
  *
- * @param {String} `realm` Identifier provided by the sender
- * @param {Object} `data` User-defined data
+ * @return {String} `realm` Identifier provided by the sender
+ * @return {Object} `data` User-defined data
  *
  * @api events
  * @name BroadcastCustomMessage
