@@ -49,6 +49,8 @@ public:
 	const char* GetRecordingTimecode();
 	obs_data_t* GetStats();
 
+	void OnBroadcastCustomMessage(QString realm, obs_data_t* data);
+
 	bool HeartbeatIsActive;
 
 private slots:

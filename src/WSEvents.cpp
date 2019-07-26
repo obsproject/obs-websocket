@@ -1506,6 +1506,25 @@ void WSEvents::OnStudioModeSwitched(bool checked) {
 }
 
 /**
+ * A custom broadcast message was received
+ *
+ * @param {String} `realm` Identifier provided by the sender
+ * @param {Object} `data` User-defined data
+ *
+ * @api events
+ * @name BroadcastCustomMessage
+ * @category general
+ * @since 4.7.0
+ */
+void WSEvents::OnBroadcastCustomMessage(QString realm, obs_data_t* data) {
+	OBSDataAutoRelease broadcastData = obs_data_create();
+	obs_data_set_string(broadcastData, "realm", realm.toUtf8().constData());
+	obs_data_set_obj(broadcastData, "data", data);
+
+	broadcastUpdate("BroadcastCustomMessage", broadcastData);
+}
+
+/**
  * @typedef {Object} `OBSStats`
  * @property {double} `fps` Current framerate.
  * @property {int} `render-total-frames` Number of frames rendered

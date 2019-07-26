@@ -232,6 +232,40 @@ HandlerResponse WSRequestHandler::HandleGetStats(WSRequestHandler* req) {
 }
 
 /**
+ * Broadcast custom message to all connected WebSocket clients
+ *
+ * @param {String} `realm` Identifier to be choosen by the client
+ * @param {Object} `data` User-defined data
+ *
+ * @api general
+ * @name BroadcastCustomMessage
+ * @category general
+ * @since 4.7.0
+ */
+HandlerResponse WSRequestHandler::HandleBroadcastCustomMessage(WSRequestHandler* req) {
+	if (!req->hasField("realm") || !req->hasField("data")) {
+		return req->SendErrorResponse("missing request parameters");
+	}
+
+	QString realm = obs_data_get_string(req->data, "realm");
+	OBSDataAutoRelease data = obs_data_get_obj(req->data, "data");
+
+	if (realm.isEmpty()) {
+		return req->SendErrorResponse("realm not specified!");
+	}
+
+	if (!data) {
+		return req->SendErrorResponse("data not specified!");
+	}
+
+	auto events = GetEventsSystem();
+	events->OnBroadcastCustomMessage(realm, data);
+
+	return req->SendOKResponse();
+}
+
+
+/**
  * Get basic OBS video information
  * 
  * @return {int} `baseWidth` Base (canvas) width
