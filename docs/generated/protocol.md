@@ -113,6 +113,7 @@ auth_response = base64_encode(auth_response_hash)
     + [SetFilenameFormatting](#setfilenameformatting)
     + [GetFilenameFormatting](#getfilenameformatting)
     + [GetStats](#getstats)
+    + [BroadcastCustomMessage](#broadcastcustommessage-1)
     + [GetVideoInfo](#getvideoinfo)
   * [Outputs](#outputs)
     + [ListOutputs](#listoutputs)
@@ -714,7 +715,11 @@ A custom broadcast message was received
 
 **Response Items:**
 
-_No additional response items._
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `realm` | _String_ | Identifier provided by the sender |
+| `data` | _Object_ | User-defined data |
+
 
 ---
 
@@ -1225,6 +1230,27 @@ _No specified parameters._
 | Name | Type  | Description |
 | ---- | :---: | ------------|
 | `stats` | _OBSStats_ | OBS stats |
+
+
+---
+
+### BroadcastCustomMessage
+
+
+- Added in v4.7.0
+
+Broadcast custom message to all connected WebSocket clients
+
+**Request Fields:**
+
+_No specified parameters._
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `realm` | _String_ | Identifier to be choosen by the client |
+| `data` | _Object_ | User-defined data |
 
 
 ---
