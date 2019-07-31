@@ -1243,15 +1243,15 @@ Broadcast custom message to all connected WebSocket clients
 
 **Request Fields:**
 
-_No specified parameters._
-
-**Response Items:**
-
 | Name | Type  | Description |
 | ---- | :---: | ------------|
 | `realm` | _String_ | Identifier to be choosen by the client |
 | `data` | _Object_ | User-defined data |
 
+
+**Response Items:**
+
+_No additional response items._
 
 ---
 

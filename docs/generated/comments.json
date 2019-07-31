@@ -3030,7 +3030,7 @@
       {
         "subheads": [],
         "description": "Broadcast custom message to all connected WebSocket clients",
-        "return": [
+        "param": [
           "{String} `realm` Identifier to be choosen by the client",
           "{Object} `data` User-defined data"
         ],
@@ -3038,7 +3038,7 @@
         "name": "BroadcastCustomMessage",
         "category": "general",
         "since": "4.7.0",
-        "returns": [
+        "params": [
           {
             "type": "String",
             "name": "realm",
