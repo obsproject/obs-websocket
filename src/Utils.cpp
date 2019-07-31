@@ -362,20 +362,6 @@ QSpinBox* Utils::GetTransitionDurationControl() {
 	return window->findChild<QSpinBox*>("transitionDuration");
 }
 
-int Utils::GetTransitionDuration() {
-	QSpinBox* control = GetTransitionDurationControl();
-	if (control)
-		return control->value();
-	else
-		return -1;
-}
-
-void Utils::SetTransitionDuration(int ms) {
-	QSpinBox* control = GetTransitionDurationControl();
-	if (control && ms >= 0)
-		control->setValue(ms);
-}
-
 bool Utils::SetTransitionByName(QString transitionName) {
 	OBSSourceAutoRelease transition = GetTransitionFromName(transitionName);
 
@@ -385,40 +371,6 @@ bool Utils::SetTransitionByName(QString transitionName) {
 	} else {
 		return false;
 	}
-}
-
-QPushButton* Utils::GetPreviewModeButtonControl() {
-	QMainWindow* main = (QMainWindow*)obs_frontend_get_main_window();
-	return main->findChild<QPushButton*>("modeSwitch");
-}
-
-QLayout* Utils::GetPreviewLayout() {
-	QMainWindow* main = (QMainWindow*)obs_frontend_get_main_window();
-	return main->findChild<QLayout*>("previewLayout");
-}
-
-void Utils::TransitionToProgram() {
-	if (!obs_frontend_preview_program_mode_active())
-		return;
-
-	// WARNING : if the layout created in OBS' CreateProgramOptions() changes
-	// then this won't work as expected
-
-	QMainWindow* main = (QMainWindow*)obs_frontend_get_main_window();
-
-	// The program options widget is the second item in the left-to-right layout
-	QWidget* programOptions = GetPreviewLayout()->itemAt(1)->widget();
-
-	// The "Transition" button lies in the mainButtonLayout
-	// which is the first itemin the program options' layout
-	QLayout* mainButtonLayout = programOptions->layout()->itemAt(1)->layout();
-	QWidget* transitionBtnWidget = mainButtonLayout->itemAt(0)->widget();
-
-	// Try to cast that widget into a button
-	QPushButton* transitionBtn = qobject_cast<QPushButton*>(transitionBtnWidget);
-
-	// Perform a click on that button
-	transitionBtn->click();
 }
 
 QString Utils::OBSVersionString() {

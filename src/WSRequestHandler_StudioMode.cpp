@@ -116,11 +116,11 @@ HandlerResponse WSRequestHandler::HandleTransitionToProgram(WSRequestHandler* re
 		if (obs_data_has_user_value(transitionInfo, "duration")) {
 			int transitionDuration =
 				obs_data_get_int(transitionInfo, "duration");
-			Utils::SetTransitionDuration(transitionDuration);
+			obs_frontend_set_transition_duration(transitionDuration);
 		}
 	}
 
-	Utils::TransitionToProgram();
+	obs_frontend_preview_program_trigger_transition();
 	return req->SendOKResponse();
 }
 

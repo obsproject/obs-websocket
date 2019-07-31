@@ -860,7 +860,7 @@ void WSEvents::OnTransitionBegin(void* param, calldata_t* data) {
 	{
 		duration = obs_data_get_int(destinationSettings, "transition_duration");
 	} else {
-		duration = Utils::GetTransitionDuration();
+		duration = obs_frontend_get_transition_duration();
 	}
 
 	OBSDataAutoRelease fields = obs_data_create();
