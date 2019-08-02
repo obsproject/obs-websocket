@@ -42,10 +42,13 @@ class WSRequestHandler : public QObject {
 		~WSRequestHandler();
 		std::string processIncomingMessage(std::string& textMessage);
 
-		bool hasField(QString fieldName, obs_data_type expectedFieldType = OBS_DATA_NULL);
+		bool hasField(QString fieldName, obs_data_type expectedFieldType = OBS_DATA_NULL,
+					  obs_data_number_type expectedNumberType = OBS_DATA_NUM_INVALID);
 		bool hasBool(QString fieldName);
 		bool hasString(QString fieldName);
-		bool hasNumber(QString fieldName);
+		bool hasNumber(QString fieldName, obs_data_number_type expectedNumberType = OBS_DATA_NUM_INVALID);
+		bool hasInteger(QString fieldName);
+		bool hasDouble(QString fieldName);
 		bool hasArray(QString fieldName);
 		bool hasObject(QString fieldName);
 
