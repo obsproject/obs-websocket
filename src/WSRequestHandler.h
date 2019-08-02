@@ -41,7 +41,13 @@ class WSRequestHandler : public QObject {
 		explicit WSRequestHandler(ConnectionProperties& connProperties);
 		~WSRequestHandler();
 		std::string processIncomingMessage(std::string& textMessage);
-		bool hasField(QString name);
+
+		bool hasField(QString fieldName, obs_data_type expectedFieldType = OBS_DATA_NULL);
+		bool hasBool(QString fieldName);
+		bool hasString(QString fieldName);
+		bool hasNumber(QString fieldName);
+		bool hasArray(QString fieldName);
+		bool hasObject(QString fieldName);
 
 		HandlerResponse SendOKResponse(obs_data_t* additionalFields = nullptr);
 		HandlerResponse SendErrorResponse(QString errorMessage);
