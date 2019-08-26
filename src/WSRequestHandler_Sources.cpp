@@ -923,7 +923,7 @@ HandlerResponse WSRequestHandler::HandleGetBrowserSourceProperties(WSRequestHand
 	}
 
 	QString sourceId = obs_source_get_id(source);
-	if (sourceId != "browser_source") {
+	if (sourceId != "browser_source" && sourceId != "linuxbrowser-source") {
 		return req->SendErrorResponse("not a browser source");
 	}
 
@@ -969,7 +969,7 @@ HandlerResponse WSRequestHandler::HandleSetBrowserSourceProperties(WSRequestHand
 	}
 
 	QString sourceId = obs_source_get_id(source);
-	if(sourceId != "browser_source") {
+	if(sourceId != "browser_source" && sourceId != "linuxbrowser-source") {
 		return req->SendErrorResponse("not a browser source");
 	}
 
