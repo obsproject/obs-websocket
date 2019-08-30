@@ -60,7 +60,6 @@ HandlerResponse WSRequestHandler::HandleCreateNewSource(WSRequestHandler* req)
 		return req->SendErrorResponse("Could not create a new source");	
 	}
 	return req->SendOKResponse(response);
-
 }
 
 /**
@@ -87,7 +86,6 @@ HandlerResponse WSRequestHandler::HandleAddNewScene(WSRequestHandler* req)
 		return req->SendErrorResponse("Could not create a new scene");
 	}
 	return req->SendOKResponse(response);
-	
 }
 
 /**
@@ -116,7 +114,6 @@ HandlerResponse WSRequestHandler::HandleAddActiveChild(WSRequestHandler* req)
 		return req->SendErrorResponse("Could not add source a recursion may be occurred");	
 	}
 	return req->SendOKResponse();
-	
 }
 
 /**
@@ -145,5 +142,4 @@ HandlerResponse WSRequestHandler::HandleAddtoScene(WSRequestHandler* req)
 		return req->SendErrorResponse("Could not add source to current Scene");
 	}
 	return req->SendOKResponse();
-
 }
