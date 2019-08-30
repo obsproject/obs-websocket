@@ -367,6 +367,12 @@ int Utils::GetTransitionDuration(obs_source_t* transition) {
 		return -1;
 	}
 
+	QString transitionKind = obs_source_get_id(transition);
+	if (transitionKind == "cut_transition") {
+		// If this is a Cut transition, return 0
+		return 0;
+	}
+
 	OBSSourceAutoRelease destinationScene = obs_transition_get_active_source(transition);
 	OBSDataAutoRelease destinationSettings = obs_source_get_private_settings(destinationScene);
 
