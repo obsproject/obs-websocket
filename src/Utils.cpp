@@ -362,6 +362,32 @@ QSpinBox* Utils::GetTransitionDurationControl() {
 	return window->findChild<QSpinBox*>("transitionDuration");
 }
 
+int Utils::GetTransitionDuration(obs_source_t* transition) {
+	if (!transition || obs_source_get_type(transition) != OBS_SOURCE_TYPE_TRANSITION) {
+		return -1;
+	}
+
+	QString transitionKind = obs_source_get_id(transition);
+	if (transitionKind == "cut_transition") {
+		// If this is a Cut transition, return 0
+		return 0;
+	}
+
+	OBSSourceAutoRelease destinationScene = obs_transition_get_active_source(transition);
+	OBSDataAutoRelease destinationSettings = obs_source_get_private_settings(destinationScene);
+
+	// Detect if transition is the global transition or a transition override.
+	// Fetching the duration is different depending on the case.
+	obs_data_item_t* transitionDurationItem = obs_data_item_byname(destinationSettings, "transition_duration");
+	int duration = (
+		transitionDurationItem
+		? obs_data_item_get_int(transitionDurationItem)
+		: obs_frontend_get_transition_duration()
+	);
+
+	return duration;
+}
+
 bool Utils::SetTransitionByName(QString transitionName) {
 	OBSSourceAutoRelease transition = GetTransitionFromName(transitionName);
 
