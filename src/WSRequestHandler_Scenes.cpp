@@ -94,8 +94,8 @@ HandlerResponse WSRequestHandler::HandleGetSceneList(WSRequestHandler* req) {
 */
 HandlerResponse WSRequestHandler::HandleReorderSceneItems(WSRequestHandler* req) {
 	QString sceneName = obs_data_get_string(req->data, "scene");
-	OBSSourceAutoRelease scene = Utils::GetSceneFromNameOrCurrent(sceneName);
-	if (!scene) {
+	OBSSourceAutoRelease sceneSource = Utils::GetSceneFromNameOrCurrent(sceneName);
+	if (!sceneSource) {
 		return req->SendErrorResponse("requested scene doesn't exist");
 	}
 
@@ -104,37 +104,28 @@ HandlerResponse WSRequestHandler::HandleReorderSceneItems(WSRequestHandler* req)
 		return req->SendErrorResponse("sceneItem order not specified");
 	}
 
-	size_t count = obs_data_array_count(items);
+	OBSScene scene = obs_scene_from_source(sceneSource);
 
-	std::vector<obs_sceneitem_t*> newOrder;
-	newOrder.reserve(count);
+	QVector<struct obs_sceneitem_order_info> orderList;
+	struct obs_sceneitem_order_info info;
 
-	for (size_t i = 0; i < count; ++i) {
+	size_t itemCount = obs_data_array_count(items);
+	for (int i = 0; i < itemCount; i++) {
 		OBSDataAutoRelease item = obs_data_array_item(items, i);
 
-		OBSSceneItemAutoRelease sceneItem = Utils::GetSceneItemFromItem(scene, item);
-		obs_sceneitem_release(sceneItem); // ref dec
-
+		OBSSceneItemAutoRelease sceneItem = Utils::GetSceneItemFromItem(sceneSource, item);
 		if (!sceneItem) {
 			return req->SendErrorResponse("Invalid sceneItem id or name specified");
 		}
-		
-		for (size_t j = 0; j <= i; ++j) {
-			if (sceneItem == newOrder[j]) {
-				return req->SendErrorResponse("Duplicate sceneItem in specified order");
-			}
-		}
 
-		newOrder.push_back(sceneItem);
+		info.group = nullptr;
+		info.item = sceneItem;
+		orderList.insert(0, info);
 	}
 
-	bool success = obs_scene_reorder_items(obs_scene_from_source(scene), newOrder.data(), count);
+	bool success = obs_scene_reorder_items2(scene, orderList.data(), orderList.size());
 	if (!success) {
 		return req->SendErrorResponse("Invalid sceneItem order");
-	}
-
-	for (auto const& item: newOrder) {
-		obs_sceneitem_release(item);
 	}
 
 	return req->SendOKResponse();
