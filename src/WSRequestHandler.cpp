@@ -226,9 +226,57 @@ HandlerResponse WSRequestHandler::SendResponse(const char* status, obs_data_t* f
 	return response;
 }
 
-bool WSRequestHandler::hasField(QString name) {
-	if (!data || name.isEmpty() || name.isNull())
+bool WSRequestHandler::hasField(QString name, obs_data_type expectedFieldType, obs_data_number_type expectedNumberType) {
+	if (!data || name.isEmpty() || name.isNull()) {
 		return false;
+	}
 
-	return obs_data_has_user_value(data, name.toUtf8());
+	obs_data_item_t* dataItem = obs_data_item_byname(data, name.toUtf8());
+	if (!dataItem) {
+		return false;
+	}
+
+	if (expectedFieldType != OBS_DATA_NULL) {
+		obs_data_type fieldType = obs_data_item_gettype(dataItem);
+		if (fieldType != expectedFieldType) {
+			return false;
+		}
+
+		if (fieldType == OBS_DATA_NUMBER && expectedNumberType != OBS_DATA_NUM_INVALID) {
+			obs_data_number_type numberType = obs_data_item_numtype(dataItem);
+			if (numberType != expectedNumberType) {
+				return false;
+			}
+		}
+	}
+
+	return true;
+}
+
+bool WSRequestHandler::hasBool(QString fieldName) {
+	return this->hasField(fieldName, OBS_DATA_BOOLEAN);
+}
+
+bool WSRequestHandler::hasString(QString fieldName) {
+	return this->hasField(fieldName, OBS_DATA_STRING);
+}
+
+bool WSRequestHandler::hasNumber(QString fieldName, obs_data_number_type expectedNumberType) {
+	return this->hasField(fieldName, OBS_DATA_NUMBER, expectedNumberType);
+}
+
+bool WSRequestHandler::hasInteger(QString fieldName) {
+	return this->hasNumber(fieldName, OBS_DATA_NUM_INT);
+}
+
+bool WSRequestHandler::hasDouble(QString fieldName) {
+	return this->hasNumber(fieldName, OBS_DATA_NUM_DOUBLE);
+}
+
+bool WSRequestHandler::hasArray(QString fieldName) {
+	return this->hasField(fieldName, OBS_DATA_ARRAY);
+}
+
+bool WSRequestHandler::hasObject(QString fieldName) {
+	return this->hasField(fieldName, OBS_DATA_OBJECT);
 }
