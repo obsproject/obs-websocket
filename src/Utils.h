@@ -54,6 +54,8 @@ class Utils {
 	// TODO contribute a proper frontend API method for this to OBS and remove this hack
 	static QSpinBox* GetTransitionDurationControl();
 
+	static int GetTransitionDuration(obs_source_t* transition);
+
 	static bool SetTransitionByName(QString transitionName);
 
 	static QString OBSVersionString();

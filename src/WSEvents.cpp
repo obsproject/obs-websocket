@@ -847,33 +847,25 @@ void WSEvents::OnTransitionBegin(void* param, calldata_t* data) {
 	auto instance = reinterpret_cast<WSEvents*>(param);
 
 	OBSSource transition = calldata_get_pointer<obs_source_t>(data, "source");
-	if (!transition) return;
+	if (!transition) {
+		return;
+	}
 
-	// Detect if transition is the global transition or a transition override.
-	// Fetching the duration is different depending on the case.
-	OBSSourceAutoRelease sourceScene = obs_transition_get_source(transition, OBS_TRANSITION_SOURCE_A);
-	OBSSourceAutoRelease destinationScene = obs_transition_get_active_source(transition);
-	OBSDataAutoRelease destinationSettings = obs_source_get_private_settings(destinationScene);
-	int duration = -1;
-	if (obs_data_has_default_value(destinationSettings, "transition_duration") ||
-		obs_data_has_user_value(destinationSettings, "transition_duration"))
-	{
-		duration = obs_data_get_int(destinationSettings, "transition_duration");
-	} else {
-		duration = obs_frontend_get_transition_duration();
+	int duration = Utils::GetTransitionDuration(transition);
+	if (duration < 0) {
+		blog(LOG_WARNING, "OnTransitionBegin: duration is negative !");
 	}
 
 	OBSDataAutoRelease fields = obs_data_create();
 	obs_data_set_string(fields, "name", obs_source_get_name(transition));
-	if (duration >= 0) {
-		obs_data_set_int(fields, "duration", duration);
-	} else {
-		blog(LOG_WARNING, "OnTransitionBegin: duration is negative !");
-	}
+	obs_data_set_int(fields, "duration", duration);
 
+	OBSSourceAutoRelease sourceScene = obs_transition_get_source(transition, OBS_TRANSITION_SOURCE_A);
 	if (sourceScene) {
 		obs_data_set_string(fields, "from-scene", obs_source_get_name(sourceScene));
 	}
+
+	OBSSourceAutoRelease destinationScene = obs_transition_get_active_source(transition);
 	if (destinationScene) {
 		obs_data_set_string(fields, "to-scene", obs_source_get_name(destinationScene));
 	}
