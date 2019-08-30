@@ -28,7 +28,7 @@
 * Create a new source
 *
 * @param {String} `sourceName` Name of the source to be created
-* @param {String} `typeIDName` type of the source to be created
+* @param {String} `sourceType` type of the source to be created
 * @param {Object} `sourceSettings` New settings. These will be merged to the new created source.
 * @param {Object} `hotkeyData` hotkeyData. These will be merged to the new created source.
 *
@@ -38,16 +38,16 @@
 */
 HandlerResponse WSRequestHandler::HandleCreateNewSource(WSRequestHandler* req)
 {
-	if (!req->hasField("sourceName") || !req->hasField("typeIDName") || !req->hasField("sourceSettings")) {
+	if (!req->hasField("sourceName") || !req->hasField("sourceType") || !req->hasField("sourceSettings")) {
 		return req->SendErrorResponse("missing request parameters");
 	}
 	const char* sourceName = obs_data_get_string(req->data, "sourceName");
-	const char* typeIDName = obs_data_get_string(req->data, "typeIDName");
+	const char* sourceType = obs_data_get_string(req->data, "sourceType");
 	
 	OBSDataAutoRelease newsourceSettings = obs_data_get_obj(req->data, "sourceSettings");
 	OBSDataAutoRelease hotkeyData = obs_data_get_obj(req->data, "hotkeyData");
 	
-	obs_source_t* source = obs_source_create(typeIDName, sourceName, newsourceSettings, hotkeyData);
+	obs_source_t* source = obs_source_create(sourceType, sourceName, newsourceSettings, hotkeyData);
 	obs_source_set_enabled(source, true);
 
 	OBSDataAutoRelease response = obs_data_create();
@@ -55,11 +55,16 @@ HandlerResponse WSRequestHandler::HandleCreateNewSource(WSRequestHandler* req)
 	obs_data_set_string(response, "sourceType", obs_source_get_id(source));
 	obs_data_set_obj(response, "sourceSettings", newsourceSettings);
 	obs_data_set_obj(response, "hotkeyData", hotkeyData);
+
+	if (source = nullptr) {
+		return req->SendErrorResponse("Could not create a new source");	
+	}
 	return req->SendOKResponse(response);
+
 }
 
 /**
-* Add New Scene
+* Create new scene
 *
 * @param {String} `sceneName` Name of the Scene to be created
 *
@@ -69,18 +74,24 @@ HandlerResponse WSRequestHandler::HandleCreateNewSource(WSRequestHandler* req)
 */
 HandlerResponse WSRequestHandler::HandleAddNewScene(WSRequestHandler* req)
 {
-	if (!req->hasField("sourceName") || !req->hasField("typeIDName") || !req->hasField("sourceSettings")) {
+	if (!req->hasField("sourceName") ) {
 		return req->SendErrorResponse("missing request parameters");
 	}
+
 	const char* sceneName = obs_data_get_string(req->data, "sceneName");
-	obs_scene_create(sceneName);
+
+	obs_scene_t* scene = obs_scene_create(sceneName);
 	OBSDataAutoRelease response = obs_data_create();
 	obs_data_set_string(response, "sceneName", sceneName);
+	if (scene = nullptr) {
+		return req->SendErrorResponse("Could not create a new scene");
+	}
 	return req->SendOKResponse(response);
+	
 }
 
 /**
-* Add Active Child
+* Add active child
 *
 * @param {String} `sourceParentName` Name of the parent source
 * @param {String} `sourceChildName` Name of the child source
@@ -99,8 +110,13 @@ HandlerResponse WSRequestHandler::HandleAddActiveChild(WSRequestHandler* req)
 	obs_source_t* sourceParent= obs_get_source_by_name(sourceParentName);
 	obs_source_t* sourceChild = obs_get_source_by_name(sourceChildName);
 	
-	obs_source_add_active_child(sourceParent, sourceChild);
+	bool  addingresponse =  obs_source_add_active_child(sourceParent, sourceChild);
+
+	if (addingresponse == false) {
+		return req->SendErrorResponse("Could not add source a recursion may be occurred");	
+	}
 	return req->SendOKResponse();
+	
 }
 
 /**
@@ -122,7 +138,12 @@ HandlerResponse WSRequestHandler::HandleAddtoScene(WSRequestHandler* req)
 
 	obs_source_t *Source= obs_get_source_by_name(targetSource);
 	obs_source_t *Scenetarget = obs_frontend_get_current_preview_scene();
-	obs_scene_t  *Scene =obs_scene_from_source(Scenetarget);
-	obs_scene_add(Scene, Source);
+	obs_scene_t  *Scene = obs_scene_from_source(Scenetarget);
+	obs_sceneitem_t* newsceneitem = obs_scene_add(Scene, Source);
+
+	if (newsceneitem = nullptr) {
+		return req->SendErrorResponse("Could not add source to current Scene");
+	}
 	return req->SendOKResponse();
+
 }

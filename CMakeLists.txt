@@ -39,7 +39,7 @@ set(obs-websocket_SOURCES
 	src/WSRequestHandler_Scenes.cpp
 	src/WSRequestHandler_SceneItems.cpp
 	src/WSRequestHandler_Sources.cpp
-	src/WSRequestHandler_ComponantsManagement.cpp
+	src/WSRequestHandler_ComponentsManagement.cpp
 	src/WSRequestHandler_Streaming.cpp
 	src/WSRequestHandler_StudioMode.cpp
 	src/WSRequestHandler_Transitions.cpp
