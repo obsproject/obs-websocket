@@ -29,17 +29,6 @@
 
 #define STATUS_INTERVAL 2000
 
-bool transitionIsCut(obs_source_t* transition) {
-	if (!transition)
-		return false;
-
-	if (obs_source_get_type(transition) == OBS_SOURCE_TYPE_TRANSITION
-		&& QString(obs_source_get_id(transition)) == "cut_transition") {
-		return true;
-	}
-	return false;
-}
-
 const char* nsToTimestamp(uint64_t ns) {
 	uint64_t ms = ns / (1000 * 1000);
 	uint64_t secs = ms / 1000;
