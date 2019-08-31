@@ -5,5 +5,5 @@
 /build64/
 /release/
 /installer/Output/
-
+.idea
 .vscode
