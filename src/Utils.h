@@ -36,11 +36,10 @@ class Utils {
 	static obs_data_array_t* StringListToArray(char** strings, const char* key);
 	static obs_data_array_t* GetSceneItems(obs_source_t* source);
 	static obs_data_t* GetSceneItemData(obs_sceneitem_t* item);
-	static obs_sceneitem_t* GetSceneItemFromName(
-		obs_source_t* source, QString name);
-	static obs_sceneitem_t* GetSceneItemFromItem(obs_source_t* scene, obs_data_t* item);
-	static obs_source_t* GetTransitionFromName(QString transitionName);
-	static obs_source_t* GetSceneFromNameOrCurrent(QString sceneName);
+
+	static obs_sceneitem_t* GetSceneItemFromName(obs_scene_t* scene, QString name);
+	static obs_sceneitem_t* GetSceneItemFromItem(obs_scene_t* scene, obs_data_t* item);
+	static obs_scene_t* GetSceneFromNameOrCurrent(QString sceneName);
 	static obs_data_t* GetSceneItemPropertiesData(obs_sceneitem_t* item);
 
 	static obs_data_array_t* GetSourceFiltersList(obs_source_t* source, bool includeSettings);
@@ -52,9 +51,8 @@ class Utils {
 
 	// TODO contribute a proper frontend API method for this to OBS and remove this hack
 	static QSpinBox* GetTransitionDurationControl();
-
 	static int GetTransitionDuration(obs_source_t* transition);
-
+	static obs_source_t* GetTransitionFromName(QString transitionName);
 	static bool SetTransitionByName(QString transitionName);
 
 	static QString OBSVersionString();
@@ -70,9 +68,11 @@ class Utils {
 
 	static QString ParseDataToQueryString(obs_data_t* data);
 	static obs_hotkey_t* FindHotkeyByName(QString name);
+
 	static bool ReplayBufferEnabled();
 	static void StartReplayBuffer();
 	static bool IsRPHotkeySet();
+
 	static const char* GetFilenameFormatting();
 	static bool SetFilenameFormatting(const char* filenameFormatting);
 };

@@ -49,13 +49,12 @@ HandlerResponse WSRequestHandler::HandleGetSceneItemProperties(WSRequestHandler*
 	}
 
 	QString sceneName = obs_data_get_string(req->data, "scene-name");
-	OBSSourceAutoRelease scene = Utils::GetSceneFromNameOrCurrent(sceneName);
+	OBSScene scene = Utils::GetSceneFromNameOrCurrent(sceneName);
 	if (!scene) {
 		return req->SendErrorResponse("requested scene doesn't exist");
 	}
 
-	OBSSceneItemAutoRelease sceneItem =
-		Utils::GetSceneItemFromName(scene, itemName);
+	OBSSceneItemAutoRelease sceneItem = Utils::GetSceneItemFromName(scene, itemName);
 	if (!sceneItem) {
 		return req->SendErrorResponse("specified scene item doesn't exist");
 	}
@@ -105,7 +104,7 @@ HandlerResponse WSRequestHandler::HandleSetSceneItemProperties(WSRequestHandler*
 	}
 
 	QString sceneName = obs_data_get_string(req->data, "scene-name");
-	OBSSourceAutoRelease scene = Utils::GetSceneFromNameOrCurrent(sceneName);
+	OBSScene scene = Utils::GetSceneFromNameOrCurrent(sceneName);
 	if (!scene) {
 		return req->SendErrorResponse("requested scene doesn't exist");
 	}
@@ -283,7 +282,7 @@ HandlerResponse WSRequestHandler::HandleResetSceneItem(WSRequestHandler* req) {
 	}
 
 	const char* sceneName = obs_data_get_string(req->data, "scene-name");
-	OBSSourceAutoRelease scene = Utils::GetSceneFromNameOrCurrent(sceneName);
+	OBSScene scene = Utils::GetSceneFromNameOrCurrent(sceneName);
 	if (!scene) {
 		return req->SendErrorResponse("requested scene doesn't exist");
 	}
@@ -329,7 +328,7 @@ HandlerResponse WSRequestHandler::HandleSetSceneItemRender(WSRequestHandler* req
 	}
 
 	const char* sceneName = obs_data_get_string(req->data, "scene-name");
-	OBSSourceAutoRelease scene = Utils::GetSceneFromNameOrCurrent(sceneName);
+	OBSScene scene = Utils::GetSceneFromNameOrCurrent(sceneName);
 	if (!scene) {
 		return req->SendErrorResponse("requested scene doesn't exist");
 	}
@@ -371,7 +370,7 @@ HandlerResponse WSRequestHandler::HandleSetSceneItemPosition(WSRequestHandler* r
 	}
 
 	QString sceneName = obs_data_get_string(req->data, "scene-name");
-	OBSSourceAutoRelease scene = Utils::GetSceneFromNameOrCurrent(sceneName);
+	OBSScene scene = Utils::GetSceneFromNameOrCurrent(sceneName);
 	if (!scene) {
 		return req->SendErrorResponse("requested scene could not be found");
 	}
@@ -419,7 +418,7 @@ HandlerResponse WSRequestHandler::HandleSetSceneItemTransform(WSRequestHandler* 
 	}
 
 	QString sceneName = obs_data_get_string(req->data, "scene-name");
-	OBSSourceAutoRelease scene = Utils::GetSceneFromNameOrCurrent(sceneName);
+	OBSScene scene = Utils::GetSceneFromNameOrCurrent(sceneName);
 	if (!scene) {
 		return req->SendErrorResponse("requested scene doesn't exist");
 	}
@@ -471,7 +470,7 @@ HandlerResponse WSRequestHandler::HandleSetSceneItemCrop(WSRequestHandler* req) 
 	}
 
 	QString sceneName = obs_data_get_string(req->data, "scene-name");
-	OBSSourceAutoRelease scene = Utils::GetSceneFromNameOrCurrent(sceneName);
+	OBSScene scene = Utils::GetSceneFromNameOrCurrent(sceneName);
 	if (!scene) {
 		return req->SendErrorResponse("requested scene doesn't exist");
 	}
@@ -511,7 +510,7 @@ HandlerResponse WSRequestHandler::HandleDeleteSceneItem(WSRequestHandler* req) {
 	}
 
 	const char* sceneName = obs_data_get_string(req->data, "scene");
-	OBSSourceAutoRelease scene = Utils::GetSceneFromNameOrCurrent(sceneName);
+	OBSScene scene = Utils::GetSceneFromNameOrCurrent(sceneName);
 	if (!scene) {
 		return req->SendErrorResponse("requested scene doesn't exist");
 	}
@@ -564,13 +563,13 @@ HandlerResponse WSRequestHandler::HandleDuplicateSceneItem(WSRequestHandler* req
 	}
 
 	const char* fromSceneName = obs_data_get_string(req->data, "fromScene");
-	OBSSourceAutoRelease fromScene = Utils::GetSceneFromNameOrCurrent(fromSceneName);
+	OBSScene fromScene = Utils::GetSceneFromNameOrCurrent(fromSceneName);
 	if (!fromScene) {
 		return req->SendErrorResponse("requested fromScene doesn't exist");
 	}
 
 	const char* toSceneName = obs_data_get_string(req->data, "toScene");
-	OBSSourceAutoRelease toScene = Utils::GetSceneFromNameOrCurrent(toSceneName);
+	OBSScene toScene = Utils::GetSceneFromNameOrCurrent(toSceneName);
 	if (!toScene) {
 		return req->SendErrorResponse("requested toScene doesn't exist");
 	}
@@ -586,7 +585,7 @@ HandlerResponse WSRequestHandler::HandleDuplicateSceneItem(WSRequestHandler* req
 	data.referenceItem = referenceItem;
 
 	obs_enter_graphics();
-	obs_scene_atomic_update(obs_scene_from_source(toScene), DuplicateSceneItem, &data);
+	obs_scene_atomic_update(toScene, DuplicateSceneItem, &data);
 	obs_leave_graphics();
 
 	obs_sceneitem_t *newItem = data.newItem;
@@ -600,7 +599,7 @@ HandlerResponse WSRequestHandler::HandleDuplicateSceneItem(WSRequestHandler* req
 
 	OBSDataAutoRelease responseData = obs_data_create();
 	obs_data_set_obj(responseData, "item", itemData);
-	obs_data_set_string(responseData, "scene", obs_source_get_name(toScene));
+	obs_data_set_string(responseData, "scene", obs_source_get_name(obs_scene_get_source(toScene)));
 
 	return req->SendOKResponse(responseData);
 }

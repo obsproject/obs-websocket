@@ -173,7 +173,11 @@ obs_data_t* Utils::GetSceneItemData(obs_sceneitem_t* item) {
 	return data;
 }
 
-obs_sceneitem_t* Utils::GetSceneItemFromItem(obs_source_t* scene, obs_data_t* itemInfo) {
+obs_sceneitem_t* Utils::GetSceneItemFromItem(obs_scene_t* scene, obs_data_t* itemInfo) {
+	if (!scene) {
+		return nullptr;
+	}
+
 	obs_data_item_t* idInfoItem = obs_data_item_byname(itemInfo, "id"); // TODO fix memory leak
 	int id = obs_data_item_get_int(idInfoItem);
 
@@ -181,7 +185,7 @@ obs_sceneitem_t* Utils::GetSceneItemFromItem(obs_source_t* scene, obs_data_t* it
 	const char* name = obs_data_item_get_string(nameInfoItem);
 
 	if (idInfoItem) {
-		obs_sceneitem_t* sceneItem = obs_scene_find_sceneitem_by_id(obs_scene_from_source(scene), id);
+		obs_sceneitem_t* sceneItem = obs_scene_find_sceneitem_by_id(scene, id);
 		obs_source_t* sceneItemSource = obs_sceneitem_get_source(sceneItem);
 
 		QString sceneItemName = obs_source_get_name(sceneItemSource);
@@ -197,7 +201,11 @@ obs_sceneitem_t* Utils::GetSceneItemFromItem(obs_source_t* scene, obs_data_t* it
 	return nullptr;
 }
 
-obs_sceneitem_t* Utils::GetSceneItemFromName(obs_source_t* source, QString name) {
+obs_sceneitem_t* Utils::GetSceneItemFromName(obs_scene_t* scene, QString name) {
+	if (!scene) {
+		return nullptr;
+	}
+
 	struct current_search {
 		QString query;
 		obs_sceneitem_t* result;
@@ -208,10 +216,6 @@ obs_sceneitem_t* Utils::GetSceneItemFromName(obs_source_t* source, QString name)
 	search.query = name;
 	search.result = nullptr;
 	search.enumCallback = nullptr;
-
-	OBSScene scene = obs_scene_from_source(source);
-	if (!scene)
-		return nullptr;
 
 	search.enumCallback = [](
 			obs_scene_t* scene,
@@ -282,17 +286,19 @@ obs_source_t* Utils::GetTransitionFromName(QString searchName) {
 	return foundTransition;
 }
 
-obs_source_t* Utils::GetSceneFromNameOrCurrent(QString sceneName) {
+obs_scene_t* Utils::GetSceneFromNameOrCurrent(QString sceneName) {
 	// Both obs_frontend_get_current_scene() and obs_get_source_by_name()
-	// do addref on the return source, so no need to use an OBSSource helper
-	obs_source_t* scene = nullptr;
+	// increase the returned source's refcount
+	OBSSourceAutoRelease sceneSource = nullptr;
 
-	if (sceneName.isEmpty() || sceneName.isNull())
-		scene = obs_frontend_get_current_scene();
-	else
-		scene = obs_get_source_by_name(sceneName.toUtf8());
+	if (sceneName.isEmpty() || sceneName.isNull()) {
+		sceneSource = obs_frontend_get_current_scene();
+	}
+	else {
+		sceneSource = obs_get_source_by_name(sceneName.toUtf8());
+	}
 
-	return scene;
+	return obs_scene_from_source(sceneSource);
 }
 
 obs_data_array_t* Utils::GetScenes() {

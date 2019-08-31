@@ -94,8 +94,8 @@ HandlerResponse WSRequestHandler::HandleGetSceneList(WSRequestHandler* req) {
 */
 HandlerResponse WSRequestHandler::HandleReorderSceneItems(WSRequestHandler* req) {
 	QString sceneName = obs_data_get_string(req->data, "scene");
-	OBSSourceAutoRelease sceneSource = Utils::GetSceneFromNameOrCurrent(sceneName);
-	if (!sceneSource) {
+	OBSScene scene = Utils::GetSceneFromNameOrCurrent(sceneName);
+	if (!scene) {
 		return req->SendErrorResponse("requested scene doesn't exist");
 	}
 
@@ -104,8 +104,6 @@ HandlerResponse WSRequestHandler::HandleReorderSceneItems(WSRequestHandler* req)
 		return req->SendErrorResponse("sceneItem order not specified");
 	}
 
-	OBSScene scene = obs_scene_from_source(sceneSource);
-
 	QVector<struct obs_sceneitem_order_info> orderList;
 	struct obs_sceneitem_order_info info;
 
@@ -113,7 +111,7 @@ HandlerResponse WSRequestHandler::HandleReorderSceneItems(WSRequestHandler* req)
 	for (int i = 0; i < itemCount; i++) {
 		OBSDataAutoRelease item = obs_data_array_item(items, i);
 
-		OBSSceneItemAutoRelease sceneItem = Utils::GetSceneItemFromItem(sceneSource, item);
+		OBSSceneItemAutoRelease sceneItem = Utils::GetSceneItemFromItem(scene, item);
 		if (!sceneItem) {
 			return req->SendErrorResponse("Invalid sceneItem id or name specified");
 		}
