@@ -178,10 +178,10 @@ obs_sceneitem_t* Utils::GetSceneItemFromItem(obs_scene_t* scene, obs_data_t* ite
 		return nullptr;
 	}
 
-	obs_data_item_t* idInfoItem = obs_data_item_byname(itemInfo, "id"); // TODO fix memory leak
+	OBSDataItemAutoRelease idInfoItem = obs_data_item_byname(itemInfo, "id");
 	int id = obs_data_item_get_int(idInfoItem);
 
-	obs_data_item_t* nameInfoItem = obs_data_item_byname(itemInfo, "name"); // TODO fix memory leak
+	OBSDataItemAutoRelease nameInfoItem = obs_data_item_byname(itemInfo, "name");
 	const char* name = obs_data_item_get_string(nameInfoItem);
 
 	if (idInfoItem) {
