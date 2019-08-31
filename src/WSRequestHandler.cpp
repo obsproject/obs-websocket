@@ -231,7 +231,7 @@ bool WSRequestHandler::hasField(QString name, obs_data_type expectedFieldType, o
 		return false;
 	}
 
-	obs_data_item_t* dataItem = obs_data_item_byname(data, name.toUtf8());
+	OBSDataItemAutoRelease dataItem = obs_data_item_byname(data, name.toUtf8());
 	if (!dataItem) {
 		return false;
 	}

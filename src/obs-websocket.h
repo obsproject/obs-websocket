@@ -38,6 +38,11 @@ using OBSDataArrayAutoRelease =
 using OBSOutputAutoRelease =
 	OBSRef<obs_output_t*, ___output_dummy_addref, obs_output_release>;
 
+void ___data_item_dummy_addref(obs_data_item_t*);
+void ___data_item_release(obs_data_item_t*);
+using OBSDataItemAutoRelease =
+	OBSRef<obs_data_item_t*, ___data_item_dummy_addref, ___data_item_release>;
+
 class Config;
 typedef std::shared_ptr<Config> ConfigPtr;
 
