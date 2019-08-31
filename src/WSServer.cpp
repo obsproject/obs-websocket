@@ -134,7 +134,15 @@ void WSServer::broadcast(std::string message)
 				continue;
 			}
 		}
-		_server.send(hdl, message, websocketpp::frame::opcode::text);
+
+		websocketpp::lib::error_code errorCode;
+		_server.send(hdl, message, websocketpp::frame::opcode::text, errorCode);
+
+		if (errorCode) {
+			std::string errorCodeMessage = errorCode.message();
+			blog(LOG_INFO, "server(broadcast): send failed: %s",
+				errorCodeMessage.c_str());
+		}
 	}
 }
 
@@ -166,7 +174,14 @@ void WSServer::onMessage(connection_hdl hdl, server::message_ptr message)
 		WSRequestHandler handler(connProperties);
 		std::string response = handler.processIncomingMessage(payload);
 
-		_server.send(hdl, response, websocketpp::frame::opcode::text);
+		websocketpp::lib::error_code errorCode;
+		_server.send(hdl, response, websocketpp::frame::opcode::text, errorCode);
+
+		if (errorCode) {
+			std::string errorCodeMessage = errorCode.message();
+			blog(LOG_INFO, "server(response): send failed: %s",
+				errorCodeMessage.c_str());
+		}
 	});
 }
 
