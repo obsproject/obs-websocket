@@ -1530,12 +1530,12 @@ obs_data_t* WSEvents::GetStats() {
 	double averageFrameTime = (double)obs_get_average_frame_time_ns() / 1000000.0;
 
 	config_t* currentProfile = obs_frontend_get_profile_config();
-	QString outputMode = config_get_string(currentProfile, "Output", "Mode");
-	QString path = (outputMode == "Advanced") ?
+	const char* outputMode = config_get_string(currentProfile, "Output", "Mode");
+	const char* path = strcmp(outputMode, "Advanced") ?
 		config_get_string(currentProfile, "SimpleOutput", "FilePath") :
 		config_get_string(currentProfile, "AdvOut", "RecFilePath");
 
-	double freeDiskSpace = (double)os_get_free_disk_space(path.toUtf8()) / (1024.0 * 1024.0);
+	double freeDiskSpace = (double)os_get_free_disk_space(path) / (1024.0 * 1024.0);
 
 	obs_data_set_double(stats, "fps", obs_get_active_fps());
 	obs_data_set_int(stats, "render-total-frames", obs_get_total_frames());
