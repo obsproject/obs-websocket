@@ -94,7 +94,7 @@ HandlerResponse WSRequestHandler::HandleGetSceneList(WSRequestHandler* req) {
 */
 HandlerResponse WSRequestHandler::HandleReorderSceneItems(WSRequestHandler* req) {
 	QString sceneName = obs_data_get_string(req->data, "scene");
-	OBSSourceAutoRelease scene = Utils::GetSceneFromNameOrCurrent(sceneName);
+	OBSScene scene = Utils::GetSceneFromNameOrCurrent(sceneName);
 	if (!scene) {
 		return req->SendErrorResponse("requested scene doesn't exist");
 	}
@@ -104,37 +104,46 @@ HandlerResponse WSRequestHandler::HandleReorderSceneItems(WSRequestHandler* req)
 		return req->SendErrorResponse("sceneItem order not specified");
 	}
 
-	size_t count = obs_data_array_count(items);
+	struct reorder_context {
+		obs_data_array_t* items;
+		bool success;
+		QString errorMessage;
+	};
 
-	std::vector<obs_sceneitem_t*> newOrder;
-	newOrder.reserve(count);
+	struct reorder_context ctx;
+	ctx.success = false;
+	ctx.items = items;
 
-	for (size_t i = 0; i < count; ++i) {
-		OBSDataAutoRelease item = obs_data_array_item(items, i);
+	obs_scene_atomic_update(scene, [](void* param, obs_scene_t* scene) {
+		auto ctx = reinterpret_cast<struct reorder_context*>(param);
 
-		OBSSceneItemAutoRelease sceneItem = Utils::GetSceneItemFromItem(scene, item);
-		obs_sceneitem_release(sceneItem); // ref dec
+		QVector<struct obs_sceneitem_order_info> orderList;
+		struct obs_sceneitem_order_info info;
 
-		if (!sceneItem) {
-			return req->SendErrorResponse("Invalid sceneItem id or name specified");
-		}
-		
-		for (size_t j = 0; j <= i; ++j) {
-			if (sceneItem == newOrder[j]) {
-				return req->SendErrorResponse("Duplicate sceneItem in specified order");
+		size_t itemCount = obs_data_array_count(ctx->items);
+		for (int i = 0; i < itemCount; i++) {
+			OBSDataAutoRelease item = obs_data_array_item(ctx->items, i);
+
+			OBSSceneItemAutoRelease sceneItem = Utils::GetSceneItemFromItem(scene, item);
+			if (!sceneItem) {
+				ctx->success = false;
+				ctx->errorMessage = "Invalid sceneItem id or name specified";
+				return;
 			}
+
+			info.group = nullptr;
+			info.item = sceneItem;
+			orderList.insert(0, info);
 		}
 
-		newOrder.push_back(sceneItem);
-	}
+		ctx->success = obs_scene_reorder_items2(scene, orderList.data(), orderList.size());
+		if (!ctx->success) {
+			ctx->errorMessage = "Invalid sceneItem order";
+		}
+	}, &ctx);
 
-	bool success = obs_scene_reorder_items(obs_scene_from_source(scene), newOrder.data(), count);
-	if (!success) {
-		return req->SendErrorResponse("Invalid sceneItem order");
-	}
-
-	for (auto const& item: newOrder) {
-		obs_sceneitem_release(item);
+	if (!ctx.success) {
+		return req->SendErrorResponse(ctx.errorMessage);
 	}
 
 	return req->SendOKResponse();

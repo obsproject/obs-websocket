@@ -69,12 +69,12 @@ HandlerResponse WSRequestHandler::HandleSetPreviewScene(WSRequestHandler* req) {
 	}
 
 	const char* scene_name = obs_data_get_string(req->data, "scene-name");
-	OBSSourceAutoRelease scene = Utils::GetSceneFromNameOrCurrent(scene_name);
+	OBSScene scene = Utils::GetSceneFromNameOrCurrent(scene_name);
 	if (!scene) {
 		return req->SendErrorResponse("specified scene doesn't exist");
 	}
 
-	obs_frontend_set_current_preview_scene(scene);
+	obs_frontend_set_current_preview_scene(obs_scene_get_source(scene));
 	return req->SendOKResponse();
 }
 
