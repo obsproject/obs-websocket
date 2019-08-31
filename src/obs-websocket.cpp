@@ -61,10 +61,6 @@ bool obs_module_load(void) {
 	_server = WSServerPtr(new WSServer());
 	_eventsSystem = WSEventsPtr(new WSEvents(_server));
 
-	if (_config->ServerEnabled) {
-		_server->start(_config->ServerPort);
-	}
-
 	// UI setup
 	obs_frontend_push_ui_translation(obs_module_get_string);
 	QMainWindow* mainWindow = (QMainWindow*)obs_frontend_get_main_window();
@@ -80,6 +76,17 @@ bool obs_module_load(void) {
 		// to pass the pointer to this QAction belonging to the main window
 		settingsDialog->ToggleShowHide();
 	});
+
+	// Setup event handler to start the server once OBS is ready
+	auto eventCallback = [](enum obs_frontend_event event, void *param) {
+		if (event == OBS_FRONTEND_EVENT_FINISHED_LOADING) {
+			if (_config->ServerEnabled) {
+				_server->start(_config->ServerPort);
+			}
+			obs_frontend_remove_event_callback((obs_frontend_event_cb)param, nullptr);
+		}
+	};
+	obs_frontend_add_event_callback(eventCallback, (void*)(obs_frontend_event_cb)eventCallback);
 
 	// Loading finished
 	blog(LOG_INFO, "module loaded!");
