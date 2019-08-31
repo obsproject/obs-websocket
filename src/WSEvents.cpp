@@ -30,14 +30,14 @@
 #define STATUS_INTERVAL 2000
 
 const char* nsToTimestamp(uint64_t ns) {
-	uint64_t ms = ns / (1000 * 1000);
-	uint64_t secs = ms / 1000;
-	uint64_t minutes = secs / 60;
+	uint64_t ms = ns / 1000000ULL;
+	uint64_t secs = ms / 1000ULL;
+	uint64_t minutes = secs / 60ULL;
 
-	uint64_t hoursPart = minutes / 60;
-	uint64_t minutesPart = minutes % 60;
-	uint64_t secsPart = secs % 60;
-	uint64_t msPart = ms % 1000;
+	uint64_t hoursPart = minutes / 60ULL;
+	uint64_t minutesPart = minutes % 60ULL;
+	uint64_t secsPart = secs % 60ULL;
+	uint64_t msPart = ms % 1000ULL;
 
 	char* ts = (char*)bmalloc(64);
 	sprintf(ts, "%02llu:%02llu:%02llu.%03llu", hoursPart, minutesPart, secsPart, msPart);
