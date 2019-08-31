@@ -185,7 +185,7 @@ obs_sceneitem_t* Utils::GetSceneItemFromItem(obs_scene_t* scene, obs_data_t* ite
 	const char* name = obs_data_item_get_string(nameInfoItem);
 
 	if (idInfoItem) {
-		obs_sceneitem_t* sceneItem = obs_scene_find_sceneitem_by_id(scene, id);
+		obs_sceneitem_t* sceneItem = GetSceneItemFromId(scene, id);
 		obs_source_t* sceneItemSource = obs_sceneitem_get_source(sceneItem);
 
 		QString sceneItemName = obs_source_get_name(sceneItemSource);
@@ -215,7 +215,6 @@ obs_sceneitem_t* Utils::GetSceneItemFromName(obs_scene_t* scene, QString name) {
 	current_search search;
 	search.query = name;
 	search.result = nullptr;
-	search.enumCallback = nullptr;
 
 	search.enumCallback = [](
 			obs_scene_t* scene,
@@ -235,6 +234,49 @@ obs_sceneitem_t* Utils::GetSceneItemFromName(obs_scene_t* scene, QString name) {
 			obs_source_get_name(obs_sceneitem_get_source(currentItem));
 
 		if (currentItemName == search->query) {
+			search->result = currentItem;
+			obs_sceneitem_addref(search->result);
+			return false;
+		}
+
+		return true;
+	};
+
+	obs_scene_enum_items(scene, search.enumCallback, &search);
+
+	return search.result;
+}
+
+obs_sceneitem_t* Utils::GetSceneItemFromId(obs_scene_t* scene, int64_t id) {
+	if (!scene) {
+		return nullptr;
+	}
+
+	struct current_search {
+		int query;
+		obs_sceneitem_t* result;
+		bool (*enumCallback)(obs_scene_t*, obs_sceneitem_t*, void*);
+	};
+
+	current_search search;
+	search.query = id;
+	search.result = nullptr;
+
+	search.enumCallback = [](
+		obs_scene_t* scene,
+		obs_sceneitem_t* currentItem,
+		void* param)
+	{
+		current_search* search = reinterpret_cast<current_search*>(param);
+
+		if (obs_sceneitem_is_group(currentItem)) {
+			obs_sceneitem_group_enum_items(currentItem, search->enumCallback, search);
+			if (search->result) {
+				return false;
+			}
+		}
+
+		if (obs_sceneitem_get_id(currentItem) == search->query) {
 			search->result = currentItem;
 			obs_sceneitem_addref(search->result);
 			return false;

@@ -37,7 +37,10 @@ class Utils {
 	static obs_data_array_t* GetSceneItems(obs_source_t* source);
 	static obs_data_t* GetSceneItemData(obs_sceneitem_t* item);
 
+	// These two functions support nested lookup into groups
 	static obs_sceneitem_t* GetSceneItemFromName(obs_scene_t* scene, QString name);
+	static obs_sceneitem_t* GetSceneItemFromId(obs_scene_t* scene, int64_t id);
+
 	static obs_sceneitem_t* GetSceneItemFromItem(obs_scene_t* scene, obs_data_t* item);
 	static obs_scene_t* GetSceneFromNameOrCurrent(QString sceneName);
 	static obs_data_t* GetSceneItemPropertiesData(obs_sceneitem_t* item);
