@@ -40,7 +40,7 @@ const char* nsToTimestamp(uint64_t ns) {
 	uint64_t msPart = ms % 1000;
 
 	char* ts = (char*)bmalloc(64);
-	sprintf(ts, "%02lu:%02lu:%02lu.%03lu", hoursPart, minutesPart, secsPart, msPart);
+	sprintf(ts, "%02llu:%02llu:%02llu.%03llu", hoursPart, minutesPart, secsPart, msPart);
 
 	return ts;
 }
