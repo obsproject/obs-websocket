@@ -708,6 +708,7 @@ void WSEvents::OnExit() {
 void WSEvents::StreamStatus() {
 	bool streamingActive = obs_frontend_streaming_active();
 	bool recordingActive = obs_frontend_recording_active();
+	bool recordingPaused = obs_frontend_recording_paused();
 	bool replayBufferActive = obs_frontend_replay_buffer_active();
 
 	OBSOutputAutoRelease streamOutput = obs_frontend_get_streaming_output();
@@ -746,6 +747,7 @@ void WSEvents::StreamStatus() {
 
 	obs_data_set_bool(data, "streaming", streamingActive);
 	obs_data_set_bool(data, "recording", recordingActive);
+	obs_data_set_bool(data, "recording-paused", recordingPaused);
 	obs_data_set_bool(data, "replay-buffer-active", replayBufferActive);
 
 	obs_data_set_int(data, "bytes-per-sec", bytesPerSec);
@@ -792,6 +794,7 @@ void WSEvents::Heartbeat() {
 
 	bool streamingActive = obs_frontend_streaming_active();
 	bool recordingActive = obs_frontend_recording_active();
+	bool recordingPaused = obs_frontend_recording_paused();
 
 	OBSDataAutoRelease data = obs_data_create();
 	OBSOutputAutoRelease recordOutput = obs_frontend_get_recording_output();
@@ -814,6 +817,7 @@ void WSEvents::Heartbeat() {
 	}
 
 	obs_data_set_bool(data, "recording", recordingActive);
+	obs_data_set_bool(data, "recording-paused", recordingPaused);
 	if (recordingActive) {
 		uint64_t totalRecordTime = (os_gettime_ns() - _recStarttime) / 1000000000;
 		obs_data_set_int(data, "total-record-time", totalRecordTime);
