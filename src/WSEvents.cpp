@@ -74,6 +74,8 @@ WSEvents::WSEvents(WSServerPtr srv) :
 	_streamStarttime(0),
 	_recStarttime(0),
 	_recPauseTime(0),
+	_lastBytesSent(0),
+	_lastBytesSentTime(0),
 	HeartbeatIsActive(false),
 	pulse(false)
 {
