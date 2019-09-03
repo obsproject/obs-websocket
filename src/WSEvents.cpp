@@ -17,6 +17,7 @@
  * with this program. If not, see <https://www.gnu.org/licenses/>
  */
 
+#include <inttypes.h>
 #include <util/platform.h>
 
 #include <QtWidgets/QPushButton>
@@ -39,7 +40,7 @@ QString nsToTimestamp(uint64_t ns) {
 	uint64_t secsPart = secs % 60ULL;
 	uint64_t msPart = ms % 1000ULL;
 
-	return QString::asprintf("%02llu:%02llu:%02llu.%03llu", hoursPart, minutesPart, secsPart, msPart);
+	return QString::asprintf("%02" PRIu64 ":%02" PRIu64 ":%02" PRIu64 ".%03" PRIu64, hoursPart, minutesPart, secsPart, msPart);
 }
 
 const char* sourceTypeToString(obs_source_type type) {
