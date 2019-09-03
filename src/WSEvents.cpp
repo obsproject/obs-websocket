@@ -770,9 +770,7 @@ void WSEvents::StreamStatus() {
 	_lastBytesSent = bytesSent;
 	_lastBytesSentTime = bytesSentTime;
 
-	uint64_t totalStreamTime =
-		(os_gettime_ns() - _streamStarttime) / 1000000000;
-
+	uint64_t totalStreamTime = (getStreamingTime() / 1000000000ULL);
 	int totalFrames = obs_output_get_total_frames(streamOutput);
 	int droppedFrames = obs_output_get_frames_dropped(streamOutput);
 
@@ -845,8 +843,7 @@ void WSEvents::Heartbeat() {
 
 	obs_data_set_bool(data, "streaming", streamingActive);
 	if (streamingActive) {
-		uint64_t totalStreamTime = (os_gettime_ns() - _streamStarttime) / 1000000000;
-		obs_data_set_int(data, "total-stream-time", totalStreamTime);
+		obs_data_set_int(data, "total-stream-time", (getStreamingTime() / 1000000000ULL));
 		obs_data_set_int(data, "total-stream-bytes", (uint64_t)obs_output_get_total_bytes(streamOutput));
 		obs_data_set_int(data, "total-stream-frames", obs_output_get_total_frames(streamOutput));
 	}
