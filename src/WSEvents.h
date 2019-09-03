@@ -69,8 +69,6 @@ private:
 	bool pulse;
 
 	uint64_t _streamStarttime;
-	uint64_t _recStarttime;
-	uint64_t _recPauseTime;
 
 	uint64_t _lastBytesSent;
 	uint64_t _lastBytesSentTime;
