@@ -24,7 +24,7 @@
 
 #include "WSRequestHandler.h"
 
-QHash<QString, HandlerResponse(*)(WSRequestHandler*)> WSRequestHandler::messageMap {
+QHash<QString, HandlerResponse(*)(WSRequestHandler*)> WSRequestHandler::messageMap{
 	{ "GetVersion", WSRequestHandler::HandleGetVersion },
 	{ "GetAuthRequired", WSRequestHandler::HandleGetAuthRequired },
 	{ "Authenticate", WSRequestHandler::HandleAuthenticate },
@@ -57,10 +57,14 @@ QHash<QString, HandlerResponse(*)(WSRequestHandler*)> WSRequestHandler::messageM
 	{ "GetStreamingStatus", WSRequestHandler::HandleGetStreamingStatus },
 	{ "StartStopStreaming", WSRequestHandler::HandleStartStopStreaming },
 	{ "StartStopRecording", WSRequestHandler::HandleStartStopRecording },
+
 	{ "StartStreaming", WSRequestHandler::HandleStartStreaming },
 	{ "StopStreaming", WSRequestHandler::HandleStopStreaming },
+
 	{ "StartRecording", WSRequestHandler::HandleStartRecording },
 	{ "StopRecording", WSRequestHandler::HandleStopRecording },
+	{ "PauseRecording", WSRequestHandler::HandlePauseRecording },
+	{ "ResumeRecording", WSRequestHandler::HandleResumeRecording },
 
 	{ "StartStopReplayBuffer", WSRequestHandler::HandleStartStopReplayBuffer },
 	{ "StartReplayBuffer", WSRequestHandler::HandleStartReplayBuffer },

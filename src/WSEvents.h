@@ -43,10 +43,12 @@ public:
 	void hookTransitionBeginEvent();
 	void unhookTransitionBeginEvent();
 
-	uint64_t GetStreamingTime();
-	const char* GetStreamingTimecode();
-	uint64_t GetRecordingTime();
-	const char* GetRecordingTimecode();
+	uint64_t getStreamingTime();
+	uint64_t getRecordingTime();
+
+	QString getStreamingTimecode();
+	QString getRecordingTimecode();
+	
 	obs_data_t* GetStats();
 
 	void OnBroadcastCustomMessage(QString realm, obs_data_t* data);
@@ -67,7 +69,6 @@ private:
 	bool pulse;
 
 	uint64_t _streamStarttime;
-	uint64_t _recStarttime;
 
 	uint64_t _lastBytesSent;
 	uint64_t _lastBytesSentTime;
@@ -95,6 +96,8 @@ private:
 	void OnRecordingStarted();
 	void OnRecordingStopping();
 	void OnRecordingStopped();
+	void OnRecordingPaused();
+	void OnRecordingResumed();
 
 	void OnReplayStarting();
 	void OnReplayStarted();

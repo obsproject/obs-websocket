@@ -1,6 +1,20 @@
+#include "WSRequestHandler.h"
+
+#include <util/platform.h>
 #include "Utils.h"
 
-#include "WSRequestHandler.h"
+HandlerResponse ifCanPause(WSRequestHandler* req, std::function<HandlerResponse()> callback)
+{
+	if (!obs_frontend_recording_active()) {
+		return req->SendErrorResponse("recording is not active");
+	}
+
+	if (!Utils::RecordingPauseSupported()) {
+		return req->SendErrorResponse("recording pauses are not available in this version of OBS Studio");
+	}
+
+	return callback();
+}
 
 /**
  * Toggle recording on or off.
@@ -11,11 +25,7 @@
  * @since 0.3
  */
 HandlerResponse WSRequestHandler::HandleStartStopRecording(WSRequestHandler* req) {
-	if (obs_frontend_recording_active())
-		obs_frontend_recording_stop();
-	else
-		obs_frontend_recording_start();
-
+	(obs_frontend_recording_active() ? obs_frontend_recording_stop() : obs_frontend_recording_start());
 	return req->SendOKResponse();
 }
 
@@ -29,12 +39,12 @@ HandlerResponse WSRequestHandler::HandleStartStopRecording(WSRequestHandler* req
  * @since 4.1.0
  */
 HandlerResponse WSRequestHandler::HandleStartRecording(WSRequestHandler* req) {
-	if (obs_frontend_recording_active() == false) {
-		obs_frontend_recording_start();
-		return req->SendOKResponse();
-	} else {
+	if (obs_frontend_recording_active()) {
 		return req->SendErrorResponse("recording already active");
 	}
+
+	obs_frontend_recording_start();
+	return req->SendOKResponse();
 }
 
 /**
@@ -47,12 +57,52 @@ HandlerResponse WSRequestHandler::HandleStartRecording(WSRequestHandler* req) {
  * @since 4.1.0
  */
  HandlerResponse WSRequestHandler::HandleStopRecording(WSRequestHandler* req) {
-	if (obs_frontend_recording_active() == true) {
-		obs_frontend_recording_stop();
-		return req->SendOKResponse();
-	} else {
+	if (!obs_frontend_recording_active()) {
 		return req->SendErrorResponse("recording not active");
 	}
+
+	obs_frontend_recording_stop();
+	return req->SendOKResponse();
+}
+
+/**
+* Pause the current recording.
+* Returns an error if recording is not active or already paused.
+*
+* @api requests
+* @name PauseRecording
+* @category recording
+* @since 4.7.0
+*/
+HandlerResponse WSRequestHandler::HandlePauseRecording(WSRequestHandler* req) {
+	return ifCanPause(req, [req]() {
+		if (Utils::RecordingPaused()) {
+			return req->SendErrorResponse("recording already paused");
+		}
+
+		Utils::PauseRecording(true);
+		return req->SendOKResponse();
+	});
+}
+
+/**
+* Resume/unpause the current recording (if paused).
+* Returns an error if recording is not active or not paused.
+*
+* @api requests
+* @name ResumeRecording
+* @category recording
+* @since 4.7.0
+*/
+HandlerResponse WSRequestHandler::HandleResumeRecording(WSRequestHandler* req) {
+	return ifCanPause(req, [req]() {
+		if (!Utils::RecordingPaused()) {
+			return req->SendErrorResponse("recording is not paused");
+		}
+
+		Utils::PauseRecording(false);
+		return req->SendOKResponse();
+	});
 }
 
 /**
@@ -62,7 +112,6 @@ HandlerResponse WSRequestHandler::HandleStartRecording(WSRequestHandler* req) {
  * Please note: if `SetRecordingFolder` is called while a recording is
  * in progress, the change won't be applied immediately and will be
  * effective on the next recording.
- * 
  * 
  * @param {String} `rec-folder` Path of the recording folder.
  *

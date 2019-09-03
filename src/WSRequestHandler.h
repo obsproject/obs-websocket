@@ -103,10 +103,14 @@ class WSRequestHandler : public QObject {
 		static HandlerResponse HandleGetStreamingStatus(WSRequestHandler* req);
 		static HandlerResponse HandleStartStopStreaming(WSRequestHandler* req);
 		static HandlerResponse HandleStartStopRecording(WSRequestHandler* req);
+
 		static HandlerResponse HandleStartStreaming(WSRequestHandler* req);
 		static HandlerResponse HandleStopStreaming(WSRequestHandler* req);
+
 		static HandlerResponse HandleStartRecording(WSRequestHandler* req);
 		static HandlerResponse HandleStopRecording(WSRequestHandler* req);
+		static HandlerResponse HandlePauseRecording(WSRequestHandler* req);
+		static HandlerResponse HandleResumeRecording(WSRequestHandler* req);
 
 		static HandlerResponse HandleStartStopReplayBuffer(WSRequestHandler* req);
 		static HandlerResponse HandleStartReplayBuffer(WSRequestHandler* req);

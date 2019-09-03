@@ -17,7 +17,9 @@
  * with this program. If not, see <https://www.gnu.org/licenses/>
  */
 
+#include <inttypes.h>
 #include <util/platform.h>
+#include <media-io/video-io.h>
 
 #include <QtWidgets/QPushButton>
 
@@ -29,7 +31,7 @@
 
 #define STATUS_INTERVAL 2000
 
-const char* nsToTimestamp(uint64_t ns) {
+QString nsToTimestamp(uint64_t ns) {
 	uint64_t ms = ns / 1000000ULL;
 	uint64_t secs = ms / 1000ULL;
 	uint64_t minutes = secs / 60ULL;
@@ -39,10 +41,7 @@ const char* nsToTimestamp(uint64_t ns) {
 	uint64_t secsPart = secs % 60ULL;
 	uint64_t msPart = ms % 1000ULL;
 
-	char* ts = (char*)bmalloc(64);
-	sprintf(ts, "%02llu:%02llu:%02llu.%03llu", hoursPart, minutesPart, secsPart, msPart);
-
-	return ts;
+	return QString::asprintf("%02" PRIu64 ":%02" PRIu64 ":%02" PRIu64 ".%03" PRIu64, hoursPart, minutesPart, secsPart, msPart);
 }
 
 const char* sourceTypeToString(obs_source_type type) {
@@ -75,7 +74,8 @@ const char* calldata_get_string(const calldata_t* data, const char* name) {
 WSEvents::WSEvents(WSServerPtr srv) :
 	_srv(srv),
 	_streamStarttime(0),
-	_recStarttime(0),
+	_lastBytesSent(0),
+	_lastBytesSentTime(0),
 	HeartbeatIsActive(false),
 	pulse(false)
 {
@@ -206,6 +206,14 @@ void WSEvents::FrontendEventHandler(enum obs_frontend_event event, void* private
 			owner->OnRecordingStopped();
 			break;
 
+		case OBS_FRONTEND_EVENT_RECORDING_PAUSED:
+			owner->OnRecordingPaused();
+			break;
+
+		case OBS_FRONTEND_EVENT_RECORDING_UNPAUSED:
+			owner->OnRecordingResumed();
+			break;
+
 		case OBS_FRONTEND_EVENT_REPLAY_BUFFER_STARTING:
 			owner->OnReplayStarting();
 			break;
@@ -247,17 +255,14 @@ void WSEvents::broadcastUpdate(const char* updateType,
 	OBSDataAutoRelease update = obs_data_create();
 	obs_data_set_string(update, "update-type", updateType);
 
-	const char* ts = nullptr;
 	if (obs_frontend_streaming_active()) {
-		ts = nsToTimestamp(os_gettime_ns() - _streamStarttime);
-		obs_data_set_string(update, "stream-timecode", ts);
-		bfree((void*)ts);
+		QString streamingTimecode = getStreamingTimecode();
+		obs_data_set_string(update, "stream-timecode", streamingTimecode.toUtf8().constData());
 	}
 
 	if (obs_frontend_recording_active()) {
-		ts = nsToTimestamp(os_gettime_ns() - _recStarttime);
-		obs_data_set_string(update, "rec-timecode", ts);
-		bfree((void*)ts);
+		QString recordingTimecode = getRecordingTimecode();
+		obs_data_set_string(update, "rec-timecode", recordingTimecode.toUtf8().constData());
 	}
 
 	if (additionalFields)
@@ -362,26 +367,34 @@ void WSEvents::unhookTransitionBeginEvent() {
 	obs_frontend_source_list_free(&transitions);
 }
 
-uint64_t WSEvents::GetStreamingTime() {
-	if (obs_frontend_streaming_active())
-		return (os_gettime_ns() - _streamStarttime);
-	else
+uint64_t getOutputRunningTime(obs_output_t* output) {
+	if (!output || !obs_output_active(output)) {
 		return 0;
+	}
+
+	video_t* video = obs_output_video(output);
+	uint64_t frameTimeNs = video_output_get_frame_time(video);
+	int totalFrames = obs_output_get_total_frames(output);
+
+	return (((uint64_t)totalFrames) * frameTimeNs);
 }
 
-const char* WSEvents::GetStreamingTimecode() {
-	return nsToTimestamp(GetStreamingTime());
+uint64_t WSEvents::getStreamingTime() {
+	OBSOutputAutoRelease streamingOutput = obs_frontend_get_streaming_output();
+	return getOutputRunningTime(streamingOutput);
 }
 
-uint64_t WSEvents::GetRecordingTime() {
-	if (obs_frontend_recording_active())
-		return (os_gettime_ns() - _recStarttime);
-	else
-		return 0;
+uint64_t WSEvents::getRecordingTime() {
+	OBSOutputAutoRelease recordingOutput = obs_frontend_get_recording_output();
+	return getOutputRunningTime(recordingOutput);
 }
 
-const char* WSEvents::GetRecordingTimecode() {
-	return nsToTimestamp(GetRecordingTime());
+QString WSEvents::getStreamingTimecode() {
+	return nsToTimestamp(getStreamingTime());
+}
+
+QString WSEvents::getRecordingTimecode() {
+	return nsToTimestamp(getRecordingTime());
 }
 
  /**
@@ -534,6 +547,7 @@ void WSEvents::OnStreamStarting() {
 void WSEvents::OnStreamStarted() {
 	_streamStarttime = os_gettime_ns();
 	_lastBytesSent = 0;
+
 	broadcastUpdate("StreamStarted");
 }
 
@@ -550,7 +564,6 @@ void WSEvents::OnStreamStarted() {
 void WSEvents::OnStreamStopping() {
 	OBSDataAutoRelease data = obs_data_create();
 	obs_data_set_bool(data, "preview-only", false);
-
 	broadcastUpdate("StreamStopping", data);
 }
 
@@ -564,6 +577,7 @@ void WSEvents::OnStreamStopping() {
  */
 void WSEvents::OnStreamStopped() {
 	_streamStarttime = 0;
+
 	broadcastUpdate("StreamStopped");
 }
 
@@ -588,7 +602,6 @@ void WSEvents::OnRecordingStarting() {
  * @since 0.3
  */
 void WSEvents::OnRecordingStarted() {
-	_recStarttime = os_gettime_ns();
 	broadcastUpdate("RecordingStarted");
 }
 
@@ -613,8 +626,31 @@ void WSEvents::OnRecordingStopping() {
  * @since 0.3
  */
 void WSEvents::OnRecordingStopped() {
-	_recStarttime = 0;
 	broadcastUpdate("RecordingStopped");
+}
+
+/**
+ * Current recording paused
+ *
+ * @api events
+ * @name RecordingPaused
+ * @category recording
+ * @since 4.7.0
+ */
+void WSEvents::OnRecordingPaused() {
+	broadcastUpdate("RecordingPaused");
+}
+
+/**
+ * Current recording resumed
+ *
+ * @api events
+ * @name RecordingResumed
+ * @category recording
+ * @since 4.7.0
+ */
+void WSEvents::OnRecordingResumed() {
+	broadcastUpdate("RecordingResumed");
 }
 
 /**
@@ -708,6 +744,7 @@ void WSEvents::OnExit() {
 void WSEvents::StreamStatus() {
 	bool streamingActive = obs_frontend_streaming_active();
 	bool recordingActive = obs_frontend_recording_active();
+	bool recordingPaused = Utils::RecordingPaused();
 	bool replayBufferActive = obs_frontend_replay_buffer_active();
 
 	OBSOutputAutoRelease streamOutput = obs_frontend_get_streaming_output();
@@ -734,9 +771,7 @@ void WSEvents::StreamStatus() {
 	_lastBytesSent = bytesSent;
 	_lastBytesSentTime = bytesSentTime;
 
-	uint64_t totalStreamTime =
-		(os_gettime_ns() - _streamStarttime) / 1000000000;
-
+	uint64_t totalStreamTime = (getStreamingTime() / 1000000000ULL);
 	int totalFrames = obs_output_get_total_frames(streamOutput);
 	int droppedFrames = obs_output_get_frames_dropped(streamOutput);
 
@@ -746,6 +781,7 @@ void WSEvents::StreamStatus() {
 
 	obs_data_set_bool(data, "streaming", streamingActive);
 	obs_data_set_bool(data, "recording", recordingActive);
+	obs_data_set_bool(data, "recording-paused", recordingPaused);
 	obs_data_set_bool(data, "replay-buffer-active", replayBufferActive);
 
 	obs_data_set_int(data, "bytes-per-sec", bytesPerSec);
@@ -792,6 +828,7 @@ void WSEvents::Heartbeat() {
 
 	bool streamingActive = obs_frontend_streaming_active();
 	bool recordingActive = obs_frontend_recording_active();
+	bool recordingPaused = Utils::RecordingPaused();
 
 	OBSDataAutoRelease data = obs_data_create();
 	OBSOutputAutoRelease recordOutput = obs_frontend_get_recording_output();
@@ -807,16 +844,15 @@ void WSEvents::Heartbeat() {
 
 	obs_data_set_bool(data, "streaming", streamingActive);
 	if (streamingActive) {
-		uint64_t totalStreamTime = (os_gettime_ns() - _streamStarttime) / 1000000000;
-		obs_data_set_int(data, "total-stream-time", totalStreamTime);
+		obs_data_set_int(data, "total-stream-time", (getStreamingTime() / 1000000000ULL));
 		obs_data_set_int(data, "total-stream-bytes", (uint64_t)obs_output_get_total_bytes(streamOutput));
 		obs_data_set_int(data, "total-stream-frames", obs_output_get_total_frames(streamOutput));
 	}
 
 	obs_data_set_bool(data, "recording", recordingActive);
+	obs_data_set_bool(data, "recording-paused", recordingPaused);
 	if (recordingActive) {
-		uint64_t totalRecordTime = (os_gettime_ns() - _recStarttime) / 1000000000;
-		obs_data_set_int(data, "total-record-time", totalRecordTime);
+		obs_data_set_int(data, "total-record-time", (getRecordingTime() / 1000000000ULL));
 		obs_data_set_int(data, "total-record-bytes", (uint64_t)obs_output_get_total_bytes(recordOutput));
 		obs_data_set_int(data, "total-record-frames", obs_output_get_total_frames(recordOutput));
 	}

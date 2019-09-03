@@ -26,19 +26,17 @@ HandlerResponse WSRequestHandler::HandleGetStreamingStatus(WSRequestHandler* req
 	OBSDataAutoRelease data = obs_data_create();
 	obs_data_set_bool(data, "streaming", obs_frontend_streaming_active());
 	obs_data_set_bool(data, "recording", obs_frontend_recording_active());
+	obs_data_set_bool(data, "recording-paused", Utils::RecordingPaused());
 	obs_data_set_bool(data, "preview-only", false);
 
-	const char* tc = nullptr;
 	if (obs_frontend_streaming_active()) {
-		tc = events->GetStreamingTimecode();
-		obs_data_set_string(data, "stream-timecode", tc);
-		bfree((void*)tc);
+		QString streamingTimecode = events->getStreamingTimecode();
+		obs_data_set_string(data, "stream-timecode", streamingTimecode.toUtf8().constData());
 	}
 
 	if (obs_frontend_recording_active()) {
-		tc = events->GetRecordingTimecode();
-		obs_data_set_string(data, "rec-timecode", tc);
-		bfree((void*)tc);
+		QString recordingTimecode = events->getRecordingTimecode();
+		obs_data_set_string(data, "rec-timecode", recordingTimecode.toUtf8().constData());
 	}
 
 	return req->SendOKResponse(data);
