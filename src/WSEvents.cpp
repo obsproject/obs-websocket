@@ -367,25 +367,26 @@ void WSEvents::unhookTransitionBeginEvent() {
 	obs_frontend_source_list_free(&transitions);
 }
 
-uint64_t WSEvents::getStreamingTime() {
-	if (!obs_frontend_streaming_active()) {
+uint64_t getOutputRunningTime(obs_output_t* output) {
+	if (!output || !obs_output_active(output)) {
 		return 0;
 	}
 
-	return (os_gettime_ns() - _streamStarttime);
+	video_t* video = obs_output_video(output);
+	uint64_t frameTimeNs = video_output_get_frame_time(video);
+	int totalFrames = obs_output_get_total_frames(output);
+
+	return (((uint64_t)totalFrames) * frameTimeNs);
+}
+
+uint64_t WSEvents::getStreamingTime() {
+	OBSOutputAutoRelease streamingOutput = obs_frontend_get_streaming_output();
+	return getOutputRunningTime(streamingOutput);
 }
 
 uint64_t WSEvents::getRecordingTime() {
 	OBSOutputAutoRelease recordingOutput = obs_frontend_get_recording_output();
-	if (!recordingOutput || !obs_output_active(recordingOutput)) {
-		return 0;
-	}
-
-	video_t* video = obs_output_video(recordingOutput);
-	uint64_t frameTimeNs = video_output_get_frame_time(video);
-	int totalFrames = obs_output_get_total_frames(recordingOutput);
-
-	return ( ((uint64_t)totalFrames) * frameTimeNs );
+	return getOutputRunningTime(recordingOutput);
 }
 
 QString WSEvents::getStreamingTimecode() {
