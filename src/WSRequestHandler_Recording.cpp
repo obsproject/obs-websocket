@@ -1,6 +1,28 @@
+#include "WSRequestHandler.h"
+
+#include <util/platform.h>
 #include "Utils.h"
 
-#include "WSRequestHandler.h"
+typedef void(*pauseRecordingFunction)(bool);
+typedef bool(*recordingPausedFunction)();
+
+HandlerResponse ifCanPause(WSRequestHandler* req, std::function<HandlerResponse(recordingPausedFunction, pauseRecordingFunction)> callback)
+{
+	void* frontendApi = os_dlopen("obs-frontend-api");
+
+	bool (*recordingPaused)() = (bool(*)())os_dlsym(frontendApi, "obs_frontend_recording_paused");
+	void (*pauseRecording)(bool) = (void(*)(bool))os_dlsym(frontendApi, "obs_frontend_recording_pause");
+
+	if (!recordingPaused || !pauseRecording) {
+		return req->SendErrorResponse("recording pause not supported");
+	}
+
+	if (!obs_frontend_recording_active()) {
+		return req->SendErrorResponse("recording is not active");
+	}
+
+	return callback(recordingPaused, pauseRecording);
+}
 
 /**
  * Toggle recording on or off.
@@ -65,22 +87,14 @@ HandlerResponse WSRequestHandler::HandleStartRecording(WSRequestHandler* req) {
 * @since 4.7.0
 */
 HandlerResponse WSRequestHandler::HandlePauseRecording(WSRequestHandler* req) {
-	// TODO runtime check
-#if LIBOBS_API_VER < MAKE_SEMANTIC_VERSION(23, 2, 2)
-	return req->SendErrorResponse("recording pause not supported");
-#else
-	if (!obs_frontend_recording_active()) {
-		return req->SendErrorResponse("recording is not active");
-	}
+	return ifCanPause(req, [req](recordingPausedFunction recordingPaused, pauseRecordingFunction pauseRecording) {
+		if (recordingPaused()) {
+			return req->SendErrorResponse("recording already paused");
+		}
 
-	if (obs_frontend_recording_paused()) {
-		return req->SendErrorResponse("recording already paused");
-	}
-
-	obs_frontend_recording_pause(true);
-
-	return req->SendOKResponse();
-#endif
+		pauseRecording(true);
+		return req->SendOKResponse();
+	});
 }
 
 /**
@@ -93,22 +107,14 @@ HandlerResponse WSRequestHandler::HandlePauseRecording(WSRequestHandler* req) {
 * @since 4.7.0
 */
 HandlerResponse WSRequestHandler::HandleResumeRecording(WSRequestHandler* req) {
-	// TODO runtime check
-#if LIBOBS_API_VER < MAKE_SEMANTIC_VERSION(23, 2, 2)
-	return req->SendErrorResponse("recording resume not supported");
-#else
-	if (!obs_frontend_recording_active()) {
-		return req->SendErrorResponse("recording is not active");
-	}
+	return ifCanPause(req, [req](recordingPausedFunction recordingPaused, pauseRecordingFunction pauseRecording) {
+		if (!recordingPaused()) {
+			return req->SendErrorResponse("recording is not paused");
+		}
 
-	if (!obs_frontend_recording_paused()) {
-		return req->SendErrorResponse("recording is not paused");
-	}
-
-	obs_frontend_recording_pause(false);
-
-	return req->SendOKResponse();
-#endif
+		pauseRecording(false);
+		return req->SendOKResponse();
+	});
 }
 
 /**
