@@ -31,6 +31,9 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <obs-module.h>
 #include <util/config-file.h>
 
+typedef void(*PauseRecordingFunction)(bool);
+typedef bool(*RecordingPausedFunction)();
+
 class Utils {
   public:
 	static obs_data_array_t* StringListToArray(char** strings, const char* key);
@@ -78,4 +81,8 @@ class Utils {
 
 	static const char* GetFilenameFormatting();
 	static bool SetFilenameFormatting(const char* filenameFormatting);
+
+	static bool RecordingPauseSupported();
+	static bool RecordingPaused();
+	static void PauseRecording(bool pause);
 };

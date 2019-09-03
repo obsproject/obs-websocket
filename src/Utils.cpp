@@ -22,6 +22,8 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include <obs-frontend-api.h>
 #include <obs.hpp>
+#include <util/platform.h>
+
 #include "obs-websocket.h"
 
 #include "Utils.h"
@@ -763,4 +765,52 @@ obs_data_array_t* Utils::GetSourceFiltersList(obs_source_t* source, bool include
 	}, &enumParams);
 
 	return enumParams.filters;
+}
+
+void getPauseRecordingFunctions(RecordingPausedFunction* recPausedFuncPtr, PauseRecordingFunction* pauseRecFuncPtr)
+{
+	void* frontendApi = os_dlopen("obs-frontend-api");
+
+	if (recPausedFuncPtr) {
+		*recPausedFuncPtr = (RecordingPausedFunction)os_dlsym(frontendApi, "obs_frontend_recording_paused");
+	}
+
+	if (pauseRecFuncPtr) {
+		*pauseRecFuncPtr = (PauseRecordingFunction)os_dlsym(frontendApi, "obs_frontend_recording_pause");
+	}
+
+	os_dlclose(frontendApi);
+}
+
+bool Utils::RecordingPauseSupported()
+{
+	RecordingPausedFunction recordingPaused = nullptr;
+	PauseRecordingFunction pauseRecording = nullptr;
+	getPauseRecordingFunctions(&recordingPaused, &pauseRecording);
+
+	return (recordingPaused && pauseRecording);
+}
+
+bool Utils::RecordingPaused()
+{
+	RecordingPausedFunction recordingPaused = nullptr;
+	getPauseRecordingFunctions(&recordingPaused, nullptr);
+
+	if (recordingPaused == nullptr) {
+		return false;
+	}
+
+	return recordingPaused();
+}
+
+void Utils::PauseRecording(bool pause)
+{
+	PauseRecordingFunction pauseRecording = nullptr;
+	getPauseRecordingFunctions(nullptr, &pauseRecording);
+
+	if (pauseRecording == nullptr) {
+		return;
+	}
+
+	pauseRecording(pause); 
 }

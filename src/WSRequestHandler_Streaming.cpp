@@ -26,7 +26,7 @@ HandlerResponse WSRequestHandler::HandleGetStreamingStatus(WSRequestHandler* req
 	OBSDataAutoRelease data = obs_data_create();
 	obs_data_set_bool(data, "streaming", obs_frontend_streaming_active());
 	obs_data_set_bool(data, "recording", obs_frontend_recording_active());
-	obs_data_set_bool(data, "recording-paused", obs_frontend_recording_paused());
+	obs_data_set_bool(data, "recording-paused", Utils::RecordingPaused());
 	obs_data_set_bool(data, "preview-only", false);
 
 	if (obs_frontend_streaming_active()) {

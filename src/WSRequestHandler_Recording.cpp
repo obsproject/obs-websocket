@@ -3,27 +3,17 @@
 #include <util/platform.h>
 #include "Utils.h"
 
-typedef void(*pauseRecordingFunction)(bool);
-typedef bool(*recordingPausedFunction)();
-
-HandlerResponse ifCanPause(WSRequestHandler* req, std::function<HandlerResponse(recordingPausedFunction, pauseRecordingFunction)> callback)
+HandlerResponse ifCanPause(WSRequestHandler* req, std::function<HandlerResponse()> callback)
 {
-	void* frontendApi = os_dlopen("obs-frontend-api");
-
-	bool (*recordingPaused)() = (bool(*)())os_dlsym(frontendApi, "obs_frontend_recording_paused");
-	void (*pauseRecording)(bool) = (void(*)(bool))os_dlsym(frontendApi, "obs_frontend_recording_pause");
-
-	os_dlclose(frontendApi);
-
-	if (!recordingPaused || !pauseRecording) {
-		return req->SendErrorResponse("recording pause not supported");
-	}
-
 	if (!obs_frontend_recording_active()) {
 		return req->SendErrorResponse("recording is not active");
 	}
 
-	return callback(recordingPaused, pauseRecording);
+	if (!Utils::RecordingPauseSupported()) {
+		return req->SendErrorResponse("recording pauses are not available in this version of OBS Studio");
+	}
+
+	return callback();
 }
 
 /**
@@ -85,12 +75,12 @@ HandlerResponse WSRequestHandler::HandleStartRecording(WSRequestHandler* req) {
 * @since 4.7.0
 */
 HandlerResponse WSRequestHandler::HandlePauseRecording(WSRequestHandler* req) {
-	return ifCanPause(req, [req](recordingPausedFunction recordingPaused, pauseRecordingFunction pauseRecording) {
-		if (recordingPaused()) {
+	return ifCanPause(req, [req]() {
+		if (Utils::RecordingPaused()) {
 			return req->SendErrorResponse("recording already paused");
 		}
 
-		pauseRecording(true);
+		Utils::PauseRecording(true);
 		return req->SendOKResponse();
 	});
 }
@@ -105,12 +95,12 @@ HandlerResponse WSRequestHandler::HandlePauseRecording(WSRequestHandler* req) {
 * @since 4.7.0
 */
 HandlerResponse WSRequestHandler::HandleResumeRecording(WSRequestHandler* req) {
-	return ifCanPause(req, [req](recordingPausedFunction recordingPaused, pauseRecordingFunction pauseRecording) {
-		if (!recordingPaused()) {
+	return ifCanPause(req, [req]() {
+		if (!Utils::RecordingPaused()) {
 			return req->SendErrorResponse("recording is not paused");
 		}
 
-		pauseRecording(false);
+		Utils::PauseRecording(false);
 		return req->SendOKResponse();
 	});
 }

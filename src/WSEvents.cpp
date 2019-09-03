@@ -381,7 +381,7 @@ uint64_t WSEvents::getRecordingTime() {
 		return 0;
 	}
 
-	if (obs_frontend_recording_paused() && _recPauseTime > 0) {
+	if (Utils::RecordingPaused() && _recPauseTime > 0) {
 		return (_recPauseTime - _recStarttime);
 	}
 
@@ -746,7 +746,7 @@ void WSEvents::OnExit() {
 void WSEvents::StreamStatus() {
 	bool streamingActive = obs_frontend_streaming_active();
 	bool recordingActive = obs_frontend_recording_active();
-	bool recordingPaused = obs_frontend_recording_paused();
+	bool recordingPaused = Utils::RecordingPaused();
 	bool replayBufferActive = obs_frontend_replay_buffer_active();
 
 	OBSOutputAutoRelease streamOutput = obs_frontend_get_streaming_output();
@@ -832,7 +832,7 @@ void WSEvents::Heartbeat() {
 
 	bool streamingActive = obs_frontend_streaming_active();
 	bool recordingActive = obs_frontend_recording_active();
-	bool recordingPaused = obs_frontend_recording_paused();
+	bool recordingPaused = Utils::RecordingPaused();
 
 	OBSDataAutoRelease data = obs_data_create();
 	OBSOutputAutoRelease recordOutput = obs_frontend_get_recording_output();
