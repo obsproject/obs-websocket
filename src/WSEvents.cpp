@@ -132,87 +132,112 @@ void WSEvents::FrontendEventHandler(enum obs_frontend_event event, void* private
 		return;
 	}
 
-	if (event == OBS_FRONTEND_EVENT_FINISHED_LOADING) {
-		owner->hookTransitionBeginEvent();
-	}
-	else if (event == OBS_FRONTEND_EVENT_SCENE_CHANGED) {
-		owner->OnSceneChange();
-	}
-	else if (event == OBS_FRONTEND_EVENT_SCENE_LIST_CHANGED) {
-		owner->OnSceneListChange();
-	}
-	else if (event == OBS_FRONTEND_EVENT_SCENE_COLLECTION_CHANGED) {
-		owner->hookTransitionBeginEvent();
-		owner->OnSceneCollectionChange();
-	}
-	else if (event == OBS_FRONTEND_EVENT_SCENE_COLLECTION_LIST_CHANGED) {
-		owner->OnSceneCollectionListChange();
-	}
-	else if (event == OBS_FRONTEND_EVENT_TRANSITION_CHANGED) {
-		owner->OnTransitionChange();
-	}
-	else if (event == OBS_FRONTEND_EVENT_TRANSITION_LIST_CHANGED) {
-		owner->hookTransitionBeginEvent();
-		owner->OnTransitionListChange();
-	}
-	else if (event == OBS_FRONTEND_EVENT_PROFILE_CHANGED) {
-		owner->OnProfileChange();
-	}
-	else if (event == OBS_FRONTEND_EVENT_PROFILE_LIST_CHANGED) {
-		owner->OnProfileListChange();
-	}
-	else if (event == OBS_FRONTEND_EVENT_STREAMING_STARTING) {
-		owner->OnStreamStarting();
-	}
-	else if (event == OBS_FRONTEND_EVENT_STREAMING_STARTED) {
-		owner->streamStatusTimer.start(STATUS_INTERVAL);
-		owner->StreamStatus();
+	switch (event) {
+		case OBS_FRONTEND_EVENT_FINISHED_LOADING:
+			owner->hookTransitionBeginEvent();
+			break;
+	
+		case OBS_FRONTEND_EVENT_SCENE_CHANGED:
+			owner->OnSceneChange();
+			break;
 
-		owner->OnStreamStarted();
-	}
-	else if (event == OBS_FRONTEND_EVENT_STREAMING_STOPPING) {
-		owner->streamStatusTimer.stop();
-		owner->OnStreamStopping();
-	}
-	else if (event == OBS_FRONTEND_EVENT_STREAMING_STOPPED) {
-		owner->OnStreamStopped();
-	}
-	else if (event == OBS_FRONTEND_EVENT_RECORDING_STARTING) {
-		owner->OnRecordingStarting();
-	}
-	else if (event == OBS_FRONTEND_EVENT_RECORDING_STARTED) {
-		owner->OnRecordingStarted();
-	}
-	else if (event == OBS_FRONTEND_EVENT_RECORDING_STOPPING) {
-		owner->OnRecordingStopping();
-	}
-	else if (event == OBS_FRONTEND_EVENT_RECORDING_STOPPED) {
-		owner->OnRecordingStopped();
-	}
-	else if (event == OBS_FRONTEND_EVENT_REPLAY_BUFFER_STARTING) {
-		owner->OnReplayStarting();
-	}
-	else if (event == OBS_FRONTEND_EVENT_REPLAY_BUFFER_STARTED) {
-		owner->OnReplayStarted();
-	}
-	else if (event == OBS_FRONTEND_EVENT_REPLAY_BUFFER_STOPPING) {
-		owner->OnReplayStopping();
-	}
-	else if (event == OBS_FRONTEND_EVENT_REPLAY_BUFFER_STOPPED) {
-		owner->OnReplayStopped();
-	}
-	else if (event == OBS_FRONTEND_EVENT_STUDIO_MODE_ENABLED) {
-		owner->OnStudioModeSwitched(true);
-	}
-	else if (event == OBS_FRONTEND_EVENT_STUDIO_MODE_DISABLED) {
-		owner->OnStudioModeSwitched(false);
-	}
-	else if (event == OBS_FRONTEND_EVENT_PREVIEW_SCENE_CHANGED) {
-		owner->OnPreviewSceneChanged();
-	}
-	else if (event == OBS_FRONTEND_EVENT_EXIT) {
-		owner->unhookTransitionBeginEvent();
-		owner->OnExit();
+		case OBS_FRONTEND_EVENT_SCENE_LIST_CHANGED:
+			owner->OnSceneListChange();
+			break;
+
+		case OBS_FRONTEND_EVENT_SCENE_COLLECTION_CHANGED:
+			owner->hookTransitionBeginEvent();
+			owner->OnSceneCollectionChange();
+			break;
+
+		case OBS_FRONTEND_EVENT_SCENE_COLLECTION_LIST_CHANGED:
+			owner->OnSceneCollectionListChange();
+			break;
+
+		case OBS_FRONTEND_EVENT_TRANSITION_CHANGED:
+			owner->OnTransitionChange();
+			break;
+
+		case OBS_FRONTEND_EVENT_TRANSITION_LIST_CHANGED:
+			owner->hookTransitionBeginEvent();
+			owner->OnTransitionListChange();
+			break;
+
+		case OBS_FRONTEND_EVENT_PROFILE_CHANGED:
+			owner->OnProfileChange();
+			break;
+
+		case OBS_FRONTEND_EVENT_PROFILE_LIST_CHANGED:
+			owner->OnProfileListChange();
+			break;
+
+		case OBS_FRONTEND_EVENT_STREAMING_STARTING:
+			owner->OnStreamStarting();
+			break;
+
+		case OBS_FRONTEND_EVENT_STREAMING_STARTED:
+			owner->streamStatusTimer.start(STATUS_INTERVAL);
+			owner->StreamStatus();
+			owner->OnStreamStarted();
+			break;
+
+		case OBS_FRONTEND_EVENT_STREAMING_STOPPING:
+			owner->streamStatusTimer.stop();
+			owner->OnStreamStopping();
+			break;
+
+		case OBS_FRONTEND_EVENT_STREAMING_STOPPED:
+			owner->OnStreamStopped();
+			break;
+
+		case OBS_FRONTEND_EVENT_RECORDING_STARTING:
+			owner->OnRecordingStarting();
+			break;
+
+		case OBS_FRONTEND_EVENT_RECORDING_STARTED:
+			owner->OnRecordingStarted();
+			break;
+
+		case OBS_FRONTEND_EVENT_RECORDING_STOPPING:
+			owner->OnRecordingStopping();
+			break;
+
+		case OBS_FRONTEND_EVENT_RECORDING_STOPPED:
+			owner->OnRecordingStopped();
+			break;
+
+		case OBS_FRONTEND_EVENT_REPLAY_BUFFER_STARTING:
+			owner->OnReplayStarting();
+			break;
+
+		case OBS_FRONTEND_EVENT_REPLAY_BUFFER_STARTED:
+			owner->OnReplayStarted();
+			break;
+
+		case OBS_FRONTEND_EVENT_REPLAY_BUFFER_STOPPING:
+			owner->OnReplayStopping();
+			break;
+
+		case OBS_FRONTEND_EVENT_REPLAY_BUFFER_STOPPED:
+			owner->OnReplayStopped();
+			break;
+
+		case OBS_FRONTEND_EVENT_STUDIO_MODE_ENABLED:
+			owner->OnStudioModeSwitched(true);
+			break;
+
+		case OBS_FRONTEND_EVENT_STUDIO_MODE_DISABLED:
+			owner->OnStudioModeSwitched(false);
+			break;
+
+		case OBS_FRONTEND_EVENT_PREVIEW_SCENE_CHANGED:
+			owner->OnPreviewSceneChanged();
+			break;
+
+		case OBS_FRONTEND_EVENT_EXIT:
+			owner->unhookTransitionBeginEvent();
+			owner->OnExit();
+			break;
 	}
 }
 
