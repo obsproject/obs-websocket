@@ -65,6 +65,10 @@ HandlerResponse WSRequestHandler::HandleStartRecording(WSRequestHandler* req) {
 * @since 4.7.0
 */
 HandlerResponse WSRequestHandler::HandlePauseRecording(WSRequestHandler* req) {
+	// TODO runtime check
+#if LIBOBS_API_VER < MAKE_SEMANTIC_VERSION(23, 2, 2)
+	return req->SendErrorResponse("recording pause not supported");
+#else
 	if (!obs_frontend_recording_active()) {
 		return req->SendErrorResponse("recording is not active");
 	}
@@ -76,6 +80,7 @@ HandlerResponse WSRequestHandler::HandlePauseRecording(WSRequestHandler* req) {
 	obs_frontend_recording_pause(true);
 
 	return req->SendOKResponse();
+#endif
 }
 
 /**
@@ -88,6 +93,10 @@ HandlerResponse WSRequestHandler::HandlePauseRecording(WSRequestHandler* req) {
 * @since 4.7.0
 */
 HandlerResponse WSRequestHandler::HandleResumeRecording(WSRequestHandler* req) {
+	// TODO runtime check
+#if LIBOBS_API_VER < MAKE_SEMANTIC_VERSION(23, 2, 2)
+	return req->SendErrorResponse("recording resume not supported");
+#else
 	if (!obs_frontend_recording_active()) {
 		return req->SendErrorResponse("recording is not active");
 	}
@@ -99,6 +108,7 @@ HandlerResponse WSRequestHandler::HandleResumeRecording(WSRequestHandler* req) {
 	obs_frontend_recording_pause(false);
 
 	return req->SendOKResponse();
+#endif
 }
 
 /**
