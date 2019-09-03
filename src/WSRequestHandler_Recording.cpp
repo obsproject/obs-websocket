@@ -33,11 +33,7 @@ HandlerResponse ifCanPause(WSRequestHandler* req, std::function<HandlerResponse(
  * @since 0.3
  */
 HandlerResponse WSRequestHandler::HandleStartStopRecording(WSRequestHandler* req) {
-	if (obs_frontend_recording_active())
-		obs_frontend_recording_stop();
-	else
-		obs_frontend_recording_start();
-
+	(obs_frontend_recording_active() ? obs_frontend_recording_stop() : obs_frontend_recording_start());
 	return req->SendOKResponse();
 }
 
@@ -51,12 +47,12 @@ HandlerResponse WSRequestHandler::HandleStartStopRecording(WSRequestHandler* req
  * @since 4.1.0
  */
 HandlerResponse WSRequestHandler::HandleStartRecording(WSRequestHandler* req) {
-	if (obs_frontend_recording_active() == false) {
-		obs_frontend_recording_start();
-		return req->SendOKResponse();
-	} else {
+	if (obs_frontend_recording_active()) {
 		return req->SendErrorResponse("recording already active");
 	}
+
+	obs_frontend_recording_start();
+	return req->SendOKResponse();
 }
 
 /**
@@ -69,12 +65,12 @@ HandlerResponse WSRequestHandler::HandleStartRecording(WSRequestHandler* req) {
  * @since 4.1.0
  */
  HandlerResponse WSRequestHandler::HandleStopRecording(WSRequestHandler* req) {
-	if (obs_frontend_recording_active() == true) {
-		obs_frontend_recording_stop();
-		return req->SendOKResponse();
-	} else {
+	if (!obs_frontend_recording_active()) {
 		return req->SendErrorResponse("recording not active");
 	}
+
+	obs_frontend_recording_stop();
+	return req->SendOKResponse();
 }
 
 /**
