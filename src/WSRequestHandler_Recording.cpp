@@ -56,13 +56,58 @@ HandlerResponse WSRequestHandler::HandleStartRecording(WSRequestHandler* req) {
 }
 
 /**
+* Pause the current recording.
+* Returns an error if recording is not active or already paused.
+*
+* @api requests
+* @name PauseRecording
+* @category recording
+* @since 4.7.0
+*/
+HandlerResponse WSRequestHandler::HandlePauseRecording(WSRequestHandler* req) {
+	if (!obs_frontend_recording_active()) {
+		return req->SendErrorResponse("recording is not active");
+	}
+
+	if (obs_frontend_recording_paused()) {
+		return req->SendErrorResponse("recording already paused");
+	}
+
+	obs_frontend_recording_pause(true);
+
+	return req->SendOKResponse();
+}
+
+/**
+* Resume/unpause the current recording (if paused).
+* Returns an error if recording is not active or not paused.
+*
+* @api requests
+* @name ResumeRecording
+* @category recording
+* @since 4.7.0
+*/
+HandlerResponse WSRequestHandler::HandleResumeRecording(WSRequestHandler* req) {
+	if (!obs_frontend_recording_active()) {
+		return req->SendErrorResponse("recording is not active");
+	}
+
+	if (!obs_frontend_recording_paused()) {
+		return req->SendErrorResponse("recording is not paused");
+	}
+
+	obs_frontend_recording_pause(false);
+
+	return req->SendOKResponse();
+}
+
+/**
  * In the current profile, sets the recording folder of the Simple and Advanced
  * output modes to the specified value.
  * 
  * Please note: if `SetRecordingFolder` is called while a recording is
  * in progress, the change won't be applied immediately and will be
  * effective on the next recording.
- * 
  * 
  * @param {String} `rec-folder` Path of the recording folder.
  *
