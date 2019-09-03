@@ -95,6 +95,8 @@ private:
 	void OnRecordingStarted();
 	void OnRecordingStopping();
 	void OnRecordingStopped();
+	void OnRecordingPaused();
+	void OnRecordingResumed();
 
 	void OnReplayStarting();
 	void OnReplayStarted();

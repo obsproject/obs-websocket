@@ -206,6 +206,14 @@ void WSEvents::FrontendEventHandler(enum obs_frontend_event event, void* private
 			owner->OnRecordingStopped();
 			break;
 
+		case OBS_FRONTEND_EVENT_RECORDING_PAUSED:
+			owner->OnRecordingPaused();
+			break;
+
+		case OBS_FRONTEND_EVENT_RECORDING_UNPAUSED:
+			owner->OnRecordingResumed();
+			break;
+
 		case OBS_FRONTEND_EVENT_REPLAY_BUFFER_STARTING:
 			owner->OnReplayStarting();
 			break;
@@ -615,6 +623,30 @@ void WSEvents::OnRecordingStopping() {
 void WSEvents::OnRecordingStopped() {
 	_recStarttime = 0;
 	broadcastUpdate("RecordingStopped");
+}
+
+/**
+ * Current recording paused
+ *
+ * @api events
+ * @name RecordingPaused
+ * @category recording
+ * @since 4.7.0
+ */
+void WSEvents::OnRecordingPaused() {
+	broadcastUpdate("RecordingPaused");
+}
+
+/**
+ * Current recording resumed
+ *
+ * @api events
+ * @name RecordingResumed
+ * @category recording
+ * @since 4.7.0
+ */
+void WSEvents::OnRecordingResumed() {
+	broadcastUpdate("RecordingResumed");
 }
 
 /**
