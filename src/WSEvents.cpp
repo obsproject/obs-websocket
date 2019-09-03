@@ -29,7 +29,7 @@
 
 #define STATUS_INTERVAL 2000
 
-const char* nsToTimestamp(uint64_t ns) {
+QString nsToTimestamp(uint64_t ns) {
 	uint64_t ms = ns / 1000000ULL;
 	uint64_t secs = ms / 1000ULL;
 	uint64_t minutes = secs / 60ULL;
@@ -39,10 +39,7 @@ const char* nsToTimestamp(uint64_t ns) {
 	uint64_t secsPart = secs % 60ULL;
 	uint64_t msPart = ms % 1000ULL;
 
-	char* ts = (char*)bmalloc(64);
-	sprintf(ts, "%02llu:%02llu:%02llu.%03llu", hoursPart, minutesPart, secsPart, msPart);
-
-	return ts;
+	return QString::asprintf("%02llu:%02llu:%02llu.%03llu", hoursPart, minutesPart, secsPart, msPart);
 }
 
 const char* sourceTypeToString(obs_source_type type) {
@@ -76,6 +73,7 @@ WSEvents::WSEvents(WSServerPtr srv) :
 	_srv(srv),
 	_streamStarttime(0),
 	_recStarttime(0),
+	_recPauseTime(0),
 	HeartbeatIsActive(false),
 	pulse(false)
 {
@@ -255,17 +253,14 @@ void WSEvents::broadcastUpdate(const char* updateType,
 	OBSDataAutoRelease update = obs_data_create();
 	obs_data_set_string(update, "update-type", updateType);
 
-	const char* ts = nullptr;
 	if (obs_frontend_streaming_active()) {
-		ts = nsToTimestamp(os_gettime_ns() - _streamStarttime);
-		obs_data_set_string(update, "stream-timecode", ts);
-		bfree((void*)ts);
+		QString streamingTimecode = getStreamingTimecode();
+		obs_data_set_string(update, "stream-timecode", streamingTimecode.toUtf8().constData());
 	}
 
 	if (obs_frontend_recording_active()) {
-		ts = nsToTimestamp(os_gettime_ns() - _recStarttime);
-		obs_data_set_string(update, "rec-timecode", ts);
-		bfree((void*)ts);
+		QString recordingTimecode = getRecordingTimecode();
+		obs_data_set_string(update, "rec-timecode", recordingTimecode.toUtf8().constData());
 	}
 
 	if (additionalFields)
@@ -370,26 +365,32 @@ void WSEvents::unhookTransitionBeginEvent() {
 	obs_frontend_source_list_free(&transitions);
 }
 
-uint64_t WSEvents::GetStreamingTime() {
-	if (obs_frontend_streaming_active())
-		return (os_gettime_ns() - _streamStarttime);
-	else
+uint64_t WSEvents::getStreamingTime() {
+	if (!obs_frontend_streaming_active()) {
 		return 0;
+	}
+
+	return (os_gettime_ns() - _streamStarttime);
 }
 
-const char* WSEvents::GetStreamingTimecode() {
-	return nsToTimestamp(GetStreamingTime());
-}
-
-uint64_t WSEvents::GetRecordingTime() {
-	if (obs_frontend_recording_active())
-		return (os_gettime_ns() - _recStarttime);
-	else
+uint64_t WSEvents::getRecordingTime() {
+	if (!obs_frontend_recording_active()) {
 		return 0;
+	}
+
+	if (obs_frontend_recording_paused() && _recPauseTime > 0) {
+		return (_recPauseTime - _recStarttime);
+	}
+
+	return (os_gettime_ns() - _recStarttime);
 }
 
-const char* WSEvents::GetRecordingTimecode() {
-	return nsToTimestamp(GetRecordingTime());
+QString WSEvents::getStreamingTimecode() {
+	return nsToTimestamp(getStreamingTime());
+}
+
+QString WSEvents::getRecordingTimecode() {
+	return nsToTimestamp(getRecordingTime());
 }
 
  /**
@@ -634,6 +635,7 @@ void WSEvents::OnRecordingStopped() {
  * @since 4.7.0
  */
 void WSEvents::OnRecordingPaused() {
+	_recPauseTime = os_gettime_ns();
 	broadcastUpdate("RecordingPaused");
 }
 
@@ -646,6 +648,7 @@ void WSEvents::OnRecordingPaused() {
  * @since 4.7.0
  */
 void WSEvents::OnRecordingResumed() {
+	_recPauseTime = 0;
 	broadcastUpdate("RecordingResumed");
 }
 
