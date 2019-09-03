@@ -13,6 +13,8 @@ HandlerResponse ifCanPause(WSRequestHandler* req, std::function<HandlerResponse(
 	bool (*recordingPaused)() = (bool(*)())os_dlsym(frontendApi, "obs_frontend_recording_paused");
 	void (*pauseRecording)(bool) = (void(*)(bool))os_dlsym(frontendApi, "obs_frontend_recording_pause");
 
+	os_dlclose(frontendApi);
+
 	if (!recordingPaused || !pauseRecording) {
 		return req->SendErrorResponse("recording pause not supported");
 	}
