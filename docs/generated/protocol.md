@@ -73,6 +73,8 @@ auth_response = base64_encode(auth_response_hash)
     + [RecordingStarted](#recordingstarted)
     + [RecordingStopping](#recordingstopping)
     + [RecordingStopped](#recordingstopped)
+    + [RecordingPaused](#recordingpaused)
+    + [RecordingResumed](#recordingresumed)
   * [Replay Buffer](#replay-buffer)
     + [ReplayStarting](#replaystarting)
     + [ReplayStarted](#replaystarted)
@@ -128,6 +130,8 @@ auth_response = base64_encode(auth_response_hash)
     + [StartStopRecording](#startstoprecording)
     + [StartRecording](#startrecording)
     + [StopRecording](#stoprecording)
+    + [PauseRecording](#pauserecording)
+    + [ResumeRecording](#resumerecording)
     + [SetRecordingFolder](#setrecordingfolder)
     + [GetRecordingFolder](#getrecordingfolder)
   * [Replay Buffer](#replay-buffer-1)
@@ -601,6 +605,32 @@ _No additional response items._
 - Added in v0.3
 
 Recording stopped successfully.
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+### RecordingPaused
+
+
+- Added in v4.7.0
+
+Current recording paused
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+### RecordingResumed
+
+
+- Added in v4.7.0
+
+Current recording resumed
 
 **Response Items:**
 
@@ -1475,6 +1505,42 @@ _No additional response items._
 
 Stop recording.
 Will return an `error` if recording is not active.
+
+**Request Fields:**
+
+_No specified parameters._
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+### PauseRecording
+
+
+- Added in v4.7.0
+
+Pause the current recording.
+Returns an error if recording is not active or already paused.
+
+**Request Fields:**
+
+_No specified parameters._
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+### ResumeRecording
+
+
+- Added in v4.7.0
+
+Resume/unpause the current recording (if paused).
+Returns an error if recording is not active or not paused.
 
 **Request Fields:**
 

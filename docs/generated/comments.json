@@ -1326,6 +1326,72 @@
         "lead": "",
         "type": "class",
         "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Current recording paused",
+        "api": "events",
+        "name": "RecordingPaused",
+        "category": "recording",
+        "since": "4.7.0",
+        "names": [
+          {
+            "name": "",
+            "description": "RecordingPaused"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "recording"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.7.0"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "RecordingPaused"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Current recording resumed",
+        "api": "events",
+        "name": "RecordingResumed",
+        "category": "recording",
+        "since": "4.7.0",
+        "names": [
+          {
+            "name": "",
+            "description": "RecordingResumed"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "recording"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.7.0"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "RecordingResumed"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
       }
     ],
     "replay buffer": [
@@ -3570,6 +3636,72 @@
         "heading": {
           "level": 2,
           "text": "StopRecording"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Pause the current recording.\nReturns an error if recording is not active or already paused.",
+        "api": "requests",
+        "name": "PauseRecording",
+        "category": "recording",
+        "since": "4.7.0",
+        "names": [
+          {
+            "name": "",
+            "description": "PauseRecording"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "recording"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.7.0"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "PauseRecording"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Resume/unpause the current recording (if paused).\nReturns an error if recording is not active or not paused.",
+        "api": "requests",
+        "name": "ResumeRecording",
+        "category": "recording",
+        "since": "4.7.0",
+        "names": [
+          {
+            "name": "",
+            "description": "ResumeRecording"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "recording"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.7.0"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "ResumeRecording"
         },
         "lead": "",
         "type": "class",
