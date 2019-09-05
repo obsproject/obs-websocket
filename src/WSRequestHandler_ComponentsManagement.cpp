@@ -122,7 +122,7 @@ HandlerResponse WSRequestHandler::HandleAddActiveChild(WSRequestHandler* req)
 * @param {String} `sourceName` Name of the source to be added
 *
 * @api requests
-* @name AddtoScene 
+* @name AddToScene 
 * @category sources
 */
 HandlerResponse WSRequestHandler::HandleAddToScene(WSRequestHandler* req)
