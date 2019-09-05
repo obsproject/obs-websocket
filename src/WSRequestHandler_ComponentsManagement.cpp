@@ -33,7 +33,7 @@
 * @param {Object} `hotkeyData` hotkeyData. These will be merged to the new created source.
 *
 * @api requests
-* @name AddNewSource
+* @name CreateNewSource
 * @category sources
 */
 HandlerResponse WSRequestHandler::HandleCreateNewSource(WSRequestHandler* req)
@@ -56,7 +56,7 @@ HandlerResponse WSRequestHandler::HandleCreateNewSource(WSRequestHandler* req)
 	obs_data_set_obj(response, "sourceSettings", newsourceSettings);
 	obs_data_set_obj(response, "hotkeyData", hotkeyData);
 
-	if (source = nullptr) {
+	if (source == nullptr) {
 		return req->SendErrorResponse("Could not create a new source");	
 	}
 	return req->SendOKResponse(response);
@@ -68,12 +68,12 @@ HandlerResponse WSRequestHandler::HandleCreateNewSource(WSRequestHandler* req)
 * @param {String} `sceneName` Name of the Scene to be created
 *
 * @api requests
-* @name AddNewScene
+* @name CreateNewScene
 * @category sources
 */
-HandlerResponse WSRequestHandler::HandleAddNewScene(WSRequestHandler* req)
+HandlerResponse WSRequestHandler::HandleCreateNewScene(WSRequestHandler* req)
 {
-	if (!req->hasField("sourceName") ) {
+	if (!req->hasField("sceneName") ) {
 		return req->SendErrorResponse("missing request parameters");
 	}
 
@@ -82,7 +82,7 @@ HandlerResponse WSRequestHandler::HandleAddNewScene(WSRequestHandler* req)
 	obs_scene_t* scene = obs_scene_create(sceneName);
 	OBSDataAutoRelease response = obs_data_create();
 	obs_data_set_string(response, "sceneName", sceneName);
-	if (scene = nullptr) {
+	if (scene == nullptr) {
 		return req->SendErrorResponse("Could not create a new scene");
 	}
 	return req->SendOKResponse(response);
@@ -125,7 +125,7 @@ HandlerResponse WSRequestHandler::HandleAddActiveChild(WSRequestHandler* req)
 * @name AddtoScene 
 * @category sources
 */
-HandlerResponse WSRequestHandler::HandleAddtoScene(WSRequestHandler* req)
+HandlerResponse WSRequestHandler::HandleAddToScene(WSRequestHandler* req)
 {
 	if (!req->hasField("sourceName")) {
 		return req->SendErrorResponse("missing request parameters");
@@ -134,11 +134,11 @@ HandlerResponse WSRequestHandler::HandleAddtoScene(WSRequestHandler* req)
 	const char* targetSource = obs_data_get_string(req->data, "sourceName");
 
 	obs_source_t *Source= obs_get_source_by_name(targetSource);
-	obs_source_t *Scenetarget = obs_frontend_get_current_preview_scene();
+	obs_source_t *Scenetarget = obs_frontend_get_current_scene();
 	obs_scene_t  *Scene = obs_scene_from_source(Scenetarget);
 	obs_sceneitem_t* newsceneitem = obs_scene_add(Scene, Source);
 
-	if (newsceneitem = nullptr) {
+	if (newsceneitem == nullptr) {
 		return req->SendErrorResponse("Could not add source to current Scene");
 	}
 	return req->SendOKResponse();
