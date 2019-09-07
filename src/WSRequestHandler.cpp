@@ -53,6 +53,7 @@ QHash<QString, HandlerResponse(*)(WSRequestHandler*)> WSRequestHandler::messageM
 	{ "DeleteSceneItem", WSRequestHandler::HandleDeleteSceneItem },
 	{ "DuplicateSceneItem", WSRequestHandler::HandleDuplicateSceneItem },
 	{ "ReorderSceneItems", WSRequestHandler::HandleReorderSceneItems },
+	{ "SetSceneItemColor", WSRequestHandler::HandleSetSceneItemColor },
 
 	{ "GetStreamingStatus", WSRequestHandler::HandleGetStreamingStatus },
 	{ "StartStopStreaming", WSRequestHandler::HandleStartStopStreaming },

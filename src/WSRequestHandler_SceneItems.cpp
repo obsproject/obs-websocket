@@ -1,3 +1,8 @@
+#include <QtCore/QMetaObject>
+#include <QtCore/QAbstractItemModel>
+#include <QtWidgets/QMainWindow>
+#include <QtWidgets/QListView>
+
 #include "Utils.h"
 
 #include "WSRequestHandler.h"
@@ -602,4 +607,64 @@ HandlerResponse WSRequestHandler::HandleDuplicateSceneItem(WSRequestHandler* req
 	obs_data_set_string(responseData, "scene", obs_source_get_name(obs_scene_get_source(toScene)));
 
 	return req->SendOKResponse(responseData);
+}
+
+/**
+ * Change the background color (as shown in the scene items list in OBS Studio) of a scene item
+ *
+ * @param {Object} `item` item to delete (required)
+ * @param {String} `item.name` name of the scene item (prefer `id`, including both is acceptable).
+ * @param {int} `item.id` id of the scene item.
+ * @param {String} `color` HTML hex-encoded color value
+ * @param {String (optional)} `scene` Name of the scene the item belongs to. Defaults to the current scene.
+ *
+ * @api requests
+ * @name SetSceneItemColor
+ * @category scene items
+ * @since 4.7.0
+ */
+HandlerResponse WSRequestHandler::HandleSetSceneItemColor(WSRequestHandler* req)
+{
+	if (!req->hasObject("item") || !req->hasString("color")) {
+		return req->SendErrorResponse("missing or invalid request parameters");
+	}
+
+	const char* sceneName = obs_data_get_string(req->data, "scene");
+	OBSScene scene = Utils::GetSceneFromNameOrCurrent(sceneName);
+	if (!scene) {
+		return req->SendErrorResponse("requested scene doesn't exist");
+	}
+
+	OBSDataAutoRelease itemInfo = obs_data_get_obj(req->data, "item");
+	OBSSceneItemAutoRelease sceneItem = Utils::GetSceneItemFromItem(scene, itemInfo);
+	if (!sceneItem) {
+		return req->SendErrorResponse("item with id/name combination not found in specified scene");
+	}
+
+	QString color = obs_data_get_string(req->data, "color");
+
+	// Set in the item's private settings
+	OBSDataAutoRelease privateSettings = obs_sceneitem_get_private_settings(sceneItem);
+	obs_data_set_int(privateSettings, "color-preset", 1);
+	obs_data_set_string(privateSettings, "color", color.toUtf8().constData());
+
+	// If possible, update the scene item if visible in the list
+	auto mainWindow = reinterpret_cast<QMainWindow*>(
+		obs_frontend_get_main_window()
+		);
+
+	auto sourcesList = mainWindow->findChild<QListView*>("sources");
+	QAbstractItemModel* model = sourcesList->model();
+
+	OBSSource itemSource = obs_sceneitem_get_source(sceneItem);
+	QString itemName = obs_source_get_name(itemSource);
+	QModelIndexList results = model->match(model->index(0, 0), Qt::AccessibleTextRole, QVariant::fromValue(itemName), -1, Qt::MatchExactly);
+	for (auto result : results) {
+		QWidget* widget = sourcesList->indexWidget(result);
+		QMetaObject::invokeMethod(widget, [widget, color]() {
+			widget->setStyleSheet("background: " + QColor(color).name(QColor::HexArgb));
+		}, Qt::BlockingQueuedConnection);
+	}
+
+	return req->SendOKResponse();
 }
