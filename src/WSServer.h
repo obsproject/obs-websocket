@@ -33,9 +33,6 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include "WSRequestHandler.h"
 
-QT_FORWARD_DECLARE_CLASS(QWebSocketServer)
-QT_FORWARD_DECLARE_CLASS(QWebSocket)
-
 using websocketpp::connection_hdl;
 
 typedef websocketpp::server<websocketpp::config::asio> server;
