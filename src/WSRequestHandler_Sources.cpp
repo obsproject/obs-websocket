@@ -1349,7 +1349,7 @@ HandlerResponse WSRequestHandler::HandleSetSourceFilterSettings(WSRequestHandler
 * Clients can specify `width` and `height` parameters to receive scaled pictures. Aspect ratio is
 * preserved if only one of these two parameters is specified.
 *
-* @param {String} `sourceName` Source name
+* @param {String} `sourceName` Source name, a Source is defined as, an item used in a scene, or a scene itself (allowing the whole compiled scene to be screenshotted).
 * @param {String (optional)} `embedPictureFormat` Format of the Data URI encoded picture. Can be "png", "jpg", "jpeg" or "bmp" (or any other value supported by Qt's Image module)
 * @param {String (optional)} `saveToFilePath` Full file path (file extension included) where the captured image is to be saved. Can be in a format different from `pictureFormat`. Can be a relative path.
 * @param {int (optional)} `width` Screenshot width. Defaults to the source's base width.
