@@ -2752,7 +2752,7 @@ preserved if only one of these two parameters is specified.
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
-| `sourceName` | _String_ | Source name |
+| `sourceName` | _String_ | Source name. Note that, since scenes are also sources, you can also provide a scene name. |
 | `embedPictureFormat` | _String (optional)_ | Format of the Data URI encoded picture. Can be "png", "jpg", "jpeg" or "bmp" (or any other value supported by Qt's Image module) |
 | `saveToFilePath` | _String (optional)_ | Full file path (file extension included) where the captured image is to be saved. Can be in a format different from `pictureFormat`. Can be a relative path. |
 | `width` | _int (optional)_ | Screenshot width. Defaults to the source's base width. |
