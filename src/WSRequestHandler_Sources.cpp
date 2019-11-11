@@ -1091,6 +1091,44 @@ HandlerResponse WSRequestHandler::HandleGetSourceFilters(WSRequestHandler* req)
 }
 
 /**
+* List filters applied to a source
+*
+* @param {String} `sourceName` Source name
+* @param {String} `filterName` Source filter name
+*
+* @return {Boolean} `enabled` Filter status (enabled or not)
+* @return {String} `type` Filter type
+* @return {String} `name` Filter name
+* @return {Object} `settings` Filter settings
+*
+* @api requests
+* @name GetSourceFilterInfo
+* @category sources
+* @since 4.7.0
+*/
+HandlerResponse WSRequestHandler::HandleGetSourceFilterInfo(WSRequestHandler* req)
+{
+	if (!req->hasField("sourceName") || !req->hasField("filterName")) {
+		return req->SendErrorResponse("missing request parameters");
+	}
+
+	const char* sourceName = obs_data_get_string(req->data, "sourceName");
+	OBSSourceAutoRelease source = obs_get_source_by_name(sourceName);
+	if (!source) {
+		return req->SendErrorResponse("specified source doesn't exist");
+	}
+
+	const char* filterName = obs_data_get_string(req->data, "filterName");
+	OBSSourceAutoRelease filter = obs_source_get_filter_by_name(source, "filterName");
+	if (!filter) {
+		return req->SendErrorResponse("specified filter doesn't exist on specified source");
+	}
+
+	OBSDataAutoRelease response = Utils::GetSourceFilterInfo(filter, true);
+	return req->SendOKResponse(response);
+}
+
+/**
 * Add a new filter to a source. Available source types along with their settings properties are available from `GetSourceTypesList`.
 *
 * @param {String} `sourceName` Name of the source on which the filter is added

@@ -95,6 +95,7 @@ QHash<QString, HandlerResponse(*)(WSRequestHandler*)> WSRequestHandler::messageM
 	{ "TakeSourceScreenshot", WSRequestHandler::HandleTakeSourceScreenshot },
 
 	{ "GetSourceFilters", WSRequestHandler::HandleGetSourceFilters },
+	{ "GetSourceFilterInfo", WSRequestHandler::HandleGetSourceFilterInfo },
 	{ "AddFilterToSource", WSRequestHandler::HandleAddFilterToSource },
 	{ "RemoveFilterFromSource", WSRequestHandler::HandleRemoveFilterFromSource },
 	{ "ReorderSourceFilter", WSRequestHandler::HandleReorderSourceFilter },

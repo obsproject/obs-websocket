@@ -139,6 +139,7 @@ class WSRequestHandler : public QObject {
 		static HandlerResponse HandleTakeSourceScreenshot(WSRequestHandler* req);
 
 		static HandlerResponse HandleGetSourceFilters(WSRequestHandler* req);
+		static HandlerResponse HandleGetSourceFilterInfo(WSRequestHandler* req);
 		static HandlerResponse HandleAddFilterToSource(WSRequestHandler* req);
 		static HandlerResponse HandleRemoveFilterFromSource(WSRequestHandler* req);
 		static HandlerResponse HandleReorderSourceFilter(WSRequestHandler* req);
