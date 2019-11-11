@@ -1119,7 +1119,7 @@ HandlerResponse WSRequestHandler::HandleGetSourceFilterInfo(WSRequestHandler* re
 	}
 
 	const char* filterName = obs_data_get_string(req->data, "filterName");
-	OBSSourceAutoRelease filter = obs_source_get_filter_by_name(source, "filterName");
+	OBSSourceAutoRelease filter = obs_source_get_filter_by_name(source, filterName);
 	if (!filter) {
 		return req->SendErrorResponse("specified filter doesn't exist on specified source");
 	}
@@ -1403,7 +1403,7 @@ HandlerResponse WSRequestHandler::HandleSetSourceFilterVisibility(WSRequestHandl
 	}
 
 	const char* filterName = obs_data_get_string(req->data, "filterName");
-	OBSSourceAutoRelease filter = obs_source_get_filter_by_name(source, "filterName");
+	OBSSourceAutoRelease filter = obs_source_get_filter_by_name(source, filterName);
 	if (!filter) {
 		return req->SendErrorResponse("specified filter doesn't exist on specified source");
 	}
