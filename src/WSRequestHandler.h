@@ -145,6 +145,7 @@ class WSRequestHandler : public QObject {
 		static HandlerResponse HandleReorderSourceFilter(WSRequestHandler* req);
 		static HandlerResponse HandleMoveSourceFilter(WSRequestHandler* req);
 		static HandlerResponse HandleSetSourceFilterSettings(WSRequestHandler* req);
+		static HandlerResponse HandleSetSourceFilterVisibility(WSRequestHandler* req);
 
 		static HandlerResponse HandleSetCurrentSceneCollection(WSRequestHandler* req);
 		static HandlerResponse HandleGetCurrentSceneCollection(WSRequestHandler* req);

@@ -101,6 +101,7 @@ QHash<QString, HandlerResponse(*)(WSRequestHandler*)> WSRequestHandler::messageM
 	{ "ReorderSourceFilter", WSRequestHandler::HandleReorderSourceFilter },
 	{ "MoveSourceFilter", WSRequestHandler::HandleMoveSourceFilter },
 	{ "SetSourceFilterSettings", WSRequestHandler::HandleSetSourceFilterSettings },
+	{ "SetSourceFilterVisibility", WSRequestHandler::HandleSetSourceFilterVisibility },
 
 	{ "SetCurrentSceneCollection", WSRequestHandler::HandleSetCurrentSceneCollection },
 	{ "GetCurrentSceneCollection", WSRequestHandler::HandleGetCurrentSceneCollection },

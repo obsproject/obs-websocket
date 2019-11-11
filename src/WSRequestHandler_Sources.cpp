@@ -1379,6 +1379,42 @@ HandlerResponse WSRequestHandler::HandleSetSourceFilterSettings(WSRequestHandler
 }
 
 /**
+* Change the visibility/enabled state of a filter
+*
+* @param {String} `sourceName` Source name
+* @param {String} `filterName` Source filter name
+* @param {String} `filterEnabled` New filter state
+*
+* @api requests
+* @name EnableSourceFilter
+* @category sources
+* @since 4.7.0
+*/
+HandlerResponse WSRequestHandler::HandleSetSourceFilterVisibility(WSRequestHandler* req)
+{
+	if (!req->hasField("sourceName") || !req->hasField("filterName") || !req->hasField("filterEnabled")) {
+		return req->SendErrorResponse("missing request parameters");
+	}
+
+	const char* sourceName = obs_data_get_string(req->data, "sourceName");
+	OBSSourceAutoRelease source = obs_get_source_by_name(sourceName);
+	if (!source) {
+		return req->SendErrorResponse("specified source doesn't exist");
+	}
+
+	const char* filterName = obs_data_get_string(req->data, "filterName");
+	OBSSourceAutoRelease filter = obs_source_get_filter_by_name(source, "filterName");
+	if (!filter) {
+		return req->SendErrorResponse("specified filter doesn't exist on specified source");
+	}
+
+	bool filterEnabled = obs_data_get_string(req->data, "filterEnabled");
+	obs_source_set_enabled(filter, filterEnabled);
+
+	return req->SendOKResponse();
+}
+
+/**
 * Takes a picture snapshot of a source and then can either or both:
 *    - Send it over as a Data URI (base64-encoded data) in the response (by specifying `embedPictureFormat` in the request)
 *    - Save it to disk (by specifying `saveToFilePath` in the request)
