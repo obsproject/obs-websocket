@@ -742,7 +742,8 @@ obs_data_t* Utils::GetSourceFilterInfo(obs_source_t* filter, bool includeSetting
 	obs_data_set_string(data, "type", obs_source_get_id(filter));
 	obs_data_set_string(data, "name", obs_source_get_name(filter));
 	if (includeSettings) {
-		obs_data_set_obj(data, "settings", obs_source_get_settings(filter));
+		OBSDataAutoRelease settings = obs_source_get_settings(filter);
+		obs_data_set_obj(data, "settings", settings);
 	}
 	return data;
 }
