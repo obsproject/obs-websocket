@@ -1061,6 +1061,7 @@ HandlerResponse WSRequestHandler::HandleGetSpecialSources(WSRequestHandler* req)
 * @param {String} `sourceName` Source name
 *
 * @return {Array<Object>} `filters` List of filters for the specified source
+* @return {Boolean} `filters.*.enabled` Filter status (enabled or not)
 * @return {String} `filters.*.type` Filter type
 * @return {String} `filters.*.name` Filter name
 * @return {Object} `filters.*.settings` Filter settings

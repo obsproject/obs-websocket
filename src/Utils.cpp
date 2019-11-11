@@ -735,6 +735,18 @@ obs_data_t* Utils::GetSceneItemPropertiesData(obs_sceneitem_t* sceneItem) {
 	return data;
 }
 
+obs_data_t* Utils::GetSourceFilterInfo(obs_source_t* filter, bool includeSettings)
+{
+	obs_data_t* data = obs_data_create();
+	obs_data_set_bool(data, "enabled", obs_source_enabled(filter));
+	obs_data_set_string(data, "type", obs_source_get_id(filter));
+	obs_data_set_string(data, "name", obs_source_get_name(filter));
+	if (includeSettings) {
+		obs_data_set_obj(data, "settings", obs_source_get_settings(filter));
+	}
+	return data;
+}
+
 obs_data_array_t* Utils::GetSourceFiltersList(obs_source_t* source, bool includeSettings)
 {
 	struct enum_params {
@@ -755,13 +767,8 @@ obs_data_array_t* Utils::GetSourceFiltersList(obs_source_t* source, bool include
 	{
 		auto enumParams = reinterpret_cast<struct enum_params*>(param);
 
-		OBSDataAutoRelease filter = obs_data_create();
-		obs_data_set_string(filter, "type", obs_source_get_id(child));
-		obs_data_set_string(filter, "name", obs_source_get_name(child));
-		if (enumParams->includeSettings) {
-			obs_data_set_obj(filter, "settings", obs_source_get_settings(child));
-		}
-		obs_data_array_push_back(enumParams->filters, filter);
+		OBSDataAutoRelease filterData = Utils::GetSourceFilterInfo(child, enumParams->includeSettings);
+		obs_data_array_push_back(enumParams->filters, filterData);
 	}, &enumParams);
 
 	return enumParams.filters;
