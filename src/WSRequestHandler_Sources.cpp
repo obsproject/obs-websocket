@@ -1408,7 +1408,7 @@ HandlerResponse WSRequestHandler::HandleSetSourceFilterVisibility(WSRequestHandl
 		return req->SendErrorResponse("specified filter doesn't exist on specified source");
 	}
 
-	bool filterEnabled = obs_data_get_string(req->data, "filterEnabled");
+	bool filterEnabled = obs_data_get_bool(req->data, "filterEnabled");
 	obs_source_set_enabled(filter, filterEnabled);
 
 	return req->SendOKResponse();
