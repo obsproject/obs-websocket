@@ -340,6 +340,26 @@ void WSEvents::disconnectSourceSignals(obs_source_t* source) {
 	signal_handler_disconnect(sh, "transition_start", OnTransitionBegin, this);
 }
 
+void WSEvents::connectFilterSignals(obs_source_t* filter) {
+	if (!filter) {
+		return;
+	}
+
+	signal_handler_t* sh = obs_source_get_signal_handler(filter);
+
+	signal_handler_connect(sh, "enable", OnSourceFilterVisibilityChanged, this);
+}
+
+void WSEvents::disconnectFilterSignals(obs_source_t* filter) {
+	if (!filter) {
+		return;
+	}
+
+	signal_handler_t* sh = obs_source_get_signal_handler(filter);
+
+	signal_handler_disconnect(sh, "enable", OnSourceFilterVisibilityChanged, this);
+}
+
 void WSEvents::hookTransitionBeginEvent() {
 	obs_frontend_source_list transitions = {};
 	obs_frontend_get_transitions(&transitions);
@@ -1180,6 +1200,8 @@ void WSEvents::OnSourceFilterAdded(void* param, calldata_t* data) {
 	if (!filter) {
 		return;
 	}
+	
+	self->connectFilterSignals(filter);
 
 	OBSDataAutoRelease filterSettings = obs_source_get_settings(filter);
 
@@ -1212,12 +1234,47 @@ void WSEvents::OnSourceFilterRemoved(void* param, calldata_t* data) {
 	}
 
 	obs_source_t* filter = calldata_get_pointer<obs_source_t>(data, "filter");
+	if (!filter) {
+		return;
+	}
+
+	self->disconnectFilterSignals(filter);
 
 	OBSDataAutoRelease fields = obs_data_create();
 	obs_data_set_string(fields, "sourceName", obs_source_get_name(source));
 	obs_data_set_string(fields, "filterName", obs_source_get_name(filter));
 	obs_data_set_string(fields, "filterType", obs_source_get_id(filter));
 	self->broadcastUpdate("SourceFilterRemoved", fields);
+}
+
+/**
+ * The visibility/enabled state of a filter changed
+ *
+ * @return {String} `sourceName` Source name
+ * @return {String} `filterName` Filter name
+ * @return {Boolean} `filterEnabled` New filter state
+ *
+ * @api events
+ * @name SourceFilterVisibilityChanged
+ * @category sources
+ * @since 4.7.0
+ */
+void WSEvents::OnSourceFilterVisibilityChanged(void* param, calldata_t* data) {
+	auto self = reinterpret_cast<WSEvents*>(param);
+
+	OBSSource source = calldata_get_pointer<obs_source_t>(data, "source");
+	if (!source) {
+		return;
+	}
+
+	OBSSource parent = obs_filter_get_parent(source);
+
+	OBSDataAutoRelease fields = obs_data_create();
+	obs_data_set_string(fields, "sourceName", obs_source_get_name(parent));
+	obs_data_set_string(fields, "filterName", obs_source_get_name(source));
+	obs_data_set_bool(fields, "filterEnabled", obs_source_enabled(source));
+
+	self->broadcastUpdate("SourceFilterVisibilityChanged", fields);
 }
 
 /**
