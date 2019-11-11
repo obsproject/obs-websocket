@@ -48,6 +48,7 @@ class Utils {
 	static obs_scene_t* GetSceneFromNameOrCurrent(QString sceneName);
 	static obs_data_t* GetSceneItemPropertiesData(obs_sceneitem_t* item);
 
+	static obs_data_t* GetSourceFilterInfo(obs_source_t* filter, bool includeSettings);
 	static obs_data_array_t* GetSourceFiltersList(obs_source_t* source, bool includeSettings);
 
 	static bool IsValidAlignment(const uint32_t alignment);
