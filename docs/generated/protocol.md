@@ -185,7 +185,7 @@ auth_response = base64_encode(auth_response_hash)
     + [ReorderSourceFilter](#reordersourcefilter)
     + [MoveSourceFilter](#movesourcefilter)
     + [SetSourceFilterSettings](#setsourcefiltersettings)
-    + [EnableSourceFilter](#enablesourcefilter)
+    + [SetSourceFilterVisibility](#setsourcefiltervisibility)
     + [TakeSourceScreenshot](#takesourcescreenshot)
   * [Streaming](#streaming-1)
     + [GetStreamingStatus](#getstreamingstatus)
@@ -2785,7 +2785,7 @@ _No additional response items._
 
 ---
 
-### EnableSourceFilter
+### SetSourceFilterVisibility
 
 
 - Added in v4.7.0

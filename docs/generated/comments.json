@@ -7224,7 +7224,7 @@
           "{String} `filterEnabled` New filter state"
         ],
         "api": "requests",
-        "name": "EnableSourceFilter",
+        "name": "SetSourceFilterVisibility",
         "category": "sources",
         "since": "4.7.0",
         "params": [
@@ -7247,7 +7247,7 @@
         "names": [
           {
             "name": "",
-            "description": "EnableSourceFilter"
+            "description": "SetSourceFilterVisibility"
           }
         ],
         "categories": [
@@ -7264,7 +7264,7 @@
         ],
         "heading": {
           "level": 2,
-          "text": "EnableSourceFilter"
+          "text": "SetSourceFilterVisibility"
         },
         "lead": "",
         "type": "class",
