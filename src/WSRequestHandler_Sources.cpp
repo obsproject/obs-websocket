@@ -1386,7 +1386,7 @@ HandlerResponse WSRequestHandler::HandleSetSourceFilterSettings(WSRequestHandler
 * @param {String} `filterEnabled` New filter state
 *
 * @api requests
-* @name EnableSourceFilter
+* @name SetSourceFilterVisibility
 * @category sources
 * @since 4.7.0
 */
