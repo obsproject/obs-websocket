@@ -1,3 +1,5 @@
+#include <functional>
+
 #include "WSRequestHandler.h"
 
 /**
@@ -57,16 +59,16 @@ obs_data_t* getOutputInfo(obs_output_t* output)
 	return data;
 }
 
-HandlerResponse findOutputOrFail(WSRequestHandler* req, std::function<HandlerResponse (obs_output_t*)> callback)
+RpcResponse findOutputOrFail(const RpcRequest& request, std::function<RpcResponse (obs_output_t*)> callback)
 {
-	if (!req->hasField("outputName")) {
-		return req->SendErrorResponse("missing request parameters");
+	if (!request.hasField("outputName")) {
+		return request.failed("missing request parameters");
 	}
 
-	const char* outputName = obs_data_get_string(req->parameters(), "outputName");
+	const char* outputName = obs_data_get_string(request.parameters(), "outputName");
 	OBSOutputAutoRelease output = obs_get_output_by_name(outputName);
 	if (!output) {
-		return req->SendErrorResponse("specified output doesn't exist");
+		return request.failed("specified output doesn't exist");
 	}
 
 	return callback(output);	
@@ -82,7 +84,7 @@ HandlerResponse findOutputOrFail(WSRequestHandler* req, std::function<HandlerRes
 * @category outputs
 * @since 4.7.0
 */
-HandlerResponse WSRequestHandler::HandleListOutputs(WSRequestHandler* req)
+RpcResponse WSRequestHandler::ListOutputs(const RpcRequest& request)
 {
 	OBSDataArrayAutoRelease outputs = obs_data_array_create();
 
@@ -97,7 +99,8 @@ HandlerResponse WSRequestHandler::HandleListOutputs(WSRequestHandler* req)
 
 	OBSDataAutoRelease fields = obs_data_create();
 	obs_data_set_array(fields, "outputs", outputs);
-	return req->SendOKResponse(fields);
+
+	return request.success(fields);
 }
 
 /**
@@ -112,14 +115,14 @@ HandlerResponse WSRequestHandler::HandleListOutputs(WSRequestHandler* req)
 * @category outputs
 * @since 4.7.0
 */
-HandlerResponse WSRequestHandler::HandleGetOutputInfo(WSRequestHandler* req)
+RpcResponse WSRequestHandler::GetOutputInfo(const RpcRequest& request)
 {
-	return findOutputOrFail(req, [req](obs_output_t* output) {
+	return findOutputOrFail(request, [request](obs_output_t* output) {
 		OBSDataAutoRelease outputInfo = getOutputInfo(output);
 
 		OBSDataAutoRelease fields = obs_data_create();
 		obs_data_set_obj(fields, "outputInfo", outputInfo);
-		return req->SendOKResponse(fields);
+		return request.success(fields);
 	});
 }
 
@@ -133,21 +136,21 @@ HandlerResponse WSRequestHandler::HandleGetOutputInfo(WSRequestHandler* req)
 * @category outputs
 * @since 4.7.0
 */
-HandlerResponse WSRequestHandler::HandleStartOutput(WSRequestHandler* req)
+RpcResponse WSRequestHandler::StartOutput(const RpcRequest& request)
 {
-	return findOutputOrFail(req, [req](obs_output_t* output) {
+	return findOutputOrFail(request, [request](obs_output_t* output) {
 		if (obs_output_active(output)) {
-			return req->SendErrorResponse("output already active");
+			return request.failed("output already active");
 		}
 
 		bool success = obs_output_start(output);
 		if (!success) {
 			QString lastError = obs_output_get_last_error(output);
 			QString errorMessage = QString("output start failed: %1").arg(lastError);
-			return req->SendErrorResponse(errorMessage);
+			return request.failed(errorMessage);
 		}
 
-		return req->SendOKResponse();
+		return request.success();
 	});
 }
 
@@ -162,20 +165,20 @@ HandlerResponse WSRequestHandler::HandleStartOutput(WSRequestHandler* req)
 * @category outputs
 * @since 4.7.0
 */
-HandlerResponse WSRequestHandler::HandleStopOutput(WSRequestHandler* req)
+RpcResponse WSRequestHandler::StopOutput(const RpcRequest& request)
 {
-	return findOutputOrFail(req, [req](obs_output_t* output) {
+	return findOutputOrFail(request, [request](obs_output_t* output) {
 		if (!obs_output_active(output)) {
-			return req->SendErrorResponse("output not active");
+			return request.failed("output not active");
 		}
 		
-		bool forceStop = obs_data_get_bool(req->data, "force");
+		bool forceStop = obs_data_get_bool(request.parameters(), "force");
 		if (forceStop) {
 			obs_output_force_stop(output);
 		} else {
 			obs_output_stop(output);
 		}
 
-		return req->SendOKResponse();
+		return request.success();
 	});
 }
