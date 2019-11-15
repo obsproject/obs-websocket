@@ -19,11 +19,9 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #pragma once
 
+#include <QtCore/QString>
 #include <QtCore/QHash>
 #include <QtCore/QSet>
-#include <QtCore/QVariantHash>
-#include <QtCore/QString>
-#include <QtCore/QSharedPointer>
 
 #include <obs.hpp>
 #include <obs-frontend-api.h>
@@ -135,31 +133,31 @@ class WSRequestHandler {
 		RpcResponse GetStreamSettings(const RpcRequest&);
 		RpcResponse SaveStreamSettings(const RpcRequest&);
 #if BUILD_CAPTIONS
-		RpcResponse SendCaptions(WSRequestHandler * req);
+		RpcResponse SendCaptions(const RpcRequest&);
 #endif
 
-		RpcResponse SetTransitionDuration(const RpcRequest& request);
-		RpcResponse GetTransitionDuration(const RpcRequest& request);
+		RpcResponse SetTransitionDuration(const RpcRequest&);
+		RpcResponse GetTransitionDuration(const RpcRequest&);
 
-		RpcResponse GetStudioModeStatus(const RpcRequest& request);
-		RpcResponse GetPreviewScene(const RpcRequest& request);
-		RpcResponse SetPreviewScene(const RpcRequest& request);
-		RpcResponse TransitionToProgram(const RpcRequest& request);
-		RpcResponse EnableStudioMode(const RpcRequest& request);
-		RpcResponse DisableStudioMode(const RpcRequest& request);
-		RpcResponse ToggleStudioMode(const RpcRequest& request);
+		RpcResponse GetStudioModeStatus(const RpcRequest&);
+		RpcResponse GetPreviewScene(const RpcRequest&);
+		RpcResponse SetPreviewScene(const RpcRequest&);
+		RpcResponse TransitionToProgram(const RpcRequest&);
+		RpcResponse EnableStudioMode(const RpcRequest&);
+		RpcResponse DisableStudioMode(const RpcRequest&);
+		RpcResponse ToggleStudioMode(const RpcRequest&);
 
-		RpcResponse SetTextGDIPlusProperties(const RpcRequest& request);
-		RpcResponse GetTextGDIPlusProperties(const RpcRequest& request);
+		RpcResponse SetTextGDIPlusProperties(const RpcRequest&);
+		RpcResponse GetTextGDIPlusProperties(const RpcRequest&);
 
-		RpcResponse SetTextFreetype2Properties(const RpcRequest& request);
-		RpcResponse GetTextFreetype2Properties(const RpcRequest& request);
+		RpcResponse SetTextFreetype2Properties(const RpcRequest&);
+		RpcResponse GetTextFreetype2Properties(const RpcRequest&);
 
-		RpcResponse SetBrowserSourceProperties(const RpcRequest& request);
-		RpcResponse GetBrowserSourceProperties(const RpcRequest& request);
+		RpcResponse SetBrowserSourceProperties(const RpcRequest&);
+		RpcResponse GetBrowserSourceProperties(const RpcRequest&);
 
-		RpcResponse ListOutputs(const RpcRequest& request);
-		RpcResponse GetOutputInfo(const RpcRequest& request);
-		RpcResponse StartOutput(const RpcRequest& request);
-		RpcResponse StopOutput(const RpcRequest& request);
+		RpcResponse ListOutputs(const RpcRequest&);
+		RpcResponse GetOutputInfo(const RpcRequest&);
+		RpcResponse StartOutput(const RpcRequest&);
+		RpcResponse StopOutput(const RpcRequest&);
 };
