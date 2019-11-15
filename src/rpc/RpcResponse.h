@@ -57,8 +57,8 @@ public:
 		return _errorMessage;
 	}
 	
-	const obs_data_t* parameters() const {
-		return _additionalFields;
+	const OBSData additionalFields() const {
+		return OBSData(_additionalFields);
 	}
 
 private:

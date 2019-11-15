@@ -156,38 +156,7 @@ WSRequestHandler::WSRequestHandler(ConnectionProperties& connProperties) :
 {
 }
 
-// std::string WSRequestHandler::processIncomingMessage(std::string& textMessage) {
-// 	if (GetConfig()->DebugEnabled) {
-// 		blog(LOG_INFO, "Request >> '%s'", textMessage.c_str());
-// 	}
-
-// 	OBSDataAutoRelease responseData = processRequest(textMessage);
-// 	std::string response = obs_data_get_json(responseData);
-
-// 	if (GetConfig()->DebugEnabled) {
-// 		blog(LOG_INFO, "Response << '%s'", response.c_str());
-// 	}
-
-// 	return response;
-// }
-
 RpcResponse WSRequestHandler::processRequest(const RpcRequest& request){
-	// std::string msgContainer(textMessage);
-	// const char* msg = msgContainer.c_str();
-
-	// data = obs_data_create_from_json(msg);
-	// if (!data) {
-	// 	blog(LOG_ERROR, "invalid JSON payload received for '%s'", msg);
-	// 	return SendErrorResponse("invalid JSON payload");
-	// }
-
-	// if (!hasField("request-type") || !hasField("message-id")) {
-	// 	return SendErrorResponse("missing request parameters");
-	// }
-
-	// _requestType = obs_data_get_string(data, "request-type");
-	// _messageId = obs_data_get_string(data, "message-id");
-
 	if (GetConfig()->AuthRequired
 		&& (!authNotRequired.contains(request.methodName()))
 		&& (!_connProperties.isAuthenticated()))
@@ -202,30 +171,3 @@ RpcResponse WSRequestHandler::processRequest(const RpcRequest& request){
 
 	return std::bind(handlerFunc, this, _1)(request);
 }
-
-// HandlerResponse WSRequestHandler::SendOKResponse(obs_data_t* additionalFields) {
-// 	return SendResponse("ok", additionalFields);
-// }
-
-// HandlerResponse WSRequestHandler::SendErrorResponse(QString errorMessage) {
-// 	OBSDataAutoRelease fields = obs_data_create();
-// 	obs_data_set_string(fields, "error", errorMessage.toUtf8().constData());
-
-// 	return SendResponse("error", fields);
-// }
-
-// HandlerResponse WSRequestHandler::SendErrorResponse(obs_data_t* additionalFields) {
-// 	return SendResponse("error", additionalFields);
-// }
-
-// HandlerResponse WSRequestHandler::SendResponse(const char* status, obs_data_t* fields) {
-// 	obs_data_t* response = obs_data_create();
-// 	obs_data_set_string(response, "message-id", _messageId);
-// 	obs_data_set_string(response, "status", status);
-
-// 	if (fields) {
-// 		obs_data_apply(response, fields);
-// 	}
-
-// 	return response;
-// }

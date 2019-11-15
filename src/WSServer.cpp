@@ -31,6 +31,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include "obs-websocket.h"
 #include "Config.h"
 #include "Utils.h"
+#include "protocol/OBSRemoteProtocol.h"
 
 QT_USE_NAMESPACE
 
@@ -171,8 +172,17 @@ void WSServer::onMessage(connection_hdl hdl, server::message_ptr message)
 		ConnectionProperties& connProperties = _connectionProperties[hdl];
 		locker.unlock();
 
-		WSRequestHandler handler(connProperties);
-		std::string response = handler.processIncomingMessage(payload);
+		if (GetConfig()->DebugEnabled) {
+			blog(LOG_INFO, "Request >> '%s'", payload.c_str());
+		}
+
+		WSRequestHandler requestHandler(connProperties);
+		OBSRemoteProtocol protocol(requestHandler);
+		std::string response = protocol.processMessage(payload);
+
+		if (GetConfig()->DebugEnabled) {
+			blog(LOG_INFO, "Response << '%s'", response.c_str());
+		}
 
 		websocketpp::lib::error_code errorCode;
 		_server.send(hdl, response, websocketpp::frame::opcode::text, errorCode);
