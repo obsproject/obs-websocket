@@ -200,7 +200,7 @@ RpcResponse WSRequestHandler::processRequest(const RpcRequest& request){
 		return RpcResponse::fail(request, "invalid request type");
 	}
 
-	return std::bind(handlerFunc, _1)(request);
+	return std::bind(handlerFunc, this, _1)(request);
 }
 
 // HandlerResponse WSRequestHandler::SendOKResponse(obs_data_t* additionalFields) {
