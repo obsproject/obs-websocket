@@ -35,8 +35,8 @@ public:
 	const QString& methodName() const;
 	const OBSData parameters() const;
 
-	const RpcResponse okResponse(obs_data_t* additionalFields = nullptr) const;
-	const RpcResponse errorResponse(const QString& errorMessage, obs_data_t* additionalFields = nullptr) const;
+	const RpcResponse success(obs_data_t* additionalFields = nullptr) const;
+	const RpcResponse failed(const QString& errorMessage, obs_data_t* additionalFields = nullptr) const;
 
 	const bool hasField(QString fieldName, obs_data_type expectedFieldType = OBS_DATA_NULL,
 					obs_data_number_type expectedNumberType = OBS_DATA_NUM_INVALID) const;

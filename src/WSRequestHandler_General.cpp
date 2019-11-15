@@ -85,7 +85,7 @@ RpcResponse WSRequestHandler::GetVersion(const RpcRequest& request) {
 	obs_data_set_string(data, "obs-studio-version", obsVersion.toUtf8());
 	obs_data_set_string(data, "available-requests", requests.toUtf8());
 
-	return request.okResponse(data);
+	return request.success(data);
 }
 
 /**
@@ -115,7 +115,7 @@ RpcResponse WSRequestHandler::GetAuthRequired(const RpcRequest& request) {
 			config->Salt.toUtf8());
 	}
 
-	return request.okResponse(data);
+	return request.success(data);
 }
 
 /**
@@ -147,7 +147,7 @@ RpcResponse WSRequestHandler::Authenticate(const RpcRequest& request) {
 	}
 
 	_connProperties.setAuthenticated(true);
-	return request.okResponse();
+	return request.success();
 }
 
 /**
@@ -171,7 +171,7 @@ RpcResponse WSRequestHandler::SetHeartbeat(const RpcRequest& request) {
 	OBSDataAutoRelease response = obs_data_create();
 	obs_data_set_bool(response, "enable", events->HeartbeatIsActive);
 
-	return request.okResponse(response);
+	return request.success(response);
 }
 
 /**
@@ -196,7 +196,7 @@ RpcResponse WSRequestHandler::SetFilenameFormatting(const RpcRequest& request) {
 
 	Utils::SetFilenameFormatting(filenameFormatting.toUtf8());
 
-	return request.okResponse();
+	return request.success();
 }
 
 /**
@@ -213,7 +213,7 @@ RpcResponse WSRequestHandler::GetFilenameFormatting(const RpcRequest& request) {
 	OBSDataAutoRelease response = obs_data_create();
 	obs_data_set_string(response, "filename-formatting", Utils::GetFilenameFormatting());
 
-	return request.okResponse(response);
+	return request.success(response);
 }
 
 /**
@@ -232,7 +232,7 @@ RpcResponse WSRequestHandler::GetStats(const RpcRequest& request) {
 	OBSDataAutoRelease response = obs_data_create();
 	obs_data_set_obj(response, "stats", stats);
 
-	return request.okResponse(response);
+	return request.success(response);
 }
 
 /**
@@ -265,7 +265,7 @@ RpcResponse WSRequestHandler::BroadcastCustomMessage(const RpcRequest& request) 
 	auto events = GetEventsSystem();
 	events->OnBroadcastCustomMessage(realm, data);
 
-	return request.okResponse();
+	return request.success();
 }
 
 
@@ -302,5 +302,5 @@ RpcResponse WSRequestHandler::GetVideoInfo(const RpcRequest& request) {
 	obs_data_set_string(response, "colorRange", describe_color_range(ovi.range));
 	obs_data_set_string(response, "scaleType", describe_scale_type(ovi.scale_type));
 
-	return request.okResponse(response);
+	return request.success(response);
 }

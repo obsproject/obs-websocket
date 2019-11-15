@@ -42,12 +42,12 @@ const OBSData RpcRequest::parameters() const
 	return OBSData(_parameters);
 }
 
-const RpcResponse RpcRequest::okResponse(obs_data_t* additionalFields) const
+const RpcResponse RpcRequest::success(obs_data_t* additionalFields) const
 {
 	return RpcResponse::ok(*this, additionalFields);
 }
 
-const RpcResponse RpcRequest::errorResponse(const QString& errorMessage, obs_data_t* additionalFields) const
+const RpcResponse RpcRequest::failed(const QString& errorMessage, obs_data_t* additionalFields) const
 {
 	return RpcResponse::fail(*this, errorMessage, additionalFields);
 }
