@@ -252,7 +252,7 @@ RpcResponse WSRequestHandler::SetSceneItemProperties(const RpcRequest& request) 
 	obs_sceneitem_defer_update_end(sceneItem);
 
 	if (badRequest) {
-		return request.failed("invalid properties", errorData);
+		return request.failed("error", errorData);
 	}
 
 	return request.success();
