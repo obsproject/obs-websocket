@@ -35,6 +35,8 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include "obs-websocket.h"
 
+typedef RpcResponse(WSRequestHandler::*RpcMethodHandler)(const RpcRequest&);
+
 class WSRequestHandler {
 	public:
 		explicit WSRequestHandler(ConnectionProperties& connProperties);
@@ -43,121 +45,121 @@ class WSRequestHandler {
 	private:
 		ConnectionProperties& _connProperties;
 
-		static QHash<QString, RpcResponse(*)(const RpcRequest&)> messageMap;
-		static QSet<QString> authNotRequired;
+		static const QHash<QString, RpcMethodHandler> messageMap;
+		static const QSet<QString> authNotRequired;
 
-		static RpcResponse HandleGetVersion(const RpcRequest&);
-		static RpcResponse HandleGetAuthRequired(const RpcRequest&);
-		static RpcResponse HandleAuthenticate(const RpcRequest&);
+		RpcResponse GetVersion(const RpcRequest&);
+		RpcResponse GetAuthRequired(const RpcRequest&);
+		RpcResponse Authenticate(const RpcRequest&);
 
-		static RpcResponse HandleGetStats(const RpcRequest&);
-		static RpcResponse HandleSetHeartbeat(const RpcRequest&);
-		static RpcResponse HandleGetVideoInfo(const RpcRequest&);
+		RpcResponse GetStats(const RpcRequest&);
+		RpcResponse SetHeartbeat(const RpcRequest&);
+		RpcResponse GetVideoInfo(const RpcRequest&);
 
-		static RpcResponse HandleSetFilenameFormatting(const RpcRequest&);
-		static RpcResponse HandleGetFilenameFormatting(const RpcRequest&);
+		RpcResponse SetFilenameFormatting(const RpcRequest&);
+		RpcResponse GetFilenameFormatting(const RpcRequest&);
 
-		static RpcResponse HandleBroadcastCustomMessage(const RpcRequest&);
+		RpcResponse BroadcastCustomMessage(const RpcRequest&);
 
-		static RpcResponse HandleSetCurrentScene(const RpcRequest&);
-		static RpcResponse HandleGetCurrentScene(const RpcRequest&);
-		static RpcResponse HandleGetSceneList(const RpcRequest&);
+		RpcResponse SetCurrentScene(const RpcRequest&);
+		RpcResponse GetCurrentScene(const RpcRequest&);
+		RpcResponse GetSceneList(const RpcRequest&);
 
-		static RpcResponse HandleSetSceneItemRender(const RpcRequest&);
-		static RpcResponse HandleSetSceneItemPosition(const RpcRequest&);
-		static RpcResponse HandleSetSceneItemTransform(const RpcRequest&);
-		static RpcResponse HandleSetSceneItemCrop(const RpcRequest&);
-		static RpcResponse HandleGetSceneItemProperties(const RpcRequest&);
-		static RpcResponse HandleSetSceneItemProperties(const RpcRequest&);
-		static RpcResponse HandleResetSceneItem(const RpcRequest&);
-		static RpcResponse HandleDuplicateSceneItem(const RpcRequest&);
-		static RpcResponse HandleDeleteSceneItem(const RpcRequest&);
-		static RpcResponse HandleReorderSceneItems(const RpcRequest&);
+		RpcResponse SetSceneItemRender(const RpcRequest&);
+		RpcResponse SetSceneItemPosition(const RpcRequest&);
+		RpcResponse SetSceneItemTransform(const RpcRequest&);
+		RpcResponse SetSceneItemCrop(const RpcRequest&);
+		RpcResponse GetSceneItemProperties(const RpcRequest&);
+		RpcResponse SetSceneItemProperties(const RpcRequest&);
+		RpcResponse ResetSceneItem(const RpcRequest&);
+		RpcResponse DuplicateSceneItem(const RpcRequest&);
+		RpcResponse DeleteSceneItem(const RpcRequest&);
+		RpcResponse ReorderSceneItems(const RpcRequest&);
 
-		static RpcResponse HandleGetStreamingStatus(const RpcRequest&);
-		static RpcResponse HandleStartStopStreaming(const RpcRequest&);
-		static RpcResponse HandleStartStopRecording(const RpcRequest&);
+		RpcResponse GetStreamingStatus(const RpcRequest&);
+		RpcResponse StartStopStreaming(const RpcRequest&);
+		RpcResponse StartStopRecording(const RpcRequest&);
 
-		static RpcResponse HandleStartStreaming(const RpcRequest&);
-		static RpcResponse HandleStopStreaming(const RpcRequest&);
+		RpcResponse StartStreaming(const RpcRequest&);
+		RpcResponse StopStreaming(const RpcRequest&);
 
-		static RpcResponse HandleStartRecording(const RpcRequest&);
-		static RpcResponse HandleStopRecording(const RpcRequest&);
-		static RpcResponse HandlePauseRecording(const RpcRequest&);
-		static RpcResponse HandleResumeRecording(const RpcRequest&);
+		RpcResponse StartRecording(const RpcRequest&);
+		RpcResponse StopRecording(const RpcRequest&);
+		RpcResponse PauseRecording(const RpcRequest&);
+		RpcResponse ResumeRecording(const RpcRequest&);
 
-		static RpcResponse HandleStartStopReplayBuffer(const RpcRequest&);
-		static RpcResponse HandleStartReplayBuffer(const RpcRequest&);
-		static RpcResponse HandleStopReplayBuffer(const RpcRequest&);
-		static RpcResponse HandleSaveReplayBuffer(const RpcRequest&);
+		RpcResponse StartStopReplayBuffer(const RpcRequest&);
+		RpcResponse StartReplayBuffer(const RpcRequest&);
+		RpcResponse StopReplayBuffer(const RpcRequest&);
+		RpcResponse SaveReplayBuffer(const RpcRequest&);
 
-		static RpcResponse HandleSetRecordingFolder(const RpcRequest&);
-		static RpcResponse HandleGetRecordingFolder(const RpcRequest&);
+		RpcResponse SetRecordingFolder(const RpcRequest&);
+		RpcResponse GetRecordingFolder(const RpcRequest&);
 
-		static RpcResponse HandleGetTransitionList(const RpcRequest&);
-		static RpcResponse HandleGetCurrentTransition(const RpcRequest&);
-		static RpcResponse HandleSetCurrentTransition(const RpcRequest&);
+		RpcResponse GetTransitionList(const RpcRequest&);
+		RpcResponse GetCurrentTransition(const RpcRequest&);
+		RpcResponse SetCurrentTransition(const RpcRequest&);
 
-		static RpcResponse HandleSetVolume(const RpcRequest&);
-		static RpcResponse HandleGetVolume(const RpcRequest&);
-		static RpcResponse HandleToggleMute(const RpcRequest&);
-		static RpcResponse HandleSetMute(const RpcRequest&);
-		static RpcResponse HandleGetMute(const RpcRequest&);
-		static RpcResponse HandleSetSyncOffset(const RpcRequest&);
-		static RpcResponse HandleGetSyncOffset(const RpcRequest&);
-		static RpcResponse HandleGetSpecialSources(const RpcRequest&);
-		static RpcResponse HandleGetSourcesList(const RpcRequest&);
-		static RpcResponse HandleGetSourceTypesList(const RpcRequest&);
-		static RpcResponse HandleGetSourceSettings(const RpcRequest&);
-		static RpcResponse HandleSetSourceSettings(const RpcRequest&);
-		static RpcResponse HandleTakeSourceScreenshot(const RpcRequest&);
+		RpcResponse SetVolume(const RpcRequest&);
+		RpcResponse GetVolume(const RpcRequest&);
+		RpcResponse ToggleMute(const RpcRequest&);
+		RpcResponse SetMute(const RpcRequest&);
+		RpcResponse GetMute(const RpcRequest&);
+		RpcResponse SetSyncOffset(const RpcRequest&);
+		RpcResponse GetSyncOffset(const RpcRequest&);
+		RpcResponse GetSpecialSources(const RpcRequest&);
+		RpcResponse GetSourcesList(const RpcRequest&);
+		RpcResponse GetSourceTypesList(const RpcRequest&);
+		RpcResponse GetSourceSettings(const RpcRequest&);
+		RpcResponse SetSourceSettings(const RpcRequest&);
+		RpcResponse TakeSourceScreenshot(const RpcRequest&);
 
-		static RpcResponse HandleGetSourceFilters(const RpcRequest&);
-		static RpcResponse HandleGetSourceFilterInfo(const RpcRequest&);
-		static RpcResponse HandleAddFilterToSource(const RpcRequest&);
-		static RpcResponse HandleRemoveFilterFromSource(const RpcRequest&);
-		static RpcResponse HandleReorderSourceFilter(const RpcRequest&);
-		static RpcResponse HandleMoveSourceFilter(const RpcRequest&);
-		static RpcResponse HandleSetSourceFilterSettings(const RpcRequest&);
-		static RpcResponse HandleSetSourceFilterVisibility(const RpcRequest&);
+		RpcResponse GetSourceFilters(const RpcRequest&);
+		RpcResponse GetSourceFilterInfo(const RpcRequest&);
+		RpcResponse AddFilterToSource(const RpcRequest&);
+		RpcResponse RemoveFilterFromSource(const RpcRequest&);
+		RpcResponse ReorderSourceFilter(const RpcRequest&);
+		RpcResponse MoveSourceFilter(const RpcRequest&);
+		RpcResponse SetSourceFilterSettings(const RpcRequest&);
+		RpcResponse SetSourceFilterVisibility(const RpcRequest&);
 
-		static RpcResponse HandleSetCurrentSceneCollection(const RpcRequest&);
-		static RpcResponse HandleGetCurrentSceneCollection(const RpcRequest&);
-		static RpcResponse HandleListSceneCollections(const RpcRequest&);
+		RpcResponse SetCurrentSceneCollection(const RpcRequest&);
+		RpcResponse GetCurrentSceneCollection(const RpcRequest&);
+		RpcResponse ListSceneCollections(const RpcRequest&);
 
-		static RpcResponse HandleSetCurrentProfile(const RpcRequest&);
-		static RpcResponse HandleGetCurrentProfile(const RpcRequest&);
-		static RpcResponse HandleListProfiles(const RpcRequest&);
+		RpcResponse SetCurrentProfile(const RpcRequest&);
+		RpcResponse GetCurrentProfile(const RpcRequest&);
+		RpcResponse ListProfiles(const RpcRequest&);
 
-		static RpcResponse HandleSetStreamSettings(const RpcRequest&);
-		static RpcResponse HandleGetStreamSettings(const RpcRequest&);
-		static RpcResponse HandleSaveStreamSettings(const RpcRequest&);
+		RpcResponse SetStreamSettings(const RpcRequest&);
+		RpcResponse GetStreamSettings(const RpcRequest&);
+		RpcResponse SaveStreamSettings(const RpcRequest&);
 #if BUILD_CAPTIONS
-		static RpcResponse HandleSendCaptions(WSRequestHandler * req);
+		RpcResponse SendCaptions(WSRequestHandler * req);
 #endif
 
-		static RpcResponse HandleSetTransitionDuration(const RpcRequest& request);
-		static RpcResponse HandleGetTransitionDuration(const RpcRequest& request);
+		RpcResponse SetTransitionDuration(const RpcRequest& request);
+		RpcResponse GetTransitionDuration(const RpcRequest& request);
 
-		static RpcResponse HandleGetStudioModeStatus(const RpcRequest& request);
-		static RpcResponse HandleGetPreviewScene(const RpcRequest& request);
-		static RpcResponse HandleSetPreviewScene(const RpcRequest& request);
-		static RpcResponse HandleTransitionToProgram(const RpcRequest& request);
-		static RpcResponse HandleEnableStudioMode(const RpcRequest& request);
-		static RpcResponse HandleDisableStudioMode(const RpcRequest& request);
-		static RpcResponse HandleToggleStudioMode(const RpcRequest& request);
+		RpcResponse GetStudioModeStatus(const RpcRequest& request);
+		RpcResponse GetPreviewScene(const RpcRequest& request);
+		RpcResponse SetPreviewScene(const RpcRequest& request);
+		RpcResponse TransitionToProgram(const RpcRequest& request);
+		RpcResponse EnableStudioMode(const RpcRequest& request);
+		RpcResponse DisableStudioMode(const RpcRequest& request);
+		RpcResponse ToggleStudioMode(const RpcRequest& request);
 
-		static RpcResponse HandleSetTextGDIPlusProperties(const RpcRequest& request);
-		static RpcResponse HandleGetTextGDIPlusProperties(const RpcRequest& request);
+		RpcResponse SetTextGDIPlusProperties(const RpcRequest& request);
+		RpcResponse GetTextGDIPlusProperties(const RpcRequest& request);
 
-		static RpcResponse HandleSetTextFreetype2Properties(const RpcRequest& request);
-		static RpcResponse HandleGetTextFreetype2Properties(const RpcRequest& request);
+		RpcResponse SetTextFreetype2Properties(const RpcRequest& request);
+		RpcResponse GetTextFreetype2Properties(const RpcRequest& request);
 
-		static RpcResponse HandleSetBrowserSourceProperties(const RpcRequest& request);
-		static RpcResponse HandleGetBrowserSourceProperties(const RpcRequest& request);
+		RpcResponse SetBrowserSourceProperties(const RpcRequest& request);
+		RpcResponse GetBrowserSourceProperties(const RpcRequest& request);
 
-		static RpcResponse HandleListOutputs(const RpcRequest& request);
-		static RpcResponse HandleGetOutputInfo(const RpcRequest& request);
-		static RpcResponse HandleStartOutput(const RpcRequest& request);
-		static RpcResponse HandleStopOutput(const RpcRequest& request);
+		RpcResponse ListOutputs(const RpcRequest& request);
+		RpcResponse GetOutputInfo(const RpcRequest& request);
+		RpcResponse StartOutput(const RpcRequest& request);
+		RpcResponse StopOutput(const RpcRequest& request);
 };
