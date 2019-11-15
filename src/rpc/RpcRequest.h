@@ -27,17 +27,19 @@ class RpcRequest
 public:
 	explicit RpcRequest(const QString& messageId, const QString& methodName, obs_data_t* params);
 	
-	const QString& messageId() const {
-		return _messageId;
-	}
-	
-	const QString& methodName() const {
-		return _methodName;
-	}
-	
-	const obs_data_t* parameters() const {
-		return _parameters;
-	}
+	const QString& messageId() const;
+	const QString& methodName() const;
+	const obs_data_t* parameters() const;
+
+	bool hasField(QString fieldName, obs_data_type expectedFieldType = OBS_DATA_NULL,
+					obs_data_number_type expectedNumberType = OBS_DATA_NUM_INVALID);
+	bool hasBool(QString fieldName);
+	bool hasString(QString fieldName);
+	bool hasNumber(QString fieldName, obs_data_number_type expectedNumberType = OBS_DATA_NUM_INVALID);
+	bool hasInteger(QString fieldName);
+	bool hasDouble(QString fieldName);
+	bool hasArray(QString fieldName);
+	bool hasObject(QString fieldName);
 
 private:
 	const QString _messageId;

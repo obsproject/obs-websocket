@@ -25,3 +25,81 @@ RpcRequest::RpcRequest(const QString& messageId, const QString& methodName, obs_
 	_parameters = obs_data_create();
 	obs_data_apply(_parameters, params);
 }
+
+const QString& RpcRequest::messageId() const
+{
+	return _messageId;
+}
+	
+const QString& RpcRequest::methodName() const
+{
+	return _methodName;
+}
+
+const obs_data_t* RpcRequest::parameters() const
+{
+	return _parameters;
+}
+
+bool RpcRequest::hasField(QString name, obs_data_type expectedFieldType, obs_data_number_type expectedNumberType)
+{
+	if (!_parameters || name.isEmpty() || name.isNull()) {
+		return false;
+	}
+
+	OBSDataItemAutoRelease dataItem = obs_data_item_byname(_parameters, name.toUtf8());
+	if (!dataItem) {
+		return false;
+	}
+
+	if (expectedFieldType != OBS_DATA_NULL) {
+		obs_data_type fieldType = obs_data_item_gettype(dataItem);
+		if (fieldType != expectedFieldType) {
+			return false;
+		}
+
+		if (fieldType == OBS_DATA_NUMBER && expectedNumberType != OBS_DATA_NUM_INVALID) {
+			obs_data_number_type numberType = obs_data_item_numtype(dataItem);
+			if (numberType != expectedNumberType) {
+				return false;
+			}
+		}
+	}
+
+	return true;
+}
+
+bool RpcRequest::hasBool(QString fieldName)
+{
+	return this->hasField(fieldName, OBS_DATA_BOOLEAN);
+}
+
+bool RpcRequest::hasString(QString fieldName)
+{
+	return this->hasField(fieldName, OBS_DATA_STRING);
+}
+
+bool RpcRequest::hasNumber(QString fieldName, obs_data_number_type expectedNumberType)
+{
+	return this->hasField(fieldName, OBS_DATA_NUMBER, expectedNumberType);
+}
+
+bool RpcRequest::hasInteger(QString fieldName)
+{
+	return this->hasNumber(fieldName, OBS_DATA_NUM_INT);
+}
+
+bool RpcRequest::hasDouble(QString fieldName)
+{
+	return this->hasNumber(fieldName, OBS_DATA_NUM_DOUBLE);
+}
+
+bool RpcRequest::hasArray(QString fieldName)
+{
+	return this->hasField(fieldName, OBS_DATA_ARRAY);
+}
+
+bool RpcRequest::hasObject(QString fieldName)
+{
+	return this->hasField(fieldName, OBS_DATA_OBJECT);
+}
