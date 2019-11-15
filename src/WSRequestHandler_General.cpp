@@ -66,7 +66,7 @@ const char *describe_scale_type(int scale) {
  * @category general
  * @since 0.3
  */
-RpcResponse WSRequestHandler::HandleGetVersion(const RpcRequest& request) {
+RpcResponse WSRequestHandler::GetVersion(const RpcRequest& request) {
 	QString obsVersion = Utils::OBSVersionString();
 
 	QList<QString> names = messageMap.keys();
@@ -85,7 +85,7 @@ RpcResponse WSRequestHandler::HandleGetVersion(const RpcRequest& request) {
 	obs_data_set_string(data, "obs-studio-version", obsVersion.toUtf8());
 	obs_data_set_string(data, "available-requests", requests.toUtf8());
 
-	return RpcResponse::ok(request, data);
+	return request.okResponse(data);
 }
 
 /**
@@ -101,7 +101,7 @@ RpcResponse WSRequestHandler::HandleGetVersion(const RpcRequest& request) {
  * @category general
  * @since 0.3
  */
-RpcResponse WSRequestHandler::HandleGetAuthRequired(const RpcRequest& request) {
+RpcResponse WSRequestHandler::GetAuthRequired(const RpcRequest& request) {
 	bool authRequired = GetConfig()->AuthRequired;
 
 	OBSDataAutoRelease data = obs_data_create();
@@ -115,7 +115,7 @@ RpcResponse WSRequestHandler::HandleGetAuthRequired(const RpcRequest& request) {
 			config->Salt.toUtf8());
 	}
 
-	return RpcResponse::ok(request, data);
+	return request.okResponse(data);
 }
 
 /**
@@ -128,7 +128,7 @@ RpcResponse WSRequestHandler::HandleGetAuthRequired(const RpcRequest& request) {
  * @category general
  * @since 0.3
  */
-RpcResponse WSRequestHandler::HandleAuthenticate(const RpcRequest& request) {
+RpcResponse WSRequestHandler::Authenticate(const RpcRequest& request) {
 	if (!request.hasField("auth")) {
 		return RpcResponse::fail(request, "missing request parameters");
 	}
@@ -147,7 +147,7 @@ RpcResponse WSRequestHandler::HandleAuthenticate(const RpcRequest& request) {
 	}
 
 	_connProperties.setAuthenticated(true);
-	return RpcResponse::ok(request);
+	return request.okResponse();
 }
 
 /**
@@ -160,7 +160,7 @@ RpcResponse WSRequestHandler::HandleAuthenticate(const RpcRequest& request) {
  * @category general
  * @since 4.3.0
  */
-RpcResponse WSRequestHandler::HandleSetHeartbeat(const RpcRequest& request) {
+RpcResponse WSRequestHandler::SetHeartbeat(const RpcRequest& request) {
 	if (!request.hasField("enable")) {
 		return RpcResponse::fail(request, "Heartbeat <enable> parameter missing");
 	}
@@ -170,7 +170,8 @@ RpcResponse WSRequestHandler::HandleSetHeartbeat(const RpcRequest& request) {
 
 	OBSDataAutoRelease response = obs_data_create();
 	obs_data_set_bool(response, "enable", events->HeartbeatIsActive);
-	return RpcResponse::ok(request, response);
+
+	return request.okResponse(response);
 }
 
 /**
@@ -183,7 +184,7 @@ RpcResponse WSRequestHandler::HandleSetHeartbeat(const RpcRequest& request) {
  * @category general
  * @since 4.3.0
  */
-RpcResponse WSRequestHandler::HandleSetFilenameFormatting(const RpcRequest& request) {
+RpcResponse WSRequestHandler::SetFilenameFormatting(const RpcRequest& request) {
 	if (!request.hasField("filename-formatting")) {
 		return RpcResponse::fail(request, "<filename-formatting> parameter missing");
 	}
@@ -194,7 +195,8 @@ RpcResponse WSRequestHandler::HandleSetFilenameFormatting(const RpcRequest& requ
 	}
 
 	Utils::SetFilenameFormatting(filenameFormatting.toUtf8());
-	return RpcResponse::ok(request);
+
+	return request.okResponse();
 }
 
 /**
@@ -207,10 +209,11 @@ RpcResponse WSRequestHandler::HandleSetFilenameFormatting(const RpcRequest& requ
  * @category general
  * @since 4.3.0
  */
-RpcResponse WSRequestHandler::HandleGetFilenameFormatting(const RpcRequest& request) {
+RpcResponse WSRequestHandler::GetFilenameFormatting(const RpcRequest& request) {
 	OBSDataAutoRelease response = obs_data_create();
 	obs_data_set_string(response, "filename-formatting", Utils::GetFilenameFormatting());
-	return RpcResponse::ok(request, response);
+
+	return request.okResponse(response);
 }
 
 /**
@@ -223,12 +226,13 @@ RpcResponse WSRequestHandler::HandleGetFilenameFormatting(const RpcRequest& requ
  * @category general
  * @since 4.6.0
  */
-RpcResponse WSRequestHandler::HandleGetStats(const RpcRequest& request) {
+RpcResponse WSRequestHandler::GetStats(const RpcRequest& request) {
 	OBSDataAutoRelease stats = GetEventsSystem()->GetStats();
 
 	OBSDataAutoRelease response = obs_data_create();
 	obs_data_set_obj(response, "stats", stats);
-	return RpcResponse::ok(request, response);
+
+	return request.okResponse(response);
 }
 
 /**
@@ -242,7 +246,7 @@ RpcResponse WSRequestHandler::HandleGetStats(const RpcRequest& request) {
  * @category general
  * @since 4.7.0
  */
-RpcResponse WSRequestHandler::HandleBroadcastCustomMessage(const RpcRequest& request) {
+RpcResponse WSRequestHandler::BroadcastCustomMessage(const RpcRequest& request) {
 	if (!request.hasField("realm") || !request.hasField("data")) {
 		return RpcResponse::fail(request, "missing request parameters");
 	}
@@ -261,7 +265,7 @@ RpcResponse WSRequestHandler::HandleBroadcastCustomMessage(const RpcRequest& req
 	auto events = GetEventsSystem();
 	events->OnBroadcastCustomMessage(realm, data);
 
-	return RpcResponse::ok(request);
+	return request.okResponse();
 }
 
 
@@ -283,7 +287,7 @@ RpcResponse WSRequestHandler::HandleBroadcastCustomMessage(const RpcRequest& req
  * @category general
  * @since 4.6.0 
  */
-RpcResponse WSRequestHandler::HandleGetVideoInfo(const RpcRequest& request) {
+RpcResponse WSRequestHandler::GetVideoInfo(const RpcRequest& request) {
 	obs_video_info ovi;
 	obs_get_video_info(&ovi);
 
@@ -297,6 +301,6 @@ RpcResponse WSRequestHandler::HandleGetVideoInfo(const RpcRequest& request) {
 	obs_data_set_string(response, "colorSpace", describe_color_space(ovi.colorspace));
 	obs_data_set_string(response, "colorRange", describe_color_range(ovi.range));
 	obs_data_set_string(response, "scaleType", describe_scale_type(ovi.scale_type));
-	
-	return RpcResponse::ok(request, response);
+
+	return request.okResponse(response);
 }
