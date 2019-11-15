@@ -36,7 +36,10 @@ class RpcResponse
 public:
 	static RpcResponse ofRequest(const RpcRequest& request);
 	static const RpcResponse ok(const RpcRequest& request, obs_data_t* additionalFields = nullptr);
-	static const RpcResponse fail(const RpcRequest& request, const QString& errorMessage);
+	static const RpcResponse fail(
+		const RpcRequest& request, const QString& errorMessage,
+		obs_data_t* additionalFields = nullptr
+	);
 
 	ResponseStatus status() {
 		return _status;

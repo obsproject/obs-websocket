@@ -40,9 +40,9 @@ const RpcResponse::RpcResponse ok(const RpcRequest& request, obs_data_t* additio
 	return response;
 }
 
-const RpcResponse::RpcResponse fail(const RpcRequest& request, const QString& errorMessage)
+const RpcResponse::RpcResponse fail(const RpcRequest& request, const QString& errorMessage, obs_data_t* additionalFields)
 {
-	RpcResponse response(ResponseStatus::Error, request.messageId(), request.methodName());
+	RpcResponse response(ResponseStatus::Error, request.messageId(), request.methodName(), additionalFields);
 	response._errorMessage = errorMessage;
 	return response;
 }
