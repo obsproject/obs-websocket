@@ -526,18 +526,6 @@ RpcResponse WSRequestHandler::DeleteSceneItem(const RpcRequest& request) {
 	return request.success();
 }
 
-struct DuplicateSceneItemData {
-	obs_sceneitem_t *referenceItem;
-	obs_source_t *fromSource;
-	obs_sceneitem_t *newItem;
-};
-
-static void DuplicateSceneItem(void *_data, obs_scene_t *scene) {
-	DuplicateSceneItemData *data = (DuplicateSceneItemData *)_data;
-	data->newItem = obs_scene_add(scene, data->fromSource);
-	obs_sceneitem_set_visible(data->newItem, obs_sceneitem_visible(data->referenceItem));
-}
-
 /**
  * Duplicates a scene item.
  *
@@ -558,6 +546,12 @@ static void DuplicateSceneItem(void *_data, obs_scene_t *scene) {
  * @since 4.5.0
  */
 RpcResponse WSRequestHandler::DuplicateSceneItem(const RpcRequest& request) {
+	struct DuplicateSceneItemData {
+		obs_sceneitem_t *referenceItem;
+		obs_source_t *fromSource;
+		obs_sceneitem_t *newItem;
+	};
+
 	if (!request.hasField("item")) {
 		return request.failed("missing request parameters");
 	}
@@ -585,7 +579,11 @@ RpcResponse WSRequestHandler::DuplicateSceneItem(const RpcRequest& request) {
 	data.referenceItem = referenceItem;
 
 	obs_enter_graphics();
-	obs_scene_atomic_update(toScene, DuplicateSceneItem, &data);
+	obs_scene_atomic_update(toScene, [](void *_data, obs_scene_t *scene) {
+		auto data = (DuplicateSceneItemData*)_data;
+		data->newItem = obs_scene_add(scene, data->fromSource);
+		obs_sceneitem_set_visible(data->newItem, obs_sceneitem_visible(data->referenceItem));
+	}, &data);
 	obs_leave_graphics();
 
 	obs_sceneitem_t *newItem = data.newItem;
