@@ -38,31 +38,31 @@
 * @category scene items
 * @since 4.3.0
 */
-HandlerResponse WSRequestHandler::HandleGetSceneItemProperties(WSRequestHandler* req) {
-	if (!req->hasField("item")) {
-		return req->SendErrorResponse("missing request parameters");
+RpcResponse WSRequestHandler::GetSceneItemProperties(const RpcRequest& request) {
+	if (!request.hasField("item")) {
+		return request.failed("missing request parameters");
 	}
 
-	QString itemName = obs_data_get_string(req->data, "item");
+	QString itemName = obs_data_get_string(request.parameters(), "item");
 	if (itemName.isEmpty()) {
-		return req->SendErrorResponse("invalid request parameters");
+		return request.failed("invalid request parameters");
 	}
 
-	QString sceneName = obs_data_get_string(req->data, "scene-name");
+	QString sceneName = obs_data_get_string(request.parameters(), "scene-name");
 	OBSScene scene = Utils::GetSceneFromNameOrCurrent(sceneName);
 	if (!scene) {
-		return req->SendErrorResponse("requested scene doesn't exist");
+		return request.failed("requested scene doesn't exist");
 	}
 
 	OBSSceneItemAutoRelease sceneItem = Utils::GetSceneItemFromName(scene, itemName);
 	if (!sceneItem) {
-		return req->SendErrorResponse("specified scene item doesn't exist");
+		return request.failed("specified scene item doesn't exist");
 	}
 
 	OBSDataAutoRelease data = Utils::GetSceneItemPropertiesData(sceneItem);
 	obs_data_set_string(data, "name", itemName.toUtf8());
 
-	return req->SendOKResponse(data);
+	return request.success(data);
 }
 
 /**
@@ -93,38 +93,38 @@ HandlerResponse WSRequestHandler::HandleGetSceneItemProperties(WSRequestHandler*
 * @category scene items
 * @since 4.3.0
 */
-HandlerResponse WSRequestHandler::HandleSetSceneItemProperties(WSRequestHandler* req) {
-	if (!req->hasField("item")) {
-		return req->SendErrorResponse("missing request parameters");
+RpcResponse WSRequestHandler::SetSceneItemProperties(const RpcRequest& request) {
+	if (!request.hasField("item")) {
+		return request.failed("missing request parameters");
 	}
 
-	QString itemName = obs_data_get_string(req->data, "item");
+	QString itemName = obs_data_get_string(request.parameters(), "item");
 	if (itemName.isEmpty()) {
-		return req->SendErrorResponse("invalid request parameters");
+		return request.failed("invalid request parameters");
 	}
 
-	QString sceneName = obs_data_get_string(req->data, "scene-name");
+	QString sceneName = obs_data_get_string(request.parameters(), "scene-name");
 	OBSScene scene = Utils::GetSceneFromNameOrCurrent(sceneName);
 	if (!scene) {
-		return req->SendErrorResponse("requested scene doesn't exist");
+		return request.failed("requested scene doesn't exist");
 	}
 
 	OBSSceneItemAutoRelease sceneItem =
 		Utils::GetSceneItemFromName(scene, itemName);
 	if (!sceneItem) {
-		return req->SendErrorResponse("specified scene item doesn't exist");
+		return request.failed("specified scene item doesn't exist");
 	}
 
 	bool badRequest = false;
-	OBSDataAutoRelease errorMessage = obs_data_create();
+	OBSDataAutoRelease errorData = obs_data_create();
 
 	obs_sceneitem_defer_update_begin(sceneItem);
 
-	if (req->hasField("position")) {
+	if (request.hasField("position")) {
 		vec2 oldPosition;
 		OBSDataAutoRelease positionError = obs_data_create();
 		obs_sceneitem_get_pos(sceneItem, &oldPosition);
-		OBSDataAutoRelease reqPosition = obs_data_get_obj(req->data, "position");
+		OBSDataAutoRelease reqPosition = obs_data_get_obj(request.parameters(), "position");
 		vec2 newPosition = oldPosition;
 		if (obs_data_has_user_value(reqPosition, "x")) {
 			newPosition.x = obs_data_get_int(reqPosition, "x");
@@ -140,20 +140,20 @@ HandlerResponse WSRequestHandler::HandleSetSceneItemProperties(WSRequestHandler*
 			else {
 				badRequest = true;
 				obs_data_set_string(positionError, "alignment", "invalid");
-				obs_data_set_obj(errorMessage, "position", positionError);
+				obs_data_set_obj(errorData, "position", positionError);
 			}
 		}
 		obs_sceneitem_set_pos(sceneItem, &newPosition);
 	}
 
-	if (req->hasField("rotation")) {
-		obs_sceneitem_set_rot(sceneItem, (float)obs_data_get_double(req->data, "rotation"));
+	if (request.hasField("rotation")) {
+		obs_sceneitem_set_rot(sceneItem, (float)obs_data_get_double(request.parameters(), "rotation"));
 	}
 
-	if (req->hasField("scale")) {
+	if (request.hasField("scale")) {
 		vec2 oldScale;
 		obs_sceneitem_get_scale(sceneItem, &oldScale);
-		OBSDataAutoRelease reqScale = obs_data_get_obj(req->data, "scale");
+		OBSDataAutoRelease reqScale = obs_data_get_obj(request.parameters(), "scale");
 		vec2 newScale = oldScale;
 		if (obs_data_has_user_value(reqScale, "x")) {
 			newScale.x = obs_data_get_double(reqScale, "x");
@@ -164,10 +164,10 @@ HandlerResponse WSRequestHandler::HandleSetSceneItemProperties(WSRequestHandler*
 		obs_sceneitem_set_scale(sceneItem, &newScale);
 	}
 
-	if (req->hasField("crop")) {
+	if (request.hasField("crop")) {
 		obs_sceneitem_crop oldCrop;
 		obs_sceneitem_get_crop(sceneItem, &oldCrop);
-		OBSDataAutoRelease reqCrop = obs_data_get_obj(req->data, "crop");
+		OBSDataAutoRelease reqCrop = obs_data_get_obj(request.parameters(), "crop");
 		obs_sceneitem_crop newCrop = oldCrop;
 		if (obs_data_has_user_value(reqCrop, "top")) {
 			newCrop.top = obs_data_get_int(reqCrop, "top");
@@ -184,18 +184,18 @@ HandlerResponse WSRequestHandler::HandleSetSceneItemProperties(WSRequestHandler*
 		obs_sceneitem_set_crop(sceneItem, &newCrop);
 	}
 
-	if (req->hasField("visible")) {
-		obs_sceneitem_set_visible(sceneItem, obs_data_get_bool(req->data, "visible"));
+	if (request.hasField("visible")) {
+		obs_sceneitem_set_visible(sceneItem, obs_data_get_bool(request.parameters(), "visible"));
 	}
 
-	if (req->hasField("locked")) {
-		obs_sceneitem_set_locked(sceneItem, obs_data_get_bool(req->data, "locked"));
+	if (request.hasField("locked")) {
+		obs_sceneitem_set_locked(sceneItem, obs_data_get_bool(request.parameters(), "locked"));
 	}
 
-	if (req->hasField("bounds")) {
+	if (request.hasField("bounds")) {
 		bool badBounds = false;
 		OBSDataAutoRelease boundsError = obs_data_create();
-		OBSDataAutoRelease reqBounds = obs_data_get_obj(req->data, "bounds");
+		OBSDataAutoRelease reqBounds = obs_data_get_obj(request.parameters(), "bounds");
 		if (obs_data_has_user_value(reqBounds, "type")) {
 			QString newBoundsType = obs_data_get_string(reqBounds, "type");
 			if (newBoundsType == "OBS_BOUNDS_NONE") {
@@ -245,17 +245,17 @@ HandlerResponse WSRequestHandler::HandleSetSceneItemProperties(WSRequestHandler*
 			}
 		}
 		if (badBounds) {
-			obs_data_set_obj(errorMessage, "bounds", boundsError);
+			obs_data_set_obj(errorData, "bounds", boundsError);
 		}
 	}
 
 	obs_sceneitem_defer_update_end(sceneItem);
 
 	if (badRequest) {
-		return req->SendErrorResponse(errorMessage);
+		return request.failed("invalid properties", errorData);
 	}
 
-	return req->SendOKResponse();
+	return request.success();
 }
 
 /**
@@ -269,27 +269,27 @@ HandlerResponse WSRequestHandler::HandleSetSceneItemProperties(WSRequestHandler*
 * @category scene items
 * @since 4.2.0
 */
-HandlerResponse WSRequestHandler::HandleResetSceneItem(WSRequestHandler* req) {
+RpcResponse WSRequestHandler::ResetSceneItem(const RpcRequest& request) {
 	// TODO: remove this request, or refactor it to ResetSource
 
-	if (!req->hasField("item")) {
-		return req->SendErrorResponse("missing request parameters");
+	if (!request.hasField("item")) {
+		return request.failed("missing request parameters");
 	}
 
-	const char* itemName = obs_data_get_string(req->data, "item");
+	const char* itemName = obs_data_get_string(request.parameters(), "item");
 	if (!itemName) {
-		return req->SendErrorResponse("invalid request parameters");
+		return request.failed("invalid request parameters");
 	}
 
-	const char* sceneName = obs_data_get_string(req->data, "scene-name");
+	const char* sceneName = obs_data_get_string(request.parameters(), "scene-name");
 	OBSScene scene = Utils::GetSceneFromNameOrCurrent(sceneName);
 	if (!scene) {
-		return req->SendErrorResponse("requested scene doesn't exist");
+		return request.failed("requested scene doesn't exist");
 	}
 
 	OBSSceneItemAutoRelease sceneItem = Utils::GetSceneItemFromName(scene, itemName);
 	if (!sceneItem) {
-		return req->SendErrorResponse("specified scene item doesn't exist");
+		return request.failed("specified scene item doesn't exist");
 	}
 
 	OBSSource sceneItemSource = obs_sceneitem_get_source(sceneItem);
@@ -297,7 +297,7 @@ HandlerResponse WSRequestHandler::HandleResetSceneItem(WSRequestHandler* req) {
 	OBSDataAutoRelease settings = obs_source_get_settings(sceneItemSource);
 	obs_source_update(sceneItemSource, settings);
 
-	return req->SendOKResponse();
+	return request.success();
 }
 
 /**
@@ -313,34 +313,34 @@ HandlerResponse WSRequestHandler::HandleResetSceneItem(WSRequestHandler* req) {
 * @since 0.3
 * @deprecated Since 4.3.0. Prefer the use of SetSceneItemProperties.
 */
-HandlerResponse WSRequestHandler::HandleSetSceneItemRender(WSRequestHandler* req) {
-	if (!req->hasField("source") ||
-		!req->hasField("render"))
+RpcResponse WSRequestHandler::SetSceneItemRender(const RpcRequest& request) {
+	if (!request.hasField("source") ||
+		!request.hasField("render"))
 	{
-		return req->SendErrorResponse("missing request parameters");
+		return request.failed("missing request parameters");
 	}
 
-	const char* itemName = obs_data_get_string(req->data, "source");
-	bool isVisible = obs_data_get_bool(req->data, "render");
+	const char* itemName = obs_data_get_string(request.parameters(), "source");
+	bool isVisible = obs_data_get_bool(request.parameters(), "render");
 
 	if (!itemName) {
-		return req->SendErrorResponse("invalid request parameters");
+		return request.failed("invalid request parameters");
 	}
 
-	const char* sceneName = obs_data_get_string(req->data, "scene-name");
+	const char* sceneName = obs_data_get_string(request.parameters(), "scene-name");
 	OBSScene scene = Utils::GetSceneFromNameOrCurrent(sceneName);
 	if (!scene) {
-		return req->SendErrorResponse("requested scene doesn't exist");
+		return request.failed("requested scene doesn't exist");
 	}
 
 	OBSSceneItemAutoRelease sceneItem =
 		Utils::GetSceneItemFromName(scene, itemName);
 	if (!sceneItem) {
-		return req->SendErrorResponse("specified scene item doesn't exist");
+		return request.failed("specified scene item doesn't exist");
 	}
 
 	obs_sceneitem_set_visible(sceneItem, isVisible);
-	return req->SendOKResponse();
+	return request.success();
 }
 
 /**
@@ -358,34 +358,34 @@ HandlerResponse WSRequestHandler::HandleSetSceneItemRender(WSRequestHandler* req
 * @since 4.0.0
 * @deprecated Since 4.3.0. Prefer the use of SetSceneItemProperties.
 */
-HandlerResponse WSRequestHandler::HandleSetSceneItemPosition(WSRequestHandler* req) {
-	if (!req->hasField("item") ||
-		!req->hasField("x") || !req->hasField("y")) {
-		return req->SendErrorResponse("missing request parameters");
+RpcResponse WSRequestHandler::SetSceneItemPosition(const RpcRequest& request) {
+	if (!request.hasField("item") ||
+		!request.hasField("x") || !request.hasField("y")) {
+		return request.failed("missing request parameters");
 	}
 
-	QString itemName = obs_data_get_string(req->data, "item");
+	QString itemName = obs_data_get_string(request.parameters(), "item");
 	if (itemName.isEmpty()) {
-		return req->SendErrorResponse("invalid request parameters");
+		return request.failed("invalid request parameters");
 	}
 
-	QString sceneName = obs_data_get_string(req->data, "scene-name");
+	QString sceneName = obs_data_get_string(request.parameters(), "scene-name");
 	OBSScene scene = Utils::GetSceneFromNameOrCurrent(sceneName);
 	if (!scene) {
-		return req->SendErrorResponse("requested scene could not be found");
+		return request.failed("requested scene could not be found");
 	}
 
 	OBSSceneItem sceneItem = Utils::GetSceneItemFromName(scene, itemName);
 	if (!sceneItem) {
-		return req->SendErrorResponse("specified scene item doesn't exist");
+		return request.failed("specified scene item doesn't exist");
 	}
 
 	vec2 item_position = { 0 };
-	item_position.x = obs_data_get_double(req->data, "x");
-	item_position.y = obs_data_get_double(req->data, "y");
+	item_position.x = obs_data_get_double(request.parameters(), "x");
+	item_position.y = obs_data_get_double(request.parameters(), "y");
 	obs_sceneitem_set_pos(sceneItem, &item_position);
 
-	return req->SendOKResponse();
+	return request.success();
 }
 
 /**
@@ -403,34 +403,34 @@ HandlerResponse WSRequestHandler::HandleSetSceneItemPosition(WSRequestHandler* r
 * @since 4.0.0
 * @deprecated Since 4.3.0. Prefer the use of SetSceneItemProperties.
 */
-HandlerResponse WSRequestHandler::HandleSetSceneItemTransform(WSRequestHandler* req) {
-	if (!req->hasField("item") ||
-		!req->hasField("x-scale") ||
-		!req->hasField("y-scale") ||
-		!req->hasField("rotation"))
+RpcResponse WSRequestHandler::SetSceneItemTransform(const RpcRequest& request) {
+	if (!request.hasField("item") ||
+		!request.hasField("x-scale") ||
+		!request.hasField("y-scale") ||
+		!request.hasField("rotation"))
 	{
-		return req->SendErrorResponse("missing request parameters");
+		return request.failed("missing request parameters");
 	}
 
-	QString itemName = obs_data_get_string(req->data, "item");
+	QString itemName = obs_data_get_string(request.parameters(), "item");
 	if (itemName.isEmpty()) {
-		return req->SendErrorResponse("invalid request parameters");
+		return request.failed("invalid request parameters");
 	}
 
-	QString sceneName = obs_data_get_string(req->data, "scene-name");
+	QString sceneName = obs_data_get_string(request.parameters(), "scene-name");
 	OBSScene scene = Utils::GetSceneFromNameOrCurrent(sceneName);
 	if (!scene) {
-		return req->SendErrorResponse("requested scene doesn't exist");
+		return request.failed("requested scene doesn't exist");
 	}
 
 	vec2 scale;
-	scale.x = obs_data_get_double(req->data, "x-scale");
-	scale.y = obs_data_get_double(req->data, "y-scale");
-	float rotation = obs_data_get_double(req->data, "rotation");
+	scale.x = obs_data_get_double(request.parameters(), "x-scale");
+	scale.y = obs_data_get_double(request.parameters(), "y-scale");
+	float rotation = obs_data_get_double(request.parameters(), "rotation");
 
 	OBSSceneItemAutoRelease sceneItem = Utils::GetSceneItemFromName(scene, itemName);
 	if (!sceneItem) {
-		return req->SendErrorResponse("specified scene item doesn't exist");
+		return request.failed("specified scene item doesn't exist");
 	}
 
 	obs_sceneitem_defer_update_begin(sceneItem);
@@ -440,7 +440,7 @@ HandlerResponse WSRequestHandler::HandleSetSceneItemTransform(WSRequestHandler* 
 	
 	obs_sceneitem_defer_update_end(sceneItem);
 
-	return req->SendOKResponse();
+	return request.success();
 }
 
 /**
@@ -459,36 +459,36 @@ HandlerResponse WSRequestHandler::HandleSetSceneItemTransform(WSRequestHandler* 
 * @since 4.1.0
 * @deprecated Since 4.3.0. Prefer the use of SetSceneItemProperties.
 */
-HandlerResponse WSRequestHandler::HandleSetSceneItemCrop(WSRequestHandler* req) {
-	if (!req->hasField("item")) {
-		return req->SendErrorResponse("missing request parameters");
+RpcResponse WSRequestHandler::SetSceneItemCrop(const RpcRequest& request) {
+	if (!request.hasField("item")) {
+		return request.failed("missing request parameters");
 	}
 
-	QString itemName = obs_data_get_string(req->data, "item");
+	QString itemName = obs_data_get_string(request.parameters(), "item");
 	if (itemName.isEmpty()) {
-		return req->SendErrorResponse("invalid request parameters");
+		return request.failed("invalid request parameters");
 	}
 
-	QString sceneName = obs_data_get_string(req->data, "scene-name");
+	QString sceneName = obs_data_get_string(request.parameters(), "scene-name");
 	OBSScene scene = Utils::GetSceneFromNameOrCurrent(sceneName);
 	if (!scene) {
-		return req->SendErrorResponse("requested scene doesn't exist");
+		return request.failed("requested scene doesn't exist");
 	}
 
 	OBSSceneItemAutoRelease sceneItem = Utils::GetSceneItemFromName(scene, itemName);
 	if (!sceneItem) {
-		return req->SendErrorResponse("specified scene item doesn't exist");
+		return request.failed("specified scene item doesn't exist");
 	}
 
 	struct obs_sceneitem_crop crop = { 0 };
-	crop.top = obs_data_get_int(req->data, "top");
-	crop.bottom = obs_data_get_int(req->data, "bottom");
-	crop.left = obs_data_get_int(req->data, "left");
-	crop.right = obs_data_get_int(req->data, "right");
+	crop.top = obs_data_get_int(request.parameters(), "top");
+	crop.bottom = obs_data_get_int(request.parameters(), "bottom");
+	crop.left = obs_data_get_int(request.parameters(), "left");
+	crop.right = obs_data_get_int(request.parameters(), "right");
 
 	obs_sceneitem_set_crop(sceneItem, &crop);
 
-	return req->SendOKResponse();
+	return request.success();
 }
 
 /**
@@ -504,26 +504,26 @@ HandlerResponse WSRequestHandler::HandleSetSceneItemCrop(WSRequestHandler* req) 
  * @category scene items
  * @since 4.5.0
  */
-HandlerResponse WSRequestHandler::HandleDeleteSceneItem(WSRequestHandler* req) {
-	if (!req->hasField("item")) {
-		return req->SendErrorResponse("missing request parameters");
+RpcResponse WSRequestHandler::DeleteSceneItem(const RpcRequest& request) {
+	if (!request.hasField("item")) {
+		return request.failed("missing request parameters");
 	}
 
-	const char* sceneName = obs_data_get_string(req->data, "scene");
+	const char* sceneName = obs_data_get_string(request.parameters(), "scene");
 	OBSScene scene = Utils::GetSceneFromNameOrCurrent(sceneName);
 	if (!scene) {
-		return req->SendErrorResponse("requested scene doesn't exist");
+		return request.failed("requested scene doesn't exist");
 	}
 
-	OBSDataAutoRelease item = obs_data_get_obj(req->data, "item");
+	OBSDataAutoRelease item = obs_data_get_obj(request.parameters(), "item");
 	OBSSceneItemAutoRelease sceneItem = Utils::GetSceneItemFromItem(scene, item);
 	if (!sceneItem) {
-		return req->SendErrorResponse("item with id/name combination not found in specified scene");
+		return request.failed("item with id/name combination not found in specified scene");
 	}
 
 	obs_sceneitem_remove(sceneItem);
 
-	return req->SendOKResponse();
+	return request.success();
 }
 
 struct DuplicateSceneItemData {
@@ -557,27 +557,27 @@ static void DuplicateSceneItem(void *_data, obs_scene_t *scene) {
  * @category scene items
  * @since 4.5.0
  */
-HandlerResponse WSRequestHandler::HandleDuplicateSceneItem(WSRequestHandler* req) {
-	if (!req->hasField("item")) {
-		return req->SendErrorResponse("missing request parameters");
+RpcResponse WSRequestHandler::DuplicateSceneItem(const RpcRequest& request) {
+	if (!request.hasField("item")) {
+		return request.failed("missing request parameters");
 	}
 
-	const char* fromSceneName = obs_data_get_string(req->data, "fromScene");
+	const char* fromSceneName = obs_data_get_string(request.parameters(), "fromScene");
 	OBSScene fromScene = Utils::GetSceneFromNameOrCurrent(fromSceneName);
 	if (!fromScene) {
-		return req->SendErrorResponse("requested fromScene doesn't exist");
+		return request.failed("requested fromScene doesn't exist");
 	}
 
-	const char* toSceneName = obs_data_get_string(req->data, "toScene");
+	const char* toSceneName = obs_data_get_string(request.parameters(), "toScene");
 	OBSScene toScene = Utils::GetSceneFromNameOrCurrent(toSceneName);
 	if (!toScene) {
-		return req->SendErrorResponse("requested toScene doesn't exist");
+		return request.failed("requested toScene doesn't exist");
 	}
 
-	OBSDataAutoRelease item = obs_data_get_obj(req->data, "item");
+	OBSDataAutoRelease item = obs_data_get_obj(request.parameters(), "item");
 	OBSSceneItemAutoRelease referenceItem = Utils::GetSceneItemFromItem(fromScene, item);
 	if (!referenceItem) {
-		return req->SendErrorResponse("item with id/name combination not found in specified scene");
+		return request.failed("item with id/name combination not found in specified scene");
 	}
 
 	DuplicateSceneItemData data;
@@ -590,7 +590,7 @@ HandlerResponse WSRequestHandler::HandleDuplicateSceneItem(WSRequestHandler* req
 
 	obs_sceneitem_t *newItem = data.newItem;
 	if (!newItem) {
-		return req->SendErrorResponse("Error duplicating scene item");
+		return request.failed("Error duplicating scene item");
 	}
 
 	OBSDataAutoRelease itemData = obs_data_create();
@@ -601,5 +601,5 @@ HandlerResponse WSRequestHandler::HandleDuplicateSceneItem(WSRequestHandler* req
 	obs_data_set_obj(responseData, "item", itemData);
 	obs_data_set_string(responseData, "scene", obs_source_get_name(obs_scene_get_source(toScene)));
 
-	return req->SendOKResponse(responseData);
+	return request.success(responseData);
 }
