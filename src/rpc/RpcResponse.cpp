@@ -38,7 +38,7 @@ const RpcResponse RpcResponse::ok(const RpcRequest& request, obs_data_t* additio
 {
 	RpcResponse response(Status::Ok, request.messageId(), request.methodName(), additionalFields);
 	return response;
-}
+} 
 
 const RpcResponse RpcResponse::fail(const RpcRequest& request, const QString& errorMessage, obs_data_t* additionalFields)
 {

@@ -66,6 +66,9 @@ std::string OBSRemoteProtocol::processMessage(std::string message)
     QString messageId = obs_data_get_string(data, "message-id");
 
     OBSDataAutoRelease params = obs_data_create();
+	obs_data_apply(params, data);
+	obs_data_unset_user_value(params, "request-type");
+	obs_data_unset_user_value(params, "message-id");
 
     RpcRequest request(messageId, methodName, params);
     RpcResponse response = _requestHandler.processRequest(request);
