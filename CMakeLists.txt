@@ -46,6 +46,8 @@ set(obs-websocket_SOURCES
 	src/WSEvents.cpp
 	src/Config.cpp
 	src/Utils.cpp
+	src/rpc/RpcRequest.cpp
+	src/rpc/RpcResponse.h
 	src/forms/settings-dialog.cpp)
 
 set(obs-websocket_HEADERS
@@ -56,6 +58,8 @@ set(obs-websocket_HEADERS
 	src/WSEvents.h
 	src/Config.h
 	src/Utils.h
+	src/rpc/RpcRequest.h
+	src/rpc/RpcResponse.h
 	src/forms/settings-dialog.h)
 
 # --- Platform-independent build settings ---
