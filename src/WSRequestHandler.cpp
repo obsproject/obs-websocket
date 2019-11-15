@@ -24,7 +24,7 @@
 
 #include "WSRequestHandler.h"
 
-QHash<QString, HandlerResponse(*)(WSRequestHandler*)> WSRequestHandler::messageMap{
+QHash<QString, RpcResponse(*)(const RpcRequest&)> WSRequestHandler::messageMap {
 	{ "GetVersion", WSRequestHandler::HandleGetVersion },
 	{ "GetAuthRequired", WSRequestHandler::HandleGetAuthRequired },
 	{ "Authenticate", WSRequestHandler::HandleAuthenticate },
@@ -148,141 +148,80 @@ QSet<QString> WSRequestHandler::authNotRequired {
 };
 
 WSRequestHandler::WSRequestHandler(ConnectionProperties& connProperties) :
-	_messageId(0),
-	_requestType(""),
-	data(nullptr),
 	_connProperties(connProperties)
 {
 }
 
-std::string WSRequestHandler::processIncomingMessage(std::string& textMessage) {
-	if (GetConfig()->DebugEnabled) {
-		blog(LOG_INFO, "Request >> '%s'", textMessage.c_str());
-	}
+// std::string WSRequestHandler::processIncomingMessage(std::string& textMessage) {
+// 	if (GetConfig()->DebugEnabled) {
+// 		blog(LOG_INFO, "Request >> '%s'", textMessage.c_str());
+// 	}
 
-	OBSDataAutoRelease responseData = processRequest(textMessage);
-	std::string response = obs_data_get_json(responseData);
+// 	OBSDataAutoRelease responseData = processRequest(textMessage);
+// 	std::string response = obs_data_get_json(responseData);
 
-	if (GetConfig()->DebugEnabled) {
-		blog(LOG_INFO, "Response << '%s'", response.c_str());
-	}
+// 	if (GetConfig()->DebugEnabled) {
+// 		blog(LOG_INFO, "Response << '%s'", response.c_str());
+// 	}
 
-	return response;
-}
+// 	return response;
+// }
 
-HandlerResponse WSRequestHandler::processRequest(std::string& textMessage){
-	std::string msgContainer(textMessage);
-	const char* msg = msgContainer.c_str();
+RpcResponse WSRequestHandler::processRequest(const RpcRequest& request){
+	// std::string msgContainer(textMessage);
+	// const char* msg = msgContainer.c_str();
 
-	data = obs_data_create_from_json(msg);
-	if (!data) {
-		blog(LOG_ERROR, "invalid JSON payload received for '%s'", msg);
-		return SendErrorResponse("invalid JSON payload");
-	}
+	// data = obs_data_create_from_json(msg);
+	// if (!data) {
+	// 	blog(LOG_ERROR, "invalid JSON payload received for '%s'", msg);
+	// 	return SendErrorResponse("invalid JSON payload");
+	// }
 
 	if (!hasField("request-type") || !hasField("message-id")) {
 		return SendErrorResponse("missing request parameters");
 	}
 
-	_requestType = obs_data_get_string(data, "request-type");
-	_messageId = obs_data_get_string(data, "message-id");
+	// _requestType = obs_data_get_string(data, "request-type");
+	// _messageId = obs_data_get_string(data, "message-id");
 
 	if (GetConfig()->AuthRequired
-		&& (!authNotRequired.contains(_requestType))
+		&& (!authNotRequired.contains(request.methodName()))
 		&& (!_connProperties.isAuthenticated()))
 	{
-		return SendErrorResponse("Not Authenticated");
+		return RpcResponse::fail(request, "Not Authenticated");
 	}
 
-	HandlerResponse (*handlerFunc)(WSRequestHandler*) = (messageMap[_requestType]);
+	RpcResponse (*handlerFunc)(const RpcRequest&) = (messageMap[request.methodName()]);
 	if (!handlerFunc) {
-		return SendErrorResponse("invalid request type");
+		return RpcResponse::fail(request, "invalid request type");
 	}
 
-	return handlerFunc(this);
+	return handlerFunc(request);
 }
 
-WSRequestHandler::~WSRequestHandler() {
-}
+// HandlerResponse WSRequestHandler::SendOKResponse(obs_data_t* additionalFields) {
+// 	return SendResponse("ok", additionalFields);
+// }
 
-HandlerResponse WSRequestHandler::SendOKResponse(obs_data_t* additionalFields) {
-	return SendResponse("ok", additionalFields);
-}
+// HandlerResponse WSRequestHandler::SendErrorResponse(QString errorMessage) {
+// 	OBSDataAutoRelease fields = obs_data_create();
+// 	obs_data_set_string(fields, "error", errorMessage.toUtf8().constData());
 
-HandlerResponse WSRequestHandler::SendErrorResponse(QString errorMessage) {
-	OBSDataAutoRelease fields = obs_data_create();
-	obs_data_set_string(fields, "error", errorMessage.toUtf8().constData());
+// 	return SendResponse("error", fields);
+// }
 
-	return SendResponse("error", fields);
-}
+// HandlerResponse WSRequestHandler::SendErrorResponse(obs_data_t* additionalFields) {
+// 	return SendResponse("error", additionalFields);
+// }
 
-HandlerResponse WSRequestHandler::SendErrorResponse(obs_data_t* additionalFields) {
-	return SendResponse("error", additionalFields);
-}
+// HandlerResponse WSRequestHandler::SendResponse(const char* status, obs_data_t* fields) {
+// 	obs_data_t* response = obs_data_create();
+// 	obs_data_set_string(response, "message-id", _messageId);
+// 	obs_data_set_string(response, "status", status);
 
-HandlerResponse WSRequestHandler::SendResponse(const char* status, obs_data_t* fields) {
-	obs_data_t* response = obs_data_create();
-	obs_data_set_string(response, "message-id", _messageId);
-	obs_data_set_string(response, "status", status);
+// 	if (fields) {
+// 		obs_data_apply(response, fields);
+// 	}
 
-	if (fields) {
-		obs_data_apply(response, fields);
-	}
-
-	return response;
-}
-
-bool WSRequestHandler::hasField(QString name, obs_data_type expectedFieldType, obs_data_number_type expectedNumberType) {
-	if (!data || name.isEmpty() || name.isNull()) {
-		return false;
-	}
-
-	OBSDataItemAutoRelease dataItem = obs_data_item_byname(data, name.toUtf8());
-	if (!dataItem) {
-		return false;
-	}
-
-	if (expectedFieldType != OBS_DATA_NULL) {
-		obs_data_type fieldType = obs_data_item_gettype(dataItem);
-		if (fieldType != expectedFieldType) {
-			return false;
-		}
-
-		if (fieldType == OBS_DATA_NUMBER && expectedNumberType != OBS_DATA_NUM_INVALID) {
-			obs_data_number_type numberType = obs_data_item_numtype(dataItem);
-			if (numberType != expectedNumberType) {
-				return false;
-			}
-		}
-	}
-
-	return true;
-}
-
-bool WSRequestHandler::hasBool(QString fieldName) {
-	return this->hasField(fieldName, OBS_DATA_BOOLEAN);
-}
-
-bool WSRequestHandler::hasString(QString fieldName) {
-	return this->hasField(fieldName, OBS_DATA_STRING);
-}
-
-bool WSRequestHandler::hasNumber(QString fieldName, obs_data_number_type expectedNumberType) {
-	return this->hasField(fieldName, OBS_DATA_NUMBER, expectedNumberType);
-}
-
-bool WSRequestHandler::hasInteger(QString fieldName) {
-	return this->hasNumber(fieldName, OBS_DATA_NUM_INT);
-}
-
-bool WSRequestHandler::hasDouble(QString fieldName) {
-	return this->hasNumber(fieldName, OBS_DATA_NUM_DOUBLE);
-}
-
-bool WSRequestHandler::hasArray(QString fieldName) {
-	return this->hasField(fieldName, OBS_DATA_ARRAY);
-}
-
-bool WSRequestHandler::hasObject(QString fieldName) {
-	return this->hasField(fieldName, OBS_DATA_OBJECT);
-}
+// 	return response;
+// }
