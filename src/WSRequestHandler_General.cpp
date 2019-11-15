@@ -130,20 +130,20 @@ RpcResponse WSRequestHandler::GetAuthRequired(const RpcRequest& request) {
  */
 RpcResponse WSRequestHandler::Authenticate(const RpcRequest& request) {
 	if (!request.hasField("auth")) {
-		return RpcResponse::fail(request, "missing request parameters");
+		return request.failed("missing request parameters");
 	}
 
 	if (_connProperties.isAuthenticated()) {
-		return RpcResponse::fail(request, "already authenticated");
+		return request.failed("already authenticated");
 	}
 
 	QString auth = obs_data_get_string(request.parameters(), "auth");
 	if (auth.isEmpty()) {
-		return RpcResponse::fail(request, "auth not specified!");
+		return request.failed("auth not specified!");
 	}
 
 	if (GetConfig()->CheckAuth(auth) == false) {
-		return RpcResponse::fail(request, "Authentication Failed.");
+		return request.failed("Authentication Failed.");
 	}
 
 	_connProperties.setAuthenticated(true);
@@ -162,7 +162,7 @@ RpcResponse WSRequestHandler::Authenticate(const RpcRequest& request) {
  */
 RpcResponse WSRequestHandler::SetHeartbeat(const RpcRequest& request) {
 	if (!request.hasField("enable")) {
-		return RpcResponse::fail(request, "Heartbeat <enable> parameter missing");
+		return request.failed("Heartbeat <enable> parameter missing");
 	}
 
 	auto events = GetEventsSystem();
@@ -186,12 +186,12 @@ RpcResponse WSRequestHandler::SetHeartbeat(const RpcRequest& request) {
  */
 RpcResponse WSRequestHandler::SetFilenameFormatting(const RpcRequest& request) {
 	if (!request.hasField("filename-formatting")) {
-		return RpcResponse::fail(request, "<filename-formatting> parameter missing");
+		return request.failed("<filename-formatting> parameter missing");
 	}
 
 	QString filenameFormatting = obs_data_get_string(request.parameters(), "filename-formatting");
 	if (filenameFormatting.isEmpty()) {
-		return RpcResponse::fail(request, "invalid request parameters");
+		return request.failed("invalid request parameters");
 	}
 
 	Utils::SetFilenameFormatting(filenameFormatting.toUtf8());
@@ -248,18 +248,18 @@ RpcResponse WSRequestHandler::GetStats(const RpcRequest& request) {
  */
 RpcResponse WSRequestHandler::BroadcastCustomMessage(const RpcRequest& request) {
 	if (!request.hasField("realm") || !request.hasField("data")) {
-		return RpcResponse::fail(request, "missing request parameters");
+		return request.failed("missing request parameters");
 	}
 
 	QString realm = obs_data_get_string(request.parameters(), "realm");
 	OBSDataAutoRelease data = obs_data_get_obj(request.parameters(), "data");
 
 	if (realm.isEmpty()) {
-		return RpcResponse::fail(request, "realm not specified!");
+		return request.failed("realm not specified!");
 	}
 
 	if (!data) {
-		return RpcResponse::fail(request, "data not specified!");
+		return request.failed("data not specified!");
 	}
 
 	auto events = GetEventsSystem();
