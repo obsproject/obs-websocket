@@ -36,12 +36,12 @@ const QString& RpcRequest::methodName() const
 	return _methodName;
 }
 
-const obs_data_t* RpcRequest::parameters() const
+const OBSData RpcRequest::parameters() const
 {
-	return _parameters;
+	return OBSData(_parameters);
 }
 
-bool RpcRequest::hasField(QString name, obs_data_type expectedFieldType, obs_data_number_type expectedNumberType)
+const bool RpcRequest::hasField(QString name, obs_data_type expectedFieldType, obs_data_number_type expectedNumberType) const
 {
 	if (!_parameters || name.isEmpty() || name.isNull()) {
 		return false;
@@ -69,37 +69,37 @@ bool RpcRequest::hasField(QString name, obs_data_type expectedFieldType, obs_dat
 	return true;
 }
 
-bool RpcRequest::hasBool(QString fieldName)
+const bool RpcRequest::hasBool(QString fieldName) const
 {
 	return this->hasField(fieldName, OBS_DATA_BOOLEAN);
 }
 
-bool RpcRequest::hasString(QString fieldName)
+const bool RpcRequest::hasString(QString fieldName) const
 {
 	return this->hasField(fieldName, OBS_DATA_STRING);
 }
 
-bool RpcRequest::hasNumber(QString fieldName, obs_data_number_type expectedNumberType)
+const bool RpcRequest::hasNumber(QString fieldName, obs_data_number_type expectedNumberType) const
 {
 	return this->hasField(fieldName, OBS_DATA_NUMBER, expectedNumberType);
 }
 
-bool RpcRequest::hasInteger(QString fieldName)
+const bool RpcRequest::hasInteger(QString fieldName) const
 {
 	return this->hasNumber(fieldName, OBS_DATA_NUM_INT);
 }
 
-bool RpcRequest::hasDouble(QString fieldName)
+const bool RpcRequest::hasDouble(QString fieldName) const
 {
 	return this->hasNumber(fieldName, OBS_DATA_NUM_DOUBLE);
 }
 
-bool RpcRequest::hasArray(QString fieldName)
+const bool RpcRequest::hasArray(QString fieldName) const
 {
 	return this->hasField(fieldName, OBS_DATA_ARRAY);
 }
 
-bool RpcRequest::hasObject(QString fieldName)
+const bool RpcRequest::hasObject(QString fieldName) const
 {
 	return this->hasField(fieldName, OBS_DATA_OBJECT);
 }

@@ -29,17 +29,17 @@ public:
 	
 	const QString& messageId() const;
 	const QString& methodName() const;
-	const obs_data_t* parameters() const;
+	const OBSData parameters() const;
 
-	bool hasField(QString fieldName, obs_data_type expectedFieldType = OBS_DATA_NULL,
-					obs_data_number_type expectedNumberType = OBS_DATA_NUM_INVALID);
-	bool hasBool(QString fieldName);
-	bool hasString(QString fieldName);
-	bool hasNumber(QString fieldName, obs_data_number_type expectedNumberType = OBS_DATA_NUM_INVALID);
-	bool hasInteger(QString fieldName);
-	bool hasDouble(QString fieldName);
-	bool hasArray(QString fieldName);
-	bool hasObject(QString fieldName);
+	const bool hasField(QString fieldName, obs_data_type expectedFieldType = OBS_DATA_NULL,
+					obs_data_number_type expectedNumberType = OBS_DATA_NUM_INVALID) const;
+	const bool hasBool(QString fieldName) const;
+	const bool hasString(QString fieldName) const;
+	const bool hasNumber(QString fieldName, obs_data_number_type expectedNumberType = OBS_DATA_NUM_INVALID) const;
+	const bool hasInteger(QString fieldName) const;
+	const bool hasDouble(QString fieldName) const;
+	const bool hasArray(QString fieldName) const;
+	const bool hasObject(QString fieldName) const;
 
 private:
 	const QString _messageId;
