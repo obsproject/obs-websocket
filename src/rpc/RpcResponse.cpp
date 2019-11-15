@@ -20,7 +20,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include "RpcRequest.h"
 
 RpcResponse::RpcResponse(
-	ResponseStatus status, const QString& messageId,
+	Status status, const QString& messageId,
 	const QString& methodName, obs_data_t* additionalFields
 ) :
 	_status(status),
@@ -34,15 +34,15 @@ RpcResponse::RpcResponse(
 	}
 }
 
-const RpcResponse::RpcResponse ok(const RpcRequest& request, obs_data_t* additionalFields)
+const RpcResponse RpcResponse::ok(const RpcRequest& request, obs_data_t* additionalFields)
 {
-	RpcResponse response(ResponseStatus::Ok, request.messageId(), request.methodName(), additionalFields);
+	RpcResponse response(Status::Ok, request.messageId(), request.methodName(), additionalFields);
 	return response;
 }
 
-const RpcResponse::RpcResponse fail(const RpcRequest& request, const QString& errorMessage, obs_data_t* additionalFields)
+const RpcResponse RpcResponse::fail(const RpcRequest& request, const QString& errorMessage, obs_data_t* additionalFields)
 {
-	RpcResponse response(ResponseStatus::Error, request.messageId(), request.methodName(), additionalFields);
+	RpcResponse response(Status::Error, request.messageId(), request.methodName(), additionalFields);
 	response._errorMessage = errorMessage;
 	return response;
 }

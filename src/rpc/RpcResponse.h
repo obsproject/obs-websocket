@@ -24,16 +24,11 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 class RpcRequest;
 
-enum ResponseStatus
-{
-	Unknown,
-	Ok,
-	Error
-};
-
 class RpcResponse
 {
 public:
+	enum Status { Unknown, Ok, Error };
+
 	static RpcResponse ofRequest(const RpcRequest& request);
 	static const RpcResponse ok(const RpcRequest& request, obs_data_t* additionalFields = nullptr);
 	static const RpcResponse fail(
@@ -41,7 +36,7 @@ public:
 		obs_data_t* additionalFields = nullptr
 	);
 
-	ResponseStatus status() {
+	Status status() {
 		return _status;
 	}
 
@@ -63,11 +58,11 @@ public:
 
 private:
 	explicit RpcResponse(
-		ResponseStatus status,
+		Status status,
 		const QString& messageId, const QString& methodName,
 		obs_data_t* additionalFields = nullptr
 	);
-	const ResponseStatus _status;
+	const Status _status;
 	const QString _messageId;
 	const QString _methodName;
 	QString _errorMessage;

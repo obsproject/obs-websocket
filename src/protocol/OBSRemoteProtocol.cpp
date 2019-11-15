@@ -72,9 +72,9 @@ std::string OBSRemoteProtocol::processMessage(std::string message)
 
     OBSData additionalFields = response.additionalFields();
     switch (response.status()) {
-        case Ok:
+		case RpcResponse::Status::Ok:
             return successResponse(messageId, additionalFields);
-        case Error:
+        case RpcResponse::Status::Error:
             return errorResponse(messageId, response.errorMessage(), additionalFields);
     }
 

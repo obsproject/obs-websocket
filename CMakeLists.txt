@@ -47,7 +47,7 @@ set(obs-websocket_SOURCES
 	src/Config.cpp
 	src/Utils.cpp
 	src/rpc/RpcRequest.cpp
-	src/rpc/RpcResponse.h
+	src/rpc/RpcResponse.cpp
 	src/protocol/OBSRemoteProtocol.cpp
 	src/forms/settings-dialog.cpp)
 
