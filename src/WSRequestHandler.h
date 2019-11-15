@@ -33,6 +33,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include "obs-websocket.h"
 
+class WSRequestHandler;
 typedef RpcResponse(WSRequestHandler::*RpcMethodHandler)(const RpcRequest&);
 
 class WSRequestHandler {
