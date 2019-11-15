@@ -22,6 +22,10 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <QtCore/QString>
 #include "../obs-websocket.h"
 
+// forward declarations
+class RpcResponse;
+enum ResponseStatus;
+
 class RpcRequest
 {
 public:
@@ -30,6 +34,9 @@ public:
 	const QString& messageId() const;
 	const QString& methodName() const;
 	const OBSData parameters() const;
+
+	const RpcResponse okResponse(obs_data_t* additionalFields = nullptr) const;
+	const RpcResponse errorResponse(const QString& errorMessage, obs_data_t* additionalFields = nullptr) const;
 
 	const bool hasField(QString fieldName, obs_data_type expectedFieldType = OBS_DATA_NULL,
 					obs_data_number_type expectedNumberType = OBS_DATA_NUM_INVALID) const;

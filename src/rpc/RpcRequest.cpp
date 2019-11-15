@@ -17,6 +17,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 */
 
 #include "RpcRequest.h"
+#include "RpcResponse.h"
 
 RpcRequest::RpcRequest(const QString& messageId, const QString& methodName, obs_data_t* params) :
 	_messageId(messageId),
@@ -39,6 +40,16 @@ const QString& RpcRequest::methodName() const
 const OBSData RpcRequest::parameters() const
 {
 	return OBSData(_parameters);
+}
+
+const RpcResponse RpcRequest::okResponse(obs_data_t* additionalFields) const
+{
+	return RpcResponse::ok(*this, additionalFields);
+}
+
+const RpcResponse RpcRequest::errorResponse(const QString& errorMessage, obs_data_t* additionalFields) const
+{
+	return RpcResponse::fail(*this, errorMessage, additionalFields);
 }
 
 const bool RpcRequest::hasField(QString name, obs_data_type expectedFieldType, obs_data_number_type expectedNumberType) const
