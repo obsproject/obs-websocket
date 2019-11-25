@@ -3287,6 +3287,67 @@
         "lead": "",
         "type": "class",
         "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Open a projector window or create a projector on a monitor. Requires OBS v24.0.4 or newer.",
+        "param": [
+          "{String (Optional)} `type` Type of projector: Preview (default), Source, Scene, StudioProgram, or Multiview (case insensitive).",
+          "{int (Optional)} `monitor` Monitor to open the projector on. If -1 or omitted, opens a window.",
+          "{String (Optional)} `geometry` Size and position of the projector window (only if monitor is -1). Encoded in base 64.",
+          "{String (Optional)} `name` Name of the source or scene to be displayed (ignored for other projector types)."
+        ],
+        "api": "requests",
+        "name": "OpenProjector",
+        "category": "general",
+        "since": "4.7.0",
+        "params": [
+          {
+            "type": "String (Optional)",
+            "name": "type",
+            "description": "Type of projector: Preview (default), Source, Scene, StudioProgram, or Multiview (case insensitive)."
+          },
+          {
+            "type": "int (Optional)",
+            "name": "monitor",
+            "description": "Monitor to open the projector on. If -1 or omitted, opens a window."
+          },
+          {
+            "type": "String (Optional)",
+            "name": "geometry",
+            "description": "Size and position of the projector window (only if monitor is -1). Encoded in base 64."
+          },
+          {
+            "type": "String (Optional)",
+            "name": "name",
+            "description": "Name of the source or scene to be displayed (ignored for other projector types)."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "OpenProjector"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "general"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.7.0"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "OpenProjector"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
       }
     ],
     "outputs": [

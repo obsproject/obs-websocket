@@ -300,7 +300,7 @@ HandlerResponse WSRequestHandler::HandleGetVideoInfo(WSRequestHandler* req) {
 }
 
 /**
- * Open a projector window or create a projector on a monitor.
+ * Open a projector window or create a projector on a monitor. Requires OBS v24.0.4 or newer.
  * 
  * @param {String (Optional)} `type` Type of projector: Preview (default), Source, Scene, StudioProgram, or Multiview (case insensitive).
  * @param {int (Optional)} `monitor` Monitor to open the projector on. If -1 or omitted, opens a window.
@@ -313,7 +313,7 @@ HandlerResponse WSRequestHandler::HandleGetVideoInfo(WSRequestHandler* req) {
  * @since 4.7.0 
  */
 HandlerResponse WSRequestHandler::HandleOpenProjector(WSRequestHandler* req) {
-	#if LIBOBS_API_VER >= 0x18000003
+	#if LIBOBS_API_VER >= 0x18000004
 	const char *type = obs_data_get_string(req->data, "type");
 	int monitor = -1;
 	if (req->hasField("monitor")) {
@@ -324,6 +324,6 @@ HandlerResponse WSRequestHandler::HandleOpenProjector(WSRequestHandler* req) {
 	obs_frontend_open_projector(type, monitor, geometry, name);
 	return req->SendOKResponse();
 	#else
-	return req->SendErrorResponse("Projector opening requires libobs v21.0.3 or newer.");
+	return req->SendErrorResponse("Projector opening requires libobs v21.0.4 or newer.");
 	#endif
 }
