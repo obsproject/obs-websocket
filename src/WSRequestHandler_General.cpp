@@ -313,6 +313,7 @@ HandlerResponse WSRequestHandler::HandleGetVideoInfo(WSRequestHandler* req) {
  * @since 4.7.0 
  */
 HandlerResponse WSRequestHandler::HandleOpenProjector(WSRequestHandler* req) {
+	#if LIBOBS_API_VER >= 0x18000003
 	const char *type = obs_data_get_string(req->data, "type");
 	int monitor = -1;
 	if (req->hasField("monitor")) {
@@ -322,4 +323,7 @@ HandlerResponse WSRequestHandler::HandleOpenProjector(WSRequestHandler* req) {
 	const char *name = obs_data_get_string(req->data, "name");
 	obs_frontend_open_projector(type, monitor, geometry, name);
 	return req->SendOKResponse();
+	#else
+	return req->SendErrorResponse("Projector opening requires libobs v21.0.3 or newer.");
+	#endif
 }
