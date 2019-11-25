@@ -324,6 +324,6 @@ HandlerResponse WSRequestHandler::HandleOpenProjector(WSRequestHandler* req) {
 	obs_frontend_open_projector(type, monitor, geometry, name);
 	return req->SendOKResponse();
 	#else
-	return req->SendErrorResponse("Projector opening requires libobs v21.0.4 or newer.");
+	return req->SendErrorResponse("Projector opening requires libobs v24.0.4 or newer.");
 	#endif
 }
