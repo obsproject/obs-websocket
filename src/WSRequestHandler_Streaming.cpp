@@ -307,7 +307,8 @@ HandlerResponse WSRequestHandler::HandleSendCaptions(WSRequestHandler* req) {
 	OBSOutputAutoRelease output = obs_frontend_get_streaming_output();
 	if (output) {
 		const char* caption = obs_data_get_string(req->data, "text");
-		obs_output_output_caption_text1(output, caption);
+		// Send caption text with immediately (0 second delay)
+		obs_output_output_caption_text2(output, caption, 0.0);
 	}
 
 	return req->SendOKResponse();
