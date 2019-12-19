@@ -2798,7 +2798,7 @@ Change the visibility/enabled state of a filter
 | ---- | :---: | ------------|
 | `sourceName` | _String_ | Source name |
 | `filterName` | _String_ | Source filter name |
-| `filterEnabled` | _String_ | New filter state |
+| `filterEnabled` | _Boolean_ | New filter state |
 
 
 **Response Items:**
