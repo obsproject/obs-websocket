@@ -9,7 +9,7 @@ Follow the main author on Twitter for news & updates : [@LePalakis](https://twit
 
 ## Downloads
 
-Binaries for Windows and Linux are available in the [Releases](https://github.com/Palakis/obs-websocket/releases) section.
+Binaries for Windows, MacOS, and Linux are available in the [Releases](https://github.com/Palakis/obs-websocket/releases) section.
 
 ## Using obs-websocket
 
