@@ -579,7 +579,7 @@ void Utils::StartReplayBuffer() {
 		obs_output_t* rpOutput = obs_frontend_get_replay_buffer_output();
 		OBSData outputHotkeys = obs_hotkeys_save_output(rpOutput);
 
-		OBSData dummyBinding = obs_data_create();
+		OBSDataAutoRelease dummyBinding = obs_data_create();
 		obs_data_set_bool(dummyBinding, "control", true);
 		obs_data_set_bool(dummyBinding, "alt", true);
 		obs_data_set_bool(dummyBinding, "shift", true);
