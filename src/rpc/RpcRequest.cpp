@@ -21,9 +21,9 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 RpcRequest::RpcRequest(const QString& messageId, const QString& methodName, obs_data_t* params) :
 	_messageId(messageId),
-	_methodName(methodName)
+	_methodName(methodName),
+	_parameters(obs_data_create())
 {
-	_parameters = obs_data_create();
 	obs_data_apply(_parameters, params);
 }
 

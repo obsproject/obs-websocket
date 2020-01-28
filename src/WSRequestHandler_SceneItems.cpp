@@ -580,7 +580,7 @@ RpcResponse WSRequestHandler::DuplicateSceneItem(const RpcRequest& request) {
 
 	obs_enter_graphics();
 	obs_scene_atomic_update(toScene, [](void *_data, obs_scene_t *scene) {
-		auto data = (DuplicateSceneItemData*)_data;
+		auto data = reinterpret_cast<DuplicateSceneItemData*>(_data);
 		data->newItem = obs_scene_add(scene, data->fromSource);
 		obs_sceneitem_set_visible(data->newItem, obs_sceneitem_visible(data->referenceItem));
 	}, &data);
