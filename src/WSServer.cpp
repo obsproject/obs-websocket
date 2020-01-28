@@ -125,8 +125,15 @@ void WSServer::stop()
 	blog(LOG_INFO, "server stopped successfully");
 }
 
-void WSServer::broadcast(std::string message)
+void WSServer::broadcast(const RpcEvent& event)
 {
+	OBSRemoteProtocol protocol;
+	std::string message = protocol.encodeEvent(event);
+
+	if (GetConfig()->DebugEnabled) {
+		blog(LOG_INFO, "Update << '%s'", message.c_str());
+	}
+
 	QMutexLocker locker(&_clMutex);
 	for (connection_hdl hdl : _connections) {
 		if (GetConfig()->AuthRequired) {

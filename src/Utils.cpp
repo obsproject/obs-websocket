@@ -16,6 +16,7 @@ You should have received a copy of the GNU General Public License along
 with this program. If not, see <https://www.gnu.org/licenses/>
 */
 
+#include <inttypes.h>
 #include <QtWidgets/QMainWindow>
 #include <QtCore/QDir>
 #include <QtCore/QUrl>
@@ -821,4 +822,18 @@ void Utils::PauseRecording(bool pause)
 	}
 
 	pauseRecording(pause); 
+}
+
+QString Utils::nsToTimestamp(uint64_t ns)
+{
+	uint64_t ms = ns / 1000000ULL;
+	uint64_t secs = ms / 1000ULL;
+	uint64_t minutes = secs / 60ULL;
+
+	uint64_t hoursPart = minutes / 60ULL;
+	uint64_t minutesPart = minutes % 60ULL;
+	uint64_t secsPart = secs % 60ULL;
+	uint64_t msPart = ms % 1000ULL;
+
+	return QString::asprintf("%02" PRIu64 ":%02" PRIu64 ":%02" PRIu64 ".%03" PRIu64, hoursPart, minutesPart, secsPart, msPart);
 }

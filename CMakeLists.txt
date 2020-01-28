@@ -48,6 +48,7 @@ set(obs-websocket_SOURCES
 	src/Utils.cpp
 	src/rpc/RpcRequest.cpp
 	src/rpc/RpcResponse.cpp
+	src/rpc/RpcEvent.cpp
 	src/protocol/OBSRemoteProtocol.cpp
 	src/forms/settings-dialog.cpp)
 
@@ -61,6 +62,7 @@ set(obs-websocket_HEADERS
 	src/Utils.h
 	src/rpc/RpcRequest.h
 	src/rpc/RpcResponse.h
+	src/rpc/RpcEvent.h
 	src/protocol/OBSRemoteProtocol.h
 	src/forms/settings-dialog.h)
 
@@ -180,8 +182,8 @@ if(UNIX AND NOT APPLE)
 	install(TARGETS obs-websocket
 		LIBRARY DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/obs-plugins")
 	# Dirty fix for Ubuntu
-        install(TARGETS obs-websocket
-                LIBRARY DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/${UNAME_MACHINE}-linux-gnu/obs-plugins")
+		install(TARGETS obs-websocket
+				LIBRARY DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/${UNAME_MACHINE}-linux-gnu/obs-plugins")
 
 	install(FILES ${locale_files}
 		DESTINATION "${CMAKE_INSTALL_PREFIX}/share/obs/obs-plugins/obs-websocket/locale")

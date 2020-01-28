@@ -16,8 +16,12 @@ You should have received a copy of the GNU General Public License along
 with this program. If not, see <https://www.gnu.org/licenses/>
 */
 
+#include <inttypes.h>
+
 #include "OBSRemoteProtocol.h"
 #include "../WSRequestHandler.h"
+#include "../rpc/RpcEvent.h"
+#include "../Utils.h"
 
 std::string OBSRemoteProtocol::processMessage(WSRequestHandler& requestHandler, std::string message)
 {
@@ -56,7 +60,33 @@ std::string OBSRemoteProtocol::processMessage(WSRequestHandler& requestHandler, 
 	return std::string();
 }
 
-std::string OBSRemoteProtocol::buildResponse(QString messageId, QString status, obs_data_t* fields) {
+std::string OBSRemoteProtocol::encodeEvent(const RpcEvent& event)
+{
+	OBSDataAutoRelease eventData = obs_data_create();
+
+	OBSData additionalFields = event.fields();
+	if (additionalFields) {
+		obs_data_apply(eventData, additionalFields);
+	}
+
+	QString updateType = event.updateType();
+	obs_data_set_string(eventData, "update-type", updateType.toUtf8().constData());
+
+	if (obs_frontend_streaming_active()) {
+		QString streamingTimecode = Utils::nsToTimestamp(event.streamTime());
+		obs_data_set_string(eventData, "stream-timecode", streamingTimecode.toUtf8().constData());
+	}
+
+	if (obs_frontend_recording_active()) {
+		QString recordingTimecode = Utils::nsToTimestamp(event.recordingTime());
+		obs_data_set_string(eventData, "rec-timecode", recordingTimecode.toUtf8().constData());
+	}
+
+	return std::string(obs_data_get_json(eventData));
+}
+
+std::string OBSRemoteProtocol::buildResponse(QString messageId, QString status, obs_data_t* fields)
+{
 	OBSDataAutoRelease response = obs_data_create();
 	if (!messageId.isNull()) {
 		obs_data_set_string(response, "message-id", messageId.toUtf8().constData());
@@ -71,11 +101,13 @@ std::string OBSRemoteProtocol::buildResponse(QString messageId, QString status, 
 	return responseString;
 }
 
-std::string OBSRemoteProtocol::successResponse(QString messageId, obs_data_t* fields) {
+std::string OBSRemoteProtocol::successResponse(QString messageId, obs_data_t* fields)
+{
 	return buildResponse(messageId, "ok", fields);
 }
 
-std::string OBSRemoteProtocol::errorResponse(QString messageId, QString errorMessage, obs_data_t* additionalFields) {
+std::string OBSRemoteProtocol::errorResponse(QString messageId, QString errorMessage, obs_data_t* additionalFields)
+{
 	OBSDataAutoRelease fields = obs_data_create();
 	if (additionalFields) {
 		obs_data_apply(fields, additionalFields);

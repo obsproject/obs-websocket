@@ -1,6 +1,6 @@
 /*
 obs-websocket
-Copyright (C) 2016-2019	Stéphane Lepin <stephane.lepin@gmail.com>
+Copyright (C) 2016-2020	Stéphane Lepin <stephane.lepin@gmail.com>
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -18,21 +18,28 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #pragma once
 
-#include <string>
 #include <obs-data.h>
 #include <QtCore/QString>
 
-class WSRequestHandler;
-class RpcEvent;
+#include "../obs-websocket.h"
 
-class OBSRemoteProtocol
+class RpcEvent
 {
 public:
-	std::string processMessage(WSRequestHandler& requestHandler, std::string message);
-	std::string encodeEvent(const RpcEvent& event);
+	explicit RpcEvent(
+		const QString& updateType,
+		uint64_t streamTime, uint64_t recordingTime,
+		obs_data_t* fields = nullptr
+	);
+
+	const QString& updateType() const;
+	const uint64_t streamTime() const;
+	const uint64_t recordingTime() const;
+	const OBSData fields() const;
 
 private:
-	std::string buildResponse(QString messageId, QString status, obs_data_t* fields = nullptr);
-	std::string successResponse(QString messageId, obs_data_t* fields = nullptr);
-	std::string errorResponse(QString messageId, QString errorMessage, obs_data_t* additionalFields = nullptr);
+	QString _updateType;
+	uint64_t _streamTime;
+	uint64_t _recordingTime;
+	OBSDataAutoRelease _fields;
 };
