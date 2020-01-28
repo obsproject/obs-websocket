@@ -75,6 +75,9 @@ std::string OBSRemoteProtocol::successResponse(QString messageId, obs_data_t* fi
 
 std::string OBSRemoteProtocol::errorResponse(QString messageId, QString errorMessage, obs_data_t* additionalFields) {
 	OBSDataAutoRelease fields = obs_data_create();
+	if (additionalFields) {
+		obs_data_apply(fields, additionalFields);
+	}
 	obs_data_set_string(fields, "error", errorMessage.toUtf8().constData());
 	return buildResponse(messageId, "error", fields);
 }
