@@ -7221,7 +7221,7 @@
         "param": [
           "{String} `sourceName` Source name",
           "{String} `filterName` Source filter name",
-          "{String} `filterEnabled` New filter state"
+          "{Boolean} `filterEnabled` New filter state"
         ],
         "api": "requests",
         "name": "SetSourceFilterVisibility",
@@ -7239,7 +7239,7 @@
             "description": "Source filter name"
           },
           {
-            "type": "String",
+            "type": "Boolean",
             "name": "filterEnabled",
             "description": "New filter state"
           }
