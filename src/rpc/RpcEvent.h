@@ -32,10 +32,25 @@ public:
 		obs_data_t* fields = nullptr
 	);
 
-	const QString& updateType() const;
-	const uint64_t streamTime() const;
-	const uint64_t recordingTime() const;
-	const OBSData fields() const;
+	const QString& updateType() const
+	{
+		return _updateType;
+	}
+
+	const uint64_t streamTime() const
+	{
+		return _streamTime;
+	}
+
+	const uint64_t recordingTime() const
+	{
+		return _recordingTime;
+	}
+
+	const OBSData fields() const
+	{
+		return OBSData(_fields);
+	}
 
 private:
 	QString _updateType;

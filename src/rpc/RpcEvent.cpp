@@ -24,24 +24,8 @@ RpcEvent::RpcEvent(const QString& updateType, uint64_t streamTime, uint64_t reco
 	_recordingTime(recordingTime),
 	_fields(fields)
 {
-}
-
-const QString& RpcEvent::updateType() const
-{
-	return _updateType;
-}
-
-const uint64_t RpcEvent::streamTime() const
-{
-	return _streamTime;
-}
-
-const uint64_t RpcEvent::recordingTime() const
-{
-	return _recordingTime;
-}
-
-const OBSData RpcEvent::fields() const
-{
-	return OBSData(_fields);
+	if (fields) {
+		_fields = obs_data_create();
+		obs_data_apply(_fields, fields);
+	}
 }

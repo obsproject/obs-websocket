@@ -22,24 +22,12 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 RpcRequest::RpcRequest(const QString& messageId, const QString& methodName, obs_data_t* params) :
 	_messageId(messageId),
 	_methodName(methodName),
-	_parameters(obs_data_create())
+	_parameters(nullptr)
 {
-	obs_data_apply(_parameters, params);
-}
-
-const QString& RpcRequest::messageId() const
-{
-	return _messageId;
-}
-	
-const QString& RpcRequest::methodName() const
-{
-	return _methodName;
-}
-
-const OBSData RpcRequest::parameters() const
-{
-	return OBSData(_parameters);
+	if (params) {
+		_parameters = obs_data_create();
+		obs_data_apply(_parameters, params);
+	}
 }
 
 const RpcResponse RpcRequest::success(obs_data_t* additionalFields) const

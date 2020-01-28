@@ -30,9 +30,20 @@ class RpcRequest
 public:
 	explicit RpcRequest(const QString& messageId, const QString& methodName, obs_data_t* params);
 	
-	const QString& messageId() const;
-	const QString& methodName() const;
-	const OBSData parameters() const;
+	const QString& messageId() const
+	{
+		return _messageId;
+	}
+		
+	const QString& methodName() const
+	{
+		return _methodName;
+	}
+
+	const OBSData parameters() const
+	{
+		return OBSData(_parameters);
+	}
 
 	const RpcResponse success(obs_data_t* additionalFields = nullptr) const;
 	const RpcResponse failed(const QString& errorMessage, obs_data_t* additionalFields = nullptr) const;
