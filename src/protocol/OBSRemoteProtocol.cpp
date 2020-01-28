@@ -27,11 +27,11 @@ std::string OBSRemoteProtocol::processMessage(WSRequestHandler& requestHandler, 
 	OBSDataAutoRelease data = obs_data_create_from_json(msg);
 	if (!data) {
 		blog(LOG_ERROR, "invalid JSON payload received for '%s'", msg);
-		return errorResponse(nullptr, "invalid JSON payload");
+		return errorResponse(QString::Null(), "invalid JSON payload");
 	}
 
 	if (!obs_data_has_user_value(data, "request-type") || !obs_data_has_user_value(data, "message-id")) {
-		return errorResponse(nullptr, "missing request parameters");
+		return errorResponse(QString::Null(), "missing request parameters");
 	}
 
 	QString methodName = obs_data_get_string(data, "request-type");
@@ -58,7 +58,9 @@ std::string OBSRemoteProtocol::processMessage(WSRequestHandler& requestHandler, 
 
 std::string OBSRemoteProtocol::buildResponse(QString messageId, QString status, obs_data_t* fields) {
 	OBSDataAutoRelease response = obs_data_create();
-	obs_data_set_string(response, "message-id", messageId.toUtf8().constData());
+	if (!messageId.isNull()) {
+		obs_data_set_string(response, "message-id", messageId.toUtf8().constData());
+	}
 	obs_data_set_string(response, "status", status.toUtf8().constData());
 
 	if (fields) {
