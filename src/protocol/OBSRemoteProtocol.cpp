@@ -20,7 +20,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include "../WSRequestHandler.h"
 
 std::string buildResponse(QString messageId, QString status, obs_data_t* fields = nullptr) {
-	obs_data_t* response = obs_data_create();
+	OBSDataAutoRelease response = obs_data_create();
 	obs_data_set_string(response, "message-id", messageId.toUtf8().constData());
 	obs_data_set_string(response, "status", status.toUtf8().constData());
 
