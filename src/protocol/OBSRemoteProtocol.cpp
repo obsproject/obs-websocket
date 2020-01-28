@@ -19,35 +19,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include "OBSRemoteProtocol.h"
 #include "../WSRequestHandler.h"
 
-std::string buildResponse(QString messageId, QString status, obs_data_t* fields = nullptr) {
-	OBSDataAutoRelease response = obs_data_create();
-	obs_data_set_string(response, "message-id", messageId.toUtf8().constData());
-	obs_data_set_string(response, "status", status.toUtf8().constData());
-
-	if (fields) {
-		obs_data_apply(response, fields);
-	}
-
-	std::string responseString = obs_data_get_json(response);
-	return responseString;
-}
-
-std::string successResponse(QString messageId, obs_data_t* fields = nullptr) {
-	return buildResponse(messageId, "ok", fields);
-}
-
-std::string errorResponse(QString messageId, QString errorMessage, obs_data_t* additionalFields = nullptr) {
-	OBSDataAutoRelease fields = obs_data_create();
-	obs_data_set_string(fields, "error", errorMessage.toUtf8().constData());
-	return buildResponse(messageId, "error", fields);
-}
-
-OBSRemoteProtocol::OBSRemoteProtocol(WSRequestHandler& requestHandler) :
-	_requestHandler(requestHandler)
-{
-}
-
-std::string OBSRemoteProtocol::processMessage(std::string message)
+std::string OBSRemoteProtocol::processMessage(WSRequestHandler& requestHandler, std::string message)
 {
 	std::string msgContainer(message);
 	const char* msg = msgContainer.c_str();
@@ -71,7 +43,7 @@ std::string OBSRemoteProtocol::processMessage(std::string message)
 	obs_data_unset_user_value(params, "message-id");
 
 	RpcRequest request(messageId, methodName, params);
-	RpcResponse response = _requestHandler.processRequest(request);
+	RpcResponse response = requestHandler.processRequest(request);
 
 	OBSData additionalFields = response.additionalFields();
 	switch (response.status()) {
@@ -82,4 +54,27 @@ std::string OBSRemoteProtocol::processMessage(std::string message)
 	}
 
 	return std::string();
+}
+
+std::string OBSRemoteProtocol::buildResponse(QString messageId, QString status, obs_data_t* fields) {
+	OBSDataAutoRelease response = obs_data_create();
+	obs_data_set_string(response, "message-id", messageId.toUtf8().constData());
+	obs_data_set_string(response, "status", status.toUtf8().constData());
+
+	if (fields) {
+		obs_data_apply(response, fields);
+	}
+
+	std::string responseString = obs_data_get_json(response);
+	return responseString;
+}
+
+std::string OBSRemoteProtocol::successResponse(QString messageId, obs_data_t* fields) {
+	return buildResponse(messageId, "ok", fields);
+}
+
+std::string OBSRemoteProtocol::errorResponse(QString messageId, QString errorMessage, obs_data_t* additionalFields) {
+	OBSDataAutoRelease fields = obs_data_create();
+	obs_data_set_string(fields, "error", errorMessage.toUtf8().constData());
+	return buildResponse(messageId, "error", fields);
 }

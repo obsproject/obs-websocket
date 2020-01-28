@@ -20,15 +20,17 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include <string>
 #include <obs-data.h>
+#include <QtCore/QString>
 
 class WSRequestHandler;
 
 class OBSRemoteProtocol
 {
 public:
-	explicit OBSRemoteProtocol(WSRequestHandler& requestHandler);
-	std::string processMessage(std::string message);
+	std::string processMessage(WSRequestHandler& requestHandler, std::string message);
 
 private:
-	WSRequestHandler& _requestHandler;
+	std::string buildResponse(QString messageId, QString status, obs_data_t* fields = nullptr);
+	std::string successResponse(QString messageId, obs_data_t* fields = nullptr);
+	std::string errorResponse(QString messageId, QString errorMessage, obs_data_t* additionalFields = nullptr);
 };
