@@ -26,9 +26,9 @@ class WSRequestHandler;
 class OBSRemoteProtocol
 {
 public:
-    explicit OBSRemoteProtocol(WSRequestHandler& requestHandler);
-    std::string processMessage(std::string message);
+	explicit OBSRemoteProtocol(WSRequestHandler& requestHandler);
+	std::string processMessage(std::string message);
 
 private:
-    WSRequestHandler& _requestHandler;
+	WSRequestHandler& _requestHandler;
 };

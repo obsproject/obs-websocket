@@ -28,28 +28,28 @@ std::string buildResponse(QString messageId, QString status, obs_data_t* fields 
 		obs_data_apply(response, fields);
 	}
 
-    std::string responseString = obs_data_get_json(response);
+	std::string responseString = obs_data_get_json(response);
 	return responseString;
 }
 
 std::string successResponse(QString messageId, obs_data_t* fields = nullptr) {
-    return buildResponse(messageId, "ok", fields);
+	return buildResponse(messageId, "ok", fields);
 }
 
 std::string errorResponse(QString messageId, QString errorMessage, obs_data_t* additionalFields = nullptr) {
-    OBSDataAutoRelease fields = obs_data_create();
+	OBSDataAutoRelease fields = obs_data_create();
 	obs_data_set_string(fields, "error", errorMessage.toUtf8().constData());
-    return buildResponse(messageId, "error", fields);
+	return buildResponse(messageId, "error", fields);
 }
 
 OBSRemoteProtocol::OBSRemoteProtocol(WSRequestHandler& requestHandler) :
-    _requestHandler(requestHandler)
+	_requestHandler(requestHandler)
 {
 }
 
 std::string OBSRemoteProtocol::processMessage(std::string message)
 {
-    std::string msgContainer(message);
+	std::string msgContainer(message);
 	const char* msg = msgContainer.c_str();
 
 	OBSDataAutoRelease data = obs_data_create_from_json(msg);
@@ -58,28 +58,28 @@ std::string OBSRemoteProtocol::processMessage(std::string message)
 		return errorResponse(nullptr, "invalid JSON payload");
 	}
 
-    if (!obs_data_has_user_value(data, "request-type") || !obs_data_has_user_value(data, "message-id")) {
-        return errorResponse(nullptr, "missing request parameters");
-    }
+	if (!obs_data_has_user_value(data, "request-type") || !obs_data_has_user_value(data, "message-id")) {
+		return errorResponse(nullptr, "missing request parameters");
+	}
 
-    QString methodName = obs_data_get_string(data, "request-type");
-    QString messageId = obs_data_get_string(data, "message-id");
+	QString methodName = obs_data_get_string(data, "request-type");
+	QString messageId = obs_data_get_string(data, "message-id");
 
-    OBSDataAutoRelease params = obs_data_create();
+	OBSDataAutoRelease params = obs_data_create();
 	obs_data_apply(params, data);
 	obs_data_unset_user_value(params, "request-type");
 	obs_data_unset_user_value(params, "message-id");
 
-    RpcRequest request(messageId, methodName, params);
-    RpcResponse response = _requestHandler.processRequest(request);
+	RpcRequest request(messageId, methodName, params);
+	RpcResponse response = _requestHandler.processRequest(request);
 
-    OBSData additionalFields = response.additionalFields();
-    switch (response.status()) {
+	OBSData additionalFields = response.additionalFields();
+	switch (response.status()) {
 		case RpcResponse::Status::Ok:
-            return successResponse(messageId, additionalFields);
-        case RpcResponse::Status::Error:
-            return errorResponse(messageId, response.errorMessage(), additionalFields);
-    }
+			return successResponse(messageId, additionalFields);
+		case RpcResponse::Status::Error:
+			return errorResponse(messageId, response.errorMessage(), additionalFields);
+	}
 
-    return std::string();
+	return std::string();
 }
