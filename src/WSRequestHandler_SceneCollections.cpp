@@ -39,8 +39,10 @@ HandlerResponse WSRequestHandler::HandleSetCurrentSceneCollection(WSRequestHandl
  */
 HandlerResponse WSRequestHandler::HandleGetCurrentSceneCollection(WSRequestHandler* req) {
 	OBSDataAutoRelease response = obs_data_create();
-	obs_data_set_string(response, "sc-name",
-		obs_frontend_get_current_scene_collection());
+
+	char* sceneCollection = obs_frontend_get_current_scene_collection();
+	obs_data_set_string(response, "sc-name", sceneCollection);
+	bfree(sceneCollection);
 
 	return req->SendOKResponse(response);
 }

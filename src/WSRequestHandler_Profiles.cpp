@@ -39,7 +39,9 @@ HandlerResponse WSRequestHandler::HandleSetCurrentProfile(WSRequestHandler* req)
  */
 HandlerResponse WSRequestHandler::HandleGetCurrentProfile(WSRequestHandler* req) {
 	OBSDataAutoRelease response = obs_data_create();
-	obs_data_set_string(response, "profile-name", obs_frontend_get_current_profile());
+	char* currentProfile = obs_frontend_get_current_profile();
+	obs_data_set_string(response, "profile-name", currentProfile);
+	bfree(currentProfile);
 	return req->SendOKResponse(response);
 }
 

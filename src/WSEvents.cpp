@@ -857,7 +857,9 @@ void WSEvents::Heartbeat() {
 	pulse = !pulse;
 	obs_data_set_bool(data, "pulse", pulse);
 
-	obs_data_set_string(data, "current-profile", obs_frontend_get_current_profile());
+	char* currentProfile = obs_frontend_get_current_profile();
+	obs_data_set_string(data, "current-profile", currentProfile);
+	bfree(currentProfile);
 
 	OBSSourceAutoRelease currentScene = obs_frontend_get_current_scene();
 	obs_data_set_string(data, "current-scene", obs_source_get_name(currentScene));
