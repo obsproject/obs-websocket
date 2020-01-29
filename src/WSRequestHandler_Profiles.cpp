@@ -39,7 +39,9 @@ RpcResponse WSRequestHandler::SetCurrentProfile(const RpcRequest& request) {
  */
 RpcResponse WSRequestHandler::GetCurrentProfile(const RpcRequest& request) {
 	OBSDataAutoRelease response = obs_data_create();
-	obs_data_set_string(response, "profile-name", obs_frontend_get_current_profile());
+	char* currentProfile = obs_frontend_get_current_profile();
+	obs_data_set_string(response, "profile-name", currentProfile);
+	bfree(currentProfile);
 	return request.success(response);
 }
 
