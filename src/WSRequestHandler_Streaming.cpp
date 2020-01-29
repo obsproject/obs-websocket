@@ -20,7 +20,7 @@
  * @category streaming
  * @since 0.3
  */
-HandlerResponse WSRequestHandler::HandleGetStreamingStatus(WSRequestHandler* req) {
+RpcResponse WSRequestHandler::GetStreamingStatus(const RpcRequest& request) {
 	auto events = GetEventsSystem();
 
 	OBSDataAutoRelease data = obs_data_create();
@@ -39,7 +39,7 @@ HandlerResponse WSRequestHandler::HandleGetStreamingStatus(WSRequestHandler* req
 		obs_data_set_string(data, "rec-timecode", recordingTimecode.toUtf8().constData());
 	}
 
-	return req->SendOKResponse(data);
+	return request.success(data);
 }
 
 /**
@@ -50,11 +50,11 @@ HandlerResponse WSRequestHandler::HandleGetStreamingStatus(WSRequestHandler* req
  * @category streaming
  * @since 0.3
  */
-HandlerResponse WSRequestHandler::HandleStartStopStreaming(WSRequestHandler* req) {
+RpcResponse WSRequestHandler::StartStopStreaming(const RpcRequest& request) {
 	if (obs_frontend_streaming_active())
-		return HandleStopStreaming(req);
+		return StopStreaming(request);
 	else
-		return HandleStartStreaming(req);
+		return StartStreaming(request);
 }
 
 /**
@@ -76,15 +76,15 @@ HandlerResponse WSRequestHandler::HandleStartStopStreaming(WSRequestHandler* req
  * @category streaming
  * @since 4.1.0
  */
-HandlerResponse WSRequestHandler::HandleStartStreaming(WSRequestHandler* req) {
+RpcResponse WSRequestHandler::StartStreaming(const RpcRequest& request) {
 	if (obs_frontend_streaming_active() == false) {
 		OBSService configuredService = obs_frontend_get_streaming_service();
 		OBSService newService = nullptr;
 
 		// TODO: fix service memory leak
 
-		if (req->hasField("stream")) {
-			OBSDataAutoRelease streamData = obs_data_get_obj(req->data, "stream");
+		if (request.hasField("stream")) {
+			OBSDataAutoRelease streamData = obs_data_get_obj(request.parameters(), "stream");
 			OBSDataAutoRelease newSettings = obs_data_get_obj(streamData, "settings");
 			OBSDataAutoRelease newMetadata = obs_data_get_obj(streamData, "metadata");
 
@@ -157,9 +157,9 @@ HandlerResponse WSRequestHandler::HandleStartStreaming(WSRequestHandler* req) {
 			obs_frontend_set_streaming_service(configuredService);
 		}
 
-		return req->SendOKResponse();
+		return request.success();
 	} else {
-		return req->SendErrorResponse("streaming already active");
+		return request.failed("streaming already active");
 	}
 }
 
@@ -172,12 +172,12 @@ HandlerResponse WSRequestHandler::HandleStartStreaming(WSRequestHandler* req) {
  * @category streaming
  * @since 4.1.0
  */
-HandlerResponse WSRequestHandler::HandleStopStreaming(WSRequestHandler* req) {
+RpcResponse WSRequestHandler::StopStreaming(const RpcRequest& request) {
 	if (obs_frontend_streaming_active() == true) {
 		obs_frontend_streaming_stop();
-		return req->SendOKResponse();
+		return request.success();
 	} else {
-		return req->SendErrorResponse("streaming not active");
+		return request.failed("streaming not active");
 	}
 }
 
@@ -198,16 +198,16 @@ HandlerResponse WSRequestHandler::HandleStopStreaming(WSRequestHandler* req) {
  * @category streaming
  * @since 4.1.0
  */
-HandlerResponse WSRequestHandler::HandleSetStreamSettings(WSRequestHandler* req) {
+RpcResponse WSRequestHandler::SetStreamSettings(const RpcRequest& request) {
 	OBSService service = obs_frontend_get_streaming_service();
 
-	OBSDataAutoRelease requestSettings = obs_data_get_obj(req->data, "settings");
+	OBSDataAutoRelease requestSettings = obs_data_get_obj(request.parameters(), "settings");
 	if (!requestSettings) {
-		return req->SendErrorResponse("'settings' are required'");
+		return request.failed("'settings' are required'");
 	}
 
 	QString serviceType = obs_service_get_type(service);
-	QString requestedType = obs_data_get_string(req->data, "type");
+	QString requestedType = obs_data_get_string(request.parameters(), "type");
 
 	if (requestedType != nullptr && requestedType != serviceType) {
 		OBSDataAutoRelease hotkeys = obs_hotkeys_save_service(service);
@@ -231,7 +231,7 @@ HandlerResponse WSRequestHandler::HandleSetStreamSettings(WSRequestHandler* req)
 	}
 
 	//if save is specified we should immediately save the streaming service
-	if (obs_data_get_bool(req->data, "save")) {
+	if (obs_data_get_bool(request.parameters(), "save")) {
 		obs_frontend_save_streaming_service();
 	}
 
@@ -241,7 +241,7 @@ HandlerResponse WSRequestHandler::HandleSetStreamSettings(WSRequestHandler* req)
 	obs_data_set_string(response, "type", requestedType.toUtf8());
 	obs_data_set_obj(response, "settings", serviceSettings);
 
-	return req->SendOKResponse(response);
+	return request.success(response);
 }
 
 /**
@@ -260,7 +260,7 @@ HandlerResponse WSRequestHandler::HandleSetStreamSettings(WSRequestHandler* req)
  * @category streaming
  * @since 4.1.0
  */
-HandlerResponse WSRequestHandler::HandleGetStreamSettings(WSRequestHandler* req) {
+RpcResponse WSRequestHandler::GetStreamSettings(const RpcRequest& request) {
 	OBSService service = obs_frontend_get_streaming_service();
 
 	const char* serviceType = obs_service_get_type(service);
@@ -270,7 +270,7 @@ HandlerResponse WSRequestHandler::HandleGetStreamSettings(WSRequestHandler* req)
 	obs_data_set_string(response, "type", serviceType);
 	obs_data_set_obj(response, "settings", settings);
 
-	return req->SendOKResponse(response);
+	return request.success(response);
 }
 
 /**
@@ -281,9 +281,9 @@ HandlerResponse WSRequestHandler::HandleGetStreamSettings(WSRequestHandler* req)
  * @category streaming
  * @since 4.1.0
  */
-HandlerResponse WSRequestHandler::HandleSaveStreamSettings(WSRequestHandler* req) {
+RpcResponse WSRequestHandler::SaveStreamSettings(const RpcRequest& request) {
 	obs_frontend_save_streaming_service();
-	return req->SendOKResponse();
+	return request.success();
 }
 
 
@@ -299,19 +299,19 @@ HandlerResponse WSRequestHandler::HandleSaveStreamSettings(WSRequestHandler* req
  * @since 4.6.0
  */
 #if BUILD_CAPTIONS
-HandlerResponse WSRequestHandler::HandleSendCaptions(WSRequestHandler* req) {
-	if (!req->hasField("text")) {
-		return req->SendErrorResponse("missing request parameters");
+RpcResponse WSRequestHandler::SendCaptions(const RpcRequest& request) {
+	if (!request.hasField("text")) {
+		return request.failed("missing request parameters");
 	}
 
 	OBSOutputAutoRelease output = obs_frontend_get_streaming_output();
 	if (output) {
-		const char* caption = obs_data_get_string(req->data, "text");
+		const char* caption = obs_data_get_string(request.parameters(), "text");
 		// Send caption text with immediately (0 second delay)
 		obs_output_output_caption_text2(output, caption, 0.0);
 	}
 
-	return req->SendOKResponse();
+	return request.success();
 }
 #endif
 
