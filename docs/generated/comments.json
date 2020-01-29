@@ -335,6 +335,135 @@
     },
     {
       "subheads": [],
+      "typedef": "{Object} `Output`",
+      "property": [
+        "{String} `name` Output name",
+        "{String} `type` Output type/kind",
+        "{int} `width` Video output width",
+        "{int} `height` Video output height",
+        "{Object} `flags` Output flags",
+        "{int} `flags.rawValue` Raw flags value",
+        "{boolean} `flags.audio` Output uses audio",
+        "{boolean} `flags.video` Output uses video",
+        "{boolean} `flags.encoded` Output is encoded",
+        "{boolean} `flags.multiTrack` Output uses several audio tracks",
+        "{boolean} `flags.service` Output uses a service",
+        "{Object} `settings` Output name",
+        "{boolean} `active` Output status (active or not)",
+        "{boolean} `reconnecting` Output reconnection status (reconnecting or not)",
+        "{double} `congestion` Output congestion",
+        "{int} `totalFrames` Number of frames sent",
+        "{int} `droppedFrames` Number of frames dropped",
+        "{int} `totalBytes` Total bytes sent"
+      ],
+      "properties": [
+        {
+          "type": "String",
+          "name": "name",
+          "description": "Output name"
+        },
+        {
+          "type": "String",
+          "name": "type",
+          "description": "Output type/kind"
+        },
+        {
+          "type": "int",
+          "name": "width",
+          "description": "Video output width"
+        },
+        {
+          "type": "int",
+          "name": "height",
+          "description": "Video output height"
+        },
+        {
+          "type": "Object",
+          "name": "flags",
+          "description": "Output flags"
+        },
+        {
+          "type": "int",
+          "name": "flags.rawValue",
+          "description": "Raw flags value"
+        },
+        {
+          "type": "boolean",
+          "name": "flags.audio",
+          "description": "Output uses audio"
+        },
+        {
+          "type": "boolean",
+          "name": "flags.video",
+          "description": "Output uses video"
+        },
+        {
+          "type": "boolean",
+          "name": "flags.encoded",
+          "description": "Output is encoded"
+        },
+        {
+          "type": "boolean",
+          "name": "flags.multiTrack",
+          "description": "Output uses several audio tracks"
+        },
+        {
+          "type": "boolean",
+          "name": "flags.service",
+          "description": "Output uses a service"
+        },
+        {
+          "type": "Object",
+          "name": "settings",
+          "description": "Output name"
+        },
+        {
+          "type": "boolean",
+          "name": "active",
+          "description": "Output status (active or not)"
+        },
+        {
+          "type": "boolean",
+          "name": "reconnecting",
+          "description": "Output reconnection status (reconnecting or not)"
+        },
+        {
+          "type": "double",
+          "name": "congestion",
+          "description": "Output congestion"
+        },
+        {
+          "type": "int",
+          "name": "totalFrames",
+          "description": "Number of frames sent"
+        },
+        {
+          "type": "int",
+          "name": "droppedFrames",
+          "description": "Number of frames dropped"
+        },
+        {
+          "type": "int",
+          "name": "totalBytes",
+          "description": "Total bytes sent"
+        }
+      ],
+      "typedefs": [
+        {
+          "type": "Object",
+          "name": "Output",
+          "description": ""
+        }
+      ],
+      "name": "",
+      "heading": {
+        "level": 2,
+        "text": ""
+      },
+      "examples": []
+    },
+    {
+      "subheads": [],
       "typedef": "{Object} `Scene`",
       "property": [
         "{String} `name` Name of the currently active scene.",
@@ -1197,6 +1326,72 @@
         "lead": "",
         "type": "class",
         "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Current recording paused",
+        "api": "events",
+        "name": "RecordingPaused",
+        "category": "recording",
+        "since": "4.7.0",
+        "names": [
+          {
+            "name": "",
+            "description": "RecordingPaused"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "recording"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.7.0"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "RecordingPaused"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Current recording resumed",
+        "api": "events",
+        "name": "RecordingResumed",
+        "category": "recording",
+        "since": "4.7.0",
+        "names": [
+          {
+            "name": "",
+            "description": "RecordingResumed"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "recording"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.7.0"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "RecordingResumed"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
       }
     ],
     "replay buffer": [
@@ -1466,6 +1661,55 @@
         "heading": {
           "level": 2,
           "text": "Heartbeat"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "A custom broadcast message was received",
+        "return": [
+          "{String} `realm` Identifier provided by the sender",
+          "{Object} `data` User-defined data"
+        ],
+        "api": "events",
+        "name": "BroadcastCustomMessage",
+        "category": "general",
+        "since": "4.7.0",
+        "returns": [
+          {
+            "type": "String",
+            "name": "realm",
+            "description": "Identifier provided by the sender"
+          },
+          {
+            "type": "Object",
+            "name": "data",
+            "description": "User-defined data"
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "BroadcastCustomMessage"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "general"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.7.0"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "BroadcastCustomMessage"
         },
         "lead": "",
         "type": "class",
@@ -1741,9 +1985,9 @@
         "description": "Audio mixer routing changed on a source.",
         "return": [
           "{String} `sourceName` Source name",
-          "{Array<Object>} `routingStatus` Routing status of the source for each audio mixer (array of 6 values)",
-          "{int} `routingStatus.*.id` Mixer number",
-          "{boolean} `routingStatus.*.enabled` Routing status",
+          "{Array<Object>} `mixers` Routing status of the source for each audio mixer (array of 6 values)",
+          "{int} `mixers.*.id` Mixer number",
+          "{boolean} `mixers.*.enabled` Routing status",
           "{String} `hexMixersValue` Raw mixer flags (little-endian, one bit per mixer) as an hexadecimal value"
         ],
         "api": "events",
@@ -1758,17 +2002,17 @@
           },
           {
             "type": "Array<Object>",
-            "name": "routingStatus",
+            "name": "mixers",
             "description": "Routing status of the source for each audio mixer (array of 6 values)"
           },
           {
             "type": "int",
-            "name": "routingStatus.*.id",
+            "name": "mixers.*.id",
             "description": "Mixer number"
           },
           {
             "type": "boolean",
-            "name": "routingStatus.*.enabled",
+            "name": "mixers.*.enabled",
             "description": "Routing status"
           },
           {
@@ -1963,6 +2207,61 @@
         "heading": {
           "level": 2,
           "text": "SourceFilterRemoved"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "The visibility/enabled state of a filter changed",
+        "return": [
+          "{String} `sourceName` Source name",
+          "{String} `filterName` Filter name",
+          "{Boolean} `filterEnabled` New filter state"
+        ],
+        "api": "events",
+        "name": "SourceFilterVisibilityChanged",
+        "category": "sources",
+        "since": "4.7.0",
+        "returns": [
+          {
+            "type": "String",
+            "name": "sourceName",
+            "description": "Source name"
+          },
+          {
+            "type": "String",
+            "name": "filterName",
+            "description": "Filter name"
+          },
+          {
+            "type": "Boolean",
+            "name": "filterEnabled",
+            "description": "New filter state"
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "SourceFilterVisibilityChanged"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "sources"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.7.0"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "SourceFilterVisibilityChanged"
         },
         "lead": "",
         "type": "class",
@@ -2851,6 +3150,55 @@
       },
       {
         "subheads": [],
+        "description": "Broadcast custom message to all connected WebSocket clients",
+        "param": [
+          "{String} `realm` Identifier to be choosen by the client",
+          "{Object} `data` User-defined data"
+        ],
+        "api": "requests",
+        "name": "BroadcastCustomMessage",
+        "category": "general",
+        "since": "4.7.0",
+        "params": [
+          {
+            "type": "String",
+            "name": "realm",
+            "description": "Identifier to be choosen by the client"
+          },
+          {
+            "type": "Object",
+            "name": "data",
+            "description": "User-defined data"
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "BroadcastCustomMessage"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "general"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.7.0"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "BroadcastCustomMessage"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
         "description": "Get basic OBS video information",
         "return": [
           "{int} `baseWidth` Base (canvas) width",
@@ -2935,6 +3283,188 @@
         "heading": {
           "level": 2,
           "text": "GetVideoInfo"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      }
+    ],
+    "outputs": [
+      {
+        "subheads": [],
+        "description": "List existing outputs",
+        "return": "{Array<Output>} `outputs` Outputs list",
+        "api": "requests",
+        "name": "ListOutputs",
+        "category": "outputs",
+        "since": "4.7.0",
+        "returns": [
+          {
+            "type": "Array<Output>",
+            "name": "outputs",
+            "description": "Outputs list"
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "ListOutputs"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "outputs"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.7.0"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "ListOutputs"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Get information about a single output",
+        "param": "{String} `outputName` Output name",
+        "return": "{Output} `outputInfo` Output info",
+        "api": "requests",
+        "name": "GetOutputInfo",
+        "category": "outputs",
+        "since": "4.7.0",
+        "returns": [
+          {
+            "type": "Output",
+            "name": "outputInfo",
+            "description": "Output info"
+          }
+        ],
+        "params": [
+          {
+            "type": "String",
+            "name": "outputName",
+            "description": "Output name"
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "GetOutputInfo"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "outputs"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.7.0"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "GetOutputInfo"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Start an output",
+        "param": "{String} `outputName` Output name",
+        "api": "requests",
+        "name": "StartOutput",
+        "category": "outputs",
+        "since": "4.7.0",
+        "params": [
+          {
+            "type": "String",
+            "name": "outputName",
+            "description": "Output name"
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "StartOutput"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "outputs"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.7.0"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "StartOutput"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Stop an output",
+        "param": [
+          "{String} `outputName` Output name",
+          "{boolean (optional)} `force` Force stop (default: false)"
+        ],
+        "api": "requests",
+        "name": "StopOutput",
+        "category": "outputs",
+        "since": "4.7.0",
+        "params": [
+          {
+            "type": "String",
+            "name": "outputName",
+            "description": "Output name"
+          },
+          {
+            "type": "boolean (optional)",
+            "name": "force",
+            "description": "Force stop (default: false)"
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "StopOutput"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "outputs"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.7.0"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "StopOutput"
         },
         "lead": "",
         "type": "class",
@@ -3161,6 +3691,72 @@
         "heading": {
           "level": 2,
           "text": "StopRecording"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Pause the current recording.\nReturns an error if recording is not active or already paused.",
+        "api": "requests",
+        "name": "PauseRecording",
+        "category": "recording",
+        "since": "4.7.0",
+        "names": [
+          {
+            "name": "",
+            "description": "PauseRecording"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "recording"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.7.0"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "PauseRecording"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Resume/unpause the current recording (if paused).\nReturns an error if recording is not active or not paused.",
+        "api": "requests",
+        "name": "ResumeRecording",
+        "category": "recording",
+        "since": "4.7.0",
+        "names": [
+          {
+            "name": "",
+            "description": "ResumeRecording"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "recording"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.7.0"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "ResumeRecording"
         },
         "lead": "",
         "type": "class",
@@ -4607,19 +5203,19 @@
         "subheads": [],
         "description": "Get a list of all available sources types",
         "return": [
-          "{Array<Object>} `ids` Array of source types",
-          "{String} `ids.*.typeId` Non-unique internal source type ID",
-          "{String} `ids.*.displayName` Display name of the source type",
-          "{String} `ids.*.type` Type. Value is one of the following: \"input\", \"filter\", \"transition\" or \"other\"",
-          "{Object} `ids.*.defaultSettings` Default settings of this source type",
-          "{Object} `ids.*.caps` Source type capabilities",
-          "{Boolean} `ids.*.caps.isAsync` True if source of this type provide frames asynchronously",
-          "{Boolean} `ids.*.caps.hasVideo` True if sources of this type provide video",
-          "{Boolean} `ids.*.caps.hasAudio` True if sources of this type provide audio",
-          "{Boolean} `ids.*.caps.canInteract` True if interaction with this sources of this type is possible",
-          "{Boolean} `ids.*.caps.isComposite` True if sources of this type composite one or more sub-sources",
-          "{Boolean} `ids.*.caps.doNotDuplicate` True if sources of this type should not be fully duplicated",
-          "{Boolean} `ids.*.caps.doNotSelfMonitor` True if sources of this type may cause a feedback loop if it's audio is monitored and shouldn't be"
+          "{Array<Object>} `types` Array of source types",
+          "{String} `types.*.typeId` Non-unique internal source type ID",
+          "{String} `types.*.displayName` Display name of the source type",
+          "{String} `types.*.type` Type. Value is one of the following: \"input\", \"filter\", \"transition\" or \"other\"",
+          "{Object} `types.*.defaultSettings` Default settings of this source type",
+          "{Object} `types.*.caps` Source type capabilities",
+          "{Boolean} `types.*.caps.isAsync` True if source of this type provide frames asynchronously",
+          "{Boolean} `types.*.caps.hasVideo` True if sources of this type provide video",
+          "{Boolean} `types.*.caps.hasAudio` True if sources of this type provide audio",
+          "{Boolean} `types.*.caps.canInteract` True if interaction with this sources of this type is possible",
+          "{Boolean} `types.*.caps.isComposite` True if sources of this type composite one or more sub-sources",
+          "{Boolean} `types.*.caps.doNotDuplicate` True if sources of this type should not be fully duplicated",
+          "{Boolean} `types.*.caps.doNotSelfMonitor` True if sources of this type may cause a feedback loop if it's audio is monitored and shouldn't be"
         ],
         "api": "requests",
         "name": "GetSourceTypesList",
@@ -4628,67 +5224,67 @@
         "returns": [
           {
             "type": "Array<Object>",
-            "name": "ids",
+            "name": "types",
             "description": "Array of source types"
           },
           {
             "type": "String",
-            "name": "ids.*.typeId",
+            "name": "types.*.typeId",
             "description": "Non-unique internal source type ID"
           },
           {
             "type": "String",
-            "name": "ids.*.displayName",
+            "name": "types.*.displayName",
             "description": "Display name of the source type"
           },
           {
             "type": "String",
-            "name": "ids.*.type",
+            "name": "types.*.type",
             "description": "Type. Value is one of the following: \"input\", \"filter\", \"transition\" or \"other\""
           },
           {
             "type": "Object",
-            "name": "ids.*.defaultSettings",
+            "name": "types.*.defaultSettings",
             "description": "Default settings of this source type"
           },
           {
             "type": "Object",
-            "name": "ids.*.caps",
+            "name": "types.*.caps",
             "description": "Source type capabilities"
           },
           {
             "type": "Boolean",
-            "name": "ids.*.caps.isAsync",
+            "name": "types.*.caps.isAsync",
             "description": "True if source of this type provide frames asynchronously"
           },
           {
             "type": "Boolean",
-            "name": "ids.*.caps.hasVideo",
+            "name": "types.*.caps.hasVideo",
             "description": "True if sources of this type provide video"
           },
           {
             "type": "Boolean",
-            "name": "ids.*.caps.hasAudio",
+            "name": "types.*.caps.hasAudio",
             "description": "True if sources of this type provide audio"
           },
           {
             "type": "Boolean",
-            "name": "ids.*.caps.canInteract",
+            "name": "types.*.caps.canInteract",
             "description": "True if interaction with this sources of this type is possible"
           },
           {
             "type": "Boolean",
-            "name": "ids.*.caps.isComposite",
+            "name": "types.*.caps.isComposite",
             "description": "True if sources of this type composite one or more sub-sources"
           },
           {
             "type": "Boolean",
-            "name": "ids.*.caps.doNotDuplicate",
+            "name": "types.*.caps.doNotDuplicate",
             "description": "True if sources of this type should not be fully duplicated"
           },
           {
             "type": "Boolean",
-            "name": "ids.*.caps.doNotSelfMonitor",
+            "name": "types.*.caps.doNotSelfMonitor",
             "description": "True if sources of this type may cause a feedback loop if it's audio is monitored and shouldn't be"
           }
         ],
@@ -6198,6 +6794,7 @@
         "param": "{String} `sourceName` Source name",
         "return": [
           "{Array<Object>} `filters` List of filters for the specified source",
+          "{Boolean} `filters.*.enabled` Filter status (enabled or not)",
           "{String} `filters.*.type` Filter type",
           "{String} `filters.*.name` Filter name",
           "{Object} `filters.*.settings` Filter settings"
@@ -6211,6 +6808,11 @@
             "type": "Array<Object>",
             "name": "filters",
             "description": "List of filters for the specified source"
+          },
+          {
+            "type": "Boolean",
+            "name": "filters.*.enabled",
+            "description": "Filter status (enabled or not)"
           },
           {
             "type": "String",
@@ -6256,6 +6858,83 @@
         "heading": {
           "level": 2,
           "text": "GetSourceFilters"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "List filters applied to a source",
+        "param": [
+          "{String} `sourceName` Source name",
+          "{String} `filterName` Source filter name"
+        ],
+        "return": [
+          "{Boolean} `enabled` Filter status (enabled or not)",
+          "{String} `type` Filter type",
+          "{String} `name` Filter name",
+          "{Object} `settings` Filter settings"
+        ],
+        "api": "requests",
+        "name": "GetSourceFilterInfo",
+        "category": "sources",
+        "since": "4.7.0",
+        "returns": [
+          {
+            "type": "Boolean",
+            "name": "enabled",
+            "description": "Filter status (enabled or not)"
+          },
+          {
+            "type": "String",
+            "name": "type",
+            "description": "Filter type"
+          },
+          {
+            "type": "String",
+            "name": "name",
+            "description": "Filter name"
+          },
+          {
+            "type": "Object",
+            "name": "settings",
+            "description": "Filter settings"
+          }
+        ],
+        "params": [
+          {
+            "type": "String",
+            "name": "sourceName",
+            "description": "Source name"
+          },
+          {
+            "type": "String",
+            "name": "filterName",
+            "description": "Source filter name"
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "GetSourceFilterInfo"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "sources"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.7.0"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "GetSourceFilterInfo"
         },
         "lead": "",
         "type": "class",
@@ -6538,9 +7217,64 @@
       },
       {
         "subheads": [],
-        "description": "\n\nAt least `embedPictureFormat` or `saveToFilePath` must be specified.\n\nClients can specify `width` and `height` parameters to receive scaled pictures. Aspect ratio is\npreserved if only one of these two parameters is specified.",
+        "description": "Change the visibility/enabled state of a filter",
         "param": [
           "{String} `sourceName` Source name",
+          "{String} `filterName` Source filter name",
+          "{Boolean} `filterEnabled` New filter state"
+        ],
+        "api": "requests",
+        "name": "SetSourceFilterVisibility",
+        "category": "sources",
+        "since": "4.7.0",
+        "params": [
+          {
+            "type": "String",
+            "name": "sourceName",
+            "description": "Source name"
+          },
+          {
+            "type": "String",
+            "name": "filterName",
+            "description": "Source filter name"
+          },
+          {
+            "type": "Boolean",
+            "name": "filterEnabled",
+            "description": "New filter state"
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "SetSourceFilterVisibility"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "sources"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.7.0"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "SetSourceFilterVisibility"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "\n\nAt least `embedPictureFormat` or `saveToFilePath` must be specified.\n\nClients can specify `width` and `height` parameters to receive scaled pictures. Aspect ratio is\npreserved if only one of these two parameters is specified.",
+        "param": [
+          "{String} `sourceName` Source name. Note that, since scenes are also sources, you can also provide a scene name.",
           "{String (optional)} `embedPictureFormat` Format of the Data URI encoded picture. Can be \"png\", \"jpg\", \"jpeg\" or \"bmp\" (or any other value supported by Qt's Image module)",
           "{String (optional)} `saveToFilePath` Full file path (file extension included) where the captured image is to be saved. Can be in a format different from `pictureFormat`. Can be a relative path.",
           "{int (optional)} `width` Screenshot width. Defaults to the source's base width.",
@@ -6576,7 +7310,7 @@
           {
             "type": "String",
             "name": "sourceName",
-            "description": "Source name"
+            "description": "Source name. Note that, since scenes are also sources, you can also provide a scene name."
           },
           {
             "type": "String (optional)",

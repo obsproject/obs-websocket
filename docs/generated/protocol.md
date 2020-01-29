@@ -1,6 +1,6 @@
 <!-- This file was generated based on handlebars templates. Do not edit directly! -->
 
-# obs-websocket 4.6.0 protocol reference
+# obs-websocket 4.7.0 protocol reference
 
 # General Introduction
 Messages are exchanged between the client and the server as JSON objects.
@@ -46,6 +46,7 @@ auth_response = base64_encode(auth_response_hash)
   * [SceneItem](#sceneitem)
   * [SceneItemTransform](#sceneitemtransform)
   * [OBSStats](#obsstats)
+  * [Output](#output)
   * [Scene](#scene)
 - [Events](#events)
   * [Scenes](#scenes)
@@ -72,6 +73,8 @@ auth_response = base64_encode(auth_response_hash)
     + [RecordingStarted](#recordingstarted)
     + [RecordingStopping](#recordingstopping)
     + [RecordingStopped](#recordingstopped)
+    + [RecordingPaused](#recordingpaused)
+    + [RecordingResumed](#recordingresumed)
   * [Replay Buffer](#replay-buffer)
     + [ReplayStarting](#replaystarting)
     + [ReplayStarted](#replaystarted)
@@ -81,6 +84,7 @@ auth_response = base64_encode(auth_response_hash)
     + [Exiting](#exiting)
   * [General](#general)
     + [Heartbeat](#heartbeat)
+    + [BroadcastCustomMessage](#broadcastcustommessage)
   * [Sources](#sources)
     + [SourceCreated](#sourcecreated)
     + [SourceDestroyed](#sourcedestroyed)
@@ -91,6 +95,7 @@ auth_response = base64_encode(auth_response_hash)
     + [SourceRenamed](#sourcerenamed)
     + [SourceFilterAdded](#sourcefilteradded)
     + [SourceFilterRemoved](#sourcefilterremoved)
+    + [SourceFilterVisibilityChanged](#sourcefiltervisibilitychanged)
     + [SourceFiltersReordered](#sourcefiltersreordered)
     + [SourceOrderChanged](#sourceorderchanged)
     + [SceneItemAdded](#sceneitemadded)
@@ -111,7 +116,13 @@ auth_response = base64_encode(auth_response_hash)
     + [SetFilenameFormatting](#setfilenameformatting)
     + [GetFilenameFormatting](#getfilenameformatting)
     + [GetStats](#getstats)
+    + [BroadcastCustomMessage](#broadcastcustommessage-1)
     + [GetVideoInfo](#getvideoinfo)
+  * [Outputs](#outputs)
+    + [ListOutputs](#listoutputs)
+    + [GetOutputInfo](#getoutputinfo)
+    + [StartOutput](#startoutput)
+    + [StopOutput](#stopoutput)
   * [Profiles](#profiles-1)
     + [SetCurrentProfile](#setcurrentprofile)
     + [GetCurrentProfile](#getcurrentprofile)
@@ -120,6 +131,8 @@ auth_response = base64_encode(auth_response_hash)
     + [StartStopRecording](#startstoprecording)
     + [StartRecording](#startrecording)
     + [StopRecording](#stoprecording)
+    + [PauseRecording](#pauserecording)
+    + [ResumeRecording](#resumerecording)
     + [SetRecordingFolder](#setrecordingfolder)
     + [GetRecordingFolder](#getrecordingfolder)
   * [Replay Buffer](#replay-buffer-1)
@@ -166,11 +179,13 @@ auth_response = base64_encode(auth_response_hash)
     + [SetBrowserSourceProperties](#setbrowsersourceproperties)
     + [GetSpecialSources](#getspecialsources)
     + [GetSourceFilters](#getsourcefilters)
+    + [GetSourceFilterInfo](#getsourcefilterinfo)
     + [AddFilterToSource](#addfiltertosource)
     + [RemoveFilterFromSource](#removefilterfromsource)
     + [ReorderSourceFilter](#reordersourcefilter)
     + [MoveSourceFilter](#movesourcefilter)
     + [SetSourceFilterSettings](#setsourcefiltersettings)
+    + [SetSourceFilterVisibility](#setsourcefiltervisibility)
     + [TakeSourceScreenshot](#takesourcescreenshot)
   * [Streaming](#streaming-1)
     + [GetStreamingStatus](#getstreamingstatus)
@@ -256,6 +271,27 @@ These are complex types, such as `Source` and `Scene`, which are used as argumen
 | `cpu-usage` | _double_ | Current CPU usage (percentage) |
 | `memory-usage` | _double_ | Current RAM usage (in megabytes) |
 | `free-disk-space` | _double_ | Free recording disk space (in megabytes) |
+## Output
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `name` | _String_ | Output name |
+| `type` | _String_ | Output type/kind |
+| `width` | _int_ | Video output width |
+| `height` | _int_ | Video output height |
+| `flags` | _Object_ | Output flags |
+| `flags.rawValue` | _int_ | Raw flags value |
+| `flags.audio` | _boolean_ | Output uses audio |
+| `flags.video` | _boolean_ | Output uses video |
+| `flags.encoded` | _boolean_ | Output is encoded |
+| `flags.multiTrack` | _boolean_ | Output uses several audio tracks |
+| `flags.service` | _boolean_ | Output uses a service |
+| `settings` | _Object_ | Output name |
+| `active` | _boolean_ | Output status (active or not) |
+| `reconnecting` | _boolean_ | Output reconnection status (reconnecting or not) |
+| `congestion` | _double_ | Output congestion |
+| `totalFrames` | _int_ | Number of frames sent |
+| `droppedFrames` | _int_ | Number of frames dropped |
+| `totalBytes` | _int_ | Total bytes sent |
 ## Scene
 | Name | Type  | Description |
 | ---- | :---: | ------------|
@@ -579,6 +615,32 @@ _No additional response items._
 
 ---
 
+### RecordingPaused
+
+
+- Added in v4.7.0
+
+Current recording paused
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+### RecordingResumed
+
+
+- Added in v4.7.0
+
+Current recording resumed
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
 ## Replay Buffer
 
 ### ReplayStarting
@@ -673,6 +735,23 @@ Emitted every 2 seconds after enabling it by calling SetHeartbeat.
 | `total-record-bytes` | _int (optional)_ | Total bytes recorded since the recording started. |
 | `total-record-frames` | _int (optional)_ | Total frames recorded since the recording started. |
 | `stats` | _OBSStats_ | OBS Stats |
+
+
+---
+
+### BroadcastCustomMessage
+
+
+- Added in v4.7.0
+
+A custom broadcast message was received
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `realm` | _String_ | Identifier provided by the sender |
+| `data` | _Object_ | User-defined data |
 
 
 ---
@@ -779,9 +858,9 @@ Audio mixer routing changed on a source.
 | Name | Type  | Description |
 | ---- | :---: | ------------|
 | `sourceName` | _String_ | Source name |
-| `routingStatus` | _Array&lt;Object&gt;_ | Routing status of the source for each audio mixer (array of 6 values) |
-| `routingStatus.*.id` | _int_ | Mixer number |
-| `routingStatus.*.enabled` | _boolean_ | Routing status |
+| `mixers` | _Array&lt;Object&gt;_ | Routing status of the source for each audio mixer (array of 6 values) |
+| `mixers.*.id` | _int_ | Mixer number |
+| `mixers.*.enabled` | _boolean_ | Routing status |
 | `hexMixersValue` | _String_ | Raw mixer flags (little-endian, one bit per mixer) as an hexadecimal value |
 
 
@@ -837,6 +916,24 @@ A filter was removed from a source.
 | `sourceName` | _String_ | Source name |
 | `filterName` | _String_ | Filter name |
 | `filterType` | _String_ | Filter type |
+
+
+---
+
+### SourceFilterVisibilityChanged
+
+
+- Added in v4.7.0
+
+The visibility/enabled state of a filter changed
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sourceName` | _String_ | Source name |
+| `filterName` | _String_ | Filter name |
+| `filterEnabled` | _Boolean_ | New filter state |
 
 
 ---
@@ -1188,6 +1285,27 @@ _No specified parameters._
 
 ---
 
+### BroadcastCustomMessage
+
+
+- Added in v4.7.0
+
+Broadcast custom message to all connected WebSocket clients
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `realm` | _String_ | Identifier to be choosen by the client |
+| `data` | _Object_ | User-defined data |
+
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
 ### GetVideoInfo
 
 
@@ -1213,6 +1331,92 @@ _No specified parameters._
 | `colorSpace` | _String_ | Color space for YUV |
 | `colorRange` | _String_ | Color range (full or partial) |
 
+
+---
+
+## Outputs
+
+### ListOutputs
+
+
+- Added in v4.7.0
+
+List existing outputs
+
+**Request Fields:**
+
+_No specified parameters._
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `outputs` | _Array&lt;Output&gt;_ | Outputs list |
+
+
+---
+
+### GetOutputInfo
+
+
+- Added in v4.7.0
+
+Get information about a single output
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `outputName` | _String_ | Output name |
+
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `outputInfo` | _Output_ | Output info |
+
+
+---
+
+### StartOutput
+
+
+- Added in v4.7.0
+
+Start an output
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `outputName` | _String_ | Output name |
+
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+### StopOutput
+
+
+- Added in v4.7.0
+
+Stop an output
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `outputName` | _String_ | Output name |
+| `force` | _boolean (optional)_ | Force stop (default: false) |
+
+
+**Response Items:**
+
+_No additional response items._
 
 ---
 
@@ -1322,6 +1526,42 @@ _No additional response items._
 
 Stop recording.
 Will return an `error` if recording is not active.
+
+**Request Fields:**
+
+_No specified parameters._
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+### PauseRecording
+
+
+- Added in v4.7.0
+
+Pause the current recording.
+Returns an error if recording is not active or already paused.
+
+**Request Fields:**
+
+_No specified parameters._
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+### ResumeRecording
+
+
+- Added in v4.7.0
+
+Resume/unpause the current recording (if paused).
+Returns an error if recording is not active or not paused.
 
 **Request Fields:**
 
@@ -1900,19 +2140,19 @@ _No specified parameters._
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
-| `ids` | _Array&lt;Object&gt;_ | Array of source types |
-| `ids.*.typeId` | _String_ | Non-unique internal source type ID |
-| `ids.*.displayName` | _String_ | Display name of the source type |
-| `ids.*.type` | _String_ | Type. Value is one of the following: "input", "filter", "transition" or "other" |
-| `ids.*.defaultSettings` | _Object_ | Default settings of this source type |
-| `ids.*.caps` | _Object_ | Source type capabilities |
-| `ids.*.caps.isAsync` | _Boolean_ | True if source of this type provide frames asynchronously |
-| `ids.*.caps.hasVideo` | _Boolean_ | True if sources of this type provide video |
-| `ids.*.caps.hasAudio` | _Boolean_ | True if sources of this type provide audio |
-| `ids.*.caps.canInteract` | _Boolean_ | True if interaction with this sources of this type is possible |
-| `ids.*.caps.isComposite` | _Boolean_ | True if sources of this type composite one or more sub-sources |
-| `ids.*.caps.doNotDuplicate` | _Boolean_ | True if sources of this type should not be fully duplicated |
-| `ids.*.caps.doNotSelfMonitor` | _Boolean_ | True if sources of this type may cause a feedback loop if it's audio is monitored and shouldn't be |
+| `types` | _Array&lt;Object&gt;_ | Array of source types |
+| `types.*.typeId` | _String_ | Non-unique internal source type ID |
+| `types.*.displayName` | _String_ | Display name of the source type |
+| `types.*.type` | _String_ | Type. Value is one of the following: "input", "filter", "transition" or "other" |
+| `types.*.defaultSettings` | _Object_ | Default settings of this source type |
+| `types.*.caps` | _Object_ | Source type capabilities |
+| `types.*.caps.isAsync` | _Boolean_ | True if source of this type provide frames asynchronously |
+| `types.*.caps.hasVideo` | _Boolean_ | True if sources of this type provide video |
+| `types.*.caps.hasAudio` | _Boolean_ | True if sources of this type provide audio |
+| `types.*.caps.canInteract` | _Boolean_ | True if interaction with this sources of this type is possible |
+| `types.*.caps.isComposite` | _Boolean_ | True if sources of this type composite one or more sub-sources |
+| `types.*.caps.doNotDuplicate` | _Boolean_ | True if sources of this type should not be fully duplicated |
+| `types.*.caps.doNotSelfMonitor` | _Boolean_ | True if sources of this type may cause a feedback loop if it's audio is monitored and shouldn't be |
 
 
 ---
@@ -2400,9 +2640,37 @@ List filters applied to a source
 | Name | Type  | Description |
 | ---- | :---: | ------------|
 | `filters` | _Array&lt;Object&gt;_ | List of filters for the specified source |
+| `filters.*.enabled` | _Boolean_ | Filter status (enabled or not) |
 | `filters.*.type` | _String_ | Filter type |
 | `filters.*.name` | _String_ | Filter name |
 | `filters.*.settings` | _Object_ | Filter settings |
+
+
+---
+
+### GetSourceFilterInfo
+
+
+- Added in v4.7.0
+
+List filters applied to a source
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sourceName` | _String_ | Source name |
+| `filterName` | _String_ | Source filter name |
+
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `enabled` | _Boolean_ | Filter status (enabled or not) |
+| `type` | _String_ | Filter type |
+| `name` | _String_ | Filter name |
+| `settings` | _Object_ | Filter settings |
 
 
 ---
@@ -2517,6 +2785,28 @@ _No additional response items._
 
 ---
 
+### SetSourceFilterVisibility
+
+
+- Added in v4.7.0
+
+Change the visibility/enabled state of a filter
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sourceName` | _String_ | Source name |
+| `filterName` | _String_ | Source filter name |
+| `filterEnabled` | _Boolean_ | New filter state |
+
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
 ### TakeSourceScreenshot
 
 
@@ -2533,7 +2823,7 @@ preserved if only one of these two parameters is specified.
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
-| `sourceName` | _String_ | Source name |
+| `sourceName` | _String_ | Source name. Note that, since scenes are also sources, you can also provide a scene name. |
 | `embedPictureFormat` | _String (optional)_ | Format of the Data URI encoded picture. Can be "png", "jpg", "jpeg" or "bmp" (or any other value supported by Qt's Image module) |
 | `saveToFilePath` | _String (optional)_ | Full file path (file extension included) where the captured image is to be saved. Can be in a format different from `pictureFormat`. Can be a relative path. |
 | `width` | _int (optional)_ | Screenshot width. Defaults to the source's base width. |

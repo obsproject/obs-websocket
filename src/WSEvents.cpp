@@ -17,44 +17,20 @@
  * with this program. If not, see <https://www.gnu.org/licenses/>
  */
 
+#include <inttypes.h>
 #include <util/platform.h>
+#include <media-io/video-io.h>
 
 #include <QtWidgets/QPushButton>
 
-#include "Config.h"
-#include "Utils.h"
 #include "WSEvents.h"
 
 #include "obs-websocket.h"
+#include "Config.h"
+#include "Utils.h"
+#include "rpc/RpcEvent.h"
 
 #define STATUS_INTERVAL 2000
-
-bool transitionIsCut(obs_source_t* transition) {
-	if (!transition)
-		return false;
-
-	if (obs_source_get_type(transition) == OBS_SOURCE_TYPE_TRANSITION
-		&& QString(obs_source_get_id(transition)) == "cut_transition") {
-		return true;
-	}
-	return false;
-}
-
-const char* nsToTimestamp(uint64_t ns) {
-	uint64_t ms = ns / (1000 * 1000);
-	uint64_t secs = ms / 1000;
-	uint64_t minutes = secs / 60;
-
-	uint64_t hoursPart = minutes / 60;
-	uint64_t minutesPart = minutes % 60;
-	uint64_t secsPart = secs % 60;
-	uint64_t msPart = ms % 1000;
-
-	char* ts = (char*)bmalloc(64);
-	sprintf(ts, "%02lu:%02lu:%02lu.%03lu", hoursPart, minutesPart, secsPart, msPart);
-
-	return ts;
-}
 
 const char* sourceTypeToString(obs_source_type type) {
 	switch (type) {
@@ -86,7 +62,8 @@ const char* calldata_get_string(const calldata_t* data, const char* name) {
 WSEvents::WSEvents(WSServerPtr srv) :
 	_srv(srv),
 	_streamStarttime(0),
-	_recStarttime(0),
+	_lastBytesSent(0),
+	_lastBytesSentTime(0),
 	HeartbeatIsActive(false),
 	pulse(false)
 {
@@ -143,118 +120,131 @@ void WSEvents::FrontendEventHandler(enum obs_frontend_event event, void* private
 		return;
 	}
 
-	if (event == OBS_FRONTEND_EVENT_FINISHED_LOADING) {
-		owner->hookTransitionBeginEvent();
-	}
-	else if (event == OBS_FRONTEND_EVENT_SCENE_CHANGED) {
-		owner->OnSceneChange();
-	}
-	else if (event == OBS_FRONTEND_EVENT_SCENE_LIST_CHANGED) {
-		owner->OnSceneListChange();
-	}
-	else if (event == OBS_FRONTEND_EVENT_SCENE_COLLECTION_CHANGED) {
-		owner->hookTransitionBeginEvent();
-		owner->OnSceneCollectionChange();
-	}
-	else if (event == OBS_FRONTEND_EVENT_SCENE_COLLECTION_LIST_CHANGED) {
-		owner->OnSceneCollectionListChange();
-	}
-	else if (event == OBS_FRONTEND_EVENT_TRANSITION_CHANGED) {
-		owner->OnTransitionChange();
-	}
-	else if (event == OBS_FRONTEND_EVENT_TRANSITION_LIST_CHANGED) {
-		owner->hookTransitionBeginEvent();
-		owner->OnTransitionListChange();
-	}
-	else if (event == OBS_FRONTEND_EVENT_PROFILE_CHANGED) {
-		owner->OnProfileChange();
-	}
-	else if (event == OBS_FRONTEND_EVENT_PROFILE_LIST_CHANGED) {
-		owner->OnProfileListChange();
-	}
-	else if (event == OBS_FRONTEND_EVENT_STREAMING_STARTING) {
-		owner->OnStreamStarting();
-	}
-	else if (event == OBS_FRONTEND_EVENT_STREAMING_STARTED) {
-		owner->streamStatusTimer.start(STATUS_INTERVAL);
-		owner->StreamStatus();
+	switch (event) {
+		case OBS_FRONTEND_EVENT_FINISHED_LOADING:
+			owner->hookTransitionBeginEvent();
+			break;
+	
+		case OBS_FRONTEND_EVENT_SCENE_CHANGED:
+			owner->OnSceneChange();
+			break;
 
-		owner->OnStreamStarted();
-	}
-	else if (event == OBS_FRONTEND_EVENT_STREAMING_STOPPING) {
-		owner->streamStatusTimer.stop();
-		owner->OnStreamStopping();
-	}
-	else if (event == OBS_FRONTEND_EVENT_STREAMING_STOPPED) {
-		owner->OnStreamStopped();
-	}
-	else if (event == OBS_FRONTEND_EVENT_RECORDING_STARTING) {
-		owner->OnRecordingStarting();
-	}
-	else if (event == OBS_FRONTEND_EVENT_RECORDING_STARTED) {
-		owner->OnRecordingStarted();
-	}
-	else if (event == OBS_FRONTEND_EVENT_RECORDING_STOPPING) {
-		owner->OnRecordingStopping();
-	}
-	else if (event == OBS_FRONTEND_EVENT_RECORDING_STOPPED) {
-		owner->OnRecordingStopped();
-	}
-	else if (event == OBS_FRONTEND_EVENT_REPLAY_BUFFER_STARTING) {
-		owner->OnReplayStarting();
-	}
-	else if (event == OBS_FRONTEND_EVENT_REPLAY_BUFFER_STARTED) {
-		owner->OnReplayStarted();
-	}
-	else if (event == OBS_FRONTEND_EVENT_REPLAY_BUFFER_STOPPING) {
-		owner->OnReplayStopping();
-	}
-	else if (event == OBS_FRONTEND_EVENT_REPLAY_BUFFER_STOPPED) {
-		owner->OnReplayStopped();
-	}
-	else if (event == OBS_FRONTEND_EVENT_STUDIO_MODE_ENABLED) {
-		owner->OnStudioModeSwitched(true);
-	}
-	else if (event == OBS_FRONTEND_EVENT_STUDIO_MODE_DISABLED) {
-		owner->OnStudioModeSwitched(false);
-	}
-	else if (event == OBS_FRONTEND_EVENT_PREVIEW_SCENE_CHANGED) {
-		owner->OnPreviewSceneChanged();
-	}
-	else if (event == OBS_FRONTEND_EVENT_EXIT) {
-		owner->unhookTransitionBeginEvent();
-		owner->OnExit();
+		case OBS_FRONTEND_EVENT_SCENE_LIST_CHANGED:
+			owner->OnSceneListChange();
+			break;
+
+		case OBS_FRONTEND_EVENT_SCENE_COLLECTION_CHANGED:
+			owner->hookTransitionBeginEvent();
+			owner->OnSceneCollectionChange();
+			break;
+
+		case OBS_FRONTEND_EVENT_SCENE_COLLECTION_LIST_CHANGED:
+			owner->OnSceneCollectionListChange();
+			break;
+
+		case OBS_FRONTEND_EVENT_TRANSITION_CHANGED:
+			owner->OnTransitionChange();
+			break;
+
+		case OBS_FRONTEND_EVENT_TRANSITION_LIST_CHANGED:
+			owner->hookTransitionBeginEvent();
+			owner->OnTransitionListChange();
+			break;
+
+		case OBS_FRONTEND_EVENT_PROFILE_CHANGED:
+			owner->OnProfileChange();
+			break;
+
+		case OBS_FRONTEND_EVENT_PROFILE_LIST_CHANGED:
+			owner->OnProfileListChange();
+			break;
+
+		case OBS_FRONTEND_EVENT_STREAMING_STARTING:
+			owner->OnStreamStarting();
+			break;
+
+		case OBS_FRONTEND_EVENT_STREAMING_STARTED:
+			owner->streamStatusTimer.start(STATUS_INTERVAL);
+			owner->StreamStatus();
+			owner->OnStreamStarted();
+			break;
+
+		case OBS_FRONTEND_EVENT_STREAMING_STOPPING:
+			owner->streamStatusTimer.stop();
+			owner->OnStreamStopping();
+			break;
+
+		case OBS_FRONTEND_EVENT_STREAMING_STOPPED:
+			owner->OnStreamStopped();
+			break;
+
+		case OBS_FRONTEND_EVENT_RECORDING_STARTING:
+			owner->OnRecordingStarting();
+			break;
+
+		case OBS_FRONTEND_EVENT_RECORDING_STARTED:
+			owner->OnRecordingStarted();
+			break;
+
+		case OBS_FRONTEND_EVENT_RECORDING_STOPPING:
+			owner->OnRecordingStopping();
+			break;
+
+		case OBS_FRONTEND_EVENT_RECORDING_STOPPED:
+			owner->OnRecordingStopped();
+			break;
+
+		case OBS_FRONTEND_EVENT_RECORDING_PAUSED:
+			owner->OnRecordingPaused();
+			break;
+
+		case OBS_FRONTEND_EVENT_RECORDING_UNPAUSED:
+			owner->OnRecordingResumed();
+			break;
+
+		case OBS_FRONTEND_EVENT_REPLAY_BUFFER_STARTING:
+			owner->OnReplayStarting();
+			break;
+
+		case OBS_FRONTEND_EVENT_REPLAY_BUFFER_STARTED:
+			owner->OnReplayStarted();
+			break;
+
+		case OBS_FRONTEND_EVENT_REPLAY_BUFFER_STOPPING:
+			owner->OnReplayStopping();
+			break;
+
+		case OBS_FRONTEND_EVENT_REPLAY_BUFFER_STOPPED:
+			owner->OnReplayStopped();
+			break;
+
+		case OBS_FRONTEND_EVENT_STUDIO_MODE_ENABLED:
+			owner->OnStudioModeSwitched(true);
+			break;
+
+		case OBS_FRONTEND_EVENT_STUDIO_MODE_DISABLED:
+			owner->OnStudioModeSwitched(false);
+			break;
+
+		case OBS_FRONTEND_EVENT_PREVIEW_SCENE_CHANGED:
+			owner->OnPreviewSceneChanged();
+			break;
+
+		case OBS_FRONTEND_EVENT_EXIT:
+			owner->unhookTransitionBeginEvent();
+			owner->OnExit();
+			break;
 	}
 }
 
 void WSEvents::broadcastUpdate(const char* updateType,
 	obs_data_t* additionalFields = nullptr)
 {
-	OBSDataAutoRelease update = obs_data_create();
-	obs_data_set_string(update, "update-type", updateType);
+	uint64_t streamTime = getStreamingTime();
+	uint64_t recordingTime = getStreamingTime();
+	RpcEvent event(QString(updateType), streamTime, recordingTime, additionalFields);
 
-	const char* ts = nullptr;
-	if (obs_frontend_streaming_active()) {
-		ts = nsToTimestamp(os_gettime_ns() - _streamStarttime);
-		obs_data_set_string(update, "stream-timecode", ts);
-		bfree((void*)ts);
-	}
-
-	if (obs_frontend_recording_active()) {
-		ts = nsToTimestamp(os_gettime_ns() - _recStarttime);
-		obs_data_set_string(update, "rec-timecode", ts);
-		bfree((void*)ts);
-	}
-
-	if (additionalFields)
-		obs_data_apply(update, additionalFields);
-
-	QString json = obs_data_get_json(update);
-	_srv->broadcast(json.toStdString());
-
-	if (GetConfig()->DebugEnabled) {
-		blog(LOG_INFO, "Update << '%s'", json.toUtf8().constData());
-	}
+	_srv->broadcast(event);
 }
 
 void WSEvents::connectSourceSignals(obs_source_t* source) {
@@ -321,6 +311,26 @@ void WSEvents::disconnectSourceSignals(obs_source_t* source) {
 	signal_handler_disconnect(sh, "transition_start", OnTransitionBegin, this);
 }
 
+void WSEvents::connectFilterSignals(obs_source_t* filter) {
+	if (!filter) {
+		return;
+	}
+
+	signal_handler_t* sh = obs_source_get_signal_handler(filter);
+
+	signal_handler_connect(sh, "enable", OnSourceFilterVisibilityChanged, this);
+}
+
+void WSEvents::disconnectFilterSignals(obs_source_t* filter) {
+	if (!filter) {
+		return;
+	}
+
+	signal_handler_t* sh = obs_source_get_signal_handler(filter);
+
+	signal_handler_disconnect(sh, "enable", OnSourceFilterVisibilityChanged, this);
+}
+
 void WSEvents::hookTransitionBeginEvent() {
 	obs_frontend_source_list transitions = {};
 	obs_frontend_get_transitions(&transitions);
@@ -348,26 +358,34 @@ void WSEvents::unhookTransitionBeginEvent() {
 	obs_frontend_source_list_free(&transitions);
 }
 
-uint64_t WSEvents::GetStreamingTime() {
-	if (obs_frontend_streaming_active())
-		return (os_gettime_ns() - _streamStarttime);
-	else
+uint64_t getOutputRunningTime(obs_output_t* output) {
+	if (!output || !obs_output_active(output)) {
 		return 0;
+	}
+
+	video_t* video = obs_output_video(output);
+	uint64_t frameTimeNs = video_output_get_frame_time(video);
+	int totalFrames = obs_output_get_total_frames(output);
+
+	return (((uint64_t)totalFrames) * frameTimeNs);
 }
 
-const char* WSEvents::GetStreamingTimecode() {
-	return nsToTimestamp(GetStreamingTime());
+uint64_t WSEvents::getStreamingTime() {
+	OBSOutputAutoRelease streamingOutput = obs_frontend_get_streaming_output();
+	return getOutputRunningTime(streamingOutput);
 }
 
-uint64_t WSEvents::GetRecordingTime() {
-	if (obs_frontend_recording_active())
-		return (os_gettime_ns() - _recStarttime);
-	else
-		return 0;
+uint64_t WSEvents::getRecordingTime() {
+	OBSOutputAutoRelease recordingOutput = obs_frontend_get_recording_output();
+	return getOutputRunningTime(recordingOutput);
 }
 
-const char* WSEvents::GetRecordingTimecode() {
-	return nsToTimestamp(GetRecordingTime());
+QString WSEvents::getStreamingTimecode() {
+	return Utils::nsToTimestamp(getStreamingTime());
+}
+
+QString WSEvents::getRecordingTimecode() {
+	return Utils::nsToTimestamp(getRecordingTime());
 }
 
  /**
@@ -520,6 +538,7 @@ void WSEvents::OnStreamStarting() {
 void WSEvents::OnStreamStarted() {
 	_streamStarttime = os_gettime_ns();
 	_lastBytesSent = 0;
+
 	broadcastUpdate("StreamStarted");
 }
 
@@ -536,7 +555,6 @@ void WSEvents::OnStreamStarted() {
 void WSEvents::OnStreamStopping() {
 	OBSDataAutoRelease data = obs_data_create();
 	obs_data_set_bool(data, "preview-only", false);
-
 	broadcastUpdate("StreamStopping", data);
 }
 
@@ -550,6 +568,7 @@ void WSEvents::OnStreamStopping() {
  */
 void WSEvents::OnStreamStopped() {
 	_streamStarttime = 0;
+
 	broadcastUpdate("StreamStopped");
 }
 
@@ -574,7 +593,6 @@ void WSEvents::OnRecordingStarting() {
  * @since 0.3
  */
 void WSEvents::OnRecordingStarted() {
-	_recStarttime = os_gettime_ns();
 	broadcastUpdate("RecordingStarted");
 }
 
@@ -599,8 +617,31 @@ void WSEvents::OnRecordingStopping() {
  * @since 0.3
  */
 void WSEvents::OnRecordingStopped() {
-	_recStarttime = 0;
 	broadcastUpdate("RecordingStopped");
+}
+
+/**
+ * Current recording paused
+ *
+ * @api events
+ * @name RecordingPaused
+ * @category recording
+ * @since 4.7.0
+ */
+void WSEvents::OnRecordingPaused() {
+	broadcastUpdate("RecordingPaused");
+}
+
+/**
+ * Current recording resumed
+ *
+ * @api events
+ * @name RecordingResumed
+ * @category recording
+ * @since 4.7.0
+ */
+void WSEvents::OnRecordingResumed() {
+	broadcastUpdate("RecordingResumed");
 }
 
 /**
@@ -694,6 +735,7 @@ void WSEvents::OnExit() {
 void WSEvents::StreamStatus() {
 	bool streamingActive = obs_frontend_streaming_active();
 	bool recordingActive = obs_frontend_recording_active();
+	bool recordingPaused = Utils::RecordingPaused();
 	bool replayBufferActive = obs_frontend_replay_buffer_active();
 
 	OBSOutputAutoRelease streamOutput = obs_frontend_get_streaming_output();
@@ -720,9 +762,7 @@ void WSEvents::StreamStatus() {
 	_lastBytesSent = bytesSent;
 	_lastBytesSentTime = bytesSentTime;
 
-	uint64_t totalStreamTime =
-		(os_gettime_ns() - _streamStarttime) / 1000000000;
-
+	uint64_t totalStreamTime = (getStreamingTime() / 1000000000ULL);
 	int totalFrames = obs_output_get_total_frames(streamOutput);
 	int droppedFrames = obs_output_get_frames_dropped(streamOutput);
 
@@ -732,6 +772,7 @@ void WSEvents::StreamStatus() {
 
 	obs_data_set_bool(data, "streaming", streamingActive);
 	obs_data_set_bool(data, "recording", recordingActive);
+	obs_data_set_bool(data, "recording-paused", recordingPaused);
 	obs_data_set_bool(data, "replay-buffer-active", replayBufferActive);
 
 	obs_data_set_int(data, "bytes-per-sec", bytesPerSec);
@@ -778,6 +819,7 @@ void WSEvents::Heartbeat() {
 
 	bool streamingActive = obs_frontend_streaming_active();
 	bool recordingActive = obs_frontend_recording_active();
+	bool recordingPaused = Utils::RecordingPaused();
 
 	OBSDataAutoRelease data = obs_data_create();
 	OBSOutputAutoRelease recordOutput = obs_frontend_get_recording_output();
@@ -786,23 +828,24 @@ void WSEvents::Heartbeat() {
 	pulse = !pulse;
 	obs_data_set_bool(data, "pulse", pulse);
 
-	obs_data_set_string(data, "current-profile", obs_frontend_get_current_profile());
+	char* currentProfile = obs_frontend_get_current_profile();
+	obs_data_set_string(data, "current-profile", currentProfile);
+	bfree(currentProfile);
 
 	OBSSourceAutoRelease currentScene = obs_frontend_get_current_scene();
 	obs_data_set_string(data, "current-scene", obs_source_get_name(currentScene));
 
 	obs_data_set_bool(data, "streaming", streamingActive);
 	if (streamingActive) {
-		uint64_t totalStreamTime = (os_gettime_ns() - _streamStarttime) / 1000000000;
-		obs_data_set_int(data, "total-stream-time", totalStreamTime);
+		obs_data_set_int(data, "total-stream-time", (getStreamingTime() / 1000000000ULL));
 		obs_data_set_int(data, "total-stream-bytes", (uint64_t)obs_output_get_total_bytes(streamOutput));
 		obs_data_set_int(data, "total-stream-frames", obs_output_get_total_frames(streamOutput));
 	}
 
 	obs_data_set_bool(data, "recording", recordingActive);
+	obs_data_set_bool(data, "recording-paused", recordingPaused);
 	if (recordingActive) {
-		uint64_t totalRecordTime = (os_gettime_ns() - _recStarttime) / 1000000000;
-		obs_data_set_int(data, "total-record-time", totalRecordTime);
+		obs_data_set_int(data, "total-record-time", (getRecordingTime() / 1000000000ULL));
 		obs_data_set_int(data, "total-record-bytes", (uint64_t)obs_output_get_total_bytes(recordOutput));
 		obs_data_set_int(data, "total-record-frames", obs_output_get_total_frames(recordOutput));
 	}
@@ -847,33 +890,25 @@ void WSEvents::OnTransitionBegin(void* param, calldata_t* data) {
 	auto instance = reinterpret_cast<WSEvents*>(param);
 
 	OBSSource transition = calldata_get_pointer<obs_source_t>(data, "source");
-	if (!transition) return;
+	if (!transition) {
+		return;
+	}
 
-	// Detect if transition is the global transition or a transition override.
-	// Fetching the duration is different depending on the case.
-	OBSSourceAutoRelease sourceScene = obs_transition_get_source(transition, OBS_TRANSITION_SOURCE_A);
-	OBSSourceAutoRelease destinationScene = obs_transition_get_active_source(transition);
-	OBSDataAutoRelease destinationSettings = obs_source_get_private_settings(destinationScene);
-	int duration = -1;
-	if (obs_data_has_default_value(destinationSettings, "transition_duration") ||
-		obs_data_has_user_value(destinationSettings, "transition_duration"))
-	{
-		duration = obs_data_get_int(destinationSettings, "transition_duration");
-	} else {
-		duration = Utils::GetTransitionDuration();
+	int duration = Utils::GetTransitionDuration(transition);
+	if (duration < 0) {
+		blog(LOG_WARNING, "OnTransitionBegin: duration is negative !");
 	}
 
 	OBSDataAutoRelease fields = obs_data_create();
 	obs_data_set_string(fields, "name", obs_source_get_name(transition));
-	if (duration >= 0) {
-		obs_data_set_int(fields, "duration", duration);
-	} else {
-		blog(LOG_WARNING, "OnTransitionBegin: duration is negative !");
-	}
+	obs_data_set_int(fields, "duration", duration);
 
+	OBSSourceAutoRelease sourceScene = obs_transition_get_source(transition, OBS_TRANSITION_SOURCE_A);
 	if (sourceScene) {
 		obs_data_set_string(fields, "from-scene", obs_source_get_name(sourceScene));
 	}
+
+	OBSSourceAutoRelease destinationScene = obs_transition_get_active_source(transition);
 	if (destinationScene) {
 		obs_data_set_string(fields, "to-scene", obs_source_get_name(destinationScene));
 	}
@@ -1041,9 +1076,9 @@ void WSEvents::OnSourceAudioSyncOffsetChanged(void* param, calldata_t* data) {
  * Audio mixer routing changed on a source.
  *
  * @return {String} `sourceName` Source name
- * @return {Array<Object>} `routingStatus` Routing status of the source for each audio mixer (array of 6 values)
- * @return {int} `routingStatus.*.id` Mixer number
- * @return {boolean} `routingStatus.*.enabled` Routing status
+ * @return {Array<Object>} `mixers` Routing status of the source for each audio mixer (array of 6 values)
+ * @return {int} `mixers.*.id` Mixer number
+ * @return {boolean} `mixers.*.enabled` Routing status
  * @return {String} `hexMixersValue` Raw mixer flags (little-endian, one bit per mixer) as an hexadecimal value
  *
  * @api events
@@ -1138,6 +1173,8 @@ void WSEvents::OnSourceFilterAdded(void* param, calldata_t* data) {
 	if (!filter) {
 		return;
 	}
+	
+	self->connectFilterSignals(filter);
 
 	OBSDataAutoRelease filterSettings = obs_source_get_settings(filter);
 
@@ -1170,12 +1207,47 @@ void WSEvents::OnSourceFilterRemoved(void* param, calldata_t* data) {
 	}
 
 	obs_source_t* filter = calldata_get_pointer<obs_source_t>(data, "filter");
+	if (!filter) {
+		return;
+	}
+
+	self->disconnectFilterSignals(filter);
 
 	OBSDataAutoRelease fields = obs_data_create();
 	obs_data_set_string(fields, "sourceName", obs_source_get_name(source));
 	obs_data_set_string(fields, "filterName", obs_source_get_name(filter));
 	obs_data_set_string(fields, "filterType", obs_source_get_id(filter));
 	self->broadcastUpdate("SourceFilterRemoved", fields);
+}
+
+/**
+ * The visibility/enabled state of a filter changed
+ *
+ * @return {String} `sourceName` Source name
+ * @return {String} `filterName` Filter name
+ * @return {Boolean} `filterEnabled` New filter state
+ *
+ * @api events
+ * @name SourceFilterVisibilityChanged
+ * @category sources
+ * @since 4.7.0
+ */
+void WSEvents::OnSourceFilterVisibilityChanged(void* param, calldata_t* data) {
+	auto self = reinterpret_cast<WSEvents*>(param);
+
+	OBSSource source = calldata_get_pointer<obs_source_t>(data, "source");
+	if (!source) {
+		return;
+	}
+
+	OBSSource parent = obs_filter_get_parent(source);
+
+	OBSDataAutoRelease fields = obs_data_create();
+	obs_data_set_string(fields, "sourceName", obs_source_get_name(parent));
+	obs_data_set_string(fields, "filterName", obs_source_get_name(source));
+	obs_data_set_bool(fields, "filterEnabled", obs_source_enabled(source));
+
+	self->broadcastUpdate("SourceFilterVisibilityChanged", fields);
 }
 
 /**
@@ -1506,6 +1578,25 @@ void WSEvents::OnStudioModeSwitched(bool checked) {
 }
 
 /**
+ * A custom broadcast message was received
+ *
+ * @return {String} `realm` Identifier provided by the sender
+ * @return {Object} `data` User-defined data
+ *
+ * @api events
+ * @name BroadcastCustomMessage
+ * @category general
+ * @since 4.7.0
+ */
+void WSEvents::OnBroadcastCustomMessage(QString realm, obs_data_t* data) {
+	OBSDataAutoRelease broadcastData = obs_data_create();
+	obs_data_set_string(broadcastData, "realm", realm.toUtf8().constData());
+	obs_data_set_obj(broadcastData, "data", data);
+
+	broadcastUpdate("BroadcastCustomMessage", broadcastData);
+}
+
+/**
  * @typedef {Object} `OBSStats`
  * @property {double} `fps` Current framerate.
  * @property {int} `render-total-frames` Number of frames rendered
@@ -1530,12 +1621,12 @@ obs_data_t* WSEvents::GetStats() {
 	double averageFrameTime = (double)obs_get_average_frame_time_ns() / 1000000.0;
 
 	config_t* currentProfile = obs_frontend_get_profile_config();
-	QString outputMode = config_get_string(currentProfile, "Output", "Mode");
-	QString path = (outputMode == "Advanced") ?
+	const char* outputMode = config_get_string(currentProfile, "Output", "Mode");
+	const char* path = strcmp(outputMode, "Advanced") ?
 		config_get_string(currentProfile, "SimpleOutput", "FilePath") :
 		config_get_string(currentProfile, "AdvOut", "RecFilePath");
 
-	double freeDiskSpace = (double)os_get_free_disk_space(path.toUtf8()) / (1024.0 * 1024.0);
+	double freeDiskSpace = (double)os_get_free_disk_space(path) / (1024.0 * 1024.0);
 
 	obs_data_set_double(stats, "fps", obs_get_active_fps());
 	obs_data_set_int(stats, "render-total-frames", obs_get_total_frames());

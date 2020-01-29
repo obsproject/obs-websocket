@@ -14,7 +14,7 @@
  * @category transitions
  * @since 4.1.0
  */
-HandlerResponse WSRequestHandler::HandleGetTransitionList(WSRequestHandler* req) {
+RpcResponse WSRequestHandler::GetTransitionList(const RpcRequest& request) {
 	OBSSourceAutoRelease currentTransition = obs_frontend_get_current_transition();
 	obs_frontend_source_list transitionList = {};
 	obs_frontend_get_transitions(&transitionList);
@@ -34,7 +34,7 @@ HandlerResponse WSRequestHandler::HandleGetTransitionList(WSRequestHandler* req)
 		obs_source_get_name(currentTransition));
 	obs_data_set_array(response, "transitions", transitions);
 
-	return req->SendOKResponse(response);
+	return request.success(response);
 }
 
 /**
@@ -48,7 +48,7 @@ HandlerResponse WSRequestHandler::HandleGetTransitionList(WSRequestHandler* req)
  * @category transitions
  * @since 0.3
  */
-HandlerResponse WSRequestHandler::HandleGetCurrentTransition(WSRequestHandler* req) {
+RpcResponse WSRequestHandler::GetCurrentTransition(const RpcRequest& request) {
 	OBSSourceAutoRelease currentTransition = obs_frontend_get_current_transition();
 
 	OBSDataAutoRelease response = obs_data_create();
@@ -56,9 +56,9 @@ HandlerResponse WSRequestHandler::HandleGetCurrentTransition(WSRequestHandler* r
 		obs_source_get_name(currentTransition));
 
 	if (!obs_transition_fixed(currentTransition))
-		obs_data_set_int(response, "duration", Utils::GetTransitionDuration());
+		obs_data_set_int(response, "duration", obs_frontend_get_transition_duration());
 
-	return req->SendOKResponse(response);
+	return request.success(response);
 }
 
 /**
@@ -71,18 +71,18 @@ HandlerResponse WSRequestHandler::HandleGetCurrentTransition(WSRequestHandler* r
  * @category transitions
  * @since 0.3
  */
-HandlerResponse WSRequestHandler::HandleSetCurrentTransition(WSRequestHandler* req) {
-	if (!req->hasField("transition-name")) {
-		return req->SendErrorResponse("missing request parameters");
+RpcResponse WSRequestHandler::SetCurrentTransition(const RpcRequest& request) {
+	if (!request.hasField("transition-name")) {
+		return request.failed("missing request parameters");
 	}
 
-	QString name = obs_data_get_string(req->data, "transition-name");
+	QString name = obs_data_get_string(request.parameters(), "transition-name");
 	bool success = Utils::SetTransitionByName(name);
 	if (!success) {
-		return req->SendErrorResponse("requested transition does not exist");
+		return request.failed("requested transition does not exist");
 	}
 	
-	return req->SendOKResponse();
+	return request.success();
 }
 
 /**
@@ -95,14 +95,14 @@ HandlerResponse WSRequestHandler::HandleSetCurrentTransition(WSRequestHandler* r
  * @category transitions
  * @since 4.0.0
  */
-HandlerResponse WSRequestHandler::HandleSetTransitionDuration(WSRequestHandler* req) {
-	if (!req->hasField("duration")) {
-		return req->SendErrorResponse("missing request parameters");
+RpcResponse WSRequestHandler::SetTransitionDuration(const RpcRequest& request) {
+	if (!request.hasField("duration")) {
+		return request.failed("missing request parameters");
 	}
 
-	int ms = obs_data_get_int(req->data, "duration");
-	Utils::SetTransitionDuration(ms);
-	return req->SendOKResponse();
+	int ms = obs_data_get_int(request.parameters(), "duration");
+	obs_frontend_set_transition_duration(ms);
+	return request.success();
 }
 
 /**
@@ -115,8 +115,8 @@ HandlerResponse WSRequestHandler::HandleSetTransitionDuration(WSRequestHandler* 
  * @category transitions
  * @since 4.1.0
  */
-HandlerResponse WSRequestHandler::HandleGetTransitionDuration(WSRequestHandler* req) {
+RpcResponse WSRequestHandler::GetTransitionDuration(const RpcRequest& request) {
 	OBSDataAutoRelease response = obs_data_create();
-	obs_data_set_int(response, "transition-duration", Utils::GetTransitionDuration());
-	return req->SendOKResponse(response);
+	obs_data_set_int(response, "transition-duration", obs_frontend_get_transition_duration());
+	return request.success(response);
 }

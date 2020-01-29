@@ -12,19 +12,19 @@
  * @category scene collections
  * @since 4.0.0
  */
-HandlerResponse WSRequestHandler::HandleSetCurrentSceneCollection(WSRequestHandler* req) {
-	if (!req->hasField("sc-name")) {
-		return req->SendErrorResponse("missing request parameters");
+RpcResponse WSRequestHandler::SetCurrentSceneCollection(const RpcRequest& request) {
+	if (!request.hasField("sc-name")) {
+		return request.failed("missing request parameters");
 	}
 
-	QString sceneCollection = obs_data_get_string(req->data, "sc-name");
+	QString sceneCollection = obs_data_get_string(request.parameters(), "sc-name");
 	if (sceneCollection.isEmpty()) {
-		return req->SendErrorResponse("invalid request parameters");
+		return request.failed("invalid request parameters");
 	}
 
 	// TODO : Check if specified profile exists and if changing is allowed
 	obs_frontend_set_current_scene_collection(sceneCollection.toUtf8());
-	return req->SendOKResponse();
+	return request.success();
 }
 
 /**
@@ -37,12 +37,14 @@ HandlerResponse WSRequestHandler::HandleSetCurrentSceneCollection(WSRequestHandl
  * @category scene collections
  * @since 4.0.0
  */
-HandlerResponse WSRequestHandler::HandleGetCurrentSceneCollection(WSRequestHandler* req) {
+RpcResponse WSRequestHandler::GetCurrentSceneCollection(const RpcRequest& request) {
 	OBSDataAutoRelease response = obs_data_create();
-	obs_data_set_string(response, "sc-name",
-		obs_frontend_get_current_scene_collection());
 
-	return req->SendOKResponse(response);
+	char* sceneCollection = obs_frontend_get_current_scene_collection();
+	obs_data_set_string(response, "sc-name", sceneCollection);
+	bfree(sceneCollection);
+
+	return request.success(response);
 }
 
 /**
@@ -55,7 +57,7 @@ HandlerResponse WSRequestHandler::HandleGetCurrentSceneCollection(WSRequestHandl
  * @category scene collections
  * @since 4.0.0
  */
-HandlerResponse WSRequestHandler::HandleListSceneCollections(WSRequestHandler* req) {
+RpcResponse WSRequestHandler::ListSceneCollections(const RpcRequest& request) {
 	char** sceneCollections = obs_frontend_get_scene_collections();
 	OBSDataArrayAutoRelease list =
 		Utils::StringListToArray(sceneCollections, "sc-name");
@@ -64,5 +66,5 @@ HandlerResponse WSRequestHandler::HandleListSceneCollections(WSRequestHandler* r
 	OBSDataAutoRelease response = obs_data_create();
 	obs_data_set_array(response, "scene-collections", list);
 
-	return req->SendOKResponse(response);
+	return request.success(response);
 }

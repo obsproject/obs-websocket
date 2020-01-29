@@ -18,6 +18,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include <obs-module.h>
 #include <obs-frontend-api.h>
+#include <obs-data.h>
 
 #include <QtCore/QTimer>
 #include <QtWidgets/QAction>
@@ -34,6 +35,11 @@ void ___sceneitem_dummy_addref(obs_sceneitem_t*) {}
 void ___data_dummy_addref(obs_data_t*) {}
 void ___data_array_dummy_addref(obs_data_array_t*) {}
 void ___output_dummy_addref(obs_output_t*) {}
+
+void ___data_item_dummy_addref(obs_data_item_t*) {}
+void ___data_item_release(obs_data_item_t* dataItem) {
+	obs_data_item_release(&dataItem);
+}
 
 OBS_DECLARE_MODULE()
 OBS_MODULE_USE_DEFAULT_LOCALE("obs-websocket", "en-US")
@@ -55,10 +61,6 @@ bool obs_module_load(void) {
 	_server = WSServerPtr(new WSServer());
 	_eventsSystem = WSEventsPtr(new WSEvents(_server));
 
-	if (_config->ServerEnabled) {
-		_server->start(_config->ServerPort);
-	}
-
 	// UI setup
 	obs_frontend_push_ui_translation(obs_module_get_string);
 	QMainWindow* mainWindow = (QMainWindow*)obs_frontend_get_main_window();
@@ -74,6 +76,17 @@ bool obs_module_load(void) {
 		// to pass the pointer to this QAction belonging to the main window
 		settingsDialog->ToggleShowHide();
 	});
+
+	// Setup event handler to start the server once OBS is ready
+	auto eventCallback = [](enum obs_frontend_event event, void *param) {
+		if (event == OBS_FRONTEND_EVENT_FINISHED_LOADING) {
+			if (_config->ServerEnabled) {
+				_server->start(_config->ServerPort);
+			}
+			obs_frontend_remove_event_callback((obs_frontend_event_cb)param, nullptr);
+		}
+	};
+	obs_frontend_add_event_callback(eventCallback, (void*)(obs_frontend_event_cb)eventCallback);
 
 	// Loading finished
 	blog(LOG_INFO, "module loaded!");

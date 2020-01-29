@@ -1,20 +1,24 @@
 obs-websocket
 ==============
-Remote control of OBS Studio made easy.
+
+WebSockets API for OBS Studio.
 
 Follow the main author on Twitter for news & updates : [@LePalakis](https://twitter.com/LePalakis)
 
-[![Build Status - Windows](https://ci.appveyor.com/api/projects/status/github/Palakis/obs-websocket)](https://ci.appveyor.com/project/Palakis/obs-websocket/history) [![Build Status - Linux & OS X](https://travis-ci.org/Palakis/obs-websocket.svg?branch=master)](https://travis-ci.org/Palakis/obs-websocket)
+[![Build Status - Windows](https://ci.appveyor.com/api/projects/status/github/Palakis/obs-websocket)](https://ci.appveyor.com/project/Palakis/obs-websocket/history) [![Build Status - Linux](https://travis-ci.org/Palakis/obs-websocket.svg?branch=master)](https://travis-ci.org/Palakis/obs-websocket)
 
 ## Downloads
-Binaries for Windows and Linux are available in the [Releases](https://github.com/Palakis/obs-websocket/releases) section.
+
+Binaries for Windows, MacOS, and Linux are available in the [Releases](https://github.com/Palakis/obs-websocket/releases) section.
 
 ## Using obs-websocket
+
 A web client and frontend made by [t2t2](https://github.com/t2t2/obs-tablet-remote) (compatible with tablets and other touch interfaces) is available here : http://t2t2.github.io/obs-tablet-remote/
 
 It is **highly recommended** to protect obs-websocket with a password against unauthorized control. To do this, open the "Websocket server settings" dialog under OBS' "Tools" menu. In the settings dialogs, you can enable or disable authentication and set a password for it.
 
 ### Possible use cases
+
 - Remote control OBS from a phone or tablet on the same local network
 - Change your stream overlay/graphics based on the current scene (like the AGDQ overlay does)
 - Automate scene switching with a third-party program (e.g. : auto-pilot, foot pedal, ...)
@@ -29,6 +33,8 @@ Here's a list of available language APIs for obs-websocket :
 - C#/VB.NET: [obs-websocket-dotnet](https://github.com/Palakis/obs-websocket-dotnet)
 - Python 2 and 3: [obs-websocket-py](https://github.com/Elektordi/obs-websocket-py) by Guillaume Genty a.k.a Elektordi
 - Python 3.5+ with asyncio: [obs-ws-rc](https://github.com/KirillMysnik/obs-ws-rc) by Kirill Mysnik
+- Java 8+: [obs-websocket-java](https://github.com/Twasi/websocket-obs-java) by TwasiNET
+- Golang: [go-obs-websocket](https://github.com/christopher-dG/go-obs-websocket) by Chris de Graaf
 
 I'd like to know what you're building with or for obs-websocket. If you do something in this fashion, feel free to drop me an email at `stephane /dot/ lepin /at/ gmail /dot/ com` !
 
@@ -59,7 +65,7 @@ If your Pull Request is not ready to merge yet, tag it with the `work in progres
 Source code is indented with tabs, with spaces allowed for alignment.
 
 Regarding protocol changes: new and updated request types / events must always come with accompanying documentation comments (see existing protocol elements for examples).
-These are using to automatically generate the [protocol specification](docs/generated/protocol.md).
+These are required to automatically generate the [protocol specification document](docs/generated/protocol.md).
 
 Among other recommendations: favor return-early code and avoid wrapping huge portions of code in conditionals. As an example, this:
 

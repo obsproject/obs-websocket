@@ -3,7 +3,7 @@
 ## Prerequisites
 
 You'll need [Qt 5.10.x](https://download.qt.io/official_releases/qt/5.10/),
-[CMake](https://cmake.org/download/), [Boost](https://www.boost.org/) and a working [OBS Studio development environment](https://obsproject.com/wiki/install-instructions) installed on your
+[CMake](https://cmake.org/download/) and a working [OBS Studio development environment](https://obsproject.com/wiki/install-instructions) installed on your
 computer.
 
 ## Windows

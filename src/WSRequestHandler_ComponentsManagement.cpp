@@ -24,6 +24,7 @@
 #include "Utils.h"
 
 #include "WSRequestHandler.h"
+
 /**
 * Create a new source
 *
@@ -36,16 +37,16 @@
 * @name CreateNewSource
 * @category sources
 */
-HandlerResponse WSRequestHandler::HandleCreateNewSource(WSRequestHandler* req)
+RpcResponse WSRequestHandler::CreateNewSource(const RpcRequest& request)
 {
-	if (!req->hasField("sourceName") || !req->hasField("sourceType") || !req->hasField("sourceSettings")) {
-		return req->SendErrorResponse("missing request parameters");
+	if (!request.hasField("sourceName") || !request.hasField("sourceType") || !request.hasField("sourceSettings")) {
+		return request.failed("missing request parameters");
 	}
-	const char* sourceName = obs_data_get_string(req->data, "sourceName");
-	const char* sourceType = obs_data_get_string(req->data, "sourceType");
+	const char* sourceName = obs_data_get_string(request.parameters(), "sourceName");
+	const char* sourceType = obs_data_get_string(request.parameters(), "sourceType");
 	
-	OBSDataAutoRelease newsourceSettings = obs_data_get_obj(req->data, "sourceSettings");
-	OBSDataAutoRelease hotkeyData = obs_data_get_obj(req->data, "hotkeyData");
+	OBSDataAutoRelease newsourceSettings = obs_data_get_obj(request.parameters(), "sourceSettings");
+	OBSDataAutoRelease hotkeyData = obs_data_get_obj(request.parameters(), "hotkeyData");
 	
 	obs_source_t* source = obs_source_create(sourceType, sourceName, newsourceSettings, hotkeyData);
 	obs_source_set_enabled(source, true);
@@ -57,9 +58,9 @@ HandlerResponse WSRequestHandler::HandleCreateNewSource(WSRequestHandler* req)
 	obs_data_set_obj(response, "hotkeyData", hotkeyData);
 
 	if (source == nullptr) {
-		return req->SendErrorResponse("Could not create a new source");	
+		return request.failed("Could not create a new source");	
 	}
-	return req->SendOKResponse(response);
+	return request.success(response);
 }
 
 /**
@@ -71,21 +72,21 @@ HandlerResponse WSRequestHandler::HandleCreateNewSource(WSRequestHandler* req)
 * @name CreateNewScene
 * @category sources
 */
-HandlerResponse WSRequestHandler::HandleCreateNewScene(WSRequestHandler* req)
+RpcResponse WSRequestHandler::CreateNewScene(const RpcRequest& request)
 {
-	if (!req->hasField("sceneName") ) {
-		return req->SendErrorResponse("missing request parameters");
+	if (!request.hasField("sceneName") ) {
+		return request.failed("missing request parameters");
 	}
 
-	const char* sceneName = obs_data_get_string(req->data, "sceneName");
+	const char* sceneName = obs_data_get_string(request.parameters(), "sceneName");
 
 	obs_scene_t* scene = obs_scene_create(sceneName);
 	OBSDataAutoRelease response = obs_data_create();
 	obs_data_set_string(response, "sceneName", sceneName);
 	if (scene == nullptr) {
-		return req->SendErrorResponse("Could not create a new scene");
+		return request.failed("Could not create a new scene");
 	}
-	return req->SendOKResponse(response);
+	return request.success(response);
 }
 
 /**
@@ -98,22 +99,22 @@ HandlerResponse WSRequestHandler::HandleCreateNewScene(WSRequestHandler* req)
 * @name AddActiveChild
 * @category sources
 */
-HandlerResponse WSRequestHandler::HandleAddActiveChild(WSRequestHandler* req)
+RpcResponse WSRequestHandler::AddActiveChild(const RpcRequest& request)
 {
-	if (!req->hasField("sourceParentName") || !req->hasField("sourceChildName")) {
-		return req->SendErrorResponse("missing request parameters");
+	if (!request.hasField("sourceParentName") || !request.hasField("sourceChildName")) {
+		return request.failed("missing request parameters");
 	}
-	const char* sourceParentName = obs_data_get_string(req->data, "sourceParentName");
-	const char* sourceChildName = obs_data_get_string(req->data, "sourceChildName");
+	const char* sourceParentName = obs_data_get_string(request.parameters(), "sourceParentName");
+	const char* sourceChildName = obs_data_get_string(request.parameters(), "sourceChildName");
 	obs_source_t* sourceParent= obs_get_source_by_name(sourceParentName);
 	obs_source_t* sourceChild = obs_get_source_by_name(sourceChildName);
 	
 	bool  addingresponse =  obs_source_add_active_child(sourceParent, sourceChild);
 
 	if (addingresponse == false) {
-		return req->SendErrorResponse("Could not add source a recursion may be occurred");	
+		return request.failed("Could not add source a recursion may be occurred");	
 	}
-	return req->SendOKResponse();
+	return request.success();
 }
 
 /**
@@ -125,13 +126,13 @@ HandlerResponse WSRequestHandler::HandleAddActiveChild(WSRequestHandler* req)
 * @name AddToScene 
 * @category sources
 */
-HandlerResponse WSRequestHandler::HandleAddToScene(WSRequestHandler* req)
+RpcResponse WSRequestHandler::AddToScene(const RpcRequest& request)
 {
-	if (!req->hasField("sourceName")) {
-		return req->SendErrorResponse("missing request parameters");
+	if (!request.hasField("sourceName")) {
+		return request.failed("missing request parameters");
 	}
 
-	const char* targetSource = obs_data_get_string(req->data, "sourceName");
+	const char* targetSource = obs_data_get_string(request.parameters(), "sourceName");
 
 	obs_source_t *Source= obs_get_source_by_name(targetSource);
 	obs_source_t *Scenetarget = obs_frontend_get_current_scene();
@@ -139,7 +140,7 @@ HandlerResponse WSRequestHandler::HandleAddToScene(WSRequestHandler* req)
 	obs_sceneitem_t* newsceneitem = obs_scene_add(Scene, Source);
 
 	if (newsceneitem == nullptr) {
-		return req->SendErrorResponse("Could not add source to current Scene");
+		return request.failed("Could not add source to current Scene");
 	}
-	return req->SendOKResponse();
+	return request.success();
 }

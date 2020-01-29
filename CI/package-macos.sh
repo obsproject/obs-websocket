@@ -23,6 +23,9 @@ export LATEST_FILENAME="obs-websocket-latest-$LATEST_VERSION.pkg"
 
 echo "[obs-websocket] Modifying obs-websocket.so"
 install_name_tool \
+	-add_rpath @executable_path/../Frameworks/QtWidgets.framework/Versions/5/ \
+	-add_rpath @executable_path/../Frameworks/QtGui.framework/Versions/5/ \
+	-add_rpath @executable_path/../Frameworks/QtCore.framework/Versions/5/ \
 	-change /usr/local/opt/qt/lib/QtWidgets.framework/Versions/5/QtWidgets @rpath/QtWidgets \
 	-change /usr/local/opt/qt/lib/QtGui.framework/Versions/5/QtGui @rpath/QtGui \
 	-change /usr/local/opt/qt/lib/QtCore.framework/Versions/5/QtCore @rpath/QtCore \
