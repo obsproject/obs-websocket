@@ -64,11 +64,6 @@ std::string OBSRemoteProtocol::encodeEvent(const RpcEvent& event)
 {
 	OBSDataAutoRelease eventData = obs_data_create();
 
-	OBSData additionalFields = event.additionalFields();
-	if (additionalFields) {
-		obs_data_apply(eventData, additionalFields);
-	}
-
 	QString updateType = event.updateType();
 	obs_data_set_string(eventData, "update-type", updateType.toUtf8().constData());
 
@@ -80,6 +75,11 @@ std::string OBSRemoteProtocol::encodeEvent(const RpcEvent& event)
 	if (obs_frontend_recording_active()) {
 		QString recordingTimecode = Utils::nsToTimestamp(event.recordingTime());
 		obs_data_set_string(eventData, "rec-timecode", recordingTimecode.toUtf8().constData());
+	}
+
+	OBSData additionalFields = event.additionalFields();
+	if (additionalFields) {
+		obs_data_apply(eventData, additionalFields);
 	}
 
 	return std::string(obs_data_get_json(eventData));
