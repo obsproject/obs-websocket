@@ -86,4 +86,6 @@ class Utils {
 	static bool RecordingPauseSupported();
 	static bool RecordingPaused();
 	static void PauseRecording(bool pause);
+
+	static QString nsToTimestamp(uint64_t ns);
 };

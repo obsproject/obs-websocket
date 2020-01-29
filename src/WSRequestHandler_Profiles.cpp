@@ -12,19 +12,19 @@
  * @category profiles
  * @since 4.0.0
  */
-HandlerResponse WSRequestHandler::HandleSetCurrentProfile(WSRequestHandler* req) {
-	if (!req->hasField("profile-name")) {
-		return req->SendErrorResponse("missing request parameters");
+RpcResponse WSRequestHandler::SetCurrentProfile(const RpcRequest& request) {
+	if (!request.hasField("profile-name")) {
+		return request.failed("missing request parameters");
 	}
 
-	QString profileName = obs_data_get_string(req->data, "profile-name");
+	QString profileName = obs_data_get_string(request.parameters(), "profile-name");
 	if (profileName.isEmpty()) {
-		return req->SendErrorResponse("invalid request parameters");
+		return request.failed("invalid request parameters");
 	}
 
 	// TODO : check if profile exists
 	obs_frontend_set_current_profile(profileName.toUtf8());
-	return req->SendOKResponse();
+	return request.success();
 }
 
  /**
@@ -37,10 +37,12 @@ HandlerResponse WSRequestHandler::HandleSetCurrentProfile(WSRequestHandler* req)
  * @category profiles
  * @since 4.0.0
  */
-HandlerResponse WSRequestHandler::HandleGetCurrentProfile(WSRequestHandler* req) {
+RpcResponse WSRequestHandler::GetCurrentProfile(const RpcRequest& request) {
 	OBSDataAutoRelease response = obs_data_create();
-	obs_data_set_string(response, "profile-name", obs_frontend_get_current_profile());
-	return req->SendOKResponse(response);
+	char* currentProfile = obs_frontend_get_current_profile();
+	obs_data_set_string(response, "profile-name", currentProfile);
+	bfree(currentProfile);
+	return request.success(response);
 }
 
 /**
@@ -53,7 +55,7 @@ HandlerResponse WSRequestHandler::HandleGetCurrentProfile(WSRequestHandler* req)
  * @category profiles
  * @since 4.0.0
  */
-HandlerResponse WSRequestHandler::HandleListProfiles(WSRequestHandler* req) {
+RpcResponse WSRequestHandler::ListProfiles(const RpcRequest& request) {
 	char** profiles = obs_frontend_get_profiles();
 	OBSDataArrayAutoRelease list = Utils::StringListToArray(profiles, "profile-name");
 	bfree(profiles);
@@ -61,5 +63,5 @@ HandlerResponse WSRequestHandler::HandleListProfiles(WSRequestHandler* req) {
 	OBSDataAutoRelease response = obs_data_create();
 	obs_data_set_array(response, "profiles", list);
 
-	return req->SendOKResponse(response);
+	return request.success(response);
 }

@@ -1,16 +1,17 @@
 #include "WSRequestHandler.h"
 
+#include <functional>
 #include <util/platform.h>
 #include "Utils.h"
 
-HandlerResponse ifCanPause(WSRequestHandler* req, std::function<HandlerResponse()> callback)
+RpcResponse ifCanPause(const RpcRequest& request, std::function<RpcResponse()> callback)
 {
 	if (!obs_frontend_recording_active()) {
-		return req->SendErrorResponse("recording is not active");
+		return request.failed("recording is not active");
 	}
 
 	if (!Utils::RecordingPauseSupported()) {
-		return req->SendErrorResponse("recording pauses are not available in this version of OBS Studio");
+		return request.failed("recording pauses are not available in this version of OBS Studio");
 	}
 
 	return callback();
@@ -24,9 +25,9 @@ HandlerResponse ifCanPause(WSRequestHandler* req, std::function<HandlerResponse(
  * @category recording
  * @since 0.3
  */
-HandlerResponse WSRequestHandler::HandleStartStopRecording(WSRequestHandler* req) {
+RpcResponse WSRequestHandler::StartStopRecording(const RpcRequest& request) {
 	(obs_frontend_recording_active() ? obs_frontend_recording_stop() : obs_frontend_recording_start());
-	return req->SendOKResponse();
+	return request.success();
 }
 
 /**
@@ -38,13 +39,13 @@ HandlerResponse WSRequestHandler::HandleStartStopRecording(WSRequestHandler* req
  * @category recording
  * @since 4.1.0
  */
-HandlerResponse WSRequestHandler::HandleStartRecording(WSRequestHandler* req) {
+RpcResponse WSRequestHandler::StartRecording(const RpcRequest& request) {
 	if (obs_frontend_recording_active()) {
-		return req->SendErrorResponse("recording already active");
+		return request.failed("recording already active");
 	}
 
 	obs_frontend_recording_start();
-	return req->SendOKResponse();
+	return request.success();
 }
 
 /**
@@ -56,13 +57,13 @@ HandlerResponse WSRequestHandler::HandleStartRecording(WSRequestHandler* req) {
  * @category recording
  * @since 4.1.0
  */
- HandlerResponse WSRequestHandler::HandleStopRecording(WSRequestHandler* req) {
+ RpcResponse WSRequestHandler::StopRecording(const RpcRequest& request) {
 	if (!obs_frontend_recording_active()) {
-		return req->SendErrorResponse("recording not active");
+		return request.failed("recording not active");
 	}
 
 	obs_frontend_recording_stop();
-	return req->SendOKResponse();
+	return request.success();
 }
 
 /**
@@ -74,14 +75,14 @@ HandlerResponse WSRequestHandler::HandleStartRecording(WSRequestHandler* req) {
 * @category recording
 * @since 4.7.0
 */
-HandlerResponse WSRequestHandler::HandlePauseRecording(WSRequestHandler* req) {
-	return ifCanPause(req, [req]() {
+RpcResponse WSRequestHandler::PauseRecording(const RpcRequest& request) {
+	return ifCanPause(request, [request]() {
 		if (Utils::RecordingPaused()) {
-			return req->SendErrorResponse("recording already paused");
+			return request.failed("recording already paused");
 		}
 
 		Utils::PauseRecording(true);
-		return req->SendOKResponse();
+		return request.success();
 	});
 }
 
@@ -94,14 +95,14 @@ HandlerResponse WSRequestHandler::HandlePauseRecording(WSRequestHandler* req) {
 * @category recording
 * @since 4.7.0
 */
-HandlerResponse WSRequestHandler::HandleResumeRecording(WSRequestHandler* req) {
-	return ifCanPause(req, [req]() {
+RpcResponse WSRequestHandler::ResumeRecording(const RpcRequest& request) {
+	return ifCanPause(request, [request]() {
 		if (!Utils::RecordingPaused()) {
-			return req->SendErrorResponse("recording is not paused");
+			return request.failed("recording is not paused");
 		}
 
 		Utils::PauseRecording(false);
-		return req->SendOKResponse();
+		return request.success();
 	});
 }
 
@@ -120,18 +121,18 @@ HandlerResponse WSRequestHandler::HandleResumeRecording(WSRequestHandler* req) {
  * @category recording
  * @since 4.1.0
  */
-HandlerResponse WSRequestHandler::HandleSetRecordingFolder(WSRequestHandler* req) {
-	if (!req->hasField("rec-folder")) {
-		return req->SendErrorResponse("missing request parameters");
+RpcResponse WSRequestHandler::SetRecordingFolder(const RpcRequest& request) {
+	if (!request.hasField("rec-folder")) {
+		return request.failed("missing request parameters");
 	}
 
-	const char* newRecFolder = obs_data_get_string(req->data, "rec-folder");
+	const char* newRecFolder = obs_data_get_string(request.parameters(), "rec-folder");
 	bool success = Utils::SetRecordingFolder(newRecFolder);
 	if (!success) {
-		return req->SendErrorResponse("invalid request parameters");
+		return request.failed("invalid request parameters");
 	}
 
-	return req->SendOKResponse();
+	return request.success();
 }
 
 /**
@@ -144,11 +145,11 @@ HandlerResponse WSRequestHandler::HandleSetRecordingFolder(WSRequestHandler* req
  * @category recording
  * @since 4.1.0
  */
-HandlerResponse WSRequestHandler::HandleGetRecordingFolder(WSRequestHandler* req) {
+RpcResponse WSRequestHandler::GetRecordingFolder(const RpcRequest& request) {
 	const char* recFolder = Utils::GetRecordingFolder();
 
 	OBSDataAutoRelease response = obs_data_create();
 	obs_data_set_string(response, "rec-folder", recFolder);
 
-	return req->SendOKResponse(response);
+	return request.success(response);
 }

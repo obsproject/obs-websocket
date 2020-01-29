@@ -30,8 +30,8 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <websocketpp/server.hpp>
 
 #include "ConnectionProperties.h"
-
 #include "WSRequestHandler.h"
+#include "rpc/RpcEvent.h"
 
 using websocketpp::connection_hdl;
 
@@ -46,7 +46,7 @@ public:
 	virtual ~WSServer();
 	void start(quint16 port);
 	void stop();
-	void broadcast(std::string message);
+	void broadcast(const RpcEvent& event);
 	QThreadPool* threadPool() {
 		return &_threadPool;
 	}

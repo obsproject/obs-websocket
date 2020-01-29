@@ -18,19 +18,19 @@
  * @category scenes
  * @since 0.3
  */
-HandlerResponse WSRequestHandler::HandleSetCurrentScene(WSRequestHandler* req) {
-	if (!req->hasField("scene-name")) {
-		return req->SendErrorResponse("missing request parameters");
+RpcResponse WSRequestHandler::SetCurrentScene(const RpcRequest& request) {
+	if (!request.hasField("scene-name")) {
+		return request.failed("missing request parameters");
 	}
 
-	const char* sceneName = obs_data_get_string(req->data, "scene-name");
+	const char* sceneName = obs_data_get_string(request.parameters(), "scene-name");
 	OBSSourceAutoRelease source = obs_get_source_by_name(sceneName);
 
 	if (source) {
 		obs_frontend_set_current_scene(source);
-		return req->SendOKResponse();
+		return request.success();
 	} else {
-		return req->SendErrorResponse("requested scene does not exist");
+		return request.failed("requested scene does not exist");
 	}
 }
 
@@ -45,7 +45,7 @@ HandlerResponse WSRequestHandler::HandleSetCurrentScene(WSRequestHandler* req) {
  * @category scenes
  * @since 0.3
  */
-HandlerResponse WSRequestHandler::HandleGetCurrentScene(WSRequestHandler* req) {
+RpcResponse WSRequestHandler::GetCurrentScene(const RpcRequest& request) {
 	OBSSourceAutoRelease currentScene = obs_frontend_get_current_scene();
 	OBSDataArrayAutoRelease sceneItems = Utils::GetSceneItems(currentScene);
 
@@ -53,7 +53,7 @@ HandlerResponse WSRequestHandler::HandleGetCurrentScene(WSRequestHandler* req) {
 	obs_data_set_string(data, "name", obs_source_get_name(currentScene));
 	obs_data_set_array(data, "sources", sceneItems);
 
-	return req->SendOKResponse(data);
+	return request.success(data);
 }
 
 /**
@@ -67,7 +67,7 @@ HandlerResponse WSRequestHandler::HandleGetCurrentScene(WSRequestHandler* req) {
  * @category scenes
  * @since 0.3
  */
-HandlerResponse WSRequestHandler::HandleGetSceneList(WSRequestHandler* req) {
+RpcResponse WSRequestHandler::GetSceneList(const RpcRequest& request) {
 	OBSSourceAutoRelease currentScene = obs_frontend_get_current_scene();
 	OBSDataArrayAutoRelease scenes = Utils::GetScenes();
 
@@ -76,7 +76,7 @@ HandlerResponse WSRequestHandler::HandleGetSceneList(WSRequestHandler* req) {
 		obs_source_get_name(currentScene));
 	obs_data_set_array(data, "scenes", scenes);
 
-	return req->SendOKResponse(data);
+	return request.success(data);
 }
 
 /**
@@ -92,16 +92,16 @@ HandlerResponse WSRequestHandler::HandleGetSceneList(WSRequestHandler* req) {
 * @category scenes
 * @since 4.5.0
 */
-HandlerResponse WSRequestHandler::HandleReorderSceneItems(WSRequestHandler* req) {
-	QString sceneName = obs_data_get_string(req->data, "scene");
+RpcResponse WSRequestHandler::ReorderSceneItems(const RpcRequest& request) {
+	QString sceneName = obs_data_get_string(request.parameters(), "scene");
 	OBSScene scene = Utils::GetSceneFromNameOrCurrent(sceneName);
 	if (!scene) {
-		return req->SendErrorResponse("requested scene doesn't exist");
+		return request.failed("requested scene doesn't exist");
 	}
 
-	OBSDataArrayAutoRelease items = obs_data_get_array(req->data, "items");
+	OBSDataArrayAutoRelease items = obs_data_get_array(request.parameters(), "items");
 	if (!items) {
-		return req->SendErrorResponse("sceneItem order not specified");
+		return request.failed("sceneItem order not specified");
 	}
 
 	struct reorder_context {
@@ -143,8 +143,8 @@ HandlerResponse WSRequestHandler::HandleReorderSceneItems(WSRequestHandler* req)
 	}, &ctx);
 
 	if (!ctx.success) {
-		return req->SendErrorResponse(ctx.errorMessage);
+		return request.failed(ctx.errorMessage);
 	}
 
-	return req->SendOKResponse();
+	return request.success();
 }
