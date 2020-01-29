@@ -64,7 +64,7 @@ std::string OBSRemoteProtocol::encodeEvent(const RpcEvent& event)
 {
 	OBSDataAutoRelease eventData = obs_data_create();
 
-	OBSData additionalFields = event.fields();
+	OBSData additionalFields = event.additionalFields();
 	if (additionalFields) {
 		obs_data_apply(eventData, additionalFields);
 	}

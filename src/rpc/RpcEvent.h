@@ -29,7 +29,7 @@ public:
 	explicit RpcEvent(
 		const QString& updateType,
 		uint64_t streamTime, uint64_t recordingTime,
-		obs_data_t* fields = nullptr
+		obs_data_t* additionalFields = nullptr
 	);
 
 	const QString& updateType() const
@@ -47,14 +47,14 @@ public:
 		return _recordingTime;
 	}
 
-	const OBSData fields() const
+	const OBSData additionalFields() const
 	{
-		return OBSData(_fields);
+		return OBSData(_additionalFields);
 	}
 
 private:
 	QString _updateType;
 	uint64_t _streamTime;
 	uint64_t _recordingTime;
-	OBSDataAutoRelease _fields;
+	OBSDataAutoRelease _additionalFields;
 };
