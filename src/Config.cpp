@@ -192,6 +192,26 @@ bool Config::CheckAuth(QString response)
 	return authSuccess;
 }
 
+bool Config::CheckHttpAuth(QString authHeader)
+{
+	QStringList headerParts = authHeader.split(' ');
+
+	QString authType = headerParts.value(0);
+	if (authType != "Basic") {
+		return false;
+	}
+
+	QString encodedAuthValue = headerParts.value(1);
+	QString authValue = QByteArray::fromBase64(
+		encodedAuthValue.toUtf8()
+	);
+
+	QString authPassword = authValue.split(':').value(1);
+	QString saltedPassword = GenerateSecret(authPassword, this->Salt);
+
+	return (saltedPassword == this->Secret);
+}
+
 void Config::OnFrontendEvent(enum obs_frontend_event event, void* param)
 {
 	auto config = reinterpret_cast<Config*>(param);

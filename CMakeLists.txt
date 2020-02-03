@@ -50,20 +50,26 @@ set(obs-websocket_SOURCES
 	src/rpc/RpcResponse.cpp
 	src/rpc/RpcEvent.cpp
 	src/protocol/OBSRemoteProtocol.cpp
+	src/http/HttpRouter.cpp
+	src/http/HttpUtils.cpp
 	src/forms/settings-dialog.cpp)
 
 set(obs-websocket_HEADERS
 	src/obs-websocket.h
+	src/server-defs.h
 	src/WSServer.h
 	src/ConnectionProperties.h
 	src/WSRequestHandler.h
 	src/WSEvents.h
 	src/Config.h
 	src/Utils.h
+	src/SimpleResult.h
 	src/rpc/RpcRequest.h
 	src/rpc/RpcResponse.h
 	src/rpc/RpcEvent.h
 	src/protocol/OBSRemoteProtocol.h
+	src/http/HttpRouter.h
+	src/http/HttpUtils.h
 	src/forms/settings-dialog.h)
 
 # --- Platform-independent build settings ---
@@ -82,6 +88,9 @@ target_link_libraries(obs-websocket
 	libobs
 	Qt5::Core
 	Qt5::Widgets)
+
+set_property(TARGET obs-websocket PROPERTY CXX_STANDARD 11)
+set_property(TARGET obs-websocket PROPERTY CXX_STANDARD_REQUIRED ON)
 
 # --- End of section ---
 
@@ -173,6 +182,8 @@ endif()
 
 # --- Linux-specific build settings and tasks ---
 if(UNIX AND NOT APPLE)
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=default")
+
 	set_target_properties(obs-websocket PROPERTIES PREFIX "")
 	target_link_libraries(obs-websocket obs-frontend-api)
 

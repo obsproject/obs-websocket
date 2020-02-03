@@ -36,6 +36,7 @@ class Config {
 
 		void SetPassword(QString password);
 		bool CheckAuth(QString userChallenge);
+		bool CheckHttpAuth(QString authHeader);
 		QString GenerateSalt();
 		static QString GenerateSecret(
 				QString password, QString salt);

@@ -23,7 +23,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include "../rpc/RpcEvent.h"
 #include "../Utils.h"
 
-std::string OBSRemoteProtocol::processMessage(WSRequestHandler& requestHandler, std::string message)
+ProtocolResult OBSRemoteProtocol::processMessage(WSRequestHandler& requestHandler, std::string message, bool messageIdRequired)
 {
 	std::string msgContainer(message);
 	const char* msg = msgContainer.c_str();
@@ -31,11 +31,18 @@ std::string OBSRemoteProtocol::processMessage(WSRequestHandler& requestHandler, 
 	OBSDataAutoRelease data = obs_data_create_from_json(msg);
 	if (!data) {
 		blog(LOG_ERROR, "invalid JSON payload received for '%s'", msg);
-		return errorResponse(QString::Null(), "invalid JSON payload");
+		return ProtocolResult::Error(
+			errorResponse(QString::Null(), "invalid JSON payload")
+		);
 	}
 
-	if (!obs_data_has_user_value(data, "request-type") || !obs_data_has_user_value(data, "message-id")) {
-		return errorResponse(QString::Null(), "missing request parameters");
+	if (
+		!obs_data_has_user_value(data, "request-type") ||
+		(messageIdRequired && !obs_data_has_user_value(data, "message-id"))
+	) {
+		return ProtocolResult::Error(
+			errorResponse(QString::Null(), "missing request parameters")
+		);
 	}
 
 	QString methodName = obs_data_get_string(data, "request-type");
@@ -52,12 +59,17 @@ std::string OBSRemoteProtocol::processMessage(WSRequestHandler& requestHandler, 
 	OBSData additionalFields = response.additionalFields();
 	switch (response.status()) {
 		case RpcResponse::Status::Ok:
-			return successResponse(messageId, additionalFields);
+			return ProtocolResult::Ok(
+				successResponse(messageId, additionalFields)
+			);
 		case RpcResponse::Status::Error:
-			return errorResponse(messageId, response.errorMessage(), additionalFields);
+			return ProtocolResult::Error(
+				errorResponse(messageId, response.errorMessage(), additionalFields)
+			);
+		default:
+			// we're not supposed to reach this place
+			assert(0);
 	}
-
-	return std::string();
 }
 
 std::string OBSRemoteProtocol::encodeEvent(const RpcEvent& event)

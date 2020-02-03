@@ -16,6 +16,8 @@ You should have received a copy of the GNU General Public License along
 with this program. If not, see <https://www.gnu.org/licenses/>
 */
 
+#include "WSServer.h"
+
 #include <chrono>
 #include <thread>
 
@@ -27,11 +29,12 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <obs-frontend-api.h>
 #include <util/platform.h>
 
-#include "WSServer.h"
 #include "obs-websocket.h"
 #include "Config.h"
 #include "Utils.h"
 #include "protocol/OBSRemoteProtocol.h"
+#include "http/HttpRouter.h"
+#include "http/HttpUtils.h"
 
 QT_USE_NAMESPACE
 
@@ -39,10 +42,27 @@ using websocketpp::lib::placeholders::_1;
 using websocketpp::lib::placeholders::_2;
 using websocketpp::lib::bind;
 
+const QList<HttpRouter::RouterEntry> httpRoutes = {
+	ROUTER_ENTRY(http::Method::Post, "/execute", [](server::connection_ptr con) {
+		return HttpUtils::handleIfAuthorized(con, [con](ConnectionProperties& connProperties, std::string requestBody) {
+			WSRequestHandler requestHandler(connProperties);
+			OBSRemoteProtocol protocol;
+
+			ProtocolResult result = protocol.processMessage(requestHandler, requestBody, false);
+			if (!result.isOk()) {
+				con->set_status(websocketpp::http::status_code::bad_request);
+			}
+
+			return result.get();
+		});
+	})
+};
+
 WSServer::WSServer()
 	: QObject(nullptr),
 	  _connections(),
-	  _clMutex(QMutex::Recursive)
+	  _clMutex(QMutex::Recursive),
+	  _httpRouter(httpRoutes)
 {
 	_server.init_asio();
 #ifndef _WIN32
@@ -52,6 +72,7 @@ WSServer::WSServer()
 	_server.set_open_handler(bind(&WSServer::onOpen, this, ::_1));
 	_server.set_close_handler(bind(&WSServer::onClose, this, ::_1));
 	_server.set_message_handler(bind(&WSServer::onMessage, this, ::_1, ::_2));
+	_server.set_http_handler(bind(&WSServer::onHttpRequest, this, ::_1));
 }
 
 WSServer::~WSServer()
@@ -185,7 +206,8 @@ void WSServer::onMessage(connection_hdl hdl, server::message_ptr message)
 
 		WSRequestHandler requestHandler(connProperties);
 		OBSRemoteProtocol protocol;
-		std::string response = protocol.processMessage(requestHandler, payload);
+		ProtocolResult result = protocol.processMessage(requestHandler, payload, true);
+		std::string response = result.get();
 
 		if (GetConfig()->DebugEnabled) {
 			blog(LOG_INFO, "Response << '%s'", response.c_str());
@@ -200,6 +222,22 @@ void WSServer::onMessage(connection_hdl hdl, server::message_ptr message)
 				errorCodeMessage.c_str());
 		}
 	});
+}
+
+void WSServer::onHttpRequest(connection_hdl hdl)
+{
+	server::connection_ptr con = _server.get_con_from_hdl(hdl);
+	if (!con) {
+		return;
+	}
+
+	bool routeMatched = _httpRouter.handleConnection(con);
+
+	if (!routeMatched) {
+		// default case: return 426 Upgrade Required
+		con->set_status(websocketpp::http::status_code::upgrade_required);
+		con->set_body("");
+	}
 }
 
 void WSServer::onClose(connection_hdl hdl)

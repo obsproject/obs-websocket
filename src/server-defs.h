@@ -18,25 +18,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #pragma once
 
-#include <string>
-#include <obs-data.h>
-#include <QtCore/QString>
+#include <websocketpp/config/asio_no_tls.hpp>
+#include <websocketpp/server.hpp>
 
-#include "../SimpleResult.h"
-
-class WSRequestHandler;
-class RpcEvent;
-
-typedef SimpleResult<std::string> ProtocolResult;
-
-class OBSRemoteProtocol
-{
-public:
-	ProtocolResult processMessage(WSRequestHandler& requestHandler, std::string message, bool messageIdRequired);
-	std::string encodeEvent(const RpcEvent& event);
-
-protected:
-	std::string buildResponse(QString messageId, QString status, obs_data_t* fields = nullptr);
-	std::string successResponse(QString messageId, obs_data_t* fields = nullptr);
-	std::string errorResponse(QString messageId, QString errorMessage, obs_data_t* additionalFields = nullptr);
-};
+typedef websocketpp::server<websocketpp::config::asio> server;
