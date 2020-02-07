@@ -878,7 +878,9 @@ void WSEvents::TransitionDurationChanged(int ms) {
  *
  * @return {String} `name` Transition name.
  * @return {String} `type` Transition type.
- * @return {int} `duration` Transition duration (in milliseconds).
+ * @return {int} `duration` Transition duration (in milliseconds). 
+ * Will be -1 for any transition with a fixed duration, 
+ * such as a Stinger, due to limitations of the OBS API.
  * @return {String} `from-scene` Source scene of the transition
  * @return {String} `to-scene` Destination scene of the transition
  *
