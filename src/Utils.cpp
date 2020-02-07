@@ -413,6 +413,30 @@ bool Utils::SetTransitionByName(QString transitionName) {
 	}
 }
 
+obs_data_t* Utils::GetTransitionData(obs_source_t* transition) {
+	int duration = Utils::GetTransitionDuration(transition);
+	if (duration < 0) {
+		blog(LOG_WARNING, "GetTransitionData: duration is negative !");
+	}
+
+	obs_data_t* transitionData = obs_data_create();
+	obs_data_set_string(transitionData, "name", obs_source_get_name(transition));
+	obs_data_set_string(transitionData, "type", obs_source_get_id(transition));
+	obs_data_set_int(transitionData, "duration", duration);
+
+	OBSSourceAutoRelease sourceScene = obs_transition_get_source(transition, OBS_TRANSITION_SOURCE_A);
+	if (sourceScene) {
+		obs_data_set_string(transitionData, "from-scene", obs_source_get_name(sourceScene));
+	}
+
+	OBSSourceAutoRelease destinationScene = obs_transition_get_active_source(transition);
+	if (destinationScene) {
+		obs_data_set_string(transitionData, "to-scene", obs_source_get_name(destinationScene));
+	}
+
+	return transitionData;
+}
+
 QString Utils::OBSVersionString() {
 	uint32_t version = obs_get_version();
 

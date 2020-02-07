@@ -43,8 +43,8 @@ public:
 	void connectFilterSignals(obs_source_t* filter);
 	void disconnectFilterSignals(obs_source_t* filter);
 
-	void hookTransitionBeginEvent();
-	void unhookTransitionBeginEvent();
+	void hookTransitionPlaybackEvents();
+	void unhookTransitionPlaybackEvents();
 
 	uint64_t getStreamingTime();
 	uint64_t getRecordingTime();
@@ -116,6 +116,8 @@ private:
 		enum obs_frontend_event event, void* privateData);
 
 	static void OnTransitionBegin(void* param, calldata_t* data);
+	static void OnTransitionEnd(void* param, calldata_t* data);
+	static void OnTransitionVideoEnd(void* param, calldata_t* data);
 
 	static void OnSourceCreate(void* param, calldata_t* data);
 	static void OnSourceDestroy(void* param, calldata_t* data);
