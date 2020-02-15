@@ -241,7 +241,7 @@ void WSEvents::broadcastUpdate(const char* updateType,
 	obs_data_t* additionalFields = nullptr)
 {
 	uint64_t streamTime = getStreamingTime();
-	uint64_t recordingTime = getStreamingTime();
+	uint64_t recordingTime = getRecordingTime();
 	RpcEvent event(QString(updateType), streamTime, recordingTime, additionalFields);
 
 	_srv->broadcast(event);
