@@ -241,7 +241,7 @@ RpcResponse WSRequestHandler::SetStreamSettings(const RpcRequest& request) {
 	const char* responseType = obs_service_get_type(responseService);
 
 	OBSDataAutoRelease response = obs_data_create();
-	obs_data_set_string(response, "type", responseType.toUtf8());
+	obs_data_set_string(response, "type", responseType);
 	obs_data_set_obj(response, "settings", serviceSettings);
 
 	return request.success(response);
