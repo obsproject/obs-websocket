@@ -213,6 +213,7 @@ RpcResponse WSRequestHandler::SetStreamSettings(const RpcRequest& request) {
 		OBSDataAutoRelease hotkeys = obs_hotkeys_save_service(service);
 		service = obs_service_create(
 			STREAM_SERVICE_ID, requestedType.toUtf8(), requestSettings, hotkeys);
+		obs_frontend_set_streaming_service(service);
 	} else {
 		// If type isn't changing, we should overlay the settings we got
 		// to the existing settings. By doing so, you can send a request that
