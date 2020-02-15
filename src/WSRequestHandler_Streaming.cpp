@@ -137,13 +137,13 @@ RpcResponse WSRequestHandler::StartStreaming(const RpcRequest& request) {
 				obs_data_apply(updatedSettings, newSettings); //then apply the settings from the request should they exist
 
 				newService = obs_service_create(
-					newType.toUtf8(), STREAM_SERVICE_ID,
+					STREAM_SERVICE_ID, newType.toUtf8(),
 					updatedSettings, csHotkeys);
 			}
 			else {
 				// Service type changed: override service settings
 				newService = obs_service_create(
-					newType.toUtf8(), STREAM_SERVICE_ID,
+					STREAM_SERVICE_ID, newType.toUtf8(),
 					newSettings, csHotkeys);
 			}
 
