@@ -877,6 +877,7 @@ void WSEvents::TransitionDurationChanged(int ms) {
  * A transition (other than "cut") has begun.
  *
  * @return {String} `name` Transition name.
+ * @return {String} `type` Transition type.
  * @return {int} `duration` Transition duration (in milliseconds).
  * @return {String} `from-scene` Source scene of the transition
  * @return {String} `to-scene` Destination scene of the transition
@@ -901,6 +902,7 @@ void WSEvents::OnTransitionBegin(void* param, calldata_t* data) {
 
 	OBSDataAutoRelease fields = obs_data_create();
 	obs_data_set_string(fields, "name", obs_source_get_name(transition));
+	obs_data_set_string(fields, "type", obs_source_get_id(transition));
 	obs_data_set_int(fields, "duration", duration);
 
 	OBSSourceAutoRelease sourceScene = obs_transition_get_source(transition, OBS_TRANSITION_SOURCE_A);
