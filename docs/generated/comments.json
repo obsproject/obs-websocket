@@ -768,6 +768,7 @@
         "description": "A transition (other than \"cut\") has begun.",
         "return": [
           "{String} `name` Transition name.",
+          "{String} `type` Transition type.",
           "{int} `duration` Transition duration (in milliseconds).",
           "{String} `from-scene` Source scene of the transition",
           "{String} `to-scene` Destination scene of the transition"
@@ -781,6 +782,11 @@
             "type": "String",
             "name": "name",
             "description": "Transition name."
+          },
+          {
+            "type": "String",
+            "name": "type",
+            "description": "Transition type."
           },
           {
             "type": "int",
