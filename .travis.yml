@@ -14,10 +14,6 @@ cache:
 matrix:
   include:
   - os: linux
-    env: _generate_docs
-    script: "./CI/generate-docs.sh"
-
-  - os: linux
     env: _linux_build
     dist: trusty
     sudo: required

@@ -1,20 +1,21 @@
 jobs:
-- job: 'Prebuild'
+- job: 'GenerateDocs'
   pool:
     vmImage: 'ubuntu-16.04'
+  variables:
+    BUILD_REASON: $(Build.Reason)
+    BUILD_BRANCH: $(Build.SourceBranch)
   steps:
     - script: ./CI/generate-docs.sh
       displayName: 'Generate docs'
 
 # - job: 'Build_Windows'
-#   dependsOn: Prebuild
 #   pool:
 #     vmImage: 'windows-2019'
 #   steps:
 #     - script: false
 
 - job: 'Build_Linux'
-  dependsOn: Prebuild
   pool:
     vmImage: 'ubuntu-16.04'
   steps:
@@ -36,7 +37,6 @@ jobs:
         artifactName: 'deb_build'
 
 - job: 'Build_macOS'
-  dependsOn: Prebuild
   pool:
     vmImage: 'macos-10.14'
   steps:

@@ -15,7 +15,7 @@ if git diff --quiet; then
 	exit 0
 fi
 
-if [ "$TRAVIS_PULL_REQUEST" != "false" -o "$TRAVIS_BRANCH" != "4.x-current" ]; then
+if [ "$BUILD_REASON" = "PullRequest" -o "$BUILD_BRANCH" != "refs/heads/4.x-current" ]; then
 	echo "-- Skipping documentation deployment because this is either a pull request or a non-master branch."
 	exit 0
 fi
@@ -24,10 +24,10 @@ REMOTE_URL="$(git config remote.origin.url)"
 TARGET_REPO=${REMOTE_URL/https:\/\/github.com\//github.com/}
 GITHUB_REPO=https://${GH_TOKEN:-git}@${TARGET_REPO}
 
-git config user.name "Travis CI"
+git config user.name "Azure CI"
 git config user.email "$COMMIT_AUTHOR_EMAIL"
 
 git add ./generated
 git pull
-git commit -m "docs(travis): Update protocol.md - $(git rev-parse --short HEAD) [skip ci]"
-git push -q $GITHUB_REPO HEAD:$TRAVIS_BRANCH
+git commit -m "docs(ci): Update protocol.md - $(git rev-parse --short HEAD) [skip ci]"
+git push -q $GITHUB_REPO HEAD:$CI_BRANCH
