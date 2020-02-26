@@ -1,7 +1,6 @@
 jobs:
 - job: 'GenerateDocs'
-  trigger:
-    - 4.x-current
+  condition: eq(variables['Build.SourceBranch'], 'refs/heads/4.x-current')
   pool:
     vmImage: 'ubuntu-16.04'
   variables:
