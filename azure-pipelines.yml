@@ -20,6 +20,10 @@ jobs:
 - job: 'Build_Linux'
   pool:
     vmImage: 'ubuntu-16.04'
+  variables:
+      BUILD_REASON: $(Build.Reason)
+      BRANCH_SHORT_NAME: $(Build.SourceBranchName)
+      BRANCH_FULL_NAME: $(Build.SourceBranch)
   steps:
     - checkout: self
       submodules: true
@@ -31,10 +35,6 @@ jobs:
       displayName: 'Build obs-websocket'
 
     - script: ./CI/package-xenial.sh
-      variables:
-        BUILD_REASON: $(Build.Reason)
-        BRANCH_NAME: $(Build.SourceBranchName)
-        BRANCH_FULL_NAME: $(Build.SourceBranch)
       displayName: 'Package obs-websocket'
 
     - task: PublishBuildArtifacts@1
