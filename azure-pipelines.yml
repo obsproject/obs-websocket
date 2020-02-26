@@ -1,5 +1,7 @@
 jobs:
 - job: 'GenerateDocs'
+  trigger:
+    - 4.x-current
   pool:
     vmImage: 'ubuntu-16.04'
   variables:
@@ -13,7 +15,8 @@ jobs:
 #   pool:
 #     vmImage: 'windows-2019'
 #   steps:
-#     - script: false
+#     - checkout: self
+#       submodules: true
 
 - job: 'Build_Linux'
   pool:
