@@ -15,7 +15,7 @@ if git diff --quiet; then
 	exit 0
 fi
 
-if [ "$BUILD_REASON" = "PullRequest" -o "$BUILD_BRANCH" != "refs/heads/4.x-current" ]; then
+if [ "$BUILD_REASON" == "PullRequest" -o "$BUILD_BRANCH" != "refs/heads/4.x-current" ]; then
 	echo "-- Skipping documentation deployment because this is either a pull request or a non-master branch."
 	exit 0
 fi
