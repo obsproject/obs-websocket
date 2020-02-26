@@ -10,12 +10,51 @@ jobs:
     - script: ./CI/generate-docs.sh
       displayName: 'Generate docs'
 
-# - job: 'Build_Windows'
-#   pool:
-#     vmImage: 'windows-2019'
-#   steps:
-#     - checkout: self
-#       submodules: true
+- job: 'Build_Windows'
+  pool:
+    vmImage: 'windows-2015'
+  variables:
+    build_config: RelWithDebInfo
+    DepsBasePath: 'C:\obsdependencies'
+    DepsPath32: '%DepsBasePath%\win32'
+    DepsPath64: '%DepsBasePath%\win64'
+    QtBaseDir: 'C:\QtDep'
+    QTDIR32: '%QtBaseDir%\5.10.1\msvc2015'
+    QTDIR64: '%QtBaseDir%\5.10.1\msvc2015_64'
+  steps:
+    - checkout: self
+      submodules: true
+    
+    - script: ./CI/install-qt-win.cmd
+      displayName: 'Install Qt'
+
+    - script: ./CI/download-obs-deps.cmd
+      displayName: 'Download OBS dependencies'
+
+    - script: ./CI/install-build-obs.cmd
+      displayName: 'Build OBS'
+
+    - script: ./CI/before-build.cmd
+      displayName: 'Prepare build'
+
+    - task: MSBuild@1
+      displayName: 'Build 32-bit'
+      inputs:
+        msbuildArguments: '/m /p:Configuration=%build_config%'
+        solution: '.\build32\obs-studio.sln'
+
+    - task: MSBuild@1
+      displayName: 'Build 64-bit'
+      inputs:
+        msbuildArguments: '/m /p:Configuration=%build_config%'
+        solution: '.\build64\obs-studio.sln'
+
+    # TODO package zip archive and build installer
+
+    - task: PublishBuildArtifacts@1
+      inputs:
+        pathtoPublish: './release'
+        artifactName: 'windows_build'
 
 - job: 'Build_Linux'
   pool:
