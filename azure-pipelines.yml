@@ -31,6 +31,10 @@ jobs:
       displayName: 'Build obs-websocket'
 
     - script: ./CI/package-xenial.sh
+      variables:
+        BUILD_REASON: $(Build.Reason)
+        BRANCH_NAME: $(Build.SourceBranchName)
+        BRANCH_FULL_NAME: $(Build.SourceBranch)
       displayName: 'Package obs-websocket'
 
     - task: PublishBuildArtifacts@1
