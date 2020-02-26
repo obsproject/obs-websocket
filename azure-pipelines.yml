@@ -83,7 +83,7 @@ jobs:
 
 - job: 'Build_macOS'
   pool:
-    vmImage: 'macos-10.14'
+    vmImage: 'macos-10.13'
   steps:
     - checkout: self
       submodules: true
