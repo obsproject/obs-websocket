@@ -1,23 +1,61 @@
-pool:
-  vmImage: 'macOS-10.14'
+jobs:
+- job: 'Prebuild'
+  pool:
+    vmImage: 'ubuntu-16.04'
+  steps:
+    - script: ./CI/generate-docs.sh
+      displayName: 'Generate docs'
 
-steps:
-- checkout: self
-  submodules: true
+# - job: 'Build_Windows'
+#   dependsOn: Prebuild
+#   pool:
+#     vmImage: 'windows-2019'
+#   steps:
+#     - script: false
 
-- script: ./CI/install-dependencies-macos.sh
-  displayName: 'Install Dependencies'
+- job: 'Build_Linux'
+  dependsOn: Prebuild
+  pool:
+    vmImage: 'ubuntu-16.04'
+  steps:
+    - checkout: self
+      submodules: true
 
-- script: ./CI/install-build-obs-macos.sh
-  displayName: 'Build OBS'
+    - script: ./CI/install-dependencies-xenial.sh
+      displayName: 'Install dependencies'
 
-- script: ./CI/build-macos.sh
-  displayName: 'Build obs-websocket'
+    - script: ./CI/build-xenial.sh
+      displayName: 'Build obs-websocket'
 
-- script: ./CI/package-macos.sh
-  displayName: 'Package'
+    - script: ./CI/package-xenial.sh
+      displayName: 'Package obs-websocket'
 
-- task: PublishBuildArtifacts@1
-  inputs:
-    pathtoPublish: './release'
-    artifactName: 'build'
+    - task: PublishBuildArtifacts@1
+      inputs:
+        pathtoPublish: './package'
+        artifactName: 'deb_build'
+
+- job: 'Build_macOS'
+  dependsOn: Prebuild
+  pool:
+    vmImage: 'macos-10.14'
+  steps:
+    - checkout: self
+      submodules: true
+
+    - script: ./CI/install-dependencies-macos.sh
+      displayName: 'Install dependencies'
+
+    - script: ./CI/install-build-obs-macos.sh
+      displayName: 'Build OBS'
+
+    - script: ./CI/build-macos.sh
+      displayName: 'Build obs-websocket'
+
+    - script: ./CI/package-macos.sh
+      displayName: 'Package obs-websocket'
+
+    - task: PublishBuildArtifacts@1
+      inputs:
+        pathtoPublish: './release'
+        artifactName: 'macos_build'
