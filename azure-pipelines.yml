@@ -24,7 +24,7 @@ jobs:
   steps:
     - checkout: self
       submodules: true
-    
+
     - script: ./CI/install-qt-win.cmd
       displayName: 'Install Qt'
 
