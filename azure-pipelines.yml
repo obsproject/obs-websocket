@@ -12,15 +12,15 @@ jobs:
 
 - job: 'Build_Windows'
   pool:
-    vmImage: 'windows-2015'
+    vmImage: 'vs2017-win2016'
   variables:
     build_config: RelWithDebInfo
     DepsBasePath: 'C:\obsdependencies'
     DepsPath32: '%DepsBasePath%\win32'
     DepsPath64: '%DepsBasePath%\win64'
     QtBaseDir: 'C:\QtDep'
-    QTDIR32: '%QtBaseDir%\5.10.1\msvc2015'
-    QTDIR64: '%QtBaseDir%\5.10.1\msvc2015_64'
+    QTDIR32: '%QtBaseDir%\5.10.1\msvc2017'
+    QTDIR64: '%QtBaseDir%\5.10.1\msvc2017_64'
   steps:
     - checkout: self
       submodules: true
