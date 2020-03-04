@@ -769,7 +769,7 @@
         "return": [
           "{String} `name` Transition name.",
           "{String} `type` Transition type.",
-          "{int} `duration` Transition duration (in milliseconds).",
+          "{int} `duration` Transition duration (in milliseconds). Will be -1 for any transition with a fixed duration, such as a Stinger, due to limitations of the OBS API.",
           "{String} `from-scene` Source scene of the transition",
           "{String} `to-scene` Destination scene of the transition"
         ],
@@ -791,7 +791,7 @@
           {
             "type": "int",
             "name": "duration",
-            "description": "Transition duration (in milliseconds)."
+            "description": "Transition duration (in milliseconds). Will be -1 for any transition with a fixed duration, such as a Stinger, due to limitations of the OBS API."
           },
           {
             "type": "String",
