@@ -2568,6 +2568,67 @@
       },
       {
         "subheads": [],
+        "description": "An item's locked status has been toggled.",
+        "return": [
+          "{String} `scene-name` Name of the scene.",
+          "{String} `item-name` Name of the item in the scene.",
+          "{int} `item-id` Scene item ID",
+          "{boolean} `item-locked` New locked state of the item."
+        ],
+        "api": "events",
+        "name": "SceneItemLockChanged",
+        "category": "sources",
+        "since": "unreleased",
+        "returns": [
+          {
+            "type": "String",
+            "name": "scene-name",
+            "description": "Name of the scene."
+          },
+          {
+            "type": "String",
+            "name": "item-name",
+            "description": "Name of the item in the scene."
+          },
+          {
+            "type": "int",
+            "name": "item-id",
+            "description": "Scene item ID"
+          },
+          {
+            "type": "boolean",
+            "name": "item-locked",
+            "description": "New locked state of the item."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "SceneItemLockChanged"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "sources"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "unreleased"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "SceneItemLockChanged"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
         "description": "An item's transform has been changed.",
         "return": [
           "{String} `scene-name` Name of the scene.",

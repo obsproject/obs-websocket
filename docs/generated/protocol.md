@@ -101,6 +101,7 @@ auth_response = base64_encode(auth_response_hash)
     + [SceneItemAdded](#sceneitemadded)
     + [SceneItemRemoved](#sceneitemremoved)
     + [SceneItemVisibilityChanged](#sceneitemvisibilitychanged)
+    + [SceneItemLockChanged](#sceneitemlockchanged)
     + [SceneItemTransformChanged](#sceneitemtransformchanged)
     + [SceneItemSelected](#sceneitemselected)
     + [SceneItemDeselected](#sceneitemdeselected)
@@ -1028,6 +1029,25 @@ An item's visibility has been toggled.
 | `item-name` | _String_ | Name of the item in the scene. |
 | `item-id` | _int_ | Scene item ID |
 | `item-visible` | _boolean_ | New visibility state of the item. |
+
+
+---
+
+### SceneItemLockChanged
+
+
+- Unreleased
+
+An item's locked status has been toggled.
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `scene-name` | _String_ | Name of the scene. |
+| `item-name` | _String_ | Name of the item in the scene. |
+| `item-id` | _int_ | Scene item ID |
+| `item-locked` | _boolean_ | New locked state of the item. |
 
 
 ---
