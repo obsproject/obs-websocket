@@ -387,6 +387,13 @@ int Utils::GetTransitionDuration(obs_source_t* transition) {
 		return 0;
 	}
 
+	if (obs_transition_fixed(transition)) {
+		// If this transition has a fixed duration (such as a Stinger),
+		// we don't currently have a way of retrieving that number.
+		// For now, return -1 to indicate that we don't know the actual duration.
+		return -1;
+	}
+
 	OBSSourceAutoRelease destinationScene = obs_transition_get_active_source(transition);
 	OBSDataAutoRelease destinationSettings = obs_source_get_private_settings(destinationScene);
 
