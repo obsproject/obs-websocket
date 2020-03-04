@@ -136,6 +136,7 @@ private:
 	static void OnSceneItemAdd(void* param, calldata_t* data);
 	static void OnSceneItemDelete(void* param, calldata_t* data);
 	static void OnSceneItemVisibilityChanged(void* param, calldata_t* data);
+	static void OnSceneItemLockChanged(void* param, calldata_t* data);
 	static void OnSceneItemTransform(void* param, calldata_t* data);
 	static void OnSceneItemSelected(void* param, calldata_t* data);
 	static void OnSceneItemDeselected(void* param, calldata_t* data);
