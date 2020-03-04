@@ -30,8 +30,9 @@
 * @return {int} `sourceHeight` Base source (without scaling) of the source
 * @return {double} `width` Scene item width (base source width multiplied by the horizontal scaling factor)
 * @return {double} `height` Scene item height (base source height multiplied by the vertical scaling factor)
-* @property {String (optional)} `parentGroupName` Name of the item's parent (if this item belongs to a group)
-* @property {Array<SceneItemTransform> (optional)} `groupChildren` List of children (if this item is a group)
+* @return {int} `alignment` The point on the source that the item is manipulated from. The sum of 1=Left or 2=Right, and 4=Top or 8=Bottom, or omit to center on that axis.
+* @return {String (optional)} `parentGroupName` Name of the item's parent (if this item belongs to a group)
+* @return {Array<SceneItemTransform> (optional)} `groupChildren` List of children (if this item is a group)
 * 
 * @api requests
 * @name GetSceneItemProperties
