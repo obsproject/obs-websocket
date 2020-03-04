@@ -305,7 +305,7 @@ void WSEvents::connectSourceSignals(obs_source_t* source) {
 		signal_handler_connect(sh,
 			"item_visible", OnSceneItemVisibilityChanged, this);
 		signal_handler_connect(sh,
-			"item_locked", OnSceneItemLockedChanged, this);
+			"item_locked", OnSceneItemLockChanged, this);
 		signal_handler_connect(sh, "item_transform", OnSceneItemTransform, this);
 		signal_handler_connect(sh, "item_select", OnSceneItemSelected, this);
 		signal_handler_connect(sh, "item_deselect", OnSceneItemDeselected, this);
@@ -336,7 +336,7 @@ void WSEvents::disconnectSourceSignals(obs_source_t* source) {
 	signal_handler_disconnect(sh,
 		"item_visible", OnSceneItemVisibilityChanged, this);
 	signal_handler_disconnect(sh,
-		"item_locked", OnSceneItemLockedChanged, this);
+		"item_locked", OnSceneItemLockChanged, this);
 	signal_handler_disconnect(sh, "item_transform", OnSceneItemTransform, this);
 	signal_handler_disconnect(sh, "item_select", OnSceneItemSelected, this);
 	signal_handler_disconnect(sh, "item_deselect", OnSceneItemDeselected, this);
@@ -1466,11 +1466,11 @@ void WSEvents::OnSceneItemVisibilityChanged(void* param, calldata_t* data) {
  * @return {boolean} `item-locked` New locked state of the item.
  *
  * @api events
- * @name SceneItemLockedChanged
+ * @name SceneItemLockChanged
  * @category sources
  * @since unreleased
  */
-void WSEvents::OnSceneItemLockedChanged(void* param, calldata_t* data) {
+void WSEvents::OnSceneItemLockChanged(void* param, calldata_t* data) {
 	auto instance = reinterpret_cast<WSEvents*>(param);
 
 	obs_scene_t* scene = nullptr;
@@ -1492,7 +1492,7 @@ void WSEvents::OnSceneItemLockedChanged(void* param, calldata_t* data) {
 	obs_data_set_string(fields, "item-name", sceneItemName);
 	obs_data_set_int(fields, "item-id", obs_sceneitem_get_id(sceneItem));
 	obs_data_set_bool(fields, "item-locked", locked);
-	instance->broadcastUpdate("SceneItemLockedChanged", fields);
+	instance->broadcastUpdate("SceneItemLockChanged", fields);
 }
 
 /**
