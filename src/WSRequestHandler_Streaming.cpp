@@ -213,6 +213,7 @@ RpcResponse WSRequestHandler::SetStreamSettings(const RpcRequest& request) {
 		OBSDataAutoRelease hotkeys = obs_hotkeys_save_service(service);
 		service = obs_service_create(
 			requestedType.toUtf8(), STREAM_SERVICE_ID, requestSettings, hotkeys);
+		obs_frontend_set_streaming_service(service);
 	} else {
 		// If type isn't changing, we should overlay the settings we got
 		// to the existing settings. By doing so, you can send a request that
@@ -235,10 +236,12 @@ RpcResponse WSRequestHandler::SetStreamSettings(const RpcRequest& request) {
 		obs_frontend_save_streaming_service();
 	}
 
-	OBSDataAutoRelease serviceSettings = obs_service_get_settings(service);
+	OBSService responseService = obs_frontend_get_streaming_service();
+	OBSDataAutoRelease serviceSettings = obs_service_get_settings(responseService);
+	const char* responseType = obs_service_get_type(responseService);
 
 	OBSDataAutoRelease response = obs_data_create();
-	obs_data_set_string(response, "type", requestedType.toUtf8());
+	obs_data_set_string(response, "type", responseType);
 	obs_data_set_obj(response, "settings", serviceSettings);
 
 	return request.success(response);
