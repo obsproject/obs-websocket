@@ -2926,9 +2926,9 @@ Will return an `error` if streaming is already active.
 | `stream.settings` | _Object (optional)_ | Settings for the stream. |
 | `stream.settings.server` | _String (optional)_ | The publish URL. |
 | `stream.settings.key` | _String (optional)_ | The publish key of the stream. |
-| `stream.settings.use-auth` | _boolean (optional)_ | Indicates whether authentication should be used when connecting to the streaming server. |
-| `stream.settings.username` | _String (optional)_ | If authentication is enabled, the username for the streaming server. Ignored if `use-auth` is not set to `true`. |
-| `stream.settings.password` | _String (optional)_ | If authentication is enabled, the password for the streaming server. Ignored if `use-auth` is not set to `true`. |
+| `stream.settings.use_auth` | _boolean (optional)_ | Indicates whether authentication should be used when connecting to the streaming server. |
+| `stream.settings.username` | _String (optional)_ | If authentication is enabled, the username for the streaming server. Ignored if `use_auth` is not set to `true`. |
+| `stream.settings.password` | _String (optional)_ | If authentication is enabled, the password for the streaming server. Ignored if `use_auth` is not set to `true`. |
 
 
 **Response Items:**
@@ -2970,7 +2970,7 @@ Sets one or more attributes of the current streaming server settings. Any option
 | `settings` | _Object_ | The actual settings of the stream. |
 | `settings.server` | _String (optional)_ | The publish URL. |
 | `settings.key` | _String (optional)_ | The publish key. |
-| `settings.use-auth` | _boolean (optional)_ | Indicates whether authentication should be used when connecting to the streaming server. |
+| `settings.use_auth` | _boolean (optional)_ | Indicates whether authentication should be used when connecting to the streaming server. |
 | `settings.username` | _String (optional)_ | The username for the streaming service. |
 | `settings.password` | _String (optional)_ | The password for the streaming service. |
 | `save` | _boolean_ | Persist the settings to disk. |
@@ -3001,9 +3001,9 @@ _No specified parameters._
 | `settings` | _Object_ | Stream settings object. |
 | `settings.server` | _String_ | The publish URL. |
 | `settings.key` | _String_ | The publish key of the stream. |
-| `settings.use-auth` | _boolean_ | Indicates whether authentication should be used when connecting to the streaming server. |
-| `settings.username` | _String_ | The username to use when accessing the streaming server. Only present if `use-auth` is `true`. |
-| `settings.password` | _String_ | The password to use when accessing the streaming server. Only present if `use-auth` is `true`. |
+| `settings.use_auth` | _boolean_ | Indicates whether authentication should be used when connecting to the streaming server. |
+| `settings.username` | _String_ | The username to use when accessing the streaming server. Only present if `use_auth` is `true`. |
+| `settings.password` | _String_ | The password to use when accessing the streaming server. Only present if `use_auth` is `true`. |
 
 
 ---

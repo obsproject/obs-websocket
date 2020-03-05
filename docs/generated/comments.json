@@ -7540,9 +7540,9 @@
           "{Object (optional)} `stream.settings` Settings for the stream.",
           "{String (optional)} `stream.settings.server` The publish URL.",
           "{String (optional)} `stream.settings.key` The publish key of the stream.",
-          "{boolean (optional)} `stream.settings.use-auth` Indicates whether authentication should be used when connecting to the streaming server.",
-          "{String (optional)} `stream.settings.username` If authentication is enabled, the username for the streaming server. Ignored if `use-auth` is not set to `true`.",
-          "{String (optional)} `stream.settings.password` If authentication is enabled, the password for the streaming server. Ignored if `use-auth` is not set to `true`."
+          "{boolean (optional)} `stream.settings.use_auth` Indicates whether authentication should be used when connecting to the streaming server.",
+          "{String (optional)} `stream.settings.username` If authentication is enabled, the username for the streaming server. Ignored if `use_auth` is not set to `true`.",
+          "{String (optional)} `stream.settings.password` If authentication is enabled, the password for the streaming server. Ignored if `use_auth` is not set to `true`."
         ],
         "api": "requests",
         "name": "StartStreaming",
@@ -7581,18 +7581,18 @@
           },
           {
             "type": "boolean (optional)",
-            "name": "stream.settings.use-auth",
+            "name": "stream.settings.use_auth",
             "description": "Indicates whether authentication should be used when connecting to the streaming server."
           },
           {
             "type": "String (optional)",
             "name": "stream.settings.username",
-            "description": "If authentication is enabled, the username for the streaming server. Ignored if `use-auth` is not set to `true`."
+            "description": "If authentication is enabled, the username for the streaming server. Ignored if `use_auth` is not set to `true`."
           },
           {
             "type": "String (optional)",
             "name": "stream.settings.password",
-            "description": "If authentication is enabled, the password for the streaming server. Ignored if `use-auth` is not set to `true`."
+            "description": "If authentication is enabled, the password for the streaming server. Ignored if `use_auth` is not set to `true`."
           }
         ],
         "names": [
@@ -7662,7 +7662,7 @@
           "{Object} `settings` The actual settings of the stream.",
           "{String (optional)} `settings.server` The publish URL.",
           "{String (optional)} `settings.key` The publish key.",
-          "{boolean (optional)} `settings.use-auth` Indicates whether authentication should be used when connecting to the streaming server.",
+          "{boolean (optional)} `settings.use_auth` Indicates whether authentication should be used when connecting to the streaming server.",
           "{String (optional)} `settings.username` The username for the streaming service.",
           "{String (optional)} `settings.password` The password for the streaming service.",
           "{boolean} `save` Persist the settings to disk."
@@ -7694,7 +7694,7 @@
           },
           {
             "type": "boolean (optional)",
-            "name": "settings.use-auth",
+            "name": "settings.use_auth",
             "description": "Indicates whether authentication should be used when connecting to the streaming server."
           },
           {
@@ -7747,9 +7747,9 @@
           "{Object} `settings` Stream settings object.",
           "{String} `settings.server` The publish URL.",
           "{String} `settings.key` The publish key of the stream.",
-          "{boolean} `settings.use-auth` Indicates whether authentication should be used when connecting to the streaming server.",
-          "{String} `settings.username` The username to use when accessing the streaming server. Only present if `use-auth` is `true`.",
-          "{String} `settings.password` The password to use when accessing the streaming server. Only present if `use-auth` is `true`."
+          "{boolean} `settings.use_auth` Indicates whether authentication should be used when connecting to the streaming server.",
+          "{String} `settings.username` The username to use when accessing the streaming server. Only present if `use_auth` is `true`.",
+          "{String} `settings.password` The password to use when accessing the streaming server. Only present if `use_auth` is `true`."
         ],
         "api": "requests",
         "name": "GetStreamSettings",
@@ -7778,18 +7778,18 @@
           },
           {
             "type": "boolean",
-            "name": "settings.use-auth",
+            "name": "settings.use_auth",
             "description": "Indicates whether authentication should be used when connecting to the streaming server."
           },
           {
             "type": "String",
             "name": "settings.username",
-            "description": "The username to use when accessing the streaming server. Only present if `use-auth` is `true`."
+            "description": "The username to use when accessing the streaming server. Only present if `use_auth` is `true`."
           },
           {
             "type": "String",
             "name": "settings.password",
-            "description": "The password to use when accessing the streaming server. Only present if `use-auth` is `true`."
+            "description": "The password to use when accessing the streaming server. Only present if `use_auth` is `true`."
           }
         ],
         "names": [
