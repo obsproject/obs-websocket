@@ -67,9 +67,9 @@ RpcResponse WSRequestHandler::StartStopStreaming(const RpcRequest& request) {
  * @param {Object (optional)} `stream.settings` Settings for the stream.
  * @param {String (optional)} `stream.settings.server` The publish URL.
  * @param {String (optional)} `stream.settings.key` The publish key of the stream.
- * @param {boolean (optional)} `stream.settings.use-auth` Indicates whether authentication should be used when connecting to the streaming server.
- * @param {String (optional)} `stream.settings.username` If authentication is enabled, the username for the streaming server. Ignored if `use-auth` is not set to `true`.
- * @param {String (optional)} `stream.settings.password` If authentication is enabled, the password for the streaming server. Ignored if `use-auth` is not set to `true`.
+ * @param {boolean (optional)} `stream.settings.use_auth` Indicates whether authentication should be used when connecting to the streaming server.
+ * @param {String (optional)} `stream.settings.username` If authentication is enabled, the username for the streaming server. Ignored if `use_auth` is not set to `true`.
+ * @param {String (optional)} `stream.settings.password` If authentication is enabled, the password for the streaming server. Ignored if `use_auth` is not set to `true`.
  *
  * @api requests
  * @name StartStreaming
@@ -188,7 +188,7 @@ RpcResponse WSRequestHandler::StopStreaming(const RpcRequest& request) {
  * @param {Object} `settings` The actual settings of the stream.
  * @param {String (optional)} `settings.server` The publish URL.
  * @param {String (optional)} `settings.key` The publish key.
- * @param {boolean (optional)} `settings.use-auth` Indicates whether authentication should be used when connecting to the streaming server.
+ * @param {boolean (optional)} `settings.use_auth` Indicates whether authentication should be used when connecting to the streaming server.
  * @param {String (optional)} `settings.username` The username for the streaming service.
  * @param {String (optional)} `settings.password` The password for the streaming service.
  * @param {boolean} `save` Persist the settings to disk.
@@ -254,9 +254,9 @@ RpcResponse WSRequestHandler::SetStreamSettings(const RpcRequest& request) {
  * @return {Object} `settings` Stream settings object.
  * @return {String} `settings.server` The publish URL.
  * @return {String} `settings.key` The publish key of the stream.
- * @return {boolean} `settings.use-auth` Indicates whether authentication should be used when connecting to the streaming server.
- * @return {String} `settings.username` The username to use when accessing the streaming server. Only present if `use-auth` is `true`.
- * @return {String} `settings.password` The password to use when accessing the streaming server. Only present if `use-auth` is `true`.
+ * @return {boolean} `settings.use_auth` Indicates whether authentication should be used when connecting to the streaming server.
+ * @return {String} `settings.username` The username to use when accessing the streaming server. Only present if `use_auth` is `true`.
+ * @return {String} `settings.password` The password to use when accessing the streaming server. Only present if `use_auth` is `true`.
  *
  * @api requests
  * @name GetStreamSettings
