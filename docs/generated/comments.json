@@ -3361,13 +3361,13 @@
         "param": [
           "{String (Optional)} `type` Type of projector: Preview (default), Source, Scene, StudioProgram, or Multiview (case insensitive).",
           "{int (Optional)} `monitor` Monitor to open the projector on. If -1 or omitted, opens a window.",
-          "{String (Optional)} `geometry` Size and position of the projector window (only if monitor is -1). Encoded in base 64.",
+          "{String (Optional)} `geometry` Size and position of the projector window (only if monitor is -1). Encoded in Base64 using Qt's geometry encoding (https://doc.qt.io/qt-5/qwidget.html#saveGeometry). Corresponds to OBS's saved projectors.",
           "{String (Optional)} `name` Name of the source or scene to be displayed (ignored for other projector types)."
         ],
         "api": "requests",
         "name": "OpenProjector",
         "category": "general",
-        "since": "4.7.0",
+        "since": "unreleased",
         "params": [
           {
             "type": "String (Optional)",
@@ -3382,7 +3382,7 @@
           {
             "type": "String (Optional)",
             "name": "geometry",
-            "description": "Size and position of the projector window (only if monitor is -1). Encoded in base 64."
+            "description": "Size and position of the projector window (only if monitor is -1). Encoded in Base64 using Qt's geometry encoding (https://doc.qt.io/qt-5/qwidget.html#saveGeometry). Corresponds to OBS's saved projectors."
           },
           {
             "type": "String (Optional)",
@@ -3405,7 +3405,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "4.7.0"
+            "description": "unreleased"
           }
         ],
         "heading": {
