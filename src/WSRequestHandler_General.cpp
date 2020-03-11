@@ -56,6 +56,44 @@ const char *describe_scale_type(int scale) {
 }
 #undef CASE
 
+obs_data_t* videoInfoToData(obs_video_info* ovi)
+{
+	obs_data_t* data = obs_data_create();
+	obs_data_set_int(data, "baseWidth", ovi->base_width);
+	obs_data_set_int(data, "baseHeight", ovi->base_height);
+	obs_data_set_int(data, "outputWidth", ovi->output_width);
+	obs_data_set_int(data, "outputHeight", ovi->output_height);
+	obs_data_set_double(data, "fps", (double)ovi->fps_num / ovi->fps_den);
+	obs_data_set_string(data, "videoFormat", describe_output_format(ovi->output_format));
+	obs_data_set_string(data, "colorSpace", describe_color_space(ovi->colorspace));
+	obs_data_set_string(data, "colorRange", describe_color_range(ovi->range));
+	obs_data_set_string(data, "scaleType", describe_scale_type(ovi->scale_type));
+	return data;
+}
+
+const char* videoErrorToString(int errorCode)
+{
+	switch (errorCode) {
+		case OBS_VIDEO_SUCCESS:
+			return "success";
+
+		case OBS_VIDEO_NOT_SUPPORTED:
+			return "requested settings are not supported by the graphics adapter";
+
+		case OBS_VIDEO_INVALID_PARAM:
+			return "invalid video parameter";
+
+		case OBS_VIDEO_CURRENTLY_ACTIVE:
+			return "one or more outputs are currently active";
+
+		case OBS_VIDEO_MODULE_NOT_FOUND:
+			return "graphics module not found";
+
+		default:
+			return "unknown error";
+	}
+}
+
 /**
  * Returns the latest version of the plugin and the API.
  *
@@ -288,11 +326,11 @@ RpcResponse WSRequestHandler::BroadcastCustomMessage(const RpcRequest& request) 
  * @return {int} `baseHeight` Base (canvas) height
  * @return {int} `outputWidth` Output width
  * @return {int} `outputHeight` Output height
- * @return {String} `scaleType` Scaling method used if output size differs from base size
+ * @return {String} `scaleType` Output scaling method used if output size differs from base size
  * @return {double} `fps` Frames rendered per second
  * @return {String} `videoFormat` Video color format
- * @return {String} `colorSpace` Color space for YUV
- * @return {String} `colorRange` Color range (full or partial)
+ * @return {String} `colorSpace` YUV color space
+ * @return {String} `colorRange` YUV color range (full or partial)
  * 
  * @api requests
  * @name GetVideoInfo
@@ -303,17 +341,7 @@ RpcResponse WSRequestHandler::GetVideoInfo(const RpcRequest& request) {
 	obs_video_info ovi;
 	obs_get_video_info(&ovi);
 
-	OBSDataAutoRelease response = obs_data_create();
-	obs_data_set_int(response, "baseWidth", ovi.base_width);
-	obs_data_set_int(response, "baseHeight", ovi.base_height);
-	obs_data_set_int(response, "outputWidth", ovi.output_width);
-	obs_data_set_int(response, "outputHeight", ovi.output_height);
-	obs_data_set_double(response, "fps", (double)ovi.fps_num / ovi.fps_den);
-	obs_data_set_string(response, "videoFormat", describe_output_format(ovi.output_format));
-	obs_data_set_string(response, "colorSpace", describe_color_space(ovi.colorspace));
-	obs_data_set_string(response, "colorRange", describe_color_range(ovi.range));
-	obs_data_set_string(response, "scaleType", describe_scale_type(ovi.scale_type));
-
+	OBSDataAutoRelease response = videoInfoToData(&ovi);
 	return request.success(response);
 }
 
@@ -324,66 +352,82 @@ RpcResponse WSRequestHandler::GetVideoInfo(const RpcRequest& request) {
  * @param {int (Optional)} `baseHeight` Base (canvas) height
  * @param {int (Optional)} `outputWidth` Output width
  * @param {int (Optional)} `outputHeight` Output height
- * @param {String (Optional)} `scaleType` Scaling method used if output size differs from base size
+ * @param {String (Optional)} `scaleType` Output scaling method used if output size differs from base size
  * @param {double (Optional)} `fps` Frames rendered per second
  * @param {String (Optional)} `videoFormat` Video color format
- * @param {String (Optional)} `colorSpace` Color space for YUV
- * @param {String (Optional)} `colorRange` Color range (full or partial)
+ * @param {String (Optional)} `colorSpace` YUV color space
+ * @param {String (Optional)} `colorRange` YUV color range (full or partial)
  * 
+ * @return {int} `baseWidth` New base (canvas) width
+ * @return {int} `baseHeight` New base (canvas) height
+ * @return {int} `outputWidth` New output width
+ * @return {int} `outputHeight` New output height
+ * @return {String} `scaleType` New output scaling method
+ * @return {double} `fps` New FPS
+ * @return {String} `videoFormat` New video color format
+ * @return {String} `colorSpace` New YUV color space
+ * @return {String} `colorRange` New YUV color range (full or partial)
+ *
  * @api requests
  * @name GetVideoInfo
  * @category general
- * @since 4.6.0 
+ * @since unreleased 
  */
 RpcResponse WSRequestHandler::SetVideoSettings(const RpcRequest& request) {
-	OBSDataItemAutoRelease firstItem = obs_data_first(request.parameters());
+	const OBSData& params = request.parameters();
+	OBSDataItemAutoRelease firstItem = obs_data_first(params);
 	if (!firstItem) {
 		return request.failed("at least one parameter is required when calling SetVideoSettings");
 	}
 
-	bool oneOrMoreOutputsActive = false; // TODO
-	if (oneOrMoreOutputsActive) {
-		return request.failed("one or more outputs are currently active. can't change video settings");
-	}
+	obs_video_info obsVideoInfo = {};
+	obs_get_video_info(&obsVideoInfo);
 
 	if (request.hasInteger("baseWidth")) {
-		// TODO
+		obsVideoInfo.base_width = obs_data_get_int(params, "baseWidth");
 	}
-
 	if (request.hasInteger("baseHeight")) {
-		// TODO
+		obsVideoInfo.base_height = obs_data_get_int(params, "baseHeight");
 	}
 
 	if (request.hasInteger("outputWidth")) {
-		// TODO
+		obsVideoInfo.output_width = obs_data_get_int(params, "outputWidth");
 	}
-
 	if (request.hasInteger("outputHeight")) {
-		// TODO
+		obsVideoInfo.output_height = obs_data_get_int(params, "outputHeight");
 	}
 
 	if (request.hasString("scaleType")) {
 		// TODO
+		// obsVideoInfo.scale_type;
 	}
 
 	if (request.hasDouble("fps")) {
 		// TODO
+		// obsVideoInfo.fps_den;
+		// obsVideoInfo.fps_num;
 	}
 
 	if (request.hasString("videoFormat")) {
 		// TODO
+		// obsVideoInfo.output_format;
 	}
-
 	if (request.hasString("colorSpace")) {
 		// TODO
+		// obsVideoInfo.colorspace;
 	}
-
 	if (request.hasString("colorRange")) {
 		// TODO
+		// obsVideoInfo.range;
 	}
 
-	OBSDataAutoRelease response = obs_data_create();
-	// TODO return new video settings
+	int result = obs_reset_video(&obsVideoInfo);
+	if (result != OBS_VIDEO_SUCCESS) {
+		return request.failed(videoErrorToString(result));
+	}
+
+	obs_get_video_info(&obsVideoInfo);
+	OBSDataAutoRelease response = videoInfoToData(&obsVideoInfo);
 	return request.success(response);
 }
 
