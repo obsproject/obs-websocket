@@ -224,9 +224,11 @@ These are complex types, such as `Source` and `Scene`, which are used as argumen
 | ---- | :---: | ------------|
 | `cy` | _Number_ |  |
 | `cx` | _Number_ |  |
+| `alignment` | _Number_ | The point on the source that the item is manipulated from. The sum of 1=Left or 2=Right, and 4=Top or 8=Bottom, or omit to center on that axis. |
 | `name` | _String_ | The name of this Scene Item. |
 | `id` | _int_ | Scene item ID |
 | `render` | _Boolean_ | Whether or not this Scene Item is set to "visible". |
+| `muted` | _Boolean_ | Whether or not this Scene Item is muted. |
 | `locked` | _Boolean_ | Whether or not this Scene Item is locked and can't be moved around |
 | `source_cx` | _Number_ |  |
 | `source_cy` | _Number_ |  |
@@ -1359,7 +1361,7 @@ _No specified parameters._
 ### OpenProjector
 
 
-- Added in v4.7.0
+- Unreleased
 
 Open a projector window or create a projector on a monitor. Requires OBS v24.0.4 or newer.
 
@@ -1369,7 +1371,7 @@ Open a projector window or create a projector on a monitor. Requires OBS v24.0.4
 | ---- | :---: | ------------|
 | `type` | _String (Optional)_ | Type of projector: Preview (default), Source, Scene, StudioProgram, or Multiview (case insensitive). |
 | `monitor` | _int (Optional)_ | Monitor to open the projector on. If -1 or omitted, opens a window. |
-| `geometry` | _String (Optional)_ | Size and position of the projector window (only if monitor is -1). Encoded in base 64. |
+| `geometry` | _String (Optional)_ | Size and position of the projector window (only if monitor is -1). Encoded in Base64 using Qt's geometry encoding (https://doc.qt.io/qt-5/qwidget.html#saveGeometry). Corresponds to OBS's saved projectors. |
 | `name` | _String (Optional)_ | Name of the source or scene to be displayed (ignored for other projector types). |
 
 
@@ -1835,6 +1837,7 @@ Coordinates are relative to the item's parent (the scene or group it belongs to)
 | `crop.bottom` | _int_ | The number of pixels cropped off the bottom of the source before scaling. |
 | `crop.left` | _int_ | The number of pixels cropped off the left of the source before scaling. |
 | `visible` | _bool_ | If the source is visible. |
+| `muted` | _bool_ | If the source is muted. |
 | `locked` | _bool_ | If the source's transform is locked. |
 | `bounds.type` | _String_ | Type of bounding box. Can be "OBS_BOUNDS_STRETCH", "OBS_BOUNDS_SCALE_INNER", "OBS_BOUNDS_SCALE_OUTER", "OBS_BOUNDS_SCALE_TO_WIDTH", "OBS_BOUNDS_SCALE_TO_HEIGHT", "OBS_BOUNDS_MAX_ONLY" or "OBS_BOUNDS_NONE". |
 | `bounds.alignment` | _int_ | Alignment of the bounding box. |
