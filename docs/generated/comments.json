@@ -6,9 +6,11 @@
       "property": [
         "{Number} `cy`",
         "{Number} `cx`",
+        "{Number} `alignment` The point on the source that the item is manipulated from. The sum of 1=Left or 2=Right, and 4=Top or 8=Bottom, or omit to center on that axis.",
         "{String} `name` The name of this Scene Item.",
         "{int} `id` Scene item ID",
         "{Boolean} `render` Whether or not this Scene Item is set to \"visible\".",
+        "{Boolean} `muted` Whether or not this Scene Item is muted.",
         "{Boolean} `locked` Whether or not this Scene Item is locked and can't be moved around",
         "{Number} `source_cx`",
         "{Number} `source_cy`",
@@ -31,6 +33,11 @@
           "description": ""
         },
         {
+          "type": "Number",
+          "name": "alignment",
+          "description": "The point on the source that the item is manipulated from. The sum of 1=Left or 2=Right, and 4=Top or 8=Bottom, or omit to center on that axis."
+        },
+        {
           "type": "String",
           "name": "name",
           "description": "The name of this Scene Item."
@@ -44,6 +51,11 @@
           "type": "Boolean",
           "name": "render",
           "description": "Whether or not this Scene Item is set to \"visible\"."
+        },
+        {
+          "type": "Boolean",
+          "name": "muted",
+          "description": "Whether or not this Scene Item is muted."
         },
         {
           "type": "Boolean",
@@ -4253,6 +4265,7 @@
           "{int} `crop.bottom` The number of pixels cropped off the bottom of the source before scaling.",
           "{int} `crop.left` The number of pixels cropped off the left of the source before scaling.",
           "{bool} `visible` If the source is visible.",
+          "{bool} `muted` If the source is muted.",
           "{bool} `locked` If the source's transform is locked.",
           "{String} `bounds.type` Type of bounding box. Can be \"OBS_BOUNDS_STRETCH\", \"OBS_BOUNDS_SCALE_INNER\", \"OBS_BOUNDS_SCALE_OUTER\", \"OBS_BOUNDS_SCALE_TO_WIDTH\", \"OBS_BOUNDS_SCALE_TO_HEIGHT\", \"OBS_BOUNDS_MAX_ONLY\" or \"OBS_BOUNDS_NONE\".",
           "{int} `bounds.alignment` Alignment of the bounding box.",
@@ -4330,6 +4343,11 @@
             "type": "bool",
             "name": "visible",
             "description": "If the source is visible."
+          },
+          {
+            "type": "bool",
+            "name": "muted",
+            "description": "If the source is muted."
           },
           {
             "type": "bool",

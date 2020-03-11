@@ -104,9 +104,11 @@ obs_data_array_t* Utils::GetSceneItems(obs_source_t* source) {
  * @typedef {Object} `SceneItem` An OBS Scene Item.
  * @property {Number} `cy`
  * @property {Number} `cx`
+ * @property {Number} `alignment` The point on the source that the item is manipulated from. The sum of 1=Left or 2=Right, and 4=Top or 8=Bottom, or omit to center on that axis.
  * @property {String} `name` The name of this Scene Item.
  * @property {int} `id` Scene item ID
  * @property {Boolean} `render` Whether or not this Scene Item is set to "visible".
+ * @property {Boolean} `muted` Whether or not this Scene Item is muted.
  * @property {Boolean} `locked` Whether or not this Scene Item is locked and can't be moved around
  * @property {Number} `source_cx`
  * @property {Number} `source_cy`
@@ -146,6 +148,7 @@ obs_data_t* Utils::GetSceneItemData(obs_sceneitem_t* item) {
 	obs_data_set_double(data, "y", pos.y);
 	obs_data_set_int(data, "source_cx", (int)item_width);
 	obs_data_set_int(data, "source_cy", (int)item_height);
+	obs_data_set_bool(data, "muted", obs_source_muted(itemSource));
 	obs_data_set_int(data, "alignment", (int)obs_sceneitem_get_alignment(item));
 	obs_data_set_double(data, "cx", item_width * scale.x);
 	obs_data_set_double(data, "cy", item_height * scale.y);
