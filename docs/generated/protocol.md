@@ -119,6 +119,7 @@ auth_response = base64_encode(auth_response_hash)
     + [GetStats](#getstats)
     + [BroadcastCustomMessage](#broadcastcustommessage-1)
     + [GetVideoInfo](#getvideoinfo)
+    + [OpenProjector](#openprojector)
   * [Outputs](#outputs)
     + [ListOutputs](#listoutputs)
     + [GetOutputInfo](#getoutputinfo)
@@ -1352,6 +1353,29 @@ _No specified parameters._
 | `colorSpace` | _String_ | Color space for YUV |
 | `colorRange` | _String_ | Color range (full or partial) |
 
+
+---
+
+### OpenProjector
+
+
+- Added in v4.7.0
+
+Open a projector window or create a projector on a monitor. Requires OBS v24.0.4 or newer.
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `type` | _String (Optional)_ | Type of projector: Preview (default), Source, Scene, StudioProgram, or Multiview (case insensitive). |
+| `monitor` | _int (Optional)_ | Monitor to open the projector on. If -1 or omitted, opens a window. |
+| `geometry` | _String (Optional)_ | Size and position of the projector window (only if monitor is -1). Encoded in base 64. |
+| `name` | _String (Optional)_ | Name of the source or scene to be displayed (ignored for other projector types). |
+
+
+**Response Items:**
+
+_No additional response items._
 
 ---
 

@@ -304,3 +304,32 @@ RpcResponse WSRequestHandler::GetVideoInfo(const RpcRequest& request) {
 
 	return request.success(response);
 }
+
+/**
+ * Open a projector window or create a projector on a monitor. Requires OBS v24.0.4 or newer.
+ * 
+ * @param {String (Optional)} `type` Type of projector: Preview (default), Source, Scene, StudioProgram, or Multiview (case insensitive).
+ * @param {int (Optional)} `monitor` Monitor to open the projector on. If -1 or omitted, opens a window.
+ * @param {String (Optional)} `geometry` Size and position of the projector window (only if monitor is -1). Encoded in Base64 using Qt's geometry encoding (https://doc.qt.io/qt-5/qwidget.html#saveGeometry). Corresponds to OBS's saved projectors.
+ * @param {String (Optional)} `name` Name of the source or scene to be displayed (ignored for other projector types).
+ * 
+ * @api requests
+ * @name OpenProjector
+ * @category general
+ * @since unreleased
+ */
+RpcResponse WSRequestHandler::OpenProjector(const RpcRequest& request) {
+#if LIBOBS_API_VER >= 0x18000004
+	const char *type = obs_data_get_string(request.parameters(), "type");
+	int monitor = -1;
+	if (request.hasField("monitor")) {
+		monitor = obs_data_get_int(request.parameters(), "monitor");
+	}
+	const char *geometry = obs_data_get_string(request.parameters(), "geometry");
+	const char *name = obs_data_get_string(request.parameters(), "name");
+	obs_frontend_open_projector(type, monitor, geometry, name);
+	return request.success();
+#else
+	return request.failed("Projector opening requires libobs v24.0.4 or newer.");
+#endif
+}
