@@ -1,8 +1,7 @@
 #include "WSRequestHandler.h"
-
+#include <cmath>
 #include <QtCore/QByteArray>
 #include <QtGui/QImageWriter>
-
 #include "obs-websocket.h"
 #include "Config.h"
 #include "Utils.h"
@@ -403,9 +402,9 @@ RpcResponse WSRequestHandler::SetVideoSettings(const RpcRequest& request) {
 	}
 
 	if (request.hasDouble("fps")) {
-		// TODO
-		// obsVideoInfo.fps_den;
-		// obsVideoInfo.fps_num;
+		double fps = obs_data_get_double(params, "fps");
+		obsVideoInfo.fps_num = (uint32_t)(std::ceil(fps) * 1000.0);
+		obsVideoInfo.fps_den = (uint32_t)std::floor((double)obsVideoInfo.fps_num / fps);
 	}
 
 	if (request.hasString("videoFormat")) {
