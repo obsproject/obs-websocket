@@ -21,6 +21,7 @@
 #include <util/platform.h>
 #include <media-io/video-io.h>
 
+#include <QtCore/QHash>
 #include <QtWidgets/QPushButton>
 
 #include "WSEvents.h"
@@ -115,10 +116,13 @@ WSEvents::~WSEvents() {
 
 void WSEvents::FrontendEventHandler(enum obs_frontend_event event, void* private_data) {
 	auto owner = reinterpret_cast<WSEvents*>(private_data);
-
 	if (!owner->_srv) {
 		return;
 	}
+
+	static const QHash<enum obs_frontend_event, void*> frontendEventHandlerMap = {
+		
+	};
 
 	switch (event) {
 		case OBS_FRONTEND_EVENT_FINISHED_LOADING:

@@ -54,6 +54,7 @@ class WSRequestHandler {
 		RpcResponse GetStats(const RpcRequest&);
 		RpcResponse SetHeartbeat(const RpcRequest&);
 		RpcResponse GetVideoInfo(const RpcRequest&);
+		RpcResponse SetVideoSettings(const RpcRequest&);
 		RpcResponse OpenProjector(const RpcRequest&);
 
 		RpcResponse SetFilenameFormatting(const RpcRequest&);

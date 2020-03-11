@@ -318,6 +318,76 @@ RpcResponse WSRequestHandler::GetVideoInfo(const RpcRequest& request) {
 }
 
 /**
+ * Change one or more OBS video settings
+ * 
+ * @param {int (Optional)} `baseWidth` Base (canvas) width
+ * @param {int (Optional)} `baseHeight` Base (canvas) height
+ * @param {int (Optional)} `outputWidth` Output width
+ * @param {int (Optional)} `outputHeight` Output height
+ * @param {String (Optional)} `scaleType` Scaling method used if output size differs from base size
+ * @param {double (Optional)} `fps` Frames rendered per second
+ * @param {String (Optional)} `videoFormat` Video color format
+ * @param {String (Optional)} `colorSpace` Color space for YUV
+ * @param {String (Optional)} `colorRange` Color range (full or partial)
+ * 
+ * @api requests
+ * @name GetVideoInfo
+ * @category general
+ * @since 4.6.0 
+ */
+RpcResponse WSRequestHandler::SetVideoSettings(const RpcRequest& request) {
+	OBSDataItemAutoRelease firstItem = obs_data_first(request.parameters());
+	if (!firstItem) {
+		return request.failed("at least one parameter is required when calling SetVideoSettings");
+	}
+
+	bool oneOrMoreOutputsActive = false; // TODO
+	if (oneOrMoreOutputsActive) {
+		return request.failed("one or more outputs are currently active. can't change video settings");
+	}
+
+	if (request.hasInteger("baseWidth")) {
+		// TODO
+	}
+
+	if (request.hasInteger("baseHeight")) {
+		// TODO
+	}
+
+	if (request.hasInteger("outputWidth")) {
+		// TODO
+	}
+
+	if (request.hasInteger("outputHeight")) {
+		// TODO
+	}
+
+	if (request.hasString("scaleType")) {
+		// TODO
+	}
+
+	if (request.hasDouble("fps")) {
+		// TODO
+	}
+
+	if (request.hasString("videoFormat")) {
+		// TODO
+	}
+
+	if (request.hasString("colorSpace")) {
+		// TODO
+	}
+
+	if (request.hasString("colorRange")) {
+		// TODO
+	}
+
+	OBSDataAutoRelease response = obs_data_create();
+	// TODO return new video settings
+	return request.success(response);
+}
+
+/**
  * Open a projector window or create a projector on a monitor. Requires OBS v24.0.4 or newer.
  * 
  * @param {String (Optional)} `type` Type of projector: Preview (default), Source, Scene, StudioProgram, or Multiview (case insensitive).

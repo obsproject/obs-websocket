@@ -36,6 +36,7 @@ const QHash<QString, RpcMethodHandler> WSRequestHandler::messageMap {
 	{ "GetStats", &WSRequestHandler::GetStats },
 	{ "SetHeartbeat", &WSRequestHandler::SetHeartbeat },
 	{ "GetVideoInfo", &WSRequestHandler::GetVideoInfo },
+	{ "SetVideoSettings", &WSRequestHandler::SetVideoSettings },
 	{ "OpenProjector", &WSRequestHandler::OpenProjector },
 
 	{ "SetFilenameFormatting", &WSRequestHandler::SetFilenameFormatting },
