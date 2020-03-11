@@ -8,7 +8,7 @@
 #include "WSEvents.h"
 
 #define CASE(x) case x: return #x;
-const char *describe_output_format(int format) {
+const char* videoFormatToString(enum video_format format) {
 	switch (format) {
 		default:
 		CASE(VIDEO_FORMAT_NONE)
@@ -25,7 +25,7 @@ const char *describe_output_format(int format) {
 	}
 }
 
-const char *describe_color_space(int cs) {
+const char* videoColorspaceToString(enum video_colorspace cs) {
 	switch (cs) {
 		default:
 		CASE(VIDEO_CS_DEFAULT)
@@ -34,8 +34,8 @@ const char *describe_color_space(int cs) {
 	}
 }
 
-const char *describe_color_range(int range) {
-	switch (range) {
+const char* videoRangeTypeToString(enum video_range_type rangeType) {
+	switch (rangeType) {
 		default:
 		CASE(VIDEO_RANGE_DEFAULT)
 		CASE(VIDEO_RANGE_PARTIAL)
@@ -43,8 +43,8 @@ const char *describe_color_range(int range) {
 	}
 }
 
-const char *describe_scale_type(int scale) {
-	switch (scale) {
+const char* videoScaleTypeToString(enum obs_scale_type scaleType) {
+	switch (scaleType) {
 		default:
 		CASE(VIDEO_SCALE_DEFAULT)
 		CASE(VIDEO_SCALE_POINT)
@@ -63,10 +63,10 @@ obs_data_t* videoInfoToData(obs_video_info* ovi)
 	obs_data_set_int(data, "outputWidth", ovi->output_width);
 	obs_data_set_int(data, "outputHeight", ovi->output_height);
 	obs_data_set_double(data, "fps", (double)ovi->fps_num / ovi->fps_den);
-	obs_data_set_string(data, "videoFormat", describe_output_format(ovi->output_format));
-	obs_data_set_string(data, "colorSpace", describe_color_space(ovi->colorspace));
-	obs_data_set_string(data, "colorRange", describe_color_range(ovi->range));
-	obs_data_set_string(data, "scaleType", describe_scale_type(ovi->scale_type));
+	obs_data_set_string(data, "videoFormat", videoFormatToString(ovi->output_format));
+	obs_data_set_string(data, "colorSpace", videoColorspaceToString(ovi->colorspace));
+	obs_data_set_string(data, "colorRange", videoRangeTypeToString(ovi->range));
+	obs_data_set_string(data, "scaleType", videoScaleTypeToString(ovi->scale_type));
 	return data;
 }
 
