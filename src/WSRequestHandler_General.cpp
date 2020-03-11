@@ -310,13 +310,13 @@ RpcResponse WSRequestHandler::GetVideoInfo(const RpcRequest& request) {
  * 
  * @param {String (Optional)} `type` Type of projector: Preview (default), Source, Scene, StudioProgram, or Multiview (case insensitive).
  * @param {int (Optional)} `monitor` Monitor to open the projector on. If -1 or omitted, opens a window.
- * @param {String (Optional)} `geometry` Size and position of the projector window (only if monitor is -1). Encoded in base 64.
+ * @param {String (Optional)} `geometry` Size and position of the projector window (only if monitor is -1). Encoded in base 64. Corresponds to OBS's saved projectors.
  * @param {String (Optional)} `name` Name of the source or scene to be displayed (ignored for other projector types).
  * 
  * @api requests
  * @name OpenProjector
  * @category general
- * @since unreleased 
+ * @since unreleased
  */
 RpcResponse WSRequestHandler::OpenProjector(const RpcRequest& request) {
 #if LIBOBS_API_VER >= 0x18000004
