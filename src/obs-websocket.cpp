@@ -21,6 +21,8 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <obs-data.h>
 
 #include <QtCore/QTimer>
+#include <QtCore/QScopedPointer>
+#include <QtCore/QCoreApplication>
 #include <QtWidgets/QAction>
 #include <QtWidgets/QMainWindow>
 
@@ -44,14 +46,21 @@ void ___data_item_release(obs_data_item_t* dataItem) {
 OBS_DECLARE_MODULE()
 OBS_MODULE_USE_DEFAULT_LOCALE("obs-websocket", "en-US")
 
+QScopedPointer<QCoreApplication> subAppPtr;
 ConfigPtr _config;
 WSServerPtr _server;
 WSEventsPtr _eventsSystem;
 
-bool obs_module_load(void) {
+bool obs_module_load(void)
+{
 	blog(LOG_INFO, "you can haz websockets (version %s)", OBS_WEBSOCKET_VERSION);
 	blog(LOG_INFO, "qt version (compile-time): %s ; qt version (run-time): %s",
 		QT_VERSION_STR, qVersion());
+
+	// create a Qt core app to load plugins
+	// (might be needed for TakeSourceScreenshot to work correctly with JPEG and PNG)
+	obs_cmdline_args args = obs_get_cmdline_args();
+	subAppPtr.reset(new QCoreApplication(args.argc, args.argv));
 
 	// Core setup
 	_config = ConfigPtr(new Config());
@@ -94,7 +103,8 @@ bool obs_module_load(void) {
 	return true;
 }
 
-void obs_module_unload() {
+void obs_module_unload()
+{
 	_server->stop();
 
 	_eventsSystem.reset();
@@ -104,14 +114,17 @@ void obs_module_unload() {
 	blog(LOG_INFO, "goodbye!");
 }
 
-ConfigPtr GetConfig() {
+ConfigPtr GetConfig()
+{
 	return _config;
 }
 
-WSServerPtr GetServer() {
+WSServerPtr GetServer()
+{
 	return _server;
 }
 
-WSEventsPtr GetEventsSystem() {
+WSEventsPtr GetEventsSystem()
+{
 	return _eventsSystem;
 }
