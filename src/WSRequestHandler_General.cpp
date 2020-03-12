@@ -331,7 +331,7 @@ RpcResponse WSRequestHandler::GetVideoInfo(const RpcRequest& request) {
  * @since unreleased
  */
 RpcResponse WSRequestHandler::OpenProjector(const RpcRequest& request) {
-#if LIBOBS_API_VER >= 0x18000004
+#if LIBOBS_API_VER >= MAKE_SEMANTIC_VERSION(24, 0, 4)
 	const char *type = obs_data_get_string(request.parameters(), "type");
 	int monitor = -1;
 	if (request.hasField("monitor")) {
