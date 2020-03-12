@@ -86,5 +86,8 @@ namespace Utils {
 	bool RecordingPaused();
 	void PauseRecording(bool pause);
 
+	bool OpenProjectorSupported();
+	void OpenProjector(const char* type, int monitor, const char* geometry, const char* name);
+
 	QString nsToTimestamp(uint64_t ns);
 };

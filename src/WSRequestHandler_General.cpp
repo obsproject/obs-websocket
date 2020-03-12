@@ -331,17 +331,20 @@ RpcResponse WSRequestHandler::GetVideoInfo(const RpcRequest& request) {
  * @since unreleased
  */
 RpcResponse WSRequestHandler::OpenProjector(const RpcRequest& request) {
-#if LIBOBS_API_VER >= 0x18000004
-	const char *type = obs_data_get_string(request.parameters(), "type");
+	if (!Utils::OpenProjectorSupported()) {
+		return request.failed("Projector opening requires OBS 24.0.4 or newer.");
+	}
+
+	const char* type = obs_data_get_string(request.parameters(), "type");
+
 	int monitor = -1;
 	if (request.hasField("monitor")) {
 		monitor = obs_data_get_int(request.parameters(), "monitor");
 	}
-	const char *geometry = obs_data_get_string(request.parameters(), "geometry");
-	const char *name = obs_data_get_string(request.parameters(), "name");
-	obs_frontend_open_projector(type, monitor, geometry, name);
+
+	const char* geometry = obs_data_get_string(request.parameters(), "geometry");
+	const char* name = obs_data_get_string(request.parameters(), "name");
+
+	Utils::OpenProjector(type, monitor, geometry, name);
 	return request.success();
-#else
-	return request.failed("Projector opening requires libobs v24.0.4 or newer.");
-#endif
 }

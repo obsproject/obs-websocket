@@ -14,6 +14,6 @@ apt-get install -y \
 	qtbase5-dev
 
 # Dirty hack
-wget -O /usr/include/obs/obs-frontend-api.h https://raw.githubusercontent.com/obsproject/obs-studio/master/UI/obs-frontend-api/obs-frontend-api.h
+wget -O /usr/include/obs/obs-frontend-api.h https://raw.githubusercontent.com/obsproject/obs-studio/24.0.3/UI/obs-frontend-api/obs-frontend-api.h
 
 ldconfig
