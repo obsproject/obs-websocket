@@ -2913,7 +2913,8 @@
           "{double} `version` OBSRemote compatible API version. Fixed to 1.1 for retrocompatibility.",
           "{String} `obs-websocket-version` obs-websocket plugin version.",
           "{String} `obs-studio-version` OBS Studio program version.",
-          "{String} `available-requests` List of available request types, formatted as a comma-separated list string (e.g. : \"Method1,Method2,Method3\")."
+          "{String} `available-requests` List of available request types, formatted as a comma-separated list string (e.g. : \"Method1,Method2,Method3\").",
+          "{String} `supported-image-export-formats` List of supported formats for features that use image export (like the TakeSourceScreenshot request type) formatted as a comma-separated list string"
         ],
         "api": "requests",
         "name": "GetVersion",
@@ -2939,6 +2940,11 @@
             "type": "String",
             "name": "available-requests",
             "description": "List of available request types, formatted as a comma-separated list string (e.g. : \"Method1,Method2,Method3\")."
+          },
+          {
+            "type": "String",
+            "name": "supported-image-export-formats",
+            "description": "List of supported formats for features that use image export (like the TakeSourceScreenshot request type) formatted as a comma-separated list string"
           }
         ],
         "names": [
