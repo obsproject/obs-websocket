@@ -1,9 +1,12 @@
+#include "WSRequestHandler.h"
+
+#include <QtCore/QByteArray>
+#include <QtGui/QImageWriter>
+
 #include "obs-websocket.h"
 #include "Config.h"
 #include "Utils.h"
 #include "WSEvents.h"
-
-#include "WSRequestHandler.h"
 
 #define CASE(x) case x: return #x;
 const char *describe_output_format(int format) {
@@ -60,6 +63,7 @@ const char *describe_scale_type(int scale) {
  * @return {String} `obs-websocket-version` obs-websocket plugin version.
  * @return {String} `obs-studio-version` OBS Studio program version.
  * @return {String} `available-requests` List of available request types, formatted as a comma-separated list string (e.g. : "Method1,Method2,Method3").
+ * @return {String} `supported-image-export-formats` List of supported formats for features that use image export (like the TakeSourceScreenshot request type) formatted as a comma-separated list string
  *
  * @api requests
  * @name GetVersion
@@ -70,13 +74,20 @@ RpcResponse WSRequestHandler::GetVersion(const RpcRequest& request) {
 	QString obsVersion = Utils::OBSVersionString();
 
 	QList<QString> names = messageMap.keys();
-	names.sort(Qt::CaseInsensitive);
+	QList<QByteArray> imageWriterFormats = QImageWriter::supportedImageFormats();
 
 	// (Palakis) OBS' data arrays only support object arrays, so I improvised.
 	QString requests;
+	names.sort(Qt::CaseInsensitive);
 	requests += names.takeFirst();
-	for (QString reqName : names) {
+	for (const QString& reqName : names) {
 		requests += ("," + reqName);
+	}
+
+	QString supportedImageExportFormats;
+	supportedImageExportFormats += QString::fromUtf8(imageWriterFormats.takeFirst());
+	for (const QByteArray& format : imageWriterFormats) {
+		supportedImageExportFormats += ("," + QString::fromUtf8(format));
 	}
 
 	OBSDataAutoRelease data = obs_data_create();
@@ -84,6 +95,7 @@ RpcResponse WSRequestHandler::GetVersion(const RpcRequest& request) {
 	obs_data_set_string(data, "obs-websocket-version", OBS_WEBSOCKET_VERSION);
 	obs_data_set_string(data, "obs-studio-version", obsVersion.toUtf8());
 	obs_data_set_string(data, "available-requests", requests.toUtf8());
+	obs_data_set_string(data, "supported-image-export-formats", supportedImageExportFormats.toUtf8());
 
 	return request.success(data);
 }
