@@ -60,6 +60,7 @@ namespace Utils {
 	int GetTransitionDuration(obs_source_t* transition);
 	obs_source_t* GetTransitionFromName(QString transitionName);
 	bool SetTransitionByName(QString transitionName);
+	obs_data_t* GetTransitionData(obs_source_t* transition);
 
 	QString OBSVersionString();
 
