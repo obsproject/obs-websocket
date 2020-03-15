@@ -909,11 +909,11 @@ void WSEvents::OnTransitionBegin(void* param, calldata_t* data) {
 
 /**
 * A transition (other than "cut") has ended.
+* Please note that the `from-scene` field is not available in TransitionEnd.
 *
 * @return {String} `name` Transition name.
 * @return {String} `type` Transition type.
 * @return {int} `duration` Transition duration (in milliseconds).
-* @return {String} `from-scene` Source scene of the transition
 * @return {String} `to-scene` Destination scene of the transition
 *
 * @api events
