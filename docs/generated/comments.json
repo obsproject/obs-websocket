@@ -841,6 +841,134 @@
         "lead": "",
         "type": "class",
         "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "A transition (other than \"cut\") has ended.\nPlease note that the `from-scene` field is not available in TransitionEnd.",
+        "return": [
+          "{String} `name` Transition name.",
+          "{String} `type` Transition type.",
+          "{int} `duration` Transition duration (in milliseconds).",
+          "{String} `to-scene` Destination scene of the transition"
+        ],
+        "api": "events",
+        "name": "TransitionEnd",
+        "category": "transitions",
+        "since": "4.8.0",
+        "returns": [
+          {
+            "type": "String",
+            "name": "name",
+            "description": "Transition name."
+          },
+          {
+            "type": "String",
+            "name": "type",
+            "description": "Transition type."
+          },
+          {
+            "type": "int",
+            "name": "duration",
+            "description": "Transition duration (in milliseconds)."
+          },
+          {
+            "type": "String",
+            "name": "to-scene",
+            "description": "Destination scene of the transition"
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "TransitionEnd"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "transitions"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.8.0"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "TransitionEnd"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "A stinger transition has finished playing its video.",
+        "return": [
+          "{String} `name` Transition name.",
+          "{String} `type` Transition type.",
+          "{int} `duration` Transition duration (in milliseconds).",
+          "{String} `from-scene` Source scene of the transition",
+          "{String} `to-scene` Destination scene of the transition"
+        ],
+        "api": "events",
+        "name": "TransitionVideoEnd",
+        "category": "transitions",
+        "since": "4.8.0",
+        "returns": [
+          {
+            "type": "String",
+            "name": "name",
+            "description": "Transition name."
+          },
+          {
+            "type": "String",
+            "name": "type",
+            "description": "Transition type."
+          },
+          {
+            "type": "int",
+            "name": "duration",
+            "description": "Transition duration (in milliseconds)."
+          },
+          {
+            "type": "String",
+            "name": "from-scene",
+            "description": "Source scene of the transition"
+          },
+          {
+            "type": "String",
+            "name": "to-scene",
+            "description": "Destination scene of the transition"
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "TransitionVideoEnd"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "transitions"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.8.0"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "TransitionVideoEnd"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
       }
     ],
     "profiles": [
