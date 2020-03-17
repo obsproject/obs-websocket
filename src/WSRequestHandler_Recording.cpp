@@ -10,10 +10,6 @@ RpcResponse ifCanPause(const RpcRequest& request, std::function<RpcResponse()> c
 		return request.failed("recording is not active");
 	}
 
-	if (!Utils::RecordingPauseSupported()) {
-		return request.failed("recording pauses are not available in this version of OBS Studio");
-	}
-
 	return callback();
 }
 
@@ -77,11 +73,11 @@ RpcResponse WSRequestHandler::StartRecording(const RpcRequest& request) {
 */
 RpcResponse WSRequestHandler::PauseRecording(const RpcRequest& request) {
 	return ifCanPause(request, [request]() {
-		if (Utils::RecordingPaused()) {
+		if (obs_frontend_recording_paused()) {
 			return request.failed("recording already paused");
 		}
 
-		Utils::PauseRecording(true);
+		obs_frontend_recording_pause(true);
 		return request.success();
 	});
 }
@@ -97,11 +93,11 @@ RpcResponse WSRequestHandler::PauseRecording(const RpcRequest& request) {
 */
 RpcResponse WSRequestHandler::ResumeRecording(const RpcRequest& request) {
 	return ifCanPause(request, [request]() {
-		if (!Utils::RecordingPaused()) {
+		if (!obs_frontend_recording_paused()) {
 			return request.failed("recording is not paused");
 		}
 
-		Utils::PauseRecording(false);
+		obs_frontend_recording_pause(false);
 		return request.success();
 	});
 }
