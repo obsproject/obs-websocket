@@ -19,7 +19,7 @@ PAGER=cat checkinstall -y --type=debian --fstrans=no --nodoc \
 	--pkglicense="GPLv2.0" --maintainer="contact@slepin.fr" \
 	--pkggroup="video" \
 	--pkgsource="https://github.com/Palakis/obs-websocket" \
-	--requires="obs-studio libqt5core5a libqt5widgets5" \
+	--requires="obs-studio libqt5core5a libqt5widgets5 qt5-image-formats-plugins" \
 	--pakdir="/package"
 
 chmod ao+r /package/*
