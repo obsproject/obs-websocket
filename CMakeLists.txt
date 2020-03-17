@@ -129,8 +129,8 @@ if(WIN32)
 
 		# In Release mode, copy Qt image format plugins
 		COMMAND if $<CONFIG:Release>==1 ("${CMAKE_COMMAND}" -E copy
-			"${RELEASE_DIR}/plugins/imageformats/qjpeg.dll"
-			"${CMAKE_BINARY_DIR}/bin/${ARCH_NAME}$<CONFIG>")
+			"${QTDIR}/plugins/imageformats/qjpeg.dll"
+			"${RELEASE_DIR}/bin/${ARCH_NAME}/qjpeg.dll")
 
 		# If config is RelWithDebInfo, package release files
 		COMMAND if $<CONFIG:RelWithDebInfo>==1 (
