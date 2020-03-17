@@ -23,8 +23,7 @@ if (WIN32 OR APPLE)
 endif()
 
 find_package(LibObs REQUIRED)
-find_package(Qt5Core REQUIRED)
-find_package(Qt5Widgets REQUIRED)
+find_package(Qt5 REQUIRED COMPONENTS Core Widgets)
 
 set(obs-websocket_SOURCES
 	src/obs-websocket.cpp
@@ -127,6 +126,11 @@ if(WIN32)
 		COMMAND if $<CONFIG:Release>==1 ("${CMAKE_COMMAND}" -E copy
 			"$<TARGET_FILE:obs-websocket>"
 			"${RELEASE_DIR}/obs-plugins/${ARCH_NAME}")
+
+		# In Release mode, copy Qt image format plugins
+		COMMAND if $<CONFIG:Release>==1 ("${CMAKE_COMMAND}" -E copy
+			"${RELEASE_DIR}/plugins/imageformats/qjpeg.dll"
+			"${CMAKE_BINARY_DIR}/bin/${ARCH_NAME}$<CONFIG>")
 
 		# If config is RelWithDebInfo, package release files
 		COMMAND if $<CONFIG:RelWithDebInfo>==1 (
