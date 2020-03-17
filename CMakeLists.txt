@@ -128,7 +128,12 @@ if(WIN32)
 			"${RELEASE_DIR}/obs-plugins/${ARCH_NAME}")
 
 		# In Release mode, copy Qt image format plugins
-		COMMAND if $<CONFIG:Release>==1 ("${CMAKE_COMMAND}" -E copy
+		COMMAND if $<CONFIG:Release>==1 (
+			"${CMAKE_COMMAND}" -E copy
+			"${QTDIR}/plugins/imageformats/qjpeg.dll"
+			"${RELEASE_DIR}/bin/${ARCH_NAME}/qjpeg.dll")
+		COMMAND if $<CONFIG:RelWithDebInfo>==1 (
+			"${CMAKE_COMMAND}" -E copy
 			"${QTDIR}/plugins/imageformats/qjpeg.dll"
 			"${RELEASE_DIR}/bin/${ARCH_NAME}/qjpeg.dll")
 
