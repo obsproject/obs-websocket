@@ -831,39 +831,6 @@ void getPauseRecordingFunctions(RecordingPausedFunction* recPausedFuncPtr, Pause
 	}
 }
 
-bool Utils::RecordingPauseSupported()
-{
-	RecordingPausedFunction recordingPaused = nullptr;
-	PauseRecordingFunction pauseRecording = nullptr;
-	getPauseRecordingFunctions(&recordingPaused, &pauseRecording);
-
-	return (recordingPaused && pauseRecording);
-}
-
-bool Utils::RecordingPaused()
-{
-	RecordingPausedFunction recordingPaused = nullptr;
-	getPauseRecordingFunctions(&recordingPaused, nullptr);
-
-	if (recordingPaused == nullptr) {
-		return false;
-	}
-
-	return recordingPaused();
-}
-
-void Utils::PauseRecording(bool pause)
-{
-	PauseRecordingFunction pauseRecording = nullptr;
-	getPauseRecordingFunctions(nullptr, &pauseRecording);
-
-	if (pauseRecording == nullptr) {
-		return;
-	}
-
-	pauseRecording(pause); 
-}
-
 bool Utils::OpenProjectorSupported()
 {
 	void* frontendApi = os_dlopen("obs-frontend-api");

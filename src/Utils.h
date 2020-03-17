@@ -83,9 +83,6 @@ namespace Utils {
 	const char* GetFilenameFormatting();
 	bool SetFilenameFormatting(const char* filenameFormatting);
 
-	bool RecordingPauseSupported();
-	bool RecordingPaused();
-	void PauseRecording(bool pause);
 
 	bool OpenProjectorSupported();
 	void OpenProjector(const char* type, int monitor, const char* geometry, const char* name);
