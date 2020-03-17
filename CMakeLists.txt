@@ -131,11 +131,11 @@ if(WIN32)
 		COMMAND if $<CONFIG:Release>==1 (
 			"${CMAKE_COMMAND}" -E copy
 			"${QTDIR}/plugins/imageformats/qjpeg.dll"
-			"${RELEASE_DIR}/bin/${ARCH_NAME}/qjpeg.dll")
+			"${RELEASE_DIR}/bin/${ARCH_NAME}/imageformats/qjpeg.dll")
 		COMMAND if $<CONFIG:RelWithDebInfo>==1 (
 			"${CMAKE_COMMAND}" -E copy
 			"${QTDIR}/plugins/imageformats/qjpeg.dll"
-			"${RELEASE_DIR}/bin/${ARCH_NAME}/qjpeg.dll")
+			"${RELEASE_DIR}/bin/${ARCH_NAME}/imageformats/qjpeg.dll")
 
 		# If config is RelWithDebInfo, package release files
 		COMMAND if $<CONFIG:RelWithDebInfo>==1 (
