@@ -16,7 +16,7 @@ cd /root/obs-websocket/build
 PAGER=cat checkinstall -y --type=debian --fstrans=no --nodoc \
 	--backup=no --deldoc=yes --install=no \
 	--pkgname=obs-websocket --pkgversion="$PKG_VERSION" \
-	--pkglicense="GPLv2.0" --maintainer="contact@slepin.fr" \
+	--pkglicense="GPLv2.0" --maintainer="stephane.lepin@gmail.com" \
 	--pkggroup="video" \
 	--pkgsource="https://github.com/Palakis/obs-websocket" \
 	--requires="obs-studio libqt5core5a libqt5widgets5 qt5-image-formats-plugins" \
