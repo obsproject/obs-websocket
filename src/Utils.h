@@ -83,9 +83,5 @@ namespace Utils {
 	const char* GetFilenameFormatting();
 	bool SetFilenameFormatting(const char* filenameFormatting);
 
-
-	bool OpenProjectorSupported();
-	void OpenProjector(const char* type, int monitor, const char* geometry, const char* name);
-
 	QString nsToTimestamp(uint64_t ns);
 };

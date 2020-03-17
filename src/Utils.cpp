@@ -831,34 +831,6 @@ void getPauseRecordingFunctions(RecordingPausedFunction* recPausedFuncPtr, Pause
 	}
 }
 
-bool Utils::OpenProjectorSupported()
-{
-	void* frontendApi = os_dlopen("obs-frontend-api");
-	if (!frontendApi) {
-		return false;
-	}
-
-	void* openProjectorFunc = os_dlsym(frontendApi, "obs_frontend_open_projector");
-	return (openProjectorFunc != nullptr);
-}
-
-void Utils::OpenProjector(const char* type, int monitor, const char* geometry, const char* name)
-{
-	typedef void(*OpenProjectorFunc)(const char*, int monitor, const char* geometry, const char* name);
-
-	void* frontendApi = os_dlopen("obs-frontend-api");
-	if (!frontendApi) {
-		return;
-	}
-
-	OpenProjectorFunc openProjectorFunc = (OpenProjectorFunc)os_dlsym(frontendApi, "obs_frontend_open_projector");
-	if (!openProjectorFunc) {
-		return;
-	}
-
-	openProjectorFunc(type, monitor, geometry, name);
-}
-
 QString Utils::nsToTimestamp(uint64_t ns)
 {
 	uint64_t ms = ns / 1000000ULL;
