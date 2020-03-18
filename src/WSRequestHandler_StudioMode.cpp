@@ -185,7 +185,7 @@ RpcResponse WSRequestHandler::ToggleStudioMode(const RpcRequest& request) {
  * @param {double} `position` T-Bar position. This value will be clamped between 0.0 and 1.0.
  *
  * @api requests
- * @name TransitionToProgram
+ * @name SetTBarPosition
  * @category studio mode
  * @since 4.8.0
  */
