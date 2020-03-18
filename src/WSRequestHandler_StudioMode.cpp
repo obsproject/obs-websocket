@@ -133,7 +133,11 @@ RpcResponse WSRequestHandler::TransitionToProgram(const RpcRequest& request) {
  * @since 4.1.0
  */
 RpcResponse WSRequestHandler::EnableStudioMode(const RpcRequest& request) {
-	obs_frontend_set_preview_program_mode(true);
+	obs_queue_task(OBS_TASK_UI, [](void* param) {
+		obs_frontend_set_preview_program_mode(true);
+
+		UNUSED_PARAMETER(param);
+	}, nullptr, true);
 	return request.success();
 }
 
@@ -146,7 +150,12 @@ RpcResponse WSRequestHandler::EnableStudioMode(const RpcRequest& request) {
  * @since 4.1.0
  */
 RpcResponse WSRequestHandler::DisableStudioMode(const RpcRequest& request) {
-	obs_frontend_set_preview_program_mode(false);
+	obs_queue_task(OBS_TASK_UI, [](void* param) {
+		obs_frontend_set_preview_program_mode(false);
+
+		UNUSED_PARAMETER(param);
+	}, nullptr, true);
+
 	return request.success();
 }
 
@@ -159,7 +168,12 @@ RpcResponse WSRequestHandler::DisableStudioMode(const RpcRequest& request) {
  * @since 4.1.0
  */
 RpcResponse WSRequestHandler::ToggleStudioMode(const RpcRequest& request) {
-	bool previewProgramMode = obs_frontend_preview_program_mode_active();
-	obs_frontend_set_preview_program_mode(!previewProgramMode);
+	obs_queue_task(OBS_TASK_UI, [](void* param) {
+		bool previewProgramMode = obs_frontend_preview_program_mode_active();
+		obs_frontend_set_preview_program_mode(!previewProgramMode);
+
+		UNUSED_PARAMETER(param);
+	}, nullptr, true);
+
 	return request.success();
 }
