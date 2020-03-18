@@ -177,3 +177,30 @@ RpcResponse WSRequestHandler::ToggleStudioMode(const RpcRequest& request) {
 
 	return request.success();
 }
+
+/**
+ * Set the position of the T-Bar (in Studio Mode) to the specified value. Will return an error if OBS is not in studio mode
+ * or if the current transition doesn't support T-Bar control.
+ *
+ * @param {double} `position` T-Bar position. This value will be clamped between 0.0 and 1.0.
+ *
+ * @api requests
+ * @name TransitionToProgram
+ * @category studio mode
+ * @since 4.8.0
+ */
+RpcResponse WSRequestHandler::SetTBarPosition(const RpcRequest& request) {
+	if (!obs_frontend_preview_program_mode_active()) {
+		return request.failed("studio mode not enabled");
+	}
+
+	OBSSourceAutoRelease currentTransition = obs_frontend_get_current_transition();
+	if (obs_transition_fixed(currentTransition)) {
+		return request.failed("current transition doesn't support t-bar control");
+	}
+
+	double position = obs_data_get_double(request.parameters(), "position");
+	obs_transition_set_manual_time(currentTransition, position);
+
+	return request.success();
+}

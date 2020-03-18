@@ -148,6 +148,7 @@ class WSRequestHandler {
 		RpcResponse EnableStudioMode(const RpcRequest&);
 		RpcResponse DisableStudioMode(const RpcRequest&);
 		RpcResponse ToggleStudioMode(const RpcRequest&);
+		RpcResponse SetTBarPosition(const RpcRequest&);
 
 		RpcResponse SetTextGDIPlusProperties(const RpcRequest&);
 		RpcResponse GetTextGDIPlusProperties(const RpcRequest&);

@@ -130,6 +130,7 @@ const QHash<QString, RpcMethodHandler> WSRequestHandler::messageMap {
 	{ "EnableStudioMode", &WSRequestHandler::EnableStudioMode },
 	{ "DisableStudioMode", &WSRequestHandler::DisableStudioMode },
 	{ "ToggleStudioMode", &WSRequestHandler::ToggleStudioMode },
+	{ "SetTBarPosition", &WSRequestHandler::SetTBarPosition },
 
 	{ "SetTextGDIPlusProperties", &WSRequestHandler::SetTextGDIPlusProperties },
 	{ "GetTextGDIPlusProperties", &WSRequestHandler::GetTextGDIPlusProperties },
