@@ -1,7 +1,10 @@
 #include "WSRequestHandler.h"
+
 #include <cmath>
 #include <QtCore/QByteArray>
+#include <QtCore/QSet>
 #include <QtGui/QImageWriter>
+
 #include "obs-websocket.h"
 #include "Config.h"
 #include "Utils.h"
@@ -361,7 +364,16 @@ RpcResponse WSRequestHandler::SetVideoSettings(const RpcRequest& request) {
 
 	if (request.hasString("videoFormat")) {
 		const char* videoFormatStr = obs_data_get_string(params, "videoFormat");
-		obsVideoInfo.output_format = Utils::videoFormatFromString(videoFormatStr);
+		enum video_format requestedFormat = Utils::videoFormatFromString(videoFormatStr);
+
+		// formats allowed in the UI (under Settings -> Advanced)
+		static const QSet<enum video_format> allowedVideoFormats = {
+			VIDEO_FORMAT_NV12, VIDEO_FORMAT_I420, VIDEO_FORMAT_I444, VIDEO_FORMAT_RGBA
+		};
+		if (allowedVideoFormats.contains(requestedFormat)) {
+			return request.failed("");
+		}
+		obsVideoInfo.output_format = requestedFormat;
 	}
 	if (request.hasString("colorSpace")) {
 		const char* colorSpaceStr = obs_data_get_string(params, "colorSpace");
