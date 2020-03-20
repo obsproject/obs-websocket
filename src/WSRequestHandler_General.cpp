@@ -307,7 +307,7 @@ RpcResponse WSRequestHandler::GetVideoInfo(const RpcRequest& request) {
  * @param {int (Optional)} `outputWidth` Output width
  * @param {int (Optional)} `outputHeight` Output height
  * @param {String (Optional)} `scaleType` Output scaling method used if output size differs from base size
- * @param {double (Optional)} `fps` Frames rendered per second
+ * @param {double (Optional)} `fps` Frames per second
  * @param {String (Optional)} `videoFormat` Video color format
  * @param {String (Optional)} `colorSpace` YUV color space
  * @param {String (Optional)} `colorRange` YUV color range (full or partial)
@@ -323,7 +323,7 @@ RpcResponse WSRequestHandler::GetVideoInfo(const RpcRequest& request) {
  * @return {String} `colorRange` New YUV color range (full or partial)
  *
  * @api requests
- * @name GetVideoInfo
+ * @name SetVideoSettings
  * @category general
  * @since unreleased 
  */
