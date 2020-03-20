@@ -349,8 +349,8 @@ RpcResponse WSRequestHandler::SetVideoSettings(const RpcRequest& request) {
 	}
 
 	if (request.hasString("scaleType")) {
-		// TODO
-		// obsVideoInfo.scale_type;
+		const char* scaleTypeStr = obs_data_get_string(params, "scaleType");
+		obsVideoInfo.scale_type = Utils::videoScaleTypeFromString(scaleTypeStr);
 	}
 
 	if (request.hasDouble("fps")) {
@@ -360,16 +360,16 @@ RpcResponse WSRequestHandler::SetVideoSettings(const RpcRequest& request) {
 	}
 
 	if (request.hasString("videoFormat")) {
-		// TODO
-		// obsVideoInfo.output_format;
+		const char* videoFormatStr = obs_data_get_string(params, "videoFormat");
+		obsVideoInfo.output_format = Utils::videoFormatFromString(videoFormatStr);
 	}
 	if (request.hasString("colorSpace")) {
-		// TODO
-		// obsVideoInfo.colorspace;
+		const char* colorSpaceStr = obs_data_get_string(params, "colorSpace");
+		obsVideoInfo.colorspace = Utils::videoColorspaceFromString(colorSpaceStr);
 	}
 	if (request.hasString("colorRange")) {
-		// TODO
-		// obsVideoInfo.range;
+		const char* colorRangeStr = obs_data_get_string(params, "colorRange");
+		obsVideoInfo.range = Utils::videoRangeTypeFromString(colorRangeStr);
 	}
 
 	int result = obs_reset_video(&obsVideoInfo);
