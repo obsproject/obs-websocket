@@ -16,7 +16,8 @@ You should have received a copy of the GNU General Public License along
 with this program. If not, see <https://www.gnu.org/licenses/>
 */
 
-#include <inttypes.h>
+#include <cinttypes>
+#include <cstring>
 #include <QtWidgets/QMainWindow>
 #include <QtCore/QDir>
 #include <QtCore/QUrl>
@@ -31,6 +32,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include "Config.h"
 
 #define CASE_CONST_TO_STRING(x) case x: return #x;
+#define RETURN_IF_STR_EQ_CONST(x, y) if (strcmp(x, #y) == 0) return y; 
 
 Q_DECLARE_METATYPE(OBSScene);
 
@@ -871,10 +873,12 @@ QString Utils::nsToTimestamp(uint64_t ns)
 	return QString::asprintf("%02" PRIu64 ":%02" PRIu64 ":%02" PRIu64 ".%03" PRIu64, hoursPart, minutesPart, secsPart, msPart);
 }
 
-const char* Utils::videoFormatToString(enum video_format format) {
+const char* Utils::videoFormatToString(enum video_format format)
+{
 	switch (format) {
 		default:
 		CASE_CONST_TO_STRING(VIDEO_FORMAT_NONE)
+
 		CASE_CONST_TO_STRING(VIDEO_FORMAT_I420)
 		CASE_CONST_TO_STRING(VIDEO_FORMAT_NV12)
 		CASE_CONST_TO_STRING(VIDEO_FORMAT_YVYU)
@@ -885,34 +889,103 @@ const char* Utils::videoFormatToString(enum video_format format) {
 		CASE_CONST_TO_STRING(VIDEO_FORMAT_BGRX)
 		CASE_CONST_TO_STRING(VIDEO_FORMAT_Y800)
 		CASE_CONST_TO_STRING(VIDEO_FORMAT_I444)
+		CASE_CONST_TO_STRING(VIDEO_FORMAT_BGR3)
+		CASE_CONST_TO_STRING(VIDEO_FORMAT_I422)
+		CASE_CONST_TO_STRING(VIDEO_FORMAT_I40A)
+		CASE_CONST_TO_STRING(VIDEO_FORMAT_I42A)
+		CASE_CONST_TO_STRING(VIDEO_FORMAT_YUVA)
+		CASE_CONST_TO_STRING(VIDEO_FORMAT_AYUV)
 	}
 }
 
-const char* Utils::videoColorspaceToString(enum video_colorspace cs) {
+enum video_format Utils::videoFormatFromString(const char* str)
+{
+	RETURN_IF_STR_EQ_CONST(str, VIDEO_FORMAT_I420)
+	RETURN_IF_STR_EQ_CONST(str, VIDEO_FORMAT_NV12)
+	RETURN_IF_STR_EQ_CONST(str, VIDEO_FORMAT_YVYU)
+	RETURN_IF_STR_EQ_CONST(str, VIDEO_FORMAT_YUY2)
+	RETURN_IF_STR_EQ_CONST(str, VIDEO_FORMAT_UYVY)
+	RETURN_IF_STR_EQ_CONST(str, VIDEO_FORMAT_RGBA)
+	RETURN_IF_STR_EQ_CONST(str, VIDEO_FORMAT_BGRA)
+	RETURN_IF_STR_EQ_CONST(str, VIDEO_FORMAT_BGRX)
+	RETURN_IF_STR_EQ_CONST(str, VIDEO_FORMAT_Y800)
+	RETURN_IF_STR_EQ_CONST(str, VIDEO_FORMAT_I444)
+	RETURN_IF_STR_EQ_CONST(str, VIDEO_FORMAT_BGR3)
+	RETURN_IF_STR_EQ_CONST(str, VIDEO_FORMAT_I422)
+	RETURN_IF_STR_EQ_CONST(str, VIDEO_FORMAT_I40A)
+	RETURN_IF_STR_EQ_CONST(str, VIDEO_FORMAT_I42A)
+	RETURN_IF_STR_EQ_CONST(str, VIDEO_FORMAT_YUVA)
+	RETURN_IF_STR_EQ_CONST(str, VIDEO_FORMAT_AYUV)
+
+	// default value
+	return VIDEO_FORMAT_NONE;
+}
+
+const char* Utils::videoColorspaceToString(enum video_colorspace cs)
+{
 	switch (cs) {
 		default:
 		CASE_CONST_TO_STRING(VIDEO_CS_DEFAULT)
+
 		CASE_CONST_TO_STRING(VIDEO_CS_601)
 		CASE_CONST_TO_STRING(VIDEO_CS_709)
+		CASE_CONST_TO_STRING(VIDEO_CS_SRGB)
 	}
 }
 
-const char* Utils::videoRangeTypeToString(enum video_range_type rangeType) {
+enum video_colorspace Utils::videoColorspaceFromString(const char* str)
+{
+	RETURN_IF_STR_EQ_CONST(str, VIDEO_CS_601)
+	RETURN_IF_STR_EQ_CONST(str, VIDEO_CS_709)
+	RETURN_IF_STR_EQ_CONST(str, VIDEO_CS_SRGB)
+
+	// default
+	return VIDEO_CS_DEFAULT;
+}
+
+
+const char* Utils::videoRangeTypeToString(enum video_range_type rangeType)
+{
 	switch (rangeType) {
 		default:
 		CASE_CONST_TO_STRING(VIDEO_RANGE_DEFAULT)
+
 		CASE_CONST_TO_STRING(VIDEO_RANGE_PARTIAL)
 		CASE_CONST_TO_STRING(VIDEO_RANGE_FULL)
 	}
 }
 
-const char* Utils::videoScaleTypeToString(enum obs_scale_type scaleType) {
+enum video_range_type Utils::videoRangeTypeFromString(const char* str)
+{
+	RETURN_IF_STR_EQ_CONST(str, VIDEO_RANGE_PARTIAL)
+	RETURN_IF_STR_EQ_CONST(str, VIDEO_RANGE_FULL)
+
+	// default
+	return VIDEO_RANGE_DEFAULT;
+}
+
+const char* Utils::videoScaleTypeToString(enum obs_scale_type scaleType)
+{
 	switch (scaleType) {
 		default:
-		CASE_CONST_TO_STRING(VIDEO_SCALE_DEFAULT)
-		CASE_CONST_TO_STRING(VIDEO_SCALE_POINT)
-		CASE_CONST_TO_STRING(VIDEO_SCALE_FAST_BILINEAR)
-		CASE_CONST_TO_STRING(VIDEO_SCALE_BILINEAR)
-		CASE_CONST_TO_STRING(VIDEO_SCALE_BICUBIC)
+		CASE_CONST_TO_STRING(OBS_SCALE_DISABLE)
+
+		CASE_CONST_TO_STRING(OBS_SCALE_POINT)
+		CASE_CONST_TO_STRING(OBS_SCALE_BICUBIC)
+		CASE_CONST_TO_STRING(OBS_SCALE_BILINEAR)
+		CASE_CONST_TO_STRING(OBS_SCALE_LANCZOS)
+		CASE_CONST_TO_STRING(OBS_SCALE_AREA)
 	}
+}
+
+enum obs_scale_type Utils::videoScaleTypeFromString(const char* str)
+{
+	RETURN_IF_STR_EQ_CONST(str, OBS_SCALE_POINT)
+	RETURN_IF_STR_EQ_CONST(str, OBS_SCALE_BICUBIC)
+	RETURN_IF_STR_EQ_CONST(str, OBS_SCALE_BILINEAR)
+	RETURN_IF_STR_EQ_CONST(str, OBS_SCALE_LANCZOS)
+	RETURN_IF_STR_EQ_CONST(str, OBS_SCALE_AREA)
+
+	// default
+	return OBS_SCALE_DISABLE;
 }

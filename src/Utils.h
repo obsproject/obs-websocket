@@ -92,10 +92,14 @@ namespace Utils {
 	QString nsToTimestamp(uint64_t ns);
 
 	const char* videoFormatToString(enum video_format format);
+	enum video_format videoFormatFromString(const char* str);
 
 	const char* videoColorspaceToString(enum video_colorspace cs);
+	enum video_colorspace videoColorspaceFromString(const char* str);
 
 	const char* videoRangeTypeToString(enum video_range_type rangeType);
+	enum video_range_type videoRangeTypeFromString(const char* str);
 
 	const char* videoScaleTypeToString(enum obs_scale_type scaleType);
+	enum obs_scale_type videoScaleTypeFromString(const char* str);
 };
