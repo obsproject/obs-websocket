@@ -30,6 +30,8 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include "Utils.h"
 #include "Config.h"
 
+#define CASE_CONST_TO_STRING(x) case x: return #x;
+
 Q_DECLARE_METATYPE(OBSScene);
 
 const QHash<obs_bounds_type, QString> boundTypeNames = {
@@ -873,4 +875,50 @@ QString Utils::nsToTimestamp(uint64_t ns)
 	uint64_t msPart = ms % 1000ULL;
 
 	return QString::asprintf("%02" PRIu64 ":%02" PRIu64 ":%02" PRIu64 ".%03" PRIu64, hoursPart, minutesPart, secsPart, msPart);
+}
+
+const char* Utils::videoFormatToString(enum video_format format) {
+	switch (format) {
+		default:
+		CASE_CONST_TO_STRING(VIDEO_FORMAT_NONE)
+		CASE_CONST_TO_STRING(VIDEO_FORMAT_I420)
+		CASE_CONST_TO_STRING(VIDEO_FORMAT_NV12)
+		CASE_CONST_TO_STRING(VIDEO_FORMAT_YVYU)
+		CASE_CONST_TO_STRING(VIDEO_FORMAT_YUY2)
+		CASE_CONST_TO_STRING(VIDEO_FORMAT_UYVY)
+		CASE_CONST_TO_STRING(VIDEO_FORMAT_RGBA)
+		CASE_CONST_TO_STRING(VIDEO_FORMAT_BGRA)
+		CASE_CONST_TO_STRING(VIDEO_FORMAT_BGRX)
+		CASE_CONST_TO_STRING(VIDEO_FORMAT_Y800)
+		CASE_CONST_TO_STRING(VIDEO_FORMAT_I444)
+	}
+}
+
+const char* Utils::videoColorspaceToString(enum video_colorspace cs) {
+	switch (cs) {
+		default:
+		CASE_CONST_TO_STRING(VIDEO_CS_DEFAULT)
+		CASE_CONST_TO_STRING(VIDEO_CS_601)
+		CASE_CONST_TO_STRING(VIDEO_CS_709)
+	}
+}
+
+const char* Utils::videoRangeTypeToString(enum video_range_type rangeType) {
+	switch (rangeType) {
+		default:
+		CASE_CONST_TO_STRING(VIDEO_RANGE_DEFAULT)
+		CASE_CONST_TO_STRING(VIDEO_RANGE_PARTIAL)
+		CASE_CONST_TO_STRING(VIDEO_RANGE_FULL)
+	}
+}
+
+const char* Utils::videoScaleTypeToString(enum obs_scale_type scaleType) {
+	switch (scaleType) {
+		default:
+		CASE_CONST_TO_STRING(VIDEO_SCALE_DEFAULT)
+		CASE_CONST_TO_STRING(VIDEO_SCALE_POINT)
+		CASE_CONST_TO_STRING(VIDEO_SCALE_FAST_BILINEAR)
+		CASE_CONST_TO_STRING(VIDEO_SCALE_BILINEAR)
+		CASE_CONST_TO_STRING(VIDEO_SCALE_BICUBIC)
+	}
 }

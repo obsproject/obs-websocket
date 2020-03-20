@@ -90,4 +90,12 @@ namespace Utils {
 	void OpenProjector(const char* type, int monitor, const char* geometry, const char* name);
 
 	QString nsToTimestamp(uint64_t ns);
+
+	const char* videoFormatToString(enum video_format format);
+
+	const char* videoColorspaceToString(enum video_colorspace cs);
+
+	const char* videoRangeTypeToString(enum video_range_type rangeType);
+
+	const char* videoScaleTypeToString(enum obs_scale_type scaleType);
 };

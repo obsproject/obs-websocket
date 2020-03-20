@@ -7,54 +7,6 @@
 #include "Utils.h"
 #include "WSEvents.h"
 
-#define CASE(x) case x: return #x;
-const char* videoFormatToString(enum video_format format) {
-	switch (format) {
-		default:
-		CASE(VIDEO_FORMAT_NONE)
-		CASE(VIDEO_FORMAT_I420)
-		CASE(VIDEO_FORMAT_NV12)
-		CASE(VIDEO_FORMAT_YVYU)
-		CASE(VIDEO_FORMAT_YUY2)
-		CASE(VIDEO_FORMAT_UYVY)
-		CASE(VIDEO_FORMAT_RGBA)
-		CASE(VIDEO_FORMAT_BGRA)
-		CASE(VIDEO_FORMAT_BGRX)
-		CASE(VIDEO_FORMAT_Y800)
-		CASE(VIDEO_FORMAT_I444)
-	}
-}
-
-const char* videoColorspaceToString(enum video_colorspace cs) {
-	switch (cs) {
-		default:
-		CASE(VIDEO_CS_DEFAULT)
-		CASE(VIDEO_CS_601)
-		CASE(VIDEO_CS_709)
-	}
-}
-
-const char* videoRangeTypeToString(enum video_range_type rangeType) {
-	switch (rangeType) {
-		default:
-		CASE(VIDEO_RANGE_DEFAULT)
-		CASE(VIDEO_RANGE_PARTIAL)
-		CASE(VIDEO_RANGE_FULL)
-	}
-}
-
-const char* videoScaleTypeToString(enum obs_scale_type scaleType) {
-	switch (scaleType) {
-		default:
-		CASE(VIDEO_SCALE_DEFAULT)
-		CASE(VIDEO_SCALE_POINT)
-		CASE(VIDEO_SCALE_FAST_BILINEAR)
-		CASE(VIDEO_SCALE_BILINEAR)
-		CASE(VIDEO_SCALE_BICUBIC)
-	}
-}
-#undef CASE
-
 obs_data_t* videoInfoToData(obs_video_info* ovi)
 {
 	obs_data_t* data = obs_data_create();
@@ -63,10 +15,10 @@ obs_data_t* videoInfoToData(obs_video_info* ovi)
 	obs_data_set_int(data, "outputWidth", ovi->output_width);
 	obs_data_set_int(data, "outputHeight", ovi->output_height);
 	obs_data_set_double(data, "fps", (double)ovi->fps_num / ovi->fps_den);
-	obs_data_set_string(data, "videoFormat", videoFormatToString(ovi->output_format));
-	obs_data_set_string(data, "colorSpace", videoColorspaceToString(ovi->colorspace));
-	obs_data_set_string(data, "colorRange", videoRangeTypeToString(ovi->range));
-	obs_data_set_string(data, "scaleType", videoScaleTypeToString(ovi->scale_type));
+	obs_data_set_string(data, "videoFormat", Utils::videoFormatToString(ovi->output_format));
+	obs_data_set_string(data, "colorSpace", Utils::videoColorspaceToString(ovi->colorspace));
+	obs_data_set_string(data, "colorRange", Utils::videoRangeTypeToString(ovi->range));
+	obs_data_set_string(data, "scaleType", Utils::videoScaleTypeToString(ovi->scale_type));
 	return data;
 }
 
