@@ -34,23 +34,17 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 Q_DECLARE_METATYPE(OBSScene);
 
-const QHash<obs_bounds_type, QString> boundTypeNames = {
-	{ OBS_BOUNDS_STRETCH, "OBS_BOUNDS_STRETCH" },
-	{ OBS_BOUNDS_SCALE_INNER, "OBS_BOUNDS_SCALE_INNER" },
-	{ OBS_BOUNDS_SCALE_OUTER, "OBS_BOUNDS_SCALE_OUTER" },
-	{ OBS_BOUNDS_SCALE_TO_WIDTH, "OBS_BOUNDS_SCALE_TO_WIDTH" },
-	{ OBS_BOUNDS_SCALE_TO_HEIGHT, "OBS_BOUNDS_SCALE_TO_HEIGHT" },
-	{ OBS_BOUNDS_MAX_ONLY, "OBS_BOUNDS_MAX_ONLY" },
-	{ OBS_BOUNDS_NONE, "OBS_BOUNDS_NONE" },
-};
-
-QString getBoundsNameFromType(obs_bounds_type type) {
-	QString fallback = boundTypeNames.value(OBS_BOUNDS_NONE);
-	return boundTypeNames.value(type, fallback);
-}
-
-obs_bounds_type getBoundsTypeFromName(QString name) {
-	return boundTypeNames.key(name);
+const char* getBoundsNameFromType(obs_bounds_type type) {
+	switch (type) {
+		default:
+		CASE_CONST_TO_STRING(OBS_BOUNDS_NONE)
+		CASE_CONST_TO_STRING(OBS_BOUNDS_STRETCH)
+		CASE_CONST_TO_STRING(OBS_BOUNDS_SCALE_INNER)
+		CASE_CONST_TO_STRING(OBS_BOUNDS_SCALE_OUTER)
+		CASE_CONST_TO_STRING(OBS_BOUNDS_SCALE_TO_WIDTH)
+		CASE_CONST_TO_STRING(OBS_BOUNDS_SCALE_TO_HEIGHT)
+		CASE_CONST_TO_STRING(OBS_BOUNDS_MAX_ONLY)
+	}
 }
 
 obs_data_array_t* Utils::StringListToArray(char** strings, const char* key) {
