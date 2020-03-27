@@ -46,13 +46,13 @@ jobs:
       displayName: 'Build OBS Studio 32-bit'
       inputs:
         msbuildArguments: '/m /p:Configuration=$(build_config)'
-        solution: 'C:\projects\obs-studio\build32\obs-studio'
+        solution: 'C:\projects\obs-studio\build32\obs-studio.sln'
 
     - task: MSBuild@1
       displayName: 'Build OBS Studio 64-bit'
       inputs:
         msbuildArguments: '/m /p:Configuration=$(build_config)'
-        solution: 'C:\projects\obs-studio\build64\obs-studio'
+        solution: 'C:\projects\obs-studio\build64\obs-studio.sln'
 
     - script: ./CI/prepare-cmake-windows.cmd
       displayName: 'CMake obs-websocket'
