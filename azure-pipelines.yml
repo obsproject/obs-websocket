@@ -67,13 +67,13 @@ jobs:
     - checkout: self
       submodules: true
 
-    - script: ./CI/install-dependencies-xenial.sh
+    - script: ./CI/install-dependencies-ubuntu.sh
       displayName: 'Install dependencies'
 
-    - script: ./CI/build-xenial.sh
+    - script: ./CI/build-ubuntu.sh
       displayName: 'Build obs-websocket'
 
-    - script: ./CI/package-xenial.sh
+    - script: ./CI/package-ubuntu.sh
       displayName: 'Package obs-websocket'
 
     - task: PublishBuildArtifacts@1
