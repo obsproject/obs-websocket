@@ -41,7 +41,7 @@ jobs:
         DepsPath64: $(DepsPath64)
         QTDIR32: $(QTDIR32)
         QTDIR64: $(QTDIR64)
-    
+
     - task: MSBuild@1
       displayName: 'Build OBS Studio 32-bit'
       inputs:
@@ -74,7 +74,7 @@ jobs:
         solution: '.\build64\obs-websocket.sln'
 
     # TODO package zip archive
-    
+
     # TODO build installer
 
     - task: PublishBuildArtifacts@1
