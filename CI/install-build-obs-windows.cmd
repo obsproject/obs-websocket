@@ -95,6 +95,10 @@ echo:
 REM If the build flag is set, build obs-studio.
 if defined BuildOBS (
 	echo Building obs-studio...
+    echo DepsPath32: %DepsPath32%
+    echo DepsPath64: %DepsPath64%
+    echo QTDIR32: %QTDIR32%
+    echo QTDIR64: %QTDIR64%
     cd /D C:\projects\obs-studio\
 	echo   git checkout %OBSLatestTag%
 	git checkout %OBSLatestTag%
