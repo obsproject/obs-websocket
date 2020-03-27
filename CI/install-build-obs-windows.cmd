@@ -95,10 +95,6 @@ echo:
 REM If the build flag is set, build obs-studio.
 if defined BuildOBS (
 	echo Building obs-studio...
-    echo DepsPath32: %DepsPath32%
-    echo DepsPath64: %DepsPath64%
-    echo QTDIR32: %QTDIR32%
-    echo QTDIR64: %QTDIR64%
     cd /D C:\projects\obs-studio\
 	echo   git checkout %OBSLatestTag%
 	git checkout %OBSLatestTag%
@@ -124,11 +120,11 @@ if defined BuildOBS (
 	echo:
 	echo:
 	
-    echo   Building obs-studio %OBSLatestTag% 32-bit ^(Build Config: %build_config%^)...
-	call msbuild /m /p:Configuration=%build_config% C:\projects\obs-studio\build32\obs-studio.sln
+    REM echo   Building obs-studio %OBSLatestTag% 32-bit ^(Build Config: %build_config%^)...
+	REM call msbuild /m /p:Configuration=%build_config% C:\projects\obs-studio\build32\obs-studio.sln
 	
-    echo   Building obs-studio %OBSLatestTag% 64-bit ^(Build Config: %build_config%^)...
-	call msbuild /m /p:Configuration=%build_config% C:\projects\obs-studio\build64\obs-studio.sln
+    REM echo   Building obs-studio %OBSLatestTag% 64-bit ^(Build Config: %build_config%^)...
+	REM call msbuild /m /p:Configuration=%build_config% C:\projects\obs-studio\build64\obs-studio.sln
 	
     cd ..
 	git describe --tags --abbrev=0 > C:\projects\obs-studio-last-tag-built.txt

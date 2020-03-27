@@ -34,13 +34,25 @@ jobs:
       displayName: 'Download OBS dependencies'
 
     - script: ./CI/install-build-obs-windows.cmd
-      displayName: 'Build OBS 32-bit and 64-bit'
+      displayName: 'CMake OBS Studio'
       env:
         build_config: $(build_config)
         DepsPath32: $(DepsPath32)
         DepsPath64: $(DepsPath64)
         QTDIR32: $(QTDIR32)
         QTDIR64: $(QTDIR64)
+    
+    - task: MSBuild@1
+      displayName: 'Build OBS Studio 32-bit'
+      inputs:
+        msbuildArguments: '/m /p:Configuration=$(build_config)'
+        solution: 'C:\projects\obs-studio\build32\obs-studio'
+
+    - task: MSBuild@1
+      displayName: 'Build OBS Studio 64-bit'
+      inputs:
+        msbuildArguments: '/m /p:Configuration=$(build_config)'
+        solution: 'C:\projects\obs-studio\build64\obs-studio'
 
     - script: ./CI/prepare-cmake-windows.cmd
       displayName: 'CMake obs-websocket'
@@ -53,13 +65,13 @@ jobs:
       displayName: 'Build obs-websocket 32-bit'
       inputs:
         msbuildArguments: '/m /p:Configuration=$(build_config)'
-        solution: '.\build32\obs-studio.sln'
+        solution: '.\build32\obs-websocket.sln'
 
     - task: MSBuild@1
       displayName: 'Build obs-websocket 64-bit'
       inputs:
         msbuildArguments: '/m /p:Configuration=$(build_config)'
-        solution: '.\build64\obs-studio.sln'
+        solution: '.\build64\obs-websocket.sln'
 
     # TODO package zip archive
     
