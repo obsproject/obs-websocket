@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.2)
 project(obs-websocket)
 
 if (WIN32 OR APPLE)
-	set(CMAKE_MODULE_PATH "${LIBOBS_INCLUDE_DIR}/../cmake/external/FindLibobs.cmake")
+	set(CMAKE_MODULE_PATH "$PWD/cmake/FindLibObs.cmake")
 endif()
 
 set(CMAKE_PREFIX_PATH "${QTDIR}")
