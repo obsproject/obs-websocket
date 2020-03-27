@@ -27,26 +27,38 @@ jobs:
 
     - script: ./CI/install-qt-win.cmd
       displayName: 'Install Qt'
+      env:
+        QtBaseDir: $(QtBaseDir)
 
     - script: ./CI/download-obs-deps.cmd
       displayName: 'Download OBS dependencies'
 
     - script: ./CI/install-build-obs-windows.cmd
-      displayName: 'Build OBS'
+      displayName: 'Build OBS 32-bit and 64-bit'
+      env:
+        build_config: $(build_config)
+        DepsPath32: $(DepsPath32)
+        DepsPath64: $(DepsPath64)
+        QTDIR32: $(QTDIR32)
+        QTDIR64: $(QTDIR64)
 
     - script: ./CI/prepare-cmake-windows.cmd
       displayName: 'CMake obs-websocket'
+      env:
+        build_config: $(build_config)
+        QTDIR32: $(QTDIR32)
+        QTDIR64: $(QTDIR64)
 
     - task: MSBuild@1
       displayName: 'Build obs-websocket 32-bit'
       inputs:
-        msbuildArguments: '/m /p:Configuration=%build_config%'
+        msbuildArguments: '/m /p:Configuration=$(build_config)'
         solution: '.\build32\obs-studio.sln'
 
     - task: MSBuild@1
       displayName: 'Build obs-websocket 64-bit'
       inputs:
-        msbuildArguments: '/m /p:Configuration=%build_config%'
+        msbuildArguments: '/m /p:Configuration=$(build_config)'
         solution: '.\build64\obs-studio.sln'
 
     # TODO package zip archive
