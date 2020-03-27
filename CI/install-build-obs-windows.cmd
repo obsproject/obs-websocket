@@ -109,13 +109,13 @@ if defined BuildOBS (
 	mkdir build64
 	
     echo   Running cmake for obs-studio %OBSLatestTag% 32-bit...
-	cd ./build32
+	cd build32
 	cmake -G "Visual Studio 15 2017" -DBUILD_CAPTIONS=true -DDISABLE_PLUGINS=true -DCOPIED_DEPENDENCIES=false -DCOPY_DEPENDENCIES=true ..
 	echo:
 	echo:
 	
     echo   Running cmake for obs-studio %OBSLatestTag% 64-bit...
-	cd ../build64
+	cd ..\build64
 	cmake -G "Visual Studio 15 2017 Win64" -DBUILD_CAPTIONS=true -DDISABLE_PLUGINS=true -DCOPIED_DEPENDENCIES=false -DCOPY_DEPENDENCIES=true ..
 	echo:
 	echo:
