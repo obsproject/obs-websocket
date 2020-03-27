@@ -60,7 +60,7 @@ REM If obs-studio directory does not exist, clone the git repo, get the latest
 REM tag number, and set the build flag.
 if not exist C:\projects\obs-studio (
 	echo obs-studio directory does not exist
-	git clone https://github.com/obsproject/obs-studio
+	git clone https://github.com/obsproject/obs-studio C:\projects\obs-studio
 	cd C:\projects\obs-studio\
 	git describe --tags --abbrev=0 --exclude="*-rc*" > C:\projects\obs-studio-latest-tag.txt
 	set /p OBSLatestTag=<C:\projects\obs-studio-latest-tag.txt
@@ -95,7 +95,6 @@ echo:
 REM If the build flag is set, build obs-studio.
 if defined BuildOBS (
 	echo Building obs-studio...
-    cd C:\projects\obs-studio\
 	echo   git checkout %OBSLatestTag%
 	git checkout %OBSLatestTag%
 	echo:
