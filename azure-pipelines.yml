@@ -34,22 +34,24 @@ jobs:
     - script: ./CI/install-build-obs-windows.cmd
       displayName: 'Build OBS'
 
-    - script: ./CI/build-windows.cmd
-      displayName: 'Prepare build'
+    - script: ./CI/prepare-cmake-windows.cmd
+      displayName: 'CMake obs-websocket'
 
     - task: MSBuild@1
-      displayName: 'Build 32-bit'
+      displayName: 'Build obs-websocket 32-bit'
       inputs:
         msbuildArguments: '/m /p:Configuration=%build_config%'
         solution: '.\build32\obs-studio.sln'
 
     - task: MSBuild@1
-      displayName: 'Build 64-bit'
+      displayName: 'Build obs-websocket 64-bit'
       inputs:
         msbuildArguments: '/m /p:Configuration=%build_config%'
         solution: '.\build64\obs-studio.sln'
 
-    # TODO package zip archive and build installer
+    # TODO package zip archive
+    
+    # TODO build installer
 
     - task: PublishBuildArtifacts@1
       inputs:

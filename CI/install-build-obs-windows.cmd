@@ -95,32 +95,38 @@ echo:
 REM If the build flag is set, build obs-studio.
 if defined BuildOBS (
 	echo Building obs-studio...
+    cd C:\projects\obs-studio\
 	echo   git checkout %OBSLatestTag%
 	git checkout %OBSLatestTag%
 	echo:
-	echo   Removing previous build dirs...
-	if exist build rmdir /s /q C:\projects\obs-studio\build
+	
+    echo   Removing previous build dirs...
 	if exist build32 rmdir /s /q C:\projects\obs-studio\build32
 	if exist build64 rmdir /s /q C:\projects\obs-studio\build64
-	echo   Making new build dirs...
-	mkdir build
+	
+    echo   Making new build dirs...
 	mkdir build32
 	mkdir build64
-	echo   Running cmake for obs-studio %OBSLatestTag% 32-bit...
+	
+    echo   Running cmake for obs-studio %OBSLatestTag% 32-bit...
 	cd ./build32
 	cmake -G "Visual Studio 15 2017" -DBUILD_CAPTIONS=true -DDISABLE_PLUGINS=true -DCOPIED_DEPENDENCIES=false -DCOPY_DEPENDENCIES=true ..
 	echo:
 	echo:
-	echo   Running cmake for obs-studio %OBSLatestTag% 64-bit...
+	
+    echo   Running cmake for obs-studio %OBSLatestTag% 64-bit...
 	cd ../build64
 	cmake -G "Visual Studio 15 2017 Win64" -DBUILD_CAPTIONS=true -DDISABLE_PLUGINS=true -DCOPIED_DEPENDENCIES=false -DCOPY_DEPENDENCIES=true ..
 	echo:
 	echo:
-	echo   Building obs-studio %OBSLatestTag% 32-bit ^(Build Config: %build_config%^)...
-	call msbuild /m /p:Configuration=%build_config% C:\projects\obs-studio\build32\obs-studio.sln /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
-	echo   Building obs-studio %OBSLatestTag% 64-bit ^(Build Config: %build_config%^)...
-	call msbuild /m /p:Configuration=%build_config% C:\projects\obs-studio\build64\obs-studio.sln /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
-	cd ..
+	
+    echo   Building obs-studio %OBSLatestTag% 32-bit ^(Build Config: %build_config%^)...
+	call msbuild /m /p:Configuration=%build_config% C:\projects\obs-studio\build32\obs-studio.sln
+	
+    echo   Building obs-studio %OBSLatestTag% 64-bit ^(Build Config: %build_config%^)...
+	call msbuild /m /p:Configuration=%build_config% C:\projects\obs-studio\build64\obs-studio.sln
+	
+    cd ..
 	git describe --tags --abbrev=0 > C:\projects\obs-studio-last-tag-built.txt
 	set /p OBSLastTagBuilt=<C:\projects\obs-studio-last-tag-built.txt
 ) else (
