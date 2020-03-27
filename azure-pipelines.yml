@@ -31,10 +31,10 @@ jobs:
     - script: ./CI/download-obs-deps.cmd
       displayName: 'Download OBS dependencies'
 
-    - script: ./CI/install-build-obs.cmd
+    - script: ./CI/install-build-obs-windows.cmd
       displayName: 'Build OBS'
 
-    - script: ./CI/before-build.cmd
+    - script: ./CI/build-windows.cmd
       displayName: 'Prepare build'
 
     - task: MSBuild@1
