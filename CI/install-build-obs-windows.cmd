@@ -110,13 +110,13 @@ if defined BuildOBS (
 	
     echo   Running cmake for obs-studio %OBSLatestTag% 32-bit...
 	cd build32
-	cmake -G "Visual Studio 16 2019" -A Win32 -DBUILD_CAPTIONS=true -DDISABLE_PLUGINS=true -DCOPIED_DEPENDENCIES=false -DCOPY_DEPENDENCIES=true ..
+	cmake -G "Visual Studio 16 2019" -A Win32 -DQTDIR="%QTDIR32%" -DDepsPath="%DepsPath32%" -DBUILD_CAPTIONS=true -DDISABLE_PLUGINS=true -DCOPIED_DEPENDENCIES=false -DCOPY_DEPENDENCIES=true ..
 	echo:
 	echo:
 	
     echo   Running cmake for obs-studio %OBSLatestTag% 64-bit...
 	cd ..\build64
-	cmake -G "Visual Studio 16 2019" -A x64 -DBUILD_CAPTIONS=true -DDISABLE_PLUGINS=true -DCOPIED_DEPENDENCIES=false -DCOPY_DEPENDENCIES=true ..
+	cmake -G "Visual Studio 16 2019" -A x64 -DQTDIR="%QTDIR64%" -DDepsPath="%DepsPath64%" -DBUILD_CAPTIONS=true -DDISABLE_PLUGINS=true -DCOPIED_DEPENDENCIES=false -DCOPY_DEPENDENCIES=true ..
 	echo:
 	echo:
 	
