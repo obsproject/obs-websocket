@@ -3,15 +3,15 @@ jobs:
   # condition: eq(variables['Build.SourceBranch'], 'refs/heads/4.x-current')
   pool:
     vmImage: 'ubuntu-18.04'
-  variables:
-    CHECKOUT_REF: $(Build.SourceBranch)
-    GH_TOKEN: $(GithubToken)
   steps:
     - checkout: self
       submodules: false
 
     - script: ./CI/generate-docs.sh
       displayName: 'Generate docs'
+      env:
+        CHECKOUT_REF: $(Build.SourceBranch)
+        GH_TOKEN: $(GithubToken)
 
 - job: 'Build_Windows'
   pool:
