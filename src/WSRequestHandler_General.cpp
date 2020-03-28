@@ -1,9 +1,12 @@
+#include "WSRequestHandler.h"
+
+#include <QtCore/QByteArray>
+#include <QtGui/QImageWriter>
+
 #include "obs-websocket.h"
 #include "Config.h"
 #include "Utils.h"
 #include "WSEvents.h"
-
-#include "WSRequestHandler.h"
 
 #define CASE(x) case x: return #x;
 const char *describe_output_format(int format) {
@@ -60,6 +63,7 @@ const char *describe_scale_type(int scale) {
  * @return {String} `obs-websocket-version` obs-websocket plugin version.
  * @return {String} `obs-studio-version` OBS Studio program version.
  * @return {String} `available-requests` List of available request types, formatted as a comma-separated list string (e.g. : "Method1,Method2,Method3").
+ * @return {String} `supported-image-export-formats` List of supported formats for features that use image export (like the TakeSourceScreenshot request type) formatted as a comma-separated list string
  *
  * @api requests
  * @name GetVersion
@@ -70,13 +74,20 @@ RpcResponse WSRequestHandler::GetVersion(const RpcRequest& request) {
 	QString obsVersion = Utils::OBSVersionString();
 
 	QList<QString> names = messageMap.keys();
-	names.sort(Qt::CaseInsensitive);
+	QList<QByteArray> imageWriterFormats = QImageWriter::supportedImageFormats();
 
 	// (Palakis) OBS' data arrays only support object arrays, so I improvised.
 	QString requests;
+	names.sort(Qt::CaseInsensitive);
 	requests += names.takeFirst();
-	for (QString reqName : names) {
+	for (const QString& reqName : names) {
 		requests += ("," + reqName);
+	}
+
+	QString supportedImageExportFormats;
+	supportedImageExportFormats += QString::fromUtf8(imageWriterFormats.takeFirst());
+	for (const QByteArray& format : imageWriterFormats) {
+		supportedImageExportFormats += ("," + QString::fromUtf8(format));
 	}
 
 	OBSDataAutoRelease data = obs_data_create();
@@ -84,6 +95,7 @@ RpcResponse WSRequestHandler::GetVersion(const RpcRequest& request) {
 	obs_data_set_string(data, "obs-websocket-version", OBS_WEBSOCKET_VERSION);
 	obs_data_set_string(data, "obs-studio-version", obsVersion.toUtf8());
 	obs_data_set_string(data, "available-requests", requests.toUtf8());
+	obs_data_set_string(data, "supported-image-export-formats", supportedImageExportFormats.toUtf8());
 
 	return request.success(data);
 }
@@ -303,4 +315,32 @@ RpcResponse WSRequestHandler::GetVideoInfo(const RpcRequest& request) {
 	obs_data_set_string(response, "scaleType", describe_scale_type(ovi.scale_type));
 
 	return request.success(response);
+}
+
+/**
+ * Open a projector window or create a projector on a monitor. Requires OBS v24.0.4 or newer.
+ * 
+ * @param {String (Optional)} `type` Type of projector: Preview (default), Source, Scene, StudioProgram, or Multiview (case insensitive).
+ * @param {int (Optional)} `monitor` Monitor to open the projector on. If -1 or omitted, opens a window.
+ * @param {String (Optional)} `geometry` Size and position of the projector window (only if monitor is -1). Encoded in Base64 using Qt's geometry encoding (https://doc.qt.io/qt-5/qwidget.html#saveGeometry). Corresponds to OBS's saved projectors.
+ * @param {String (Optional)} `name` Name of the source or scene to be displayed (ignored for other projector types).
+ * 
+ * @api requests
+ * @name OpenProjector
+ * @category general
+ * @since unreleased
+ */
+RpcResponse WSRequestHandler::OpenProjector(const RpcRequest& request) {
+	const char* type = obs_data_get_string(request.parameters(), "type");
+
+	int monitor = -1;
+	if (request.hasField("monitor")) {
+		monitor = obs_data_get_int(request.parameters(), "monitor");
+	}
+
+	const char* geometry = obs_data_get_string(request.parameters(), "geometry");
+	const char* name = obs_data_get_string(request.parameters(), "name");
+
+	obs_frontend_open_projector(type, monitor, geometry, name);
+	return request.success();
 }

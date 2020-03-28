@@ -104,9 +104,11 @@ obs_data_array_t* Utils::GetSceneItems(obs_source_t* source) {
  * @typedef {Object} `SceneItem` An OBS Scene Item.
  * @property {Number} `cy`
  * @property {Number} `cx`
+ * @property {Number} `alignment` The point on the source that the item is manipulated from. The sum of 1=Left or 2=Right, and 4=Top or 8=Bottom, or omit to center on that axis.
  * @property {String} `name` The name of this Scene Item.
  * @property {int} `id` Scene item ID
  * @property {Boolean} `render` Whether or not this Scene Item is set to "visible".
+ * @property {Boolean} `muted` Whether or not this Scene Item is muted.
  * @property {Boolean} `locked` Whether or not this Scene Item is locked and can't be moved around
  * @property {Number} `source_cx`
  * @property {Number} `source_cy`
@@ -146,6 +148,8 @@ obs_data_t* Utils::GetSceneItemData(obs_sceneitem_t* item) {
 	obs_data_set_double(data, "y", pos.y);
 	obs_data_set_int(data, "source_cx", (int)item_width);
 	obs_data_set_int(data, "source_cy", (int)item_height);
+	obs_data_set_bool(data, "muted", obs_source_muted(itemSource));
+	obs_data_set_int(data, "alignment", (int)obs_sceneitem_get_alignment(item));
 	obs_data_set_double(data, "cx", item_width * scale.x);
 	obs_data_set_double(data, "cy", item_height * scale.y);
 	obs_data_set_bool(data, "render", obs_sceneitem_visible(item));
@@ -387,6 +391,13 @@ int Utils::GetTransitionDuration(obs_source_t* transition) {
 		return 0;
 	}
 
+	if (obs_transition_fixed(transition)) {
+		// If this transition has a fixed duration (such as a Stinger),
+		// we don't currently have a way of retrieving that number.
+		// For now, return -1 to indicate that we don't know the actual duration.
+		return -1;
+	}
+
 	OBSSourceAutoRelease destinationScene = obs_transition_get_active_source(transition);
 	OBSDataAutoRelease destinationSettings = obs_source_get_private_settings(destinationScene);
 
@@ -411,6 +422,37 @@ bool Utils::SetTransitionByName(QString transitionName) {
 	} else {
 		return false;
 	}
+}
+
+obs_data_t* Utils::GetTransitionData(obs_source_t* transition) {
+	int duration = Utils::GetTransitionDuration(transition);
+	if (duration < 0) {
+		blog(LOG_WARNING, "GetTransitionData: duration is negative !");
+	}
+
+	OBSSourceAutoRelease sourceScene = obs_transition_get_source(transition, OBS_TRANSITION_SOURCE_A);
+	OBSSourceAutoRelease destinationScene = obs_transition_get_active_source(transition);
+
+	obs_data_t* transitionData = obs_data_create();
+	obs_data_set_string(transitionData, "name", obs_source_get_name(transition));
+	obs_data_set_string(transitionData, "type", obs_source_get_id(transition));
+	obs_data_set_int(transitionData, "duration", duration);
+
+	// When a transition starts and while it is running, SOURCE_A is the source scene
+	// and SOURCE_B is the destination scene.
+	// Before the transition_end event is triggered on a transition, the destination scene
+	// goes into SOURCE_A and SOURCE_B becomes null. This means that, in transition_stop
+	// we don't know what was the source scene
+	// TODO fix this in libobs
+
+	bool isTransitionEndEvent = (sourceScene == destinationScene);
+	if (!isTransitionEndEvent) {
+		obs_data_set_string(transitionData, "from-scene", obs_source_get_name(sourceScene));
+	}
+	
+	obs_data_set_string(transitionData, "to-scene", obs_source_get_name(destinationScene));
+
+	return transitionData;
 }
 
 QString Utils::OBSVersionString() {
@@ -787,41 +829,6 @@ void getPauseRecordingFunctions(RecordingPausedFunction* recPausedFuncPtr, Pause
 	if (pauseRecFuncPtr) {
 		*pauseRecFuncPtr = (PauseRecordingFunction)os_dlsym(frontendApi, "obs_frontend_recording_pause");
 	}
-
-	os_dlclose(frontendApi);
-}
-
-bool Utils::RecordingPauseSupported()
-{
-	RecordingPausedFunction recordingPaused = nullptr;
-	PauseRecordingFunction pauseRecording = nullptr;
-	getPauseRecordingFunctions(&recordingPaused, &pauseRecording);
-
-	return (recordingPaused && pauseRecording);
-}
-
-bool Utils::RecordingPaused()
-{
-	RecordingPausedFunction recordingPaused = nullptr;
-	getPauseRecordingFunctions(&recordingPaused, nullptr);
-
-	if (recordingPaused == nullptr) {
-		return false;
-	}
-
-	return recordingPaused();
-}
-
-void Utils::PauseRecording(bool pause)
-{
-	PauseRecordingFunction pauseRecording = nullptr;
-	getPauseRecordingFunctions(nullptr, &pauseRecording);
-
-	if (pauseRecording == nullptr) {
-		return;
-	}
-
-	pauseRecording(pause); 
 }
 
 QString Utils::nsToTimestamp(uint64_t ns)

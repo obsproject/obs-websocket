@@ -122,7 +122,7 @@ void WSEvents::FrontendEventHandler(enum obs_frontend_event event, void* private
 
 	switch (event) {
 		case OBS_FRONTEND_EVENT_FINISHED_LOADING:
-			owner->hookTransitionBeginEvent();
+			owner->hookTransitionPlaybackEvents();
 			break;
 	
 		case OBS_FRONTEND_EVENT_SCENE_CHANGED:
@@ -134,7 +134,7 @@ void WSEvents::FrontendEventHandler(enum obs_frontend_event event, void* private
 			break;
 
 		case OBS_FRONTEND_EVENT_SCENE_COLLECTION_CHANGED:
-			owner->hookTransitionBeginEvent();
+			owner->hookTransitionPlaybackEvents();
 			owner->OnSceneCollectionChange();
 			break;
 
@@ -147,7 +147,7 @@ void WSEvents::FrontendEventHandler(enum obs_frontend_event event, void* private
 			break;
 
 		case OBS_FRONTEND_EVENT_TRANSITION_LIST_CHANGED:
-			owner->hookTransitionBeginEvent();
+			owner->hookTransitionPlaybackEvents();
 			owner->OnTransitionListChange();
 			break;
 
@@ -231,7 +231,7 @@ void WSEvents::FrontendEventHandler(enum obs_frontend_event event, void* private
 			break;
 
 		case OBS_FRONTEND_EVENT_EXIT:
-			owner->unhookTransitionBeginEvent();
+			owner->unhookTransitionPlaybackEvents();
 			owner->OnExit();
 			break;
 	}
@@ -241,7 +241,7 @@ void WSEvents::broadcastUpdate(const char* updateType,
 	obs_data_t* additionalFields = nullptr)
 {
 	uint64_t streamTime = getStreamingTime();
-	uint64_t recordingTime = getStreamingTime();
+	uint64_t recordingTime = getRecordingTime();
 	RpcEvent event(QString(updateType), streamTime, recordingTime, additionalFields);
 
 	_srv->broadcast(event);
@@ -275,6 +275,8 @@ void WSEvents::connectSourceSignals(obs_source_t* source) {
 		signal_handler_connect(sh, "item_remove", OnSceneItemDelete, this);
 		signal_handler_connect(sh,
 			"item_visible", OnSceneItemVisibilityChanged, this);
+		signal_handler_connect(sh,
+			"item_locked", OnSceneItemLockChanged, this);
 		signal_handler_connect(sh, "item_transform", OnSceneItemTransform, this);
 		signal_handler_connect(sh, "item_select", OnSceneItemSelected, this);
 		signal_handler_connect(sh, "item_deselect", OnSceneItemDeselected, this);
@@ -304,11 +306,15 @@ void WSEvents::disconnectSourceSignals(obs_source_t* source) {
 	signal_handler_disconnect(sh, "item_remove", OnSceneItemDelete, this);
 	signal_handler_disconnect(sh,
 		"item_visible", OnSceneItemVisibilityChanged, this);
+	signal_handler_disconnect(sh,
+		"item_locked", OnSceneItemLockChanged, this);
 	signal_handler_disconnect(sh, "item_transform", OnSceneItemTransform, this);
 	signal_handler_disconnect(sh, "item_select", OnSceneItemSelected, this);
 	signal_handler_disconnect(sh, "item_deselect", OnSceneItemDeselected, this);
 
 	signal_handler_disconnect(sh, "transition_start", OnTransitionBegin, this);
+	signal_handler_disconnect(sh, "transition_stop", OnTransitionEnd, this);
+	signal_handler_disconnect(sh, "transition_video_stop", OnTransitionVideoEnd, this);
 }
 
 void WSEvents::connectFilterSignals(obs_source_t* filter) {
@@ -331,7 +337,7 @@ void WSEvents::disconnectFilterSignals(obs_source_t* filter) {
 	signal_handler_disconnect(sh, "enable", OnSourceFilterVisibilityChanged, this);
 }
 
-void WSEvents::hookTransitionBeginEvent() {
+void WSEvents::hookTransitionPlaybackEvents() {
 	obs_frontend_source_list transitions = {};
 	obs_frontend_get_transitions(&transitions);
 
@@ -340,12 +346,16 @@ void WSEvents::hookTransitionBeginEvent() {
 		signal_handler_t* sh = obs_source_get_signal_handler(transition);
 		signal_handler_disconnect(sh, "transition_start", OnTransitionBegin, this);
 		signal_handler_connect(sh, "transition_start", OnTransitionBegin, this);
+		signal_handler_disconnect(sh, "transition_stop", OnTransitionEnd, this);
+		signal_handler_connect(sh, "transition_stop", OnTransitionEnd, this);
+		signal_handler_disconnect(sh, "transition_video_stop", OnTransitionVideoEnd, this);
+		signal_handler_connect(sh, "transition_video_stop", OnTransitionVideoEnd, this);
 	}
 
 	obs_frontend_source_list_free(&transitions);
 }
 
-void WSEvents::unhookTransitionBeginEvent() {
+void WSEvents::unhookTransitionPlaybackEvents() {
 	obs_frontend_source_list transitions = {};
 	obs_frontend_get_transitions(&transitions);
 
@@ -353,6 +363,8 @@ void WSEvents::unhookTransitionBeginEvent() {
 		obs_source_t* transition = transitions.sources.array[i];
 		signal_handler_t* sh = obs_source_get_signal_handler(transition);
 		signal_handler_disconnect(sh, "transition_start", OnTransitionBegin, this);
+		signal_handler_disconnect(sh, "transition_stop", OnTransitionEnd, this);
+		signal_handler_disconnect(sh, "transition_video_stop", OnTransitionVideoEnd, this);
 	}
 
 	obs_frontend_source_list_free(&transitions);
@@ -735,7 +747,7 @@ void WSEvents::OnExit() {
 void WSEvents::StreamStatus() {
 	bool streamingActive = obs_frontend_streaming_active();
 	bool recordingActive = obs_frontend_recording_active();
-	bool recordingPaused = Utils::RecordingPaused();
+	bool recordingPaused = obs_frontend_recording_paused();
 	bool replayBufferActive = obs_frontend_replay_buffer_active();
 
 	OBSOutputAutoRelease streamOutput = obs_frontend_get_streaming_output();
@@ -819,7 +831,7 @@ void WSEvents::Heartbeat() {
 
 	bool streamingActive = obs_frontend_streaming_active();
 	bool recordingActive = obs_frontend_recording_active();
-	bool recordingPaused = Utils::RecordingPaused();
+	bool recordingPaused = obs_frontend_recording_paused();
 
 	OBSDataAutoRelease data = obs_data_create();
 	OBSOutputAutoRelease recordOutput = obs_frontend_get_recording_output();
@@ -877,7 +889,10 @@ void WSEvents::TransitionDurationChanged(int ms) {
  * A transition (other than "cut") has begun.
  *
  * @return {String} `name` Transition name.
- * @return {int} `duration` Transition duration (in milliseconds).
+ * @return {String} `type` Transition type.
+ * @return {int} `duration` Transition duration (in milliseconds). 
+ * Will be -1 for any transition with a fixed duration, 
+ * such as a Stinger, due to limitations of the OBS API.
  * @return {String} `from-scene` Source scene of the transition
  * @return {String} `to-scene` Destination scene of the transition
  *
@@ -894,26 +909,60 @@ void WSEvents::OnTransitionBegin(void* param, calldata_t* data) {
 		return;
 	}
 
-	int duration = Utils::GetTransitionDuration(transition);
-	if (duration < 0) {
-		blog(LOG_WARNING, "OnTransitionBegin: duration is negative !");
-	}
-
-	OBSDataAutoRelease fields = obs_data_create();
-	obs_data_set_string(fields, "name", obs_source_get_name(transition));
-	obs_data_set_int(fields, "duration", duration);
-
-	OBSSourceAutoRelease sourceScene = obs_transition_get_source(transition, OBS_TRANSITION_SOURCE_A);
-	if (sourceScene) {
-		obs_data_set_string(fields, "from-scene", obs_source_get_name(sourceScene));
-	}
-
-	OBSSourceAutoRelease destinationScene = obs_transition_get_active_source(transition);
-	if (destinationScene) {
-		obs_data_set_string(fields, "to-scene", obs_source_get_name(destinationScene));
-	}
-
+	OBSDataAutoRelease fields = Utils::GetTransitionData(transition);
 	instance->broadcastUpdate("TransitionBegin", fields);
+}
+
+/**
+* A transition (other than "cut") has ended.
+* Please note that the `from-scene` field is not available in TransitionEnd.
+*
+* @return {String} `name` Transition name.
+* @return {String} `type` Transition type.
+* @return {int} `duration` Transition duration (in milliseconds).
+* @return {String} `to-scene` Destination scene of the transition
+*
+* @api events
+* @name TransitionEnd
+* @category transitions
+* @since 4.8.0
+*/
+void WSEvents::OnTransitionEnd(void* param, calldata_t* data) {
+	auto instance = reinterpret_cast<WSEvents*>(param);
+
+	OBSSource transition = calldata_get_pointer<obs_source_t>(data, "source");
+	if (!transition) {
+		return;
+	}
+
+	OBSDataAutoRelease fields = Utils::GetTransitionData(transition);
+	instance->broadcastUpdate("TransitionEnd", fields);
+}
+
+/**
+* A stinger transition has finished playing its video.
+*
+* @return {String} `name` Transition name.
+* @return {String} `type` Transition type.
+* @return {int} `duration` Transition duration (in milliseconds).
+* @return {String} `from-scene` Source scene of the transition
+* @return {String} `to-scene` Destination scene of the transition
+*
+* @api events
+* @name TransitionVideoEnd
+* @category transitions
+* @since 4.8.0
+*/
+void WSEvents::OnTransitionVideoEnd(void* param, calldata_t* data) {
+	auto instance = reinterpret_cast<WSEvents*>(param);
+
+	OBSSource transition = calldata_get_pointer<obs_source_t>(data, "source");
+	if (!transition) {
+		return;
+	}
+
+	OBSDataAutoRelease fields = Utils::GetTransitionData(transition);
+	instance->broadcastUpdate("TransitionVideoEnd", fields);
 }
 
 /**
@@ -1424,6 +1473,44 @@ void WSEvents::OnSceneItemVisibilityChanged(void* param, calldata_t* data) {
 	obs_data_set_int(fields, "item-id", obs_sceneitem_get_id(sceneItem));
 	obs_data_set_bool(fields, "item-visible", visible);
 	instance->broadcastUpdate("SceneItemVisibilityChanged", fields);
+}
+
+/**
+ * An item's locked status has been toggled.
+ *
+ * @return {String} `scene-name` Name of the scene.
+ * @return {String} `item-name` Name of the item in the scene.
+ * @return {int} `item-id` Scene item ID
+ * @return {boolean} `item-locked` New locked state of the item.
+ *
+ * @api events
+ * @name SceneItemLockChanged
+ * @category sources
+ * @since unreleased
+ */
+void WSEvents::OnSceneItemLockChanged(void* param, calldata_t* data) {
+	auto instance = reinterpret_cast<WSEvents*>(param);
+
+	obs_scene_t* scene = nullptr;
+	calldata_get_ptr(data, "scene", &scene);
+
+	obs_sceneitem_t* sceneItem = nullptr;
+	calldata_get_ptr(data, "item", &sceneItem);
+
+	bool locked = false;
+	calldata_get_bool(data, "locked", &locked);
+
+	const char* sceneName =
+		obs_source_get_name(obs_scene_get_source(scene));
+	const char* sceneItemName =
+		obs_source_get_name(obs_sceneitem_get_source(sceneItem));
+
+	OBSDataAutoRelease fields = obs_data_create();
+	obs_data_set_string(fields, "scene-name", sceneName);
+	obs_data_set_string(fields, "item-name", sceneItemName);
+	obs_data_set_int(fields, "item-id", obs_sceneitem_get_id(sceneItem));
+	obs_data_set_bool(fields, "item-locked", locked);
+	instance->broadcastUpdate("SceneItemLockChanged", fields);
 }
 
 /**
