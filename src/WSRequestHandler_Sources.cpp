@@ -335,7 +335,7 @@ RpcResponse WSRequestHandler::SetSyncOffset(const RpcRequest& request)
 	QString sourceName = obs_data_get_string(request.parameters(), "source");
 	int64_t sourceSyncOffset = (int64_t)obs_data_get_int(request.parameters(), "offset");
 
-	if (sourceName.isEmpty() || sourceSyncOffset < 0) {
+	if (sourceName.isEmpty()) {
 		return request.failed("invalid request parameters");
 	}
 

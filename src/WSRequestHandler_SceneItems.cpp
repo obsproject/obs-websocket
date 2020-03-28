@@ -21,6 +21,7 @@
 * @return {int} `crop.bottom` The number of pixels cropped off the bottom of the source before scaling.
 * @return {int} `crop.left` The number of pixels cropped off the left of the source before scaling.
 * @return {bool} `visible` If the source is visible.
+* @return {bool} `muted` If the source is muted.
 * @return {bool} `locked` If the source's transform is locked.
 * @return {String} `bounds.type` Type of bounding box. Can be "OBS_BOUNDS_STRETCH", "OBS_BOUNDS_SCALE_INNER", "OBS_BOUNDS_SCALE_OUTER", "OBS_BOUNDS_SCALE_TO_WIDTH", "OBS_BOUNDS_SCALE_TO_HEIGHT", "OBS_BOUNDS_MAX_ONLY" or "OBS_BOUNDS_NONE".
 * @return {int} `bounds.alignment` Alignment of the bounding box.
@@ -30,8 +31,9 @@
 * @return {int} `sourceHeight` Base source (without scaling) of the source
 * @return {double} `width` Scene item width (base source width multiplied by the horizontal scaling factor)
 * @return {double} `height` Scene item height (base source height multiplied by the vertical scaling factor)
-* @property {String (optional)} `parentGroupName` Name of the item's parent (if this item belongs to a group)
-* @property {Array<SceneItemTransform> (optional)} `groupChildren` List of children (if this item is a group)
+* @return {int} `alignment` The point on the source that the item is manipulated from. The sum of 1=Left or 2=Right, and 4=Top or 8=Bottom, or omit to center on that axis.
+* @return {String (optional)} `parentGroupName` Name of the item's parent (if this item belongs to a group)
+* @return {Array<SceneItemTransform> (optional)} `groupChildren` List of children (if this item is a group)
 * 
 * @api requests
 * @name GetSceneItemProperties
