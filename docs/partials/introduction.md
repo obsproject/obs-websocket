@@ -1,4 +1,4 @@
-# obs-websocket 4.6.0 protocol reference
+# obs-websocket 4.7.0 protocol reference
 
 # General Introduction
 Messages are exchanged between the client and the server as JSON objects.

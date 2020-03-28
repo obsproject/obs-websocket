@@ -20,28 +20,26 @@
  * @category streaming
  * @since 0.3
  */
-HandlerResponse WSRequestHandler::HandleGetStreamingStatus(WSRequestHandler* req) {
+RpcResponse WSRequestHandler::GetStreamingStatus(const RpcRequest& request) {
 	auto events = GetEventsSystem();
 
 	OBSDataAutoRelease data = obs_data_create();
 	obs_data_set_bool(data, "streaming", obs_frontend_streaming_active());
 	obs_data_set_bool(data, "recording", obs_frontend_recording_active());
+	obs_data_set_bool(data, "recording-paused", obs_frontend_recording_paused());
 	obs_data_set_bool(data, "preview-only", false);
 
-	const char* tc = nullptr;
 	if (obs_frontend_streaming_active()) {
-		tc = events->GetStreamingTimecode();
-		obs_data_set_string(data, "stream-timecode", tc);
-		bfree((void*)tc);
+		QString streamingTimecode = events->getStreamingTimecode();
+		obs_data_set_string(data, "stream-timecode", streamingTimecode.toUtf8().constData());
 	}
 
 	if (obs_frontend_recording_active()) {
-		tc = events->GetRecordingTimecode();
-		obs_data_set_string(data, "rec-timecode", tc);
-		bfree((void*)tc);
+		QString recordingTimecode = events->getRecordingTimecode();
+		obs_data_set_string(data, "rec-timecode", recordingTimecode.toUtf8().constData());
 	}
 
-	return req->SendOKResponse(data);
+	return request.success(data);
 }
 
 /**
@@ -52,11 +50,11 @@ HandlerResponse WSRequestHandler::HandleGetStreamingStatus(WSRequestHandler* req
  * @category streaming
  * @since 0.3
  */
-HandlerResponse WSRequestHandler::HandleStartStopStreaming(WSRequestHandler* req) {
+RpcResponse WSRequestHandler::StartStopStreaming(const RpcRequest& request) {
 	if (obs_frontend_streaming_active())
-		return HandleStopStreaming(req);
+		return StopStreaming(request);
 	else
-		return HandleStartStreaming(req);
+		return StartStreaming(request);
 }
 
 /**
@@ -69,24 +67,24 @@ HandlerResponse WSRequestHandler::HandleStartStopStreaming(WSRequestHandler* req
  * @param {Object (optional)} `stream.settings` Settings for the stream.
  * @param {String (optional)} `stream.settings.server` The publish URL.
  * @param {String (optional)} `stream.settings.key` The publish key of the stream.
- * @param {boolean (optional)} `stream.settings.use-auth` Indicates whether authentication should be used when connecting to the streaming server.
- * @param {String (optional)} `stream.settings.username` If authentication is enabled, the username for the streaming server. Ignored if `use-auth` is not set to `true`.
- * @param {String (optional)} `stream.settings.password` If authentication is enabled, the password for the streaming server. Ignored if `use-auth` is not set to `true`.
+ * @param {boolean (optional)} `stream.settings.use_auth` Indicates whether authentication should be used when connecting to the streaming server.
+ * @param {String (optional)} `stream.settings.username` If authentication is enabled, the username for the streaming server. Ignored if `use_auth` is not set to `true`.
+ * @param {String (optional)} `stream.settings.password` If authentication is enabled, the password for the streaming server. Ignored if `use_auth` is not set to `true`.
  *
  * @api requests
  * @name StartStreaming
  * @category streaming
  * @since 4.1.0
  */
-HandlerResponse WSRequestHandler::HandleStartStreaming(WSRequestHandler* req) {
+RpcResponse WSRequestHandler::StartStreaming(const RpcRequest& request) {
 	if (obs_frontend_streaming_active() == false) {
 		OBSService configuredService = obs_frontend_get_streaming_service();
 		OBSService newService = nullptr;
 
 		// TODO: fix service memory leak
 
-		if (req->hasField("stream")) {
-			OBSDataAutoRelease streamData = obs_data_get_obj(req->data, "stream");
+		if (request.hasField("stream")) {
+			OBSDataAutoRelease streamData = obs_data_get_obj(request.parameters(), "stream");
 			OBSDataAutoRelease newSettings = obs_data_get_obj(streamData, "settings");
 			OBSDataAutoRelease newMetadata = obs_data_get_obj(streamData, "metadata");
 
@@ -159,9 +157,9 @@ HandlerResponse WSRequestHandler::HandleStartStreaming(WSRequestHandler* req) {
 			obs_frontend_set_streaming_service(configuredService);
 		}
 
-		return req->SendOKResponse();
+		return request.success();
 	} else {
-		return req->SendErrorResponse("streaming already active");
+		return request.failed("streaming already active");
 	}
 }
 
@@ -174,12 +172,12 @@ HandlerResponse WSRequestHandler::HandleStartStreaming(WSRequestHandler* req) {
  * @category streaming
  * @since 4.1.0
  */
-HandlerResponse WSRequestHandler::HandleStopStreaming(WSRequestHandler* req) {
+RpcResponse WSRequestHandler::StopStreaming(const RpcRequest& request) {
 	if (obs_frontend_streaming_active() == true) {
 		obs_frontend_streaming_stop();
-		return req->SendOKResponse();
+		return request.success();
 	} else {
-		return req->SendErrorResponse("streaming not active");
+		return request.failed("streaming not active");
 	}
 }
 
@@ -190,7 +188,7 @@ HandlerResponse WSRequestHandler::HandleStopStreaming(WSRequestHandler* req) {
  * @param {Object} `settings` The actual settings of the stream.
  * @param {String (optional)} `settings.server` The publish URL.
  * @param {String (optional)} `settings.key` The publish key.
- * @param {boolean (optional)} `settings.use-auth` Indicates whether authentication should be used when connecting to the streaming server.
+ * @param {boolean (optional)} `settings.use_auth` Indicates whether authentication should be used when connecting to the streaming server.
  * @param {String (optional)} `settings.username` The username for the streaming service.
  * @param {String (optional)} `settings.password` The password for the streaming service.
  * @param {boolean} `save` Persist the settings to disk.
@@ -200,21 +198,22 @@ HandlerResponse WSRequestHandler::HandleStopStreaming(WSRequestHandler* req) {
  * @category streaming
  * @since 4.1.0
  */
-HandlerResponse WSRequestHandler::HandleSetStreamSettings(WSRequestHandler* req) {
+RpcResponse WSRequestHandler::SetStreamSettings(const RpcRequest& request) {
 	OBSService service = obs_frontend_get_streaming_service();
 
-	OBSDataAutoRelease requestSettings = obs_data_get_obj(req->data, "settings");
+	OBSDataAutoRelease requestSettings = obs_data_get_obj(request.parameters(), "settings");
 	if (!requestSettings) {
-		return req->SendErrorResponse("'settings' are required'");
+		return request.failed("'settings' are required'");
 	}
 
 	QString serviceType = obs_service_get_type(service);
-	QString requestedType = obs_data_get_string(req->data, "type");
+	QString requestedType = obs_data_get_string(request.parameters(), "type");
 
 	if (requestedType != nullptr && requestedType != serviceType) {
 		OBSDataAutoRelease hotkeys = obs_hotkeys_save_service(service);
 		service = obs_service_create(
 			requestedType.toUtf8(), STREAM_SERVICE_ID, requestSettings, hotkeys);
+		obs_frontend_set_streaming_service(service);
 	} else {
 		// If type isn't changing, we should overlay the settings we got
 		// to the existing settings. By doing so, you can send a request that
@@ -233,17 +232,19 @@ HandlerResponse WSRequestHandler::HandleSetStreamSettings(WSRequestHandler* req)
 	}
 
 	//if save is specified we should immediately save the streaming service
-	if (obs_data_get_bool(req->data, "save")) {
+	if (obs_data_get_bool(request.parameters(), "save")) {
 		obs_frontend_save_streaming_service();
 	}
 
-	OBSDataAutoRelease serviceSettings = obs_service_get_settings(service);
+	OBSService responseService = obs_frontend_get_streaming_service();
+	OBSDataAutoRelease serviceSettings = obs_service_get_settings(responseService);
+	const char* responseType = obs_service_get_type(responseService);
 
 	OBSDataAutoRelease response = obs_data_create();
-	obs_data_set_string(response, "type", requestedType.toUtf8());
+	obs_data_set_string(response, "type", responseType);
 	obs_data_set_obj(response, "settings", serviceSettings);
 
-	return req->SendOKResponse(response);
+	return request.success(response);
 }
 
 /**
@@ -253,16 +254,16 @@ HandlerResponse WSRequestHandler::HandleSetStreamSettings(WSRequestHandler* req)
  * @return {Object} `settings` Stream settings object.
  * @return {String} `settings.server` The publish URL.
  * @return {String} `settings.key` The publish key of the stream.
- * @return {boolean} `settings.use-auth` Indicates whether authentication should be used when connecting to the streaming server.
- * @return {String} `settings.username` The username to use when accessing the streaming server. Only present if `use-auth` is `true`.
- * @return {String} `settings.password` The password to use when accessing the streaming server. Only present if `use-auth` is `true`.
+ * @return {boolean} `settings.use_auth` Indicates whether authentication should be used when connecting to the streaming server.
+ * @return {String} `settings.username` The username to use when accessing the streaming server. Only present if `use_auth` is `true`.
+ * @return {String} `settings.password` The password to use when accessing the streaming server. Only present if `use_auth` is `true`.
  *
  * @api requests
  * @name GetStreamSettings
  * @category streaming
  * @since 4.1.0
  */
-HandlerResponse WSRequestHandler::HandleGetStreamSettings(WSRequestHandler* req) {
+RpcResponse WSRequestHandler::GetStreamSettings(const RpcRequest& request) {
 	OBSService service = obs_frontend_get_streaming_service();
 
 	const char* serviceType = obs_service_get_type(service);
@@ -272,7 +273,7 @@ HandlerResponse WSRequestHandler::HandleGetStreamSettings(WSRequestHandler* req)
 	obs_data_set_string(response, "type", serviceType);
 	obs_data_set_obj(response, "settings", settings);
 
-	return req->SendOKResponse(response);
+	return request.success(response);
 }
 
 /**
@@ -283,9 +284,9 @@ HandlerResponse WSRequestHandler::HandleGetStreamSettings(WSRequestHandler* req)
  * @category streaming
  * @since 4.1.0
  */
-HandlerResponse WSRequestHandler::HandleSaveStreamSettings(WSRequestHandler* req) {
+RpcResponse WSRequestHandler::SaveStreamSettings(const RpcRequest& request) {
 	obs_frontend_save_streaming_service();
-	return req->SendOKResponse();
+	return request.success();
 }
 
 
@@ -301,18 +302,19 @@ HandlerResponse WSRequestHandler::HandleSaveStreamSettings(WSRequestHandler* req
  * @since 4.6.0
  */
 #if BUILD_CAPTIONS
-HandlerResponse WSRequestHandler::HandleSendCaptions(WSRequestHandler* req) {
-	if (!req->hasField("text")) {
-		return req->SendErrorResponse("missing request parameters");
+RpcResponse WSRequestHandler::SendCaptions(const RpcRequest& request) {
+	if (!request.hasField("text")) {
+		return request.failed("missing request parameters");
 	}
 
 	OBSOutputAutoRelease output = obs_frontend_get_streaming_output();
 	if (output) {
-		const char* caption = obs_data_get_string(req->data, "text");
-		obs_output_output_caption_text1(output, caption);
+		const char* caption = obs_data_get_string(request.parameters(), "text");
+		// Send caption text with immediately (0 second delay)
+		obs_output_output_caption_text2(output, caption, 0.0);
 	}
 
-	return req->SendOKResponse();
+	return request.success();
 }
 #endif
 

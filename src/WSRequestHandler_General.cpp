@@ -1,9 +1,12 @@
+#include "WSRequestHandler.h"
+
+#include <QtCore/QByteArray>
+#include <QtGui/QImageWriter>
+
 #include "obs-websocket.h"
 #include "Config.h"
 #include "Utils.h"
 #include "WSEvents.h"
-
-#include "WSRequestHandler.h"
 
 #define CASE(x) case x: return #x;
 const char *describe_output_format(int format) {
@@ -60,23 +63,31 @@ const char *describe_scale_type(int scale) {
  * @return {String} `obs-websocket-version` obs-websocket plugin version.
  * @return {String} `obs-studio-version` OBS Studio program version.
  * @return {String} `available-requests` List of available request types, formatted as a comma-separated list string (e.g. : "Method1,Method2,Method3").
+ * @return {String} `supported-image-export-formats` List of supported formats for features that use image export (like the TakeSourceScreenshot request type) formatted as a comma-separated list string
  *
  * @api requests
  * @name GetVersion
  * @category general
  * @since 0.3
  */
-HandlerResponse WSRequestHandler::HandleGetVersion(WSRequestHandler* req) {
+RpcResponse WSRequestHandler::GetVersion(const RpcRequest& request) {
 	QString obsVersion = Utils::OBSVersionString();
 
-	QList<QString> names = req->messageMap.keys();
-	names.sort(Qt::CaseInsensitive);
+	QList<QString> names = messageMap.keys();
+	QList<QByteArray> imageWriterFormats = QImageWriter::supportedImageFormats();
 
 	// (Palakis) OBS' data arrays only support object arrays, so I improvised.
 	QString requests;
+	names.sort(Qt::CaseInsensitive);
 	requests += names.takeFirst();
-	for (QString reqName : names) {
+	for (const QString& reqName : names) {
 		requests += ("," + reqName);
+	}
+
+	QString supportedImageExportFormats;
+	supportedImageExportFormats += QString::fromUtf8(imageWriterFormats.takeFirst());
+	for (const QByteArray& format : imageWriterFormats) {
+		supportedImageExportFormats += ("," + QString::fromUtf8(format));
 	}
 
 	OBSDataAutoRelease data = obs_data_create();
@@ -84,8 +95,9 @@ HandlerResponse WSRequestHandler::HandleGetVersion(WSRequestHandler* req) {
 	obs_data_set_string(data, "obs-websocket-version", OBS_WEBSOCKET_VERSION);
 	obs_data_set_string(data, "obs-studio-version", obsVersion.toUtf8());
 	obs_data_set_string(data, "available-requests", requests.toUtf8());
+	obs_data_set_string(data, "supported-image-export-formats", supportedImageExportFormats.toUtf8());
 
-	return req->SendOKResponse(data);
+	return request.success(data);
 }
 
 /**
@@ -101,7 +113,7 @@ HandlerResponse WSRequestHandler::HandleGetVersion(WSRequestHandler* req) {
  * @category general
  * @since 0.3
  */
-HandlerResponse WSRequestHandler::HandleGetAuthRequired(WSRequestHandler* req) {
+RpcResponse WSRequestHandler::GetAuthRequired(const RpcRequest& request) {
 	bool authRequired = GetConfig()->AuthRequired;
 
 	OBSDataAutoRelease data = obs_data_create();
@@ -115,7 +127,7 @@ HandlerResponse WSRequestHandler::HandleGetAuthRequired(WSRequestHandler* req) {
 			config->Salt.toUtf8());
 	}
 
-	return req->SendOKResponse(data);
+	return request.success(data);
 }
 
 /**
@@ -128,26 +140,26 @@ HandlerResponse WSRequestHandler::HandleGetAuthRequired(WSRequestHandler* req) {
  * @category general
  * @since 0.3
  */
-HandlerResponse WSRequestHandler::HandleAuthenticate(WSRequestHandler* req) {
-	if (!req->hasField("auth")) {
-		return req->SendErrorResponse("missing request parameters");
+RpcResponse WSRequestHandler::Authenticate(const RpcRequest& request) {
+	if (!request.hasField("auth")) {
+		return request.failed("missing request parameters");
 	}
 
-	if (req->_connProperties.isAuthenticated()) {
-		return req->SendErrorResponse("already authenticated");
+	if (_connProperties.isAuthenticated()) {
+		return request.failed("already authenticated");
 	}
 
-	QString auth = obs_data_get_string(req->data, "auth");
+	QString auth = obs_data_get_string(request.parameters(), "auth");
 	if (auth.isEmpty()) {
-		return req->SendErrorResponse("auth not specified!");
+		return request.failed("auth not specified!");
 	}
 
 	if (GetConfig()->CheckAuth(auth) == false) {
-		return req->SendErrorResponse("Authentication Failed.");
+		return request.failed("Authentication Failed.");
 	}
 
-	req->_connProperties.setAuthenticated(true);
-	return req->SendOKResponse();
+	_connProperties.setAuthenticated(true);
+	return request.success();
 }
 
 /**
@@ -160,17 +172,18 @@ HandlerResponse WSRequestHandler::HandleAuthenticate(WSRequestHandler* req) {
  * @category general
  * @since 4.3.0
  */
-HandlerResponse WSRequestHandler::HandleSetHeartbeat(WSRequestHandler* req) {
-	if (!req->hasField("enable")) {
-		return req->SendErrorResponse("Heartbeat <enable> parameter missing");
+RpcResponse WSRequestHandler::SetHeartbeat(const RpcRequest& request) {
+	if (!request.hasField("enable")) {
+		return request.failed("Heartbeat <enable> parameter missing");
 	}
 
 	auto events = GetEventsSystem();
-	events->HeartbeatIsActive = obs_data_get_bool(req->data, "enable");
+	events->HeartbeatIsActive = obs_data_get_bool(request.parameters(), "enable");
 
 	OBSDataAutoRelease response = obs_data_create();
 	obs_data_set_bool(response, "enable", events->HeartbeatIsActive);
-	return req->SendOKResponse(response);
+
+	return request.success(response);
 }
 
 /**
@@ -183,18 +196,19 @@ HandlerResponse WSRequestHandler::HandleSetHeartbeat(WSRequestHandler* req) {
  * @category general
  * @since 4.3.0
  */
-HandlerResponse WSRequestHandler::HandleSetFilenameFormatting(WSRequestHandler* req) {
-	if (!req->hasField("filename-formatting")) {
-		return req->SendErrorResponse("<filename-formatting> parameter missing");
+RpcResponse WSRequestHandler::SetFilenameFormatting(const RpcRequest& request) {
+	if (!request.hasField("filename-formatting")) {
+		return request.failed("<filename-formatting> parameter missing");
 	}
 
-	QString filenameFormatting = obs_data_get_string(req->data, "filename-formatting");
+	QString filenameFormatting = obs_data_get_string(request.parameters(), "filename-formatting");
 	if (filenameFormatting.isEmpty()) {
-		return req->SendErrorResponse("invalid request parameters");
+		return request.failed("invalid request parameters");
 	}
 
 	Utils::SetFilenameFormatting(filenameFormatting.toUtf8());
-	return req->SendOKResponse();
+
+	return request.success();
 }
 
 /**
@@ -207,10 +221,11 @@ HandlerResponse WSRequestHandler::HandleSetFilenameFormatting(WSRequestHandler* 
  * @category general
  * @since 4.3.0
  */
-HandlerResponse WSRequestHandler::HandleGetFilenameFormatting(WSRequestHandler* req) {
+RpcResponse WSRequestHandler::GetFilenameFormatting(const RpcRequest& request) {
 	OBSDataAutoRelease response = obs_data_create();
 	obs_data_set_string(response, "filename-formatting", Utils::GetFilenameFormatting());
-	return req->SendOKResponse(response);
+
+	return request.success(response);
 }
 
 /**
@@ -223,13 +238,48 @@ HandlerResponse WSRequestHandler::HandleGetFilenameFormatting(WSRequestHandler* 
  * @category general
  * @since 4.6.0
  */
-HandlerResponse WSRequestHandler::HandleGetStats(WSRequestHandler* req) {
+RpcResponse WSRequestHandler::GetStats(const RpcRequest& request) {
 	OBSDataAutoRelease stats = GetEventsSystem()->GetStats();
 
 	OBSDataAutoRelease response = obs_data_create();
 	obs_data_set_obj(response, "stats", stats);
-	return req->SendOKResponse(response);
+
+	return request.success(response);
 }
+
+/**
+ * Broadcast custom message to all connected WebSocket clients
+ *
+ * @param {String} `realm` Identifier to be choosen by the client
+ * @param {Object} `data` User-defined data
+ *
+ * @api requests
+ * @name BroadcastCustomMessage
+ * @category general
+ * @since 4.7.0
+ */
+RpcResponse WSRequestHandler::BroadcastCustomMessage(const RpcRequest& request) {
+	if (!request.hasField("realm") || !request.hasField("data")) {
+		return request.failed("missing request parameters");
+	}
+
+	QString realm = obs_data_get_string(request.parameters(), "realm");
+	OBSDataAutoRelease data = obs_data_get_obj(request.parameters(), "data");
+
+	if (realm.isEmpty()) {
+		return request.failed("realm not specified!");
+	}
+
+	if (!data) {
+		return request.failed("data not specified!");
+	}
+
+	auto events = GetEventsSystem();
+	events->OnBroadcastCustomMessage(realm, data);
+
+	return request.success();
+}
+
 
 /**
  * Get basic OBS video information
@@ -249,9 +299,10 @@ HandlerResponse WSRequestHandler::HandleGetStats(WSRequestHandler* req) {
  * @category general
  * @since 4.6.0 
  */
-HandlerResponse WSRequestHandler::HandleGetVideoInfo(WSRequestHandler* req) {
+RpcResponse WSRequestHandler::GetVideoInfo(const RpcRequest& request) {
 	obs_video_info ovi;
 	obs_get_video_info(&ovi);
+
 	OBSDataAutoRelease response = obs_data_create();
 	obs_data_set_int(response, "baseWidth", ovi.base_width);
 	obs_data_set_int(response, "baseHeight", ovi.base_height);
@@ -262,5 +313,34 @@ HandlerResponse WSRequestHandler::HandleGetVideoInfo(WSRequestHandler* req) {
 	obs_data_set_string(response, "colorSpace", describe_color_space(ovi.colorspace));
 	obs_data_set_string(response, "colorRange", describe_color_range(ovi.range));
 	obs_data_set_string(response, "scaleType", describe_scale_type(ovi.scale_type));
-	return req->SendOKResponse(response);
+
+	return request.success(response);
+}
+
+/**
+ * Open a projector window or create a projector on a monitor. Requires OBS v24.0.4 or newer.
+ * 
+ * @param {String (Optional)} `type` Type of projector: Preview (default), Source, Scene, StudioProgram, or Multiview (case insensitive).
+ * @param {int (Optional)} `monitor` Monitor to open the projector on. If -1 or omitted, opens a window.
+ * @param {String (Optional)} `geometry` Size and position of the projector window (only if monitor is -1). Encoded in Base64 using Qt's geometry encoding (https://doc.qt.io/qt-5/qwidget.html#saveGeometry). Corresponds to OBS's saved projectors.
+ * @param {String (Optional)} `name` Name of the source or scene to be displayed (ignored for other projector types).
+ * 
+ * @api requests
+ * @name OpenProjector
+ * @category general
+ * @since unreleased
+ */
+RpcResponse WSRequestHandler::OpenProjector(const RpcRequest& request) {
+	const char* type = obs_data_get_string(request.parameters(), "type");
+
+	int monitor = -1;
+	if (request.hasField("monitor")) {
+		monitor = obs_data_get_int(request.parameters(), "monitor");
+	}
+
+	const char* geometry = obs_data_get_string(request.parameters(), "geometry");
+	const char* name = obs_data_get_string(request.parameters(), "name");
+
+	obs_frontend_open_projector(type, monitor, geometry, name);
+	return request.success();
 }

@@ -40,14 +40,21 @@ public:
 	void connectSourceSignals(obs_source_t* source);
 	void disconnectSourceSignals(obs_source_t* source);
 
-	void hookTransitionBeginEvent();
-	void unhookTransitionBeginEvent();
+	void connectFilterSignals(obs_source_t* filter);
+	void disconnectFilterSignals(obs_source_t* filter);
 
-	uint64_t GetStreamingTime();
-	const char* GetStreamingTimecode();
-	uint64_t GetRecordingTime();
-	const char* GetRecordingTimecode();
+	void hookTransitionPlaybackEvents();
+	void unhookTransitionPlaybackEvents();
+
+	uint64_t getStreamingTime();
+	uint64_t getRecordingTime();
+
+	QString getStreamingTimecode();
+	QString getRecordingTimecode();
+	
 	obs_data_t* GetStats();
+
+	void OnBroadcastCustomMessage(QString realm, obs_data_t* data);
 
 	bool HeartbeatIsActive;
 
@@ -65,7 +72,6 @@ private:
 	bool pulse;
 
 	uint64_t _streamStarttime;
-	uint64_t _recStarttime;
 
 	uint64_t _lastBytesSent;
 	uint64_t _lastBytesSentTime;
@@ -93,6 +99,8 @@ private:
 	void OnRecordingStarted();
 	void OnRecordingStopping();
 	void OnRecordingStopped();
+	void OnRecordingPaused();
+	void OnRecordingResumed();
 
 	void OnReplayStarting();
 	void OnReplayStarted();
@@ -108,6 +116,8 @@ private:
 		enum obs_frontend_event event, void* privateData);
 
 	static void OnTransitionBegin(void* param, calldata_t* data);
+	static void OnTransitionEnd(void* param, calldata_t* data);
+	static void OnTransitionVideoEnd(void* param, calldata_t* data);
 
 	static void OnSourceCreate(void* param, calldata_t* data);
 	static void OnSourceDestroy(void* param, calldata_t* data);
@@ -121,12 +131,14 @@ private:
 
 	static void OnSourceFilterAdded(void* param, calldata_t* data);
 	static void OnSourceFilterRemoved(void* param, calldata_t* data);
+	static void OnSourceFilterVisibilityChanged(void* param, calldata_t* data);
 	static void OnSourceFilterOrderChanged(void* param, calldata_t* data);
 
 	static void OnSceneReordered(void* param, calldata_t* data);
 	static void OnSceneItemAdd(void* param, calldata_t* data);
 	static void OnSceneItemDelete(void* param, calldata_t* data);
 	static void OnSceneItemVisibilityChanged(void* param, calldata_t* data);
+	static void OnSceneItemLockChanged(void* param, calldata_t* data);
 	static void OnSceneItemTransform(void* param, calldata_t* data);
 	static void OnSceneItemSelected(void* param, calldata_t* data);
 	static void OnSceneItemDeselected(void* param, calldata_t* data);

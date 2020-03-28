@@ -31,55 +31,57 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <obs-module.h>
 #include <util/config-file.h>
 
-class Utils {
-  public:
-	static obs_data_array_t* StringListToArray(char** strings, const char* key);
-	static obs_data_array_t* GetSceneItems(obs_source_t* source);
-	static obs_data_t* GetSceneItemData(obs_sceneitem_t* item);
-	static obs_sceneitem_t* GetSceneItemFromName(
-		obs_source_t* source, QString name);
-        static obs_sceneitem_t* GetSceneItemFromId(obs_source_t* source, size_t id);
-	static obs_sceneitem_t* GetSceneItemFromItem(obs_source_t* source, obs_data_t* item);
-	static obs_source_t* GetTransitionFromName(QString transitionName);
-	static obs_source_t* GetSceneFromNameOrCurrent(QString sceneName);
-	static obs_data_t* GetSceneItemPropertiesData(obs_sceneitem_t* item);
+typedef void(*PauseRecordingFunction)(bool);
+typedef bool(*RecordingPausedFunction)();
 
-	static obs_data_array_t* GetSourceFiltersList(obs_source_t* source, bool includeSettings);
+namespace Utils {
+	obs_data_array_t* StringListToArray(char** strings, const char* key);
+	obs_data_array_t* GetSceneItems(obs_source_t* source);
+	obs_data_t* GetSceneItemData(obs_sceneitem_t* item);
 
-	static bool IsValidAlignment(const uint32_t alignment);
+	// These two functions support nested lookup into groups
+	obs_sceneitem_t* GetSceneItemFromName(obs_scene_t* scene, QString name);
+	obs_sceneitem_t* GetSceneItemFromId(obs_scene_t* scene, int64_t id);
 
-	static obs_data_array_t* GetScenes();
-	static obs_data_t* GetSceneData(obs_source_t* source);
+	obs_sceneitem_t* GetSceneItemFromItem(obs_scene_t* scene, obs_data_t* item);
+	obs_scene_t* GetSceneFromNameOrCurrent(QString sceneName);
+	obs_data_t* GetSceneItemPropertiesData(obs_sceneitem_t* item);
 
-	// TODO contribute a proper frontend API method for this to OBS and remove this hack
-	static QSpinBox* GetTransitionDurationControl();
-	static int GetTransitionDuration();
-	static void SetTransitionDuration(int ms);
+	obs_data_t* GetSourceFilterInfo(obs_source_t* filter, bool includeSettings);
+	obs_data_array_t* GetSourceFiltersList(obs_source_t* source, bool includeSettings);
 
-	static bool SetTransitionByName(QString transitionName);
+	bool IsValidAlignment(const uint32_t alignment);
 
-	static QPushButton* GetPreviewModeButtonControl();
-	static QLayout* GetPreviewLayout();
+	obs_data_array_t* GetScenes();
+	obs_data_t* GetSceneData(obs_source_t* source);
 
 	// TODO contribute a proper frontend API method for this to OBS and remove this hack
-	static void TransitionToProgram();
+	QSpinBox* GetTransitionDurationControl();
+	int GetTransitionDuration(obs_source_t* transition);
+	obs_source_t* GetTransitionFromName(QString transitionName);
+	bool SetTransitionByName(QString transitionName);
+	obs_data_t* GetTransitionData(obs_source_t* transition);
 
-	static QString OBSVersionString();
+	QString OBSVersionString();
 
-	static QSystemTrayIcon* GetTrayIcon();
-	static void SysTrayNotify(
+	QSystemTrayIcon* GetTrayIcon();
+	void SysTrayNotify(
 		QString text,
 		QSystemTrayIcon::MessageIcon n,
 		QString title = QString("obs-websocket"));
 
-	static const char* GetRecordingFolder();
-	static bool SetRecordingFolder(const char* path);
+	const char* GetRecordingFolder();
+	bool SetRecordingFolder(const char* path);
 
-	static QString ParseDataToQueryString(obs_data_t* data);
-	static obs_hotkey_t* FindHotkeyByName(QString name);
-	static bool ReplayBufferEnabled();
-	static void StartReplayBuffer();
-	static bool IsRPHotkeySet();
-	static const char* GetFilenameFormatting();
-	static bool SetFilenameFormatting(const char* filenameFormatting);
+	QString ParseDataToQueryString(obs_data_t* data);
+	obs_hotkey_t* FindHotkeyByName(QString name);
+
+	bool ReplayBufferEnabled();
+	void StartReplayBuffer();
+	bool IsRPHotkeySet();
+
+	const char* GetFilenameFormatting();
+	bool SetFilenameFormatting(const char* filenameFormatting);
+
+	QString nsToTimestamp(uint64_t ns);
 };

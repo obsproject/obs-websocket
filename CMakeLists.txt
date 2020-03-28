@@ -8,23 +8,15 @@ set(CMAKE_AUTOUIC ON)
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-if (WIN32 OR APPLE)
-include(external/FindLibObs.cmake)
-endif()
 
 add_definitions(-DASIO_STANDALONE)
-
-if (UNIX)
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-endif()
 
 if (WIN32 OR APPLE)
 	include(external/FindLibObs.cmake)
 endif()
 
 find_package(LibObs REQUIRED)
-find_package(Qt5Core REQUIRED)
-find_package(Qt5Widgets REQUIRED)
+find_package(Qt5 REQUIRED COMPONENTS Core Widgets)
 
 set(obs-websocket_SOURCES
 	src/obs-websocket.cpp
@@ -42,9 +34,14 @@ set(obs-websocket_SOURCES
 	src/WSRequestHandler_Streaming.cpp
 	src/WSRequestHandler_StudioMode.cpp
 	src/WSRequestHandler_Transitions.cpp
+	src/WSRequestHandler_Outputs.cpp
 	src/WSEvents.cpp
 	src/Config.cpp
 	src/Utils.cpp
+	src/rpc/RpcRequest.cpp
+	src/rpc/RpcResponse.cpp
+	src/rpc/RpcEvent.cpp
+	src/protocol/OBSRemoteProtocol.cpp
 	src/forms/settings-dialog.cpp)
 
 set(obs-websocket_HEADERS
@@ -55,6 +52,10 @@ set(obs-websocket_HEADERS
 	src/WSEvents.h
 	src/Config.h
 	src/Utils.h
+	src/rpc/RpcRequest.h
+	src/rpc/RpcResponse.h
+	src/rpc/RpcEvent.h
+	src/protocol/OBSRemoteProtocol.h
 	src/forms/settings-dialog.h)
 
 # --- Platform-independent build settings ---
@@ -82,6 +83,10 @@ if(WIN32)
 	if(OBS_FRONTEND_LIB STREQUAL "NOTFOUND")
 		message(FATAL_ERROR "Could not find OBS Frontend API's library !")
 	endif()
+
+    if(MSVC)
+	    add_compile_options("/MP")
+    endif()
 
 	add_definitions(-D_WEBSOCKETPP_CPP11_STL_)
 
@@ -118,6 +123,16 @@ if(WIN32)
 		COMMAND if $<CONFIG:Release>==1 ("${CMAKE_COMMAND}" -E copy
 			"$<TARGET_FILE:obs-websocket>"
 			"${RELEASE_DIR}/obs-plugins/${ARCH_NAME}")
+
+		# In Release mode, copy Qt image format plugins
+		COMMAND if $<CONFIG:Release>==1 (
+			"${CMAKE_COMMAND}" -E copy
+			"${QTDIR}/plugins/imageformats/qjpeg.dll"
+			"${RELEASE_DIR}/bin/${ARCH_NAME}/imageformats/qjpeg.dll")
+		COMMAND if $<CONFIG:RelWithDebInfo>==1 (
+			"${CMAKE_COMMAND}" -E copy
+			"${QTDIR}/plugins/imageformats/qjpeg.dll"
+			"${RELEASE_DIR}/bin/${ARCH_NAME}/imageformats/qjpeg.dll")
 
 		# If config is RelWithDebInfo, package release files
 		COMMAND if $<CONFIG:RelWithDebInfo>==1 (
@@ -173,8 +188,8 @@ if(UNIX AND NOT APPLE)
 	install(TARGETS obs-websocket
 		LIBRARY DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/obs-plugins")
 	# Dirty fix for Ubuntu
-        install(TARGETS obs-websocket
-                LIBRARY DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/${UNAME_MACHINE}-linux-gnu/obs-plugins")
+		install(TARGETS obs-websocket
+				LIBRARY DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/${UNAME_MACHINE}-linux-gnu/obs-plugins")
 
 	install(FILES ${locale_files}
 		DESTINATION "${CMAKE_INSTALL_PREFIX}/share/obs/obs-plugins/obs-websocket/locale")

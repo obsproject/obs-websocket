@@ -19,145 +19,147 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #pragma once
 
+#include <QtCore/QString>
 #include <QtCore/QHash>
 #include <QtCore/QSet>
-#include <QtCore/QVariantHash>
-#include <QtCore/QString>
-#include <QtCore/QSharedPointer>
 
 #include <obs.hpp>
 #include <obs-frontend-api.h>
 
 #include "ConnectionProperties.h"
 
+#include "rpc/RpcRequest.h"
+#include "rpc/RpcResponse.h"
+
 #include "obs-websocket.h"
 
-typedef obs_data_t* HandlerResponse;
+class WSRequestHandler;
+typedef RpcResponse(WSRequestHandler::*RpcMethodHandler)(const RpcRequest&);
 
-class WSRequestHandler : public QObject {
-	Q_OBJECT
-
+class WSRequestHandler {
 	public:
 		explicit WSRequestHandler(ConnectionProperties& connProperties);
-		~WSRequestHandler();
-		std::string processIncomingMessage(std::string& textMessage);
-		bool hasField(QString name);
+		RpcResponse processRequest(const RpcRequest& textMessage);
 
 	private:
-		const char* _messageId;
-		const char* _requestType;
 		ConnectionProperties& _connProperties;
-		OBSDataAutoRelease data;
 
-		HandlerResponse processRequest(std::string& textMessage);
+		static const QHash<QString, RpcMethodHandler> messageMap;
+		static const QSet<QString> authNotRequired;
 
-		HandlerResponse SendOKResponse(obs_data_t* additionalFields = nullptr);
-		HandlerResponse SendErrorResponse(const char* errorMessage);
-		HandlerResponse SendErrorResponse(obs_data_t* additionalFields = nullptr);
-		HandlerResponse SendResponse(const char* status, obs_data_t* additionalFields = nullptr);
+		RpcResponse GetVersion(const RpcRequest&);
+		RpcResponse GetAuthRequired(const RpcRequest&);
+		RpcResponse Authenticate(const RpcRequest&);
 
-		static QHash<QString, HandlerResponse(*)(WSRequestHandler*)> messageMap;
-		static QSet<QString> authNotRequired;
+		RpcResponse GetStats(const RpcRequest&);
+		RpcResponse SetHeartbeat(const RpcRequest&);
+		RpcResponse GetVideoInfo(const RpcRequest&);
+		RpcResponse OpenProjector(const RpcRequest&);
 
-		static HandlerResponse HandleGetVersion(WSRequestHandler* req);
-		static HandlerResponse HandleGetAuthRequired(WSRequestHandler* req);
-		static HandlerResponse HandleAuthenticate(WSRequestHandler* req);
+		RpcResponse SetFilenameFormatting(const RpcRequest&);
+		RpcResponse GetFilenameFormatting(const RpcRequest&);
 
-		static HandlerResponse HandleGetStats(WSRequestHandler* req);
-		static HandlerResponse HandleSetHeartbeat(WSRequestHandler* req);
-		static HandlerResponse HandleGetVideoInfo(WSRequestHandler* req);
+		RpcResponse BroadcastCustomMessage(const RpcRequest&);
 
-		static HandlerResponse HandleSetFilenameFormatting(WSRequestHandler* req);
-		static HandlerResponse HandleGetFilenameFormatting(WSRequestHandler* req);
+		RpcResponse SetCurrentScene(const RpcRequest&);
+		RpcResponse GetCurrentScene(const RpcRequest&);
+		RpcResponse GetSceneList(const RpcRequest&);
 
-		static HandlerResponse HandleSetCurrentScene(WSRequestHandler* req);
-		static HandlerResponse HandleGetCurrentScene(WSRequestHandler* req);
-		static HandlerResponse HandleGetSceneList(WSRequestHandler* req);
+		RpcResponse SetSceneItemRender(const RpcRequest&);
+		RpcResponse SetSceneItemPosition(const RpcRequest&);
+		RpcResponse SetSceneItemTransform(const RpcRequest&);
+		RpcResponse SetSceneItemCrop(const RpcRequest&);
+		RpcResponse GetSceneItemProperties(const RpcRequest&);
+		RpcResponse SetSceneItemProperties(const RpcRequest&);
+		RpcResponse ResetSceneItem(const RpcRequest&);
+		RpcResponse DuplicateSceneItem(const RpcRequest&);
+		RpcResponse DeleteSceneItem(const RpcRequest&);
+		RpcResponse ReorderSceneItems(const RpcRequest&);
 
-		static HandlerResponse HandleSetSceneItemRender(WSRequestHandler* req);
-		static HandlerResponse HandleSetSceneItemPosition(WSRequestHandler* req);
-		static HandlerResponse HandleSetSceneItemTransform(WSRequestHandler* req);
-		static HandlerResponse HandleSetSceneItemCrop(WSRequestHandler* req);
-		static HandlerResponse HandleGetSceneItemProperties(WSRequestHandler* req);
-		static HandlerResponse HandleSetSceneItemProperties(WSRequestHandler* req);
-		static HandlerResponse HandleResetSceneItem(WSRequestHandler* req);
-		static HandlerResponse HandleDuplicateSceneItem(WSRequestHandler* req);
-		static HandlerResponse HandleDeleteSceneItem(WSRequestHandler* req);
-		static HandlerResponse HandleReorderSceneItems(WSRequestHandler* req);
+		RpcResponse GetStreamingStatus(const RpcRequest&);
+		RpcResponse StartStopStreaming(const RpcRequest&);
+		RpcResponse StartStopRecording(const RpcRequest&);
 
-		static HandlerResponse HandleGetStreamingStatus(WSRequestHandler* req);
-		static HandlerResponse HandleStartStopStreaming(WSRequestHandler* req);
-		static HandlerResponse HandleStartStopRecording(WSRequestHandler* req);
-		static HandlerResponse HandleStartStreaming(WSRequestHandler* req);
-		static HandlerResponse HandleStopStreaming(WSRequestHandler* req);
-		static HandlerResponse HandleStartRecording(WSRequestHandler* req);
-		static HandlerResponse HandleStopRecording(WSRequestHandler* req);
+		RpcResponse StartStreaming(const RpcRequest&);
+		RpcResponse StopStreaming(const RpcRequest&);
 
-		static HandlerResponse HandleStartStopReplayBuffer(WSRequestHandler* req);
-		static HandlerResponse HandleStartReplayBuffer(WSRequestHandler* req);
-		static HandlerResponse HandleStopReplayBuffer(WSRequestHandler* req);
-		static HandlerResponse HandleSaveReplayBuffer(WSRequestHandler* req);
+		RpcResponse StartRecording(const RpcRequest&);
+		RpcResponse StopRecording(const RpcRequest&);
+		RpcResponse PauseRecording(const RpcRequest&);
+		RpcResponse ResumeRecording(const RpcRequest&);
 
-		static HandlerResponse HandleSetRecordingFolder(WSRequestHandler* req);
-		static HandlerResponse HandleGetRecordingFolder(WSRequestHandler* req);
+		RpcResponse StartStopReplayBuffer(const RpcRequest&);
+		RpcResponse StartReplayBuffer(const RpcRequest&);
+		RpcResponse StopReplayBuffer(const RpcRequest&);
+		RpcResponse SaveReplayBuffer(const RpcRequest&);
 
-		static HandlerResponse HandleGetTransitionList(WSRequestHandler* req);
-		static HandlerResponse HandleGetCurrentTransition(WSRequestHandler* req);
-		static HandlerResponse HandleSetCurrentTransition(WSRequestHandler* req);
+		RpcResponse SetRecordingFolder(const RpcRequest&);
+		RpcResponse GetRecordingFolder(const RpcRequest&);
 
-		static HandlerResponse HandleSetVolume(WSRequestHandler* req);
-		static HandlerResponse HandleGetVolume(WSRequestHandler* req);
-		static HandlerResponse HandleToggleMute(WSRequestHandler* req);
-		static HandlerResponse HandleSetMute(WSRequestHandler* req);
-		static HandlerResponse HandleGetMute(WSRequestHandler* req);
-		static HandlerResponse HandleSetSyncOffset(WSRequestHandler* req);
-		static HandlerResponse HandleGetSyncOffset(WSRequestHandler* req);
-		static HandlerResponse HandleGetSpecialSources(WSRequestHandler* req);
-		static HandlerResponse HandleGetSourcesList(WSRequestHandler* req);
-		static HandlerResponse HandleGetSourceTypesList(WSRequestHandler* req);
-		static HandlerResponse HandleGetSourceSettings(WSRequestHandler* req);
-		static HandlerResponse HandleSetSourceSettings(WSRequestHandler* req);
-		static HandlerResponse HandleTakeSourceScreenshot(WSRequestHandler* req);
+		RpcResponse GetTransitionList(const RpcRequest&);
+		RpcResponse GetCurrentTransition(const RpcRequest&);
+		RpcResponse SetCurrentTransition(const RpcRequest&);
 
-		static HandlerResponse HandleGetSourceFilters(WSRequestHandler* req);
-		static HandlerResponse HandleAddFilterToSource(WSRequestHandler* req);
-		static HandlerResponse HandleRemoveFilterFromSource(WSRequestHandler* req);
-		static HandlerResponse HandleReorderSourceFilter(WSRequestHandler* req);
-		static HandlerResponse HandleMoveSourceFilter(WSRequestHandler* req);
-		static HandlerResponse HandleSetSourceFilterSettings(WSRequestHandler* req);
+		RpcResponse SetVolume(const RpcRequest&);
+		RpcResponse GetVolume(const RpcRequest&);
+		RpcResponse ToggleMute(const RpcRequest&);
+		RpcResponse SetMute(const RpcRequest&);
+		RpcResponse GetMute(const RpcRequest&);
+		RpcResponse SetSyncOffset(const RpcRequest&);
+		RpcResponse GetSyncOffset(const RpcRequest&);
+		RpcResponse GetSpecialSources(const RpcRequest&);
+		RpcResponse GetSourcesList(const RpcRequest&);
+		RpcResponse GetSourceTypesList(const RpcRequest&);
+		RpcResponse GetSourceSettings(const RpcRequest&);
+		RpcResponse SetSourceSettings(const RpcRequest&);
+		RpcResponse TakeSourceScreenshot(const RpcRequest&);
 
-		static HandlerResponse HandleSetCurrentSceneCollection(WSRequestHandler* req);
-		static HandlerResponse HandleGetCurrentSceneCollection(WSRequestHandler* req);
-		static HandlerResponse HandleListSceneCollections(WSRequestHandler* req);
+		RpcResponse GetSourceFilters(const RpcRequest&);
+		RpcResponse GetSourceFilterInfo(const RpcRequest&);
+		RpcResponse AddFilterToSource(const RpcRequest&);
+		RpcResponse RemoveFilterFromSource(const RpcRequest&);
+		RpcResponse ReorderSourceFilter(const RpcRequest&);
+		RpcResponse MoveSourceFilter(const RpcRequest&);
+		RpcResponse SetSourceFilterSettings(const RpcRequest&);
+		RpcResponse SetSourceFilterVisibility(const RpcRequest&);
 
-		static HandlerResponse HandleSetCurrentProfile(WSRequestHandler* req);
-		static HandlerResponse HandleGetCurrentProfile(WSRequestHandler* req);
-		static HandlerResponse HandleListProfiles(WSRequestHandler* req);
+		RpcResponse SetCurrentSceneCollection(const RpcRequest&);
+		RpcResponse GetCurrentSceneCollection(const RpcRequest&);
+		RpcResponse ListSceneCollections(const RpcRequest&);
 
-		static HandlerResponse HandleSetStreamSettings(WSRequestHandler* req);
-		static HandlerResponse HandleGetStreamSettings(WSRequestHandler* req);
-		static HandlerResponse HandleSaveStreamSettings(WSRequestHandler* req);
+		RpcResponse SetCurrentProfile(const RpcRequest&);
+		RpcResponse GetCurrentProfile(const RpcRequest&);
+		RpcResponse ListProfiles(const RpcRequest&);
+
+		RpcResponse SetStreamSettings(const RpcRequest&);
+		RpcResponse GetStreamSettings(const RpcRequest&);
+		RpcResponse SaveStreamSettings(const RpcRequest&);
 #if BUILD_CAPTIONS
-		static HandlerResponse HandleSendCaptions(WSRequestHandler * req);
+		RpcResponse SendCaptions(const RpcRequest&);
 #endif
 
-		static HandlerResponse HandleSetTransitionDuration(WSRequestHandler* req);
-		static HandlerResponse HandleGetTransitionDuration(WSRequestHandler* req);
+		RpcResponse SetTransitionDuration(const RpcRequest&);
+		RpcResponse GetTransitionDuration(const RpcRequest&);
 
-		static HandlerResponse HandleGetStudioModeStatus(WSRequestHandler* req);
-		static HandlerResponse HandleGetPreviewScene(WSRequestHandler* req);
-		static HandlerResponse HandleSetPreviewScene(WSRequestHandler* req);
-		static HandlerResponse HandleTransitionToProgram(WSRequestHandler* req);
-		static HandlerResponse HandleEnableStudioMode(WSRequestHandler* req);
-		static HandlerResponse HandleDisableStudioMode(WSRequestHandler* req);
-		static HandlerResponse HandleToggleStudioMode(WSRequestHandler* req);
+		RpcResponse GetStudioModeStatus(const RpcRequest&);
+		RpcResponse GetPreviewScene(const RpcRequest&);
+		RpcResponse SetPreviewScene(const RpcRequest&);
+		RpcResponse TransitionToProgram(const RpcRequest&);
+		RpcResponse EnableStudioMode(const RpcRequest&);
+		RpcResponse DisableStudioMode(const RpcRequest&);
+		RpcResponse ToggleStudioMode(const RpcRequest&);
 
-		static HandlerResponse HandleSetTextGDIPlusProperties(WSRequestHandler* req);
-		static HandlerResponse HandleGetTextGDIPlusProperties(WSRequestHandler* req);
+		RpcResponse SetTextGDIPlusProperties(const RpcRequest&);
+		RpcResponse GetTextGDIPlusProperties(const RpcRequest&);
 
-		static HandlerResponse HandleSetTextFreetype2Properties(WSRequestHandler* req);
-		static HandlerResponse HandleGetTextFreetype2Properties(WSRequestHandler* req);
+		RpcResponse SetTextFreetype2Properties(const RpcRequest&);
+		RpcResponse GetTextFreetype2Properties(const RpcRequest&);
 
-		static HandlerResponse HandleSetBrowserSourceProperties(WSRequestHandler* req);
-		static HandlerResponse HandleGetBrowserSourceProperties(WSRequestHandler* req);
+		RpcResponse SetBrowserSourceProperties(const RpcRequest&);
+		RpcResponse GetBrowserSourceProperties(const RpcRequest&);
+
+		RpcResponse ListOutputs(const RpcRequest&);
+		RpcResponse GetOutputInfo(const RpcRequest&);
+		RpcResponse StartOutput(const RpcRequest&);
+		RpcResponse StopOutput(const RpcRequest&);
 };
