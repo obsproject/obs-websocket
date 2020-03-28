@@ -25,4 +25,4 @@ git config user.email "$COMMIT_AUTHOR_EMAIL"
 git add ./generated
 git pull
 git commit -m "docs(ci): Update protocol.md - $(git rev-parse --short HEAD) [skip ci]"
-git push -q $GITHUB_REPO
+git push -q $GITHUB_REPO HEAD:$BUILD_BRANCH
