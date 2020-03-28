@@ -21,6 +21,7 @@ jobs:
     QtBaseDir: 'D:\QtDep'
     QTDIR32: '$(QtBaseDir)\5.10.1\msvc2017'
     QTDIR64: '$(QtBaseDir)\5.10.1\msvc2017_64'
+    OBSPath: 'D:\obs-studio'
   steps:
     - checkout: self
       submodules: true
@@ -41,18 +42,19 @@ jobs:
         DepsPath64: $(DepsPath64)
         QTDIR32: $(QTDIR32)
         QTDIR64: $(QTDIR64)
+        OBSPath: $(OBSPath)
 
     - task: MSBuild@1
       displayName: 'Build OBS Studio 32-bit'
       inputs:
         msbuildArguments: '/m /p:Configuration=$(build_config)'
-        solution: 'C:\projects\obs-studio\build32\obs-studio.sln'
+        solution: '$(OBSPath)\build32\obs-studio.sln'
 
     - task: MSBuild@1
       displayName: 'Build OBS Studio 64-bit'
       inputs:
         msbuildArguments: '/m /p:Configuration=$(build_config)'
-        solution: 'C:\projects\obs-studio\build64\obs-studio.sln'
+        solution: '$(OBSPath)\build64\obs-studio.sln'
 
     - script: ./CI/prepare-cmake-windows.cmd
       displayName: 'CMake obs-websocket'
@@ -60,6 +62,7 @@ jobs:
         build_config: $(build_config)
         QTDIR32: $(QTDIR32)
         QTDIR64: $(QTDIR64)
+        OBSPath: $(OBSPath)
 
     - task: MSBuild@1
       displayName: 'Build obs-websocket 32-bit'
