@@ -133,3 +133,5 @@ if defined BuildOBS (
 	echo Last OBS tag built is:  %OBSLastTagBuilt%
 	echo No need to rebuild OBS.
 )
+
+dir "C:\projects\obs-studio\libobs"
