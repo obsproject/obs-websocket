@@ -35,9 +35,20 @@ jobs:
         path: $(QtBaseDir)
 
     - script: ./CI/install-qt-win.cmd
-      displayName: 'Download Qt'
+      displayName: 'Install Qt'
       env:
         QtBaseDir: $(QtBaseDir)
+
+    - task: Cache@2
+      displayName: Restore cached OBS Studio dependencies
+      inputs:
+        key: 'obsdeps | "$(Agent.OS)"'
+        restoreKeys: |
+          obsdeps | "$(Agent.OS)"
+        path: $(DepsBasePath)
+
+    - script: ./CI/download-obs-deps.cmd
+      displayName: 'Download OBS Studio dependencies'
 
     - task: Cache@2
       displayName: Restore cached OBS Studio builds
@@ -46,9 +57,6 @@ jobs:
         restoreKeys: |
           obs | "$(Agent.OS)"
         path: $(OBSPath)
-
-    - script: ./CI/download-obs-deps.cmd
-      displayName: 'Download OBS Studio dependencies'
 
     - script: ./CI/checkout-cmake-obs-windows.cmd
       displayName: 'Checkout & CMake OBS Studio'
