@@ -422,6 +422,37 @@ bool Utils::SetTransitionByName(QString transitionName) {
 	}
 }
 
+obs_data_t* Utils::GetTransitionData(obs_source_t* transition) {
+	int duration = Utils::GetTransitionDuration(transition);
+	if (duration < 0) {
+		blog(LOG_WARNING, "GetTransitionData: duration is negative !");
+	}
+
+	OBSSourceAutoRelease sourceScene = obs_transition_get_source(transition, OBS_TRANSITION_SOURCE_A);
+	OBSSourceAutoRelease destinationScene = obs_transition_get_active_source(transition);
+
+	obs_data_t* transitionData = obs_data_create();
+	obs_data_set_string(transitionData, "name", obs_source_get_name(transition));
+	obs_data_set_string(transitionData, "type", obs_source_get_id(transition));
+	obs_data_set_int(transitionData, "duration", duration);
+
+	// When a transition starts and while it is running, SOURCE_A is the source scene
+	// and SOURCE_B is the destination scene.
+	// Before the transition_end event is triggered on a transition, the destination scene
+	// goes into SOURCE_A and SOURCE_B becomes null. This means that, in transition_stop
+	// we don't know what was the source scene
+	// TODO fix this in libobs
+
+	bool isTransitionEndEvent = (sourceScene == destinationScene);
+	if (!isTransitionEndEvent) {
+		obs_data_set_string(transitionData, "from-scene", obs_source_get_name(sourceScene));
+	}
+	
+	obs_data_set_string(transitionData, "to-scene", obs_source_get_name(destinationScene));
+
+	return transitionData;
+}
+
 QString Utils::OBSVersionString() {
 	uint32_t version = obs_get_version();
 
@@ -796,67 +827,6 @@ void getPauseRecordingFunctions(RecordingPausedFunction* recPausedFuncPtr, Pause
 	if (pauseRecFuncPtr) {
 		*pauseRecFuncPtr = (PauseRecordingFunction)os_dlsym(frontendApi, "obs_frontend_recording_pause");
 	}
-}
-
-bool Utils::RecordingPauseSupported()
-{
-	RecordingPausedFunction recordingPaused = nullptr;
-	PauseRecordingFunction pauseRecording = nullptr;
-	getPauseRecordingFunctions(&recordingPaused, &pauseRecording);
-
-	return (recordingPaused && pauseRecording);
-}
-
-bool Utils::RecordingPaused()
-{
-	RecordingPausedFunction recordingPaused = nullptr;
-	getPauseRecordingFunctions(&recordingPaused, nullptr);
-
-	if (recordingPaused == nullptr) {
-		return false;
-	}
-
-	return recordingPaused();
-}
-
-void Utils::PauseRecording(bool pause)
-{
-	PauseRecordingFunction pauseRecording = nullptr;
-	getPauseRecordingFunctions(nullptr, &pauseRecording);
-
-	if (pauseRecording == nullptr) {
-		return;
-	}
-
-	pauseRecording(pause); 
-}
-
-bool Utils::OpenProjectorSupported()
-{
-	void* frontendApi = os_dlopen("obs-frontend-api");
-	if (!frontendApi) {
-		return false;
-	}
-
-	void* openProjectorFunc = os_dlsym(frontendApi, "obs_frontend_open_projector");
-	return (openProjectorFunc != nullptr);
-}
-
-void Utils::OpenProjector(const char* type, int monitor, const char* geometry, const char* name)
-{
-	typedef void(*OpenProjectorFunc)(const char*, int monitor, const char* geometry, const char* name);
-
-	void* frontendApi = os_dlopen("obs-frontend-api");
-	if (!frontendApi) {
-		return;
-	}
-
-	OpenProjectorFunc openProjectorFunc = (OpenProjectorFunc)os_dlsym(frontendApi, "obs_frontend_open_projector");
-	if (!openProjectorFunc) {
-		return;
-	}
-
-	openProjectorFunc(type, monitor, geometry, name);
 }
 
 QString Utils::nsToTimestamp(uint64_t ns)
