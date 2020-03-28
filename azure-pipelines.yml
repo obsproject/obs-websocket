@@ -1,13 +1,10 @@
-variables:
-  isMainBranch: |
+jobs:
+- job: 'GenerateDocs'
+  condition: |
     or(
       eq(variables['Build.SourceBranch'], 'refs/heads/4.x-current'),
       eq(variables['Build.SourceBranch'], 'refs/heads/master')
     )
-
-jobs:
-- job: 'GenerateDocs'
-  condition: $(isMainBranch)
   pool:
     vmImage: 'ubuntu-18.04'
   steps:
