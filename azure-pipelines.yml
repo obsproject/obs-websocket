@@ -5,6 +5,7 @@ jobs:
     vmImage: 'ubuntu-18.04'
   variables:
     BUILD_BRANCH: $(Build.SourceBranch)
+    GH_TOKEN: $(GithubToken)
   steps:
     - checkout: self
       submodules: false
