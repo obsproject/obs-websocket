@@ -6,9 +6,11 @@
       "property": [
         "{Number} `cy`",
         "{Number} `cx`",
+        "{Number} `alignment` The point on the source that the item is manipulated from. The sum of 1=Left or 2=Right, and 4=Top or 8=Bottom, or omit to center on that axis.",
         "{String} `name` The name of this Scene Item.",
         "{int} `id` Scene item ID",
         "{Boolean} `render` Whether or not this Scene Item is set to \"visible\".",
+        "{Boolean} `muted` Whether or not this Scene Item is muted.",
         "{Boolean} `locked` Whether or not this Scene Item is locked and can't be moved around",
         "{Number} `source_cx`",
         "{Number} `source_cy`",
@@ -31,6 +33,11 @@
           "description": ""
         },
         {
+          "type": "Number",
+          "name": "alignment",
+          "description": "The point on the source that the item is manipulated from. The sum of 1=Left or 2=Right, and 4=Top or 8=Bottom, or omit to center on that axis."
+        },
+        {
           "type": "String",
           "name": "name",
           "description": "The name of this Scene Item."
@@ -44,6 +51,11 @@
           "type": "Boolean",
           "name": "render",
           "description": "Whether or not this Scene Item is set to \"visible\"."
+        },
+        {
+          "type": "Boolean",
+          "name": "muted",
+          "description": "Whether or not this Scene Item is muted."
         },
         {
           "type": "Boolean",
@@ -768,7 +780,8 @@
         "description": "A transition (other than \"cut\") has begun.",
         "return": [
           "{String} `name` Transition name.",
-          "{int} `duration` Transition duration (in milliseconds).",
+          "{String} `type` Transition type.",
+          "{int} `duration` Transition duration (in milliseconds). Will be -1 for any transition with a fixed duration, such as a Stinger, due to limitations of the OBS API.",
           "{String} `from-scene` Source scene of the transition",
           "{String} `to-scene` Destination scene of the transition"
         ],
@@ -783,9 +796,14 @@
             "description": "Transition name."
           },
           {
+            "type": "String",
+            "name": "type",
+            "description": "Transition type."
+          },
+          {
             "type": "int",
             "name": "duration",
-            "description": "Transition duration (in milliseconds)."
+            "description": "Transition duration (in milliseconds). Will be -1 for any transition with a fixed duration, such as a Stinger, due to limitations of the OBS API."
           },
           {
             "type": "String",
@@ -819,6 +837,134 @@
         "heading": {
           "level": 2,
           "text": "TransitionBegin"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "A transition (other than \"cut\") has ended.\nPlease note that the `from-scene` field is not available in TransitionEnd.",
+        "return": [
+          "{String} `name` Transition name.",
+          "{String} `type` Transition type.",
+          "{int} `duration` Transition duration (in milliseconds).",
+          "{String} `to-scene` Destination scene of the transition"
+        ],
+        "api": "events",
+        "name": "TransitionEnd",
+        "category": "transitions",
+        "since": "4.8.0",
+        "returns": [
+          {
+            "type": "String",
+            "name": "name",
+            "description": "Transition name."
+          },
+          {
+            "type": "String",
+            "name": "type",
+            "description": "Transition type."
+          },
+          {
+            "type": "int",
+            "name": "duration",
+            "description": "Transition duration (in milliseconds)."
+          },
+          {
+            "type": "String",
+            "name": "to-scene",
+            "description": "Destination scene of the transition"
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "TransitionEnd"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "transitions"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.8.0"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "TransitionEnd"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "A stinger transition has finished playing its video.",
+        "return": [
+          "{String} `name` Transition name.",
+          "{String} `type` Transition type.",
+          "{int} `duration` Transition duration (in milliseconds).",
+          "{String} `from-scene` Source scene of the transition",
+          "{String} `to-scene` Destination scene of the transition"
+        ],
+        "api": "events",
+        "name": "TransitionVideoEnd",
+        "category": "transitions",
+        "since": "4.8.0",
+        "returns": [
+          {
+            "type": "String",
+            "name": "name",
+            "description": "Transition name."
+          },
+          {
+            "type": "String",
+            "name": "type",
+            "description": "Transition type."
+          },
+          {
+            "type": "int",
+            "name": "duration",
+            "description": "Transition duration (in milliseconds)."
+          },
+          {
+            "type": "String",
+            "name": "from-scene",
+            "description": "Source scene of the transition"
+          },
+          {
+            "type": "String",
+            "name": "to-scene",
+            "description": "Destination scene of the transition"
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "TransitionVideoEnd"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "transitions"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.8.0"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "TransitionVideoEnd"
         },
         "lead": "",
         "type": "class",
@@ -2562,6 +2708,67 @@
       },
       {
         "subheads": [],
+        "description": "An item's locked status has been toggled.",
+        "return": [
+          "{String} `scene-name` Name of the scene.",
+          "{String} `item-name` Name of the item in the scene.",
+          "{int} `item-id` Scene item ID",
+          "{boolean} `item-locked` New locked state of the item."
+        ],
+        "api": "events",
+        "name": "SceneItemLockChanged",
+        "category": "sources",
+        "since": "unreleased",
+        "returns": [
+          {
+            "type": "String",
+            "name": "scene-name",
+            "description": "Name of the scene."
+          },
+          {
+            "type": "String",
+            "name": "item-name",
+            "description": "Name of the item in the scene."
+          },
+          {
+            "type": "int",
+            "name": "item-id",
+            "description": "Scene item ID"
+          },
+          {
+            "type": "boolean",
+            "name": "item-locked",
+            "description": "New locked state of the item."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "SceneItemLockChanged"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "sources"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "unreleased"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "SceneItemLockChanged"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
         "description": "An item's transform has been changed.",
         "return": [
           "{String} `scene-name` Name of the scene.",
@@ -2834,7 +3041,8 @@
           "{double} `version` OBSRemote compatible API version. Fixed to 1.1 for retrocompatibility.",
           "{String} `obs-websocket-version` obs-websocket plugin version.",
           "{String} `obs-studio-version` OBS Studio program version.",
-          "{String} `available-requests` List of available request types, formatted as a comma-separated list string (e.g. : \"Method1,Method2,Method3\")."
+          "{String} `available-requests` List of available request types, formatted as a comma-separated list string (e.g. : \"Method1,Method2,Method3\").",
+          "{String} `supported-image-export-formats` List of supported formats for features that use image export (like the TakeSourceScreenshot request type) formatted as a comma-separated list string"
         ],
         "api": "requests",
         "name": "GetVersion",
@@ -2860,6 +3068,11 @@
             "type": "String",
             "name": "available-requests",
             "description": "List of available request types, formatted as a comma-separated list string (e.g. : \"Method1,Method2,Method3\")."
+          },
+          {
+            "type": "String",
+            "name": "supported-image-export-formats",
+            "description": "List of supported formats for features that use image export (like the TakeSourceScreenshot request type) formatted as a comma-separated list string"
           }
         ],
         "names": [
@@ -3283,6 +3496,67 @@
         "heading": {
           "level": 2,
           "text": "GetVideoInfo"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Open a projector window or create a projector on a monitor. Requires OBS v24.0.4 or newer.",
+        "param": [
+          "{String (Optional)} `type` Type of projector: Preview (default), Source, Scene, StudioProgram, or Multiview (case insensitive).",
+          "{int (Optional)} `monitor` Monitor to open the projector on. If -1 or omitted, opens a window.",
+          "{String (Optional)} `geometry` Size and position of the projector window (only if monitor is -1). Encoded in Base64 using Qt's geometry encoding (https://doc.qt.io/qt-5/qwidget.html#saveGeometry). Corresponds to OBS's saved projectors.",
+          "{String (Optional)} `name` Name of the source or scene to be displayed (ignored for other projector types)."
+        ],
+        "api": "requests",
+        "name": "OpenProjector",
+        "category": "general",
+        "since": "unreleased",
+        "params": [
+          {
+            "type": "String (Optional)",
+            "name": "type",
+            "description": "Type of projector: Preview (default), Source, Scene, StudioProgram, or Multiview (case insensitive)."
+          },
+          {
+            "type": "int (Optional)",
+            "name": "monitor",
+            "description": "Monitor to open the projector on. If -1 or omitted, opens a window."
+          },
+          {
+            "type": "String (Optional)",
+            "name": "geometry",
+            "description": "Size and position of the projector window (only if monitor is -1). Encoded in Base64 using Qt's geometry encoding (https://doc.qt.io/qt-5/qwidget.html#saveGeometry). Corresponds to OBS's saved projectors."
+          },
+          {
+            "type": "String (Optional)",
+            "name": "name",
+            "description": "Name of the source or scene to be displayed (ignored for other projector types)."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "OpenProjector"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "general"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "unreleased"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "OpenProjector"
         },
         "lead": "",
         "type": "class",
@@ -4125,6 +4399,7 @@
           "{int} `crop.bottom` The number of pixels cropped off the bottom of the source before scaling.",
           "{int} `crop.left` The number of pixels cropped off the left of the source before scaling.",
           "{bool} `visible` If the source is visible.",
+          "{bool} `muted` If the source is muted.",
           "{bool} `locked` If the source's transform is locked.",
           "{String} `bounds.type` Type of bounding box. Can be \"OBS_BOUNDS_STRETCH\", \"OBS_BOUNDS_SCALE_INNER\", \"OBS_BOUNDS_SCALE_OUTER\", \"OBS_BOUNDS_SCALE_TO_WIDTH\", \"OBS_BOUNDS_SCALE_TO_HEIGHT\", \"OBS_BOUNDS_MAX_ONLY\" or \"OBS_BOUNDS_NONE\".",
           "{int} `bounds.alignment` Alignment of the bounding box.",
@@ -4133,9 +4408,8 @@
           "{int} `sourceWidth` Base width (without scaling) of the source",
           "{int} `sourceHeight` Base source (without scaling) of the source",
           "{double} `width` Scene item width (base source width multiplied by the horizontal scaling factor)",
-          "{double} `height` Scene item height (base source height multiplied by the vertical scaling factor)"
-        ],
-        "property": [
+          "{double} `height` Scene item height (base source height multiplied by the vertical scaling factor)",
+          "{int} `alignment` The point on the source that the item is manipulated from. The sum of 1=Left or 2=Right, and 4=Top or 8=Bottom, or omit to center on that axis.",
           "{String (optional)} `parentGroupName` Name of the item's parent (if this item belongs to a group)",
           "{Array<SceneItemTransform> (optional)} `groupChildren` List of children (if this item is a group)"
         ],
@@ -4206,6 +4480,11 @@
           },
           {
             "type": "bool",
+            "name": "muted",
+            "description": "If the source is muted."
+          },
+          {
+            "type": "bool",
             "name": "locked",
             "description": "If the source's transform is locked."
           },
@@ -4248,6 +4527,21 @@
             "type": "double",
             "name": "height",
             "description": "Scene item height (base source height multiplied by the vertical scaling factor)"
+          },
+          {
+            "type": "int",
+            "name": "alignment",
+            "description": "The point on the source that the item is manipulated from. The sum of 1=Left or 2=Right, and 4=Top or 8=Bottom, or omit to center on that axis."
+          },
+          {
+            "type": "String (optional)",
+            "name": "parentGroupName",
+            "description": "Name of the item's parent (if this item belongs to a group)"
+          },
+          {
+            "type": "Array<SceneItemTransform> (optional)",
+            "name": "groupChildren",
+            "description": "List of children (if this item is a group)"
           }
         ],
         "params": [
@@ -4260,18 +4554,6 @@
             "type": "String",
             "name": "item",
             "description": "The name of the source."
-          }
-        ],
-        "properties": [
-          {
-            "type": "String (optional)",
-            "name": "parentGroupName",
-            "description": "Name of the item's parent (if this item belongs to a group)"
-          },
-          {
-            "type": "Array<SceneItemTransform> (optional)",
-            "name": "groupChildren",
-            "description": "List of children (if this item is a group)"
           }
         ],
         "names": [
@@ -7471,9 +7753,9 @@
           "{Object (optional)} `stream.settings` Settings for the stream.",
           "{String (optional)} `stream.settings.server` The publish URL.",
           "{String (optional)} `stream.settings.key` The publish key of the stream.",
-          "{boolean (optional)} `stream.settings.use-auth` Indicates whether authentication should be used when connecting to the streaming server.",
-          "{String (optional)} `stream.settings.username` If authentication is enabled, the username for the streaming server. Ignored if `use-auth` is not set to `true`.",
-          "{String (optional)} `stream.settings.password` If authentication is enabled, the password for the streaming server. Ignored if `use-auth` is not set to `true`."
+          "{boolean (optional)} `stream.settings.use_auth` Indicates whether authentication should be used when connecting to the streaming server.",
+          "{String (optional)} `stream.settings.username` If authentication is enabled, the username for the streaming server. Ignored if `use_auth` is not set to `true`.",
+          "{String (optional)} `stream.settings.password` If authentication is enabled, the password for the streaming server. Ignored if `use_auth` is not set to `true`."
         ],
         "api": "requests",
         "name": "StartStreaming",
@@ -7512,18 +7794,18 @@
           },
           {
             "type": "boolean (optional)",
-            "name": "stream.settings.use-auth",
+            "name": "stream.settings.use_auth",
             "description": "Indicates whether authentication should be used when connecting to the streaming server."
           },
           {
             "type": "String (optional)",
             "name": "stream.settings.username",
-            "description": "If authentication is enabled, the username for the streaming server. Ignored if `use-auth` is not set to `true`."
+            "description": "If authentication is enabled, the username for the streaming server. Ignored if `use_auth` is not set to `true`."
           },
           {
             "type": "String (optional)",
             "name": "stream.settings.password",
-            "description": "If authentication is enabled, the password for the streaming server. Ignored if `use-auth` is not set to `true`."
+            "description": "If authentication is enabled, the password for the streaming server. Ignored if `use_auth` is not set to `true`."
           }
         ],
         "names": [
@@ -7593,7 +7875,7 @@
           "{Object} `settings` The actual settings of the stream.",
           "{String (optional)} `settings.server` The publish URL.",
           "{String (optional)} `settings.key` The publish key.",
-          "{boolean (optional)} `settings.use-auth` Indicates whether authentication should be used when connecting to the streaming server.",
+          "{boolean (optional)} `settings.use_auth` Indicates whether authentication should be used when connecting to the streaming server.",
           "{String (optional)} `settings.username` The username for the streaming service.",
           "{String (optional)} `settings.password` The password for the streaming service.",
           "{boolean} `save` Persist the settings to disk."
@@ -7625,7 +7907,7 @@
           },
           {
             "type": "boolean (optional)",
-            "name": "settings.use-auth",
+            "name": "settings.use_auth",
             "description": "Indicates whether authentication should be used when connecting to the streaming server."
           },
           {
@@ -7678,9 +7960,9 @@
           "{Object} `settings` Stream settings object.",
           "{String} `settings.server` The publish URL.",
           "{String} `settings.key` The publish key of the stream.",
-          "{boolean} `settings.use-auth` Indicates whether authentication should be used when connecting to the streaming server.",
-          "{String} `settings.username` The username to use when accessing the streaming server. Only present if `use-auth` is `true`.",
-          "{String} `settings.password` The password to use when accessing the streaming server. Only present if `use-auth` is `true`."
+          "{boolean} `settings.use_auth` Indicates whether authentication should be used when connecting to the streaming server.",
+          "{String} `settings.username` The username to use when accessing the streaming server. Only present if `use_auth` is `true`.",
+          "{String} `settings.password` The password to use when accessing the streaming server. Only present if `use_auth` is `true`."
         ],
         "api": "requests",
         "name": "GetStreamSettings",
@@ -7709,18 +7991,18 @@
           },
           {
             "type": "boolean",
-            "name": "settings.use-auth",
+            "name": "settings.use_auth",
             "description": "Indicates whether authentication should be used when connecting to the streaming server."
           },
           {
             "type": "String",
             "name": "settings.username",
-            "description": "The username to use when accessing the streaming server. Only present if `use-auth` is `true`."
+            "description": "The username to use when accessing the streaming server. Only present if `use_auth` is `true`."
           },
           {
             "type": "String",
             "name": "settings.password",
-            "description": "The password to use when accessing the streaming server. Only present if `use-auth` is `true`."
+            "description": "The password to use when accessing the streaming server. Only present if `use_auth` is `true`."
           }
         ],
         "names": [
