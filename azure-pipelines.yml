@@ -34,8 +34,8 @@ jobs:
     - script: ./CI/download-obs-deps.cmd
       displayName: 'Download OBS dependencies'
 
-    - script: ./CI/prepare-obs-windows.cmd
-      displayName: 'Prepare OBS Studio build'
+    - script: ./CI/checkout-cmake-obs-windows.cmd
+      displayName: 'Checkout & CMake OBS Studio'
       env:
         build_config: $(build_config)
         DepsPath32: $(DepsPath32)
@@ -56,7 +56,7 @@ jobs:
         msbuildArguments: '/m /p:Configuration=$(build_config)'
         solution: '$(OBSPath)\build64\obs-studio.sln'
 
-    - script: ./CI/prepare-cmake-windows.cmd
+    - script: ./CI/prepare-windows.cmd
       displayName: 'CMake obs-websocket'
       env:
         build_config: $(build_config)
