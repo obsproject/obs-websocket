@@ -9,9 +9,9 @@ set(CMAKE_AUTOUIC ON)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# if (WIN32 OR APPLE)
+if (WIN32 OR APPLE)
 	include(external/FindLibObs.cmake)
-# endif()
+endif()
 
 add_definitions(-DASIO_STANDALONE)
 
