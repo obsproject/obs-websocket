@@ -26,13 +26,29 @@ jobs:
     - checkout: self
       submodules: true
 
+    - task: Cache@2
+      displayName: Restore cached Qt installation
+      inputs:
+        key: 'qt | "$(Agent.OS)"'
+        restoreKeys: |
+          qt | "$(Agent.OS)"
+        path: $(QtBaseDir)
+
     - script: ./CI/install-qt-win.cmd
-      displayName: 'Install Qt'
+      displayName: 'Download Qt'
       env:
         QtBaseDir: $(QtBaseDir)
 
+    - task: Cache@2
+      displayName: Restore cached OBS Studio builds
+      inputs:
+        key: 'obs | "$(Agent.OS)"'
+        restoreKeys: |
+          obs | "$(Agent.OS)"
+        path: $(OBSPath)
+
     - script: ./CI/download-obs-deps.cmd
-      displayName: 'Download OBS dependencies'
+      displayName: 'Download OBS Studio dependencies'
 
     - script: ./CI/checkout-cmake-obs-windows.cmd
       displayName: 'Checkout & CMake OBS Studio'
