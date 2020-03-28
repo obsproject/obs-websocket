@@ -4,6 +4,7 @@ echo "-- Generating documentation."
 echo "-- Node version: $(node -v)"
 echo "-- NPM version: $(npm -v)"
 
+git fetch origin
 git checkout $BUILD_BRANCH
 
 cd docs
@@ -25,6 +26,5 @@ git config user.name "Azure CI"
 git config user.email "$COMMIT_AUTHOR_EMAIL"
 
 git add ./generated
-git pull
 git commit -m "docs(ci): Update protocol.md - $(git rev-parse --short HEAD) [skip ci]"
 git push -q $GITHUB_REPO $BUILD_BRANCH
