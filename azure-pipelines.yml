@@ -76,13 +76,13 @@ jobs:
         msbuildArguments: '/m /p:Configuration=$(build_config)'
         solution: '.\build64\obs-websocket.sln'
 
-    # TODO package zip archive
-
-    # TODO build installer
+    - script: ./CI/package-windows.cmd
+      displayName: 'Package obs-websocket'
 
     - task: PublishBuildArtifacts@1
+      displayName: 'Upload package artifacts'
       inputs:
-        pathtoPublish: './release'
+        pathtoPublish: './package'
         artifactName: 'windows_build'
 
 - job: 'Build_Linux'
