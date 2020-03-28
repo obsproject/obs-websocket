@@ -5,7 +5,7 @@ echo "-- Node version: $(node -v)"
 echo "-- NPM version: $(npm -v)"
 
 git fetch origin
-git checkout ${CHECKOUT_REF/refs\/heads/}
+git checkout ${CHECKOUT_REF/refs\/heads\//}
 
 cd docs
 npm install
