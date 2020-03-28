@@ -4,7 +4,7 @@ jobs:
   pool:
     vmImage: 'ubuntu-18.04'
   variables:
-    CHECKOUT_BRANCH: $(Build.SourceBranch)
+    CHECKOUT_REF: $(Build.SourceBranch)
     GH_TOKEN: $(GithubToken)
   steps:
     - checkout: self
