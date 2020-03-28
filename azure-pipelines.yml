@@ -4,9 +4,11 @@ jobs:
   pool:
     vmImage: 'ubuntu-18.04'
   variables:
-    BUILD_REASON: $(Build.Reason)
     BUILD_BRANCH: $(Build.SourceBranch)
   steps:
+    - checkout: self
+      submodules: false
+
     - script: ./CI/generate-docs.sh
       displayName: 'Generate docs'
 
