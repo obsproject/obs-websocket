@@ -84,6 +84,10 @@ if(WIN32)
 		message(FATAL_ERROR "Could not find OBS Frontend API's library !")
 	endif()
 
+    if(MSVC)
+	    add_compile_options("/MP")
+    endif()
+
 	add_definitions(-D_WEBSOCKETPP_CPP11_STL_)
 
 	if(CMAKE_SIZEOF_VOID_P EQUAL 8)
