@@ -1,7 +1,7 @@
 mkdir package
 cd package
 
-git log --pretty=format:'%h' -n 1 > package-version.txt
+git rev-parse --short HEAD > package-version.txt
 set /p PackageVersion=<package-version.txt
 
 REM Package ZIP archive
