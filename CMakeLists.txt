@@ -8,15 +8,8 @@ set(CMAKE_AUTOUIC ON)
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-if (WIN32 OR APPLE)
-include(external/FindLibObs.cmake)
-endif()
 
 add_definitions(-DASIO_STANDALONE)
-
-if (UNIX)
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-endif()
 
 if (WIN32 OR APPLE)
 	include(external/FindLibObs.cmake)
@@ -90,6 +83,10 @@ if(WIN32)
 		set(OBS_FRONTEND_LIB "OBS_FRONTEND_LIB-NOTFOUND" CACHE FILEPATH "OBS frontend library")
 		message(FATAL_ERROR "Could not find OBS Frontend API's library !")
 	endif()
+
+    if(MSVC)
+	    add_compile_options("/MP")
+    endif()
 
 	add_definitions(-D_WEBSOCKETPP_CPP11_STL_)
 
