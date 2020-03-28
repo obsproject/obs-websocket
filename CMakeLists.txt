@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 3.2)
 project(obs-websocket)
 
+if (WIN32 OR APPLE)
+	include(external/FindLibObs.cmake)
+endif()
+
 set(CMAKE_PREFIX_PATH "${QTDIR}")
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
@@ -8,10 +12,6 @@ set(CMAKE_AUTOUIC ON)
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
-if (WIN32 OR APPLE)
-	include(external/FindLibObs.cmake)
-endif()
 
 add_definitions(-DASIO_STANDALONE)
 
