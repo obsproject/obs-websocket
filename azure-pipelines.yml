@@ -34,8 +34,8 @@ jobs:
     - script: ./CI/download-obs-deps.cmd
       displayName: 'Download OBS dependencies'
 
-    - script: ./CI/install-build-obs-windows.cmd
-      displayName: 'CMake OBS Studio'
+    - script: ./CI/prepare-obs-windows.cmd
+      displayName: 'Prepare OBS Studio build'
       env:
         build_config: $(build_config)
         DepsPath32: $(DepsPath32)
