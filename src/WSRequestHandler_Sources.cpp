@@ -8,6 +8,11 @@
 
 #include "WSRequestHandler.h"
 
+bool isTextGDIPlusSource(const QString& sourceKind)
+{
+	return (sourceKind == "text_gdiplus" || sourceKind == "text_gdiplus_v2");
+}
+
 /**
 * List all sources available in the running OBS instance
 *
@@ -536,8 +541,8 @@ RpcResponse WSRequestHandler::GetTextGDIPlusProperties(const RpcRequest& request
 		return request.failed("specified source doesn't exist");
 	}
 
-	QString sourceId = obs_source_get_id(source);
-	if (sourceId != "text_gdiplus") {
+	QString sourceKind = obs_source_get_id(source);
+	if (!isTextGDIPlusSource(sourceKind)) {
 		return request.failed("not a text gdi plus source");
 	}
 
@@ -601,8 +606,8 @@ RpcResponse WSRequestHandler::SetTextGDIPlusProperties(const RpcRequest& request
 		return request.failed("specified source doesn't exist");
 	}
 
-	QString sourceId = obs_source_get_id(source);
-	if (sourceId != "text_gdiplus") {
+	QString sourceKind = obs_source_get_id(source);
+	if (!isTextGDIPlusSource(sourceKind)) {
 		return request.failed("not a text gdi plus source");
 	}
 
