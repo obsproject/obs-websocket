@@ -12,6 +12,7 @@
 * @param {int (optional)} `item.id` Scene Item ID (if the `item` field is an object)
 *
 * @return {String} `name` Scene Item name.
+* @return {int} `itemId` Scene Item ID.
 * @return {int} `position.x` The x position of the source from the left.
 * @return {int} `position.y` The y position of the source from the top.
 * @return {int} `position.alignment` The point on the source that the item is manipulated from.
@@ -63,6 +64,7 @@ RpcResponse WSRequestHandler::GetSceneItemProperties(const RpcRequest& request) 
 
 	OBSSourceAutoRelease sceneItemSource = obs_sceneitem_get_source(sceneItem);
 	obs_data_set_string(data, "name", obs_source_get_name(sceneItemSource));
+	obs_data_set_int(data, "itemId", obs_sceneitem_get_id(sceneItem));
 
 	return request.success(data);
 }
