@@ -13,6 +13,11 @@ bool isTextGDIPlusSource(const QString& sourceKind)
 	return (sourceKind == "text_gdiplus" || sourceKind == "text_gdiplus_v2");
 }
 
+bool isTextFreeType2Source(const QString& sourceKind)
+{
+	return (sourceKind == "text_ft2" || sourceKind == "text_ft2_v2");
+}
+
 /**
 * List all sources available in the running OBS instance
 *
@@ -772,8 +777,8 @@ RpcResponse WSRequestHandler::GetTextFreetype2Properties(const RpcRequest& reque
 		return request.failed("specified source doesn't exist");
 	}
 
-	QString sourceId = obs_source_get_id(source);
-	if (sourceId != "text_ft2_source") {
+	QString sourceKind = obs_source_get_id(source);
+	if (!isTextFreeType2Source(sourceKind)) {
 		return request.failed("not a freetype 2 source");
 	}
 
@@ -820,8 +825,8 @@ RpcResponse WSRequestHandler::SetTextFreetype2Properties(const RpcRequest& reque
 		return request.failed("specified source doesn't exist");
 	}
 
-	QString sourceId = obs_source_get_id(source);
-	if (sourceId != "text_ft2_source") {
+	QString sourceKind = obs_source_get_id(source);
+	if (!isTextFreeType2Source(sourceKind)) {
 		return request.failed("not text freetype 2 source");
 	}
 
