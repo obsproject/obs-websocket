@@ -1493,7 +1493,7 @@ void WSEvents::OnSceneItemVisibilityChanged(void* param, calldata_t* data) {
  * @api events
  * @name SceneItemLockChanged
  * @category sources
- * @since unreleased
+ * @since 4.8.0
  */
 void WSEvents::OnSceneItemLockChanged(void* param, calldata_t* data) {
 	auto instance = reinterpret_cast<WSEvents*>(param);
