@@ -305,9 +305,9 @@ RpcResponse WSRequestHandler::ResetSceneItem(const RpcRequest& request) {
 /**
 * Show or hide a specified source item in a specified scene.
 *
-* @param {String} `source` Scene item name in the specified scene.
+* @param {String (optional)} `scene-name` Name of the scene the scene item belongs to. Defaults to the currently active scene.
+* @param {String} `source` Scene Item name.
 * @param {boolean} `render` true = shown ; false = hidden
-* @param {String (optional)} `scene-name` Name of the scene where the source resides. Defaults to the currently active scene.
 *
 * @api requests
 * @name SetSceneItemRender
@@ -348,8 +348,8 @@ RpcResponse WSRequestHandler::SetSceneItemRender(const RpcRequest& request) {
 /**
 * Sets the coordinates of a specified source item.
 *
-* @param {String (optional)} `scene-name` The name of the scene that the source item belongs to. Defaults to the current scene.
-* @param {String} `item` The name of the source item.
+* @param {String (optional)} `scene-name` Name of the scene the scene item belongs to. Defaults to the current scene.
+* @param {String} `item` Scene Item name.
 * @param {double} `x` X coordinate.
 * @param {double} `y` Y coordinate.
 
@@ -393,8 +393,8 @@ RpcResponse WSRequestHandler::SetSceneItemPosition(const RpcRequest& request) {
 /**
 * Set the transform of the specified source item.
 *
-* @param {String (optional)} `scene-name` The name of the scene that the source item belongs to. Defaults to the current scene.
-* @param {String} `item` The name of the source item.
+* @param {String (optional)} `scene-name` Name of the scene the scene item belongs to. Defaults to the current scene.
+* @param {String} `item` Scene Item name.
 * @param {double} `x-scale` Width scale factor.
 * @param {double} `y-scale` Height scale factor.
 * @param {double} `rotation` Source item rotation (in degrees).
@@ -448,8 +448,8 @@ RpcResponse WSRequestHandler::SetSceneItemTransform(const RpcRequest& request) {
 /**
 * Sets the crop coordinates of the specified source item.
 *
-* @param {String (optional)} `scene-name` the name of the scene that the source item belongs to. Defaults to the current scene.
-* @param {String} `item` The name of the source.
+* @param {String (optional)} `scene-name` Name of the scene the scene item belongs to. Defaults to the current scene.
+* @param {String} `item` Scene Item name.
 * @param {int} `top` Pixel position of the top of the source item.
 * @param {int} `bottom` Pixel position of the bottom of the source item.
 * @param {int} `left` Pixel position of the left of the source item.
