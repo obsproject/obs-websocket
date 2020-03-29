@@ -7,7 +7,9 @@
 * Coordinates are relative to the item's parent (the scene or group it belongs to).
 *
 * @param {String (optional)} `scene-name` Name of the scene the scene item belongs to. Defaults to the current scene.
-* @param {String} `item` Scene Item name.
+* @param {String | Object} `item` Scene Item name (if this field is a string) or specification (if it is an object).
+* @param {String (optional)} `item.name` Scene Item name (if the `item` field is an object)
+* @param {int (optional)} `item.id` Scene Item ID (if the `item` field is an object)
 *
 * @return {String} `name` Scene Item name.
 * @return {int} `position.x` The x position of the source from the left.
@@ -70,7 +72,9 @@ RpcResponse WSRequestHandler::GetSceneItemProperties(const RpcRequest& request) 
 * Coordinates are relative to the item's parent (the scene or group it belongs to).
 *
 * @param {String (optional)} `scene-name` Name of the scene the source item belongs to. Defaults to the current scene.
-* @param {String} `item` Scene Item name.
+* @param {String | Object} `item` Scene Item name (if this field is a string) or specification (if it is an object).
+* @param {String (optional)} `item.name` Scene Item name (if the `item` field is an object)
+* @param {int (optional)} `item.id` Scene Item ID (if the `item` field is an object)
 * @param {int (optional)} `position.x` The new x position of the source.
 * @param {int (optional)} `position.y` The new y position of the source.
 * @param {int (optional)} `position.alignment` The new alignment of the source.
@@ -257,7 +261,9 @@ RpcResponse WSRequestHandler::SetSceneItemProperties(const RpcRequest& request) 
 * Reset a scene item.
 *
 * @param {String (optional)} `scene-name` Name of the scene the scene item belongs to. Defaults to the current scene.
-* @param {String} `item` Scene item name.
+* @param {String | Object} `item` Scene Item name (if this field is a string) or specification (if it is an object).
+* @param {String (optional)} `item.name` Scene Item name (if the `item` field is an object)
+* @param {int (optional)} `item.id` Scene Item ID (if the `item` field is an object)
 *
 * @api requests
 * @name ResetSceneItem
