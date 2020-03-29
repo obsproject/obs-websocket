@@ -6,10 +6,10 @@
 * Gets the scene specific properties of the specified source item.
 * Coordinates are relative to the item's parent (the scene or group it belongs to).
 *
-* @param {String (optional)} `scene-name` the name of the scene that the source item belongs to. Defaults to the current scene.
-* @param {String} `item` The name of the source.
+* @param {String (optional)} `scene-name` Name of the scene the scene item belongs to. Defaults to the current scene.
+* @param {String} `item` Scene Item name.
 *
-* @return {String} `name` The name of the source.
+* @return {String} `name` Scene Item name.
 * @return {int} `position.x` The x position of the source from the left.
 * @return {int} `position.y` The y position of the source from the top.
 * @return {int} `position.alignment` The point on the source that the item is manipulated from.
@@ -71,8 +71,8 @@ RpcResponse WSRequestHandler::GetSceneItemProperties(const RpcRequest& request) 
 * Sets the scene specific properties of a source. Unspecified properties will remain unchanged.
 * Coordinates are relative to the item's parent (the scene or group it belongs to).
 *
-* @param {String (optional)} `scene-name` the name of the scene that the source item belongs to. Defaults to the current scene.
-* @param {String} `item` The name of the source.
+* @param {String (optional)} `scene-name` Name of the scene the source item belongs to. Defaults to the current scene.
+* @param {String} `item` Scene Item name.
 * @param {int (optional)} `position.x` The new x position of the source.
 * @param {int (optional)} `position.y` The new y position of the source.
 * @param {int (optional)} `position.alignment` The new alignment of the source.
@@ -263,8 +263,8 @@ RpcResponse WSRequestHandler::SetSceneItemProperties(const RpcRequest& request) 
 /**
 * Reset a scene item.
 *
-* @param {String (optional)} `scene-name` Name of the scene the source belongs to. Defaults to the current scene.
-* @param {String} `item` Name of the source item.
+* @param {String (optional)} `scene-name` Name of the scene the scene item belongs to. Defaults to the current scene.
+* @param {String} `item` Scene item name.
 *
 * @api requests
 * @name ResetSceneItem
@@ -496,10 +496,10 @@ RpcResponse WSRequestHandler::SetSceneItemCrop(const RpcRequest& request) {
 /**
  * Deletes a scene item.
  *
- * @param {String (optional)} `scene` Name of the scene the source belongs to. Defaults to the current scene.
- * @param {Object} `item` item to delete (required)
- * @param {String} `item.name` name of the scene item (prefer `id`, including both is acceptable).
- * @param {int} `item.id` id of the scene item.
+ * @param {String (optional)} `scene` Name of the scene the scene item belongs to. Defaults to the current scene.
+ * @param {Object} `item` Scene item to delete (required)
+ * @param {String} `item.name` Scene Item name (prefer `id`, including both is acceptable).
+ * @param {int} `item.id` Scene Item ID.
  *
  * @api requests
  * @name DeleteSceneItem
@@ -533,9 +533,9 @@ RpcResponse WSRequestHandler::DeleteSceneItem(const RpcRequest& request) {
  *
  * @param {String (optional)} `fromScene` Name of the scene to copy the item from. Defaults to the current scene.
  * @param {String (optional)} `toScene` Name of the scene to create the item in. Defaults to the current scene.
- * @param {Object} `item` item to duplicate (required)
- * @param {String} `item.name` name of the scene item (prefer `id`, including both is acceptable).
- * @param {int} `item.id` id of the scene item.
+ * @param {Object} `item` Scene Item to duplicate from the source scene (required)
+ * @param {String} `item.name` Scene Item name (prefer `id`, including both is acceptable).
+ * @param {int} `item.id` Scene Item ID.
  *
  * @return {String} `scene` Name of the scene where the new item was created
  * @return {Object} `item` New item info
