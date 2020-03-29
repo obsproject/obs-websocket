@@ -2718,7 +2718,7 @@
         "api": "events",
         "name": "SceneItemLockChanged",
         "category": "sources",
-        "since": "unreleased",
+        "since": "4.8.0",
         "returns": [
           {
             "type": "String",
@@ -2756,7 +2756,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "unreleased"
+            "description": "4.8.0"
           }
         ],
         "heading": {
@@ -3513,7 +3513,7 @@
         "api": "requests",
         "name": "OpenProjector",
         "category": "general",
-        "since": "unreleased",
+        "since": "4.8.0",
         "params": [
           {
             "type": "String (Optional)",
@@ -3551,7 +3551,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "unreleased"
+            "description": "4.8.0"
           }
         ],
         "heading": {

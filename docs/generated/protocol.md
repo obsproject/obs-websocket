@@ -1081,7 +1081,7 @@ An item's visibility has been toggled.
 ### SceneItemLockChanged
 
 
-- Unreleased
+- Added in v4.8.0
 
 An item's locked status has been toggled.
 
@@ -1404,7 +1404,7 @@ _No specified parameters._
 ### OpenProjector
 
 
-- Unreleased
+- Added in v4.8.0
 
 Open a projector window or create a projector on a monitor. Requires OBS v24.0.4 or newer.
 
