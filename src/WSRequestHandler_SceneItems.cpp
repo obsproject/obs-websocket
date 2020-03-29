@@ -51,14 +51,16 @@ RpcResponse WSRequestHandler::GetSceneItemProperties(const RpcRequest& request) 
 		return request.failed("requested scene doesn't exist");
 	}
 
-	OBSDataItemAutoRelease itemField = obs_data_item_byname("item");
-	OBSSceneItemAutoRelease sceneItem = Utils::GetSceneItemFromName(scene, itemField);
+	OBSDataItemAutoRelease itemField = obs_data_item_byname(request.parameters(), "item");
+	OBSSceneItemAutoRelease sceneItem = Utils::GetSceneItemFromRequestField(scene, itemField);
 	if (!sceneItem) {
 		return request.failed("specified scene item doesn't exist");
 	}
 
 	OBSDataAutoRelease data = Utils::GetSceneItemPropertiesData(sceneItem);
-	obs_data_set_string(data, "name", itemName.toUtf8());
+
+	OBSSourceAutoRelease sceneItemSource = obs_sceneitem_get_source(sceneItem);
+	obs_data_set_string(data, "name", obs_source_get_name(sceneItemSource));
 
 	return request.success(data);
 }
@@ -102,7 +104,7 @@ RpcResponse WSRequestHandler::SetSceneItemProperties(const RpcRequest& request) 
 		return request.failed("requested scene doesn't exist");
 	}
 
-	OBSDataItemAutoRelease itemField = obs_data_item_byname("item");
+	OBSDataItemAutoRelease itemField = obs_data_item_byname(request.parameters(), "item");
 	OBSSceneItemAutoRelease sceneItem =Utils::GetSceneItemFromRequestField(scene, itemField);
 	if (!sceneItem) {
 		return request.failed("specified scene item doesn't exist");
@@ -273,7 +275,7 @@ RpcResponse WSRequestHandler::ResetSceneItem(const RpcRequest& request) {
 		return request.failed("requested scene doesn't exist");
 	}
 
-	OBSDataItemAutoRelease itemField = obs_data_item_byname("item");
+	OBSDataItemAutoRelease itemField = obs_data_item_byname(request.parameters(), "item");
 	OBSSceneItemAutoRelease sceneItem = Utils::GetSceneItemFromRequestField(scene, itemField);
 	if (!sceneItem) {
 		return request.failed("specified scene item doesn't exist");
