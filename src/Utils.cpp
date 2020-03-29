@@ -180,34 +180,6 @@ obs_data_t* Utils::GetSceneItemData(obs_sceneitem_t* item) {
 	return data;
 }
 
-obs_sceneitem_t* Utils::GetSceneItemFromItem(obs_scene_t* scene, obs_data_t* itemInfo) {
-	if (!scene) {
-		return nullptr;
-	}
-
-	OBSDataItemAutoRelease idInfoItem = obs_data_item_byname(itemInfo, "id");
-	int id = obs_data_item_get_int(idInfoItem);
-
-	OBSDataItemAutoRelease nameInfoItem = obs_data_item_byname(itemInfo, "name");
-	const char* name = obs_data_item_get_string(nameInfoItem);
-
-	if (idInfoItem) {
-		obs_sceneitem_t* sceneItem = GetSceneItemFromId(scene, id);
-		obs_source_t* sceneItemSource = obs_sceneitem_get_source(sceneItem);
-
-		QString sceneItemName = obs_source_get_name(sceneItemSource);
-		if (nameInfoItem && (QString(name) != sceneItemName)) {
-			return nullptr;
-		}
-
-		return sceneItem;
-	} else if (nameInfoItem) {
-		return GetSceneItemFromName(scene, name);
-	}
-
-	return nullptr;
-}
-
 obs_sceneitem_t* Utils::GetSceneItemFromName(obs_scene_t* scene, QString name) {
 	if (!scene) {
 		return nullptr;
@@ -295,6 +267,49 @@ obs_sceneitem_t* Utils::GetSceneItemFromId(obs_scene_t* scene, int64_t id) {
 	obs_scene_enum_items(scene, search.enumCallback, &search);
 
 	return search.result;
+}
+
+obs_sceneitem_t* Utils::GetSceneItemFromItem(obs_scene_t* scene, obs_data_t* itemInfo) {
+	if (!scene) {
+		return nullptr;
+	}
+
+	OBSDataItemAutoRelease idInfoItem = obs_data_item_byname(itemInfo, "id");
+	int id = obs_data_item_get_int(idInfoItem);
+
+	OBSDataItemAutoRelease nameInfoItem = obs_data_item_byname(itemInfo, "name");
+	const char* name = obs_data_item_get_string(nameInfoItem);
+
+	if (idInfoItem) {
+		obs_sceneitem_t* sceneItem = GetSceneItemFromId(scene, id);
+		obs_source_t* sceneItemSource = obs_sceneitem_get_source(sceneItem);
+
+		QString sceneItemName = obs_source_get_name(sceneItemSource);
+		if (nameInfoItem && (QString(name) != sceneItemName)) {
+			return nullptr;
+		}
+
+		return sceneItem;
+	} else if (nameInfoItem) {
+		return GetSceneItemFromName(scene, name);
+	}
+
+	return nullptr;
+}
+
+obs_sceneitem_t* Utils::GetSceneItemFromRequestField(obs_scene_t* scene, obs_data_item_t* dataItem)
+{
+	enum obs_data_type dataType = obs_data_item_gettype(dataItem);
+
+	if (dataType == OBS_DATA_OBJECT) {
+		OBSDataAutoRelease itemData = obs_data_item_get_obj(dataItem);
+		return GetSceneItemFromItem(scene, itemData);
+	} else if (dataType == OBS_DATA_STRING) {
+		QString name = obs_data_item_get_string(dataItem);
+		return GetSceneItemFromName(scene, name);
+	}
+
+	return nullptr;
 }
 
 bool Utils::IsValidAlignment(const uint32_t alignment) {
