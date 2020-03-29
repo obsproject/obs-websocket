@@ -299,13 +299,13 @@ obs_sceneitem_t* Utils::GetSceneItemFromItem(obs_scene_t* scene, obs_data_t* ite
 
 obs_sceneitem_t* Utils::GetSceneItemFromRequestField(obs_scene_t* scene, obs_data_item_t* dataItem)
 {
-	obs_data_type dataType = obs_data_item_gettype(dataItem);
+	enum obs_data_type dataType = obs_data_item_gettype(dataItem);
 
 	if (dataType == OBS_DATA_OBJECT) {
 		OBSDataAutoRelease itemData = obs_data_item_get_obj(dataItem);
 		return GetSceneItemFromItem(scene, itemData);
 	} else if (dataType == OBS_DATA_STRING) {
-		const char* name = obs_data_item_get_string(dataItem);
+		QString name = obs_data_item_get_string(dataItem);
 		return GetSceneItemFromName(scene, name);
 	}
 
