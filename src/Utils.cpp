@@ -297,6 +297,21 @@ obs_sceneitem_t* Utils::GetSceneItemFromItem(obs_scene_t* scene, obs_data_t* ite
 	return nullptr;
 }
 
+obs_sceneitem_t* Utils::GetSceneItemFromRequestField(obs_scene_t* scene, obs_data_item_t* dataItem)
+{
+	obs_data_type dataType = obs_data_item_gettype(dataItem);
+
+	if (dataType == OBS_DATA_OBJECT) {
+		OBSDataAutoRelease itemData = obs_data_item_get_obj(dataItem);
+		return GetSceneItemFromItem(scene, itemData);
+	} else if (dataType == OBS_DATA_STRING) {
+		const char* name = obs_data_item_get_string(dataItem);
+		return GetSceneItemFromName(scene, name);
+	}
+
+	return nullptr;
+}
+
 bool Utils::IsValidAlignment(const uint32_t alignment) {
 	switch (alignment) {
 		case OBS_ALIGN_CENTER:
