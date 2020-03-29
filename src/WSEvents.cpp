@@ -1345,7 +1345,7 @@ void WSEvents::OnSourceFilterOrderChanged(void* param, calldata_t* data) {
  *
  * @api events
  * @name SourceOrderChanged
- * @category sources
+ * @category scene items
  * @since 4.0.0
  */
 void WSEvents::OnSceneReordered(void* param, calldata_t* data) {
@@ -1387,7 +1387,7 @@ void WSEvents::OnSceneReordered(void* param, calldata_t* data) {
  *
  * @api events
  * @name SceneItemAdded
- * @category sources
+ * @category scene items
  * @since 4.0.0
  */
 void WSEvents::OnSceneItemAdd(void* param, calldata_t* data) {
@@ -1420,7 +1420,7 @@ void WSEvents::OnSceneItemAdd(void* param, calldata_t* data) {
  *
  * @api events
  * @name SceneItemRemoved
- * @category sources
+ * @category scene items
  * @since 4.0.0
  */
 void WSEvents::OnSceneItemDelete(void* param, calldata_t* data) {
@@ -1454,7 +1454,7 @@ void WSEvents::OnSceneItemDelete(void* param, calldata_t* data) {
  *
  * @api events
  * @name SceneItemVisibilityChanged
- * @category sources
+ * @category scene items
  * @since 4.0.0
  */
 void WSEvents::OnSceneItemVisibilityChanged(void* param, calldata_t* data) {
@@ -1492,7 +1492,7 @@ void WSEvents::OnSceneItemVisibilityChanged(void* param, calldata_t* data) {
  *
  * @api events
  * @name SceneItemLockChanged
- * @category sources
+ * @category scene items
  * @since 4.8.0
  */
 void WSEvents::OnSceneItemLockChanged(void* param, calldata_t* data) {
@@ -1530,7 +1530,7 @@ void WSEvents::OnSceneItemLockChanged(void* param, calldata_t* data) {
  *
  * @api events
  * @name SceneItemTransformChanged
- * @category sources
+ * @category scene items
  * @since 4.6.0
  */
 void WSEvents::OnSceneItemTransform(void* param, calldata_t* data) {
@@ -1566,7 +1566,7 @@ void WSEvents::OnSceneItemTransform(void* param, calldata_t* data) {
  *
  * @api events
  * @name SceneItemSelected
- * @category sources
+ * @category scene items
  * @since 4.6.0
  */
 void WSEvents::OnSceneItemSelected(void* param, calldata_t* data) {
@@ -1601,7 +1601,7 @@ void WSEvents::OnSceneItemSelected(void* param, calldata_t* data) {
  *
  * @api events
  * @name SceneItemDeselected
- * @category sources
+ * @category scene items
  * @since 4.6.0
  */
 void WSEvents::OnSceneItemDeselected(void* param, calldata_t* data) {
