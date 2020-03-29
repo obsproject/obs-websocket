@@ -115,7 +115,7 @@ RpcResponse WSRequestHandler::SetSceneItemProperties(const RpcRequest& request) 
 	}
 
 	OBSDataItemAutoRelease itemField = obs_data_item_byname(params, "item");
-	OBSSceneItemAutoRelease sceneItem =Utils::GetSceneItemFromRequestField(scene, itemField);
+	OBSSceneItemAutoRelease sceneItem = Utils::GetSceneItemFromRequestField(scene, itemField);
 	if (!sceneItem) {
 		return request.failed("specified scene item doesn't exist");
 	}
@@ -533,8 +533,8 @@ RpcResponse WSRequestHandler::DeleteSceneItem(const RpcRequest& request) {
 		return request.failed("requested scene doesn't exist");
 	}
 
-	OBSDataAutoRelease item = obs_data_get_obj(request.parameters(), "item");
-	OBSSceneItemAutoRelease sceneItem = Utils::GetSceneItemFromItem(scene, item);
+	OBSDataItemAutoRelease itemField = obs_data_item_byname(request.parameters(), "item");
+	OBSSceneItemAutoRelease sceneItem = Utils::GetSceneItemFromRequestField(scene, itemField);
 	if (!sceneItem) {
 		return request.failed("item with id/name combination not found in specified scene");
 	}
@@ -586,8 +586,8 @@ RpcResponse WSRequestHandler::DuplicateSceneItem(const RpcRequest& request) {
 		return request.failed("requested toScene doesn't exist");
 	}
 
-	OBSDataAutoRelease item = obs_data_get_obj(request.parameters(), "item");
-	OBSSceneItemAutoRelease referenceItem = Utils::GetSceneItemFromItem(fromScene, item);
+	OBSDataItemAutoRelease itemField = obs_data_item_byname(request.parameters(), "item");
+	OBSSceneItemAutoRelease referenceItem = Utils::GetSceneItemFromRequestField(fromScene, itemField);
 	if (!referenceItem) {
 		return request.failed("item with id/name combination not found in specified scene");
 	}
