@@ -85,4 +85,7 @@ namespace Utils {
 	bool SetFilenameFormatting(const char* filenameFormatting);
 
 	QString nsToTimestamp(uint64_t ns);
+
+	obs_data_array_t* validateSourceSettings(obs_properties_t* properties, obs_data_t* settings);
+	bool applySourceSettings(obs_source_t* source, obs_data_t* sourceSettings, obs_data_array_t** outValidationErrors = nullptr);
 };

@@ -484,8 +484,7 @@ RpcResponse WSRequestHandler::SetSourceSettings(const RpcRequest& request)
 	obs_data_apply(sourceSettings, currentSettings);
 	obs_data_apply(sourceSettings, newSettings);
 
-	obs_source_update(source, sourceSettings);
-	obs_source_update_properties(source);
+	Utils::applySourceSettings(source, sourceSettings);
 
 	OBSDataAutoRelease response = obs_data_create();
 	obs_data_set_string(response, "sourceName", obs_source_get_name(source));
@@ -733,7 +732,7 @@ RpcResponse WSRequestHandler::SetTextGDIPlusProperties(const RpcRequest& request
 		obs_data_set_bool(settings, "vertical", obs_data_get_bool(request.parameters(), "vertical"));
 	}
 
-	obs_source_update(source, settings);
+	Utils::applySourceSettings(source, settings);
 
 	return request.success();
 }
@@ -895,7 +894,7 @@ RpcResponse WSRequestHandler::SetTextFreetype2Properties(const RpcRequest& reque
 		obs_data_set_bool(settings, "word_wrap", obs_data_get_bool(request.parameters(), "word_wrap"));
 	}
 
-	obs_source_update(source, settings);
+	Utils::applySourceSettings(source, settings);
 
 	return request.success();
 }
@@ -1021,7 +1020,7 @@ RpcResponse WSRequestHandler::SetBrowserSourceProperties(const RpcRequest& reque
 		obs_data_set_int(settings, "fps", obs_data_get_int(request.parameters(), "fps"));
 	}
 
-	obs_source_update(source, settings);
+	Utils::applySourceSettings(source, settings);
 
 	return request.success();
 }
@@ -1383,7 +1382,8 @@ RpcResponse WSRequestHandler::SetSourceFilterSettings(const RpcRequest& request)
 
 	OBSDataAutoRelease settings = obs_source_get_settings(filter);
 	obs_data_apply(settings, newFilterSettings);
-	obs_source_update(filter, settings);
+
+	Utils::applySourceSettings(filter, settings);
 
 	return request.success();
 }

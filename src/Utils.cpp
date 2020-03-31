@@ -859,3 +859,35 @@ QString Utils::nsToTimestamp(uint64_t ns)
 
 	return QString::asprintf("%02" PRIu64 ":%02" PRIu64 ":%02" PRIu64 ".%03" PRIu64, hoursPart, minutesPart, secsPart, msPart);
 }
+
+obs_data_array_t* Utils::validateSourceSettings(obs_properties_t* properties, obs_data_t* settings)
+{
+	obs_data_array_t* validationErrors = obs_data_array_create();
+	// TODO
+	return validationErrors;
+}
+
+bool Utils::applySourceSettings(obs_source_t* source, obs_data_t* sourceSettings, obs_data_array_t** outValidationErrors)
+{
+	obs_properties_t* sourceProperties = obs_source_properties(source);
+
+	obs_data_array_t* validationErrors = validateSourceSettings(sourceProperties, sourceSettings);
+	if (obs_data_array_count(validationErrors) > 0) {
+		if (outValidationErrors) {
+			outValidationErrors = &validationErrors;
+		} else {
+			obs_data_array_release(validationErrors);
+		}
+
+		return false;
+	}
+
+	// update settings
+	obs_source_update(source, sourceSettings);
+
+	// trigger update signal
+	obs_source_update_properties(source);
+
+	return true;
+}
+
