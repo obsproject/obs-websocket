@@ -450,6 +450,7 @@ RpcResponse WSRequestHandler::GetSourceSettings(const RpcRequest& request)
 * @return {String} `sourceName` Source name
 * @return {String} `sourceType` Type of the specified source
 * @return {Object} `sourceSettings` Updated source settings
+* @return {Array<PropertiesValidationError> (optional)} `validationErrors` Returned alongside error messages if source settings validation fails
 *
 * @api requests
 * @name SetSourceSettings
@@ -484,16 +485,20 @@ RpcResponse WSRequestHandler::SetSourceSettings(const RpcRequest& request)
 	obs_data_apply(sourceSettings, currentSettings);
 	obs_data_apply(sourceSettings, newSettings);
 
-	bool success = Utils::applySourceSettings(source, sourceSettings);
-	if (!success) {
-		return request.failed("settings update failed");
-	}
-
 	OBSDataAutoRelease response = obs_data_create();
+
+	obs_data_array_t* inValidationErrors = nullptr;
+	bool success = Utils::applySourceSettings(source, sourceSettings, &inValidationErrors);
+	if (!success) {
+		OBSDataArrayAutoRelease validationErrors = inValidationErrors;
+
+		obs_data_set_array(response, "validationErrors", validationErrors);
+		return request.failed("settings update failed", response);
+	}
+	
 	obs_data_set_string(response, "sourceName", obs_source_get_name(source));
 	obs_data_set_string(response, "sourceType", obs_source_get_id(source));
 	obs_data_set_obj(response, "sourceSettings", sourceSettings);
-
 	return request.success(response);
 }
 
@@ -591,6 +596,8 @@ RpcResponse WSRequestHandler::GetTextGDIPlusProperties(const RpcRequest& request
  * @param {String (optional)} `valign` Text vertical alignment ("top", "center", "bottom").
  * @param {boolean (optional)} `vertical` Vertical text enabled.
  * @param {boolean (optional)} `render` Visibility of the scene item.
+ *
+ * @return {Array<PropertiesValidationError> (optional)} `validationErrors` Returned alongside error messages if source settings validation fails
  *
  * @api requests
  * @name SetTextGDIPlusProperties
@@ -735,9 +742,14 @@ RpcResponse WSRequestHandler::SetTextGDIPlusProperties(const RpcRequest& request
 		obs_data_set_bool(settings, "vertical", obs_data_get_bool(request.parameters(), "vertical"));
 	}
 
-	bool success = Utils::applySourceSettings(source, settings);
+	obs_data_array_t* inValidationErrors = nullptr;
+	bool success = Utils::applySourceSettings(source, settings, &inValidationErrors);
 	if (!success) {
-		return request.failed("settings update failed");
+		OBSDataArrayAutoRelease validationErrors = inValidationErrors;
+
+		OBSDataAutoRelease response = obs_data_create();
+		obs_data_set_array(response, "validationErrors", validationErrors);
+		return request.failed("settings update failed", response);
 	}
 
 	return request.success();
@@ -812,6 +824,8 @@ RpcResponse WSRequestHandler::GetTextFreetype2Properties(const RpcRequest& reque
  * @param {String (optional)} `text` Text content to be displayed.
  * @param {String (optional)} `text_file` File path.
  * @param {boolean (optional)} `word_wrap` Word wrap.
+ *
+ * @return {Array<PropertiesValidationError> (optional)} `validationErrors` Returned alongside error messages if source settings validation fails
  *
  * @api requests
  * @name SetTextFreetype2Properties
@@ -900,9 +914,14 @@ RpcResponse WSRequestHandler::SetTextFreetype2Properties(const RpcRequest& reque
 		obs_data_set_bool(settings, "word_wrap", obs_data_get_bool(request.parameters(), "word_wrap"));
 	}
 
-	bool success = Utils::applySourceSettings(source, settings);
+	obs_data_array_t* inValidationErrors = nullptr;
+	bool success = Utils::applySourceSettings(source, settings, &inValidationErrors);
 	if (!success) {
-		return request.failed("settings update failed");
+		OBSDataArrayAutoRelease validationErrors = inValidationErrors;
+
+		OBSDataAutoRelease response = obs_data_create();
+		obs_data_set_array(response, "validationErrors", validationErrors);
+		return request.failed("settings update failed", response);
 	}
 
 	return request.success();
@@ -964,6 +983,8 @@ RpcResponse WSRequestHandler::GetBrowserSourceProperties(const RpcRequest& reque
  * @param {int (optional)} `fps` Framerate.
  * @param {boolean (optional)} `shutdown` Indicates whether the source should be shutdown when not visible.
  * @param {boolean (optional)} `render` Visibility of the scene item.
+ *
+ * @return {Array<PropertiesValidationError> (optional)} `validationErrors` Returned alongside error messages if source settings validation fails
  *
  * @api requests
  * @name SetBrowserSourceProperties
@@ -1029,9 +1050,14 @@ RpcResponse WSRequestHandler::SetBrowserSourceProperties(const RpcRequest& reque
 		obs_data_set_int(settings, "fps", obs_data_get_int(request.parameters(), "fps"));
 	}
 
-	bool success = Utils::applySourceSettings(source, settings);
+	obs_data_array_t* inValidationErrors = nullptr;
+	bool success = Utils::applySourceSettings(source, settings, &inValidationErrors);
 	if (!success) {
-		return request.failed("settings update failed");
+		OBSDataArrayAutoRelease validationErrors = inValidationErrors;
+
+		OBSDataAutoRelease response = obs_data_create();
+		obs_data_set_array(response, "validationErrors", validationErrors);
+		return request.failed("settings update failed", response);
 	}
 
 	return request.success();
@@ -1367,6 +1393,8 @@ RpcResponse WSRequestHandler::MoveSourceFilter(const RpcRequest& request)
 * @param {String} `filterName` Name of the filter to reconfigure
 * @param {Object} `filterSettings` New settings. These will be merged to the current filter settings.
 *
+* @return {Array<PropertiesValidationError> (optional)} `validationErrors` Returned alongside error messages if source settings validation fails
+*
 * @api requests
 * @name SetSourceFilterSettings
 * @category sources
@@ -1395,9 +1423,14 @@ RpcResponse WSRequestHandler::SetSourceFilterSettings(const RpcRequest& request)
 	OBSDataAutoRelease settings = obs_source_get_settings(filter);
 	obs_data_apply(settings, newFilterSettings);
 
-	bool success = Utils::applySourceSettings(filter, settings);
+	obs_data_array_t* inValidationErrors = nullptr;
+	bool success = Utils::applySourceSettings(filter, settings, &inValidationErrors);
 	if (!success) {
-		return request.failed("settings update failed");
+		OBSDataArrayAutoRelease validationErrors = inValidationErrors;
+
+		OBSDataAutoRelease response = obs_data_create();
+		obs_data_set_array(response, "validationErrors", validationErrors);
+		return request.failed("settings update failed", response);
 	}
 
 	return request.success();

@@ -860,6 +860,11 @@ QString Utils::nsToTimestamp(uint64_t ns)
 	return QString::asprintf("%02" PRIu64 ":%02" PRIu64 ":%02" PRIu64 ".%03" PRIu64, hoursPart, minutesPart, secsPart, msPart);
 }
 
+/**
+ * @typedef {Object} `PropertiesValidationError`
+ * @property {String} `field` Settings field targeted by this error
+ * @property {String} `message` Error message
+ */
 obs_data_array_t* Utils::validateSourceSettings(obs_properties_t* properties, obs_data_t* settings)
 {
 	obs_data_array_t* validationErrors = obs_data_array_create();
