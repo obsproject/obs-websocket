@@ -484,7 +484,10 @@ RpcResponse WSRequestHandler::SetSourceSettings(const RpcRequest& request)
 	obs_data_apply(sourceSettings, currentSettings);
 	obs_data_apply(sourceSettings, newSettings);
 
-	Utils::applySourceSettings(source, sourceSettings);
+	bool success = Utils::applySourceSettings(source, sourceSettings);
+	if (!success) {
+		return request.failed("settings update failed");
+	}
 
 	OBSDataAutoRelease response = obs_data_create();
 	obs_data_set_string(response, "sourceName", obs_source_get_name(source));
@@ -732,7 +735,10 @@ RpcResponse WSRequestHandler::SetTextGDIPlusProperties(const RpcRequest& request
 		obs_data_set_bool(settings, "vertical", obs_data_get_bool(request.parameters(), "vertical"));
 	}
 
-	Utils::applySourceSettings(source, settings);
+	bool success = Utils::applySourceSettings(source, settings);
+	if (!success) {
+		return request.failed("settings update failed");
+	}
 
 	return request.success();
 }
@@ -894,7 +900,10 @@ RpcResponse WSRequestHandler::SetTextFreetype2Properties(const RpcRequest& reque
 		obs_data_set_bool(settings, "word_wrap", obs_data_get_bool(request.parameters(), "word_wrap"));
 	}
 
-	Utils::applySourceSettings(source, settings);
+	bool success = Utils::applySourceSettings(source, settings);
+	if (!success) {
+		return request.failed("settings update failed");
+	}
 
 	return request.success();
 }
@@ -1020,7 +1029,10 @@ RpcResponse WSRequestHandler::SetBrowserSourceProperties(const RpcRequest& reque
 		obs_data_set_int(settings, "fps", obs_data_get_int(request.parameters(), "fps"));
 	}
 
-	Utils::applySourceSettings(source, settings);
+	bool success = Utils::applySourceSettings(source, settings);
+	if (!success) {
+		return request.failed("settings update failed");
+	}
 
 	return request.success();
 }
@@ -1383,7 +1395,10 @@ RpcResponse WSRequestHandler::SetSourceFilterSettings(const RpcRequest& request)
 	OBSDataAutoRelease settings = obs_source_get_settings(filter);
 	obs_data_apply(settings, newFilterSettings);
 
-	Utils::applySourceSettings(filter, settings);
+	bool success = Utils::applySourceSettings(filter, settings);
+	if (!success) {
+		return request.failed("settings update failed");
+	}
 
 	return request.success();
 }
