@@ -1,5 +1,5 @@
-cmake_minimum_required(VERSION 3.2)
-project(obs-websocket)
+cmake_minimum_required(VERSION 3.5)
+project(obs-websocket VERSION 4.8.0)
 
 set(CMAKE_PREFIX_PATH "${QTDIR}")
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -85,7 +85,8 @@ if(WIN32)
 	endif()
 
     if(MSVC)
-	    add_compile_options("/MP")
+        # Enable Multicore Builds
+	    add_definitions(/MP)
     endif()
 
 	add_definitions(-D_WEBSOCKETPP_CPP11_STL_)
