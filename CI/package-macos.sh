@@ -23,11 +23,11 @@ FILENAME="obs-websocket-$VERSION.pkg"
 echo "[obs-websocket] Modifying obs-websocket.so"
 install_name_tool \
 	-change /usr/local/opt/qt/lib/QtWidgets.framework/Versions/5/QtWidgets \
-        @executable_path/../Frameworks/QtWidgets.framework/Versions/5/QtWidgets \
+		@executable_path/../Frameworks/QtWidgets.framework/Versions/5/QtWidgets \
 	-change /usr/local/opt/qt/lib/QtGui.framework/Versions/5/QtGui \
-        @executable_path/../Frameworks/QtGui.framework/Versions/5/QtGui \
+		@executable_path/../Frameworks/QtGui.framework/Versions/5/QtGui \
 	-change /usr/local/opt/qt/lib/QtCore.framework/Versions/5/QtCore \
-        @executable_path/../Frameworks/QtCore.framework/Versions/5/QtCore \
+		@executable_path/../Frameworks/QtCore.framework/Versions/5/QtCore \
 	./build/obs-websocket.so
 
 # Check if replacement worked
@@ -45,7 +45,7 @@ echo "[obs-websocket] Actual package build"
 packagesbuild ./CI/macos/obs-websocket.pkgproj
 
 echo "[obs-websocket] Renaming obs-websocket.pkg to $FILENAME"
-mv ./release/obs-websocket.pkg ./release/$FILENAME
+mv ./release/obs-websocket.pkg ./release/$FILENAME_UNSIGNED
 
 if [[ "$RELEASE_MODE" == "True" ]]; then
 	echo "[obs-websocket] Signing installer: $FILENAME"
