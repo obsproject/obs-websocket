@@ -2176,7 +2176,7 @@ _No specified parameters._
 | Name | Type  | Description |
 | ---- | :---: | ------------|
 | `current-scene` | _String_ | Name of the currently active scene. |
-| `scenes` | _Array&lt;Scene&gt;_ | Ordered list of the current profile's scenes (See `[GetCurrentScene](#getcurrentscene)` for more information). |
+| `scenes` | _Array&lt;Scene&gt;_ | Ordered list of the current profile's scenes (See [GetCurrentScene](#getcurrentscene) for more information). |
 
 
 ---
