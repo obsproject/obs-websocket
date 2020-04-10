@@ -60,7 +60,7 @@ RpcResponse WSRequestHandler::GetCurrentScene(const RpcRequest& request) {
  * Get a list of scenes in the currently active profile.
  * 
  * @return {String} `current-scene` Name of the currently active scene.
- * @return {Array<Scene>} `scenes` Ordered list of the current profile's scenes (See `[GetCurrentScene](#getcurrentscene)` for more information).
+ * @return {Array<Scene>} `scenes` Ordered list of the current profile's scenes (See [GetCurrentScene](#getcurrentscene) for more information).
  *
  * @api requests
  * @name GetSceneList
