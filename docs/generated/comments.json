@@ -5357,7 +5357,7 @@
         "description": "Get a list of scenes in the currently active profile.",
         "return": [
           "{String} `current-scene` Name of the currently active scene.",
-          "{Array<Scene>} `scenes` Ordered list of the current profile's scenes (See `[GetCurrentScene](#getcurrentscene)` for more information)."
+          "{Array<Scene>} `scenes` Ordered list of the current profile's scenes (See [GetCurrentScene](#getcurrentscene) for more information)."
         ],
         "api": "requests",
         "name": "GetSceneList",
@@ -5372,7 +5372,7 @@
           {
             "type": "Array<Scene>",
             "name": "scenes",
-            "description": "Ordered list of the current profile's scenes (See `[GetCurrentScene](#getcurrentscene)` for more information)."
+            "description": "Ordered list of the current profile's scenes (See [GetCurrentScene](#getcurrentscene) for more information)."
           }
         ],
         "names": [
