@@ -5,7 +5,7 @@ WebSockets API for OBS Studio.
 
 Follow the main author on Twitter for news & updates : [@LePalakis](https://twitter.com/LePalakis)
 
-[![Build Status - Windows](https://ci.appveyor.com/api/projects/status/github/Palakis/obs-websocket)](https://ci.appveyor.com/project/Palakis/obs-websocket/history) [![Build Status - Linux](https://travis-ci.org/Palakis/obs-websocket.svg?branch=master)](https://travis-ci.org/Palakis/obs-websocket)
+[![Financial Contributors on Open Collective](https://opencollective.com/obs-websocket/all/badge.svg?label=financial+contributors)](https://opencollective.com/obs-websocket) [![Build Status - Windows](https://ci.appveyor.com/api/projects/status/github/Palakis/obs-websocket)](https://ci.appveyor.com/project/Palakis/obs-websocket/history) [![Build Status - Linux](https://travis-ci.org/Palakis/obs-websocket.svg?branch=master)](https://travis-ci.org/Palakis/obs-websocket)
 
 ## Downloads
 
@@ -135,3 +135,33 @@ They have contributed financially to the project and made possible the addition 
 [MediaUnit](http://www.mediaunit.no) is a Norwegian media company developing products and services for the media industry, primarly focused on web and events.  
 
 [![MediaUnit](.github/images/mediaunit_logo_black.png)](http://www.mediaunit.no/)
+
+## Contributors
+
+### Code Contributors
+
+This project exists thanks to all the people who contribute. [[Contribute](CONTRIBUTING.md)].
+<a href="https://github.com/Palakis/obs-websocket/graphs/contributors"><img src="https://opencollective.com/obs-websocket/contributors.svg?width=890&button=false" /></a>
+
+### Financial Contributors
+
+Become a financial contributor and help us sustain our community. [[Contribute](https://opencollective.com/obs-websocket/contribute)]
+
+#### Individuals
+
+<a href="https://opencollective.com/obs-websocket"><img src="https://opencollective.com/obs-websocket/individuals.svg?width=890"></a>
+
+#### Organizations
+
+Support this project with your organization. Your logo will show up here with a link to your website. [[Contribute](https://opencollective.com/obs-websocket/contribute)]
+
+<a href="https://opencollective.com/obs-websocket/organization/0/website"><img src="https://opencollective.com/obs-websocket/organization/0/avatar.svg"></a>
+<a href="https://opencollective.com/obs-websocket/organization/1/website"><img src="https://opencollective.com/obs-websocket/organization/1/avatar.svg"></a>
+<a href="https://opencollective.com/obs-websocket/organization/2/website"><img src="https://opencollective.com/obs-websocket/organization/2/avatar.svg"></a>
+<a href="https://opencollective.com/obs-websocket/organization/3/website"><img src="https://opencollective.com/obs-websocket/organization/3/avatar.svg"></a>
+<a href="https://opencollective.com/obs-websocket/organization/4/website"><img src="https://opencollective.com/obs-websocket/organization/4/avatar.svg"></a>
+<a href="https://opencollective.com/obs-websocket/organization/5/website"><img src="https://opencollective.com/obs-websocket/organization/5/avatar.svg"></a>
+<a href="https://opencollective.com/obs-websocket/organization/6/website"><img src="https://opencollective.com/obs-websocket/organization/6/avatar.svg"></a>
+<a href="https://opencollective.com/obs-websocket/organization/7/website"><img src="https://opencollective.com/obs-websocket/organization/7/avatar.svg"></a>
+<a href="https://opencollective.com/obs-websocket/organization/8/website"><img src="https://opencollective.com/obs-websocket/organization/8/avatar.svg"></a>
+<a href="https://opencollective.com/obs-websocket/organization/9/website"><img src="https://opencollective.com/obs-websocket/organization/9/avatar.svg"></a>
