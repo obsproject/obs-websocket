@@ -20,7 +20,7 @@ It is **highly recommended** to protect obs-websocket with a password against un
 ### Possible use cases
 
 - Remote control OBS from a phone or tablet on the same local network
-- Change your stream overlay/graphics based on the current scene (like the AGDQ overlay does)
+- Change your stream overlay/graphics based on the current scene
 - Automate scene switching with a third-party program (e.g. : auto-pilot, foot pedal, ...)
 
 ### For developers
@@ -46,19 +46,14 @@ See the [build instructions](BUILDING.md).
 
 ### Branches
 
-The two main development branches are:
-
-- `4.x-current`: actively-maintained codebase for 4.x releases. Backwards-compatible (unless stated otherwise) with existing clients until 5.0.
-- `5.x`: upcoming 5.0 version
-
-**New features and fixes must be based off and contributed to `4.x-current`**, as obs-websocket 5.0 is not in active development yet.
+Development happens on `4.x-current`
 
 ### Pull Requests
 
-Pull Requests must never be based off your fork's main branch (in our case, `4.x-current` or `5.x`). Start your work in a new branch
+Pull Requests must never be based off your fork's main branch (in this case, `4.x-current`). Start your work in a new branch
 based on the main one (e.g.: `cool-new-feature`, `fix-palakis-mistakes`, ...) and open a Pull Request once you feel ready to show your work.
 
-If your Pull Request is not ready to merge yet, tag it with the `work in progress` label. You can also use the `help needed` label if you have questions, need a hand or want to ask for input.
+**If your Pull Request is not ready to merge yet, create it as a Draft Pull Request** (open the little arrow menu next to the "Create pull request" button, then select "Create draft pull request").
 
 ### Code style & formatting
 
