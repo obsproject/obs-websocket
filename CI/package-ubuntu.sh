@@ -14,7 +14,6 @@ cd ./build
 PAGER="cat" sudo checkinstall -y --type=debian --fstrans=no --nodoc \
 	--backup=no --deldoc=yes --install=no \
 	--pkgname=obs-websocket --pkgversion="$PKG_VERSION" \
-	--summary="WebSockets Remote Control API for OBS Studio" \
 	--pkglicense="GPLv2.0" --maintainer="stephane.lepin@gmail.com" \
 	--pkggroup="video" \
 	--pkgsource="https://github.com/Palakis/obs-websocket" \
