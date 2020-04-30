@@ -15,7 +15,7 @@ bool isTextGDIPlusSource(const QString& sourceKind)
 
 bool isTextFreeType2Source(const QString& sourceKind)
 {
-	return (sourceKind == "text_ft2" || sourceKind == "text_ft2_v2" || sourceKind == "text_ft2_source" || sourceKind == "text_ft2_source_v2");
+	return (sourceKind == "text_ft2_source" || sourceKind == "text_ft2_source_v2");
 }
 
 /**
