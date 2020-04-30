@@ -83,7 +83,7 @@ void WSServer::start(quint16 port)
 
 		obs_frontend_push_ui_translation(obs_module_get_string);
 		QString errorTitle = tr("OBSWebsocket.Server.StartFailed.Title");
-		QString errorMessage = tr("OBSWebsocket.Server.StartFailed.Message").arg(_serverPort);
+		QString errorMessage = tr("OBSWebsocket.Server.StartFailed.Message").arg(_serverPort).arg(errorCodeMessage.c_str());
 		obs_frontend_pop_ui_translation();
 
 		QMainWindow* mainWindow = reinterpret_cast<QMainWindow*>(obs_frontend_get_main_window());
