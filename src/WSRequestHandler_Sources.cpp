@@ -1438,7 +1438,7 @@ RpcResponse WSRequestHandler::SetSourceFilterVisibility(const RpcRequest& reques
 * @param {String (optional)} `embedPictureFormat` Format of the Data URI encoded picture. Can be "png", "jpg", "jpeg" or "bmp" (or any other value supported by Qt's Image module)
 * @param {String (optional)} `saveToFilePath` Full file path (file extension included) where the captured image is to be saved. Can be in a format different from `pictureFormat`. Can be a relative path.
 * @param {String (optional)} `fileFormat` Format to save the image file as. If not specified, tries to guess based on file extension.
-* @param {int (optional)} `fileCompressionQuality` Compression ratio between -1 and 100 to save the file with. -1 is automatic, 1 is smallest file/most compression, 100 is largest file/least compression. Varies with image type.
+* @param {int (optional)} `compressionQuality` Compression ratio between -1 and 100 to write the image with. -1 is automatic, 1 is smallest file/most compression, 100 is largest file/least compression. Varies with image type.
 * @param {int (optional)} `width` Screenshot width. Defaults to the source's base width.
 * @param {int (optional)} `height` Screenshot height. Defaults to the source's base height.
 *
@@ -1541,6 +1541,16 @@ RpcResponse WSRequestHandler::TakeSourceScreenshot(const RpcRequest& request) {
 
 	OBSDataAutoRelease response = obs_data_create();
 
+	int compressionQuality {-1};
+	if (request.hasField("compressionQuality")) {
+		compressionQuality = obs_data_get_int(request.parameters(), "compressionQuality");
+
+		if (compressionQuality < -1 || compressionQuality > 100) {
+			QString errorMessage = QString("compression quality out of range: %1").arg(compressionQuality);
+			return request.failed(errorMessage.toUtf8());
+		}
+	}
+
 	if (request.hasField("embedPictureFormat")) {
 		const char* pictureFormat = obs_data_get_string(request.parameters(), "embedPictureFormat");
 
@@ -1553,7 +1563,7 @@ RpcResponse WSRequestHandler::TakeSourceScreenshot(const RpcRequest& request) {
 		QByteArray encodedImgBytes;
 		QBuffer buffer(&encodedImgBytes);
 		buffer.open(QBuffer::WriteOnly);
-		if (!sourceImage.save(&buffer, pictureFormat)) {
+		if (!sourceImage.save(&buffer, pictureFormat, compressionQuality)) {
 			return request.failed("embed image encoding failed");
 		}
 		buffer.close();
@@ -1585,17 +1595,7 @@ RpcResponse WSRequestHandler::TakeSourceScreenshot(const RpcRequest& request) {
 			fileFormat = nullptr;
 		}
 
-		int fileCompressionQuality {-1};
-		if (request.hasField("fileCompressionQuality")) {
-			fileCompressionQuality = obs_data_get_int(request.parameters(), "fileCompressionQuality");
-            
-			if (fileCompressionQuality < -1 || fileCompressionQuality > 100) {
-				QString errorMessage = QString("compression quality out of range: %1").arg(fileCompressionQuality);
-				return request.failed(errorMessage.toUtf8());
-			}
-		}
-
-		if (!sourceImage.save(absoluteFilePath, fileFormat, fileCompressionQuality)) {
+		if (!sourceImage.save(absoluteFilePath, fileFormat, compressionQuality)) {
 			return request.failed("Image save failed");
 		}
 		obs_data_set_string(response, "imageFile", absoluteFilePath.toUtf8());
