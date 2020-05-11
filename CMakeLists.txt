@@ -35,6 +35,7 @@ set(obs-websocket_SOURCES
 	src/WSRequestHandler_StudioMode.cpp
 	src/WSRequestHandler_Transitions.cpp
 	src/WSRequestHandler_Outputs.cpp
+	src/WSRequestHandler_MediaControl.cpp
 	src/WSEvents.cpp
 	src/Config.cpp
 	src/Utils.cpp
