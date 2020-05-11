@@ -145,8 +145,7 @@ const QHash<QString, RpcMethodHandler> WSRequestHandler::messageMap {
 	{ "StartOutput", &WSRequestHandler::StartOutput },
 	{ "StopOutput", &WSRequestHandler::StopOutput },
 
-	{ "MediaPlayPause", &WSRequestHandler::MediaPlayPause }
-
+	{ "PlayPauseMedia", &WSRequestHandler::PlayPauseMedia }
 };
 
 const QSet<QString> WSRequestHandler::authNotRequired {

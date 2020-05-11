@@ -9,11 +9,11 @@
 * @param {boolean} `playPause` Whether to pause or play the source. `false` for play, `true` for pause.
 *
 * @api requests
-* @name MediaPlayPause
+* @name PlayPauseMedia
 * @category media control
 * @since 4.8.0
 */
-RpcResponse WSRequestHandler::MediaPlayPause(const RpcRequest& request) {
+RpcResponse WSRequestHandler::PlayPauseMedia(const RpcRequest& request) {
 	if ((!request.hasField("sourceName")) || (!request.hasField("playPause"))) {
 		return request.failed("missing request parameters");
 	}
@@ -31,5 +31,5 @@ RpcResponse WSRequestHandler::MediaPlayPause(const RpcRequest& request) {
 
 	obs_source_media_play_pause(source, playPause);
 	return request.success();
-
 }
+

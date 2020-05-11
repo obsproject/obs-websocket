@@ -163,5 +163,5 @@ class WSRequestHandler {
 		RpcResponse StartOutput(const RpcRequest&);
 		RpcResponse StopOutput(const RpcRequest&);
 
-		RpcResponse MediaPlayPause(const RpcRequest&);
+		RpcResponse PlayPauseMedia(const RpcRequest&);
 };
