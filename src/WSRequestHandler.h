@@ -99,6 +99,10 @@ class WSRequestHandler {
 		RpcResponse GetTransitionList(const RpcRequest&);
 		RpcResponse GetCurrentTransition(const RpcRequest&);
 		RpcResponse SetCurrentTransition(const RpcRequest&);
+		RpcResponse SetTransitionDuration(const RpcRequest&);
+		RpcResponse GetTransitionDuration(const RpcRequest&);
+		RpcResponse SetTBarPosition(const RpcRequest&);
+		RpcResponse GetTransitionPosition(const RpcRequest&);
 
 		RpcResponse SetVolume(const RpcRequest&);
 		RpcResponse GetVolume(const RpcRequest&);
@@ -138,9 +142,6 @@ class WSRequestHandler {
 		RpcResponse SendCaptions(const RpcRequest&);
 #endif
 
-		RpcResponse SetTransitionDuration(const RpcRequest&);
-		RpcResponse GetTransitionDuration(const RpcRequest&);
-
 		RpcResponse GetStudioModeStatus(const RpcRequest&);
 		RpcResponse GetPreviewScene(const RpcRequest&);
 		RpcResponse SetPreviewScene(const RpcRequest&);
@@ -148,7 +149,6 @@ class WSRequestHandler {
 		RpcResponse EnableStudioMode(const RpcRequest&);
 		RpcResponse DisableStudioMode(const RpcRequest&);
 		RpcResponse ToggleStudioMode(const RpcRequest&);
-		RpcResponse SetTBarPosition(const RpcRequest&);
 
 		RpcResponse SetTextGDIPlusProperties(const RpcRequest&);
 		RpcResponse GetTextGDIPlusProperties(const RpcRequest&);

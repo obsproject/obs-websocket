@@ -120,3 +120,53 @@ RpcResponse WSRequestHandler::GetTransitionDuration(const RpcRequest& request) {
 	obs_data_set_int(response, "transition-duration", obs_frontend_get_transition_duration());
 	return request.success(response);
 }
+
+/**
+ * Set the manual position of the T-Bar (in Studio Mode) to the specified value. Will return an error if OBS is not in studio mode
+ * or if the current transition doesn't support T-Bar control.
+ *
+ * @param {double} `position` T-Bar position. This value must be between 0.0 and 1.0.
+ *
+ * @api requests
+ * @name SetTBarPosition
+ * @category transitions
+ * @since 4.8.0
+ */
+RpcResponse WSRequestHandler::SetTBarPosition(const RpcRequest& request) {
+	if (!obs_frontend_preview_program_mode_active()) {
+		return request.failed("studio mode not enabled");
+	}
+
+	OBSSourceAutoRelease currentTransition = obs_frontend_get_current_transition();
+	if (obs_transition_fixed(currentTransition)) {
+		return request.failed("current transition doesn't support t-bar control");
+	}
+
+	double position = obs_data_get_double(request.parameters(), "position");
+	if (position < 0.0 || position > 1.0) {
+		return request.failed("position is out of range");
+	}
+
+	obs_transition_set_manual_time(currentTransition, position);
+
+	return request.success();
+}
+
+/**
+ * Get the position of the current transition.
+ *
+ * @return {double} `position` current transition position. This value will be between 0.0 and 1.0. Note: Transition returns 1.0 when not active.
+ *
+ * @api requests
+ * @name GetTransitionPosition
+ * @category transitions
+ * @since 4.8.0
+ */
+RpcResponse WSRequestHandler::GetTransitionPosition(const RpcRequest& request) {
+	OBSSourceAutoRelease currentTransition = obs_frontend_get_current_transition();
+	
+	OBSDataAutoRelease response = obs_data_create();
+	obs_data_set_double(response, "position", obs_transition_get_time(currentTransition));
+
+	return request.success(response);
+}

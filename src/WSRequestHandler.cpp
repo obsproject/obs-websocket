@@ -84,6 +84,8 @@ const QHash<QString, RpcMethodHandler> WSRequestHandler::messageMap {
 	{ "SetCurrentTransition", &WSRequestHandler::SetCurrentTransition },
 	{ "SetTransitionDuration", &WSRequestHandler::SetTransitionDuration },
 	{ "GetTransitionDuration", &WSRequestHandler::GetTransitionDuration },
+	{ "SetTBarPosition", &WSRequestHandler::SetTBarPosition	},
+	{ "GetTransitionPosition", &WSRequestHandler::GetTransitionPosition },
 
 	{ "SetVolume", &WSRequestHandler::SetVolume },
 	{ "GetVolume", &WSRequestHandler::GetVolume },
@@ -130,7 +132,6 @@ const QHash<QString, RpcMethodHandler> WSRequestHandler::messageMap {
 	{ "EnableStudioMode", &WSRequestHandler::EnableStudioMode },
 	{ "DisableStudioMode", &WSRequestHandler::DisableStudioMode },
 	{ "ToggleStudioMode", &WSRequestHandler::ToggleStudioMode },
-	{ "SetTBarPosition", &WSRequestHandler::SetTBarPosition },
 
 	{ "SetTextGDIPlusProperties", &WSRequestHandler::SetTextGDIPlusProperties },
 	{ "GetTextGDIPlusProperties", &WSRequestHandler::GetTextGDIPlusProperties },
