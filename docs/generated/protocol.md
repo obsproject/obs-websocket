@@ -2643,6 +2643,7 @@ _No additional response items._
 
 ### GetBrowserSourceProperties
 
+- **⚠️ Deprecated. Since 4.8.0. Prefer the use of GetSourceSettings. ⚠️**
 
 - Added in v4.1.0
 
@@ -2674,6 +2675,7 @@ Get current properties for a Browser Source.
 
 ### SetBrowserSourceProperties
 
+- **⚠️ Deprecated. Since 4.8.0. Prefer the use of SetSourceSettings. ⚠️**
 
 - Added in v4.1.0
 
