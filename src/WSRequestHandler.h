@@ -101,6 +101,7 @@ class WSRequestHandler {
 		RpcResponse SetCurrentTransition(const RpcRequest&);
 		RpcResponse SetTransitionDuration(const RpcRequest&);
 		RpcResponse GetTransitionDuration(const RpcRequest&);
+		RpcResponse ReleaseTBar(const RpcRequest&);
 		RpcResponse SetTBarPosition(const RpcRequest&);
 		RpcResponse GetTransitionPosition(const RpcRequest&);
 

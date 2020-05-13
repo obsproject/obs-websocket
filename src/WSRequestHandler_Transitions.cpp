@@ -122,6 +122,28 @@ RpcResponse WSRequestHandler::GetTransitionDuration(const RpcRequest& request) {
 }
 
 /**
+ * Release the T-Bar. YOU MUST CALL THIS IF YOU SPECIFY `release = false` IN `SetTBarPosition`.
+ *
+ * @api requests
+ * @name ReleaseTBar
+ * @category transitions
+ * @since 4.8.0
+ */
+RpcResponse WSRequestHandler::ReleaseTBar(const RpcRequest& request) {
+	if (!obs_frontend_preview_program_mode_active()) {
+		return request.failed("studio mode not enabled");
+	}
+
+	if (obs_transition_fixed(obs_frontend_get_current_transition())) {
+		return request.failed("current transition doesn't support t-bar control");
+	}
+
+	obs_frontend_release_tbar();
+
+	return request.success();
+}
+
+/**
  * Set the manual position of the T-Bar (in Studio Mode) to the specified value. Will return an error if OBS is not in studio mode
  * or if the current transition doesn't support T-Bar control.
  *
@@ -137,17 +159,28 @@ RpcResponse WSRequestHandler::SetTBarPosition(const RpcRequest& request) {
 		return request.failed("studio mode not enabled");
 	}
 
-	OBSSourceAutoRelease currentTransition = obs_frontend_get_current_transition();
-	if (obs_transition_fixed(currentTransition)) {
+	if (obs_transition_fixed(obs_frontend_get_current_transition())) {
 		return request.failed("current transition doesn't support t-bar control");
+	}
+
+	if (!request.hasField("position")) {
+		return request.failed("missing request parameters");
 	}
 
 	double position = obs_data_get_double(request.parameters(), "position");
 	if (position < 0.0 || position > 1.0) {
 		return request.failed("position is out of range");
 	}
-
-	obs_transition_set_manual_time(currentTransition, position);
+	
+	bool release = true;
+	if (request.hasField("release")) {
+		release = obs_data_get_bool(request.parameters(), "release");
+	}
+	
+	obs_frontend_set_tbar_position((int)((float)position * 1024.0));
+	if (release) {
+		obs_frontend_release_tbar();
+	}
 
 	return request.success();
 }
