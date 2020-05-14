@@ -8,6 +8,16 @@
 
 #include "WSRequestHandler.h"
 
+bool isTextGDIPlusSource(const QString& sourceKind)
+{
+	return (sourceKind == "text_gdiplus" || sourceKind == "text_gdiplus_v2");
+}
+
+bool isTextFreeType2Source(const QString& sourceKind)
+{
+	return (sourceKind == "text_ft2_source" || sourceKind == "text_ft2_source_v2");
+}
+
 /**
 * List all sources available in the running OBS instance
 *
@@ -536,8 +546,8 @@ RpcResponse WSRequestHandler::GetTextGDIPlusProperties(const RpcRequest& request
 		return request.failed("specified source doesn't exist");
 	}
 
-	QString sourceId = obs_source_get_id(source);
-	if (sourceId != "text_gdiplus") {
+	QString sourceKind = obs_source_get_id(source);
+	if (!isTextGDIPlusSource(sourceKind)) {
 		return request.failed("not a text gdi plus source");
 	}
 
@@ -601,8 +611,8 @@ RpcResponse WSRequestHandler::SetTextGDIPlusProperties(const RpcRequest& request
 		return request.failed("specified source doesn't exist");
 	}
 
-	QString sourceId = obs_source_get_id(source);
-	if (sourceId != "text_gdiplus") {
+	QString sourceKind = obs_source_get_id(source);
+	if (!isTextGDIPlusSource(sourceKind)) {
 		return request.failed("not a text gdi plus source");
 	}
 
@@ -767,8 +777,8 @@ RpcResponse WSRequestHandler::GetTextFreetype2Properties(const RpcRequest& reque
 		return request.failed("specified source doesn't exist");
 	}
 
-	QString sourceId = obs_source_get_id(source);
-	if (sourceId != "text_ft2_source") {
+	QString sourceKind = obs_source_get_id(source);
+	if (!isTextFreeType2Source(sourceKind)) {
 		return request.failed("not a freetype 2 source");
 	}
 
@@ -815,8 +825,8 @@ RpcResponse WSRequestHandler::SetTextFreetype2Properties(const RpcRequest& reque
 		return request.failed("specified source doesn't exist");
 	}
 
-	QString sourceId = obs_source_get_id(source);
-	if (sourceId != "text_ft2_source") {
+	QString sourceKind = obs_source_get_id(source);
+	if (!isTextFreeType2Source(sourceKind)) {
 		return request.failed("not text freetype 2 source");
 	}
 
@@ -909,6 +919,7 @@ RpcResponse WSRequestHandler::SetTextFreetype2Properties(const RpcRequest& reque
  * @name GetBrowserSourceProperties
  * @category sources
  * @since 4.1.0
+ * @deprecated Since 4.8.0. Prefer the use of GetSourceSettings.
  */
 RpcResponse WSRequestHandler::GetBrowserSourceProperties(const RpcRequest& request)
 {
@@ -950,6 +961,7 @@ RpcResponse WSRequestHandler::GetBrowserSourceProperties(const RpcRequest& reque
  * @api requests
  * @name SetBrowserSourceProperties
  * @category sources
+ * @deprecated Since 4.8.0. Prefer the use of SetSourceSettings.
  * @since 4.1.0
  */
 RpcResponse WSRequestHandler::SetBrowserSourceProperties(const RpcRequest& request)

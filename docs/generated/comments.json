@@ -2473,7 +2473,9 @@
         "lead": "",
         "type": "class",
         "examples": []
-      },
+      }
+    ],
+    "scene items": [
       {
         "subheads": [],
         "description": "Scene items have been reordered.",
@@ -2485,7 +2487,7 @@
         ],
         "api": "events",
         "name": "SourceOrderChanged",
-        "category": "sources",
+        "category": "scene items",
         "since": "4.0.0",
         "returns": [
           {
@@ -2518,7 +2520,7 @@
         "categories": [
           {
             "name": "",
-            "description": "sources"
+            "description": "scene items"
           }
         ],
         "sinces": [
@@ -2545,7 +2547,7 @@
         ],
         "api": "events",
         "name": "SceneItemAdded",
-        "category": "sources",
+        "category": "scene items",
         "since": "4.0.0",
         "returns": [
           {
@@ -2573,7 +2575,7 @@
         "categories": [
           {
             "name": "",
-            "description": "sources"
+            "description": "scene items"
           }
         ],
         "sinces": [
@@ -2600,7 +2602,7 @@
         ],
         "api": "events",
         "name": "SceneItemRemoved",
-        "category": "sources",
+        "category": "scene items",
         "since": "4.0.0",
         "returns": [
           {
@@ -2628,7 +2630,7 @@
         "categories": [
           {
             "name": "",
-            "description": "sources"
+            "description": "scene items"
           }
         ],
         "sinces": [
@@ -2656,7 +2658,7 @@
         ],
         "api": "events",
         "name": "SceneItemVisibilityChanged",
-        "category": "sources",
+        "category": "scene items",
         "since": "4.0.0",
         "returns": [
           {
@@ -2689,7 +2691,7 @@
         "categories": [
           {
             "name": "",
-            "description": "sources"
+            "description": "scene items"
           }
         ],
         "sinces": [
@@ -2717,8 +2719,8 @@
         ],
         "api": "events",
         "name": "SceneItemLockChanged",
-        "category": "sources",
-        "since": "unreleased",
+        "category": "scene items",
+        "since": "4.8.0",
         "returns": [
           {
             "type": "String",
@@ -2750,13 +2752,13 @@
         "categories": [
           {
             "name": "",
-            "description": "sources"
+            "description": "scene items"
           }
         ],
         "sinces": [
           {
             "name": "",
-            "description": "unreleased"
+            "description": "4.8.0"
           }
         ],
         "heading": {
@@ -2778,7 +2780,7 @@
         ],
         "api": "events",
         "name": "SceneItemTransformChanged",
-        "category": "sources",
+        "category": "scene items",
         "since": "4.6.0",
         "returns": [
           {
@@ -2811,7 +2813,7 @@
         "categories": [
           {
             "name": "",
-            "description": "sources"
+            "description": "scene items"
           }
         ],
         "sinces": [
@@ -2838,7 +2840,7 @@
         ],
         "api": "events",
         "name": "SceneItemSelected",
-        "category": "sources",
+        "category": "scene items",
         "since": "4.6.0",
         "returns": [
           {
@@ -2866,7 +2868,7 @@
         "categories": [
           {
             "name": "",
-            "description": "sources"
+            "description": "scene items"
           }
         ],
         "sinces": [
@@ -2893,7 +2895,7 @@
         ],
         "api": "events",
         "name": "SceneItemDeselected",
-        "category": "sources",
+        "category": "scene items",
         "since": "4.6.0",
         "returns": [
           {
@@ -2921,7 +2923,7 @@
         "categories": [
           {
             "name": "",
-            "description": "sources"
+            "description": "scene items"
           }
         ],
         "sinces": [
@@ -3513,7 +3515,7 @@
         "api": "requests",
         "name": "OpenProjector",
         "category": "general",
-        "since": "unreleased",
+        "since": "4.8.0",
         "params": [
           {
             "type": "String (Optional)",
@@ -3551,7 +3553,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "unreleased"
+            "description": "4.8.0"
           }
         ],
         "heading": {
@@ -4383,11 +4385,14 @@
         "subheads": [],
         "description": "Gets the scene specific properties of the specified source item.\nCoordinates are relative to the item's parent (the scene or group it belongs to).",
         "param": [
-          "{String (optional)} `scene-name` the name of the scene that the source item belongs to. Defaults to the current scene.",
-          "{String} `item` The name of the source."
+          "{String (optional)} `scene-name` Name of the scene the scene item belongs to. Defaults to the current scene.",
+          "{String | Object} `item` Scene Item name (if this field is a string) or specification (if it is an object).",
+          "{String (optional)} `item.name` Scene Item name (if the `item` field is an object)",
+          "{int (optional)} `item.id` Scene Item ID (if the `item` field is an object)"
         ],
         "return": [
-          "{String} `name` The name of the source.",
+          "{String} `name` Scene Item name.",
+          "{int} `itemId` Scene Item ID.",
           "{int} `position.x` The x position of the source from the left.",
           "{int} `position.y` The y position of the source from the top.",
           "{int} `position.alignment` The point on the source that the item is manipulated from.",
@@ -4421,7 +4426,12 @@
           {
             "type": "String",
             "name": "name",
-            "description": "The name of the source."
+            "description": "Scene Item name."
+          },
+          {
+            "type": "int",
+            "name": "itemId",
+            "description": "Scene Item ID."
           },
           {
             "type": "int",
@@ -4548,12 +4558,22 @@
           {
             "type": "String (optional)",
             "name": "scene-name",
-            "description": "the name of the scene that the source item belongs to. Defaults to the current scene."
+            "description": "Name of the scene the scene item belongs to. Defaults to the current scene."
           },
           {
-            "type": "String",
+            "type": "String | Object",
             "name": "item",
-            "description": "The name of the source."
+            "description": "Scene Item name (if this field is a string) or specification (if it is an object)."
+          },
+          {
+            "type": "String (optional)",
+            "name": "item.name",
+            "description": "Scene Item name (if the `item` field is an object)"
+          },
+          {
+            "type": "int (optional)",
+            "name": "item.id",
+            "description": "Scene Item ID (if the `item` field is an object)"
           }
         ],
         "names": [
@@ -4586,8 +4606,10 @@
         "subheads": [],
         "description": "Sets the scene specific properties of a source. Unspecified properties will remain unchanged.\nCoordinates are relative to the item's parent (the scene or group it belongs to).",
         "param": [
-          "{String (optional)} `scene-name` the name of the scene that the source item belongs to. Defaults to the current scene.",
-          "{String} `item` The name of the source.",
+          "{String (optional)} `scene-name` Name of the scene the source item belongs to. Defaults to the current scene.",
+          "{String | Object} `item` Scene Item name (if this field is a string) or specification (if it is an object).",
+          "{String (optional)} `item.name` Scene Item name (if the `item` field is an object)",
+          "{int (optional)} `item.id` Scene Item ID (if the `item` field is an object)",
           "{int (optional)} `position.x` The new x position of the source.",
           "{int (optional)} `position.y` The new y position of the source.",
           "{int (optional)} `position.alignment` The new alignment of the source.",
@@ -4613,12 +4635,22 @@
           {
             "type": "String (optional)",
             "name": "scene-name",
-            "description": "the name of the scene that the source item belongs to. Defaults to the current scene."
+            "description": "Name of the scene the source item belongs to. Defaults to the current scene."
           },
           {
-            "type": "String",
+            "type": "String | Object",
             "name": "item",
-            "description": "The name of the source."
+            "description": "Scene Item name (if this field is a string) or specification (if it is an object)."
+          },
+          {
+            "type": "String (optional)",
+            "name": "item.name",
+            "description": "Scene Item name (if the `item` field is an object)"
+          },
+          {
+            "type": "int (optional)",
+            "name": "item.id",
+            "description": "Scene Item ID (if the `item` field is an object)"
           },
           {
             "type": "int (optional)",
@@ -4731,8 +4763,10 @@
         "subheads": [],
         "description": "Reset a scene item.",
         "param": [
-          "{String (optional)} `scene-name` Name of the scene the source belongs to. Defaults to the current scene.",
-          "{String} `item` Name of the source item."
+          "{String (optional)} `scene-name` Name of the scene the scene item belongs to. Defaults to the current scene.",
+          "{String | Object} `item` Scene Item name (if this field is a string) or specification (if it is an object).",
+          "{String (optional)} `item.name` Scene Item name (if the `item` field is an object)",
+          "{int (optional)} `item.id` Scene Item ID (if the `item` field is an object)"
         ],
         "api": "requests",
         "name": "ResetSceneItem",
@@ -4742,12 +4776,22 @@
           {
             "type": "String (optional)",
             "name": "scene-name",
-            "description": "Name of the scene the source belongs to. Defaults to the current scene."
+            "description": "Name of the scene the scene item belongs to. Defaults to the current scene."
           },
           {
-            "type": "String",
+            "type": "String | Object",
             "name": "item",
-            "description": "Name of the source item."
+            "description": "Scene Item name (if this field is a string) or specification (if it is an object)."
+          },
+          {
+            "type": "String (optional)",
+            "name": "item.name",
+            "description": "Scene Item name (if the `item` field is an object)"
+          },
+          {
+            "type": "int (optional)",
+            "name": "item.id",
+            "description": "Scene Item ID (if the `item` field is an object)"
           }
         ],
         "names": [
@@ -4780,9 +4824,9 @@
         "subheads": [],
         "description": "Show or hide a specified source item in a specified scene.",
         "param": [
-          "{String} `source` Scene item name in the specified scene.",
-          "{boolean} `render` true = shown ; false = hidden",
-          "{String (optional)} `scene-name` Name of the scene where the source resides. Defaults to the currently active scene."
+          "{String (optional)} `scene-name` Name of the scene the scene item belongs to. Defaults to the currently active scene.",
+          "{String} `source` Scene Item name.",
+          "{boolean} `render` true = shown ; false = hidden"
         ],
         "api": "requests",
         "name": "SetSceneItemRender",
@@ -4791,19 +4835,19 @@
         "deprecated": "Since 4.3.0. Prefer the use of SetSceneItemProperties.",
         "params": [
           {
+            "type": "String (optional)",
+            "name": "scene-name",
+            "description": "Name of the scene the scene item belongs to. Defaults to the currently active scene."
+          },
+          {
             "type": "String",
             "name": "source",
-            "description": "Scene item name in the specified scene."
+            "description": "Scene Item name."
           },
           {
             "type": "boolean",
             "name": "render",
             "description": "true = shown ; false = hidden"
-          },
-          {
-            "type": "String (optional)",
-            "name": "scene-name",
-            "description": "Name of the scene where the source resides. Defaults to the currently active scene."
           }
         ],
         "names": [
@@ -4842,8 +4886,8 @@
         "subheads": [],
         "description": "Sets the coordinates of a specified source item.",
         "param": [
-          "{String (optional)} `scene-name` The name of the scene that the source item belongs to. Defaults to the current scene.",
-          "{String} `item` The name of the source item.",
+          "{String (optional)} `scene-name` Name of the scene the scene item belongs to. Defaults to the current scene.",
+          "{String} `item` Scene Item name.",
           "{double} `x` X coordinate.",
           "{double} `y` Y coordinate."
         ],
@@ -4856,12 +4900,12 @@
           {
             "type": "String (optional)",
             "name": "scene-name",
-            "description": "The name of the scene that the source item belongs to. Defaults to the current scene."
+            "description": "Name of the scene the scene item belongs to. Defaults to the current scene."
           },
           {
             "type": "String",
             "name": "item",
-            "description": "The name of the source item."
+            "description": "Scene Item name."
           },
           {
             "type": "double",
@@ -4910,8 +4954,8 @@
         "subheads": [],
         "description": "Set the transform of the specified source item.",
         "param": [
-          "{String (optional)} `scene-name` The name of the scene that the source item belongs to. Defaults to the current scene.",
-          "{String} `item` The name of the source item.",
+          "{String (optional)} `scene-name` Name of the scene the scene item belongs to. Defaults to the current scene.",
+          "{String} `item` Scene Item name.",
           "{double} `x-scale` Width scale factor.",
           "{double} `y-scale` Height scale factor.",
           "{double} `rotation` Source item rotation (in degrees)."
@@ -4925,12 +4969,12 @@
           {
             "type": "String (optional)",
             "name": "scene-name",
-            "description": "The name of the scene that the source item belongs to. Defaults to the current scene."
+            "description": "Name of the scene the scene item belongs to. Defaults to the current scene."
           },
           {
             "type": "String",
             "name": "item",
-            "description": "The name of the source item."
+            "description": "Scene Item name."
           },
           {
             "type": "double",
@@ -4984,8 +5028,8 @@
         "subheads": [],
         "description": "Sets the crop coordinates of the specified source item.",
         "param": [
-          "{String (optional)} `scene-name` the name of the scene that the source item belongs to. Defaults to the current scene.",
-          "{String} `item` The name of the source.",
+          "{String (optional)} `scene-name` Name of the scene the scene item belongs to. Defaults to the current scene.",
+          "{String} `item` Scene Item name.",
           "{int} `top` Pixel position of the top of the source item.",
           "{int} `bottom` Pixel position of the bottom of the source item.",
           "{int} `left` Pixel position of the left of the source item.",
@@ -5000,12 +5044,12 @@
           {
             "type": "String (optional)",
             "name": "scene-name",
-            "description": "the name of the scene that the source item belongs to. Defaults to the current scene."
+            "description": "Name of the scene the scene item belongs to. Defaults to the current scene."
           },
           {
             "type": "String",
             "name": "item",
-            "description": "The name of the source."
+            "description": "Scene Item name."
           },
           {
             "type": "int",
@@ -5064,10 +5108,10 @@
         "subheads": [],
         "description": "Deletes a scene item.",
         "param": [
-          "{String (optional)} `scene` Name of the scene the source belongs to. Defaults to the current scene.",
-          "{Object} `item` item to delete (required)",
-          "{String} `item.name` name of the scene item (prefer `id`, including both is acceptable).",
-          "{int} `item.id` id of the scene item."
+          "{String (optional)} `scene` Name of the scene the scene item belongs to. Defaults to the current scene.",
+          "{Object} `item` Scene item to delete (required)",
+          "{String} `item.name` Scene Item name (prefer `id`, including both is acceptable).",
+          "{int} `item.id` Scene Item ID."
         ],
         "api": "requests",
         "name": "DeleteSceneItem",
@@ -5077,22 +5121,22 @@
           {
             "type": "String (optional)",
             "name": "scene",
-            "description": "Name of the scene the source belongs to. Defaults to the current scene."
+            "description": "Name of the scene the scene item belongs to. Defaults to the current scene."
           },
           {
             "type": "Object",
             "name": "item",
-            "description": "item to delete (required)"
+            "description": "Scene item to delete (required)"
           },
           {
             "type": "String",
             "name": "item.name",
-            "description": "name of the scene item (prefer `id`, including both is acceptable)."
+            "description": "Scene Item name (prefer `id`, including both is acceptable)."
           },
           {
             "type": "int",
             "name": "item.id",
-            "description": "id of the scene item."
+            "description": "Scene Item ID."
           }
         ],
         "names": [
@@ -5127,9 +5171,9 @@
         "param": [
           "{String (optional)} `fromScene` Name of the scene to copy the item from. Defaults to the current scene.",
           "{String (optional)} `toScene` Name of the scene to create the item in. Defaults to the current scene.",
-          "{Object} `item` item to duplicate (required)",
-          "{String} `item.name` name of the scene item (prefer `id`, including both is acceptable).",
-          "{int} `item.id` id of the scene item."
+          "{Object} `item` Scene Item to duplicate from the source scene (required)",
+          "{String} `item.name` Scene Item name (prefer `id`, including both is acceptable).",
+          "{int} `item.id` Scene Item ID."
         ],
         "return": [
           "{String} `scene` Name of the scene where the new item was created",
@@ -5177,17 +5221,17 @@
           {
             "type": "Object",
             "name": "item",
-            "description": "item to duplicate (required)"
+            "description": "Scene Item to duplicate from the source scene (required)"
           },
           {
             "type": "String",
             "name": "item.name",
-            "description": "name of the scene item (prefer `id`, including both is acceptable)."
+            "description": "Scene Item name (prefer `id`, including both is acceptable)."
           },
           {
             "type": "int",
             "name": "item.id",
-            "description": "id of the scene item."
+            "description": "Scene Item ID."
           }
         ],
         "names": [
@@ -5313,7 +5357,7 @@
         "description": "Get a list of scenes in the currently active profile.",
         "return": [
           "{String} `current-scene` Name of the currently active scene.",
-          "{Array<Scene>} `scenes` Ordered list of the current profile's scenes (See `[GetCurrentScene](#getcurrentscene)` for more information)."
+          "{Array<Scene>} `scenes` Ordered list of the current profile's scenes (See [GetCurrentScene](#getcurrentscene) for more information)."
         ],
         "api": "requests",
         "name": "GetSceneList",
@@ -5328,7 +5372,7 @@
           {
             "type": "Array<Scene>",
             "name": "scenes",
-            "description": "Ordered list of the current profile's scenes (See `[GetCurrentScene](#getcurrentscene)` for more information)."
+            "description": "Ordered list of the current profile's scenes (See [GetCurrentScene](#getcurrentscene) for more information)."
           }
         ],
         "names": [
@@ -6826,6 +6870,7 @@
         "name": "GetBrowserSourceProperties",
         "category": "sources",
         "since": "4.1.0",
+        "deprecated": "Since 4.8.0. Prefer the use of GetSourceSettings.",
         "returns": [
           {
             "type": "String",
@@ -6898,6 +6943,12 @@
             "description": "4.1.0"
           }
         ],
+        "deprecateds": [
+          {
+            "name": "",
+            "description": "Since 4.8.0. Prefer the use of GetSourceSettings."
+          }
+        ],
         "heading": {
           "level": 2,
           "text": "GetBrowserSourceProperties"
@@ -6924,6 +6975,7 @@
         "api": "requests",
         "name": "SetBrowserSourceProperties",
         "category": "sources",
+        "deprecated": "Since 4.8.0. Prefer the use of SetSourceSettings.",
         "since": "4.1.0",
         "params": [
           {
@@ -6987,6 +7039,12 @@
           {
             "name": "",
             "description": "sources"
+          }
+        ],
+        "deprecateds": [
+          {
+            "name": "",
+            "description": "Since 4.8.0. Prefer the use of SetSourceSettings."
           }
         ],
         "sinces": [

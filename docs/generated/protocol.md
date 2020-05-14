@@ -99,6 +99,7 @@ auth_response = base64_encode(auth_response_hash)
     + [SourceFilterRemoved](#sourcefilterremoved)
     + [SourceFilterVisibilityChanged](#sourcefiltervisibilitychanged)
     + [SourceFiltersReordered](#sourcefiltersreordered)
+  * [Scene Items](#scene-items)
     + [SourceOrderChanged](#sourceorderchanged)
     + [SceneItemAdded](#sceneitemadded)
     + [SceneItemRemoved](#sceneitemremoved)
@@ -148,7 +149,7 @@ auth_response = base64_encode(auth_response_hash)
     + [SetCurrentSceneCollection](#setcurrentscenecollection)
     + [GetCurrentSceneCollection](#getcurrentscenecollection)
     + [ListSceneCollections](#listscenecollections)
-  * [Scene Items](#scene-items)
+  * [Scene Items](#scene-items-1)
     + [GetSceneItemProperties](#getsceneitemproperties)
     + [SetSceneItemProperties](#setsceneitemproperties)
     + [ResetSceneItem](#resetsceneitem)
@@ -1004,6 +1005,8 @@ Filters in a source have been reordered.
 
 ---
 
+## Scene Items
+
 ### SourceOrderChanged
 
 
@@ -1081,7 +1084,7 @@ An item's visibility has been toggled.
 ### SceneItemLockChanged
 
 
-- Unreleased
+- Added in v4.8.0
 
 An item's locked status has been toggled.
 
@@ -1404,7 +1407,7 @@ _No specified parameters._
 ### OpenProjector
 
 
-- Unreleased
+- Added in v4.8.0
 
 Open a projector window or create a projector on a monitor. Requires OBS v24.0.4 or newer.
 
@@ -1860,15 +1863,18 @@ Coordinates are relative to the item's parent (the scene or group it belongs to)
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
-| `scene-name` | _String (optional)_ | the name of the scene that the source item belongs to. Defaults to the current scene. |
-| `item` | _String_ | The name of the source. |
+| `scene-name` | _String (optional)_ | Name of the scene the scene item belongs to. Defaults to the current scene. |
+| `item` | _String \| Object_ | Scene Item name (if this field is a string) or specification (if it is an object). |
+| `item.name` | _String (optional)_ | Scene Item name (if the `item` field is an object) |
+| `item.id` | _int (optional)_ | Scene Item ID (if the `item` field is an object) |
 
 
 **Response Items:**
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
-| `name` | _String_ | The name of the source. |
+| `name` | _String_ | Scene Item name. |
+| `itemId` | _int_ | Scene Item ID. |
 | `position.x` | _int_ | The x position of the source from the left. |
 | `position.y` | _int_ | The y position of the source from the top. |
 | `position.alignment` | _int_ | The point on the source that the item is manipulated from. |
@@ -1909,8 +1915,10 @@ Coordinates are relative to the item's parent (the scene or group it belongs to)
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
-| `scene-name` | _String (optional)_ | the name of the scene that the source item belongs to. Defaults to the current scene. |
-| `item` | _String_ | The name of the source. |
+| `scene-name` | _String (optional)_ | Name of the scene the source item belongs to. Defaults to the current scene. |
+| `item` | _String \| Object_ | Scene Item name (if this field is a string) or specification (if it is an object). |
+| `item.name` | _String (optional)_ | Scene Item name (if the `item` field is an object) |
+| `item.id` | _int (optional)_ | Scene Item ID (if the `item` field is an object) |
 | `position.x` | _int (optional)_ | The new x position of the source. |
 | `position.y` | _int (optional)_ | The new y position of the source. |
 | `position.alignment` | _int (optional)_ | The new alignment of the source. |
@@ -1946,8 +1954,10 @@ Reset a scene item.
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
-| `scene-name` | _String (optional)_ | Name of the scene the source belongs to. Defaults to the current scene. |
-| `item` | _String_ | Name of the source item. |
+| `scene-name` | _String (optional)_ | Name of the scene the scene item belongs to. Defaults to the current scene. |
+| `item` | _String \| Object_ | Scene Item name (if this field is a string) or specification (if it is an object). |
+| `item.name` | _String (optional)_ | Scene Item name (if the `item` field is an object) |
+| `item.id` | _int (optional)_ | Scene Item ID (if the `item` field is an object) |
 
 
 **Response Items:**
@@ -1968,9 +1978,9 @@ Show or hide a specified source item in a specified scene.
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
-| `source` | _String_ | Scene item name in the specified scene. |
+| `scene-name` | _String (optional)_ | Name of the scene the scene item belongs to. Defaults to the currently active scene. |
+| `source` | _String_ | Scene Item name. |
 | `render` | _boolean_ | true = shown ; false = hidden |
-| `scene-name` | _String (optional)_ | Name of the scene where the source resides. Defaults to the currently active scene. |
 
 
 **Response Items:**
@@ -1991,8 +2001,8 @@ Sets the coordinates of a specified source item.
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
-| `scene-name` | _String (optional)_ | The name of the scene that the source item belongs to. Defaults to the current scene. |
-| `item` | _String_ | The name of the source item. |
+| `scene-name` | _String (optional)_ | Name of the scene the scene item belongs to. Defaults to the current scene. |
+| `item` | _String_ | Scene Item name. |
 | `x` | _double_ | X coordinate. |
 | `y` | _double_ | Y coordinate. |
 
@@ -2015,8 +2025,8 @@ Set the transform of the specified source item.
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
-| `scene-name` | _String (optional)_ | The name of the scene that the source item belongs to. Defaults to the current scene. |
-| `item` | _String_ | The name of the source item. |
+| `scene-name` | _String (optional)_ | Name of the scene the scene item belongs to. Defaults to the current scene. |
+| `item` | _String_ | Scene Item name. |
 | `x-scale` | _double_ | Width scale factor. |
 | `y-scale` | _double_ | Height scale factor. |
 | `rotation` | _double_ | Source item rotation (in degrees). |
@@ -2040,8 +2050,8 @@ Sets the crop coordinates of the specified source item.
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
-| `scene-name` | _String (optional)_ | the name of the scene that the source item belongs to. Defaults to the current scene. |
-| `item` | _String_ | The name of the source. |
+| `scene-name` | _String (optional)_ | Name of the scene the scene item belongs to. Defaults to the current scene. |
+| `item` | _String_ | Scene Item name. |
 | `top` | _int_ | Pixel position of the top of the source item. |
 | `bottom` | _int_ | Pixel position of the bottom of the source item. |
 | `left` | _int_ | Pixel position of the left of the source item. |
@@ -2065,10 +2075,10 @@ Deletes a scene item.
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
-| `scene` | _String (optional)_ | Name of the scene the source belongs to. Defaults to the current scene. |
-| `item` | _Object_ | item to delete (required) |
-| `item.name` | _String_ | name of the scene item (prefer `id`, including both is acceptable). |
-| `item.id` | _int_ | id of the scene item. |
+| `scene` | _String (optional)_ | Name of the scene the scene item belongs to. Defaults to the current scene. |
+| `item` | _Object_ | Scene item to delete (required) |
+| `item.name` | _String_ | Scene Item name (prefer `id`, including both is acceptable). |
+| `item.id` | _int_ | Scene Item ID. |
 
 
 **Response Items:**
@@ -2090,9 +2100,9 @@ Duplicates a scene item.
 | ---- | :---: | ------------|
 | `fromScene` | _String (optional)_ | Name of the scene to copy the item from. Defaults to the current scene. |
 | `toScene` | _String (optional)_ | Name of the scene to create the item in. Defaults to the current scene. |
-| `item` | _Object_ | item to duplicate (required) |
-| `item.name` | _String_ | name of the scene item (prefer `id`, including both is acceptable). |
-| `item.id` | _int_ | id of the scene item. |
+| `item` | _Object_ | Scene Item to duplicate from the source scene (required) |
+| `item.name` | _String_ | Scene Item name (prefer `id`, including both is acceptable). |
+| `item.id` | _int_ | Scene Item ID. |
 
 
 **Response Items:**
@@ -2166,7 +2176,7 @@ _No specified parameters._
 | Name | Type  | Description |
 | ---- | :---: | ------------|
 | `current-scene` | _String_ | Name of the currently active scene. |
-| `scenes` | _Array&lt;Scene&gt;_ | Ordered list of the current profile's scenes (See `[GetCurrentScene](#getcurrentscene)` for more information). |
+| `scenes` | _Array&lt;Scene&gt;_ | Ordered list of the current profile's scenes (See [GetCurrentScene](#getcurrentscene) for more information). |
 
 
 ---
@@ -2633,6 +2643,7 @@ _No additional response items._
 
 ### GetBrowserSourceProperties
 
+- **⚠️ Deprecated. Since 4.8.0. Prefer the use of GetSourceSettings. ⚠️**
 
 - Added in v4.1.0
 
@@ -2664,6 +2675,7 @@ Get current properties for a Browser Source.
 
 ### SetBrowserSourceProperties
 
+- **⚠️ Deprecated. Since 4.8.0. Prefer the use of SetSourceSettings. ⚠️**
 
 - Added in v4.1.0
 

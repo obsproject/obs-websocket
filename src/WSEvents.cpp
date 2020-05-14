@@ -240,10 +240,17 @@ void WSEvents::FrontendEventHandler(enum obs_frontend_event event, void* private
 void WSEvents::broadcastUpdate(const char* updateType,
 	obs_data_t* additionalFields = nullptr)
 {
-	uint64_t streamTime = getStreamingTime();
-	uint64_t recordingTime = getRecordingTime();
-	RpcEvent event(QString(updateType), streamTime, recordingTime, additionalFields);
+	std::optional<uint64_t> streamTime;
+	if (obs_frontend_streaming_active()) {
+		streamTime = std::make_optional(getStreamingTime());
+	}
 
+	std::optional<uint64_t> recordingTime;
+	if (obs_frontend_recording_active()) {
+		recordingTime = std::make_optional(getRecordingTime());
+	}
+
+	RpcEvent event(QString(updateType), streamTime, recordingTime, additionalFields);
 	_srv->broadcast(event);
 }
 
@@ -1338,7 +1345,7 @@ void WSEvents::OnSourceFilterOrderChanged(void* param, calldata_t* data) {
  *
  * @api events
  * @name SourceOrderChanged
- * @category sources
+ * @category scene items
  * @since 4.0.0
  */
 void WSEvents::OnSceneReordered(void* param, calldata_t* data) {
@@ -1380,7 +1387,7 @@ void WSEvents::OnSceneReordered(void* param, calldata_t* data) {
  *
  * @api events
  * @name SceneItemAdded
- * @category sources
+ * @category scene items
  * @since 4.0.0
  */
 void WSEvents::OnSceneItemAdd(void* param, calldata_t* data) {
@@ -1413,7 +1420,7 @@ void WSEvents::OnSceneItemAdd(void* param, calldata_t* data) {
  *
  * @api events
  * @name SceneItemRemoved
- * @category sources
+ * @category scene items
  * @since 4.0.0
  */
 void WSEvents::OnSceneItemDelete(void* param, calldata_t* data) {
@@ -1447,7 +1454,7 @@ void WSEvents::OnSceneItemDelete(void* param, calldata_t* data) {
  *
  * @api events
  * @name SceneItemVisibilityChanged
- * @category sources
+ * @category scene items
  * @since 4.0.0
  */
 void WSEvents::OnSceneItemVisibilityChanged(void* param, calldata_t* data) {
@@ -1485,8 +1492,8 @@ void WSEvents::OnSceneItemVisibilityChanged(void* param, calldata_t* data) {
  *
  * @api events
  * @name SceneItemLockChanged
- * @category sources
- * @since unreleased
+ * @category scene items
+ * @since 4.8.0
  */
 void WSEvents::OnSceneItemLockChanged(void* param, calldata_t* data) {
 	auto instance = reinterpret_cast<WSEvents*>(param);
@@ -1523,7 +1530,7 @@ void WSEvents::OnSceneItemLockChanged(void* param, calldata_t* data) {
  *
  * @api events
  * @name SceneItemTransformChanged
- * @category sources
+ * @category scene items
  * @since 4.6.0
  */
 void WSEvents::OnSceneItemTransform(void* param, calldata_t* data) {
@@ -1559,7 +1566,7 @@ void WSEvents::OnSceneItemTransform(void* param, calldata_t* data) {
  *
  * @api events
  * @name SceneItemSelected
- * @category sources
+ * @category scene items
  * @since 4.6.0
  */
 void WSEvents::OnSceneItemSelected(void* param, calldata_t* data) {
@@ -1594,7 +1601,7 @@ void WSEvents::OnSceneItemSelected(void* param, calldata_t* data) {
  *
  * @api events
  * @name SceneItemDeselected
- * @category sources
+ * @category scene items
  * @since 4.6.0
  */
 void WSEvents::OnSceneItemDeselected(void* param, calldata_t* data) {

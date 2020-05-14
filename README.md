@@ -5,7 +5,7 @@ WebSockets API for OBS Studio.
 
 Follow the main author on Twitter for news & updates : [@LePalakis](https://twitter.com/LePalakis)
 
-[![Build Status - Windows](https://ci.appveyor.com/api/projects/status/github/Palakis/obs-websocket)](https://ci.appveyor.com/project/Palakis/obs-websocket/history) [![Build Status - Linux](https://travis-ci.org/Palakis/obs-websocket.svg?branch=master)](https://travis-ci.org/Palakis/obs-websocket)
+[![Build Status](https://dev.azure.com/Palakis/obs-websocket/_apis/build/status/Palakis.obs-websocket?branchName=4.x-current)](https://dev.azure.com/Palakis/obs-websocket/_build/latest?definitionId=2&branchName=4.x-current)
 
 ## Downloads
 
@@ -20,21 +20,23 @@ It is **highly recommended** to protect obs-websocket with a password against un
 ### Possible use cases
 
 - Remote control OBS from a phone or tablet on the same local network
-- Change your stream overlay/graphics based on the current scene (like the AGDQ overlay does)
+- Change your stream overlay/graphics based on the current scene
 - Automate scene switching with a third-party program (e.g. : auto-pilot, foot pedal, ...)
 
 ### For developers
 
 The server is a typical Websockets server running by default on port 4444 (the port number can be changed in the Settings dialog).
-The protocol understood by the server is documented in [PROTOCOL.md](docs/generated/protocol.md).  
+The protocol understood by the server is documented in [PROTOCOL.md](docs/generated/protocol.md).
 
 Here's a list of available language APIs for obs-websocket :
 - Javascript (browser & nodejs): [obs-websocket-js](https://github.com/haganbmj/obs-websocket-js) by Brendan Hagan
 - C#/VB.NET: [obs-websocket-dotnet](https://github.com/Palakis/obs-websocket-dotnet)
 - Python 2 and 3: [obs-websocket-py](https://github.com/Elektordi/obs-websocket-py) by Guillaume Genty a.k.a Elektordi
 - Python 3.5+ with asyncio: [obs-ws-rc](https://github.com/KirillMysnik/obs-ws-rc) by Kirill Mysnik
+- Python 3.6+ with asyncio: [simpleobsws](https://github.com/IRLToolkit/simpleobsws) by tt2468 
 - Java 8+: [obs-websocket-java](https://github.com/Twasi/websocket-obs-java) by TwasiNET
 - Golang: [go-obs-websocket](https://github.com/christopher-dG/go-obs-websocket) by Chris de Graaf
+- HTTP API: [obs-websocket-http](https://github.com/IRLToolkit/obs-websocket-http) by tt2468
 
 I'd like to know what you're building with or for obs-websocket. If you do something in this fashion, feel free to drop me an email at `stephane /dot/ lepin /at/ gmail /dot/ com` !
 
@@ -46,19 +48,14 @@ See the [build instructions](BUILDING.md).
 
 ### Branches
 
-The two main development branches are:
-
-- `4.x-current`: actively-maintained codebase for 4.x releases. Backwards-compatible (unless stated otherwise) with existing clients until 5.0.
-- `5.x`: upcoming 5.0 version
-
-**New features and fixes must be based off and contributed to `4.x-current`**, as obs-websocket 5.0 is not in active development yet.
+Development happens on `4.x-current`
 
 ### Pull Requests
 
-Pull Requests must never be based off your fork's main branch (in our case, `4.x-current` or `5.x`). Start your work in a new branch
+Pull Requests must never be based off your fork's main branch (in this case, `4.x-current`). Start your work in a new branch
 based on the main one (e.g.: `cool-new-feature`, `fix-palakis-mistakes`, ...) and open a Pull Request once you feel ready to show your work.
 
-If your Pull Request is not ready to merge yet, tag it with the `work in progress` label. You can also use the `help needed` label if you have questions, need a hand or want to ask for input.
+**If your Pull Request is not ready to merge yet, create it as a Draft Pull Request** (open the little arrow menu next to the "Create pull request" button, then select "Create draft pull request").
 
 ### Code style & formatting
 
