@@ -2267,13 +2267,14 @@ _No specified parameters._
 
 - Added in v4.0.0
 
-Get the volume of the specified source.
+Get the volume of the specified source. Default response uses mul format, NOT SLIDER PERCENTAGE.
 
 **Request Fields:**
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
 | `source` | _String_ | Source name. |
+| `useDecibel` | _boolean (optional)_ | Output volume in decibels of attenuation instead of amplitude/mul. |
 
 
 **Response Items:**
@@ -2281,7 +2282,7 @@ Get the volume of the specified source.
 | Name | Type  | Description |
 | ---- | :---: | ------------|
 | `name` | _String_ | Source name. |
-| `volume` | _double_ | Volume of the source. Between `0.0` and `1.0`. |
+| `volume` | _double_ | Volume of the source. Between `0.0` and `1.0` if using mul, under `0.0` if using dB (since it is attenuating). |
 | `muted` | _boolean_ | Indicates whether the source is muted. |
 
 
@@ -2292,14 +2293,15 @@ Get the volume of the specified source.
 
 - Added in v4.0.0
 
-Set the volume of the specified source.
+Set the volume of the specified source. Default request format uses mul, NOT SLIDER PERCENTAGE.
 
 **Request Fields:**
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
 | `source` | _String_ | Source name. |
-| `volume` | _double_ | Desired volume. Must be between `0.0` and `1.0`. |
+| `volume` | _double_ | Desired volume. Must be between `0.0` and `1.0` for mul, and under 0.0 for dB. Note: OBS will interpret dB values under -100.0 as Inf. |
+| `useDecibel` | _boolean (optional)_ | Interperet `volume` data as decibels instead of amplitude/mul. |
 
 
 **Response Items:**
