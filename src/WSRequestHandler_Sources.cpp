@@ -223,8 +223,9 @@ RpcResponse WSRequestHandler::SetVolume(const RpcRequest& request)
 	QString sourceName = obs_data_get_string(request.parameters(), "source");
 	float sourceVolume = obs_data_get_double(request.parameters(), "volume");
 
-	if ((useDecibel && sourceVolume > 0.0) ||
-(!useDecibel && (sourceVolume < 0.0 || sourceVolume > 1.0)) || (sourceName.isEmpty())) {
+	bool isNotValidDecibel = (useDecibel && sourceVolume > 0.0);
+	bool isNotValidMul = (!useDecibel && (sourceVolume < 0.0 || sourceVolume > 1.0));
+	if (sourceName.isEmpty() || isNotValidDecibel || isNotValidMul) {
 		return request.failed("invalid request parameters");
 	}
 
