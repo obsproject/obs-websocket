@@ -156,12 +156,13 @@ RpcResponse WSRequestHandler::GetSourceTypesList(const RpcRequest& request)
 }
 
 /**
-* Get the volume of the specified source.
+* Get the volume of the specified source. Default response uses mul format, NOT SLIDER PERCENTAGE.
 *
 * @param {String} `source` Source name.
+* @param {boolean (optional)} `useDecibel` Output volume in decibels of attenuation instead of amplitude/mul.
 *
 * @return {String} `name` Source name.
-* @return {double} `volume` Volume of the source. Between `0.0` and `1.0`.
+* @return {double} `volume` Volume of the source. Between `0.0` and `1.0` if using mul, under `0.0` if using dB (since it is attenuating).
 * @return {boolean} `muted` Indicates whether the source is muted.
 *
 * @api requests
@@ -185,35 +186,46 @@ RpcResponse WSRequestHandler::GetVolume(const RpcRequest& request)
 		return request.failed("specified source doesn't exist");
 	}
 
+	float volume = obs_source_get_volume(source);
+
+	bool useDecibel = obs_data_get_bool(request.parameters(), "useDecibel");
+	if (useDecibel) {
+		volume = obs_mul_to_db(volume);
+	}
+
 	OBSDataAutoRelease response = obs_data_create();
 	obs_data_set_string(response, "name", obs_source_get_name(source));
-	obs_data_set_double(response, "volume", obs_source_get_volume(source));
+	obs_data_set_double(response, "volume", volume);
 	obs_data_set_bool(response, "muted", obs_source_muted(source));
-
 	return request.success(response);
 }
 
 /**
- * Set the volume of the specified source.
- *
- * @param {String} `source` Source name.
- * @param {double} `volume` Desired volume. Must be between `0.0` and `1.0`.
- *
- * @api requests
- * @name SetVolume
- * @category sources
- * @since 4.0.0
- */
+* Set the volume of the specified source. Default request format uses mul, NOT SLIDER PERCENTAGE.
+*
+* @param {String} `source` Source name.
+* @param {double} `volume` Desired volume. Must be between `0.0` and `1.0` for mul, and under 0.0 for dB. Note: OBS will interpret dB values under -100.0 as Inf.
+* @param {boolean (optional)} `useDecibel` Interperet `volume` data as decibels instead of amplitude/mul.
+*
+* @api requests
+* @name SetVolume
+* @category sources
+* @since 4.0.0
+*/
 RpcResponse WSRequestHandler::SetVolume(const RpcRequest& request)
  {
 	if (!request.hasField("source") || !request.hasField("volume")) {
 		return request.failed("missing request parameters");
 	}
 
+	bool useDecibel = obs_data_get_bool(request.parameters(), "useDecibel");
+
 	QString sourceName = obs_data_get_string(request.parameters(), "source");
 	float sourceVolume = obs_data_get_double(request.parameters(), "volume");
 
-	if (sourceName.isEmpty() || sourceVolume < 0.0 || sourceVolume > 1.0) {
+	bool isNotValidDecibel = (useDecibel && sourceVolume > 0.0);
+	bool isNotValidMul = (!useDecibel && (sourceVolume < 0.0 || sourceVolume > 1.0));
+	if (sourceName.isEmpty() || isNotValidDecibel || isNotValidMul) {
 		return request.failed("invalid request parameters");
 	}
 
@@ -222,7 +234,11 @@ RpcResponse WSRequestHandler::SetVolume(const RpcRequest& request)
 		return request.failed("specified source doesn't exist");
 	}
 
+	if (useDecibel) {
+		sourceVolume = obs_db_to_mul(sourceVolume);
+	}
 	obs_source_set_volume(source, sourceVolume);
+
 	return request.success();
 }
 
