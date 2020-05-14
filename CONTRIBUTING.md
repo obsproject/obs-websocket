@@ -46,15 +46,15 @@ return req->SendOKResponse();
 ### Commit Guidelines
 
 -   Commits follow the 50/72 standard:
-	-   50 characters max for the commit title (excluding scope name)
-	-   One empty line after the title
-	-   Description wrapped to 72 columns max width per line.
+   -   50 characters max for the commit title (excluding scope name)
+   -   One empty line after the title
+   -   Description wrapped to 72 columns max width per line.
 
 -   Commit titles:
-	-   Use present tense
-	-   Prefix the title with a "scope" name
-		-   e.g: "CI: fix wrong behaviour when packaging for OS X"
-		-   Typical scopes: CI, General, Requests, Events, Server
+   -   Use present tense
+   -   Prefix the title with a "scope" name
+      -   e.g: "CI: fix wrong behaviour when packaging for OS X"
+      -   Typical scopes: CI, General, Requests, Events, Server
 
 **Example commit:**
 
@@ -69,7 +69,7 @@ transitions.
 ### Pull Requests
 
 -   Pull Requests must never be based off your fork's main branch (in this case, `4.x-current`).
-	-   Start your work in a newly named branch based on the upstream main one (e.g.: `feature/cool-new-feature`, `bugfix/fix-palakis-mistakes`, ...)
+   -   Start your work in a newly named branch based on the upstream main one (e.g.: `feature/cool-new-feature`, `bugfix/fix-palakis-mistakes`, ...)
 
 -   Only open a pull request if you are ready to show off your work. 
 

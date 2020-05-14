@@ -27,9 +27,9 @@ Tested OS(s):
 ### Checklist:
 <!--- Go over all the following points, and put an `x` in all the boxes that apply. -->
 <!--- If you're unsure about any of these, don't hesitate to ask. We're here to help! -->
-- [ ] I have read the [**contributing** document](https://github.com/Palakis/obs-websocket/blob/4.x-current/CONTRIBUTING.md).
-- [ ] My code is not on the master branch.
-- [ ] The code has been tested.
-- [ ] All commit messages are properly formatted and commits squashed where appropriate.
-- [ ] I have included updates to all appropriate documentation.
+-   [ ] I have read the [**contributing** document](https://github.com/Palakis/obs-websocket/blob/4.x-current/CONTRIBUTING.md).
+-   [ ] My code is not on the master branch.
+-   [ ] The code has been tested.
+-   [ ] All commit messages are properly formatted and commits squashed where appropriate.
+-   [ ] I have included updates to all appropriate documentation.
 
