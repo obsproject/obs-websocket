@@ -81,7 +81,7 @@ RpcResponse WSRequestHandler::SetCurrentTransition(const RpcRequest& request) {
 	if (!success) {
 		return request.failed("requested transition does not exist");
 	}
-	
+
 	return request.success();
 }
 
@@ -171,12 +171,12 @@ RpcResponse WSRequestHandler::SetTBarPosition(const RpcRequest& request) {
 	if (position < 0.0 || position > 1.0) {
 		return request.failed("position is out of range");
 	}
-	
+
 	bool release = true;
 	if (request.hasField("release")) {
 		release = obs_data_get_bool(request.parameters(), "release");
 	}
-	
+
 	obs_frontend_set_tbar_position((int)((float)position * 1024.0));
 	if (release) {
 		obs_frontend_release_tbar();
@@ -197,7 +197,7 @@ RpcResponse WSRequestHandler::SetTBarPosition(const RpcRequest& request) {
  */
 RpcResponse WSRequestHandler::GetTransitionPosition(const RpcRequest& request) {
 	OBSSourceAutoRelease currentTransition = obs_frontend_get_current_transition();
-	
+
 	OBSDataAutoRelease response = obs_data_create();
 	obs_data_set_double(response, "position", obs_transition_get_time(currentTransition));
 
