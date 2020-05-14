@@ -52,7 +52,7 @@ See [the contributing document](/CONTRIBUTING.md)
 
 **Your help is welcome on translations.**
 
-Please join the localization project on Crowdin: https://crowdin.com/project/obs-websocket
+Please join the localization project on [Crowdin](https://crowdin.com/project/obs-websocket)
 
 ## Special thanks
 
