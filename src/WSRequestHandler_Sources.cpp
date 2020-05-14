@@ -176,11 +176,6 @@ RpcResponse WSRequestHandler::GetVolume(const RpcRequest& request)
 		return request.failed("missing request parameters");
 	}
 
-	bool useDecibel = false;
-	if (request.hasField("useDecibel")) {
-		useDecibel = obs_data_get_bool(request.parameters(), "useDecibel");
-	}
-
 	QString sourceName = obs_data_get_string(request.parameters(), "source");
 	if (sourceName.isEmpty()) {
 		return request.failed("invalid request parameters");
@@ -191,16 +186,17 @@ RpcResponse WSRequestHandler::GetVolume(const RpcRequest& request)
 		return request.failed("specified source doesn't exist");
 	}
 
+	float volume = obs_source_get_volume(source);
+
+	bool useDecibel = obs_data_get_bool(request.parameters(), "useDecibel");
+	if (useDecibel) {
+		volume = obs_mul_to_db(volume);
+	}
+
 	OBSDataAutoRelease response = obs_data_create();
 	obs_data_set_string(response, "name", obs_source_get_name(source));
-	if (!useDecibel) {
-		obs_data_set_double(response, "volume", obs_source_get_volume(source));
-	} else {
-		float volume = obs_source_get_volume(source);
-		obs_data_set_double(response, "volume", obs_mul_to_db(volume));
-	}
+	obs_data_set_double(response, "volume", volume);
 	obs_data_set_bool(response, "muted", obs_source_muted(source));
-
 	return request.success(response);
 }
 
@@ -222,10 +218,7 @@ RpcResponse WSRequestHandler::SetVolume(const RpcRequest& request)
 		return request.failed("missing request parameters");
 	}
 
-	bool useDecibel = false;
-	if (request.hasField("useDecibel")) {
-		useDecibel = obs_data_get_bool(request.parameters(), "useDecibel");
-	}
+	bool useDecibel = obs_data_get_bool(request.parameters(), "useDecibel");
 
 	QString sourceName = obs_data_get_string(request.parameters(), "source");
 	float sourceVolume = obs_data_get_double(request.parameters(), "volume");
@@ -240,12 +233,11 @@ RpcResponse WSRequestHandler::SetVolume(const RpcRequest& request)
 		return request.failed("specified source doesn't exist");
 	}
 
-	if (!useDecibel) {
-		obs_source_set_volume(source, sourceVolume);
-	} else {
-		float mul = obs_db_to_mul(sourceVolume);
-		obs_source_set_volume(source, mul);
+	if (useDecibel) {
+		sourceVolume = obs_db_to_mul(sourceVolume);
 	}
+	obs_source_set_volume(source, sourceVolume);
+
 	return request.success();
 }
 
