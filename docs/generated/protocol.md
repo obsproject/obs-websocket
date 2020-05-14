@@ -215,6 +215,7 @@ auth_response = base64_encode(auth_response_hash)
     + [SetCurrentTransition](#setcurrenttransition)
     + [SetTransitionDuration](#settransitionduration)
     + [GetTransitionDuration](#gettransitionduration)
+    + [GetTransitionPosition](#gettransitionposition)
 
 <!-- tocstop -->
 
@@ -3368,6 +3369,26 @@ _No specified parameters._
 | Name | Type  | Description |
 | ---- | :---: | ------------|
 | `transition-duration` | _int_ | Duration of the current transition (in milliseconds). |
+
+
+---
+
+### GetTransitionPosition
+
+
+- Added in v4.8.0
+
+Get the position of the current transition.
+
+**Request Fields:**
+
+_No specified parameters._
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `position` | _double_ | current transition position. This value will be between 0.0 and 1.0. Note: Transition returns 1.0 when not active. |
 
 
 ---

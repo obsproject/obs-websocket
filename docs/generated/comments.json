@@ -8678,6 +8678,47 @@
         "lead": "",
         "type": "class",
         "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Get the position of the current transition.",
+        "return": "{double} `position` current transition position. This value will be between 0.0 and 1.0. Note: Transition returns 1.0 when not active.",
+        "api": "requests",
+        "name": "GetTransitionPosition",
+        "category": "transitions",
+        "since": "4.8.0",
+        "returns": [
+          {
+            "type": "double",
+            "name": "position",
+            "description": "current transition position. This value will be between 0.0 and 1.0. Note: Transition returns 1.0 when not active."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "GetTransitionPosition"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "transitions"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.8.0"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "GetTransitionPosition"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
       }
     ]
   }
