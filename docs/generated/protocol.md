@@ -1,6 +1,6 @@
 <!-- This file was generated based on handlebars templates. Do not edit directly! -->
 
-# obs-websocket 4.7.0 protocol reference
+# obs-websocket 4.8.0 protocol reference
 
 # General Introduction
 Messages are exchanged between the client and the server as JSON objects.
@@ -2643,6 +2643,7 @@ _No additional response items._
 
 ### GetBrowserSourceProperties
 
+- **⚠️ Deprecated. Since 4.8.0. Prefer the use of GetSourceSettings. ⚠️**
 
 - Added in v4.1.0
 
@@ -2674,6 +2675,7 @@ Get current properties for a Browser Source.
 
 ### SetBrowserSourceProperties
 
+- **⚠️ Deprecated. Since 4.8.0. Prefer the use of SetSourceSettings. ⚠️**
 
 - Added in v4.1.0
 

@@ -26,7 +26,7 @@ It is **highly recommended** to protect obs-websocket with a password against un
 ### For developers
 
 The server is a typical Websockets server running by default on port 4444 (the port number can be changed in the Settings dialog).
-The protocol understood by the server is documented in [PROTOCOL.md](docs/generated/protocol.md).  
+The protocol understood by the server is documented in [PROTOCOL.md](docs/generated/protocol.md).
 
 Here's a list of available language APIs for obs-websocket :
 - Javascript (browser & nodejs): [obs-websocket-js](https://github.com/haganbmj/obs-websocket-js) by Brendan Hagan
@@ -36,6 +36,7 @@ Here's a list of available language APIs for obs-websocket :
 - Python 3.6+ with asyncio: [simpleobsws](https://github.com/IRLToolkit/simpleobsws) by tt2468 
 - Java 8+: [obs-websocket-java](https://github.com/Twasi/websocket-obs-java) by TwasiNET
 - Golang: [go-obs-websocket](https://github.com/christopher-dG/go-obs-websocket) by Chris de Graaf
+- HTTP API: [obs-websocket-http](https://github.com/IRLToolkit/obs-websocket-http) by tt2468
 
 I'd like to know what you're building with or for obs-websocket. If you do something in this fashion, feel free to drop me an email at `stephane /dot/ lepin /at/ gmail /dot/ com` !
 

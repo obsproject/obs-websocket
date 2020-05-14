@@ -6870,6 +6870,7 @@
         "name": "GetBrowserSourceProperties",
         "category": "sources",
         "since": "4.1.0",
+        "deprecated": "Since 4.8.0. Prefer the use of GetSourceSettings.",
         "returns": [
           {
             "type": "String",
@@ -6942,6 +6943,12 @@
             "description": "4.1.0"
           }
         ],
+        "deprecateds": [
+          {
+            "name": "",
+            "description": "Since 4.8.0. Prefer the use of GetSourceSettings."
+          }
+        ],
         "heading": {
           "level": 2,
           "text": "GetBrowserSourceProperties"
@@ -6968,6 +6975,7 @@
         "api": "requests",
         "name": "SetBrowserSourceProperties",
         "category": "sources",
+        "deprecated": "Since 4.8.0. Prefer the use of SetSourceSettings.",
         "since": "4.1.0",
         "params": [
           {
@@ -7031,6 +7039,12 @@
           {
             "name": "",
             "description": "sources"
+          }
+        ],
+        "deprecateds": [
+          {
+            "name": "",
+            "description": "Since 4.8.0. Prefer the use of SetSourceSettings."
           }
         ],
         "sinces": [

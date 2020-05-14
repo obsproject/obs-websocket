@@ -133,6 +133,9 @@ RpcResponse WSRequestHandler::TransitionToProgram(const RpcRequest& request) {
  * @since 4.1.0
  */
 RpcResponse WSRequestHandler::EnableStudioMode(const RpcRequest& request) {
+	if (obs_frontend_preview_program_mode_active()) {
+		return request.failed("studio mode already active");
+	}
 	obs_queue_task(OBS_TASK_UI, [](void* param) {
 		obs_frontend_set_preview_program_mode(true);
 
@@ -150,6 +153,9 @@ RpcResponse WSRequestHandler::EnableStudioMode(const RpcRequest& request) {
  * @since 4.1.0
  */
 RpcResponse WSRequestHandler::DisableStudioMode(const RpcRequest& request) {
+	if (!obs_frontend_preview_program_mode_active()) {
+		return request.failed("studio mode not active");
+	}
 	obs_queue_task(OBS_TASK_UI, [](void* param) {
 		obs_frontend_set_preview_program_mode(false);
 

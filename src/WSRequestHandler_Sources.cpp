@@ -15,7 +15,7 @@ bool isTextGDIPlusSource(const QString& sourceKind)
 
 bool isTextFreeType2Source(const QString& sourceKind)
 {
-	return (sourceKind == "text_ft2" || sourceKind == "text_ft2_v2");
+	return (sourceKind == "text_ft2_source" || sourceKind == "text_ft2_source_v2");
 }
 
 /**
@@ -919,6 +919,7 @@ RpcResponse WSRequestHandler::SetTextFreetype2Properties(const RpcRequest& reque
  * @name GetBrowserSourceProperties
  * @category sources
  * @since 4.1.0
+ * @deprecated Since 4.8.0. Prefer the use of GetSourceSettings.
  */
 RpcResponse WSRequestHandler::GetBrowserSourceProperties(const RpcRequest& request)
 {
@@ -960,6 +961,7 @@ RpcResponse WSRequestHandler::GetBrowserSourceProperties(const RpcRequest& reque
  * @api requests
  * @name SetBrowserSourceProperties
  * @category sources
+ * @deprecated Since 4.8.0. Prefer the use of SetSourceSettings.
  * @since 4.1.0
  */
 RpcResponse WSRequestHandler::SetBrowserSourceProperties(const RpcRequest& request)

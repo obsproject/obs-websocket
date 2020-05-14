@@ -24,7 +24,7 @@ sudo apt-get install libboost-all-dev
 git clone --recursive https://github.com/Palakis/obs-websocket.git
 cd obs-websocket
 mkdir build && cd build
-cmake -DLIBOBS_INCLUDE_DIR="<path to the libobs sub-folder in obs-studio's source code>" -DCMAKE_INSTALL_PREFIX=/usr ..
+cmake -DLIBOBS_INCLUDE_DIR="<path to the libobs sub-folder in obs-studio's source code>" -DCMAKE_INSTALL_PREFIX=/usr -DUSE_UBUNTU_FIX=true ..
 make -j4
 sudo make install
 ```
