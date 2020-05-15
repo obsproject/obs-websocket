@@ -191,6 +191,8 @@ auth_response = base64_encode(auth_response_hash)
     + [MoveSourceFilter](#movesourcefilter)
     + [SetSourceFilterSettings](#setsourcefiltersettings)
     + [SetSourceFilterVisibility](#setsourcefiltervisibility)
+    + [GetAudioMonitorType](#getaudiomonitortype)
+    + [SetAudioMonitorType](#setaudiomonitortype)
     + [TakeSourceScreenshot](#takesourcescreenshot)
   * [Streaming](#streaming-1)
     + [GetStreamingStatus](#getstreamingstatus)
@@ -2908,6 +2910,50 @@ Change the visibility/enabled state of a filter
 | `sourceName` | _String_ | Source name |
 | `filterName` | _String_ | Source filter name |
 | `filterEnabled` | _Boolean_ | New filter state |
+
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+### GetAudioMonitorType
+
+
+- Added in v4.8.0
+
+Get the audio monitoring type of the specified source.
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sourceName` | _String_ | Source name. |
+
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `monitorType` | _String_ | The monitor type in use. Options: `none`, `monitorOnly`, `monitorAndOutput`. |
+
+
+---
+
+### SetAudioMonitorType
+
+
+- Added in v4.8.0
+
+Set the audio monitoring type of the specified source.
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sourceName` | _String_ | Source name. |
+| `monitorType` | _String_ | The monitor type to use. Options: `none`, `monitorOnly`, `monitorAndOutput`. |
 
 
 **Response Items:**

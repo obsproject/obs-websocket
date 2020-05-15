@@ -7626,6 +7626,104 @@
       },
       {
         "subheads": [],
+        "description": "Get the audio monitoring type of the specified source.",
+        "param": "{String} `sourceName` Source name.",
+        "return": "{String} `monitorType` The monitor type in use. Options: `none`, `monitorOnly`, `monitorAndOutput`.",
+        "api": "requests",
+        "name": "GetAudioMonitorType",
+        "category": "sources",
+        "since": "4.8.0",
+        "returns": [
+          {
+            "type": "String",
+            "name": "monitorType",
+            "description": "The monitor type in use. Options: `none`, `monitorOnly`, `monitorAndOutput`."
+          }
+        ],
+        "params": [
+          {
+            "type": "String",
+            "name": "sourceName",
+            "description": "Source name."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "GetAudioMonitorType"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "sources"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.8.0"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "GetAudioMonitorType"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Set the audio monitoring type of the specified source.",
+        "param": [
+          "{String} `sourceName` Source name.",
+          "{String} `monitorType` The monitor type to use. Options: `none`, `monitorOnly`, `monitorAndOutput`."
+        ],
+        "api": "requests",
+        "name": "SetAudioMonitorType",
+        "category": "sources",
+        "since": "4.8.0",
+        "params": [
+          {
+            "type": "String",
+            "name": "sourceName",
+            "description": "Source name."
+          },
+          {
+            "type": "String",
+            "name": "monitorType",
+            "description": "The monitor type to use. Options: `none`, `monitorOnly`, `monitorAndOutput`."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "SetAudioMonitorType"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "sources"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.8.0"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "SetAudioMonitorType"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
         "description": "\n\nAt least `embedPictureFormat` or `saveToFilePath` must be specified.\n\nClients can specify `width` and `height` parameters to receive scaled pictures. Aspect ratio is\npreserved if only one of these two parameters is specified.",
         "param": [
           "{String} `sourceName` Source name. Note that, since scenes are also sources, you can also provide a scene name.",
