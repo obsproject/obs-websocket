@@ -1437,7 +1437,7 @@ RpcResponse WSRequestHandler::SetSourceFilterVisibility(const RpcRequest& reques
 * @param {String} `sourceName` Source name. Note that, since scenes are also sources, you can also provide a scene name.
 * @param {String (optional)} `embedPictureFormat` Format of the Data URI encoded picture. Can be "png", "jpg", "jpeg" or "bmp" (or any other value supported by Qt's Image module)
 * @param {String (optional)} `saveToFilePath` Full file path (file extension included) where the captured image is to be saved. Can be in a format different from `pictureFormat`. Can be a relative path.
-* @param {String (optional)} `fileFormat` Format to save the image file as. If not specified, tries to guess based on file extension.
+* @param {String (optional)} `fileFormat` Format to save the image file as (one of the values provided in the `supported-image-export-formats` response field of `GetVersion`). If not specified, tries to guess based on file extension.
 * @param {int (optional)} `compressionQuality` Compression ratio between -1 and 100 to write the image with. -1 is automatic, 1 is smallest file/most compression, 100 is largest file/least compression. Varies with image type.
 * @param {int (optional)} `width` Screenshot width. Defaults to the source's base width.
 * @param {int (optional)} `height` Screenshot height. Defaults to the source's base height.
@@ -1581,7 +1581,7 @@ RpcResponse WSRequestHandler::TakeSourceScreenshot(const RpcRequest& request) {
 		QFileInfo filePathInfo(filePathStr);
 		QString absoluteFilePath = filePathInfo.absoluteFilePath();
 
-		const char* fileFormat;
+		const char* fileFormat = nullptr;
 		if (request.hasField("fileFormat")) {
 			fileFormat = obs_data_get_string(request.parameters(), "fileFormat");
 			QByteArrayList supportedFormats = QImageWriter::supportedImageFormats();
@@ -1590,9 +1590,6 @@ RpcResponse WSRequestHandler::TakeSourceScreenshot(const RpcRequest& request) {
 				QString errorMessage = QString("unsupported file format: %1").arg(fileFormat);
 				return request.failed(errorMessage.toUtf8());
 			}
-		}
-		else {
-			fileFormat = nullptr;
 		}
 
 		if (!sourceImage.save(absoluteFilePath, fileFormat, compressionQuality)) {
