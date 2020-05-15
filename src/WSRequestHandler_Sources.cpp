@@ -1431,7 +1431,7 @@ RpcResponse WSRequestHandler::SetSourceFilterVisibility(const RpcRequest& reques
 *
 * @param {String} `sourceName` Source name.
 *
-* @return {String} `monitorType` The monitor type in use. Options: `none`, `monitor_only`, `monitor_and_output`.
+* @return {String} `monitorType` The monitor type in use. Options: `none`, `monitorOnly`, `monitorAndOutput`.
 *
 * @api requests
 * @name GetAudioMonitor
@@ -1464,10 +1464,10 @@ RpcResponse WSRequestHandler::GetAudioMonitor(const RpcRequest& request)
 		monitorType = "none";
 		break;
 	case OBS_MONITORING_TYPE_MONITOR_ONLY:
-		monitorType = "monitor_only";
+		monitorType = "monitorOnly";
 		break;
 	case OBS_MONITORING_TYPE_MONITOR_AND_OUTPUT:
-		monitorType = "monitor_and_output";
+		monitorType = "monitorAndOutput";
 		break;
 	default:
 		monitorType = "unknown";
@@ -1482,7 +1482,7 @@ RpcResponse WSRequestHandler::GetAudioMonitor(const RpcRequest& request)
 * Set the audio monitoring type of the specified source.
 *
 * @param {String} `sourceName` Source name.
-* @param {String} `monitorType` The monitor type to use. Options: `none`, `monitor_only`, `monitor_and_output`.
+* @param {String} `monitorType` The monitor type to use. Options: `none`, `monitorOnly`, `monitorAndOutput`.
 *
 * @api requests
 * @name SetAudioMonitor
@@ -1509,9 +1509,9 @@ RpcResponse WSRequestHandler::SetAudioMonitor(const RpcRequest& request)
 
 	if (monitorType == "none") {
 		obs_source_set_monitoring_type(source, OBS_MONITORING_TYPE_NONE);
-	} else if (monitorType == "monitor_only") {
+	} else if (monitorType == "monitorOnly") {
 		obs_source_set_monitoring_type(source, OBS_MONITORING_TYPE_MONITOR_ONLY);
-	} else if (monitorType == "monitor_and_output") {
+	} else if (monitorType == "monitorAndOutput") {
 		obs_source_set_monitoring_type(source, OBS_MONITORING_TYPE_MONITOR_AND_OUTPUT);
 	} else {
 		return request.failed("invalid monitorType");
