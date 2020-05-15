@@ -2935,6 +2935,8 @@ preserved if only one of these two parameters is specified.
 | `sourceName` | _String_ | Source name. Note that, since scenes are also sources, you can also provide a scene name. |
 | `embedPictureFormat` | _String (optional)_ | Format of the Data URI encoded picture. Can be "png", "jpg", "jpeg" or "bmp" (or any other value supported by Qt's Image module) |
 | `saveToFilePath` | _String (optional)_ | Full file path (file extension included) where the captured image is to be saved. Can be in a format different from `pictureFormat`. Can be a relative path. |
+| `fileFormat` | _String (optional)_ | Format to save the image file as (one of the values provided in the `supported-image-export-formats` response field of `GetVersion`). If not specified, tries to guess based on file extension. |
+| `compressionQuality` | _int (optional)_ | Compression ratio between -1 and 100 to write the image with. -1 is automatic, 1 is smallest file/most compression, 100 is largest file/least compression. Varies with image type. |
 | `width` | _int (optional)_ | Screenshot width. Defaults to the source's base width. |
 | `height` | _int (optional)_ | Screenshot height. Defaults to the source's base height. |
 

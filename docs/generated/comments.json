@@ -7631,6 +7631,8 @@
           "{String} `sourceName` Source name. Note that, since scenes are also sources, you can also provide a scene name.",
           "{String (optional)} `embedPictureFormat` Format of the Data URI encoded picture. Can be \"png\", \"jpg\", \"jpeg\" or \"bmp\" (or any other value supported by Qt's Image module)",
           "{String (optional)} `saveToFilePath` Full file path (file extension included) where the captured image is to be saved. Can be in a format different from `pictureFormat`. Can be a relative path.",
+          "{String (optional)} `fileFormat` Format to save the image file as (one of the values provided in the `supported-image-export-formats` response field of `GetVersion`). If not specified, tries to guess based on file extension.",
+          "{int (optional)} `compressionQuality` Compression ratio between -1 and 100 to write the image with. -1 is automatic, 1 is smallest file/most compression, 100 is largest file/least compression. Varies with image type.",
           "{int (optional)} `width` Screenshot width. Defaults to the source's base width.",
           "{int (optional)} `height` Screenshot height. Defaults to the source's base height."
         ],
@@ -7675,6 +7677,16 @@
             "type": "String (optional)",
             "name": "saveToFilePath",
             "description": "Full file path (file extension included) where the captured image is to be saved. Can be in a format different from `pictureFormat`. Can be a relative path."
+          },
+          {
+            "type": "String (optional)",
+            "name": "fileFormat",
+            "description": "Format to save the image file as (one of the values provided in the `supported-image-export-formats` response field of `GetVersion`). If not specified, tries to guess based on file extension."
+          },
+          {
+            "type": "int (optional)",
+            "name": "compressionQuality",
+            "description": "Compression ratio between -1 and 100 to write the image with. -1 is automatic, 1 is smallest file/most compression, 100 is largest file/least compression. Varies with image type."
           },
           {
             "type": "int (optional)",
