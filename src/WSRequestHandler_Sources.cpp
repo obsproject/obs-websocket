@@ -1434,11 +1434,11 @@ RpcResponse WSRequestHandler::SetSourceFilterVisibility(const RpcRequest& reques
 * @return {String} `monitorType` The monitor type in use. Options: `none`, `monitorOnly`, `monitorAndOutput`.
 *
 * @api requests
-* @name GetAudioMonitor
+* @name GetAudioMonitorType
 * @category sources
 * @since 4.8.0
 */
-RpcResponse WSRequestHandler::GetAudioMonitor(const RpcRequest& request)
+RpcResponse WSRequestHandler::GetAudioMonitorType(const RpcRequest& request)
  {
 	if (!request.hasField("sourceName")) {
 		return request.failed("missing request parameters");
@@ -1485,11 +1485,11 @@ RpcResponse WSRequestHandler::GetAudioMonitor(const RpcRequest& request)
 * @param {String} `monitorType` The monitor type to use. Options: `none`, `monitorOnly`, `monitorAndOutput`.
 *
 * @api requests
-* @name SetAudioMonitor
+* @name SetAudioMonitorType
 * @category sources
 * @since 4.8.0
 */
-RpcResponse WSRequestHandler::SetAudioMonitor(const RpcRequest& request)
+RpcResponse WSRequestHandler::SetAudioMonitorType(const RpcRequest& request)
  {
 	if (!request.hasField("sourceName") || !request.hasField("monitorType")) {
 		return request.failed("missing request parameters");
