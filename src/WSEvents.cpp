@@ -1177,6 +1177,7 @@ void WSEvents::OnSourceAudioMixersChanged(void* param, calldata_t* data) {
  *
  * @return {String} `previousName` Previous source name
  * @return {String} `newName` New source name
+ * @return {String} `sourceType` Type of source (input, scene, filter, transition)
  *
  * @api events
  * @name SourceRenamed
@@ -1201,6 +1202,8 @@ void WSEvents::OnSourceRename(void* param, calldata_t* data) {
 	OBSDataAutoRelease fields = obs_data_create();
 	obs_data_set_string(fields, "previousName", previousName);
 	obs_data_set_string(fields, "newName", newName);
+	obs_data_set_string(fields, "sourceType",
+						sourceTypeToString(obs_source_get_type(source))); // TODO: Split into dedicated events for source/scene. Only doing it this way for backwards compatability until 5.0
 	self->broadcastUpdate("SourceRenamed", fields);
 }
 
