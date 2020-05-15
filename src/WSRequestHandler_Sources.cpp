@@ -1443,6 +1443,99 @@ RpcResponse WSRequestHandler::SetSourceFilterVisibility(const RpcRequest& reques
 }
 
 /**
+* Get the audio monitoring type of the specified source.
+*
+* @param {String} `sourceName` Source name.
+*
+* @return {String} `monitorType` The monitor type in use. Options: `none`, `monitorOnly`, `monitorAndOutput`.
+*
+* @api requests
+* @name GetAudioMonitorType
+* @category sources
+* @since 4.8.0
+*/
+RpcResponse WSRequestHandler::GetAudioMonitorType(const RpcRequest& request)
+ {
+	if (!request.hasField("sourceName")) {
+		return request.failed("missing request parameters");
+	}
+
+	QString sourceName = obs_data_get_string(request.parameters(), "sourceName");
+
+	if (sourceName.isEmpty()) {
+		return request.failed("invalid request parameters");
+	}
+
+	OBSSourceAutoRelease source = obs_get_source_by_name(sourceName.toUtf8());
+	if (!source) {
+		return request.failed("specified source doesn't exist");
+	}
+
+	OBSDataAutoRelease response = obs_data_create();
+
+	QString monitorType;
+	enum obs_monitoring_type mtype = obs_source_get_monitoring_type(source);
+	switch (mtype) {
+	case OBS_MONITORING_TYPE_NONE:
+		monitorType = "none";
+		break;
+	case OBS_MONITORING_TYPE_MONITOR_ONLY:
+		monitorType = "monitorOnly";
+		break;
+	case OBS_MONITORING_TYPE_MONITOR_AND_OUTPUT:
+		monitorType = "monitorAndOutput";
+		break;
+	default:
+		monitorType = "unknown";
+		break;
+	}
+	obs_data_set_string(response, "monitorType", monitorType.toUtf8());
+
+	return request.success(response);
+}
+
+/**
+* Set the audio monitoring type of the specified source.
+*
+* @param {String} `sourceName` Source name.
+* @param {String} `monitorType` The monitor type to use. Options: `none`, `monitorOnly`, `monitorAndOutput`.
+*
+* @api requests
+* @name SetAudioMonitorType
+* @category sources
+* @since 4.8.0
+*/
+RpcResponse WSRequestHandler::SetAudioMonitorType(const RpcRequest& request)
+ {
+	if (!request.hasField("sourceName") || !request.hasField("monitorType")) {
+		return request.failed("missing request parameters");
+	}
+
+	QString sourceName = obs_data_get_string(request.parameters(), "sourceName");
+	QString monitorType = obs_data_get_string(request.parameters(), "monitorType");
+
+	if (sourceName.isEmpty() || monitorType.isEmpty()) {
+		return request.failed("invalid request parameters");
+	}
+
+	OBSSourceAutoRelease source = obs_get_source_by_name(sourceName.toUtf8());
+	if (!source) {
+		return request.failed("specified source doesn't exist");
+	}
+
+	if (monitorType == "none") {
+		obs_source_set_monitoring_type(source, OBS_MONITORING_TYPE_NONE);
+	} else if (monitorType == "monitorOnly") {
+		obs_source_set_monitoring_type(source, OBS_MONITORING_TYPE_MONITOR_ONLY);
+	} else if (monitorType == "monitorAndOutput") {
+		obs_source_set_monitoring_type(source, OBS_MONITORING_TYPE_MONITOR_AND_OUTPUT);
+	} else {
+		return request.failed("invalid monitorType");
+	}
+	return request.success();
+}
+
+/**
 * Takes a picture snapshot of a source and then can either or both:
 *    - Send it over as a Data URI (base64-encoded data) in the response (by specifying `embedPictureFormat` in the request)
 *    - Save it to disk (by specifying `saveToFilePath` in the request)
