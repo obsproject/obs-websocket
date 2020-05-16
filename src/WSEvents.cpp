@@ -275,6 +275,15 @@ void WSEvents::connectSourceSignals(obs_source_t* source) {
 	signal_handler_connect(sh, "filter_add", OnSourceFilterAdded, this);
 	signal_handler_connect(sh, "filter_remove", OnSourceFilterRemoved, this);
 	signal_handler_connect(sh, "reorder_filters", OnSourceFilterOrderChanged, this);
+	
+	signal_handler_connect(sh, "media_play", OnMediaPlaying, this);
+	signal_handler_connect(sh, "media_pause", OnMediaPaused, this);
+	signal_handler_connect(sh, "media_restart", OnMediaRestarted, this);
+	signal_handler_connect(sh, "media_stopped", OnMediaStopped, this);
+	signal_handler_connect(sh, "media_next", OnMediaNext, this);
+	signal_handler_connect(sh, "media_previous", OnMediaPrevious, this);
+	signal_handler_connect(sh, "media_started", OnMediaStarted, this);
+	signal_handler_connect(sh, "media_ended", OnMediaEnded, this);
 
 	if (sourceType == OBS_SOURCE_TYPE_SCENE) {
 		signal_handler_connect(sh, "reorder", OnSceneReordered, this);
@@ -322,6 +331,15 @@ void WSEvents::disconnectSourceSignals(obs_source_t* source) {
 	signal_handler_disconnect(sh, "transition_start", OnTransitionBegin, this);
 	signal_handler_disconnect(sh, "transition_stop", OnTransitionEnd, this);
 	signal_handler_disconnect(sh, "transition_video_stop", OnTransitionVideoEnd, this);
+	
+	signal_handler_disconnect(sh, "media_play", OnMediaPlaying, this);
+	signal_handler_disconnect(sh, "media_pause", OnMediaPaused, this);
+	signal_handler_disconnect(sh, "media_restart", OnMediaRestarted, this);
+	signal_handler_disconnect(sh, "media_stopped", OnMediaStopped, this);
+	signal_handler_disconnect(sh, "media_next", OnMediaNext, this);
+	signal_handler_disconnect(sh, "media_previous", OnMediaPrevious, this);
+	signal_handler_disconnect(sh, "media_started", OnMediaStarted, this);
+	signal_handler_disconnect(sh, "media_ended", OnMediaEnded, this);
 }
 
 void WSEvents::connectFilterSignals(obs_source_t* filter) {
@@ -1333,6 +1351,196 @@ void WSEvents::OnSourceFilterOrderChanged(void* param, calldata_t* data) {
 	obs_data_set_string(fields, "sourceName", obs_source_get_name(source));
 	obs_data_set_array(fields, "filters", filters);
 	self->broadcastUpdate("SourceFiltersReordered", fields);
+}
+
+/**
+ * A media source has started playing.
+ *
+ * @return {String} `sourceName` Source name
+ *
+ * @api events
+ * @name MediaPlaying
+ * @category media
+ * @since 4.9.0
+ */
+void WSEvents::OnMediaPlaying(void* param, calldata_t* data) {
+	auto self = reinterpret_cast<WSEvents*>(param);
+
+	OBSSource source = calldata_get_pointer<obs_source_t>(data, "source");
+	if (!source) {
+		return;
+	}
+
+	OBSDataAutoRelease fields = obs_data_create();
+	obs_data_set_string(fields, "sourceName", obs_source_get_name(source));
+	self->broadcastUpdate("MediaPlaying", fields);
+}
+
+/**
+ * A media source has been paused.
+ *
+ * @return {String} `sourceName` Source name
+ *
+ * @api events
+ * @name MediaPaused
+ * @category media
+ * @since 4.9.0
+ */
+void WSEvents::OnMediaPaused(void* param, calldata_t* data) {
+	auto self = reinterpret_cast<WSEvents*>(param);
+
+	OBSSource source = calldata_get_pointer<obs_source_t>(data, "source");
+	if (!source) {
+		return;
+	}
+
+	OBSDataAutoRelease fields = obs_data_create();
+	obs_data_set_string(fields, "sourceName", obs_source_get_name(source));
+	self->broadcastUpdate("MediaPaused", fields);
+}
+
+/**
+ * A media source has been restarted.
+ *
+ * @return {String} `sourceName` Source name
+ *
+ * @api events
+ * @name MediaRestarted
+ * @category media
+ * @since 4.9.0
+ */
+void WSEvents::OnMediaRestarted(void* param, calldata_t* data) {
+	auto self = reinterpret_cast<WSEvents*>(param);
+
+	OBSSource source = calldata_get_pointer<obs_source_t>(data, "source");
+	if (!source) {
+		return;
+	}
+
+	OBSDataAutoRelease fields = obs_data_create();
+	obs_data_set_string(fields, "sourceName", obs_source_get_name(source));
+	self->broadcastUpdate("MediaRestarted", fields);
+}
+
+/**
+ * A media source has been stopped.
+ *
+ * @return {String} `sourceName` Source name
+ *
+ * @api events
+ * @name MediaStopped
+ * @category media
+ * @since 4.9.0
+ */
+void WSEvents::OnMediaStopped(void* param, calldata_t* data) {
+	auto self = reinterpret_cast<WSEvents*>(param);
+
+	OBSSource source = calldata_get_pointer<obs_source_t>(data, "source");
+	if (!source) {
+		return;
+	}
+
+	OBSDataAutoRelease fields = obs_data_create();
+	obs_data_set_string(fields, "sourceName", obs_source_get_name(source));
+	self->broadcastUpdate("MediaStopped", fields);
+}
+
+/**
+ * A media source has gone to the next item in the playlist.
+ *
+ * @return {String} `sourceName` Source name
+ *
+ * @api events
+ * @name MediaNext
+ * @category media
+ * @since 4.9.0
+ */
+void WSEvents::OnMediaNext(void* param, calldata_t* data) {
+	auto self = reinterpret_cast<WSEvents*>(param);
+
+	OBSSource source = calldata_get_pointer<obs_source_t>(data, "source");
+	if (!source) {
+		return;
+	}
+
+	OBSDataAutoRelease fields = obs_data_create();
+	obs_data_set_string(fields, "sourceName", obs_source_get_name(source));
+	self->broadcastUpdate("MediaNext", fields);
+}
+
+/**
+ * A media source has gone to the previous item in the playlist.
+ *
+ * @return {String} `sourceName` Source name
+ *
+ * @api events
+ * @name MediaPrevious
+ * @category media
+ * @since 4.9.0
+ */
+void WSEvents::OnMediaPrevious(void* param, calldata_t* data) {
+	auto self = reinterpret_cast<WSEvents*>(param);
+
+	OBSSource source = calldata_get_pointer<obs_source_t>(data, "source");
+	if (!source) {
+		return;
+	}
+
+	OBSDataAutoRelease fields = obs_data_create();
+	obs_data_set_string(fields, "sourceName", obs_source_get_name(source));
+	self->broadcastUpdate("MediaPrevious", fields);
+}
+
+/**
+ * A media source has been started. (Does not mean that it is playing. See [`MediaPlaying`](#mediaplaying))
+ * 
+ * Note: For VLC, this means that the source and therefore playlist has started.
+ * For the normal Media Source, this just means that the source has been started. 
+ *
+ * @return {String} `sourceName` Source name
+ *
+ * @api events
+ * @name MediaStarted
+ * @category media
+ * @since 4.9.0
+ */
+void WSEvents::OnMediaStarted(void* param, calldata_t* data) {
+	auto self = reinterpret_cast<WSEvents*>(param);
+
+	OBSSource source = calldata_get_pointer<obs_source_t>(data, "source");
+	if (!source) {
+		return;
+	}
+
+	OBSDataAutoRelease fields = obs_data_create();
+	obs_data_set_string(fields, "sourceName", obs_source_get_name(source));
+	self->broadcastUpdate("MediaStarted", fields);
+}
+
+/**
+ * A media source has ended.
+ *
+ * Note: For VLC, this means that the source and therefore playlist has ended.
+ * For the normal Media Source, this just means that the source has been stopped/ended. 
+ *
+ * @return {String} `sourceName` Source name
+ *
+ * @api events
+ * @name MediaEnded
+ * @category media
+ * @since 4.9.0
+ */
+void WSEvents::OnMediaEnded(void* param, calldata_t* data) {
+	auto self = reinterpret_cast<WSEvents*>(param);
+
+	OBSSource source = calldata_get_pointer<obs_source_t>(data, "source");
+	if (!source) {
+		return;
+	}
+
+	OBSDataAutoRelease fields = obs_data_create();
+	obs_data_set_string(fields, "sourceName", obs_source_get_name(source));
+	self->broadcastUpdate("MediaEnded", fields);
 }
 
 /**
