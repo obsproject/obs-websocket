@@ -120,3 +120,22 @@ RpcResponse WSRequestHandler::GetTransitionDuration(const RpcRequest& request) {
 	obs_data_set_int(response, "transition-duration", obs_frontend_get_transition_duration());
 	return request.success(response);
 }
+
+/**
+ * Get the position of the current transition.
+ *
+ * @return {double} `position` current transition position. This value will be between 0.0 and 1.0. Note: Transition returns 1.0 when not active.
+ *
+ * @api requests
+ * @name GetTransitionPosition
+ * @category transitions
+ * @since 4.8.0
+ */
+RpcResponse WSRequestHandler::GetTransitionPosition(const RpcRequest& request) {
+	OBSSourceAutoRelease currentTransition = obs_frontend_get_current_transition();
+
+	OBSDataAutoRelease response = obs_data_create();
+	obs_data_set_double(response, "position", obs_transition_get_time(currentTransition));
+
+	return request.success(response);
+}

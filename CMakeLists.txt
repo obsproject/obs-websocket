@@ -188,6 +188,10 @@ if(UNIX AND NOT APPLE)
 
 	file(GLOB locale_files data/locale/*.ini)
 
+	if(${USE_UBUNTU_FIX})
+		install(TARGETS obs-websocket
+			LIBRARY DESTINATION "/usr/lib/obs-plugins")
+	endif()
 	install(TARGETS obs-websocket
 		LIBRARY DESTINATION "${CMAKE_INSTALL_FULL_LIBDIR}/obs-plugins")
 

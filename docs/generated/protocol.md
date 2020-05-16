@@ -1,6 +1,6 @@
 <!-- This file was generated based on handlebars templates. Do not edit directly! -->
 
-# obs-websocket 4.7.0 protocol reference
+# obs-websocket 4.8.0 protocol reference
 
 # General Introduction
 Messages are exchanged between the client and the server as JSON objects.
@@ -191,6 +191,8 @@ auth_response = base64_encode(auth_response_hash)
     + [MoveSourceFilter](#movesourcefilter)
     + [SetSourceFilterSettings](#setsourcefiltersettings)
     + [SetSourceFilterVisibility](#setsourcefiltervisibility)
+    + [GetAudioMonitorType](#getaudiomonitortype)
+    + [SetAudioMonitorType](#setaudiomonitortype)
     + [TakeSourceScreenshot](#takesourcescreenshot)
   * [Streaming](#streaming-1)
     + [GetStreamingStatus](#getstreamingstatus)
@@ -215,6 +217,7 @@ auth_response = base64_encode(auth_response_hash)
     + [SetCurrentTransition](#setcurrenttransition)
     + [SetTransitionDuration](#settransitionduration)
     + [GetTransitionDuration](#gettransitionduration)
+    + [GetTransitionPosition](#gettransitionposition)
 
 <!-- tocstop -->
 
@@ -2266,13 +2269,14 @@ _No specified parameters._
 
 - Added in v4.0.0
 
-Get the volume of the specified source.
+Get the volume of the specified source. Default response uses mul format, NOT SLIDER PERCENTAGE.
 
 **Request Fields:**
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
 | `source` | _String_ | Source name. |
+| `useDecibel` | _boolean (optional)_ | Output volume in decibels of attenuation instead of amplitude/mul. |
 
 
 **Response Items:**
@@ -2280,7 +2284,7 @@ Get the volume of the specified source.
 | Name | Type  | Description |
 | ---- | :---: | ------------|
 | `name` | _String_ | Source name. |
-| `volume` | _double_ | Volume of the source. Between `0.0` and `1.0`. |
+| `volume` | _double_ | Volume of the source. Between `0.0` and `1.0` if using mul, under `0.0` if using dB (since it is attenuating). |
 | `muted` | _boolean_ | Indicates whether the source is muted. |
 
 
@@ -2291,14 +2295,15 @@ Get the volume of the specified source.
 
 - Added in v4.0.0
 
-Set the volume of the specified source.
+Set the volume of the specified source. Default request format uses mul, NOT SLIDER PERCENTAGE.
 
 **Request Fields:**
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
 | `source` | _String_ | Source name. |
-| `volume` | _double_ | Desired volume. Must be between `0.0` and `1.0`. |
+| `volume` | _double_ | Desired volume. Must be between `0.0` and `1.0` for mul, and under 0.0 for dB. Note: OBS will interpret dB values under -100.0 as Inf. |
+| `useDecibel` | _boolean (optional)_ | Interperet `volume` data as decibels instead of amplitude/mul. |
 
 
 **Response Items:**
@@ -2643,6 +2648,7 @@ _No additional response items._
 
 ### GetBrowserSourceProperties
 
+- **⚠️ Deprecated. Since 4.8.0. Prefer the use of GetSourceSettings. ⚠️**
 
 - Added in v4.1.0
 
@@ -2674,6 +2680,7 @@ Get current properties for a Browser Source.
 
 ### SetBrowserSourceProperties
 
+- **⚠️ Deprecated. Since 4.8.0. Prefer the use of SetSourceSettings. ⚠️**
 
 - Added in v4.1.0
 
@@ -2911,6 +2918,50 @@ _No additional response items._
 
 ---
 
+### GetAudioMonitorType
+
+
+- Added in v4.8.0
+
+Get the audio monitoring type of the specified source.
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sourceName` | _String_ | Source name. |
+
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `monitorType` | _String_ | The monitor type in use. Options: `none`, `monitorOnly`, `monitorAndOutput`. |
+
+
+---
+
+### SetAudioMonitorType
+
+
+- Added in v4.8.0
+
+Set the audio monitoring type of the specified source.
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sourceName` | _String_ | Source name. |
+| `monitorType` | _String_ | The monitor type to use. Options: `none`, `monitorOnly`, `monitorAndOutput`. |
+
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
 ### TakeSourceScreenshot
 
 
@@ -2930,6 +2981,8 @@ preserved if only one of these two parameters is specified.
 | `sourceName` | _String_ | Source name. Note that, since scenes are also sources, you can also provide a scene name. |
 | `embedPictureFormat` | _String (optional)_ | Format of the Data URI encoded picture. Can be "png", "jpg", "jpeg" or "bmp" (or any other value supported by Qt's Image module) |
 | `saveToFilePath` | _String (optional)_ | Full file path (file extension included) where the captured image is to be saved. Can be in a format different from `pictureFormat`. Can be a relative path. |
+| `fileFormat` | _String (optional)_ | Format to save the image file as (one of the values provided in the `supported-image-export-formats` response field of `GetVersion`). If not specified, tries to guess based on file extension. |
+| `compressionQuality` | _int (optional)_ | Compression ratio between -1 and 100 to write the image with. -1 is automatic, 1 is smallest file/most compression, 100 is largest file/least compression. Varies with image type. |
 | `width` | _int (optional)_ | Screenshot width. Defaults to the source's base width. |
 | `height` | _int (optional)_ | Screenshot height. Defaults to the source's base height. |
 
@@ -3366,6 +3419,26 @@ _No specified parameters._
 | Name | Type  | Description |
 | ---- | :---: | ------------|
 | `transition-duration` | _int_ | Duration of the current transition (in milliseconds). |
+
+
+---
+
+### GetTransitionPosition
+
+
+- Added in v4.8.0
+
+Get the position of the current transition.
+
+**Request Fields:**
+
+_No specified parameters._
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `position` | _double_ | current transition position. This value will be between 0.0 and 1.0. Note: Transition returns 1.0 when not active. |
 
 
 ---

@@ -5642,11 +5642,14 @@
       },
       {
         "subheads": [],
-        "description": "Get the volume of the specified source.",
-        "param": "{String} `source` Source name.",
+        "description": "Get the volume of the specified source. Default response uses mul format, NOT SLIDER PERCENTAGE.",
+        "param": [
+          "{String} `source` Source name.",
+          "{boolean (optional)} `useDecibel` Output volume in decibels of attenuation instead of amplitude/mul."
+        ],
         "return": [
           "{String} `name` Source name.",
-          "{double} `volume` Volume of the source. Between `0.0` and `1.0`.",
+          "{double} `volume` Volume of the source. Between `0.0` and `1.0` if using mul, under `0.0` if using dB (since it is attenuating).",
           "{boolean} `muted` Indicates whether the source is muted."
         ],
         "api": "requests",
@@ -5662,7 +5665,7 @@
           {
             "type": "double",
             "name": "volume",
-            "description": "Volume of the source. Between `0.0` and `1.0`."
+            "description": "Volume of the source. Between `0.0` and `1.0` if using mul, under `0.0` if using dB (since it is attenuating)."
           },
           {
             "type": "boolean",
@@ -5675,6 +5678,11 @@
             "type": "String",
             "name": "source",
             "description": "Source name."
+          },
+          {
+            "type": "boolean (optional)",
+            "name": "useDecibel",
+            "description": "Output volume in decibels of attenuation instead of amplitude/mul."
           }
         ],
         "names": [
@@ -5705,10 +5713,11 @@
       },
       {
         "subheads": [],
-        "description": "Set the volume of the specified source.",
+        "description": "Set the volume of the specified source. Default request format uses mul, NOT SLIDER PERCENTAGE.",
         "param": [
           "{String} `source` Source name.",
-          "{double} `volume` Desired volume. Must be between `0.0` and `1.0`."
+          "{double} `volume` Desired volume. Must be between `0.0` and `1.0` for mul, and under 0.0 for dB. Note: OBS will interpret dB values under -100.0 as Inf.",
+          "{boolean (optional)} `useDecibel` Interperet `volume` data as decibels instead of amplitude/mul."
         ],
         "api": "requests",
         "name": "SetVolume",
@@ -5723,7 +5732,12 @@
           {
             "type": "double",
             "name": "volume",
-            "description": "Desired volume. Must be between `0.0` and `1.0`."
+            "description": "Desired volume. Must be between `0.0` and `1.0` for mul, and under 0.0 for dB. Note: OBS will interpret dB values under -100.0 as Inf."
+          },
+          {
+            "type": "boolean (optional)",
+            "name": "useDecibel",
+            "description": "Interperet `volume` data as decibels instead of amplitude/mul."
           }
         ],
         "names": [
@@ -6870,6 +6884,7 @@
         "name": "GetBrowserSourceProperties",
         "category": "sources",
         "since": "4.1.0",
+        "deprecated": "Since 4.8.0. Prefer the use of GetSourceSettings.",
         "returns": [
           {
             "type": "String",
@@ -6942,6 +6957,12 @@
             "description": "4.1.0"
           }
         ],
+        "deprecateds": [
+          {
+            "name": "",
+            "description": "Since 4.8.0. Prefer the use of GetSourceSettings."
+          }
+        ],
         "heading": {
           "level": 2,
           "text": "GetBrowserSourceProperties"
@@ -6968,6 +6989,7 @@
         "api": "requests",
         "name": "SetBrowserSourceProperties",
         "category": "sources",
+        "deprecated": "Since 4.8.0. Prefer the use of SetSourceSettings.",
         "since": "4.1.0",
         "params": [
           {
@@ -7031,6 +7053,12 @@
           {
             "name": "",
             "description": "sources"
+          }
+        ],
+        "deprecateds": [
+          {
+            "name": "",
+            "description": "Since 4.8.0. Prefer the use of SetSourceSettings."
           }
         ],
         "sinces": [
@@ -7598,11 +7626,111 @@
       },
       {
         "subheads": [],
+        "description": "Get the audio monitoring type of the specified source.",
+        "param": "{String} `sourceName` Source name.",
+        "return": "{String} `monitorType` The monitor type in use. Options: `none`, `monitorOnly`, `monitorAndOutput`.",
+        "api": "requests",
+        "name": "GetAudioMonitorType",
+        "category": "sources",
+        "since": "4.8.0",
+        "returns": [
+          {
+            "type": "String",
+            "name": "monitorType",
+            "description": "The monitor type in use. Options: `none`, `monitorOnly`, `monitorAndOutput`."
+          }
+        ],
+        "params": [
+          {
+            "type": "String",
+            "name": "sourceName",
+            "description": "Source name."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "GetAudioMonitorType"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "sources"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.8.0"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "GetAudioMonitorType"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Set the audio monitoring type of the specified source.",
+        "param": [
+          "{String} `sourceName` Source name.",
+          "{String} `monitorType` The monitor type to use. Options: `none`, `monitorOnly`, `monitorAndOutput`."
+        ],
+        "api": "requests",
+        "name": "SetAudioMonitorType",
+        "category": "sources",
+        "since": "4.8.0",
+        "params": [
+          {
+            "type": "String",
+            "name": "sourceName",
+            "description": "Source name."
+          },
+          {
+            "type": "String",
+            "name": "monitorType",
+            "description": "The monitor type to use. Options: `none`, `monitorOnly`, `monitorAndOutput`."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "SetAudioMonitorType"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "sources"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.8.0"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "SetAudioMonitorType"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
         "description": "\n\nAt least `embedPictureFormat` or `saveToFilePath` must be specified.\n\nClients can specify `width` and `height` parameters to receive scaled pictures. Aspect ratio is\npreserved if only one of these two parameters is specified.",
         "param": [
           "{String} `sourceName` Source name. Note that, since scenes are also sources, you can also provide a scene name.",
           "{String (optional)} `embedPictureFormat` Format of the Data URI encoded picture. Can be \"png\", \"jpg\", \"jpeg\" or \"bmp\" (or any other value supported by Qt's Image module)",
           "{String (optional)} `saveToFilePath` Full file path (file extension included) where the captured image is to be saved. Can be in a format different from `pictureFormat`. Can be a relative path.",
+          "{String (optional)} `fileFormat` Format to save the image file as (one of the values provided in the `supported-image-export-formats` response field of `GetVersion`). If not specified, tries to guess based on file extension.",
+          "{int (optional)} `compressionQuality` Compression ratio between -1 and 100 to write the image with. -1 is automatic, 1 is smallest file/most compression, 100 is largest file/least compression. Varies with image type.",
           "{int (optional)} `width` Screenshot width. Defaults to the source's base width.",
           "{int (optional)} `height` Screenshot height. Defaults to the source's base height."
         ],
@@ -7647,6 +7775,16 @@
             "type": "String (optional)",
             "name": "saveToFilePath",
             "description": "Full file path (file extension included) where the captured image is to be saved. Can be in a format different from `pictureFormat`. Can be a relative path."
+          },
+          {
+            "type": "String (optional)",
+            "name": "fileFormat",
+            "description": "Format to save the image file as (one of the values provided in the `supported-image-export-formats` response field of `GetVersion`). If not specified, tries to guess based on file extension."
+          },
+          {
+            "type": "int (optional)",
+            "name": "compressionQuality",
+            "description": "Compression ratio between -1 and 100 to write the image with. -1 is automatic, 1 is smallest file/most compression, 100 is largest file/least compression. Varies with image type."
           },
           {
             "type": "int (optional)",
@@ -8660,6 +8798,47 @@
         "heading": {
           "level": 2,
           "text": "GetTransitionDuration"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Get the position of the current transition.",
+        "return": "{double} `position` current transition position. This value will be between 0.0 and 1.0. Note: Transition returns 1.0 when not active.",
+        "api": "requests",
+        "name": "GetTransitionPosition",
+        "category": "transitions",
+        "since": "4.8.0",
+        "returns": [
+          {
+            "type": "double",
+            "name": "position",
+            "description": "current transition position. This value will be between 0.0 and 1.0. Note: Transition returns 1.0 when not active."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "GetTransitionPosition"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "transitions"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.8.0"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "GetTransitionPosition"
         },
         "lead": "",
         "type": "class",
