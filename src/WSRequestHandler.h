@@ -64,6 +64,9 @@ class WSRequestHandler {
 		RpcResponse SetCurrentScene(const RpcRequest&);
 		RpcResponse GetCurrentScene(const RpcRequest&);
 		RpcResponse GetSceneList(const RpcRequest&);
+		RpcResponse SetSceneTransitionOverride(const RpcRequest&);
+		RpcResponse RemoveSceneTransitionOverride(const RpcRequest&);
+		RpcResponse GetSceneTransitionOverride(const RpcRequest&);
 
 		RpcResponse SetSceneItemRender(const RpcRequest&);
 		RpcResponse SetSceneItemPosition(const RpcRequest&);
