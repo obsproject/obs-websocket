@@ -157,7 +157,8 @@ const QHash<QString, RpcMethodHandler> WSRequestHandler::messageMap {
 	{ "GetMediaTime", &WSRequestHandler::GetMediaTime },
 	{ "SetMediaTime", &WSRequestHandler::SetMediaTime },
 	{ "ScrubMedia", &WSRequestHandler::ScrubMedia },
-	{ "GetMediaState", &WSRequestHandler::GetMediaState }
+	{ "GetMediaState", &WSRequestHandler::GetMediaState },
+	{ "GetMediaSourcesList", &WSRequestHandler::GetMediaSourcesList }
 };
 
 const QSet<QString> WSRequestHandler::authNotRequired {

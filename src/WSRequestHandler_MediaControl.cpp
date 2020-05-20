@@ -2,6 +2,46 @@
 
 #include "WSRequestHandler.h"
 
+bool isMediaSource(const QString& sourceKind)
+{
+	return (sourceKind == "vlc_source" || sourceKind == "ffmpeg_source");
+}
+
+QString getSourceMediaState(obs_source_t *source)
+{
+	QString mediaState;
+	enum obs_media_state mstate = obs_source_media_get_state(source);
+	switch (mstate) {
+	case OBS_MEDIA_STATE_NONE:
+		mediaState = "none";
+		break;
+	case OBS_MEDIA_STATE_PLAYING:
+		mediaState = "playing";
+		break;
+	case OBS_MEDIA_STATE_OPENING:
+		mediaState = "opening";
+		break;
+	case OBS_MEDIA_STATE_BUFFERING:
+		mediaState = "buffering";
+		break;
+	case OBS_MEDIA_STATE_PAUSED:
+		mediaState = "paused";
+		break;
+	case OBS_MEDIA_STATE_STOPPED:
+		mediaState = "stopped";
+		break;
+	case OBS_MEDIA_STATE_ENDED:
+		mediaState = "ended";
+		break;
+	case OBS_MEDIA_STATE_ERROR:
+		mediaState = "error";
+		break;
+	default:
+		mediaState = "unknown";
+	}
+	return mediaState;
+}
+
 /**
 * Pause or play a media source. Supports ffmpeg and vlc media sources (as of OBS v25.0.8)
 *
@@ -287,7 +327,7 @@ RpcResponse WSRequestHandler::ScrubMedia(const RpcRequest& request) {
 *
 * @param {String} `sourceName` Source name.
 *
-* @return {String} `mediaState` The media state of the provided source. States: `none`, `playing`, `opening`, `buffering`, `paused`, `stopped`, `ended`, `error`
+* @return {String} `mediaState` The media state of the provided source. States: `none`, `playing`, `opening`, `buffering`, `paused`, `stopped`, `ended`, `error`, `unknown`
 *
 * @api requests
 * @name GetMediaState
@@ -309,39 +349,48 @@ RpcResponse WSRequestHandler::GetMediaState(const RpcRequest& request) {
 		return request.failed("specified source doesn't exist");
 	}
 
-	QString mediaState;
-	enum obs_media_state mstate = obs_source_media_get_state(source);
-	switch (mstate) {
-	case OBS_MEDIA_STATE_NONE:
-		mediaState = "none";
-		break;
-	case OBS_MEDIA_STATE_PLAYING:
-		mediaState = "playing";
-		break;
-	case OBS_MEDIA_STATE_OPENING:
-		mediaState = "opening";
-		break;
-	case OBS_MEDIA_STATE_BUFFERING:
-		mediaState = "buffering";
-		break;
-	case OBS_MEDIA_STATE_PAUSED:
-		mediaState = "paused";
-		break;
-	case OBS_MEDIA_STATE_STOPPED:
-		mediaState = "stopped";
-		break;
-	case OBS_MEDIA_STATE_ENDED:
-		mediaState = "ended";
-		break;
-	case OBS_MEDIA_STATE_ERROR:
-		mediaState = "error";
-		break;
-	default:
-		mediaState = "unknown";
-	}
+	OBSDataAutoRelease response = obs_data_create();
+	obs_data_set_string(response, "mediaState", getSourceMediaState(source).toUtf8());
+
+	return request.success(response);
+}
+
+/**
+* List the media state of all media sources (vlc and media source)
+*
+* @return {Array<Object>} `mediaSources` Array of sources
+* @return {String} `mediaSources.*.sourceName` Unique source name
+* @return {String} `mediaSources.*.sourceTypeId` Non-unique source internal type (a.k.a `ffmpeg_source` or `vlc_source`)
+* @return {String} `mediaSources.*.mediaState` The current state of media for that source. States: `none`, `playing`, `opening`, `buffering`, `paused`, `stopped`, `ended`, `error`, `unknown`
+*
+* @api requests
+* @name GetMediaSourcesList
+* @category sources
+* @since 4.9.0
+*/
+RpcResponse WSRequestHandler::GetMediaSourcesList(const RpcRequest& request)
+{
+	OBSDataArrayAutoRelease sourcesArray = obs_data_array_create();
+
+	auto sourceEnumProc = [](void* privateData, obs_source_t* source) -> bool {
+		obs_data_array_t* sourcesArray = (obs_data_array_t*)privateData;
+		
+		QString sourceTypeId = obs_source_get_id(source);
+		if (isMediaSource(sourceTypeId)) {
+			OBSDataAutoRelease sourceData = obs_data_create();
+			obs_data_set_string(sourceData, "sourceName", obs_source_get_name(source));
+			obs_data_set_string(sourceData, "sourceTypeId", sourceTypeId.toUtf8());
+
+			QString mediaState = getSourceMediaState(source);
+			obs_data_set_string(sourceData, "mediaState", mediaState.toUtf8());
+
+			obs_data_array_push_back(sourcesArray, sourceData);
+		}
+		return true;
+	};
+	obs_enum_sources(sourceEnumProc, sourcesArray);
 
 	OBSDataAutoRelease response = obs_data_create();
-	obs_data_set_string(response, "mediaState", mediaState.toUtf8());
-
+	obs_data_set_array(response, "mediaSources", sourcesArray);
 	return request.success(response);
 }

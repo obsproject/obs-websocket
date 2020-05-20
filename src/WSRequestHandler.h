@@ -175,4 +175,5 @@ class WSRequestHandler {
 		RpcResponse SetMediaTime(const RpcRequest&);
 		RpcResponse ScrubMedia(const RpcRequest&);
 		RpcResponse GetMediaState(const RpcRequest&);
+		RpcResponse GetMediaSourcesList(const RpcRequest&);
 };
