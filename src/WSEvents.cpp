@@ -348,7 +348,7 @@ void WSEvents::hookTransitionPlaybackEvents() {
 	obs_frontend_source_list transitions = {};
 	obs_frontend_get_transitions(&transitions);
 
-	for (int i = 0; i < transitions.sources.num; i++) {
+	for (uint i = 0; i < transitions.sources.num; i++) {
 		obs_source_t* transition = transitions.sources.array[i];
 		signal_handler_t* sh = obs_source_get_signal_handler(transition);
 		signal_handler_disconnect(sh, "transition_start", OnTransitionBegin, this);
@@ -366,7 +366,7 @@ void WSEvents::unhookTransitionPlaybackEvents() {
 	obs_frontend_source_list transitions = {};
 	obs_frontend_get_transitions(&transitions);
 
-	for (int i = 0; i < transitions.sources.num; i++) {
+	for (uint i = 0; i < transitions.sources.num; i++) {
 		obs_source_t* transition = transitions.sources.array[i];
 		signal_handler_t* sh = obs_source_get_signal_handler(transition);
 		signal_handler_disconnect(sh, "transition_start", OnTransitionBegin, this);
