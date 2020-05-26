@@ -46,6 +46,9 @@ const QHash<QString, RpcMethodHandler> WSRequestHandler::messageMap {
 	{ "SetCurrentScene", &WSRequestHandler::SetCurrentScene },
 	{ "GetCurrentScene", &WSRequestHandler::GetCurrentScene },
 	{ "GetSceneList", &WSRequestHandler::GetSceneList },
+	{ "SetSceneTransitionOverride", &WSRequestHandler::SetSceneTransitionOverride },
+	{ "RemoveSceneTransitionOverride", &WSRequestHandler::RemoveSceneTransitionOverride },
+	{ "GetSceneTransitionOverride", &WSRequestHandler::GetSceneTransitionOverride },
 
 	{ "SetSourceRender", &WSRequestHandler::SetSceneItemRender }, // Retrocompat
 	{ "SetSceneItemRender", &WSRequestHandler::SetSceneItemRender },
