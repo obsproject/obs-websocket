@@ -154,7 +154,7 @@ RpcResponse WSRequestHandler::ReorderSceneItems(const RpcRequest& request) {
  *
  * @param {String} `sceneName` Name of the scene to switch to.
  * @param {String} `transitionName` Name of the transition to use.
- * @param {int (Optional)} `transitionDuration` Duration in milliseconds of the transition if transition is not fixed. Defaults 300 if there is no current override and this value is not given.
+ * @param {int (Optional)} `transitionDuration` Duration in milliseconds of the transition if transition is not fixed. Defaults to the current transition duration specified in the UI if this value is not given.
  *
  * @api requests
  * @name SetSceneTransitionOverride
@@ -170,7 +170,10 @@ RpcResponse WSRequestHandler::SetSceneTransitionOverride(const RpcRequest& reque
 	OBSSourceAutoRelease source = obs_get_source_by_name(sceneName.toUtf8());
 	if (!source) {
 		return request.failed("requested scene does not exist");
-	} else if (!(obs_source_get_type(source) == OBS_SOURCE_TYPE_SCENE)) {
+	}
+	
+	enum obs_source_type sourceType = obs_source_get_type(source);
+	if (sourceType != OBS_SOURCE_TYPE_SCENE) {
 		return request.failed("requested scene is invalid");
 	}
 	
@@ -179,18 +182,15 @@ RpcResponse WSRequestHandler::SetSceneTransitionOverride(const RpcRequest& reque
 		return request.failed("requested transition does not exist");
 	}
 
-	obs_data_t *sourceData = obs_source_get_private_settings(source);
+	int transitionOverrideDuration = (
+		request.hasField("transitionDuration")
+		? obs_data_get_int(request.parameters(), "transitionDuration")
+		: obs_frontend_get_transition_duration()
+	);
 
-	int transitionDuration = obs_data_get_int(sourceData, "transition_duration");
-	if (request.hasField("transitionDuration")) {
-		transitionDuration = obs_data_get_int(request.parameters(), "transitionDuration");
-	} else if (!transitionDuration) {
-		transitionDuration = 300;
-	}
-
-	obs_data_set_string(sourceData, "transition", transitionName.toUtf8());
-	obs_data_set_int(sourceData, "transition_duration", transitionDuration);
-	obs_data_release(sourceData);
+	OBSDataAutoRelease sourceData = obs_source_get_private_settings(source);
+	obs_data_set_string(sourceData, "transition", transitionName.toUtf8().constData());
+	obs_data_set_int(sourceData, "transition_duration", transitionOverrideDuration);
 
 	return request.success();
 }
@@ -214,14 +214,16 @@ RpcResponse WSRequestHandler::RemoveSceneTransitionOverride(const RpcRequest& re
 	OBSSourceAutoRelease source = obs_get_source_by_name(sceneName.toUtf8());
 	if (!source) {
 		return request.failed("requested scene does not exist");
-	} else if (!(obs_source_get_type(source) == OBS_SOURCE_TYPE_SCENE)) {
+	}
+	
+	enum obs_source_type sourceType = obs_source_get_type(source);
+	if (sourceType != OBS_SOURCE_TYPE_SCENE) {
 		return request.failed("requested scene is invalid");
 	}
 
-	obs_data_t *sourceData = obs_source_get_private_settings(source);
+	OBSDataAutoRelease sourceData = obs_source_get_private_settings(source);
 	obs_data_erase(sourceData, "transition");
 	obs_data_erase(sourceData, "transition_duration");
-	obs_data_release(sourceData);
 
 	return request.success();
 }
@@ -248,19 +250,24 @@ RpcResponse WSRequestHandler::GetSceneTransitionOverride(const RpcRequest& reque
 	OBSSourceAutoRelease source = obs_get_source_by_name(sceneName.toUtf8());
 	if (!source) {
 		return request.failed("requested scene does not exist");
-	} else if (!(obs_source_get_type(source) == OBS_SOURCE_TYPE_SCENE)) {
+	}
+	
+	enum obs_source_type sourceType = obs_source_get_type(source);
+	if (sourceType != OBS_SOURCE_TYPE_SCENE) {
 		return request.failed("requested scene is invalid");
 	}
 
-	OBSDataAutoRelease data = obs_data_create();
-	obs_data_t *sourceData = obs_source_get_private_settings(source);
-	obs_data_set_string(data, "transitionName", obs_data_get_string(sourceData, "transition"));
-	if (!obs_data_get_int(sourceData, "transition_duration")) {
-		obs_data_set_int(data, "transitionDuration", -1);
-	} else {
-		obs_data_set_int(data, "transitionDuration", obs_data_get_int(sourceData, "transition_duration"));
-	}
-	obs_data_release(sourceData);
+	OBSDataAutoRelease sourceData = obs_source_get_private_settings(source);
+	const char* transitionOverrideName = obs_data_get_string(sourceData, "transition");
 
-	return request.success(data);
+	bool hasDurationOverride = obs_data_has_autoselect_value(sourceData, "transition_duration");
+	int transitionOverrideDuration = obs_data_get_int(sourceData, "transition_duration");
+
+	OBSDataAutoRelease fields = obs_data_create();
+	obs_data_set_string(fields, "transitionName", transitionOverrideName);
+	obs_data_set_int(fields, "transitionDuration",
+		(hasDurationOverride ? transitionOverrideDuration : -1)
+	);
+
+	return request.success(fields);
 }
