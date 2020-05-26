@@ -121,7 +121,7 @@ RpcResponse WSRequestHandler::ReorderSceneItems(const RpcRequest& request) {
 		struct obs_sceneitem_order_info info;
 
 		size_t itemCount = obs_data_array_count(ctx->items);
-		for (int i = 0; i < itemCount; i++) {
+		for (uint i = 0; i < itemCount; i++) {
 			OBSDataAutoRelease item = obs_data_array_item(ctx->items, i);
 
 			OBSSceneItemAutoRelease sceneItem = Utils::GetSceneItemFromItem(scene, item);

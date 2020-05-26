@@ -1673,7 +1673,7 @@ RpcResponse WSRequestHandler::TakeSourceScreenshot(const RpcRequest& request) {
 		gs_stage_texture(stagesurface, gs_texrender_get_texture(texrender));
 		if (gs_stagesurface_map(stagesurface, &videoData, &videoLinesize)) {
 			int linesize = sourceImage.bytesPerLine();
-			for (int y = 0; y < imgHeight; y++) {
+			for (uint y = 0; y < imgHeight; y++) {
 			 	memcpy(sourceImage.scanLine(y), videoData + (y * videoLinesize), linesize);
 			}
 			gs_stagesurface_unmap(stagesurface);
