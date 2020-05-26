@@ -91,6 +91,7 @@ const QHash<QString, RpcMethodHandler> WSRequestHandler::messageMap {
 	{ "ToggleMute", &WSRequestHandler::ToggleMute },
 	{ "SetMute", &WSRequestHandler::SetMute },
 	{ "GetMute", &WSRequestHandler::GetMute },
+	{ "SetSourceName", &WSRequestHandler::SetSourceName },
 	{ "SetSyncOffset", &WSRequestHandler::SetSyncOffset },
 	{ "GetSyncOffset", &WSRequestHandler::GetSyncOffset },
 	{ "GetSpecialSources", &WSRequestHandler::GetSpecialSources },
