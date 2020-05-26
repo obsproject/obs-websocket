@@ -5921,6 +5921,55 @@
       },
       {
         "subheads": [],
+        "description": "\n\nNote: If the new name already exists as a source, OBS will automatically modify the name to not interfere.",
+        "param": [
+          "{String} `sourceName` Source name.",
+          "{String} `newName` New source name."
+        ],
+        "api": "requests",
+        "name": "SetSourceName",
+        "category": "sources",
+        "since": "4.8.0",
+        "params": [
+          {
+            "type": "String",
+            "name": "sourceName",
+            "description": "Source name."
+          },
+          {
+            "type": "String",
+            "name": "newName",
+            "description": "New source name."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "SetSourceName"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "sources"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.8.0"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "SetSourceName"
+        },
+        "lead": "Sets (aka rename) the name of a source. Also works with scenes since scenes are technically sources in OBS.",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
         "description": "Set the audio sync offset of a specified source.",
         "param": [
           "{String} `source` Source name.",

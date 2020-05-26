@@ -172,6 +172,7 @@ auth_response = base64_encode(auth_response_hash)
     + [GetMute](#getmute)
     + [SetMute](#setmute)
     + [ToggleMute](#togglemute)
+    + [SetSourceName](#setsourcename)
     + [SetSyncOffset](#setsyncoffset)
     + [GetSyncOffset](#getsyncoffset)
     + [GetSourceSettings](#getsourcesettings)
@@ -2370,6 +2371,29 @@ Inverts the mute status of a specified source.
 | Name | Type  | Description |
 | ---- | :---: | ------------|
 | `source` | _String_ | Source name. |
+
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+### SetSourceName
+
+
+- Added in v4.8.0
+
+
+
+Note: If the new name already exists as a source, OBS will automatically modify the name to not interfere.
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sourceName` | _String_ | Source name. |
+| `newName` | _String_ | New source name. |
 
 
 **Response Items:**
