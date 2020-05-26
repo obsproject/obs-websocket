@@ -80,6 +80,31 @@ RpcResponse WSRequestHandler::GetSceneList(const RpcRequest& request) {
 }
 
 /**
+ * Create a new scene scene.
+ *
+ * @param {String} `scene-name` Name of the scene to create.
+ *
+ * @api requests
+ * @name CreateScene
+ * @category scenes
+ * @since 4.8.0
+ */
+RpcResponse WSRequestHandler::CreateScene(const RpcRequest& request) {
+	if (!request.hasField("sceneName")) {
+		return request.failed("missing request parameters");
+	}
+
+	const char* sceneName = obs_data_get_string(request.parameters(), "sceneName");
+	OBSSourceAutoRelease source = obs_get_source_by_name(sceneName);
+
+	if (source) {
+		return request.failed("scene with this name already exists");
+	}
+	obs_scene_create(sceneName);
+	return request.success();
+}
+
+/**
 * Changes the order of scene items in the requested scene.
 *
 * @param {String (optional)} `scene` Name of the scene to reorder (defaults to current).
