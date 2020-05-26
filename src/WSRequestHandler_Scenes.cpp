@@ -154,7 +154,7 @@ RpcResponse WSRequestHandler::ReorderSceneItems(const RpcRequest& request) {
  *
  * @param {String} `sceneName` Name of the scene to switch to.
  * @param {String} `transitionName` Name of the transition to use.
- * @param {int (Optional)} `transitionDuration` Duration in milliseconds of the transition if transition is not fixed. Defaults to the current transition duration specified in the UI if this value is not given.
+ * @param {int (Optional)} `transitionDuration` Duration in milliseconds of the transition if transition is not fixed. Defaults to the current duration specified in the UI if there is no current override and this value is not given.
  *
  * @api requests
  * @name SetSceneTransitionOverride
@@ -182,16 +182,18 @@ RpcResponse WSRequestHandler::SetSceneTransitionOverride(const RpcRequest& reque
 		return request.failed("requested transition does not exist");
 	}
 
-	int transitionOverrideDuration = (
-		request.hasField("transitionDuration")
-		? obs_data_get_int(request.parameters(), "transitionDuration")
-		: obs_frontend_get_transition_duration()
-	);
-
 	OBSDataAutoRelease sourceData = obs_source_get_private_settings(source);
 	obs_data_set_string(sourceData, "transition", transitionName.toUtf8().constData());
-	obs_data_set_int(sourceData, "transition_duration", transitionOverrideDuration);
 
+	if (request.hasField("transitionDuration")) {
+		int transitionOverrideDuration = obs_data_get_int(request.parameters(), "transitionDuration");
+		obs_data_set_int(sourceData, "transition_duration", transitionOverrideDuration);
+	} else if(!obs_data_has_user_value(sourceData, "transition_duration")) {
+		obs_data_set_int(sourceData, "transition_duration",
+			obs_frontend_get_transition_duration()
+		);
+	}
+	
 	return request.success();
 }
 
@@ -260,7 +262,7 @@ RpcResponse WSRequestHandler::GetSceneTransitionOverride(const RpcRequest& reque
 	OBSDataAutoRelease sourceData = obs_source_get_private_settings(source);
 	const char* transitionOverrideName = obs_data_get_string(sourceData, "transition");
 
-	bool hasDurationOverride = obs_data_has_autoselect_value(sourceData, "transition_duration");
+	bool hasDurationOverride = obs_data_has_user_value(sourceData, "transition_duration");
 	int transitionOverrideDuration = obs_data_get_int(sourceData, "transition_duration");
 
 	OBSDataAutoRelease fields = obs_data_create();
