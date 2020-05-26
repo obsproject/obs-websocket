@@ -930,6 +930,7 @@ A source has been renamed.
 | ---- | :---: | ------------|
 | `previousName` | _String_ | Previous source name |
 | `newName` | _String_ | New source name |
+| `sourceType` | _String_ | Type of source (input, scene, filter, transition) |
 
 
 ---

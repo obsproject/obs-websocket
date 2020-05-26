@@ -2198,7 +2198,8 @@
         "description": "A source has been renamed.",
         "return": [
           "{String} `previousName` Previous source name",
-          "{String} `newName` New source name"
+          "{String} `newName` New source name",
+          "{String} `sourceType` Type of source (input, scene, filter, transition)"
         ],
         "api": "events",
         "name": "SourceRenamed",
@@ -2214,6 +2215,11 @@
             "type": "String",
             "name": "newName",
             "description": "New source name"
+          },
+          {
+            "type": "String",
+            "name": "sourceType",
+            "description": "Type of source (input, scene, filter, transition)"
           }
         ],
         "names": [
