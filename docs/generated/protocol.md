@@ -164,6 +164,9 @@ auth_response = base64_encode(auth_response_hash)
     + [GetCurrentScene](#getcurrentscene)
     + [GetSceneList](#getscenelist)
     + [ReorderSceneItems](#reordersceneitems)
+    + [SetSceneTransitionOverride](#setscenetransitionoverride)
+    + [RemoveSceneTransitionOverride](#removescenetransitionoverride)
+    + [GetSceneTransitionOverride](#getscenetransitionoverride)
   * [Sources](#sources-1)
     + [GetSourcesList](#getsourceslist)
     + [GetSourceTypesList](#getsourcetypeslist)
@@ -2206,6 +2209,72 @@ Changes the order of scene items in the requested scene.
 **Response Items:**
 
 _No additional response items._
+
+---
+
+### SetSceneTransitionOverride
+
+
+- Added in v4.9.0
+
+Set a scene to use a specific transition override.
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sceneName` | _String_ | Name of the scene to switch to. |
+| `transitionName` | _String_ | Name of the transition to use. |
+| `transitionDuration` | _int (Optional)_ | Duration in milliseconds of the transition if transition is not fixed. Defaults to the current duration specified in the UI if there is no current override and this value is not given. |
+
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+### RemoveSceneTransitionOverride
+
+
+- Added in v4.9.0
+
+Remove any transition override on a scene.
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sceneName` | _String_ | Name of the scene to switch to. |
+
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+### GetSceneTransitionOverride
+
+
+- Added in v4.9.0
+
+Get the current scene transition override.
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sceneName` | _String_ | Name of the scene to switch to. |
+
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `transitionName` | _String_ | Name of the current overriding transition. Empty string if no override is set. |
+| `transitionDuration` | _int_ | Transition duration. `-1` if no override is set. |
+
 
 ---
 
