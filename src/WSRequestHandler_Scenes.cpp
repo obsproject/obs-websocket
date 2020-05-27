@@ -82,7 +82,7 @@ RpcResponse WSRequestHandler::GetSceneList(const RpcRequest& request) {
 /**
  * Create a new scene scene.
  *
- * @param {String} `scene-name` Name of the scene to create.
+ * @param {String} `sceneName` Name of the scene to create.
  *
  * @api requests
  * @name CreateScene
