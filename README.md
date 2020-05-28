@@ -1,13 +1,14 @@
-obs-websocket
-==============
+# obs-websocket
+
+<p align="center">
+  <img src="/.github/images/obsws_logo.png" width=150 align="center">
+</p>
 
 WebSockets API for OBS Studio.
 
-Follow the main author on Twitter for news & updates : [@LePalakis](https://twitter.com/LePalakis)
-
 [![Discord](https://img.shields.io/discord/715691013825364120.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/WBaSQ3A)
-
 [![Build Status](https://dev.azure.com/Palakis/obs-websocket/_apis/build/status/Palakis.obs-websocket?branchName=4.x-current)](https://dev.azure.com/Palakis/obs-websocket/_build/latest?definitionId=2&branchName=4.x-current)
+[![Twitter](https://img.shields.io/twitter/url/https/twitter.com/fold_left.svg?style=social&label=Follow%20%40LePalakis)](https://twitter.com/LePalakis)
 
 ## Downloads
 
