@@ -115,7 +115,7 @@ In (almost) order of appearance:
 - [Casey Muller](https://github.com/caseymrm): CI fixes
 - [Chris Angelico](https://github.com/Rosuav): Documentation fixes
 
-And also: special thanks to supporters of the project!
+And also: special thanks to supporters of the project!!
 
 ## Supporters
 
