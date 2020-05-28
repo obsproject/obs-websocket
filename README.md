@@ -41,7 +41,7 @@ Here's a list of available language APIs for obs-websocket :
 - Golang: [go-obs-websocket](https://github.com/christopher-dG/go-obs-websocket) by Chris de Graaf
 - HTTP API: [obs-websocket-http](https://github.com/IRLToolkit/obs-websocket-http) by tt2468
 
-I'd like to know what you're building with or for obs-websocket. If you do something in this fashion, feel free to drop me an email at `stephane /dot/ lepin /at/ gmail /dot/ com` !
+I'd like to know what you're building with or for obs-websocket. If you do something in this fashion, feel free to drop a message in `#project-showoff` in the [discord server!](https://discord.gg/WBaSQ3A)
 
 ## Compiling obs-websocket
 
@@ -59,36 +59,13 @@ Please join the localization project on [Crowdin](https://crowdin.com/project/ob
 
 ## Special thanks
 
-In (almost) order of appearance:
-
-- [Brendan H.](https://github.com/haganbmj): Code contributions and gooder English in the Protocol specification
-- [Mikhail Swift](https://github.com/mikhailswift): Code contributions
-- [Tobias Frahmer](https://github.com/Frahmer): Initial German localization
-- [Genture](https://github.com/Genteure): Initial Simplified Chinese and Traditional Chinese localizations
-- [Larissa Gabilan](https://github.com/laris151): Initial Portuguese localization
-- [Andy Asquelt](https://github.com/asquelt): Initial Polish localization
-- [Marcel Haazen](https://github.com/nekocentral): Initial Dutch localization
-- [Peter Antonvich](https://github.com/pantonvich): Code contributions
-- [yinzara](https://github.com/yinzara): Code contributions
-- [Chris Angelico](https://github.com/Rosuav): Code contributions
-- [Guillaume "Elektordi" Genty](https://github.com/Elektordi): Code contributions
-- [Marwin M](https://github.com/dragonbane0): Code contributions
-- [Logan S.](https://github.com/lsdaniel): Code contributions
-- [RainbowEK](https://github.com/RainbowEK): Code contributions
-- [RytoEX](https://github.com/RytoEX): CI script and code contributions
-- [Theodore Stoddard](https://github.com/TStod): Code contributions
-- [Philip Loche](https://github.com/PicoCentauri): Code contributions
-- [Patrick Heyer](https://github.com/PatTheMav): Code contributions and CI fixes
-- [Alex Van Camp](https://github.com/Lange): Code contributions
-- [Freddie Meyer](https://github.com/DungFu): Code contributions
-- [Casey Muller](https://github.com/caseymrm): CI fixes
-- [Chris Angelico](https://github.com/Rosuav): Documentation fixes
+Thank you so much to all of the contibutors [(here)](https://github.com/Palakis/obs-websocket/graphs/contributors) for your amazing help.
 
 And also: special thanks to supporters of the project!
 
 ## Supporters
 
-They have contributed financially to the project and made possible the addition of several features into obs-websocket. Many thanks to them!
+These supporters have contributed financially to the project and made possible the addition of several features into obs-websocket. Many thanks to them!
 
 ---
 
