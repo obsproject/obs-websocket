@@ -78,6 +78,7 @@ class WSRequestHandler {
 		RpcResponse ResetSceneItem(const RpcRequest&);
 		RpcResponse DuplicateSceneItem(const RpcRequest&);
 		RpcResponse DeleteSceneItem(const RpcRequest&);
+		RpcResponse AddSceneItem(const RpcRequest&);
 		RpcResponse ReorderSceneItems(const RpcRequest&);
 
 		RpcResponse GetStreamingStatus(const RpcRequest&);

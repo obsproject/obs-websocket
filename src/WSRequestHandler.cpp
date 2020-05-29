@@ -60,6 +60,7 @@ const QHash<QString, RpcMethodHandler> WSRequestHandler::messageMap {
 	{ "SetSceneItemProperties", &WSRequestHandler::SetSceneItemProperties },
 	{ "ResetSceneItem", &WSRequestHandler::ResetSceneItem },
 	{ "DeleteSceneItem", &WSRequestHandler::DeleteSceneItem },
+	{ "AddSceneItem", &WSRequestHandler::AddSceneItem },
 	{ "DuplicateSceneItem", &WSRequestHandler::DuplicateSceneItem },
 	{ "ReorderSceneItems", &WSRequestHandler::ReorderSceneItems },
 
