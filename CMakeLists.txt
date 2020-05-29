@@ -1,12 +1,12 @@
-cmake_minimum_required(VERSION 3.2)
-project(obs-websocket)
+cmake_minimum_required(VERSION 3.5)
+project(obs-websocket VERSION 4.8.0)
 
 set(CMAKE_PREFIX_PATH "${QTDIR}")
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_definitions(-DASIO_STANDALONE)
@@ -94,7 +94,8 @@ if(WIN32)
 	endif()
 
     if(MSVC)
-	    add_compile_options("/MP")
+        # Enable Multicore Builds and disable FH4 (to not depend on VCRUNTIME140_1.DLL)
+	    add_definitions(/MP /d2FH4-)
     endif()
 
 	add_definitions(-D_WEBSOCKETPP_CPP11_STL_)
@@ -188,22 +189,23 @@ endif()
 
 # --- Linux-specific build settings and tasks ---
 if(UNIX AND NOT APPLE)
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=default")
+	include(GNUInstallDirs)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=default")
 
 	set_target_properties(obs-websocket PROPERTIES PREFIX "")
 	target_link_libraries(obs-websocket obs-frontend-api)
 
 	file(GLOB locale_files data/locale/*.ini)
-	execute_process(COMMAND uname -m COMMAND tr -d '\n' OUTPUT_VARIABLE UNAME_MACHINE)
 
-	install(TARGETS obs-websocket
-		LIBRARY DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/obs-plugins")
-	# Dirty fix for Ubuntu
+	if(${USE_UBUNTU_FIX})
 		install(TARGETS obs-websocket
-				LIBRARY DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/${UNAME_MACHINE}-linux-gnu/obs-plugins")
+			LIBRARY DESTINATION "/usr/lib/obs-plugins")
+	endif()
+	install(TARGETS obs-websocket
+		LIBRARY DESTINATION "${CMAKE_INSTALL_FULL_LIBDIR}/obs-plugins")
 
 	install(FILES ${locale_files}
-		DESTINATION "${CMAKE_INSTALL_PREFIX}/share/obs/obs-plugins/obs-websocket/locale")
+		DESTINATION "${CMAKE_INSTALL_FULL_DATAROOTDIR}/obs/obs-plugins/obs-websocket/locale")
 endif()
 # --- End of section ---
 

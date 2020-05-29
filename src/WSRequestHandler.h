@@ -64,6 +64,10 @@ class WSRequestHandler {
 		RpcResponse SetCurrentScene(const RpcRequest&);
 		RpcResponse GetCurrentScene(const RpcRequest&);
 		RpcResponse GetSceneList(const RpcRequest&);
+		RpcResponse CreateScene(const RpcRequest&);
+		RpcResponse SetSceneTransitionOverride(const RpcRequest&);
+		RpcResponse RemoveSceneTransitionOverride(const RpcRequest&);
+		RpcResponse GetSceneTransitionOverride(const RpcRequest&);
 
 		RpcResponse SetSceneItemRender(const RpcRequest&);
 		RpcResponse SetSceneItemPosition(const RpcRequest&);
@@ -99,12 +103,16 @@ class WSRequestHandler {
 		RpcResponse GetTransitionList(const RpcRequest&);
 		RpcResponse GetCurrentTransition(const RpcRequest&);
 		RpcResponse SetCurrentTransition(const RpcRequest&);
+		RpcResponse SetTransitionDuration(const RpcRequest&);
+		RpcResponse GetTransitionDuration(const RpcRequest&);
+		RpcResponse GetTransitionPosition(const RpcRequest&);
 
 		RpcResponse SetVolume(const RpcRequest&);
 		RpcResponse GetVolume(const RpcRequest&);
 		RpcResponse ToggleMute(const RpcRequest&);
 		RpcResponse SetMute(const RpcRequest&);
 		RpcResponse GetMute(const RpcRequest&);
+		RpcResponse SetSourceName(const RpcRequest&);
 		RpcResponse SetSyncOffset(const RpcRequest&);
 		RpcResponse GetSyncOffset(const RpcRequest&);
 		RpcResponse GetSpecialSources(const RpcRequest&);
@@ -112,6 +120,8 @@ class WSRequestHandler {
 		RpcResponse GetSourceTypesList(const RpcRequest&);
 		RpcResponse GetSourceSettings(const RpcRequest&);
 		RpcResponse SetSourceSettings(const RpcRequest&);
+		RpcResponse GetAudioMonitorType(const RpcRequest&);
+		RpcResponse SetAudioMonitorType(const RpcRequest&);
 		RpcResponse TakeSourceScreenshot(const RpcRequest&);
 
 		RpcResponse GetSourceFilters(const RpcRequest&);
@@ -137,9 +147,6 @@ class WSRequestHandler {
 #if BUILD_CAPTIONS
 		RpcResponse SendCaptions(const RpcRequest&);
 #endif
-
-		RpcResponse SetTransitionDuration(const RpcRequest&);
-		RpcResponse GetTransitionDuration(const RpcRequest&);
 
 		RpcResponse GetStudioModeStatus(const RpcRequest&);
 		RpcResponse GetPreviewScene(const RpcRequest&);

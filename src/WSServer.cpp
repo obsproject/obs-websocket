@@ -64,6 +64,7 @@ WSServer::WSServer()
 	  _clMutex(QMutex::Recursive),
 	  _httpRouter(httpRoutes)
 {
+        _server.get_alog().clear_channels(websocketpp::log::alevel::frame_header | websocketpp::log::alevel::frame_payload | websocketpp::log::alevel::control);
 	_server.init_asio();
 #ifndef _WIN32
 	_server.set_reuse_addr(true);
@@ -104,7 +105,7 @@ void WSServer::start(quint16 port)
 
 		obs_frontend_push_ui_translation(obs_module_get_string);
 		QString errorTitle = tr("OBSWebsocket.Server.StartFailed.Title");
-		QString errorMessage = tr("OBSWebsocket.Server.StartFailed.Message").arg(_serverPort);
+		QString errorMessage = tr("OBSWebsocket.Server.StartFailed.Message").arg(_serverPort).arg(errorCodeMessage.c_str());
 		obs_frontend_pop_ui_translation();
 
 		QMainWindow* mainWindow = reinterpret_cast<QMainWindow*>(obs_frontend_get_main_window());

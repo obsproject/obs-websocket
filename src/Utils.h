@@ -39,11 +39,12 @@ namespace Utils {
 	obs_data_array_t* GetSceneItems(obs_source_t* source);
 	obs_data_t* GetSceneItemData(obs_sceneitem_t* item);
 
-	// These two functions support nested lookup into groups
+	// These functions support nested lookup into groups
 	obs_sceneitem_t* GetSceneItemFromName(obs_scene_t* scene, QString name);
 	obs_sceneitem_t* GetSceneItemFromId(obs_scene_t* scene, int64_t id);
-
 	obs_sceneitem_t* GetSceneItemFromItem(obs_scene_t* scene, obs_data_t* item);
+	obs_sceneitem_t* GetSceneItemFromRequestField(obs_scene_t* scene, obs_data_item_t* dataItem);
+
 	obs_scene_t* GetSceneFromNameOrCurrent(QString sceneName);
 	obs_data_t* GetSceneItemPropertiesData(obs_sceneitem_t* item);
 

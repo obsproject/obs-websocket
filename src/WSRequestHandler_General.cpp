@@ -328,7 +328,7 @@ RpcResponse WSRequestHandler::GetVideoInfo(const RpcRequest& request) {
  * @api requests
  * @name OpenProjector
  * @category general
- * @since unreleased
+ * @since 4.8.0
  */
 RpcResponse WSRequestHandler::OpenProjector(const RpcRequest& request) {
 	const char* type = obs_data_get_string(request.parameters(), "type");

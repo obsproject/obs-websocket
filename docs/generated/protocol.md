@@ -1,6 +1,6 @@
 <!-- This file was generated based on handlebars templates. Do not edit directly! -->
 
-# obs-websocket 4.7.0 protocol reference
+# obs-websocket 4.8.0 protocol reference
 
 # General Introduction
 Messages are exchanged between the client and the server as JSON objects.
@@ -99,6 +99,7 @@ auth_response = base64_encode(auth_response_hash)
     + [SourceFilterRemoved](#sourcefilterremoved)
     + [SourceFilterVisibilityChanged](#sourcefiltervisibilitychanged)
     + [SourceFiltersReordered](#sourcefiltersreordered)
+  * [Scene Items](#scene-items)
     + [SourceOrderChanged](#sourceorderchanged)
     + [SceneItemAdded](#sceneitemadded)
     + [SceneItemRemoved](#sceneitemremoved)
@@ -148,7 +149,7 @@ auth_response = base64_encode(auth_response_hash)
     + [SetCurrentSceneCollection](#setcurrentscenecollection)
     + [GetCurrentSceneCollection](#getcurrentscenecollection)
     + [ListSceneCollections](#listscenecollections)
-  * [Scene Items](#scene-items)
+  * [Scene Items](#scene-items-1)
     + [GetSceneItemProperties](#getsceneitemproperties)
     + [SetSceneItemProperties](#setsceneitemproperties)
     + [ResetSceneItem](#resetsceneitem)
@@ -163,6 +164,9 @@ auth_response = base64_encode(auth_response_hash)
     + [GetCurrentScene](#getcurrentscene)
     + [GetSceneList](#getscenelist)
     + [ReorderSceneItems](#reordersceneitems)
+    + [SetSceneTransitionOverride](#setscenetransitionoverride)
+    + [RemoveSceneTransitionOverride](#removescenetransitionoverride)
+    + [GetSceneTransitionOverride](#getscenetransitionoverride)
   * [Sources](#sources-1)
     + [GetSourcesList](#getsourceslist)
     + [GetSourceTypesList](#getsourcetypeslist)
@@ -171,6 +175,7 @@ auth_response = base64_encode(auth_response_hash)
     + [GetMute](#getmute)
     + [SetMute](#setmute)
     + [ToggleMute](#togglemute)
+    + [SetSourceName](#setsourcename)
     + [SetSyncOffset](#setsyncoffset)
     + [GetSyncOffset](#getsyncoffset)
     + [GetSourceSettings](#getsourcesettings)
@@ -190,6 +195,8 @@ auth_response = base64_encode(auth_response_hash)
     + [MoveSourceFilter](#movesourcefilter)
     + [SetSourceFilterSettings](#setsourcefiltersettings)
     + [SetSourceFilterVisibility](#setsourcefiltervisibility)
+    + [GetAudioMonitorType](#getaudiomonitortype)
+    + [SetAudioMonitorType](#setaudiomonitortype)
     + [TakeSourceScreenshot](#takesourcescreenshot)
   * [Streaming](#streaming-1)
     + [GetStreamingStatus](#getstreamingstatus)
@@ -214,6 +221,7 @@ auth_response = base64_encode(auth_response_hash)
     + [SetCurrentTransition](#setcurrenttransition)
     + [SetTransitionDuration](#settransitionduration)
     + [GetTransitionDuration](#gettransitionduration)
+    + [GetTransitionPosition](#gettransitionposition)
 
 <!-- tocstop -->
 
@@ -926,6 +934,7 @@ A source has been renamed.
 | ---- | :---: | ------------|
 | `previousName` | _String_ | Previous source name |
 | `newName` | _String_ | New source name |
+| `sourceType` | _String_ | Type of source (input, scene, filter, transition) |
 
 
 ---
@@ -1004,6 +1013,8 @@ Filters in a source have been reordered.
 
 ---
 
+## Scene Items
+
 ### SourceOrderChanged
 
 
@@ -1081,7 +1092,7 @@ An item's visibility has been toggled.
 ### SceneItemLockChanged
 
 
-- Unreleased
+- Added in v4.8.0
 
 An item's locked status has been toggled.
 
@@ -1404,7 +1415,7 @@ _No specified parameters._
 ### OpenProjector
 
 
-- Unreleased
+- Added in v4.8.0
 
 Open a projector window or create a projector on a monitor. Requires OBS v24.0.4 or newer.
 
@@ -1860,15 +1871,18 @@ Coordinates are relative to the item's parent (the scene or group it belongs to)
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
-| `scene-name` | _String (optional)_ | the name of the scene that the source item belongs to. Defaults to the current scene. |
-| `item` | _String_ | The name of the source. |
+| `scene-name` | _String (optional)_ | Name of the scene the scene item belongs to. Defaults to the current scene. |
+| `item` | _String \| Object_ | Scene Item name (if this field is a string) or specification (if it is an object). |
+| `item.name` | _String (optional)_ | Scene Item name (if the `item` field is an object) |
+| `item.id` | _int (optional)_ | Scene Item ID (if the `item` field is an object) |
 
 
 **Response Items:**
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
-| `name` | _String_ | The name of the source. |
+| `name` | _String_ | Scene Item name. |
+| `itemId` | _int_ | Scene Item ID. |
 | `position.x` | _int_ | The x position of the source from the left. |
 | `position.y` | _int_ | The y position of the source from the top. |
 | `position.alignment` | _int_ | The point on the source that the item is manipulated from. |
@@ -1909,8 +1923,10 @@ Coordinates are relative to the item's parent (the scene or group it belongs to)
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
-| `scene-name` | _String (optional)_ | the name of the scene that the source item belongs to. Defaults to the current scene. |
-| `item` | _String_ | The name of the source. |
+| `scene-name` | _String (optional)_ | Name of the scene the source item belongs to. Defaults to the current scene. |
+| `item` | _String \| Object_ | Scene Item name (if this field is a string) or specification (if it is an object). |
+| `item.name` | _String (optional)_ | Scene Item name (if the `item` field is an object) |
+| `item.id` | _int (optional)_ | Scene Item ID (if the `item` field is an object) |
 | `position.x` | _int (optional)_ | The new x position of the source. |
 | `position.y` | _int (optional)_ | The new y position of the source. |
 | `position.alignment` | _int (optional)_ | The new alignment of the source. |
@@ -1946,8 +1962,10 @@ Reset a scene item.
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
-| `scene-name` | _String (optional)_ | Name of the scene the source belongs to. Defaults to the current scene. |
-| `item` | _String_ | Name of the source item. |
+| `scene-name` | _String (optional)_ | Name of the scene the scene item belongs to. Defaults to the current scene. |
+| `item` | _String \| Object_ | Scene Item name (if this field is a string) or specification (if it is an object). |
+| `item.name` | _String (optional)_ | Scene Item name (if the `item` field is an object) |
+| `item.id` | _int (optional)_ | Scene Item ID (if the `item` field is an object) |
 
 
 **Response Items:**
@@ -1968,9 +1986,9 @@ Show or hide a specified source item in a specified scene.
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
-| `source` | _String_ | Scene item name in the specified scene. |
+| `scene-name` | _String (optional)_ | Name of the scene the scene item belongs to. Defaults to the currently active scene. |
+| `source` | _String_ | Scene Item name. |
 | `render` | _boolean_ | true = shown ; false = hidden |
-| `scene-name` | _String (optional)_ | Name of the scene where the source resides. Defaults to the currently active scene. |
 
 
 **Response Items:**
@@ -1991,8 +2009,8 @@ Sets the coordinates of a specified source item.
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
-| `scene-name` | _String (optional)_ | The name of the scene that the source item belongs to. Defaults to the current scene. |
-| `item` | _String_ | The name of the source item. |
+| `scene-name` | _String (optional)_ | Name of the scene the scene item belongs to. Defaults to the current scene. |
+| `item` | _String_ | Scene Item name. |
 | `x` | _double_ | X coordinate. |
 | `y` | _double_ | Y coordinate. |
 
@@ -2015,8 +2033,8 @@ Set the transform of the specified source item.
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
-| `scene-name` | _String (optional)_ | The name of the scene that the source item belongs to. Defaults to the current scene. |
-| `item` | _String_ | The name of the source item. |
+| `scene-name` | _String (optional)_ | Name of the scene the scene item belongs to. Defaults to the current scene. |
+| `item` | _String_ | Scene Item name. |
 | `x-scale` | _double_ | Width scale factor. |
 | `y-scale` | _double_ | Height scale factor. |
 | `rotation` | _double_ | Source item rotation (in degrees). |
@@ -2040,8 +2058,8 @@ Sets the crop coordinates of the specified source item.
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
-| `scene-name` | _String (optional)_ | the name of the scene that the source item belongs to. Defaults to the current scene. |
-| `item` | _String_ | The name of the source. |
+| `scene-name` | _String (optional)_ | Name of the scene the scene item belongs to. Defaults to the current scene. |
+| `item` | _String_ | Scene Item name. |
 | `top` | _int_ | Pixel position of the top of the source item. |
 | `bottom` | _int_ | Pixel position of the bottom of the source item. |
 | `left` | _int_ | Pixel position of the left of the source item. |
@@ -2065,10 +2083,10 @@ Deletes a scene item.
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
-| `scene` | _String (optional)_ | Name of the scene the source belongs to. Defaults to the current scene. |
-| `item` | _Object_ | item to delete (required) |
-| `item.name` | _String_ | name of the scene item (prefer `id`, including both is acceptable). |
-| `item.id` | _int_ | id of the scene item. |
+| `scene` | _String (optional)_ | Name of the scene the scene item belongs to. Defaults to the current scene. |
+| `item` | _Object_ | Scene item to delete (required) |
+| `item.name` | _String_ | Scene Item name (prefer `id`, including both is acceptable). |
+| `item.id` | _int_ | Scene Item ID. |
 
 
 **Response Items:**
@@ -2090,9 +2108,9 @@ Duplicates a scene item.
 | ---- | :---: | ------------|
 | `fromScene` | _String (optional)_ | Name of the scene to copy the item from. Defaults to the current scene. |
 | `toScene` | _String (optional)_ | Name of the scene to create the item in. Defaults to the current scene. |
-| `item` | _Object_ | item to duplicate (required) |
-| `item.name` | _String_ | name of the scene item (prefer `id`, including both is acceptable). |
-| `item.id` | _int_ | id of the scene item. |
+| `item` | _Object_ | Scene Item to duplicate from the source scene (required) |
+| `item.name` | _String_ | Scene Item name (prefer `id`, including both is acceptable). |
+| `item.id` | _int_ | Scene Item ID. |
 
 
 **Response Items:**
@@ -2166,7 +2184,7 @@ _No specified parameters._
 | Name | Type  | Description |
 | ---- | :---: | ------------|
 | `current-scene` | _String_ | Name of the currently active scene. |
-| `scenes` | _Array&lt;Scene&gt;_ | Ordered list of the current profile's scenes (See `[GetCurrentScene](#getcurrentscene)` for more information). |
+| `scenes` | _Array&lt;Scene&gt;_ | Ordered list of the current profile's scenes (See [GetCurrentScene](#getcurrentscene) for more information). |
 
 
 ---
@@ -2191,6 +2209,72 @@ Changes the order of scene items in the requested scene.
 **Response Items:**
 
 _No additional response items._
+
+---
+
+### SetSceneTransitionOverride
+
+
+- Added in v4.9.0
+
+Set a scene to use a specific transition override.
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sceneName` | _String_ | Name of the scene to switch to. |
+| `transitionName` | _String_ | Name of the transition to use. |
+| `transitionDuration` | _int (Optional)_ | Duration in milliseconds of the transition if transition is not fixed. Defaults to the current duration specified in the UI if there is no current override and this value is not given. |
+
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+### RemoveSceneTransitionOverride
+
+
+- Added in v4.9.0
+
+Remove any transition override on a scene.
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sceneName` | _String_ | Name of the scene to switch to. |
+
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+### GetSceneTransitionOverride
+
+
+- Added in v4.9.0
+
+Get the current scene transition override.
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sceneName` | _String_ | Name of the scene to switch to. |
+
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `transitionName` | _String_ | Name of the current overriding transition. Empty string if no override is set. |
+| `transitionDuration` | _int_ | Transition duration. `-1` if no override is set. |
+
 
 ---
 
@@ -2256,13 +2340,14 @@ _No specified parameters._
 
 - Added in v4.0.0
 
-Get the volume of the specified source.
+Get the volume of the specified source. Default response uses mul format, NOT SLIDER PERCENTAGE.
 
 **Request Fields:**
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
 | `source` | _String_ | Source name. |
+| `useDecibel` | _boolean (optional)_ | Output volume in decibels of attenuation instead of amplitude/mul. |
 
 
 **Response Items:**
@@ -2270,7 +2355,7 @@ Get the volume of the specified source.
 | Name | Type  | Description |
 | ---- | :---: | ------------|
 | `name` | _String_ | Source name. |
-| `volume` | _double_ | Volume of the source. Between `0.0` and `1.0`. |
+| `volume` | _double_ | Volume of the source. Between `0.0` and `1.0` if using mul, under `0.0` if using dB (since it is attenuating). |
 | `muted` | _boolean_ | Indicates whether the source is muted. |
 
 
@@ -2281,14 +2366,15 @@ Get the volume of the specified source.
 
 - Added in v4.0.0
 
-Set the volume of the specified source.
+Set the volume of the specified source. Default request format uses mul, NOT SLIDER PERCENTAGE.
 
 **Request Fields:**
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
 | `source` | _String_ | Source name. |
-| `volume` | _double_ | Desired volume. Must be between `0.0` and `1.0`. |
+| `volume` | _double_ | Desired volume. Must be between `0.0` and `1.0` for mul, and under 0.0 for dB. Note: OBS will interpret dB values under -100.0 as Inf. |
+| `useDecibel` | _boolean (optional)_ | Interperet `volume` data as decibels instead of amplitude/mul. |
 
 
 **Response Items:**
@@ -2354,6 +2440,29 @@ Inverts the mute status of a specified source.
 | Name | Type  | Description |
 | ---- | :---: | ------------|
 | `source` | _String_ | Source name. |
+
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+### SetSourceName
+
+
+- Added in v4.8.0
+
+
+
+Note: If the new name already exists as a source, OBS will automatically modify the name to not interfere.
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sourceName` | _String_ | Source name. |
+| `newName` | _String_ | New source name. |
 
 
 **Response Items:**
@@ -2633,6 +2742,7 @@ _No additional response items._
 
 ### GetBrowserSourceProperties
 
+- **⚠️ Deprecated. Since 4.8.0. Prefer the use of GetSourceSettings. ⚠️**
 
 - Added in v4.1.0
 
@@ -2664,6 +2774,7 @@ Get current properties for a Browser Source.
 
 ### SetBrowserSourceProperties
 
+- **⚠️ Deprecated. Since 4.8.0. Prefer the use of SetSourceSettings. ⚠️**
 
 - Added in v4.1.0
 
@@ -2901,6 +3012,50 @@ _No additional response items._
 
 ---
 
+### GetAudioMonitorType
+
+
+- Added in v4.8.0
+
+Get the audio monitoring type of the specified source.
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sourceName` | _String_ | Source name. |
+
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `monitorType` | _String_ | The monitor type in use. Options: `none`, `monitorOnly`, `monitorAndOutput`. |
+
+
+---
+
+### SetAudioMonitorType
+
+
+- Added in v4.8.0
+
+Set the audio monitoring type of the specified source.
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sourceName` | _String_ | Source name. |
+| `monitorType` | _String_ | The monitor type to use. Options: `none`, `monitorOnly`, `monitorAndOutput`. |
+
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
 ### TakeSourceScreenshot
 
 
@@ -2920,6 +3075,8 @@ preserved if only one of these two parameters is specified.
 | `sourceName` | _String_ | Source name. Note that, since scenes are also sources, you can also provide a scene name. |
 | `embedPictureFormat` | _String (optional)_ | Format of the Data URI encoded picture. Can be "png", "jpg", "jpeg" or "bmp" (or any other value supported by Qt's Image module) |
 | `saveToFilePath` | _String (optional)_ | Full file path (file extension included) where the captured image is to be saved. Can be in a format different from `pictureFormat`. Can be a relative path. |
+| `fileFormat` | _String (optional)_ | Format to save the image file as (one of the values provided in the `supported-image-export-formats` response field of `GetVersion`). If not specified, tries to guess based on file extension. |
+| `compressionQuality` | _int (optional)_ | Compression ratio between -1 and 100 to write the image with. -1 is automatic, 1 is smallest file/most compression, 100 is largest file/least compression. Varies with image type. |
 | `width` | _int (optional)_ | Screenshot width. Defaults to the source's base width. |
 | `height` | _int (optional)_ | Screenshot height. Defaults to the source's base height. |
 
@@ -3356,6 +3513,26 @@ _No specified parameters._
 | Name | Type  | Description |
 | ---- | :---: | ------------|
 | `transition-duration` | _int_ | Duration of the current transition (in milliseconds). |
+
+
+---
+
+### GetTransitionPosition
+
+
+- Added in v4.8.0
+
+Get the position of the current transition.
+
+**Request Fields:**
+
+_No specified parameters._
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `position` | _double_ | current transition position. This value will be between 0.0 and 1.0. Note: Transition returns 1.0 when not active. |
 
 
 ---

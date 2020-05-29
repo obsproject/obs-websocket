@@ -8,6 +8,16 @@
 
 #include "WSRequestHandler.h"
 
+bool isTextGDIPlusSource(const QString& sourceKind)
+{
+	return (sourceKind == "text_gdiplus" || sourceKind == "text_gdiplus_v2");
+}
+
+bool isTextFreeType2Source(const QString& sourceKind)
+{
+	return (sourceKind == "text_ft2_source" || sourceKind == "text_ft2_source_v2");
+}
+
 /**
 * List all sources available in the running OBS instance
 *
@@ -146,12 +156,13 @@ RpcResponse WSRequestHandler::GetSourceTypesList(const RpcRequest& request)
 }
 
 /**
-* Get the volume of the specified source.
+* Get the volume of the specified source. Default response uses mul format, NOT SLIDER PERCENTAGE.
 *
 * @param {String} `source` Source name.
+* @param {boolean (optional)} `useDecibel` Output volume in decibels of attenuation instead of amplitude/mul.
 *
 * @return {String} `name` Source name.
-* @return {double} `volume` Volume of the source. Between `0.0` and `1.0`.
+* @return {double} `volume` Volume of the source. Between `0.0` and `1.0` if using mul, under `0.0` if using dB (since it is attenuating).
 * @return {boolean} `muted` Indicates whether the source is muted.
 *
 * @api requests
@@ -175,35 +186,46 @@ RpcResponse WSRequestHandler::GetVolume(const RpcRequest& request)
 		return request.failed("specified source doesn't exist");
 	}
 
+	float volume = obs_source_get_volume(source);
+
+	bool useDecibel = obs_data_get_bool(request.parameters(), "useDecibel");
+	if (useDecibel) {
+		volume = obs_mul_to_db(volume);
+	}
+
 	OBSDataAutoRelease response = obs_data_create();
 	obs_data_set_string(response, "name", obs_source_get_name(source));
-	obs_data_set_double(response, "volume", obs_source_get_volume(source));
+	obs_data_set_double(response, "volume", volume);
 	obs_data_set_bool(response, "muted", obs_source_muted(source));
-
 	return request.success(response);
 }
 
 /**
- * Set the volume of the specified source.
- *
- * @param {String} `source` Source name.
- * @param {double} `volume` Desired volume. Must be between `0.0` and `1.0`.
- *
- * @api requests
- * @name SetVolume
- * @category sources
- * @since 4.0.0
- */
+* Set the volume of the specified source. Default request format uses mul, NOT SLIDER PERCENTAGE.
+*
+* @param {String} `source` Source name.
+* @param {double} `volume` Desired volume. Must be between `0.0` and `1.0` for mul, and under 0.0 for dB. Note: OBS will interpret dB values under -100.0 as Inf.
+* @param {boolean (optional)} `useDecibel` Interperet `volume` data as decibels instead of amplitude/mul.
+*
+* @api requests
+* @name SetVolume
+* @category sources
+* @since 4.0.0
+*/
 RpcResponse WSRequestHandler::SetVolume(const RpcRequest& request)
  {
 	if (!request.hasField("source") || !request.hasField("volume")) {
 		return request.failed("missing request parameters");
 	}
 
+	bool useDecibel = obs_data_get_bool(request.parameters(), "useDecibel");
+
 	QString sourceName = obs_data_get_string(request.parameters(), "source");
 	float sourceVolume = obs_data_get_double(request.parameters(), "volume");
 
-	if (sourceName.isEmpty() || sourceVolume < 0.0 || sourceVolume > 1.0) {
+	bool isNotValidDecibel = (useDecibel && sourceVolume > 0.0);
+	bool isNotValidMul = (!useDecibel && (sourceVolume < 0.0 || sourceVolume > 1.0));
+	if (sourceName.isEmpty() || isNotValidDecibel || isNotValidMul) {
 		return request.failed("invalid request parameters");
 	}
 
@@ -212,7 +234,11 @@ RpcResponse WSRequestHandler::SetVolume(const RpcRequest& request)
 		return request.failed("specified source doesn't exist");
 	}
 
+	if (useDecibel) {
+		sourceVolume = obs_db_to_mul(sourceVolume);
+	}
 	obs_source_set_volume(source, sourceVolume);
+
 	return request.success();
 }
 
@@ -313,6 +339,46 @@ RpcResponse WSRequestHandler::ToggleMute(const RpcRequest& request)
 
 	obs_source_set_muted(source, !obs_source_muted(source));
 	return request.success();
+}
+
+/**
+* Sets (aka rename) the name of a source. Also works with scenes since scenes are technically sources in OBS.
+*
+* Note: If the new name already exists as a source, OBS will automatically modify the name to not interfere.
+*
+* @param {String} `sourceName` Source name.
+* @param {String} `newName` New source name.
+*
+* @api requests
+* @name SetSourceName
+* @category sources
+* @since 4.8.0
+*/
+RpcResponse WSRequestHandler::SetSourceName(const RpcRequest& request)
+{
+	if (!request.hasField("sourceName") || !request.hasField("newName")) {
+		return request.failed("missing request parameters");
+	}
+
+	QString sourceName = obs_data_get_string(request.parameters(), "sourceName");
+	QString newName = obs_data_get_string(request.parameters(), "newName");
+	if (sourceName.isEmpty() || newName.isEmpty()) {
+		return request.failed("invalid request parameters");
+	}
+
+	OBSSourceAutoRelease source = obs_get_source_by_name(sourceName.toUtf8());
+	if (!source) {
+		return request.failed("specified source doesn't exist");
+	}
+
+	OBSSourceAutoRelease existingSource = obs_get_source_by_name(newName.toUtf8());
+	if (!existingSource) { // OBS is supposed to automatically rename colliding source names, but it doesn't. So this gets to be the solution for now.
+		obs_source_set_name(source, newName.toUtf8());
+
+		return request.success();
+	} else {
+		return request.failed("a source with that newSourceName already exists");
+	}
 }
 
 /**
@@ -536,8 +602,8 @@ RpcResponse WSRequestHandler::GetTextGDIPlusProperties(const RpcRequest& request
 		return request.failed("specified source doesn't exist");
 	}
 
-	QString sourceId = obs_source_get_id(source);
-	if (sourceId != "text_gdiplus") {
+	QString sourceKind = obs_source_get_id(source);
+	if (!isTextGDIPlusSource(sourceKind)) {
 		return request.failed("not a text gdi plus source");
 	}
 
@@ -601,8 +667,8 @@ RpcResponse WSRequestHandler::SetTextGDIPlusProperties(const RpcRequest& request
 		return request.failed("specified source doesn't exist");
 	}
 
-	QString sourceId = obs_source_get_id(source);
-	if (sourceId != "text_gdiplus") {
+	QString sourceKind = obs_source_get_id(source);
+	if (!isTextGDIPlusSource(sourceKind)) {
 		return request.failed("not a text gdi plus source");
 	}
 
@@ -767,8 +833,8 @@ RpcResponse WSRequestHandler::GetTextFreetype2Properties(const RpcRequest& reque
 		return request.failed("specified source doesn't exist");
 	}
 
-	QString sourceId = obs_source_get_id(source);
-	if (sourceId != "text_ft2_source") {
+	QString sourceKind = obs_source_get_id(source);
+	if (!isTextFreeType2Source(sourceKind)) {
 		return request.failed("not a freetype 2 source");
 	}
 
@@ -815,8 +881,8 @@ RpcResponse WSRequestHandler::SetTextFreetype2Properties(const RpcRequest& reque
 		return request.failed("specified source doesn't exist");
 	}
 
-	QString sourceId = obs_source_get_id(source);
-	if (sourceId != "text_ft2_source") {
+	QString sourceKind = obs_source_get_id(source);
+	if (!isTextFreeType2Source(sourceKind)) {
 		return request.failed("not text freetype 2 source");
 	}
 
@@ -909,6 +975,7 @@ RpcResponse WSRequestHandler::SetTextFreetype2Properties(const RpcRequest& reque
  * @name GetBrowserSourceProperties
  * @category sources
  * @since 4.1.0
+ * @deprecated Since 4.8.0. Prefer the use of GetSourceSettings.
  */
 RpcResponse WSRequestHandler::GetBrowserSourceProperties(const RpcRequest& request)
 {
@@ -950,6 +1017,7 @@ RpcResponse WSRequestHandler::GetBrowserSourceProperties(const RpcRequest& reque
  * @api requests
  * @name SetBrowserSourceProperties
  * @category sources
+ * @deprecated Since 4.8.0. Prefer the use of SetSourceSettings.
  * @since 4.1.0
  */
 RpcResponse WSRequestHandler::SetBrowserSourceProperties(const RpcRequest& request)
@@ -1415,6 +1483,99 @@ RpcResponse WSRequestHandler::SetSourceFilterVisibility(const RpcRequest& reques
 }
 
 /**
+* Get the audio monitoring type of the specified source.
+*
+* @param {String} `sourceName` Source name.
+*
+* @return {String} `monitorType` The monitor type in use. Options: `none`, `monitorOnly`, `monitorAndOutput`.
+*
+* @api requests
+* @name GetAudioMonitorType
+* @category sources
+* @since 4.8.0
+*/
+RpcResponse WSRequestHandler::GetAudioMonitorType(const RpcRequest& request)
+ {
+	if (!request.hasField("sourceName")) {
+		return request.failed("missing request parameters");
+	}
+
+	QString sourceName = obs_data_get_string(request.parameters(), "sourceName");
+
+	if (sourceName.isEmpty()) {
+		return request.failed("invalid request parameters");
+	}
+
+	OBSSourceAutoRelease source = obs_get_source_by_name(sourceName.toUtf8());
+	if (!source) {
+		return request.failed("specified source doesn't exist");
+	}
+
+	OBSDataAutoRelease response = obs_data_create();
+
+	QString monitorType;
+	enum obs_monitoring_type mtype = obs_source_get_monitoring_type(source);
+	switch (mtype) {
+	case OBS_MONITORING_TYPE_NONE:
+		monitorType = "none";
+		break;
+	case OBS_MONITORING_TYPE_MONITOR_ONLY:
+		monitorType = "monitorOnly";
+		break;
+	case OBS_MONITORING_TYPE_MONITOR_AND_OUTPUT:
+		monitorType = "monitorAndOutput";
+		break;
+	default:
+		monitorType = "unknown";
+		break;
+	}
+	obs_data_set_string(response, "monitorType", monitorType.toUtf8());
+
+	return request.success(response);
+}
+
+/**
+* Set the audio monitoring type of the specified source.
+*
+* @param {String} `sourceName` Source name.
+* @param {String} `monitorType` The monitor type to use. Options: `none`, `monitorOnly`, `monitorAndOutput`.
+*
+* @api requests
+* @name SetAudioMonitorType
+* @category sources
+* @since 4.8.0
+*/
+RpcResponse WSRequestHandler::SetAudioMonitorType(const RpcRequest& request)
+ {
+	if (!request.hasField("sourceName") || !request.hasField("monitorType")) {
+		return request.failed("missing request parameters");
+	}
+
+	QString sourceName = obs_data_get_string(request.parameters(), "sourceName");
+	QString monitorType = obs_data_get_string(request.parameters(), "monitorType");
+
+	if (sourceName.isEmpty() || monitorType.isEmpty()) {
+		return request.failed("invalid request parameters");
+	}
+
+	OBSSourceAutoRelease source = obs_get_source_by_name(sourceName.toUtf8());
+	if (!source) {
+		return request.failed("specified source doesn't exist");
+	}
+
+	if (monitorType == "none") {
+		obs_source_set_monitoring_type(source, OBS_MONITORING_TYPE_NONE);
+	} else if (monitorType == "monitorOnly") {
+		obs_source_set_monitoring_type(source, OBS_MONITORING_TYPE_MONITOR_ONLY);
+	} else if (monitorType == "monitorAndOutput") {
+		obs_source_set_monitoring_type(source, OBS_MONITORING_TYPE_MONITOR_AND_OUTPUT);
+	} else {
+		return request.failed("invalid monitorType");
+	}
+	return request.success();
+}
+
+/**
 * Takes a picture snapshot of a source and then can either or both:
 *    - Send it over as a Data URI (base64-encoded data) in the response (by specifying `embedPictureFormat` in the request)
 *    - Save it to disk (by specifying `saveToFilePath` in the request)
@@ -1427,6 +1588,8 @@ RpcResponse WSRequestHandler::SetSourceFilterVisibility(const RpcRequest& reques
 * @param {String} `sourceName` Source name. Note that, since scenes are also sources, you can also provide a scene name.
 * @param {String (optional)} `embedPictureFormat` Format of the Data URI encoded picture. Can be "png", "jpg", "jpeg" or "bmp" (or any other value supported by Qt's Image module)
 * @param {String (optional)} `saveToFilePath` Full file path (file extension included) where the captured image is to be saved. Can be in a format different from `pictureFormat`. Can be a relative path.
+* @param {String (optional)} `fileFormat` Format to save the image file as (one of the values provided in the `supported-image-export-formats` response field of `GetVersion`). If not specified, tries to guess based on file extension.
+* @param {int (optional)} `compressionQuality` Compression ratio between -1 and 100 to write the image with. -1 is automatic, 1 is smallest file/most compression, 100 is largest file/least compression. Varies with image type.
 * @param {int (optional)} `width` Screenshot width. Defaults to the source's base width.
 * @param {int (optional)} `height` Screenshot height. Defaults to the source's base height.
 *
@@ -1510,7 +1673,7 @@ RpcResponse WSRequestHandler::TakeSourceScreenshot(const RpcRequest& request) {
 		gs_stage_texture(stagesurface, gs_texrender_get_texture(texrender));
 		if (gs_stagesurface_map(stagesurface, &videoData, &videoLinesize)) {
 			int linesize = sourceImage.bytesPerLine();
-			for (int y = 0; y < imgHeight; y++) {
+			for (uint y = 0; y < imgHeight; y++) {
 			 	memcpy(sourceImage.scanLine(y), videoData + (y * videoLinesize), linesize);
 			}
 			gs_stagesurface_unmap(stagesurface);
@@ -1529,20 +1692,30 @@ RpcResponse WSRequestHandler::TakeSourceScreenshot(const RpcRequest& request) {
 
 	OBSDataAutoRelease response = obs_data_create();
 
+	int compressionQuality {-1};
+	if (request.hasField("compressionQuality")) {
+		compressionQuality = obs_data_get_int(request.parameters(), "compressionQuality");
+
+		if (compressionQuality < -1 || compressionQuality > 100) {
+			QString errorMessage = QString("compression quality out of range: %1").arg(compressionQuality);
+			return request.failed(errorMessage.toUtf8());
+		}
+	}
+
 	if (request.hasField("embedPictureFormat")) {
 		const char* pictureFormat = obs_data_get_string(request.parameters(), "embedPictureFormat");
 
 		QByteArrayList supportedFormats = QImageWriter::supportedImageFormats();
 		if (!supportedFormats.contains(pictureFormat)) {
-			QString errorMessage = QString("Unsupported picture format: %1").arg(pictureFormat);
+			QString errorMessage = QString("unsupported picture format: %1").arg(pictureFormat);
 			return request.failed(errorMessage.toUtf8());
 		}
 
 		QByteArray encodedImgBytes;
 		QBuffer buffer(&encodedImgBytes);
 		buffer.open(QBuffer::WriteOnly);
-		if (!sourceImage.save(&buffer, pictureFormat)) {
-			return request.failed("Embed image encoding failed");
+		if (!sourceImage.save(&buffer, pictureFormat, compressionQuality)) {
+			return request.failed("embed image encoding failed");
 		}
 		buffer.close();
 
@@ -1559,7 +1732,18 @@ RpcResponse WSRequestHandler::TakeSourceScreenshot(const RpcRequest& request) {
 		QFileInfo filePathInfo(filePathStr);
 		QString absoluteFilePath = filePathInfo.absoluteFilePath();
 
-		if (!sourceImage.save(absoluteFilePath)) {
+		const char* fileFormat = nullptr;
+		if (request.hasField("fileFormat")) {
+			fileFormat = obs_data_get_string(request.parameters(), "fileFormat");
+			QByteArrayList supportedFormats = QImageWriter::supportedImageFormats();
+
+			if (!supportedFormats.contains(fileFormat)) {
+				QString errorMessage = QString("unsupported file format: %1").arg(fileFormat);
+				return request.failed(errorMessage.toUtf8());
+			}
+		}
+
+		if (!sourceImage.save(absoluteFilePath, fileFormat, compressionQuality)) {
 			return request.failed("Image save failed");
 		}
 		obs_data_set_string(response, "imageFile", absoluteFilePath.toUtf8());

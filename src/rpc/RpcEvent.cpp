@@ -20,7 +20,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 RpcEvent::RpcEvent(
 	const QString& updateType,
-	uint64_t streamTime, uint64_t recordingTime,
+	std::optional<uint64_t> streamTime, std::optional<uint64_t> recordingTime,
 	obs_data_t* additionalFields
 ) :
 	_updateType(updateType),
