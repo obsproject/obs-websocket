@@ -12,13 +12,13 @@ Localization happens on [Crowdin](https://crowdin.com/project/obs-websocket)
 
 ### Code Formatting Guidelines
 
--   Function and variable names: snake_case for C names, MixedCaps for C++ names
+-   Function and variable names: snake_case for C names, camelCase for C++ method names
 
 -   Request and Event names should use MixedCaps names
 
 -   Request and Event json properties should use camelCase. For more detailed info on property naming, see [Google's JSON Style Guide](https://google.github.io/styleguide/jsoncstyleguide.xml)
 
--   Tabs are 8 columns wide
+-   Code is indented with Tabs. Assume they are 8 columns wide
 
 -   80 columns max code width. (Docs can be larger)
 
@@ -42,6 +42,11 @@ if (!success) {
 }
 return req->SendOKResponse();
 ```
+
+-   Some example common response/request property names are:
+   -   `sceneName` - The name of a scene
+   -   `sourceName` - The name of a source
+   -   `fromScene` - From a scene - scene name
 
 ### Commit Guidelines
 
