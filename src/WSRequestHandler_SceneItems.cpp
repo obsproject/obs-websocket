@@ -15,6 +15,73 @@ void AddSourceHelper(void *_data, obs_scene_t *scene) {
 }
 
 /**
+* Get a list of all scene items in a scene.
+*
+* @param {String} `sceneName` Name of the scene to get the list of scene items from.
+*
+* @return {Array<Object>} `sceneItems` Array of scene items
+* @return {int} `sceneItems.*.itemId` Unique item id of the source item
+* @return {String} `sceneItems.*.sourceId` ID if the scene item's source. For example `vlc_source` or `image_source`
+* @return {String} `sceneItems.*.sourceName` Name of the scene item's source
+* @return {String} `sceneItems.*.sourceType` Type of the scene item's source. Either `input` or `scene`
+* 
+* @api requests
+* @name GetSceneItemList
+* @category scene items
+* @since unreleased
+*/
+RpcResponse WSRequestHandler::GetSceneItemList(const RpcRequest& request) {
+	if (!request.hasField("sceneName")) {
+		return request.failed("missing request parameters");
+	}
+
+	const char* sceneName = obs_data_get_string(request.parameters(), "sceneName");
+	OBSSourceAutoRelease sceneSource = obs_get_source_by_name(sceneName);
+	OBSScene scene = obs_scene_from_source(sceneSource);
+	if (!scene) {
+		return request.failed("requested scene is invalid or doesnt exist");
+	}
+
+	OBSDataArrayAutoRelease sceneItemArray = obs_data_array_create();
+
+	auto sceneItemEnumProc = [](obs_scene_t *, obs_sceneitem_t* item, void* privateData) -> bool {
+		obs_data_array_t* sceneItemArray = (obs_data_array_t*)privateData;
+
+		OBSDataAutoRelease sceneItemData = obs_data_create();
+		obs_data_set_int(sceneItemData, "itemId", obs_sceneitem_get_id(item));
+		OBSSource source = obs_sceneitem_get_source(item);
+		obs_data_set_string(sceneItemData, "sourceId", obs_source_get_id(source));
+		obs_data_set_string(sceneItemData, "sourceName", obs_source_get_name(source));
+
+		QString typeString = "";
+		enum obs_source_type sourceType = obs_source_get_type(source);
+		switch (sourceType) {
+		case OBS_SOURCE_TYPE_INPUT:
+			typeString = "input";
+			break;
+
+		case OBS_SOURCE_TYPE_SCENE:
+			typeString = "scene";
+			break;
+
+		default:
+			typeString = "unknown";
+			break;
+		}
+		obs_data_set_string(sceneItemData, "sourceType", typeString.toUtf8());
+
+		obs_data_array_push_back(sceneItemArray, sceneItemData);
+		return true;
+	};
+	obs_scene_enum_items(scene, sceneItemEnumProc, sceneItemArray);
+
+	OBSDataAutoRelease response = obs_data_create();
+	obs_data_set_array(response, "sceneItems", sceneItemArray);
+
+	return request.success(response);
+}
+
+/**
 * Gets the scene specific properties of the specified source item.
 * Coordinates are relative to the item's parent (the scene or group it belongs to).
 *
