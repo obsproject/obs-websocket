@@ -13,8 +13,8 @@
 *
 * @return {String} `name` Scene Item name.
 * @return {int} `itemId` Scene Item ID.
-* @return {int} `position.x` The x position of the source from the left.
-* @return {int} `position.y` The y position of the source from the top.
+* @return {double} `position.x` The x position of the source from the left.
+* @return {double} `position.y` The y position of the source from the top.
 * @return {int} `position.alignment` The point on the source that the item is manipulated from.
 * @return {double} `rotation` The clockwise rotation of the item in degrees around the point of alignment.
 * @return {double} `scale.x` The x-scale factor of the source.
