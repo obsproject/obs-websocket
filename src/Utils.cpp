@@ -684,8 +684,8 @@ bool Utils::SetFilenameFormatting(const char* filenameFormatting) {
 
 /**
  * @typedef {Object} `SceneItemTransform`
- * @property {int} `position.x` The x position of the scene item from the left.
- * @property {int} `position.y` The y position of the scene item from the top.
+ * @property {double} `position.x` The x position of the scene item from the left.
+ * @property {double} `position.y` The y position of the scene item from the top.
  * @property {int} `position.alignment` The point on the scene item that the item is manipulated from.
  * @property {double} `rotation` The clockwise rotation of the scene item in degrees around the point of alignment.
  * @property {double} `scale.x` The x-scale factor of the scene item.
