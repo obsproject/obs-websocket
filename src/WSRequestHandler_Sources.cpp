@@ -156,6 +156,31 @@ RpcResponse WSRequestHandler::GetSourceTypesList(const RpcRequest& request)
 }
 
 /**
+ * Create a new source.
+ *
+ * @param {String} `sourceName` Name of the source to create.
+ *
+ * @api requests
+ * @name CreateSource
+ * @category sources
+ * @since 4.9.0
+ */
+RpcResponse WSRequestHandler::CreateSource(const RpcRequest& request) {
+	if (!request.hasField("sourceName")) {
+		return request.failed("missing request parameters");
+	}
+
+	const char* sourceName = obs_data_get_string(request.parameters(), "sourceName");
+	OBSSourceAutoRelease source = obs_get_source_by_name(sourceName);
+
+	if (source) {
+		return request.failed("source with this name already exists");
+	}
+	obs_scene_create(sourceName);
+	return request.success();
+}
+
+/**
 * Get the volume of the specified source. Default response uses mul format, NOT SLIDER PERCENTAGE.
 *
 * @param {String} `source` Source name.
