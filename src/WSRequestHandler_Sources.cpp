@@ -342,6 +342,46 @@ RpcResponse WSRequestHandler::ToggleMute(const RpcRequest& request)
 }
 
 /**
+* Sets (aka rename) the name of a source. Also works with scenes since scenes are technically sources in OBS.
+*
+* Note: If the new name already exists as a source, OBS will automatically modify the name to not interfere.
+*
+* @param {String} `sourceName` Source name.
+* @param {String} `newName` New source name.
+*
+* @api requests
+* @name SetSourceName
+* @category sources
+* @since 4.8.0
+*/
+RpcResponse WSRequestHandler::SetSourceName(const RpcRequest& request)
+{
+	if (!request.hasField("sourceName") || !request.hasField("newName")) {
+		return request.failed("missing request parameters");
+	}
+
+	QString sourceName = obs_data_get_string(request.parameters(), "sourceName");
+	QString newName = obs_data_get_string(request.parameters(), "newName");
+	if (sourceName.isEmpty() || newName.isEmpty()) {
+		return request.failed("invalid request parameters");
+	}
+
+	OBSSourceAutoRelease source = obs_get_source_by_name(sourceName.toUtf8());
+	if (!source) {
+		return request.failed("specified source doesn't exist");
+	}
+
+	OBSSourceAutoRelease existingSource = obs_get_source_by_name(newName.toUtf8());
+	if (!existingSource) { // OBS is supposed to automatically rename colliding source names, but it doesn't. So this gets to be the solution for now.
+		obs_source_set_name(source, newName.toUtf8());
+
+		return request.success();
+	} else {
+		return request.failed("a source with that newSourceName already exists");
+	}
+}
+
+/**
  * Set the audio sync offset of a specified source.
  *
  * @param {String} `source` Source name.
@@ -1633,7 +1673,7 @@ RpcResponse WSRequestHandler::TakeSourceScreenshot(const RpcRequest& request) {
 		gs_stage_texture(stagesurface, gs_texrender_get_texture(texrender));
 		if (gs_stagesurface_map(stagesurface, &videoData, &videoLinesize)) {
 			int linesize = sourceImage.bytesPerLine();
-			for (int y = 0; y < imgHeight; y++) {
+			for (uint y = 0; y < imgHeight; y++) {
 			 	memcpy(sourceImage.scanLine(y), videoData + (y * videoLinesize), linesize);
 			}
 			gs_stagesurface_unmap(stagesurface);

@@ -103,10 +103,10 @@ RpcResponse WSRequestHandler::StartStreaming(const RpcRequest& request) {
 					&& obs_data_has_user_value(newSettings, "key"))
 			{
 				const char* key = obs_data_get_string(newSettings, "key");
-				int keylen = strlen(key);
+				size_t keylen = strlen(key);
 
 				bool hasQuestionMark = false;
-				for (int i = 0; i < keylen; i++) {
+				for (size_t i = 0; i < keylen; i++) {
 					if (key[i] == '?') {
 						hasQuestionMark = true;
 						break;

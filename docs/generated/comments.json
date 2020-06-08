@@ -2198,7 +2198,8 @@
         "description": "A source has been renamed.",
         "return": [
           "{String} `previousName` Previous source name",
-          "{String} `newName` New source name"
+          "{String} `newName` New source name",
+          "{String} `sourceType` Type of source (input, scene, filter, transition)"
         ],
         "api": "events",
         "name": "SourceRenamed",
@@ -2214,6 +2215,11 @@
             "type": "String",
             "name": "newName",
             "description": "New source name"
+          },
+          {
+            "type": "String",
+            "name": "sourceType",
+            "description": "Type of source (input, scene, filter, transition)"
           }
         ],
         "names": [
@@ -5461,6 +5467,159 @@
         "lead": "",
         "type": "class",
         "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Set a scene to use a specific transition override.",
+        "param": [
+          "{String} `sceneName` Name of the scene to switch to.",
+          "{String} `transitionName` Name of the transition to use.",
+          "{int (Optional)} `transitionDuration` Duration in milliseconds of the transition if transition is not fixed. Defaults to the current duration specified in the UI if there is no current override and this value is not given."
+        ],
+        "api": "requests",
+        "name": "SetSceneTransitionOverride",
+        "category": "scenes",
+        "since": "4.9.0",
+        "params": [
+          {
+            "type": "String",
+            "name": "sceneName",
+            "description": "Name of the scene to switch to."
+          },
+          {
+            "type": "String",
+            "name": "transitionName",
+            "description": "Name of the transition to use."
+          },
+          {
+            "type": "int (Optional)",
+            "name": "transitionDuration",
+            "description": "Duration in milliseconds of the transition if transition is not fixed. Defaults to the current duration specified in the UI if there is no current override and this value is not given."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "SetSceneTransitionOverride"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "scenes"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.9.0"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "SetSceneTransitionOverride"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Remove any transition override on a scene.",
+        "param": "{String} `sceneName` Name of the scene to switch to.",
+        "api": "requests",
+        "name": "RemoveSceneTransitionOverride",
+        "category": "scenes",
+        "since": "4.9.0",
+        "params": [
+          {
+            "type": "String",
+            "name": "sceneName",
+            "description": "Name of the scene to switch to."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "RemoveSceneTransitionOverride"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "scenes"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.9.0"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "RemoveSceneTransitionOverride"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Get the current scene transition override.",
+        "param": "{String} `sceneName` Name of the scene to switch to.",
+        "return": [
+          "{String} `transitionName` Name of the current overriding transition. Empty string if no override is set.",
+          "{int} `transitionDuration` Transition duration. `-1` if no override is set."
+        ],
+        "api": "requests",
+        "name": "GetSceneTransitionOverride",
+        "category": "scenes",
+        "since": "4.9.0",
+        "returns": [
+          {
+            "type": "String",
+            "name": "transitionName",
+            "description": "Name of the current overriding transition. Empty string if no override is set."
+          },
+          {
+            "type": "int",
+            "name": "transitionDuration",
+            "description": "Transition duration. `-1` if no override is set."
+          }
+        ],
+        "params": [
+          {
+            "type": "String",
+            "name": "sceneName",
+            "description": "Name of the scene to switch to."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "GetSceneTransitionOverride"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "scenes"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.9.0"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "GetSceneTransitionOverride"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
       }
     ],
     "sources": [
@@ -5910,6 +6069,55 @@
           "text": "ToggleMute"
         },
         "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "\n\nNote: If the new name already exists as a source, OBS will automatically modify the name to not interfere.",
+        "param": [
+          "{String} `sourceName` Source name.",
+          "{String} `newName` New source name."
+        ],
+        "api": "requests",
+        "name": "SetSourceName",
+        "category": "sources",
+        "since": "4.8.0",
+        "params": [
+          {
+            "type": "String",
+            "name": "sourceName",
+            "description": "Source name."
+          },
+          {
+            "type": "String",
+            "name": "newName",
+            "description": "New source name."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "SetSourceName"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "sources"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.8.0"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "SetSourceName"
+        },
+        "lead": "Sets (aka rename) the name of a source. Also works with scenes since scenes are technically sources in OBS.",
         "type": "class",
         "examples": []
       },

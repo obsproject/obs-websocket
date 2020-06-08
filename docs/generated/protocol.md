@@ -164,6 +164,9 @@ auth_response = base64_encode(auth_response_hash)
     + [GetCurrentScene](#getcurrentscene)
     + [GetSceneList](#getscenelist)
     + [ReorderSceneItems](#reordersceneitems)
+    + [SetSceneTransitionOverride](#setscenetransitionoverride)
+    + [RemoveSceneTransitionOverride](#removescenetransitionoverride)
+    + [GetSceneTransitionOverride](#getscenetransitionoverride)
   * [Sources](#sources-1)
     + [GetSourcesList](#getsourceslist)
     + [GetSourceTypesList](#getsourcetypeslist)
@@ -172,6 +175,7 @@ auth_response = base64_encode(auth_response_hash)
     + [GetMute](#getmute)
     + [SetMute](#setmute)
     + [ToggleMute](#togglemute)
+    + [SetSourceName](#setsourcename)
     + [SetSyncOffset](#setsyncoffset)
     + [GetSyncOffset](#getsyncoffset)
     + [GetSourceSettings](#getsourcesettings)
@@ -930,6 +934,7 @@ A source has been renamed.
 | ---- | :---: | ------------|
 | `previousName` | _String_ | Previous source name |
 | `newName` | _String_ | New source name |
+| `sourceType` | _String_ | Type of source (input, scene, filter, transition) |
 
 
 ---
@@ -2207,6 +2212,72 @@ _No additional response items._
 
 ---
 
+### SetSceneTransitionOverride
+
+
+- Added in v4.9.0
+
+Set a scene to use a specific transition override.
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sceneName` | _String_ | Name of the scene to switch to. |
+| `transitionName` | _String_ | Name of the transition to use. |
+| `transitionDuration` | _int (Optional)_ | Duration in milliseconds of the transition if transition is not fixed. Defaults to the current duration specified in the UI if there is no current override and this value is not given. |
+
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+### RemoveSceneTransitionOverride
+
+
+- Added in v4.9.0
+
+Remove any transition override on a scene.
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sceneName` | _String_ | Name of the scene to switch to. |
+
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+### GetSceneTransitionOverride
+
+
+- Added in v4.9.0
+
+Get the current scene transition override.
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sceneName` | _String_ | Name of the scene to switch to. |
+
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `transitionName` | _String_ | Name of the current overriding transition. Empty string if no override is set. |
+| `transitionDuration` | _int_ | Transition duration. `-1` if no override is set. |
+
+
+---
+
 ## Sources
 
 ### GetSourcesList
@@ -2369,6 +2440,29 @@ Inverts the mute status of a specified source.
 | Name | Type  | Description |
 | ---- | :---: | ------------|
 | `source` | _String_ | Source name. |
+
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+### SetSourceName
+
+
+- Added in v4.8.0
+
+
+
+Note: If the new name already exists as a source, OBS will automatically modify the name to not interfere.
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sourceName` | _String_ | Source name. |
+| `newName` | _String_ | New source name. |
 
 
 **Response Items:**

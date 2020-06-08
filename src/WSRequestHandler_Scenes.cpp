@@ -80,6 +80,31 @@ RpcResponse WSRequestHandler::GetSceneList(const RpcRequest& request) {
 }
 
 /**
+ * Create a new scene scene.
+ *
+ * @param {String} `sceneName` Name of the scene to create.
+ *
+ * @api requests
+ * @name CreateScene
+ * @category scenes
+ * @since 4.8.0
+ */
+RpcResponse WSRequestHandler::CreateScene(const RpcRequest& request) {
+	if (!request.hasField("sceneName")) {
+		return request.failed("missing request parameters");
+	}
+
+	const char* sceneName = obs_data_get_string(request.parameters(), "sceneName");
+	OBSSourceAutoRelease source = obs_get_source_by_name(sceneName);
+
+	if (source) {
+		return request.failed("scene with this name already exists");
+	}
+	obs_scene_create(sceneName);
+	return request.success();
+}
+
+/**
 * Changes the order of scene items in the requested scene.
 *
 * @param {String (optional)} `scene` Name of the scene to reorder (defaults to current).
@@ -121,7 +146,7 @@ RpcResponse WSRequestHandler::ReorderSceneItems(const RpcRequest& request) {
 		struct obs_sceneitem_order_info info;
 
 		size_t itemCount = obs_data_array_count(ctx->items);
-		for (int i = 0; i < itemCount; i++) {
+		for (uint i = 0; i < itemCount; i++) {
 			OBSDataAutoRelease item = obs_data_array_item(ctx->items, i);
 
 			OBSSceneItemAutoRelease sceneItem = Utils::GetSceneItemFromItem(scene, item);
@@ -147,4 +172,129 @@ RpcResponse WSRequestHandler::ReorderSceneItems(const RpcRequest& request) {
 	}
 
 	return request.success();
+}
+
+/**
+ * Set a scene to use a specific transition override.
+ *
+ * @param {String} `sceneName` Name of the scene to switch to.
+ * @param {String} `transitionName` Name of the transition to use.
+ * @param {int (Optional)} `transitionDuration` Duration in milliseconds of the transition if transition is not fixed. Defaults to the current duration specified in the UI if there is no current override and this value is not given.
+ *
+ * @api requests
+ * @name SetSceneTransitionOverride
+ * @category scenes
+ * @since 4.9.0
+ */
+RpcResponse WSRequestHandler::SetSceneTransitionOverride(const RpcRequest& request) {
+	if (!request.hasField("sceneName") || !request.hasField("transitionName")) {
+		return request.failed("missing request parameters");
+	}
+
+	QString sceneName = obs_data_get_string(request.parameters(), "sceneName");
+	OBSSourceAutoRelease source = obs_get_source_by_name(sceneName.toUtf8());
+	if (!source) {
+		return request.failed("requested scene does not exist");
+	}
+	
+	enum obs_source_type sourceType = obs_source_get_type(source);
+	if (sourceType != OBS_SOURCE_TYPE_SCENE) {
+		return request.failed("requested scene is invalid");
+	}
+	
+	QString transitionName = obs_data_get_string(request.parameters(), "transitionName");
+	if (!Utils::GetTransitionFromName(transitionName)) {
+		return request.failed("requested transition does not exist");
+	}
+
+	OBSDataAutoRelease sourceData = obs_source_get_private_settings(source);
+	obs_data_set_string(sourceData, "transition", transitionName.toUtf8().constData());
+
+	if (request.hasField("transitionDuration")) {
+		int transitionOverrideDuration = obs_data_get_int(request.parameters(), "transitionDuration");
+		obs_data_set_int(sourceData, "transition_duration", transitionOverrideDuration);
+	} else if(!obs_data_has_user_value(sourceData, "transition_duration")) {
+		obs_data_set_int(sourceData, "transition_duration",
+			obs_frontend_get_transition_duration()
+		);
+	}
+	
+	return request.success();
+}
+
+/**
+ * Remove any transition override on a scene.
+ *
+ * @param {String} `sceneName` Name of the scene to switch to.
+ *
+ * @api requests
+ * @name RemoveSceneTransitionOverride
+ * @category scenes
+ * @since 4.9.0
+ */
+RpcResponse WSRequestHandler::RemoveSceneTransitionOverride(const RpcRequest& request) {
+	if (!request.hasField("sceneName")) {
+		return request.failed("missing request parameters");
+	}
+
+	QString sceneName = obs_data_get_string(request.parameters(), "sceneName");
+	OBSSourceAutoRelease source = obs_get_source_by_name(sceneName.toUtf8());
+	if (!source) {
+		return request.failed("requested scene does not exist");
+	}
+	
+	enum obs_source_type sourceType = obs_source_get_type(source);
+	if (sourceType != OBS_SOURCE_TYPE_SCENE) {
+		return request.failed("requested scene is invalid");
+	}
+
+	OBSDataAutoRelease sourceData = obs_source_get_private_settings(source);
+	obs_data_erase(sourceData, "transition");
+	obs_data_erase(sourceData, "transition_duration");
+
+	return request.success();
+}
+
+/**
+ * Get the current scene transition override.
+ *
+ * @param {String} `sceneName` Name of the scene to switch to.
+ *
+ * @return {String} `transitionName` Name of the current overriding transition. Empty string if no override is set.
+ * @return {int} `transitionDuration` Transition duration. `-1` if no override is set.
+ *
+ * @api requests
+ * @name GetSceneTransitionOverride
+ * @category scenes
+ * @since 4.9.0
+ */
+RpcResponse WSRequestHandler::GetSceneTransitionOverride(const RpcRequest& request) {
+	if (!request.hasField("sceneName")) {
+		return request.failed("missing request parameters");
+	}
+
+	QString sceneName = obs_data_get_string(request.parameters(), "sceneName");
+	OBSSourceAutoRelease source = obs_get_source_by_name(sceneName.toUtf8());
+	if (!source) {
+		return request.failed("requested scene does not exist");
+	}
+	
+	enum obs_source_type sourceType = obs_source_get_type(source);
+	if (sourceType != OBS_SOURCE_TYPE_SCENE) {
+		return request.failed("requested scene is invalid");
+	}
+
+	OBSDataAutoRelease sourceData = obs_source_get_private_settings(source);
+	const char* transitionOverrideName = obs_data_get_string(sourceData, "transition");
+
+	bool hasDurationOverride = obs_data_has_user_value(sourceData, "transition_duration");
+	int transitionOverrideDuration = obs_data_get_int(sourceData, "transition_duration");
+
+	OBSDataAutoRelease fields = obs_data_create();
+	obs_data_set_string(fields, "transitionName", transitionOverrideName);
+	obs_data_set_int(fields, "transitionDuration",
+		(hasDurationOverride ? transitionOverrideDuration : -1)
+	);
+
+	return request.success(fields);
 }
