@@ -218,7 +218,7 @@ RpcResponse WSRequestHandler::GetMediaDuration(const RpcRequest& request) {
 	}
 
 	OBSDataAutoRelease response = obs_data_create();
-	obs_data_set_int(response, "timeStamp", obs_source_media_get_duration(source));
+	obs_data_set_int(response, "mediaDuration", obs_source_media_get_duration(source));
 	return request.success(response);
 }
 
@@ -227,7 +227,7 @@ RpcResponse WSRequestHandler::GetMediaDuration(const RpcRequest& request) {
 *
 * @param {String} `sourceName` Source name.
 *
-* @return {int} `timeStamp` The time in milliseconds since the start of the media.
+* @return {int} `timestamp` The time in milliseconds since the start of the media.
 *
 * @api requests
 * @name GetMediaTime
@@ -250,7 +250,7 @@ RpcResponse WSRequestHandler::GetMediaTime(const RpcRequest& request) {
 	}
 
 	OBSDataAutoRelease response = obs_data_create();
-	obs_data_set_int(response, "timeStamp", obs_source_media_get_time(source));
+	obs_data_set_int(response, "timestamp", obs_source_media_get_time(source));
 	return request.success(response);
 }
 
@@ -258,7 +258,7 @@ RpcResponse WSRequestHandler::GetMediaTime(const RpcRequest& request) {
 * Set the timestamp of a media source. Supports ffmpeg and vlc media sources (as of OBS v25.0.8)
 *
 * @param {String} `sourceName` Source name.
-* @param {int} `timeStamp` Milliseconds to set the timestamp to.
+* @param {int} `timestamp` Milliseconds to set the timestamp to.
 *
 * @api requests
 * @name SetMediaTime
@@ -266,12 +266,12 @@ RpcResponse WSRequestHandler::GetMediaTime(const RpcRequest& request) {
 * @since 4.9.0
 */
 RpcResponse WSRequestHandler::SetMediaTime(const RpcRequest& request) {
-	if (!request.hasField("sourceName") || !request.hasField("timeStamp")) {
+	if (!request.hasField("sourceName") || !request.hasField("timestamp")) {
 		return request.failed("missing request parameters");
 	}
 
 	QString sourceName = obs_data_get_string(request.parameters(), "sourceName");
-	int64_t timeStamp = (int64_t)obs_data_get_int(request.parameters(), "timeStamp");
+	int64_t timestamp = (int64_t)obs_data_get_int(request.parameters(), "timestamp");
 	if (sourceName.isEmpty()) {
 		return request.failed("invalid request parameters");
 	}
@@ -281,7 +281,7 @@ RpcResponse WSRequestHandler::SetMediaTime(const RpcRequest& request) {
 		return request.failed("specified source doesn't exist");
 	}
 
-	obs_source_media_set_time(source, timeStamp);
+	obs_source_media_set_time(source, timestamp);
 	return request.success();
 }
 
@@ -374,7 +374,7 @@ RpcResponse WSRequestHandler::GetMediaSourcesList(const RpcRequest& request)
 
 	auto sourceEnumProc = [](void* privateData, obs_source_t* source) -> bool {
 		obs_data_array_t* sourcesArray = (obs_data_array_t*)privateData;
-		
+
 		QString sourceTypeId = obs_source_get_id(source);
 		if (isMediaSource(sourceTypeId)) {
 			OBSDataAutoRelease sourceData = obs_data_create();

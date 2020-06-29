@@ -425,6 +425,16 @@ QString WSEvents::getRecordingTimecode() {
 	return Utils::nsToTimestamp(getRecordingTime());
 }
 
+OBSDataAutoRelease getMediaSourceData(calldata_t* data) {
+	OBSDataAutoRelease fields = obs_data_create();
+	OBSSource source = calldata_get_pointer<obs_source_t>(data, "source");
+
+	obs_data_set_string(fields, "sourceName", obs_source_get_name(source));
+	obs_data_set_string(fields, "sourceTypeId", obs_source_get_id(source));
+
+	return fields;
+}
+
  /**
  * Indicates a scene change.
  *
@@ -1359,7 +1369,10 @@ void WSEvents::OnSourceFilterOrderChanged(void* param, calldata_t* data) {
 /**
  * A media source has started playing.
  *
+ * Note: This event is only emitted when something actively controls the media/VLC source. In other words, the source will never emit this on its own naturally.
+ *
  * @return {String} `sourceName` Source name
+ * @return {String} `sourceTypeId` The ID type of the source (Eg. `vlc_source` or `ffmpeg_source`)
  *
  * @api events
  * @name MediaPlaying
@@ -1369,20 +1382,18 @@ void WSEvents::OnSourceFilterOrderChanged(void* param, calldata_t* data) {
 void WSEvents::OnMediaPlaying(void* param, calldata_t* data) {
 	auto self = reinterpret_cast<WSEvents*>(param);
 
-	OBSSource source = calldata_get_pointer<obs_source_t>(data, "source");
-	if (!source) {
-		return;
-	}
+	OBSDataAutoRelease fields = getMediaSourceData(data);
 
-	OBSDataAutoRelease fields = obs_data_create();
-	obs_data_set_string(fields, "sourceName", obs_source_get_name(source));
 	self->broadcastUpdate("MediaPlaying", fields);
 }
 
 /**
  * A media source has been paused.
  *
+ * Note: This event is only emitted when something actively controls the media/VLC source. In other words, the source will never emit this on its own naturally.
+ *
  * @return {String} `sourceName` Source name
+ * @return {String} `sourceTypeId` The ID type of the source (Eg. `vlc_source` or `ffmpeg_source`)
  *
  * @api events
  * @name MediaPaused
@@ -1392,20 +1403,18 @@ void WSEvents::OnMediaPlaying(void* param, calldata_t* data) {
 void WSEvents::OnMediaPaused(void* param, calldata_t* data) {
 	auto self = reinterpret_cast<WSEvents*>(param);
 
-	OBSSource source = calldata_get_pointer<obs_source_t>(data, "source");
-	if (!source) {
-		return;
-	}
+	OBSDataAutoRelease fields = getMediaSourceData(data);
 
-	OBSDataAutoRelease fields = obs_data_create();
-	obs_data_set_string(fields, "sourceName", obs_source_get_name(source));
 	self->broadcastUpdate("MediaPaused", fields);
 }
 
 /**
  * A media source has been restarted.
  *
+ * Note: This event is only emitted when something actively controls the media/VLC source. In other words, the source will never emit this on its own naturally.
+ *
  * @return {String} `sourceName` Source name
+ * @return {String} `sourceTypeId` The ID type of the source (Eg. `vlc_source` or `ffmpeg_source`)
  *
  * @api events
  * @name MediaRestarted
@@ -1415,20 +1424,18 @@ void WSEvents::OnMediaPaused(void* param, calldata_t* data) {
 void WSEvents::OnMediaRestarted(void* param, calldata_t* data) {
 	auto self = reinterpret_cast<WSEvents*>(param);
 
-	OBSSource source = calldata_get_pointer<obs_source_t>(data, "source");
-	if (!source) {
-		return;
-	}
+	OBSDataAutoRelease fields = getMediaSourceData(data);
 
-	OBSDataAutoRelease fields = obs_data_create();
-	obs_data_set_string(fields, "sourceName", obs_source_get_name(source));
 	self->broadcastUpdate("MediaRestarted", fields);
 }
 
 /**
  * A media source has been stopped.
  *
+ * Note: This event is only emitted when something actively controls the media/VLC source. In other words, the source will never emit this on its own naturally.
+ *
  * @return {String} `sourceName` Source name
+ * @return {String} `sourceTypeId` The ID type of the source (Eg. `vlc_source` or `ffmpeg_source`)
  *
  * @api events
  * @name MediaStopped
@@ -1438,20 +1445,18 @@ void WSEvents::OnMediaRestarted(void* param, calldata_t* data) {
 void WSEvents::OnMediaStopped(void* param, calldata_t* data) {
 	auto self = reinterpret_cast<WSEvents*>(param);
 
-	OBSSource source = calldata_get_pointer<obs_source_t>(data, "source");
-	if (!source) {
-		return;
-	}
+	OBSDataAutoRelease fields = getMediaSourceData(data);
 
-	OBSDataAutoRelease fields = obs_data_create();
-	obs_data_set_string(fields, "sourceName", obs_source_get_name(source));
 	self->broadcastUpdate("MediaStopped", fields);
 }
 
 /**
  * A media source has gone to the next item in the playlist.
  *
+ * Note: This event is only emitted when something actively controls the media/VLC source. In other words, the source will never emit this on its own naturally.
+ *
  * @return {String} `sourceName` Source name
+ * @return {String} `sourceTypeId` The ID type of the source (Eg. `vlc_source` or `ffmpeg_source`)
  *
  * @api events
  * @name MediaNext
@@ -1461,20 +1466,18 @@ void WSEvents::OnMediaStopped(void* param, calldata_t* data) {
 void WSEvents::OnMediaNext(void* param, calldata_t* data) {
 	auto self = reinterpret_cast<WSEvents*>(param);
 
-	OBSSource source = calldata_get_pointer<obs_source_t>(data, "source");
-	if (!source) {
-		return;
-	}
+	OBSDataAutoRelease fields = getMediaSourceData(data);
 
-	OBSDataAutoRelease fields = obs_data_create();
-	obs_data_set_string(fields, "sourceName", obs_source_get_name(source));
 	self->broadcastUpdate("MediaNext", fields);
 }
 
 /**
  * A media source has gone to the previous item in the playlist.
  *
+ * Note: This event is only emitted when something actively controls the media/VLC source. In other words, the source will never emit this on its own naturally.
+ *
  * @return {String} `sourceName` Source name
+ * @return {String} `sourceTypeId` The ID type of the source (Eg. `vlc_source` or `ffmpeg_source`)
  *
  * @api events
  * @name MediaPrevious
@@ -1484,23 +1487,18 @@ void WSEvents::OnMediaNext(void* param, calldata_t* data) {
 void WSEvents::OnMediaPrevious(void* param, calldata_t* data) {
 	auto self = reinterpret_cast<WSEvents*>(param);
 
-	OBSSource source = calldata_get_pointer<obs_source_t>(data, "source");
-	if (!source) {
-		return;
-	}
+	OBSDataAutoRelease fields = getMediaSourceData(data);
 
-	OBSDataAutoRelease fields = obs_data_create();
-	obs_data_set_string(fields, "sourceName", obs_source_get_name(source));
 	self->broadcastUpdate("MediaPrevious", fields);
 }
 
 /**
- * A media source has been started. (Does not mean that it is playing. See [`MediaPlaying`](#mediaplaying))
- * 
- * Note: For VLC, this means that the source and therefore playlist has started.
- * For the normal Media Source, this just means that the source has been started. 
+ * A media source has been started.
+ *
+ * Note: These events are emitted by the OBS sources themselves. For example when the media file starts playing. The behavior depends on the type of media source being used.
  *
  * @return {String} `sourceName` Source name
+ * @return {String} `sourceTypeId` The ID type of the source (Eg. `vlc_source` or `ffmpeg_source`)
  *
  * @api events
  * @name MediaStarted
@@ -1510,23 +1508,18 @@ void WSEvents::OnMediaPrevious(void* param, calldata_t* data) {
 void WSEvents::OnMediaStarted(void* param, calldata_t* data) {
 	auto self = reinterpret_cast<WSEvents*>(param);
 
-	OBSSource source = calldata_get_pointer<obs_source_t>(data, "source");
-	if (!source) {
-		return;
-	}
+	OBSDataAutoRelease fields = getMediaSourceData(data);
 
-	OBSDataAutoRelease fields = obs_data_create();
-	obs_data_set_string(fields, "sourceName", obs_source_get_name(source));
 	self->broadcastUpdate("MediaStarted", fields);
 }
 
 /**
  * A media source has ended.
  *
- * Note: For VLC, this means that the source and therefore playlist has ended.
- * For the normal Media Source, this just means that the source has been stopped/ended. 
+ * Note: These events are emitted by the OBS sources themselves. For example when the media file ends. The behavior depends on the type of media source being used.
  *
  * @return {String} `sourceName` Source name
+ * @return {String} `sourceTypeId` The ID type of the source (Eg. `vlc_source` or `ffmpeg_source`)
  *
  * @api events
  * @name MediaEnded
@@ -1536,13 +1529,8 @@ void WSEvents::OnMediaStarted(void* param, calldata_t* data) {
 void WSEvents::OnMediaEnded(void* param, calldata_t* data) {
 	auto self = reinterpret_cast<WSEvents*>(param);
 
-	OBSSource source = calldata_get_pointer<obs_source_t>(data, "source");
-	if (!source) {
-		return;
-	}
+	OBSDataAutoRelease fields = getMediaSourceData(data);
 
-	OBSDataAutoRelease fields = obs_data_create();
-	obs_data_set_string(fields, "sourceName", obs_source_get_name(source));
 	self->broadcastUpdate("MediaEnded", fields);
 }
 
