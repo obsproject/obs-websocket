@@ -342,6 +342,40 @@ RpcResponse WSRequestHandler::ToggleMute(const RpcRequest& request)
 }
 
 /**
+* Get the audio's active status of a specified source.
+*
+* @param {String} `sourceName` Source name.
+*
+* @return {boolean} `audioActive` Audio active status of the source.
+*
+* @api requests
+* @name GetAudioActive
+* @category sources
+* @since 4.9.0
+*/
+RpcResponse WSRequestHandler::GetAudioActive(const RpcRequest& request)
+{
+	if (!request.hasField("sourceName")) {
+		return request.failed("missing request parameters");
+	}
+
+	QString sourceName = obs_data_get_string(request.parameters(), "sourceName");
+	if (sourceName.isEmpty()) {
+		return request.failed("invalid request parameters");
+	}
+
+	OBSSourceAutoRelease source = obs_get_source_by_name(sourceName.toUtf8());
+	if (!source) {
+		return request.failed("specified source doesn't exist");
+	}
+
+	OBSDataAutoRelease response = obs_data_create();
+	obs_data_set_bool(response, "audioActive", obs_source_audio_active(source));
+
+	return request.success(response);
+}
+
+/**
 * Sets (aka rename) the name of a source. Also works with scenes since scenes are technically sources in OBS.
 *
 * Note: If the new name already exists as a source, OBS will automatically modify the name to not interfere.
