@@ -126,6 +126,8 @@ private:
 	static void OnSourceMuteStateChange(void* param, calldata_t* data);
 	static void OnSourceAudioSyncOffsetChanged(void* param, calldata_t* data);
 	static void OnSourceAudioMixersChanged(void* param, calldata_t* data);
+	static void OnSourceAudioActivated(void* param, calldata_t* data);
+	static void OnSourceAudioDeactivated(void* param, calldata_t* data);
 
 	static void OnSourceRename(void* param, calldata_t* data);
 

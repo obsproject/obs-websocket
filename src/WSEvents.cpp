@@ -271,6 +271,8 @@ void WSEvents::connectSourceSignals(obs_source_t* source) {
 	signal_handler_connect(sh, "volume", OnSourceVolumeChange, this);
 	signal_handler_connect(sh, "audio_sync", OnSourceAudioSyncOffsetChanged, this);
 	signal_handler_connect(sh, "audio_mixers", OnSourceAudioMixersChanged, this);
+	signal_handler_connect(sh, "audio_activate", OnSourceAudioActivated, this);
+	signal_handler_connect(sh, "audio_deactivate", OnSourceAudioDeactivated, this);
 
 	signal_handler_connect(sh, "filter_add", OnSourceFilterAdded, this);
 	signal_handler_connect(sh, "filter_remove", OnSourceFilterRemoved, this);
@@ -303,6 +305,8 @@ void WSEvents::disconnectSourceSignals(obs_source_t* source) {
 	signal_handler_disconnect(sh, "volume", OnSourceVolumeChange, this);
 	signal_handler_disconnect(sh, "audio_sync", OnSourceAudioSyncOffsetChanged, this);
 	signal_handler_disconnect(sh, "audio_mixers", OnSourceAudioMixersChanged, this);
+	signal_handler_disconnect(sh, "audio_activate", OnSourceAudioActivated, this);
+	signal_handler_disconnect(sh, "audio_deactivate", OnSourceAudioDeactivated, this);
 
 	signal_handler_disconnect(sh, "filter_add", OnSourceFilterAdded, this);
 	signal_handler_disconnect(sh, "filter_remove", OnSourceFilterRemoved, this);
@@ -1096,6 +1100,52 @@ void WSEvents::OnSourceMuteStateChange(void* param, calldata_t* data) {
 	obs_data_set_string(fields, "sourceName", obs_source_get_name(source));
 	obs_data_set_bool(fields, "muted", muted);
 	self->broadcastUpdate("SourceMuteStateChanged", fields);
+}
+
+/**
+ * A source has removed audio.
+ *
+ * @return {String} `sourceName` Source name
+ *
+ * @api events
+ * @name SourceAudioDeactivated
+ * @category sources
+ * @since unreleased
+ */
+void WSEvents::OnSourceAudioDeactivated(void* param, calldata_t* data) {
+	auto self = reinterpret_cast<WSEvents*>(param);
+
+	OBSSource source = calldata_get_pointer<obs_source_t>(data, "source");
+	if (!source) {
+		return;
+	}
+
+	OBSDataAutoRelease fields = obs_data_create();
+	obs_data_set_string(fields, "sourceName", obs_source_get_name(source));
+	self->broadcastUpdate("SourceAudioDeactivated", fields);
+}
+
+/**
+ * A source has added audio.
+ *
+ * @return {String} `sourceName` Source name
+ *
+ * @api events
+ * @name SourceAudioActivated
+ * @category sources
+ * @since unreleased
+ */
+void WSEvents::OnSourceAudioActivated(void* param, calldata_t* data) {
+	auto self = reinterpret_cast<WSEvents*>(param);
+
+	OBSSource source = calldata_get_pointer<obs_source_t>(data, "source");
+	if (!source) {
+		return;
+	}
+
+	OBSDataAutoRelease fields = obs_data_create();
+	obs_data_set_string(fields, "sourceName", obs_source_get_name(source));
+	self->broadcastUpdate("SourceAudioActivated", fields);
 }
 
 /**

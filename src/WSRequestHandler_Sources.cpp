@@ -351,7 +351,7 @@ RpcResponse WSRequestHandler::ToggleMute(const RpcRequest& request)
 * @api requests
 * @name GetAudioActive
 * @category sources
-* @since 4.9.0
+* @since unreleased
 */
 RpcResponse WSRequestHandler::GetAudioActive(const RpcRequest& request)
 {
