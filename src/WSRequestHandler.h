@@ -87,11 +87,13 @@ class WSRequestHandler {
 		RpcResponse StartStreaming(const RpcRequest&);
 		RpcResponse StopStreaming(const RpcRequest&);
 
+		RpcResponse GetRecordingStatus(const RpcRequest&);
 		RpcResponse StartRecording(const RpcRequest&);
 		RpcResponse StopRecording(const RpcRequest&);
 		RpcResponse PauseRecording(const RpcRequest&);
 		RpcResponse ResumeRecording(const RpcRequest&);
 
+		RpcResponse GetReplayBufferStatus(const RpcRequest&);
 		RpcResponse StartStopReplayBuffer(const RpcRequest&);
 		RpcResponse StartReplayBuffer(const RpcRequest&);
 		RpcResponse StopReplayBuffer(const RpcRequest&);
