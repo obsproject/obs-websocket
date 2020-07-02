@@ -192,6 +192,10 @@ RpcResponse WSRequestHandler::GetVolume(const RpcRequest& request)
 	if (useDecibel) {
 		volume = obs_mul_to_db(volume);
 	}
+	
+	if (volume == -INFINITY) {
+		volume = -100.0;
+	}
 
 	OBSDataAutoRelease response = obs_data_create();
 	obs_data_set_string(response, "name", obs_source_get_name(source));
