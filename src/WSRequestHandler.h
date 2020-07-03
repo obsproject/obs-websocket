@@ -69,6 +69,7 @@ class WSRequestHandler {
 		RpcResponse RemoveSceneTransitionOverride(const RpcRequest&);
 		RpcResponse GetSceneTransitionOverride(const RpcRequest&);
 
+		RpcResponse GetSceneItemList(const RpcRequest&);
 		RpcResponse SetSceneItemRender(const RpcRequest&);
 		RpcResponse SetSceneItemPosition(const RpcRequest&);
 		RpcResponse SetSceneItemTransform(const RpcRequest&);
@@ -78,6 +79,7 @@ class WSRequestHandler {
 		RpcResponse ResetSceneItem(const RpcRequest&);
 		RpcResponse DuplicateSceneItem(const RpcRequest&);
 		RpcResponse DeleteSceneItem(const RpcRequest&);
+		RpcResponse AddSceneItem(const RpcRequest&);
 		RpcResponse ReorderSceneItems(const RpcRequest&);
 
 		RpcResponse GetStreamingStatus(const RpcRequest&);

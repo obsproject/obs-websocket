@@ -2,6 +2,85 @@
 
 #include "WSRequestHandler.h"
 
+struct AddSourceData {
+	obs_source_t *source;
+	obs_sceneitem_t *sceneItem;
+	bool setVisible;
+};
+
+void AddSourceHelper(void *_data, obs_scene_t *scene) {
+	auto *data = reinterpret_cast<AddSourceData*>(_data);
+	data->sceneItem = obs_scene_add(scene, data->source);
+	obs_sceneitem_set_visible(data->sceneItem, data->setVisible);
+}
+
+/**
+* Get a list of all scene items in a scene.
+*
+* @param {String} `sceneName` Name of the scene to get the list of scene items from.
+*
+* @return {Array<Object>} `sceneItems` Array of scene items
+* @return {int} `sceneItems.*.itemId` Unique item id of the source item
+* @return {String} `sceneItems.*.sourceKind` ID if the scene item's source. For example `vlc_source` or `image_source`
+* @return {String} `sceneItems.*.sourceName` Name of the scene item's source
+* @return {String} `sceneItems.*.sourceType` Type of the scene item's source. Either `input`, `group`, or `scene`
+*
+* @api requests
+* @name GetSceneItemList
+* @category scene items
+* @since unreleased
+*/
+RpcResponse WSRequestHandler::GetSceneItemList(const RpcRequest& request) {
+	if (!request.hasField("sceneName")) {
+		return request.failed("missing request parameters");
+	}
+
+	const char* sceneName = obs_data_get_string(request.parameters(), "sceneName");
+	OBSSourceAutoRelease sceneSource = obs_get_source_by_name(sceneName);
+	OBSScene scene = obs_scene_from_source(sceneSource);
+	if (!scene) {
+		return request.failed("requested scene is invalid or doesnt exist");
+	}
+
+	OBSDataArrayAutoRelease sceneItemArray = obs_data_array_create();
+
+	auto sceneItemEnumProc = [](obs_scene_t *, obs_sceneitem_t* item, void* privateData) -> bool {
+		obs_data_array_t* sceneItemArray = (obs_data_array_t*)privateData;
+
+		OBSDataAutoRelease sceneItemData = obs_data_create();
+		obs_data_set_int(sceneItemData, "itemId", obs_sceneitem_get_id(item));
+		OBSSource source = obs_sceneitem_get_source(item);
+		obs_data_set_string(sceneItemData, "sourceKind", obs_source_get_id(source));
+		obs_data_set_string(sceneItemData, "sourceName", obs_source_get_name(source));
+
+		QString typeString = "";
+		enum obs_source_type sourceType = obs_source_get_type(source);
+		switch (sourceType) {
+		case OBS_SOURCE_TYPE_INPUT:
+			typeString = "input";
+			break;
+
+		case OBS_SOURCE_TYPE_SCENE:
+			typeString = "scene";
+			break;
+
+		default:
+			typeString = "unknown";
+			break;
+		}
+		obs_data_set_string(sceneItemData, "sourceType", typeString.toUtf8());
+
+		obs_data_array_push_back(sceneItemArray, sceneItemData);
+		return true;
+	};
+	obs_scene_enum_items(scene, sceneItemEnumProc, sceneItemArray);
+
+	OBSDataAutoRelease response = obs_data_create();
+	obs_data_set_array(response, "sceneItems", sceneItemArray);
+
+	return request.success(response);
+}
+
 /**
 * Gets the scene specific properties of the specified source item.
 * Coordinates are relative to the item's parent (the scene or group it belongs to).
@@ -37,7 +116,7 @@
 * @return {int} `alignment` The point on the source that the item is manipulated from. The sum of 1=Left or 2=Right, and 4=Top or 8=Bottom, or omit to center on that axis.
 * @return {String (optional)} `parentGroupName` Name of the item's parent (if this item belongs to a group)
 * @return {Array<SceneItemTransform> (optional)} `groupChildren` List of children (if this item is a group)
-* 
+*
 * @api requests
 * @name GetSceneItemProperties
 * @category scene items
@@ -164,7 +243,7 @@ RpcResponse WSRequestHandler::SetSceneItemProperties(const RpcRequest& request) 
 		vec2 newScale = oldScale;
 
 		OBSDataAutoRelease reqScale = obs_data_get_obj(params, "scale");
-		
+
 		if (obs_data_has_user_value(reqScale, "x")) {
 			newScale.x = obs_data_get_double(reqScale, "x");
 		}
@@ -252,7 +331,7 @@ RpcResponse WSRequestHandler::SetSceneItemProperties(const RpcRequest& request) 
 		}
 
 		obs_sceneitem_set_bounds(sceneItem, &newBounds);
-		
+
 		if (obs_data_has_user_value(reqBounds, "alignment")) {
 			const uint32_t bounds_alignment = obs_data_get_int(reqBounds, "alignment");
 			if (Utils::IsValidAlignment(bounds_alignment)) {
@@ -455,7 +534,7 @@ RpcResponse WSRequestHandler::SetSceneItemTransform(const RpcRequest& request) {
 
 	obs_sceneitem_set_scale(sceneItem, &scale);
 	obs_sceneitem_set_rot(sceneItem, rotation);
-	
+
 	obs_sceneitem_defer_update_end(sceneItem);
 
 	return request.success();
@@ -542,6 +621,59 @@ RpcResponse WSRequestHandler::DeleteSceneItem(const RpcRequest& request) {
 	obs_sceneitem_remove(sceneItem);
 
 	return request.success();
+}
+
+/**
+ * Creates a scene item in a scene. In other words, this is how you add a source into a scene.
+ *
+ * @param {String} `sceneName` Name of the scene to create the scene item in
+ * @param {String} `sourceName` Name of the source to be added
+ * @param {boolean} `setVisible` Whether to make the sceneitem visible on creation or not. Default `true`
+ *
+ * @return {int} `itemId` Numerical ID of the created scene item
+ *
+ * @api requests
+ * @name AddSceneItem
+ * @category scene items
+ * @since unreleased
+ */
+RpcResponse WSRequestHandler::AddSceneItem(const RpcRequest& request) {
+	if (!request.hasField("sceneName") || !request.hasField("sourceName")) {
+		return request.failed("missing request parameters");
+	}
+
+	const char* sceneName = obs_data_get_string(request.parameters(), "sceneName");
+	OBSSourceAutoRelease sceneSource = obs_get_source_by_name(sceneName);
+	OBSScene scene = obs_scene_from_source(sceneSource);
+	if (!scene) {
+		return request.failed("requested scene is invalid or doesnt exist");
+	}
+
+	const char* sourceName = obs_data_get_string(request.parameters(), "sourceName");
+	OBSSourceAutoRelease source = obs_get_source_by_name(sourceName);
+	if (!source) {
+		return request.failed("requested source does not exist");
+	}
+
+	if (source == sceneSource) {
+		return request.failed("you cannot add a scene as a sceneitem to itself");
+	}
+
+	AddSourceData data;
+	data.source = source;
+	data.setVisible = true;
+	if (request.hasField("setVisible")) {
+		data.setVisible = obs_data_get_bool(request.parameters(), "setVisible");
+	}
+
+	obs_enter_graphics();
+	obs_scene_atomic_update(scene, AddSourceHelper, &data);
+	obs_leave_graphics();
+
+	OBSDataAutoRelease responseData = obs_data_create();
+	obs_data_set_int(responseData, "itemId", obs_sceneitem_get_id(data.sceneItem));
+
+	return request.success(responseData);
 }
 
 /**

@@ -52,6 +52,7 @@ const QHash<QString, RpcMethodHandler> WSRequestHandler::messageMap {
 	{ "GetSceneTransitionOverride", &WSRequestHandler::GetSceneTransitionOverride },
 
 	{ "SetSourceRender", &WSRequestHandler::SetSceneItemRender }, // Retrocompat
+	{ "GetSceneItemList", &WSRequestHandler::GetSceneItemList },
 	{ "SetSceneItemRender", &WSRequestHandler::SetSceneItemRender },
 	{ "SetSceneItemPosition", &WSRequestHandler::SetSceneItemPosition },
 	{ "SetSceneItemTransform", &WSRequestHandler::SetSceneItemTransform },
@@ -60,6 +61,7 @@ const QHash<QString, RpcMethodHandler> WSRequestHandler::messageMap {
 	{ "SetSceneItemProperties", &WSRequestHandler::SetSceneItemProperties },
 	{ "ResetSceneItem", &WSRequestHandler::ResetSceneItem },
 	{ "DeleteSceneItem", &WSRequestHandler::DeleteSceneItem },
+	{ "AddSceneItem", &WSRequestHandler::AddSceneItem },
 	{ "DuplicateSceneItem", &WSRequestHandler::DuplicateSceneItem },
 	{ "ReorderSceneItems", &WSRequestHandler::ReorderSceneItems },
 
