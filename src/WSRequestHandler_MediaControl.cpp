@@ -360,7 +360,7 @@ RpcResponse WSRequestHandler::GetMediaState(const RpcRequest& request) {
 *
 * @return {Array<Object>} `mediaSources` Array of sources
 * @return {String} `mediaSources.*.sourceName` Unique source name
-* @return {String} `mediaSources.*.sourceTypeId` Non-unique source internal type (a.k.a `ffmpeg_source` or `vlc_source`)
+* @return {String} `mediaSources.*.sourceKind` Unique source internal type (a.k.a `ffmpeg_source` or `vlc_source`)
 * @return {String} `mediaSources.*.mediaState` The current state of media for that source. States: `none`, `playing`, `opening`, `buffering`, `paused`, `stopped`, `ended`, `error`, `unknown`
 *
 * @api requests
@@ -379,7 +379,7 @@ RpcResponse WSRequestHandler::GetMediaSourcesList(const RpcRequest& request)
 		if (isMediaSource(sourceTypeId)) {
 			OBSDataAutoRelease sourceData = obs_data_create();
 			obs_data_set_string(sourceData, "sourceName", obs_source_get_name(source));
-			obs_data_set_string(sourceData, "sourceTypeId", sourceTypeId.toUtf8());
+			obs_data_set_string(sourceData, "sourceKind", sourceTypeId.toUtf8());
 
 			QString mediaState = getSourceMediaState(source);
 			obs_data_set_string(sourceData, "mediaState", mediaState.toUtf8());
