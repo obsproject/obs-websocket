@@ -21,10 +21,10 @@ void AddSourceHelper(void *_data, obs_scene_t *scene) {
 *
 * @return {Array<Object>} `sceneItems` Array of scene items
 * @return {int} `sceneItems.*.itemId` Unique item id of the source item
-* @return {String} `sceneItems.*.sourceId` ID if the scene item's source. For example `vlc_source` or `image_source`
+* @return {String} `sceneItems.*.sourceKind` ID if the scene item's source. For example `vlc_source` or `image_source`
 * @return {String} `sceneItems.*.sourceName` Name of the scene item's source
-* @return {String} `sceneItems.*.sourceType` Type of the scene item's source. Either `input` or `scene`
-* 
+* @return {String} `sceneItems.*.sourceType` Type of the scene item's source. Either `input`, `group`, or `scene`
+*
 * @api requests
 * @name GetSceneItemList
 * @category scene items
@@ -50,7 +50,7 @@ RpcResponse WSRequestHandler::GetSceneItemList(const RpcRequest& request) {
 		OBSDataAutoRelease sceneItemData = obs_data_create();
 		obs_data_set_int(sceneItemData, "itemId", obs_sceneitem_get_id(item));
 		OBSSource source = obs_sceneitem_get_source(item);
-		obs_data_set_string(sceneItemData, "sourceId", obs_source_get_id(source));
+		obs_data_set_string(sceneItemData, "sourceKind", obs_source_get_id(source));
 		obs_data_set_string(sceneItemData, "sourceName", obs_source_get_name(source));
 
 		QString typeString = "";
@@ -654,7 +654,7 @@ RpcResponse WSRequestHandler::AddSceneItem(const RpcRequest& request) {
 	if (!source) {
 		return request.failed("requested source does not exist");
 	}
-	
+
 	if (source == sceneSource) {
 		return request.failed("you cannot add a scene as a sceneitem to itself");
 	}
@@ -671,7 +671,7 @@ RpcResponse WSRequestHandler::AddSceneItem(const RpcRequest& request) {
 	obs_leave_graphics();
 
 	OBSDataAutoRelease responseData = obs_data_create();
-	obs_data_set_int(responseData, "itemID", obs_sceneitem_get_id(data.sceneItem));
+	obs_data_set_int(responseData, "itemId", obs_sceneitem_get_id(data.sceneItem));
 
 	return request.success(responseData);
 }
