@@ -89,11 +89,13 @@ class WSRequestHandler {
 		RpcResponse StartStreaming(const RpcRequest&);
 		RpcResponse StopStreaming(const RpcRequest&);
 
+		RpcResponse GetRecordingStatus(const RpcRequest&);
 		RpcResponse StartRecording(const RpcRequest&);
 		RpcResponse StopRecording(const RpcRequest&);
 		RpcResponse PauseRecording(const RpcRequest&);
 		RpcResponse ResumeRecording(const RpcRequest&);
 
+		RpcResponse GetReplayBufferStatus(const RpcRequest&);
 		RpcResponse StartStopReplayBuffer(const RpcRequest&);
 		RpcResponse StartReplayBuffer(const RpcRequest&);
 		RpcResponse StopReplayBuffer(const RpcRequest&);
@@ -114,6 +116,7 @@ class WSRequestHandler {
 		RpcResponse ToggleMute(const RpcRequest&);
 		RpcResponse SetMute(const RpcRequest&);
 		RpcResponse GetMute(const RpcRequest&);
+		RpcResponse GetAudioActive(const RpcRequest&);
 		RpcResponse SetSourceName(const RpcRequest&);
 		RpcResponse SetSyncOffset(const RpcRequest&);
 		RpcResponse GetSyncOffset(const RpcRequest&);
@@ -171,4 +174,16 @@ class WSRequestHandler {
 		RpcResponse GetOutputInfo(const RpcRequest&);
 		RpcResponse StartOutput(const RpcRequest&);
 		RpcResponse StopOutput(const RpcRequest&);
+
+		RpcResponse PlayPauseMedia(const RpcRequest&);
+		RpcResponse RestartMedia(const RpcRequest&);
+		RpcResponse StopMedia(const RpcRequest&);
+		RpcResponse NextMedia(const RpcRequest&);
+		RpcResponse PreviousMedia(const RpcRequest&);
+		RpcResponse GetMediaDuration(const RpcRequest&);
+		RpcResponse GetMediaTime(const RpcRequest&);
+		RpcResponse SetMediaTime(const RpcRequest&);
+		RpcResponse ScrubMedia(const RpcRequest&);
+		RpcResponse GetMediaState(const RpcRequest&);
+		RpcResponse GetMediaSourcesList(const RpcRequest&);
 };

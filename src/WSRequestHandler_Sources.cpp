@@ -192,6 +192,10 @@ RpcResponse WSRequestHandler::GetVolume(const RpcRequest& request)
 	if (useDecibel) {
 		volume = obs_mul_to_db(volume);
 	}
+	
+	if (volume == -INFINITY) {
+		volume = -100.0;
+	}
 
 	OBSDataAutoRelease response = obs_data_create();
 	obs_data_set_string(response, "name", obs_source_get_name(source));
@@ -339,6 +343,40 @@ RpcResponse WSRequestHandler::ToggleMute(const RpcRequest& request)
 
 	obs_source_set_muted(source, !obs_source_muted(source));
 	return request.success();
+}
+
+/**
+* Get the audio's active status of a specified source.
+*
+* @param {String} `sourceName` Source name.
+*
+* @return {boolean} `audioActive` Audio active status of the source.
+*
+* @api requests
+* @name GetAudioActive
+* @category sources
+* @since unreleased
+*/
+RpcResponse WSRequestHandler::GetAudioActive(const RpcRequest& request)
+{
+	if (!request.hasField("sourceName")) {
+		return request.failed("missing request parameters");
+	}
+
+	QString sourceName = obs_data_get_string(request.parameters(), "sourceName");
+	if (sourceName.isEmpty()) {
+		return request.failed("invalid request parameters");
+	}
+
+	OBSSourceAutoRelease source = obs_get_source_by_name(sourceName.toUtf8());
+	if (!source) {
+		return request.failed("specified source doesn't exist");
+	}
+
+	OBSDataAutoRelease response = obs_data_create();
+	obs_data_set_bool(response, "audioActive", obs_source_audio_active(source));
+
+	return request.success(response);
 }
 
 /**

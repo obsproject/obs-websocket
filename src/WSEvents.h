@@ -126,6 +126,8 @@ private:
 	static void OnSourceMuteStateChange(void* param, calldata_t* data);
 	static void OnSourceAudioSyncOffsetChanged(void* param, calldata_t* data);
 	static void OnSourceAudioMixersChanged(void* param, calldata_t* data);
+	static void OnSourceAudioActivated(void* param, calldata_t* data);
+	static void OnSourceAudioDeactivated(void* param, calldata_t* data);
 
 	static void OnSourceRename(void* param, calldata_t* data);
 
@@ -133,6 +135,15 @@ private:
 	static void OnSourceFilterRemoved(void* param, calldata_t* data);
 	static void OnSourceFilterVisibilityChanged(void* param, calldata_t* data);
 	static void OnSourceFilterOrderChanged(void* param, calldata_t* data);
+	
+	static void OnMediaPlaying(void* param, calldata_t* data);
+	static void OnMediaPaused(void* param, calldata_t* data);
+	static void OnMediaRestarted(void* param, calldata_t* data);
+	static void OnMediaStopped(void* param, calldata_t* data);
+	static void OnMediaNext(void* param, calldata_t* data);
+	static void OnMediaPrevious(void* param, calldata_t* data);
+	static void OnMediaStarted(void* param, calldata_t* data);
+	static void OnMediaEnded(void* param, calldata_t* data);
 
 	static void OnSceneReordered(void* param, calldata_t* data);
 	static void OnSceneItemAdd(void* param, calldata_t* data);

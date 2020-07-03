@@ -92,8 +92,8 @@ RpcResponse WSRequestHandler::GetSceneItemList(const RpcRequest& request) {
 *
 * @return {String} `name` Scene Item name.
 * @return {int} `itemId` Scene Item ID.
-* @return {int} `position.x` The x position of the source from the left.
-* @return {int} `position.y` The y position of the source from the top.
+* @return {double} `position.x` The x position of the source from the left.
+* @return {double} `position.y` The y position of the source from the top.
 * @return {int} `position.alignment` The point on the source that the item is manipulated from.
 * @return {double} `rotation` The clockwise rotation of the item in degrees around the point of alignment.
 * @return {double} `scale.x` The x-scale factor of the source.
@@ -158,8 +158,8 @@ RpcResponse WSRequestHandler::GetSceneItemProperties(const RpcRequest& request) 
 * @param {String | Object} `item` Scene Item name (if this field is a string) or specification (if it is an object).
 * @param {String (optional)} `item.name` Scene Item name (if the `item` field is an object)
 * @param {int (optional)} `item.id` Scene Item ID (if the `item` field is an object)
-* @param {int (optional)} `position.x` The new x position of the source.
-* @param {int (optional)} `position.y` The new y position of the source.
+* @param {double (optional)} `position.x` The new x position of the source.
+* @param {double (optional)} `position.y` The new y position of the source.
 * @param {int (optional)} `position.alignment` The new alignment of the source.
 * @param {double (optional)} `rotation` The new clockwise rotation of the item in degrees.
 * @param {double (optional)} `scale.x` The new x scale of the item.
@@ -213,10 +213,10 @@ RpcResponse WSRequestHandler::SetSceneItemProperties(const RpcRequest& request) 
 		vec2 newPosition = oldPosition;
 
 		if (obs_data_has_user_value(reqPosition, "x")) {
-			newPosition.x = obs_data_get_int(reqPosition, "x");
+			newPosition.x = obs_data_get_double(reqPosition, "x");
 		}
 		if (obs_data_has_user_value(reqPosition, "y")) {
-			newPosition.y = obs_data_get_int(reqPosition, "y");
+			newPosition.y = obs_data_get_double(reqPosition, "y");
 		}
 
 		if (obs_data_has_user_value(reqPosition, "alignment")) {

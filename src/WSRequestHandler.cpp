@@ -72,11 +72,13 @@ const QHash<QString, RpcMethodHandler> WSRequestHandler::messageMap {
 	{ "StartStreaming", &WSRequestHandler::StartStreaming },
 	{ "StopStreaming", &WSRequestHandler::StopStreaming },
 
+	{ "GetRecordingStatus", &WSRequestHandler::GetRecordingStatus },
 	{ "StartRecording", &WSRequestHandler::StartRecording },
 	{ "StopRecording", &WSRequestHandler::StopRecording },
 	{ "PauseRecording", &WSRequestHandler::PauseRecording },
 	{ "ResumeRecording", &WSRequestHandler::ResumeRecording },
 
+	{ "GetReplayBufferStatus", &WSRequestHandler::GetReplayBufferStatus },
 	{ "StartStopReplayBuffer", &WSRequestHandler::StartStopReplayBuffer },
 	{ "StartReplayBuffer", &WSRequestHandler::StartReplayBuffer },
 	{ "StopReplayBuffer", &WSRequestHandler::StopReplayBuffer },
@@ -97,6 +99,7 @@ const QHash<QString, RpcMethodHandler> WSRequestHandler::messageMap {
 	{ "ToggleMute", &WSRequestHandler::ToggleMute },
 	{ "SetMute", &WSRequestHandler::SetMute },
 	{ "GetMute", &WSRequestHandler::GetMute },
+	{ "GetAudioActive", &WSRequestHandler::GetAudioActive },
 	{ "SetSourceName", &WSRequestHandler::SetSourceName },
 	{ "SetSyncOffset", &WSRequestHandler::SetSyncOffset },
 	{ "GetSyncOffset", &WSRequestHandler::GetSyncOffset },
@@ -153,7 +156,19 @@ const QHash<QString, RpcMethodHandler> WSRequestHandler::messageMap {
 	{ "ListOutputs", &WSRequestHandler::ListOutputs },
 	{ "GetOutputInfo", &WSRequestHandler::GetOutputInfo },
 	{ "StartOutput", &WSRequestHandler::StartOutput },
-	{ "StopOutput", &WSRequestHandler::StopOutput }
+	{ "StopOutput", &WSRequestHandler::StopOutput },
+
+	{ "PlayPauseMedia", &WSRequestHandler::PlayPauseMedia },
+	{ "RestartMedia", &WSRequestHandler::RestartMedia },
+	{ "StopMedia", &WSRequestHandler::StopMedia },
+	{ "NextMedia", &WSRequestHandler::NextMedia },
+	{ "PreviousMedia", &WSRequestHandler::PreviousMedia },
+	{ "GetMediaDuration", &WSRequestHandler::GetMediaDuration },
+	{ "GetMediaTime", &WSRequestHandler::GetMediaTime },
+	{ "SetMediaTime", &WSRequestHandler::SetMediaTime },
+	{ "ScrubMedia", &WSRequestHandler::ScrubMedia },
+	{ "GetMediaState", &WSRequestHandler::GetMediaState },
+	{ "GetMediaSourcesList", &WSRequestHandler::GetMediaSourcesList }
 };
 
 const QSet<QString> WSRequestHandler::authNotRequired {

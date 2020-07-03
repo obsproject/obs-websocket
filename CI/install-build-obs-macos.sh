@@ -34,6 +34,7 @@ git checkout $OBSLatestTag
 mkdir build && cd build
 echo "[obs-websocket] Building obs-studio.."
 cmake .. \
+	-DBUILD_CAPTIONS=true \
 	-DCMAKE_OSX_DEPLOYMENT_TARGET=10.11 \
 	-DDISABLE_PLUGINS=true \
     -DENABLE_SCRIPTING=0 \
