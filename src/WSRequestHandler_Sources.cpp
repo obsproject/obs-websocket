@@ -382,7 +382,7 @@ RpcResponse WSRequestHandler::GetAudioActive(const RpcRequest& request)
 /**
 * Sets (aka rename) the name of a source. Also works with scenes since scenes are technically sources in OBS.
 *
-* Note: If the new name already exists as a source, OBS will automatically modify the name to not interfere.
+* Note: If the new name already exists as a source, an error will be returned.
 *
 * @param {String} `sourceName` Source name.
 * @param {String} `newName` New source name.
