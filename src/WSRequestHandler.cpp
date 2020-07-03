@@ -70,11 +70,13 @@ const QHash<QString, RpcMethodHandler> WSRequestHandler::messageMap {
 	{ "StartStreaming", &WSRequestHandler::StartStreaming },
 	{ "StopStreaming", &WSRequestHandler::StopStreaming },
 
+	{ "GetRecordingStatus", &WSRequestHandler::GetRecordingStatus },
 	{ "StartRecording", &WSRequestHandler::StartRecording },
 	{ "StopRecording", &WSRequestHandler::StopRecording },
 	{ "PauseRecording", &WSRequestHandler::PauseRecording },
 	{ "ResumeRecording", &WSRequestHandler::ResumeRecording },
 
+	{ "GetReplayBufferStatus", &WSRequestHandler::GetReplayBufferStatus },
 	{ "StartStopReplayBuffer", &WSRequestHandler::StartStopReplayBuffer },
 	{ "StartReplayBuffer", &WSRequestHandler::StartReplayBuffer },
 	{ "StopReplayBuffer", &WSRequestHandler::StopReplayBuffer },
