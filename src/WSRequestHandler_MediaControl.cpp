@@ -375,11 +375,11 @@ RpcResponse WSRequestHandler::GetMediaSourcesList(const RpcRequest& request)
 	auto sourceEnumProc = [](void* privateData, obs_source_t* source) -> bool {
 		obs_data_array_t* sourcesArray = (obs_data_array_t*)privateData;
 
-		QString sourceTypeId = obs_source_get_id(source);
-		if (isMediaSource(sourceTypeId)) {
+		QString sourceKind = obs_source_get_id(source);
+		if (isMediaSource(sourceKind)) {
 			OBSDataAutoRelease sourceData = obs_data_create();
 			obs_data_set_string(sourceData, "sourceName", obs_source_get_name(source));
-			obs_data_set_string(sourceData, "sourceKind", sourceTypeId.toUtf8());
+			obs_data_set_string(sourceData, "sourceKind", sourceKind.toUtf8());
 
 			QString mediaState = getSourceMediaState(source);
 			obs_data_set_string(sourceData, "mediaState", mediaState.toUtf8());

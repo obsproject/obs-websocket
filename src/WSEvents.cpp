@@ -434,7 +434,7 @@ OBSDataAutoRelease getMediaSourceData(calldata_t* data) {
 	OBSSource source = calldata_get_pointer<obs_source_t>(data, "source");
 
 	obs_data_set_string(fields, "sourceName", obs_source_get_name(source));
-	obs_data_set_string(fields, "sourceTypeId", obs_source_get_id(source));
+	obs_data_set_string(fields, "sourceKind", obs_source_get_id(source));
 
 	return fields;
 }
@@ -1422,7 +1422,7 @@ void WSEvents::OnSourceFilterOrderChanged(void* param, calldata_t* data) {
  * Note: This event is only emitted when something actively controls the media/VLC source. In other words, the source will never emit this on its own naturally.
  *
  * @return {String} `sourceName` Source name
- * @return {String} `sourceTypeId` The ID type of the source (Eg. `vlc_source` or `ffmpeg_source`)
+ * @return {String} `sourceKind` The ID type of the source (Eg. `vlc_source` or `ffmpeg_source`)
  *
  * @api events
  * @name MediaPlaying
@@ -1443,7 +1443,7 @@ void WSEvents::OnMediaPlaying(void* param, calldata_t* data) {
  * Note: This event is only emitted when something actively controls the media/VLC source. In other words, the source will never emit this on its own naturally.
  *
  * @return {String} `sourceName` Source name
- * @return {String} `sourceTypeId` The ID type of the source (Eg. `vlc_source` or `ffmpeg_source`)
+ * @return {String} `sourceKind` The ID type of the source (Eg. `vlc_source` or `ffmpeg_source`)
  *
  * @api events
  * @name MediaPaused
@@ -1464,7 +1464,7 @@ void WSEvents::OnMediaPaused(void* param, calldata_t* data) {
  * Note: This event is only emitted when something actively controls the media/VLC source. In other words, the source will never emit this on its own naturally.
  *
  * @return {String} `sourceName` Source name
- * @return {String} `sourceTypeId` The ID type of the source (Eg. `vlc_source` or `ffmpeg_source`)
+ * @return {String} `sourceKind` The ID type of the source (Eg. `vlc_source` or `ffmpeg_source`)
  *
  * @api events
  * @name MediaRestarted
@@ -1485,7 +1485,7 @@ void WSEvents::OnMediaRestarted(void* param, calldata_t* data) {
  * Note: This event is only emitted when something actively controls the media/VLC source. In other words, the source will never emit this on its own naturally.
  *
  * @return {String} `sourceName` Source name
- * @return {String} `sourceTypeId` The ID type of the source (Eg. `vlc_source` or `ffmpeg_source`)
+ * @return {String} `sourceKind` The ID type of the source (Eg. `vlc_source` or `ffmpeg_source`)
  *
  * @api events
  * @name MediaStopped
@@ -1506,7 +1506,7 @@ void WSEvents::OnMediaStopped(void* param, calldata_t* data) {
  * Note: This event is only emitted when something actively controls the media/VLC source. In other words, the source will never emit this on its own naturally.
  *
  * @return {String} `sourceName` Source name
- * @return {String} `sourceTypeId` The ID type of the source (Eg. `vlc_source` or `ffmpeg_source`)
+ * @return {String} `sourceKind` The ID type of the source (Eg. `vlc_source` or `ffmpeg_source`)
  *
  * @api events
  * @name MediaNext
@@ -1527,7 +1527,7 @@ void WSEvents::OnMediaNext(void* param, calldata_t* data) {
  * Note: This event is only emitted when something actively controls the media/VLC source. In other words, the source will never emit this on its own naturally.
  *
  * @return {String} `sourceName` Source name
- * @return {String} `sourceTypeId` The ID type of the source (Eg. `vlc_source` or `ffmpeg_source`)
+ * @return {String} `sourceKind` The ID type of the source (Eg. `vlc_source` or `ffmpeg_source`)
  *
  * @api events
  * @name MediaPrevious
@@ -1548,7 +1548,7 @@ void WSEvents::OnMediaPrevious(void* param, calldata_t* data) {
  * Note: These events are emitted by the OBS sources themselves. For example when the media file starts playing. The behavior depends on the type of media source being used.
  *
  * @return {String} `sourceName` Source name
- * @return {String} `sourceTypeId` The ID type of the source (Eg. `vlc_source` or `ffmpeg_source`)
+ * @return {String} `sourceKind` The ID type of the source (Eg. `vlc_source` or `ffmpeg_source`)
  *
  * @api events
  * @name MediaStarted
@@ -1569,7 +1569,7 @@ void WSEvents::OnMediaStarted(void* param, calldata_t* data) {
  * Note: These events are emitted by the OBS sources themselves. For example when the media file ends. The behavior depends on the type of media source being used.
  *
  * @return {String} `sourceName` Source name
- * @return {String} `sourceTypeId` The ID type of the source (Eg. `vlc_source` or `ffmpeg_source`)
+ * @return {String} `sourceKind` The ID type of the source (Eg. `vlc_source` or `ffmpeg_source`)
  *
  * @api events
  * @name MediaEnded
