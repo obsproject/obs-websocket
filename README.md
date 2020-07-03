@@ -1,11 +1,14 @@
-obs-websocket
-==============
+# obs-websocket
+
+<p align="center">
+  <img src="/.github/images/obsws_logo.png" width=150 align="center">
+</p>
 
 WebSockets API for OBS Studio.
 
-Follow the main author on Twitter for news & updates : [@LePalakis](https://twitter.com/LePalakis)
-
+[![Discord](https://img.shields.io/discord/715691013825364120.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/WBaSQ3A)
 [![Build Status](https://dev.azure.com/Palakis/obs-websocket/_apis/build/status/Palakis.obs-websocket?branchName=4.x-current)](https://dev.azure.com/Palakis/obs-websocket/_build/latest?definitionId=2&branchName=4.x-current)
+[![Twitter](https://img.shields.io/twitter/url/https/twitter.com/fold_left.svg?style=social&label=Follow%20%40LePalakis)](https://twitter.com/LePalakis)
 
 ## Downloads
 
@@ -82,7 +85,7 @@ Here's a list of available language APIs for obs-websocket :
 - Golang: [go-obs-websocket](https://github.com/christopher-dG/go-obs-websocket) by Chris de Graaf
 - HTTP API: [obs-websocket-http](https://github.com/IRLToolkit/obs-websocket-http) by tt2468
 
-I'd like to know what you're building with or for obs-websocket. If you do something in this fashion, feel free to drop me an email at `stephane /dot/ lepin /at/ gmail /dot/ com` !
+I'd like to know what you're building with or for obs-websocket. If you do something in this fashion, feel free to drop a message in `#project-showoff` in the [discord server!](https://discord.gg/WBaSQ3A)
 
 ## Compiling obs-websocket
 
@@ -90,80 +93,23 @@ See the [build instructions](BUILDING.md).
 
 ## Contributing
 
-### Branches
-
-Development happens on `4.x-current`
-
-### Pull Requests
-
-Pull Requests must never be based off your fork's main branch (in this case, `4.x-current`). Start your work in a new branch
-based on the main one (e.g.: `cool-new-feature`, `fix-palakis-mistakes`, ...) and open a Pull Request once you feel ready to show your work.
-
-**If your Pull Request is not ready to merge yet, create it as a Draft Pull Request** (open the little arrow menu next to the "Create pull request" button, then select "Create draft pull request").
-
-### Code style & formatting
-
-Source code is indented with tabs, with spaces allowed for alignment.
-
-Regarding protocol changes: new and updated request types / events must always come with accompanying documentation comments (see existing protocol elements for examples).
-These are required to automatically generate the [protocol specification document](docs/generated/protocol.md).
-
-Among other recommendations: favor return-early code and avoid wrapping huge portions of code in conditionals. As an example, this:
-
-```cpp
-if (success) {
-    return req->SendOKResponse();
-} else {
-    return req->SendErrorResponse("something went wrong");
-}
-```
-
-is better like this:
-
-```cpp
-if (!success) {
-    return req->SendErrorResponse("something went wrong");
-}
-return req->SendOKResponse();
-```
-
+See [the contributing document](/CONTRIBUTING.md)
 
 ## Translations
 
-**Your help is welcome on translations**. Please join the localization project on Crowdin: https://crowdin.com/project/obs-websocket
+**Your help is welcome on translations.**
+
+Please join the localization project on [Crowdin](https://crowdin.com/project/obs-websocket)
 
 ## Special thanks
 
-In (almost) order of appearance:
-
-- [Brendan H.](https://github.com/haganbmj): Code contributions and gooder English in the Protocol specification
-- [Mikhail Swift](https://github.com/mikhailswift): Code contributions
-- [Tobias Frahmer](https://github.com/Frahmer): Initial German localization
-- [Genture](https://github.com/Genteure): Initial Simplified Chinese and Traditional Chinese localizations
-- [Larissa Gabilan](https://github.com/laris151): Initial Portuguese localization
-- [Andy Asquelt](https://github.com/asquelt): Initial Polish localization
-- [Marcel Haazen](https://github.com/nekocentral): Initial Dutch localization
-- [Peter Antonvich](https://github.com/pantonvich): Code contributions
-- [yinzara](https://github.com/yinzara): Code contributions
-- [Chris Angelico](https://github.com/Rosuav): Code contributions
-- [Guillaume "Elektordi" Genty](https://github.com/Elektordi): Code contributions
-- [Marwin M](https://github.com/dragonbane0): Code contributions
-- [Logan S.](https://github.com/lsdaniel): Code contributions
-- [RainbowEK](https://github.com/RainbowEK): Code contributions
-- [RytoEX](https://github.com/RytoEX): CI script and code contributions
-- [Theodore Stoddard](https://github.com/TStod): Code contributions
-- [Philip Loche](https://github.com/PicoCentauri): Code contributions
-- [Patrick Heyer](https://github.com/PatTheMav): Code contributions and CI fixes
-- [Alex Van Camp](https://github.com/Lange): Code contributions
-- [Freddie Meyer](https://github.com/DungFu): Code contributions
-- [Casey Muller](https://github.com/caseymrm): CI fixes
-- [Chris Angelico](https://github.com/Rosuav): Documentation fixes
+Thank you so much to all of the contibutors [(here)](https://github.com/Palakis/obs-websocket/graphs/contributors) for your amazing help.
 
 And also: special thanks to supporters of the project!
 
 ## Supporters
 
-They have contributed financially to the project and made possible the addition of several features into obs-websocket. Many thanks to them!
+These supporters have contributed financially to the project and made possible the addition of several features into obs-websocket. Many thanks to them!
 
 ---
 
