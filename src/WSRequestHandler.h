@@ -172,4 +172,16 @@ class WSRequestHandler {
 		RpcResponse GetOutputInfo(const RpcRequest&);
 		RpcResponse StartOutput(const RpcRequest&);
 		RpcResponse StopOutput(const RpcRequest&);
+
+		RpcResponse PlayPauseMedia(const RpcRequest&);
+		RpcResponse RestartMedia(const RpcRequest&);
+		RpcResponse StopMedia(const RpcRequest&);
+		RpcResponse NextMedia(const RpcRequest&);
+		RpcResponse PreviousMedia(const RpcRequest&);
+		RpcResponse GetMediaDuration(const RpcRequest&);
+		RpcResponse GetMediaTime(const RpcRequest&);
+		RpcResponse SetMediaTime(const RpcRequest&);
+		RpcResponse ScrubMedia(const RpcRequest&);
+		RpcResponse GetMediaState(const RpcRequest&);
+		RpcResponse GetMediaSourcesList(const RpcRequest&);
 };

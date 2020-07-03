@@ -154,7 +154,19 @@ const QHash<QString, RpcMethodHandler> WSRequestHandler::messageMap {
 	{ "ListOutputs", &WSRequestHandler::ListOutputs },
 	{ "GetOutputInfo", &WSRequestHandler::GetOutputInfo },
 	{ "StartOutput", &WSRequestHandler::StartOutput },
-	{ "StopOutput", &WSRequestHandler::StopOutput }
+	{ "StopOutput", &WSRequestHandler::StopOutput },
+
+	{ "PlayPauseMedia", &WSRequestHandler::PlayPauseMedia },
+	{ "RestartMedia", &WSRequestHandler::RestartMedia },
+	{ "StopMedia", &WSRequestHandler::StopMedia },
+	{ "NextMedia", &WSRequestHandler::NextMedia },
+	{ "PreviousMedia", &WSRequestHandler::PreviousMedia },
+	{ "GetMediaDuration", &WSRequestHandler::GetMediaDuration },
+	{ "GetMediaTime", &WSRequestHandler::GetMediaTime },
+	{ "SetMediaTime", &WSRequestHandler::SetMediaTime },
+	{ "ScrubMedia", &WSRequestHandler::ScrubMedia },
+	{ "GetMediaState", &WSRequestHandler::GetMediaState },
+	{ "GetMediaSourcesList", &WSRequestHandler::GetMediaSourcesList }
 };
 
 const QSet<QString> WSRequestHandler::authNotRequired {
