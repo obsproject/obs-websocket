@@ -166,7 +166,7 @@ RpcResponse WSRequestHandler::DisableStudioMode(const RpcRequest& request) {
 }
 
 /**
- * Toggles Studio Mode.
+ * Toggles Studio Mode (depending on the current state of studio mode).
  *
  * @api requests
  * @name ToggleStudioMode
