@@ -1623,7 +1623,7 @@ RpcResponse WSRequestHandler::SetAudioMonitorType(const RpcRequest& request)
 * Clients can specify `width` and `height` parameters to receive scaled pictures. Aspect ratio is
 * preserved if only one of these two parameters is specified.
 *
-* @param {String} `sourceName` Source name. Note that, since scenes are also sources, you can also provide a scene name. If an empty string is provided, the currently active scene is used.
+* @param {String (optional)} `sourceName` Source name. Note that, since scenes are also sources, you can also provide a scene name. If not provided, the currently active scene is used.
 * @param {String (optional)} `embedPictureFormat` Format of the Data URI encoded picture. Can be "png", "jpg", "jpeg" or "bmp" (or any other value supported by Qt's Image module)
 * @param {String (optional)} `saveToFilePath` Full file path (file extension included) where the captured image is to be saved. Can be in a format different from `pictureFormat`. Can be a relative path.
 * @param {String (optional)} `fileFormat` Format to save the image file as (one of the values provided in the `supported-image-export-formats` response field of `GetVersion`). If not specified, tries to guess based on file extension.
@@ -1641,25 +1641,19 @@ RpcResponse WSRequestHandler::SetAudioMonitorType(const RpcRequest& request)
 * @since 4.6.0
 */
 RpcResponse WSRequestHandler::TakeSourceScreenshot(const RpcRequest& request) {
-	if (!request.hasField("sourceName")) {
-		return request.failed("missing request parameters");
-	}
-
 	if (!request.hasField("embedPictureFormat") && !request.hasField("saveToFilePath")) {
 		return request.failed("At least 'embedPictureFormat' or 'saveToFilePath' must be specified");
 	}
 
-	const char* sourceName = obs_data_get_string(request.parameters(), "sourceName");
-
 	OBSSourceAutoRelease source;
-	if (strlen(sourceName) == 0) {
+	if (!request.hasField("sourceName")) {
 		source = obs_frontend_get_current_scene();
 	} else {
+		const char* sourceName = obs_data_get_string(request.parameters(), "sourceName");
 	 	source = obs_get_source_by_name(sourceName);
-	}
-
-	if (!source) {
-		return request.failed("specified source doesn't exist");;
+		if (!source) {
+			return request.failed("specified source doesn't exist");;
+		}
 	}
 
 	const uint32_t sourceWidth = obs_source_get_base_width(source);
