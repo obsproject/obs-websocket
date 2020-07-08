@@ -1623,7 +1623,7 @@ RpcResponse WSRequestHandler::SetAudioMonitorType(const RpcRequest& request)
 * Clients can specify `width` and `height` parameters to receive scaled pictures. Aspect ratio is
 * preserved if only one of these two parameters is specified.
 *
-* @param {String} `sourceName` Source name. Note that, since scenes are also sources, you can also provide a scene name.
+* @param {String} `sourceName` Source name. Note that, since scenes are also sources, you can also provide a scene name. If an empty string is provided, the currently active scene is used.
 * @param {String (optional)} `embedPictureFormat` Format of the Data URI encoded picture. Can be "png", "jpg", "jpeg" or "bmp" (or any other value supported by Qt's Image module)
 * @param {String (optional)} `saveToFilePath` Full file path (file extension included) where the captured image is to be saved. Can be in a format different from `pictureFormat`. Can be a relative path.
 * @param {String (optional)} `fileFormat` Format to save the image file as (one of the values provided in the `supported-image-export-formats` response field of `GetVersion`). If not specified, tries to guess based on file extension.
@@ -1650,7 +1650,14 @@ RpcResponse WSRequestHandler::TakeSourceScreenshot(const RpcRequest& request) {
 	}
 
 	const char* sourceName = obs_data_get_string(request.parameters(), "sourceName");
-	OBSSourceAutoRelease source = obs_get_source_by_name(sourceName);
+
+	OBSSourceAutoRelease source;
+	if (strlen(sourceName) == 0) {
+		source = obs_frontend_get_current_scene();
+	} else {
+	 	source = obs_get_source_by_name(sourceName);
+	}
+
 	if (!source) {
 		return request.failed("specified source doesn't exist");;
 	}
