@@ -1430,7 +1430,7 @@ void WSEvents::OnSourceFilterOrderChanged(void* param, calldata_t* data) {
  * @api events
  * @name MediaPlaying
  * @category media
- * @since 4.9.0
+ * @since unreleased
  */
 void WSEvents::OnMediaPlaying(void* param, calldata_t* data) {
 	auto self = reinterpret_cast<WSEvents*>(param);
@@ -1451,7 +1451,7 @@ void WSEvents::OnMediaPlaying(void* param, calldata_t* data) {
  * @api events
  * @name MediaPaused
  * @category media
- * @since 4.9.0
+ * @since unreleased
  */
 void WSEvents::OnMediaPaused(void* param, calldata_t* data) {
 	auto self = reinterpret_cast<WSEvents*>(param);
@@ -1472,7 +1472,7 @@ void WSEvents::OnMediaPaused(void* param, calldata_t* data) {
  * @api events
  * @name MediaRestarted
  * @category media
- * @since 4.9.0
+ * @since unreleased
  */
 void WSEvents::OnMediaRestarted(void* param, calldata_t* data) {
 	auto self = reinterpret_cast<WSEvents*>(param);
@@ -1493,7 +1493,7 @@ void WSEvents::OnMediaRestarted(void* param, calldata_t* data) {
  * @api events
  * @name MediaStopped
  * @category media
- * @since 4.9.0
+ * @since unreleased
  */
 void WSEvents::OnMediaStopped(void* param, calldata_t* data) {
 	auto self = reinterpret_cast<WSEvents*>(param);
@@ -1514,7 +1514,7 @@ void WSEvents::OnMediaStopped(void* param, calldata_t* data) {
  * @api events
  * @name MediaNext
  * @category media
- * @since 4.9.0
+ * @since unreleased
  */
 void WSEvents::OnMediaNext(void* param, calldata_t* data) {
 	auto self = reinterpret_cast<WSEvents*>(param);
@@ -1535,7 +1535,7 @@ void WSEvents::OnMediaNext(void* param, calldata_t* data) {
  * @api events
  * @name MediaPrevious
  * @category media
- * @since 4.9.0
+ * @since unreleased
  */
 void WSEvents::OnMediaPrevious(void* param, calldata_t* data) {
 	auto self = reinterpret_cast<WSEvents*>(param);
@@ -1556,7 +1556,7 @@ void WSEvents::OnMediaPrevious(void* param, calldata_t* data) {
  * @api events
  * @name MediaStarted
  * @category media
- * @since 4.9.0
+ * @since unreleased
  */
 void WSEvents::OnMediaStarted(void* param, calldata_t* data) {
 	auto self = reinterpret_cast<WSEvents*>(param);
@@ -1577,7 +1577,7 @@ void WSEvents::OnMediaStarted(void* param, calldata_t* data) {
  * @api events
  * @name MediaEnded
  * @category media
- * @since 4.9.0
+ * @since unreleased
  */
 void WSEvents::OnMediaEnded(void* param, calldata_t* data) {
 	auto self = reinterpret_cast<WSEvents*>(param);
