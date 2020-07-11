@@ -51,6 +51,26 @@ obs_bounds_type getBoundsTypeFromName(QString name) {
 	return boundTypeNames.key(name);
 }
 
+bool Utils::StringInStringList(char** strings, const char* string) {
+	size_t index = 0;
+	char* value = nullptr;
+
+	while (1) {
+		value = strings[index];
+
+		if (value == nullptr) {
+			return false;
+		}
+
+		if (strcmp(value, string) == 0) {
+			return true;
+		}
+
+		index++;
+	}
+	return false;
+}
+
 obs_data_array_t* Utils::StringListToArray(char** strings, const char* key) {
 	obs_data_array_t* list = obs_data_array_create();
 

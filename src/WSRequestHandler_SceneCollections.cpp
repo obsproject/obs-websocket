@@ -22,7 +22,13 @@ RpcResponse WSRequestHandler::SetCurrentSceneCollection(const RpcRequest& reques
 		return request.failed("invalid request parameters");
 	}
 
-	// TODO : Check if specified profile exists and if changing is allowed
+	char** collections = obs_frontend_get_profiles();
+	bool collectionExists = Utils::StringInStringList(collections, sceneCollection.toUtf8());
+	bfree(collections);
+	if (!collectionExists) {
+		return request.failed("collection does not exist");
+	}
+
 	obs_frontend_set_current_scene_collection(sceneCollection.toUtf8());
 	return request.success();
 }

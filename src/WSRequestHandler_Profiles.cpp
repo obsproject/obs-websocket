@@ -22,7 +22,13 @@ RpcResponse WSRequestHandler::SetCurrentProfile(const RpcRequest& request) {
 		return request.failed("invalid request parameters");
 	}
 
-	// TODO : check if profile exists
+	char** profiles = obs_frontend_get_profiles();
+	bool profileExists = Utils::StringInStringList(profiles, profileName.toUtf8());
+	bfree(profiles);
+	if (!profileExists) {
+		return request.failed("profile does not exist");
+	}
+
 	obs_frontend_set_current_profile(profileName.toUtf8());
 	return request.success();
 }
