@@ -596,8 +596,8 @@ RpcResponse WSRequestHandler::SetSourceSettings(const RpcRequest& request)
  *
  * @return {String} `source` Source name.
  * @return {String} `align` Text Alignment ("left", "center", "right").
- * @return {int} `bk-color` Background color.
- * @return {int} `bk-opacity` Background opacity (0-100).
+ * @return {int} `bk_color` Background color.
+ * @return {int} `bk_opacity` Background opacity (0-100).
  * @return {boolean} `chatlog` Chat log.
  * @return {int} `chatlog_lines` Chat log lines.
  * @return {int} `color` Text color.
@@ -656,8 +656,8 @@ RpcResponse WSRequestHandler::GetTextGDIPlusProperties(const RpcRequest& request
  *
  * @param {String} `source` Name of the source.
  * @param {String (optional)} `align` Text Alignment ("left", "center", "right").
- * @param {int (optional)} `bk-color` Background color.
- * @param {int (optional)} `bk-opacity` Background opacity (0-100).
+ * @param {int (optional)} `bk_color` Background color.
+ * @param {int (optional)} `bk_opacity` Background opacity (0-100).
  * @param {boolean (optional)} `chatlog` Chat log.
  * @param {int (optional)} `chatlog_lines` Chat log lines.
  * @param {int (optional)} `color` Text color.
