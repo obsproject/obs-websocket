@@ -6943,7 +6943,7 @@
         "subheads": [],
         "description": "\n\nAt least `embedPictureFormat` or `saveToFilePath` must be specified.\n\nClients can specify `width` and `height` parameters to receive scaled pictures. Aspect ratio is\npreserved if only one of these two parameters is specified.",
         "param": [
-          "{String} `sourceName` Source name. Note that, since scenes are also sources, you can also provide a scene name.",
+          "{String (optional)} `sourceName` Source name. Note that, since scenes are also sources, you can also provide a scene name. If not provided, the currently active scene is used.",
           "{String (optional)} `embedPictureFormat` Format of the Data URI encoded picture. Can be \"png\", \"jpg\", \"jpeg\" or \"bmp\" (or any other value supported by Qt's Image module)",
           "{String (optional)} `saveToFilePath` Full file path (file extension included) where the captured image is to be saved. Can be in a format different from `pictureFormat`. Can be a relative path.",
           "{String (optional)} `fileFormat` Format to save the image file as (one of the values provided in the `supported-image-export-formats` response field of `GetVersion`). If not specified, tries to guess based on file extension.",
@@ -6979,9 +6979,9 @@
         ],
         "params": [
           {
-            "type": "String",
+            "type": "String (optional)",
             "name": "sourceName",
-            "description": "Source name. Note that, since scenes are also sources, you can also provide a scene name."
+            "description": "Source name. Note that, since scenes are also sources, you can also provide a scene name. If not provided, the currently active scene is used."
           },
           {
             "type": "String (optional)",
