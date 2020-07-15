@@ -43,7 +43,7 @@ RpcResponse WSRequestHandler::GetRecordingStatus(const RpcRequest& request) {
 }
 
 /**
- * Toggle recording on or off.
+ * Toggle recording on or off (depending on the current recording state).
  *
  * @api requests
  * @name StartStopRecording

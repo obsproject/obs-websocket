@@ -23,7 +23,7 @@ RpcResponse WSRequestHandler::GetReplayBufferStatus(const RpcRequest& request) {
 }
 
 /**
-* Toggle the Replay Buffer on/off.
+* Toggle the Replay Buffer on/off (depending on the current state of the replay buffer).
 *
 * @api requests
 * @name StartStopReplayBuffer

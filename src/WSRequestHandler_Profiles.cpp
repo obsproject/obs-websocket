@@ -4,7 +4,7 @@
 
 /**
  * Set the currently active profile.
- * 
+ *
  * @param {String} `profile-name` Name of the desired profile.
  *
  * @api requests
@@ -35,7 +35,7 @@ RpcResponse WSRequestHandler::SetCurrentProfile(const RpcRequest& request) {
 
  /**
  * Get the name of the current profile.
- * 
+ *
  * @return {String} `profile-name` Name of the currently active profile.
  *
  * @api requests
@@ -55,6 +55,7 @@ RpcResponse WSRequestHandler::GetCurrentProfile(const RpcRequest& request) {
  * Get a list of available profiles.
  *
  * @return {Array<Object>} `profiles` List of available profiles.
+ * @return {String} `profiles.*.profile-name` Filter name
  *
  * @api requests
  * @name ListProfiles

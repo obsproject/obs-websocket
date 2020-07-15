@@ -57,6 +57,7 @@ RpcResponse WSRequestHandler::GetCurrentSceneCollection(const RpcRequest& reques
  * List available scene collections
  *
  * @return {Array<String>} `scene-collections` Scene collections list
+ * @return {String} `scene-collections.*.sc-name` Scene collection name
  *
  * @api requests
  * @name ListSceneCollections

@@ -51,7 +51,7 @@ QString getSourceMediaState(obs_source_t *source)
 * @api requests
 * @name PlayPauseMedia
 * @category media control
-* @since 4.9.0
+* @since unreleased
 */
 RpcResponse WSRequestHandler::PlayPauseMedia(const RpcRequest& request) {
 	if ((!request.hasField("sourceName")) || (!request.hasField("playPause"))) {
@@ -81,7 +81,7 @@ RpcResponse WSRequestHandler::PlayPauseMedia(const RpcRequest& request) {
 * @api requests
 * @name RestartMedia
 * @category media control
-* @since 4.9.0
+* @since unreleased
 */
 RpcResponse WSRequestHandler::RestartMedia(const RpcRequest& request) {
 	if (!request.hasField("sourceName")) {
@@ -110,7 +110,7 @@ RpcResponse WSRequestHandler::RestartMedia(const RpcRequest& request) {
 * @api requests
 * @name StopMedia
 * @category media control
-* @since 4.9.0
+* @since unreleased
 */
 RpcResponse WSRequestHandler::StopMedia(const RpcRequest& request) {
 	if (!request.hasField("sourceName")) {
@@ -139,7 +139,7 @@ RpcResponse WSRequestHandler::StopMedia(const RpcRequest& request) {
 * @api requests
 * @name NextMedia
 * @category media control
-* @since 4.9.0
+* @since unreleased
 */
 RpcResponse WSRequestHandler::NextMedia(const RpcRequest& request) {
 	if (!request.hasField("sourceName")) {
@@ -168,7 +168,7 @@ RpcResponse WSRequestHandler::NextMedia(const RpcRequest& request) {
 * @api requests
 * @name PreviousMedia
 * @category media control
-* @since 4.9.0
+* @since unreleased
 */
 RpcResponse WSRequestHandler::PreviousMedia(const RpcRequest& request) {
 	if (!request.hasField("sourceName")) {
@@ -200,7 +200,7 @@ RpcResponse WSRequestHandler::PreviousMedia(const RpcRequest& request) {
 * @api requests
 * @name GetMediaDuration
 * @category media control
-* @since 4.9.0
+* @since unreleased
 */
 RpcResponse WSRequestHandler::GetMediaDuration(const RpcRequest& request) {
 	if (!request.hasField("sourceName")) {
@@ -232,7 +232,7 @@ RpcResponse WSRequestHandler::GetMediaDuration(const RpcRequest& request) {
 * @api requests
 * @name GetMediaTime
 * @category media control
-* @since 4.9.0
+* @since unreleased
 */
 RpcResponse WSRequestHandler::GetMediaTime(const RpcRequest& request) {
 	if (!request.hasField("sourceName")) {
@@ -263,7 +263,7 @@ RpcResponse WSRequestHandler::GetMediaTime(const RpcRequest& request) {
 * @api requests
 * @name SetMediaTime
 * @category media control
-* @since 4.9.0
+* @since unreleased
 */
 RpcResponse WSRequestHandler::SetMediaTime(const RpcRequest& request) {
 	if (!request.hasField("sourceName") || !request.hasField("timestamp")) {
@@ -295,7 +295,7 @@ RpcResponse WSRequestHandler::SetMediaTime(const RpcRequest& request) {
 * @api requests
 * @name ScrubMedia
 * @category media control
-* @since 4.9.0
+* @since unreleased
 */
 RpcResponse WSRequestHandler::ScrubMedia(const RpcRequest& request) {
 	if (!request.hasField("sourceName") || !request.hasField("timeOffset")) {
@@ -332,7 +332,7 @@ RpcResponse WSRequestHandler::ScrubMedia(const RpcRequest& request) {
 * @api requests
 * @name GetMediaState
 * @category media control
-* @since 4.9.0
+* @since unreleased
 */
 RpcResponse WSRequestHandler::GetMediaState(const RpcRequest& request) {
 	if (!request.hasField("sourceName")) {
@@ -366,7 +366,7 @@ RpcResponse WSRequestHandler::GetMediaState(const RpcRequest& request) {
 * @api requests
 * @name GetMediaSourcesList
 * @category sources
-* @since 4.9.0
+* @since unreleased
 */
 RpcResponse WSRequestHandler::GetMediaSourcesList(const RpcRequest& request)
 {
