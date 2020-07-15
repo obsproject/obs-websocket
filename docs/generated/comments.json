@@ -561,7 +561,7 @@
       },
       {
         "subheads": [],
-        "description": "The scene list has been modified.\nScenes have been added, removed, or renamed.",
+        "description": "\n\nNote: This event is not fired when the scenes are reordered.",
         "api": "events",
         "name": "ScenesChanged",
         "category": "scenes",
@@ -588,7 +588,7 @@
           "level": 2,
           "text": "ScenesChanged"
         },
-        "lead": "",
+        "lead": "The scene list has been modified. Scenes have been added, removed, or renamed.",
         "type": "class",
         "examples": []
       },
@@ -1190,7 +1190,7 @@
       },
       {
         "subheads": [],
-        "description": "Emit every 2 seconds.",
+        "description": "Emitted every 2 seconds when stream is active.",
         "return": [
           "{boolean} `streaming` Current streaming state.",
           "{boolean} `recording` Current recording state.",
@@ -1730,6 +1730,7 @@
         "api": "events",
         "name": "Heartbeat",
         "category": "general",
+        "since": "v0.3",
         "returns": [
           {
             "type": "boolean",
@@ -1804,6 +1805,12 @@
             "description": "general"
           }
         ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "v0.3"
+          }
+        ],
         "heading": {
           "level": 2,
           "text": "Heartbeat"
@@ -1814,7 +1821,7 @@
       },
       {
         "subheads": [],
-        "description": "A custom broadcast message was received",
+        "description": "A custom broadcast message, sent by the server, requested by one of the websocket clients.",
         "return": [
           "{String} `realm` Identifier provided by the sender",
           "{Object} `data` User-defined data"
@@ -2574,7 +2581,7 @@
         "api": "events",
         "name": "MediaPlaying",
         "category": "media",
-        "since": "4.9.0",
+        "since": "unreleased",
         "returns": [
           {
             "type": "String",
@@ -2602,7 +2609,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "4.9.0"
+            "description": "unreleased"
           }
         ],
         "heading": {
@@ -2623,7 +2630,7 @@
         "api": "events",
         "name": "MediaPaused",
         "category": "media",
-        "since": "4.9.0",
+        "since": "unreleased",
         "returns": [
           {
             "type": "String",
@@ -2651,7 +2658,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "4.9.0"
+            "description": "unreleased"
           }
         ],
         "heading": {
@@ -2672,7 +2679,7 @@
         "api": "events",
         "name": "MediaRestarted",
         "category": "media",
-        "since": "4.9.0",
+        "since": "unreleased",
         "returns": [
           {
             "type": "String",
@@ -2700,7 +2707,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "4.9.0"
+            "description": "unreleased"
           }
         ],
         "heading": {
@@ -2721,7 +2728,7 @@
         "api": "events",
         "name": "MediaStopped",
         "category": "media",
-        "since": "4.9.0",
+        "since": "unreleased",
         "returns": [
           {
             "type": "String",
@@ -2749,7 +2756,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "4.9.0"
+            "description": "unreleased"
           }
         ],
         "heading": {
@@ -2770,7 +2777,7 @@
         "api": "events",
         "name": "MediaNext",
         "category": "media",
-        "since": "4.9.0",
+        "since": "unreleased",
         "returns": [
           {
             "type": "String",
@@ -2798,7 +2805,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "4.9.0"
+            "description": "unreleased"
           }
         ],
         "heading": {
@@ -2819,7 +2826,7 @@
         "api": "events",
         "name": "MediaPrevious",
         "category": "media",
-        "since": "4.9.0",
+        "since": "unreleased",
         "returns": [
           {
             "type": "String",
@@ -2847,7 +2854,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "4.9.0"
+            "description": "unreleased"
           }
         ],
         "heading": {
@@ -2868,7 +2875,7 @@
         "api": "events",
         "name": "MediaStarted",
         "category": "media",
-        "since": "4.9.0",
+        "since": "unreleased",
         "returns": [
           {
             "type": "String",
@@ -2896,7 +2903,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "4.9.0"
+            "description": "unreleased"
           }
         ],
         "heading": {
@@ -2917,7 +2924,7 @@
         "api": "events",
         "name": "MediaEnded",
         "category": "media",
-        "since": "4.9.0",
+        "since": "unreleased",
         "returns": [
           {
             "type": "String",
@@ -2945,7 +2952,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "4.9.0"
+            "description": "unreleased"
           }
         ],
         "heading": {
@@ -2960,7 +2967,7 @@
     "scene items": [
       {
         "subheads": [],
-        "description": "Scene items have been reordered.",
+        "description": "Scene items within a scene have been reordered.",
         "return": [
           "{String} `scene-name` Name of the scene where items have been reordered.",
           "{Array<Object>} `scene-items` Ordered list of scene items",
@@ -3021,7 +3028,7 @@
       },
       {
         "subheads": [],
-        "description": "An item has been added to the current scene.",
+        "description": "A scene item has been added to a scene.",
         "return": [
           "{String} `scene-name` Name of the scene.",
           "{String} `item-name` Name of the item added to the scene.",
@@ -3076,7 +3083,7 @@
       },
       {
         "subheads": [],
-        "description": "An item has been removed from the current scene.",
+        "description": "A scene item has been removed from a scene.",
         "return": [
           "{String} `scene-name` Name of the scene.",
           "{String} `item-name` Name of the item removed from the scene.",
@@ -3131,7 +3138,7 @@
       },
       {
         "subheads": [],
-        "description": "An item's visibility has been toggled.",
+        "description": "A scene item's visibility has been toggled.",
         "return": [
           "{String} `scene-name` Name of the scene.",
           "{String} `item-name` Name of the item in the scene.",
@@ -3192,7 +3199,7 @@
       },
       {
         "subheads": [],
-        "description": "An item's locked status has been toggled.",
+        "description": "A scene item's locked status has been toggled.",
         "return": [
           "{String} `scene-name` Name of the scene.",
           "{String} `item-name` Name of the item in the scene.",
@@ -3253,7 +3260,7 @@
       },
       {
         "subheads": [],
-        "description": "An item's transform has been changed.",
+        "description": "A scene item's transform has been changed.",
         "return": [
           "{String} `scene-name` Name of the scene.",
           "{String} `item-name` Name of the item in the scene.",
@@ -3689,6 +3696,7 @@
         "name": "SetHeartbeat",
         "category": "general",
         "since": "4.3.0",
+        "deprecated": "Since 4.9.0. Please poll the appropriate data using requests. Will be removed in v5.0.0.",
         "params": [
           {
             "type": "boolean",
@@ -3712,6 +3720,12 @@
           {
             "name": "",
             "description": "4.3.0"
+          }
+        ],
+        "deprecateds": [
+          {
+            "name": "",
+            "description": "Since 4.9.0. Please poll the appropriate data using requests. Will be removed in v5.0.0."
           }
         ],
         "heading": {
@@ -3807,7 +3821,7 @@
       {
         "subheads": [],
         "description": "Get OBS stats (almost the same info as provided in OBS' stats window)",
-        "return": "{OBSStats} `stats` OBS stats",
+        "return": "{OBSStats} `stats` [OBS stats](#obsstats)",
         "api": "requests",
         "name": "GetStats",
         "category": "general",
@@ -3816,7 +3830,7 @@
           {
             "type": "OBSStats",
             "name": "stats",
-            "description": "OBS stats"
+            "description": "[OBS stats](#obsstats)"
           }
         ],
         "names": [
@@ -3989,9 +4003,9 @@
         "subheads": [],
         "description": "Open a projector window or create a projector on a monitor. Requires OBS v24.0.4 or newer.",
         "param": [
-          "{String (Optional)} `type` Type of projector: Preview (default), Source, Scene, StudioProgram, or Multiview (case insensitive).",
+          "{String (Optional)} `type` Type of projector: `Preview` (default), `Source`, `Scene`, `StudioProgram`, or `Multiview` (case insensitive).",
           "{int (Optional)} `monitor` Monitor to open the projector on. If -1 or omitted, opens a window.",
-          "{String (Optional)} `geometry` Size and position of the projector window (only if monitor is -1). Encoded in Base64 using Qt's geometry encoding (https://doc.qt.io/qt-5/qwidget.html#saveGeometry). Corresponds to OBS's saved projectors.",
+          "{String (Optional)} `geometry` Size and position of the projector window (only if monitor is -1). Encoded in Base64 using [Qt's geometry encoding](https://doc.qt.io/qt-5/qwidget.html#saveGeometry). Corresponds to OBS's saved projectors.",
           "{String (Optional)} `name` Name of the source or scene to be displayed (ignored for other projector types)."
         ],
         "api": "requests",
@@ -4002,7 +4016,7 @@
           {
             "type": "String (Optional)",
             "name": "type",
-            "description": "Type of projector: Preview (default), Source, Scene, StudioProgram, or Multiview (case insensitive)."
+            "description": "Type of projector: `Preview` (default), `Source`, `Scene`, `StudioProgram`, or `Multiview` (case insensitive)."
           },
           {
             "type": "int (Optional)",
@@ -4012,7 +4026,7 @@
           {
             "type": "String (Optional)",
             "name": "geometry",
-            "description": "Size and position of the projector window (only if monitor is -1). Encoded in Base64 using Qt's geometry encoding (https://doc.qt.io/qt-5/qwidget.html#saveGeometry). Corresponds to OBS's saved projectors."
+            "description": "Size and position of the projector window (only if monitor is -1). Encoded in Base64 using [Qt's geometry encoding](https://doc.qt.io/qt-5/qwidget.html#saveGeometry). Corresponds to OBS's saved projectors."
           },
           {
             "type": "String (Optional)",
@@ -4058,7 +4072,7 @@
         "api": "requests",
         "name": "PlayPauseMedia",
         "category": "media control",
-        "since": "4.9.0",
+        "since": "unreleased",
         "params": [
           {
             "type": "String",
@@ -4086,7 +4100,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "4.9.0"
+            "description": "unreleased"
           }
         ],
         "heading": {
@@ -4104,7 +4118,7 @@
         "api": "requests",
         "name": "RestartMedia",
         "category": "media control",
-        "since": "4.9.0",
+        "since": "unreleased",
         "params": [
           {
             "type": "String",
@@ -4127,7 +4141,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "4.9.0"
+            "description": "unreleased"
           }
         ],
         "heading": {
@@ -4145,7 +4159,7 @@
         "api": "requests",
         "name": "StopMedia",
         "category": "media control",
-        "since": "4.9.0",
+        "since": "unreleased",
         "params": [
           {
             "type": "String",
@@ -4168,7 +4182,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "4.9.0"
+            "description": "unreleased"
           }
         ],
         "heading": {
@@ -4186,7 +4200,7 @@
         "api": "requests",
         "name": "NextMedia",
         "category": "media control",
-        "since": "4.9.0",
+        "since": "unreleased",
         "params": [
           {
             "type": "String",
@@ -4209,7 +4223,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "4.9.0"
+            "description": "unreleased"
           }
         ],
         "heading": {
@@ -4227,7 +4241,7 @@
         "api": "requests",
         "name": "PreviousMedia",
         "category": "media control",
-        "since": "4.9.0",
+        "since": "unreleased",
         "params": [
           {
             "type": "String",
@@ -4250,7 +4264,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "4.9.0"
+            "description": "unreleased"
           }
         ],
         "heading": {
@@ -4269,7 +4283,7 @@
         "api": "requests",
         "name": "GetMediaDuration",
         "category": "media control",
-        "since": "4.9.0",
+        "since": "unreleased",
         "returns": [
           {
             "type": "int",
@@ -4299,7 +4313,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "4.9.0"
+            "description": "unreleased"
           }
         ],
         "heading": {
@@ -4318,7 +4332,7 @@
         "api": "requests",
         "name": "GetMediaTime",
         "category": "media control",
-        "since": "4.9.0",
+        "since": "unreleased",
         "returns": [
           {
             "type": "int",
@@ -4348,7 +4362,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "4.9.0"
+            "description": "unreleased"
           }
         ],
         "heading": {
@@ -4369,7 +4383,7 @@
         "api": "requests",
         "name": "SetMediaTime",
         "category": "media control",
-        "since": "4.9.0",
+        "since": "unreleased",
         "params": [
           {
             "type": "String",
@@ -4397,7 +4411,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "4.9.0"
+            "description": "unreleased"
           }
         ],
         "heading": {
@@ -4418,7 +4432,7 @@
         "api": "requests",
         "name": "ScrubMedia",
         "category": "media control",
-        "since": "4.9.0",
+        "since": "unreleased",
         "params": [
           {
             "type": "String",
@@ -4446,7 +4460,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "4.9.0"
+            "description": "unreleased"
           }
         ],
         "heading": {
@@ -4465,7 +4479,7 @@
         "api": "requests",
         "name": "GetMediaState",
         "category": "media control",
-        "since": "4.9.0",
+        "since": "unreleased",
         "returns": [
           {
             "type": "String",
@@ -4495,7 +4509,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "4.9.0"
+            "description": "unreleased"
           }
         ],
         "heading": {
@@ -4520,7 +4534,7 @@
         "api": "requests",
         "name": "GetMediaSourcesList",
         "category": "sources",
-        "since": "4.9.0",
+        "since": "unreleased",
         "returns": [
           {
             "type": "Array<Object>",
@@ -4558,7 +4572,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "4.9.0"
+            "description": "unreleased"
           }
         ],
         "heading": {
@@ -4575,7 +4589,7 @@
         "return": [
           "{Array<Object>} `sources` Array of sources",
           "{String} `sources.*.name` Unique source name",
-          "{String} `sources.*.typeId` Non-unique source internal type (a.k.a type id)",
+          "{String} `sources.*.typeId` Non-unique source internal type (a.k.a kind)",
           "{String} `sources.*.type` Source type. Value is one of the following: \"input\", \"filter\", \"transition\", \"scene\" or \"unknown\""
         ],
         "api": "requests",
@@ -4596,7 +4610,7 @@
           {
             "type": "String",
             "name": "sources.*.typeId",
-            "description": "Non-unique source internal type (a.k.a type id)"
+            "description": "Non-unique source internal type (a.k.a kind)"
           },
           {
             "type": "String",
@@ -5069,7 +5083,7 @@
       },
       {
         "subheads": [],
-        "description": "\n\nNote: If the new name already exists as a source, OBS will automatically modify the name to not interfere.",
+        "description": "\n\nNote: If the new name already exists as a source, obs-websocket will return an error.",
         "param": [
           "{String} `sourceName` Source name.",
           "{String} `newName` New source name."
@@ -5377,8 +5391,8 @@
         "return": [
           "{String} `source` Source name.",
           "{String} `align` Text Alignment (\"left\", \"center\", \"right\").",
-          "{int} `bk-color` Background color.",
-          "{int} `bk-opacity` Background opacity (0-100).",
+          "{int} `bk_color` Background color.",
+          "{int} `bk_opacity` Background opacity (0-100).",
           "{boolean} `chatlog` Chat log.",
           "{int} `chatlog_lines` Chat log lines.",
           "{int} `color` Text color.",
@@ -5421,12 +5435,12 @@
           },
           {
             "type": "int",
-            "name": "bk-color",
+            "name": "bk_color",
             "description": "Background color."
           },
           {
             "type": "int",
-            "name": "bk-opacity",
+            "name": "bk_opacity",
             "description": "Background opacity (0-100)."
           },
           {
@@ -5589,8 +5603,8 @@
         "param": [
           "{String} `source` Name of the source.",
           "{String (optional)} `align` Text Alignment (\"left\", \"center\", \"right\").",
-          "{int (optional)} `bk-color` Background color.",
-          "{int (optional)} `bk-opacity` Background opacity (0-100).",
+          "{int (optional)} `bk_color` Background color.",
+          "{int (optional)} `bk_opacity` Background opacity (0-100).",
           "{boolean (optional)} `chatlog` Chat log.",
           "{int (optional)} `chatlog_lines` Chat log lines.",
           "{int (optional)} `color` Text color.",
@@ -5634,12 +5648,12 @@
           },
           {
             "type": "int (optional)",
-            "name": "bk-color",
+            "name": "bk_color",
             "description": "Background color."
           },
           {
             "type": "int (optional)",
-            "name": "bk-opacity",
+            "name": "bk_opacity",
             "description": "Background opacity (0-100)."
           },
           {
@@ -6087,7 +6101,7 @@
         "name": "GetBrowserSourceProperties",
         "category": "sources",
         "since": "4.1.0",
-        "deprecated": "Since 4.8.0. Prefer the use of GetSourceSettings.",
+        "deprecated": "Since 4.8.0. Prefer the use of GetSourceSettings. Will be removed in v5.0.0",
         "returns": [
           {
             "type": "String",
@@ -6163,7 +6177,7 @@
         "deprecateds": [
           {
             "name": "",
-            "description": "Since 4.8.0. Prefer the use of GetSourceSettings."
+            "description": "Since 4.8.0. Prefer the use of GetSourceSettings. Will be removed in v5.0.0"
           }
         ],
         "heading": {
@@ -6192,7 +6206,7 @@
         "api": "requests",
         "name": "SetBrowserSourceProperties",
         "category": "sources",
-        "deprecated": "Since 4.8.0. Prefer the use of SetSourceSettings.",
+        "deprecated": "Since 4.8.0. Prefer the use of SetSourceSettings. Will be removed in v5.0.0",
         "since": "4.1.0",
         "params": [
           {
@@ -6261,7 +6275,7 @@
         "deprecateds": [
           {
             "name": "",
-            "description": "Since 4.8.0. Prefer the use of SetSourceSettings."
+            "description": "Since 4.8.0. Prefer the use of SetSourceSettings. Will be removed in v5.0.0"
           }
         ],
         "sinces": [
@@ -7120,7 +7134,7 @@
       },
       {
         "subheads": [],
-        "description": "Start an output",
+        "description": "\n\nNote: Controlling outputs is an experimental feature of obs-websocket. Some plugins which add outputs to OBS may not function properly when they are controlled in this way.",
         "param": "{String} `outputName` Output name",
         "api": "requests",
         "name": "StartOutput",
@@ -7155,13 +7169,13 @@
           "level": 2,
           "text": "StartOutput"
         },
-        "lead": "",
+        "lead": "Start an output",
         "type": "class",
         "examples": []
       },
       {
         "subheads": [],
-        "description": "Stop an output",
+        "description": "\n\nNote: Controlling outputs is an experimental feature of obs-websocket. Some plugins which add outputs to OBS may not function properly when they are controlled in this way.",
         "param": [
           "{String} `outputName` Output name",
           "{boolean (optional)} `force` Force stop (default: false)"
@@ -7204,7 +7218,7 @@
           "level": 2,
           "text": "StopOutput"
         },
-        "lead": "",
+        "lead": "Stop an output",
         "type": "class",
         "examples": []
       }
@@ -7295,7 +7309,10 @@
       {
         "subheads": [],
         "description": "Get a list of available profiles.",
-        "return": "{Array<Object>} `profiles` List of available profiles.",
+        "return": [
+          "{Array<Object>} `profiles` List of available profiles.",
+          "{String} `profiles.*.profile-name` Filter name"
+        ],
         "api": "requests",
         "name": "ListProfiles",
         "category": "profiles",
@@ -7305,6 +7322,11 @@
             "type": "Array<Object>",
             "name": "profiles",
             "description": "List of available profiles."
+          },
+          {
+            "type": "String",
+            "name": "profiles.*.profile-name",
+            "description": "Filter name"
           }
         ],
         "names": [
@@ -7392,7 +7414,7 @@
       },
       {
         "subheads": [],
-        "description": "Toggle recording on or off.",
+        "description": "Toggle recording on or off (depending on the current recording state).",
         "api": "requests",
         "name": "StartStopRecording",
         "category": "recording",
@@ -7682,7 +7704,7 @@
       },
       {
         "subheads": [],
-        "description": "Toggle the Replay Buffer on/off.",
+        "description": "Toggle the Replay Buffer on/off (depending on the current state of the replay buffer).",
         "api": "requests",
         "name": "StartStopReplayBuffer",
         "category": "replay buffer",
@@ -7899,7 +7921,10 @@
       {
         "subheads": [],
         "description": "List available scene collections",
-        "return": "{Array<String>} `scene-collections` Scene collections list",
+        "return": [
+          "{Array<String>} `scene-collections` Scene collections list",
+          "{String} `scene-collections.*.sc-name` Scene collection name"
+        ],
         "api": "requests",
         "name": "ListSceneCollections",
         "category": "scene collections",
@@ -7909,6 +7934,11 @@
             "type": "Array<String>",
             "name": "scene-collections",
             "description": "Scene collections list"
+          },
+          {
+            "type": "String",
+            "name": "scene-collections.*.sc-name",
+            "description": "Scene collection name"
           }
         ],
         "names": [
@@ -8465,7 +8495,6 @@
         "name": "SetSceneItemRender",
         "category": "scene items",
         "since": "0.3",
-        "deprecated": "Since 4.3.0. Prefer the use of SetSceneItemProperties.",
         "params": [
           {
             "type": "String (optional)",
@@ -8499,12 +8528,6 @@
           {
             "name": "",
             "description": "0.3"
-          }
-        ],
-        "deprecateds": [
-          {
-            "name": "",
-            "description": "Since 4.3.0. Prefer the use of SetSceneItemProperties."
           }
         ],
         "heading": {
@@ -9144,8 +9167,8 @@
         "param": [
           "{String (optional)} `scene` Name of the scene to reorder (defaults to current).",
           "{Array<Scene>} `items` Ordered list of objects with name and/or id specified. Id preferred due to uniqueness per scene",
-          "{int (optional)} `items[].id` Id of a specific scene item. Unique on a scene by scene basis.",
-          "{String (optional)} `items[].name` Name of a scene item. Sufficiently unique if no scene items share sources within the scene."
+          "{int (optional)} `items.*.id` Id of a specific scene item. Unique on a scene by scene basis.",
+          "{String (optional)} `items.*.name` Name of a scene item. Sufficiently unique if no scene items share sources within the scene."
         ],
         "api": "requests",
         "name": "ReorderSceneItems",
@@ -9164,12 +9187,12 @@
           },
           {
             "type": "int (optional)",
-            "name": "items[].id",
+            "name": "items.*.id",
             "description": "Id of a specific scene item. Unique on a scene by scene basis."
           },
           {
             "type": "String (optional)",
-            "name": "items[].name",
+            "name": "items.*.name",
             "description": "Name of a scene item. Sufficiently unique if no scene items share sources within the scene."
           }
         ],
@@ -9210,7 +9233,7 @@
         "api": "requests",
         "name": "SetSceneTransitionOverride",
         "category": "scenes",
-        "since": "4.9.0",
+        "since": "unreleased",
         "params": [
           {
             "type": "String",
@@ -9243,7 +9266,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "4.9.0"
+            "description": "unreleased"
           }
         ],
         "heading": {
@@ -9261,7 +9284,7 @@
         "api": "requests",
         "name": "RemoveSceneTransitionOverride",
         "category": "scenes",
-        "since": "4.9.0",
+        "since": "unreleased",
         "params": [
           {
             "type": "String",
@@ -9284,7 +9307,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "4.9.0"
+            "description": "unreleased"
           }
         ],
         "heading": {
@@ -9306,7 +9329,7 @@
         "api": "requests",
         "name": "GetSceneTransitionOverride",
         "category": "scenes",
-        "since": "4.9.0",
+        "since": "unreleased",
         "returns": [
           {
             "type": "String",
@@ -9341,7 +9364,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "4.9.0"
+            "description": "unreleased"
           }
         ],
         "heading": {
@@ -9423,7 +9446,7 @@
       },
       {
         "subheads": [],
-        "description": "Toggle streaming on or off.",
+        "description": "Toggle streaming on or off (depending on the current stream state).",
         "api": "requests",
         "name": "StartStopStreaming",
         "category": "streaming",
@@ -9777,7 +9800,7 @@
       },
       {
         "subheads": [],
-        "description": "Send the provided text as embedded CEA-608 caption data.\nAs of OBS Studio 23.1, captions are not yet available on Linux.",
+        "description": "Send the provided text as embedded CEA-608 caption data.",
         "param": "{String} `text` Captions text",
         "api": "requests",
         "name": "SendCaptions",
@@ -10072,7 +10095,7 @@
       },
       {
         "subheads": [],
-        "description": "Toggles Studio Mode.",
+        "description": "Toggles Studio Mode (depending on the current state of studio mode).",
         "api": "requests",
         "name": "ToggleStudioMode",
         "category": "studio mode",

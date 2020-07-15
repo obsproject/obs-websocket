@@ -4,7 +4,7 @@
 
 # General Introduction
 Messages are exchanged between the client and the server as JSON objects.
-This protocol is based on the original OBS Remote protocol created by Bill Hamilton, with new commands specific to OBS Studio.
+This protocol is based on the original OBS Remote protocol created by Bill Hamilton, with new commands specific to OBS Studio. As of v5.0.0, backwards compatability with the protocol will not be kept.
 
 # Authentication
 `obs-websocket` uses SHA256 to transmit credentials.
@@ -34,6 +34,8 @@ auth_response_string = secret + challenge
 auth_response_hash = binary_sha256(auth_response_string)
 auth_response = base64_encode(auth_response_hash)
 ```
+
+You can also refer to any of the client libraries listed on the [README](README.md) for examples of how to authenticate.
 
 
 
@@ -380,8 +382,9 @@ Indicates a scene change.
 
 - Added in v0.3
 
-The scene list has been modified.
-Scenes have been added, removed, or renamed.
+
+
+Note: This event is not fired when the scenes are reordered.
 
 **Response Items:**
 
@@ -616,7 +619,7 @@ _No additional response items._
 
 - Added in v0.3
 
-Emit every 2 seconds.
+Emitted every 2 seconds when stream is active.
 
 **Response Items:**
 
@@ -799,7 +802,7 @@ _No additional response items._
 ### Heartbeat
 
 
-- Added in v
+- Added in vv0.3
 
 Emitted every 2 seconds after enabling it by calling SetHeartbeat.
 
@@ -828,7 +831,7 @@ Emitted every 2 seconds after enabling it by calling SetHeartbeat.
 
 - Added in v4.7.0
 
-A custom broadcast message was received
+A custom broadcast message, sent by the server, requested by one of the websocket clients.
 
 **Response Items:**
 
@@ -1079,7 +1082,7 @@ Filters in a source have been reordered.
 ### MediaPlaying
 
 
-- Added in v4.9.0
+- Unreleased
 
 
 
@@ -1098,7 +1101,7 @@ Note: This event is only emitted when something actively controls the media/VLC 
 ### MediaPaused
 
 
-- Added in v4.9.0
+- Unreleased
 
 
 
@@ -1117,7 +1120,7 @@ Note: This event is only emitted when something actively controls the media/VLC 
 ### MediaRestarted
 
 
-- Added in v4.9.0
+- Unreleased
 
 
 
@@ -1136,7 +1139,7 @@ Note: This event is only emitted when something actively controls the media/VLC 
 ### MediaStopped
 
 
-- Added in v4.9.0
+- Unreleased
 
 
 
@@ -1155,7 +1158,7 @@ Note: This event is only emitted when something actively controls the media/VLC 
 ### MediaNext
 
 
-- Added in v4.9.0
+- Unreleased
 
 
 
@@ -1174,7 +1177,7 @@ Note: This event is only emitted when something actively controls the media/VLC 
 ### MediaPrevious
 
 
-- Added in v4.9.0
+- Unreleased
 
 
 
@@ -1193,7 +1196,7 @@ Note: This event is only emitted when something actively controls the media/VLC 
 ### MediaStarted
 
 
-- Added in v4.9.0
+- Unreleased
 
 
 
@@ -1212,7 +1215,7 @@ Note: These events are emitted by the OBS sources themselves. For example when t
 ### MediaEnded
 
 
-- Added in v4.9.0
+- Unreleased
 
 
 
@@ -1235,7 +1238,7 @@ Note: These events are emitted by the OBS sources themselves. For example when t
 
 - Added in v4.0.0
 
-Scene items have been reordered.
+Scene items within a scene have been reordered.
 
 **Response Items:**
 
@@ -1254,7 +1257,7 @@ Scene items have been reordered.
 
 - Added in v4.0.0
 
-An item has been added to the current scene.
+A scene item has been added to a scene.
 
 **Response Items:**
 
@@ -1272,7 +1275,7 @@ An item has been added to the current scene.
 
 - Added in v4.0.0
 
-An item has been removed from the current scene.
+A scene item has been removed from a scene.
 
 **Response Items:**
 
@@ -1290,7 +1293,7 @@ An item has been removed from the current scene.
 
 - Added in v4.0.0
 
-An item's visibility has been toggled.
+A scene item's visibility has been toggled.
 
 **Response Items:**
 
@@ -1309,7 +1312,7 @@ An item's visibility has been toggled.
 
 - Added in v4.8.0
 
-An item's locked status has been toggled.
+A scene item's locked status has been toggled.
 
 **Response Items:**
 
@@ -1328,7 +1331,7 @@ An item's locked status has been toggled.
 
 - Added in v4.6.0
 
-An item's transform has been changed.
+A scene item's transform has been changed.
 
 **Response Items:**
 
@@ -1424,7 +1427,7 @@ Requests are sent by the client and require at least the following two fields:
 Once a request is sent, the server will return a JSON response with at least the following fields:
 - `message-id` _String_: The client defined identifier specified in the request.
 - `status` _String_: Response status, will be one of the following: `ok`, `error`
-- `error` _String_: An error message accompanying an `error` status.
+- `error` _String (Optional)_: An error message accompanying an `error` status.
 
 Additional information may be required/returned depending on the request type. See below for more information.
 
@@ -1500,6 +1503,7 @@ _No additional response items._
 
 ### SetHeartbeat
 
+- **⚠️ Deprecated. Since 4.9.0. Please poll the appropriate data using requests. Will be removed in v5.0.0. ⚠️**
 
 - Added in v4.3.0
 
@@ -1573,7 +1577,7 @@ _No specified parameters._
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
-| `stats` | _OBSStats_ | OBS stats |
+| `stats` | _OBSStats_ | [OBS stats](#obsstats) |
 
 
 ---
@@ -1638,9 +1642,9 @@ Open a projector window or create a projector on a monitor. Requires OBS v24.0.4
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
-| `type` | _String (Optional)_ | Type of projector: Preview (default), Source, Scene, StudioProgram, or Multiview (case insensitive). |
+| `type` | _String (Optional)_ | Type of projector: `Preview` (default), `Source`, `Scene`, `StudioProgram`, or `Multiview` (case insensitive). |
 | `monitor` | _int (Optional)_ | Monitor to open the projector on. If -1 or omitted, opens a window. |
-| `geometry` | _String (Optional)_ | Size and position of the projector window (only if monitor is -1). Encoded in Base64 using Qt's geometry encoding (https://doc.qt.io/qt-5/qwidget.html#saveGeometry). Corresponds to OBS's saved projectors. |
+| `geometry` | _String (Optional)_ | Size and position of the projector window (only if monitor is -1). Encoded in Base64 using [Qt's geometry encoding](https://doc.qt.io/qt-5/qwidget.html#saveGeometry). Corresponds to OBS's saved projectors. |
 | `name` | _String (Optional)_ | Name of the source or scene to be displayed (ignored for other projector types). |
 
 
@@ -1655,7 +1659,7 @@ _No additional response items._
 ### PlayPauseMedia
 
 
-- Added in v4.9.0
+- Unreleased
 
 Pause or play a media source. Supports ffmpeg and vlc media sources (as of OBS v25.0.8)
 
@@ -1676,7 +1680,7 @@ _No additional response items._
 ### RestartMedia
 
 
-- Added in v4.9.0
+- Unreleased
 
 Restart a media source. Supports ffmpeg and vlc media sources (as of OBS v25.0.8)
 
@@ -1696,7 +1700,7 @@ _No additional response items._
 ### StopMedia
 
 
-- Added in v4.9.0
+- Unreleased
 
 Stop a media source. Supports ffmpeg and vlc media sources (as of OBS v25.0.8)
 
@@ -1716,7 +1720,7 @@ _No additional response items._
 ### NextMedia
 
 
-- Added in v4.9.0
+- Unreleased
 
 Skip to the next media item in the playlist. Supports only vlc media source (as of OBS v25.0.8)
 
@@ -1736,7 +1740,7 @@ _No additional response items._
 ### PreviousMedia
 
 
-- Added in v4.9.0
+- Unreleased
 
 Go to the previous media item in the playlist. Supports only vlc media source (as of OBS v25.0.8)
 
@@ -1756,7 +1760,7 @@ _No additional response items._
 ### GetMediaDuration
 
 
-- Added in v4.9.0
+- Unreleased
 
 Get the length of media in milliseconds. Supports ffmpeg and vlc media sources (as of OBS v25.0.8)
 Note: For some reason, for the first 5 or so seconds that the media is playing, the total duration can be off by upwards of 50ms.
@@ -1780,7 +1784,7 @@ Note: For some reason, for the first 5 or so seconds that the media is playing, 
 ### GetMediaTime
 
 
-- Added in v4.9.0
+- Unreleased
 
 Get the current timestamp of media in milliseconds. Supports ffmpeg and vlc media sources (as of OBS v25.0.8)
 
@@ -1803,7 +1807,7 @@ Get the current timestamp of media in milliseconds. Supports ffmpeg and vlc medi
 ### SetMediaTime
 
 
-- Added in v4.9.0
+- Unreleased
 
 Set the timestamp of a media source. Supports ffmpeg and vlc media sources (as of OBS v25.0.8)
 
@@ -1824,7 +1828,7 @@ _No additional response items._
 ### ScrubMedia
 
 
-- Added in v4.9.0
+- Unreleased
 
 Scrub media using a supplied offset. Supports ffmpeg and vlc media sources (as of OBS v25.0.8)
 Note: Due to processing/network delays, this request is not perfect. The processing rate of this request has also not been tested.
@@ -1846,7 +1850,7 @@ _No additional response items._
 ### GetMediaState
 
 
-- Added in v4.9.0
+- Unreleased
 
 Get the current playing state of a media source. Supports ffmpeg and vlc media sources (as of OBS v25.0.8)
 
@@ -1871,7 +1875,7 @@ Get the current playing state of a media source. Supports ffmpeg and vlc media s
 ### GetMediaSourcesList
 
 
-- Added in v4.9.0
+- Unreleased
 
 List the media state of all media sources (vlc and media source)
 
@@ -1908,7 +1912,7 @@ _No specified parameters._
 | ---- | :---: | ------------|
 | `sources` | _Array&lt;Object&gt;_ | Array of sources |
 | `sources.*.name` | _String_ | Unique source name |
-| `sources.*.typeId` | _String_ | Non-unique source internal type (a.k.a type id) |
+| `sources.*.typeId` | _String_ | Non-unique source internal type (a.k.a kind) |
 | `sources.*.type` | _String_ | Source type. Value is one of the following: "input", "filter", "transition", "scene" or "unknown" |
 
 
@@ -2089,7 +2093,7 @@ Get the audio's active status of a specified source.
 
 
 
-Note: If the new name already exists as a source, OBS will automatically modify the name to not interfere.
+Note: If the new name already exists as a source, obs-websocket will return an error.
 
 **Request Fields:**
 
@@ -2223,8 +2227,8 @@ Get the current properties of a Text GDI Plus source.
 | ---- | :---: | ------------|
 | `source` | _String_ | Source name. |
 | `align` | _String_ | Text Alignment ("left", "center", "right"). |
-| `bk-color` | _int_ | Background color. |
-| `bk-opacity` | _int_ | Background opacity (0-100). |
+| `bk_color` | _int_ | Background color. |
+| `bk_opacity` | _int_ | Background opacity (0-100). |
 | `chatlog` | _boolean_ | Chat log. |
 | `chatlog_lines` | _int_ | Chat log lines. |
 | `color` | _int_ | Text color. |
@@ -2266,8 +2270,8 @@ Set the current properties of a Text GDI Plus source.
 | ---- | :---: | ------------|
 | `source` | _String_ | Name of the source. |
 | `align` | _String (optional)_ | Text Alignment ("left", "center", "right"). |
-| `bk-color` | _int (optional)_ | Background color. |
-| `bk-opacity` | _int (optional)_ | Background opacity (0-100). |
+| `bk_color` | _int (optional)_ | Background color. |
+| `bk_opacity` | _int (optional)_ | Background opacity (0-100). |
 | `chatlog` | _boolean (optional)_ | Chat log. |
 | `chatlog_lines` | _int (optional)_ | Chat log lines. |
 | `color` | _int (optional)_ | Text color. |
@@ -2376,7 +2380,7 @@ _No additional response items._
 
 ### GetBrowserSourceProperties
 
-- **⚠️ Deprecated. Since 4.8.0. Prefer the use of GetSourceSettings. ⚠️**
+- **⚠️ Deprecated. Since 4.8.0. Prefer the use of GetSourceSettings. Will be removed in v5.0.0 ⚠️**
 
 - Added in v4.1.0
 
@@ -2408,7 +2412,7 @@ Get current properties for a Browser Source.
 
 ### SetBrowserSourceProperties
 
-- **⚠️ Deprecated. Since 4.8.0. Prefer the use of SetSourceSettings. ⚠️**
+- **⚠️ Deprecated. Since 4.8.0. Prefer the use of SetSourceSettings. Will be removed in v5.0.0 ⚠️**
 
 - Added in v4.1.0
 
@@ -2776,7 +2780,9 @@ Get information about a single output
 
 - Added in v4.7.0
 
-Start an output
+
+
+Note: Controlling outputs is an experimental feature of obs-websocket. Some plugins which add outputs to OBS may not function properly when they are controlled in this way.
 
 **Request Fields:**
 
@@ -2796,7 +2802,9 @@ _No additional response items._
 
 - Added in v4.7.0
 
-Stop an output
+
+
+Note: Controlling outputs is an experimental feature of obs-websocket. Some plugins which add outputs to OBS may not function properly when they are controlled in this way.
 
 **Request Fields:**
 
@@ -2870,6 +2878,7 @@ _No specified parameters._
 | Name | Type  | Description |
 | ---- | :---: | ------------|
 | `profiles` | _Array&lt;Object&gt;_ | List of available profiles. |
+| `profiles.*.profile-name` | _String_ | Filter name |
 
 
 ---
@@ -2903,7 +2912,7 @@ _No specified parameters._
 
 - Added in v0.3
 
-Toggle recording on or off.
+Toggle recording on or off (depending on the current recording state).
 
 **Request Fields:**
 
@@ -3058,7 +3067,7 @@ _No specified parameters._
 
 - Added in v4.2.0
 
-Toggle the Replay Buffer on/off.
+Toggle the Replay Buffer on/off (depending on the current state of the replay buffer).
 
 **Request Fields:**
 
@@ -3186,6 +3195,7 @@ _No specified parameters._
 | Name | Type  | Description |
 | ---- | :---: | ------------|
 | `scene-collections` | _Array&lt;String&gt;_ | Scene collections list |
+| `scene-collections.*.sc-name` | _String_ | Scene collection name |
 
 
 ---
@@ -3336,7 +3346,6 @@ _No additional response items._
 
 ### SetSceneItemRender
 
-- **⚠️ Deprecated. Since 4.3.0. Prefer the use of SetSceneItemProperties. ⚠️**
 
 - Added in v0.3
 
@@ -3607,8 +3616,8 @@ Changes the order of scene items in the requested scene.
 | ---- | :---: | ------------|
 | `scene` | _String (optional)_ | Name of the scene to reorder (defaults to current). |
 | `items` | _Array&lt;Scene&gt;_ | Ordered list of objects with name and/or id specified. Id preferred due to uniqueness per scene |
-| `items[].id` | _int (optional)_ | Id of a specific scene item. Unique on a scene by scene basis. |
-| `items[].name` | _String (optional)_ | Name of a scene item. Sufficiently unique if no scene items share sources within the scene. |
+| `items.*.id` | _int (optional)_ | Id of a specific scene item. Unique on a scene by scene basis. |
+| `items.*.name` | _String (optional)_ | Name of a scene item. Sufficiently unique if no scene items share sources within the scene. |
 
 
 **Response Items:**
@@ -3620,7 +3629,7 @@ _No additional response items._
 ### SetSceneTransitionOverride
 
 
-- Added in v4.9.0
+- Unreleased
 
 Set a scene to use a specific transition override.
 
@@ -3642,7 +3651,7 @@ _No additional response items._
 ### RemoveSceneTransitionOverride
 
 
-- Added in v4.9.0
+- Unreleased
 
 Remove any transition override on a scene.
 
@@ -3662,7 +3671,7 @@ _No additional response items._
 ### GetSceneTransitionOverride
 
 
-- Added in v4.9.0
+- Unreleased
 
 Get the current scene transition override.
 
@@ -3714,7 +3723,7 @@ _No specified parameters._
 
 - Added in v0.3
 
-Toggle streaming on or off.
+Toggle streaming on or off (depending on the current stream state).
 
 **Request Fields:**
 
@@ -3849,7 +3858,6 @@ _No additional response items._
 - Added in v4.6.0
 
 Send the provided text as embedded CEA-608 caption data.
-As of OBS Studio 23.1, captions are not yet available on Linux.
 
 **Request Fields:**
 
@@ -3991,7 +3999,7 @@ _No additional response items._
 
 - Added in v4.1.0
 
-Toggles Studio Mode.
+Toggles Studio Mode (depending on the current state of studio mode).
 
 **Request Fields:**
 
