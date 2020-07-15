@@ -2,8 +2,14 @@
 
 #include <QtCore/QByteArray>
 #include <QtGui/QImageWriter>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonValue>
+
 
 #include "obs-websocket.h"
+#include "obs-module.h"
+#include <util/platform.h>
 #include "Config.h"
 #include "Utils.h"
 #include "WSEvents.h"
@@ -281,6 +287,102 @@ RpcResponse WSRequestHandler::BroadcastCustomMessage(const RpcRequest& request) 
 	return request.success();
 }
 
+/**
+ * Save user defined persistent data in OBS
+ *
+ * @param {String} `key` Identifier to be choosen by the client
+ * @param {String} `value` User-defined data
+ *
+ * @api general
+ * @name SetPersistentData
+ * @category general
+ * @since 4.7.0
+ */
+RpcResponse WSRequestHandler::SetPersistentData(const RpcRequest& request) {
+	if (!GetConfig()->PersistentDataEnabled) {
+		return request.failed("persistent data storage is disabled");
+	}
+
+	if (!request.hasField("key") || !request.hasField("value")) {
+		return request.failed("missing request parameters");
+	}
+
+	QString key = obs_data_get_string(request.parameters(), "key");
+	QString value = obs_data_get_string(request.parameters(), "value");
+
+	if (key.isEmpty()) {
+		return request.failed("key not specified!");
+	}
+
+	if (value.isEmpty()) {
+		return request.failed("value not specified!");
+	}
+
+	if (value.length() > GetConfig()->PersistentDataMaxSize) {
+		return request.failed("maximum data size exceeded, check configuration");
+	}
+
+	QString jsonString = GetConfig()->PersistentDataStore;
+	QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonString.toUtf8());
+
+	QJsonObject jsonObj;
+	if (!jsonDoc.isNull()) {
+		jsonObj = jsonDoc.object();
+	} else {
+		jsonObj = QJsonObject();
+	}
+
+	jsonObj[key] = QJsonValue::fromVariant(value);
+	jsonDoc = QJsonDocument(jsonObj);
+	GetConfig()->PersistentDataStore = jsonDoc.toJson();
+	GetConfig()->Save();
+
+	return request.success();
+}
+
+/**
+ * Retrieve user defined persistent data from OBS
+ *
+ * @param {String} `key` Identifier to be choosen by the client
+ * @return {String} `value` User-defined data
+ *
+ * @api general
+ * @name GetPersistentData
+ * @category general
+ * @since 4.7.0
+ */
+RpcResponse WSRequestHandler::GetPersistentData(const RpcRequest& request) {
+	if (!request.hasField("key")) {
+		return request.failed("missing request parameters");
+	}
+
+	QString key = obs_data_get_string(request.parameters(), "key");
+
+	if (key.isEmpty()) {
+		return request.failed("key not specified!");
+	}
+
+    QString jsonString = GetConfig()->PersistentDataStore;
+	QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonString.toUtf8());
+
+	QJsonObject jsonObj;
+	if (!jsonDoc.isNull()) {
+		jsonObj = jsonDoc.object();
+	} else {
+		jsonObj = QJsonObject();
+	}
+
+	QJsonValue jsonValue = jsonObj[key];
+	if (jsonValue.isNull()) {
+		return request.failed("realm not found in stored data!");
+	}
+
+	QString value = jsonValue.toString();
+	OBSDataAutoRelease response = obs_data_create();
+	obs_data_set_string(response, "value", value.toUtf8());
+
+	return request.success(response);
+}
 
 /**
  * Get basic OBS video information

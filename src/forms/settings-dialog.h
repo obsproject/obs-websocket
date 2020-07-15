@@ -34,6 +34,7 @@ public:
 
 private Q_SLOTS:
 	void AuthCheckboxChanged();
+	void PersistentDataCheckboxChanged();
 	void FormAccepted();
 
 private:

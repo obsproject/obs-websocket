@@ -59,6 +59,9 @@ class WSRequestHandler {
 		RpcResponse SetFilenameFormatting(const RpcRequest&);
 		RpcResponse GetFilenameFormatting(const RpcRequest&);
 
+		RpcResponse SetPersistentData(const RpcRequest&);
+		RpcResponse GetPersistentData(const RpcRequest&);
+
 		RpcResponse BroadcastCustomMessage(const RpcRequest&);
 
 		RpcResponse SetCurrentScene(const RpcRequest&);

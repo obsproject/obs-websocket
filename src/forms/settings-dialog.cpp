@@ -33,6 +33,8 @@ SettingsDialog::SettingsDialog(QWidget* parent) :
 
 	connect(ui->authRequired, &QCheckBox::stateChanged,
 		this, &SettingsDialog::AuthCheckboxChanged);
+	connect(ui->persistentDataEnabled, &QCheckBox::stateChanged,
+		this, &SettingsDialog::PersistentDataCheckboxChanged);
 	connect(ui->buttonBox, &QDialogButtonBox::accepted,
 		this, &SettingsDialog::FormAccepted);
 
@@ -45,9 +47,11 @@ void SettingsDialog::showEvent(QShowEvent* event) {
 
 	ui->serverEnabled->setChecked(conf->ServerEnabled);
 	ui->serverPort->setValue(conf->ServerPort);
+	ui->persistentDataMaxSize->setValue(conf->PersistentDataMaxSize);
 
 	ui->debugEnabled->setChecked(conf->DebugEnabled);
 	ui->alertsEnabled->setChecked(conf->AlertsEnabled);
+	ui->persistentDataEnabled->setChecked(conf->PersistentDataEnabled);
 
 	ui->authRequired->setChecked(conf->AuthRequired);
 	ui->password->setText(CHANGE_ME);
@@ -67,14 +71,27 @@ void SettingsDialog::AuthCheckboxChanged() {
 		ui->password->setEnabled(false);
 }
 
+void SettingsDialog::PersistentDataCheckboxChanged() {
+	if (ui->persistentDataEnabled->isChecked()) {
+		ui->persistentDataMaxSize->show();
+		ui->lbl_persistentDataMaxSize->show();
+	}
+	else {
+		ui->persistentDataMaxSize->hide();
+		ui->lbl_persistentDataMaxSize->hide();
+	}
+}
+
 void SettingsDialog::FormAccepted() {
 	auto conf = GetConfig();
 
 	conf->ServerEnabled = ui->serverEnabled->isChecked();
 	conf->ServerPort = ui->serverPort->value();
+	conf->PersistentDataMaxSize = ui->persistentDataMaxSize->value();
 
 	conf->DebugEnabled = ui->debugEnabled->isChecked();
 	conf->AlertsEnabled = ui->alertsEnabled->isChecked();
+	conf->PersistentDataEnabled = ui->persistentDataEnabled->isChecked();
 
 	if (ui->authRequired->isChecked()) {
 		if (ui->password->text() != CHANGE_ME) {

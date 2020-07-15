@@ -41,6 +41,9 @@ const QHash<QString, RpcMethodHandler> WSRequestHandler::messageMap {
 	{ "SetFilenameFormatting", &WSRequestHandler::SetFilenameFormatting },
 	{ "GetFilenameFormatting", &WSRequestHandler::GetFilenameFormatting },
 
+	{ "SetPersistentData", &WSRequestHandler::SetPersistentData },
+	{ "GetPersistentData", &WSRequestHandler::GetPersistentData },
+
 	{ "BroadcastCustomMessage", &WSRequestHandler::BroadcastCustomMessage },
 
 	{ "SetCurrentScene", &WSRequestHandler::SetCurrentScene },

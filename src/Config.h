@@ -42,14 +42,17 @@ class Config {
 
 		bool ServerEnabled;
 		uint64_t ServerPort;
+		uint64_t PersistentDataMaxSize;
 
 		bool DebugEnabled;
 		bool AlertsEnabled;
+		bool PersistentDataEnabled;
 
 		bool AuthRequired;
 		QString Secret;
 		QString Salt;
 		QString SessionChallenge;
+		QString PersistentDataStore;
 		bool SettingsLoaded;
 
 	private:
