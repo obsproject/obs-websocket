@@ -171,6 +171,7 @@ RpcResponse WSRequestHandler::Authenticate(const RpcRequest& request) {
  * @name SetHeartbeat
  * @category general
  * @since 4.3.0
+ * @deprecated Since 4.9.0. Please poll the appropriate data using requests. Will be removed in v5.0.0.
  */
 RpcResponse WSRequestHandler::SetHeartbeat(const RpcRequest& request) {
 	if (!request.hasField("enable")) {
@@ -231,7 +232,7 @@ RpcResponse WSRequestHandler::GetFilenameFormatting(const RpcRequest& request) {
 /**
  * Get OBS stats (almost the same info as provided in OBS' stats window)
  *
- * @return {OBSStats} `stats` OBS stats
+ * @return {OBSStats} `stats` [OBS stats](#obsstats)
  *
  * @api requests
  * @name GetStats
@@ -319,12 +320,12 @@ RpcResponse WSRequestHandler::GetVideoInfo(const RpcRequest& request) {
 
 /**
  * Open a projector window or create a projector on a monitor. Requires OBS v24.0.4 or newer.
- * 
- * @param {String (Optional)} `type` Type of projector: Preview (default), Source, Scene, StudioProgram, or Multiview (case insensitive).
+ *
+ * @param {String (Optional)} `type` Type of projector: `Preview` (default), `Source`, `Scene`, `StudioProgram`, or `Multiview` (case insensitive).
  * @param {int (Optional)} `monitor` Monitor to open the projector on. If -1 or omitted, opens a window.
- * @param {String (Optional)} `geometry` Size and position of the projector window (only if monitor is -1). Encoded in Base64 using Qt's geometry encoding (https://doc.qt.io/qt-5/qwidget.html#saveGeometry). Corresponds to OBS's saved projectors.
+ * @param {String (Optional)} `geometry` Size and position of the projector window (only if monitor is -1). Encoded in Base64 using [Qt's geometry encoding](https://doc.qt.io/qt-5/qwidget.html#saveGeometry). Corresponds to OBS's saved projectors.
  * @param {String (Optional)} `name` Name of the source or scene to be displayed (ignored for other projector types).
- * 
+ *
  * @api requests
  * @name OpenProjector
  * @category general

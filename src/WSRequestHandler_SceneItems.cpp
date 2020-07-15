@@ -408,7 +408,6 @@ RpcResponse WSRequestHandler::ResetSceneItem(const RpcRequest& request) {
 * @name SetSceneItemRender
 * @category scene items
 * @since 0.3
-* @deprecated Since 4.3.0. Prefer the use of SetSceneItemProperties.
 */
 RpcResponse WSRequestHandler::SetSceneItemRender(const RpcRequest& request) {
 	if (!request.hasField("source") ||

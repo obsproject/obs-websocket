@@ -23,7 +23,7 @@ bool isTextFreeType2Source(const QString& sourceKind)
 *
 * @return {Array<Object>} `sources` Array of sources
 * @return {String} `sources.*.name` Unique source name
-* @return {String} `sources.*.typeId` Non-unique source internal type (a.k.a type id)
+* @return {String} `sources.*.typeId` Non-unique source internal type (a.k.a kind)
 * @return {String} `sources.*.type` Source type. Value is one of the following: "input", "filter", "transition", "scene" or "unknown"
 *
 * @api requests
@@ -382,7 +382,7 @@ RpcResponse WSRequestHandler::GetAudioActive(const RpcRequest& request)
 /**
 * Sets (aka rename) the name of a source. Also works with scenes since scenes are technically sources in OBS.
 *
-* Note: If the new name already exists as a source, OBS will automatically modify the name to not interfere.
+* Note: If the new name already exists as a source, obs-websocket will return an error.
 *
 * @param {String} `sourceName` Source name.
 * @param {String} `newName` New source name.
@@ -415,7 +415,7 @@ RpcResponse WSRequestHandler::SetSourceName(const RpcRequest& request)
 
 		return request.success();
 	} else {
-		return request.failed("a source with that newSourceName already exists");
+		return request.failed("a source with that name already exists");
 	}
 }
 
@@ -596,8 +596,8 @@ RpcResponse WSRequestHandler::SetSourceSettings(const RpcRequest& request)
  *
  * @return {String} `source` Source name.
  * @return {String} `align` Text Alignment ("left", "center", "right").
- * @return {int} `bk-color` Background color.
- * @return {int} `bk-opacity` Background opacity (0-100).
+ * @return {int} `bk_color` Background color.
+ * @return {int} `bk_opacity` Background opacity (0-100).
  * @return {boolean} `chatlog` Chat log.
  * @return {int} `chatlog_lines` Chat log lines.
  * @return {int} `color` Text color.
@@ -656,8 +656,8 @@ RpcResponse WSRequestHandler::GetTextGDIPlusProperties(const RpcRequest& request
  *
  * @param {String} `source` Name of the source.
  * @param {String (optional)} `align` Text Alignment ("left", "center", "right").
- * @param {int (optional)} `bk-color` Background color.
- * @param {int (optional)} `bk-opacity` Background opacity (0-100).
+ * @param {int (optional)} `bk_color` Background color.
+ * @param {int (optional)} `bk_opacity` Background opacity (0-100).
  * @param {boolean (optional)} `chatlog` Chat log.
  * @param {int (optional)} `chatlog_lines` Chat log lines.
  * @param {int (optional)} `color` Text color.
@@ -1013,7 +1013,7 @@ RpcResponse WSRequestHandler::SetTextFreetype2Properties(const RpcRequest& reque
  * @name GetBrowserSourceProperties
  * @category sources
  * @since 4.1.0
- * @deprecated Since 4.8.0. Prefer the use of GetSourceSettings.
+ * @deprecated Since 4.8.0. Prefer the use of GetSourceSettings. Will be removed in v5.0.0
  */
 RpcResponse WSRequestHandler::GetBrowserSourceProperties(const RpcRequest& request)
 {
@@ -1055,7 +1055,7 @@ RpcResponse WSRequestHandler::GetBrowserSourceProperties(const RpcRequest& reque
  * @api requests
  * @name SetBrowserSourceProperties
  * @category sources
- * @deprecated Since 4.8.0. Prefer the use of SetSourceSettings.
+ * @deprecated Since 4.8.0. Prefer the use of SetSourceSettings. Will be removed in v5.0.0
  * @since 4.1.0
  */
 RpcResponse WSRequestHandler::SetBrowserSourceProperties(const RpcRequest& request)

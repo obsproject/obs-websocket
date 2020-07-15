@@ -465,6 +465,8 @@ void WSEvents::OnSceneChange() {
  * The scene list has been modified.
  * Scenes have been added, removed, or renamed.
  *
+ * Note: This event is not fired when the scenes are reordered.
+ *
  * @api events
  * @name ScenesChanged
  * @category scenes
@@ -756,7 +758,7 @@ void WSEvents::OnExit() {
 }
 
 /**
- * Emit every 2 seconds.
+ * Emitted every 2 seconds when stream is active.
  *
  * @return {boolean} `streaming` Current streaming state.
  * @return {boolean} `recording` Current recording state.
@@ -863,6 +865,7 @@ void WSEvents::StreamStatus() {
  * @api events
  * @name Heartbeat
  * @category general
+ * @since v0.3
  */
 void WSEvents::Heartbeat() {
 
@@ -1427,7 +1430,7 @@ void WSEvents::OnSourceFilterOrderChanged(void* param, calldata_t* data) {
  * @api events
  * @name MediaPlaying
  * @category media
- * @since 4.9.0
+ * @since unreleased
  */
 void WSEvents::OnMediaPlaying(void* param, calldata_t* data) {
 	auto self = reinterpret_cast<WSEvents*>(param);
@@ -1448,7 +1451,7 @@ void WSEvents::OnMediaPlaying(void* param, calldata_t* data) {
  * @api events
  * @name MediaPaused
  * @category media
- * @since 4.9.0
+ * @since unreleased
  */
 void WSEvents::OnMediaPaused(void* param, calldata_t* data) {
 	auto self = reinterpret_cast<WSEvents*>(param);
@@ -1469,7 +1472,7 @@ void WSEvents::OnMediaPaused(void* param, calldata_t* data) {
  * @api events
  * @name MediaRestarted
  * @category media
- * @since 4.9.0
+ * @since unreleased
  */
 void WSEvents::OnMediaRestarted(void* param, calldata_t* data) {
 	auto self = reinterpret_cast<WSEvents*>(param);
@@ -1490,7 +1493,7 @@ void WSEvents::OnMediaRestarted(void* param, calldata_t* data) {
  * @api events
  * @name MediaStopped
  * @category media
- * @since 4.9.0
+ * @since unreleased
  */
 void WSEvents::OnMediaStopped(void* param, calldata_t* data) {
 	auto self = reinterpret_cast<WSEvents*>(param);
@@ -1511,7 +1514,7 @@ void WSEvents::OnMediaStopped(void* param, calldata_t* data) {
  * @api events
  * @name MediaNext
  * @category media
- * @since 4.9.0
+ * @since unreleased
  */
 void WSEvents::OnMediaNext(void* param, calldata_t* data) {
 	auto self = reinterpret_cast<WSEvents*>(param);
@@ -1532,7 +1535,7 @@ void WSEvents::OnMediaNext(void* param, calldata_t* data) {
  * @api events
  * @name MediaPrevious
  * @category media
- * @since 4.9.0
+ * @since unreleased
  */
 void WSEvents::OnMediaPrevious(void* param, calldata_t* data) {
 	auto self = reinterpret_cast<WSEvents*>(param);
@@ -1553,7 +1556,7 @@ void WSEvents::OnMediaPrevious(void* param, calldata_t* data) {
  * @api events
  * @name MediaStarted
  * @category media
- * @since 4.9.0
+ * @since unreleased
  */
 void WSEvents::OnMediaStarted(void* param, calldata_t* data) {
 	auto self = reinterpret_cast<WSEvents*>(param);
@@ -1574,7 +1577,7 @@ void WSEvents::OnMediaStarted(void* param, calldata_t* data) {
  * @api events
  * @name MediaEnded
  * @category media
- * @since 4.9.0
+ * @since unreleased
  */
 void WSEvents::OnMediaEnded(void* param, calldata_t* data) {
 	auto self = reinterpret_cast<WSEvents*>(param);
@@ -1585,7 +1588,7 @@ void WSEvents::OnMediaEnded(void* param, calldata_t* data) {
 }
 
 /**
- * Scene items have been reordered.
+ * Scene items within a scene have been reordered.
  *
  * @return {String} `scene-name` Name of the scene where items have been reordered.
  * @return {Array<Object>} `scene-items` Ordered list of scene items
@@ -1628,7 +1631,7 @@ void WSEvents::OnSceneReordered(void* param, calldata_t* data) {
 }
 
 /**
- * An item has been added to the current scene.
+ * A scene item has been added to a scene.
  *
  * @return {String} `scene-name` Name of the scene.
  * @return {String} `item-name` Name of the item added to the scene.
@@ -1661,7 +1664,7 @@ void WSEvents::OnSceneItemAdd(void* param, calldata_t* data) {
 }
 
 /**
- * An item has been removed from the current scene.
+ * A scene item has been removed from a scene.
  *
  * @return {String} `scene-name` Name of the scene.
  * @return {String} `item-name` Name of the item removed from the scene.
@@ -1694,7 +1697,7 @@ void WSEvents::OnSceneItemDelete(void* param, calldata_t* data) {
 }
 
 /**
- * An item's visibility has been toggled.
+ * A scene item's visibility has been toggled.
  *
  * @return {String} `scene-name` Name of the scene.
  * @return {String} `item-name` Name of the item in the scene.
@@ -1732,7 +1735,7 @@ void WSEvents::OnSceneItemVisibilityChanged(void* param, calldata_t* data) {
 }
 
 /**
- * An item's locked status has been toggled.
+ * A scene item's locked status has been toggled.
  *
  * @return {String} `scene-name` Name of the scene.
  * @return {String} `item-name` Name of the item in the scene.
@@ -1770,7 +1773,7 @@ void WSEvents::OnSceneItemLockChanged(void* param, calldata_t* data) {
 }
 
 /**
- * An item's transform has been changed.
+ * A scene item's transform has been changed.
  *
  * @return {String} `scene-name` Name of the scene.
  * @return {String} `item-name` Name of the item in the scene.
@@ -1921,7 +1924,7 @@ void WSEvents::OnStudioModeSwitched(bool checked) {
 }
 
 /**
- * A custom broadcast message was received
+ * A custom broadcast message, sent by the server, requested by one of the websocket clients.
  *
  * @return {String} `realm` Identifier provided by the sender
  * @return {Object} `data` User-defined data
