@@ -485,11 +485,8 @@ QString Utils::OBSVersionString() {
 }
 
 QSystemTrayIcon* Utils::GetTrayIcon() {
-	QMainWindow* main = (QMainWindow*)obs_frontend_get_main_window();
-	if (!main) return nullptr;
-
-	QList<QSystemTrayIcon*> trays = main->findChildren<QSystemTrayIcon*>();
-	return trays.isEmpty() ? nullptr : trays.first();
+	void* systemTray = obs_frontend_get_system_tray();
+	return reinterpret_cast<QSystemTrayIcon*>(systemTray);
 }
 
 void Utils::SysTrayNotify(QString text,
