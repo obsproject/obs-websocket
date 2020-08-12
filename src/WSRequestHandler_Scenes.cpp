@@ -184,7 +184,7 @@ RpcResponse WSRequestHandler::ReorderSceneItems(const RpcRequest& request) {
  * @api requests
  * @name SetSceneTransitionOverride
  * @category scenes
- * @since unreleased
+ * @since 4.8.0
  */
 RpcResponse WSRequestHandler::SetSceneTransitionOverride(const RpcRequest& request) {
 	if (!request.hasField("sceneName") || !request.hasField("transitionName")) {
@@ -230,7 +230,7 @@ RpcResponse WSRequestHandler::SetSceneTransitionOverride(const RpcRequest& reque
  * @api requests
  * @name RemoveSceneTransitionOverride
  * @category scenes
- * @since unreleased
+ * @since 4.8.0
  */
 RpcResponse WSRequestHandler::RemoveSceneTransitionOverride(const RpcRequest& request) {
 	if (!request.hasField("sceneName")) {
@@ -266,7 +266,7 @@ RpcResponse WSRequestHandler::RemoveSceneTransitionOverride(const RpcRequest& re
  * @api requests
  * @name GetSceneTransitionOverride
  * @category scenes
- * @since unreleased
+ * @since 4.8.0
  */
 RpcResponse WSRequestHandler::GetSceneTransitionOverride(const RpcRequest& request) {
 	if (!request.hasField("sceneName")) {
