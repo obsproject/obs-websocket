@@ -1073,6 +1073,7 @@ Filters in a source have been reordered.
 | `filters` | _Array&lt;Object&gt;_ | Ordered Filters list |
 | `filters.*.name` | _String_ | Filter name |
 | `filters.*.type` | _String_ | Filter type |
+| `filters.*.enabled` | _boolean_ | Filter visibility status |
 
 
 ---
@@ -3629,7 +3630,7 @@ _No additional response items._
 ### SetSceneTransitionOverride
 
 
-- Unreleased
+- Added in v4.8.0
 
 Set a scene to use a specific transition override.
 
@@ -3651,7 +3652,7 @@ _No additional response items._
 ### RemoveSceneTransitionOverride
 
 
-- Unreleased
+- Added in v4.8.0
 
 Remove any transition override on a scene.
 
@@ -3671,7 +3672,7 @@ _No additional response items._
 ### GetSceneTransitionOverride
 
 
-- Unreleased
+- Added in v4.8.0
 
 Get the current scene transition override.
 
