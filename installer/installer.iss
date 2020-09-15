@@ -23,6 +23,7 @@ DefaultGroupName={#MyAppName}
 OutputBaseFilename=obs-websocket-Windows-Installer
 Compression=lzma
 SolidCompression=yes
+DirExistsWarning=no
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
