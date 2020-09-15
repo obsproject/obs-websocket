@@ -859,3 +859,10 @@ QString Utils::nsToTimestamp(uint64_t ns)
 
 	return QString::asprintf("%02" PRIu64 ":%02" PRIu64 ":%02" PRIu64 ".%03" PRIu64, hoursPart, minutesPart, secsPart, msPart);
 }
+
+void Utils::AddSourceHelper(void *_data, obs_scene_t *scene)
+{
+	auto *data = reinterpret_cast<AddSourceData*>(_data);
+	data->sceneItem = obs_scene_add(scene, data->source);
+	obs_sceneitem_set_visible(data->sceneItem, data->setVisible);
+}

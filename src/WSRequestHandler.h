@@ -111,6 +111,7 @@ class WSRequestHandler {
 		RpcResponse GetTransitionDuration(const RpcRequest&);
 		RpcResponse GetTransitionPosition(const RpcRequest&);
 
+        RpcResponse CreateSource(const RpcRequest&);
 		RpcResponse SetVolume(const RpcRequest&);
 		RpcResponse GetVolume(const RpcRequest&);
 		RpcResponse ToggleMute(const RpcRequest&);

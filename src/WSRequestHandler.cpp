@@ -94,6 +94,7 @@ const QHash<QString, RpcMethodHandler> WSRequestHandler::messageMap {
 	{ "GetTransitionDuration", &WSRequestHandler::GetTransitionDuration },
 	{ "GetTransitionPosition", &WSRequestHandler::GetTransitionPosition },
 
+    { "CreateSource", &WSRequestHandler::CreateSource },
 	{ "SetVolume", &WSRequestHandler::SetVolume },
 	{ "GetVolume", &WSRequestHandler::GetVolume },
 	{ "ToggleMute", &WSRequestHandler::ToggleMute },

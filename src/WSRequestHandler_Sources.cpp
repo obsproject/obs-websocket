@@ -19,6 +19,81 @@ bool isTextFreeType2Source(const QString& sourceKind)
 }
 
 /**
+ * Create a source and add it as a sceneitem to a scene.
+ *
+ * @param {String} `sourceName` Source name.
+ * @param {String} `sourceKind` Source kind, Eg. `vlc_source`.
+ * @param {String} `sceneName` Scene to add the new source to.
+ * @param {Object (optional)} `sourceSettings` Source settings data.
+ * @param {boolean (optional)} `setVisible` Set the created SceneItem as visible or not.
+ *
+ * @return {int} `itemId` ID of the SceneItem in the scene.
+ *
+ * @api requests
+ * @name CreateSource
+ * @category sources
+ * @since unreleased
+ */
+RpcResponse WSRequestHandler::CreateSource(const RpcRequest& request)
+{
+	if (!request.hasField("sourceName") || !request.hasField("sourceKind") || !request.hasField("sceneName")) {
+		return request.failed("missing request parameters");
+	}
+
+	QString sourceName = obs_data_get_string(request.parameters(), "sourceName");
+	QString sourceKind = obs_data_get_string(request.parameters(), "sourceKind");
+	if (sourceName.isEmpty() || sourceKind.isEmpty()) {
+		return request.failed("empty sourceKind or sourceName parameters");
+	}
+	
+	OBSSourceAutoRelease source = obs_get_source_by_name(sourceName.toUtf8());
+	if (source) {
+		return request.failed("a source with that name already exists");
+	}
+	
+	const char* sceneName = obs_data_get_string(request.parameters(), "sceneName");
+	OBSSourceAutoRelease sceneSource = obs_get_source_by_name(sceneName);
+	OBSScene scene = obs_scene_from_source(sceneSource);
+	if (!scene) {
+		return request.failed("requested scene is invalid or doesnt exist");
+	}
+
+	obs_source_t *newSource = obs_source_create(sourceKind.toUtf8(), sourceName.toUtf8(), nullptr, nullptr);
+
+	if (!newSource) {
+		return request.failed("failed to create the source");
+	}
+	obs_source_set_enabled(newSource, true);
+
+	if (request.hasField("sourceSettings")) { // We apply the settings after source creation because otherwise we get a bunch of memory leaks.
+		OBSDataAutoRelease currentSettings = obs_source_get_settings(newSource);
+		OBSDataAutoRelease newSettings = obs_data_get_obj(request.parameters(), "sourceSettings");
+		OBSDataAutoRelease sourceSettings = obs_data_create();
+		obs_data_apply(sourceSettings, currentSettings);
+		obs_data_apply(sourceSettings, newSettings);
+		obs_source_update(newSource, sourceSettings);
+		obs_source_update_properties(newSource);
+	}
+	
+	Utils::AddSourceData data;
+	data.source = newSource;
+	data.setVisible = true;
+	if (request.hasField("setVisible")) {
+		data.setVisible = obs_data_get_bool(request.parameters(), "setVisible");
+	}
+	
+	obs_enter_graphics();
+	obs_scene_atomic_update(scene, Utils::AddSourceHelper, &data);
+	obs_leave_graphics();
+	
+	OBSDataAutoRelease responseData = obs_data_create();
+	obs_data_set_int(responseData, "itemId", obs_sceneitem_get_id(data.sceneItem));
+
+	obs_source_release(newSource);
+	return request.success(responseData);
+}
+
+/**
 * List all sources available in the running OBS instance
 *
 * @return {Array<Object>} `sources` Array of sources
