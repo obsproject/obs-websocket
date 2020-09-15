@@ -17,19 +17,19 @@ RpcResponse WSRequestHandler::SetCurrentSceneCollection(const RpcRequest& reques
 		return request.failed("missing request parameters");
 	}
 
-	QString sceneCollection = obs_data_get_string(request.parameters(), "sc-name");
-	if (sceneCollection.isEmpty()) {
+	const char* sceneCollection = obs_data_get_string(request.parameters(), "sc-name");
+	if (!sceneCollection) {
 		return request.failed("invalid request parameters");
 	}
 
 	char** collections = obs_frontend_get_scene_collections();
-	bool collectionExists = Utils::StringInStringList(collections, sceneCollection.toUtf8());
+	bool collectionExists = Utils::StringInStringList(collections, sceneCollection);
 	bfree(collections);
 	if (!collectionExists) {
 		return request.failed("scene collection does not exist");
 	}
 
-	obs_frontend_set_current_scene_collection(sceneCollection.toUtf8());
+	obs_frontend_set_current_scene_collection(sceneCollection);
 	return request.success();
 }
 
