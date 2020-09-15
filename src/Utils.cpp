@@ -52,15 +52,13 @@ obs_bounds_type getBoundsTypeFromName(QString name) {
 }
 
 bool Utils::StringInStringList(char** strings, const char* string) {
+	if (!strings) {
+		return false;
+	}
+
 	size_t index = 0;
-	char* value = nullptr;
-
-	while (1) {
-		value = strings[index];
-
-		if (value == nullptr) {
-			return false;
-		}
+	while (strings[index] != NULL) {
+		char* value = strings[index];
 
 		if (strcmp(value, string) == 0) {
 			return true;
@@ -68,6 +66,7 @@ bool Utils::StringInStringList(char** strings, const char* string) {
 
 		index++;
 	}
+
 	return false;
 }
 
