@@ -29,7 +29,10 @@ RpcResponse WSRequestHandler::SetCurrentSceneCollection(const RpcRequest& reques
 		return request.failed("scene collection does not exist");
 	}
 
-	obs_frontend_set_current_scene_collection(sceneCollection);
+	obs_queue_task(OBS_TASK_UI, [](void* param) {
+		obs_frontend_set_current_scene_collection(reinterpret_cast<const char*>(param));
+	}, (void*)sceneCollection, true);
+
 	return request.success();
 }
 

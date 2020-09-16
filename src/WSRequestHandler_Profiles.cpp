@@ -29,7 +29,10 @@ RpcResponse WSRequestHandler::SetCurrentProfile(const RpcRequest& request) {
 		return request.failed("profile does not exist");
 	}
 
-	obs_frontend_set_current_profile(profileName);
+	obs_queue_task(OBS_TASK_UI, [](void* param) {
+		obs_frontend_set_current_profile(reinterpret_cast<const char*>(param));
+	}, (void*)profileName, true);
+
 	return request.success();
 }
 
