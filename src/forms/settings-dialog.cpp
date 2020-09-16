@@ -47,6 +47,7 @@ void SettingsDialog::showEvent(QShowEvent* event) {
 
 	ui->serverEnabled->setChecked(conf->ServerEnabled);
 	ui->serverPort->setValue(conf->ServerPort);
+	ui->lockToIPv4->setChecked(conf->LockToIPv4);
 	ui->persistentDataMaxSize->setValue(conf->PersistentDataMaxSize);
 
 	ui->debugEnabled->setChecked(conf->DebugEnabled);
@@ -87,6 +88,7 @@ void SettingsDialog::FormAccepted() {
 
 	conf->ServerEnabled = ui->serverEnabled->isChecked();
 	conf->ServerPort = ui->serverPort->value();
+	conf->LockToIPv4 = ui->lockToIPv4->isChecked();
 	conf->PersistentDataMaxSize = ui->persistentDataMaxSize->value();
 
 	conf->DebugEnabled = ui->debugEnabled->isChecked();
@@ -112,7 +114,7 @@ void SettingsDialog::FormAccepted() {
 
 	auto server = GetServer();
 	if (conf->ServerEnabled) {
-		server->start(conf->ServerPort);
+		server->start(conf->ServerPort, conf->LockToIPv4);
 	} else {
 		server->stop();
 	}

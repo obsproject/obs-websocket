@@ -1397,6 +1397,7 @@ void WSEvents::OnSourceFilterVisibilityChanged(void* param, calldata_t* data) {
  * @return {Array<Object>} `filters` Ordered Filters list
  * @return {String} `filters.*.name` Filter name
  * @return {String} `filters.*.type` Filter type
+ * @return {boolean} `filters.*.enabled` Filter visibility status
  *
  * @api events
  * @name SourceFiltersReordered

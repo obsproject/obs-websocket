@@ -2515,7 +2515,8 @@
           "{String} `sourceName` Source name",
           "{Array<Object>} `filters` Ordered Filters list",
           "{String} `filters.*.name` Filter name",
-          "{String} `filters.*.type` Filter type"
+          "{String} `filters.*.type` Filter type",
+          "{boolean} `filters.*.enabled` Filter visibility status"
         ],
         "api": "events",
         "name": "SourceFiltersReordered",
@@ -2541,6 +2542,11 @@
             "type": "String",
             "name": "filters.*.type",
             "description": "Filter type"
+          },
+          {
+            "type": "boolean",
+            "name": "filters.*.enabled",
+            "description": "Filter visibility status"
           }
         ],
         "names": [
@@ -9233,7 +9239,7 @@
         "api": "requests",
         "name": "SetSceneTransitionOverride",
         "category": "scenes",
-        "since": "unreleased",
+        "since": "4.8.0",
         "params": [
           {
             "type": "String",
@@ -9266,7 +9272,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "unreleased"
+            "description": "4.8.0"
           }
         ],
         "heading": {
@@ -9284,7 +9290,7 @@
         "api": "requests",
         "name": "RemoveSceneTransitionOverride",
         "category": "scenes",
-        "since": "unreleased",
+        "since": "4.8.0",
         "params": [
           {
             "type": "String",
@@ -9307,7 +9313,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "unreleased"
+            "description": "4.8.0"
           }
         ],
         "heading": {
@@ -9329,7 +9335,7 @@
         "api": "requests",
         "name": "GetSceneTransitionOverride",
         "category": "scenes",
-        "since": "unreleased",
+        "since": "4.8.0",
         "returns": [
           {
             "type": "String",
@@ -9364,7 +9370,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "unreleased"
+            "description": "4.8.0"
           }
         ],
         "heading": {

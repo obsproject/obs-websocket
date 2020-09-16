@@ -25,6 +25,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #define SECTION_NAME "WebsocketAPI"
 #define PARAM_ENABLE "ServerEnabled"
 #define PARAM_PORT "ServerPort"
+#define PARAM_LOCKTOIPV4 "LockToIPv4"
 #define PARAM_DEBUG "DebugEnabled"
 #define PARAM_ALERT "AlertsEnabled"
 #define PARAM_AUTHREQUIRED "AuthRequired"
@@ -44,6 +45,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 Config::Config() :
 	ServerEnabled(true),
 	ServerPort(4444),
+	LockToIPv4(false),
 	DebugEnabled(false),
 	AlertsEnabled(true),
 	PersistentDataEnabled(false),
@@ -73,7 +75,9 @@ void Config::Load()
 
 	ServerEnabled = config_get_bool(obsConfig, SECTION_NAME, PARAM_ENABLE);
 	ServerPort = config_get_uint(obsConfig, SECTION_NAME, PARAM_PORT);
+	LockToIPv4 = config_get_bool(obsConfig, SECTION_NAME, PARAM_LOCKTOIPV4);
 	PersistentDataMaxSize = config_get_uint(obsConfig, SECTION_NAME, PARAM_PERSISTENTDATAMAXSIZE);
+
 
 	DebugEnabled = config_get_bool(obsConfig, SECTION_NAME, PARAM_DEBUG);
 	AlertsEnabled = config_get_bool(obsConfig, SECTION_NAME, PARAM_ALERT);
@@ -91,6 +95,7 @@ void Config::Save()
 
 	config_set_bool(obsConfig, SECTION_NAME, PARAM_ENABLE, ServerEnabled);
 	config_set_uint(obsConfig, SECTION_NAME, PARAM_PORT, ServerPort);
+	config_set_bool(obsConfig, SECTION_NAME, PARAM_LOCKTOIPV4, LockToIPv4);
 	config_set_uint(obsConfig, SECTION_NAME, PARAM_PERSISTENTDATAMAXSIZE, PersistentDataMaxSize);
 
 	config_set_bool(obsConfig, SECTION_NAME, PARAM_DEBUG, DebugEnabled);
@@ -117,6 +122,8 @@ void Config::SetDefaults()
 			SECTION_NAME, PARAM_ENABLE, ServerEnabled);
 		config_set_default_uint(obsConfig,
 			SECTION_NAME, PARAM_PORT, ServerPort);
+		config_set_default_bool(obsConfig,
+			SECTION_NAME, PARAM_LOCKTOIPV4, LockToIPv4);
 		config_set_default_uint(obsConfig,
 			SECTION_NAME, PARAM_PERSISTENTDATAMAXSIZE, PersistentDataMaxSize);
 
@@ -222,16 +229,17 @@ void Config::OnFrontendEvent(enum obs_frontend_event event, void* param)
 
 		bool previousEnabled = config->ServerEnabled;
 		uint64_t previousPort = config->ServerPort;
+		bool previousLock = config->LockToIPv4;
 
 		config->SetDefaults();
 		config->Load();
 
-		if (config->ServerEnabled != previousEnabled || config->ServerPort != previousPort) {
+		if (config->ServerEnabled != previousEnabled || config->ServerPort != previousPort || config->LockToIPv4 != previousLock) {
 			auto server = GetServer();
 			server->stop();
 
 			if (config->ServerEnabled) {
-				server->start(config->ServerPort);
+				server->start(config->ServerPort, config->LockToIPv4);
 
 				if (previousEnabled != config->ServerEnabled) {
 					Utils::SysTrayNotify(startMessage, QSystemTrayIcon::MessageIcon::Information);
@@ -262,6 +270,13 @@ void Config::MigrateFromGlobalSettings()
 		config_set_uint(destination, SECTION_NAME, PARAM_PORT, value);
 
 		config_remove_value(source, SECTION_NAME, PARAM_PORT);
+	}
+	
+	if(config_has_user_value(source, SECTION_NAME, PARAM_LOCKTOIPV4)) {
+		bool value = config_get_bool(source, SECTION_NAME, PARAM_LOCKTOIPV4);
+		config_set_bool(destination, SECTION_NAME, PARAM_LOCKTOIPV4, value);
+
+		config_remove_value(source, SECTION_NAME, PARAM_LOCKTOIPV4);
 	}
 
 	if(config_has_user_value(source, SECTION_NAME, PARAM_DEBUG)) {

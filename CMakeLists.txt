@@ -11,6 +11,10 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_definitions(-DASIO_STANDALONE)
 
+if (${CMAKE_SYSTEM_PROCESSOR} MATCHES "arm") 
+    set(CMAKE_CXX_FLAGS "-mfpu=neon")
+endif()
+
 if (WIN32 OR APPLE)
 	include(external/FindLibObs.cmake)
 endif()

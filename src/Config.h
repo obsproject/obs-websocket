@@ -42,6 +42,7 @@ class Config {
 
 		bool ServerEnabled;
 		uint64_t ServerPort;
+		bool LockToIPv4;
 		uint64_t PersistentDataMaxSize;
 
 		bool DebugEnabled;
