@@ -16,7 +16,10 @@ Binaries for Windows, MacOS, and Linux are available in the [Releases](https://g
 
 ## Using obs-websocket
 
-A web client and frontend made by [t2t2](https://github.com/t2t2/obs-tablet-remote) (compatible with tablets and other touch interfaces) is available here : http://t2t2.github.io/obs-tablet-remote/
+Here is a list of available web clients: (compatible with tablets and other touch interfaces)
+
+- [Niek/obs-web](https://github.com/Niek/obs-web)
+- [t2t2/obs-tablet-remote](https://github.com/t2t2/obs-tablet-remote)
 
 It is **highly recommended** to protect obs-websocket with a password against unauthorized control. To do this, open the "Websocket server settings" dialog under OBS' "Tools" menu. In the settings dialogs, you can enable or disable authentication and set a password for it.
 
