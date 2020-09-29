@@ -345,3 +345,24 @@ RpcResponse WSRequestHandler::OpenProjector(const RpcRequest& request) {
 	obs_frontend_open_projector(type, monitor, geometry, name);
 	return request.success();
 }
+
+/**
+* Executes hotkey routine, identified by hotkey unique name
+*
+* @param {String} `name` Unique name of the hotkey, as defined when registering the hotkey (e.g. "ReplayBuffer.Save")
+*
+* @api requests
+* @name ProcessHotkeyByName
+* @category general
+* @since unreleased
+*/
+RpcResponse WSRequestHandler::ProcessHotkeyByName(const RpcRequest& request) {
+	const char* name = obs_data_get_string(request.parameters(), "name");
+
+	obs_hotkey_t* hk = Utils::FindHotkeyByName(name);
+	if (!hk) {
+		return request.failed("Hotkey not found");
+	}
+	obs_hotkey_trigger_routed_callback(obs_hotkey_get_id(hk), true);
+	return request.success();
+}

@@ -43,6 +43,8 @@ const QHash<QString, RpcMethodHandler> WSRequestHandler::messageMap {
 
 	{ "BroadcastCustomMessage", &WSRequestHandler::BroadcastCustomMessage },
 
+	{ "ProcessHotkeyByName", &WSRequestHandler::ProcessHotkeyByName },
+
 	{ "SetCurrentScene", &WSRequestHandler::SetCurrentScene },
 	{ "GetCurrentScene", &WSRequestHandler::GetCurrentScene },
 	{ "GetSceneList", &WSRequestHandler::GetSceneList },

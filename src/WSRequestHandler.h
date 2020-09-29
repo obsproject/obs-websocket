@@ -61,6 +61,8 @@ class WSRequestHandler {
 
 		RpcResponse BroadcastCustomMessage(const RpcRequest&);
 
+		RpcResponse ProcessHotkeyByName(const RpcRequest&);
+
 		RpcResponse SetCurrentScene(const RpcRequest&);
 		RpcResponse GetCurrentScene(const RpcRequest&);
 		RpcResponse GetSceneList(const RpcRequest&);
