@@ -34,7 +34,7 @@ RpcResponse WSRequestHandler::GetSceneItemList(const RpcRequest& request) {
 	const char* sceneName = obs_data_get_string(request.parameters(), "sceneName");
 
 	OBSSourceAutoRelease sceneSource;
-	if (sceneName) {
+	if (sceneName && strcmp(sceneName, "") != 0) {
 		sceneSource = obs_get_source_by_name(sceneName);
 	} else {
 		sceneSource = obs_frontend_get_current_scene();
