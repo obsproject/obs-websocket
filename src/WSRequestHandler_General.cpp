@@ -366,3 +366,48 @@ RpcResponse WSRequestHandler::ProcessHotkeyByName(const RpcRequest& request) {
 	obs_hotkey_trigger_routed_callback(obs_hotkey_get_id(hk), true);
 	return request.success();
 }
+
+/**
+* Executes hotkey routine, identified by bound combination of keys. A single key combination might trigger multiple hotkey routines depending on user settings 
+*
+* @param {String} `key` Main key identifier (e.g. `OBS_KEY_A` for key "A"). Available identifiers [here](https://github.com/obsproject/obs-studio/blob/master/libobs/obs-hotkeys.h)
+* @param {Object (Optional)} `modifiers` Optional key modifiers object: `{"shift":true/false, "alt":true/false, "control":true/false, "command":true/false}`. False entries can be ommitted
+*
+* @api requests
+* @name ProcessHotkeyByCombination
+* @category general
+* @since unreleased
+*/
+RpcResponse WSRequestHandler::ProcessHotkeyByCombination(const RpcRequest& request) {
+	if (!request.hasField("key")) {
+		return request.failed("Missing request key parameter");
+	}
+
+	OBSDataAutoRelease data = obs_data_get_obj(request.parameters(), "modifiers");
+
+	obs_key_combination_t combo = {0};
+	uint32_t modifiers = 0;
+	if (obs_data_get_bool(data, "shift"))
+		modifiers |= INTERACT_SHIFT_KEY;
+	if (obs_data_get_bool(data, "control"))
+		modifiers |= INTERACT_CONTROL_KEY;
+	if (obs_data_get_bool(data, "alt"))
+		modifiers |= INTERACT_ALT_KEY;
+	if (obs_data_get_bool(data, "command"))
+		modifiers |= INTERACT_COMMAND_KEY;
+
+	combo.modifiers = modifiers;
+	combo.key = obs_key_from_name(obs_data_get_string(request.parameters(), "key"));
+
+	if (!modifiers
+		&& (combo.key == OBS_KEY_NONE || combo.key >= OBS_KEY_LAST_VALUE)) {
+		return request.failed("Invalid key-modifier combination");
+	}
+
+	// Inject hotkey press-release sequence
+	obs_hotkey_inject_event(combo, false);
+	obs_hotkey_inject_event(combo, true);
+	obs_hotkey_inject_event(combo, false);
+
+	return request.success();
+}
