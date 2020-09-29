@@ -19,6 +19,7 @@ void AddSourceHelper(void *_data, obs_scene_t *scene) {
 *
 * @param {String (optional)} `sceneName` Name of the scene to get the list of scene items from. Defaults to the current scene if not specified.
 *
+* @return {String} `sceneName` Name of the requested (or current) scene
 * @return {Array<Object>} `sceneItems` Array of scene items
 * @return {int} `sceneItems.*.itemId` Unique item id of the source item
 * @return {String} `sceneItems.*.sourceKind` ID if the scene item's source. For example `vlc_source` or `image_source`
@@ -79,6 +80,7 @@ RpcResponse WSRequestHandler::GetSceneItemList(const RpcRequest& request) {
 	obs_scene_enum_items(scene, sceneItemEnumProc, sceneItemArray);
 
 	OBSDataAutoRelease response = obs_data_create();
+	obs_data_set_string(response, "sceneName", obs_source_get_name(sceneSource));
 	obs_data_set_array(response, "sceneItems", sceneItemArray);
 
 	return request.success(response);
