@@ -40,6 +40,7 @@ Here's a list of available language APIs for obs-websocket :
 - Java 8+: [obs-websocket-java](https://github.com/Twasi/websocket-obs-java) by TwasiNET
 - Golang: [go-obs-websocket](https://github.com/christopher-dG/go-obs-websocket) by Chris de Graaf
 - HTTP API: [obs-websocket-http](https://github.com/IRLToolkit/obs-websocket-http) by tt2468
+- Dart (Flutter): [obs_websocket_dart](https://github.com/renannoronha/obs_websocket_dart) by Renan Noronha
 
 I'd like to know what you're building with or for obs-websocket. If you do something in this fashion, feel free to drop a message in `#project-showoff` in the [discord server!](https://discord.gg/WBaSQ3A)
 
