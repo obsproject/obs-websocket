@@ -31,12 +31,15 @@ void AddSourceHelper(void *_data, obs_scene_t *scene) {
 * @since unreleased
 */
 RpcResponse WSRequestHandler::GetSceneItemList(const RpcRequest& request) {
-	if (!request.hasField("sceneName")) {
-		return request.failed("missing request parameters");
+	const char* sceneName = obs_data_get_string(request.parameters(), "sceneName");
+
+	OBSSourceAutoRelease sceneSource;
+	if (sceneName) {
+		sceneSource = obs_get_source_by_name(sceneName);
+	} else {
+		sceneSource = obs_frontend_get_current_scene();
 	}
 
-	const char* sceneName = obs_data_get_string(request.parameters(), "sceneName");
-	OBSSourceAutoRelease sceneSource = obs_get_source_by_name(sceneName);
 	OBSScene scene = obs_scene_from_source(sceneSource);
 	if (!scene) {
 		return request.failed("requested scene is invalid or doesnt exist");
