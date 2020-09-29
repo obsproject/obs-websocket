@@ -17,7 +17,7 @@ void AddSourceHelper(void *_data, obs_scene_t *scene) {
 /**
 * Get a list of all scene items in a scene.
 *
-* @param {String} `sceneName` Name of the scene to get the list of scene items from.
+* @param {String (optional)} `sceneName` Name of the scene to get the list of scene items from. Defaults to the current scene if not specified.
 *
 * @return {Array<Object>} `sceneItems` Array of scene items
 * @return {int} `sceneItems.*.itemId` Unique item id of the source item
