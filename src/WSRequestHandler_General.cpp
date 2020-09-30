@@ -349,19 +349,19 @@ RpcResponse WSRequestHandler::OpenProjector(const RpcRequest& request) {
 /**
 * Executes hotkey routine, identified by hotkey unique name
 *
-* @param {String} `name` Unique name of the hotkey, as defined when registering the hotkey (e.g. "ReplayBuffer.Save")
+* @param {String} `hotkeyName` Unique name of the hotkey, as defined when registering the hotkey (e.g. "ReplayBuffer.Save")
 *
 * @api requests
-* @name ProcessHotkeyByName
+* @name TriggerHotkeyByName
 * @category general
 * @since unreleased
 */
 RpcResponse WSRequestHandler::TriggerHotkeyByName(const RpcRequest& request) {
-	const char* name = obs_data_get_string(request.parameters(), "name");
+	const char* name = obs_data_get_string(request.parameters(), "hotkeyName");
 
 	obs_hotkey_t* hk = Utils::FindHotkeyByName(name);
 	if (!hk) {
-		return request.failed("Hotkey not found");
+		return request.failed("hotkey not found");
 	}
 	obs_hotkey_trigger_routed_callback(obs_hotkey_get_id(hk), true);
 	return request.success();
@@ -370,20 +370,24 @@ RpcResponse WSRequestHandler::TriggerHotkeyByName(const RpcRequest& request) {
 /**
 * Executes hotkey routine, identified by bound combination of keys. A single key combination might trigger multiple hotkey routines depending on user settings 
 *
-* @param {String} `key` Main key identifier (e.g. `OBS_KEY_A` for key "A"). Available identifiers [here](https://github.com/obsproject/obs-studio/blob/master/libobs/obs-hotkeys.h)
-* @param {Object (Optional)} `modifiers` Optional key modifiers object: `{"shift":true/false, "alt":true/false, "control":true/false, "command":true/false}`. False entries can be ommitted
+* @param {String} `keyId` Main key identifier (e.g. `OBS_KEY_A` for key "A"). Available identifiers [here](https://github.com/obsproject/obs-studio/blob/master/libobs/obs-hotkeys.h)
+* @param {Object (Optional)} `keyModifiers` Optional key modifiers object. False entries can be ommitted
+* @param {boolean} `keyModifiers.shift` Trigger Shift Key
+* @param {boolean} `keyModifiers.alt` Trigger Alt Key
+* @param {boolean} `keyModifiers.control` Trigger Control (Ctrl) Key
+* @param {boolean} `keyModifiers.command` Trigger Command Key (Mac)
 *
 * @api requests
-* @name ProcessHotkeyByCombination
+* @name TriggerHotkeyByCombination
 * @category general
 * @since unreleased
 */
 RpcResponse WSRequestHandler::TriggerHotkeyBySequence(const RpcRequest& request) {
-	if (!request.hasField("key")) {
-		return request.failed("Missing request key parameter");
+	if (!request.hasField("keyId")) {
+		return request.failed("missing request keyId parameter");
 	}
 
-	OBSDataAutoRelease data = obs_data_get_obj(request.parameters(), "modifiers");
+	OBSDataAutoRelease data = obs_data_get_obj(request.parameters(), "keyModifiers");
 
 	obs_key_combination_t combo = {0};
 	uint32_t modifiers = 0;
@@ -397,11 +401,11 @@ RpcResponse WSRequestHandler::TriggerHotkeyBySequence(const RpcRequest& request)
 		modifiers |= INTERACT_COMMAND_KEY;
 
 	combo.modifiers = modifiers;
-	combo.key = obs_key_from_name(obs_data_get_string(request.parameters(), "key"));
+	combo.key = obs_key_from_name(obs_data_get_string(request.parameters(), "keyId"));
 
 	if (!modifiers
 		&& (combo.key == OBS_KEY_NONE || combo.key >= OBS_KEY_LAST_VALUE)) {
-		return request.failed("Invalid key-modifier combination");
+		return request.failed("invalid key-modifier combination");
 	}
 
 	// Inject hotkey press-release sequence
