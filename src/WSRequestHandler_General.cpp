@@ -378,7 +378,7 @@ RpcResponse WSRequestHandler::TriggerHotkeyByName(const RpcRequest& request) {
 * @param {boolean} `keyModifiers.command` Trigger Command Key (Mac)
 *
 * @api requests
-* @name TriggerHotkeyByCombination
+* @name TriggerHotkeyBySequence
 * @category general
 * @since unreleased
 */
