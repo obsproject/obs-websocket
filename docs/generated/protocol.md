@@ -136,6 +136,8 @@ You can also refer to any of the client libraries listed on the [README](README.
     + [BroadcastCustomMessage](#broadcastcustommessage-1)
     + [GetVideoInfo](#getvideoinfo)
     + [OpenProjector](#openprojector)
+    + [TriggerHotkeyByName](#triggerhotkeybyname)
+    + [TriggerHotkeyByCombination](#triggerhotkeybycombination)
   * [Media Control](#media-control)
     + [PlayPauseMedia](#playpausemedia)
     + [RestartMedia](#restartmedia)
@@ -1647,6 +1649,51 @@ Open a projector window or create a projector on a monitor. Requires OBS v24.0.4
 | `monitor` | _int (Optional)_ | Monitor to open the projector on. If -1 or omitted, opens a window. |
 | `geometry` | _String (Optional)_ | Size and position of the projector window (only if monitor is -1). Encoded in Base64 using [Qt's geometry encoding](https://doc.qt.io/qt-5/qwidget.html#saveGeometry). Corresponds to OBS's saved projectors. |
 | `name` | _String (Optional)_ | Name of the source or scene to be displayed (ignored for other projector types). |
+
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+### TriggerHotkeyByName
+
+
+- Unreleased
+
+Executes hotkey routine, identified by hotkey unique name
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `hotkeyName` | _String_ | Unique name of the hotkey, as defined when registering the hotkey (e.g. "ReplayBuffer.Save") |
+
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+### TriggerHotkeyByCombination
+
+
+- Unreleased
+
+Executes hotkey routine, identified by bound combination of keys. A single key combination might trigger multiple hotkey routines depending on user settings
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `keyId` | _String_ | Main key identifier (e.g. `OBS_KEY_A` for key "A"). Available identifiers [here](https://github.com/obsproject/obs-studio/blob/master/libobs/obs-hotkeys.h) |
+| `keyModifiers` | _Object (Optional)_ | Optional key modifiers object. False entries can be ommitted |
+| `keyModifiers.shift` | _boolean_ | Trigger Shift Key |
+| `keyModifiers.alt` | _boolean_ | Trigger Alt Key |
+| `keyModifiers.control` | _boolean_ | Trigger Control (Ctrl) Key |
+| `keyModifiers.command` | _boolean_ | Trigger Command Key (Mac) |
 
 
 **Response Items:**

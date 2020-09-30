@@ -4065,6 +4065,120 @@
         "lead": "",
         "type": "class",
         "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Executes hotkey routine, identified by hotkey unique name",
+        "param": "{String} `hotkeyName` Unique name of the hotkey, as defined when registering the hotkey (e.g. \"ReplayBuffer.Save\")",
+        "api": "requests",
+        "name": "TriggerHotkeyByName",
+        "category": "general",
+        "since": "unreleased",
+        "params": [
+          {
+            "type": "String",
+            "name": "hotkeyName",
+            "description": "Unique name of the hotkey, as defined when registering the hotkey (e.g. \"ReplayBuffer.Save\")"
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "TriggerHotkeyByName"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "general"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "unreleased"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "TriggerHotkeyByName"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Executes hotkey routine, identified by bound combination of keys. A single key combination might trigger multiple hotkey routines depending on user settings",
+        "param": [
+          "{String} `keyId` Main key identifier (e.g. `OBS_KEY_A` for key \"A\"). Available identifiers [here](https://github.com/obsproject/obs-studio/blob/master/libobs/obs-hotkeys.h)",
+          "{Object (Optional)} `keyModifiers` Optional key modifiers object. False entries can be ommitted",
+          "{boolean} `keyModifiers.shift` Trigger Shift Key",
+          "{boolean} `keyModifiers.alt` Trigger Alt Key",
+          "{boolean} `keyModifiers.control` Trigger Control (Ctrl) Key",
+          "{boolean} `keyModifiers.command` Trigger Command Key (Mac)"
+        ],
+        "api": "requests",
+        "name": "TriggerHotkeyByCombination",
+        "category": "general",
+        "since": "unreleased",
+        "params": [
+          {
+            "type": "String",
+            "name": "keyId",
+            "description": "Main key identifier (e.g. `OBS_KEY_A` for key \"A\"). Available identifiers [here](https://github.com/obsproject/obs-studio/blob/master/libobs/obs-hotkeys.h)"
+          },
+          {
+            "type": "Object (Optional)",
+            "name": "keyModifiers",
+            "description": "Optional key modifiers object. False entries can be ommitted"
+          },
+          {
+            "type": "boolean",
+            "name": "keyModifiers.shift",
+            "description": "Trigger Shift Key"
+          },
+          {
+            "type": "boolean",
+            "name": "keyModifiers.alt",
+            "description": "Trigger Alt Key"
+          },
+          {
+            "type": "boolean",
+            "name": "keyModifiers.control",
+            "description": "Trigger Control (Ctrl) Key"
+          },
+          {
+            "type": "boolean",
+            "name": "keyModifiers.command",
+            "description": "Trigger Command Key (Mac)"
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "TriggerHotkeyByCombination"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "general"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "unreleased"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "TriggerHotkeyByCombination"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
       }
     ],
     "media control": [
