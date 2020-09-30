@@ -356,7 +356,7 @@ RpcResponse WSRequestHandler::OpenProjector(const RpcRequest& request) {
 * @category general
 * @since unreleased
 */
-RpcResponse WSRequestHandler::ProcessHotkeyByName(const RpcRequest& request) {
+RpcResponse WSRequestHandler::TriggerHotkeyByName(const RpcRequest& request) {
 	const char* name = obs_data_get_string(request.parameters(), "name");
 
 	obs_hotkey_t* hk = Utils::FindHotkeyByName(name);
@@ -378,7 +378,7 @@ RpcResponse WSRequestHandler::ProcessHotkeyByName(const RpcRequest& request) {
 * @category general
 * @since unreleased
 */
-RpcResponse WSRequestHandler::ProcessHotkeyByCombination(const RpcRequest& request) {
+RpcResponse WSRequestHandler::TriggerHotkeyBySequence(const RpcRequest& request) {
 	if (!request.hasField("key")) {
 		return request.failed("Missing request key parameter");
 	}
