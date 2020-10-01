@@ -137,7 +137,7 @@ You can also refer to any of the client libraries listed on the [README](README.
     + [GetVideoInfo](#getvideoinfo)
     + [OpenProjector](#openprojector)
     + [TriggerHotkeyByName](#triggerhotkeybyname)
-    + [TriggerHotkeyByCombination](#triggerhotkeybycombination)
+    + [TriggerHotkeyBySequence](#triggerhotkeybysequence)
   * [Media Control](#media-control)
     + [PlayPauseMedia](#playpausemedia)
     + [RestartMedia](#restartmedia)
@@ -1677,7 +1677,7 @@ _No additional response items._
 
 ---
 
-### TriggerHotkeyByCombination
+### TriggerHotkeyBySequence
 
 
 - Unreleased

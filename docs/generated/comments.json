@@ -4119,7 +4119,7 @@
           "{boolean} `keyModifiers.command` Trigger Command Key (Mac)"
         ],
         "api": "requests",
-        "name": "TriggerHotkeyByCombination",
+        "name": "TriggerHotkeyBySequence",
         "category": "general",
         "since": "unreleased",
         "params": [
@@ -4157,7 +4157,7 @@
         "names": [
           {
             "name": "",
-            "description": "TriggerHotkeyByCombination"
+            "description": "TriggerHotkeyBySequence"
           }
         ],
         "categories": [
@@ -4174,7 +4174,7 @@
         ],
         "heading": {
           "level": 2,
-          "text": "TriggerHotkeyByCombination"
+          "text": "TriggerHotkeyBySequence"
         },
         "lead": "",
         "type": "class",
