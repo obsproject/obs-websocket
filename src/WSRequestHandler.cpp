@@ -28,7 +28,7 @@
 
 using namespace std::placeholders;
 
-const QHash<QString, RpcMethodHandler> WSRequestHandler::messageMap {
+const QHash<QString, RpcMethodHandler> WSRequestHandler::messageMap{
 	{ "GetVersion", &WSRequestHandler::GetVersion },
 	{ "GetAuthRequired", &WSRequestHandler::GetAuthRequired },
 	{ "Authenticate", &WSRequestHandler::Authenticate },
@@ -96,6 +96,8 @@ const QHash<QString, RpcMethodHandler> WSRequestHandler::messageMap {
 	{ "SetTransitionDuration", &WSRequestHandler::SetTransitionDuration },
 	{ "GetTransitionDuration", &WSRequestHandler::GetTransitionDuration },
 	{ "GetTransitionPosition", &WSRequestHandler::GetTransitionPosition },
+	{ "GetTransitionSettings", &WSRequestHandler::GetTransitionSettings },
+	{ "SetTransitionSettings", &WSRequestHandler::SetTransitionSettings },
 
 	{ "SetVolume", &WSRequestHandler::SetVolume },
 	{ "GetVolume", &WSRequestHandler::GetVolume },
