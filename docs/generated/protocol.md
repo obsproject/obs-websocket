@@ -3261,13 +3261,14 @@ Get a list of all scene items in a scene.
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
-| `sceneName` | _String_ | Name of the scene to get the list of scene items from. |
+| `sceneName` | _String (optional)_ | Name of the scene to get the list of scene items from. Defaults to the current scene if not specified. |
 
 
 **Response Items:**
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
+| `sceneName` | _String_ | Name of the requested (or current) scene |
 | `sceneItems` | _Array&lt;Object&gt;_ | Array of scene items |
 | `sceneItems.*.itemId` | _int_ | Unique item id of the source item |
 | `sceneItems.*.sourceKind` | _String_ | ID if the scene item's source. For example `vlc_source` or `image_source` |

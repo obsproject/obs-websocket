@@ -8092,8 +8092,9 @@
       {
         "subheads": [],
         "description": "Get a list of all scene items in a scene.",
-        "param": "{String} `sceneName` Name of the scene to get the list of scene items from.",
+        "param": "{String (optional)} `sceneName` Name of the scene to get the list of scene items from. Defaults to the current scene if not specified.",
         "return": [
+          "{String} `sceneName` Name of the requested (or current) scene",
           "{Array<Object>} `sceneItems` Array of scene items",
           "{int} `sceneItems.*.itemId` Unique item id of the source item",
           "{String} `sceneItems.*.sourceKind` ID if the scene item's source. For example `vlc_source` or `image_source`",
@@ -8105,6 +8106,11 @@
         "category": "scene items",
         "since": "unreleased",
         "returns": [
+          {
+            "type": "String",
+            "name": "sceneName",
+            "description": "Name of the requested (or current) scene"
+          },
           {
             "type": "Array<Object>",
             "name": "sceneItems",
@@ -8133,9 +8139,9 @@
         ],
         "params": [
           {
-            "type": "String",
+            "type": "String (optional)",
             "name": "sceneName",
-            "description": "Name of the scene to get the list of scene items from."
+            "description": "Name of the scene to get the list of scene items from. Defaults to the current scene if not specified."
           }
         ],
         "names": [
