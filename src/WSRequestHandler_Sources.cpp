@@ -511,6 +511,7 @@ RpcResponse WSRequestHandler::GetSourceSettings(const RpcRequest& request)
 
 	const char* sourceName = obs_data_get_string(request.parameters(), "sourceName");
 	OBSSourceAutoRelease source = obs_get_source_by_name(sourceName);
+
 	if (!source) {
 		return request.failed("specified source doesn't exist");
 	}
@@ -571,21 +572,17 @@ RpcResponse WSRequestHandler::SetSourceSettings(const RpcRequest& request)
 		}
 	}
 
-	OBSDataAutoRelease currentSettings = obs_source_get_settings(source);
 	OBSDataAutoRelease newSettings = obs_data_get_obj(request.parameters(), "sourceSettings");
 
-	OBSDataAutoRelease sourceSettings = obs_data_create();
-	obs_data_apply(sourceSettings, currentSettings);
-	obs_data_apply(sourceSettings, newSettings);
-
-	obs_source_update(source, sourceSettings);
+	obs_source_update(source, newSettings);
 	obs_source_update_properties(source);
+
+	OBSDataAutoRelease updatedSettings = obs_source_get_settings(source);
 
 	OBSDataAutoRelease response = obs_data_create();
 	obs_data_set_string(response, "sourceName", obs_source_get_name(source));
 	obs_data_set_string(response, "sourceType", obs_source_get_id(source));
-	obs_data_set_obj(response, "sourceSettings", sourceSettings);
-
+	obs_data_set_obj(response, "sourceSettings", updatedSettings);
 	return request.success(response);
 }
 
