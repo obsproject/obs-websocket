@@ -201,6 +201,6 @@ RpcResponse WSRequestHandler::SetTransitionSettings(const RpcRequest& request) {
 	OBSDataAutoRelease updatedSettings = obs_source_get_settings(transition);
 
 	OBSDataAutoRelease response = obs_data_create();
-	obs_data_set_obj(response, "transitionSettings", updatedSettings); // TODO
+	obs_data_set_obj(response, "transitionSettings", updatedSettings);
 	return request.success(response);
 }
