@@ -152,9 +152,7 @@ class WSRequestHandler {
 		RpcResponse SetStreamSettings(const RpcRequest&);
 		RpcResponse GetStreamSettings(const RpcRequest&);
 		RpcResponse SaveStreamSettings(const RpcRequest&);
-#if BUILD_CAPTIONS
 		RpcResponse SendCaptions(const RpcRequest&);
-#endif
 
 		RpcResponse GetStudioModeStatus(const RpcRequest&);
 		RpcResponse GetPreviewScene(const RpcRequest&);

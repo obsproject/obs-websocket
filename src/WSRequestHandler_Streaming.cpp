@@ -300,7 +300,6 @@ RpcResponse WSRequestHandler::SaveStreamSettings(const RpcRequest& request) {
  * @category streaming
  * @since 4.6.0
  */
-#if BUILD_CAPTIONS
 RpcResponse WSRequestHandler::SendCaptions(const RpcRequest& request) {
 	if (!request.hasField("text")) {
 		return request.failed("missing request parameters");
@@ -315,5 +314,4 @@ RpcResponse WSRequestHandler::SendCaptions(const RpcRequest& request) {
 
 	return request.success();
 }
-#endif
 
