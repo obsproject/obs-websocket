@@ -550,13 +550,30 @@ void WSEvents::OnTransitionChange() {
  * The list of available transitions has been modified.
  * Transitions have been added, removed, or renamed.
  *
+ * @return {Array} `transitions` Transitions list.
+ * 
  * @api events
  * @name TransitionListChanged
  * @category transitions
  * @since 4.0.0
  */
 void WSEvents::OnTransitionListChange() {
-	broadcastUpdate("TransitionListChanged");
+	obs_frontend_source_list transitionList = {};
+	obs_frontend_get_transitions(&transitionList);
+
+	OBSDataArrayAutoRelease transitions = obs_data_array_create();
+	for (size_t i = 0; i < transitionList.sources.num; i++) {
+		OBSSource transition = transitionList.sources.array[i];
+
+		OBSDataAutoRelease obj = obs_data_create();
+		obs_data_set_string(obj, "name", obs_source_get_name(transition));
+		obs_data_array_push_back(transitions, obj);
+	}
+	obs_frontend_source_list_free(&transitionList);
+
+	OBSDataAutoRelease fields = obs_data_create();
+	obs_data_set_array(fields, "transitions", transitions);
+	broadcastUpdate("TransitionListChanged", fields);
 }
 
 /**
