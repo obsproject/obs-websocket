@@ -507,7 +507,7 @@ void WSEvents::OnSceneCollectionChange() {
 /**
  * Triggered when a scene collection is created, added, renamed, or removed.
  *
- * @return {Array} `sceneCollections` Scene collections list.
+ * @return {Array<Object>} `sceneCollections` Scene collections list.
  * @return {String} `sceneCollections.*.name` Scene collection name.
  * 
  * @api events
@@ -550,7 +550,8 @@ void WSEvents::OnTransitionChange() {
  * The list of available transitions has been modified.
  * Transitions have been added, removed, or renamed.
  *
- * @return {Array} `transitions` Transitions list.
+ * @return {Array<Object>} `transitions` Transitions list.
+ * @return {String} `transitions.*.name` Transition name.
  * 
  * @api events
  * @name TransitionListChanged
@@ -595,7 +596,7 @@ void WSEvents::OnProfileChange() {
 /**
  * Triggered when a profile is created, added, renamed, or removed.
  *
- * @return {Array} `profiles` Profiles list.
+ * @return {Array<Object>} `profiles` Profiles list.
  * @return {String} `profiles.*.name` Profile name.
  * 
  * @api events
