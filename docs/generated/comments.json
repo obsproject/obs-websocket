@@ -10521,6 +10521,112 @@
         "lead": "",
         "type": "class",
         "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Get the current settings of a transition",
+        "param": "{String} `transitionName` Transition name",
+        "return": "{Object} `transitionSettings` Current transition settings",
+        "api": "requests",
+        "name": "GetTransitionSettings",
+        "category": "transitions",
+        "since": "unreleased",
+        "returns": [
+          {
+            "type": "Object",
+            "name": "transitionSettings",
+            "description": "Current transition settings"
+          }
+        ],
+        "params": [
+          {
+            "type": "String",
+            "name": "transitionName",
+            "description": "Transition name"
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "GetTransitionSettings"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "transitions"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "unreleased"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "GetTransitionSettings"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Change the current settings of a transition",
+        "param": [
+          "{String} `transitionName` Transition name",
+          "{Object} `transitionSettings` Transition settings (they can be partial)"
+        ],
+        "return": "{Object} `transitionSettings` Updated transition settings",
+        "api": "requests",
+        "name": "SetTransitionSettings",
+        "category": "transitions",
+        "since": "unreleased",
+        "returns": [
+          {
+            "type": "Object",
+            "name": "transitionSettings",
+            "description": "Updated transition settings"
+          }
+        ],
+        "params": [
+          {
+            "type": "String",
+            "name": "transitionName",
+            "description": "Transition name"
+          },
+          {
+            "type": "Object",
+            "name": "transitionSettings",
+            "description": "Transition settings (they can be partial)"
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "SetTransitionSettings"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "transitions"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "unreleased"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "SetTransitionSettings"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
       }
     ]
   }

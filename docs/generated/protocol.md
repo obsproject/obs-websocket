@@ -255,6 +255,8 @@ You can also refer to any of the client libraries listed on the [README](README.
     + [SetTransitionDuration](#settransitionduration)
     + [GetTransitionDuration](#gettransitionduration)
     + [GetTransitionPosition](#gettransitionposition)
+    + [GetTransitionSettings](#gettransitionsettings)
+    + [SetTransitionSettings](#settransitionsettings)
 
 <!-- tocstop -->
 
@@ -4181,6 +4183,53 @@ _No specified parameters._
 | Name | Type  | Description |
 | ---- | :---: | ------------|
 | `position` | _double_ | current transition position. This value will be between 0.0 and 1.0. Note: Transition returns 1.0 when not active. |
+
+
+---
+
+### GetTransitionSettings
+
+
+- Unreleased
+
+Get the current settings of a transition
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `transitionName` | _String_ | Transition name |
+
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `transitionSettings` | _Object_ | Current transition settings |
+
+
+---
+
+### SetTransitionSettings
+
+
+- Unreleased
+
+Change the current settings of a transition
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `transitionName` | _String_ | Transition name |
+| `transitionSettings` | _Object_ | Transition settings (they can be partial) |
+
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `transitionSettings` | _Object_ | Updated transition settings |
 
 
 ---
