@@ -546,13 +546,17 @@ void WSEvents::OnTransitionListChange() {
 /**
  * Triggered when switching to another profile or when renaming the current profile.
  *
+ * @return {String} `profile` Name of the new current profile.
+ * 
  * @api events
  * @name ProfileChanged
  * @category profiles
  * @since 4.0.0
  */
 void WSEvents::OnProfileChange() {
-	broadcastUpdate("ProfileChanged");
+	OBSDataAutoRelease fields = obs_data_create();
+	obs_data_set_string(fields, "profile", obs_frontend_get_current_profile());
+	broadcastUpdate("ProfileChanged", fields);
 }
 
 /**
