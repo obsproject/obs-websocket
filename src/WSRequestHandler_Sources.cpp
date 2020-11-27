@@ -58,19 +58,18 @@ RpcResponse WSRequestHandler::CreateSource(const RpcRequest& request)
 		return request.failed("requested scene is invalid or doesnt exist");
 	}
 
-	OBSSourceAutoRelease newSource = obs_source_create(sourceKind.toUtf8(), sourceName.toUtf8(), nullptr, nullptr);
+	OBSDataAutoRelease sourceSettings = nullptr;
+	if (request.hasField("sourceSettings")) {
+		sourceSettings = obs_data_get_obj(request.parameters(), "sourceSettings");
+	}
+
+	OBSSourceAutoRelease newSource = obs_source_create(sourceKind.toUtf8(), sourceName.toUtf8(), sourceSettings, nullptr);
 
 	if (!newSource) {
 		return request.failed("failed to create the source");
 	}
 	obs_source_set_enabled(newSource, true);
 
-	if (request.hasField("sourceSettings")) { // We apply the settings after source creation because otherwise we get a bunch of memory leaks.
-		OBSDataAutoRelease newSettings = obs_data_get_obj(request.parameters(), "sourceSettings");
-		obs_source_update(newSource, newSettings);
-		obs_source_update_properties(newSource);
-	}
-	
 	Utils::AddSourceData data;
 	data.source = newSource;
 	data.setVisible = true;
