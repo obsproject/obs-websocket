@@ -572,14 +572,21 @@ void WSEvents::OnProfileChange() {
 /**
  * Triggered when a profile is created, added, renamed, or removed.
  *
+ * @return {Array} `profiles` Profiles list.
+ * @return {String} `profiles.*.name` Profile name.
+ * 
  * @api events
  * @name ProfileListChanged
  * @category profiles
  * @since 4.0.0
  */
 void WSEvents::OnProfileListChange() {
+	char** profiles = obs_frontend_get_profiles();
+	OBSDataArrayAutoRelease profilesList = Utils::StringListToArray(profiles, "name");
+	bfree(profiles);
+
 	OBSDataAutoRelease fields = obs_data_create();
-	// TODO provide new profile list
+	obs_data_set_array(fields, "profiles", profilesList);
 	broadcastUpdate("ProfileListChanged", fields);
 }
 
