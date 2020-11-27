@@ -394,7 +394,10 @@ Note: This event is not fired when the scenes are reordered.
 
 **Response Items:**
 
-_No additional response items._
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `scenes` | _Array&lt;Scene&gt;_ | Scenes list. |
+
 
 ---
 
@@ -407,7 +410,10 @@ Triggered when switching to another scene collection or when renaming the curren
 
 **Response Items:**
 
-_No additional response items._
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sceneCollection` | _String_ | Name of the new current scene collection. |
+
 
 ---
 
@@ -420,7 +426,11 @@ Triggered when a scene collection is created, added, renamed, or removed.
 
 **Response Items:**
 
-_No additional response items._
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sceneCollections` | _Array&lt;Object&gt;_ | Scene collections list. |
+| `sceneCollections.*.name` | _String_ | Scene collection name. |
+
 
 ---
 
@@ -452,7 +462,11 @@ Transitions have been added, removed, or renamed.
 
 **Response Items:**
 
-_No additional response items._
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `transitions` | _Array&lt;Object&gt;_ | Transitions list. |
+| `transitions.*.name` | _String_ | Transition name. |
+
 
 ---
 
@@ -543,7 +557,10 @@ Triggered when switching to another profile or when renaming the current profile
 
 **Response Items:**
 
-_No additional response items._
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `profile` | _String_ | Name of the new current profile. |
+
 
 ---
 
@@ -556,7 +573,11 @@ Triggered when a profile is created, added, renamed, or removed.
 
 **Response Items:**
 
-_No additional response items._
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `profiles` | _Array&lt;Object&gt;_ | Profiles list. |
+| `profiles.*.name` | _String_ | Profile name. |
+
 
 ---
 

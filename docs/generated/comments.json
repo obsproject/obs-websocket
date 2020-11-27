@@ -562,10 +562,18 @@
       {
         "subheads": [],
         "description": "\n\nNote: This event is not fired when the scenes are reordered.",
+        "return": "{Array<Scene>} `scenes` Scenes list.",
         "api": "events",
         "name": "ScenesChanged",
         "category": "scenes",
         "since": "0.3",
+        "returns": [
+          {
+            "type": "Array<Scene>",
+            "name": "scenes",
+            "description": "Scenes list."
+          }
+        ],
         "names": [
           {
             "name": "",
@@ -595,10 +603,18 @@
       {
         "subheads": [],
         "description": "Triggered when switching to another scene collection or when renaming the current scene collection.",
+        "return": "{String} `sceneCollection` Name of the new current scene collection.",
         "api": "events",
         "name": "SceneCollectionChanged",
         "category": "scenes",
         "since": "4.0.0",
+        "returns": [
+          {
+            "type": "String",
+            "name": "sceneCollection",
+            "description": "Name of the new current scene collection."
+          }
+        ],
         "names": [
           {
             "name": "",
@@ -628,10 +644,26 @@
       {
         "subheads": [],
         "description": "Triggered when a scene collection is created, added, renamed, or removed.",
+        "return": [
+          "{Array<Object>} `sceneCollections` Scene collections list.",
+          "{String} `sceneCollections.*.name` Scene collection name."
+        ],
         "api": "events",
         "name": "SceneCollectionListChanged",
         "category": "scenes",
         "since": "4.0.0",
+        "returns": [
+          {
+            "type": "Array<Object>",
+            "name": "sceneCollections",
+            "description": "Scene collections list."
+          },
+          {
+            "type": "String",
+            "name": "sceneCollections.*.name",
+            "description": "Scene collection name."
+          }
+        ],
         "names": [
           {
             "name": "",
@@ -704,10 +736,26 @@
       {
         "subheads": [],
         "description": "The list of available transitions has been modified.\nTransitions have been added, removed, or renamed.",
+        "return": [
+          "{Array<Object>} `transitions` Transitions list.",
+          "{String} `transitions.*.name` Transition name."
+        ],
         "api": "events",
         "name": "TransitionListChanged",
         "category": "transitions",
         "since": "4.0.0",
+        "returns": [
+          {
+            "type": "Array<Object>",
+            "name": "transitions",
+            "description": "Transitions list."
+          },
+          {
+            "type": "String",
+            "name": "transitions.*.name",
+            "description": "Transition name."
+          }
+        ],
         "names": [
           {
             "name": "",
@@ -975,10 +1023,18 @@
       {
         "subheads": [],
         "description": "Triggered when switching to another profile or when renaming the current profile.",
+        "return": "{String} `profile` Name of the new current profile.",
         "api": "events",
         "name": "ProfileChanged",
         "category": "profiles",
         "since": "4.0.0",
+        "returns": [
+          {
+            "type": "String",
+            "name": "profile",
+            "description": "Name of the new current profile."
+          }
+        ],
         "names": [
           {
             "name": "",
@@ -1008,10 +1064,26 @@
       {
         "subheads": [],
         "description": "Triggered when a profile is created, added, renamed, or removed.",
+        "return": [
+          "{Array<Object>} `profiles` Profiles list.",
+          "{String} `profiles.*.name` Profile name."
+        ],
         "api": "events",
         "name": "ProfileListChanged",
         "category": "profiles",
         "since": "4.0.0",
+        "returns": [
+          {
+            "type": "Array<Object>",
+            "name": "profiles",
+            "description": "Profiles list."
+          },
+          {
+            "type": "String",
+            "name": "profiles.*.name",
+            "description": "Profile name."
+          }
+        ],
         "names": [
           {
             "name": "",
