@@ -136,6 +136,8 @@ You can also refer to any of the client libraries listed on the [README](README.
     + [BroadcastCustomMessage](#broadcastcustommessage-1)
     + [GetVideoInfo](#getvideoinfo)
     + [OpenProjector](#openprojector)
+    + [TriggerHotkeyByName](#triggerhotkeybyname)
+    + [TriggerHotkeyBySequence](#triggerhotkeybysequence)
   * [Media Control](#media-control)
     + [PlayPauseMedia](#playpausemedia)
     + [RestartMedia](#restartmedia)
@@ -253,6 +255,8 @@ You can also refer to any of the client libraries listed on the [README](README.
     + [SetTransitionDuration](#settransitionduration)
     + [GetTransitionDuration](#gettransitionduration)
     + [GetTransitionPosition](#gettransitionposition)
+    + [GetTransitionSettings](#gettransitionsettings)
+    + [SetTransitionSettings](#settransitionsettings)
 
 <!-- tocstop -->
 
@@ -1647,6 +1651,51 @@ Open a projector window or create a projector on a monitor. Requires OBS v24.0.4
 | `monitor` | _int (Optional)_ | Monitor to open the projector on. If -1 or omitted, opens a window. |
 | `geometry` | _String (Optional)_ | Size and position of the projector window (only if monitor is -1). Encoded in Base64 using [Qt's geometry encoding](https://doc.qt.io/qt-5/qwidget.html#saveGeometry). Corresponds to OBS's saved projectors. |
 | `name` | _String (Optional)_ | Name of the source or scene to be displayed (ignored for other projector types). |
+
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+### TriggerHotkeyByName
+
+
+- Unreleased
+
+Executes hotkey routine, identified by hotkey unique name
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `hotkeyName` | _String_ | Unique name of the hotkey, as defined when registering the hotkey (e.g. "ReplayBuffer.Save") |
+
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+### TriggerHotkeyBySequence
+
+
+- Unreleased
+
+Executes hotkey routine, identified by bound combination of keys. A single key combination might trigger multiple hotkey routines depending on user settings
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `keyId` | _String_ | Main key identifier (e.g. `OBS_KEY_A` for key "A"). Available identifiers [here](https://github.com/obsproject/obs-studio/blob/master/libobs/obs-hotkeys.h) |
+| `keyModifiers` | _Object (Optional)_ | Optional key modifiers object. False entries can be ommitted |
+| `keyModifiers.shift` | _boolean_ | Trigger Shift Key |
+| `keyModifiers.alt` | _boolean_ | Trigger Alt Key |
+| `keyModifiers.control` | _boolean_ | Trigger Control (Ctrl) Key |
+| `keyModifiers.command` | _boolean_ | Trigger Command Key (Mac) |
 
 
 **Response Items:**
@@ -3214,13 +3263,14 @@ Get a list of all scene items in a scene.
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
-| `sceneName` | _String_ | Name of the scene to get the list of scene items from. |
+| `sceneName` | _String (optional)_ | Name of the scene to get the list of scene items from. Defaults to the current scene if not specified. |
 
 
 **Response Items:**
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
+| `sceneName` | _String_ | Name of the requested (or current) scene |
 | `sceneItems` | _Array&lt;Object&gt;_ | Array of scene items |
 | `sceneItems.*.itemId` | _int_ | Unique item id of the source item |
 | `sceneItems.*.sourceKind` | _String_ | ID if the scene item's source. For example `vlc_source` or `image_source` |
@@ -4133,6 +4183,53 @@ _No specified parameters._
 | Name | Type  | Description |
 | ---- | :---: | ------------|
 | `position` | _double_ | current transition position. This value will be between 0.0 and 1.0. Note: Transition returns 1.0 when not active. |
+
+
+---
+
+### GetTransitionSettings
+
+
+- Unreleased
+
+Get the current settings of a transition
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `transitionName` | _String_ | Transition name |
+
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `transitionSettings` | _Object_ | Current transition settings |
+
+
+---
+
+### SetTransitionSettings
+
+
+- Unreleased
+
+Change the current settings of a transition
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `transitionName` | _String_ | Transition name |
+| `transitionSettings` | _Object_ | Transition settings (they can be partial) |
+
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `transitionSettings` | _Object_ | Updated transition settings |
 
 
 ---

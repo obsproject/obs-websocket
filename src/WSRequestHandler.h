@@ -64,6 +64,9 @@ class WSRequestHandler {
 
 		RpcResponse BroadcastCustomMessage(const RpcRequest&);
 
+		RpcResponse TriggerHotkeyByName(const RpcRequest&);
+		RpcResponse TriggerHotkeyBySequence(const RpcRequest&);
+
 		RpcResponse SetCurrentScene(const RpcRequest&);
 		RpcResponse GetCurrentScene(const RpcRequest&);
 		RpcResponse GetSceneList(const RpcRequest&);
@@ -113,6 +116,8 @@ class WSRequestHandler {
 		RpcResponse SetTransitionDuration(const RpcRequest&);
 		RpcResponse GetTransitionDuration(const RpcRequest&);
 		RpcResponse GetTransitionPosition(const RpcRequest&);
+		RpcResponse GetTransitionSettings(const RpcRequest&);
+		RpcResponse SetTransitionSettings(const RpcRequest&);
 
 		RpcResponse SetVolume(const RpcRequest&);
 		RpcResponse GetVolume(const RpcRequest&);
