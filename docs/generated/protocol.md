@@ -257,6 +257,8 @@ You can also refer to any of the client libraries listed on the [README](README.
     + [GetTransitionPosition](#gettransitionposition)
     + [GetTransitionSettings](#gettransitionsettings)
     + [SetTransitionSettings](#settransitionsettings)
+    + [ReleaseTBar](#releasetbar)
+    + [SetTBarPosition](#settbarposition)
 
 <!-- tocstop -->
 
@@ -4170,7 +4172,7 @@ _No specified parameters._
 ### GetTransitionPosition
 
 
-- Added in v4.8.0
+- Unreleased
 
 Get the position of the current transition.
 
@@ -4231,6 +4233,47 @@ Change the current settings of a transition
 | ---- | :---: | ------------|
 | `transitionSettings` | _Object_ | Updated transition settings |
 
+
+---
+
+### ReleaseTBar
+
+
+- Unreleased
+
+Release the T-Bar (like a user releasing their mouse button after moving it).
+*YOU MUST CALL THIS if you called `SetTBarPosition` with the `release` parameter set to `false`.*
+
+**Request Fields:**
+
+_No specified parameters._
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+### SetTBarPosition
+
+
+- Unreleased
+
+
+
+If your code needs to perform multiple successive T-Bar moves (e.g. : in an animation, or in response to a user moving a T-Bar control in your User Interface), set `release` to false and call `ReleaseTBar` later once the animation/interaction is over.
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `position` | _double_ | T-Bar position. This value must be between 0.0 and 1.0. |
+| `release` | _boolean (optional)_ | Whether or not the T-Bar gets released automatically after setting its new position (like a user releasing their mouse button after moving the T-Bar). Call `ReleaseTBar` manually if you set `release` to false. Defaults to true. |
+
+
+**Response Items:**
+
+_No additional response items._
 
 ---
 

@@ -10488,7 +10488,7 @@
         "api": "requests",
         "name": "GetTransitionPosition",
         "category": "transitions",
-        "since": "4.8.0",
+        "since": "unreleased",
         "returns": [
           {
             "type": "double",
@@ -10511,7 +10511,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "4.8.0"
+            "description": "unreleased"
           }
         ],
         "heading": {
@@ -10625,6 +10625,88 @@
           "text": "SetTransitionSettings"
         },
         "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Release the T-Bar (like a user releasing their mouse button after moving it).\n*YOU MUST CALL THIS if you called `SetTBarPosition` with the `release` parameter set to `false`.*",
+        "api": "requests",
+        "name": "ReleaseTBar",
+        "category": "transitions",
+        "since": "unreleased",
+        "names": [
+          {
+            "name": "",
+            "description": "ReleaseTBar"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "transitions"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "unreleased"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "ReleaseTBar"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "\n\nIf your code needs to perform multiple successive T-Bar moves (e.g. : in an animation, or in response to a user moving a T-Bar control in your User Interface), set `release` to false and call `ReleaseTBar` later once the animation/interaction is over.",
+        "param": [
+          "{double} `position` T-Bar position. This value must be between 0.0 and 1.0.",
+          "{boolean (optional)} `release` Whether or not the T-Bar gets released automatically after setting its new position (like a user releasing their mouse button after moving the T-Bar). Call `ReleaseTBar` manually if you set `release` to false. Defaults to true."
+        ],
+        "api": "requests",
+        "name": "SetTBarPosition",
+        "category": "transitions",
+        "since": "unreleased",
+        "params": [
+          {
+            "type": "double",
+            "name": "position",
+            "description": "T-Bar position. This value must be between 0.0 and 1.0."
+          },
+          {
+            "type": "boolean (optional)",
+            "name": "release",
+            "description": "Whether or not the T-Bar gets released automatically after setting its new position (like a user releasing their mouse button after moving the T-Bar). Call `ReleaseTBar` manually if you set `release` to false. Defaults to true."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "SetTBarPosition"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "transitions"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "unreleased"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "SetTBarPosition"
+        },
+        "lead": "Set the manual position of the T-Bar (in Studio Mode) to the specified value. Will return an error if OBS is not in studio mode or if the current transition doesn't support T-Bar control.",
         "type": "class",
         "examples": []
       }
