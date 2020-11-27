@@ -24,9 +24,15 @@ sudo apt-get install libboost-all-dev
 git clone --recursive https://github.com/Palakis/obs-websocket.git
 cd obs-websocket
 mkdir build && cd build
-cmake -DLIBOBS_INCLUDE_DIR="<path to the libobs sub-folder in obs-studio's source code>" -DCMAKE_INSTALL_PREFIX=/usr ..
+cmake -DLIBOBS_INCLUDE_DIR="<path to the libobs sub-folder in obs-studio's source code>" -DCMAKE_INSTALL_PREFIX=/usr -DUSE_UBUNTU_FIX=true ..
 make -j4
 sudo make install
+```
+
+On other linux OS's, use this cmake command instead:
+
+```shell
+cmake -DLIBOBS_INCLUDE_DIR="<path to the libobs sub-folder in obs-studio's source code>" -DCMAKE_INSTALL_PREFIX=/usr ..
 ```
 
 ## OS X
@@ -34,7 +40,7 @@ sudo make install
 As a prerequisite, you will need Xcode for your current OSX version, the Xcode command line tools, and [Homebrew](https://brew.sh/).
 Homebrew's setup will guide you in getting your system set up, you should be good to go once Homebrew is successfully up and running.
 
-Use of the Travis macOS CI scripts is recommended. Please note that these
+Use of the macOS CI scripts is recommended. Please note that these
 scripts install new software and can change several settings on your system. An
 existing obs-studio development environment is not required, as
 `install-build-obs-macos.sh` will install it for you. If you already have a
@@ -57,6 +63,4 @@ This will result in a ready-to-use `obs-websocket.pkg` installer in the `release
 
 ## Automated Builds
 
-- Windows: [![Automated Build status for Windows](https://ci.appveyor.com/api/projects/status/github/Palakis/obs-websocket)](https://ci.appveyor.com/project/Palakis/obs-websocket/history)
-- Linux: [![Automated Build status for Linux](https://travis-ci.org/Palakis/obs-websocket.svg?branch=master)](https://travis-ci.org/Palakis/obs-websocket)
-- macOS: [![Automated Build status for macOS](https://img.shields.io/azure-devops/build/Palakis/obs-websocket/Palakis.obs-websocket.svg)](https://dev.azure.com/Palakis/obs-websocket/_build)
+[![Build Status](https://dev.azure.com/Palakis/obs-websocket/_apis/build/status/Palakis.obs-websocket?branchName=4.x-current)](https://dev.azure.com/Palakis/obs-websocket/_build/latest?definitionId=2&branchName=4.x-current)

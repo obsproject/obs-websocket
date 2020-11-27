@@ -122,6 +122,90 @@ RpcResponse WSRequestHandler::GetTransitionDuration(const RpcRequest& request) {
 }
 
 /**
+ * Get the position of the current transition.
+ *
+ * @return {double} `position` current transition position. This value will be between 0.0 and 1.0. Note: Transition returns 1.0 when not active.
+ *
+ * @api requests
+ * @name GetTransitionPosition
+ * @category transitions
+ * @since 4.8.0
+ */
+RpcResponse WSRequestHandler::GetTransitionPosition(const RpcRequest& request) {
+	OBSSourceAutoRelease currentTransition = obs_frontend_get_current_transition();
+
+	OBSDataAutoRelease response = obs_data_create();
+	obs_data_set_double(response, "position", obs_transition_get_time(currentTransition));
+
+	return request.success(response);
+}
+
+/**
+ * Get the current settings of a transition
+ *
+ * @param {String} `transitionName` Transition name
+ * 
+ * @return {Object} `transitionSettings` Current transition settings
+ * 
+ * @api requests
+ * @name GetTransitionSettings
+ * @category transitions
+ * @since unreleased
+ */
+RpcResponse WSRequestHandler::GetTransitionSettings(const RpcRequest& request) {
+	if (!request.hasField("transitionName")) {
+		return request.failed("missing request parameters");
+	}
+
+	const char* transitionName = obs_data_get_string(request.parameters(), "transitionName");
+	OBSSourceAutoRelease transition = Utils::GetTransitionFromName(transitionName);
+	if (!transition) {
+		return request.failed("specified transition doesn't exist");
+	}
+
+	OBSDataAutoRelease transitionSettings = obs_source_get_settings(transition);
+
+	OBSDataAutoRelease response = obs_data_create();
+	obs_data_set_obj(response, "transitionSettings", transitionSettings);
+	return request.success(response);
+}
+
+/**
+ * Change the current settings of a transition
+ *
+ * @param {String} `transitionName` Transition name
+ * @param {Object} `transitionSettings` Transition settings (they can be partial)
+ * 
+ * @return {Object} `transitionSettings` Updated transition settings
+ * 
+ * @api requests
+ * @name SetTransitionSettings
+ * @category transitions
+ * @since unreleased
+ */
+RpcResponse WSRequestHandler::SetTransitionSettings(const RpcRequest& request) {
+	if (!request.hasField("transitionName") || !request.hasField("transitionSettings")) {
+		return request.failed("missing request parameters");
+	}
+
+	const char* transitionName = obs_data_get_string(request.parameters(), "transitionName");
+	OBSSourceAutoRelease transition = Utils::GetTransitionFromName(transitionName);
+	if (!transition) {
+		return request.failed("specified transition doesn't exist");
+	}
+
+	OBSDataAutoRelease newSettings = obs_data_get_obj(request.parameters(), "transitionSettings");
+	obs_source_update(transition, newSettings);
+	obs_source_update_properties(transition);
+
+	OBSDataAutoRelease updatedSettings = obs_source_get_settings(transition);
+
+	OBSDataAutoRelease response = obs_data_create();
+	obs_data_set_obj(response, "transitionSettings", updatedSettings);
+	return request.success(response);
+}
+
+/**
  * Release the T-Bar. YOU MUST CALL THIS IF YOU SPECIFY `release = false` IN `SetTBarPosition`.
  *
  * @api requests

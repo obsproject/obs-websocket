@@ -1,10 +1,10 @@
 <!-- This file was generated based on handlebars templates. Do not edit directly! -->
 
-# obs-websocket 4.7.0 protocol reference
+# obs-websocket 4.8.0 protocol reference
 
 # General Introduction
 Messages are exchanged between the client and the server as JSON objects.
-This protocol is based on the original OBS Remote protocol created by Bill Hamilton, with new commands specific to OBS Studio.
+This protocol is based on the original OBS Remote protocol created by Bill Hamilton, with new commands specific to OBS Studio. As of v5.0.0, backwards compatability with the protocol will not be kept.
 
 # Authentication
 `obs-websocket` uses SHA256 to transmit credentials.
@@ -34,6 +34,8 @@ auth_response_string = secret + challenge
 auth_response_hash = binary_sha256(auth_response_string)
 auth_response = base64_encode(auth_response_hash)
 ```
+
+You can also refer to any of the client libraries listed on the [README](README.md) for examples of how to authenticate.
 
 
 
@@ -92,6 +94,8 @@ auth_response = base64_encode(auth_response_hash)
     + [SourceDestroyed](#sourcedestroyed)
     + [SourceVolumeChanged](#sourcevolumechanged)
     + [SourceMuteStateChanged](#sourcemutestatechanged)
+    + [SourceAudioDeactivated](#sourceaudiodeactivated)
+    + [SourceAudioActivated](#sourceaudioactivated)
     + [SourceAudioSyncOffsetChanged](#sourceaudiosyncoffsetchanged)
     + [SourceAudioMixersChanged](#sourceaudiomixerschanged)
     + [SourceRenamed](#sourcerenamed)
@@ -99,6 +103,15 @@ auth_response = base64_encode(auth_response_hash)
     + [SourceFilterRemoved](#sourcefilterremoved)
     + [SourceFilterVisibilityChanged](#sourcefiltervisibilitychanged)
     + [SourceFiltersReordered](#sourcefiltersreordered)
+  * [Media](#media)
+    + [MediaPlaying](#mediaplaying)
+    + [MediaPaused](#mediapaused)
+    + [MediaRestarted](#mediarestarted)
+    + [MediaStopped](#mediastopped)
+    + [MediaNext](#medianext)
+    + [MediaPrevious](#mediaprevious)
+    + [MediaStarted](#mediastarted)
+    + [MediaEnded](#mediaended)
   * [Scene Items](#scene-items)
     + [SourceOrderChanged](#sourceorderchanged)
     + [SceneItemAdded](#sceneitemadded)
@@ -123,48 +136,21 @@ auth_response = base64_encode(auth_response_hash)
     + [BroadcastCustomMessage](#broadcastcustommessage-1)
     + [GetVideoInfo](#getvideoinfo)
     + [OpenProjector](#openprojector)
-  * [Outputs](#outputs)
-    + [ListOutputs](#listoutputs)
-    + [GetOutputInfo](#getoutputinfo)
-    + [StartOutput](#startoutput)
-    + [StopOutput](#stopoutput)
-  * [Profiles](#profiles-1)
-    + [SetCurrentProfile](#setcurrentprofile)
-    + [GetCurrentProfile](#getcurrentprofile)
-    + [ListProfiles](#listprofiles)
-  * [Recording](#recording-1)
-    + [StartStopRecording](#startstoprecording)
-    + [StartRecording](#startrecording)
-    + [StopRecording](#stoprecording)
-    + [PauseRecording](#pauserecording)
-    + [ResumeRecording](#resumerecording)
-    + [SetRecordingFolder](#setrecordingfolder)
-    + [GetRecordingFolder](#getrecordingfolder)
-  * [Replay Buffer](#replay-buffer-1)
-    + [StartStopReplayBuffer](#startstopreplaybuffer)
-    + [StartReplayBuffer](#startreplaybuffer)
-    + [StopReplayBuffer](#stopreplaybuffer)
-    + [SaveReplayBuffer](#savereplaybuffer)
-  * [Scene Collections](#scene-collections)
-    + [SetCurrentSceneCollection](#setcurrentscenecollection)
-    + [GetCurrentSceneCollection](#getcurrentscenecollection)
-    + [ListSceneCollections](#listscenecollections)
-  * [Scene Items](#scene-items-1)
-    + [GetSceneItemProperties](#getsceneitemproperties)
-    + [SetSceneItemProperties](#setsceneitemproperties)
-    + [ResetSceneItem](#resetsceneitem)
-    + [SetSceneItemRender](#setsceneitemrender)
-    + [SetSceneItemPosition](#setsceneitemposition)
-    + [SetSceneItemTransform](#setsceneitemtransform)
-    + [SetSceneItemCrop](#setsceneitemcrop)
-    + [DeleteSceneItem](#deletesceneitem)
-    + [DuplicateSceneItem](#duplicatesceneitem)
-  * [Scenes](#scenes-1)
-    + [SetCurrentScene](#setcurrentscene)
-    + [GetCurrentScene](#getcurrentscene)
-    + [GetSceneList](#getscenelist)
-    + [ReorderSceneItems](#reordersceneitems)
+    + [TriggerHotkeyByName](#triggerhotkeybyname)
+    + [TriggerHotkeyBySequence](#triggerhotkeybysequence)
+  * [Media Control](#media-control)
+    + [PlayPauseMedia](#playpausemedia)
+    + [RestartMedia](#restartmedia)
+    + [StopMedia](#stopmedia)
+    + [NextMedia](#nextmedia)
+    + [PreviousMedia](#previousmedia)
+    + [GetMediaDuration](#getmediaduration)
+    + [GetMediaTime](#getmediatime)
+    + [SetMediaTime](#setmediatime)
+    + [ScrubMedia](#scrubmedia)
+    + [GetMediaState](#getmediastate)
   * [Sources](#sources-1)
+    + [GetMediaSourcesList](#getmediasourceslist)
     + [GetSourcesList](#getsourceslist)
     + [GetSourceTypesList](#getsourcetypeslist)
     + [GetVolume](#getvolume)
@@ -172,6 +158,8 @@ auth_response = base64_encode(auth_response_hash)
     + [GetMute](#getmute)
     + [SetMute](#setmute)
     + [ToggleMute](#togglemute)
+    + [GetAudioActive](#getaudioactive)
+    + [SetSourceName](#setsourcename)
     + [SetSyncOffset](#setsyncoffset)
     + [GetSyncOffset](#getsyncoffset)
     + [GetSourceSettings](#getsourcesettings)
@@ -191,7 +179,58 @@ auth_response = base64_encode(auth_response_hash)
     + [MoveSourceFilter](#movesourcefilter)
     + [SetSourceFilterSettings](#setsourcefiltersettings)
     + [SetSourceFilterVisibility](#setsourcefiltervisibility)
+    + [GetAudioMonitorType](#getaudiomonitortype)
+    + [SetAudioMonitorType](#setaudiomonitortype)
     + [TakeSourceScreenshot](#takesourcescreenshot)
+  * [Outputs](#outputs)
+    + [ListOutputs](#listoutputs)
+    + [GetOutputInfo](#getoutputinfo)
+    + [StartOutput](#startoutput)
+    + [StopOutput](#stopoutput)
+  * [Profiles](#profiles-1)
+    + [SetCurrentProfile](#setcurrentprofile)
+    + [GetCurrentProfile](#getcurrentprofile)
+    + [ListProfiles](#listprofiles)
+  * [Recording](#recording-1)
+    + [GetRecordingStatus](#getrecordingstatus)
+    + [StartStopRecording](#startstoprecording)
+    + [StartRecording](#startrecording)
+    + [StopRecording](#stoprecording)
+    + [PauseRecording](#pauserecording)
+    + [ResumeRecording](#resumerecording)
+    + [SetRecordingFolder](#setrecordingfolder)
+    + [GetRecordingFolder](#getrecordingfolder)
+  * [Replay Buffer](#replay-buffer-1)
+    + [GetReplayBufferStatus](#getreplaybufferstatus)
+    + [StartStopReplayBuffer](#startstopreplaybuffer)
+    + [StartReplayBuffer](#startreplaybuffer)
+    + [StopReplayBuffer](#stopreplaybuffer)
+    + [SaveReplayBuffer](#savereplaybuffer)
+  * [Scene Collections](#scene-collections)
+    + [SetCurrentSceneCollection](#setcurrentscenecollection)
+    + [GetCurrentSceneCollection](#getcurrentscenecollection)
+    + [ListSceneCollections](#listscenecollections)
+  * [Scene Items](#scene-items-1)
+    + [GetSceneItemList](#getsceneitemlist)
+    + [GetSceneItemProperties](#getsceneitemproperties)
+    + [SetSceneItemProperties](#setsceneitemproperties)
+    + [ResetSceneItem](#resetsceneitem)
+    + [SetSceneItemRender](#setsceneitemrender)
+    + [SetSceneItemPosition](#setsceneitemposition)
+    + [SetSceneItemTransform](#setsceneitemtransform)
+    + [SetSceneItemCrop](#setsceneitemcrop)
+    + [DeleteSceneItem](#deletesceneitem)
+    + [AddSceneItem](#addsceneitem)
+    + [DuplicateSceneItem](#duplicatesceneitem)
+  * [Scenes](#scenes-1)
+    + [SetCurrentScene](#setcurrentscene)
+    + [GetCurrentScene](#getcurrentscene)
+    + [GetSceneList](#getscenelist)
+    + [CreateScene](#createscene)
+    + [ReorderSceneItems](#reordersceneitems)
+    + [SetSceneTransitionOverride](#setscenetransitionoverride)
+    + [RemoveSceneTransitionOverride](#removescenetransitionoverride)
+    + [GetSceneTransitionOverride](#getscenetransitionoverride)
   * [Streaming](#streaming-1)
     + [GetStreamingStatus](#getstreamingstatus)
     + [StartStopStreaming](#startstopstreaming)
@@ -215,6 +254,9 @@ auth_response = base64_encode(auth_response_hash)
     + [SetCurrentTransition](#setcurrenttransition)
     + [SetTransitionDuration](#settransitionduration)
     + [GetTransitionDuration](#gettransitionduration)
+    + [GetTransitionPosition](#gettransitionposition)
+    + [GetTransitionSettings](#gettransitionsettings)
+    + [SetTransitionSettings](#settransitionsettings)
 
 <!-- tocstop -->
 
@@ -244,8 +286,8 @@ These are complex types, such as `Source` and `Scene`, which are used as argumen
 ## SceneItemTransform
 | Name | Type  | Description |
 | ---- | :---: | ------------|
-| `position.x` | _int_ | The x position of the scene item from the left. |
-| `position.y` | _int_ | The y position of the scene item from the top. |
+| `position.x` | _double_ | The x position of the scene item from the left. |
+| `position.y` | _double_ | The y position of the scene item from the top. |
 | `position.alignment` | _int_ | The point on the scene item that the item is manipulated from. |
 | `rotation` | _double_ | The clockwise rotation of the scene item in degrees around the point of alignment. |
 | `scale.x` | _double_ | The x-scale factor of the scene item. |
@@ -344,8 +386,9 @@ Indicates a scene change.
 
 - Added in v0.3
 
-The scene list has been modified.
-Scenes have been added, removed, or renamed.
+
+
+Note: This event is not fired when the scenes are reordered.
 
 **Response Items:**
 
@@ -580,7 +623,7 @@ _No additional response items._
 
 - Added in v0.3
 
-Emit every 2 seconds.
+Emitted every 2 seconds when stream is active.
 
 **Response Items:**
 
@@ -763,7 +806,7 @@ _No additional response items._
 ### Heartbeat
 
 
-- Added in v
+- Added in vv0.3
 
 Emitted every 2 seconds after enabling it by calling SetHeartbeat.
 
@@ -792,7 +835,7 @@ Emitted every 2 seconds after enabling it by calling SetHeartbeat.
 
 - Added in v4.7.0
 
-A custom broadcast message was received
+A custom broadcast message, sent by the server, requested by one of the websocket clients.
 
 **Response Items:**
 
@@ -877,6 +920,38 @@ A source has been muted or unmuted.
 
 ---
 
+### SourceAudioDeactivated
+
+
+- Unreleased
+
+A source has removed audio.
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sourceName` | _String_ | Source name |
+
+
+---
+
+### SourceAudioActivated
+
+
+- Unreleased
+
+A source has added audio.
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sourceName` | _String_ | Source name |
+
+
+---
+
 ### SourceAudioSyncOffsetChanged
 
 
@@ -927,6 +1002,7 @@ A source has been renamed.
 | ---- | :---: | ------------|
 | `previousName` | _String_ | Previous source name |
 | `newName` | _String_ | New source name |
+| `sourceType` | _String_ | Type of source (input, scene, filter, transition) |
 
 
 ---
@@ -1001,6 +1077,161 @@ Filters in a source have been reordered.
 | `filters` | _Array&lt;Object&gt;_ | Ordered Filters list |
 | `filters.*.name` | _String_ | Filter name |
 | `filters.*.type` | _String_ | Filter type |
+| `filters.*.enabled` | _boolean_ | Filter visibility status |
+
+
+---
+
+## Media
+
+### MediaPlaying
+
+
+- Unreleased
+
+
+
+Note: This event is only emitted when something actively controls the media/VLC source. In other words, the source will never emit this on its own naturally.
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sourceName` | _String_ | Source name |
+| `sourceKind` | _String_ | The ID type of the source (Eg. `vlc_source` or `ffmpeg_source`) |
+
+
+---
+
+### MediaPaused
+
+
+- Unreleased
+
+
+
+Note: This event is only emitted when something actively controls the media/VLC source. In other words, the source will never emit this on its own naturally.
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sourceName` | _String_ | Source name |
+| `sourceKind` | _String_ | The ID type of the source (Eg. `vlc_source` or `ffmpeg_source`) |
+
+
+---
+
+### MediaRestarted
+
+
+- Unreleased
+
+
+
+Note: This event is only emitted when something actively controls the media/VLC source. In other words, the source will never emit this on its own naturally.
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sourceName` | _String_ | Source name |
+| `sourceKind` | _String_ | The ID type of the source (Eg. `vlc_source` or `ffmpeg_source`) |
+
+
+---
+
+### MediaStopped
+
+
+- Unreleased
+
+
+
+Note: This event is only emitted when something actively controls the media/VLC source. In other words, the source will never emit this on its own naturally.
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sourceName` | _String_ | Source name |
+| `sourceKind` | _String_ | The ID type of the source (Eg. `vlc_source` or `ffmpeg_source`) |
+
+
+---
+
+### MediaNext
+
+
+- Unreleased
+
+
+
+Note: This event is only emitted when something actively controls the media/VLC source. In other words, the source will never emit this on its own naturally.
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sourceName` | _String_ | Source name |
+| `sourceKind` | _String_ | The ID type of the source (Eg. `vlc_source` or `ffmpeg_source`) |
+
+
+---
+
+### MediaPrevious
+
+
+- Unreleased
+
+
+
+Note: This event is only emitted when something actively controls the media/VLC source. In other words, the source will never emit this on its own naturally.
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sourceName` | _String_ | Source name |
+| `sourceKind` | _String_ | The ID type of the source (Eg. `vlc_source` or `ffmpeg_source`) |
+
+
+---
+
+### MediaStarted
+
+
+- Unreleased
+
+
+
+Note: These events are emitted by the OBS sources themselves. For example when the media file starts playing. The behavior depends on the type of media source being used.
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sourceName` | _String_ | Source name |
+| `sourceKind` | _String_ | The ID type of the source (Eg. `vlc_source` or `ffmpeg_source`) |
+
+
+---
+
+### MediaEnded
+
+
+- Unreleased
+
+
+
+Note: These events are emitted by the OBS sources themselves. For example when the media file ends. The behavior depends on the type of media source being used.
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sourceName` | _String_ | Source name |
+| `sourceKind` | _String_ | The ID type of the source (Eg. `vlc_source` or `ffmpeg_source`) |
 
 
 ---
@@ -1012,7 +1243,7 @@ Filters in a source have been reordered.
 
 - Added in v4.0.0
 
-Scene items have been reordered.
+Scene items within a scene have been reordered.
 
 **Response Items:**
 
@@ -1031,7 +1262,7 @@ Scene items have been reordered.
 
 - Added in v4.0.0
 
-An item has been added to the current scene.
+A scene item has been added to a scene.
 
 **Response Items:**
 
@@ -1049,7 +1280,7 @@ An item has been added to the current scene.
 
 - Added in v4.0.0
 
-An item has been removed from the current scene.
+A scene item has been removed from a scene.
 
 **Response Items:**
 
@@ -1067,7 +1298,7 @@ An item has been removed from the current scene.
 
 - Added in v4.0.0
 
-An item's visibility has been toggled.
+A scene item's visibility has been toggled.
 
 **Response Items:**
 
@@ -1086,7 +1317,7 @@ An item's visibility has been toggled.
 
 - Added in v4.8.0
 
-An item's locked status has been toggled.
+A scene item's locked status has been toggled.
 
 **Response Items:**
 
@@ -1105,7 +1336,7 @@ An item's locked status has been toggled.
 
 - Added in v4.6.0
 
-An item's transform has been changed.
+A scene item's transform has been changed.
 
 **Response Items:**
 
@@ -1201,7 +1432,7 @@ Requests are sent by the client and require at least the following two fields:
 Once a request is sent, the server will return a JSON response with at least the following fields:
 - `message-id` _String_: The client defined identifier specified in the request.
 - `status` _String_: Response status, will be one of the following: `ok`, `error`
-- `error` _String_: An error message accompanying an `error` status.
+- `error` _String (Optional)_: An error message accompanying an `error` status.
 
 Additional information may be required/returned depending on the request type. See below for more information.
 
@@ -1277,6 +1508,7 @@ _No additional response items._
 
 ### SetHeartbeat
 
+- **⚠️ Deprecated. Since 4.9.0. Please poll the appropriate data using requests. Will be removed in v5.0.0. ⚠️**
 
 - Added in v4.3.0
 
@@ -1350,7 +1582,7 @@ _No specified parameters._
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
-| `stats` | _OBSStats_ | OBS stats |
+| `stats` | _OBSStats_ | [OBS stats](#obsstats) |
 
 
 ---
@@ -1415,9 +1647,9 @@ Open a projector window or create a projector on a monitor. Requires OBS v24.0.4
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
-| `type` | _String (Optional)_ | Type of projector: Preview (default), Source, Scene, StudioProgram, or Multiview (case insensitive). |
+| `type` | _String (Optional)_ | Type of projector: `Preview` (default), `Source`, `Scene`, `StudioProgram`, or `Multiview` (case insensitive). |
 | `monitor` | _int (Optional)_ | Monitor to open the projector on. If -1 or omitted, opens a window. |
-| `geometry` | _String (Optional)_ | Size and position of the projector window (only if monitor is -1). Encoded in Base64 using Qt's geometry encoding (https://doc.qt.io/qt-5/qwidget.html#saveGeometry). Corresponds to OBS's saved projectors. |
+| `geometry` | _String (Optional)_ | Size and position of the projector window (only if monitor is -1). Encoded in Base64 using [Qt's geometry encoding](https://doc.qt.io/qt-5/qwidget.html#saveGeometry). Corresponds to OBS's saved projectors. |
 | `name` | _String (Optional)_ | Name of the source or scene to be displayed (ignored for other projector types). |
 
 
@@ -1427,63 +1659,18 @@ _No additional response items._
 
 ---
 
-## Outputs
-
-### ListOutputs
+### TriggerHotkeyByName
 
 
-- Added in v4.7.0
+- Unreleased
 
-List existing outputs
-
-**Request Fields:**
-
-_No specified parameters._
-
-**Response Items:**
-
-| Name | Type  | Description |
-| ---- | :---: | ------------|
-| `outputs` | _Array&lt;Output&gt;_ | Outputs list |
-
-
----
-
-### GetOutputInfo
-
-
-- Added in v4.7.0
-
-Get information about a single output
+Executes hotkey routine, identified by hotkey unique name
 
 **Request Fields:**
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
-| `outputName` | _String_ | Output name |
-
-
-**Response Items:**
-
-| Name | Type  | Description |
-| ---- | :---: | ------------|
-| `outputInfo` | _Output_ | Output info |
-
-
----
-
-### StartOutput
-
-
-- Added in v4.7.0
-
-Start an output
-
-**Request Fields:**
-
-| Name | Type  | Description |
-| ---- | :---: | ------------|
-| `outputName` | _String_ | Output name |
+| `hotkeyName` | _String_ | Unique name of the hotkey, as defined when registering the hotkey (e.g. "ReplayBuffer.Save") |
 
 
 **Response Items:**
@@ -1492,19 +1679,23 @@ _No additional response items._
 
 ---
 
-### StopOutput
+### TriggerHotkeyBySequence
 
 
-- Added in v4.7.0
+- Unreleased
 
-Stop an output
+Executes hotkey routine, identified by bound combination of keys. A single key combination might trigger multiple hotkey routines depending on user settings
 
 **Request Fields:**
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
-| `outputName` | _String_ | Output name |
-| `force` | _boolean (optional)_ | Force stop (default: false) |
+| `keyId` | _String_ | Main key identifier (e.g. `OBS_KEY_A` for key "A"). Available identifiers [here](https://github.com/obsproject/obs-studio/blob/master/libobs/obs-hotkeys.h) |
+| `keyModifiers` | _Object (Optional)_ | Optional key modifiers object. False entries can be ommitted |
+| `keyModifiers.shift` | _boolean_ | Trigger Shift Key |
+| `keyModifiers.alt` | _boolean_ | Trigger Alt Key |
+| `keyModifiers.control` | _boolean_ | Trigger Control (Ctrl) Key |
+| `keyModifiers.command` | _boolean_ | Trigger Command Key (Mac) |
 
 
 **Response Items:**
@@ -1513,20 +1704,21 @@ _No additional response items._
 
 ---
 
-## Profiles
+## Media Control
 
-### SetCurrentProfile
+### PlayPauseMedia
 
 
-- Added in v4.0.0
+- Unreleased
 
-Set the currently active profile.
+Pause or play a media source. Supports ffmpeg and vlc media sources (as of OBS v25.0.8)
 
 **Request Fields:**
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
-| `profile-name` | _String_ | Name of the desired profile. |
+| `sourceName` | _String_ | Source name. |
+| `playPause` | _boolean_ | Whether to pause or play the source. `false` for play, `true` for pause. |
 
 
 **Response Items:**
@@ -1535,153 +1727,18 @@ _No additional response items._
 
 ---
 
-### GetCurrentProfile
+### RestartMedia
 
 
-- Added in v4.0.0
+- Unreleased
 
-Get the name of the current profile.
-
-**Request Fields:**
-
-_No specified parameters._
-
-**Response Items:**
-
-| Name | Type  | Description |
-| ---- | :---: | ------------|
-| `profile-name` | _String_ | Name of the currently active profile. |
-
-
----
-
-### ListProfiles
-
-
-- Added in v4.0.0
-
-Get a list of available profiles.
-
-**Request Fields:**
-
-_No specified parameters._
-
-**Response Items:**
-
-| Name | Type  | Description |
-| ---- | :---: | ------------|
-| `profiles` | _Array&lt;Object&gt;_ | List of available profiles. |
-
-
----
-
-## Recording
-
-### StartStopRecording
-
-
-- Added in v0.3
-
-Toggle recording on or off.
-
-**Request Fields:**
-
-_No specified parameters._
-
-**Response Items:**
-
-_No additional response items._
-
----
-
-### StartRecording
-
-
-- Added in v4.1.0
-
-Start recording.
-Will return an `error` if recording is already active.
-
-**Request Fields:**
-
-_No specified parameters._
-
-**Response Items:**
-
-_No additional response items._
-
----
-
-### StopRecording
-
-
-- Added in v4.1.0
-
-Stop recording.
-Will return an `error` if recording is not active.
-
-**Request Fields:**
-
-_No specified parameters._
-
-**Response Items:**
-
-_No additional response items._
-
----
-
-### PauseRecording
-
-
-- Added in v4.7.0
-
-Pause the current recording.
-Returns an error if recording is not active or already paused.
-
-**Request Fields:**
-
-_No specified parameters._
-
-**Response Items:**
-
-_No additional response items._
-
----
-
-### ResumeRecording
-
-
-- Added in v4.7.0
-
-Resume/unpause the current recording (if paused).
-Returns an error if recording is not active or not paused.
-
-**Request Fields:**
-
-_No specified parameters._
-
-**Response Items:**
-
-_No additional response items._
-
----
-
-### SetRecordingFolder
-
-
-- Added in v4.1.0
-
-
-
-Please note: if `SetRecordingFolder` is called while a recording is
-in progress, the change won't be applied immediately and will be
-effective on the next recording.
+Restart a media source. Supports ffmpeg and vlc media sources (as of OBS v25.0.8)
 
 **Request Fields:**
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
-| `rec-folder` | _String_ | Path of the recording folder. |
+| `sourceName` | _String_ | Source name. |
 
 
 **Response Items:**
@@ -1690,117 +1747,18 @@ _No additional response items._
 
 ---
 
-### GetRecordingFolder
+### StopMedia
 
 
-- Added in v4.1.0
+- Unreleased
 
-Get the path of  the current recording folder.
-
-**Request Fields:**
-
-_No specified parameters._
-
-**Response Items:**
-
-| Name | Type  | Description |
-| ---- | :---: | ------------|
-| `rec-folder` | _String_ | Path of the recording folder. |
-
-
----
-
-## Replay Buffer
-
-### StartStopReplayBuffer
-
-
-- Added in v4.2.0
-
-Toggle the Replay Buffer on/off.
-
-**Request Fields:**
-
-_No specified parameters._
-
-**Response Items:**
-
-_No additional response items._
-
----
-
-### StartReplayBuffer
-
-
-- Added in v4.2.0
-
-Start recording into the Replay Buffer.
-Will return an `error` if the Replay Buffer is already active or if the
-"Save Replay Buffer" hotkey is not set in OBS' settings.
-Setting this hotkey is mandatory, even when triggering saves only
-through obs-websocket.
-
-**Request Fields:**
-
-_No specified parameters._
-
-**Response Items:**
-
-_No additional response items._
-
----
-
-### StopReplayBuffer
-
-
-- Added in v4.2.0
-
-Stop recording into the Replay Buffer.
-Will return an `error` if the Replay Buffer is not active.
-
-**Request Fields:**
-
-_No specified parameters._
-
-**Response Items:**
-
-_No additional response items._
-
----
-
-### SaveReplayBuffer
-
-
-- Added in v4.2.0
-
-Flush and save the contents of the Replay Buffer to disk. This is
-basically the same as triggering the "Save Replay Buffer" hotkey.
-Will return an `error` if the Replay Buffer is not active.
-
-**Request Fields:**
-
-_No specified parameters._
-
-**Response Items:**
-
-_No additional response items._
-
----
-
-## Scene Collections
-
-### SetCurrentSceneCollection
-
-
-- Added in v4.0.0
-
-Change the active scene collection.
+Stop a media source. Supports ffmpeg and vlc media sources (as of OBS v25.0.8)
 
 **Request Fields:**
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
-| `sc-name` | _String_ | Name of the desired scene collection. |
+| `sourceName` | _String_ | Source name. |
 
 
 **Response Items:**
@@ -1809,132 +1767,18 @@ _No additional response items._
 
 ---
 
-### GetCurrentSceneCollection
+### NextMedia
 
 
-- Added in v4.0.0
+- Unreleased
 
-Get the name of the current scene collection.
-
-**Request Fields:**
-
-_No specified parameters._
-
-**Response Items:**
-
-| Name | Type  | Description |
-| ---- | :---: | ------------|
-| `sc-name` | _String_ | Name of the currently active scene collection. |
-
-
----
-
-### ListSceneCollections
-
-
-- Added in v4.0.0
-
-List available scene collections
-
-**Request Fields:**
-
-_No specified parameters._
-
-**Response Items:**
-
-| Name | Type  | Description |
-| ---- | :---: | ------------|
-| `scene-collections` | _Array&lt;String&gt;_ | Scene collections list |
-
-
----
-
-## Scene Items
-
-### GetSceneItemProperties
-
-
-- Added in v4.3.0
-
-Gets the scene specific properties of the specified source item.
-Coordinates are relative to the item's parent (the scene or group it belongs to).
+Skip to the next media item in the playlist. Supports only vlc media source (as of OBS v25.0.8)
 
 **Request Fields:**
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
-| `scene-name` | _String (optional)_ | Name of the scene the scene item belongs to. Defaults to the current scene. |
-| `item` | _String \| Object_ | Scene Item name (if this field is a string) or specification (if it is an object). |
-| `item.name` | _String (optional)_ | Scene Item name (if the `item` field is an object) |
-| `item.id` | _int (optional)_ | Scene Item ID (if the `item` field is an object) |
-
-
-**Response Items:**
-
-| Name | Type  | Description |
-| ---- | :---: | ------------|
-| `name` | _String_ | Scene Item name. |
-| `itemId` | _int_ | Scene Item ID. |
-| `position.x` | _int_ | The x position of the source from the left. |
-| `position.y` | _int_ | The y position of the source from the top. |
-| `position.alignment` | _int_ | The point on the source that the item is manipulated from. |
-| `rotation` | _double_ | The clockwise rotation of the item in degrees around the point of alignment. |
-| `scale.x` | _double_ | The x-scale factor of the source. |
-| `scale.y` | _double_ | The y-scale factor of the source. |
-| `crop.top` | _int_ | The number of pixels cropped off the top of the source before scaling. |
-| `crop.right` | _int_ | The number of pixels cropped off the right of the source before scaling. |
-| `crop.bottom` | _int_ | The number of pixels cropped off the bottom of the source before scaling. |
-| `crop.left` | _int_ | The number of pixels cropped off the left of the source before scaling. |
-| `visible` | _bool_ | If the source is visible. |
-| `muted` | _bool_ | If the source is muted. |
-| `locked` | _bool_ | If the source's transform is locked. |
-| `bounds.type` | _String_ | Type of bounding box. Can be "OBS_BOUNDS_STRETCH", "OBS_BOUNDS_SCALE_INNER", "OBS_BOUNDS_SCALE_OUTER", "OBS_BOUNDS_SCALE_TO_WIDTH", "OBS_BOUNDS_SCALE_TO_HEIGHT", "OBS_BOUNDS_MAX_ONLY" or "OBS_BOUNDS_NONE". |
-| `bounds.alignment` | _int_ | Alignment of the bounding box. |
-| `bounds.x` | _double_ | Width of the bounding box. |
-| `bounds.y` | _double_ | Height of the bounding box. |
-| `sourceWidth` | _int_ | Base width (without scaling) of the source |
-| `sourceHeight` | _int_ | Base source (without scaling) of the source |
-| `width` | _double_ | Scene item width (base source width multiplied by the horizontal scaling factor) |
-| `height` | _double_ | Scene item height (base source height multiplied by the vertical scaling factor) |
-| `alignment` | _int_ | The point on the source that the item is manipulated from. The sum of 1=Left or 2=Right, and 4=Top or 8=Bottom, or omit to center on that axis. |
-| `parentGroupName` | _String (optional)_ | Name of the item's parent (if this item belongs to a group) |
-| `groupChildren` | _Array&lt;SceneItemTransform&gt; (optional)_ | List of children (if this item is a group) |
-
-
----
-
-### SetSceneItemProperties
-
-
-- Added in v4.3.0
-
-Sets the scene specific properties of a source. Unspecified properties will remain unchanged.
-Coordinates are relative to the item's parent (the scene or group it belongs to).
-
-**Request Fields:**
-
-| Name | Type  | Description |
-| ---- | :---: | ------------|
-| `scene-name` | _String (optional)_ | Name of the scene the source item belongs to. Defaults to the current scene. |
-| `item` | _String \| Object_ | Scene Item name (if this field is a string) or specification (if it is an object). |
-| `item.name` | _String (optional)_ | Scene Item name (if the `item` field is an object) |
-| `item.id` | _int (optional)_ | Scene Item ID (if the `item` field is an object) |
-| `position.x` | _int (optional)_ | The new x position of the source. |
-| `position.y` | _int (optional)_ | The new y position of the source. |
-| `position.alignment` | _int (optional)_ | The new alignment of the source. |
-| `rotation` | _double (optional)_ | The new clockwise rotation of the item in degrees. |
-| `scale.x` | _double (optional)_ | The new x scale of the item. |
-| `scale.y` | _double (optional)_ | The new y scale of the item. |
-| `crop.top` | _int (optional)_ | The new amount of pixels cropped off the top of the source before scaling. |
-| `crop.bottom` | _int (optional)_ | The new amount of pixels cropped off the bottom of the source before scaling. |
-| `crop.left` | _int (optional)_ | The new amount of pixels cropped off the left of the source before scaling. |
-| `crop.right` | _int (optional)_ | The new amount of pixels cropped off the right of the source before scaling. |
-| `visible` | _bool (optional)_ | The new visibility of the source. 'true' shows source, 'false' hides source. |
-| `locked` | _bool (optional)_ | The new locked status of the source. 'true' keeps it in its current position, 'false' allows movement. |
-| `bounds.type` | _String (optional)_ | The new bounds type of the source. Can be "OBS_BOUNDS_STRETCH", "OBS_BOUNDS_SCALE_INNER", "OBS_BOUNDS_SCALE_OUTER", "OBS_BOUNDS_SCALE_TO_WIDTH", "OBS_BOUNDS_SCALE_TO_HEIGHT", "OBS_BOUNDS_MAX_ONLY" or "OBS_BOUNDS_NONE". |
-| `bounds.alignment` | _int (optional)_ | The new alignment of the bounding box. (0-2, 4-6, 8-10) |
-| `bounds.x` | _double (optional)_ | The new width of the bounding box. |
-| `bounds.y` | _double (optional)_ | The new height of the bounding box. |
+| `sourceName` | _String_ | Source name. |
 
 
 **Response Items:**
@@ -1943,21 +1787,18 @@ _No additional response items._
 
 ---
 
-### ResetSceneItem
+### PreviousMedia
 
 
-- Added in v4.2.0
+- Unreleased
 
-Reset a scene item.
+Go to the previous media item in the playlist. Supports only vlc media source (as of OBS v25.0.8)
 
 **Request Fields:**
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
-| `scene-name` | _String (optional)_ | Name of the scene the scene item belongs to. Defaults to the current scene. |
-| `item` | _String \| Object_ | Scene Item name (if this field is a string) or specification (if it is an object). |
-| `item.name` | _String (optional)_ | Scene Item name (if the `item` field is an object) |
-| `item.id` | _int (optional)_ | Scene Item ID (if the `item` field is an object) |
+| `sourceName` | _String_ | Source name. |
 
 
 **Response Items:**
@@ -1966,21 +1807,66 @@ _No additional response items._
 
 ---
 
-### SetSceneItemRender
+### GetMediaDuration
 
-- **⚠️ Deprecated. Since 4.3.0. Prefer the use of SetSceneItemProperties. ⚠️**
 
-- Added in v0.3
+- Unreleased
 
-Show or hide a specified source item in a specified scene.
+Get the length of media in milliseconds. Supports ffmpeg and vlc media sources (as of OBS v25.0.8)
+Note: For some reason, for the first 5 or so seconds that the media is playing, the total duration can be off by upwards of 50ms.
 
 **Request Fields:**
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
-| `scene-name` | _String (optional)_ | Name of the scene the scene item belongs to. Defaults to the currently active scene. |
-| `source` | _String_ | Scene Item name. |
-| `render` | _boolean_ | true = shown ; false = hidden |
+| `sourceName` | _String_ | Source name. |
+
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `mediaDuration` | _int_ | The total length of media in milliseconds.. |
+
+
+---
+
+### GetMediaTime
+
+
+- Unreleased
+
+Get the current timestamp of media in milliseconds. Supports ffmpeg and vlc media sources (as of OBS v25.0.8)
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sourceName` | _String_ | Source name. |
+
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `timestamp` | _int_ | The time in milliseconds since the start of the media. |
+
+
+---
+
+### SetMediaTime
+
+
+- Unreleased
+
+Set the timestamp of a media source. Supports ffmpeg and vlc media sources (as of OBS v25.0.8)
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sourceName` | _String_ | Source name. |
+| `timestamp` | _int_ | Milliseconds to set the timestamp to. |
 
 
 **Response Items:**
@@ -1989,22 +1875,20 @@ _No additional response items._
 
 ---
 
-### SetSceneItemPosition
+### ScrubMedia
 
-- **⚠️ Deprecated. Since 4.3.0. Prefer the use of SetSceneItemProperties. ⚠️**
 
-- Added in v4.0.0
+- Unreleased
 
-Sets the coordinates of a specified source item.
+Scrub media using a supplied offset. Supports ffmpeg and vlc media sources (as of OBS v25.0.8)
+Note: Due to processing/network delays, this request is not perfect. The processing rate of this request has also not been tested.
 
 **Request Fields:**
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
-| `scene-name` | _String (optional)_ | Name of the scene the scene item belongs to. Defaults to the current scene. |
-| `item` | _String_ | Scene Item name. |
-| `x` | _double_ | X coordinate. |
-| `y` | _double_ | Y coordinate. |
+| `sourceName` | _String_ | Source name. |
+| `timeOffset` | _int_ | Millisecond offset (positive or negative) to offset the current media position. |
 
 
 **Response Items:**
@@ -2013,198 +1897,53 @@ _No additional response items._
 
 ---
 
-### SetSceneItemTransform
-
-- **⚠️ Deprecated. Since 4.3.0. Prefer the use of SetSceneItemProperties. ⚠️**
-
-- Added in v4.0.0
-
-Set the transform of the specified source item.
-
-**Request Fields:**
-
-| Name | Type  | Description |
-| ---- | :---: | ------------|
-| `scene-name` | _String (optional)_ | Name of the scene the scene item belongs to. Defaults to the current scene. |
-| `item` | _String_ | Scene Item name. |
-| `x-scale` | _double_ | Width scale factor. |
-| `y-scale` | _double_ | Height scale factor. |
-| `rotation` | _double_ | Source item rotation (in degrees). |
+### GetMediaState
 
 
-**Response Items:**
+- Unreleased
 
-_No additional response items._
-
----
-
-### SetSceneItemCrop
-
-- **⚠️ Deprecated. Since 4.3.0. Prefer the use of SetSceneItemProperties. ⚠️**
-
-- Added in v4.1.0
-
-Sets the crop coordinates of the specified source item.
+Get the current playing state of a media source. Supports ffmpeg and vlc media sources (as of OBS v25.0.8)
 
 **Request Fields:**
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
-| `scene-name` | _String (optional)_ | Name of the scene the scene item belongs to. Defaults to the current scene. |
-| `item` | _String_ | Scene Item name. |
-| `top` | _int_ | Pixel position of the top of the source item. |
-| `bottom` | _int_ | Pixel position of the bottom of the source item. |
-| `left` | _int_ | Pixel position of the left of the source item. |
-| `right` | _int_ | Pixel position of the right of the source item. |
-
-
-**Response Items:**
-
-_No additional response items._
-
----
-
-### DeleteSceneItem
-
-
-- Added in v4.5.0
-
-Deletes a scene item.
-
-**Request Fields:**
-
-| Name | Type  | Description |
-| ---- | :---: | ------------|
-| `scene` | _String (optional)_ | Name of the scene the scene item belongs to. Defaults to the current scene. |
-| `item` | _Object_ | Scene item to delete (required) |
-| `item.name` | _String_ | Scene Item name (prefer `id`, including both is acceptable). |
-| `item.id` | _int_ | Scene Item ID. |
-
-
-**Response Items:**
-
-_No additional response items._
-
----
-
-### DuplicateSceneItem
-
-
-- Added in v4.5.0
-
-Duplicates a scene item.
-
-**Request Fields:**
-
-| Name | Type  | Description |
-| ---- | :---: | ------------|
-| `fromScene` | _String (optional)_ | Name of the scene to copy the item from. Defaults to the current scene. |
-| `toScene` | _String (optional)_ | Name of the scene to create the item in. Defaults to the current scene. |
-| `item` | _Object_ | Scene Item to duplicate from the source scene (required) |
-| `item.name` | _String_ | Scene Item name (prefer `id`, including both is acceptable). |
-| `item.id` | _int_ | Scene Item ID. |
+| `sourceName` | _String_ | Source name. |
 
 
 **Response Items:**
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
-| `scene` | _String_ | Name of the scene where the new item was created |
-| `item` | _Object_ | New item info |
-| `item.id` | _int_ | New item ID |
-| `item.name` | _String_ | New item name |
+| `mediaState` | _String_ | The media state of the provided source. States: `none`, `playing`, `opening`, `buffering`, `paused`, `stopped`, `ended`, `error`, `unknown` |
 
-
----
-
-## Scenes
-
-### SetCurrentScene
-
-
-- Added in v0.3
-
-Switch to the specified scene.
-
-**Request Fields:**
-
-| Name | Type  | Description |
-| ---- | :---: | ------------|
-| `scene-name` | _String_ | Name of the scene to switch to. |
-
-
-**Response Items:**
-
-_No additional response items._
-
----
-
-### GetCurrentScene
-
-
-- Added in v0.3
-
-Get the current scene's name and source items.
-
-**Request Fields:**
-
-_No specified parameters._
-
-**Response Items:**
-
-| Name | Type  | Description |
-| ---- | :---: | ------------|
-| `name` | _String_ | Name of the currently active scene. |
-| `sources` | _Array&lt;SceneItem&gt;_ | Ordered list of the current scene's source items. |
-
-
----
-
-### GetSceneList
-
-
-- Added in v0.3
-
-Get a list of scenes in the currently active profile.
-
-**Request Fields:**
-
-_No specified parameters._
-
-**Response Items:**
-
-| Name | Type  | Description |
-| ---- | :---: | ------------|
-| `current-scene` | _String_ | Name of the currently active scene. |
-| `scenes` | _Array&lt;Scene&gt;_ | Ordered list of the current profile's scenes (See [GetCurrentScene](#getcurrentscene) for more information). |
-
-
----
-
-### ReorderSceneItems
-
-
-- Added in v4.5.0
-
-Changes the order of scene items in the requested scene.
-
-**Request Fields:**
-
-| Name | Type  | Description |
-| ---- | :---: | ------------|
-| `scene` | _String (optional)_ | Name of the scene to reorder (defaults to current). |
-| `items` | _Array&lt;Scene&gt;_ | Ordered list of objects with name and/or id specified. Id preferred due to uniqueness per scene |
-| `items[].id` | _int (optional)_ | Id of a specific scene item. Unique on a scene by scene basis. |
-| `items[].name` | _String (optional)_ | Name of a scene item. Sufficiently unique if no scene items share sources within the scene. |
-
-
-**Response Items:**
-
-_No additional response items._
 
 ---
 
 ## Sources
+
+### GetMediaSourcesList
+
+
+- Unreleased
+
+List the media state of all media sources (vlc and media source)
+
+**Request Fields:**
+
+_No specified parameters._
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `mediaSources` | _Array&lt;Object&gt;_ | Array of sources |
+| `mediaSources.*.sourceName` | _String_ | Unique source name |
+| `mediaSources.*.sourceKind` | _String_ | Unique source internal type (a.k.a `ffmpeg_source` or `vlc_source`) |
+| `mediaSources.*.mediaState` | _String_ | The current state of media for that source. States: `none`, `playing`, `opening`, `buffering`, `paused`, `stopped`, `ended`, `error`, `unknown` |
+
+
+---
 
 ### GetSourcesList
 
@@ -2223,7 +1962,7 @@ _No specified parameters._
 | ---- | :---: | ------------|
 | `sources` | _Array&lt;Object&gt;_ | Array of sources |
 | `sources.*.name` | _String_ | Unique source name |
-| `sources.*.typeId` | _String_ | Non-unique source internal type (a.k.a type id) |
+| `sources.*.typeId` | _String_ | Non-unique source internal type (a.k.a kind) |
 | `sources.*.type` | _String_ | Source type. Value is one of the following: "input", "filter", "transition", "scene" or "unknown" |
 
 
@@ -2266,13 +2005,14 @@ _No specified parameters._
 
 - Added in v4.0.0
 
-Get the volume of the specified source.
+Get the volume of the specified source. Default response uses mul format, NOT SLIDER PERCENTAGE.
 
 **Request Fields:**
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
 | `source` | _String_ | Source name. |
+| `useDecibel` | _boolean (optional)_ | Output volume in decibels of attenuation instead of amplitude/mul. |
 
 
 **Response Items:**
@@ -2280,7 +2020,7 @@ Get the volume of the specified source.
 | Name | Type  | Description |
 | ---- | :---: | ------------|
 | `name` | _String_ | Source name. |
-| `volume` | _double_ | Volume of the source. Between `0.0` and `1.0`. |
+| `volume` | _double_ | Volume of the source. Between `0.0` and `1.0` if using mul, under `0.0` if using dB (since it is attenuating). |
 | `muted` | _boolean_ | Indicates whether the source is muted. |
 
 
@@ -2291,14 +2031,15 @@ Get the volume of the specified source.
 
 - Added in v4.0.0
 
-Set the volume of the specified source.
+Set the volume of the specified source. Default request format uses mul, NOT SLIDER PERCENTAGE.
 
 **Request Fields:**
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
 | `source` | _String_ | Source name. |
-| `volume` | _double_ | Desired volume. Must be between `0.0` and `1.0`. |
+| `volume` | _double_ | Desired volume. Must be between `0.0` and `1.0` for mul, and under 0.0 for dB. Note: OBS will interpret dB values under -100.0 as Inf. |
+| `useDecibel` | _boolean (optional)_ | Interperet `volume` data as decibels instead of amplitude/mul. |
 
 
 **Response Items:**
@@ -2364,6 +2105,52 @@ Inverts the mute status of a specified source.
 | Name | Type  | Description |
 | ---- | :---: | ------------|
 | `source` | _String_ | Source name. |
+
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+### GetAudioActive
+
+
+- Unreleased
+
+Get the audio's active status of a specified source.
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sourceName` | _String_ | Source name. |
+
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `audioActive` | _boolean_ | Audio active status of the source. |
+
+
+---
+
+### SetSourceName
+
+
+- Added in v4.8.0
+
+
+
+Note: If the new name already exists as a source, obs-websocket will return an error.
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sourceName` | _String_ | Source name. |
+| `newName` | _String_ | New source name. |
 
 
 **Response Items:**
@@ -2490,8 +2277,8 @@ Get the current properties of a Text GDI Plus source.
 | ---- | :---: | ------------|
 | `source` | _String_ | Source name. |
 | `align` | _String_ | Text Alignment ("left", "center", "right"). |
-| `bk-color` | _int_ | Background color. |
-| `bk-opacity` | _int_ | Background opacity (0-100). |
+| `bk_color` | _int_ | Background color. |
+| `bk_opacity` | _int_ | Background opacity (0-100). |
 | `chatlog` | _boolean_ | Chat log. |
 | `chatlog_lines` | _int_ | Chat log lines. |
 | `color` | _int_ | Text color. |
@@ -2533,8 +2320,8 @@ Set the current properties of a Text GDI Plus source.
 | ---- | :---: | ------------|
 | `source` | _String_ | Name of the source. |
 | `align` | _String (optional)_ | Text Alignment ("left", "center", "right"). |
-| `bk-color` | _int (optional)_ | Background color. |
-| `bk-opacity` | _int (optional)_ | Background opacity (0-100). |
+| `bk_color` | _int (optional)_ | Background color. |
+| `bk_opacity` | _int (optional)_ | Background opacity (0-100). |
 | `chatlog` | _boolean (optional)_ | Chat log. |
 | `chatlog_lines` | _int (optional)_ | Chat log lines. |
 | `color` | _int (optional)_ | Text color. |
@@ -2643,7 +2430,7 @@ _No additional response items._
 
 ### GetBrowserSourceProperties
 
-- **⚠️ Deprecated. Since 4.8.0. Prefer the use of GetSourceSettings. ⚠️**
+- **⚠️ Deprecated. Since 4.8.0. Prefer the use of GetSourceSettings. Will be removed in v5.0.0 ⚠️**
 
 - Added in v4.1.0
 
@@ -2675,7 +2462,7 @@ Get current properties for a Browser Source.
 
 ### SetBrowserSourceProperties
 
-- **⚠️ Deprecated. Since 4.8.0. Prefer the use of SetSourceSettings. ⚠️**
+- **⚠️ Deprecated. Since 4.8.0. Prefer the use of SetSourceSettings. Will be removed in v5.0.0 ⚠️**
 
 - Added in v4.1.0
 
@@ -2913,6 +2700,50 @@ _No additional response items._
 
 ---
 
+### GetAudioMonitorType
+
+
+- Added in v4.8.0
+
+Get the audio monitoring type of the specified source.
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sourceName` | _String_ | Source name. |
+
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `monitorType` | _String_ | The monitor type in use. Options: `none`, `monitorOnly`, `monitorAndOutput`. |
+
+
+---
+
+### SetAudioMonitorType
+
+
+- Added in v4.8.0
+
+Set the audio monitoring type of the specified source.
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sourceName` | _String_ | Source name. |
+| `monitorType` | _String_ | The monitor type to use. Options: `none`, `monitorOnly`, `monitorAndOutput`. |
+
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
 ### TakeSourceScreenshot
 
 
@@ -2929,9 +2760,11 @@ preserved if only one of these two parameters is specified.
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
-| `sourceName` | _String_ | Source name. Note that, since scenes are also sources, you can also provide a scene name. |
+| `sourceName` | _String (optional)_ | Source name. Note that, since scenes are also sources, you can also provide a scene name. If not provided, the currently active scene is used. |
 | `embedPictureFormat` | _String (optional)_ | Format of the Data URI encoded picture. Can be "png", "jpg", "jpeg" or "bmp" (or any other value supported by Qt's Image module) |
 | `saveToFilePath` | _String (optional)_ | Full file path (file extension included) where the captured image is to be saved. Can be in a format different from `pictureFormat`. Can be a relative path. |
+| `fileFormat` | _String (optional)_ | Format to save the image file as (one of the values provided in the `supported-image-export-formats` response field of `GetVersion`). If not specified, tries to guess based on file extension. |
+| `compressionQuality` | _int (optional)_ | Compression ratio between -1 and 100 to write the image with. -1 is automatic, 1 is smallest file/most compression, 100 is largest file/least compression. Varies with image type. |
 | `width` | _int (optional)_ | Screenshot width. Defaults to the source's base width. |
 | `height` | _int (optional)_ | Screenshot height. Defaults to the source's base height. |
 
@@ -2943,6 +2776,969 @@ preserved if only one of these two parameters is specified.
 | `sourceName` | _String_ | Source name |
 | `img` | _String_ | Image Data URI (if `embedPictureFormat` was specified in the request) |
 | `imageFile` | _String_ | Absolute path to the saved image file (if `saveToFilePath` was specified in the request) |
+
+
+---
+
+## Outputs
+
+### ListOutputs
+
+
+- Added in v4.7.0
+
+List existing outputs
+
+**Request Fields:**
+
+_No specified parameters._
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `outputs` | _Array&lt;Output&gt;_ | Outputs list |
+
+
+---
+
+### GetOutputInfo
+
+
+- Added in v4.7.0
+
+Get information about a single output
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `outputName` | _String_ | Output name |
+
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `outputInfo` | _Output_ | Output info |
+
+
+---
+
+### StartOutput
+
+
+- Added in v4.7.0
+
+
+
+Note: Controlling outputs is an experimental feature of obs-websocket. Some plugins which add outputs to OBS may not function properly when they are controlled in this way.
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `outputName` | _String_ | Output name |
+
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+### StopOutput
+
+
+- Added in v4.7.0
+
+
+
+Note: Controlling outputs is an experimental feature of obs-websocket. Some plugins which add outputs to OBS may not function properly when they are controlled in this way.
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `outputName` | _String_ | Output name |
+| `force` | _boolean (optional)_ | Force stop (default: false) |
+
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+## Profiles
+
+### SetCurrentProfile
+
+
+- Added in v4.0.0
+
+Set the currently active profile.
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `profile-name` | _String_ | Name of the desired profile. |
+
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+### GetCurrentProfile
+
+
+- Added in v4.0.0
+
+Get the name of the current profile.
+
+**Request Fields:**
+
+_No specified parameters._
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `profile-name` | _String_ | Name of the currently active profile. |
+
+
+---
+
+### ListProfiles
+
+
+- Added in v4.0.0
+
+Get a list of available profiles.
+
+**Request Fields:**
+
+_No specified parameters._
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `profiles` | _Array&lt;Object&gt;_ | List of available profiles. |
+| `profiles.*.profile-name` | _String_ | Filter name |
+
+
+---
+
+## Recording
+
+### GetRecordingStatus
+
+
+- Unreleased
+
+Get current recording status.
+
+**Request Fields:**
+
+_No specified parameters._
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `isRecording` | _boolean_ | Current recording status. |
+| `isRecordingPaused` | _boolean_ | Whether the recording is paused or not. |
+| `recordTimecode` | _String (optional)_ | Time elapsed since recording started (only present if currently recording). |
+
+
+---
+
+### StartStopRecording
+
+
+- Added in v0.3
+
+Toggle recording on or off (depending on the current recording state).
+
+**Request Fields:**
+
+_No specified parameters._
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+### StartRecording
+
+
+- Added in v4.1.0
+
+Start recording.
+Will return an `error` if recording is already active.
+
+**Request Fields:**
+
+_No specified parameters._
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+### StopRecording
+
+
+- Added in v4.1.0
+
+Stop recording.
+Will return an `error` if recording is not active.
+
+**Request Fields:**
+
+_No specified parameters._
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+### PauseRecording
+
+
+- Added in v4.7.0
+
+Pause the current recording.
+Returns an error if recording is not active or already paused.
+
+**Request Fields:**
+
+_No specified parameters._
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+### ResumeRecording
+
+
+- Added in v4.7.0
+
+Resume/unpause the current recording (if paused).
+Returns an error if recording is not active or not paused.
+
+**Request Fields:**
+
+_No specified parameters._
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+### SetRecordingFolder
+
+
+- Added in v4.1.0
+
+
+
+Please note: if `SetRecordingFolder` is called while a recording is
+in progress, the change won't be applied immediately and will be
+effective on the next recording.
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `rec-folder` | _String_ | Path of the recording folder. |
+
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+### GetRecordingFolder
+
+
+- Added in v4.1.0
+
+Get the path of  the current recording folder.
+
+**Request Fields:**
+
+_No specified parameters._
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `rec-folder` | _String_ | Path of the recording folder. |
+
+
+---
+
+## Replay Buffer
+
+### GetReplayBufferStatus
+
+
+- Unreleased
+
+Get the status of the OBS replay buffer.
+
+**Request Fields:**
+
+_No specified parameters._
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `isReplayBufferActive` | _boolean_ | Current recording status. |
+
+
+---
+
+### StartStopReplayBuffer
+
+
+- Added in v4.2.0
+
+Toggle the Replay Buffer on/off (depending on the current state of the replay buffer).
+
+**Request Fields:**
+
+_No specified parameters._
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+### StartReplayBuffer
+
+
+- Added in v4.2.0
+
+Start recording into the Replay Buffer.
+Will return an `error` if the Replay Buffer is already active or if the
+"Save Replay Buffer" hotkey is not set in OBS' settings.
+Setting this hotkey is mandatory, even when triggering saves only
+through obs-websocket.
+
+**Request Fields:**
+
+_No specified parameters._
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+### StopReplayBuffer
+
+
+- Added in v4.2.0
+
+Stop recording into the Replay Buffer.
+Will return an `error` if the Replay Buffer is not active.
+
+**Request Fields:**
+
+_No specified parameters._
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+### SaveReplayBuffer
+
+
+- Added in v4.2.0
+
+Flush and save the contents of the Replay Buffer to disk. This is
+basically the same as triggering the "Save Replay Buffer" hotkey.
+Will return an `error` if the Replay Buffer is not active.
+
+**Request Fields:**
+
+_No specified parameters._
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+## Scene Collections
+
+### SetCurrentSceneCollection
+
+
+- Added in v4.0.0
+
+Change the active scene collection.
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sc-name` | _String_ | Name of the desired scene collection. |
+
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+### GetCurrentSceneCollection
+
+
+- Added in v4.0.0
+
+Get the name of the current scene collection.
+
+**Request Fields:**
+
+_No specified parameters._
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sc-name` | _String_ | Name of the currently active scene collection. |
+
+
+---
+
+### ListSceneCollections
+
+
+- Added in v4.0.0
+
+List available scene collections
+
+**Request Fields:**
+
+_No specified parameters._
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `scene-collections` | _Array&lt;String&gt;_ | Scene collections list |
+| `scene-collections.*.sc-name` | _String_ | Scene collection name |
+
+
+---
+
+## Scene Items
+
+### GetSceneItemList
+
+
+- Unreleased
+
+Get a list of all scene items in a scene.
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sceneName` | _String (optional)_ | Name of the scene to get the list of scene items from. Defaults to the current scene if not specified. |
+
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sceneName` | _String_ | Name of the requested (or current) scene |
+| `sceneItems` | _Array&lt;Object&gt;_ | Array of scene items |
+| `sceneItems.*.itemId` | _int_ | Unique item id of the source item |
+| `sceneItems.*.sourceKind` | _String_ | ID if the scene item's source. For example `vlc_source` or `image_source` |
+| `sceneItems.*.sourceName` | _String_ | Name of the scene item's source |
+| `sceneItems.*.sourceType` | _String_ | Type of the scene item's source. Either `input`, `group`, or `scene` |
+
+
+---
+
+### GetSceneItemProperties
+
+
+- Added in v4.3.0
+
+Gets the scene specific properties of the specified source item.
+Coordinates are relative to the item's parent (the scene or group it belongs to).
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `scene-name` | _String (optional)_ | Name of the scene the scene item belongs to. Defaults to the current scene. |
+| `item` | _String \| Object_ | Scene Item name (if this field is a string) or specification (if it is an object). |
+| `item.name` | _String (optional)_ | Scene Item name (if the `item` field is an object) |
+| `item.id` | _int (optional)_ | Scene Item ID (if the `item` field is an object) |
+
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `name` | _String_ | Scene Item name. |
+| `itemId` | _int_ | Scene Item ID. |
+| `position.x` | _double_ | The x position of the source from the left. |
+| `position.y` | _double_ | The y position of the source from the top. |
+| `position.alignment` | _int_ | The point on the source that the item is manipulated from. |
+| `rotation` | _double_ | The clockwise rotation of the item in degrees around the point of alignment. |
+| `scale.x` | _double_ | The x-scale factor of the source. |
+| `scale.y` | _double_ | The y-scale factor of the source. |
+| `crop.top` | _int_ | The number of pixels cropped off the top of the source before scaling. |
+| `crop.right` | _int_ | The number of pixels cropped off the right of the source before scaling. |
+| `crop.bottom` | _int_ | The number of pixels cropped off the bottom of the source before scaling. |
+| `crop.left` | _int_ | The number of pixels cropped off the left of the source before scaling. |
+| `visible` | _bool_ | If the source is visible. |
+| `muted` | _bool_ | If the source is muted. |
+| `locked` | _bool_ | If the source's transform is locked. |
+| `bounds.type` | _String_ | Type of bounding box. Can be "OBS_BOUNDS_STRETCH", "OBS_BOUNDS_SCALE_INNER", "OBS_BOUNDS_SCALE_OUTER", "OBS_BOUNDS_SCALE_TO_WIDTH", "OBS_BOUNDS_SCALE_TO_HEIGHT", "OBS_BOUNDS_MAX_ONLY" or "OBS_BOUNDS_NONE". |
+| `bounds.alignment` | _int_ | Alignment of the bounding box. |
+| `bounds.x` | _double_ | Width of the bounding box. |
+| `bounds.y` | _double_ | Height of the bounding box. |
+| `sourceWidth` | _int_ | Base width (without scaling) of the source |
+| `sourceHeight` | _int_ | Base source (without scaling) of the source |
+| `width` | _double_ | Scene item width (base source width multiplied by the horizontal scaling factor) |
+| `height` | _double_ | Scene item height (base source height multiplied by the vertical scaling factor) |
+| `alignment` | _int_ | The point on the source that the item is manipulated from. The sum of 1=Left or 2=Right, and 4=Top or 8=Bottom, or omit to center on that axis. |
+| `parentGroupName` | _String (optional)_ | Name of the item's parent (if this item belongs to a group) |
+| `groupChildren` | _Array&lt;SceneItemTransform&gt; (optional)_ | List of children (if this item is a group) |
+
+
+---
+
+### SetSceneItemProperties
+
+
+- Added in v4.3.0
+
+Sets the scene specific properties of a source. Unspecified properties will remain unchanged.
+Coordinates are relative to the item's parent (the scene or group it belongs to).
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `scene-name` | _String (optional)_ | Name of the scene the source item belongs to. Defaults to the current scene. |
+| `item` | _String \| Object_ | Scene Item name (if this field is a string) or specification (if it is an object). |
+| `item.name` | _String (optional)_ | Scene Item name (if the `item` field is an object) |
+| `item.id` | _int (optional)_ | Scene Item ID (if the `item` field is an object) |
+| `position.x` | _double (optional)_ | The new x position of the source. |
+| `position.y` | _double (optional)_ | The new y position of the source. |
+| `position.alignment` | _int (optional)_ | The new alignment of the source. |
+| `rotation` | _double (optional)_ | The new clockwise rotation of the item in degrees. |
+| `scale.x` | _double (optional)_ | The new x scale of the item. |
+| `scale.y` | _double (optional)_ | The new y scale of the item. |
+| `crop.top` | _int (optional)_ | The new amount of pixels cropped off the top of the source before scaling. |
+| `crop.bottom` | _int (optional)_ | The new amount of pixels cropped off the bottom of the source before scaling. |
+| `crop.left` | _int (optional)_ | The new amount of pixels cropped off the left of the source before scaling. |
+| `crop.right` | _int (optional)_ | The new amount of pixels cropped off the right of the source before scaling. |
+| `visible` | _bool (optional)_ | The new visibility of the source. 'true' shows source, 'false' hides source. |
+| `locked` | _bool (optional)_ | The new locked status of the source. 'true' keeps it in its current position, 'false' allows movement. |
+| `bounds.type` | _String (optional)_ | The new bounds type of the source. Can be "OBS_BOUNDS_STRETCH", "OBS_BOUNDS_SCALE_INNER", "OBS_BOUNDS_SCALE_OUTER", "OBS_BOUNDS_SCALE_TO_WIDTH", "OBS_BOUNDS_SCALE_TO_HEIGHT", "OBS_BOUNDS_MAX_ONLY" or "OBS_BOUNDS_NONE". |
+| `bounds.alignment` | _int (optional)_ | The new alignment of the bounding box. (0-2, 4-6, 8-10) |
+| `bounds.x` | _double (optional)_ | The new width of the bounding box. |
+| `bounds.y` | _double (optional)_ | The new height of the bounding box. |
+
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+### ResetSceneItem
+
+
+- Added in v4.2.0
+
+Reset a scene item.
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `scene-name` | _String (optional)_ | Name of the scene the scene item belongs to. Defaults to the current scene. |
+| `item` | _String \| Object_ | Scene Item name (if this field is a string) or specification (if it is an object). |
+| `item.name` | _String (optional)_ | Scene Item name (if the `item` field is an object) |
+| `item.id` | _int (optional)_ | Scene Item ID (if the `item` field is an object) |
+
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+### SetSceneItemRender
+
+
+- Added in v0.3
+
+Show or hide a specified source item in a specified scene.
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `scene-name` | _String (optional)_ | Name of the scene the scene item belongs to. Defaults to the currently active scene. |
+| `source` | _String_ | Scene Item name. |
+| `render` | _boolean_ | true = shown ; false = hidden |
+
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+### SetSceneItemPosition
+
+- **⚠️ Deprecated. Since 4.3.0. Prefer the use of SetSceneItemProperties. ⚠️**
+
+- Added in v4.0.0
+
+Sets the coordinates of a specified source item.
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `scene-name` | _String (optional)_ | Name of the scene the scene item belongs to. Defaults to the current scene. |
+| `item` | _String_ | Scene Item name. |
+| `x` | _double_ | X coordinate. |
+| `y` | _double_ | Y coordinate. |
+
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+### SetSceneItemTransform
+
+- **⚠️ Deprecated. Since 4.3.0. Prefer the use of SetSceneItemProperties. ⚠️**
+
+- Added in v4.0.0
+
+Set the transform of the specified source item.
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `scene-name` | _String (optional)_ | Name of the scene the scene item belongs to. Defaults to the current scene. |
+| `item` | _String_ | Scene Item name. |
+| `x-scale` | _double_ | Width scale factor. |
+| `y-scale` | _double_ | Height scale factor. |
+| `rotation` | _double_ | Source item rotation (in degrees). |
+
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+### SetSceneItemCrop
+
+- **⚠️ Deprecated. Since 4.3.0. Prefer the use of SetSceneItemProperties. ⚠️**
+
+- Added in v4.1.0
+
+Sets the crop coordinates of the specified source item.
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `scene-name` | _String (optional)_ | Name of the scene the scene item belongs to. Defaults to the current scene. |
+| `item` | _String_ | Scene Item name. |
+| `top` | _int_ | Pixel position of the top of the source item. |
+| `bottom` | _int_ | Pixel position of the bottom of the source item. |
+| `left` | _int_ | Pixel position of the left of the source item. |
+| `right` | _int_ | Pixel position of the right of the source item. |
+
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+### DeleteSceneItem
+
+
+- Added in v4.5.0
+
+Deletes a scene item.
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `scene` | _String (optional)_ | Name of the scene the scene item belongs to. Defaults to the current scene. |
+| `item` | _Object_ | Scene item to delete (required) |
+| `item.name` | _String_ | Scene Item name (prefer `id`, including both is acceptable). |
+| `item.id` | _int_ | Scene Item ID. |
+
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+### AddSceneItem
+
+
+- Unreleased
+
+Creates a scene item in a scene. In other words, this is how you add a source into a scene.
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sceneName` | _String_ | Name of the scene to create the scene item in |
+| `sourceName` | _String_ | Name of the source to be added |
+| `setVisible` | _boolean_ | Whether to make the sceneitem visible on creation or not. Default `true` |
+
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `itemId` | _int_ | Numerical ID of the created scene item |
+
+
+---
+
+### DuplicateSceneItem
+
+
+- Added in v4.5.0
+
+Duplicates a scene item.
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `fromScene` | _String (optional)_ | Name of the scene to copy the item from. Defaults to the current scene. |
+| `toScene` | _String (optional)_ | Name of the scene to create the item in. Defaults to the current scene. |
+| `item` | _Object_ | Scene Item to duplicate from the source scene (required) |
+| `item.name` | _String_ | Scene Item name (prefer `id`, including both is acceptable). |
+| `item.id` | _int_ | Scene Item ID. |
+
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `scene` | _String_ | Name of the scene where the new item was created |
+| `item` | _Object_ | New item info |
+| `item.id` | _int_ | New item ID |
+| `item.name` | _String_ | New item name |
+
+
+---
+
+## Scenes
+
+### SetCurrentScene
+
+
+- Added in v0.3
+
+Switch to the specified scene.
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `scene-name` | _String_ | Name of the scene to switch to. |
+
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+### GetCurrentScene
+
+
+- Added in v0.3
+
+Get the current scene's name and source items.
+
+**Request Fields:**
+
+_No specified parameters._
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `name` | _String_ | Name of the currently active scene. |
+| `sources` | _Array&lt;SceneItem&gt;_ | Ordered list of the current scene's source items. |
+
+
+---
+
+### GetSceneList
+
+
+- Added in v0.3
+
+Get a list of scenes in the currently active profile.
+
+**Request Fields:**
+
+_No specified parameters._
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `current-scene` | _String_ | Name of the currently active scene. |
+| `scenes` | _Array&lt;Scene&gt;_ | Ordered list of the current profile's scenes (See [GetCurrentScene](#getcurrentscene) for more information). |
+
+
+---
+
+### CreateScene
+
+
+- Added in v4.8.0
+
+Create a new scene scene.
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sceneName` | _String_ | Name of the scene to create. |
+
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+### ReorderSceneItems
+
+
+- Added in v4.5.0
+
+Changes the order of scene items in the requested scene.
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `scene` | _String (optional)_ | Name of the scene to reorder (defaults to current). |
+| `items` | _Array&lt;Scene&gt;_ | Ordered list of objects with name and/or id specified. Id preferred due to uniqueness per scene |
+| `items.*.id` | _int (optional)_ | Id of a specific scene item. Unique on a scene by scene basis. |
+| `items.*.name` | _String (optional)_ | Name of a scene item. Sufficiently unique if no scene items share sources within the scene. |
+
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+### SetSceneTransitionOverride
+
+
+- Added in v4.8.0
+
+Set a scene to use a specific transition override.
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sceneName` | _String_ | Name of the scene to switch to. |
+| `transitionName` | _String_ | Name of the transition to use. |
+| `transitionDuration` | _int (Optional)_ | Duration in milliseconds of the transition if transition is not fixed. Defaults to the current duration specified in the UI if there is no current override and this value is not given. |
+
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+### RemoveSceneTransitionOverride
+
+
+- Added in v4.8.0
+
+Remove any transition override on a scene.
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sceneName` | _String_ | Name of the scene to switch to. |
+
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+### GetSceneTransitionOverride
+
+
+- Added in v4.8.0
+
+Get the current scene transition override.
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sceneName` | _String_ | Name of the scene to switch to. |
+
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `transitionName` | _String_ | Name of the current overriding transition. Empty string if no override is set. |
+| `transitionDuration` | _int_ | Transition duration. `-1` if no override is set. |
 
 
 ---
@@ -2978,7 +3774,7 @@ _No specified parameters._
 
 - Added in v0.3
 
-Toggle streaming on or off.
+Toggle streaming on or off (depending on the current stream state).
 
 **Request Fields:**
 
@@ -3113,7 +3909,6 @@ _No additional response items._
 - Added in v4.6.0
 
 Send the provided text as embedded CEA-608 caption data.
-As of OBS Studio 23.1, captions are not yet available on Linux.
 
 **Request Fields:**
 
@@ -3255,7 +4050,7 @@ _No additional response items._
 
 - Added in v4.1.0
 
-Toggles Studio Mode.
+Toggles Studio Mode (depending on the current state of studio mode).
 
 **Request Fields:**
 
@@ -3368,6 +4163,73 @@ _No specified parameters._
 | Name | Type  | Description |
 | ---- | :---: | ------------|
 | `transition-duration` | _int_ | Duration of the current transition (in milliseconds). |
+
+
+---
+
+### GetTransitionPosition
+
+
+- Added in v4.8.0
+
+Get the position of the current transition.
+
+**Request Fields:**
+
+_No specified parameters._
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `position` | _double_ | current transition position. This value will be between 0.0 and 1.0. Note: Transition returns 1.0 when not active. |
+
+
+---
+
+### GetTransitionSettings
+
+
+- Unreleased
+
+Get the current settings of a transition
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `transitionName` | _String_ | Transition name |
+
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `transitionSettings` | _Object_ | Current transition settings |
+
+
+---
+
+### SetTransitionSettings
+
+
+- Unreleased
+
+Change the current settings of a transition
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `transitionName` | _String_ | Transition name |
+| `transitionSettings` | _Object_ | Transition settings (they can be partial) |
+
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `transitionSettings` | _Object_ | Updated transition settings |
 
 
 ---
