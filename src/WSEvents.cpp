@@ -467,13 +467,19 @@ void WSEvents::OnSceneChange() {
  *
  * Note: This event is not fired when the scenes are reordered.
  *
+ * @return {Array<Scene>} `scenes` Scenes list.
+ * 
  * @api events
  * @name ScenesChanged
  * @category scenes
  * @since 0.3
  */
 void WSEvents::OnSceneListChange() {
-	broadcastUpdate("ScenesChanged");
+	OBSDataArrayAutoRelease scenes = Utils::GetScenes();
+
+	OBSDataAutoRelease fields = obs_data_create();
+	obs_data_set_array(fields, "scenes", scenes);
+	broadcastUpdate("ScenesChanged", fields);
 }
 
 /**
