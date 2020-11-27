@@ -115,6 +115,8 @@ class WSRequestHandler {
 		RpcResponse GetTransitionPosition(const RpcRequest&);
 		RpcResponse GetTransitionSettings(const RpcRequest&);
 		RpcResponse SetTransitionSettings(const RpcRequest&);
+		RpcResponse ReleaseTBar(const RpcRequest&);
+		RpcResponse SetTBarPosition(const RpcRequest&);
 
 		RpcResponse SetVolume(const RpcRequest&);
 		RpcResponse GetVolume(const RpcRequest&);

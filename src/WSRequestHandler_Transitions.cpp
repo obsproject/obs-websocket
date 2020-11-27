@@ -81,7 +81,7 @@ RpcResponse WSRequestHandler::SetCurrentTransition(const RpcRequest& request) {
 	if (!success) {
 		return request.failed("requested transition does not exist");
 	}
-	
+
 	return request.success();
 }
 
@@ -129,7 +129,7 @@ RpcResponse WSRequestHandler::GetTransitionDuration(const RpcRequest& request) {
  * @api requests
  * @name GetTransitionPosition
  * @category transitions
- * @since 4.8.0
+ * @since unreleased
  */
 RpcResponse WSRequestHandler::GetTransitionPosition(const RpcRequest& request) {
 	OBSSourceAutoRelease currentTransition = obs_frontend_get_current_transition();
@@ -203,4 +203,72 @@ RpcResponse WSRequestHandler::SetTransitionSettings(const RpcRequest& request) {
 	OBSDataAutoRelease response = obs_data_create();
 	obs_data_set_obj(response, "transitionSettings", updatedSettings);
 	return request.success(response);
+}
+
+/**
+ * Release the T-Bar (like a user releasing their mouse button after moving it).
+ * *YOU MUST CALL THIS if you called `SetTBarPosition` with the `release` parameter set to `false`.*
+ *
+ * @api requests
+ * @name ReleaseTBar
+ * @category transitions
+ * @since unreleased
+ */
+RpcResponse WSRequestHandler::ReleaseTBar(const RpcRequest& request) {
+	if (!obs_frontend_preview_program_mode_active()) {
+		return request.failed("studio mode not enabled");
+	}
+
+	if (obs_transition_fixed(obs_frontend_get_current_transition())) {
+		return request.failed("current transition doesn't support t-bar control");
+	}
+
+	obs_frontend_release_tbar();
+
+	return request.success();
+}
+
+/**
+ * Set the manual position of the T-Bar (in Studio Mode) to the specified value. Will return an error if OBS is not in studio mode
+ * or if the current transition doesn't support T-Bar control.
+ * 
+ * If your code needs to perform multiple successive T-Bar moves (e.g. : in an animation, or in response to a user moving a T-Bar control in your User Interface), set `release` to false and call `ReleaseTBar` later once the animation/interaction is over.
+ *
+ * @param {double} `position` T-Bar position. This value must be between 0.0 and 1.0.
+ * @param {boolean (optional)} `release` Whether or not the T-Bar gets released automatically after setting its new position (like a user releasing their mouse button after moving the T-Bar). Call `ReleaseTBar` manually if you set `release` to false. Defaults to true.
+ *
+ * @api requests
+ * @name SetTBarPosition
+ * @category transitions
+ * @since unreleased
+ */
+RpcResponse WSRequestHandler::SetTBarPosition(const RpcRequest& request) {
+	if (!obs_frontend_preview_program_mode_active()) {
+		return request.failed("studio mode not enabled");
+	}
+
+	if (obs_transition_fixed(obs_frontend_get_current_transition())) {
+		return request.failed("current transition doesn't support t-bar control");
+	}
+
+	if (!request.hasField("position")) {
+		return request.failed("missing request parameters");
+	}
+
+	double position = obs_data_get_double(request.parameters(), "position");
+	if (position < 0.0 || position > 1.0) {
+		return request.failed("position is out of range");
+	}
+
+	bool release = true;
+	if (request.hasField("release")) {
+		release = obs_data_get_bool(request.parameters(), "release");
+	}
+
+	obs_frontend_set_tbar_position((int)((float)position * 1024.0));
+	if (release) {
+		obs_frontend_release_tbar();
+	}
+
+	return request.success();
 }
