@@ -66,12 +66,8 @@ RpcResponse WSRequestHandler::CreateSource(const RpcRequest& request)
 	obs_source_set_enabled(newSource, true);
 
 	if (request.hasField("sourceSettings")) { // We apply the settings after source creation because otherwise we get a bunch of memory leaks.
-		OBSDataAutoRelease currentSettings = obs_source_get_settings(newSource);
 		OBSDataAutoRelease newSettings = obs_data_get_obj(request.parameters(), "sourceSettings");
-		OBSDataAutoRelease sourceSettings = obs_data_create();
-		obs_data_apply(sourceSettings, currentSettings);
-		obs_data_apply(sourceSettings, newSettings);
-		obs_source_update(newSource, sourceSettings);
+		obs_source_update(newSource, newSettings);
 		obs_source_update_properties(newSource);
 	}
 	
