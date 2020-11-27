@@ -25,7 +25,7 @@ bool isTextFreeType2Source(const QString& sourceKind)
  * @param {String} `sourceKind` Source kind, Eg. `vlc_source`.
  * @param {String} `sceneName` Scene to add the new source to.
  * @param {Object (optional)} `sourceSettings` Source settings data.
- * @param {boolean (optional)} `setVisible` Set the created SceneItem as visible or not.
+ * @param {boolean (optional)} `setVisible` Set the created SceneItem as visible or not. Defaults to true
  *
  * @return {int} `itemId` ID of the SceneItem in the scene.
  *
