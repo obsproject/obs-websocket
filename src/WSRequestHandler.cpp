@@ -101,6 +101,7 @@ const QHash<QString, RpcMethodHandler> WSRequestHandler::messageMap{
 	{ "ReleaseTBar", &WSRequestHandler::ReleaseTBar	},
 	{ "SetTBarPosition", &WSRequestHandler::SetTBarPosition	},
 
+	{ "CreateSource", &WSRequestHandler::CreateSource },
 	{ "SetVolume", &WSRequestHandler::SetVolume },
 	{ "GetVolume", &WSRequestHandler::GetVolume },
 	{ "ToggleMute", &WSRequestHandler::ToggleMute },

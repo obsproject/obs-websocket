@@ -118,6 +118,7 @@ class WSRequestHandler {
 		RpcResponse ReleaseTBar(const RpcRequest&);
 		RpcResponse SetTBarPosition(const RpcRequest&);
 
+		RpcResponse CreateSource(const RpcRequest&);
 		RpcResponse SetVolume(const RpcRequest&);
 		RpcResponse GetVolume(const RpcRequest&);
 		RpcResponse ToggleMute(const RpcRequest&);

@@ -2,18 +2,6 @@
 
 #include "WSRequestHandler.h"
 
-struct AddSourceData {
-	obs_source_t *source;
-	obs_sceneitem_t *sceneItem;
-	bool setVisible;
-};
-
-void AddSourceHelper(void *_data, obs_scene_t *scene) {
-	auto *data = reinterpret_cast<AddSourceData*>(_data);
-	data->sceneItem = obs_scene_add(scene, data->source);
-	obs_sceneitem_set_visible(data->sceneItem, data->setVisible);
-}
-
 /**
 * Get a list of all scene items in a scene.
 *
@@ -663,7 +651,7 @@ RpcResponse WSRequestHandler::AddSceneItem(const RpcRequest& request) {
 		return request.failed("you cannot add a scene as a sceneitem to itself");
 	}
 
-	AddSourceData data;
+	Utils::AddSourceData data;
 	data.source = source;
 	data.setVisible = true;
 	if (request.hasField("setVisible")) {
@@ -671,7 +659,7 @@ RpcResponse WSRequestHandler::AddSceneItem(const RpcRequest& request) {
 	}
 
 	obs_enter_graphics();
-	obs_scene_atomic_update(scene, AddSourceHelper, &data);
+	obs_scene_atomic_update(scene, Utils::AddSourceHelper, &data);
 	obs_leave_graphics();
 
 	OBSDataAutoRelease responseData = obs_data_create();

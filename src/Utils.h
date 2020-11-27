@@ -86,4 +86,10 @@ namespace Utils {
 	bool SetFilenameFormatting(const char* filenameFormatting);
 
 	QString nsToTimestamp(uint64_t ns);
+    struct AddSourceData {
+        obs_source_t *source;
+        obs_sceneitem_t *sceneItem;
+        bool setVisible;
+    };
+    void AddSourceHelper(void *_data, obs_scene_t *scene);
 };
