@@ -81,7 +81,7 @@ bool obs_module_load(void) {
 	auto eventCallback = [](enum obs_frontend_event event, void *param) {
 		if (event == OBS_FRONTEND_EVENT_FINISHED_LOADING) {
 			if (_config->ServerEnabled) {
-				_server->start(_config->ServerPort);
+				_server->start(_config->ServerPort, _config->LockToIPv4);
 			}
 			obs_frontend_remove_event_callback((obs_frontend_event_cb)param, nullptr);
 		}

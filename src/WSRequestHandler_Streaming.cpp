@@ -43,7 +43,7 @@ RpcResponse WSRequestHandler::GetStreamingStatus(const RpcRequest& request) {
 }
 
 /**
- * Toggle streaming on or off.
+ * Toggle streaming on or off (depending on the current stream state).
  *
  * @api requests
  * @name StartStopStreaming
@@ -292,7 +292,6 @@ RpcResponse WSRequestHandler::SaveStreamSettings(const RpcRequest& request) {
 
 /**
  * Send the provided text as embedded CEA-608 caption data.
- * As of OBS Studio 23.1, captions are not yet available on Linux.
  *
  * @param {String} `text` Captions text
  *

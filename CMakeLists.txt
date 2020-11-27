@@ -11,6 +11,10 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_definitions(-DASIO_STANDALONE)
 
+if (${CMAKE_SYSTEM_PROCESSOR} MATCHES "arm") 
+    set(CMAKE_CXX_FLAGS "-mfpu=neon")
+endif()
+
 if (WIN32 OR APPLE)
 	include(external/FindLibObs.cmake)
 endif()
@@ -35,6 +39,7 @@ set(obs-websocket_SOURCES
 	src/WSRequestHandler_StudioMode.cpp
 	src/WSRequestHandler_Transitions.cpp
 	src/WSRequestHandler_Outputs.cpp
+	src/WSRequestHandler_MediaControl.cpp
 	src/WSEvents.cpp
 	src/Config.cpp
 	src/Utils.cpp

@@ -43,6 +43,7 @@ class Config {
 
 		bool ServerEnabled;
 		uint64_t ServerPort;
+		bool LockToIPv4;
 
 		bool DebugEnabled;
 		bool AlertsEnabled;

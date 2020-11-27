@@ -71,7 +71,7 @@ RpcResponse findOutputOrFail(const RpcRequest& request, std::function<RpcRespons
 		return request.failed("specified output doesn't exist");
 	}
 
-	return callback(output);	
+	return callback(output);
 }
 
 /**
@@ -129,6 +129,8 @@ RpcResponse WSRequestHandler::GetOutputInfo(const RpcRequest& request)
 /**
 * Start an output
 *
+* Note: Controlling outputs is an experimental feature of obs-websocket. Some plugins which add outputs to OBS may not function properly when they are controlled in this way.
+*
 * @param {String} `outputName` Output name
 *
 * @api requests
@@ -157,6 +159,8 @@ RpcResponse WSRequestHandler::StartOutput(const RpcRequest& request)
 /**
 * Stop an output
 *
+* Note: Controlling outputs is an experimental feature of obs-websocket. Some plugins which add outputs to OBS may not function properly when they are controlled in this way.
+*
 * @param {String} `outputName` Output name
 * @param {boolean (optional)} `force` Force stop (default: false)
 *
@@ -171,7 +175,7 @@ RpcResponse WSRequestHandler::StopOutput(const RpcRequest& request)
 		if (!obs_output_active(output)) {
 			return request.failed("output not active");
 		}
-		
+
 		bool forceStop = obs_data_get_bool(request.parameters(), "force");
 		if (forceStop) {
 			obs_output_force_stop(output);

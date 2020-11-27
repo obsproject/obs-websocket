@@ -36,7 +36,7 @@ RpcResponse WSRequestHandler::SetCurrentScene(const RpcRequest& request) {
 
 /**
  * Get the current scene's name and source items.
- * 
+ *
  * @return {String} `name` Name of the currently active scene.
  * @return {Array<SceneItem>} `sources` Ordered list of the current scene's source items.
  *
@@ -58,7 +58,7 @@ RpcResponse WSRequestHandler::GetCurrentScene(const RpcRequest& request) {
 
 /**
  * Get a list of scenes in the currently active profile.
- * 
+ *
  * @return {String} `current-scene` Name of the currently active scene.
  * @return {Array<Scene>} `scenes` Ordered list of the current profile's scenes (See [GetCurrentScene](#getcurrentscene) for more information).
  *
@@ -109,8 +109,8 @@ RpcResponse WSRequestHandler::CreateScene(const RpcRequest& request) {
 *
 * @param {String (optional)} `scene` Name of the scene to reorder (defaults to current).
 * @param {Array<Scene>} `items` Ordered list of objects with name and/or id specified. Id preferred due to uniqueness per scene
-* @param {int (optional)} `items[].id` Id of a specific scene item. Unique on a scene by scene basis.
-* @param {String (optional)} `items[].name` Name of a scene item. Sufficiently unique if no scene items share sources within the scene.
+* @param {int (optional)} `items.*.id` Id of a specific scene item. Unique on a scene by scene basis.
+* @param {String (optional)} `items.*.name` Name of a scene item. Sufficiently unique if no scene items share sources within the scene.
 *
 * @api requests
 * @name ReorderSceneItems
@@ -184,7 +184,7 @@ RpcResponse WSRequestHandler::ReorderSceneItems(const RpcRequest& request) {
  * @api requests
  * @name SetSceneTransitionOverride
  * @category scenes
- * @since 4.9.0
+ * @since 4.8.0
  */
 RpcResponse WSRequestHandler::SetSceneTransitionOverride(const RpcRequest& request) {
 	if (!request.hasField("sceneName") || !request.hasField("transitionName")) {
@@ -196,12 +196,12 @@ RpcResponse WSRequestHandler::SetSceneTransitionOverride(const RpcRequest& reque
 	if (!source) {
 		return request.failed("requested scene does not exist");
 	}
-	
+
 	enum obs_source_type sourceType = obs_source_get_type(source);
 	if (sourceType != OBS_SOURCE_TYPE_SCENE) {
 		return request.failed("requested scene is invalid");
 	}
-	
+
 	QString transitionName = obs_data_get_string(request.parameters(), "transitionName");
 	if (!Utils::GetTransitionFromName(transitionName)) {
 		return request.failed("requested transition does not exist");
@@ -218,7 +218,7 @@ RpcResponse WSRequestHandler::SetSceneTransitionOverride(const RpcRequest& reque
 			obs_frontend_get_transition_duration()
 		);
 	}
-	
+
 	return request.success();
 }
 
@@ -230,7 +230,7 @@ RpcResponse WSRequestHandler::SetSceneTransitionOverride(const RpcRequest& reque
  * @api requests
  * @name RemoveSceneTransitionOverride
  * @category scenes
- * @since 4.9.0
+ * @since 4.8.0
  */
 RpcResponse WSRequestHandler::RemoveSceneTransitionOverride(const RpcRequest& request) {
 	if (!request.hasField("sceneName")) {
@@ -242,7 +242,7 @@ RpcResponse WSRequestHandler::RemoveSceneTransitionOverride(const RpcRequest& re
 	if (!source) {
 		return request.failed("requested scene does not exist");
 	}
-	
+
 	enum obs_source_type sourceType = obs_source_get_type(source);
 	if (sourceType != OBS_SOURCE_TYPE_SCENE) {
 		return request.failed("requested scene is invalid");
@@ -266,7 +266,7 @@ RpcResponse WSRequestHandler::RemoveSceneTransitionOverride(const RpcRequest& re
  * @api requests
  * @name GetSceneTransitionOverride
  * @category scenes
- * @since 4.9.0
+ * @since 4.8.0
  */
 RpcResponse WSRequestHandler::GetSceneTransitionOverride(const RpcRequest& request) {
 	if (!request.hasField("sceneName")) {
@@ -278,7 +278,7 @@ RpcResponse WSRequestHandler::GetSceneTransitionOverride(const RpcRequest& reque
 	if (!source) {
 		return request.failed("requested scene does not exist");
 	}
-	
+
 	enum obs_source_type sourceType = obs_source_get_type(source);
 	if (sourceType != OBS_SOURCE_TYPE_SCENE) {
 		return request.failed("requested scene is invalid");

@@ -4,7 +4,7 @@ variables:
 trigger:
   branches:
     include:
-      - master
+      - '4.x-current'
   tags:
     include:
       - '*'

@@ -171,6 +171,7 @@ RpcResponse WSRequestHandler::Authenticate(const RpcRequest& request) {
  * @name SetHeartbeat
  * @category general
  * @since 4.3.0
+ * @deprecated Since 4.9.0. Please poll the appropriate data using requests. Will be removed in v5.0.0.
  */
 RpcResponse WSRequestHandler::SetHeartbeat(const RpcRequest& request) {
 	if (!request.hasField("enable")) {
@@ -231,7 +232,7 @@ RpcResponse WSRequestHandler::GetFilenameFormatting(const RpcRequest& request) {
 /**
  * Get OBS stats (almost the same info as provided in OBS' stats window)
  *
- * @return {OBSStats} `stats` OBS stats
+ * @return {OBSStats} `stats` [OBS stats](#obsstats)
  *
  * @api requests
  * @name GetStats
@@ -319,12 +320,12 @@ RpcResponse WSRequestHandler::GetVideoInfo(const RpcRequest& request) {
 
 /**
  * Open a projector window or create a projector on a monitor. Requires OBS v24.0.4 or newer.
- * 
- * @param {String (Optional)} `type` Type of projector: Preview (default), Source, Scene, StudioProgram, or Multiview (case insensitive).
+ *
+ * @param {String (Optional)} `type` Type of projector: `Preview` (default), `Source`, `Scene`, `StudioProgram`, or `Multiview` (case insensitive).
  * @param {int (Optional)} `monitor` Monitor to open the projector on. If -1 or omitted, opens a window.
- * @param {String (Optional)} `geometry` Size and position of the projector window (only if monitor is -1). Encoded in Base64 using Qt's geometry encoding (https://doc.qt.io/qt-5/qwidget.html#saveGeometry). Corresponds to OBS's saved projectors.
+ * @param {String (Optional)} `geometry` Size and position of the projector window (only if monitor is -1). Encoded in Base64 using [Qt's geometry encoding](https://doc.qt.io/qt-5/qwidget.html#saveGeometry). Corresponds to OBS's saved projectors.
  * @param {String (Optional)} `name` Name of the source or scene to be displayed (ignored for other projector types).
- * 
+ *
  * @api requests
  * @name OpenProjector
  * @category general
@@ -342,5 +343,75 @@ RpcResponse WSRequestHandler::OpenProjector(const RpcRequest& request) {
 	const char* name = obs_data_get_string(request.parameters(), "name");
 
 	obs_frontend_open_projector(type, monitor, geometry, name);
+	return request.success();
+}
+
+/**
+* Executes hotkey routine, identified by hotkey unique name
+*
+* @param {String} `hotkeyName` Unique name of the hotkey, as defined when registering the hotkey (e.g. "ReplayBuffer.Save")
+*
+* @api requests
+* @name TriggerHotkeyByName
+* @category general
+* @since unreleased
+*/
+RpcResponse WSRequestHandler::TriggerHotkeyByName(const RpcRequest& request) {
+	const char* name = obs_data_get_string(request.parameters(), "hotkeyName");
+
+	obs_hotkey_t* hk = Utils::FindHotkeyByName(name);
+	if (!hk) {
+		return request.failed("hotkey not found");
+	}
+	obs_hotkey_trigger_routed_callback(obs_hotkey_get_id(hk), true);
+	return request.success();
+}
+
+/**
+* Executes hotkey routine, identified by bound combination of keys. A single key combination might trigger multiple hotkey routines depending on user settings 
+*
+* @param {String} `keyId` Main key identifier (e.g. `OBS_KEY_A` for key "A"). Available identifiers [here](https://github.com/obsproject/obs-studio/blob/master/libobs/obs-hotkeys.h)
+* @param {Object (Optional)} `keyModifiers` Optional key modifiers object. False entries can be ommitted
+* @param {boolean} `keyModifiers.shift` Trigger Shift Key
+* @param {boolean} `keyModifiers.alt` Trigger Alt Key
+* @param {boolean} `keyModifiers.control` Trigger Control (Ctrl) Key
+* @param {boolean} `keyModifiers.command` Trigger Command Key (Mac)
+*
+* @api requests
+* @name TriggerHotkeyBySequence
+* @category general
+* @since unreleased
+*/
+RpcResponse WSRequestHandler::TriggerHotkeyBySequence(const RpcRequest& request) {
+	if (!request.hasField("keyId")) {
+		return request.failed("missing request keyId parameter");
+	}
+
+	OBSDataAutoRelease data = obs_data_get_obj(request.parameters(), "keyModifiers");
+
+	obs_key_combination_t combo = {0};
+	uint32_t modifiers = 0;
+	if (obs_data_get_bool(data, "shift"))
+		modifiers |= INTERACT_SHIFT_KEY;
+	if (obs_data_get_bool(data, "control"))
+		modifiers |= INTERACT_CONTROL_KEY;
+	if (obs_data_get_bool(data, "alt"))
+		modifiers |= INTERACT_ALT_KEY;
+	if (obs_data_get_bool(data, "command"))
+		modifiers |= INTERACT_COMMAND_KEY;
+
+	combo.modifiers = modifiers;
+	combo.key = obs_key_from_name(obs_data_get_string(request.parameters(), "keyId"));
+
+	if (!modifiers
+		&& (combo.key == OBS_KEY_NONE || combo.key >= OBS_KEY_LAST_VALUE)) {
+		return request.failed("invalid key-modifier combination");
+	}
+
+	// Inject hotkey press-release sequence
+	obs_hotkey_inject_event(combo, false);
+	obs_hotkey_inject_event(combo, true);
+	obs_hotkey_inject_event(combo, false);
+
 	return request.success();
 }
