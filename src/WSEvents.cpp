@@ -479,13 +479,17 @@ void WSEvents::OnSceneListChange() {
 /**
  * Triggered when switching to another scene collection or when renaming the current scene collection.
  *
+ * @return {String} `sceneCollection` Name of the new current scene collection.
+ * 
  * @api events
  * @name SceneCollectionChanged
  * @category scenes
  * @since 4.0.0
  */
 void WSEvents::OnSceneCollectionChange() {
-	broadcastUpdate("SceneCollectionChanged");
+	OBSDataAutoRelease fields = obs_data_create();
+	obs_data_set_string(fields, "sceneCollection", obs_frontend_get_current_scene_collection());
+	broadcastUpdate("SceneCollectionChanged", fields);
 
 	OnTransitionListChange();
 	OnTransitionChange();
