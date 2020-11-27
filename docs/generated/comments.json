@@ -4777,6 +4777,81 @@
       },
       {
         "subheads": [],
+        "description": "Create a source and add it as a sceneitem to a scene.",
+        "param": [
+          "{String} `sourceName` Source name.",
+          "{String} `sourceKind` Source kind, Eg. `vlc_source`.",
+          "{String} `sceneName` Scene to add the new source to.",
+          "{Object (optional)} `sourceSettings` Source settings data.",
+          "{boolean (optional)} `setVisible` Set the created SceneItem as visible or not. Defaults to true"
+        ],
+        "return": "{int} `itemId` ID of the SceneItem in the scene.",
+        "api": "requests",
+        "name": "CreateSource",
+        "category": "sources",
+        "since": "unreleased",
+        "returns": [
+          {
+            "type": "int",
+            "name": "itemId",
+            "description": "ID of the SceneItem in the scene."
+          }
+        ],
+        "params": [
+          {
+            "type": "String",
+            "name": "sourceName",
+            "description": "Source name."
+          },
+          {
+            "type": "String",
+            "name": "sourceKind",
+            "description": "Source kind, Eg. `vlc_source`."
+          },
+          {
+            "type": "String",
+            "name": "sceneName",
+            "description": "Scene to add the new source to."
+          },
+          {
+            "type": "Object (optional)",
+            "name": "sourceSettings",
+            "description": "Source settings data."
+          },
+          {
+            "type": "boolean (optional)",
+            "name": "setVisible",
+            "description": "Set the created SceneItem as visible or not. Defaults to true"
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "CreateSource"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "sources"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "unreleased"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "CreateSource"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
         "description": "List all sources available in the running OBS instance",
         "return": [
           "{Array<Object>} `sources` Array of sources",

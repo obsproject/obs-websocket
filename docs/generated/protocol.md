@@ -151,6 +151,7 @@ You can also refer to any of the client libraries listed on the [README](README.
     + [GetMediaState](#getmediastate)
   * [Sources](#sources-1)
     + [GetMediaSourcesList](#getmediasourceslist)
+    + [CreateSource](#createsource)
     + [GetSourcesList](#getsourceslist)
     + [GetSourceTypesList](#getsourcetypeslist)
     + [GetVolume](#getvolume)
@@ -1964,6 +1965,33 @@ _No specified parameters._
 | `mediaSources.*.sourceName` | _String_ | Unique source name |
 | `mediaSources.*.sourceKind` | _String_ | Unique source internal type (a.k.a `ffmpeg_source` or `vlc_source`) |
 | `mediaSources.*.mediaState` | _String_ | The current state of media for that source. States: `none`, `playing`, `opening`, `buffering`, `paused`, `stopped`, `ended`, `error`, `unknown` |
+
+
+---
+
+### CreateSource
+
+
+- Unreleased
+
+Create a source and add it as a sceneitem to a scene.
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sourceName` | _String_ | Source name. |
+| `sourceKind` | _String_ | Source kind, Eg. `vlc_source`. |
+| `sceneName` | _String_ | Scene to add the new source to. |
+| `sourceSettings` | _Object (optional)_ | Source settings data. |
+| `setVisible` | _boolean (optional)_ | Set the created SceneItem as visible or not. Defaults to true |
+
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `itemId` | _int_ | ID of the SceneItem in the scene. |
 
 
 ---
