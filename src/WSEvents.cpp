@@ -501,13 +501,23 @@ void WSEvents::OnSceneCollectionChange() {
 /**
  * Triggered when a scene collection is created, added, renamed, or removed.
  *
+ * @return {Array} `sceneCollections` Scene collections list.
+ * @return {String} `sceneCollections.*.name` Scene collection name.
+ * 
  * @api events
  * @name SceneCollectionListChanged
  * @category scenes
  * @since 4.0.0
  */
 void WSEvents::OnSceneCollectionListChange() {
-	broadcastUpdate("SceneCollectionListChanged");
+	char** sceneCollections = obs_frontend_get_scene_collections();
+	OBSDataArrayAutoRelease sceneCollectionsList =
+		Utils::StringListToArray(sceneCollections, "name");
+	bfree(sceneCollections);
+
+	OBSDataAutoRelease fields = obs_data_create();
+	obs_data_set_array(fields, "sceneCollections", sceneCollectionsList);
+	broadcastUpdate("SceneCollectionListChanged", fields);
 }
 
 /**
@@ -568,7 +578,9 @@ void WSEvents::OnProfileChange() {
  * @since 4.0.0
  */
 void WSEvents::OnProfileListChange() {
-	broadcastUpdate("ProfileListChanged");
+	OBSDataAutoRelease fields = obs_data_create();
+	// TODO provide new profile list
+	broadcastUpdate("ProfileListChanged", fields);
 }
 
 /**
