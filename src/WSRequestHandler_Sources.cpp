@@ -58,7 +58,7 @@ RpcResponse WSRequestHandler::CreateSource(const RpcRequest& request)
 		return request.failed("requested scene is invalid or doesnt exist");
 	}
 
-	obs_source_t *newSource = obs_source_create(sourceKind.toUtf8(), sourceName.toUtf8(), nullptr, nullptr);
+	OBSSourceAutoRelease newSource = obs_source_create(sourceKind.toUtf8(), sourceName.toUtf8(), nullptr, nullptr);
 
 	if (!newSource) {
 		return request.failed("failed to create the source");
@@ -85,7 +85,6 @@ RpcResponse WSRequestHandler::CreateSource(const RpcRequest& request)
 	OBSDataAutoRelease responseData = obs_data_create();
 	obs_data_set_int(responseData, "itemId", obs_sceneitem_get_id(data.sceneItem));
 
-	obs_source_release(newSource);
 	return request.success(responseData);
 }
 
