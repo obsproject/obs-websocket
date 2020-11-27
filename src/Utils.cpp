@@ -51,6 +51,25 @@ obs_bounds_type getBoundsTypeFromName(QString name) {
 	return boundTypeNames.key(name);
 }
 
+bool Utils::StringInStringList(char** strings, const char* string) {
+	if (!strings) {
+		return false;
+	}
+
+	size_t index = 0;
+	while (strings[index] != NULL) {
+		char* value = strings[index];
+
+		if (strcmp(value, string) == 0) {
+			return true;
+		}
+
+		index++;
+	}
+
+	return false;
+}
+
 obs_data_array_t* Utils::StringListToArray(char** strings, const char* key) {
 	obs_data_array_t* list = obs_data_array_create();
 
@@ -485,11 +504,8 @@ QString Utils::OBSVersionString() {
 }
 
 QSystemTrayIcon* Utils::GetTrayIcon() {
-	QMainWindow* main = (QMainWindow*)obs_frontend_get_main_window();
-	if (!main) return nullptr;
-
-	QList<QSystemTrayIcon*> trays = main->findChildren<QSystemTrayIcon*>();
-	return trays.isEmpty() ? nullptr : trays.first();
+	void* systemTray = obs_frontend_get_system_tray();
+	return reinterpret_cast<QSystemTrayIcon*>(systemTray);
 }
 
 void Utils::SysTrayNotify(QString text,

@@ -45,6 +45,7 @@ void SettingsDialog::showEvent(QShowEvent* event) {
 
 	ui->serverEnabled->setChecked(conf->ServerEnabled);
 	ui->serverPort->setValue(conf->ServerPort);
+	ui->lockToIPv4->setChecked(conf->LockToIPv4);
 
 	ui->debugEnabled->setChecked(conf->DebugEnabled);
 	ui->alertsEnabled->setChecked(conf->AlertsEnabled);
@@ -72,6 +73,7 @@ void SettingsDialog::FormAccepted() {
 
 	conf->ServerEnabled = ui->serverEnabled->isChecked();
 	conf->ServerPort = ui->serverPort->value();
+	conf->LockToIPv4 = ui->lockToIPv4->isChecked();
 
 	conf->DebugEnabled = ui->debugEnabled->isChecked();
 	conf->AlertsEnabled = ui->alertsEnabled->isChecked();
@@ -95,7 +97,7 @@ void SettingsDialog::FormAccepted() {
 
 	auto server = GetServer();
 	if (conf->ServerEnabled) {
-		server->start(conf->ServerPort);
+		server->start(conf->ServerPort, conf->LockToIPv4);
 	} else {
 		server->stop();
 	}

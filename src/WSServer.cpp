@@ -60,10 +60,10 @@ WSServer::~WSServer()
 	stop();
 }
 
-void WSServer::start(quint16 port)
+void WSServer::start(quint16 port, bool lockToIPv4)
 {
-	if (_server.is_listening() && port == _serverPort) {
-		blog(LOG_INFO, "WSServer::start: server already on this port. no restart needed");
+	if (_server.is_listening() && (port == _serverPort && _lockToIPv4 == lockToIPv4)) {
+		blog(LOG_INFO, "WSServer::start: server already on this port and protocol mode. no restart needed");
 		return;
 	}
 
@@ -74,9 +74,16 @@ void WSServer::start(quint16 port)
 	_server.reset();
 
 	_serverPort = port;
+	_lockToIPv4 = lockToIPv4;
 
 	websocketpp::lib::error_code errorCode;
-	_server.listen(_serverPort, errorCode);
+	if (lockToIPv4) {
+		blog(LOG_INFO, "WSServer::start: Locked to IPv4 bindings");
+		_server.listen(websocketpp::lib::asio::ip::tcp::v4(), _serverPort, errorCode);
+	} else {
+		blog(LOG_INFO, "WSServer::start: Not locked to IPv4 bindings");
+		_server.listen(_serverPort, errorCode);
+	}
 
 	if (errorCode) {
 		std::string errorCodeMessage = errorCode.message();

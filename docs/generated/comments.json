@@ -2515,7 +2515,8 @@
           "{String} `sourceName` Source name",
           "{Array<Object>} `filters` Ordered Filters list",
           "{String} `filters.*.name` Filter name",
-          "{String} `filters.*.type` Filter type"
+          "{String} `filters.*.type` Filter type",
+          "{boolean} `filters.*.enabled` Filter visibility status"
         ],
         "api": "events",
         "name": "SourceFiltersReordered",
@@ -2541,6 +2542,11 @@
             "type": "String",
             "name": "filters.*.type",
             "description": "Filter type"
+          },
+          {
+            "type": "boolean",
+            "name": "filters.*.enabled",
+            "description": "Filter visibility status"
           }
         ],
         "names": [
@@ -4055,6 +4061,120 @@
         "heading": {
           "level": 2,
           "text": "OpenProjector"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Executes hotkey routine, identified by hotkey unique name",
+        "param": "{String} `hotkeyName` Unique name of the hotkey, as defined when registering the hotkey (e.g. \"ReplayBuffer.Save\")",
+        "api": "requests",
+        "name": "TriggerHotkeyByName",
+        "category": "general",
+        "since": "unreleased",
+        "params": [
+          {
+            "type": "String",
+            "name": "hotkeyName",
+            "description": "Unique name of the hotkey, as defined when registering the hotkey (e.g. \"ReplayBuffer.Save\")"
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "TriggerHotkeyByName"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "general"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "unreleased"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "TriggerHotkeyByName"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Executes hotkey routine, identified by bound combination of keys. A single key combination might trigger multiple hotkey routines depending on user settings",
+        "param": [
+          "{String} `keyId` Main key identifier (e.g. `OBS_KEY_A` for key \"A\"). Available identifiers [here](https://github.com/obsproject/obs-studio/blob/master/libobs/obs-hotkeys.h)",
+          "{Object (Optional)} `keyModifiers` Optional key modifiers object. False entries can be ommitted",
+          "{boolean} `keyModifiers.shift` Trigger Shift Key",
+          "{boolean} `keyModifiers.alt` Trigger Alt Key",
+          "{boolean} `keyModifiers.control` Trigger Control (Ctrl) Key",
+          "{boolean} `keyModifiers.command` Trigger Command Key (Mac)"
+        ],
+        "api": "requests",
+        "name": "TriggerHotkeyBySequence",
+        "category": "general",
+        "since": "unreleased",
+        "params": [
+          {
+            "type": "String",
+            "name": "keyId",
+            "description": "Main key identifier (e.g. `OBS_KEY_A` for key \"A\"). Available identifiers [here](https://github.com/obsproject/obs-studio/blob/master/libobs/obs-hotkeys.h)"
+          },
+          {
+            "type": "Object (Optional)",
+            "name": "keyModifiers",
+            "description": "Optional key modifiers object. False entries can be ommitted"
+          },
+          {
+            "type": "boolean",
+            "name": "keyModifiers.shift",
+            "description": "Trigger Shift Key"
+          },
+          {
+            "type": "boolean",
+            "name": "keyModifiers.alt",
+            "description": "Trigger Alt Key"
+          },
+          {
+            "type": "boolean",
+            "name": "keyModifiers.control",
+            "description": "Trigger Control (Ctrl) Key"
+          },
+          {
+            "type": "boolean",
+            "name": "keyModifiers.command",
+            "description": "Trigger Command Key (Mac)"
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "TriggerHotkeyBySequence"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "general"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "unreleased"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "TriggerHotkeyBySequence"
         },
         "lead": "",
         "type": "class",
@@ -7972,8 +8092,9 @@
       {
         "subheads": [],
         "description": "Get a list of all scene items in a scene.",
-        "param": "{String} `sceneName` Name of the scene to get the list of scene items from.",
+        "param": "{String (optional)} `sceneName` Name of the scene to get the list of scene items from. Defaults to the current scene if not specified.",
         "return": [
+          "{String} `sceneName` Name of the requested (or current) scene",
           "{Array<Object>} `sceneItems` Array of scene items",
           "{int} `sceneItems.*.itemId` Unique item id of the source item",
           "{String} `sceneItems.*.sourceKind` ID if the scene item's source. For example `vlc_source` or `image_source`",
@@ -7985,6 +8106,11 @@
         "category": "scene items",
         "since": "unreleased",
         "returns": [
+          {
+            "type": "String",
+            "name": "sceneName",
+            "description": "Name of the requested (or current) scene"
+          },
           {
             "type": "Array<Object>",
             "name": "sceneItems",
@@ -8013,9 +8139,9 @@
         ],
         "params": [
           {
-            "type": "String",
+            "type": "String (optional)",
             "name": "sceneName",
-            "description": "Name of the scene to get the list of scene items from."
+            "description": "Name of the scene to get the list of scene items from. Defaults to the current scene if not specified."
           }
         ],
         "names": [
@@ -9233,7 +9359,7 @@
         "api": "requests",
         "name": "SetSceneTransitionOverride",
         "category": "scenes",
-        "since": "unreleased",
+        "since": "4.8.0",
         "params": [
           {
             "type": "String",
@@ -9266,7 +9392,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "unreleased"
+            "description": "4.8.0"
           }
         ],
         "heading": {
@@ -9284,7 +9410,7 @@
         "api": "requests",
         "name": "RemoveSceneTransitionOverride",
         "category": "scenes",
-        "since": "unreleased",
+        "since": "4.8.0",
         "params": [
           {
             "type": "String",
@@ -9307,7 +9433,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "unreleased"
+            "description": "4.8.0"
           }
         ],
         "heading": {
@@ -9329,7 +9455,7 @@
         "api": "requests",
         "name": "GetSceneTransitionOverride",
         "category": "scenes",
-        "since": "unreleased",
+        "since": "4.8.0",
         "returns": [
           {
             "type": "String",
@@ -9364,7 +9490,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "unreleased"
+            "description": "4.8.0"
           }
         ],
         "heading": {
@@ -10391,6 +10517,112 @@
         "heading": {
           "level": 2,
           "text": "GetTransitionPosition"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Get the current settings of a transition",
+        "param": "{String} `transitionName` Transition name",
+        "return": "{Object} `transitionSettings` Current transition settings",
+        "api": "requests",
+        "name": "GetTransitionSettings",
+        "category": "transitions",
+        "since": "unreleased",
+        "returns": [
+          {
+            "type": "Object",
+            "name": "transitionSettings",
+            "description": "Current transition settings"
+          }
+        ],
+        "params": [
+          {
+            "type": "String",
+            "name": "transitionName",
+            "description": "Transition name"
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "GetTransitionSettings"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "transitions"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "unreleased"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "GetTransitionSettings"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Change the current settings of a transition",
+        "param": [
+          "{String} `transitionName` Transition name",
+          "{Object} `transitionSettings` Transition settings (they can be partial)"
+        ],
+        "return": "{Object} `transitionSettings` Updated transition settings",
+        "api": "requests",
+        "name": "SetTransitionSettings",
+        "category": "transitions",
+        "since": "unreleased",
+        "returns": [
+          {
+            "type": "Object",
+            "name": "transitionSettings",
+            "description": "Updated transition settings"
+          }
+        ],
+        "params": [
+          {
+            "type": "String",
+            "name": "transitionName",
+            "description": "Transition name"
+          },
+          {
+            "type": "Object",
+            "name": "transitionSettings",
+            "description": "Transition settings (they can be partial)"
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "SetTransitionSettings"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "transitions"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "unreleased"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "SetTransitionSettings"
         },
         "lead": "",
         "type": "class",
