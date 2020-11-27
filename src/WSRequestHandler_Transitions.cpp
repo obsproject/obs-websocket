@@ -231,6 +231,8 @@ RpcResponse WSRequestHandler::ReleaseTBar(const RpcRequest& request) {
 /**
  * Set the manual position of the T-Bar (in Studio Mode) to the specified value. Will return an error if OBS is not in studio mode
  * or if the current transition doesn't support T-Bar control.
+ * 
+ * If your code needs to perform multiple successive T-Bar moves (e.g. : in an animation, or in response to a user moving a T-Bar control in your User Interface), set `release` to false and call `ReleaseTBar` later once the animation/interaction is over.
  *
  * @param {double} `position` T-Bar position. This value must be between 0.0 and 1.0.
  * @param {boolean (optional)} `release` Whether or not the T-Bar gets released automatically after setting its new position (like a user releasing their mouse button after moving the T-Bar). Call `ReleaseTBar` manually if you set `release` to false. Defaults to true.
