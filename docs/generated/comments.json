@@ -8331,7 +8331,7 @@
           "{int} `itemId` Scene Item ID.",
           "{double} `position.x` The x position of the source from the left.",
           "{double} `position.y` The y position of the source from the top.",
-          "{int} `position.alignment` The point on the source that the item is manipulated from.",
+          "{int} `position.alignment` The point on the source that the item is manipulated from. The sum of 1=Left or 2=Right, and 4=Top or 8=Bottom, or omit to center on that axis.",
           "{double} `rotation` The clockwise rotation of the item in degrees around the point of alignment.",
           "{double} `scale.x` The x-scale factor of the source.",
           "{double} `scale.y` The y-scale factor of the source.",
@@ -8350,7 +8350,6 @@
           "{int} `sourceHeight` Base source (without scaling) of the source",
           "{double} `width` Scene item width (base source width multiplied by the horizontal scaling factor)",
           "{double} `height` Scene item height (base source height multiplied by the vertical scaling factor)",
-          "{int} `alignment` The point on the source that the item is manipulated from. The sum of 1=Left or 2=Right, and 4=Top or 8=Bottom, or omit to center on that axis.",
           "{String (optional)} `parentGroupName` Name of the item's parent (if this item belongs to a group)",
           "{Array<SceneItemTransform> (optional)} `groupChildren` List of children (if this item is a group)"
         ],
@@ -8382,7 +8381,7 @@
           {
             "type": "int",
             "name": "position.alignment",
-            "description": "The point on the source that the item is manipulated from."
+            "description": "The point on the source that the item is manipulated from. The sum of 1=Left or 2=Right, and 4=Top or 8=Bottom, or omit to center on that axis."
           },
           {
             "type": "double",
@@ -8473,11 +8472,6 @@
             "type": "double",
             "name": "height",
             "description": "Scene item height (base source height multiplied by the vertical scaling factor)"
-          },
-          {
-            "type": "int",
-            "name": "alignment",
-            "description": "The point on the source that the item is manipulated from. The sum of 1=Left or 2=Right, and 4=Top or 8=Bottom, or omit to center on that axis."
           },
           {
             "type": "String (optional)",
