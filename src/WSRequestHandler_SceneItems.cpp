@@ -87,7 +87,7 @@ RpcResponse WSRequestHandler::GetSceneItemList(const RpcRequest& request) {
 * @return {int} `itemId` Scene Item ID.
 * @return {double} `position.x` The x position of the source from the left.
 * @return {double} `position.y` The y position of the source from the top.
-* @return {int} `position.alignment` The point on the source that the item is manipulated from.
+* @return {int} `position.alignment` The point on the source that the item is manipulated from. The sum of 1=Left or 2=Right, and 4=Top or 8=Bottom, or omit to center on that axis.
 * @return {double} `rotation` The clockwise rotation of the item in degrees around the point of alignment.
 * @return {double} `scale.x` The x-scale factor of the source.
 * @return {double} `scale.y` The y-scale factor of the source.
@@ -106,7 +106,6 @@ RpcResponse WSRequestHandler::GetSceneItemList(const RpcRequest& request) {
 * @return {int} `sourceHeight` Base source (without scaling) of the source
 * @return {double} `width` Scene item width (base source width multiplied by the horizontal scaling factor)
 * @return {double} `height` Scene item height (base source height multiplied by the vertical scaling factor)
-* @return {int} `alignment` The point on the source that the item is manipulated from. The sum of 1=Left or 2=Right, and 4=Top or 8=Bottom, or omit to center on that axis.
 * @return {String (optional)} `parentGroupName` Name of the item's parent (if this item belongs to a group)
 * @return {Array<SceneItemTransform> (optional)} `groupChildren` List of children (if this item is a group)
 *
