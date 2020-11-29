@@ -1415,7 +1415,7 @@
     "recording": [
       {
         "subheads": [],
-        "description": "A request to start recording has been issued.",
+        "description": "\n\nNote: `recordingFilename` is not provided in this event because this information\nis not available at the time this event is emitted.",
         "api": "events",
         "name": "RecordingStarting",
         "category": "recording",
@@ -1442,17 +1442,25 @@
           "level": 2,
           "text": "RecordingStarting"
         },
-        "lead": "",
+        "lead": "A request to start recording has been issued.",
         "type": "class",
         "examples": []
       },
       {
         "subheads": [],
         "description": "Recording started successfully.",
+        "return": "{String} `recordingFilename` Absolute path to the file of the current recording.",
         "api": "events",
         "name": "RecordingStarted",
         "category": "recording",
         "since": "0.3",
+        "returns": [
+          {
+            "type": "String",
+            "name": "recordingFilename",
+            "description": "Absolute path to the file of the current recording."
+          }
+        ],
         "names": [
           {
             "name": "",
@@ -1482,10 +1490,18 @@
       {
         "subheads": [],
         "description": "A request to stop recording has been issued.",
+        "return": "{String} `recordingFilename` Absolute path to the file of the current recording.",
         "api": "events",
         "name": "RecordingStopping",
         "category": "recording",
         "since": "0.3",
+        "returns": [
+          {
+            "type": "String",
+            "name": "recordingFilename",
+            "description": "Absolute path to the file of the current recording."
+          }
+        ],
         "names": [
           {
             "name": "",
@@ -1515,10 +1531,18 @@
       {
         "subheads": [],
         "description": "Recording stopped successfully.",
+        "return": "{String} `recordingFilename` Absolute path to the file of the current recording.",
         "api": "events",
         "name": "RecordingStopped",
         "category": "recording",
         "since": "0.3",
+        "returns": [
+          {
+            "type": "String",
+            "name": "recordingFilename",
+            "description": "Absolute path to the file of the current recording."
+          }
+        ],
         "names": [
           {
             "name": "",
@@ -7630,7 +7654,8 @@
         "return": [
           "{boolean} `isRecording` Current recording status.",
           "{boolean} `isRecordingPaused` Whether the recording is paused or not.",
-          "{String (optional)} `recordTimecode` Time elapsed since recording started (only present if currently recording)."
+          "{String (optional)} `recordTimecode` Time elapsed since recording started (only present if currently recording).",
+          "{String (optional)} `recordingFilename` Absolute path to the recording file (only present if currently recording)."
         ],
         "api": "requests",
         "name": "GetRecordingStatus",
@@ -7651,6 +7676,11 @@
             "type": "String (optional)",
             "name": "recordTimecode",
             "description": "Time elapsed since recording started (only present if currently recording)."
+          },
+          {
+            "type": "String (optional)",
+            "name": "recordingFilename",
+            "description": "Absolute path to the recording file (only present if currently recording)."
           }
         ],
         "names": [

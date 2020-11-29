@@ -683,7 +683,10 @@ Emitted every 2 seconds when stream is active.
 
 - Added in v0.3
 
-A request to start recording has been issued.
+
+
+Note: `recordingFilename` is not provided in this event because this information
+is not available at the time this event is emitted.
 
 **Response Items:**
 
@@ -700,7 +703,10 @@ Recording started successfully.
 
 **Response Items:**
 
-_No additional response items._
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `recordingFilename` | _String_ | Absolute path to the file of the current recording. |
+
 
 ---
 
@@ -713,7 +719,10 @@ A request to stop recording has been issued.
 
 **Response Items:**
 
-_No additional response items._
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `recordingFilename` | _String_ | Absolute path to the file of the current recording. |
+
 
 ---
 
@@ -726,7 +735,10 @@ Recording stopped successfully.
 
 **Response Items:**
 
-_No additional response items._
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `recordingFilename` | _String_ | Absolute path to the file of the current recording. |
+
 
 ---
 
@@ -3004,6 +3016,7 @@ _No specified parameters._
 | `isRecording` | _boolean_ | Current recording status. |
 | `isRecordingPaused` | _boolean_ | Whether the recording is paused or not. |
 | `recordTimecode` | _String (optional)_ | Time elapsed since recording started (only present if currently recording). |
+| `recordingFilename` | _String (optional)_ | Absolute path to the recording file (only present if currently recording). |
 
 
 ---
