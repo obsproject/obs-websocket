@@ -21,6 +21,7 @@ RpcResponse ifCanPause(const RpcRequest& request, std::function<RpcResponse()> c
  * @return {boolean} `isRecording` Current recording status.
  * @return {boolean} `isRecordingPaused` Whether the recording is paused or not.
  * @return {String (optional)} `recordTimecode` Time elapsed since recording started (only present if currently recording).
+ * @return {String (optional)} `recordingFilename` Absolute path to the recording file (only present if currently recording).
  *
  * @api requests
  * @name GetRecordingStatus
@@ -37,6 +38,7 @@ RpcResponse WSRequestHandler::GetRecordingStatus(const RpcRequest& request) {
         if (obs_frontend_recording_active()) {
                 QString recordingTimecode = events->getRecordingTimecode();
                 obs_data_set_string(data, "recordTimecode", recordingTimecode.toUtf8().constData());
+				obs_data_set_string(data, "recordingFilename", Utils::GetCurrentRecordingFilename());
         }
 
         return request.success(data);
