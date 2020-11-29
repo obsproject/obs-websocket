@@ -678,7 +678,10 @@ void WSEvents::OnStreamStopped() {
 
 /**
  * A request to start recording has been issued.
- *
+ * 
+ * Note: `recordingFilename` is not provided in this event because this information
+ * is not available at the time this event is emitted.
+ * 
  * @api events
  * @name RecordingStarting
  * @category recording
@@ -691,37 +694,49 @@ void WSEvents::OnRecordingStarting() {
 /**
  * Recording started successfully.
  *
+ * @return {String} `recordingFilename` Absolute path to the file of the current recording.
+ * 
  * @api events
  * @name RecordingStarted
  * @category recording
  * @since 0.3
  */
 void WSEvents::OnRecordingStarted() {
-	broadcastUpdate("RecordingStarted");
+	OBSDataAutoRelease data = obs_data_create();
+	obs_data_set_string(data, "recordingFilename", Utils::GetCurrentRecordingFilename());
+	broadcastUpdate("RecordingStarted", data);
 }
 
 /**
  * A request to stop recording has been issued.
  *
+ * @return {String} `recordingFilename` Absolute path to the file of the current recording.
+ * 
  * @api events
  * @name RecordingStopping
  * @category recording
  * @since 0.3
  */
 void WSEvents::OnRecordingStopping() {
-	broadcastUpdate("RecordingStopping");
+	OBSDataAutoRelease data = obs_data_create();
+	obs_data_set_string(data, "recordingFilename", Utils::GetCurrentRecordingFilename());
+	broadcastUpdate("RecordingStopping", data);
 }
 
 /**
  * Recording stopped successfully.
  *
+ * @return {String} `recordingFilename` Absolute path to the file of the current recording.
+ * 
  * @api events
  * @name RecordingStopped
  * @category recording
  * @since 0.3
  */
 void WSEvents::OnRecordingStopped() {
-	broadcastUpdate("RecordingStopped");
+	OBSDataAutoRelease data = obs_data_create();
+	obs_data_set_string(data, "recordingFilename", Utils::GetCurrentRecordingFilename());
+	broadcastUpdate("RecordingStopped", data);
 }
 
 /**

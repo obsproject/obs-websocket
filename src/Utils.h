@@ -85,6 +85,8 @@ namespace Utils {
 	const char* GetFilenameFormatting();
 	bool SetFilenameFormatting(const char* filenameFormatting);
 
+	const char* GetCurrentRecordingFilename();
+
 	QString nsToTimestamp(uint64_t ns);
     struct AddSourceData {
         obs_source_t *source;
