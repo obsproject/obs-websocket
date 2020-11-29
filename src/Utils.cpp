@@ -696,6 +696,29 @@ bool Utils::SetFilenameFormatting(const char* filenameFormatting) {
 	return true;
 }
 
+const char* Utils::GetCurrentRecordingFilename()
+{
+	OBSOutputAutoRelease recordingOutput = obs_frontend_get_recording_output();
+	if (!recordingOutput) {
+		return nullptr;
+	}
+
+	OBSDataAutoRelease settings = obs_output_get_settings(recordingOutput);
+
+	// mimicks the behavior of BasicOutputHandler::GetRecordingFilename :
+	// try to fetch the path from the "url" property, then try "path" if the first one
+	// didn't yield any result
+	OBSDataItemAutoRelease item = obs_data_item_byname(settings, "url");
+	if (!item) {
+		item = obs_data_item_byname(settings, "path");
+		if (!item) {
+			return nullptr;
+		}
+	}
+
+	return obs_data_item_get_string(item);
+}
+
 // Transform properties copy-pasted from WSRequestHandler_SceneItems.cpp because typedefs can't be extended yet
 
 /**
