@@ -393,7 +393,8 @@ RpcResponse WSRequestHandler::ResetSceneItem(const RpcRequest& request) {
 * Show or hide a specified source item in a specified scene.
 *
 * @param {String (optional)} `scene-name` Name of the scene the scene item belongs to. Defaults to the currently active scene.
-* @param {String} `source` Scene Item name.
+* @param {String (optional)} `source` Scene Item name.
+* @param {int (optional)} `item` Scene Item id
 * @param {boolean} `render` true = shown ; false = hidden
 *
 * @api requests
@@ -402,16 +403,18 @@ RpcResponse WSRequestHandler::ResetSceneItem(const RpcRequest& request) {
 * @since 0.3
 */
 RpcResponse WSRequestHandler::SetSceneItemRender(const RpcRequest& request) {
-	if (!request.hasField("source") ||
-		!request.hasField("render"))
+	if (!request.hasField("render") ||
+		(!request.hasField("source") && !request.hasField("item"))
+		)
 	{
 		return request.failed("missing request parameters");
 	}
 
 	const char* itemName = obs_data_get_string(request.parameters(), "source");
+	int64_t itemId = obs_data_get_int(request.parameters(), "item");
 	bool isVisible = obs_data_get_bool(request.parameters(), "render");
 
-	if (!itemName) {
+	if (!itemName && !itemId) {
 		return request.failed("invalid request parameters");
 	}
 
@@ -421,12 +424,21 @@ RpcResponse WSRequestHandler::SetSceneItemRender(const RpcRequest& request) {
 		return request.failed("requested scene doesn't exist");
 	}
 
-	OBSSceneItemAutoRelease sceneItem =
-		Utils::GetSceneItemFromName(scene, itemName);
-	if (!sceneItem) {
-		return request.failed("specified scene item doesn't exist");
-	}
+	OBSSceneItemAutoRelease sceneItem;
 
+	if (strlen(itemName)) {
+		OBSDataItemAutoRelease itemField = obs_data_item_byname(request.parameters(), "source");
+		sceneItem = Utils::GetSceneItemFromName(scene, itemName);
+		if (!sceneItem) {
+			return request.failed("specified scene item name doesn't exist");
+		}
+	} else {
+		OBSDataItemAutoRelease itemField = obs_data_item_byname(request.parameters(), "item");
+		sceneItem = Utils::GetSceneItemFromId(scene, itemId);
+		if (!sceneItem) {
+			return request.failed("specified scene item ID doesn't exist");
+		}
+	}
 	obs_sceneitem_set_visible(sceneItem, isVisible);
 	return request.success();
 }
