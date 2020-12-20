@@ -5059,7 +5059,7 @@
         ],
         "return": [
           "{String} `name` Source name.",
-          "{double} `volume` Volume of the source. Between `0.0` and `1.0` if using mul, under `0.0` if using dB (since it is attenuating).",
+          "{double} `volume` Volume of the source. Between `0.0` and `20.0` if using mul, under `26.0` if using dB.",
           "{boolean} `muted` Indicates whether the source is muted."
         ],
         "api": "requests",
@@ -5075,7 +5075,7 @@
           {
             "type": "double",
             "name": "volume",
-            "description": "Volume of the source. Between `0.0` and `1.0` if using mul, under `0.0` if using dB (since it is attenuating)."
+            "description": "Volume of the source. Between `0.0` and `20.0` if using mul, under `26.0` if using dB."
           },
           {
             "type": "boolean",
@@ -5126,7 +5126,7 @@
         "description": "Set the volume of the specified source. Default request format uses mul, NOT SLIDER PERCENTAGE.",
         "param": [
           "{String} `source` Source name.",
-          "{double} `volume` Desired volume. Must be between `0.0` and `1.0` for mul, and under 0.0 for dB. Note: OBS will interpret dB values under -100.0 as Inf.",
+          "{double} `volume` Desired volume. Must be between `0.0` and `20.0` for mul, and under 26.0 for dB. OBS will interpret dB values under -100.0 as Inf. Note: The OBS volume sliders only reach a maximum of 1.0mul/0.0dB, however OBS actually supports larger values.",
           "{boolean (optional)} `useDecibel` Interperet `volume` data as decibels instead of amplitude/mul."
         ],
         "api": "requests",
@@ -5142,7 +5142,7 @@
           {
             "type": "double",
             "name": "volume",
-            "description": "Desired volume. Must be between `0.0` and `1.0` for mul, and under 0.0 for dB. Note: OBS will interpret dB values under -100.0 as Inf."
+            "description": "Desired volume. Must be between `0.0` and `20.0` for mul, and under 26.0 for dB. OBS will interpret dB values under -100.0 as Inf. Note: The OBS volume sliders only reach a maximum of 1.0mul/0.0dB, however OBS actually supports larger values."
           },
           {
             "type": "boolean (optional)",
