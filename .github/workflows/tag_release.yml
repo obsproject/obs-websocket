@@ -76,7 +76,7 @@ jobs:
         run: |
           mkdir .\build32
           cd .\build32
-          cmake -G "${{ env.CMAKE_GENERATOR }}" -A Win32 -DCMAKE_SYSTEM_VERSION="${{ env.CMAKE_SYSTEM_VERSION }}" -DQTDIR="${{ github.workspace }}\cmbuild\QT\${{ env.QT_VERSION }}\msvc2017" -DDepsPath="${{ github.workspace }}\cmbuild\deps\win32" -DBUILD_CAPTIONS=YES -DCOPIED_DEPENDENCIES=NO -DCOPY_DEPENDENCIES=YES ..
+          cmake -G "${{ env.CMAKE_GENERATOR }}" -A Win32 -DCMAKE_SYSTEM_VERSION="${{ env.CMAKE_SYSTEM_VERSION }}" -DQTDIR="${{ github.workspace }}\cmbuild\QT\${{ env.QT_VERSION }}\msvc2017" -DDepsPath="${{ github.workspace }}\cmbuild\deps\win32" -DCOPIED_DEPENDENCIES=NO -DCOPY_DEPENDENCIES=YES ..
       - name: 'Build OBS-Studio 32-bit'
         if: steps.build-cache-obs-32.outputs.cache-hit != 'true'
         working-directory: ${{ github.workspace }}/obs-studio
@@ -99,7 +99,7 @@ jobs:
         run: |
           mkdir .\build64
           cd .\build64
-          cmake -G "${{ env.CMAKE_GENERATOR }}" -A x64 -DCMAKE_SYSTEM_VERSION="${{ env.CMAKE_SYSTEM_VERSION }}" -DQTDIR="${{ github.workspace }}\cmbuild\QT\${{ env.QT_VERSION }}\msvc2017_64" -DDepsPath="${{ github.workspace }}\cmbuild\deps\win64" -DBUILD_CAPTIONS=YES -DCOPIED_DEPENDENCIES=NO -DCOPY_DEPENDENCIES=YES ..
+          cmake -G "${{ env.CMAKE_GENERATOR }}" -A x64 -DCMAKE_SYSTEM_VERSION="${{ env.CMAKE_SYSTEM_VERSION }}" -DQTDIR="${{ github.workspace }}\cmbuild\QT\${{ env.QT_VERSION }}\msvc2017_64" -DDepsPath="${{ github.workspace }}\cmbuild\deps\win64" -DCOPIED_DEPENDENCIES=NO -DCOPY_DEPENDENCIES=YES ..
       - name: 'Build OBS-Studio 64-bit'
         if: steps.build-cache-obs-64.outputs.cache-hit != 'true'
         working-directory: ${{ github.workspace }}/obs-studio
@@ -235,7 +235,7 @@ jobs:
         run: |
           mkdir ./build
           cd ./build
-          cmake -DBUILD_CAPTIONS=YES -DDISABLE_PLUGINS=YES -DENABLE_SCRIPTING=NO -DUNIX_STRUCTURE=YES -DCMAKE_INSTALL_PREFIX=/usr ..
+          cmake -DDISABLE_PLUGINS=YES -DENABLE_SCRIPTING=NO -DUNIX_STRUCTURE=YES -DCMAKE_INSTALL_PREFIX=/usr ..
       - name: 'Build OBS-Studio'
         working-directory: ${{ github.workspace }}/obs-studio
         shell: bash
@@ -346,7 +346,7 @@ jobs:
         run: |
           mkdir build
           cd build
-          cmake -DBUILD_CAPTIONS=YES -DCMAKE_OSX_DEPLOYMENT_TARGET=10.11 -DENABLE_SCRIPTING=NO -DDepsPath=/tmp/obsdeps -DCMAKE_PREFIX_PATH=/usr/local/Cellar/qt/${{ env.QT_VERSION }}/lib/cmake ..
+          cmake -DCMAKE_OSX_DEPLOYMENT_TARGET=10.11 -DENABLE_SCRIPTING=NO -DDepsPath=/tmp/obsdeps -DCMAKE_PREFIX_PATH=/usr/local/Cellar/qt/${{ env.QT_VERSION }}/lib/cmake ..
       - name: 'Build OBS Studio libraries'
         working-directory: ${{ github.workspace }}/obs-studio
         shell: bash

@@ -140,9 +140,7 @@ const QHash<QString, RpcMethodHandler> WSRequestHandler::messageMap{
 	{ "SetStreamSettings", &WSRequestHandler::SetStreamSettings },
 	{ "GetStreamSettings", &WSRequestHandler::GetStreamSettings },
 	{ "SaveStreamSettings", &WSRequestHandler::SaveStreamSettings },
-#if BUILD_CAPTIONS
 	{ "SendCaptions", &WSRequestHandler::SendCaptions },
-#endif
 
 	{ "GetStudioModeStatus", &WSRequestHandler::GetStudioModeStatus },
 	{ "GetPreviewScene", &WSRequestHandler::GetPreviewScene },
