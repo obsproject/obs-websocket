@@ -231,7 +231,7 @@ RpcResponse WSRequestHandler::GetSourceTypesList(const RpcRequest& request)
 * @param {boolean (optional)} `useDecibel` Output volume in decibels of attenuation instead of amplitude/mul.
 *
 * @return {String} `name` Source name.
-* @return {double} `volume` Volume of the source. Between `0.0` and `1.0` if using mul, under `0.0` if using dB (since it is attenuating).
+* @return {double} `volume` Volume of the source. Between `0.0` and `20.0` if using mul, under `26.0` if using dB.
 * @return {boolean} `muted` Indicates whether the source is muted.
 *
 * @api requests
@@ -277,7 +277,7 @@ RpcResponse WSRequestHandler::GetVolume(const RpcRequest& request)
 * Set the volume of the specified source. Default request format uses mul, NOT SLIDER PERCENTAGE.
 *
 * @param {String} `source` Source name.
-* @param {double} `volume` Desired volume. Must be between `0.0` and `1.0` for mul, and under 0.0 for dB. Note: OBS will interpret dB values under -100.0 as Inf.
+* @param {double} `volume` Desired volume. Must be between `0.0` and `20.0` for mul, and under 26.0 for dB. OBS will interpret dB values under -100.0 as Inf. Note: The OBS volume sliders only reach a maximum of 1.0mul/0.0dB, however OBS actually supports larger values.
 * @param {boolean (optional)} `useDecibel` Interperet `volume` data as decibels instead of amplitude/mul.
 *
 * @api requests
@@ -296,8 +296,8 @@ RpcResponse WSRequestHandler::SetVolume(const RpcRequest& request)
 	QString sourceName = obs_data_get_string(request.parameters(), "source");
 	float sourceVolume = obs_data_get_double(request.parameters(), "volume");
 
-	bool isNotValidDecibel = (useDecibel && sourceVolume > 0.0);
-	bool isNotValidMul = (!useDecibel && (sourceVolume < 0.0 || sourceVolume > 1.0));
+	bool isNotValidDecibel = (useDecibel && sourceVolume > 26.0);
+	bool isNotValidMul = (!useDecibel && (sourceVolume < 0.0 || sourceVolume > 20.0));
 	if (sourceName.isEmpty() || isNotValidDecibel || isNotValidMul) {
 		return request.failed("invalid request parameters");
 	}
