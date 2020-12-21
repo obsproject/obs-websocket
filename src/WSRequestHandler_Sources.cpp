@@ -1680,6 +1680,40 @@ RpcResponse WSRequestHandler::SetAudioMonitorType(const RpcRequest& request)
 }
 
 /**
+* Get the default settings for a given source type.
+*
+* @param {String} `sourceKind` Source name.
+*
+* @api requests
+* @name GetSourceDefaultSettings
+* @category sources
+* @since 4.9.0
+*/
+RpcResponse WSRequestHandler::GetSourceDefaultSettings(const RpcRequest& request)
+{
+	if (!request.hasField("sourceKind")) {
+		return request.failed("missing request parameters");
+	}
+
+    QString sourceKind = obs_data_get_string(request.parameters(), "sourceKind");
+
+    if (sourceKind.isEmpty()) {
+        return request.failed("invalid request parameters");
+    }
+
+    OBSDataAutoRelease defaultData = obs_get_source_defaults(sourceKind.toUtf8());
+    if (!defaultData) {
+        return request.failed("invalid sourceKind");
+    }
+
+    OBSDataAutoRelease defaultSettings = Utils::OBSDataGetDefaults(defaultData);
+
+    OBSDataAutoRelease response = obs_data_create();
+    obs_data_set_obj(response, "defaultSettings", defaultSettings);
+    return request.success(response);
+}
+
+/**
 * Takes a picture snapshot of a source and then can either or both:
 *    - Send it over as a Data URI (base64-encoded data) in the response (by specifying `embedPictureFormat` in the request)
 *    - Save it to disk (by specifying `saveToFilePath` in the request)
