@@ -43,9 +43,9 @@ Here's a list of available language APIs for obs-websocket :
 - Python 3.6+ with asyncio: [simpleobsws](https://github.com/IRLToolkit/simpleobsws) by tt2468 
 - Java 8+: [obs-websocket-java](https://github.com/Twasi/websocket-obs-java) by TwasiNET
 - Golang: [go-obs-websocket](https://github.com/christopher-dG/go-obs-websocket) by Chris de Graaf
+- Rust: [obws](https://github.com/dnaka91/obws) by dnaka91
 - HTTP API: [obs-websocket-http](https://github.com/IRLToolkit/obs-websocket-http) by tt2468
 - CLI: [obs-cli](https://github.com/leafac/obs-cli) by leafac
-- Rust: [obws](https://github.com/dnaka91/obws) by dnaka91
 
 I'd like to know what you're building with or for obs-websocket. If you do something in this fashion, feel free to drop a message in `#project-showoff` in the [discord server!](https://discord.gg/WBaSQ3A)
 
