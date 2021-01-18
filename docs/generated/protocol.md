@@ -3825,9 +3825,10 @@ _No specified parameters._
 | ---- | :---: | ------------|
 | `streaming` | _boolean_ | Current streaming status. |
 | `recording` | _boolean_ | Current recording status. |
+| `recording-paused` | _boolean_ | If recording is paused. |
+| `preview-only` | _boolean_ | Always false. Retrocompatibility with OBSRemote. |
 | `stream-timecode` | _String (optional)_ | Time elapsed since streaming started (only present if currently streaming). |
 | `rec-timecode` | _String (optional)_ | Time elapsed since recording started (only present if currently recording). |
-| `preview-only` | _boolean_ | Always false. Retrocompatibility with OBSRemote. |
 
 
 ---

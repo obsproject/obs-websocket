@@ -9680,9 +9680,10 @@
         "return": [
           "{boolean} `streaming` Current streaming status.",
           "{boolean} `recording` Current recording status.",
+          "{boolean} `recording-paused` If recording is paused.",
+          "{boolean} `preview-only` Always false. Retrocompatibility with OBSRemote.",
           "{String (optional)} `stream-timecode` Time elapsed since streaming started (only present if currently streaming).",
-          "{String (optional)} `rec-timecode` Time elapsed since recording started (only present if currently recording).",
-          "{boolean} `preview-only` Always false. Retrocompatibility with OBSRemote."
+          "{String (optional)} `rec-timecode` Time elapsed since recording started (only present if currently recording)."
         ],
         "api": "requests",
         "name": "GetStreamingStatus",
@@ -9700,6 +9701,16 @@
             "description": "Current recording status."
           },
           {
+            "type": "boolean",
+            "name": "recording-paused",
+            "description": "If recording is paused."
+          },
+          {
+            "type": "boolean",
+            "name": "preview-only",
+            "description": "Always false. Retrocompatibility with OBSRemote."
+          },
+          {
             "type": "String (optional)",
             "name": "stream-timecode",
             "description": "Time elapsed since streaming started (only present if currently streaming)."
@@ -9708,11 +9719,6 @@
             "type": "String (optional)",
             "name": "rec-timecode",
             "description": "Time elapsed since recording started (only present if currently recording)."
-          },
-          {
-            "type": "boolean",
-            "name": "preview-only",
-            "description": "Always false. Retrocompatibility with OBSRemote."
           }
         ],
         "names": [
