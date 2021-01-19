@@ -45,7 +45,7 @@ Config::Config() :
 	LockToIPv4(false),
 	DebugEnabled(false),
 	AlertsEnabled(true),
-	AuthRequired(false),
+	AuthRequired(true),
 	Secret(""),
 	Salt(""),
 	SettingsLoaded(false)
