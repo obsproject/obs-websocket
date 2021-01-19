@@ -696,6 +696,29 @@ bool Utils::SetFilenameFormatting(const char* filenameFormatting) {
 	return true;
 }
 
+const char* Utils::GetCurrentRecordingFilename()
+{
+	OBSOutputAutoRelease recordingOutput = obs_frontend_get_recording_output();
+	if (!recordingOutput) {
+		return nullptr;
+	}
+
+	OBSDataAutoRelease settings = obs_output_get_settings(recordingOutput);
+
+	// mimicks the behavior of BasicOutputHandler::GetRecordingFilename :
+	// try to fetch the path from the "url" property, then try "path" if the first one
+	// didn't yield any result
+	OBSDataItemAutoRelease item = obs_data_item_byname(settings, "url");
+	if (!item) {
+		item = obs_data_item_byname(settings, "path");
+		if (!item) {
+			return nullptr;
+		}
+	}
+
+	return obs_data_item_get_string(item);
+}
+
 // Transform properties copy-pasted from WSRequestHandler_SceneItems.cpp because typedefs can't be extended yet
 
 /**
@@ -874,4 +897,11 @@ QString Utils::nsToTimestamp(uint64_t ns)
 	uint64_t msPart = ms % 1000ULL;
 
 	return QString::asprintf("%02" PRIu64 ":%02" PRIu64 ":%02" PRIu64 ".%03" PRIu64, hoursPart, minutesPart, secsPart, msPart);
+}
+
+void Utils::AddSourceHelper(void *_data, obs_scene_t *scene)
+{
+	auto *data = reinterpret_cast<AddSourceData*>(_data);
+	data->sceneItem = obs_scene_add(scene, data->source);
+	obs_sceneitem_set_visible(data->sceneItem, data->setVisible);
 }

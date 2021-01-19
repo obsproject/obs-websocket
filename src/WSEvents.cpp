@@ -233,6 +233,7 @@ void WSEvents::FrontendEventHandler(enum obs_frontend_event event, void* private
 		case OBS_FRONTEND_EVENT_EXIT:
 			owner->unhookTransitionPlaybackEvents();
 			owner->OnExit();
+			owner->_srv->stop();
 			break;
 	}
 }
@@ -467,25 +468,35 @@ void WSEvents::OnSceneChange() {
  *
  * Note: This event is not fired when the scenes are reordered.
  *
+ * @return {Array<Scene>} `scenes` Scenes list.
+ * 
  * @api events
  * @name ScenesChanged
  * @category scenes
  * @since 0.3
  */
 void WSEvents::OnSceneListChange() {
-	broadcastUpdate("ScenesChanged");
+	OBSDataArrayAutoRelease scenes = Utils::GetScenes();
+
+	OBSDataAutoRelease fields = obs_data_create();
+	obs_data_set_array(fields, "scenes", scenes);
+	broadcastUpdate("ScenesChanged", fields);
 }
 
 /**
  * Triggered when switching to another scene collection or when renaming the current scene collection.
  *
+ * @return {String} `sceneCollection` Name of the new current scene collection.
+ * 
  * @api events
  * @name SceneCollectionChanged
  * @category scenes
  * @since 4.0.0
  */
 void WSEvents::OnSceneCollectionChange() {
-	broadcastUpdate("SceneCollectionChanged");
+	OBSDataAutoRelease fields = obs_data_create();
+	obs_data_set_string(fields, "sceneCollection", obs_frontend_get_current_scene_collection());
+	broadcastUpdate("SceneCollectionChanged", fields);
 
 	OnTransitionListChange();
 	OnTransitionChange();
@@ -497,13 +508,23 @@ void WSEvents::OnSceneCollectionChange() {
 /**
  * Triggered when a scene collection is created, added, renamed, or removed.
  *
+ * @return {Array<Object>} `sceneCollections` Scene collections list.
+ * @return {String} `sceneCollections.*.name` Scene collection name.
+ * 
  * @api events
  * @name SceneCollectionListChanged
  * @category scenes
  * @since 4.0.0
  */
 void WSEvents::OnSceneCollectionListChange() {
-	broadcastUpdate("SceneCollectionListChanged");
+	char** sceneCollections = obs_frontend_get_scene_collections();
+	OBSDataArrayAutoRelease sceneCollectionsList =
+		Utils::StringListToArray(sceneCollections, "name");
+	bfree(sceneCollections);
+
+	OBSDataAutoRelease fields = obs_data_create();
+	obs_data_set_array(fields, "sceneCollections", sceneCollectionsList);
+	broadcastUpdate("SceneCollectionListChanged", fields);
 }
 
 /**
@@ -530,37 +551,68 @@ void WSEvents::OnTransitionChange() {
  * The list of available transitions has been modified.
  * Transitions have been added, removed, or renamed.
  *
+ * @return {Array<Object>} `transitions` Transitions list.
+ * @return {String} `transitions.*.name` Transition name.
+ * 
  * @api events
  * @name TransitionListChanged
  * @category transitions
  * @since 4.0.0
  */
 void WSEvents::OnTransitionListChange() {
-	broadcastUpdate("TransitionListChanged");
+	obs_frontend_source_list transitionList = {};
+	obs_frontend_get_transitions(&transitionList);
+
+	OBSDataArrayAutoRelease transitions = obs_data_array_create();
+	for (size_t i = 0; i < transitionList.sources.num; i++) {
+		OBSSource transition = transitionList.sources.array[i];
+
+		OBSDataAutoRelease obj = obs_data_create();
+		obs_data_set_string(obj, "name", obs_source_get_name(transition));
+		obs_data_array_push_back(transitions, obj);
+	}
+	obs_frontend_source_list_free(&transitionList);
+
+	OBSDataAutoRelease fields = obs_data_create();
+	obs_data_set_array(fields, "transitions", transitions);
+	broadcastUpdate("TransitionListChanged", fields);
 }
 
 /**
  * Triggered when switching to another profile or when renaming the current profile.
  *
+ * @return {String} `profile` Name of the new current profile.
+ * 
  * @api events
  * @name ProfileChanged
  * @category profiles
  * @since 4.0.0
  */
 void WSEvents::OnProfileChange() {
-	broadcastUpdate("ProfileChanged");
+	OBSDataAutoRelease fields = obs_data_create();
+	obs_data_set_string(fields, "profile", obs_frontend_get_current_profile());
+	broadcastUpdate("ProfileChanged", fields);
 }
 
 /**
  * Triggered when a profile is created, added, renamed, or removed.
  *
+ * @return {Array<Object>} `profiles` Profiles list.
+ * @return {String} `profiles.*.name` Profile name.
+ * 
  * @api events
  * @name ProfileListChanged
  * @category profiles
  * @since 4.0.0
  */
 void WSEvents::OnProfileListChange() {
-	broadcastUpdate("ProfileListChanged");
+	char** profiles = obs_frontend_get_profiles();
+	OBSDataArrayAutoRelease profilesList = Utils::StringListToArray(profiles, "name");
+	bfree(profiles);
+
+	OBSDataAutoRelease fields = obs_data_create();
+	obs_data_set_array(fields, "profiles", profilesList);
+	broadcastUpdate("ProfileListChanged", fields);
 }
 
 /**
@@ -627,7 +679,10 @@ void WSEvents::OnStreamStopped() {
 
 /**
  * A request to start recording has been issued.
- *
+ * 
+ * Note: `recordingFilename` is not provided in this event because this information
+ * is not available at the time this event is emitted.
+ * 
  * @api events
  * @name RecordingStarting
  * @category recording
@@ -640,37 +695,49 @@ void WSEvents::OnRecordingStarting() {
 /**
  * Recording started successfully.
  *
+ * @return {String} `recordingFilename` Absolute path to the file of the current recording.
+ * 
  * @api events
  * @name RecordingStarted
  * @category recording
  * @since 0.3
  */
 void WSEvents::OnRecordingStarted() {
-	broadcastUpdate("RecordingStarted");
+	OBSDataAutoRelease data = obs_data_create();
+	obs_data_set_string(data, "recordingFilename", Utils::GetCurrentRecordingFilename());
+	broadcastUpdate("RecordingStarted", data);
 }
 
 /**
  * A request to stop recording has been issued.
  *
+ * @return {String} `recordingFilename` Absolute path to the file of the current recording.
+ * 
  * @api events
  * @name RecordingStopping
  * @category recording
  * @since 0.3
  */
 void WSEvents::OnRecordingStopping() {
-	broadcastUpdate("RecordingStopping");
+	OBSDataAutoRelease data = obs_data_create();
+	obs_data_set_string(data, "recordingFilename", Utils::GetCurrentRecordingFilename());
+	broadcastUpdate("RecordingStopping", data);
 }
 
 /**
  * Recording stopped successfully.
  *
+ * @return {String} `recordingFilename` Absolute path to the file of the current recording.
+ * 
  * @api events
  * @name RecordingStopped
  * @category recording
  * @since 0.3
  */
 void WSEvents::OnRecordingStopped() {
-	broadcastUpdate("RecordingStopped");
+	OBSDataAutoRelease data = obs_data_create();
+	obs_data_set_string(data, "recordingFilename", Utils::GetCurrentRecordingFilename());
+	broadcastUpdate("RecordingStopped", data);
 }
 
 /**

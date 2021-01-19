@@ -562,10 +562,18 @@
       {
         "subheads": [],
         "description": "\n\nNote: This event is not fired when the scenes are reordered.",
+        "return": "{Array<Scene>} `scenes` Scenes list.",
         "api": "events",
         "name": "ScenesChanged",
         "category": "scenes",
         "since": "0.3",
+        "returns": [
+          {
+            "type": "Array<Scene>",
+            "name": "scenes",
+            "description": "Scenes list."
+          }
+        ],
         "names": [
           {
             "name": "",
@@ -595,10 +603,18 @@
       {
         "subheads": [],
         "description": "Triggered when switching to another scene collection or when renaming the current scene collection.",
+        "return": "{String} `sceneCollection` Name of the new current scene collection.",
         "api": "events",
         "name": "SceneCollectionChanged",
         "category": "scenes",
         "since": "4.0.0",
+        "returns": [
+          {
+            "type": "String",
+            "name": "sceneCollection",
+            "description": "Name of the new current scene collection."
+          }
+        ],
         "names": [
           {
             "name": "",
@@ -628,10 +644,26 @@
       {
         "subheads": [],
         "description": "Triggered when a scene collection is created, added, renamed, or removed.",
+        "return": [
+          "{Array<Object>} `sceneCollections` Scene collections list.",
+          "{String} `sceneCollections.*.name` Scene collection name."
+        ],
         "api": "events",
         "name": "SceneCollectionListChanged",
         "category": "scenes",
         "since": "4.0.0",
+        "returns": [
+          {
+            "type": "Array<Object>",
+            "name": "sceneCollections",
+            "description": "Scene collections list."
+          },
+          {
+            "type": "String",
+            "name": "sceneCollections.*.name",
+            "description": "Scene collection name."
+          }
+        ],
         "names": [
           {
             "name": "",
@@ -704,10 +736,26 @@
       {
         "subheads": [],
         "description": "The list of available transitions has been modified.\nTransitions have been added, removed, or renamed.",
+        "return": [
+          "{Array<Object>} `transitions` Transitions list.",
+          "{String} `transitions.*.name` Transition name."
+        ],
         "api": "events",
         "name": "TransitionListChanged",
         "category": "transitions",
         "since": "4.0.0",
+        "returns": [
+          {
+            "type": "Array<Object>",
+            "name": "transitions",
+            "description": "Transitions list."
+          },
+          {
+            "type": "String",
+            "name": "transitions.*.name",
+            "description": "Transition name."
+          }
+        ],
         "names": [
           {
             "name": "",
@@ -975,10 +1023,18 @@
       {
         "subheads": [],
         "description": "Triggered when switching to another profile or when renaming the current profile.",
+        "return": "{String} `profile` Name of the new current profile.",
         "api": "events",
         "name": "ProfileChanged",
         "category": "profiles",
         "since": "4.0.0",
+        "returns": [
+          {
+            "type": "String",
+            "name": "profile",
+            "description": "Name of the new current profile."
+          }
+        ],
         "names": [
           {
             "name": "",
@@ -1008,10 +1064,26 @@
       {
         "subheads": [],
         "description": "Triggered when a profile is created, added, renamed, or removed.",
+        "return": [
+          "{Array<Object>} `profiles` Profiles list.",
+          "{String} `profiles.*.name` Profile name."
+        ],
         "api": "events",
         "name": "ProfileListChanged",
         "category": "profiles",
         "since": "4.0.0",
+        "returns": [
+          {
+            "type": "Array<Object>",
+            "name": "profiles",
+            "description": "Profiles list."
+          },
+          {
+            "type": "String",
+            "name": "profiles.*.name",
+            "description": "Profile name."
+          }
+        ],
         "names": [
           {
             "name": "",
@@ -1343,7 +1415,7 @@
     "recording": [
       {
         "subheads": [],
-        "description": "A request to start recording has been issued.",
+        "description": "\n\nNote: `recordingFilename` is not provided in this event because this information\nis not available at the time this event is emitted.",
         "api": "events",
         "name": "RecordingStarting",
         "category": "recording",
@@ -1370,17 +1442,25 @@
           "level": 2,
           "text": "RecordingStarting"
         },
-        "lead": "",
+        "lead": "A request to start recording has been issued.",
         "type": "class",
         "examples": []
       },
       {
         "subheads": [],
         "description": "Recording started successfully.",
+        "return": "{String} `recordingFilename` Absolute path to the file of the current recording.",
         "api": "events",
         "name": "RecordingStarted",
         "category": "recording",
         "since": "0.3",
+        "returns": [
+          {
+            "type": "String",
+            "name": "recordingFilename",
+            "description": "Absolute path to the file of the current recording."
+          }
+        ],
         "names": [
           {
             "name": "",
@@ -1410,10 +1490,18 @@
       {
         "subheads": [],
         "description": "A request to stop recording has been issued.",
+        "return": "{String} `recordingFilename` Absolute path to the file of the current recording.",
         "api": "events",
         "name": "RecordingStopping",
         "category": "recording",
         "since": "0.3",
+        "returns": [
+          {
+            "type": "String",
+            "name": "recordingFilename",
+            "description": "Absolute path to the file of the current recording."
+          }
+        ],
         "names": [
           {
             "name": "",
@@ -1443,10 +1531,18 @@
       {
         "subheads": [],
         "description": "Recording stopped successfully.",
+        "return": "{String} `recordingFilename` Absolute path to the file of the current recording.",
         "api": "events",
         "name": "RecordingStopped",
         "category": "recording",
         "since": "0.3",
+        "returns": [
+          {
+            "type": "String",
+            "name": "recordingFilename",
+            "description": "Absolute path to the file of the current recording."
+          }
+        ],
         "names": [
           {
             "name": "",
@@ -4705,6 +4801,81 @@
       },
       {
         "subheads": [],
+        "description": "Create a source and add it as a sceneitem to a scene.",
+        "param": [
+          "{String} `sourceName` Source name.",
+          "{String} `sourceKind` Source kind, Eg. `vlc_source`.",
+          "{String} `sceneName` Scene to add the new source to.",
+          "{Object (optional)} `sourceSettings` Source settings data.",
+          "{boolean (optional)} `setVisible` Set the created SceneItem as visible or not. Defaults to true"
+        ],
+        "return": "{int} `itemId` ID of the SceneItem in the scene.",
+        "api": "requests",
+        "name": "CreateSource",
+        "category": "sources",
+        "since": "unreleased",
+        "returns": [
+          {
+            "type": "int",
+            "name": "itemId",
+            "description": "ID of the SceneItem in the scene."
+          }
+        ],
+        "params": [
+          {
+            "type": "String",
+            "name": "sourceName",
+            "description": "Source name."
+          },
+          {
+            "type": "String",
+            "name": "sourceKind",
+            "description": "Source kind, Eg. `vlc_source`."
+          },
+          {
+            "type": "String",
+            "name": "sceneName",
+            "description": "Scene to add the new source to."
+          },
+          {
+            "type": "Object (optional)",
+            "name": "sourceSettings",
+            "description": "Source settings data."
+          },
+          {
+            "type": "boolean (optional)",
+            "name": "setVisible",
+            "description": "Set the created SceneItem as visible or not. Defaults to true"
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "CreateSource"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "sources"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "unreleased"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "CreateSource"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
         "description": "List all sources available in the running OBS instance",
         "return": [
           "{Array<Object>} `sources` Array of sources",
@@ -4888,7 +5059,7 @@
         ],
         "return": [
           "{String} `name` Source name.",
-          "{double} `volume` Volume of the source. Between `0.0` and `1.0` if using mul, under `0.0` if using dB (since it is attenuating).",
+          "{double} `volume` Volume of the source. Between `0.0` and `20.0` if using mul, under `26.0` if using dB.",
           "{boolean} `muted` Indicates whether the source is muted."
         ],
         "api": "requests",
@@ -4904,7 +5075,7 @@
           {
             "type": "double",
             "name": "volume",
-            "description": "Volume of the source. Between `0.0` and `1.0` if using mul, under `0.0` if using dB (since it is attenuating)."
+            "description": "Volume of the source. Between `0.0` and `20.0` if using mul, under `26.0` if using dB."
           },
           {
             "type": "boolean",
@@ -4955,7 +5126,7 @@
         "description": "Set the volume of the specified source. Default request format uses mul, NOT SLIDER PERCENTAGE.",
         "param": [
           "{String} `source` Source name.",
-          "{double} `volume` Desired volume. Must be between `0.0` and `1.0` for mul, and under 0.0 for dB. Note: OBS will interpret dB values under -100.0 as Inf.",
+          "{double} `volume` Desired volume. Must be between `0.0` and `20.0` for mul, and under 26.0 for dB. OBS will interpret dB values under -100.0 as Inf. Note: The OBS volume sliders only reach a maximum of 1.0mul/0.0dB, however OBS actually supports larger values.",
           "{boolean (optional)} `useDecibel` Interperet `volume` data as decibels instead of amplitude/mul."
         ],
         "api": "requests",
@@ -4971,7 +5142,7 @@
           {
             "type": "double",
             "name": "volume",
-            "description": "Desired volume. Must be between `0.0` and `1.0` for mul, and under 0.0 for dB. Note: OBS will interpret dB values under -100.0 as Inf."
+            "description": "Desired volume. Must be between `0.0` and `20.0` for mul, and under 26.0 for dB. OBS will interpret dB values under -100.0 as Inf. Note: The OBS volume sliders only reach a maximum of 1.0mul/0.0dB, however OBS actually supports larger values."
           },
           {
             "type": "boolean (optional)",
@@ -7483,7 +7654,8 @@
         "return": [
           "{boolean} `isRecording` Current recording status.",
           "{boolean} `isRecordingPaused` Whether the recording is paused or not.",
-          "{String (optional)} `recordTimecode` Time elapsed since recording started (only present if currently recording)."
+          "{String (optional)} `recordTimecode` Time elapsed since recording started (only present if currently recording).",
+          "{String (optional)} `recordingFilename` Absolute path to the recording file (only present if currently recording)."
         ],
         "api": "requests",
         "name": "GetRecordingStatus",
@@ -7504,6 +7676,11 @@
             "type": "String (optional)",
             "name": "recordTimecode",
             "description": "Time elapsed since recording started (only present if currently recording)."
+          },
+          {
+            "type": "String (optional)",
+            "name": "recordingFilename",
+            "description": "Absolute path to the recording file (only present if currently recording)."
           }
         ],
         "names": [
@@ -8184,7 +8361,7 @@
           "{int} `itemId` Scene Item ID.",
           "{double} `position.x` The x position of the source from the left.",
           "{double} `position.y` The y position of the source from the top.",
-          "{int} `position.alignment` The point on the source that the item is manipulated from.",
+          "{int} `position.alignment` The point on the source that the item is manipulated from. The sum of 1=Left or 2=Right, and 4=Top or 8=Bottom, or omit to center on that axis.",
           "{double} `rotation` The clockwise rotation of the item in degrees around the point of alignment.",
           "{double} `scale.x` The x-scale factor of the source.",
           "{double} `scale.y` The y-scale factor of the source.",
@@ -8203,7 +8380,6 @@
           "{int} `sourceHeight` Base source (without scaling) of the source",
           "{double} `width` Scene item width (base source width multiplied by the horizontal scaling factor)",
           "{double} `height` Scene item height (base source height multiplied by the vertical scaling factor)",
-          "{int} `alignment` The point on the source that the item is manipulated from. The sum of 1=Left or 2=Right, and 4=Top or 8=Bottom, or omit to center on that axis.",
           "{String (optional)} `parentGroupName` Name of the item's parent (if this item belongs to a group)",
           "{Array<SceneItemTransform> (optional)} `groupChildren` List of children (if this item is a group)"
         ],
@@ -8235,7 +8411,7 @@
           {
             "type": "int",
             "name": "position.alignment",
-            "description": "The point on the source that the item is manipulated from."
+            "description": "The point on the source that the item is manipulated from. The sum of 1=Left or 2=Right, and 4=Top or 8=Bottom, or omit to center on that axis."
           },
           {
             "type": "double",
@@ -8326,11 +8502,6 @@
             "type": "double",
             "name": "height",
             "description": "Scene item height (base source height multiplied by the vertical scaling factor)"
-          },
-          {
-            "type": "int",
-            "name": "alignment",
-            "description": "The point on the source that the item is manipulated from. The sum of 1=Left or 2=Right, and 4=Top or 8=Bottom, or omit to center on that axis."
           },
           {
             "type": "String (optional)",
@@ -9253,7 +9424,7 @@
         "api": "requests",
         "name": "CreateScene",
         "category": "scenes",
-        "since": "4.8.0",
+        "since": "unreleased",
         "params": [
           {
             "type": "String",
@@ -9276,7 +9447,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "4.8.0"
+            "description": "unreleased"
           }
         ],
         "heading": {
@@ -9509,9 +9680,10 @@
         "return": [
           "{boolean} `streaming` Current streaming status.",
           "{boolean} `recording` Current recording status.",
+          "{boolean} `recording-paused` If recording is paused.",
+          "{boolean} `preview-only` Always false. Retrocompatibility with OBSRemote.",
           "{String (optional)} `stream-timecode` Time elapsed since streaming started (only present if currently streaming).",
-          "{String (optional)} `rec-timecode` Time elapsed since recording started (only present if currently recording).",
-          "{boolean} `preview-only` Always false. Retrocompatibility with OBSRemote."
+          "{String (optional)} `rec-timecode` Time elapsed since recording started (only present if currently recording)."
         ],
         "api": "requests",
         "name": "GetStreamingStatus",
@@ -9529,6 +9701,16 @@
             "description": "Current recording status."
           },
           {
+            "type": "boolean",
+            "name": "recording-paused",
+            "description": "If recording is paused."
+          },
+          {
+            "type": "boolean",
+            "name": "preview-only",
+            "description": "Always false. Retrocompatibility with OBSRemote."
+          },
+          {
             "type": "String (optional)",
             "name": "stream-timecode",
             "description": "Time elapsed since streaming started (only present if currently streaming)."
@@ -9537,11 +9719,6 @@
             "type": "String (optional)",
             "name": "rec-timecode",
             "description": "Time elapsed since recording started (only present if currently recording)."
-          },
-          {
-            "type": "boolean",
-            "name": "preview-only",
-            "description": "Always false. Retrocompatibility with OBSRemote."
           }
         ],
         "names": [
@@ -10488,7 +10665,7 @@
         "api": "requests",
         "name": "GetTransitionPosition",
         "category": "transitions",
-        "since": "4.8.0",
+        "since": "unreleased",
         "returns": [
           {
             "type": "double",
@@ -10511,7 +10688,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "4.8.0"
+            "description": "unreleased"
           }
         ],
         "heading": {
@@ -10625,6 +10802,88 @@
           "text": "SetTransitionSettings"
         },
         "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Release the T-Bar (like a user releasing their mouse button after moving it).\n*YOU MUST CALL THIS if you called `SetTBarPosition` with the `release` parameter set to `false`.*",
+        "api": "requests",
+        "name": "ReleaseTBar",
+        "category": "transitions",
+        "since": "unreleased",
+        "names": [
+          {
+            "name": "",
+            "description": "ReleaseTBar"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "transitions"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "unreleased"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "ReleaseTBar"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "\n\nIf your code needs to perform multiple successive T-Bar moves (e.g. : in an animation, or in response to a user moving a T-Bar control in your User Interface), set `release` to false and call `ReleaseTBar` later once the animation/interaction is over.",
+        "param": [
+          "{double} `position` T-Bar position. This value must be between 0.0 and 1.0.",
+          "{boolean (optional)} `release` Whether or not the T-Bar gets released automatically after setting its new position (like a user releasing their mouse button after moving the T-Bar). Call `ReleaseTBar` manually if you set `release` to false. Defaults to true."
+        ],
+        "api": "requests",
+        "name": "SetTBarPosition",
+        "category": "transitions",
+        "since": "unreleased",
+        "params": [
+          {
+            "type": "double",
+            "name": "position",
+            "description": "T-Bar position. This value must be between 0.0 and 1.0."
+          },
+          {
+            "type": "boolean (optional)",
+            "name": "release",
+            "description": "Whether or not the T-Bar gets released automatically after setting its new position (like a user releasing their mouse button after moving the T-Bar). Call `ReleaseTBar` manually if you set `release` to false. Defaults to true."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "SetTBarPosition"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "transitions"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "unreleased"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "SetTBarPosition"
+        },
+        "lead": "Set the manual position of the T-Bar (in Studio Mode) to the specified value. Will return an error if OBS is not in studio mode or if the current transition doesn't support T-Bar control.",
         "type": "class",
         "examples": []
       }

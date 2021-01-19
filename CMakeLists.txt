@@ -202,12 +202,17 @@ if(UNIX AND NOT APPLE)
 
 	file(GLOB locale_files data/locale/*.ini)
 
+        set(CMAKE_INSTALL_DEFAULT_DIRECTORY_PERMISSIONS
+		OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_WRITE GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
+
 	if(${USE_UBUNTU_FIX})
-		install(TARGETS obs-websocket
-			LIBRARY DESTINATION "/usr/lib/obs-plugins")
+		install(TARGETS obs-websocket LIBRARY
+			DESTINATION "/usr/lib/obs-plugins"
+			PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ)
 	endif()
-	install(TARGETS obs-websocket
-		LIBRARY DESTINATION "${CMAKE_INSTALL_FULL_LIBDIR}/obs-plugins")
+	install(TARGETS obs-websocket LIBRARY
+		DESTINATION "${CMAKE_INSTALL_FULL_LIBDIR}/obs-plugins"
+		PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ)
 
 	install(FILES ${locale_files}
 		DESTINATION "${CMAKE_INSTALL_FULL_DATAROOTDIR}/obs/obs-plugins/obs-websocket/locale")

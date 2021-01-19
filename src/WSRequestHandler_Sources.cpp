@@ -19,6 +19,75 @@ bool isTextFreeType2Source(const QString& sourceKind)
 }
 
 /**
+ * Create a source and add it as a sceneitem to a scene.
+ *
+ * @param {String} `sourceName` Source name.
+ * @param {String} `sourceKind` Source kind, Eg. `vlc_source`.
+ * @param {String} `sceneName` Scene to add the new source to.
+ * @param {Object (optional)} `sourceSettings` Source settings data.
+ * @param {boolean (optional)} `setVisible` Set the created SceneItem as visible or not. Defaults to true
+ *
+ * @return {int} `itemId` ID of the SceneItem in the scene.
+ *
+ * @api requests
+ * @name CreateSource
+ * @category sources
+ * @since unreleased
+ */
+RpcResponse WSRequestHandler::CreateSource(const RpcRequest& request)
+{
+	if (!request.hasField("sourceName") || !request.hasField("sourceKind") || !request.hasField("sceneName")) {
+		return request.failed("missing request parameters");
+	}
+
+	QString sourceName = obs_data_get_string(request.parameters(), "sourceName");
+	QString sourceKind = obs_data_get_string(request.parameters(), "sourceKind");
+	if (sourceName.isEmpty() || sourceKind.isEmpty()) {
+		return request.failed("empty sourceKind or sourceName parameters");
+	}
+	
+	OBSSourceAutoRelease source = obs_get_source_by_name(sourceName.toUtf8());
+	if (source) {
+		return request.failed("a source with that name already exists");
+	}
+	
+	const char* sceneName = obs_data_get_string(request.parameters(), "sceneName");
+	OBSSourceAutoRelease sceneSource = obs_get_source_by_name(sceneName);
+	OBSScene scene = obs_scene_from_source(sceneSource);
+	if (!scene) {
+		return request.failed("requested scene is invalid or doesnt exist");
+	}
+
+	OBSDataAutoRelease sourceSettings = nullptr;
+	if (request.hasField("sourceSettings")) {
+		sourceSettings = obs_data_get_obj(request.parameters(), "sourceSettings");
+	}
+
+	OBSSourceAutoRelease newSource = obs_source_create(sourceKind.toUtf8(), sourceName.toUtf8(), sourceSettings, nullptr);
+
+	if (!newSource) {
+		return request.failed("failed to create the source");
+	}
+	obs_source_set_enabled(newSource, true);
+
+	Utils::AddSourceData data;
+	data.source = newSource;
+	data.setVisible = true;
+	if (request.hasField("setVisible")) {
+		data.setVisible = obs_data_get_bool(request.parameters(), "setVisible");
+	}
+	
+	obs_enter_graphics();
+	obs_scene_atomic_update(scene, Utils::AddSourceHelper, &data);
+	obs_leave_graphics();
+	
+	OBSDataAutoRelease responseData = obs_data_create();
+	obs_data_set_int(responseData, "itemId", obs_sceneitem_get_id(data.sceneItem));
+
+	return request.success(responseData);
+}
+
+/**
 * List all sources available in the running OBS instance
 *
 * @return {Array<Object>} `sources` Array of sources
@@ -162,7 +231,7 @@ RpcResponse WSRequestHandler::GetSourceTypesList(const RpcRequest& request)
 * @param {boolean (optional)} `useDecibel` Output volume in decibels of attenuation instead of amplitude/mul.
 *
 * @return {String} `name` Source name.
-* @return {double} `volume` Volume of the source. Between `0.0` and `1.0` if using mul, under `0.0` if using dB (since it is attenuating).
+* @return {double} `volume` Volume of the source. Between `0.0` and `20.0` if using mul, under `26.0` if using dB.
 * @return {boolean} `muted` Indicates whether the source is muted.
 *
 * @api requests
@@ -208,7 +277,7 @@ RpcResponse WSRequestHandler::GetVolume(const RpcRequest& request)
 * Set the volume of the specified source. Default request format uses mul, NOT SLIDER PERCENTAGE.
 *
 * @param {String} `source` Source name.
-* @param {double} `volume` Desired volume. Must be between `0.0` and `1.0` for mul, and under 0.0 for dB. Note: OBS will interpret dB values under -100.0 as Inf.
+* @param {double} `volume` Desired volume. Must be between `0.0` and `20.0` for mul, and under 26.0 for dB. OBS will interpret dB values under -100.0 as Inf. Note: The OBS volume sliders only reach a maximum of 1.0mul/0.0dB, however OBS actually supports larger values.
 * @param {boolean (optional)} `useDecibel` Interperet `volume` data as decibels instead of amplitude/mul.
 *
 * @api requests
@@ -227,8 +296,8 @@ RpcResponse WSRequestHandler::SetVolume(const RpcRequest& request)
 	QString sourceName = obs_data_get_string(request.parameters(), "source");
 	float sourceVolume = obs_data_get_double(request.parameters(), "volume");
 
-	bool isNotValidDecibel = (useDecibel && sourceVolume > 0.0);
-	bool isNotValidMul = (!useDecibel && (sourceVolume < 0.0 || sourceVolume > 1.0));
+	bool isNotValidDecibel = (useDecibel && sourceVolume > 26.0);
+	bool isNotValidMul = (!useDecibel && (sourceVolume < 0.0 || sourceVolume > 20.0));
 	if (sourceName.isEmpty() || isNotValidDecibel || isNotValidMul) {
 		return request.failed("invalid request parameters");
 	}

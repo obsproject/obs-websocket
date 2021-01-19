@@ -59,7 +59,7 @@ obs_data_t* getOutputInfo(obs_output_t* output)
 	return data;
 }
 
-RpcResponse findOutputOrFail(const RpcRequest& request, std::function<RpcResponse (obs_output_t*)> callback)
+RpcResponse findOutputOrFail(const RpcRequest& request, std::function<RpcResponse (obs_output_t*, const RpcRequest&)> callback)
 {
 	if (!request.hasField("outputName")) {
 		return request.failed("missing request parameters");
@@ -71,7 +71,7 @@ RpcResponse findOutputOrFail(const RpcRequest& request, std::function<RpcRespons
 		return request.failed("specified output doesn't exist");
 	}
 
-	return callback(output);
+	return callback(output, request);
 }
 
 /**
@@ -117,7 +117,7 @@ RpcResponse WSRequestHandler::ListOutputs(const RpcRequest& request)
 */
 RpcResponse WSRequestHandler::GetOutputInfo(const RpcRequest& request)
 {
-	return findOutputOrFail(request, [request](obs_output_t* output) {
+	return findOutputOrFail(request, [](obs_output_t* output, const RpcRequest& request) {
 		OBSDataAutoRelease outputInfo = getOutputInfo(output);
 
 		OBSDataAutoRelease fields = obs_data_create();
@@ -140,7 +140,7 @@ RpcResponse WSRequestHandler::GetOutputInfo(const RpcRequest& request)
 */
 RpcResponse WSRequestHandler::StartOutput(const RpcRequest& request)
 {
-	return findOutputOrFail(request, [request](obs_output_t* output) {
+	return findOutputOrFail(request, [](obs_output_t* output, const RpcRequest& request) {
 		if (obs_output_active(output)) {
 			return request.failed("output already active");
 		}
@@ -171,7 +171,7 @@ RpcResponse WSRequestHandler::StartOutput(const RpcRequest& request)
 */
 RpcResponse WSRequestHandler::StopOutput(const RpcRequest& request)
 {
-	return findOutputOrFail(request, [request](obs_output_t* output) {
+	return findOutputOrFail(request, [](obs_output_t* output, const RpcRequest& request) {
 		if (!obs_output_active(output)) {
 			return request.failed("output not active");
 		}

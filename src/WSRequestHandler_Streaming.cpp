@@ -11,9 +11,10 @@
  *
  * @return {boolean} `streaming` Current streaming status.
  * @return {boolean} `recording` Current recording status.
+ * @return {boolean} `recording-paused` If recording is paused.
+ * @return {boolean} `preview-only` Always false. Retrocompatibility with OBSRemote.
  * @return {String (optional)} `stream-timecode` Time elapsed since streaming started (only present if currently streaming).
  * @return {String (optional)} `rec-timecode` Time elapsed since recording started (only present if currently recording).
- * @return {boolean} `preview-only` Always false. Retrocompatibility with OBSRemote.
  *
  * @api requests
  * @name GetStreamingStatus
@@ -300,7 +301,6 @@ RpcResponse WSRequestHandler::SaveStreamSettings(const RpcRequest& request) {
  * @category streaming
  * @since 4.6.0
  */
-#if BUILD_CAPTIONS
 RpcResponse WSRequestHandler::SendCaptions(const RpcRequest& request) {
 	if (!request.hasField("text")) {
 		return request.failed("missing request parameters");
@@ -315,5 +315,4 @@ RpcResponse WSRequestHandler::SendCaptions(const RpcRequest& request) {
 
 	return request.success();
 }
-#endif
 

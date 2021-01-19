@@ -151,6 +151,7 @@ You can also refer to any of the client libraries listed on the [README](README.
     + [GetMediaState](#getmediastate)
   * [Sources](#sources-1)
     + [GetMediaSourcesList](#getmediasourceslist)
+    + [CreateSource](#createsource)
     + [GetSourcesList](#getsourceslist)
     + [GetSourceTypesList](#getsourcetypeslist)
     + [GetVolume](#getvolume)
@@ -257,6 +258,8 @@ You can also refer to any of the client libraries listed on the [README](README.
     + [GetTransitionPosition](#gettransitionposition)
     + [GetTransitionSettings](#gettransitionsettings)
     + [SetTransitionSettings](#settransitionsettings)
+    + [ReleaseTBar](#releasetbar)
+    + [SetTBarPosition](#settbarposition)
 
 <!-- tocstop -->
 
@@ -392,7 +395,10 @@ Note: This event is not fired when the scenes are reordered.
 
 **Response Items:**
 
-_No additional response items._
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `scenes` | _Array&lt;Scene&gt;_ | Scenes list. |
+
 
 ---
 
@@ -405,7 +411,10 @@ Triggered when switching to another scene collection or when renaming the curren
 
 **Response Items:**
 
-_No additional response items._
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sceneCollection` | _String_ | Name of the new current scene collection. |
+
 
 ---
 
@@ -418,7 +427,11 @@ Triggered when a scene collection is created, added, renamed, or removed.
 
 **Response Items:**
 
-_No additional response items._
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sceneCollections` | _Array&lt;Object&gt;_ | Scene collections list. |
+| `sceneCollections.*.name` | _String_ | Scene collection name. |
+
 
 ---
 
@@ -450,7 +463,11 @@ Transitions have been added, removed, or renamed.
 
 **Response Items:**
 
-_No additional response items._
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `transitions` | _Array&lt;Object&gt;_ | Transitions list. |
+| `transitions.*.name` | _String_ | Transition name. |
+
 
 ---
 
@@ -541,7 +558,10 @@ Triggered when switching to another profile or when renaming the current profile
 
 **Response Items:**
 
-_No additional response items._
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `profile` | _String_ | Name of the new current profile. |
+
 
 ---
 
@@ -554,7 +574,11 @@ Triggered when a profile is created, added, renamed, or removed.
 
 **Response Items:**
 
-_No additional response items._
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `profiles` | _Array&lt;Object&gt;_ | Profiles list. |
+| `profiles.*.name` | _String_ | Profile name. |
+
 
 ---
 
@@ -659,7 +683,10 @@ Emitted every 2 seconds when stream is active.
 
 - Added in v0.3
 
-A request to start recording has been issued.
+
+
+Note: `recordingFilename` is not provided in this event because this information
+is not available at the time this event is emitted.
 
 **Response Items:**
 
@@ -676,7 +703,10 @@ Recording started successfully.
 
 **Response Items:**
 
-_No additional response items._
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `recordingFilename` | _String_ | Absolute path to the file of the current recording. |
+
 
 ---
 
@@ -689,7 +719,10 @@ A request to stop recording has been issued.
 
 **Response Items:**
 
-_No additional response items._
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `recordingFilename` | _String_ | Absolute path to the file of the current recording. |
+
 
 ---
 
@@ -702,7 +735,10 @@ Recording stopped successfully.
 
 **Response Items:**
 
-_No additional response items._
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `recordingFilename` | _String_ | Absolute path to the file of the current recording. |
+
 
 ---
 
@@ -1945,6 +1981,33 @@ _No specified parameters._
 
 ---
 
+### CreateSource
+
+
+- Unreleased
+
+Create a source and add it as a sceneitem to a scene.
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sourceName` | _String_ | Source name. |
+| `sourceKind` | _String_ | Source kind, Eg. `vlc_source`. |
+| `sceneName` | _String_ | Scene to add the new source to. |
+| `sourceSettings` | _Object (optional)_ | Source settings data. |
+| `setVisible` | _boolean (optional)_ | Set the created SceneItem as visible or not. Defaults to true |
+
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `itemId` | _int_ | ID of the SceneItem in the scene. |
+
+
+---
+
 ### GetSourcesList
 
 
@@ -2020,7 +2083,7 @@ Get the volume of the specified source. Default response uses mul format, NOT SL
 | Name | Type  | Description |
 | ---- | :---: | ------------|
 | `name` | _String_ | Source name. |
-| `volume` | _double_ | Volume of the source. Between `0.0` and `1.0` if using mul, under `0.0` if using dB (since it is attenuating). |
+| `volume` | _double_ | Volume of the source. Between `0.0` and `20.0` if using mul, under `26.0` if using dB. |
 | `muted` | _boolean_ | Indicates whether the source is muted. |
 
 
@@ -2038,7 +2101,7 @@ Set the volume of the specified source. Default request format uses mul, NOT SLI
 | Name | Type  | Description |
 | ---- | :---: | ------------|
 | `source` | _String_ | Source name. |
-| `volume` | _double_ | Desired volume. Must be between `0.0` and `1.0` for mul, and under 0.0 for dB. Note: OBS will interpret dB values under -100.0 as Inf. |
+| `volume` | _double_ | Desired volume. Must be between `0.0` and `20.0` for mul, and under 26.0 for dB. OBS will interpret dB values under -100.0 as Inf. Note: The OBS volume sliders only reach a maximum of 1.0mul/0.0dB, however OBS actually supports larger values. |
 | `useDecibel` | _boolean (optional)_ | Interperet `volume` data as decibels instead of amplitude/mul. |
 
 
@@ -2953,6 +3016,7 @@ _No specified parameters._
 | `isRecording` | _boolean_ | Current recording status. |
 | `isRecordingPaused` | _boolean_ | Whether the recording is paused or not. |
 | `recordTimecode` | _String (optional)_ | Time elapsed since recording started (only present if currently recording). |
+| `recordingFilename` | _String (optional)_ | Absolute path to the recording file (only present if currently recording). |
 
 
 ---
@@ -3306,7 +3370,7 @@ Coordinates are relative to the item's parent (the scene or group it belongs to)
 | `itemId` | _int_ | Scene Item ID. |
 | `position.x` | _double_ | The x position of the source from the left. |
 | `position.y` | _double_ | The y position of the source from the top. |
-| `position.alignment` | _int_ | The point on the source that the item is manipulated from. |
+| `position.alignment` | _int_ | The point on the source that the item is manipulated from. The sum of 1=Left or 2=Right, and 4=Top or 8=Bottom, or omit to center on that axis. |
 | `rotation` | _double_ | The clockwise rotation of the item in degrees around the point of alignment. |
 | `scale.x` | _double_ | The x-scale factor of the source. |
 | `scale.y` | _double_ | The y-scale factor of the source. |
@@ -3325,7 +3389,6 @@ Coordinates are relative to the item's parent (the scene or group it belongs to)
 | `sourceHeight` | _int_ | Base source (without scaling) of the source |
 | `width` | _double_ | Scene item width (base source width multiplied by the horizontal scaling factor) |
 | `height` | _double_ | Scene item height (base source height multiplied by the vertical scaling factor) |
-| `alignment` | _int_ | The point on the source that the item is manipulated from. The sum of 1=Left or 2=Right, and 4=Top or 8=Bottom, or omit to center on that axis. |
 | `parentGroupName` | _String (optional)_ | Name of the item's parent (if this item belongs to a group) |
 | `groupChildren` | _Array&lt;SceneItemTransform&gt; (optional)_ | List of children (if this item is a group) |
 
@@ -3637,7 +3700,7 @@ _No specified parameters._
 ### CreateScene
 
 
-- Added in v4.8.0
+- Unreleased
 
 Create a new scene scene.
 
@@ -3762,9 +3825,10 @@ _No specified parameters._
 | ---- | :---: | ------------|
 | `streaming` | _boolean_ | Current streaming status. |
 | `recording` | _boolean_ | Current recording status. |
+| `recording-paused` | _boolean_ | If recording is paused. |
+| `preview-only` | _boolean_ | Always false. Retrocompatibility with OBSRemote. |
 | `stream-timecode` | _String (optional)_ | Time elapsed since streaming started (only present if currently streaming). |
 | `rec-timecode` | _String (optional)_ | Time elapsed since recording started (only present if currently recording). |
-| `preview-only` | _boolean_ | Always false. Retrocompatibility with OBSRemote. |
 
 
 ---
@@ -4170,7 +4234,7 @@ _No specified parameters._
 ### GetTransitionPosition
 
 
-- Added in v4.8.0
+- Unreleased
 
 Get the position of the current transition.
 
@@ -4231,6 +4295,47 @@ Change the current settings of a transition
 | ---- | :---: | ------------|
 | `transitionSettings` | _Object_ | Updated transition settings |
 
+
+---
+
+### ReleaseTBar
+
+
+- Unreleased
+
+Release the T-Bar (like a user releasing their mouse button after moving it).
+*YOU MUST CALL THIS if you called `SetTBarPosition` with the `release` parameter set to `false`.*
+
+**Request Fields:**
+
+_No specified parameters._
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+### SetTBarPosition
+
+
+- Unreleased
+
+
+
+If your code needs to perform multiple successive T-Bar moves (e.g. : in an animation, or in response to a user moving a T-Bar control in your User Interface), set `release` to false and call `ReleaseTBar` later once the animation/interaction is over.
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `position` | _double_ | T-Bar position. This value must be between 0.0 and 1.0. |
+| `release` | _boolean (optional)_ | Whether or not the T-Bar gets released automatically after setting its new position (like a user releasing their mouse button after moving the T-Bar). Call `ReleaseTBar` manually if you set `release` to false. Defaults to true. |
+
+
+**Response Items:**
+
+_No additional response items._
 
 ---
 

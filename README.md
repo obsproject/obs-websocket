@@ -6,13 +6,22 @@
 
 WebSockets API for OBS Studio.
 
-[![Discord](https://img.shields.io/discord/715691013825364120.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/WBaSQ3A)
 [![Build Status](https://dev.azure.com/Palakis/obs-websocket/_apis/build/status/Palakis.obs-websocket?branchName=4.x-current)](https://dev.azure.com/Palakis/obs-websocket/_build/latest?definitionId=2&branchName=4.x-current)
+[![CodeFactor](https://www.codefactor.io/repository/github/palakis/obs-websocket/badge)](https://www.codefactor.io/repository/github/palakis/obs-websocket)
 [![Twitter](https://img.shields.io/twitter/url/https/twitter.com/fold_left.svg?style=social&label=Follow%20%40LePalakis)](https://twitter.com/LePalakis)
+[![Discord](https://img.shields.io/discord/715691013825364120.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/WBaSQ3A)
 
 ## Downloads
 
 Binaries for Windows, MacOS, and Linux are available in the [Releases](https://github.com/Palakis/obs-websocket/releases) section.
+
+### Homebrew
+
+If you're using MacOS you can use Homebrew for installation as well:
+
+```sh
+brew install obs-websocket
+```
 
 ## Using obs-websocket
 
@@ -39,10 +48,12 @@ Here's a list of available language APIs for obs-websocket :
 - C#/VB.NET: [obs-websocket-dotnet](https://github.com/Palakis/obs-websocket-dotnet)
 - Python 2 and 3: [obs-websocket-py](https://github.com/Elektordi/obs-websocket-py) by Guillaume Genty a.k.a Elektordi
 - Python 3.5+ with asyncio: [obs-ws-rc](https://github.com/KirillMysnik/obs-ws-rc) by Kirill Mysnik
-- Python 3.6+ with asyncio: [simpleobsws](https://github.com/IRLToolkit/simpleobsws) by tt2468 
+- Python 3.6+ with asyncio: [simpleobsws](https://github.com/IRLToolkit/simpleobsws) by tt2468
 - Java 8+: [obs-websocket-java](https://github.com/Twasi/websocket-obs-java) by TwasiNET
 - Golang: [go-obs-websocket](https://github.com/christopher-dG/go-obs-websocket) by Chris de Graaf
+- Rust: [obws](https://github.com/dnaka91/obws) by dnaka91
 - HTTP API: [obs-websocket-http](https://github.com/IRLToolkit/obs-websocket-http) by tt2468
+- CLI: [obs-cli](https://github.com/leafac/obs-cli) by leafac
 
 I'd like to know what you're building with or for obs-websocket. If you do something in this fashion, feel free to drop a message in `#project-showoff` in the [discord server!](https://discord.gg/WBaSQ3A)
 
@@ -78,12 +89,12 @@ These supporters have contributed financially to the project and made possible t
 
 ---
 
-[Support Class](http://supportclass.net) designs and develops professional livestreams, with services ranging from broadcast graphics design and integration to event organization, along many other skills.  
+[Support Class](http://supportclass.net) designs and develops professional livestreams, with services ranging from broadcast graphics design and integration to event organization, along many other skills.
 
 [![Support Class](.github/images/supportclass_logo_blacktext.png)](http://supportclass.net)
 
 ---
 
-[MediaUnit](http://www.mediaunit.no) is a Norwegian media company developing products and services for the media industry, primarly focused on web and events.  
+[MediaUnit](http://www.mediaunit.no) is a Norwegian media company developing products and services for the media industry, primarly focused on web and events.
 
 [![MediaUnit](.github/images/mediaunit_logo_black.png)](http://www.mediaunit.no/)

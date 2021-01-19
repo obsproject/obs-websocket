@@ -115,7 +115,10 @@ class WSRequestHandler {
 		RpcResponse GetTransitionPosition(const RpcRequest&);
 		RpcResponse GetTransitionSettings(const RpcRequest&);
 		RpcResponse SetTransitionSettings(const RpcRequest&);
+		RpcResponse ReleaseTBar(const RpcRequest&);
+		RpcResponse SetTBarPosition(const RpcRequest&);
 
+		RpcResponse CreateSource(const RpcRequest&);
 		RpcResponse SetVolume(const RpcRequest&);
 		RpcResponse GetVolume(const RpcRequest&);
 		RpcResponse ToggleMute(const RpcRequest&);
@@ -154,9 +157,7 @@ class WSRequestHandler {
 		RpcResponse SetStreamSettings(const RpcRequest&);
 		RpcResponse GetStreamSettings(const RpcRequest&);
 		RpcResponse SaveStreamSettings(const RpcRequest&);
-#if BUILD_CAPTIONS
 		RpcResponse SendCaptions(const RpcRequest&);
-#endif
 
 		RpcResponse GetStudioModeStatus(const RpcRequest&);
 		RpcResponse GetPreviewScene(const RpcRequest&);
