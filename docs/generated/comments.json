@@ -9424,7 +9424,7 @@
         "api": "requests",
         "name": "CreateScene",
         "category": "scenes",
-        "since": "4.8.0",
+        "since": "unreleased",
         "params": [
           {
             "type": "String",
@@ -9447,7 +9447,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "4.8.0"
+            "description": "unreleased"
           }
         ],
         "heading": {

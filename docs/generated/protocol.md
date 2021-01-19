@@ -3700,7 +3700,7 @@ _No specified parameters._
 ### CreateScene
 
 
-- Added in v4.8.0
+- Unreleased
 
 Create a new scene scene.
 
