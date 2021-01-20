@@ -44,7 +44,7 @@ WSServer::WSServer()
 	  _connections(),
 	  _clMutex(QMutex::Recursive)
 {
-        _server.get_alog().clear_channels(websocketpp::log::alevel::frame_header | websocketpp::log::alevel::frame_payload | websocketpp::log::alevel::control);
+		_server.get_alog().clear_channels(websocketpp::log::alevel::frame_header | websocketpp::log::alevel::frame_payload | websocketpp::log::alevel::control);
 	_server.init_asio();
 #ifndef _WIN32
 	_server.set_reuse_addr(true);

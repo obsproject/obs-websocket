@@ -29,19 +29,19 @@ RpcResponse ifCanPause(const RpcRequest& request, std::function<RpcResponse()> c
  * @since unreleased
  */
 RpcResponse WSRequestHandler::GetRecordingStatus(const RpcRequest& request) {
-        auto events = GetEventsSystem();
+		auto events = GetEventsSystem();
 
-        OBSDataAutoRelease data = obs_data_create();
-        obs_data_set_bool(data, "isRecording", obs_frontend_recording_active());
-        obs_data_set_bool(data, "isRecordingPaused", obs_frontend_recording_paused());
+		OBSDataAutoRelease data = obs_data_create();
+		obs_data_set_bool(data, "isRecording", obs_frontend_recording_active());
+		obs_data_set_bool(data, "isRecordingPaused", obs_frontend_recording_paused());
 
-        if (obs_frontend_recording_active()) {
-                QString recordingTimecode = events->getRecordingTimecode();
-                obs_data_set_string(data, "recordTimecode", recordingTimecode.toUtf8().constData());
+		if (obs_frontend_recording_active()) {
+				QString recordingTimecode = events->getRecordingTimecode();
+				obs_data_set_string(data, "recordTimecode", recordingTimecode.toUtf8().constData());
 				obs_data_set_string(data, "recordingFilename", Utils::GetCurrentRecordingFilename());
-        }
+		}
 
-        return request.success(data);
+		return request.success(data);
 }
 
 /**
