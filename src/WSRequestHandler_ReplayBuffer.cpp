@@ -16,10 +16,10 @@
  * @since unreleased
  */
 RpcResponse WSRequestHandler::GetReplayBufferStatus(const RpcRequest& request) {
-        OBSDataAutoRelease data = obs_data_create();
-        obs_data_set_bool(data, "isReplayBufferActive", obs_frontend_replay_buffer_active());
+		OBSDataAutoRelease data = obs_data_create();
+		obs_data_set_bool(data, "isReplayBufferActive", obs_frontend_replay_buffer_active());
 
-        return request.success(data);
+		return request.success(data);
 }
 
 /**
