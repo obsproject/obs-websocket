@@ -1684,6 +1684,8 @@ RpcResponse WSRequestHandler::SetAudioMonitorType(const RpcRequest& request)
 *
 * @param {String} `sourceKind` Source name.
 *
+* @return {Object} `defaultSettings` Settings object for source.
+*
 * @api requests
 * @name GetSourceDefaultSettings
 * @category sources
@@ -1695,22 +1697,21 @@ RpcResponse WSRequestHandler::GetSourceDefaultSettings(const RpcRequest& request
 		return request.failed("missing request parameters");
 	}
 
-    QString sourceKind = obs_data_get_string(request.parameters(), "sourceKind");
+	QString sourceKind = obs_data_get_string(request.parameters(), "sourceKind");
+	if (sourceKind.isEmpty()) {
+		return request.failed("invalid request parameters");
+	}
 
-    if (sourceKind.isEmpty()) {
-        return request.failed("invalid request parameters");
-    }
+	OBSDataAutoRelease defaultData = obs_get_source_defaults(sourceKind.toUtf8());
+	if (!defaultData) {
+		return request.failed("invalid sourceKind");
+	}
 
-    OBSDataAutoRelease defaultData = obs_get_source_defaults(sourceKind.toUtf8());
-    if (!defaultData) {
-        return request.failed("invalid sourceKind");
-    }
+	OBSDataAutoRelease defaultSettings = Utils::OBSDataGetDefaults(defaultData);
 
-    OBSDataAutoRelease defaultSettings = Utils::OBSDataGetDefaults(defaultData);
-
-    OBSDataAutoRelease response = obs_data_create();
-    obs_data_set_obj(response, "defaultSettings", defaultSettings);
-    return request.success(response);
+	OBSDataAutoRelease response = obs_data_create();
+	obs_data_set_obj(response, "defaultSettings", defaultSettings);
+	return request.success(response);
 }
 
 /**

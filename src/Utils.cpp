@@ -917,41 +917,41 @@ struct obs_data_item { // Used for OBSDataGetDefaults
 	size_t data_size;
 	size_t default_len;
 	size_t default_size;
-    size_t autoselect_size;
+	size_t autoselect_size;
 	size_t capacity;
 };
 
 obs_data_t *Utils::OBSDataGetDefaults(obs_data_t *data)
 {
-    obs_data_t *returnData = obs_data_create();
-    obs_data_item_t *item = NULL;
+	obs_data_t *returnData = obs_data_create();
+	obs_data_item_t *item = NULL;
 
-    for (item = obs_data_first(data); item; obs_data_item_next(&item)) {
-        enum obs_data_type type = obs_data_item_gettype(item);
-        const char *name = (char *)item + sizeof(struct obs_data_item);
+	for (item = obs_data_first(data); item; obs_data_item_next(&item)) {
+		enum obs_data_type type = obs_data_item_gettype(item);
+		const char *name = (char *)item + sizeof(struct obs_data_item);
 
-        if (type == OBS_DATA_STRING) {
+		if (type == OBS_DATA_STRING) {
 			const char *val = obs_data_item_get_string(item);
-            obs_data_set_string(returnData, name, val);
+			obs_data_set_string(returnData, name, val);
 		} else if (type == OBS_DATA_NUMBER) {
 			enum obs_data_number_type type = obs_data_item_numtype(item);
-            if (type == OBS_DATA_NUM_INT) {
-                long long val = obs_data_item_get_int(item);
-                obs_data_set_int(returnData, name, val);
-            } else {
-                double val = obs_data_item_get_double(item);
-                obs_data_set_double(returnData, name, val);
-            }
+			if (type == OBS_DATA_NUM_INT) {
+				long long val = obs_data_item_get_int(item);
+				obs_data_set_int(returnData, name, val);
+			} else {
+				double val = obs_data_item_get_double(item);
+				obs_data_set_double(returnData, name, val);
+			}
 		} else if (type == OBS_DATA_BOOLEAN) {
 			bool val = obs_data_item_get_bool(item);
-            obs_data_set_bool(returnData, name, val);
+			obs_data_set_bool(returnData, name, val);
 		} else if (type == OBS_DATA_OBJECT) {
 			OBSDataAutoRelease obj = obs_data_item_get_obj(item);
-            obs_data_set_obj(returnData, name, obj);
+			obs_data_set_obj(returnData, name, obj);
 		} else if (type == OBS_DATA_ARRAY) {
-            OBSDataArrayAutoRelease array = obs_data_item_get_array(item);
-            obs_data_set_array(returnData, name, array);
-        }
-    }
-    return returnData;
+			OBSDataArrayAutoRelease array = obs_data_item_get_array(item);
+			obs_data_set_array(returnData, name, array);
+		}
+	}
+	return returnData;
 }
