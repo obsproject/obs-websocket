@@ -3,6 +3,11 @@
 #include "WSRequestHandler.h"
 
 /**
+* @typedef {Object} `ScenesCollection`
+* @property {String} `sc-name` Name of the scene collection
+*/
+
+/**
  * Change the active scene collection.
  *
  * @param {String} `sc-name` Name of the desired scene collection.
@@ -59,8 +64,7 @@ RpcResponse WSRequestHandler::GetCurrentSceneCollection(const RpcRequest& reques
 /**
  * List available scene collections
  *
- * @return {Array<String>} `scene-collections` Scene collections list
- * @return {String} `scene-collections.*.sc-name` Scene collection name
+ * @return {Array<ScenesCollection>} `scene-collections` Scene collections list
  *
  * @api requests
  * @name ListSceneCollections
