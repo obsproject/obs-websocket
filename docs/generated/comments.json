@@ -7327,7 +7327,7 @@
           "level": 2,
           "text": "TakeSourceScreenshot"
         },
-        "lead": "Takes a picture snapshot of a source and then can either or both:    - Send it over as a Data URI (base64-encoded data) in the response (by specifying `embedPictureFormat` in the request)    - Save it to disk (by specifying `saveToFilePath` in the request)",
+        "lead": "Takes a picture snapshot of a source and then can either or both: \t- Send it over as a Data URI (base64-encoded data) in the response (by specifying `embedPictureFormat` in the request) \t- Save it to disk (by specifying `saveToFilePath` in the request)",
         "type": "class",
         "examples": []
       }
