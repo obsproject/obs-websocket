@@ -975,10 +975,10 @@ RpcResponse WSRequestHandler::GetTextFreetype2Properties(const RpcRequest& reque
  */
 RpcResponse WSRequestHandler::SetTextFreetype2Properties(const RpcRequest& request)
 {
-    const char* sourceName = obs_data_get_string(request.parameters(), "source");
-    if (!sourceName) {
+	const char* sourceName = obs_data_get_string(request.parameters(), "source");
+	if (!sourceName) {
 		return request.failed("invalid request parameters");
-    }
+	}
 
 	OBSSourceAutoRelease source = obs_get_source_by_name(sourceName);
 	if (!source) {
@@ -1716,8 +1716,8 @@ RpcResponse WSRequestHandler::GetSourceDefaultSettings(const RpcRequest& request
 
 /**
 * Takes a picture snapshot of a source and then can either or both:
-*    - Send it over as a Data URI (base64-encoded data) in the response (by specifying `embedPictureFormat` in the request)
-*    - Save it to disk (by specifying `saveToFilePath` in the request)
+*	- Send it over as a Data URI (base64-encoded data) in the response (by specifying `embedPictureFormat` in the request)
+*	- Save it to disk (by specifying `saveToFilePath` in the request)
 *
 * At least `embedPictureFormat` or `saveToFilePath` must be specified.
 *
