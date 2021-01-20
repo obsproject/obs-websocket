@@ -15,6 +15,14 @@ WebSockets API for OBS Studio.
 
 Binaries for Windows, MacOS, and Linux are available in the [Releases](https://github.com/Palakis/obs-websocket/releases) section.
 
+### Homebrew
+
+If you're using MacOS you can use Homebrew for installation as well:
+
+```sh
+brew install obs-websocket
+```
+
 ## Using obs-websocket
 
 Here is a list of available web clients: (compatible with tablets and other touch interfaces)
@@ -40,9 +48,10 @@ Here's a list of available language APIs for obs-websocket :
 - C#/VB.NET: [obs-websocket-dotnet](https://github.com/Palakis/obs-websocket-dotnet)
 - Python 2 and 3: [obs-websocket-py](https://github.com/Elektordi/obs-websocket-py) by Guillaume Genty a.k.a Elektordi
 - Python 3.5+ with asyncio: [obs-ws-rc](https://github.com/KirillMysnik/obs-ws-rc) by Kirill Mysnik
-- Python 3.6+ with asyncio: [simpleobsws](https://github.com/IRLToolkit/simpleobsws) by tt2468 
+- Python 3.6+ with asyncio: [simpleobsws](https://github.com/IRLToolkit/simpleobsws) by tt2468
 - Java 8+: [obs-websocket-java](https://github.com/Twasi/websocket-obs-java) by TwasiNET
 - Golang: [go-obs-websocket](https://github.com/christopher-dG/go-obs-websocket) by Chris de Graaf
+- Rust: [obws](https://github.com/dnaka91/obws) by dnaka91
 - HTTP API: [obs-websocket-http](https://github.com/IRLToolkit/obs-websocket-http) by tt2468
 - CLI: [obs-cli](https://github.com/leafac/obs-cli) by leafac
 
@@ -80,12 +89,12 @@ These supporters have contributed financially to the project and made possible t
 
 ---
 
-[Support Class](http://supportclass.net) designs and develops professional livestreams, with services ranging from broadcast graphics design and integration to event organization, along many other skills.  
+[Support Class](http://supportclass.net) designs and develops professional livestreams, with services ranging from broadcast graphics design and integration to event organization, along many other skills.
 
 [![Support Class](.github/images/supportclass_logo_blacktext.png)](http://supportclass.net)
 
 ---
 
-[MediaUnit](http://www.mediaunit.no) is a Norwegian media company developing products and services for the media industry, primarly focused on web and events.  
+[MediaUnit](http://www.mediaunit.no) is a Norwegian media company developing products and services for the media industry, primarly focused on web and events.
 
 [![MediaUnit](.github/images/mediaunit_logo_black.png)](http://www.mediaunit.no/)

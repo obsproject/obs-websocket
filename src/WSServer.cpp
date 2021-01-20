@@ -44,7 +44,7 @@ WSServer::WSServer()
 	  _connections(),
 	  _clMutex(QMutex::Recursive)
 {
-        _server.get_alog().clear_channels(websocketpp::log::alevel::frame_header | websocketpp::log::alevel::frame_payload | websocketpp::log::alevel::control);
+		_server.get_alog().clear_channels(websocketpp::log::alevel::frame_header | websocketpp::log::alevel::frame_payload | websocketpp::log::alevel::control);
 	_server.init_asio();
 #ifndef _WIN32
 	_server.set_reuse_addr(true);
@@ -121,13 +121,11 @@ void WSServer::stop()
 	for (connection_hdl hdl : _connections) {
 		_server.close(hdl, websocketpp::close::status::going_away, "Server stopping");
 	}
-	_connections.clear();
-	_connectionProperties.clear();
 
 	_threadPool.waitForDone();
 
-	while (!_server.stopped()) {
-		std::this_thread::sleep_for(std::chrono::milliseconds(1));
+	while (_connections.size() > 0) {
+		std::this_thread::sleep_for(std::chrono::milliseconds(10));
 	}
 
 	blog(LOG_INFO, "server stopped successfully");

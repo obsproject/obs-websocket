@@ -7327,7 +7327,7 @@
           "level": 2,
           "text": "TakeSourceScreenshot"
         },
-        "lead": "Takes a picture snapshot of a source and then can either or both:    - Send it over as a Data URI (base64-encoded data) in the response (by specifying `embedPictureFormat` in the request)    - Save it to disk (by specifying `saveToFilePath` in the request)",
+        "lead": "Takes a picture snapshot of a source and then can either or both: \t- Send it over as a Data URI (base64-encoded data) in the response (by specifying `embedPictureFormat` in the request) \t- Save it to disk (by specifying `saveToFilePath` in the request)",
         "type": "class",
         "examples": []
       }
@@ -9424,7 +9424,7 @@
         "api": "requests",
         "name": "CreateScene",
         "category": "scenes",
-        "since": "4.8.0",
+        "since": "unreleased",
         "params": [
           {
             "type": "String",
@@ -9447,7 +9447,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "4.8.0"
+            "description": "unreleased"
           }
         ],
         "heading": {
@@ -9680,9 +9680,10 @@
         "return": [
           "{boolean} `streaming` Current streaming status.",
           "{boolean} `recording` Current recording status.",
+          "{boolean} `recording-paused` If recording is paused.",
+          "{boolean} `preview-only` Always false. Retrocompatibility with OBSRemote.",
           "{String (optional)} `stream-timecode` Time elapsed since streaming started (only present if currently streaming).",
-          "{String (optional)} `rec-timecode` Time elapsed since recording started (only present if currently recording).",
-          "{boolean} `preview-only` Always false. Retrocompatibility with OBSRemote."
+          "{String (optional)} `rec-timecode` Time elapsed since recording started (only present if currently recording)."
         ],
         "api": "requests",
         "name": "GetStreamingStatus",
@@ -9700,6 +9701,16 @@
             "description": "Current recording status."
           },
           {
+            "type": "boolean",
+            "name": "recording-paused",
+            "description": "If recording is paused."
+          },
+          {
+            "type": "boolean",
+            "name": "preview-only",
+            "description": "Always false. Retrocompatibility with OBSRemote."
+          },
+          {
             "type": "String (optional)",
             "name": "stream-timecode",
             "description": "Time elapsed since streaming started (only present if currently streaming)."
@@ -9708,11 +9719,6 @@
             "type": "String (optional)",
             "name": "rec-timecode",
             "description": "Time elapsed since recording started (only present if currently recording)."
-          },
-          {
-            "type": "boolean",
-            "name": "preview-only",
-            "description": "Always false. Retrocompatibility with OBSRemote."
           }
         ],
         "names": [

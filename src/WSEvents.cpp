@@ -233,6 +233,7 @@ void WSEvents::FrontendEventHandler(enum obs_frontend_event event, void* private
 		case OBS_FRONTEND_EVENT_EXIT:
 			owner->unhookTransitionPlaybackEvents();
 			owner->OnExit();
+			owner->_srv->stop();
 			break;
 	}
 }
