@@ -49,6 +49,7 @@ You can also refer to any of the client libraries listed on the [README](README.
   * [SceneItemTransform](#sceneitemtransform)
   * [OBSStats](#obsstats)
   * [Output](#output)
+  * [ScenesCollection](#scenescollection)
   * [Scene](#scene)
 - [Events](#events)
   * [Scenes](#scenes)
@@ -344,6 +345,10 @@ These are complex types, such as `Source` and `Scene`, which are used as argumen
 | `totalFrames` | _int_ | Number of frames sent |
 | `droppedFrames` | _int_ | Number of frames dropped |
 | `totalBytes` | _int_ | Total bytes sent |
+## ScenesCollection
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sc-name` | _String_ | Name of the scene collection |
 ## Scene
 | Name | Type  | Description |
 | ---- | :---: | ------------|
@@ -3308,8 +3313,7 @@ _No specified parameters._
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
-| `scene-collections` | _Array&lt;String&gt;_ | Scene collections list |
-| `scene-collections.*.sc-name` | _String_ | Scene collection name |
+| `scene-collections` | _Array&lt;ScenesCollection&gt;_ | Scene collections list |
 
 
 ---

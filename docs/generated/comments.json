@@ -476,6 +476,31 @@
     },
     {
       "subheads": [],
+      "typedef": "{Object} `ScenesCollection`",
+      "property": "{String} `sc-name` Name of the scene collection",
+      "properties": [
+        {
+          "type": "String",
+          "name": "sc-name",
+          "description": "Name of the scene collection"
+        }
+      ],
+      "typedefs": [
+        {
+          "type": "Object",
+          "name": "ScenesCollection",
+          "description": ""
+        }
+      ],
+      "name": "",
+      "heading": {
+        "level": 2,
+        "text": ""
+      },
+      "examples": []
+    },
+    {
+      "subheads": [],
       "typedef": "{Object} `Scene`",
       "property": [
         "{String} `name` Name of the currently active scene.",
@@ -8218,24 +8243,16 @@
       {
         "subheads": [],
         "description": "List available scene collections",
-        "return": [
-          "{Array<String>} `scene-collections` Scene collections list",
-          "{String} `scene-collections.*.sc-name` Scene collection name"
-        ],
+        "return": "{Array<ScenesCollection>} `scene-collections` Scene collections list",
         "api": "requests",
         "name": "ListSceneCollections",
         "category": "scene collections",
         "since": "4.0.0",
         "returns": [
           {
-            "type": "Array<String>",
+            "type": "Array<ScenesCollection>",
             "name": "scene-collections",
             "description": "Scene collections list"
-          },
-          {
-            "type": "String",
-            "name": "scene-collections.*.sc-name",
-            "description": "Scene collection name"
           }
         ],
         "names": [
