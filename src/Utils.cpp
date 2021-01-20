@@ -928,7 +928,7 @@ obs_data_t *Utils::OBSDataGetDefaults(obs_data_t *data)
 
 	for (item = obs_data_first(data); item; obs_data_item_next(&item)) {
 		enum obs_data_type type = obs_data_item_gettype(item);
-		const char *name = (char *)item + sizeof(struct obs_data_item);
+		const char *name = obs_data_item_get_name(item);
 
 		if (type == OBS_DATA_STRING) {
 			const char *val = obs_data_item_get_string(item);
