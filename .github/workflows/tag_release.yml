@@ -16,6 +16,7 @@ jobs:
       WINDOWS_DEPS_VERSION: '2017'
       CMAKE_GENERATOR: "Visual Studio 16 2019"
       CMAKE_SYSTEM_VERSION: "10.0"
+      ACTIONS_ALLOW_UNSECURE_COMMANDS: true
     steps:
       - name: 'Add msbuild to PATH'
         uses: microsoft/setup-msbuild@v1.0.0
