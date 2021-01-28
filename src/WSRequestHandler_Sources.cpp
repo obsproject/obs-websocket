@@ -1682,8 +1682,9 @@ RpcResponse WSRequestHandler::SetAudioMonitorType(const RpcRequest& request)
 /**
 * Get the default settings for a given source type.
 *
-* @param {String} `sourceKind` Source name.
+* @param {String} `sourceKind` Source kind. Also called "source id" in libobs terminology.
 *
+* @return {String} `sourceKind` Source kind. Same value as the `sourceKind` parameter.
 * @return {Object} `defaultSettings` Settings object for source.
 *
 * @api requests
@@ -1710,6 +1711,7 @@ RpcResponse WSRequestHandler::GetSourceDefaultSettings(const RpcRequest& request
 	OBSDataAutoRelease defaultSettings = Utils::OBSDataGetDefaults(defaultData);
 
 	OBSDataAutoRelease response = obs_data_create();
+	obs_data_set_string(response, "sourceKind", sourceKind.toUtf8().constData());
 	obs_data_set_obj(response, "defaultSettings", defaultSettings);
 	return request.success(response);
 }
