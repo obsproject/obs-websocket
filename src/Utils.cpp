@@ -907,20 +907,6 @@ void Utils::AddSourceHelper(void *_data, obs_scene_t *scene)
 	obs_sceneitem_set_visible(data->sceneItem, data->setVisible);
 }
 
-struct obs_data_item { // Used for OBSDataGetDefaults
-	volatile long ref;
-	struct obs_data *parent;
-	struct obs_data_item *next;
-	enum obs_data_type type;
-	size_t name_len;
-	size_t data_len;
-	size_t data_size;
-	size_t default_len;
-	size_t default_size;
-	size_t autoselect_size;
-	size_t capacity;
-};
-
 obs_data_t *Utils::OBSDataGetDefaults(obs_data_t *data)
 {
 	obs_data_t *returnData = obs_data_create();
