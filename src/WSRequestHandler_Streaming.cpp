@@ -11,9 +11,10 @@
  *
  * @return {boolean} `streaming` Current streaming status.
  * @return {boolean} `recording` Current recording status.
+ * @return {boolean} `recording-paused` If recording is paused.
+ * @return {boolean} `preview-only` Always false. Retrocompatibility with OBSRemote.
  * @return {String (optional)} `stream-timecode` Time elapsed since streaming started (only present if currently streaming).
  * @return {String (optional)} `rec-timecode` Time elapsed since recording started (only present if currently recording).
- * @return {boolean} `preview-only` Always false. Retrocompatibility with OBSRemote.
  *
  * @api requests
  * @name GetStreamingStatus
@@ -43,7 +44,7 @@ RpcResponse WSRequestHandler::GetStreamingStatus(const RpcRequest& request) {
 }
 
 /**
- * Toggle streaming on or off.
+ * Toggle streaming on or off (depending on the current stream state).
  *
  * @api requests
  * @name StartStopStreaming
@@ -103,10 +104,10 @@ RpcResponse WSRequestHandler::StartStreaming(const RpcRequest& request) {
 					&& obs_data_has_user_value(newSettings, "key"))
 			{
 				const char* key = obs_data_get_string(newSettings, "key");
-				int keylen = strlen(key);
+				size_t keylen = strlen(key);
 
 				bool hasQuestionMark = false;
-				for (int i = 0; i < keylen; i++) {
+				for (size_t i = 0; i < keylen; i++) {
 					if (key[i] == '?') {
 						hasQuestionMark = true;
 						break;
@@ -292,7 +293,6 @@ RpcResponse WSRequestHandler::SaveStreamSettings(const RpcRequest& request) {
 
 /**
  * Send the provided text as embedded CEA-608 caption data.
- * As of OBS Studio 23.1, captions are not yet available on Linux.
  *
  * @param {String} `text` Captions text
  *
@@ -301,7 +301,6 @@ RpcResponse WSRequestHandler::SaveStreamSettings(const RpcRequest& request) {
  * @category streaming
  * @since 4.6.0
  */
-#if BUILD_CAPTIONS
 RpcResponse WSRequestHandler::SendCaptions(const RpcRequest& request) {
 	if (!request.hasField("text")) {
 		return request.failed("missing request parameters");
@@ -316,5 +315,4 @@ RpcResponse WSRequestHandler::SendCaptions(const RpcRequest& request) {
 
 	return request.success();
 }
-#endif
 

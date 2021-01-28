@@ -51,6 +51,25 @@ obs_bounds_type getBoundsTypeFromName(QString name) {
 	return boundTypeNames.key(name);
 }
 
+bool Utils::StringInStringList(char** strings, const char* string) {
+	if (!strings) {
+		return false;
+	}
+
+	size_t index = 0;
+	while (strings[index] != NULL) {
+		char* value = strings[index];
+
+		if (strcmp(value, string) == 0) {
+			return true;
+		}
+
+		index++;
+	}
+
+	return false;
+}
+
 obs_data_array_t* Utils::StringListToArray(char** strings, const char* key) {
 	obs_data_array_t* list = obs_data_array_create();
 
@@ -485,11 +504,8 @@ QString Utils::OBSVersionString() {
 }
 
 QSystemTrayIcon* Utils::GetTrayIcon() {
-	QMainWindow* main = (QMainWindow*)obs_frontend_get_main_window();
-	if (!main) return nullptr;
-
-	QList<QSystemTrayIcon*> trays = main->findChildren<QSystemTrayIcon*>();
-	return trays.isEmpty() ? nullptr : trays.first();
+	void* systemTray = obs_frontend_get_system_tray();
+	return reinterpret_cast<QSystemTrayIcon*>(systemTray);
 }
 
 void Utils::SysTrayNotify(QString text,
@@ -680,12 +696,35 @@ bool Utils::SetFilenameFormatting(const char* filenameFormatting) {
 	return true;
 }
 
+const char* Utils::GetCurrentRecordingFilename()
+{
+	OBSOutputAutoRelease recordingOutput = obs_frontend_get_recording_output();
+	if (!recordingOutput) {
+		return nullptr;
+	}
+
+	OBSDataAutoRelease settings = obs_output_get_settings(recordingOutput);
+
+	// mimicks the behavior of BasicOutputHandler::GetRecordingFilename :
+	// try to fetch the path from the "url" property, then try "path" if the first one
+	// didn't yield any result
+	OBSDataItemAutoRelease item = obs_data_item_byname(settings, "url");
+	if (!item) {
+		item = obs_data_item_byname(settings, "path");
+		if (!item) {
+			return nullptr;
+		}
+	}
+
+	return obs_data_item_get_string(item);
+}
+
 // Transform properties copy-pasted from WSRequestHandler_SceneItems.cpp because typedefs can't be extended yet
 
 /**
  * @typedef {Object} `SceneItemTransform`
- * @property {int} `position.x` The x position of the scene item from the left.
- * @property {int} `position.y` The y position of the scene item from the top.
+ * @property {double} `position.x` The x position of the scene item from the left.
+ * @property {double} `position.y` The y position of the scene item from the top.
  * @property {int} `position.alignment` The point on the scene item that the item is manipulated from.
  * @property {double} `rotation` The clockwise rotation of the scene item in degrees around the point of alignment.
  * @property {double} `scale.x` The x-scale factor of the scene item.
@@ -858,4 +897,11 @@ QString Utils::nsToTimestamp(uint64_t ns)
 	uint64_t msPart = ms % 1000ULL;
 
 	return QString::asprintf("%02" PRIu64 ":%02" PRIu64 ":%02" PRIu64 ".%03" PRIu64, hoursPart, minutesPart, secsPart, msPart);
+}
+
+void Utils::AddSourceHelper(void *_data, obs_scene_t *scene)
+{
+	auto *data = reinterpret_cast<AddSourceData*>(_data);
+	data->sceneItem = obs_scene_add(scene, data->source);
+	obs_sceneitem_set_visible(data->sceneItem, data->setVisible);
 }

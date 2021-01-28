@@ -11,6 +11,10 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_definitions(-DASIO_STANDALONE)
 
+if (${CMAKE_SYSTEM_PROCESSOR} MATCHES "arm") 
+    set(CMAKE_CXX_FLAGS "-mfpu=neon")
+endif()
+
 if (WIN32 OR APPLE)
 	include(external/FindLibObs.cmake)
 endif()
@@ -35,6 +39,7 @@ set(obs-websocket_SOURCES
 	src/WSRequestHandler_StudioMode.cpp
 	src/WSRequestHandler_Transitions.cpp
 	src/WSRequestHandler_Outputs.cpp
+	src/WSRequestHandler_MediaControl.cpp
 	src/WSEvents.cpp
 	src/Config.cpp
 	src/Utils.cpp
@@ -180,20 +185,27 @@ endif()
 
 # --- Linux-specific build settings and tasks ---
 if(UNIX AND NOT APPLE)
+	include(GNUInstallDirs)
+
 	set_target_properties(obs-websocket PROPERTIES PREFIX "")
 	target_link_libraries(obs-websocket obs-frontend-api)
 
 	file(GLOB locale_files data/locale/*.ini)
-	execute_process(COMMAND uname -m COMMAND tr -d '\n' OUTPUT_VARIABLE UNAME_MACHINE)
 
-	install(TARGETS obs-websocket
-		LIBRARY DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/obs-plugins")
-	# Dirty fix for Ubuntu
-		install(TARGETS obs-websocket
-				LIBRARY DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/${UNAME_MACHINE}-linux-gnu/obs-plugins")
+        set(CMAKE_INSTALL_DEFAULT_DIRECTORY_PERMISSIONS
+		OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_WRITE GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
+
+	if(${USE_UBUNTU_FIX})
+		install(TARGETS obs-websocket LIBRARY
+			DESTINATION "/usr/lib/obs-plugins"
+			PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ)
+	endif()
+	install(TARGETS obs-websocket LIBRARY
+		DESTINATION "${CMAKE_INSTALL_FULL_LIBDIR}/obs-plugins"
+		PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ)
 
 	install(FILES ${locale_files}
-		DESTINATION "${CMAKE_INSTALL_PREFIX}/share/obs/obs-plugins/obs-websocket/locale")
+		DESTINATION "${CMAKE_INSTALL_FULL_DATAROOTDIR}/obs/obs-plugins/obs-websocket/locale")
 endif()
 # --- End of section ---
 

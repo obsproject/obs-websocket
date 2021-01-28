@@ -23,9 +23,9 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 class ConnectionProperties
 {
 public:
-    explicit ConnectionProperties();
-    bool isAuthenticated();
-    void setAuthenticated(bool authenticated);
+	explicit ConnectionProperties();
+	bool isAuthenticated();
+	void setAuthenticated(bool authenticated);
 private:
-    std::atomic<bool> _authenticated;
+	std::atomic<bool> _authenticated;
 };

@@ -35,6 +35,7 @@ typedef void(*PauseRecordingFunction)(bool);
 typedef bool(*RecordingPausedFunction)();
 
 namespace Utils {
+	bool StringInStringList(char** strings, const char* string);
 	obs_data_array_t* StringListToArray(char** strings, const char* key);
 	obs_data_array_t* GetSceneItems(obs_source_t* source);
 	obs_data_t* GetSceneItemData(obs_sceneitem_t* item);
@@ -84,5 +85,13 @@ namespace Utils {
 	const char* GetFilenameFormatting();
 	bool SetFilenameFormatting(const char* filenameFormatting);
 
+	const char* GetCurrentRecordingFilename();
+
 	QString nsToTimestamp(uint64_t ns);
+	struct AddSourceData {
+		obs_source_t *source;
+		obs_sceneitem_t *sceneItem;
+		bool setVisible;
+	};
+	void AddSourceHelper(void *_data, obs_scene_t *scene);
 };
