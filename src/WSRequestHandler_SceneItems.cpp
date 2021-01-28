@@ -427,13 +427,11 @@ RpcResponse WSRequestHandler::SetSceneItemRender(const RpcRequest& request) {
 	OBSSceneItemAutoRelease sceneItem;
 
 	if (strlen(itemName)) {
-		OBSDataItemAutoRelease itemField = obs_data_item_byname(request.parameters(), "source");
 		sceneItem = Utils::GetSceneItemFromName(scene, itemName);
 		if (!sceneItem) {
 			return request.failed("specified scene item name doesn't exist");
 		}
 	} else {
-		OBSDataItemAutoRelease itemField = obs_data_item_byname(request.parameters(), "item");
 		sceneItem = Utils::GetSceneItemFromId(scene, itemId);
 		if (!sceneItem) {
 			return request.failed("specified scene item ID doesn't exist");
