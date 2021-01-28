@@ -7257,6 +7257,63 @@
       },
       {
         "subheads": [],
+        "description": "Get the default settings for a given source type.",
+        "param": "{String} `sourceKind` Source kind. Also called \"source id\" in libobs terminology.",
+        "return": [
+          "{String} `sourceKind` Source kind. Same value as the `sourceKind` parameter.",
+          "{Object} `defaultSettings` Settings object for source."
+        ],
+        "api": "requests",
+        "name": "GetSourceDefaultSettings",
+        "category": "sources",
+        "since": "4.9.0",
+        "returns": [
+          {
+            "type": "String",
+            "name": "sourceKind",
+            "description": "Source kind. Same value as the `sourceKind` parameter."
+          },
+          {
+            "type": "Object",
+            "name": "defaultSettings",
+            "description": "Settings object for source."
+          }
+        ],
+        "params": [
+          {
+            "type": "String",
+            "name": "sourceKind",
+            "description": "Source kind. Also called \"source id\" in libobs terminology."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "GetSourceDefaultSettings"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "sources"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.9.0"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "GetSourceDefaultSettings"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
         "description": "\n\nAt least `embedPictureFormat` or `saveToFilePath` must be specified.\n\nClients can specify `width` and `height` parameters to receive scaled pictures. Aspect ratio is\npreserved if only one of these two parameters is specified.",
         "param": [
           "{String (optional)} `sourceName` Source name. Note that, since scenes are also sources, you can also provide a scene name. If not provided, the currently active scene is used.",

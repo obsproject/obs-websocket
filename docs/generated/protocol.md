@@ -183,6 +183,7 @@ You can also refer to any of the client libraries listed on the [README](README.
     + [SetSourceFilterVisibility](#setsourcefiltervisibility)
     + [GetAudioMonitorType](#getaudiomonitortype)
     + [SetAudioMonitorType](#setaudiomonitortype)
+    + [GetSourceDefaultSettings](#getsourcedefaultsettings)
     + [TakeSourceScreenshot](#takesourcescreenshot)
   * [Outputs](#outputs)
     + [ListOutputs](#listoutputs)
@@ -2809,6 +2810,30 @@ Set the audio monitoring type of the specified source.
 **Response Items:**
 
 _No additional response items._
+
+---
+
+### GetSourceDefaultSettings
+
+
+- Added in v4.9.0
+
+Get the default settings for a given source type.
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sourceKind` | _String_ | Source kind. Also called "source id" in libobs terminology. |
+
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sourceKind` | _String_ | Source kind. Same value as the `sourceKind` parameter. |
+| `defaultSettings` | _Object_ | Settings object for source. |
+
 
 ---
 
