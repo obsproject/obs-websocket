@@ -8802,7 +8802,8 @@
         "description": "Show or hide a specified source item in a specified scene.",
         "param": [
           "{String (optional)} `scene-name` Name of the scene the scene item belongs to. Defaults to the currently active scene.",
-          "{String} `source` Scene Item name.",
+          "{String (optional)} `source` Scene Item name.",
+          "{int (optional)} `item` Scene Item id",
           "{boolean} `render` true = shown ; false = hidden"
         ],
         "api": "requests",
@@ -8816,9 +8817,14 @@
             "description": "Name of the scene the scene item belongs to. Defaults to the currently active scene."
           },
           {
-            "type": "String",
+            "type": "String (optional)",
             "name": "source",
             "description": "Scene Item name."
+          },
+          {
+            "type": "int (optional)",
+            "name": "item",
+            "description": "Scene Item id"
           },
           {
             "type": "boolean",

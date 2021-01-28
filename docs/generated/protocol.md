@@ -3474,7 +3474,8 @@ Show or hide a specified source item in a specified scene.
 | Name | Type  | Description |
 | ---- | :---: | ------------|
 | `scene-name` | _String (optional)_ | Name of the scene the scene item belongs to. Defaults to the currently active scene. |
-| `source` | _String_ | Scene Item name. |
+| `source` | _String (optional)_ | Scene Item name. |
+| `item` | _int (optional)_ | Scene Item id |
 | `render` | _boolean_ | true = shown ; false = hidden |
 
 
