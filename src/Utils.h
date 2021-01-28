@@ -94,4 +94,6 @@ namespace Utils {
 		bool setVisible;
 	};
 	void AddSourceHelper(void *_data, obs_scene_t *scene);
+
+	obs_data_t *OBSDataGetDefaults(obs_data_t *data);
 };
