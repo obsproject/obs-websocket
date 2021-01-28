@@ -403,9 +403,8 @@ RpcResponse WSRequestHandler::ResetSceneItem(const RpcRequest& request) {
 * @since 0.3
 */
 RpcResponse WSRequestHandler::SetSceneItemRender(const RpcRequest& request) {
-	if (!request.hasField("render") ||
-		(!request.hasField("source") && !request.hasField("item"))
-		)
+	bool doesntHaveSourceOrItemParameter = !(request.hasField("source") || request.hasField("item"));
+	if (!request.hasField("render") || doesntHaveSourceOrItemParameter)
 	{
 		return request.failed("missing request parameters");
 	}
