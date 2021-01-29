@@ -18,9 +18,13 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include <obs-frontend-api.h>
 
+#include <QtCore/QObject>
 #include <QtCore/QCryptographicHash>
 #include <QtCore/QTime>
 #include <QtWidgets/QSystemTrayIcon>
+#include <QtWidgets/QMainWindow>
+#include <QtWidgets/QInputDialog>
+#include <QtWidgets/QMessageBox>
 
 #define SECTION_NAME "WebsocketAPI"
 #define PARAM_ENABLE "ServerEnabled"
@@ -31,6 +35,8 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #define PARAM_AUTHREQUIRED "AuthRequired"
 #define PARAM_SECRET "AuthSecret"
 #define PARAM_SALT "AuthSalt"
+
+#define GLOBAL_AUTH_SETUP_PROMPTED "AuthSetupPrompted"
 
 #include "Utils.h"
 #include "WSServer.h"
@@ -128,6 +134,70 @@ void Config::SetDefaults()
 config_t* Config::GetConfigStore()
 {
 	return obs_frontend_get_profile_config();
+}
+
+void Config::MigrateFromGlobalSettings()
+{
+	config_t* source = obs_frontend_get_global_config();
+	config_t* destination = obs_frontend_get_profile_config();
+
+	if(config_has_user_value(source, SECTION_NAME, PARAM_ENABLE)) {
+		bool value = config_get_bool(source, SECTION_NAME, PARAM_ENABLE);
+		config_set_bool(destination, SECTION_NAME, PARAM_ENABLE, value);
+
+		config_remove_value(source, SECTION_NAME, PARAM_ENABLE);
+	}
+
+	if(config_has_user_value(source, SECTION_NAME, PARAM_PORT)) {
+		uint64_t value = config_get_uint(source, SECTION_NAME, PARAM_PORT);
+		config_set_uint(destination, SECTION_NAME, PARAM_PORT, value);
+
+		config_remove_value(source, SECTION_NAME, PARAM_PORT);
+	}
+	
+	if(config_has_user_value(source, SECTION_NAME, PARAM_LOCKTOIPV4)) {
+		bool value = config_get_bool(source, SECTION_NAME, PARAM_LOCKTOIPV4);
+		config_set_bool(destination, SECTION_NAME, PARAM_LOCKTOIPV4, value);
+
+		config_remove_value(source, SECTION_NAME, PARAM_LOCKTOIPV4);
+	}
+
+	if(config_has_user_value(source, SECTION_NAME, PARAM_DEBUG)) {
+		bool value = config_get_bool(source, SECTION_NAME, PARAM_DEBUG);
+		config_set_bool(destination, SECTION_NAME, PARAM_DEBUG, value);
+
+		config_remove_value(source, SECTION_NAME, PARAM_DEBUG);
+	}
+
+	if(config_has_user_value(source, SECTION_NAME, PARAM_ALERT)) {
+		bool value = config_get_bool(source, SECTION_NAME, PARAM_ALERT);
+		config_set_bool(destination, SECTION_NAME, PARAM_ALERT, value);
+
+		config_remove_value(source, SECTION_NAME, PARAM_ALERT);
+	}
+
+	if(config_has_user_value(source, SECTION_NAME, PARAM_AUTHREQUIRED)) {
+		bool value = config_get_bool(source, SECTION_NAME, PARAM_AUTHREQUIRED);
+		config_set_bool(destination, SECTION_NAME, PARAM_AUTHREQUIRED, value);
+
+		config_remove_value(source, SECTION_NAME, PARAM_AUTHREQUIRED);
+	}
+
+	if(config_has_user_value(source, SECTION_NAME, PARAM_SECRET)) {
+		const char* value = config_get_string(source, SECTION_NAME, PARAM_SECRET);
+		config_set_string(destination, SECTION_NAME, PARAM_SECRET, value);
+
+		config_remove_value(source, SECTION_NAME, PARAM_SECRET);
+	}
+
+	if(config_has_user_value(source, SECTION_NAME, PARAM_SALT)) {
+		const char* value = config_get_string(source, SECTION_NAME, PARAM_SALT);
+		config_set_string(destination, SECTION_NAME, PARAM_SALT, value);
+
+		config_remove_value(source, SECTION_NAME, PARAM_SALT);
+	}
+
+	config_save(destination);
 }
 
 QString Config::GenerateSalt()
@@ -233,68 +303,48 @@ void Config::OnFrontendEvent(enum obs_frontend_event event, void* param)
 			}
 		}
 	}
+	else if (event == OBS_FRONTEND_EVENT_FINISHED_LOADING) {
+		FirstRunPasswordSetup();
+	}
 }
 
-void Config::MigrateFromGlobalSettings()
+void Config::FirstRunPasswordSetup()
 {
-	config_t* source = obs_frontend_get_global_config();
-	config_t* destination = obs_frontend_get_profile_config();
-
-	if(config_has_user_value(source, SECTION_NAME, PARAM_ENABLE)) {
-		bool value = config_get_bool(source, SECTION_NAME, PARAM_ENABLE);
-		config_set_bool(destination, SECTION_NAME, PARAM_ENABLE, value);
-
-		config_remove_value(source, SECTION_NAME, PARAM_ENABLE);
+	// check if we already showed the auth setup prompt to the user, independently of the current settings (tied to the current profile)
+	config_t* globalConfig = obs_frontend_get_global_config();
+	bool alreadyPrompted = config_get_bool(globalConfig, SECTION_NAME, GLOBAL_AUTH_SETUP_PROMPTED);
+	if (alreadyPrompted) {
+		return;
 	}
 
-	if(config_has_user_value(source, SECTION_NAME, PARAM_PORT)) {
-		uint64_t value = config_get_uint(source, SECTION_NAME, PARAM_PORT);
-		config_set_uint(destination, SECTION_NAME, PARAM_PORT, value);
+	// lift the flag up and save it
+	config_set_bool(globalConfig, SECTION_NAME, GLOBAL_AUTH_SETUP_PROMPTED, true);
+	config_save(globalConfig);
 
-		config_remove_value(source, SECTION_NAME, PARAM_PORT);
+	obs_frontend_push_ui_translation(obs_module_get_string);
+	QString initialPasswordSetupTitle = QObject::tr("OBSWebsocket.InitialPasswordSetup.Title");
+	QString initialPasswordSetupText = QObject::tr("OBSWebsocket.InitialPasswordSetup.Text");
+	QString setupDismissedTitle = QObject::tr("OBSWebsocket.InitialPasswordSetupDismissed.Title");
+	QString setupDismissedText = QObject::tr("OBSWebsocket.InitialPasswordSetupDismissed.Text");
+	obs_frontend_pop_ui_translation();
+
+	// prompt for a password
+	auto mainWindow = reinterpret_cast<QMainWindow*>(
+		obs_frontend_get_main_window()
+	);
+	bool promptAccepted = false;
+	QString newPassword = QInputDialog::getText(
+		mainWindow,
+		initialPasswordSetupTitle, initialPasswordSetupText,
+		QLineEdit::PasswordEchoOnEdit, QString::Null(), &promptAccepted
+	);
+
+	if (promptAccepted) {
+		// set new password
+		GetConfig()->SetPassword(newPassword);
+	} else {
+		// tell the user they still can set the password later in our settings dialog
+		QMessageBox::information(mainWindow, setupDismissedTitle, setupDismissedText, QMessageBox::Ok);
+
 	}
-	
-	if(config_has_user_value(source, SECTION_NAME, PARAM_LOCKTOIPV4)) {
-		bool value = config_get_bool(source, SECTION_NAME, PARAM_LOCKTOIPV4);
-		config_set_bool(destination, SECTION_NAME, PARAM_LOCKTOIPV4, value);
-
-		config_remove_value(source, SECTION_NAME, PARAM_LOCKTOIPV4);
-	}
-
-	if(config_has_user_value(source, SECTION_NAME, PARAM_DEBUG)) {
-		bool value = config_get_bool(source, SECTION_NAME, PARAM_DEBUG);
-		config_set_bool(destination, SECTION_NAME, PARAM_DEBUG, value);
-
-		config_remove_value(source, SECTION_NAME, PARAM_DEBUG);
-	}
-
-	if(config_has_user_value(source, SECTION_NAME, PARAM_ALERT)) {
-		bool value = config_get_bool(source, SECTION_NAME, PARAM_ALERT);
-		config_set_bool(destination, SECTION_NAME, PARAM_ALERT, value);
-
-		config_remove_value(source, SECTION_NAME, PARAM_ALERT);
-	}
-
-	if(config_has_user_value(source, SECTION_NAME, PARAM_AUTHREQUIRED)) {
-		bool value = config_get_bool(source, SECTION_NAME, PARAM_AUTHREQUIRED);
-		config_set_bool(destination, SECTION_NAME, PARAM_AUTHREQUIRED, value);
-
-		config_remove_value(source, SECTION_NAME, PARAM_AUTHREQUIRED);
-	}
-
-	if(config_has_user_value(source, SECTION_NAME, PARAM_SECRET)) {
-		const char* value = config_get_string(source, SECTION_NAME, PARAM_SECRET);
-		config_set_string(destination, SECTION_NAME, PARAM_SECRET, value);
-
-		config_remove_value(source, SECTION_NAME, PARAM_SECRET);
-	}
-
-	if(config_has_user_value(source, SECTION_NAME, PARAM_SALT)) {
-		const char* value = config_get_string(source, SECTION_NAME, PARAM_SALT);
-		config_set_string(destination, SECTION_NAME, PARAM_SALT, value);
-
-		config_remove_value(source, SECTION_NAME, PARAM_SALT);
-	}
-
-	config_save(destination);
 }

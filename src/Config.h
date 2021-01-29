@@ -55,4 +55,5 @@ class Config {
 
 	private:
 		static void OnFrontendEvent(enum obs_frontend_event event, void* param);
+		static void FirstRunPasswordSetup();
 };
