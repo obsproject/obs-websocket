@@ -310,6 +310,12 @@ void Config::OnFrontendEvent(enum obs_frontend_event event, void* param)
 
 void Config::FirstRunPasswordSetup()
 {
+	// check if the password is already set
+	auto config = GetConfig();
+	if (!(config->Secret.isEmpty()) && !(config->Salt.isEmpty())) {
+		return;
+	}
+
 	// check if we already showed the auth setup prompt to the user, independently of the current settings (tied to the current profile)
 	config_t* globalConfig = obs_frontend_get_global_config();
 	bool alreadyPrompted = config_get_bool(globalConfig, SECTION_NAME, GLOBAL_AUTH_SETUP_PROMPTED);
@@ -322,29 +328,34 @@ void Config::FirstRunPasswordSetup()
 	config_save(globalConfig);
 
 	obs_frontend_push_ui_translation(obs_module_get_string);
-	QString initialPasswordSetupTitle = QObject::tr("OBSWebsocket.InitialPasswordSetup.Title");
-	QString initialPasswordSetupText = QObject::tr("OBSWebsocket.InitialPasswordSetup.Text");
-	QString setupDismissedTitle = QObject::tr("OBSWebsocket.InitialPasswordSetupDismissed.Title");
-	QString setupDismissedText = QObject::tr("OBSWebsocket.InitialPasswordSetupDismissed.Text");
+	QString dialogTitle = QObject::tr("OBSWebsocket.InitialPasswordSetup.Title");
+	QString dialogText = QObject::tr("OBSWebsocket.InitialPasswordSetup.Text");
+	QString successText = QObject::tr("OBSWebsocket.InitialPasswordSetup.SuccessText");
+	QString dismissedText = QObject::tr("OBSWebsocket.InitialPasswordSetup.DismissedText");
+	QString passwordLabel = QObject::tr("OBSWebsocket.Settings.Password");
 	obs_frontend_pop_ui_translation();
 
-	// prompt for a password
 	auto mainWindow = reinterpret_cast<QMainWindow*>(
 		obs_frontend_get_main_window()
 	);
-	bool promptAccepted = false;
-	QString newPassword = QInputDialog::getText(
-		mainWindow,
-		initialPasswordSetupTitle, initialPasswordSetupText,
-		QLineEdit::PasswordEchoOnEdit, QString::Null(), &promptAccepted
-	);
+	
+	int proceed = QMessageBox::question(mainWindow, dialogTitle, dialogText, QMessageBox::No, QMessageBox::Yes);
+	if (proceed) {
+		bool promptAccepted = false;
+		QString newPassword = QInputDialog::getText(
+			mainWindow,
+			dialogTitle, passwordLabel,
+			QLineEdit::PasswordEchoOnEdit, QString::Null(), &promptAccepted
+		);
 
-	if (promptAccepted) {
-		// set new password
-		GetConfig()->SetPassword(newPassword);
-	} else {
-		// tell the user they still can set the password later in our settings dialog
-		QMessageBox::information(mainWindow, setupDismissedTitle, setupDismissedText, QMessageBox::Ok);
-
+		if (promptAccepted) {
+			// set new password
+			GetConfig()->SetPassword(newPassword);
+			QMessageBox::information(mainWindow, dialogTitle, successText);
+			return;
+		}
 	}
+	
+	// tell the user they still can set the password later in our settings dialog
+	QMessageBox::information(mainWindow, dialogTitle, dismissedText);
 }
