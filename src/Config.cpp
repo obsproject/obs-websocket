@@ -310,12 +310,6 @@ void Config::OnFrontendEvent(enum obs_frontend_event event, void* param)
 
 void Config::FirstRunPasswordSetup()
 {
-	// check if the password is already set
-	auto config = GetConfig();
-	if (!(config->Secret.isEmpty()) && !(config->Salt.isEmpty())) {
-		return;
-	}
-
 	// check if we already showed the auth setup prompt to the user, independently of the current settings (tied to the current profile)
 	config_t* globalConfig = obs_frontend_get_global_config();
 	bool alreadyPrompted = config_get_bool(globalConfig, SECTION_NAME, GLOBAL_AUTH_SETUP_PROMPTED);
@@ -327,12 +321,16 @@ void Config::FirstRunPasswordSetup()
 	config_set_bool(globalConfig, SECTION_NAME, GLOBAL_AUTH_SETUP_PROMPTED, true);
 	config_save(globalConfig);
 
+	// check if the password is already set
+	auto config = GetConfig();
+	if (!(config->Secret.isEmpty()) && !(config->Salt.isEmpty())) {
+		return;
+	}
+
 	obs_frontend_push_ui_translation(obs_module_get_string);
 	QString dialogTitle = QObject::tr("OBSWebsocket.InitialPasswordSetup.Title");
 	QString dialogText = QObject::tr("OBSWebsocket.InitialPasswordSetup.Text");
-	QString successText = QObject::tr("OBSWebsocket.InitialPasswordSetup.SuccessText");
 	QString dismissedText = QObject::tr("OBSWebsocket.InitialPasswordSetup.DismissedText");
-	QString passwordLabel = QObject::tr("OBSWebsocket.Settings.Password");
 	obs_frontend_pop_ui_translation();
 
 	auto mainWindow = reinterpret_cast<QMainWindow*>(
@@ -341,21 +339,10 @@ void Config::FirstRunPasswordSetup()
 	
 	QMessageBox::StandardButton response = QMessageBox::question(mainWindow, dialogTitle, dialogText);
 	if (response == QMessageBox::Yes) {
-		bool promptAccepted = false;
-		QString newPassword = QInputDialog::getText(
-			mainWindow,
-			dialogTitle, passwordLabel,
-			QLineEdit::PasswordEchoOnEdit, QString::Null(), &promptAccepted
-		);
-
-		if (promptAccepted) {
-			// set new password
-			GetConfig()->SetPassword(newPassword);
-			QMessageBox::information(mainWindow, dialogTitle, successText);
-			return;
-		}
+		ShowSettingsDialog();
 	}
-	
-	// tell the user they still can set the password later in our settings dialog
-	QMessageBox::information(mainWindow, dialogTitle, dismissedText);
+	else {
+		// tell the user they still can set the password later in our settings dialog
+		QMessageBox::information(mainWindow, dialogTitle, dismissedText);
+	}
 }
