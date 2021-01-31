@@ -339,8 +339,8 @@ void Config::FirstRunPasswordSetup()
 		obs_frontend_get_main_window()
 	);
 	
-	int proceed = QMessageBox::question(mainWindow, dialogTitle, dialogText, QMessageBox::No, QMessageBox::Yes);
-	if (proceed) {
+	QMessageBox::StandardButton response = QMessageBox::question(mainWindow, dialogTitle, dialogText);
+	if (response == QMessageBox::Yes) {
 		bool promptAccepted = false;
 		QString newPassword = QInputDialog::getText(
 			mainWindow,
