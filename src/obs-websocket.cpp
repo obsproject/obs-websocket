@@ -117,12 +117,6 @@ WSEventsPtr GetEventsSystem() {
 	return _eventsSystem;
 }
 
-void ShowSettingsDialog() {
-	if (settingsDialog) {
-		settingsDialog->setVisible(true);
-	}
-}
-
 void ShowPasswordSetting() {
 	if (settingsDialog) {
 		settingsDialog->PreparePasswordEntry();
