@@ -66,6 +66,16 @@ void SettingsDialog::ToggleShowHide() {
 		setVisible(false);
 }
 
+void SettingsDialog::PreparePasswordEntry() {
+	auto conf = GetConfig();
+	conf->AuthRequired = true;
+	ui->authRequired->blockSignals(true);
+	ui->authRequired->setChecked(true);
+	ui->authRequired->blockSignals(false);
+	ui->password->setEnabled(true);
+	ui->password->setFocus();
+}
+
 void SettingsDialog::AuthCheckboxChanged() {
 	if (ui->authRequired->isChecked()) {
 		ui->password->setEnabled(true);

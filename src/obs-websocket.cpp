@@ -122,3 +122,10 @@ void ShowSettingsDialog() {
 		settingsDialog->setVisible(true);
 	}
 }
+
+void ShowPasswordSetting() {
+	if (settingsDialog) {
+		settingsDialog->PreparePasswordEntry();
+		settingsDialog->setVisible(true);
+	}
+}

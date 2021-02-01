@@ -339,7 +339,7 @@ void Config::FirstRunPasswordSetup()
 	
 	QMessageBox::StandardButton response = QMessageBox::question(mainWindow, dialogTitle, dialogText);
 	if (response == QMessageBox::Yes) {
-		ShowSettingsDialog();
+		ShowPasswordSetting();
 	}
 	else {
 		// tell the user they still can set the password later in our settings dialog
