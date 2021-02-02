@@ -20,7 +20,8 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include <string>
 #include <obs-data.h>
-#include <QtCore/QString>
+
+#include "../rpc/RpcResponse.h"
 
 class WSRequestHandler;
 class RpcEvent;
@@ -28,11 +29,13 @@ class RpcEvent;
 class OBSRemoteProtocol
 {
 public:
-	std::string processMessage(WSRequestHandler& requestHandler, std::string message);
-	std::string encodeEvent(const RpcEvent& event);
+	static std::string processMessage(WSRequestHandler& requestHandler, std::string message);
+	static std::string encodeEvent(const RpcEvent& event);
+	static obs_data_t* rpcResponseToJsonData(const RpcResponse& response);
 
 private:
-	std::string buildResponse(QString messageId, QString status, obs_data_t* fields = nullptr);
-	std::string successResponse(QString messageId, obs_data_t* fields = nullptr);
-	std::string errorResponse(QString messageId, QString errorMessage, obs_data_t* additionalFields = nullptr);
+	static obs_data_t* successResponse(const char* messageId, obs_data_t* fields = nullptr);
+	static obs_data_t* errorResponse(const char* messageId, const char* errorMessage, obs_data_t* additionalFields = nullptr);
+	static obs_data_t* buildResponse(const char* messageId, const char*, obs_data_t* fields = nullptr);
+	static std::string jsonDataToString(obs_data_t* data);
 };

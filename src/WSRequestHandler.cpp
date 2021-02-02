@@ -46,6 +46,8 @@ const QHash<QString, RpcMethodHandler> WSRequestHandler::messageMap{
 	{ "TriggerHotkeyByName", &WSRequestHandler::TriggerHotkeyByName },
 	{ "TriggerHotkeyBySequence", &WSRequestHandler::TriggerHotkeyBySequence },
 
+	{ "ExecuteBatch", &WSRequestHandler::ExecuteBatch },
+
 	{ "SetCurrentScene", &WSRequestHandler::SetCurrentScene },
 	{ "GetCurrentScene", &WSRequestHandler::GetCurrentScene },
 	{ "GetSceneList", &WSRequestHandler::GetSceneList },
@@ -189,7 +191,7 @@ WSRequestHandler::WSRequestHandler(ConnectionProperties& connProperties) :
 {
 }
 
-RpcResponse WSRequestHandler::processRequest(const RpcRequest& request){
+RpcResponse WSRequestHandler::processRequest(const RpcRequest& request) {
 	if (GetConfig()->AuthRequired
 		&& (!authNotRequired.contains(request.methodName()))
 		&& (!_connProperties.isAuthenticated()))

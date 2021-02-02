@@ -36,7 +36,7 @@ public:
 		obs_data_t* additionalFields = nullptr
 	);
 
-	Status status() {
+	const Status status() const {
 		return _status;
 	}
 

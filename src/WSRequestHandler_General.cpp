@@ -7,6 +7,7 @@
 #include "Config.h"
 #include "Utils.h"
 #include "WSEvents.h"
+#include "protocol/OBSRemoteProtocol.h"
 
 #define CASE(x) case x: return #x;
 const char *describe_output_format(int format) {
@@ -414,4 +415,48 @@ RpcResponse WSRequestHandler::TriggerHotkeyBySequence(const RpcRequest& request)
 	obs_hotkey_inject_event(combo, false);
 
 	return request.success();
+}
+
+/**
+* Executes a list of requests sequentially.
+*
+* @param {Array<Object>} `requests`
+*
+* @return {Array<Object>} `results`
+*
+* @api requests
+* @name ExecuteBatch
+* @category general
+* @since unreleased
+*/
+RpcResponse WSRequestHandler::ExecuteBatch(const RpcRequest& request) {
+	if (!request.hasField("requests")) {
+		return request.failed("missing request parameters");
+	}
+
+	OBSDataArrayAutoRelease results = obs_data_array_create();
+
+	OBSDataArrayAutoRelease requests = obs_data_get_array(request.parameters(), "requests");
+	size_t requestsCount = obs_data_array_count(requests);
+	for (size_t i = 0; i < requestsCount; i++) {
+		OBSDataAutoRelease requestData = obs_data_array_item(requests, i);
+		QString methodName = obs_data_get_string(requestData, "request-type");
+		obs_data_unset_user_value(requestData, "request-type");
+		obs_data_unset_user_value(requestData, "message-id");
+
+		// build RpcRequest from json data object
+		RpcRequest subRequest(QString::Null(), methodName, requestData);
+
+		// execute the request
+		RpcResponse subResponse = processRequest(subRequest);
+
+		// transform response into json data
+		OBSDataAutoRelease subResponseData = OBSRemoteProtocol::rpcResponseToJsonData(subResponse);
+
+		obs_data_array_push_back(results, subResponseData);
+	}
+
+	OBSDataAutoRelease response = obs_data_create();
+	obs_data_set_array(response, "results", results);
+	return request.success(response);
 }

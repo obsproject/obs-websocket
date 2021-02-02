@@ -133,8 +133,7 @@ void WSServer::stop()
 
 void WSServer::broadcast(const RpcEvent& event)
 {
-	OBSRemoteProtocol protocol;
-	std::string message = protocol.encodeEvent(event);
+	std::string message = OBSRemoteProtocol::encodeEvent(event);
 
 	if (GetConfig()->DebugEnabled) {
 		blog(LOG_INFO, "Update << '%s'", message.c_str());
@@ -190,8 +189,7 @@ void WSServer::onMessage(connection_hdl hdl, server::message_ptr message)
 		}
 
 		WSRequestHandler requestHandler(connProperties);
-		OBSRemoteProtocol protocol;
-		std::string response = protocol.processMessage(requestHandler, payload);
+		std::string response = OBSRemoteProtocol::processMessage(requestHandler, payload);
 
 		if (GetConfig()->DebugEnabled) {
 			blog(LOG_INFO, "Response << '%s'", response.c_str());

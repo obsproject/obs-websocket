@@ -31,11 +31,15 @@ std::string OBSRemoteProtocol::processMessage(WSRequestHandler& requestHandler, 
 	OBSDataAutoRelease data = obs_data_create_from_json(msg);
 	if (!data) {
 		blog(LOG_ERROR, "invalid JSON payload received for '%s'", msg);
-		return errorResponse(QString::Null(), "invalid JSON payload");
+		return jsonDataToString(
+			errorResponse(nullptr, "invalid JSON payload")
+		);
 	}
 
 	if (!obs_data_has_user_value(data, "request-type") || !obs_data_has_user_value(data, "message-id")) {
-		return errorResponse(QString::Null(), "missing request parameters");
+		return jsonDataToString(
+			errorResponse(nullptr, "missing request parameters")
+		);
 	}
 
 	QString methodName = obs_data_get_string(data, "request-type");
@@ -49,15 +53,8 @@ std::string OBSRemoteProtocol::processMessage(WSRequestHandler& requestHandler, 
 	RpcRequest request(messageId, methodName, params);
 	RpcResponse response = requestHandler.processRequest(request);
 
-	OBSData additionalFields = response.additionalFields();
-	switch (response.status()) {
-		case RpcResponse::Status::Ok:
-			return successResponse(messageId, additionalFields);
-		case RpcResponse::Status::Error:
-			return errorResponse(messageId, response.errorMessage(), additionalFields);
-	}
-
-	return std::string();
+	OBSData responseData = rpcResponseToJsonData(response);
+	return jsonDataToString(responseData);
 }
 
 std::string OBSRemoteProtocol::encodeEvent(const RpcEvent& event)
@@ -87,33 +84,53 @@ std::string OBSRemoteProtocol::encodeEvent(const RpcEvent& event)
 	return std::string(obs_data_get_json(eventData));
 }
 
-std::string OBSRemoteProtocol::buildResponse(QString messageId, QString status, obs_data_t* fields)
+obs_data_t* OBSRemoteProtocol::rpcResponseToJsonData(const RpcResponse& response)
 {
-	OBSDataAutoRelease response = obs_data_create();
-	if (!messageId.isNull()) {
-		obs_data_set_string(response, "message-id", messageId.toUtf8().constData());
+	const char* messageId = response.messageId().toUtf8().constData();
+	OBSData additionalFields = response.additionalFields();
+	switch (response.status()) {
+		case RpcResponse::Status::Ok:
+			return successResponse(messageId, additionalFields);
+		case RpcResponse::Status::Error:
+			return errorResponse(messageId, response.errorMessage().toUtf8().constData(), additionalFields);
+		default:
+			assert(false);
 	}
-	obs_data_set_string(response, "status", status.toUtf8().constData());
-
-	if (fields) {
-		obs_data_apply(response, fields);
-	}
-
-	std::string responseString = obs_data_get_json(response);
-	return responseString;
 }
 
-std::string OBSRemoteProtocol::successResponse(QString messageId, obs_data_t* fields)
+obs_data_t* OBSRemoteProtocol::successResponse(const char* messageId, obs_data_t* fields)
 {
 	return buildResponse(messageId, "ok", fields);
 }
 
-std::string OBSRemoteProtocol::errorResponse(QString messageId, QString errorMessage, obs_data_t* additionalFields)
+obs_data_t* OBSRemoteProtocol::errorResponse(const char* messageId, const char* errorMessage, obs_data_t* additionalFields)
 {
 	OBSDataAutoRelease fields = obs_data_create();
 	if (additionalFields) {
 		obs_data_apply(fields, additionalFields);
 	}
-	obs_data_set_string(fields, "error", errorMessage.toUtf8().constData());
+	obs_data_set_string(fields, "error", errorMessage);
 	return buildResponse(messageId, "error", fields);
+}
+
+obs_data_t* OBSRemoteProtocol::buildResponse(const char* messageId, const char* status, obs_data_t* fields)
+{
+	OBSDataAutoRelease response = obs_data_create();
+	if (messageId) {
+		obs_data_set_string(response, "message-id", messageId);
+	}
+	obs_data_set_string(response, "status", status);
+
+	if (fields) {
+		obs_data_apply(response, fields);
+	}
+
+	obs_data_addref(response);
+	return response;
+}
+
+std::string OBSRemoteProtocol::jsonDataToString(obs_data_t* data)
+{
+	std::string responseString = obs_data_get_json(data);
+	return responseString;
 }
