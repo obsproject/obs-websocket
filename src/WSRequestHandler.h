@@ -161,6 +161,7 @@ class WSRequestHandler {
 		RpcResponse SetAudioMonitorType(const RpcRequest&);
 		RpcResponse GetSourceDefaultSettings(const RpcRequest&);
 		RpcResponse TakeSourceScreenshot(const RpcRequest&);
+		RpcResponse RefreshBrowserSource(const RpcRequest&);
 
 		// Category: Streaming
 		RpcResponse GetStreamingStatus(const RpcRequest&);

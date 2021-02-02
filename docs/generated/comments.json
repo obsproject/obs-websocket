@@ -7412,6 +7412,47 @@
         "lead": "Takes a picture snapshot of a source and then can either or both: \t- Send it over as a Data URI (base64-encoded data) in the response (by specifying `embedPictureFormat` in the request) \t- Save it to disk (by specifying `saveToFilePath` in the request)",
         "type": "class",
         "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Refreshes the specified browser source.",
+        "param": "{String} `sourceName` Source name.",
+        "api": "requests",
+        "name": "RefreshBrowserSource",
+        "category": "sources",
+        "since": "4.9.0",
+        "params": [
+          {
+            "type": "String",
+            "name": "sourceName",
+            "description": "Source name."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "RefreshBrowserSource"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "sources"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.9.0"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "RefreshBrowserSource"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
       }
     ],
     "outputs": [

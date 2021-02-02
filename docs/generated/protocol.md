@@ -185,6 +185,7 @@ You can also refer to any of the client libraries listed on the [README](README.
     + [SetAudioMonitorType](#setaudiomonitortype)
     + [GetSourceDefaultSettings](#getsourcedefaultsettings)
     + [TakeSourceScreenshot](#takesourcescreenshot)
+    + [RefreshBrowserSource](#refreshbrowsersource)
   * [Outputs](#outputs)
     + [ListOutputs](#listoutputs)
     + [GetOutputInfo](#getoutputinfo)
@@ -2870,6 +2871,26 @@ preserved if only one of these two parameters is specified.
 | `img` | _String_ | Image Data URI (if `embedPictureFormat` was specified in the request) |
 | `imageFile` | _String_ | Absolute path to the saved image file (if `saveToFilePath` was specified in the request) |
 
+
+---
+
+### RefreshBrowserSource
+
+
+- Added in v4.9.0
+
+Refreshes the specified browser source.
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sourceName` | _String_ | Source name. |
+
+
+**Response Items:**
+
+_No additional response items._
 
 ---
 

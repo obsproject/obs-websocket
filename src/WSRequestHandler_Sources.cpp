@@ -1894,3 +1894,38 @@ RpcResponse WSRequestHandler::TakeSourceScreenshot(const RpcRequest& request) {
 	obs_data_set_string(response, "sourceName", obs_source_get_name(source));
 	return request.success(response);
 }
+
+/**
+* Refreshes the specified browser source.
+*
+* @param {String} `sourceName` Source name.
+*
+* @api requests
+* @name RefreshBrowserSource
+* @category sources
+* @since 4.9.0
+*/
+RpcResponse WSRequestHandler::RefreshBrowserSource(const RpcRequest& request)
+{
+	if (!request.hasField("sourceName")) {
+		return request.failed("missing request parameters");
+	}
+
+	QString sourceName = obs_data_get_string(request.parameters(), "sourceName");
+
+	OBSSourceAutoRelease source = obs_get_source_by_name(sourceName.toUtf8());
+	if (!source) {
+		return request.failed("specified source doesn't exist");
+	}
+
+	if (strcmp(obs_source_get_id(source), "browser_source") != 0) {
+		return request.failed("specified source is not a browser");
+	}
+
+	obs_properties_t *sourceProperties = obs_source_properties(source);
+	obs_property_t *property = obs_properties_get(sourceProperties, "refreshnocache");
+	obs_property_button_clicked(property, source); // This returns a boolean but we ignore it because the browser plugin always returns `false`.
+	obs_properties_destroy(sourceProperties);
+
+	return request.success();
+}
