@@ -74,9 +74,6 @@ class WSRequestHandler {
 
 		RpcResponse GetSceneItemList(const RpcRequest&);
 		RpcResponse SetSceneItemRender(const RpcRequest&);
-		RpcResponse SetSceneItemPosition(const RpcRequest&);
-		RpcResponse SetSceneItemTransform(const RpcRequest&);
-		RpcResponse SetSceneItemCrop(const RpcRequest&);
 		RpcResponse GetSceneItemProperties(const RpcRequest&);
 		RpcResponse SetSceneItemProperties(const RpcRequest&);
 		RpcResponse ResetSceneItem(const RpcRequest&);

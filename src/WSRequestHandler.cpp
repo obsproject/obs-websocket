@@ -57,9 +57,6 @@ const QHash<QString, RpcMethodHandler> WSRequestHandler::messageMap{
 	{ "SetSourceRender", &WSRequestHandler::SetSceneItemRender }, // Retrocompat
 	{ "GetSceneItemList", &WSRequestHandler::GetSceneItemList },
 	{ "SetSceneItemRender", &WSRequestHandler::SetSceneItemRender },
-	{ "SetSceneItemPosition", &WSRequestHandler::SetSceneItemPosition },
-	{ "SetSceneItemTransform", &WSRequestHandler::SetSceneItemTransform },
-	{ "SetSceneItemCrop", &WSRequestHandler::SetSceneItemCrop },
 	{ "GetSceneItemProperties", &WSRequestHandler::GetSceneItemProperties },
 	{ "SetSceneItemProperties", &WSRequestHandler::SetSceneItemProperties },
 	{ "ResetSceneItem", &WSRequestHandler::ResetSceneItem },
