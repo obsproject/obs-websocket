@@ -67,8 +67,6 @@ void SettingsDialog::ToggleShowHide() {
 }
 
 void SettingsDialog::PreparePasswordEntry() {
-	auto conf = GetConfig();
-	conf->AuthRequired = true;
 	ui->authRequired->blockSignals(true);
 	ui->authRequired->setChecked(true);
 	ui->authRequired->blockSignals(false);
