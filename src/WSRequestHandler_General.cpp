@@ -354,7 +354,7 @@ RpcResponse WSRequestHandler::OpenProjector(const RpcRequest& request) {
 * @api requests
 * @name TriggerHotkeyByName
 * @category general
-* @since unreleased
+* @since 4.9.0
 */
 RpcResponse WSRequestHandler::TriggerHotkeyByName(const RpcRequest& request) {
 	const char* name = obs_data_get_string(request.parameters(), "hotkeyName");
@@ -380,7 +380,7 @@ RpcResponse WSRequestHandler::TriggerHotkeyByName(const RpcRequest& request) {
 * @api requests
 * @name TriggerHotkeyBySequence
 * @category general
-* @since unreleased
+* @since 4.9.0
 */
 RpcResponse WSRequestHandler::TriggerHotkeyBySequence(const RpcRequest& request) {
 	if (!request.hasField("keyId")) {

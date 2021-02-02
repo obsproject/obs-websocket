@@ -17,7 +17,7 @@
 * @api requests
 * @name GetSceneItemList
 * @category scene items
-* @since unreleased
+* @since 4.9.0
 */
 RpcResponse WSRequestHandler::GetSceneItemList(const RpcRequest& request) {
 	const char* sceneName = obs_data_get_string(request.parameters(), "sceneName");
@@ -635,7 +635,7 @@ RpcResponse WSRequestHandler::DeleteSceneItem(const RpcRequest& request) {
  * @api requests
  * @name AddSceneItem
  * @category scene items
- * @since unreleased
+ * @since 4.9.0
  */
 RpcResponse WSRequestHandler::AddSceneItem(const RpcRequest& request) {
 	if (!request.hasField("sceneName") || !request.hasField("sourceName")) {

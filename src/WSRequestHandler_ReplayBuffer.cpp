@@ -13,7 +13,7 @@
  * @api requests
  * @name GetReplayBufferStatus
  * @category replay buffer
- * @since unreleased
+ * @since 4.9.0
  */
 RpcResponse WSRequestHandler::GetReplayBufferStatus(const RpcRequest& request) {
 		OBSDataAutoRelease data = obs_data_create();

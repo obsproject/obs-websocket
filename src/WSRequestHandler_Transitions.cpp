@@ -129,7 +129,7 @@ RpcResponse WSRequestHandler::GetTransitionDuration(const RpcRequest& request) {
  * @api requests
  * @name GetTransitionPosition
  * @category transitions
- * @since unreleased
+ * @since 4.9.0
  */
 RpcResponse WSRequestHandler::GetTransitionPosition(const RpcRequest& request) {
 	OBSSourceAutoRelease currentTransition = obs_frontend_get_current_transition();
@@ -150,7 +150,7 @@ RpcResponse WSRequestHandler::GetTransitionPosition(const RpcRequest& request) {
  * @api requests
  * @name GetTransitionSettings
  * @category transitions
- * @since unreleased
+ * @since 4.9.0
  */
 RpcResponse WSRequestHandler::GetTransitionSettings(const RpcRequest& request) {
 	if (!request.hasField("transitionName")) {
@@ -181,7 +181,7 @@ RpcResponse WSRequestHandler::GetTransitionSettings(const RpcRequest& request) {
  * @api requests
  * @name SetTransitionSettings
  * @category transitions
- * @since unreleased
+ * @since 4.9.0
  */
 RpcResponse WSRequestHandler::SetTransitionSettings(const RpcRequest& request) {
 	if (!request.hasField("transitionName") || !request.hasField("transitionSettings")) {
@@ -212,7 +212,7 @@ RpcResponse WSRequestHandler::SetTransitionSettings(const RpcRequest& request) {
  * @api requests
  * @name ReleaseTBar
  * @category transitions
- * @since unreleased
+ * @since 4.9.0
  */
 RpcResponse WSRequestHandler::ReleaseTBar(const RpcRequest& request) {
 	if (!obs_frontend_preview_program_mode_active()) {
@@ -240,7 +240,7 @@ RpcResponse WSRequestHandler::ReleaseTBar(const RpcRequest& request) {
  * @api requests
  * @name SetTBarPosition
  * @category transitions
- * @since unreleased
+ * @since 4.9.0
  */
 RpcResponse WSRequestHandler::SetTBarPosition(const RpcRequest& request) {
 	if (!obs_frontend_preview_program_mode_active()) {

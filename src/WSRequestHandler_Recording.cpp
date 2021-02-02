@@ -26,7 +26,7 @@ RpcResponse ifCanPause(const RpcRequest& request, std::function<RpcResponse()> c
  * @api requests
  * @name GetRecordingStatus
  * @category recording
- * @since unreleased
+ * @since 4.9.0
  */
 RpcResponse WSRequestHandler::GetRecordingStatus(const RpcRequest& request) {
 		auto events = GetEventsSystem();

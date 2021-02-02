@@ -32,7 +32,7 @@ bool isTextFreeType2Source(const QString& sourceKind)
  * @api requests
  * @name CreateSource
  * @category sources
- * @since unreleased
+ * @since 4.9.0
  */
 RpcResponse WSRequestHandler::CreateSource(const RpcRequest& request)
 {
@@ -424,7 +424,7 @@ RpcResponse WSRequestHandler::ToggleMute(const RpcRequest& request)
 * @api requests
 * @name GetAudioActive
 * @category sources
-* @since unreleased
+* @since 4.9.0
 */
 RpcResponse WSRequestHandler::GetAudioActive(const RpcRequest& request)
 {
