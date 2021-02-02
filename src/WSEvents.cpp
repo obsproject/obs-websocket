@@ -1080,7 +1080,6 @@ void WSEvents::OnTransitionVideoEnd(void* param, calldata_t* data) {
  * @return {String} `sourceName` Source name
  * @return {String} `sourceType` Source type. Can be "input", "scene", "transition" or "filter".
  * @return {String} `sourceKind` Source kind.
- * @return {Object} `sourceSettings` Source settings
  *
  * @api events
  * @name SourceCreated
@@ -1097,15 +1096,12 @@ void WSEvents::OnSourceCreate(void* param, calldata_t* data) {
 
 	self->connectSourceSignals(source);
 
-	OBSDataAutoRelease sourceSettings = obs_source_get_settings(source);
-
 	OBSDataAutoRelease fields = obs_data_create();
 	obs_data_set_string(fields, "sourceName", obs_source_get_name(source));
 	obs_data_set_string(fields, "sourceType",
 		sourceTypeToString(obs_source_get_type(source))
 	);
 	obs_data_set_string(fields, "sourceKind", obs_source_get_id(source));
-	obs_data_set_obj(fields, "sourceSettings", sourceSettings);
 	self->broadcastUpdate("SourceCreated", fields);
 }
 
