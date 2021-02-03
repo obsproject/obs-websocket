@@ -418,16 +418,16 @@ RpcResponse WSRequestHandler::TriggerHotkeyBySequence(const RpcRequest& request)
 }
 
 /**
-* Executes a list of requests sequentially.
+* Executes a list of requests sequentially (one-by-one on the same thread).
 *
-* @param {Array<Object>} `requests`
+* @param {Array<Object>} `requests` Array of batch requests. They have the same fields as a traditional request object: `message-id`, `request-type` and the method-specific parameters.
 *
-* @return {Array<Object>} `results`
+* @return {Array<Object>} `results` Batch requests results, ordered sequentially.
 *
 * @api requests
 * @name ExecuteBatch
 * @category general
-* @since unreleased
+* @since 4.9.0
 */
 RpcResponse WSRequestHandler::ExecuteBatch(const RpcRequest& request) {
 	if (!request.hasField("requests")) {
