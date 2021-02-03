@@ -86,7 +86,9 @@ std::string OBSRemoteProtocol::encodeEvent(const RpcEvent& event)
 
 obs_data_t* OBSRemoteProtocol::rpcResponseToJsonData(const RpcResponse& response)
 {
-	const char* messageId = response.messageId().toUtf8().constData();
+	QByteArray messageIdBytes = response.messageId().toUtf8();
+	const char* messageId = messageIdBytes.constData();
+
 	OBSData additionalFields = response.additionalFields();
 	switch (response.status()) {
 		case RpcResponse::Status::Ok:
@@ -96,6 +98,8 @@ obs_data_t* OBSRemoteProtocol::rpcResponseToJsonData(const RpcResponse& response
 		default:
 			assert(false);
 	}
+
+	return nullptr;
 }
 
 obs_data_t* OBSRemoteProtocol::successResponse(const char* messageId, obs_data_t* fields)
