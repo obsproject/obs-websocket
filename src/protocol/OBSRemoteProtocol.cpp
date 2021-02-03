@@ -53,7 +53,7 @@ std::string OBSRemoteProtocol::processMessage(WSRequestHandler& requestHandler, 
 	RpcRequest request(messageId, methodName, params);
 	RpcResponse response = requestHandler.processRequest(request);
 
-	OBSData responseData = rpcResponseToJsonData(response);
+	OBSDataAutoRelease responseData = rpcResponseToJsonData(response);
 	return jsonDataToString(responseData);
 }
 
@@ -115,7 +115,7 @@ obs_data_t* OBSRemoteProtocol::errorResponse(const char* messageId, const char* 
 
 obs_data_t* OBSRemoteProtocol::buildResponse(const char* messageId, const char* status, obs_data_t* fields)
 {
-	OBSDataAutoRelease response = obs_data_create();
+	obs_data_t* response = obs_data_create();
 	if (messageId) {
 		obs_data_set_string(response, "message-id", messageId);
 	}
@@ -125,11 +125,10 @@ obs_data_t* OBSRemoteProtocol::buildResponse(const char* messageId, const char* 
 		obs_data_apply(response, fields);
 	}
 
-	obs_data_addref(response);
 	return response;
 }
 
-std::string OBSRemoteProtocol::jsonDataToString(obs_data_t* data)
+std::string OBSRemoteProtocol::jsonDataToString(OBSDataAutoRelease data)
 {
 	std::string responseString = obs_data_get_json(data);
 	return responseString;
