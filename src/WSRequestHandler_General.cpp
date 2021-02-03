@@ -440,12 +440,13 @@ RpcResponse WSRequestHandler::ExecuteBatch(const RpcRequest& request) {
 	size_t requestsCount = obs_data_array_count(requests);
 	for (size_t i = 0; i < requestsCount; i++) {
 		OBSDataAutoRelease requestData = obs_data_array_item(requests, i);
+		QString messageId = obs_data_get_string(requestData, "message-id");
 		QString methodName = obs_data_get_string(requestData, "request-type");
 		obs_data_unset_user_value(requestData, "request-type");
 		obs_data_unset_user_value(requestData, "message-id");
 
 		// build RpcRequest from json data object
-		RpcRequest subRequest(QString::Null(), methodName, requestData);
+		RpcRequest subRequest(messageId, methodName, requestData);
 
 		// execute the request
 		RpcResponse subResponse = processRequest(subRequest);
