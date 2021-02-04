@@ -7,6 +7,7 @@
 #include "Config.h"
 #include "Utils.h"
 #include "WSEvents.h"
+#include "protocol/OBSRemoteProtocol.h"
 
 #define CASE(x) case x: return #x;
 const char *describe_output_format(int format) {
@@ -414,4 +415,61 @@ RpcResponse WSRequestHandler::TriggerHotkeyBySequence(const RpcRequest& request)
 	obs_hotkey_inject_event(combo, false);
 
 	return request.success();
+}
+
+/**
+* Executes a list of requests sequentially (one-by-one on the same thread).
+*
+* @param {Array<Object>} `requests` Array of requests to perform. Executed in order.
+* @param {String} `requests.*.request-type` Request type. Eg. `GetVersion`.
+* @param {String (Optional)} `requests.*.message-id` ID of the individual request. Can be any string and not required to be unique. Defaults to empty string if not specified.
+* @param {boolean (Optional)} `abortOnFail` Stop processing batch requests if one returns a failure.
+*
+* @return {Array<Object>} `results` Batch requests results, ordered sequentially.
+* @return {String} `results.*.message-id` ID of the individual request which was originally provided by the client.
+* @return {String} `results.*.status` Status response as string. Either `ok` or `error`.
+* @return {String (Optional)} `results.*.error` Error message accompanying an `error` status.
+*
+* @api requests
+* @name ExecuteBatch
+* @category general
+* @since 4.9.0
+*/
+RpcResponse WSRequestHandler::ExecuteBatch(const RpcRequest& request) {
+	if (!request.hasField("requests")) {
+		return request.failed("missing request parameters");
+	}
+
+	bool abortOnFail = obs_data_get_bool(request.parameters(), "abortOnFail");
+
+	OBSDataArrayAutoRelease results = obs_data_array_create();
+
+	OBSDataArrayAutoRelease requests = obs_data_get_array(request.parameters(), "requests");
+	size_t requestsCount = obs_data_array_count(requests);
+	for (size_t i = 0; i < requestsCount; i++) {
+		OBSDataAutoRelease requestData = obs_data_array_item(requests, i);
+		QString messageId = obs_data_get_string(requestData, "message-id");
+		QString methodName = obs_data_get_string(requestData, "request-type");
+		obs_data_unset_user_value(requestData, "request-type");
+		obs_data_unset_user_value(requestData, "message-id");
+
+		// build RpcRequest from json data object
+		RpcRequest subRequest(messageId, methodName, requestData);
+
+		// execute the request
+		RpcResponse subResponse = processRequest(subRequest);
+
+		// transform response into json data
+		OBSDataAutoRelease subResponseData = OBSRemoteProtocol::rpcResponseToJsonData(subResponse);
+
+		obs_data_array_push_back(results, subResponseData);
+
+		// if told to abort on fail and a failure occurs, stop request processing and return the progress
+		if (abortOnFail && (subResponse.status() == RpcResponse::Status::Error))
+			break;
+	}
+
+	OBSDataAutoRelease response = obs_data_create();
+	obs_data_set_array(response, "results", results);
+	return request.success(response);
 }
