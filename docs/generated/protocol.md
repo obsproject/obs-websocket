@@ -7,6 +7,8 @@ Messages are exchanged between the client and the server as JSON objects.
 This protocol is based on the original OBS Remote protocol created by Bill Hamilton, with new commands specific to OBS Studio. As of v5.0.0, backwards compatability with the protocol will not be kept.
 
 # Authentication
+**Starting with obs-websocket 4.9, authentication is enabled by default and users are encouraged to configure a password on first run.**
+
 `obs-websocket` uses SHA256 to transmit credentials.
 
 A request for [`GetAuthRequired`](#getauthrequired) returns two elements:
