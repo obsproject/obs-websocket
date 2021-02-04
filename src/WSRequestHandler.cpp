@@ -95,6 +95,9 @@ const QHash<QString, RpcMethodHandler> WSRequestHandler::messageMap{
 	{ "SetSceneItemProperties", &WSRequestHandler::SetSceneItemProperties },
 	{ "ResetSceneItem", &WSRequestHandler::ResetSceneItem },
 	{ "SetSceneItemRender", &WSRequestHandler::SetSceneItemRender },
+	{ "SetSceneItemPosition", &WSRequestHandler::SetSceneItemPosition },
+	{ "SetSceneItemTransform", &WSRequestHandler::SetSceneItemTransform },
+	{ "SetSceneItemCrop", &WSRequestHandler::SetSceneItemCrop },
 	{ "SetSourceRender", &WSRequestHandler::SetSceneItemRender }, // Retrocompat TODO: Remove in 5.0.0
 	{ "DeleteSceneItem", &WSRequestHandler::DeleteSceneItem },
 	{ "AddSceneItem", &WSRequestHandler::AddSceneItem },
