@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-project(obs-websocket VERSION 4.8.0)
+project(obs-websocket VERSION 4.9.0)
 
 set(CMAKE_PREFIX_PATH "${QTDIR}")
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
