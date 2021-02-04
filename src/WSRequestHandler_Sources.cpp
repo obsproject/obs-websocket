@@ -32,7 +32,7 @@ bool isTextFreeType2Source(const QString& sourceKind)
  * @api requests
  * @name CreateSource
  * @category sources
- * @since unreleased
+ * @since 4.9.0
  */
 RpcResponse WSRequestHandler::CreateSource(const RpcRequest& request)
 {
@@ -424,7 +424,7 @@ RpcResponse WSRequestHandler::ToggleMute(const RpcRequest& request)
 * @api requests
 * @name GetAudioActive
 * @category sources
-* @since unreleased
+* @since 4.9.0
 */
 RpcResponse WSRequestHandler::GetAudioActive(const RpcRequest& request)
 {
@@ -1726,7 +1726,7 @@ RpcResponse WSRequestHandler::GetSourceDefaultSettings(const RpcRequest& request
 * Clients can specify `width` and `height` parameters to receive scaled pictures. Aspect ratio is
 * preserved if only one of these two parameters is specified.
 *
-* @param {String (optional)} `sourceName` Source name. Note that, since scenes are also sources, you can also provide a scene name. If not provided, the currently active scene is used.
+* @param {String (optional)} `sourceName` Source name. Note: Since scenes are also sources, you can also provide a scene name. If not provided, the currently active scene is used.
 * @param {String (optional)} `embedPictureFormat` Format of the Data URI encoded picture. Can be "png", "jpg", "jpeg" or "bmp" (or any other value supported by Qt's Image module)
 * @param {String (optional)} `saveToFilePath` Full file path (file extension included) where the captured image is to be saved. Can be in a format different from `pictureFormat`. Can be a relative path.
 * @param {String (optional)} `fileFormat` Format to save the image file as (one of the values provided in the `supported-image-export-formats` response field of `GetVersion`). If not specified, tries to guess based on file extension.

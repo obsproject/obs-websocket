@@ -26,7 +26,7 @@ RpcResponse ifCanPause(const RpcRequest& request, std::function<RpcResponse()> c
  * @api requests
  * @name GetRecordingStatus
  * @category recording
- * @since unreleased
+ * @since 4.9.0
  */
 RpcResponse WSRequestHandler::GetRecordingStatus(const RpcRequest& request) {
 		auto events = GetEventsSystem();
@@ -137,7 +137,7 @@ RpcResponse WSRequestHandler::ResumeRecording(const RpcRequest& request) {
  * In the current profile, sets the recording folder of the Simple and Advanced
  * output modes to the specified value.
  * 
- * Please note: if `SetRecordingFolder` is called while a recording is
+ * Note: If `SetRecordingFolder` is called while a recording is
  * in progress, the change won't be applied immediately and will be
  * effective on the next recording.
  * 

@@ -87,7 +87,7 @@ RpcResponse WSRequestHandler::GetSceneList(const RpcRequest& request) {
  * @api requests
  * @name CreateScene
  * @category scenes
- * @since unreleased
+ * @since 4.9.0
  */
 RpcResponse WSRequestHandler::CreateScene(const RpcRequest& request) {
 	if (!request.hasField("sceneName")) {

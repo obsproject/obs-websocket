@@ -29,145 +29,22 @@
 using namespace std::placeholders;
 
 const QHash<QString, RpcMethodHandler> WSRequestHandler::messageMap{
+	// Category: General
 	{ "GetVersion", &WSRequestHandler::GetVersion },
 	{ "GetAuthRequired", &WSRequestHandler::GetAuthRequired },
 	{ "Authenticate", &WSRequestHandler::Authenticate },
-
-	{ "GetStats", &WSRequestHandler::GetStats },
 	{ "SetHeartbeat", &WSRequestHandler::SetHeartbeat },
-	{ "GetVideoInfo", &WSRequestHandler::GetVideoInfo },
-	{ "OpenProjector", &WSRequestHandler::OpenProjector },
-
 	{ "SetFilenameFormatting", &WSRequestHandler::SetFilenameFormatting },
 	{ "GetFilenameFormatting", &WSRequestHandler::GetFilenameFormatting },
-
+	{ "GetStats", &WSRequestHandler::GetStats },
 	{ "BroadcastCustomMessage", &WSRequestHandler::BroadcastCustomMessage },
-
+	{ "GetVideoInfo", &WSRequestHandler::GetVideoInfo },
+	{ "OpenProjector", &WSRequestHandler::OpenProjector },
 	{ "TriggerHotkeyByName", &WSRequestHandler::TriggerHotkeyByName },
 	{ "TriggerHotkeyBySequence", &WSRequestHandler::TriggerHotkeyBySequence },
-
 	{ "ExecuteBatch", &WSRequestHandler::ExecuteBatch },
 
-	{ "SetCurrentScene", &WSRequestHandler::SetCurrentScene },
-	{ "GetCurrentScene", &WSRequestHandler::GetCurrentScene },
-	{ "GetSceneList", &WSRequestHandler::GetSceneList },
-	{ "CreateScene", &WSRequestHandler::CreateScene },
-	{ "SetSceneTransitionOverride", &WSRequestHandler::SetSceneTransitionOverride },
-	{ "RemoveSceneTransitionOverride", &WSRequestHandler::RemoveSceneTransitionOverride },
-	{ "GetSceneTransitionOverride", &WSRequestHandler::GetSceneTransitionOverride },
-
-	{ "SetSourceRender", &WSRequestHandler::SetSceneItemRender }, // Retrocompat
-	{ "GetSceneItemList", &WSRequestHandler::GetSceneItemList },
-	{ "SetSceneItemRender", &WSRequestHandler::SetSceneItemRender },
-	{ "SetSceneItemPosition", &WSRequestHandler::SetSceneItemPosition },
-	{ "SetSceneItemTransform", &WSRequestHandler::SetSceneItemTransform },
-	{ "SetSceneItemCrop", &WSRequestHandler::SetSceneItemCrop },
-	{ "GetSceneItemProperties", &WSRequestHandler::GetSceneItemProperties },
-	{ "SetSceneItemProperties", &WSRequestHandler::SetSceneItemProperties },
-	{ "ResetSceneItem", &WSRequestHandler::ResetSceneItem },
-	{ "DeleteSceneItem", &WSRequestHandler::DeleteSceneItem },
-	{ "AddSceneItem", &WSRequestHandler::AddSceneItem },
-	{ "DuplicateSceneItem", &WSRequestHandler::DuplicateSceneItem },
-	{ "ReorderSceneItems", &WSRequestHandler::ReorderSceneItems },
-
-	{ "GetStreamingStatus", &WSRequestHandler::GetStreamingStatus },
-	{ "StartStopStreaming", &WSRequestHandler::StartStopStreaming },
-	{ "StartStopRecording", &WSRequestHandler::StartStopRecording },
-
-	{ "StartStreaming", &WSRequestHandler::StartStreaming },
-	{ "StopStreaming", &WSRequestHandler::StopStreaming },
-
-	{ "GetRecordingStatus", &WSRequestHandler::GetRecordingStatus },
-	{ "StartRecording", &WSRequestHandler::StartRecording },
-	{ "StopRecording", &WSRequestHandler::StopRecording },
-	{ "PauseRecording", &WSRequestHandler::PauseRecording },
-	{ "ResumeRecording", &WSRequestHandler::ResumeRecording },
-
-	{ "GetReplayBufferStatus", &WSRequestHandler::GetReplayBufferStatus },
-	{ "StartStopReplayBuffer", &WSRequestHandler::StartStopReplayBuffer },
-	{ "StartReplayBuffer", &WSRequestHandler::StartReplayBuffer },
-	{ "StopReplayBuffer", &WSRequestHandler::StopReplayBuffer },
-	{ "SaveReplayBuffer", &WSRequestHandler::SaveReplayBuffer },
-
-	{ "SetRecordingFolder", &WSRequestHandler::SetRecordingFolder },
-	{ "GetRecordingFolder", &WSRequestHandler::GetRecordingFolder },
-
-	{ "GetTransitionList", &WSRequestHandler::GetTransitionList },
-	{ "GetCurrentTransition", &WSRequestHandler::GetCurrentTransition },
-	{ "SetCurrentTransition", &WSRequestHandler::SetCurrentTransition },
-	{ "SetTransitionDuration", &WSRequestHandler::SetTransitionDuration },
-	{ "GetTransitionDuration", &WSRequestHandler::GetTransitionDuration },
-	{ "GetTransitionPosition", &WSRequestHandler::GetTransitionPosition },
-	{ "GetTransitionSettings", &WSRequestHandler::GetTransitionSettings },
-	{ "SetTransitionSettings", &WSRequestHandler::SetTransitionSettings },
-	{ "ReleaseTBar", &WSRequestHandler::ReleaseTBar	},
-	{ "SetTBarPosition", &WSRequestHandler::SetTBarPosition	},
-
-	{ "CreateSource", &WSRequestHandler::CreateSource },
-	{ "SetVolume", &WSRequestHandler::SetVolume },
-	{ "GetVolume", &WSRequestHandler::GetVolume },
-	{ "ToggleMute", &WSRequestHandler::ToggleMute },
-	{ "SetMute", &WSRequestHandler::SetMute },
-	{ "GetMute", &WSRequestHandler::GetMute },
-	{ "GetAudioActive", &WSRequestHandler::GetAudioActive },
-	{ "SetSourceName", &WSRequestHandler::SetSourceName },
-	{ "SetSyncOffset", &WSRequestHandler::SetSyncOffset },
-	{ "GetSyncOffset", &WSRequestHandler::GetSyncOffset },
-	{ "GetSpecialSources", &WSRequestHandler::GetSpecialSources },
-	{ "GetSourcesList", &WSRequestHandler::GetSourcesList },
-	{ "GetSourceTypesList", &WSRequestHandler::GetSourceTypesList },
-	{ "GetSourceSettings", &WSRequestHandler::GetSourceSettings },
-	{ "SetSourceSettings", &WSRequestHandler::SetSourceSettings },
-	{ "GetAudioMonitorType", &WSRequestHandler::GetAudioMonitorType },
-	{ "SetAudioMonitorType", &WSRequestHandler::SetAudioMonitorType },
-	{ "GetSourceDefaultSettings", &WSRequestHandler::GetSourceDefaultSettings },
-	{ "TakeSourceScreenshot", &WSRequestHandler::TakeSourceScreenshot },
-	{ "RefreshBrowserSource", &WSRequestHandler::RefreshBrowserSource },
-
-	{ "GetSourceFilters", &WSRequestHandler::GetSourceFilters },
-	{ "GetSourceFilterInfo", &WSRequestHandler::GetSourceFilterInfo },
-	{ "AddFilterToSource", &WSRequestHandler::AddFilterToSource },
-	{ "RemoveFilterFromSource", &WSRequestHandler::RemoveFilterFromSource },
-	{ "ReorderSourceFilter", &WSRequestHandler::ReorderSourceFilter },
-	{ "MoveSourceFilter", &WSRequestHandler::MoveSourceFilter },
-	{ "SetSourceFilterSettings", &WSRequestHandler::SetSourceFilterSettings },
-	{ "SetSourceFilterVisibility", &WSRequestHandler::SetSourceFilterVisibility },
-
-	{ "SetCurrentSceneCollection", &WSRequestHandler::SetCurrentSceneCollection },
-	{ "GetCurrentSceneCollection", &WSRequestHandler::GetCurrentSceneCollection },
-	{ "ListSceneCollections", &WSRequestHandler::ListSceneCollections },
-
-	{ "SetCurrentProfile", &WSRequestHandler::SetCurrentProfile },
-	{ "GetCurrentProfile", &WSRequestHandler::GetCurrentProfile },
-	{ "ListProfiles", &WSRequestHandler::ListProfiles },
-
-	{ "SetStreamSettings", &WSRequestHandler::SetStreamSettings },
-	{ "GetStreamSettings", &WSRequestHandler::GetStreamSettings },
-	{ "SaveStreamSettings", &WSRequestHandler::SaveStreamSettings },
-	{ "SendCaptions", &WSRequestHandler::SendCaptions },
-
-	{ "GetStudioModeStatus", &WSRequestHandler::GetStudioModeStatus },
-	{ "GetPreviewScene", &WSRequestHandler::GetPreviewScene },
-	{ "SetPreviewScene", &WSRequestHandler::SetPreviewScene },
-	{ "TransitionToProgram", &WSRequestHandler::TransitionToProgram },
-	{ "EnableStudioMode", &WSRequestHandler::EnableStudioMode },
-	{ "DisableStudioMode", &WSRequestHandler::DisableStudioMode },
-	{ "ToggleStudioMode", &WSRequestHandler::ToggleStudioMode },
-
-	{ "SetTextGDIPlusProperties", &WSRequestHandler::SetTextGDIPlusProperties },
-	{ "GetTextGDIPlusProperties", &WSRequestHandler::GetTextGDIPlusProperties },
-
-	{ "SetTextFreetype2Properties", &WSRequestHandler::SetTextFreetype2Properties },
-	{ "GetTextFreetype2Properties", &WSRequestHandler::GetTextFreetype2Properties },
-
-	{ "GetBrowserSourceProperties", &WSRequestHandler::GetBrowserSourceProperties },
-	{ "SetBrowserSourceProperties", &WSRequestHandler::SetBrowserSourceProperties },
-
-	{ "ListOutputs", &WSRequestHandler::ListOutputs },
-	{ "GetOutputInfo", &WSRequestHandler::GetOutputInfo },
-	{ "StartOutput", &WSRequestHandler::StartOutput },
-	{ "StopOutput", &WSRequestHandler::StopOutput },
-
+	// Category: Media Control
 	{ "PlayPauseMedia", &WSRequestHandler::PlayPauseMedia },
 	{ "RestartMedia", &WSRequestHandler::RestartMedia },
 	{ "StopMedia", &WSRequestHandler::StopMedia },
@@ -178,7 +55,131 @@ const QHash<QString, RpcMethodHandler> WSRequestHandler::messageMap{
 	{ "SetMediaTime", &WSRequestHandler::SetMediaTime },
 	{ "ScrubMedia", &WSRequestHandler::ScrubMedia },
 	{ "GetMediaState", &WSRequestHandler::GetMediaState },
-	{ "GetMediaSourcesList", &WSRequestHandler::GetMediaSourcesList }
+	{ "GetMediaSourcesList", &WSRequestHandler::GetMediaSourcesList },
+
+	// Category: Outputs
+	{ "ListOutputs", &WSRequestHandler::ListOutputs },
+	{ "GetOutputInfo", &WSRequestHandler::GetOutputInfo },
+	{ "StartOutput", &WSRequestHandler::StartOutput },
+	{ "StopOutput", &WSRequestHandler::StopOutput },
+
+	// Category: Profiles
+	{ "SetCurrentProfile", &WSRequestHandler::SetCurrentProfile },
+	{ "GetCurrentProfile", &WSRequestHandler::GetCurrentProfile },
+	{ "ListProfiles", &WSRequestHandler::ListProfiles },
+
+	// Category: Recording
+	{ "GetRecordingStatus", &WSRequestHandler::GetRecordingStatus },
+	{ "StartStopRecording", &WSRequestHandler::StartStopRecording },
+	{ "StartRecording", &WSRequestHandler::StartRecording },
+	{ "StopRecording", &WSRequestHandler::StopRecording },
+	{ "PauseRecording", &WSRequestHandler::PauseRecording },
+	{ "ResumeRecording", &WSRequestHandler::ResumeRecording },
+	{ "SetRecordingFolder", &WSRequestHandler::SetRecordingFolder },
+	{ "GetRecordingFolder", &WSRequestHandler::GetRecordingFolder },
+
+	// Category: Replay Buffer
+	{ "GetReplayBufferStatus", &WSRequestHandler::GetReplayBufferStatus },
+	{ "StartStopReplayBuffer", &WSRequestHandler::StartStopReplayBuffer },
+	{ "StartReplayBuffer", &WSRequestHandler::StartReplayBuffer },
+	{ "StopReplayBuffer", &WSRequestHandler::StopReplayBuffer },
+	{ "SaveReplayBuffer", &WSRequestHandler::SaveReplayBuffer },
+
+	// Category: Scene Collections
+	{ "SetCurrentSceneCollection", &WSRequestHandler::SetCurrentSceneCollection },
+	{ "GetCurrentSceneCollection", &WSRequestHandler::GetCurrentSceneCollection },
+	{ "ListSceneCollections", &WSRequestHandler::ListSceneCollections },
+
+	// Category: Scene Items
+	{ "GetSceneItemList", &WSRequestHandler::GetSceneItemList },
+	{ "GetSceneItemProperties", &WSRequestHandler::GetSceneItemProperties },
+	{ "SetSceneItemProperties", &WSRequestHandler::SetSceneItemProperties },
+	{ "ResetSceneItem", &WSRequestHandler::ResetSceneItem },
+	{ "SetSceneItemRender", &WSRequestHandler::SetSceneItemRender },
+	{ "SetSceneItemPosition", &WSRequestHandler::SetSceneItemPosition },
+	{ "SetSceneItemTransform", &WSRequestHandler::SetSceneItemTransform },
+	{ "SetSceneItemCrop", &WSRequestHandler::SetSceneItemCrop },
+	{ "SetSourceRender", &WSRequestHandler::SetSceneItemRender }, // Retrocompat TODO: Remove in 5.0.0
+	{ "DeleteSceneItem", &WSRequestHandler::DeleteSceneItem },
+	{ "AddSceneItem", &WSRequestHandler::AddSceneItem },
+	{ "DuplicateSceneItem", &WSRequestHandler::DuplicateSceneItem },
+
+	// Category: Scenes
+	{ "SetCurrentScene", &WSRequestHandler::SetCurrentScene },
+	{ "GetCurrentScene", &WSRequestHandler::GetCurrentScene },
+	{ "GetSceneList", &WSRequestHandler::GetSceneList },
+	{ "CreateScene", &WSRequestHandler::CreateScene },
+	{ "ReorderSceneItems", &WSRequestHandler::ReorderSceneItems },
+	{ "SetSceneTransitionOverride", &WSRequestHandler::SetSceneTransitionOverride },
+	{ "RemoveSceneTransitionOverride", &WSRequestHandler::RemoveSceneTransitionOverride },
+	{ "GetSceneTransitionOverride", &WSRequestHandler::GetSceneTransitionOverride },
+
+	// Category: Sources
+	{ "CreateSource", &WSRequestHandler::CreateSource },
+	{ "GetSourcesList", &WSRequestHandler::GetSourcesList },
+	{ "GetSourceTypesList", &WSRequestHandler::GetSourceTypesList },
+	{ "GetVolume", &WSRequestHandler::GetVolume },
+	{ "SetVolume", &WSRequestHandler::SetVolume },
+	{ "GetMute", &WSRequestHandler::GetMute },
+	{ "SetMute", &WSRequestHandler::SetMute },
+	{ "ToggleMute", &WSRequestHandler::ToggleMute },
+	{ "GetAudioActive", &WSRequestHandler::GetAudioActive },
+	{ "SetSourceName", &WSRequestHandler::SetSourceName },
+	{ "SetSyncOffset", &WSRequestHandler::SetSyncOffset },
+	{ "GetSyncOffset", &WSRequestHandler::GetSyncOffset },
+	{ "GetSourceSettings", &WSRequestHandler::GetSourceSettings },
+	{ "SetSourceSettings", &WSRequestHandler::SetSourceSettings },
+	{ "GetTextGDIPlusProperties", &WSRequestHandler::GetTextGDIPlusProperties },
+	{ "SetTextGDIPlusProperties", &WSRequestHandler::SetTextGDIPlusProperties },
+	{ "GetTextFreetype2Properties", &WSRequestHandler::GetTextFreetype2Properties },
+	{ "SetTextFreetype2Properties", &WSRequestHandler::SetTextFreetype2Properties },
+	{ "GetBrowserSourceProperties", &WSRequestHandler::GetBrowserSourceProperties },
+	{ "SetBrowserSourceProperties", &WSRequestHandler::SetBrowserSourceProperties },
+	{ "GetSpecialSources", &WSRequestHandler::GetSpecialSources },
+	{ "GetSourceFilters", &WSRequestHandler::GetSourceFilters },
+	{ "GetSourceFilterInfo", &WSRequestHandler::GetSourceFilterInfo },
+	{ "AddFilterToSource", &WSRequestHandler::AddFilterToSource },
+	{ "RemoveFilterFromSource", &WSRequestHandler::RemoveFilterFromSource },
+	{ "ReorderSourceFilter", &WSRequestHandler::ReorderSourceFilter },
+	{ "MoveSourceFilter", &WSRequestHandler::MoveSourceFilter },
+	{ "SetSourceFilterSettings", &WSRequestHandler::SetSourceFilterSettings },
+	{ "SetSourceFilterVisibility", &WSRequestHandler::SetSourceFilterVisibility },
+	{ "GetAudioMonitorType", &WSRequestHandler::GetAudioMonitorType },
+	{ "SetAudioMonitorType", &WSRequestHandler::SetAudioMonitorType },
+	{ "GetSourceDefaultSettings", &WSRequestHandler::GetSourceDefaultSettings },
+	{ "TakeSourceScreenshot", &WSRequestHandler::TakeSourceScreenshot },
+	{ "RefreshBrowserSource", &WSRequestHandler::RefreshBrowserSource },
+
+	// Category: Streaming
+	{ "GetStreamingStatus", &WSRequestHandler::GetStreamingStatus },
+	{ "StartStopStreaming", &WSRequestHandler::StartStopStreaming },
+	{ "StartStreaming", &WSRequestHandler::StartStreaming },
+	{ "StopStreaming", &WSRequestHandler::StopStreaming },
+	{ "SetStreamSettings", &WSRequestHandler::SetStreamSettings },
+	{ "GetStreamSettings", &WSRequestHandler::GetStreamSettings },
+	{ "SaveStreamSettings", &WSRequestHandler::SaveStreamSettings },
+	{ "SendCaptions", &WSRequestHandler::SendCaptions },
+
+	// Category: Studio Mode
+	{ "GetStudioModeStatus", &WSRequestHandler::GetStudioModeStatus },
+	{ "GetPreviewScene", &WSRequestHandler::GetPreviewScene },
+	{ "SetPreviewScene", &WSRequestHandler::SetPreviewScene },
+	{ "TransitionToProgram", &WSRequestHandler::TransitionToProgram },
+	{ "EnableStudioMode", &WSRequestHandler::EnableStudioMode },
+	{ "DisableStudioMode", &WSRequestHandler::DisableStudioMode },
+	{ "ToggleStudioMode", &WSRequestHandler::ToggleStudioMode },
+
+	// Category: Transitions
+	{ "GetTransitionList", &WSRequestHandler::GetTransitionList },
+	{ "GetCurrentTransition", &WSRequestHandler::GetCurrentTransition },
+	{ "SetCurrentTransition", &WSRequestHandler::SetCurrentTransition },
+	{ "SetTransitionDuration", &WSRequestHandler::SetTransitionDuration },
+	{ "GetTransitionDuration", &WSRequestHandler::GetTransitionDuration },
+	{ "GetTransitionPosition", &WSRequestHandler::GetTransitionPosition },
+	{ "GetTransitionSettings", &WSRequestHandler::GetTransitionSettings },
+	{ "SetTransitionSettings", &WSRequestHandler::SetTransitionSettings },
+	{ "ReleaseTBar", &WSRequestHandler::ReleaseTBar	},
+	{ "SetTBarPosition", &WSRequestHandler::SetTBarPosition	}
 };
 
 const QSet<QString> WSRequestHandler::authNotRequired {

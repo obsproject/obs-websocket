@@ -62,7 +62,7 @@ RpcResponse WSRequestHandler::StartStopStreaming(const RpcRequest& request) {
  * Start streaming.
  * Will return an `error` if streaming is already active.
  *
- * @param {Object (optional)} `stream` Special stream configuration. Please note: these won't be saved to OBS' configuration.
+ * @param {Object (optional)} `stream` Special stream configuration. Note: these won't be saved to OBS' configuration.
  * @param {String (optional)} `stream.type` If specified ensures the type of stream matches the given type (usually 'rtmp_custom' or 'rtmp_common'). If the currently configured stream type does not match the given stream type, all settings must be specified in the `settings` object or an error will occur when starting the stream.
  * @param {Object (optional)} `stream.metadata` Adds the given object parameters as encoded query string parameters to the 'key' of the RTMP stream. Used to pass data to the RTMP service about the streaming. May be any String, Numeric, or Boolean field.
  * @param {Object (optional)} `stream.settings` Settings for the stream.
