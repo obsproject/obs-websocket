@@ -917,7 +917,7 @@
       },
       {
         "subheads": [],
-        "description": "A transition (other than \"cut\") has ended.\nPlease note that the `from-scene` field is not available in TransitionEnd.",
+        "description": "A transition (other than \"cut\") has ended.\nNote: The `from-scene` field is not available in TransitionEnd.",
         "return": [
           "{String} `name` Transition name.",
           "{String} `type` Transition type.",
@@ -2212,7 +2212,7 @@
         "api": "events",
         "name": "SourceAudioDeactivated",
         "category": "sources",
-        "since": "unreleased",
+        "since": "4.9.0",
         "returns": [
           {
             "type": "String",
@@ -2235,7 +2235,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "unreleased"
+            "description": "4.9.0"
           }
         ],
         "heading": {
@@ -2253,7 +2253,7 @@
         "api": "events",
         "name": "SourceAudioActivated",
         "category": "sources",
-        "since": "unreleased",
+        "since": "4.9.0",
         "returns": [
           {
             "type": "String",
@@ -2276,7 +2276,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "unreleased"
+            "description": "4.9.0"
           }
         ],
         "heading": {
@@ -2708,7 +2708,7 @@
         "api": "events",
         "name": "MediaPlaying",
         "category": "media",
-        "since": "unreleased",
+        "since": "4.9.0",
         "returns": [
           {
             "type": "String",
@@ -2736,7 +2736,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "unreleased"
+            "description": "4.9.0"
           }
         ],
         "heading": {
@@ -2757,7 +2757,7 @@
         "api": "events",
         "name": "MediaPaused",
         "category": "media",
-        "since": "unreleased",
+        "since": "4.9.0",
         "returns": [
           {
             "type": "String",
@@ -2785,7 +2785,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "unreleased"
+            "description": "4.9.0"
           }
         ],
         "heading": {
@@ -2806,7 +2806,7 @@
         "api": "events",
         "name": "MediaRestarted",
         "category": "media",
-        "since": "unreleased",
+        "since": "4.9.0",
         "returns": [
           {
             "type": "String",
@@ -2834,7 +2834,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "unreleased"
+            "description": "4.9.0"
           }
         ],
         "heading": {
@@ -2855,7 +2855,7 @@
         "api": "events",
         "name": "MediaStopped",
         "category": "media",
-        "since": "unreleased",
+        "since": "4.9.0",
         "returns": [
           {
             "type": "String",
@@ -2883,7 +2883,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "unreleased"
+            "description": "4.9.0"
           }
         ],
         "heading": {
@@ -2904,7 +2904,7 @@
         "api": "events",
         "name": "MediaNext",
         "category": "media",
-        "since": "unreleased",
+        "since": "4.9.0",
         "returns": [
           {
             "type": "String",
@@ -2932,7 +2932,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "unreleased"
+            "description": "4.9.0"
           }
         ],
         "heading": {
@@ -2953,7 +2953,7 @@
         "api": "events",
         "name": "MediaPrevious",
         "category": "media",
-        "since": "unreleased",
+        "since": "4.9.0",
         "returns": [
           {
             "type": "String",
@@ -2981,7 +2981,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "unreleased"
+            "description": "4.9.0"
           }
         ],
         "heading": {
@@ -3002,7 +3002,7 @@
         "api": "events",
         "name": "MediaStarted",
         "category": "media",
-        "since": "unreleased",
+        "since": "4.9.0",
         "returns": [
           {
             "type": "String",
@@ -3030,7 +3030,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "unreleased"
+            "description": "4.9.0"
           }
         ],
         "heading": {
@@ -3051,7 +3051,7 @@
         "api": "events",
         "name": "MediaEnded",
         "category": "media",
-        "since": "unreleased",
+        "since": "4.9.0",
         "returns": [
           {
             "type": "String",
@@ -3079,7 +3079,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "unreleased"
+            "description": "4.9.0"
           }
         ],
         "heading": {
@@ -4194,7 +4194,7 @@
         "api": "requests",
         "name": "TriggerHotkeyByName",
         "category": "general",
-        "since": "unreleased",
+        "since": "4.9.0",
         "params": [
           {
             "type": "String",
@@ -4217,7 +4217,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "unreleased"
+            "description": "4.9.0"
           }
         ],
         "heading": {
@@ -4242,7 +4242,7 @@
         "api": "requests",
         "name": "TriggerHotkeyBySequence",
         "category": "general",
-        "since": "unreleased",
+        "since": "4.9.0",
         "params": [
           {
             "type": "String",
@@ -4290,7 +4290,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "unreleased"
+            "description": "4.9.0"
           }
         ],
         "heading": {
@@ -4402,7 +4402,7 @@
         "api": "requests",
         "name": "PlayPauseMedia",
         "category": "media control",
-        "since": "unreleased",
+        "since": "4.9.0",
         "params": [
           {
             "type": "String",
@@ -4430,7 +4430,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "unreleased"
+            "description": "4.9.0"
           }
         ],
         "heading": {
@@ -4448,7 +4448,7 @@
         "api": "requests",
         "name": "RestartMedia",
         "category": "media control",
-        "since": "unreleased",
+        "since": "4.9.0",
         "params": [
           {
             "type": "String",
@@ -4471,7 +4471,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "unreleased"
+            "description": "4.9.0"
           }
         ],
         "heading": {
@@ -4489,7 +4489,7 @@
         "api": "requests",
         "name": "StopMedia",
         "category": "media control",
-        "since": "unreleased",
+        "since": "4.9.0",
         "params": [
           {
             "type": "String",
@@ -4512,7 +4512,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "unreleased"
+            "description": "4.9.0"
           }
         ],
         "heading": {
@@ -4530,7 +4530,7 @@
         "api": "requests",
         "name": "NextMedia",
         "category": "media control",
-        "since": "unreleased",
+        "since": "4.9.0",
         "params": [
           {
             "type": "String",
@@ -4553,7 +4553,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "unreleased"
+            "description": "4.9.0"
           }
         ],
         "heading": {
@@ -4571,7 +4571,7 @@
         "api": "requests",
         "name": "PreviousMedia",
         "category": "media control",
-        "since": "unreleased",
+        "since": "4.9.0",
         "params": [
           {
             "type": "String",
@@ -4594,7 +4594,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "unreleased"
+            "description": "4.9.0"
           }
         ],
         "heading": {
@@ -4613,7 +4613,7 @@
         "api": "requests",
         "name": "GetMediaDuration",
         "category": "media control",
-        "since": "unreleased",
+        "since": "4.9.0",
         "returns": [
           {
             "type": "int",
@@ -4643,7 +4643,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "unreleased"
+            "description": "4.9.0"
           }
         ],
         "heading": {
@@ -4662,7 +4662,7 @@
         "api": "requests",
         "name": "GetMediaTime",
         "category": "media control",
-        "since": "unreleased",
+        "since": "4.9.0",
         "returns": [
           {
             "type": "int",
@@ -4692,7 +4692,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "unreleased"
+            "description": "4.9.0"
           }
         ],
         "heading": {
@@ -4713,7 +4713,7 @@
         "api": "requests",
         "name": "SetMediaTime",
         "category": "media control",
-        "since": "unreleased",
+        "since": "4.9.0",
         "params": [
           {
             "type": "String",
@@ -4741,7 +4741,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "unreleased"
+            "description": "4.9.0"
           }
         ],
         "heading": {
@@ -4762,7 +4762,7 @@
         "api": "requests",
         "name": "ScrubMedia",
         "category": "media control",
-        "since": "unreleased",
+        "since": "4.9.0",
         "params": [
           {
             "type": "String",
@@ -4790,7 +4790,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "unreleased"
+            "description": "4.9.0"
           }
         ],
         "heading": {
@@ -4809,7 +4809,7 @@
         "api": "requests",
         "name": "GetMediaState",
         "category": "media control",
-        "since": "unreleased",
+        "since": "4.9.0",
         "returns": [
           {
             "type": "String",
@@ -4839,7 +4839,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "unreleased"
+            "description": "4.9.0"
           }
         ],
         "heading": {
@@ -4864,7 +4864,7 @@
         "api": "requests",
         "name": "GetMediaSourcesList",
         "category": "sources",
-        "since": "unreleased",
+        "since": "4.9.0",
         "returns": [
           {
             "type": "Array<Object>",
@@ -4902,7 +4902,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "unreleased"
+            "description": "4.9.0"
           }
         ],
         "heading": {
@@ -4927,7 +4927,7 @@
         "api": "requests",
         "name": "CreateSource",
         "category": "sources",
-        "since": "unreleased",
+        "since": "4.9.0",
         "returns": [
           {
             "type": "int",
@@ -4977,7 +4977,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "unreleased"
+            "description": "4.9.0"
           }
         ],
         "heading": {
@@ -5445,7 +5445,7 @@
         "api": "requests",
         "name": "GetAudioActive",
         "category": "sources",
-        "since": "unreleased",
+        "since": "4.9.0",
         "returns": [
           {
             "type": "boolean",
@@ -5475,7 +5475,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "unreleased"
+            "description": "4.9.0"
           }
         ],
         "heading": {
@@ -7405,7 +7405,7 @@
         "subheads": [],
         "description": "\n\nAt least `embedPictureFormat` or `saveToFilePath` must be specified.\n\nClients can specify `width` and `height` parameters to receive scaled pictures. Aspect ratio is\npreserved if only one of these two parameters is specified.",
         "param": [
-          "{String (optional)} `sourceName` Source name. Note that, since scenes are also sources, you can also provide a scene name. If not provided, the currently active scene is used.",
+          "{String (optional)} `sourceName` Source name. Note: Since scenes are also sources, you can also provide a scene name. If not provided, the currently active scene is used.",
           "{String (optional)} `embedPictureFormat` Format of the Data URI encoded picture. Can be \"png\", \"jpg\", \"jpeg\" or \"bmp\" (or any other value supported by Qt's Image module)",
           "{String (optional)} `saveToFilePath` Full file path (file extension included) where the captured image is to be saved. Can be in a format different from `pictureFormat`. Can be a relative path.",
           "{String (optional)} `fileFormat` Format to save the image file as (one of the values provided in the `supported-image-export-formats` response field of `GetVersion`). If not specified, tries to guess based on file extension.",
@@ -7443,7 +7443,7 @@
           {
             "type": "String (optional)",
             "name": "sourceName",
-            "description": "Source name. Note that, since scenes are also sources, you can also provide a scene name. If not provided, the currently active scene is used."
+            "description": "Source name. Note: Since scenes are also sources, you can also provide a scene name. If not provided, the currently active scene is used."
           },
           {
             "type": "String (optional)",
@@ -7872,7 +7872,7 @@
         "api": "requests",
         "name": "GetRecordingStatus",
         "category": "recording",
-        "since": "unreleased",
+        "since": "4.9.0",
         "returns": [
           {
             "type": "boolean",
@@ -7910,7 +7910,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "unreleased"
+            "description": "4.9.0"
           }
         ],
         "heading": {
@@ -8088,7 +8088,7 @@
       },
       {
         "subheads": [],
-        "description": "\n\nPlease note: if `SetRecordingFolder` is called while a recording is\nin progress, the change won't be applied immediately and will be\neffective on the next recording.",
+        "description": "\n\nNote: If `SetRecordingFolder` is called while a recording is\nin progress, the change won't be applied immediately and will be\neffective on the next recording.",
         "param": "{String} `rec-folder` Path of the recording folder.",
         "api": "requests",
         "name": "SetRecordingFolder",
@@ -8177,7 +8177,7 @@
         "api": "requests",
         "name": "GetReplayBufferStatus",
         "category": "replay buffer",
-        "since": "unreleased",
+        "since": "4.9.0",
         "returns": [
           {
             "type": "boolean",
@@ -8200,7 +8200,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "unreleased"
+            "description": "4.9.0"
           }
         ],
         "heading": {
@@ -8485,7 +8485,7 @@
         "api": "requests",
         "name": "GetSceneItemList",
         "category": "scene items",
-        "since": "unreleased",
+        "since": "4.9.0",
         "returns": [
           {
             "type": "String",
@@ -8540,7 +8540,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "unreleased"
+            "description": "4.9.0"
           }
         ],
         "heading": {
@@ -9340,7 +9340,7 @@
         "api": "requests",
         "name": "AddSceneItem",
         "category": "scene items",
-        "since": "unreleased",
+        "since": "4.9.0",
         "returns": [
           {
             "type": "int",
@@ -9380,7 +9380,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "unreleased"
+            "description": "4.9.0"
           }
         ],
         "heading": {
@@ -9634,7 +9634,7 @@
         "api": "requests",
         "name": "CreateScene",
         "category": "scenes",
-        "since": "unreleased",
+        "since": "4.9.0",
         "params": [
           {
             "type": "String",
@@ -9657,7 +9657,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "unreleased"
+            "description": "4.9.0"
           }
         ],
         "heading": {
@@ -9994,7 +9994,7 @@
         "subheads": [],
         "description": "Start streaming.\nWill return an `error` if streaming is already active.",
         "param": [
-          "{Object (optional)} `stream` Special stream configuration. Please note: these won't be saved to OBS' configuration.",
+          "{Object (optional)} `stream` Special stream configuration. Note: these won't be saved to OBS' configuration.",
           "{String (optional)} `stream.type` If specified ensures the type of stream matches the given type (usually 'rtmp_custom' or 'rtmp_common'). If the currently configured stream type does not match the given stream type, all settings must be specified in the `settings` object or an error will occur when starting the stream.",
           "{Object (optional)} `stream.metadata` Adds the given object parameters as encoded query string parameters to the 'key' of the RTMP stream. Used to pass data to the RTMP service about the streaming. May be any String, Numeric, or Boolean field.",
           "{Object (optional)} `stream.settings` Settings for the stream.",
@@ -10012,7 +10012,7 @@
           {
             "type": "Object (optional)",
             "name": "stream",
-            "description": "Special stream configuration. Please note: these won't be saved to OBS' configuration."
+            "description": "Special stream configuration. Note: these won't be saved to OBS' configuration."
           },
           {
             "type": "String (optional)",
@@ -10875,7 +10875,7 @@
         "api": "requests",
         "name": "GetTransitionPosition",
         "category": "transitions",
-        "since": "unreleased",
+        "since": "4.9.0",
         "returns": [
           {
             "type": "double",
@@ -10898,7 +10898,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "unreleased"
+            "description": "4.9.0"
           }
         ],
         "heading": {
@@ -10917,7 +10917,7 @@
         "api": "requests",
         "name": "GetTransitionSettings",
         "category": "transitions",
-        "since": "unreleased",
+        "since": "4.9.0",
         "returns": [
           {
             "type": "Object",
@@ -10947,7 +10947,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "unreleased"
+            "description": "4.9.0"
           }
         ],
         "heading": {
@@ -10969,7 +10969,7 @@
         "api": "requests",
         "name": "SetTransitionSettings",
         "category": "transitions",
-        "since": "unreleased",
+        "since": "4.9.0",
         "returns": [
           {
             "type": "Object",
@@ -11004,7 +11004,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "unreleased"
+            "description": "4.9.0"
           }
         ],
         "heading": {
@@ -11021,7 +11021,7 @@
         "api": "requests",
         "name": "ReleaseTBar",
         "category": "transitions",
-        "since": "unreleased",
+        "since": "4.9.0",
         "names": [
           {
             "name": "",
@@ -11037,7 +11037,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "unreleased"
+            "description": "4.9.0"
           }
         ],
         "heading": {
@@ -11058,7 +11058,7 @@
         "api": "requests",
         "name": "SetTBarPosition",
         "category": "transitions",
-        "since": "unreleased",
+        "since": "4.9.0",
         "params": [
           {
             "type": "double",
@@ -11086,7 +11086,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "unreleased"
+            "description": "4.9.0"
           }
         ],
         "heading": {

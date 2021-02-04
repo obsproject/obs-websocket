@@ -1,6 +1,6 @@
 <!-- This file was generated based on handlebars templates. Do not edit directly! -->
 
-# obs-websocket 4.8.0 protocol reference
+# obs-websocket 4.9.0 protocol reference
 
 # General Introduction
 Messages are exchanged between the client and the server as JSON objects.
@@ -523,7 +523,7 @@ A transition (other than "cut") has begun.
 - Added in v4.8.0
 
 A transition (other than "cut") has ended.
-Please note that the `from-scene` field is not available in TransitionEnd.
+Note: The `from-scene` field is not available in TransitionEnd.
 
 **Response Items:**
 
@@ -969,7 +969,7 @@ A source has been muted or unmuted.
 ### SourceAudioDeactivated
 
 
-- Unreleased
+- Added in v4.9.0
 
 A source has removed audio.
 
@@ -985,7 +985,7 @@ A source has removed audio.
 ### SourceAudioActivated
 
 
-- Unreleased
+- Added in v4.9.0
 
 A source has added audio.
 
@@ -1133,7 +1133,7 @@ Filters in a source have been reordered.
 ### MediaPlaying
 
 
-- Unreleased
+- Added in v4.9.0
 
 
 
@@ -1152,7 +1152,7 @@ Note: This event is only emitted when something actively controls the media/VLC 
 ### MediaPaused
 
 
-- Unreleased
+- Added in v4.9.0
 
 
 
@@ -1171,7 +1171,7 @@ Note: This event is only emitted when something actively controls the media/VLC 
 ### MediaRestarted
 
 
-- Unreleased
+- Added in v4.9.0
 
 
 
@@ -1190,7 +1190,7 @@ Note: This event is only emitted when something actively controls the media/VLC 
 ### MediaStopped
 
 
-- Unreleased
+- Added in v4.9.0
 
 
 
@@ -1209,7 +1209,7 @@ Note: This event is only emitted when something actively controls the media/VLC 
 ### MediaNext
 
 
-- Unreleased
+- Added in v4.9.0
 
 
 
@@ -1228,7 +1228,7 @@ Note: This event is only emitted when something actively controls the media/VLC 
 ### MediaPrevious
 
 
-- Unreleased
+- Added in v4.9.0
 
 
 
@@ -1247,7 +1247,7 @@ Note: This event is only emitted when something actively controls the media/VLC 
 ### MediaStarted
 
 
-- Unreleased
+- Added in v4.9.0
 
 
 
@@ -1266,7 +1266,7 @@ Note: These events are emitted by the OBS sources themselves. For example when t
 ### MediaEnded
 
 
-- Unreleased
+- Added in v4.9.0
 
 
 
@@ -1708,7 +1708,7 @@ _No additional response items._
 ### TriggerHotkeyByName
 
 
-- Unreleased
+- Added in v4.9.0
 
 Executes hotkey routine, identified by hotkey unique name
 
@@ -1728,7 +1728,7 @@ _No additional response items._
 ### TriggerHotkeyBySequence
 
 
-- Unreleased
+- Added in v4.9.0
 
 Executes hotkey routine, identified by bound combination of keys. A single key combination might trigger multiple hotkey routines depending on user settings
 
@@ -1784,7 +1784,7 @@ Executes a list of requests sequentially (one-by-one on the same thread).
 ### PlayPauseMedia
 
 
-- Unreleased
+- Added in v4.9.0
 
 Pause or play a media source. Supports ffmpeg and vlc media sources (as of OBS v25.0.8)
 
@@ -1805,7 +1805,7 @@ _No additional response items._
 ### RestartMedia
 
 
-- Unreleased
+- Added in v4.9.0
 
 Restart a media source. Supports ffmpeg and vlc media sources (as of OBS v25.0.8)
 
@@ -1825,7 +1825,7 @@ _No additional response items._
 ### StopMedia
 
 
-- Unreleased
+- Added in v4.9.0
 
 Stop a media source. Supports ffmpeg and vlc media sources (as of OBS v25.0.8)
 
@@ -1845,7 +1845,7 @@ _No additional response items._
 ### NextMedia
 
 
-- Unreleased
+- Added in v4.9.0
 
 Skip to the next media item in the playlist. Supports only vlc media source (as of OBS v25.0.8)
 
@@ -1865,7 +1865,7 @@ _No additional response items._
 ### PreviousMedia
 
 
-- Unreleased
+- Added in v4.9.0
 
 Go to the previous media item in the playlist. Supports only vlc media source (as of OBS v25.0.8)
 
@@ -1885,7 +1885,7 @@ _No additional response items._
 ### GetMediaDuration
 
 
-- Unreleased
+- Added in v4.9.0
 
 Get the length of media in milliseconds. Supports ffmpeg and vlc media sources (as of OBS v25.0.8)
 Note: For some reason, for the first 5 or so seconds that the media is playing, the total duration can be off by upwards of 50ms.
@@ -1909,7 +1909,7 @@ Note: For some reason, for the first 5 or so seconds that the media is playing, 
 ### GetMediaTime
 
 
-- Unreleased
+- Added in v4.9.0
 
 Get the current timestamp of media in milliseconds. Supports ffmpeg and vlc media sources (as of OBS v25.0.8)
 
@@ -1932,7 +1932,7 @@ Get the current timestamp of media in milliseconds. Supports ffmpeg and vlc medi
 ### SetMediaTime
 
 
-- Unreleased
+- Added in v4.9.0
 
 Set the timestamp of a media source. Supports ffmpeg and vlc media sources (as of OBS v25.0.8)
 
@@ -1953,7 +1953,7 @@ _No additional response items._
 ### ScrubMedia
 
 
-- Unreleased
+- Added in v4.9.0
 
 Scrub media using a supplied offset. Supports ffmpeg and vlc media sources (as of OBS v25.0.8)
 Note: Due to processing/network delays, this request is not perfect. The processing rate of this request has also not been tested.
@@ -1975,7 +1975,7 @@ _No additional response items._
 ### GetMediaState
 
 
-- Unreleased
+- Added in v4.9.0
 
 Get the current playing state of a media source. Supports ffmpeg and vlc media sources (as of OBS v25.0.8)
 
@@ -2000,7 +2000,7 @@ Get the current playing state of a media source. Supports ffmpeg and vlc media s
 ### GetMediaSourcesList
 
 
-- Unreleased
+- Added in v4.9.0
 
 List the media state of all media sources (vlc and media source)
 
@@ -2023,7 +2023,7 @@ _No specified parameters._
 ### CreateSource
 
 
-- Unreleased
+- Added in v4.9.0
 
 Create a source and add it as a sceneitem to a scene.
 
@@ -2218,7 +2218,7 @@ _No additional response items._
 ### GetAudioActive
 
 
-- Unreleased
+- Added in v4.9.0
 
 Get the audio's active status of a specified source.
 
@@ -2886,7 +2886,7 @@ preserved if only one of these two parameters is specified.
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
-| `sourceName` | _String (optional)_ | Source name. Note that, since scenes are also sources, you can also provide a scene name. If not provided, the currently active scene is used. |
+| `sourceName` | _String (optional)_ | Source name. Note: Since scenes are also sources, you can also provide a scene name. If not provided, the currently active scene is used. |
 | `embedPictureFormat` | _String (optional)_ | Format of the Data URI encoded picture. Can be "png", "jpg", "jpeg" or "bmp" (or any other value supported by Qt's Image module) |
 | `saveToFilePath` | _String (optional)_ | Full file path (file extension included) where the captured image is to be saved. Can be in a format different from `pictureFormat`. Can be a relative path. |
 | `fileFormat` | _String (optional)_ | Format to save the image file as (one of the values provided in the `supported-image-export-formats` response field of `GetVersion`). If not specified, tries to guess based on file extension. |
@@ -3084,7 +3084,7 @@ _No specified parameters._
 ### GetRecordingStatus
 
 
-- Unreleased
+- Added in v4.9.0
 
 Get current recording status.
 
@@ -3200,7 +3200,7 @@ _No additional response items._
 
 
 
-Please note: if `SetRecordingFolder` is called while a recording is
+Note: If `SetRecordingFolder` is called while a recording is
 in progress, the change won't be applied immediately and will be
 effective on the next recording.
 
@@ -3242,7 +3242,7 @@ _No specified parameters._
 ### GetReplayBufferStatus
 
 
-- Unreleased
+- Added in v4.9.0
 
 Get the status of the OBS replay buffer.
 
@@ -3401,7 +3401,7 @@ _No specified parameters._
 ### GetSceneItemList
 
 
-- Unreleased
+- Added in v4.9.0
 
 Get a list of all scene items in a scene.
 
@@ -3664,7 +3664,7 @@ _No additional response items._
 ### AddSceneItem
 
 
-- Unreleased
+- Added in v4.9.0
 
 Creates a scene item in a scene. In other words, this is how you add a source into a scene.
 
@@ -3783,7 +3783,7 @@ _No specified parameters._
 ### CreateScene
 
 
-- Unreleased
+- Added in v4.9.0
 
 Create a new scene scene.
 
@@ -3945,7 +3945,7 @@ Will return an `error` if streaming is already active.
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
-| `stream` | _Object (optional)_ | Special stream configuration. Please note: these won't be saved to OBS' configuration. |
+| `stream` | _Object (optional)_ | Special stream configuration. Note: these won't be saved to OBS' configuration. |
 | `stream.type` | _String (optional)_ | If specified ensures the type of stream matches the given type (usually 'rtmp_custom' or 'rtmp_common'). If the currently configured stream type does not match the given stream type, all settings must be specified in the `settings` object or an error will occur when starting the stream. |
 | `stream.metadata` | _Object (optional)_ | Adds the given object parameters as encoded query string parameters to the 'key' of the RTMP stream. Used to pass data to the RTMP service about the streaming. May be any String, Numeric, or Boolean field. |
 | `stream.settings` | _Object (optional)_ | Settings for the stream. |
@@ -4317,7 +4317,7 @@ _No specified parameters._
 ### GetTransitionPosition
 
 
-- Unreleased
+- Added in v4.9.0
 
 Get the position of the current transition.
 
@@ -4337,7 +4337,7 @@ _No specified parameters._
 ### GetTransitionSettings
 
 
-- Unreleased
+- Added in v4.9.0
 
 Get the current settings of a transition
 
@@ -4360,7 +4360,7 @@ Get the current settings of a transition
 ### SetTransitionSettings
 
 
-- Unreleased
+- Added in v4.9.0
 
 Change the current settings of a transition
 
@@ -4384,7 +4384,7 @@ Change the current settings of a transition
 ### ReleaseTBar
 
 
-- Unreleased
+- Added in v4.9.0
 
 Release the T-Bar (like a user releasing their mouse button after moving it).
 *YOU MUST CALL THIS if you called `SetTBarPosition` with the `release` parameter set to `false`.*
@@ -4402,7 +4402,7 @@ _No additional response items._
 ### SetTBarPosition
 
 
-- Unreleased
+- Added in v4.9.0
 
 
 
