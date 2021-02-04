@@ -139,6 +139,7 @@ You can also refer to any of the client libraries listed on the [README](README.
     + [OpenProjector](#openprojector)
     + [TriggerHotkeyByName](#triggerhotkeybyname)
     + [TriggerHotkeyBySequence](#triggerhotkeybysequence)
+    + [ExecuteBatch](#executebatch)
   * [Media Control](#media-control)
     + [PlayPauseMedia](#playpausemedia)
     + [RestartMedia](#restartmedia)
@@ -1744,6 +1745,35 @@ Executes hotkey routine, identified by bound combination of keys. A single key c
 **Response Items:**
 
 _No additional response items._
+
+---
+
+### ExecuteBatch
+
+
+- Added in v4.9.0
+
+Executes a list of requests sequentially (one-by-one on the same thread).
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `requests` | _Array&lt;Object&gt;_ | Array of requests to perform. Executed in order. |
+| `requests.*.request-type` | _String_ | Request type. Eg. `GetVersion`. |
+| `requests.*.message-id` | _String (Optional)_ | ID of the individual request. Can be any string and not required to be unique. Defaults to empty string if not specified. |
+| `abortOnFail` | _boolean (Optional)_ | Stop processing batch requests if one returns a failure. |
+
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `results` | _Array&lt;Object&gt;_ | Batch requests results, ordered sequentially. |
+| `results.*.message-id` | _String_ | ID of the individual request which was originally provided by the client. |
+| `results.*.status` | _String_ | Status response as string. Either `ok` or `error`. |
+| `results.*.error` | _String (Optional)_ | Error message accompanying an `error` status. |
+
 
 ---
 

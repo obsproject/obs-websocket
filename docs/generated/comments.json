@@ -4300,6 +4300,95 @@
         "lead": "",
         "type": "class",
         "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Executes a list of requests sequentially (one-by-one on the same thread).",
+        "param": [
+          "{Array<Object>} `requests` Array of requests to perform. Executed in order.",
+          "{String} `requests.*.request-type` Request type. Eg. `GetVersion`.",
+          "{String (Optional)} `requests.*.message-id` ID of the individual request. Can be any string and not required to be unique. Defaults to empty string if not specified.",
+          "{boolean (Optional)} `abortOnFail` Stop processing batch requests if one returns a failure."
+        ],
+        "return": [
+          "{Array<Object>} `results` Batch requests results, ordered sequentially.",
+          "{String} `results.*.message-id` ID of the individual request which was originally provided by the client.",
+          "{String} `results.*.status` Status response as string. Either `ok` or `error`.",
+          "{String (Optional)} `results.*.error` Error message accompanying an `error` status."
+        ],
+        "api": "requests",
+        "name": "ExecuteBatch",
+        "category": "general",
+        "since": "4.9.0",
+        "returns": [
+          {
+            "type": "Array<Object>",
+            "name": "results",
+            "description": "Batch requests results, ordered sequentially."
+          },
+          {
+            "type": "String",
+            "name": "results.*.message-id",
+            "description": "ID of the individual request which was originally provided by the client."
+          },
+          {
+            "type": "String",
+            "name": "results.*.status",
+            "description": "Status response as string. Either `ok` or `error`."
+          },
+          {
+            "type": "String (Optional)",
+            "name": "results.*.error",
+            "description": "Error message accompanying an `error` status."
+          }
+        ],
+        "params": [
+          {
+            "type": "Array<Object>",
+            "name": "requests",
+            "description": "Array of requests to perform. Executed in order."
+          },
+          {
+            "type": "String",
+            "name": "requests.*.request-type",
+            "description": "Request type. Eg. `GetVersion`."
+          },
+          {
+            "type": "String (Optional)",
+            "name": "requests.*.message-id",
+            "description": "ID of the individual request. Can be any string and not required to be unique. Defaults to empty string if not specified."
+          },
+          {
+            "type": "boolean (Optional)",
+            "name": "abortOnFail",
+            "description": "Stop processing batch requests if one returns a failure."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "ExecuteBatch"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "general"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "4.9.0"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "ExecuteBatch"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
       }
     ],
     "media control": [
