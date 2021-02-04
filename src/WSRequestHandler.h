@@ -60,6 +60,7 @@ class WSRequestHandler {
 		RpcResponse OpenProjector(const RpcRequest&);
 		RpcResponse TriggerHotkeyByName(const RpcRequest&);
 		RpcResponse TriggerHotkeyBySequence(const RpcRequest&);
+		RpcResponse ExecuteBatch(const RpcRequest&);
 
 		// Category: Media Control
 		RpcResponse PlayPauseMedia(const RpcRequest&);

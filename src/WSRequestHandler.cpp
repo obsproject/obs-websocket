@@ -42,6 +42,7 @@ const QHash<QString, RpcMethodHandler> WSRequestHandler::messageMap{
 	{ "OpenProjector", &WSRequestHandler::OpenProjector },
 	{ "TriggerHotkeyByName", &WSRequestHandler::TriggerHotkeyByName },
 	{ "TriggerHotkeyBySequence", &WSRequestHandler::TriggerHotkeyBySequence },
+	{ "ExecuteBatch", &WSRequestHandler::ExecuteBatch },
 
 	// Category: Media Control
 	{ "PlayPauseMedia", &WSRequestHandler::PlayPauseMedia },
@@ -192,7 +193,7 @@ WSRequestHandler::WSRequestHandler(ConnectionProperties& connProperties) :
 {
 }
 
-RpcResponse WSRequestHandler::processRequest(const RpcRequest& request){
+RpcResponse WSRequestHandler::processRequest(const RpcRequest& request) {
 	if (GetConfig()->AuthRequired
 		&& (!authNotRequired.contains(request.methodName()))
 		&& (!_connProperties.isAuthenticated()))
