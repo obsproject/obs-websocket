@@ -422,7 +422,8 @@ RpcResponse WSRequestHandler::TriggerHotkeyBySequence(const RpcRequest& request)
 *
 * @param {Array<Object>} `requests` Array of requests to perform. Executed in order.
 * @param {String} `requests.*.request-type` Request type. Eg. `GetVersion`.
-* @param {String} `requests.*.message-id` ID of the individual request. Can be any string and not required to be unique.
+* @param {String (Optional)} `requests.*.message-id` ID of the individual request. Can be any string and not required to be unique. Defaults to empty string if not specified.
+* @param {boolean (Optional)} `abortOnFail` Stop processing batch requests if one returns a failure.
 *
 * @return {Array<Object>} `results` Batch requests results, ordered sequentially.
 * @return {String} `results.*.message-id` ID of the individual request which was originally provided by the client.
@@ -438,6 +439,8 @@ RpcResponse WSRequestHandler::ExecuteBatch(const RpcRequest& request) {
 	if (!request.hasField("requests")) {
 		return request.failed("missing request parameters");
 	}
+
+	bool abortOnFail = obs_data_get_bool(request.parameters(), "abortOnFail");
 
 	OBSDataArrayAutoRelease results = obs_data_array_create();
 
@@ -460,6 +463,10 @@ RpcResponse WSRequestHandler::ExecuteBatch(const RpcRequest& request) {
 		OBSDataAutoRelease subResponseData = OBSRemoteProtocol::rpcResponseToJsonData(subResponse);
 
 		obs_data_array_push_back(results, subResponseData);
+
+		// if told to abort on fail and a failure occurs, stop request processing and return the progress
+		if (abortOnFail && (subResponse.status() == RpcResponse::Status::Error))
+			break;
 	}
 
 	OBSDataAutoRelease response = obs_data_create();
