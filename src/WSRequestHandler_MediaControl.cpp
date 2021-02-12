@@ -7,7 +7,7 @@ bool isMediaSource(const QString& sourceKind)
 	return (sourceKind == "vlc_source" || sourceKind == "ffmpeg_source");
 }
 
-QString getSourceMediaState(obs_source_t *source)
+QString getSourceMediaState(obs_source_t* source)
 {
 	QString mediaState;
 	enum obs_media_state mstate = obs_source_media_get_state(source);
@@ -54,12 +54,11 @@ QString getSourceMediaState(obs_source_t *source)
 * @since 4.9.0
 */
 RpcResponse WSRequestHandler::PlayPauseMedia(const RpcRequest& request) {
-	if ((!request.hasField("sourceName")) || (!request.hasField("playPause"))) {
+	if (!request.hasField("sourceName")) {
 		return request.failed("missing request parameters");
 	}
 
 	QString sourceName = obs_data_get_string(request.parameters(), "sourceName");
-	bool playPause = obs_data_get_bool(request.parameters(), "playPause");
 	if (sourceName.isEmpty()) {
 		return request.failed("invalid request parameters");
 	}
@@ -68,8 +67,23 @@ RpcResponse WSRequestHandler::PlayPauseMedia(const RpcRequest& request) {
 	if (!source) {
 		return request.failed("specified source doesn't exist");
 	}
-
-	obs_source_media_play_pause(source, playPause);
+	if (!request.hasField("playPause")) {
+		switch (obs_source_media_get_state(source)) {
+		case obs_media_state::OBS_MEDIA_STATE_PAUSED:
+			obs_source_media_play_pause(source, false);
+			break;
+		case obs_media_state::OBS_MEDIA_STATE_PLAYING:
+			obs_source_media_play_pause(source, true);
+			break;
+		case obs_media_state::OBS_MEDIA_STATE_ENDED:
+			obs_source_media_restart(source);
+			break;
+		}
+	}
+	else {
+		bool playPause = obs_data_get_bool(request.parameters(), "playPause");
+		obs_source_media_play_pause(source, playPause);
+	}
 	return request.success();
 }
 
