@@ -68,16 +68,11 @@ RpcResponse WSRequestHandler::PlayPauseMedia(const RpcRequest& request) {
 		return request.failed("specified source doesn't exist");
 	}
 	if (!request.hasField("playPause")) {
-		switch (obs_source_media_get_state(source)) {
-		case obs_media_state::OBS_MEDIA_STATE_PAUSED:
-			obs_source_media_play_pause(source, false);
-			break;
-		case obs_media_state::OBS_MEDIA_STATE_PLAYING:
+		if (obs_source_media_get_state(source) == obs_media_state::OBS_MEDIA_STATE_PLAYING) {
 			obs_source_media_play_pause(source, true);
-			break;
-		case obs_media_state::OBS_MEDIA_STATE_ENDED:
-			obs_source_media_restart(source);
-			break;
+		}
+		else {
+			obs_source_media_play_pause(source, false);
 		}
 	}
 	else {
