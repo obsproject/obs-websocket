@@ -135,13 +135,14 @@ void WSServer::broadcast(const RpcEvent& event)
 {
 	std::string message = OBSRemoteProtocol::encodeEvent(event);
 
-	if (GetConfig()->DebugEnabled) {
+	auto config = GetConfig();
+	if (config && config->DebugEnabled) {
 		blog(LOG_INFO, "Update << '%s'", message.c_str());
 	}
 
 	QMutexLocker locker(&_clMutex);
 	for (connection_hdl hdl : _connections) {
-		if (GetConfig()->AuthRequired) {
+		if (config && config->AuthRequired) {
 			bool authenticated = _connectionProperties[hdl].isAuthenticated();
 			if (!authenticated) {
 				continue;
@@ -184,14 +185,15 @@ void WSServer::onMessage(connection_hdl hdl, server::message_ptr message)
 		ConnectionProperties& connProperties = _connectionProperties[hdl];
 		locker.unlock();
 
-		if (GetConfig()->DebugEnabled) {
+		auto config = GetConfig();
+		if (config && config->DebugEnabled) {
 			blog(LOG_INFO, "Request >> '%s'", payload.c_str());
 		}
 
 		WSRequestHandler requestHandler(connProperties);
 		std::string response = OBSRemoteProtocol::processMessage(requestHandler, payload);
 
-		if (GetConfig()->DebugEnabled) {
+		if (config && config->DebugEnabled) {
 			blog(LOG_INFO, "Response << '%s'", response.c_str());
 		}
 

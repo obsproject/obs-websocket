@@ -43,17 +43,18 @@ SettingsDialog::SettingsDialog(QWidget* parent) :
 
 void SettingsDialog::showEvent(QShowEvent* event) {
 	auto conf = GetConfig();
+	if (conf) {
+		ui->serverEnabled->setChecked(conf->ServerEnabled);
+		ui->serverPort->setValue(conf->ServerPort);
+		ui->lockToIPv4->setChecked(conf->LockToIPv4);
 
-	ui->serverEnabled->setChecked(conf->ServerEnabled);
-	ui->serverPort->setValue(conf->ServerPort);
-	ui->lockToIPv4->setChecked(conf->LockToIPv4);
+		ui->debugEnabled->setChecked(conf->DebugEnabled);
+		ui->alertsEnabled->setChecked(conf->AlertsEnabled);
 
-	ui->debugEnabled->setChecked(conf->DebugEnabled);
-	ui->alertsEnabled->setChecked(conf->AlertsEnabled);
-
-	ui->authRequired->blockSignals(true);
-	ui->authRequired->setChecked(conf->AuthRequired);
-	ui->authRequired->blockSignals(false);
+		ui->authRequired->blockSignals(true);
+		ui->authRequired->setChecked(conf->AuthRequired);
+		ui->authRequired->blockSignals(false);
+	}
 
 	ui->password->setText(CHANGE_ME);
 	ui->password->setEnabled(ui->authRequired->isChecked());
@@ -94,6 +95,9 @@ void SettingsDialog::AuthCheckboxChanged() {
 
 void SettingsDialog::FormAccepted() {
 	auto conf = GetConfig();
+	if (!conf) {
+		return;
+	}
 
 	conf->ServerEnabled = ui->serverEnabled->isChecked();
 	conf->ServerPort = ui->serverPort->value();
@@ -107,7 +111,7 @@ void SettingsDialog::FormAccepted() {
 			conf->SetPassword(ui->password->text());
 		}
 
-		if (!GetConfig()->Secret.isEmpty())
+		if (!conf->Secret.isEmpty())
 			conf->AuthRequired = true;
 		else
 			conf->AuthRequired = false;

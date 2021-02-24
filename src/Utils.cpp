@@ -509,9 +509,9 @@ QSystemTrayIcon* Utils::GetTrayIcon() {
 	return reinterpret_cast<QSystemTrayIcon*>(systemTray);
 }
 
-void Utils::SysTrayNotify(QString text,
-	QSystemTrayIcon::MessageIcon icon, QString title) {
-	if (!GetConfig()->AlertsEnabled ||
+void Utils::SysTrayNotify(QString text, QSystemTrayIcon::MessageIcon icon, QString title) {
+	auto config = GetConfig();
+	if ((config && !config->AlertsEnabled) ||
 		!QSystemTrayIcon::isSystemTrayAvailable() ||
 		!QSystemTrayIcon::supportsMessages())
 	{

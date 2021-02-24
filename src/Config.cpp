@@ -323,6 +323,10 @@ void Config::FirstRunPasswordSetup()
 
 	// check if the password is already set
 	auto config = GetConfig();
+	if (!config) {
+		return;
+	}
+
 	if (!(config->Secret.isEmpty()) && !(config->Salt.isEmpty())) {
 		return;
 	}

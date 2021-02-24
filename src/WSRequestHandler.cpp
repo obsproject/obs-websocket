@@ -194,7 +194,8 @@ WSRequestHandler::WSRequestHandler(ConnectionProperties& connProperties) :
 }
 
 RpcResponse WSRequestHandler::processRequest(const RpcRequest& request) {
-	if (GetConfig()->AuthRequired
+	auto config = GetConfig();
+	if ((config && config->AuthRequired)
 		&& (!authNotRequired.contains(request.methodName()))
 		&& (!_connProperties.isAuthenticated()))
 	{

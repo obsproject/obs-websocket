@@ -115,13 +115,13 @@ RpcResponse WSRequestHandler::GetVersion(const RpcRequest& request) {
  * @since 0.3
  */
 RpcResponse WSRequestHandler::GetAuthRequired(const RpcRequest& request) {
-	bool authRequired = GetConfig()->AuthRequired;
+	auto config = GetConfig();
+	bool authRequired = (config && config->AuthRequired);
 
 	OBSDataAutoRelease data = obs_data_create();
 	obs_data_set_bool(data, "authRequired", authRequired);
 
 	if (authRequired) {
-		auto config = GetConfig();
 		obs_data_set_string(data, "challenge",
 			config->SessionChallenge.toUtf8());
 		obs_data_set_string(data, "salt",
@@ -155,7 +155,8 @@ RpcResponse WSRequestHandler::Authenticate(const RpcRequest& request) {
 		return request.failed("auth not specified!");
 	}
 
-	if (GetConfig()->CheckAuth(auth) == false) {
+	auto config = GetConfig();
+	if (!config || (config->CheckAuth(auth) == false)) {
 		return request.failed("Authentication Failed.");
 	}
 
