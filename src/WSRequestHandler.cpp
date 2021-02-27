@@ -43,6 +43,7 @@ const QHash<QString, RpcMethodHandler> WSRequestHandler::messageMap{
 	{ "TriggerHotkeyByName", &WSRequestHandler::TriggerHotkeyByName },
 	{ "TriggerHotkeyBySequence", &WSRequestHandler::TriggerHotkeyBySequence },
 	{ "ExecuteBatch", &WSRequestHandler::ExecuteBatch },
+	{ "Sleep", &WSRequestHandler::Sleep },
 
 	// Category: Media Control
 	{ "PlayPauseMedia", &WSRequestHandler::PlayPauseMedia },
