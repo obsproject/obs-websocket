@@ -142,6 +142,7 @@ You can also refer to any of the client libraries listed on the [README](README.
     + [TriggerHotkeyByName](#triggerhotkeybyname)
     + [TriggerHotkeyBySequence](#triggerhotkeybysequence)
     + [ExecuteBatch](#executebatch)
+    + [Sleep](#sleep)
   * [Media Control](#media-control)
     + [PlayPauseMedia](#playpausemedia)
     + [RestartMedia](#restartmedia)
@@ -1776,6 +1777,26 @@ Executes a list of requests sequentially (one-by-one on the same thread).
 | `results.*.status` | _String_ | Status response as string. Either `ok` or `error`. |
 | `results.*.error` | _String (Optional)_ | Error message accompanying an `error` status. |
 
+
+---
+
+### Sleep
+
+
+- Unreleased
+
+Waits for the specified duration. Designed to be used in `ExecuteBatch` operations.
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sleepMillis` | _int_ | Delay in milliseconds to wait before continuing. |
+
+
+**Response Items:**
+
+_No additional response items._
 
 ---
 

@@ -4389,6 +4389,47 @@
         "lead": "",
         "type": "class",
         "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Waits for the specified duration. Designed to be used in `ExecuteBatch` operations.",
+        "param": "{int} `sleepMillis` Delay in milliseconds to wait before continuing.",
+        "api": "requests",
+        "name": "Sleep",
+        "category": "general",
+        "since": "unreleased",
+        "params": [
+          {
+            "type": "int",
+            "name": "sleepMillis",
+            "description": "Delay in milliseconds to wait before continuing."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "Sleep"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "general"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "unreleased"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "Sleep"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
       }
     ],
     "media control": [
