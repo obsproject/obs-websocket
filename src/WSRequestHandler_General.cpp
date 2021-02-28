@@ -476,9 +476,9 @@ RpcResponse WSRequestHandler::ExecuteBatch(const RpcRequest& request) {
 }
 
 /**
- * Waits for the specified delay. Designed to be used in `ExecuteBatch` operations.
+ * Waits for the specified duration. Designed to be used in `ExecuteBatch` operations.
  *
- * @param {int} `delayMillis` Delay in milliseconds to wait before continuing.
+ * @param {int} `sleepMillis` Delay in milliseconds to wait before continuing.
  *
  * @api requests
  * @name Sleep
@@ -486,12 +486,12 @@ RpcResponse WSRequestHandler::ExecuteBatch(const RpcRequest& request) {
  * @since unreleased
  */
 RpcResponse WSRequestHandler::Sleep(const RpcRequest& request) {
-	if (!request.hasField("delayMillis")) {
+	if (!request.hasField("sleepMillis")) {
 		return request.failed("missing request parameters");
 	}
 
-	long long delayMillis = obs_data_get_int(request.parameters(), "delayMillis");
-	std::this_thread::sleep_for(std::chrono::milliseconds(delayMillis));
+	long long sleepMillis = obs_data_get_int(request.parameters(), "sleepMillis");
+	std::this_thread::sleep_for(std::chrono::milliseconds(sleepMillis));
 
 	return request.success();
 }
