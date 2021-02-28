@@ -61,6 +61,7 @@ class WSRequestHandler {
 		RpcResponse TriggerHotkeyByName(const RpcRequest&);
 		RpcResponse TriggerHotkeyBySequence(const RpcRequest&);
 		RpcResponse ExecuteBatch(const RpcRequest&);
+		RpcResponse Sleep(const RpcRequest&);
 
 		// Category: Media Control
 		RpcResponse PlayPauseMedia(const RpcRequest&);
