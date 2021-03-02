@@ -316,6 +316,97 @@ RpcResponse WSRequestHandler::SetVolume(const RpcRequest& request)
 }
 
 /**
+* Changes whether an audio track is active for a source.
+*
+* @param {String} `source` Source name.
+* @param {int} `track` Audio tracks 1-6.
+* @param {boolean} `active` Whether audio track is active or not.
+*
+* @api requests
+* @name SetTracks
+* @category sources
+* @since 4.0.0
+*/
+RpcResponse WSRequestHandler::SetAudioTracks(const RpcRequest& request)
+ {
+	if (!request.hasField("source") || !request.hasField("track") || !request.hasField("active")) {
+		return request.failed("missing request parameters");
+	}
+
+	QString sourceName = obs_data_get_string(request.parameters(), "source");
+	bool active = obs_data_get_bool(request.parameters(), "active");
+	int track = obs_data_get_int(request.parameters(), "track")-1;
+
+	if (sourceName.isEmpty()) {
+		return request.failed("invalid request parameters");
+	}
+
+	OBSSourceAutoRelease source = obs_get_source_by_name(sourceName.toUtf8());
+	if (!source) {
+		return request.failed("specified source doesn't exist");
+	}
+
+	uint32_t mixers = obs_source_get_audio_mixers(source);
+	uint32_t new_mixers = mixers;
+
+	if (active)
+		new_mixers |= (1 << track);
+	else
+		new_mixers &= ~(1 << track);
+
+	obs_source_set_audio_mixers(source, new_mixers);
+
+	return request.success();
+}
+
+
+/**
+* Gets whether an audio track is active for a source.
+*
+* @param {String} `source` Source name.
+* 
+* @return {boolean} `mixer1`
+* @return {boolean} `mixer2`
+* @return {boolean} `mixer3`
+* @return {boolean} `mixer4`
+* @return {boolean} `mixer5`
+* @return {boolean} `mixer6`
+*
+* @api requests
+* @name GetTracks
+* @category sources
+* @since 4.0.0
+*/
+RpcResponse WSRequestHandler::GetAudioTracks(const RpcRequest& request)
+{
+	if (!request.hasField("source")) {
+		return request.failed("missing request parameters");
+	}
+
+	QString sourceName = obs_data_get_string(request.parameters(), "source");
+	if (sourceName.isEmpty()) {
+		return request.failed("invalid request parameters");
+	}
+
+	OBSSourceAutoRelease source = obs_get_source_by_name(sourceName.toUtf8());
+	if (!source) {
+		return request.failed("specified source doesn't exist");
+	}
+
+	uint32_t mixers = obs_source_get_audio_mixers(source);
+
+	OBSDataAutoRelease response = obs_data_create();
+	obs_data_set_string(response, "name", obs_source_get_name(source));
+	obs_data_set_bool(response, "mixer1", mixers & (1 << 0));
+	obs_data_set_bool(response, "mixer2", mixers & (1 << 1));
+	obs_data_set_bool(response, "mixer3", mixers & (1 << 2));
+	obs_data_set_bool(response, "mixer4", mixers & (1 << 3));
+	obs_data_set_bool(response, "mixer5", mixers & (1 << 4));
+	obs_data_set_bool(response, "mixer6", mixers & (1 << 5));
+	return request.success(response);
+}
+
+/**
 * Get the mute status of a specified source.
 *
 * @param {String} `source` Source name.

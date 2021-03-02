@@ -121,6 +121,8 @@ const QHash<QString, RpcMethodHandler> WSRequestHandler::messageMap{
 	{ "GetSourceTypesList", &WSRequestHandler::GetSourceTypesList },
 	{ "GetVolume", &WSRequestHandler::GetVolume },
 	{ "SetVolume", &WSRequestHandler::SetVolume },
+	{ "SetAudioTracks", &WSRequestHandler::SetAudioTracks },
+	{ "GetAudioTracks", &WSRequestHandler::GetAudioTracks },
 	{ "GetMute", &WSRequestHandler::GetMute },
 	{ "SetMute", &WSRequestHandler::SetMute },
 	{ "ToggleMute", &WSRequestHandler::ToggleMute },
