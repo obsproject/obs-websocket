@@ -365,12 +365,12 @@ RpcResponse WSRequestHandler::SetAudioTracks(const RpcRequest& request)
 *
 * @param {String} `source` Source name.
 * 
-* @return {boolean} `mixer1`
-* @return {boolean} `mixer2`
-* @return {boolean} `mixer3`
-* @return {boolean} `mixer4`
-* @return {boolean} `mixer5`
-* @return {boolean} `mixer6`
+* @return {boolean} `track1`
+* @return {boolean} `track2`
+* @return {boolean} `track3`
+* @return {boolean} `track4`
+* @return {boolean} `track5`
+* @return {boolean} `track6`
 *
 * @api requests
 * @name GetTracks
@@ -397,12 +397,12 @@ RpcResponse WSRequestHandler::GetAudioTracks(const RpcRequest& request)
 
 	OBSDataAutoRelease response = obs_data_create();
 	obs_data_set_string(response, "name", obs_source_get_name(source));
-	obs_data_set_bool(response, "mixer1", mixers & (1 << 0));
-	obs_data_set_bool(response, "mixer2", mixers & (1 << 1));
-	obs_data_set_bool(response, "mixer3", mixers & (1 << 2));
-	obs_data_set_bool(response, "mixer4", mixers & (1 << 3));
-	obs_data_set_bool(response, "mixer5", mixers & (1 << 4));
-	obs_data_set_bool(response, "mixer6", mixers & (1 << 5));
+	obs_data_set_bool(response, "track1", mixers & (1 << 0));
+	obs_data_set_bool(response, "track2", mixers & (1 << 1));
+	obs_data_set_bool(response, "track3", mixers & (1 << 2));
+	obs_data_set_bool(response, "track4", mixers & (1 << 3));
+	obs_data_set_bool(response, "track5", mixers & (1 << 4));
+	obs_data_set_bool(response, "track6", mixers & (1 << 5));
 	return request.success(response);
 }
 
