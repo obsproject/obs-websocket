@@ -91,6 +91,7 @@ RpcResponse WSRequestHandler::GetSceneItemList(const RpcRequest& request) {
 * @return {double} `rotation` The clockwise rotation of the item in degrees around the point of alignment.
 * @return {double} `scale.x` The x-scale factor of the source.
 * @return {double} `scale.y` The y-scale factor of the source.
+* @return {String} `scale.filter` The scale filter of the source. Can be "OBS_SCALE_DISABLE", "OBS_SCALE_POINT", "OBS_SCALE_BICUBIC", "OBS_SCALE_BILINEAR", "OBS_SCALE_LANCZOS" or "OBS_SCALE_AREA".
 * @return {int} `crop.top` The number of pixels cropped off the top of the source before scaling.
 * @return {int} `crop.right` The number of pixels cropped off the right of the source before scaling.
 * @return {int} `crop.bottom` The number of pixels cropped off the bottom of the source before scaling.
@@ -156,6 +157,7 @@ RpcResponse WSRequestHandler::GetSceneItemProperties(const RpcRequest& request) 
 * @param {double (optional)} `rotation` The new clockwise rotation of the item in degrees.
 * @param {double (optional)} `scale.x` The new x scale of the item.
 * @param {double (optional)} `scale.y` The new y scale of the item.
+* @param {String (optional)} `scale.filter` The new scale filter of the source. Can be "OBS_SCALE_DISABLE", "OBS_SCALE_POINT", "OBS_SCALE_BICUBIC", "OBS_SCALE_BILINEAR", "OBS_SCALE_LANCZOS" or "OBS_SCALE_AREA".
 * @param {int (optional)} `crop.top` The new amount of pixels cropped off the top of the source before scaling.
 * @param {int (optional)} `crop.bottom` The new amount of pixels cropped off the bottom of the source before scaling.
 * @param {int (optional)} `crop.left` The new amount of pixels cropped off the left of the source before scaling.
@@ -230,11 +232,33 @@ RpcResponse WSRequestHandler::SetSceneItemProperties(const RpcRequest& request) 
 	}
 
 	if (request.hasField("scale")) {
+		OBSDataAutoRelease reqScale = obs_data_get_obj(params, "scale");
+
+		if (obs_data_has_user_value(reqScale, "filter")) {
+			QString newScaleFilter = obs_data_get_string(reqScale, "filter");
+			if (newScaleFilter == "OBS_SCALE_DISABLE") {
+				obs_sceneitem_set_scale_filter(sceneItem, OBS_SCALE_DISABLE);
+			}
+			else if (newScaleFilter == "OBS_SCALE_POINT") {
+				obs_sceneitem_set_scale_filter(sceneItem, OBS_SCALE_POINT);
+			}
+			else if (newScaleFilter == "OBS_SCALE_BICUBIC") {
+				obs_sceneitem_set_scale_filter(sceneItem, OBS_SCALE_BICUBIC);
+			}
+			else if (newScaleFilter == "OBS_SCALE_BILINEAR") {
+				obs_sceneitem_set_scale_filter(sceneItem, OBS_SCALE_BICUBIC);
+			}
+			else if (newScaleFilter == "OBS_SCALE_LANCZOS") {
+				obs_sceneitem_set_scale_filter(sceneItem, OBS_SCALE_LANCZOS);
+			}
+			else if (newScaleFilter == "OBS_SCALE_AREA") {
+				obs_sceneitem_set_scale_filter(sceneItem, OBS_SCALE_AREA);
+			}
+		}
+
 		vec2 oldScale;
 		obs_sceneitem_get_scale(sceneItem, &oldScale);
 		vec2 newScale = oldScale;
-
-		OBSDataAutoRelease reqScale = obs_data_get_obj(params, "scale");
 
 		if (obs_data_has_user_value(reqScale, "x")) {
 			newScale.x = obs_data_get_double(reqScale, "x");
