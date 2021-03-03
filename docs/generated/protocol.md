@@ -302,6 +302,7 @@ These are complex types, such as `Source` and `Scene`, which are used as argumen
 | `rotation` | _double_ | The clockwise rotation of the scene item in degrees around the point of alignment. |
 | `scale.x` | _double_ | The x-scale factor of the scene item. |
 | `scale.y` | _double_ | The y-scale factor of the scene item. |
+| `scale.filter` | _String_ | The scale filter of the source. Can be "OBS_SCALE_DISABLE", "OBS_SCALE_POINT", "OBS_SCALE_BICUBIC", "OBS_SCALE_BILINEAR", "OBS_SCALE_LANCZOS" or "OBS_SCALE_AREA". |
 | `crop.top` | _int_ | The number of pixels cropped off the top of the scene item before scaling. |
 | `crop.right` | _int_ | The number of pixels cropped off the right of the scene item before scaling. |
 | `crop.bottom` | _int_ | The number of pixels cropped off the bottom of the scene item before scaling. |
@@ -3477,6 +3478,7 @@ Coordinates are relative to the item's parent (the scene or group it belongs to)
 | `rotation` | _double_ | The clockwise rotation of the item in degrees around the point of alignment. |
 | `scale.x` | _double_ | The x-scale factor of the source. |
 | `scale.y` | _double_ | The y-scale factor of the source. |
+| `scale.filter` | _String_ | The scale filter of the source. Can be "OBS_SCALE_DISABLE", "OBS_SCALE_POINT", "OBS_SCALE_BICUBIC", "OBS_SCALE_BILINEAR", "OBS_SCALE_LANCZOS" or "OBS_SCALE_AREA". |
 | `crop.top` | _int_ | The number of pixels cropped off the top of the source before scaling. |
 | `crop.right` | _int_ | The number of pixels cropped off the right of the source before scaling. |
 | `crop.bottom` | _int_ | The number of pixels cropped off the bottom of the source before scaling. |
@@ -3520,6 +3522,7 @@ Coordinates are relative to the item's parent (the scene or group it belongs to)
 | `rotation` | _double (optional)_ | The new clockwise rotation of the item in degrees. |
 | `scale.x` | _double (optional)_ | The new x scale of the item. |
 | `scale.y` | _double (optional)_ | The new y scale of the item. |
+| `scale.filter` | _String (optional)_ | The new scale filter of the source. Can be "OBS_SCALE_DISABLE", "OBS_SCALE_POINT", "OBS_SCALE_BICUBIC", "OBS_SCALE_BILINEAR", "OBS_SCALE_LANCZOS" or "OBS_SCALE_AREA". |
 | `crop.top` | _int (optional)_ | The new amount of pixels cropped off the top of the source before scaling. |
 | `crop.bottom` | _int (optional)_ | The new amount of pixels cropped off the bottom of the source before scaling. |
 | `crop.left` | _int (optional)_ | The new amount of pixels cropped off the left of the source before scaling. |

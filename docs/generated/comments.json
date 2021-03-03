@@ -127,6 +127,7 @@
         "{double} `rotation` The clockwise rotation of the scene item in degrees around the point of alignment.",
         "{double} `scale.x` The x-scale factor of the scene item.",
         "{double} `scale.y` The y-scale factor of the scene item.",
+        "{String} `scale.filter` The scale filter of the source. Can be \"OBS_SCALE_DISABLE\", \"OBS_SCALE_POINT\", \"OBS_SCALE_BICUBIC\", \"OBS_SCALE_BILINEAR\", \"OBS_SCALE_LANCZOS\" or \"OBS_SCALE_AREA\".",
         "{int} `crop.top` The number of pixels cropped off the top of the scene item before scaling.",
         "{int} `crop.right` The number of pixels cropped off the right of the scene item before scaling.",
         "{int} `crop.bottom` The number of pixels cropped off the bottom of the scene item before scaling.",
@@ -174,6 +175,11 @@
           "type": "double",
           "name": "scale.y",
           "description": "The y-scale factor of the scene item."
+        },
+        {
+          "type": "String",
+          "name": "scale.filter",
+          "description": "The scale filter of the source. Can be \"OBS_SCALE_DISABLE\", \"OBS_SCALE_POINT\", \"OBS_SCALE_BICUBIC\", \"OBS_SCALE_BILINEAR\", \"OBS_SCALE_LANCZOS\" or \"OBS_SCALE_AREA\"."
         },
         {
           "type": "int",
@@ -8610,6 +8616,7 @@
           "{double} `rotation` The clockwise rotation of the item in degrees around the point of alignment.",
           "{double} `scale.x` The x-scale factor of the source.",
           "{double} `scale.y` The y-scale factor of the source.",
+          "{String} `scale.filter` The scale filter of the source. Can be \"OBS_SCALE_DISABLE\", \"OBS_SCALE_POINT\", \"OBS_SCALE_BICUBIC\", \"OBS_SCALE_BILINEAR\", \"OBS_SCALE_LANCZOS\" or \"OBS_SCALE_AREA\".",
           "{int} `crop.top` The number of pixels cropped off the top of the source before scaling.",
           "{int} `crop.right` The number of pixels cropped off the right of the source before scaling.",
           "{int} `crop.bottom` The number of pixels cropped off the bottom of the source before scaling.",
@@ -8672,6 +8679,11 @@
             "type": "double",
             "name": "scale.y",
             "description": "The y-scale factor of the source."
+          },
+          {
+            "type": "String",
+            "name": "scale.filter",
+            "description": "The scale filter of the source. Can be \"OBS_SCALE_DISABLE\", \"OBS_SCALE_POINT\", \"OBS_SCALE_BICUBIC\", \"OBS_SCALE_BILINEAR\", \"OBS_SCALE_LANCZOS\" or \"OBS_SCALE_AREA\"."
           },
           {
             "type": "int",
@@ -8821,6 +8833,7 @@
           "{double (optional)} `rotation` The new clockwise rotation of the item in degrees.",
           "{double (optional)} `scale.x` The new x scale of the item.",
           "{double (optional)} `scale.y` The new y scale of the item.",
+          "{String (optional)} `scale.filter` The new scale filter of the source. Can be \"OBS_SCALE_DISABLE\", \"OBS_SCALE_POINT\", \"OBS_SCALE_BICUBIC\", \"OBS_SCALE_BILINEAR\", \"OBS_SCALE_LANCZOS\" or \"OBS_SCALE_AREA\".",
           "{int (optional)} `crop.top` The new amount of pixels cropped off the top of the source before scaling.",
           "{int (optional)} `crop.bottom` The new amount of pixels cropped off the bottom of the source before scaling.",
           "{int (optional)} `crop.left` The new amount of pixels cropped off the left of the source before scaling.",
@@ -8886,6 +8899,11 @@
             "type": "double (optional)",
             "name": "scale.y",
             "description": "The new y scale of the item."
+          },
+          {
+            "type": "String (optional)",
+            "name": "scale.filter",
+            "description": "The new scale filter of the source. Can be \"OBS_SCALE_DISABLE\", \"OBS_SCALE_POINT\", \"OBS_SCALE_BICUBIC\", \"OBS_SCALE_BILINEAR\", \"OBS_SCALE_LANCZOS\" or \"OBS_SCALE_AREA\"."
           },
           {
             "type": "int (optional)",
