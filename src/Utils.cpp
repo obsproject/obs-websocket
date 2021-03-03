@@ -52,6 +52,24 @@ obs_bounds_type getBoundsTypeFromName(QString name) {
 	return boundTypeNames.key(name);
 }
 
+const QHash<obs_scale_type, QString> scaleTypeNames = {
+	{ OBS_SCALE_DISABLE, "OBS_SCALE_DISABLE" },
+	{ OBS_SCALE_POINT, "OBS_SCALE_POINT" },
+	{ OBS_SCALE_BICUBIC, "OBS_SCALE_BICUBIC" },
+	{ OBS_SCALE_BILINEAR, "OBS_SCALE_BILINEAR" },
+	{ OBS_SCALE_LANCZOS, "OBS_SCALE_LANCZOS" },
+	{ OBS_SCALE_AREA, "OBS_SCALE_AREA" },
+};
+
+QString getScaleNameFromType(obs_scale_type type) {
+	QString fallback = scaleTypeNames.value(OBS_SCALE_DISABLE);
+	return scaleTypeNames.value(type, fallback);
+}
+
+obs_scale_type getFilterTypeFromName(QString name) {
+	return scaleTypeNames.key(name);
+}
+
 bool Utils::StringInStringList(char** strings, const char* string) {
 	if (!strings) {
 		return false;
@@ -730,6 +748,7 @@ const char* Utils::GetCurrentRecordingFilename()
  * @property {double} `rotation` The clockwise rotation of the scene item in degrees around the point of alignment.
  * @property {double} `scale.x` The x-scale factor of the scene item.
  * @property {double} `scale.y` The y-scale factor of the scene item.
+ * @property {String} `scale.filter` The scale filter of the source. Can be "OBS_SCALE_DISABLE", "OBS_SCALE_POINT", "OBS_SCALE_BICUBIC", "OBS_SCALE_BILINEAR", "OBS_SCALE_LANCZOS" or "OBS_SCALE_AREA".
  * @property {int} `crop.top` The number of pixels cropped off the top of the scene item before scaling.
  * @property {int} `crop.right` The number of pixels cropped off the right of the scene item before scaling.
  * @property {int} `crop.bottom` The number of pixels cropped off the bottom of the scene item before scaling.
@@ -773,12 +792,16 @@ obs_data_t* Utils::GetSceneItemPropertiesData(obs_sceneitem_t* sceneItem) {
 	uint32_t boundsAlignment = obs_sceneitem_get_bounds_alignment(sceneItem);
 	QString boundsTypeName = getBoundsNameFromType(boundsType);
 
+	obs_scale_type scaleFilter = obs_sceneitem_get_scale_filter(sceneItem);
+	QString scaleFilterName = getScaleNameFromType(scaleFilter);
+
 	OBSDataAutoRelease posData = obs_data_create();
 	obs_data_set_double(posData, "x", pos.x);
 	obs_data_set_double(posData, "y", pos.y);
 	obs_data_set_int(posData, "alignment", alignment);
 
 	OBSDataAutoRelease scaleData = obs_data_create();
+	obs_data_set_string(scaleData, "filter", scaleFilterName.toUtf8());
 	obs_data_set_double(scaleData, "x", scale.x);
 	obs_data_set_double(scaleData, "y", scale.y);
 
