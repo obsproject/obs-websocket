@@ -45,7 +45,7 @@ QString getSourceMediaState(obs_source_t *source)
 /**
 * Pause or play a media source. Supports ffmpeg and vlc media sources (as of OBS v25.0.8)
 * Note :Leaving out `playPause` toggles the current pause state
-
+*
 * @param {String} `sourceName` Source name.
 * @param {boolean} `playPause` (optional) Whether to pause or play the source. `false` for play, `true` for pause.
 *
