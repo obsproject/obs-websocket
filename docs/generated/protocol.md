@@ -1809,13 +1809,14 @@ _No additional response items._
 - Added in v4.9.0
 
 Pause or play a media source. Supports ffmpeg and vlc media sources (as of OBS v25.0.8)
+Note :Leaving out `playPause` toggles the current pause state
 
 **Request Fields:**
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
 | `sourceName` | _String_ | Source name. |
-| `playPause` | _boolean_ | Whether to pause or play the source. `false` for play, `true` for pause. |
+| `playPause` | _boolean_ | (optional) Whether to pause or play the source. `false` for play, `true` for pause. |
 
 
 **Response Items:**

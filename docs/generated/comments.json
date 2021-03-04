@@ -4441,10 +4441,10 @@
     "media control": [
       {
         "subheads": [],
-        "description": "Pause or play a media source. Supports ffmpeg and vlc media sources (as of OBS v25.0.8)",
+        "description": "Pause or play a media source. Supports ffmpeg and vlc media sources (as of OBS v25.0.8)\nNote :Leaving out `playPause` toggles the current pause state",
         "param": [
           "{String} `sourceName` Source name.",
-          "{boolean} `playPause` Whether to pause or play the source. `false` for play, `true` for pause."
+          "{boolean} `playPause` (optional) Whether to pause or play the source. `false` for play, `true` for pause."
         ],
         "api": "requests",
         "name": "PlayPauseMedia",
@@ -4459,7 +4459,7 @@
           {
             "type": "boolean",
             "name": "playPause",
-            "description": "Whether to pause or play the source. `false` for play, `true` for pause."
+            "description": "(optional) Whether to pause or play the source. `false` for play, `true` for pause."
           }
         ],
         "names": [
