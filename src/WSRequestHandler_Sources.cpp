@@ -362,7 +362,7 @@ RpcResponse WSRequestHandler::SetAudioTracks(const RpcRequest& request)
 /**
 * Gets whether an audio track is active for a source.
 *
-* @param {String} `source` Source name.
+* @param {String} `sourceName` Source name.
 * 
 * @return {boolean} `track1`
 * @return {boolean} `track2`
@@ -378,11 +378,11 @@ RpcResponse WSRequestHandler::SetAudioTracks(const RpcRequest& request)
 */
 RpcResponse WSRequestHandler::GetAudioTracks(const RpcRequest& request)
 {
-	if (!request.hasField("source")) {
+	if (!request.hasField("sourceName")) {
 		return request.failed("missing request parameters");
 	}
 
-	QString sourceName = obs_data_get_string(request.parameters(), "source");
+	QString sourceName = obs_data_get_string(request.parameters(), "sourceName");
 	if (sourceName.isEmpty()) {
 		return request.failed("invalid request parameters");
 	}
