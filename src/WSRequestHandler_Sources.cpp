@@ -318,26 +318,26 @@ RpcResponse WSRequestHandler::SetVolume(const RpcRequest& request)
 /**
 * Changes whether an audio track is active for a source.
 *
-* @param {String} `source` Source name.
+* @param {String} `sourceName` Source name.
 * @param {int} `track` Audio tracks 1-6.
 * @param {boolean} `active` Whether audio track is active or not.
 *
 * @api requests
 * @name SetTracks
 * @category sources
-* @since 4.0.0
+* @since unreleased
 */
 RpcResponse WSRequestHandler::SetAudioTracks(const RpcRequest& request)
  {
-	if (!request.hasField("source") || !request.hasField("track") || !request.hasField("active")) {
+	if (!request.hasField("sourceName") || !request.hasField("track") || !request.hasField("active")) {
 		return request.failed("missing request parameters");
 	}
 
-	QString sourceName = obs_data_get_string(request.parameters(), "source");
+	QString sourceName = obs_data_get_string(request.parameters(), "sourceName");
 	bool active = obs_data_get_bool(request.parameters(), "active");
 	int track = obs_data_get_int(request.parameters(), "track")-1;
 
-	if (sourceName.isEmpty()) {
+	if (sourceName.isEmpty() || track > 5 || track < 0) {
 		return request.failed("invalid request parameters");
 	}
 
@@ -347,14 +347,13 @@ RpcResponse WSRequestHandler::SetAudioTracks(const RpcRequest& request)
 	}
 
 	uint32_t mixers = obs_source_get_audio_mixers(source);
-	uint32_t new_mixers = mixers;
 
-	if (active)
-		new_mixers |= (1 << track);
-	else
-		new_mixers &= ~(1 << track);
+	if (active && !(mixers & (1 << track)))
+		mixers |= (1 << track);
+	else if (mixers & (1 << track))
+		mixers &= ~(1 << track);
 
-	obs_source_set_audio_mixers(source, new_mixers);
+	obs_source_set_audio_mixers(source, mixers);
 
 	return request.success();
 }
@@ -365,17 +364,17 @@ RpcResponse WSRequestHandler::SetAudioTracks(const RpcRequest& request)
 *
 * @param {String} `source` Source name.
 * 
-* @return {boolean} `track1`
-* @return {boolean} `track2`
-* @return {boolean} `track3`
-* @return {boolean} `track4`
-* @return {boolean} `track5`
-* @return {boolean} `track6`
+* @return {boolean} `mixer1`
+* @return {boolean} `mixer2`
+* @return {boolean} `mixer3`
+* @return {boolean} `mixer4`
+* @return {boolean} `mixer5`
+* @return {boolean} `mixer6`
 *
 * @api requests
 * @name GetTracks
 * @category sources
-* @since 4.0.0
+* @since unreleased
 */
 RpcResponse WSRequestHandler::GetAudioTracks(const RpcRequest& request)
 {
@@ -397,12 +396,12 @@ RpcResponse WSRequestHandler::GetAudioTracks(const RpcRequest& request)
 
 	OBSDataAutoRelease response = obs_data_create();
 	obs_data_set_string(response, "name", obs_source_get_name(source));
-	obs_data_set_bool(response, "track1", mixers & (1 << 0));
-	obs_data_set_bool(response, "track2", mixers & (1 << 1));
-	obs_data_set_bool(response, "track3", mixers & (1 << 2));
-	obs_data_set_bool(response, "track4", mixers & (1 << 3));
-	obs_data_set_bool(response, "track5", mixers & (1 << 4));
-	obs_data_set_bool(response, "track6", mixers & (1 << 5));
+	obs_data_set_bool(response, "mixer1", mixers & (1 << 0));
+	obs_data_set_bool(response, "mixer2", mixers & (1 << 1));
+	obs_data_set_bool(response, "mixer3", mixers & (1 << 2));
+	obs_data_set_bool(response, "mixer4", mixers & (1 << 3));
+	obs_data_set_bool(response, "mixer5", mixers & (1 << 4));
+	obs_data_set_bool(response, "mixer6", mixers & (1 << 5));
 	return request.success(response);
 }
 
