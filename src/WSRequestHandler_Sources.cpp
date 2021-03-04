@@ -408,7 +408,7 @@ RpcResponse WSRequestHandler::GetAudioTracks(const RpcRequest& request)
 /**
 * Get the mute status of a specified source.
 *
-* @param {String} `sourceName` Source name.
+* @param {String} `source` Source name.
 *
 * @return {String} `name` Source name.
 * @return {boolean} `muted` Mute status of the source.
