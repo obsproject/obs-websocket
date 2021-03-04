@@ -160,6 +160,11 @@ void WSServer::broadcast(const RpcEvent& event)
 	}
 }
 
+bool WSServer::isListening()
+{
+	return _server.is_listening();
+}
+
 void WSServer::onOpen(connection_hdl hdl)
 {
 	QMutexLocker locker(&_clMutex);
@@ -217,11 +222,12 @@ void WSServer::onClose(connection_hdl hdl)
 
 	auto conn = _server.get_con_from_hdl(hdl);
 	auto localCloseCode = conn->get_local_close_code();
+	auto localCloseReason = conn->get_local_close_reason();
+	QString clientIp = getRemoteEndpoint(hdl);
 
-	if (localCloseCode != websocketpp::close::status::going_away) {
-		QString clientIp = getRemoteEndpoint(hdl);
+	blog(LOG_INFO, "Websocket connection with client '%s' closed (disconnected). Code is %d, reason is: '%s'", clientIp.toUtf8().constData(), localCloseCode, localCloseReason.c_str());
+	if (localCloseCode != websocketpp::close::status::going_away && _server.is_listening()) {
 		notifyDisconnection(clientIp);
-		blog(LOG_INFO, "client %s disconnected", clientIp.toUtf8().constData());
 	}
 }
 

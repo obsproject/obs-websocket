@@ -47,6 +47,7 @@ public:
 	void start(quint16 port, bool lockToIPv4);
 	void stop();
 	void broadcast(const RpcEvent& event);
+	bool isListening();
 	QThreadPool* threadPool() {
 		return &_threadPool;
 	}
