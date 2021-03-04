@@ -48,7 +48,7 @@ QString getSourceMediaState(obs_source_t *source)
 
 * @param {String} `sourceName` Source name.
 * @param {boolean} `playPause` (optional) Whether to pause or play the source. `false` for play, `true` for pause.
-* 
+*
 * @api requests
 * @name PlayPauseMedia
 * @category media control
@@ -75,8 +75,7 @@ RpcResponse WSRequestHandler::PlayPauseMedia(const RpcRequest& request) {
 		} else {
 			obs_source_media_play_pause(source, false);
 		}
-	}
-	else {
+	} else {
 		bool playPause = obs_data_get_bool(request.parameters(), "playPause");
 		obs_source_media_play_pause(source, playPause);
 	}
