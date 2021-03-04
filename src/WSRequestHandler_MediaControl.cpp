@@ -44,10 +44,11 @@ QString getSourceMediaState(obs_source_t *source)
 
 /**
 * Pause or play a media source. Supports ffmpeg and vlc media sources (as of OBS v25.0.8)
-*
+* Note :Leaving out `playPause` toggles the current pause state
+
 * @param {String} `sourceName` Source name.
 * @param {boolean} `playPause` (optional) Whether to pause or play the source. `false` for play, `true` for pause.
-*
+* 
 * @api requests
 * @name PlayPauseMedia
 * @category media control
@@ -71,8 +72,7 @@ RpcResponse WSRequestHandler::PlayPauseMedia(const RpcRequest& request) {
 	if (!request.hasField("playPause")) {
 		if (obs_source_media_get_state(source) == obs_media_state::OBS_MEDIA_STATE_PLAYING) {
 			obs_source_media_play_pause(source, true);
-		}
-		else {
+		} else {
 			obs_source_media_play_pause(source, false);
 		}
 	}
