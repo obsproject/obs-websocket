@@ -141,6 +141,7 @@ class WSRequestHandler {
 		RpcResponse GetMute(const RpcRequest&);
 		RpcResponse SetMute(const RpcRequest&);
 		RpcResponse ToggleMute(const RpcRequest&);
+		RpcResponse GetSourceActive(const RpcRequest&);
 		RpcResponse GetAudioActive(const RpcRequest&);
 		RpcResponse SetSourceName(const RpcRequest&);
 		RpcResponse SetSyncOffset(const RpcRequest&);

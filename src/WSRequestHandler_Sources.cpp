@@ -415,6 +415,40 @@ RpcResponse WSRequestHandler::ToggleMute(const RpcRequest& request)
 }
 
 /**
+* Get the source's active status of a specified source (if it is showing in the final mix).
+*
+* @param {String} `sourceName` Source name.
+*
+* @return {boolean} `sourceActive` Source active status of the source.
+*
+* @api requests
+* @name GetSourceActive
+* @category sources
+* @since unreleased
+*/
+RpcResponse WSRequestHandler::GetSourceActive(const RpcRequest& request)
+{
+	if (!request.hasField("sourceName")) {
+		return request.failed("missing request parameters");
+	}
+
+	QString sourceName = obs_data_get_string(request.parameters(), "sourceName");
+	if (sourceName.isEmpty()) {
+		return request.failed("invalid request parameters");
+	}
+
+	OBSSourceAutoRelease source = obs_get_source_by_name(sourceName.toUtf8());
+	if (!source) {
+		return request.failed("specified source doesn't exist");
+	}
+
+	OBSDataAutoRelease response = obs_data_create();
+	obs_data_set_bool(response, "sourceActive", obs_source_active(source));
+
+	return request.success(response);
+}
+
+/**
 * Get the audio's active status of a specified source.
 *
 * @param {String} `sourceName` Source name.
