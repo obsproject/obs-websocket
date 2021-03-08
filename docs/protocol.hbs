@@ -1,0 +1,112 @@
+{{#read "partials/introduction.md"}}{{/read}}
+
+
+
+# Table of Contents
+<!-- toc -->
+
+
+
+{{#read "partials/typedefsHeader.md"}}{{/read}}
+
+{{#each typedefs}}
+## {{typedefs.0.name}}
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+{{#each properties}}
+| `{{name}}` | _{{depipe type}}_ | {{{depipe description}}} |
+{{/each}}
+{{/each}}
+
+
+
+{{#read "partials/eventsHeader.md"}}{{/read}}
+
+{{#each events}}
+## {{capitalizeAll @key}}
+
+{{#each this}}
+### {{name}}
+
+{{#if deprecated}}
+- **⚠️ Deprecated. {{deprecated}} ⚠️**
+{{/if}}
+
+{{#eq since "unreleased"}}
+- Unreleased
+{{else}}
+- Added in v{{since}}
+{{/eq}}
+
+{{{description}}}
+
+**Response Items:**
+
+{{#if returns.length}}
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+{{#each returns}}
+| `{{name}}` | _{{depipe type}}_ | {{{depipe description}}} |
+{{/each}}
+
+{{else}}
+_No additional response items._
+{{/if}}
+
+---
+
+{{/each}}
+{{/each}}
+
+
+
+{{#read "partials/requestsHeader.md"}}{{/read}}
+
+{{#each requests}}
+## {{capitalizeAll @key}}
+
+{{#each this}}
+### {{name}}
+
+{{#if deprecated}}
+- **⚠️ Deprecated. {{deprecated}} ⚠️**
+{{/if}}
+
+{{#eq since "unreleased"}}
+- Unreleased
+{{else}}
+- Added in v{{since}}
+{{/eq}}
+
+{{{description}}}
+
+**Request Fields:**
+
+{{#if params.length}}
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+{{#each params}}
+| `{{name}}` | _{{depipe type}}_ | {{{depipe description}}} |
+{{/each}}
+
+{{else}}
+_No specified parameters._
+{{/if}}
+
+**Response Items:**
+
+{{#if returns.length}}
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+{{#each returns}}
+| `{{name}}` | _{{depipe type}}_ | {{{depipe description}}} |
+{{/each}}
+
+{{else}}
+_No additional response items._
+{{/if}}
+
+---
+
+{{/each}}
+{{/each}}

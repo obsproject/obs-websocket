@@ -1,0 +1,10 @@
+[*]
+insert_final_newline = true
+
+[*.{c,cpp,h,hpp}]
+indent_style = tab
+indent_size = 4
+
+[*.{yml,yaml}]
+indent_style = space
+indent_size = 2
