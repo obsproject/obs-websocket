@@ -30,6 +30,7 @@ set(obs-websocket_SOURCES
 	src/WSRequestHandler_General.cpp
 	src/WSRequestHandler_Profiles.cpp
 	src/WSRequestHandler_Recording.cpp
+	src/WSRequestHandler_VirtualCam.cpp
 	src/WSRequestHandler_ReplayBuffer.cpp
 	src/WSRequestHandler_SceneCollections.cpp
 	src/WSRequestHandler_Scenes.cpp
