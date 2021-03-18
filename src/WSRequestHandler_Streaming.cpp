@@ -12,9 +12,11 @@
  * @return {boolean} `streaming` Current streaming status.
  * @return {boolean} `recording` Current recording status.
  * @return {boolean} `recording-paused` If recording is paused.
+ * @return {boolean} `virtualcam` Current virtual cam status.
  * @return {boolean} `preview-only` Always false. Retrocompatibility with OBSRemote.
  * @return {String (optional)} `stream-timecode` Time elapsed since streaming started (only present if currently streaming).
  * @return {String (optional)} `rec-timecode` Time elapsed since recording started (only present if currently recording).
+ * @return {String (optional)} `virtualcam-timecode` Time elapsed since virtual cam started (only present if virtual cam currently active).
  *
  * @api requests
  * @name GetStreamingStatus
@@ -28,6 +30,7 @@ RpcResponse WSRequestHandler::GetStreamingStatus(const RpcRequest& request) {
 	obs_data_set_bool(data, "streaming", obs_frontend_streaming_active());
 	obs_data_set_bool(data, "recording", obs_frontend_recording_active());
 	obs_data_set_bool(data, "recording-paused", obs_frontend_recording_paused());
+	obs_data_set_bool(data, "virtualcam", obs_frontend_virtualcam_active());
 	obs_data_set_bool(data, "preview-only", false);
 
 	if (obs_frontend_streaming_active()) {
@@ -38,6 +41,11 @@ RpcResponse WSRequestHandler::GetStreamingStatus(const RpcRequest& request) {
 	if (obs_frontend_recording_active()) {
 		QString recordingTimecode = events->getRecordingTimecode();
 		obs_data_set_string(data, "rec-timecode", recordingTimecode.toUtf8().constData());
+	}
+
+	if (obs_frontend_virtualcam_active()) {
+		QString virtualCamTimecode = events->getVirtualCamTimecode();
+		obs_data_set_string(data, "virtualcam-timecode", virtualCamTimecode.toUtf8().constData());
 	}
 
 	return request.success(data);

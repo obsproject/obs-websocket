@@ -422,12 +422,21 @@ uint64_t WSEvents::getRecordingTime() {
 	return getOutputRunningTime(recordingOutput);
 }
 
+uint64_t WSEvents::getVirtualCamTime() {
+	OBSOutputAutoRelease virtualCamOutput = obs_frontend_get_virtualcam_output();
+	return getOutputRunningTime(virtualCamOutput);
+}
+
 QString WSEvents::getStreamingTimecode() {
 	return Utils::nsToTimestamp(getStreamingTime());
 }
 
 QString WSEvents::getRecordingTimecode() {
 	return Utils::nsToTimestamp(getRecordingTime());
+}
+
+QString WSEvents::getVirtualCamTimecode() {
+	return Utils::nsToTimestamp(getVirtualCamTime());
 }
 
 OBSDataAutoRelease getMediaSourceData(calldata_t* data) {
