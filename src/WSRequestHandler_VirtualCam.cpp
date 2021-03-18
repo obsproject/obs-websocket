@@ -1,10 +1,8 @@
 #include "obs-websocket.h"
-#include "WSRequestHandler.h"
-
-#include <functional>
-#include <util/platform.h>
 #include "Utils.h"
 #include "WSEvents.h"
+
+#include "WSRequestHandler.h"
 
  /**
  * Get current virtual cam status.
@@ -58,7 +56,7 @@ RpcResponse WSRequestHandler::StartVirtualCam(const RpcRequest& request) {
 		return request.failed("virtual cam already active");
 	}
 
-	obs_frontend_virtualcam_start();
+	obs_frontend_start_virtualcam();
 	return request.success();
 }
 
@@ -76,6 +74,6 @@ RpcResponse WSRequestHandler::StartVirtualCam(const RpcRequest& request) {
 		return request.failed("virtual cam not active");
 	}
 
-	obs_frontend_virtualcam_stop();
+	obs_frontend_stop_virtualcam();
 	return request.success();
 }

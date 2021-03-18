@@ -202,6 +202,14 @@ void WSEvents::FrontendEventHandler(enum obs_frontend_event event, void* private
 			owner->OnRecordingResumed();
 			break;
 
+		case OBS_FRONTEND_EVENT_VIRTUALCAM_STARTED:
+			owner->OnVirtualCamStarted();
+			break;
+
+		case OBS_FRONTEND_EVENT_VIRTUALCAM_STOPPED:
+			owner->OnVirtualCamStopped();
+			break;
+
 		case OBS_FRONTEND_EVENT_REPLAY_BUFFER_STARTING:
 			owner->OnReplayStarting();
 			break;
@@ -771,6 +779,30 @@ void WSEvents::OnRecordingPaused() {
  */
 void WSEvents::OnRecordingResumed() {
 	broadcastUpdate("RecordingResumed");
+}
+
+/**
+ * Virtual cam started successfully.
+ *
+ * @api events
+ * @name VirtualCamStarted
+ * @category virtual cam
+ * @since 4.9.1
+ */
+void WSEvents::OnVirtualCamStarted() {
+	broadcastUpdate("VirtualCamStarted");
+}
+
+/**
+ * Virtual cam stopped successfully.
+ *
+ * @api events
+ * @name VirtualCamStopped
+ * @category virtual cam
+ * @since 4.9.1
+ */
+void WSEvents::OnVirtualCamStopped() {
+	broadcastUpdate("VirtualCamStopped");
 }
 
 /**
