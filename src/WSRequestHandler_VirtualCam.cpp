@@ -13,7 +13,7 @@
  * @api requests
  * @name GetVirtualCamStatus
  * @category virtual cam
- * @since 4.9.0
+ * @since 4.9.1
  */
 RpcResponse WSRequestHandler::GetVirtualCamStatus(const RpcRequest& request) {
 		auto events = GetEventsSystem();
@@ -35,10 +35,10 @@ RpcResponse WSRequestHandler::GetVirtualCamStatus(const RpcRequest& request) {
  * @api requests
  * @name StartStopVirtualCam
  * @category virtual cam
- * @since 4.9.0
+ * @since 4.9.1
  */
 RpcResponse WSRequestHandler::StartStopVirtualCam(const RpcRequest& request) {
-	(obs_frontend_virtualcam_active() ? obs_frontend_virtualcam_stop() : obs_frontend_virtualcam_start());
+	(obs_frontend_virtualcam_active() ? obs_frontend_stop_virtualcam() : obs_frontend_start_virtualcam());
 	return request.success();
 }
 
@@ -49,7 +49,7 @@ RpcResponse WSRequestHandler::StartStopVirtualCam(const RpcRequest& request) {
  * @api requests
  * @name StartVirtualCam
  * @category virtual cam
- * @since 4.9.0
+ * @since 4.9.1
  */
 RpcResponse WSRequestHandler::StartVirtualCam(const RpcRequest& request) {
 	if (obs_frontend_virtualcam_active()) {
@@ -67,7 +67,7 @@ RpcResponse WSRequestHandler::StartVirtualCam(const RpcRequest& request) {
  * @api requests
  * @name StopVirtualCam
  * @category virtual cam
- * @since 4.9.0
+ * @since 4.9.1
  */
  RpcResponse WSRequestHandler::StopVirtualCam(const RpcRequest& request) {
 	if (!obs_frontend_virtualcam_active()) {
