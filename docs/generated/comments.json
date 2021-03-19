@@ -2118,7 +2118,8 @@
         "description": "The volume of a source has changed.",
         "return": [
           "{String} `sourceName` Source name",
-          "{float} `volume` Source volume"
+          "{float} `volume` Source volume",
+          "{float} `volumeDb` Source volume in Decibel"
         ],
         "api": "events",
         "name": "SourceVolumeChanged",
@@ -2134,6 +2135,11 @@
             "type": "float",
             "name": "volume",
             "description": "Source volume"
+          },
+          {
+            "type": "float",
+            "name": "volumeDb",
+            "description": "Source volume in Decibel"
           }
         ],
         "names": [
@@ -5332,6 +5338,142 @@
         "heading": {
           "level": 2,
           "text": "SetVolume"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Changes whether an audio track is active for a source.",
+        "param": [
+          "{String} `sourceName` Source name.",
+          "{int} `track` Audio tracks 1-6.",
+          "{boolean} `active` Whether audio track is active or not."
+        ],
+        "api": "requests",
+        "name": "SetTracks",
+        "category": "sources",
+        "since": "unreleased",
+        "params": [
+          {
+            "type": "String",
+            "name": "sourceName",
+            "description": "Source name."
+          },
+          {
+            "type": "int",
+            "name": "track",
+            "description": "Audio tracks 1-6."
+          },
+          {
+            "type": "boolean",
+            "name": "active",
+            "description": "Whether audio track is active or not."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "SetTracks"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "sources"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "unreleased"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "SetTracks"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Gets whether an audio track is active for a source.",
+        "param": "{String} `sourceName` Source name.",
+        "return": [
+          "{boolean} `track1`",
+          "{boolean} `track2`",
+          "{boolean} `track3`",
+          "{boolean} `track4`",
+          "{boolean} `track5`",
+          "{boolean} `track6`"
+        ],
+        "api": "requests",
+        "name": "GetTracks",
+        "category": "sources",
+        "since": "unreleased",
+        "returns": [
+          {
+            "type": "boolean",
+            "name": "track1",
+            "description": ""
+          },
+          {
+            "type": "boolean",
+            "name": "track2",
+            "description": ""
+          },
+          {
+            "type": "boolean",
+            "name": "track3",
+            "description": ""
+          },
+          {
+            "type": "boolean",
+            "name": "track4",
+            "description": ""
+          },
+          {
+            "type": "boolean",
+            "name": "track5",
+            "description": ""
+          },
+          {
+            "type": "boolean",
+            "name": "track6",
+            "description": ""
+          }
+        ],
+        "params": [
+          {
+            "type": "String",
+            "name": "sourceName",
+            "description": "Source name."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "GetTracks"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "sources"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "unreleased"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "GetTracks"
         },
         "lead": "",
         "type": "class",

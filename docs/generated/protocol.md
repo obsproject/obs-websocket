@@ -161,6 +161,8 @@ You can also refer to any of the client libraries listed on the [README](README.
     + [GetSourceTypesList](#getsourcetypeslist)
     + [GetVolume](#getvolume)
     + [SetVolume](#setvolume)
+    + [SetTracks](#settracks)
+    + [GetTracks](#gettracks)
     + [GetMute](#getmute)
     + [SetMute](#setmute)
     + [ToggleMute](#togglemute)
@@ -947,6 +949,7 @@ The volume of a source has changed.
 | ---- | :---: | ------------|
 | `sourceName` | _String_ | Source name |
 | `volume` | _float_ | Source volume |
+| `volumeDb` | _float_ | Source volume in Decibel |
 
 
 ---
@@ -2170,6 +2173,56 @@ Set the volume of the specified source. Default request format uses mul, NOT SLI
 **Response Items:**
 
 _No additional response items._
+
+---
+
+### SetTracks
+
+
+- Unreleased
+
+Changes whether an audio track is active for a source.
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sourceName` | _String_ | Source name. |
+| `track` | _int_ | Audio tracks 1-6. |
+| `active` | _boolean_ | Whether audio track is active or not. |
+
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+### GetTracks
+
+
+- Unreleased
+
+Gets whether an audio track is active for a source.
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sourceName` | _String_ | Source name. |
+
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `track1` | _boolean_ |  |
+| `track2` | _boolean_ |  |
+| `track3` | _boolean_ |  |
+| `track4` | _boolean_ |  |
+| `track5` | _boolean_ |  |
+| `track6` | _boolean_ |  |
+
 
 ---
 
