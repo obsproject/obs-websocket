@@ -5628,6 +5628,55 @@
       },
       {
         "subheads": [],
+        "description": "Get the source's active status of a specified source (if it is showing in the final mix).",
+        "param": "{String} `sourceName` Source name.",
+        "return": "{boolean} `sourceActive` Source active status of the source.",
+        "api": "requests",
+        "name": "GetSourceActive",
+        "category": "sources",
+        "since": "unreleased",
+        "returns": [
+          {
+            "type": "boolean",
+            "name": "sourceActive",
+            "description": "Source active status of the source."
+          }
+        ],
+        "params": [
+          {
+            "type": "String",
+            "name": "sourceName",
+            "description": "Source name."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "GetSourceActive"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "sources"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "unreleased"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "GetSourceActive"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
         "description": "Get the audio's active status of a specified source.",
         "param": "{String} `sourceName` Source name.",
         "return": "{boolean} `audioActive` Audio active status of the source.",

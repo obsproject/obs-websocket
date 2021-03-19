@@ -166,6 +166,7 @@ You can also refer to any of the client libraries listed on the [README](README.
     + [GetMute](#getmute)
     + [SetMute](#setmute)
     + [ToggleMute](#togglemute)
+    + [GetSourceActive](#getsourceactive)
     + [GetAudioActive](#getaudioactive)
     + [SetSourceName](#setsourcename)
     + [SetSyncOffset](#setsyncoffset)
@@ -2288,6 +2289,29 @@ Inverts the mute status of a specified source.
 **Response Items:**
 
 _No additional response items._
+
+---
+
+### GetSourceActive
+
+
+- Unreleased
+
+Get the source's active status of a specified source (if it is showing in the final mix).
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sourceName` | _String_ | Source name. |
+
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sourceActive` | _boolean_ | Source active status of the source. |
+
 
 ---
 
