@@ -33,16 +33,26 @@ jobs:
     vmImage: 'windows-2019'
   variables:
     build_config: RelWithDebInfo
+    DepsCacheVersion: '1' # Change whenever updating OBS dependencies URL, in order to force a cache reset
     DepsBasePath: 'D:\obsdependencies'
     DepsPath32: '$(DepsBasePath)\win32'
     DepsPath64: '$(DepsBasePath)\win64'
+    QtCacheVersion: '1' # Change whenever updating Qt dependency URL, in order to force a cache reset
     QtBaseDir: 'D:\QtDep'
-    QTDIR32: '$(QtBaseDir)\5.10.1\msvc2017'
-    QTDIR64: '$(QtBaseDir)\5.10.1\msvc2017_64'
+    QTDIR32: '$(QtBaseDir)\5.15.2\msvc2019'
+    QTDIR64: '$(QtBaseDir)\5.15.2\msvc2019_64'
     OBSPath: 'D:\obs-studio'
   steps:
     - checkout: self
       submodules: true
+
+    - task: Cache@2
+      displayName: Restore cached Qt archive file
+      inputs:
+        key: 'qtdep-"$(QtCacheVersion)" | "$(Agent.OS)"'
+        restoreKeys: |
+          qtdep-"$(QtCacheVersion)" | "$(Agent.OS)"
+        path: $(QtBaseDir)
 
     - script: ./CI/install-qt-win.cmd
       displayName: 'Install Qt'
@@ -52,9 +62,9 @@ jobs:
     - task: Cache@2
       displayName: Restore cached OBS Studio dependencies
       inputs:
-        key: 'obsdeps | "$(Agent.OS)"'
+        key: 'obsdeps-"$(DepsCacheVersion)" | "$(Agent.OS)"'
         restoreKeys: |
-          obsdeps | "$(Agent.OS)"
+          obsdeps-"$(DepsCacheVersion)" | "$(Agent.OS)"
         path: $(DepsBasePath)
 
     - script: ./CI/download-obs-deps.cmd
