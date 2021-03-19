@@ -1145,6 +1145,7 @@ void WSEvents::OnSourceDestroy(void* param, calldata_t* data) {
  *
  * @return {String} `sourceName` Source name
  * @return {float} `volume` Source volume
+ * @return {float} `volumeDb` Source volume in Decibel
  *
  * @api events
  * @name SourceVolumeChanged
@@ -1164,9 +1165,15 @@ void WSEvents::OnSourceVolumeChange(void* param, calldata_t* data) {
 		return;
 	}
 
+	double volumeDb = obs_mul_to_db(volume);
+	if (volumeDb == -INFINITY) {
+		volumeDb = -100.0;
+	}
+
 	OBSDataAutoRelease fields = obs_data_create();
 	obs_data_set_string(fields, "sourceName", obs_source_get_name(source));
 	obs_data_set_double(fields, "volume", volume);
+	obs_data_set_double(fields, "volumeDb", volumeDb);
 	self->broadcastUpdate("SourceVolumeChanged", fields);
 }
 
