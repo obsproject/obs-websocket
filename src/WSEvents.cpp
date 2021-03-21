@@ -124,7 +124,7 @@ void WSEvents::FrontendEventHandler(enum obs_frontend_event event, void* private
 		case OBS_FRONTEND_EVENT_FINISHED_LOADING:
 			owner->hookTransitionPlaybackEvents();
 			break;
-	
+
 		case OBS_FRONTEND_EVENT_SCENE_CHANGED:
 			owner->OnSceneChange();
 			break;
@@ -278,7 +278,7 @@ void WSEvents::connectSourceSignals(obs_source_t* source) {
 	signal_handler_connect(sh, "filter_add", OnSourceFilterAdded, this);
 	signal_handler_connect(sh, "filter_remove", OnSourceFilterRemoved, this);
 	signal_handler_connect(sh, "reorder_filters", OnSourceFilterOrderChanged, this);
-	
+
 	signal_handler_connect(sh, "media_play", OnMediaPlaying, this);
 	signal_handler_connect(sh, "media_pause", OnMediaPaused, this);
 	signal_handler_connect(sh, "media_restart", OnMediaRestarted, this);
@@ -336,7 +336,7 @@ void WSEvents::disconnectSourceSignals(obs_source_t* source) {
 	signal_handler_disconnect(sh, "transition_start", OnTransitionBegin, this);
 	signal_handler_disconnect(sh, "transition_stop", OnTransitionEnd, this);
 	signal_handler_disconnect(sh, "transition_video_stop", OnTransitionVideoEnd, this);
-	
+
 	signal_handler_disconnect(sh, "media_play", OnMediaPlaying, this);
 	signal_handler_disconnect(sh, "media_pause", OnMediaPaused, this);
 	signal_handler_disconnect(sh, "media_restart", OnMediaRestarted, this);
@@ -469,7 +469,7 @@ void WSEvents::OnSceneChange() {
  * Note: This event is not fired when the scenes are reordered.
  *
  * @return {Array<Scene>} `scenes` Scenes list.
- * 
+ *
  * @api events
  * @name ScenesChanged
  * @category scenes
@@ -487,7 +487,7 @@ void WSEvents::OnSceneListChange() {
  * Triggered when switching to another scene collection or when renaming the current scene collection.
  *
  * @return {String} `sceneCollection` Name of the new current scene collection.
- * 
+ *
  * @api events
  * @name SceneCollectionChanged
  * @category scenes
@@ -510,7 +510,7 @@ void WSEvents::OnSceneCollectionChange() {
  *
  * @return {Array<Object>} `sceneCollections` Scene collections list.
  * @return {String} `sceneCollections.*.name` Scene collection name.
- * 
+ *
  * @api events
  * @name SceneCollectionListChanged
  * @category scenes
@@ -553,7 +553,7 @@ void WSEvents::OnTransitionChange() {
  *
  * @return {Array<Object>} `transitions` Transitions list.
  * @return {String} `transitions.*.name` Transition name.
- * 
+ *
  * @api events
  * @name TransitionListChanged
  * @category transitions
@@ -582,7 +582,7 @@ void WSEvents::OnTransitionListChange() {
  * Triggered when switching to another profile or when renaming the current profile.
  *
  * @return {String} `profile` Name of the new current profile.
- * 
+ *
  * @api events
  * @name ProfileChanged
  * @category profiles
@@ -599,7 +599,7 @@ void WSEvents::OnProfileChange() {
  *
  * @return {Array<Object>} `profiles` Profiles list.
  * @return {String} `profiles.*.name` Profile name.
- * 
+ *
  * @api events
  * @name ProfileListChanged
  * @category profiles
@@ -679,10 +679,10 @@ void WSEvents::OnStreamStopped() {
 
 /**
  * A request to start recording has been issued.
- * 
+ *
  * Note: `recordingFilename` is not provided in this event because this information
  * is not available at the time this event is emitted.
- * 
+ *
  * @api events
  * @name RecordingStarting
  * @category recording
@@ -696,7 +696,7 @@ void WSEvents::OnRecordingStarting() {
  * Recording started successfully.
  *
  * @return {String} `recordingFilename` Absolute path to the file of the current recording.
- * 
+ *
  * @api events
  * @name RecordingStarted
  * @category recording
@@ -712,7 +712,7 @@ void WSEvents::OnRecordingStarted() {
  * A request to stop recording has been issued.
  *
  * @return {String} `recordingFilename` Absolute path to the file of the current recording.
- * 
+ *
  * @api events
  * @name RecordingStopping
  * @category recording
@@ -728,7 +728,7 @@ void WSEvents::OnRecordingStopping() {
  * Recording stopped successfully.
  *
  * @return {String} `recordingFilename` Absolute path to the file of the current recording.
- * 
+ *
  * @api events
  * @name RecordingStopped
  * @category recording
@@ -999,10 +999,10 @@ void WSEvents::TransitionDurationChanged(int ms) {
  *
  * @return {String} `name` Transition name.
  * @return {String} `type` Transition type.
- * @return {int} `duration` Transition duration (in milliseconds). 
- * Will be -1 for any transition with a fixed duration, 
+ * @return {int} `duration` Transition duration (in milliseconds).
+ * Will be -1 for any transition with a fixed duration,
  * such as a Stinger, due to limitations of the OBS API.
- * @return {String} `from-scene` Source scene of the transition
+ * @return {String (optional)} `from-scene` Source scene of the transition
  * @return {String} `to-scene` Destination scene of the transition
  *
  * @api events
@@ -1054,7 +1054,7 @@ void WSEvents::OnTransitionEnd(void* param, calldata_t* data) {
 * @return {String} `name` Transition name.
 * @return {String} `type` Transition type.
 * @return {int} `duration` Transition duration (in milliseconds).
-* @return {String} `from-scene` Source scene of the transition
+* @return {String (optional)} `from-scene` Source scene of the transition
 * @return {String} `to-scene` Destination scene of the transition
 *
 * @api events
@@ -1387,7 +1387,7 @@ void WSEvents::OnSourceFilterAdded(void* param, calldata_t* data) {
 	if (!filter) {
 		return;
 	}
-	
+
 	self->connectFilterSignals(filter);
 
 	OBSDataAutoRelease filterSettings = obs_source_get_settings(filter);
