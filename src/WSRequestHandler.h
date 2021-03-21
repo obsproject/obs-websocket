@@ -127,6 +127,7 @@ class WSRequestHandler {
 		RpcResponse GetCurrentScene(const RpcRequest&);
 		RpcResponse GetSceneList(const RpcRequest&);
 		RpcResponse CreateScene(const RpcRequest&);
+		RpcResponse RemoveScene(const RpcRequest&);
 		RpcResponse ReorderSceneItems(const RpcRequest&);
 		RpcResponse SetSceneTransitionOverride(const RpcRequest&);
 		RpcResponse RemoveSceneTransitionOverride(const RpcRequest&);
@@ -134,6 +135,7 @@ class WSRequestHandler {
 
 		// Category: Sources
 		RpcResponse CreateSource(const RpcRequest&);
+		RpcResponse RemoveSource(const RpcRequest&);
 		RpcResponse GetSourcesList(const RpcRequest&);
 		RpcResponse GetSourceTypesList(const RpcRequest&);
 		RpcResponse GetVolume(const RpcRequest&);

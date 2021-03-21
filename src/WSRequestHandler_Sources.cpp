@@ -45,12 +45,12 @@ RpcResponse WSRequestHandler::CreateSource(const RpcRequest& request)
 	if (sourceName.isEmpty() || sourceKind.isEmpty()) {
 		return request.failed("empty sourceKind or sourceName parameters");
 	}
-	
+
 	OBSSourceAutoRelease source = obs_get_source_by_name(sourceName.toUtf8());
 	if (source) {
 		return request.failed("a source with that name already exists");
 	}
-	
+
 	const char* sceneName = obs_data_get_string(request.parameters(), "sceneName");
 	OBSSourceAutoRelease sceneSource = obs_get_source_by_name(sceneName);
 	OBSScene scene = obs_scene_from_source(sceneSource);
@@ -76,15 +76,46 @@ RpcResponse WSRequestHandler::CreateSource(const RpcRequest& request)
 	if (request.hasField("setVisible")) {
 		data.setVisible = obs_data_get_bool(request.parameters(), "setVisible");
 	}
-	
+
 	obs_enter_graphics();
 	obs_scene_atomic_update(scene, Utils::AddSourceHelper, &data);
 	obs_leave_graphics();
-	
+
 	OBSDataAutoRelease responseData = obs_data_create();
 	obs_data_set_int(responseData, "itemId", obs_sceneitem_get_id(data.sceneItem));
 
 	return request.success(responseData);
+}
+
+/**
+* Remove the specified source.
+*
+* @param {String} `sourceName` Source name.
+*
+* @api requests
+* @name RemoveSource
+* @category sources
+* @since unreleased
+*/
+RpcResponse WSRequestHandler::RemoveSource(const RpcRequest& request)
+{
+	if (!request.hasField("sourceName")) {
+		return request.failed("missing request parameters");
+	}
+
+	QString sourceName = obs_data_get_string(request.parameters(), "sourceName");
+	if (sourceName.isEmpty()) {
+		return request.failed("invalid request parameters");
+	}
+
+	OBSSourceAutoRelease source = obs_get_source_by_name(sourceName.toUtf8());
+	if (!source) {
+		return request.failed("specified source doesn't exist");
+	}
+
+	obs_source_remove(source);
+
+	return request.success(obs_data_create());
 }
 
 /**
@@ -261,7 +292,7 @@ RpcResponse WSRequestHandler::GetVolume(const RpcRequest& request)
 	if (useDecibel) {
 		volume = obs_mul_to_db(volume);
 	}
-	
+
 	if (volume == -INFINITY) {
 		volume = -100.0;
 	}
@@ -363,7 +394,7 @@ RpcResponse WSRequestHandler::SetAudioTracks(const RpcRequest& request)
 * Gets whether an audio track is active for a source.
 *
 * @param {String} `sourceName` Source name.
-* 
+*
 * @return {boolean} `track1`
 * @return {boolean} `track2`
 * @return {boolean} `track3`

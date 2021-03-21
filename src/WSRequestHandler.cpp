@@ -110,6 +110,7 @@ const QHash<QString, RpcMethodHandler> WSRequestHandler::messageMap{
 	{ "GetCurrentScene", &WSRequestHandler::GetCurrentScene },
 	{ "GetSceneList", &WSRequestHandler::GetSceneList },
 	{ "CreateScene", &WSRequestHandler::CreateScene },
+	{ "RemoveScene", &WSRequestHandler::RemoveScene },
 	{ "ReorderSceneItems", &WSRequestHandler::ReorderSceneItems },
 	{ "SetSceneTransitionOverride", &WSRequestHandler::SetSceneTransitionOverride },
 	{ "RemoveSceneTransitionOverride", &WSRequestHandler::RemoveSceneTransitionOverride },
@@ -117,6 +118,7 @@ const QHash<QString, RpcMethodHandler> WSRequestHandler::messageMap{
 
 	// Category: Sources
 	{ "CreateSource", &WSRequestHandler::CreateSource },
+	{ "RemoveSource", &WSRequestHandler::RemoveSource },
 	{ "GetSourcesList", &WSRequestHandler::GetSourcesList },
 	{ "GetSourceTypesList", &WSRequestHandler::GetSourceTypesList },
 	{ "GetVolume", &WSRequestHandler::GetVolume },

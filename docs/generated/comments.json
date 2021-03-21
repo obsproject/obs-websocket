@@ -5043,6 +5043,47 @@
       },
       {
         "subheads": [],
+        "description": "Remove the specified source.",
+        "param": "{String} `sourceName` Source name.",
+        "api": "requests",
+        "name": "RemoveSource",
+        "category": "sources",
+        "since": "unreleased",
+        "params": [
+          {
+            "type": "String",
+            "name": "sourceName",
+            "description": "Source name."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "RemoveSource"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "sources"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "unreleased"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "RemoveSource"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
         "description": "List all sources available in the running OBS instance",
         "return": [
           "{Array<Object>} `sources` Array of sources",
@@ -9913,6 +9954,47 @@
         "heading": {
           "level": 2,
           "text": "CreateScene"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Remove the specified scene.",
+        "param": "{String} `sceneName` Scene name.",
+        "api": "requests",
+        "name": "RemoveScene",
+        "category": "scenes",
+        "since": "unreleased",
+        "params": [
+          {
+            "type": "String",
+            "name": "sceneName",
+            "description": "Scene name."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "RemoveScene"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "scenes"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "unreleased"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "RemoveScene"
         },
         "lead": "",
         "type": "class",

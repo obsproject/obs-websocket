@@ -157,6 +157,7 @@ You can also refer to any of the client libraries listed on the [README](README.
   * [Sources](#sources-1)
     + [GetMediaSourcesList](#getmediasourceslist)
     + [CreateSource](#createsource)
+    + [RemoveSource](#removesource)
     + [GetSourcesList](#getsourceslist)
     + [GetSourceTypesList](#getsourcetypeslist)
     + [GetVolume](#getvolume)
@@ -238,6 +239,7 @@ You can also refer to any of the client libraries listed on the [README](README.
     + [GetCurrentScene](#getcurrentscene)
     + [GetSceneList](#getscenelist)
     + [CreateScene](#createscene)
+    + [RemoveScene](#removescene)
     + [ReorderSceneItems](#reordersceneitems)
     + [SetSceneTransitionOverride](#setscenetransitionoverride)
     + [RemoveSceneTransitionOverride](#removescenetransitionoverride)
@@ -2074,6 +2076,26 @@ Create a source and add it as a sceneitem to a scene.
 
 ---
 
+### RemoveSource
+
+
+- Unreleased
+
+Remove the specified source.
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sourceName` | _String_ | Source name. |
+
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
 ### GetSourcesList
 
 
@@ -3894,6 +3916,26 @@ Create a new scene scene.
 | Name | Type  | Description |
 | ---- | :---: | ------------|
 | `sceneName` | _String_ | Name of the scene to create. |
+
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+### RemoveScene
+
+
+- Unreleased
+
+Remove the specified scene.
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sceneName` | _String_ | Scene name. |
 
 
 **Response Items:**

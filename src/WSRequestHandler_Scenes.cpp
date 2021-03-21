@@ -105,6 +105,42 @@ RpcResponse WSRequestHandler::CreateScene(const RpcRequest& request) {
 }
 
 /**
+* Remove the specified scene.
+*
+* @param {String} `sceneName` Scene name.
+*
+* @api requests
+* @name RemoveScene
+* @category scenes
+* @since unreleased
+*/
+RpcResponse WSRequestHandler::RemoveScene(const RpcRequest& request)
+{
+	if (!request.hasField("sceneName")) {
+		return request.failed("missing request parameters");
+	}
+
+	QString sourceName = obs_data_get_string(request.parameters(), "sceneName");
+	if (sourceName.isEmpty()) {
+		return request.failed("invalid request parameters");
+	}
+
+	OBSSourceAutoRelease source = obs_get_source_by_name(sourceName.toUtf8());
+	if (!source) {
+		return request.failed("specified scene doesn't exist");
+	}
+
+	obs_source_type type = obs_source_get_type(source);
+	if (type != OBS_SOURCE_TYPE_SCENE) {
+		return request.failed("specified scene doesn't exist");
+	}
+
+	obs_source_remove(source);
+
+	return request.success(obs_data_create());
+}
+
+/**
 * Changes the order of scene items in the requested scene.
 *
 * @param {String (optional)} `scene` Name of the scene to reorder (defaults to current).
