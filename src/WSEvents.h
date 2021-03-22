@@ -48,6 +48,7 @@ public:
 
 	uint64_t getStreamingTime();
 	uint64_t getRecordingTime();
+	uint64_t getVirtualCamTime();
 
 	QString getStreamingTimecode();
 	QString getRecordingTimecode();
