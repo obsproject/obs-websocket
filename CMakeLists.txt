@@ -72,8 +72,8 @@ include_directories(
 	"${LIBOBS_INCLUDE_DIR}/../UI/obs-frontend-api"
 	${Qt5Core_INCLUDES}
 	${Qt5Widgets_INCLUDES}
-	"${CMAKE_SOURCE_DIR}/deps/asio/asio/include"
-	"${CMAKE_SOURCE_DIR}/deps/websocketpp")
+	"${CMAKE_CURRENT_SOURCE_DIR}/deps/asio/asio/include"
+	"${CMAKE_CURRENT_SOURCE_DIR}/deps/websocketpp")
 
 target_link_libraries(obs-websocket
 	libobs
