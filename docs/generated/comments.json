@@ -366,7 +366,7 @@
         "{boolean} `flags.encoded` Output is encoded",
         "{boolean} `flags.multiTrack` Output uses several audio tracks",
         "{boolean} `flags.service` Output uses a service",
-        "{Object} `settings` Output name",
+        "{Object} `settings` Output settings",
         "{boolean} `active` Output status (active or not)",
         "{boolean} `reconnecting` Output reconnection status (reconnecting or not)",
         "{double} `congestion` Output congestion",
@@ -433,7 +433,7 @@
         {
           "type": "Object",
           "name": "settings",
-          "description": "Output name"
+          "description": "Output settings"
         },
         {
           "type": "boolean",

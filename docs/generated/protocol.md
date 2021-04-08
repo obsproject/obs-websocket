@@ -348,7 +348,7 @@ These are complex types, such as `Source` and `Scene`, which are used as argumen
 | `flags.encoded` | _boolean_ | Output is encoded |
 | `flags.multiTrack` | _boolean_ | Output uses several audio tracks |
 | `flags.service` | _boolean_ | Output uses a service |
-| `settings` | _Object_ | Output name |
+| `settings` | _Object_ | Output settings |
 | `active` | _boolean_ | Output status (active or not) |
 | `reconnecting` | _boolean_ | Output reconnection status (reconnecting or not) |
 | `congestion` | _double_ | Output congestion |
@@ -4523,4 +4523,3 @@ If your code needs to perform multiple successive T-Bar moves (e.g. : in an anim
 _No additional response items._
 
 ---
-
