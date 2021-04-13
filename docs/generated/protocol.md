@@ -161,9 +161,12 @@ You can also refer to any of the client libraries listed on the [README](README.
     + [GetSourceTypesList](#getsourcetypeslist)
     + [GetVolume](#getvolume)
     + [SetVolume](#setvolume)
+    + [SetTracks](#settracks)
+    + [GetTracks](#gettracks)
     + [GetMute](#getmute)
     + [SetMute](#setmute)
     + [ToggleMute](#togglemute)
+    + [GetSourceActive](#getsourceactive)
     + [GetAudioActive](#getaudioactive)
     + [SetSourceName](#setsourcename)
     + [SetSyncOffset](#setsyncoffset)
@@ -345,7 +348,7 @@ These are complex types, such as `Source` and `Scene`, which are used as argumen
 | `flags.encoded` | _boolean_ | Output is encoded |
 | `flags.multiTrack` | _boolean_ | Output uses several audio tracks |
 | `flags.service` | _boolean_ | Output uses a service |
-| `settings` | _Object_ | Output name |
+| `settings` | _Object_ | Output settings |
 | `active` | _boolean_ | Output status (active or not) |
 | `reconnecting` | _boolean_ | Output reconnection status (reconnecting or not) |
 | `congestion` | _double_ | Output congestion |
@@ -947,6 +950,7 @@ The volume of a source has changed.
 | ---- | :---: | ------------|
 | `sourceName` | _String_ | Source name |
 | `volume` | _float_ | Source volume |
+| `volumeDb` | _float_ | Source volume in Decibel |
 
 
 ---
@@ -2173,6 +2177,56 @@ _No additional response items._
 
 ---
 
+### SetTracks
+
+
+- Unreleased
+
+Changes whether an audio track is active for a source.
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sourceName` | _String_ | Source name. |
+| `track` | _int_ | Audio tracks 1-6. |
+| `active` | _boolean_ | Whether audio track is active or not. |
+
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+### GetTracks
+
+
+- Unreleased
+
+Gets whether an audio track is active for a source.
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sourceName` | _String_ | Source name. |
+
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `track1` | _boolean_ |  |
+| `track2` | _boolean_ |  |
+| `track3` | _boolean_ |  |
+| `track4` | _boolean_ |  |
+| `track5` | _boolean_ |  |
+| `track6` | _boolean_ |  |
+
+
+---
+
 ### GetMute
 
 
@@ -2235,6 +2289,29 @@ Inverts the mute status of a specified source.
 **Response Items:**
 
 _No additional response items._
+
+---
+
+### GetSourceActive
+
+
+- Unreleased
+
+Get the source's active status of a specified source (if it is showing in the final mix).
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sourceName` | _String_ | Source name. |
+
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sourceActive` | _boolean_ | Source active status of the source. |
+
 
 ---
 
