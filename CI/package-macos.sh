@@ -20,13 +20,13 @@ VERSION="$GIT_HASH-$GIT_BRANCH_OR_TAG"
 FILENAME_UNSIGNED="obs-websocket-$VERSION-Unsigned.pkg"
 FILENAME="obs-websocket-$VERSION.pkg"
 
-echo "[obs-websocket] Modifying obs-websocket.so"
+echo "[obs-websocket] Modifying obs-websocket.so linking"
 install_name_tool \
-	-change /usr/local/opt/qt/lib/QtWidgets.framework/Versions/5/QtWidgets \
+	-change /tmp/obsdeps/lib/QtWidgets.framework/Versions/5/QtWidgets \
 		@executable_path/../Frameworks/QtWidgets.framework/Versions/5/QtWidgets \
-	-change /usr/local/opt/qt/lib/QtGui.framework/Versions/5/QtGui \
+	-change /tmp/obsdeps/lib/QtGui.framework/Versions/5/QtGui \
 		@executable_path/../Frameworks/QtGui.framework/Versions/5/QtGui \
-	-change /usr/local/opt/qt/lib/QtCore.framework/Versions/5/QtCore \
+	-change /tmp/obsdeps/lib/QtCore.framework/Versions/5/QtCore \
 		@executable_path/../Frameworks/QtCore.framework/Versions/5/QtCore \
 	./build/obs-websocket.so
 

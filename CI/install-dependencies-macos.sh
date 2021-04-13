@@ -1,7 +1,5 @@
 #!/bin/sh
 
-
-
 OSTYPE=$(uname)
 
 if [ "${OSTYPE}" != "Darwin" ]; then
@@ -20,7 +18,7 @@ fi
 echo "[obs-websocket] Updating Homebrew.."
 brew update >/dev/null
 echo "[obs-websocket] Checking installed Homebrew formulas.."
-BREW_PACKAGES=$(brew list)
+BREW_PACKAGES=$(brew list --formula)
 BREW_DEPENDENCIES="jack speexdsp ccache swig mbedtls"
 
 for DEPENDENCY in ${BREW_DEPENDENCIES}; do
@@ -32,15 +30,6 @@ for DEPENDENCY in ${BREW_DEPENDENCIES}; do
         brew install ${DEPENDENCY} 2>/dev/null
     fi
 done
-
-# qtwebsockets deps
-echo "[obs-websocket] Installing obs-websocket dependency 'QT 5.10.1'.."
-
-brew install ./CI/macos/qt.rb
-
-# Pin this version of QT5 to avoid `brew upgrade`
-# upgrading it to incompatible version
-brew pin qt
 
 # Fetch and install Packages app
 # =!= NOTICE =!=
@@ -55,3 +44,14 @@ if [ "${HAS_PACKAGES}" = "" ]; then
     sudo hdiutil attach ./Packages.dmg
     sudo installer -pkg /Volumes/Packages\ 1.2.9/Install\ Packages.pkg -target /
 fi
+
+# Qt deps
+echo "[obs-websocket] Installing obs-websocket dependency 'Qt ${QT_VERSION}'.."
+curl -L -O https://github.com/obsproject/obs-deps/releases/download/${OBS_DEPS_VERSION}/macos-qt-${QT_VERSION}-${OBS_DEPS_VERSION}.tar.gz
+tar -xf ./macos-qt-${QT_VERSION}-${OBS_DEPS_VERSION}.tar.gz -C "/tmp"
+xattr -r -d com.apple.quarantine /tmp/obsdeps
+
+# OBS Deps
+echo "[obs-websocket] Downloading and unpacking OBS dependencies"
+wget --quiet --retry-connrefused --waitretry=1 https://github.com/obsproject/obs-deps/releases/download/${OBS_DEPS_VERSION}/macos-deps-${OBS_DEPS_VERSION}.tar.gz
+tar -xf ./macos-deps-${OBS_DEPS_VERSION}.tar.gz -C /tmp

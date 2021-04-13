@@ -20,10 +20,6 @@ if [ "${HAS_GIT}" = "" ]; then
     exit 1
 fi
 
-echo "[obs-websocket] Downloading and unpacking OBS dependencies"
-wget --quiet --retry-connrefused --waitretry=1 https://github.com/obsproject/obs-deps/releases/download/2021-02-28/macos-deps-2021-02-28.tar.gz
-tar -xf ./macos-deps-2021-02-28.tar.gz -C /tmp
-
 # Build obs-studio
 cd ..
 echo "[obs-websocket] Cloning obs-studio from GitHub.."
@@ -34,9 +30,10 @@ git checkout $OBSLatestTag
 mkdir build && cd build
 echo "[obs-websocket] Building obs-studio.."
 cmake .. \
+    -DQTDIR=/tmp/obsdeps \
 	-DCMAKE_OSX_DEPLOYMENT_TARGET=10.11 \
 	-DDISABLE_PLUGINS=true \
-    -DENABLE_SCRIPTING=0 \
+	-DENABLE_SCRIPTING=0 \
 	-DDepsPath=/tmp/obsdeps \
 	-DCMAKE_PREFIX_PATH=/usr/local/opt/qt/lib/cmake \
 && make -j4

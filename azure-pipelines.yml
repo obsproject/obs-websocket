@@ -157,12 +157,18 @@ jobs:
 - job: 'Build_macOS'
   pool:
     vmImage: 'macos-10.14'
+  variables:
+    obsDepsVersion: '2020-12-22'
+    qtVersion: '5.15.2'
   steps:
     - checkout: self
       submodules: true
 
     - script: ./CI/install-dependencies-macos.sh
       displayName: 'Install dependencies'
+      env:
+        OBS_DEPS_VERSION: $(obsDepsVersion)
+        QT_VERSION: $(qtVersion)
 
     - script: ./CI/install-build-obs-macos.sh
       displayName: 'Build OBS'
