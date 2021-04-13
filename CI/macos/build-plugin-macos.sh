@@ -14,8 +14,6 @@ if [ "${HAS_CMAKE}" = "" ]; then
     exit 1
 fi
 
-#export QT_PREFIX="$(find /usr/local/Cellar/qt5 -d 1 | tail -n 1)"
-
 echo "[obs-websocket] Building 'obs-websocket' for macOS."
 mkdir -p build && cd build
 cmake .. \

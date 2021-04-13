@@ -14,22 +14,22 @@ if [ "${HAS_BREW}" = "" ]; then
     exit 1
 fi
 
-# OBS Studio deps
+# OBS Studio Brew Deps
 echo "[obs-websocket] Updating Homebrew.."
 brew update >/dev/null
 echo "[obs-websocket] Checking installed Homebrew formulas.."
-BREW_PACKAGES=$(brew list --formula)
-BREW_DEPENDENCIES="jack speexdsp ccache swig mbedtls"
 
-for DEPENDENCY in ${BREW_DEPENDENCIES}; do
-    if echo "${BREW_PACKAGES}" | grep -q "^${DEPENDENCY}\$"; then
-        echo "[obs-websocket] Upgrading OBS-Studio dependency '${DEPENDENCY}'.."
-        brew upgrade ${DEPENDENCY} 2>/dev/null
-    else
-        echo "[obs-websocket] Installing OBS-Studio dependency '${DEPENDENCY}'.."
-        brew install ${DEPENDENCY} 2>/dev/null
-    fi
-done
+if [ -d /usr/local/opt/openssl@1.0.2t ]; then
+  brew uninstall openssl@1.0.2t
+  brew untap local/openssl
+fi
+
+if [ -d /usr/local/opt/python@2.7.17 ]; then
+  brew uninstall python@2.7.17
+  brew untap local/python2
+fi
+
+brew bundle --file ./CI/macos/Brewfile
 
 # Fetch and install Packages app
 # =!= NOTICE =!=
@@ -45,13 +45,13 @@ if [ "${HAS_PACKAGES}" = "" ]; then
     sudo installer -pkg /Volumes/Packages\ 1.2.9/Install\ Packages.pkg -target /
 fi
 
+# OBS Deps
+echo "[obs-websocket] Installing obs-websocket dependency 'OBS Deps ${OBS_DEPS_VERSION}'.."
+wget --quiet --retry-connrefused --waitretry=1 https://github.com/obsproject/obs-deps/releases/download/${OBS_DEPS_VERSION}/macos-deps-${OBS_DEPS_VERSION}.tar.gz
+tar -xf ./macos-deps-${OBS_DEPS_VERSION}.tar.gz -C /tmp
+
 # Qt deps
 echo "[obs-websocket] Installing obs-websocket dependency 'Qt ${QT_VERSION}'.."
 curl -L -O https://github.com/obsproject/obs-deps/releases/download/${OBS_DEPS_VERSION}/macos-qt-${QT_VERSION}-${OBS_DEPS_VERSION}.tar.gz
 tar -xf ./macos-qt-${QT_VERSION}-${OBS_DEPS_VERSION}.tar.gz -C "/tmp"
 xattr -r -d com.apple.quarantine /tmp/obsdeps
-
-# OBS Deps
-echo "[obs-websocket] Downloading and unpacking OBS dependencies"
-wget --quiet --retry-connrefused --waitretry=1 https://github.com/obsproject/obs-deps/releases/download/${OBS_DEPS_VERSION}/macos-deps-${OBS_DEPS_VERSION}.tar.gz
-tar -xf ./macos-deps-${OBS_DEPS_VERSION}.tar.gz -C /tmp

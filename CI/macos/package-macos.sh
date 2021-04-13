@@ -10,7 +10,6 @@ if [ "${OSTYPE}" != "Darwin" ]; then
 fi
 
 echo "[obs-websocket] Preparing package build"
-export QT_CELLAR_PREFIX="$(/usr/bin/find /usr/local/Cellar/qt -d 1 | sort -t '.' -k 1,1n -k 2,2n -k 3,3n | tail -n 1)"
 
 GIT_HASH=$(git rev-parse --short HEAD)
 GIT_BRANCH_OR_TAG=$(git name-rev --name-only HEAD | awk -F/ '{print $NF}')

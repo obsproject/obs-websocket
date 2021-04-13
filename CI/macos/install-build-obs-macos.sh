@@ -31,9 +31,9 @@ mkdir build && cd build
 echo "[obs-websocket] Building obs-studio.."
 cmake .. \
     -DQTDIR=/tmp/obsdeps \
-	-DCMAKE_OSX_DEPLOYMENT_TARGET=10.11 \
+    -DDepsPath=/tmp/obsdeps \
+	-DCMAKE_OSX_DEPLOYMENT_TARGET=10.13 \
 	-DDISABLE_PLUGINS=true \
 	-DENABLE_SCRIPTING=0 \
-	-DDepsPath=/tmp/obsdeps \
-	-DCMAKE_PREFIX_PATH=/usr/local/opt/qt/lib/cmake \
+	-DCMAKE_PREFIX_PATH=/tmp/obsdeps/lib/cmake \
 && make -j4

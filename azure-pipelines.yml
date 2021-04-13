@@ -156,7 +156,7 @@ jobs:
 
 - job: 'Build_macOS'
   pool:
-    vmImage: 'macos-10.14'
+    vmImage: 'macOS-10.15'
   variables:
     obsDepsVersion: '2020-12-22'
     qtVersion: '5.15.2'
@@ -164,16 +164,16 @@ jobs:
     - checkout: self
       submodules: true
 
-    - script: ./CI/install-dependencies-macos.sh
+    - script: ./CI/macos/install-dependencies-macos.sh
       displayName: 'Install dependencies'
       env:
         OBS_DEPS_VERSION: $(obsDepsVersion)
         QT_VERSION: $(qtVersion)
 
-    - script: ./CI/install-build-obs-macos.sh
+    - script: ./CI/macos/install-build-obs-macos.sh
       displayName: 'Build OBS'
 
-    - script: ./CI/build-macos.sh
+    - script: ./CI/macos/build-plugin-macos.sh
       displayName: 'Build obs-websocket'
 
     - task: InstallAppleCertificate@2
@@ -183,7 +183,7 @@ jobs:
         certSecureFile: 'Certificates.p12'
         certPwd: $(secrets.macOS.certificatesImportPassword)
 
-    - script: ./CI/package-macos.sh
+    - script: ./CI/macos/package-macos.sh
       displayName: 'Package obs-websocket'
       env:
         RELEASE_MODE: $(isReleaseMode)
