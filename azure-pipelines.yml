@@ -131,7 +131,7 @@ jobs:
 
 - job: 'Build_Linux'
   pool:
-    vmImage: 'ubuntu-18.04'
+    vmImage: 'ubuntu-20.04'
   variables:
       BUILD_REASON: $(Build.Reason)
       BRANCH_SHORT_NAME: $(Build.SourceBranchName)
@@ -140,13 +140,13 @@ jobs:
     - checkout: self
       submodules: true
 
-    - script: ./CI/install-dependencies-ubuntu.sh
+    - script: ./CI/linux/install-dependencies-ubuntu.sh
       displayName: 'Install dependencies'
 
-    - script: ./CI/build-ubuntu.sh
+    - script: ./CI/linux/build-plugin-ubuntu.sh
       displayName: 'Build obs-websocket'
 
-    - script: ./CI/package-ubuntu.sh
+    - script: ./CI/linux/package-plugin-ubuntu.sh
       displayName: 'Package obs-websocket'
 
     - task: PublishBuildArtifacts@1
