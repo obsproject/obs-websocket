@@ -787,7 +787,7 @@ void WSEvents::OnRecordingResumed() {
  * @api events
  * @name VirtualCamStarted
  * @category virtual cam
- * @since 4.9.1
+ * @since unreleased
  */
 void WSEvents::OnVirtualCamStarted() {
 	broadcastUpdate("VirtualCamStarted");
@@ -799,7 +799,7 @@ void WSEvents::OnVirtualCamStarted() {
  * @api events
  * @name VirtualCamStopped
  * @category virtual cam
- * @since 4.9.1
+ * @since unreleased
  */
 void WSEvents::OnVirtualCamStopped() {
 	broadcastUpdate("VirtualCamStopped");
