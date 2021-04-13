@@ -3,15 +3,15 @@
 OSTYPE=$(uname)
 
 if [ "${OSTYPE}" != "Darwin" ]; then
-    echo "[obs-websocket - Error] macOS install dependencies script can be run on Darwin-type OS only."
-    exit 1
+	echo "[obs-websocket - Error] macOS install dependencies script can be run on Darwin-type OS only."
+	exit 1
 fi
 
 HAS_BREW=$(type brew 2>/dev/null)
 
 if [ "${HAS_BREW}" = "" ]; then
-    echo "[obs-websocket - Error] Please install Homebrew (https://www.brew.sh/) to build obs-websocket on macOS."
-    exit 1
+	echo "[obs-websocket - Error] Please install Homebrew (https://www.brew.sh/) to build obs-websocket on macOS."
+	exit 1
 fi
 
 # OBS Studio Brew Deps
@@ -39,10 +39,10 @@ brew bundle --file ./CI/macos/Brewfile
 HAS_PACKAGES=$(type packagesbuild 2>/dev/null)
 
 if [ "${HAS_PACKAGES}" = "" ]; then
-    echo "[obs-websocket] Installing Packaging app (might require password due to 'sudo').."
-    curl -L -O http://s.sudre.free.fr/Software/files/Packages.dmg
-    sudo hdiutil attach ./Packages.dmg
-    sudo installer -pkg /Volumes/Packages\ 1.2.9/Install\ Packages.pkg -target /
+	echo "[obs-websocket] Installing Packaging app (might require password due to 'sudo').."
+	curl -L -O http://s.sudre.free.fr/Software/files/Packages.dmg
+	sudo hdiutil attach ./Packages.dmg
+	sudo installer -pkg /Volumes/Packages\ 1.2.9/Install\ Packages.pkg -target /
 fi
 
 # OBS Deps
