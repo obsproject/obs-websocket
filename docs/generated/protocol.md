@@ -516,7 +516,7 @@ A transition (other than "cut") has begun.
 | `name` | _String_ | Transition name. |
 | `type` | _String_ | Transition type. |
 | `duration` | _int_ | Transition duration (in milliseconds). Will be -1 for any transition with a fixed duration, such as a Stinger, due to limitations of the OBS API. |
-| `from-scene` | _String_ | Source scene of the transition |
+| `from-scene` | _String (optional)_ | Source scene of the transition |
 | `to-scene` | _String_ | Destination scene of the transition |
 
 
@@ -556,7 +556,7 @@ A stinger transition has finished playing its video.
 | `name` | _String_ | Transition name. |
 | `type` | _String_ | Transition type. |
 | `duration` | _int_ | Transition duration (in milliseconds). |
-| `from-scene` | _String_ | Source scene of the transition |
+| `from-scene` | _String (optional)_ | Source scene of the transition |
 | `to-scene` | _String_ | Destination scene of the transition |
 
 
