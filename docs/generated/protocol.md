@@ -3776,7 +3776,7 @@ Creates a scene item in a scene. In other words, this is how you add a source in
 | ---- | :---: | ------------|
 | `sceneName` | _String_ | Name of the scene to create the scene item in |
 | `sourceName` | _String_ | Name of the source to be added |
-| `setVisible` | _boolean_ | Whether to make the sceneitem visible on creation or not. Default `true` |
+| `setVisible` | _boolean (optional)_ | Whether to make the sceneitem visible on creation or not. Default `true` |
 
 
 **Response Items:**
