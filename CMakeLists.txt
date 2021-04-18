@@ -130,8 +130,11 @@ if(WIN32)
 			"$<TARGET_FILE:obs-websocket>"
 			"${RELEASE_DIR}/obs-plugins/${ARCH_NAME}")
 
-		# In Release mode, copy Qt image format plugins
-		COMMAND if $<CONFIG:Release>==1 (
+		# In Release or RelWithDebInfo mode, copy Qt image format plugins
+		COMMAND if $<OR:$<CONFIG:Release>,$<CONFIG:RelWithDebInfo>>==1 (
+			"${CMAKE_COMMAND}" -E make_directory
+			"${RELEASE_DIR}/bin/${ARCH_NAME}/imageformats")
+		COMMAND if $<OR:$<CONFIG:Release>,$<CONFIG:RelWithDebInfo>>==1 (
 			"${CMAKE_COMMAND}" -E copy
 			"${QTDIR}/plugins/imageformats/qicns.dll"
 			"${QTDIR}/plugins/imageformats/qico.dll"
@@ -139,16 +142,7 @@ if(WIN32)
 			"${QTDIR}/plugins/imageformats/qtiff.dll"
 			"${QTDIR}/plugins/imageformats/qwbmp.dll"
 			"${QTDIR}/plugins/imageformats/qwebp.dll"
-			"${RELEASE_DIR}/bin/${ARCH_NAME}/imageformats/qjpeg.dll")
-		COMMAND if $<CONFIG:RelWithDebInfo>==1 (
-			"${CMAKE_COMMAND}" -E copy
-			"${QTDIR}/plugins/imageformats/qicns.dll"
-			"${QTDIR}/plugins/imageformats/qico.dll"
-			"${QTDIR}/plugins/imageformats/qjpeg.dll"
-			"${QTDIR}/plugins/imageformats/qtiff.dll"
-			"${QTDIR}/plugins/imageformats/qwbmp.dll"
-			"${QTDIR}/plugins/imageformats/qwebp.dll"
-			"${RELEASE_DIR}/bin/${ARCH_NAME}/imageformats/qjpeg.dll")
+			"${RELEASE_DIR}/bin/${ARCH_NAME}/imageformats")
 
 		# If config is RelWithDebInfo, package release files
 		COMMAND if $<CONFIG:RelWithDebInfo>==1 (
