@@ -137,7 +137,7 @@ RpcResponse WSRequestHandler::RemoveScene(const RpcRequest& request)
 
 	obs_source_remove(source);
 
-	return request.success(obs_data_create());
+	return request.success();
 }
 
 /**
