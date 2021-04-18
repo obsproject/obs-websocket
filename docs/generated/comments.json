@@ -366,7 +366,7 @@
         "{boolean} `flags.encoded` Output is encoded",
         "{boolean} `flags.multiTrack` Output uses several audio tracks",
         "{boolean} `flags.service` Output uses a service",
-        "{Object} `settings` Output name",
+        "{Object} `settings` Output settings",
         "{boolean} `active` Output status (active or not)",
         "{boolean} `reconnecting` Output reconnection status (reconnecting or not)",
         "{double} `congestion` Output congestion",
@@ -433,7 +433,7 @@
         {
           "type": "Object",
           "name": "settings",
-          "description": "Output name"
+          "description": "Output settings"
         },
         {
           "type": "boolean",
@@ -861,7 +861,7 @@
           "{String} `name` Transition name.",
           "{String} `type` Transition type.",
           "{int} `duration` Transition duration (in milliseconds). Will be -1 for any transition with a fixed duration, such as a Stinger, due to limitations of the OBS API.",
-          "{String} `from-scene` Source scene of the transition",
+          "{String (optional)} `from-scene` Source scene of the transition",
           "{String} `to-scene` Destination scene of the transition"
         ],
         "api": "events",
@@ -885,7 +885,7 @@
             "description": "Transition duration (in milliseconds). Will be -1 for any transition with a fixed duration, such as a Stinger, due to limitations of the OBS API."
           },
           {
-            "type": "String",
+            "type": "String (optional)",
             "name": "from-scene",
             "description": "Source scene of the transition"
           },
@@ -989,7 +989,7 @@
           "{String} `name` Transition name.",
           "{String} `type` Transition type.",
           "{int} `duration` Transition duration (in milliseconds).",
-          "{String} `from-scene` Source scene of the transition",
+          "{String (optional)} `from-scene` Source scene of the transition",
           "{String} `to-scene` Destination scene of the transition"
         ],
         "api": "events",
@@ -1013,7 +1013,7 @@
             "description": "Transition duration (in milliseconds)."
           },
           {
-            "type": "String",
+            "type": "String (optional)",
             "name": "from-scene",
             "description": "Source scene of the transition"
           },
@@ -9584,7 +9584,7 @@
         "param": [
           "{String} `sceneName` Name of the scene to create the scene item in",
           "{String} `sourceName` Name of the source to be added",
-          "{boolean} `setVisible` Whether to make the sceneitem visible on creation or not. Default `true`"
+          "{boolean (optional)} `setVisible` Whether to make the sceneitem visible on creation or not. Default `true`"
         ],
         "return": "{int} `itemId` Numerical ID of the created scene item",
         "api": "requests",
@@ -9610,7 +9610,7 @@
             "description": "Name of the source to be added"
           },
           {
-            "type": "boolean",
+            "type": "boolean (optional)",
             "name": "setVisible",
             "description": "Whether to make the sceneitem visible on creation or not. Default `true`"
           }
