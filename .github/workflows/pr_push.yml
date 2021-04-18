@@ -18,8 +18,8 @@ jobs:
     runs-on: [windows-latest]
     if: contains(github.event.head_commit.message, '[skip ci]') != true
     env:
-      QT_VERSION: '5.10.1'
-      WINDOWS_DEPS_VERSION: '2017'
+      QT_VERSION: '5.15.2'
+      WINDOWS_DEPS_VERSION: '2019'
       CMAKE_GENERATOR: "Visual Studio 16 2019"
       CMAKE_SYSTEM_VERSION: "10.0"
     steps:

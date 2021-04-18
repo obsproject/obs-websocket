@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-You'll need [Qt 5.10.x](https://download.qt.io/official_releases/qt/5.10/),
+You'll need [Qt 5.15.2](https://download.qt.io/official_releases/qt/5.15/5.15.2/),
 [CMake](https://cmake.org/download/) and a working [OBS Studio development environment](https://obsproject.com/wiki/install-instructions) installed on your
 computer.
 
@@ -53,10 +53,10 @@ look for issues or specificities.
 ```shell
 git clone --recursive https://github.com/Palakis/obs-websocket.git
 cd obs-websocket
-./CI/install-dependencies-macos.sh
-./CI/install-build-obs-macos.sh
-./CI/build-macos.sh
-./CI/package-macos.sh
+./CI/macos/install-dependencies-macos.sh
+./CI/macos/install-build-obs-macos.sh
+./CI/macos/build-plugin-macos.sh
+./CI/macos/package-plugin-macos.sh
 ```
 
 This will result in a ready-to-use `obs-websocket.pkg` installer in the `release` subfolder.
