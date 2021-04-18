@@ -1,3 +1,14 @@
+variables:
+  isReleaseMode: ${{ startsWith(variables['Build.SourceBranch'], 'refs/tags/') }}
+
+trigger:
+  branches:
+    include:
+      - '4.x-current'
+  tags:
+    include:
+      - '*'
+
 jobs:
 - job: 'GenerateDocs'
   condition: |
@@ -22,31 +33,41 @@ jobs:
     vmImage: 'windows-2019'
   variables:
     build_config: RelWithDebInfo
-    DepsBasePath: 'D:\obsdependencies'
-    DepsPath32: '$(DepsBasePath)\win32'
-    DepsPath64: '$(DepsBasePath)\win64'
-    QtBaseDir: 'D:\QtDep'
-    QTDIR32: '$(QtBaseDir)\5.10.1\msvc2017'
-    QTDIR64: '$(QtBaseDir)\5.10.1\msvc2017_64'
-    OBSPath: 'D:\obs-studio'
+    DEPS_CACHE_VERSION: '1' # Change whenever updating OBS dependencies URL, in order to force a cache reset
+    DEPS_BASE_PATH: 'D:\obsdependencies'
+    DEPS_PATH_32: '$(DEPS_BASE_PATH)\win32'
+    DEPS_PATH_64: '$(DEPS_BASE_PATH)\win64'
+    QT_CACHE_VERSION: '1' # Change whenever updating Qt dependency URL, in order to force a cache reset
+    QT_BASE_DIR: 'D:\QtDep'
+    QTDIR32: '$(QT_BASE_DIR)\5.15.2\msvc2019'
+    QTDIR64: '$(QT_BASE_DIR)\5.15.2\msvc2019_64'
+    OBS_PATH: 'D:\obs-studio'
   steps:
     - checkout: self
       submodules: true
 
-    - script: ./CI/install-qt-win.cmd
+    - task: Cache@2
+      displayName: Restore cached Qt archive file
+      inputs:
+        key: 'qtdep-"$(QT_CACHE_VERSION)" | "$(Agent.OS)"'
+        restoreKeys: |
+          qtdep-"$(QT_CACHE_VERSION)" | "$(Agent.OS)"
+        path: $(QT_BASE_DIR)
+
+    - script: ./CI/windows/install-qt-win.cmd
       displayName: 'Install Qt'
       env:
-        QtBaseDir: $(QtBaseDir)
+        QT_BASE_DIR: $(QT_BASE_DIR)
 
     - task: Cache@2
       displayName: Restore cached OBS Studio dependencies
       inputs:
-        key: 'obsdeps | "$(Agent.OS)"'
+        key: 'obsdeps-"$(DEPS_CACHE_VERSION)" | "$(Agent.OS)"'
         restoreKeys: |
-          obsdeps | "$(Agent.OS)"
-        path: $(DepsBasePath)
+          obsdeps-"$(DEPS_CACHE_VERSION)" | "$(Agent.OS)"
+        path: $(DEPS_BASE_PATH)
 
-    - script: ./CI/download-obs-deps.cmd
+    - script: ./CI/windows/download-obs-deps.cmd
       displayName: 'Download OBS Studio dependencies'
 
     - task: Cache@2
@@ -55,37 +76,37 @@ jobs:
         key: 'obs | "$(Agent.OS)"'
         restoreKeys: |
           obs | "$(Agent.OS)"
-        path: $(OBSPath)
+        path: $(OBS_PATH)
 
-    - script: ./CI/checkout-cmake-obs-windows.cmd
+    - script: ./CI/windows/prepare-obs-windows.cmd
       displayName: 'Checkout & CMake OBS Studio'
       env:
         build_config: $(build_config)
-        DepsPath32: $(DepsPath32)
-        DepsPath64: $(DepsPath64)
+        DEPS_PATH_32: $(DEPS_PATH_32)
+        DEPS_PATH_64: $(DEPS_PATH_64)
         QTDIR32: $(QTDIR32)
         QTDIR64: $(QTDIR64)
-        OBSPath: $(OBSPath)
+        OBS_PATH: $(OBS_PATH)
 
     - task: MSBuild@1
       displayName: 'Build OBS Studio 32-bit'
       inputs:
         msbuildArguments: '/m /p:Configuration=$(build_config)'
-        solution: '$(OBSPath)\build32\obs-studio.sln'
+        solution: '$(OBS_PATH)\build32\obs-studio.sln'
 
     - task: MSBuild@1
       displayName: 'Build OBS Studio 64-bit'
       inputs:
         msbuildArguments: '/m /p:Configuration=$(build_config)'
-        solution: '$(OBSPath)\build64\obs-studio.sln'
+        solution: '$(OBS_PATH)\build64\obs-studio.sln'
 
-    - script: ./CI/prepare-windows.cmd
+    - script: ./CI/windows/prepare-plugin-windows.cmd
       displayName: 'CMake obs-websocket'
       env:
         build_config: $(build_config)
         QTDIR32: $(QTDIR32)
         QTDIR64: $(QTDIR64)
-        OBSPath: $(OBSPath)
+        OBS_PATH: $(OBS_PATH)
 
     - task: MSBuild@1
       displayName: 'Build obs-websocket 32-bit'
@@ -99,7 +120,7 @@ jobs:
         msbuildArguments: '/m /p:Configuration=$(build_config)'
         solution: '.\build64\obs-websocket.sln'
 
-    - script: ./CI/package-windows.cmd
+    - script: ./CI/windows/package-plugin-windows.cmd
       displayName: 'Package obs-websocket'
 
     - task: PublishBuildArtifacts@1
@@ -110,22 +131,21 @@ jobs:
 
 - job: 'Build_Linux'
   pool:
-    vmImage: 'ubuntu-18.04'
+    vmImage: 'ubuntu-20.04'
   variables:
-      BUILD_REASON: $(Build.Reason)
       BRANCH_SHORT_NAME: $(Build.SourceBranchName)
       BRANCH_FULL_NAME: $(Build.SourceBranch)
   steps:
     - checkout: self
       submodules: true
 
-    - script: ./CI/install-dependencies-ubuntu.sh
+    - script: ./CI/linux/install-dependencies-ubuntu.sh
       displayName: 'Install dependencies'
 
-    - script: ./CI/build-ubuntu.sh
+    - script: ./CI/linux/build-plugin-ubuntu.sh
       displayName: 'Build obs-websocket'
 
-    - script: ./CI/package-ubuntu.sh
+    - script: ./CI/linux/package-plugin-ubuntu.sh
       displayName: 'Package obs-websocket'
 
     - task: PublishBuildArtifacts@1
@@ -135,22 +155,42 @@ jobs:
 
 - job: 'Build_macOS'
   pool:
-    vmImage: 'macos-10.14'
+    vmImage: 'macOS-10.15'
+  variables:
+    OBS_DEPS_VERSION: '2020-12-22'
+    QT_VERSION: '5.15.2'
   steps:
     - checkout: self
       submodules: true
 
-    - script: ./CI/install-dependencies-macos.sh
+    - script: ./CI/macos/install-dependencies-macos.sh
       displayName: 'Install dependencies'
+      env:
+        OBS_DEPS_VERSION: $(OBS_DEPS_VERSION)
+        QT_VERSION: $(QT_VERSION)
 
-    - script: ./CI/install-build-obs-macos.sh
+    - script: ./CI/macos/install-build-obs-macos.sh
       displayName: 'Build OBS'
 
-    - script: ./CI/build-macos.sh
+    - script: ./CI/macos/build-plugin-macos.sh
       displayName: 'Build obs-websocket'
 
-    - script: ./CI/package-macos.sh
+    - task: InstallAppleCertificate@2
+      displayName: 'Install release signing certificates'
+      condition: eq(variables['isReleaseMode'], true)
+      inputs:
+        certSecureFile: 'Certificates.p12'
+        certPwd: $(secrets.macOS.certificatesImportPassword)
+
+    - script: ./CI/macos/package-plugin-macos.sh
       displayName: 'Package obs-websocket'
+      env:
+        RELEASE_MODE: $(isReleaseMode)
+        CODE_SIGNING_IDENTITY: $(secrets.macOS.codeSigningIdentity)
+        INSTALLER_SIGNING_IDENTITY: $(secrets.macOS.installerSigningIdentity)
+        AC_USERNAME: $(secrets.macOS.notarization.username)
+        AC_PASSWORD: $(secrets.macOS.notarization.password)
+        AC_PROVIDER_SHORTNAME: $(secrets.macOS.notarization.providerShortName)
 
     - task: PublishBuildArtifacts@1
       inputs:

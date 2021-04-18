@@ -4,7 +4,7 @@
 
 /**
  * Set the currently active profile.
- * 
+ *
  * @param {String} `profile-name` Name of the desired profile.
  *
  * @api requests
@@ -17,19 +17,28 @@ RpcResponse WSRequestHandler::SetCurrentProfile(const RpcRequest& request) {
 		return request.failed("missing request parameters");
 	}
 
-	QString profileName = obs_data_get_string(request.parameters(), "profile-name");
-	if (profileName.isEmpty()) {
+	const char* profileName = obs_data_get_string(request.parameters(), "profile-name");
+	if (!profileName) {
 		return request.failed("invalid request parameters");
 	}
 
-	// TODO : check if profile exists
-	obs_frontend_set_current_profile(profileName.toUtf8());
+	char** profiles = obs_frontend_get_profiles();
+	bool profileExists = Utils::StringInStringList(profiles, profileName);
+	bfree(profiles);
+	if (!profileExists) {
+		return request.failed("profile does not exist");
+	}
+
+	obs_queue_task(OBS_TASK_UI, [](void* param) {
+		obs_frontend_set_current_profile(reinterpret_cast<const char*>(param));
+	}, (void*)profileName, true);
+
 	return request.success();
 }
 
  /**
  * Get the name of the current profile.
- * 
+ *
  * @return {String} `profile-name` Name of the currently active profile.
  *
  * @api requests
@@ -49,6 +58,7 @@ RpcResponse WSRequestHandler::GetCurrentProfile(const RpcRequest& request) {
  * Get a list of available profiles.
  *
  * @return {Array<Object>} `profiles` List of available profiles.
+ * @return {String} `profiles.*.profile-name` Filter name
  *
  * @api requests
  * @name ListProfiles

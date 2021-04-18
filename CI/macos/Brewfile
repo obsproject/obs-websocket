@@ -1,0 +1,5 @@
+brew "jack"
+brew "speexdsp"
+brew "cmake"
+brew "freetype"
+brew "fdk-aac"

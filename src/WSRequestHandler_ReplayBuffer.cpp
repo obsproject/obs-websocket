@@ -1,9 +1,29 @@
+#include "obs-websocket.h"
+#include "WSEvents.h"
 #include "Utils.h"
 
 #include "WSRequestHandler.h"
 
+
+ /**
+ * Get the status of the OBS replay buffer.
+ *
+ * @return {boolean} `isReplayBufferActive` Current recording status.
+ *
+ * @api requests
+ * @name GetReplayBufferStatus
+ * @category replay buffer
+ * @since 4.9.0
+ */
+RpcResponse WSRequestHandler::GetReplayBufferStatus(const RpcRequest& request) {
+		OBSDataAutoRelease data = obs_data_create();
+		obs_data_set_bool(data, "isReplayBufferActive", obs_frontend_replay_buffer_active());
+
+		return request.success(data);
+}
+
 /**
-* Toggle the Replay Buffer on/off.
+* Toggle the Replay Buffer on/off (depending on the current state of the replay buffer).
 *
 * @api requests
 * @name StartStopReplayBuffer

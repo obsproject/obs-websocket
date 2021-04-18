@@ -1,15 +1,19 @@
-cmake_minimum_required(VERSION 3.2)
-project(obs-websocket)
+cmake_minimum_required(VERSION 3.5)
+project(obs-websocket VERSION 4.9.0)
 
 set(CMAKE_PREFIX_PATH "${QTDIR}")
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_definitions(-DASIO_STANDALONE)
+
+if (${CMAKE_SYSTEM_PROCESSOR} MATCHES "arm") 
+    set(CMAKE_CXX_FLAGS "-mfpu=neon")
+endif()
 
 if (WIN32 OR APPLE)
 	include(external/FindLibObs.cmake)
@@ -35,6 +39,7 @@ set(obs-websocket_SOURCES
 	src/WSRequestHandler_StudioMode.cpp
 	src/WSRequestHandler_Transitions.cpp
 	src/WSRequestHandler_Outputs.cpp
+	src/WSRequestHandler_MediaControl.cpp
 	src/WSEvents.cpp
 	src/Config.cpp
 	src/Utils.cpp
@@ -67,8 +72,8 @@ include_directories(
 	"${LIBOBS_INCLUDE_DIR}/../UI/obs-frontend-api"
 	${Qt5Core_INCLUDES}
 	${Qt5Widgets_INCLUDES}
-	"${CMAKE_SOURCE_DIR}/deps/asio/asio/include"
-	"${CMAKE_SOURCE_DIR}/deps/websocketpp")
+	"${CMAKE_CURRENT_SOURCE_DIR}/deps/asio/asio/include"
+	"${CMAKE_CURRENT_SOURCE_DIR}/deps/websocketpp")
 
 target_link_libraries(obs-websocket
 	libobs
@@ -85,7 +90,8 @@ if(WIN32)
 	endif()
 
     if(MSVC)
-	    add_compile_options("/MP")
+        # Enable Multicore Builds and disable FH4 (to not depend on VCRUNTIME140_1.DLL)
+	    add_definitions(/MP /d2FH4-)
     endif()
 
 	add_definitions(-D_WEBSOCKETPP_CPP11_STL_)
@@ -110,67 +116,70 @@ if(WIN32)
 	set(RELEASE_DIR "${PROJECT_SOURCE_DIR}/release")
 
 	add_custom_command(TARGET obs-websocket POST_BUILD
-		# If config is Release, package release files
-		COMMAND if $<CONFIG:Release>==1 (
+		# If config is Release or RelWithDebInfo, package release files
+		COMMAND if $<OR:$<CONFIG:Release>,$<CONFIG:RelWithDebInfo>>==1 (
 			"${CMAKE_COMMAND}" -E make_directory
-			"${RELEASE_DIR}/data/obs-plugins/obs-websocket"
-			"${RELEASE_DIR}/obs-plugins/${ARCH_NAME}")
+			"${RELEASE_DIR}/obs-plugins/${ARCH_NAME}"
+		)
 
-		COMMAND if $<CONFIG:Release>==1 ("${CMAKE_COMMAND}" -E copy_directory
+		COMMAND if $<OR:$<CONFIG:Release>,$<CONFIG:RelWithDebInfo>>==1 (
+			"${CMAKE_COMMAND}" -E copy_directory
 			"${PROJECT_SOURCE_DIR}/data"
-			"${RELEASE_DIR}/data/obs-plugins/obs-websocket")
+			"${RELEASE_DIR}/data/obs-plugins/obs-websocket"
+		)
 
-		COMMAND if $<CONFIG:Release>==1 ("${CMAKE_COMMAND}" -E copy
-			"$<TARGET_FILE:obs-websocket>"
-			"${RELEASE_DIR}/obs-plugins/${ARCH_NAME}")
-
-		# In Release mode, copy Qt image format plugins
-		COMMAND if $<CONFIG:Release>==1 (
+		COMMAND if $<OR:$<CONFIG:Release>,$<CONFIG:RelWithDebInfo>>==1 (
 			"${CMAKE_COMMAND}" -E copy
+			"$<TARGET_FILE:obs-websocket>"
+			"${RELEASE_DIR}/obs-plugins/${ARCH_NAME}"
+		)
+
+		# In Release or RelWithDebInfo mode, copy Qt image format plugins
+		COMMAND if $<OR:$<CONFIG:Release>,$<CONFIG:RelWithDebInfo>>==1 (
+			"${CMAKE_COMMAND}" -E make_directory
+			"${RELEASE_DIR}/bin/${ARCH_NAME}/imageformats"
+		)
+		COMMAND if $<OR:$<CONFIG:Release>,$<CONFIG:RelWithDebInfo>>==1 (
+			"${CMAKE_COMMAND}" -E copy
+			"${QTDIR}/plugins/imageformats/qicns.dll"
+			"${QTDIR}/plugins/imageformats/qico.dll"
 			"${QTDIR}/plugins/imageformats/qjpeg.dll"
-			"${RELEASE_DIR}/bin/${ARCH_NAME}/imageformats/qjpeg.dll")
+			"${QTDIR}/plugins/imageformats/qtiff.dll"
+			"${QTDIR}/plugins/imageformats/qwbmp.dll"
+			"${QTDIR}/plugins/imageformats/qwebp.dll"
+			"${RELEASE_DIR}/bin/${ARCH_NAME}/imageformats"
+		)
+
+		# If config is RelWithDebInfo, package PDB file for target
 		COMMAND if $<CONFIG:RelWithDebInfo>==1 (
 			"${CMAKE_COMMAND}" -E copy
-			"${QTDIR}/plugins/imageformats/qjpeg.dll"
-			"${RELEASE_DIR}/bin/${ARCH_NAME}/imageformats/qjpeg.dll")
-
-		# If config is RelWithDebInfo, package release files
-		COMMAND if $<CONFIG:RelWithDebInfo>==1 (
-			"${CMAKE_COMMAND}" -E make_directory
-			"${RELEASE_DIR}/data/obs-plugins/obs-websocket"
-			"${RELEASE_DIR}/obs-plugins/${ARCH_NAME}")
-
-		COMMAND if $<CONFIG:RelWithDebInfo>==1 ("${CMAKE_COMMAND}" -E copy_directory
-			"${PROJECT_SOURCE_DIR}/data"
-			"${RELEASE_DIR}/data/obs-plugins/obs-websocket")
-
-		COMMAND if $<CONFIG:RelWithDebInfo>==1 ("${CMAKE_COMMAND}" -E copy
-			"$<TARGET_FILE:obs-websocket>"
-			"${RELEASE_DIR}/obs-plugins/${ARCH_NAME}")
-
-		COMMAND if $<CONFIG:RelWithDebInfo>==1 ("${CMAKE_COMMAND}" -E copy
 			"$<TARGET_PDB_FILE:obs-websocket>"
-			"${RELEASE_DIR}/obs-plugins/${ARCH_NAME}")
+			"${RELEASE_DIR}/obs-plugins/${ARCH_NAME}"
+		)
 
-		# Copy to obs-studio dev environment for immediate testing
+		# In the Debug configuration, copy to obs-studio dev environment for immediate testing
 		COMMAND if $<CONFIG:Debug>==1 (
 			"${CMAKE_COMMAND}" -E copy
 				"$<TARGET_FILE:obs-websocket>"
-				"${LIBOBS_INCLUDE_DIR}/../${OBS_BUILDDIR_ARCH}/rundir/$<CONFIG>/obs-plugins/${ARCH_NAME}")
+				"${LIBOBS_INCLUDE_DIR}/../${OBS_BUILDDIR_ARCH}/rundir/$<CONFIG>/obs-plugins/${ARCH_NAME}"
+		)
 
 		COMMAND if $<CONFIG:Debug>==1 (
 			"${CMAKE_COMMAND}" -E copy
-				"$<TARGET_PDB_FILE:obs-websocket>"
-				"${LIBOBS_INCLUDE_DIR}/../${OBS_BUILDDIR_ARCH}/rundir/$<CONFIG>/obs-plugins/${ARCH_NAME}")
+			"$<TARGET_PDB_FILE:obs-websocket>"
+			"${LIBOBS_INCLUDE_DIR}/../${OBS_BUILDDIR_ARCH}/rundir/$<CONFIG>/obs-plugins/${ARCH_NAME}"
+		)
 
 		COMMAND if $<CONFIG:Debug>==1 (
 			"${CMAKE_COMMAND}" -E make_directory
-				"${LIBOBS_INCLUDE_DIR}/../${OBS_BUILDDIR_ARCH}/rundir/$<CONFIG>/data/obs-plugins/obs-websocket")
+			"${LIBOBS_INCLUDE_DIR}/../${OBS_BUILDDIR_ARCH}/rundir/$<CONFIG>/data/obs-plugins/obs-websocket"
+		)
 
 		COMMAND if $<CONFIG:Debug>==1 (
 			"${CMAKE_COMMAND}" -E copy_directory
-				"${PROJECT_SOURCE_DIR}/data"
-				"${LIBOBS_INCLUDE_DIR}/../${OBS_BUILDDIR_ARCH}/rundir/$<CONFIG>/data/obs-plugins/obs-websocket")
+			"${PROJECT_SOURCE_DIR}/data"
+			"${LIBOBS_INCLUDE_DIR}/../${OBS_BUILDDIR_ARCH}/rundir/$<CONFIG>/data/obs-plugins/obs-websocket"
+		)
 	)
 	# --- End of sub-section ---
 
@@ -179,20 +188,27 @@ endif()
 
 # --- Linux-specific build settings and tasks ---
 if(UNIX AND NOT APPLE)
+	include(GNUInstallDirs)
+
 	set_target_properties(obs-websocket PROPERTIES PREFIX "")
 	target_link_libraries(obs-websocket obs-frontend-api)
 
 	file(GLOB locale_files data/locale/*.ini)
-	execute_process(COMMAND uname -m COMMAND tr -d '\n' OUTPUT_VARIABLE UNAME_MACHINE)
 
-	install(TARGETS obs-websocket
-		LIBRARY DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/obs-plugins")
-	# Dirty fix for Ubuntu
-		install(TARGETS obs-websocket
-				LIBRARY DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/${UNAME_MACHINE}-linux-gnu/obs-plugins")
+        set(CMAKE_INSTALL_DEFAULT_DIRECTORY_PERMISSIONS
+		OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_WRITE GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
+
+	if(${USE_UBUNTU_FIX})
+		install(TARGETS obs-websocket LIBRARY
+			DESTINATION "/usr/lib/obs-plugins"
+			PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ)
+	endif()
+	install(TARGETS obs-websocket LIBRARY
+		DESTINATION "${CMAKE_INSTALL_FULL_LIBDIR}/obs-plugins"
+		PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ)
 
 	install(FILES ${locale_files}
-		DESTINATION "${CMAKE_INSTALL_PREFIX}/share/obs/obs-plugins/obs-websocket/locale")
+		DESTINATION "${CMAKE_INSTALL_FULL_DATAROOTDIR}/obs/obs-plugins/obs-websocket/locale")
 endif()
 # --- End of section ---
 

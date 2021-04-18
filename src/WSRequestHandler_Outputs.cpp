@@ -15,7 +15,7 @@
 * @property {boolean} `flags.encoded` Output is encoded
 * @property {boolean} `flags.multiTrack` Output uses several audio tracks
 * @property {boolean} `flags.service` Output uses a service
-* @property {Object} `settings` Output name
+* @property {Object} `settings` Output settings
 * @property {boolean} `active` Output status (active or not)
 * @property {boolean} `reconnecting` Output reconnection status (reconnecting or not)
 * @property {double} `congestion` Output congestion
@@ -59,7 +59,7 @@ obs_data_t* getOutputInfo(obs_output_t* output)
 	return data;
 }
 
-RpcResponse findOutputOrFail(const RpcRequest& request, std::function<RpcResponse (obs_output_t*)> callback)
+RpcResponse findOutputOrFail(const RpcRequest& request, std::function<RpcResponse (obs_output_t*, const RpcRequest&)> callback)
 {
 	if (!request.hasField("outputName")) {
 		return request.failed("missing request parameters");
@@ -71,7 +71,7 @@ RpcResponse findOutputOrFail(const RpcRequest& request, std::function<RpcRespons
 		return request.failed("specified output doesn't exist");
 	}
 
-	return callback(output);	
+	return callback(output, request);
 }
 
 /**
@@ -117,7 +117,7 @@ RpcResponse WSRequestHandler::ListOutputs(const RpcRequest& request)
 */
 RpcResponse WSRequestHandler::GetOutputInfo(const RpcRequest& request)
 {
-	return findOutputOrFail(request, [request](obs_output_t* output) {
+	return findOutputOrFail(request, [](obs_output_t* output, const RpcRequest& request) {
 		OBSDataAutoRelease outputInfo = getOutputInfo(output);
 
 		OBSDataAutoRelease fields = obs_data_create();
@@ -129,6 +129,8 @@ RpcResponse WSRequestHandler::GetOutputInfo(const RpcRequest& request)
 /**
 * Start an output
 *
+* Note: Controlling outputs is an experimental feature of obs-websocket. Some plugins which add outputs to OBS may not function properly when they are controlled in this way.
+*
 * @param {String} `outputName` Output name
 *
 * @api requests
@@ -138,7 +140,7 @@ RpcResponse WSRequestHandler::GetOutputInfo(const RpcRequest& request)
 */
 RpcResponse WSRequestHandler::StartOutput(const RpcRequest& request)
 {
-	return findOutputOrFail(request, [request](obs_output_t* output) {
+	return findOutputOrFail(request, [](obs_output_t* output, const RpcRequest& request) {
 		if (obs_output_active(output)) {
 			return request.failed("output already active");
 		}
@@ -157,6 +159,8 @@ RpcResponse WSRequestHandler::StartOutput(const RpcRequest& request)
 /**
 * Stop an output
 *
+* Note: Controlling outputs is an experimental feature of obs-websocket. Some plugins which add outputs to OBS may not function properly when they are controlled in this way.
+*
 * @param {String} `outputName` Output name
 * @param {boolean (optional)} `force` Force stop (default: false)
 *
@@ -167,11 +171,11 @@ RpcResponse WSRequestHandler::StartOutput(const RpcRequest& request)
 */
 RpcResponse WSRequestHandler::StopOutput(const RpcRequest& request)
 {
-	return findOutputOrFail(request, [request](obs_output_t* output) {
+	return findOutputOrFail(request, [](obs_output_t* output, const RpcRequest& request) {
 		if (!obs_output_active(output)) {
 			return request.failed("output not active");
 		}
-		
+
 		bool forceStop = obs_data_get_bool(request.parameters(), "force");
 		if (forceStop) {
 			obs_output_force_stop(output);

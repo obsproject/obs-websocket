@@ -44,6 +44,7 @@ WSServer::WSServer()
 	  _connections(),
 	  _clMutex(QMutex::Recursive)
 {
+		_server.get_alog().clear_channels(websocketpp::log::alevel::frame_header | websocketpp::log::alevel::frame_payload | websocketpp::log::alevel::control);
 	_server.init_asio();
 #ifndef _WIN32
 	_server.set_reuse_addr(true);
@@ -59,10 +60,10 @@ WSServer::~WSServer()
 	stop();
 }
 
-void WSServer::start(quint16 port)
+void WSServer::start(quint16 port, bool lockToIPv4)
 {
-	if (_server.is_listening() && port == _serverPort) {
-		blog(LOG_INFO, "WSServer::start: server already on this port. no restart needed");
+	if (_server.is_listening() && (port == _serverPort && _lockToIPv4 == lockToIPv4)) {
+		blog(LOG_INFO, "WSServer::start: server already on this port and protocol mode. no restart needed");
 		return;
 	}
 
@@ -73,9 +74,16 @@ void WSServer::start(quint16 port)
 	_server.reset();
 
 	_serverPort = port;
+	_lockToIPv4 = lockToIPv4;
 
 	websocketpp::lib::error_code errorCode;
-	_server.listen(_serverPort, errorCode);
+	if (lockToIPv4) {
+		blog(LOG_INFO, "WSServer::start: Locked to IPv4 bindings");
+		_server.listen(websocketpp::lib::asio::ip::tcp::v4(), _serverPort, errorCode);
+	} else {
+		blog(LOG_INFO, "WSServer::start: Not locked to IPv4 bindings");
+		_server.listen(_serverPort, errorCode);
+	}
 
 	if (errorCode) {
 		std::string errorCodeMessage = errorCode.message();
@@ -83,7 +91,7 @@ void WSServer::start(quint16 port)
 
 		obs_frontend_push_ui_translation(obs_module_get_string);
 		QString errorTitle = tr("OBSWebsocket.Server.StartFailed.Title");
-		QString errorMessage = tr("OBSWebsocket.Server.StartFailed.Message").arg(_serverPort);
+		QString errorMessage = tr("OBSWebsocket.Server.StartFailed.Message").arg(_serverPort).arg(errorCodeMessage.c_str());
 		obs_frontend_pop_ui_translation();
 
 		QMainWindow* mainWindow = reinterpret_cast<QMainWindow*>(obs_frontend_get_main_window());
@@ -113,13 +121,11 @@ void WSServer::stop()
 	for (connection_hdl hdl : _connections) {
 		_server.close(hdl, websocketpp::close::status::going_away, "Server stopping");
 	}
-	_connections.clear();
-	_connectionProperties.clear();
 
 	_threadPool.waitForDone();
 
-	while (!_server.stopped()) {
-		std::this_thread::sleep_for(std::chrono::milliseconds(1));
+	while (_connections.size() > 0) {
+		std::this_thread::sleep_for(std::chrono::milliseconds(10));
 	}
 
 	blog(LOG_INFO, "server stopped successfully");
@@ -127,16 +133,16 @@ void WSServer::stop()
 
 void WSServer::broadcast(const RpcEvent& event)
 {
-	OBSRemoteProtocol protocol;
-	std::string message = protocol.encodeEvent(event);
+	std::string message = OBSRemoteProtocol::encodeEvent(event);
 
-	if (GetConfig()->DebugEnabled) {
+	auto config = GetConfig();
+	if (config && config->DebugEnabled) {
 		blog(LOG_INFO, "Update << '%s'", message.c_str());
 	}
 
 	QMutexLocker locker(&_clMutex);
 	for (connection_hdl hdl : _connections) {
-		if (GetConfig()->AuthRequired) {
+		if (config && config->AuthRequired) {
 			bool authenticated = _connectionProperties[hdl].isAuthenticated();
 			if (!authenticated) {
 				continue;
@@ -179,15 +185,15 @@ void WSServer::onMessage(connection_hdl hdl, server::message_ptr message)
 		ConnectionProperties& connProperties = _connectionProperties[hdl];
 		locker.unlock();
 
-		if (GetConfig()->DebugEnabled) {
+		auto config = GetConfig();
+		if (config && config->DebugEnabled) {
 			blog(LOG_INFO, "Request >> '%s'", payload.c_str());
 		}
 
 		WSRequestHandler requestHandler(connProperties);
-		OBSRemoteProtocol protocol;
-		std::string response = protocol.processMessage(requestHandler, payload);
+		std::string response = OBSRemoteProtocol::processMessage(requestHandler, payload);
 
-		if (GetConfig()->DebugEnabled) {
+		if (config && config->DebugEnabled) {
 			blog(LOG_INFO, "Response << '%s'", response.c_str());
 		}
 

@@ -24,6 +24,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <obs-frontend-api.h>
 #include <obs.hpp>
 #include <util/platform.h>
+#include <obs-data.h>
 
 #include "obs-websocket.h"
 
@@ -49,6 +50,43 @@ QString getBoundsNameFromType(obs_bounds_type type) {
 
 obs_bounds_type getBoundsTypeFromName(QString name) {
 	return boundTypeNames.key(name);
+}
+
+const QHash<obs_scale_type, QString> scaleTypeNames = {
+	{ OBS_SCALE_DISABLE, "OBS_SCALE_DISABLE" },
+	{ OBS_SCALE_POINT, "OBS_SCALE_POINT" },
+	{ OBS_SCALE_BICUBIC, "OBS_SCALE_BICUBIC" },
+	{ OBS_SCALE_BILINEAR, "OBS_SCALE_BILINEAR" },
+	{ OBS_SCALE_LANCZOS, "OBS_SCALE_LANCZOS" },
+	{ OBS_SCALE_AREA, "OBS_SCALE_AREA" },
+};
+
+QString getScaleNameFromType(obs_scale_type type) {
+	QString fallback = scaleTypeNames.value(OBS_SCALE_DISABLE);
+	return scaleTypeNames.value(type, fallback);
+}
+
+obs_scale_type getFilterTypeFromName(QString name) {
+	return scaleTypeNames.key(name);
+}
+
+bool Utils::StringInStringList(char** strings, const char* string) {
+	if (!strings) {
+		return false;
+	}
+
+	size_t index = 0;
+	while (strings[index] != NULL) {
+		char* value = strings[index];
+
+		if (strcmp(value, string) == 0) {
+			return true;
+		}
+
+		index++;
+	}
+
+	return false;
 }
 
 obs_data_array_t* Utils::StringListToArray(char** strings, const char* key) {
@@ -180,34 +218,6 @@ obs_data_t* Utils::GetSceneItemData(obs_sceneitem_t* item) {
 	return data;
 }
 
-obs_sceneitem_t* Utils::GetSceneItemFromItem(obs_scene_t* scene, obs_data_t* itemInfo) {
-	if (!scene) {
-		return nullptr;
-	}
-
-	OBSDataItemAutoRelease idInfoItem = obs_data_item_byname(itemInfo, "id");
-	int id = obs_data_item_get_int(idInfoItem);
-
-	OBSDataItemAutoRelease nameInfoItem = obs_data_item_byname(itemInfo, "name");
-	const char* name = obs_data_item_get_string(nameInfoItem);
-
-	if (idInfoItem) {
-		obs_sceneitem_t* sceneItem = GetSceneItemFromId(scene, id);
-		obs_source_t* sceneItemSource = obs_sceneitem_get_source(sceneItem);
-
-		QString sceneItemName = obs_source_get_name(sceneItemSource);
-		if (nameInfoItem && (QString(name) != sceneItemName)) {
-			return nullptr;
-		}
-
-		return sceneItem;
-	} else if (nameInfoItem) {
-		return GetSceneItemFromName(scene, name);
-	}
-
-	return nullptr;
-}
-
 obs_sceneitem_t* Utils::GetSceneItemFromName(obs_scene_t* scene, QString name) {
 	if (!scene) {
 		return nullptr;
@@ -295,6 +305,49 @@ obs_sceneitem_t* Utils::GetSceneItemFromId(obs_scene_t* scene, int64_t id) {
 	obs_scene_enum_items(scene, search.enumCallback, &search);
 
 	return search.result;
+}
+
+obs_sceneitem_t* Utils::GetSceneItemFromItem(obs_scene_t* scene, obs_data_t* itemInfo) {
+	if (!scene) {
+		return nullptr;
+	}
+
+	OBSDataItemAutoRelease idInfoItem = obs_data_item_byname(itemInfo, "id");
+	int id = obs_data_item_get_int(idInfoItem);
+
+	OBSDataItemAutoRelease nameInfoItem = obs_data_item_byname(itemInfo, "name");
+	const char* name = obs_data_item_get_string(nameInfoItem);
+
+	if (idInfoItem) {
+		obs_sceneitem_t* sceneItem = GetSceneItemFromId(scene, id);
+		obs_source_t* sceneItemSource = obs_sceneitem_get_source(sceneItem);
+
+		QString sceneItemName = obs_source_get_name(sceneItemSource);
+		if (nameInfoItem && (QString(name) != sceneItemName)) {
+			return nullptr;
+		}
+
+		return sceneItem;
+	} else if (nameInfoItem) {
+		return GetSceneItemFromName(scene, name);
+	}
+
+	return nullptr;
+}
+
+obs_sceneitem_t* Utils::GetSceneItemFromRequestField(obs_scene_t* scene, obs_data_item_t* dataItem)
+{
+	enum obs_data_type dataType = obs_data_item_gettype(dataItem);
+
+	if (dataType == OBS_DATA_OBJECT) {
+		OBSDataAutoRelease itemData = obs_data_item_get_obj(dataItem);
+		return GetSceneItemFromItem(scene, itemData);
+	} else if (dataType == OBS_DATA_STRING) {
+		QString name = obs_data_item_get_string(dataItem);
+		return GetSceneItemFromName(scene, name);
+	}
+
+	return nullptr;
 }
 
 bool Utils::IsValidAlignment(const uint32_t alignment) {
@@ -470,16 +523,13 @@ QString Utils::OBSVersionString() {
 }
 
 QSystemTrayIcon* Utils::GetTrayIcon() {
-	QMainWindow* main = (QMainWindow*)obs_frontend_get_main_window();
-	if (!main) return nullptr;
-
-	QList<QSystemTrayIcon*> trays = main->findChildren<QSystemTrayIcon*>();
-	return trays.isEmpty() ? nullptr : trays.first();
+	void* systemTray = obs_frontend_get_system_tray();
+	return reinterpret_cast<QSystemTrayIcon*>(systemTray);
 }
 
-void Utils::SysTrayNotify(QString text,
-	QSystemTrayIcon::MessageIcon icon, QString title) {
-	if (!GetConfig()->AlertsEnabled ||
+void Utils::SysTrayNotify(QString text, QSystemTrayIcon::MessageIcon icon, QString title) {
+	auto config = GetConfig();
+	if ((config && !config->AlertsEnabled) ||
 		!QSystemTrayIcon::isSystemTrayAvailable() ||
 		!QSystemTrayIcon::supportsMessages())
 	{
@@ -665,16 +715,40 @@ bool Utils::SetFilenameFormatting(const char* filenameFormatting) {
 	return true;
 }
 
+const char* Utils::GetCurrentRecordingFilename()
+{
+	OBSOutputAutoRelease recordingOutput = obs_frontend_get_recording_output();
+	if (!recordingOutput) {
+		return nullptr;
+	}
+
+	OBSDataAutoRelease settings = obs_output_get_settings(recordingOutput);
+
+	// mimicks the behavior of BasicOutputHandler::GetRecordingFilename :
+	// try to fetch the path from the "url" property, then try "path" if the first one
+	// didn't yield any result
+	OBSDataItemAutoRelease item = obs_data_item_byname(settings, "url");
+	if (!item) {
+		item = obs_data_item_byname(settings, "path");
+		if (!item) {
+			return nullptr;
+		}
+	}
+
+	return obs_data_item_get_string(item);
+}
+
 // Transform properties copy-pasted from WSRequestHandler_SceneItems.cpp because typedefs can't be extended yet
 
 /**
  * @typedef {Object} `SceneItemTransform`
- * @property {int} `position.x` The x position of the scene item from the left.
- * @property {int} `position.y` The y position of the scene item from the top.
+ * @property {double} `position.x` The x position of the scene item from the left.
+ * @property {double} `position.y` The y position of the scene item from the top.
  * @property {int} `position.alignment` The point on the scene item that the item is manipulated from.
  * @property {double} `rotation` The clockwise rotation of the scene item in degrees around the point of alignment.
  * @property {double} `scale.x` The x-scale factor of the scene item.
  * @property {double} `scale.y` The y-scale factor of the scene item.
+ * @property {String} `scale.filter` The scale filter of the source. Can be "OBS_SCALE_DISABLE", "OBS_SCALE_POINT", "OBS_SCALE_BICUBIC", "OBS_SCALE_BILINEAR", "OBS_SCALE_LANCZOS" or "OBS_SCALE_AREA".
  * @property {int} `crop.top` The number of pixels cropped off the top of the scene item before scaling.
  * @property {int} `crop.right` The number of pixels cropped off the right of the scene item before scaling.
  * @property {int} `crop.bottom` The number of pixels cropped off the bottom of the scene item before scaling.
@@ -718,12 +792,16 @@ obs_data_t* Utils::GetSceneItemPropertiesData(obs_sceneitem_t* sceneItem) {
 	uint32_t boundsAlignment = obs_sceneitem_get_bounds_alignment(sceneItem);
 	QString boundsTypeName = getBoundsNameFromType(boundsType);
 
+	obs_scale_type scaleFilter = obs_sceneitem_get_scale_filter(sceneItem);
+	QString scaleFilterName = getScaleNameFromType(scaleFilter);
+
 	OBSDataAutoRelease posData = obs_data_create();
 	obs_data_set_double(posData, "x", pos.x);
 	obs_data_set_double(posData, "y", pos.y);
 	obs_data_set_int(posData, "alignment", alignment);
 
 	OBSDataAutoRelease scaleData = obs_data_create();
+	obs_data_set_string(scaleData, "filter", scaleFilterName.toUtf8());
 	obs_data_set_double(scaleData, "x", scale.x);
 	obs_data_set_double(scaleData, "y", scale.y);
 
@@ -843,4 +921,46 @@ QString Utils::nsToTimestamp(uint64_t ns)
 	uint64_t msPart = ms % 1000ULL;
 
 	return QString::asprintf("%02" PRIu64 ":%02" PRIu64 ":%02" PRIu64 ".%03" PRIu64, hoursPart, minutesPart, secsPart, msPart);
+}
+
+void Utils::AddSourceHelper(void *_data, obs_scene_t *scene)
+{
+	auto *data = reinterpret_cast<AddSourceData*>(_data);
+	data->sceneItem = obs_scene_add(scene, data->source);
+	obs_sceneitem_set_visible(data->sceneItem, data->setVisible);
+}
+
+obs_data_t *Utils::OBSDataGetDefaults(obs_data_t *data)
+{
+	obs_data_t *returnData = obs_data_create();
+	obs_data_item_t *item = NULL;
+
+	for (item = obs_data_first(data); item; obs_data_item_next(&item)) {
+		enum obs_data_type type = obs_data_item_gettype(item);
+		const char *name = obs_data_item_get_name(item);
+
+		if (type == OBS_DATA_STRING) {
+			const char *val = obs_data_item_get_string(item);
+			obs_data_set_string(returnData, name, val);
+		} else if (type == OBS_DATA_NUMBER) {
+			enum obs_data_number_type type = obs_data_item_numtype(item);
+			if (type == OBS_DATA_NUM_INT) {
+				long long val = obs_data_item_get_int(item);
+				obs_data_set_int(returnData, name, val);
+			} else {
+				double val = obs_data_item_get_double(item);
+				obs_data_set_double(returnData, name, val);
+			}
+		} else if (type == OBS_DATA_BOOLEAN) {
+			bool val = obs_data_item_get_bool(item);
+			obs_data_set_bool(returnData, name, val);
+		} else if (type == OBS_DATA_OBJECT) {
+			OBSDataAutoRelease obj = obs_data_item_get_obj(item);
+			obs_data_set_obj(returnData, name, obj);
+		} else if (type == OBS_DATA_ARRAY) {
+			OBSDataArrayAutoRelease array = obs_data_item_get_array(item);
+			obs_data_set_array(returnData, name, array);
+		}
+	}
+	return returnData;
 }

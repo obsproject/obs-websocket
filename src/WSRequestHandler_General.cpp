@@ -7,6 +7,7 @@
 #include "Config.h"
 #include "Utils.h"
 #include "WSEvents.h"
+#include "protocol/OBSRemoteProtocol.h"
 
 #define CASE(x) case x: return #x;
 const char *describe_output_format(int format) {
@@ -114,13 +115,13 @@ RpcResponse WSRequestHandler::GetVersion(const RpcRequest& request) {
  * @since 0.3
  */
 RpcResponse WSRequestHandler::GetAuthRequired(const RpcRequest& request) {
-	bool authRequired = GetConfig()->AuthRequired;
+	auto config = GetConfig();
+	bool authRequired = (config && config->AuthRequired);
 
 	OBSDataAutoRelease data = obs_data_create();
 	obs_data_set_bool(data, "authRequired", authRequired);
 
 	if (authRequired) {
-		auto config = GetConfig();
 		obs_data_set_string(data, "challenge",
 			config->SessionChallenge.toUtf8());
 		obs_data_set_string(data, "salt",
@@ -154,7 +155,8 @@ RpcResponse WSRequestHandler::Authenticate(const RpcRequest& request) {
 		return request.failed("auth not specified!");
 	}
 
-	if (GetConfig()->CheckAuth(auth) == false) {
+	auto config = GetConfig();
+	if (!config || (config->CheckAuth(auth) == false)) {
 		return request.failed("Authentication Failed.");
 	}
 
@@ -171,6 +173,7 @@ RpcResponse WSRequestHandler::Authenticate(const RpcRequest& request) {
  * @name SetHeartbeat
  * @category general
  * @since 4.3.0
+ * @deprecated Since 4.9.0. Please poll the appropriate data using requests. Will be removed in v5.0.0.
  */
 RpcResponse WSRequestHandler::SetHeartbeat(const RpcRequest& request) {
 	if (!request.hasField("enable")) {
@@ -231,7 +234,7 @@ RpcResponse WSRequestHandler::GetFilenameFormatting(const RpcRequest& request) {
 /**
  * Get OBS stats (almost the same info as provided in OBS' stats window)
  *
- * @return {OBSStats} `stats` OBS stats
+ * @return {OBSStats} `stats` [OBS stats](#obsstats)
  *
  * @api requests
  * @name GetStats
@@ -319,16 +322,16 @@ RpcResponse WSRequestHandler::GetVideoInfo(const RpcRequest& request) {
 
 /**
  * Open a projector window or create a projector on a monitor. Requires OBS v24.0.4 or newer.
- * 
- * @param {String (Optional)} `type` Type of projector: Preview (default), Source, Scene, StudioProgram, or Multiview (case insensitive).
+ *
+ * @param {String (Optional)} `type` Type of projector: `Preview` (default), `Source`, `Scene`, `StudioProgram`, or `Multiview` (case insensitive).
  * @param {int (Optional)} `monitor` Monitor to open the projector on. If -1 or omitted, opens a window.
- * @param {String (Optional)} `geometry` Size and position of the projector window (only if monitor is -1). Encoded in Base64 using Qt's geometry encoding (https://doc.qt.io/qt-5/qwidget.html#saveGeometry). Corresponds to OBS's saved projectors.
+ * @param {String (Optional)} `geometry` Size and position of the projector window (only if monitor is -1). Encoded in Base64 using [Qt's geometry encoding](https://doc.qt.io/qt-5/qwidget.html#saveGeometry). Corresponds to OBS's saved projectors.
  * @param {String (Optional)} `name` Name of the source or scene to be displayed (ignored for other projector types).
- * 
+ *
  * @api requests
  * @name OpenProjector
  * @category general
- * @since unreleased
+ * @since 4.8.0
  */
 RpcResponse WSRequestHandler::OpenProjector(const RpcRequest& request) {
 	const char* type = obs_data_get_string(request.parameters(), "type");
@@ -342,5 +345,153 @@ RpcResponse WSRequestHandler::OpenProjector(const RpcRequest& request) {
 	const char* name = obs_data_get_string(request.parameters(), "name");
 
 	obs_frontend_open_projector(type, monitor, geometry, name);
+	return request.success();
+}
+
+/**
+* Executes hotkey routine, identified by hotkey unique name
+*
+* @param {String} `hotkeyName` Unique name of the hotkey, as defined when registering the hotkey (e.g. "ReplayBuffer.Save")
+*
+* @api requests
+* @name TriggerHotkeyByName
+* @category general
+* @since 4.9.0
+*/
+RpcResponse WSRequestHandler::TriggerHotkeyByName(const RpcRequest& request) {
+	const char* name = obs_data_get_string(request.parameters(), "hotkeyName");
+
+	obs_hotkey_t* hk = Utils::FindHotkeyByName(name);
+	if (!hk) {
+		return request.failed("hotkey not found");
+	}
+	obs_hotkey_trigger_routed_callback(obs_hotkey_get_id(hk), true);
+	return request.success();
+}
+
+/**
+* Executes hotkey routine, identified by bound combination of keys. A single key combination might trigger multiple hotkey routines depending on user settings 
+*
+* @param {String} `keyId` Main key identifier (e.g. `OBS_KEY_A` for key "A"). Available identifiers [here](https://github.com/obsproject/obs-studio/blob/master/libobs/obs-hotkeys.h)
+* @param {Object (Optional)} `keyModifiers` Optional key modifiers object. False entries can be ommitted
+* @param {boolean} `keyModifiers.shift` Trigger Shift Key
+* @param {boolean} `keyModifiers.alt` Trigger Alt Key
+* @param {boolean} `keyModifiers.control` Trigger Control (Ctrl) Key
+* @param {boolean} `keyModifiers.command` Trigger Command Key (Mac)
+*
+* @api requests
+* @name TriggerHotkeyBySequence
+* @category general
+* @since 4.9.0
+*/
+RpcResponse WSRequestHandler::TriggerHotkeyBySequence(const RpcRequest& request) {
+	if (!request.hasField("keyId")) {
+		return request.failed("missing request keyId parameter");
+	}
+
+	OBSDataAutoRelease data = obs_data_get_obj(request.parameters(), "keyModifiers");
+
+	obs_key_combination_t combo = {0};
+	uint32_t modifiers = 0;
+	if (obs_data_get_bool(data, "shift"))
+		modifiers |= INTERACT_SHIFT_KEY;
+	if (obs_data_get_bool(data, "control"))
+		modifiers |= INTERACT_CONTROL_KEY;
+	if (obs_data_get_bool(data, "alt"))
+		modifiers |= INTERACT_ALT_KEY;
+	if (obs_data_get_bool(data, "command"))
+		modifiers |= INTERACT_COMMAND_KEY;
+
+	combo.modifiers = modifiers;
+	combo.key = obs_key_from_name(obs_data_get_string(request.parameters(), "keyId"));
+
+	if (!modifiers
+		&& (combo.key == OBS_KEY_NONE || combo.key >= OBS_KEY_LAST_VALUE)) {
+		return request.failed("invalid key-modifier combination");
+	}
+
+	// Inject hotkey press-release sequence
+	obs_hotkey_inject_event(combo, false);
+	obs_hotkey_inject_event(combo, true);
+	obs_hotkey_inject_event(combo, false);
+
+	return request.success();
+}
+
+/**
+* Executes a list of requests sequentially (one-by-one on the same thread).
+*
+* @param {Array<Object>} `requests` Array of requests to perform. Executed in order.
+* @param {String} `requests.*.request-type` Request type. Eg. `GetVersion`.
+* @param {String (Optional)} `requests.*.message-id` ID of the individual request. Can be any string and not required to be unique. Defaults to empty string if not specified.
+* @param {boolean (Optional)} `abortOnFail` Stop processing batch requests if one returns a failure.
+*
+* @return {Array<Object>} `results` Batch requests results, ordered sequentially.
+* @return {String} `results.*.message-id` ID of the individual request which was originally provided by the client.
+* @return {String} `results.*.status` Status response as string. Either `ok` or `error`.
+* @return {String (Optional)} `results.*.error` Error message accompanying an `error` status.
+*
+* @api requests
+* @name ExecuteBatch
+* @category general
+* @since 4.9.0
+*/
+RpcResponse WSRequestHandler::ExecuteBatch(const RpcRequest& request) {
+	if (!request.hasField("requests")) {
+		return request.failed("missing request parameters");
+	}
+
+	bool abortOnFail = obs_data_get_bool(request.parameters(), "abortOnFail");
+
+	OBSDataArrayAutoRelease results = obs_data_array_create();
+
+	OBSDataArrayAutoRelease requests = obs_data_get_array(request.parameters(), "requests");
+	size_t requestsCount = obs_data_array_count(requests);
+	for (size_t i = 0; i < requestsCount; i++) {
+		OBSDataAutoRelease requestData = obs_data_array_item(requests, i);
+		QString messageId = obs_data_get_string(requestData, "message-id");
+		QString methodName = obs_data_get_string(requestData, "request-type");
+		obs_data_unset_user_value(requestData, "request-type");
+		obs_data_unset_user_value(requestData, "message-id");
+
+		// build RpcRequest from json data object
+		RpcRequest subRequest(messageId, methodName, requestData);
+
+		// execute the request
+		RpcResponse subResponse = processRequest(subRequest);
+
+		// transform response into json data
+		OBSDataAutoRelease subResponseData = OBSRemoteProtocol::rpcResponseToJsonData(subResponse);
+
+		obs_data_array_push_back(results, subResponseData);
+
+		// if told to abort on fail and a failure occurs, stop request processing and return the progress
+		if (abortOnFail && (subResponse.status() == RpcResponse::Status::Error))
+			break;
+	}
+
+	OBSDataAutoRelease response = obs_data_create();
+	obs_data_set_array(response, "results", results);
+	return request.success(response);
+}
+
+/**
+ * Waits for the specified duration. Designed to be used in `ExecuteBatch` operations.
+ *
+ * @param {int} `sleepMillis` Delay in milliseconds to wait before continuing.
+ *
+ * @api requests
+ * @name Sleep
+ * @category general
+ * @since unreleased
+ */
+RpcResponse WSRequestHandler::Sleep(const RpcRequest& request) {
+	if (!request.hasField("sleepMillis")) {
+		return request.failed("missing request parameters");
+	}
+
+	long long sleepMillis = obs_data_get_int(request.parameters(), "sleepMillis");
+	std::this_thread::sleep_for(std::chrono::milliseconds(sleepMillis));
+
 	return request.success();
 }

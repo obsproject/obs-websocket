@@ -42,6 +42,7 @@ class Config {
 
 		bool ServerEnabled;
 		uint64_t ServerPort;
+		bool LockToIPv4;
 
 		bool DebugEnabled;
 		bool AlertsEnabled;
@@ -54,4 +55,5 @@ class Config {
 
 	private:
 		static void OnFrontendEvent(enum obs_frontend_event event, void* param);
+		static void FirstRunPasswordSetup();
 };

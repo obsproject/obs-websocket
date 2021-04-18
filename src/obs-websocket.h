@@ -55,7 +55,8 @@ typedef std::shared_ptr<WSEvents> WSEventsPtr;
 ConfigPtr GetConfig();
 WSServerPtr GetServer();
 WSEventsPtr GetEventsSystem();
+void ShowPasswordSetting();
 
-#define OBS_WEBSOCKET_VERSION "4.8.0"
+#define OBS_WEBSOCKET_VERSION "4.9.0"
 
 #define blog(level, msg, ...) blog(level, "[obs-websocket] " msg, ##__VA_ARGS__)

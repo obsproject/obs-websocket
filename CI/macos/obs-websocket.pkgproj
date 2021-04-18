@@ -514,11 +514,11 @@
 			<key>CONCLUSION_ACTION</key>
 			<integer>0</integer>
 			<key>IDENTIFIER</key>
-			<string>fr.palakis.obswebsocket</string>
+			<string>fr.palakis.obs-websocket</string>
 			<key>OVERWRITE_PERMISSIONS</key>
 			<false/>
 			<key>VERSION</key>
-			<string>4.7.0</string>
+			<string>4.9.0</string>
 		</dict>
 		<key>PROJECT_COMMENTS</key>
 		<dict>

@@ -1,8 +1,10 @@
+#include "obs-websocket.h"
 #include "WSRequestHandler.h"
 
 #include <functional>
 #include <util/platform.h>
 #include "Utils.h"
+#include "WSEvents.h"
 
 RpcResponse ifCanPause(const RpcRequest& request, std::function<RpcResponse()> callback)
 {
@@ -13,8 +15,37 @@ RpcResponse ifCanPause(const RpcRequest& request, std::function<RpcResponse()> c
 	return callback();
 }
 
+ /**
+ * Get current recording status.
+ *
+ * @return {boolean} `isRecording` Current recording status.
+ * @return {boolean} `isRecordingPaused` Whether the recording is paused or not.
+ * @return {String (optional)} `recordTimecode` Time elapsed since recording started (only present if currently recording).
+ * @return {String (optional)} `recordingFilename` Absolute path to the recording file (only present if currently recording).
+ *
+ * @api requests
+ * @name GetRecordingStatus
+ * @category recording
+ * @since 4.9.0
+ */
+RpcResponse WSRequestHandler::GetRecordingStatus(const RpcRequest& request) {
+		auto events = GetEventsSystem();
+
+		OBSDataAutoRelease data = obs_data_create();
+		obs_data_set_bool(data, "isRecording", obs_frontend_recording_active());
+		obs_data_set_bool(data, "isRecordingPaused", obs_frontend_recording_paused());
+
+		if (obs_frontend_recording_active()) {
+				QString recordingTimecode = events->getRecordingTimecode();
+				obs_data_set_string(data, "recordTimecode", recordingTimecode.toUtf8().constData());
+				obs_data_set_string(data, "recordingFilename", Utils::GetCurrentRecordingFilename());
+		}
+
+		return request.success(data);
+}
+
 /**
- * Toggle recording on or off.
+ * Toggle recording on or off (depending on the current recording state).
  *
  * @api requests
  * @name StartStopRecording
@@ -106,7 +137,7 @@ RpcResponse WSRequestHandler::ResumeRecording(const RpcRequest& request) {
  * In the current profile, sets the recording folder of the Simple and Advanced
  * output modes to the specified value.
  * 
- * Please note: if `SetRecordingFolder` is called while a recording is
+ * Note: If `SetRecordingFolder` is called while a recording is
  * in progress, the change won't be applied immediately and will be
  * effective on the next recording.
  * 
