@@ -652,7 +652,7 @@ RpcResponse WSRequestHandler::DeleteSceneItem(const RpcRequest& request) {
  *
  * @param {String} `sceneName` Name of the scene to create the scene item in
  * @param {String} `sourceName` Name of the source to be added
- * @param {boolean} `setVisible` Whether to make the sceneitem visible on creation or not. Default `true`
+ * @param {boolean (optional)} `setVisible` Whether to make the sceneitem visible on creation or not. Default `true`
  *
  * @return {int} `itemId` Numerical ID of the created scene item
  *
