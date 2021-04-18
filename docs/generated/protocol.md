@@ -166,6 +166,7 @@ You can also refer to any of the client libraries listed on the [README](README.
     + [GetMute](#getmute)
     + [SetMute](#setmute)
     + [ToggleMute](#togglemute)
+    + [GetSourceActive](#getsourceactive)
     + [GetAudioActive](#getaudioactive)
     + [SetSourceName](#setsourcename)
     + [SetSyncOffset](#setsyncoffset)
@@ -347,7 +348,7 @@ These are complex types, such as `Source` and `Scene`, which are used as argumen
 | `flags.encoded` | _boolean_ | Output is encoded |
 | `flags.multiTrack` | _boolean_ | Output uses several audio tracks |
 | `flags.service` | _boolean_ | Output uses a service |
-| `settings` | _Object_ | Output name |
+| `settings` | _Object_ | Output settings |
 | `active` | _boolean_ | Output status (active or not) |
 | `reconnecting` | _boolean_ | Output reconnection status (reconnecting or not) |
 | `congestion` | _double_ | Output congestion |
@@ -515,7 +516,7 @@ A transition (other than "cut") has begun.
 | `name` | _String_ | Transition name. |
 | `type` | _String_ | Transition type. |
 | `duration` | _int_ | Transition duration (in milliseconds). Will be -1 for any transition with a fixed duration, such as a Stinger, due to limitations of the OBS API. |
-| `from-scene` | _String_ | Source scene of the transition |
+| `from-scene` | _String (optional)_ | Source scene of the transition |
 | `to-scene` | _String_ | Destination scene of the transition |
 
 
@@ -555,7 +556,7 @@ A stinger transition has finished playing its video.
 | `name` | _String_ | Transition name. |
 | `type` | _String_ | Transition type. |
 | `duration` | _int_ | Transition duration (in milliseconds). |
-| `from-scene` | _String_ | Source scene of the transition |
+| `from-scene` | _String (optional)_ | Source scene of the transition |
 | `to-scene` | _String_ | Destination scene of the transition |
 
 
@@ -2291,6 +2292,29 @@ _No additional response items._
 
 ---
 
+### GetSourceActive
+
+
+- Unreleased
+
+Get the source's active status of a specified source (if it is showing in the final mix).
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sourceName` | _String_ | Source name. |
+
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sourceActive` | _boolean_ | Source active status of the source. |
+
+
+---
+
 ### GetAudioActive
 
 
@@ -3752,7 +3776,7 @@ Creates a scene item in a scene. In other words, this is how you add a source in
 | ---- | :---: | ------------|
 | `sceneName` | _String_ | Name of the scene to create the scene item in |
 | `sourceName` | _String_ | Name of the source to be added |
-| `setVisible` | _boolean_ | Whether to make the sceneitem visible on creation or not. Default `true` |
+| `setVisible` | _boolean (optional)_ | Whether to make the sceneitem visible on creation or not. Default `true` |
 
 
 **Response Items:**

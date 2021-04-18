@@ -15,7 +15,7 @@
 * @property {boolean} `flags.encoded` Output is encoded
 * @property {boolean} `flags.multiTrack` Output uses several audio tracks
 * @property {boolean} `flags.service` Output uses a service
-* @property {Object} `settings` Output name
+* @property {Object} `settings` Output settings
 * @property {boolean} `active` Output status (active or not)
 * @property {boolean} `reconnecting` Output reconnection status (reconnecting or not)
 * @property {double} `congestion` Output congestion
