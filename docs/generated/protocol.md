@@ -2489,9 +2489,10 @@ Get the current properties of a Text GDI Plus source.
 | `extents_cy` | _int_ | Extents cy. |
 | `file` | _String_ | File path name. |
 | `read_from_file` | _boolean_ | Read text from the specified file. |
-| `font` | _Object_ | Holds data for the font. Ex: `"font": { "face": "Arial", "flags": 0, "size": 150, "style": "" }` |
+| `font` | _Object_ | Holds data for the font. Ex: `"font": { "face": "Arial", "flags": 0, "opacity": 0, "size": 150, "style": "" }` |
 | `font.face` | _String_ | Font face. |
 | `font.flags` | _int_ | Font text styling flag. `Bold=1, Italic=2, Bold Italic=3, Underline=5, Strikeout=8` |
+| `font.opacity` | _int_ | Font opacity (0-100). |
 | `font.size` | _int_ | Font text size. |
 | `font.style` | _String_ | Font Style (unknown function). |
 | `gradient` | _boolean_ | Gradient enabled. |
@@ -2532,9 +2533,10 @@ Set the current properties of a Text GDI Plus source.
 | `extents_cy` | _int (optional)_ | Extents cy. |
 | `file` | _String (optional)_ | File path name. |
 | `read_from_file` | _boolean (optional)_ | Read text from the specified file. |
-| `font` | _Object (optional)_ | Holds data for the font. Ex: `"font": { "face": "Arial", "flags": 0, "size": 150, "style": "" }` |
+| `font` | _Object (optional)_ | Holds data for the font. Ex: `"font": { "face": "Arial", "flags": 0, "opacity": 0, "size": 150, "style": "" }` |
 | `font.face` | _String (optional)_ | Font face. |
 | `font.flags` | _int (optional)_ | Font text styling flag. `Bold=1, Italic=2, Bold Italic=3, Underline=5, Strikeout=8` |
+| `font.opacity` | _int (optional)_ | Font opacity (0-100). |
 | `font.size` | _int (optional)_ | Font text size. |
 | `font.style` | _String (optional)_ | Font Style (unknown function). |
 | `gradient` | _boolean (optional)_ | Gradient enabled. |
