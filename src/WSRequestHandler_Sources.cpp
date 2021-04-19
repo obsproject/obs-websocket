@@ -796,9 +796,10 @@ RpcResponse WSRequestHandler::SetSourceSettings(const RpcRequest& request)
  * @return {int} `extents_cy` Extents cy.
  * @return {String} `file` File path name.
  * @return {boolean} `read_from_file` Read text from the specified file.
- * @return {Object} `font` Holds data for the font. Ex: `"font": { "face": "Arial", "flags": 0, "size": 150, "style": "" }`
+ * @return {Object} `font` Holds data for the font. Ex: `"font": { "face": "Arial", "flags": 0, "opacity": 0, "size": 150, "style": "" }`
  * @return {String} `font.face` Font face.
  * @return {int} `font.flags` Font text styling flag. `Bold=1, Italic=2, Bold Italic=3, Underline=5, Strikeout=8`
+ * @return {int} `font.opacity` Font opacity (0-100).
  * @return {int} `font.size` Font text size.
  * @return {String} `font.style` Font Style (unknown function).
  * @return {boolean} `gradient` Gradient enabled.
@@ -856,9 +857,10 @@ RpcResponse WSRequestHandler::GetTextGDIPlusProperties(const RpcRequest& request
  * @param {int (optional)} `extents_cy` Extents cy.
  * @param {String (optional)} `file` File path name.
  * @param {boolean (optional)} `read_from_file` Read text from the specified file.
- * @param {Object (optional)} `font` Holds data for the font. Ex: `"font": { "face": "Arial", "flags": 0, "size": 150, "style": "" }`
+ * @param {Object (optional)} `font` Holds data for the font. Ex: `"font": { "face": "Arial", "flags": 0, "opacity": 0, "size": 150, "style": "" }`
  * @param {String (optional)} `font.face` Font face.
  * @param {int (optional)} `font.flags` Font text styling flag. `Bold=1, Italic=2, Bold Italic=3, Underline=5, Strikeout=8`
+ * @param {int (optional)} `font.opacity` Font opacity (0-100).
  * @param {int (optional)} `font.size` Font text size.
  * @param {String (optional)} `font.style` Font Style (unknown function).
  * @param {boolean (optional)} `gradient` Gradient enabled.
@@ -910,7 +912,7 @@ RpcResponse WSRequestHandler::SetTextGDIPlusProperties(const RpcRequest& request
 		obs_data_set_int(settings, "bk_color", obs_data_get_int(request.parameters(), "bk_color"));
 	}
 
-	if (request.hasField("bk-opacity")) {
+	if (request.hasField("bk_opacity")) {
 		obs_data_set_int(settings, "bk_opacity", obs_data_get_int(request.parameters(), "bk_opacity"));
 	}
 
@@ -957,6 +959,10 @@ RpcResponse WSRequestHandler::SetTextGDIPlusProperties(const RpcRequest& request
 
 			if (obs_data_has_user_value(req_font_obj, "flags")) {
 				obs_data_set_int(font_obj, "flags", obs_data_get_int(req_font_obj, "flags"));
+			}
+			
+			if (obs_data_has_user_value(req_font_obj, "opacity")) {
+				obs_data_set_int(font_obj, "opacity", obs_data_get_int(req_font_obj, "opacity"));
 			}
 
 			if (obs_data_has_user_value(req_font_obj, "size")) {
