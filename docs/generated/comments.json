@@ -6044,9 +6044,10 @@
           "{int} `extents_cy` Extents cy.",
           "{String} `file` File path name.",
           "{boolean} `read_from_file` Read text from the specified file.",
-          "{Object} `font` Holds data for the font. Ex: `\"font\": { \"face\": \"Arial\", \"flags\": 0, \"size\": 150, \"style\": \"\" }`",
+          "{Object} `font` Holds data for the font. Ex: `\"font\": { \"face\": \"Arial\", \"flags\": 0, \"opacity\": 0, \"size\": 150, \"style\": \"\" }`",
           "{String} `font.face` Font face.",
           "{int} `font.flags` Font text styling flag. `Bold=1, Italic=2, Bold Italic=3, Underline=5, Strikeout=8`",
+          "{int} `font.opacity` Font opacity (0-100).",
           "{int} `font.size` Font text size.",
           "{String} `font.style` Font Style (unknown function).",
           "{boolean} `gradient` Gradient enabled.",
@@ -6129,7 +6130,7 @@
           {
             "type": "Object",
             "name": "font",
-            "description": "Holds data for the font. Ex: `\"font\": { \"face\": \"Arial\", \"flags\": 0, \"size\": 150, \"style\": \"\" }`"
+            "description": "Holds data for the font. Ex: `\"font\": { \"face\": \"Arial\", \"flags\": 0, \"opacity\": 0, \"size\": 150, \"style\": \"\" }`"
           },
           {
             "type": "String",
@@ -6140,6 +6141,11 @@
             "type": "int",
             "name": "font.flags",
             "description": "Font text styling flag. `Bold=1, Italic=2, Bold Italic=3, Underline=5, Strikeout=8`"
+          },
+          {
+            "type": "int",
+            "name": "font.opacity",
+            "description": "Font opacity (0-100)."
           },
           {
             "type": "int",
@@ -6256,9 +6262,10 @@
           "{int (optional)} `extents_cy` Extents cy.",
           "{String (optional)} `file` File path name.",
           "{boolean (optional)} `read_from_file` Read text from the specified file.",
-          "{Object (optional)} `font` Holds data for the font. Ex: `\"font\": { \"face\": \"Arial\", \"flags\": 0, \"size\": 150, \"style\": \"\" }`",
+          "{Object (optional)} `font` Holds data for the font. Ex: `\"font\": { \"face\": \"Arial\", \"flags\": 0, \"opacity\": 0, \"size\": 150, \"style\": \"\" }`",
           "{String (optional)} `font.face` Font face.",
           "{int (optional)} `font.flags` Font text styling flag. `Bold=1, Italic=2, Bold Italic=3, Underline=5, Strikeout=8`",
+          "{int (optional)} `font.opacity` Font opacity (0-100).",
           "{int (optional)} `font.size` Font text size.",
           "{String (optional)} `font.style` Font Style (unknown function).",
           "{boolean (optional)} `gradient` Gradient enabled.",
@@ -6342,7 +6349,7 @@
           {
             "type": "Object (optional)",
             "name": "font",
-            "description": "Holds data for the font. Ex: `\"font\": { \"face\": \"Arial\", \"flags\": 0, \"size\": 150, \"style\": \"\" }`"
+            "description": "Holds data for the font. Ex: `\"font\": { \"face\": \"Arial\", \"flags\": 0, \"opacity\": 0, \"size\": 150, \"style\": \"\" }`"
           },
           {
             "type": "String (optional)",
@@ -6353,6 +6360,11 @@
             "type": "int (optional)",
             "name": "font.flags",
             "description": "Font text styling flag. `Bold=1, Italic=2, Bold Italic=3, Underline=5, Strikeout=8`"
+          },
+          {
+            "type": "int (optional)",
+            "name": "font.opacity",
+            "description": "Font opacity (0-100)."
           },
           {
             "type": "int (optional)",
