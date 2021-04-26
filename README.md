@@ -91,22 +91,6 @@ Thank you so much to all of the contibutors [(here)](https://github.com/Palakis/
 
 And also: special thanks to supporters of the project!
 
-## Supporters
-
-These supporters have contributed financially to the project and made possible the addition of several features into obs-websocket. Many thanks to them!
-
----
-
-[Support Class](http://supportclass.net) designs and develops professional livestreams, with services ranging from broadcast graphics design and integration to event organization, along many other skills.
-
-[![Support Class](.github/images/supportclass_logo_blacktext.png)](http://supportclass.net)
-
----
-
-[MediaUnit](http://www.mediaunit.no) is a Norwegian media company developing products and services for the media industry, primarly focused on web and events.
-
-[![MediaUnit](.github/images/mediaunit_logo_black.png)](http://www.mediaunit.no/)
-
 ## Contributors
 
 ### Code Contributors
