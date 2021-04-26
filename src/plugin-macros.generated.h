@@ -1,6 +1,6 @@
 /*
 obs-websocket
-Copyright (C) 2016-2019	Stéphane Lepin <stephane.lepin@gmail.com>
+Copyright (C) 2021 Kyle Manning <tt2468@irltoolkit.com>
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -16,25 +16,11 @@ You should have received a copy of the GNU General Public License along
 with this program. If not, see <https://www.gnu.org/licenses/>
 */
 
-#pragma once
+#ifndef PLUGINNAME_H
+#define PLUGINNAME_H
 
-#include <QtWidgets/QDialog>
+#define OBS_WEBSOCKET_VERSION "5.0.0"
 
-#include "ui_settings-dialog.h"
+#define blog(level, msg, ...) blog(level, "[obs-websocket] " msg, ##__VA_ARGS__)
 
-class SettingsDialog : public QDialog
-{
-	Q_OBJECT
-
-public:
-	explicit SettingsDialog(QWidget* parent = 0);
-	~SettingsDialog();
-	void showEvent(QShowEvent* event);
-	void ToggleShowHide();
-
-private Q_SLOTS:
-	void FormAccepted();
-
-private:
-	Ui::SettingsDialog* ui;
-};
+#endif // PLUGINNAME_H

@@ -3,6 +3,7 @@
 #include <obs.hpp>
 #include <memory>
 
+// Autorelease object declarations
 void ___source_dummy_addref(obs_source_t*);
 void ___sceneitem_dummy_addref(obs_sceneitem_t*);
 void ___data_dummy_addref(obs_data_t*);
@@ -24,7 +25,3 @@ void ___data_item_dummy_addref(obs_data_item_t*);
 void ___data_item_release(obs_data_item_t*);
 using OBSDataItemAutoRelease =
 	OBSRef<obs_data_item_t*, ___data_item_dummy_addref, ___data_item_release>;
-
-#define OBS_WEBSOCKET_VERSION "5.0.0"
-
-#define blog(level, msg, ...) blog(level, "[obs-websocket] " msg, ##__VA_ARGS__)

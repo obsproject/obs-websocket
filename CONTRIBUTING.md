@@ -6,21 +6,21 @@ Localization happens on [Crowdin](https://crowdin.com/project/obs-websocket)
 
 ## Branches
 
-**Development happens on `4.x-current`**
+**Development happens on `master`**
 
 ## Writing code for obs-websocket
 
 ### Code Formatting Guidelines
 
-* Function and variable names: snake_case for C names, camelCase for C++ method names
+* Function and variable names: camelCase for variables, MixedCaps for method names
 
-* Request and Event names should use MixedCaps names
+* Request and Event names should use MixedCaps names. Keep naming conformity of request naming using similar terms like `Get`, `Set`, `Get[x]List`, `Start[x]`, `Toggle[x]`.
 
-* Request and Event json properties should use camelCase. For more detailed info on property naming, see [Google's JSON Style Guide](https://google.github.io/styleguide/jsoncstyleguide.xml)
+* Request and Event json properties should use camelCase. For more detailed info on property naming, see [here](https://gist.github.com/tt2468/59390b99e7841b28f56dffb3dd622ec9)
 
 * Code is indented with Tabs. Assume they are 8 columns wide
 
-* 80 columns max code width. (Docs can be larger)
+* 80 columns max code width. (Comments/docs can be larger)
 
 * New and updated requests/events must always come with accompanying documentation comments (see existing protocol elements for examples).
 These are required to automatically generate the [protocol specification document](docs/generated/protocol.md).
@@ -73,7 +73,7 @@ transitions.
 
 ### Pull Requests
 
-* Pull Requests must never be based off your fork's main branch (in this case, `4.x-current`).
+* Pull Requests must never be based off your fork's main branch (in this case, `master`).
     * Start your work in a newly named branch based on the upstream main one (e.g.: `feature/cool-new-feature`, `bugfix/fix-palakis-mistakes`, ...)
 
 * Only open a pull request if you are ready to show off your work.
