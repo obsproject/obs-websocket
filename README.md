@@ -12,8 +12,6 @@
 
 WebSockets API for OBS Studio.
 
-[![Build Status](https://dev.azure.com/Palakis/obs-websocket/_apis/build/status/Palakis.obs-websocket?branchName=4.x-current)](https://dev.azure.com/Palakis/obs-websocket/_build/latest?definitionId=2&branchName=4.x-current)
-[![CodeFactor](https://www.codefactor.io/repository/github/palakis/obs-websocket/badge)](https://www.codefactor.io/repository/github/palakis/obs-websocket)
 [![Twitter](https://img.shields.io/twitter/url/https/twitter.com/fold_left.svg?style=social&label=Follow%20%40LePalakis)](https://twitter.com/LePalakis)
 [![Discord](https://img.shields.io/discord/715691013825364120.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/WBaSQ3A)
 [![Financial Contributors on Open Collective](https://opencollective.com/obs-websocket/all/badge.svg?label=financial+contributors)](https://opencollective.com/obs-websocket)
@@ -34,8 +32,7 @@ brew install obs-websocket
 
 Here is a list of available web clients: (compatible with tablets and other touch interfaces)
 
-- [Niek/obs-web](https://github.com/Niek/obs-web)
-- [t2t2/obs-tablet-remote](https://github.com/t2t2/obs-tablet-remote)
+- (No known clients supporting 5.0.0)
 
 It is **highly recommended** to protect obs-websocket with a password against unauthorized control. To do this, open the "Websocket server settings" dialog under OBS' "Tools" menu. In the settings dialogs, you can enable or disable authentication and set a password for it.
 
@@ -51,17 +48,7 @@ The server is a typical Websockets server running by default on port 4444 (the p
 The protocol understood by the server is documented in [PROTOCOL.md](docs/generated/protocol.md).
 
 Here's a list of available language APIs for obs-websocket :
-- Javascript (browser & nodejs): [obs-websocket-js](https://github.com/haganbmj/obs-websocket-js) by Brendan Hagan
-- C#/VB.NET: [obs-websocket-dotnet](https://github.com/Palakis/obs-websocket-dotnet)
-- Python 2 and 3: [obs-websocket-py](https://github.com/Elektordi/obs-websocket-py) by Guillaume Genty a.k.a Elektordi
-- Python 3.5+ with asyncio: [obs-ws-rc](https://github.com/KirillMysnik/obs-ws-rc) by Kirill Mysnik
-- Python 3.6+ with asyncio: [simpleobsws](https://github.com/IRLToolkit/simpleobsws) by tt2468
-- Java 8+: [obs-websocket-java](https://github.com/Twasi/websocket-obs-java) by TwasiNET
-- Java 11+: [obs-java-client](https://github.com/harm27/obs-java-client) by harm27
-- Golang: [go-obs-websocket](https://github.com/christopher-dG/go-obs-websocket) by Chris de Graaf
-- Rust: [obws](https://github.com/dnaka91/obws) by dnaka91
-- HTTP API: [obs-websocket-http](https://github.com/IRLToolkit/obs-websocket-http) by tt2468
-- CLI: [obs-cli](https://github.com/leafac/obs-cli) by leafac
+- (No known apis supporting 5.0.0)
 
 I'd like to know what you're building with or for obs-websocket. If you do something in this fashion, feel free to drop a message in `#project-showoff` in the [discord server!](https://discord.gg/WBaSQ3A)
 
