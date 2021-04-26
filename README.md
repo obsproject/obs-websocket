@@ -75,32 +75,22 @@ See the SSL [tunnelling guide](SSL-TUNNELLING.md) for easy instructions on how t
 
 See the [build instructions](BUILDING.md).
 
-## Contributing
-
-See [the contributing document](/CONTRIBUTING.md)
-
 ## Translations
 
 **Your help is welcome on translations.**
 
 Please join the localization project on [Crowdin](https://crowdin.com/project/obs-websocket)
 
-## Special thanks
-
-Thank you so much to all of the contibutors [(here)](https://github.com/Palakis/obs-websocket/graphs/contributors) for your amazing help.
-
-And also: special thanks to supporters of the project!
-
 ## Contributors
 
 ### Code Contributors
 
-This project exists thanks to all the people who contribute. [[Contribute](CONTRIBUTING.md)].
+This project exists thanks to all the people who contribute. [Contribute](CONTRIBUTING.md).
 <a href="https://github.com/Palakis/obs-websocket/graphs/contributors"><img src="https://opencollective.com/obs-websocket/contributors.svg?width=890&button=false" /></a>
 
 ### Financial Contributors
 
-Become a financial contributor and help us sustain our community. [[Contribute](https://opencollective.com/obs-websocket/contribute)]
+Become a financial contributor and help us sustain our community. [Contribute](https://opencollective.com/obs-websocket/contribute)
 
 #### Individuals
 
@@ -108,7 +98,7 @@ Become a financial contributor and help us sustain our community. [[Contribute](
 
 #### Organizations
 
-Support this project with your organization. Your logo will show up here with a link to your website. [[Contribute](https://opencollective.com/obs-websocket/contribute)]
+Support this project with your organization. Your logo will show up here with a link to your website. [Contribute](https://opencollective.com/obs-websocket/contribute)
 
 <a href="https://opencollective.com/obs-websocket/organization/0/website"><img src="https://opencollective.com/obs-websocket/organization/0/avatar.svg"></a>
 <a href="https://opencollective.com/obs-websocket/organization/1/website"><img src="https://opencollective.com/obs-websocket/organization/1/avatar.svg"></a>
