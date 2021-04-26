@@ -25,60 +25,60 @@ obs-websocket provides a feature-rich RPC communication protocol, giving access 
 - [Events](#events)
 
 
-## Connecting to obs-websocket {connecting_to_obs-websocket}
+## Connecting to obs-websocket {#connecting_to_obs-websocket}
 Here's info on how to connect to obs-websocket
 
-### Connection steps {connecting_steps}
+### Connection steps {#connecting_steps}
 - Step 1
 
-### Creating an authentication string {connecting_authentication_string}
+### Creating an authentication string {#connecting_authentication_string}
 - Start by
 
 
-## Message Types {message_types}
+## Message Types {#message_types}
 The following message types (`messageType`) are the base message types which may be sent to and from obs-websocket. Sending a message with a `messageType` that is not recognized to the obs-websocket server will result in your connection being closed with `WebsocketCloseCode::UnknownMessageType`.
 
-### Hello {basemessage_hello}
+### Hello {#basemessage_hello}
 - Sent from: obs-websocket
 - Sent to: Freshly connected websocket client
 - Description:
 
-### Identify {basemessage_identify}
+### Identify {#basemessage_identify}
 - Sent from: Freshly connected websocket client
 - Sent to: obs-websocket
 - Description: 
 
-### Identified {basemessage_event}
+### Identified {#basemessage_event}
 - Sent from: obs-websocket
 - Sent to: Freshly identified client
 - Description: 
 
-### Reidentify {basemessage_reidentify}
+### Reidentify {#basemessage_reidentify}
 - Sent from: Identified client
 - Sent to: obs-websocket
 - Description:
 
-### Event {basemessage_event}
+### Event {#basemessage_event}
 - Sent from: obs-websocket
 - Sent to: All subscribed and identified clients
 - Description: 
 
-### Request {basemessage_request}
+### Request {#basemessage_request}
 - Sent from: Identified client
 - Sent to: obs-websocket
 - Description: 
 
-### RequestResponse {basemessage_requestresponse}
+### RequestResponse {#basemessage_requestresponse}
 - Sent from: obs-websocket
 - Sent to: Identified client which made the request
 - Description: 
 
-### RequestBatch {basemessage_requestbatch}
+### RequestBatch {#basemessage_requestbatch}
 - Sent from: Identified client
 - Sent to: obs-websocket
 - Description: 
 
-### RequestBatchResponse {basemessage_requestbatchresponse}
+### RequestBatchResponse {#basemessage_requestbatchresponse}
 - Sent from: obs-websocket
 - Sent to: Identified client which made the request
 - Description: 
