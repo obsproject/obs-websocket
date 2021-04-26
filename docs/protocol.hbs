@@ -7,19 +7,6 @@
 
 
 
-{{#read "partials/typedefsHeader.md"}}{{/read}}
-
-{{#each typedefs}}
-## {{typedefs.0.name}}
-| Name | Type  | Description |
-| ---- | :---: | ------------|
-{{#each properties}}
-| `{{name}}` | _{{depipe type}}_ | {{{depipe description}}} |
-{{/each}}
-{{/each}}
-
-
-
 {{#read "partials/eventsHeader.md"}}{{/read}}
 
 {{#each events}}
