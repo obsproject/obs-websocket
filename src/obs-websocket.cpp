@@ -27,11 +27,24 @@ OBS_DECLARE_MODULE()
 OBS_MODULE_USE_DEFAULT_LOCALE("obs-websocket", "en-US")
 
 ConfigPtr _config;
+SettingsDialog *_settingsDialog = nullptr;
 
 bool obs_module_load(void) {
 	blog(LOG_INFO, "you can haz websockets (version %s)", OBS_WEBSOCKET_VERSION);
 	blog(LOG_INFO, "Qt version (compile-time): %s | Qt version (run-time): %s",
 		QT_VERSION_STR, qVersion());
+
+	_config = ConfigPtr(new Config());
+	_config->Load();
+
+	obs_frontend_push_ui_translation(obs_module_get_string);
+	QMainWindow* mainWindow = (QMainWindow*)obs_frontend_get_main_window();
+	_settingsDialog = new SettingsDialog(mainWindow);
+	obs_frontend_pop_ui_translation();
+
+	const char* menuActionText = obs_module_text("OBSWebSocket.Settings.DialogTitle");
+	QAction* menuAction = (QAction*)obs_frontend_add_tools_menu_qaction(menuActionText);
+	QObject::connect(menuAction, &QAction::triggered, [] { _settingsDialog->ToggleShowHide(); });
 
 	// Loading finished
 	blog(LOG_INFO, "Module loaded.");
@@ -40,6 +53,7 @@ bool obs_module_load(void) {
 }
 
 void obs_module_unload() {
+	_config.reset();
 	blog(LOG_INFO, "Finished shutting down.");
 }
 

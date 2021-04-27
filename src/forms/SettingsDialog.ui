@@ -6,18 +6,18 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>453</width>
+    <height>235</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>OBSWebSocket.Settings.DialogTitle</string>
   </property>
   <widget class="QDialogButtonBox" name="buttonBox">
    <property name="geometry">
     <rect>
-     <x>30</x>
-     <y>240</y>
+     <x>100</x>
+     <y>200</y>
      <width>341</width>
      <height>32</height>
     </rect>
@@ -28,6 +28,103 @@
    <property name="standardButtons">
     <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
    </property>
+  </widget>
+  <widget class="QWidget" name="formLayoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>9</x>
+     <y>9</y>
+     <width>431</width>
+     <height>191</height>
+    </rect>
+   </property>
+   <layout class="QFormLayout" name="mainForm">
+    <item row="0" column="0">
+     <widget class="QLabel" name="enableWebSocketServerLabel">
+      <property name="text">
+       <string>OBSWebSocket.Settings.ServerEnable</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="1">
+     <widget class="QCheckBox" name="enableWebSocketServerCheckBox">
+      <property name="checked">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <widget class="QLabel" name="enableSystemTrayAlertsLabel">
+      <property name="text">
+       <string>OBSWebSocket.Settings.AlertsEnable</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="1">
+     <widget class="QCheckBox" name="enableSystemTrayAlertsCheckBox"/>
+    </item>
+    <item row="2" column="0">
+     <widget class="QLabel" name="enableDebugLoggingLabel">
+      <property name="text">
+       <string>OBSWebSocket.Settings.DebugEnable</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="1">
+     <widget class="QCheckBox" name="enableDebugLoggingCheckBox"/>
+    </item>
+    <item row="3" column="0">
+     <widget class="QLabel" name="enableAuthenticationLabel">
+      <property name="text">
+       <string>OBSWebSocket.Settings.AuthRequired</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="1">
+     <widget class="QCheckBox" name="enableAuthenticationCheckBox"/>
+    </item>
+    <item row="4" column="0">
+     <widget class="QLabel" name="serverPasswordLabel">
+      <property name="text">
+       <string>OBSWebSocket.Settings.Password</string>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="1">
+     <widget class="QLineEdit" name="serverPasswordLineEdit">
+      <property name="echoMode">
+       <enum>QLineEdit::PasswordEchoOnEdit</enum>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="1">
+     <widget class="QPushButton" name="copyPasswordButton">
+      <property name="text">
+       <string>OBSWebSocket.Settings.CopyPassword</string>
+      </property>
+     </widget>
+    </item>
+    <item row="6" column="0">
+     <widget class="QLabel" name="serverPortLabel">
+      <property name="text">
+       <string>OBSWebSocket.Settings.ServerPort</string>
+      </property>
+     </widget>
+    </item>
+    <item row="6" column="1">
+     <widget class="QSpinBox" name="serverPortSpinBox">
+      <property name="minimum">
+       <number>1</number>
+      </property>
+      <property name="maximum">
+       <number>65534</number>
+      </property>
+      <property name="value">
+       <number>4444</number>
+      </property>
+     </widget>
+    </item>
+   </layout>
   </widget>
  </widget>
  <resources/>
