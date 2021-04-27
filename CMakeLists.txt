@@ -67,12 +67,18 @@ set(obs-websocket_SOURCES
 	src/obs-websocket.cpp
     src/Config.cpp
     src/WebSocketServer.cpp
+    src/requesthandler/RequestHandler.cpp
+    src/requesthandler/rpc/Request.cpp
+    src/requesthandler/rpc/RequestResult.cpp
     src/forms/SettingsDialog.cpp)
 
 set(obs-websocket_HEADERS
 	src/obs-websocket.h
     src/Config.h
     src/WebSocketServer.h
+    src/requesthandler/RequestHandler.h
+    src/requesthandler/rpc/Request.h
+    src/requesthandler/rpc/RequestResult.h
     src/forms/SettingsDialog.h)
 
 
