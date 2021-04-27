@@ -71,6 +71,8 @@ These steps should be followed precisely. Failure to connect to the server as in
   - If the server's version is newer than the client's, the client sends its highest supported version in its `Identify` in hopes that the server is backwards compatible to that version.
 - If the `Hello` does not contain an `authentication` object, the resulting `Identify` object sent to the server does not need to have an `authentication` string.
 
+---
+
 ### Creating an authentication string
 obs-websocket uses SHA256 to transmit authentication credentials. The server starts by sending an object in the `authentication` field of its `Hello`. The client processes the authentication challenge and responds via the `authentication` string in `Identify`.
 
@@ -91,6 +93,8 @@ To generate the authentication string, follow these steps:
 - Generate a binary SHA256 hash of that result and encode it to base64. You now have your `authentication` string.
 
 For more info on how to create the `authentication` string, refer to the obs-websocket client libraries listed on the [README](README.md).
+
+---
 
 ### Status and Close Codes
 These are the enumeration definitions for various codes used by obs-websocket.
@@ -292,6 +296,8 @@ Authentication is not required
 }
 ```
 
+---
+
 ### Identify
 - Sent from: Freshly connected websocket client
 - Sent to: obs-websocket
@@ -325,6 +331,8 @@ Authentication is not required
 }
 ```
 
+---
+
 ### Identified
 - Sent from: obs-websocket
 - Sent to: Freshly identified client
@@ -346,6 +354,8 @@ Authentication is not required
 }
 ```
 
+---
+
 ### Reidentify
 - Sent from: Identified client
 - Sent to: obs-websocket
@@ -362,6 +372,8 @@ Authentication is not required
 ```
 - Only the listed parameters may be changed by `Reidentify` after initial identification. To change a parameter not listed, you must reconnect to the obs-websocket server.
 
+---
+
 ### Event
 - Sent from: obs-websocket
 - Sent to: All subscribed and identified clients
@@ -374,6 +386,8 @@ Authentication is not required
   "eventData": object(optional)
 }
 ```
+
+---
 
 ### Request
 - Sent from: Identified client
@@ -401,6 +415,8 @@ Authentication is not required
   }
 }
 ```
+
+---
 
 ### RequestResponse
 - Sent from: obs-websocket
@@ -458,10 +474,14 @@ Failure Response
 }
 ```
 
+---
+
 ### RequestBatch
 - Sent from: Identified client
 - Sent to: obs-websocket
 - Description: 
+
+---
 
 ### RequestBatchResponse
 - Sent from: obs-websocket
