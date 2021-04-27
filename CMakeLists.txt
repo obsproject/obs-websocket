@@ -75,7 +75,8 @@ set(obs-websocket_SOURCES
     src/requesthandler/RequestHandler.cpp
     src/requesthandler/rpc/Request.cpp
     src/requesthandler/rpc/RequestResult.cpp
-    src/forms/SettingsDialog.cpp)
+    src/forms/SettingsDialog.cpp
+    src/utils/JsonUtils.cpp)
 
 set(obs-websocket_HEADERS
 	src/obs-websocket.h
@@ -84,7 +85,8 @@ set(obs-websocket_HEADERS
     src/requesthandler/RequestHandler.h
     src/requesthandler/rpc/Request.h
     src/requesthandler/rpc/RequestResult.h
-    src/forms/SettingsDialog.h)
+    src/forms/SettingsDialog.h
+    src/utils/JsonUtils.h)
 
 
 # Platform-independent build settings
