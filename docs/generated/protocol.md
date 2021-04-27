@@ -38,6 +38,8 @@ obs-websocket provides a feature-rich RPC communication protocol, giving access 
 ## Connecting to obs-websocket
 Here's info on how to connect to obs-websocket
 
+---
+
 ### Connection steps
 These steps should be followed precisely. Failure to connect to the server as instructed will likely result in your client being treated in an undefined way.
 
@@ -252,6 +254,8 @@ The following message types are the base message types which may be sent to and 
 }
 ```
 
+---
+
 ### Hello
 - Sent from: obs-websocket
 - Sent to: Freshly connected websocket client
@@ -442,7 +446,7 @@ Authentication is not required
   "comment": string(optional)
 }
 ```
-- `result` is true if the request resulted in `RequestStatus::Success`. False if otherwise.
+- `result` is `true` if the request resulted in `RequestStatus::Success`. False if otherwise.
 - `code` is a [`RequestStatus`](#requeststatus-enum) code.
 - `comment` may be provided by the server on errors to offer further details on why a request failed.
 
@@ -479,14 +483,33 @@ Failure Response
 ### RequestBatch
 - Sent from: Identified client
 - Sent to: obs-websocket
-- Description: 
+- Description: Client is making a batch of requests for obs-websocket. Requests are processed serially (in order) by the server.
+
+**Additional Base Object Fields:**
+```
+{
+  "requestId": string,
+  "haltOnFailure": bool(optional) = false,
+  "requests": array<object>
+}
+```
+- When `haltOnFailure` is `true`, the processing of requests will be halted on first failure. Returns only the processed requests in [`RequestBatchResponse`](#requestbatchresponse).
 
 ---
 
 ### RequestBatchResponse
 - Sent from: obs-websocket
 - Sent to: Identified client which made the request
-- Description: 
+- Description: obs-websocket is responding to a request batch coming from the client.
+
+**Additional Base Object Fields:**
+```
+{
+  "requestId": string,
+  "results": array<object>
+}
+```
+
 
 
 
