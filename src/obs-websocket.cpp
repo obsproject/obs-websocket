@@ -60,6 +60,12 @@ bool obs_module_load(void)
 
 void obs_module_unload()
 {
+	blog(LOG_INFO, "Shutting down...");
+	if (_webSocketServer->IsListening()) {
+		blog(LOG_INFO, "WebSocket server is running. Stopping...");
+		_webSocketServer->Stop();
+	}
+
 	_config.reset();
 	_webSocketServer.reset();
 	blog(LOG_INFO, "Finished shutting down.");

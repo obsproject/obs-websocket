@@ -25,6 +25,10 @@ class WebSocketServer : public QObject
 		void Stop();
 		void InvalidateSession(websocketpp::connection_hdl hdl);
 
+		bool IsListening() {
+			return _server.is_listening();
+		}
+
 		struct WebSocketState {
 			websocketpp::connection_hdl hdl;
 			std::string remoteAddress;
