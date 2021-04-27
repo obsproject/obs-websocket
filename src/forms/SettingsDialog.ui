@@ -6,190 +6,186 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>601</width>
-    <height>419</height>
+    <width>600</width>
+    <height>437</height>
    </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>600</width>
+    <height>437</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>600</width>
+    <height>16777215</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>OBSWebSocket.Settings.DialogTitle</string>
   </property>
-  <widget class="QDialogButtonBox" name="buttonBox">
-   <property name="geometry">
-    <rect>
-     <x>250</x>
-     <y>380</y>
-     <width>341</width>
-     <height>32</height>
-    </rect>
-   </property>
-   <property name="orientation">
-    <enum>Qt::Horizontal</enum>
-   </property>
-   <property name="standardButtons">
-    <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-   </property>
-  </widget>
-  <widget class="QWidget" name="formLayoutWidget">
-   <property name="geometry">
-    <rect>
-     <x>9</x>
-     <y>9</y>
-     <width>581</width>
-     <height>191</height>
-    </rect>
-   </property>
-   <layout class="QFormLayout" name="mainForm">
-    <item row="0" column="0">
-     <widget class="QLabel" name="enableWebSocketServerLabel">
-      <property name="text">
-       <string>OBSWebSocket.Settings.ServerEnable</string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="1">
-     <widget class="QCheckBox" name="enableWebSocketServerCheckBox">
-      <property name="checked">
-       <bool>true</bool>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="0">
-     <widget class="QLabel" name="enableSystemTrayAlertsLabel">
-      <property name="text">
-       <string>OBSWebSocket.Settings.AlertsEnable</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="1">
-     <widget class="QCheckBox" name="enableSystemTrayAlertsCheckBox"/>
-    </item>
-    <item row="2" column="0">
-     <widget class="QLabel" name="enableDebugLoggingLabel">
-      <property name="text">
-       <string>OBSWebSocket.Settings.DebugEnable</string>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="1">
-     <widget class="QCheckBox" name="enableDebugLoggingCheckBox"/>
-    </item>
-    <item row="3" column="0">
-     <widget class="QLabel" name="enableAuthenticationLabel">
-      <property name="text">
-       <string>OBSWebSocket.Settings.AuthRequired</string>
-      </property>
-     </widget>
-    </item>
-    <item row="3" column="1">
-     <widget class="QCheckBox" name="enableAuthenticationCheckBox"/>
-    </item>
-    <item row="4" column="0">
-     <widget class="QLabel" name="serverPasswordLabel">
-      <property name="text">
-       <string>OBSWebSocket.Settings.Password</string>
-      </property>
-     </widget>
-    </item>
-    <item row="4" column="1">
-     <widget class="QLineEdit" name="serverPasswordLineEdit">
-      <property name="echoMode">
-       <enum>QLineEdit::PasswordEchoOnEdit</enum>
-      </property>
-     </widget>
-    </item>
-    <item row="5" column="1">
-     <widget class="QPushButton" name="copyPasswordButton">
-      <property name="text">
-       <string>OBSWebSocket.Settings.CopyPassword</string>
-      </property>
-     </widget>
-    </item>
-    <item row="6" column="0">
-     <widget class="QLabel" name="serverPortLabel">
-      <property name="text">
-       <string>OBSWebSocket.Settings.ServerPort</string>
-      </property>
-     </widget>
-    </item>
-    <item row="6" column="1">
-     <widget class="QSpinBox" name="serverPortSpinBox">
-      <property name="minimum">
-       <number>1</number>
-      </property>
-      <property name="maximum">
-       <number>65534</number>
-      </property>
-      <property name="value">
-       <number>4444</number>
-      </property>
-     </widget>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QGroupBox" name="groupBox">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>210</y>
-     <width>581</width>
-     <height>161</height>
-    </rect>
-   </property>
-   <property name="title">
-    <string>OBSWebSocket.Settings.ConnectedSessionsTitle</string>
-   </property>
-   <widget class="QTableWidget" name="websocketSessionTable">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>30</y>
-      <width>561</width>
-      <height>121</height>
-     </rect>
-    </property>
-    <property name="editTriggers">
-     <set>QAbstractItemView::NoEditTriggers</set>
-    </property>
-    <property name="tabKeyNavigation">
-     <bool>false</bool>
-    </property>
-    <property name="showDropIndicator" stdset="0">
-     <bool>false</bool>
-    </property>
-    <attribute name="horizontalHeaderMinimumSectionSize">
-     <number>135</number>
-    </attribute>
-    <attribute name="horizontalHeaderDefaultSectionSize">
-     <number>135</number>
-    </attribute>
-    <attribute name="verticalHeaderVisible">
-     <bool>false</bool>
-    </attribute>
-    <attribute name="verticalHeaderMinimumSectionSize">
-     <number>21</number>
-    </attribute>
-    <column>
-     <property name="text">
-      <string>Remote Address</string>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="2" column="0">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
      </property>
-    </column>
-    <column>
-     <property name="text">
-      <string>Duration</string>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
      </property>
-    </column>
-    <column>
-     <property name="text">
-      <string>In/Out</string>
+    </widget>
+   </item>
+   <item row="0" column="0">
+    <layout class="QFormLayout" name="mainForm">
+     <item row="0" column="0">
+      <widget class="QLabel" name="enableWebSocketServerLabel">
+       <property name="text">
+        <string>OBSWebSocket.Settings.ServerEnable</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QCheckBox" name="enableWebSocketServerCheckBox">
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="enableSystemTrayAlertsLabel">
+       <property name="text">
+        <string>OBSWebSocket.Settings.AlertsEnable</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QCheckBox" name="enableSystemTrayAlertsCheckBox"/>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="enableDebugLoggingLabel">
+       <property name="text">
+        <string>OBSWebSocket.Settings.DebugEnable</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QCheckBox" name="enableDebugLoggingCheckBox"/>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="enableAuthenticationLabel">
+       <property name="text">
+        <string>OBSWebSocket.Settings.AuthRequired</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <widget class="QCheckBox" name="enableAuthenticationCheckBox"/>
+     </item>
+     <item row="4" column="0">
+      <widget class="QLabel" name="serverPasswordLabel">
+       <property name="text">
+        <string>OBSWebSocket.Settings.Password</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1">
+      <widget class="QLineEdit" name="serverPasswordLineEdit">
+       <property name="echoMode">
+        <enum>QLineEdit::PasswordEchoOnEdit</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="1">
+      <widget class="QPushButton" name="copyPasswordButton">
+       <property name="text">
+        <string>OBSWebSocket.Settings.CopyPassword</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="0">
+      <widget class="QLabel" name="serverPortLabel">
+       <property name="text">
+        <string>OBSWebSocket.Settings.ServerPort</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="1">
+      <widget class="QSpinBox" name="serverPortSpinBox">
+       <property name="minimum">
+        <number>1</number>
+       </property>
+       <property name="maximum">
+        <number>65534</number>
+       </property>
+       <property name="value">
+        <number>4444</number>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="1" column="0">
+    <widget class="QGroupBox" name="websocketSessionGroupBox">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>200</height>
+      </size>
      </property>
-    </column>
-    <column>
-     <property name="text">
-      <string>Kick?</string>
+     <property name="title">
+      <string>OBSWebSocket.Settings.ConnectedSessionsTitle</string>
      </property>
-    </column>
-   </widget>
-  </widget>
+     <layout class="QGridLayout" name="gridLayout_2">
+      <item row="0" column="0">
+       <widget class="QTableWidget" name="websocketSessionTable">
+        <property name="editTriggers">
+         <set>QAbstractItemView::NoEditTriggers</set>
+        </property>
+        <property name="tabKeyNavigation">
+         <bool>false</bool>
+        </property>
+        <property name="showDropIndicator" stdset="0">
+         <bool>false</bool>
+        </property>
+        <attribute name="horizontalHeaderMinimumSectionSize">
+         <number>135</number>
+        </attribute>
+        <attribute name="horizontalHeaderDefaultSectionSize">
+         <number>135</number>
+        </attribute>
+        <attribute name="verticalHeaderVisible">
+         <bool>false</bool>
+        </attribute>
+        <attribute name="verticalHeaderMinimumSectionSize">
+         <number>21</number>
+        </attribute>
+        <column>
+         <property name="text">
+          <string>Remote Address</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Duration</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>In/Out</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Kick?</string>
+         </property>
+        </column>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
  </widget>
  <resources/>
  <connections>

@@ -68,7 +68,7 @@ void SettingsDialog::FillSessionTable()
 
 		QPushButton *invalidateButton = new QPushButton("Kick", this);
 		QWidget *invalidateButtonWidget = new QWidget();
-		QHBoxLayout *invalidateButtonLayout = new QHBoxLayout(this);
+		QHBoxLayout *invalidateButtonLayout = new QHBoxLayout(invalidateButtonWidget);
 		invalidateButtonLayout->addWidget(invalidateButton);
 		invalidateButtonLayout->setAlignment(Qt::AlignCenter);
 		invalidateButtonLayout->setContentsMargins(0, 0, 0, 0);
