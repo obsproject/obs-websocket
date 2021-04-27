@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>453</width>
-    <height>235</height>
+    <width>601</width>
+    <height>419</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,8 +16,8 @@
   <widget class="QDialogButtonBox" name="buttonBox">
    <property name="geometry">
     <rect>
-     <x>100</x>
-     <y>200</y>
+     <x>250</x>
+     <y>380</y>
      <width>341</width>
      <height>32</height>
     </rect>
@@ -34,7 +34,7 @@
     <rect>
      <x>9</x>
      <y>9</y>
-     <width>431</width>
+     <width>581</width>
      <height>191</height>
     </rect>
    </property>
@@ -125,6 +125,70 @@
      </widget>
     </item>
    </layout>
+  </widget>
+  <widget class="QGroupBox" name="groupBox">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>210</y>
+     <width>581</width>
+     <height>161</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>OBSWebSocket.Settings.ConnectedSessionsTitle</string>
+   </property>
+   <widget class="QTableWidget" name="websocketSessionTable">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>30</y>
+      <width>561</width>
+      <height>121</height>
+     </rect>
+    </property>
+    <property name="editTriggers">
+     <set>QAbstractItemView::NoEditTriggers</set>
+    </property>
+    <property name="tabKeyNavigation">
+     <bool>false</bool>
+    </property>
+    <property name="showDropIndicator" stdset="0">
+     <bool>false</bool>
+    </property>
+    <attribute name="horizontalHeaderMinimumSectionSize">
+     <number>135</number>
+    </attribute>
+    <attribute name="horizontalHeaderDefaultSectionSize">
+     <number>135</number>
+    </attribute>
+    <attribute name="verticalHeaderVisible">
+     <bool>false</bool>
+    </attribute>
+    <attribute name="verticalHeaderMinimumSectionSize">
+     <number>21</number>
+    </attribute>
+    <column>
+     <property name="text">
+      <string>Remote Address</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>Duration</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>In/Out</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>Kick?</string>
+     </property>
+    </column>
+   </widget>
   </widget>
  </widget>
  <resources/>

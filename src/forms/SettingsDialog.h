@@ -16,7 +16,11 @@ public:
 
 private Q_SLOTS:
 	void FormAccepted();
+	void EnableAuthenticationCheckBoxChanged();
+	void CopyPasswordButtonClicked();
 
 private:
 	Ui::SettingsDialog* ui;
+
+	void FillSessionTable();
 };
