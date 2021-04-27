@@ -162,22 +162,22 @@
         </attribute>
         <column>
          <property name="text">
-          <string>Remote Address</string>
+          <string>OBSWebSocket.SessionTable.RemoteAddressColumnTitle</string>
          </property>
         </column>
         <column>
          <property name="text">
-          <string>Duration</string>
+          <string>OBSWebSocket.SessionTable.SessionDurationColumnTitle</string>
          </property>
         </column>
         <column>
          <property name="text">
-          <string>In/Out</string>
+          <string>OBSWebSocket.SessionTable.MessagesInOutColumnTitle</string>
          </property>
         </column>
         <column>
          <property name="text">
-          <string>Kick?</string>
+          <string>OBSWebSocket.SessionTable.KickButtonColumnTitle</string>
          </property>
         </column>
        </widget>

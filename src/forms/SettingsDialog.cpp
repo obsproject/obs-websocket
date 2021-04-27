@@ -55,6 +55,10 @@ void SettingsDialog::ToggleShowHide()
 void SettingsDialog::FillSessionTable()
 {
 	int rowCount = 5;
+
+	obs_frontend_push_ui_translation(obs_module_get_string);
+	QString kickButtonText = QObject::tr("OBSWebSocket.SessionTable.KickButtonText");
+	obs_frontend_pop_ui_translation();
 	ui->websocketSessionTable->setRowCount(rowCount);
 	for (int i = 0; i < 5; i++) {
 		QTableWidgetItem *addressItem = new QTableWidgetItem("test");
@@ -66,7 +70,7 @@ void SettingsDialog::FillSessionTable()
 		QTableWidgetItem *statsItem = new QTableWidgetItem("test");
 		ui->websocketSessionTable->setItem(i, 2, statsItem);
 
-		QPushButton *invalidateButton = new QPushButton("Kick", this);
+		QPushButton *invalidateButton = new QPushButton(kickButtonText, this);
 		QWidget *invalidateButtonWidget = new QWidget();
 		QHBoxLayout *invalidateButtonLayout = new QHBoxLayout(invalidateButtonWidget);
 		invalidateButtonLayout->addWidget(invalidateButton);
