@@ -34,7 +34,7 @@ SettingsDialog *_settingsDialog = nullptr;
 
 bool obs_module_load(void)
 {
-	blog(LOG_INFO, "you can haz websockets (version %s)", OBS_WEBSOCKET_VERSION);
+	blog(LOG_INFO, "you can haz websockets (Version: %s | RPC Version: %d)", OBS_WEBSOCKET_VERSION, OBS_WEBSOCKET_RPC_VERSION);
 	blog(LOG_INFO, "Qt version (compile-time): %s | Qt version (run-time): %s",
 		QT_VERSION_STR, qVersion());
 
