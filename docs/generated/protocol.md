@@ -59,7 +59,9 @@ These steps should be followed precisely. Failure to connect to the server as in
 
 - The client will begin receiving events from obs-websocket and may now make requests to obs-websocket.
 
-#### Notes
+- At any time after a client has been identified, it may send a `Reidentify` message to update certain allowed session parameters. The server will respond in the same way it does during initial identification.
+
+#### Connection Notes
 - The obs-websocket server listens for any messages containing a `request-type` field in the first level JSON from unidentified clients. If a message matches, the connection is dropped with `WebsocketCloseCode::UnsupportedProtocolVersion`.
 - If a message with a `messageType` is not recognized to the obs-websocket server, the connection is dropped with `WebsocketCloseCode::UnknownMessageType`.
 - At no point may the client send any message other than a single `Identify` before it has received an `Identified`. Breaking this rule will result in the connection being dropped by the server with `WebsocketCloseCode::NotIdentified`.
@@ -80,6 +82,14 @@ The `authentication` object in `Hello` looks like this (example):
     "salt": "PZVbYpvAnZut2SS6JNJytDm9"
 }
 ```
+
+To generate the authentication string, follow these steps:
+- Concatenate the websocket password with the `salt` provided by the server (`password + salt`)
+- Generate an SHA256 binary hash of the result and encode it with base64, known as a base64 secret.
+- Concatenate the base64 secret with the `challenge` sent by the server (`base64_secret + challenge`)
+- Generate a binary SHA256 hash of that result and encode it to base64. You now have your `authentication` string.
+
+For more info on how to create the `authentication` string, refer to the obs-websocket client libraries listed on the [README](README.md).
 
 
 ## Message Types
