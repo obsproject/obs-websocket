@@ -64,10 +64,14 @@ configure_file(
 
 # Inlude sources
 set(obs-websocket_SOURCES
-	src/obs-websocket.cpp)
+	src/obs-websocket.cpp
+    src/Config.cpp
+    src/forms/SettingsDialog.cpp)
 
 set(obs-websocket_HEADERS
-	src/obs-websocket.h)
+	src/obs-websocket.h
+    src/Config.h
+    src/forms/SettingsDialog.h)
 
 
 # Platform-independent build settings

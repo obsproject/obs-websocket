@@ -2,7 +2,7 @@
 
 ## YOU HAVE STUMBLED UPON THE DEV BRANCH FOR V5.0.0
 
-- You can find the main API sheet [here](https://gist.github.com/tt2468/59390b99e7841b28f56dffb3dd622ec9)
+- You can find the main protocol spec here: [PROTOCOL.md](docs/generated/protocol.md).
 - You can find the planned requests sheet [here](https://docs.google.com/spreadsheets/d/1LfCZrbT8e7cSaKo_TuPDd-CJiptL7RSuo8iE63vMmMs/edit?usp=sharing)
 
 

@@ -3,6 +3,8 @@
 #include <obs.hpp>
 #include <memory>
 
+#include "plugin-macros.generated.h"
+
 // Autorelease object declarations
 void ___source_dummy_addref(obs_source_t*);
 void ___sceneitem_dummy_addref(obs_sceneitem_t*);
@@ -25,3 +27,8 @@ void ___data_item_dummy_addref(obs_data_item_t*);
 void ___data_item_release(obs_data_item_t*);
 using OBSDataItemAutoRelease =
 	OBSRef<obs_data_item_t*, ___data_item_dummy_addref, ___data_item_release>;
+
+class Config;
+typedef std::shared_ptr<Config> ConfigPtr;
+
+ConfigPtr GetConfig();

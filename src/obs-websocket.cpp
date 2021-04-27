@@ -6,8 +6,9 @@
 #include <QtWidgets/QAction>
 #include <QtWidgets/QMainWindow>
 
-#include "plugin-macros.generated.h"
 #include "obs-websocket.h"
+#include "Config.h"
+#include "forms/SettingsDialog.h"
 
 // Auto release definitions
 void ___source_dummy_addref(obs_source_t*) {}
@@ -25,6 +26,8 @@ void ___data_item_release(obs_data_item_t* dataItem) {
 OBS_DECLARE_MODULE()
 OBS_MODULE_USE_DEFAULT_LOCALE("obs-websocket", "en-US")
 
+ConfigPtr _config;
+
 bool obs_module_load(void) {
 	blog(LOG_INFO, "you can haz websockets (version %s)", OBS_WEBSOCKET_VERSION);
 	blog(LOG_INFO, "Qt version (compile-time): %s | Qt version (run-time): %s",
@@ -38,4 +41,8 @@ bool obs_module_load(void) {
 
 void obs_module_unload() {
 	blog(LOG_INFO, "Finished shutting down.");
+}
+
+ConfigPtr GetConfig() {
+	return _config;
 }
