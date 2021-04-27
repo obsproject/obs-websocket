@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.16...3.20)
 project(obs-websocket VERSION 5.0.0)
+set(OBS_WEBSOCKET_RPC_VERSION 1)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -72,6 +73,7 @@ set(obs-websocket_SOURCES
 	src/obs-websocket.cpp
 	src/Config.cpp
 	src/WebSocketServer.cpp
+    src/WebSocketSession.cpp
 	src/requesthandler/RequestHandler.cpp
 	src/requesthandler/rpc/Request.cpp
 	src/requesthandler/rpc/RequestResult.cpp
@@ -82,6 +84,7 @@ set(obs-websocket_HEADERS
 	src/obs-websocket.h
 	src/Config.h
 	src/WebSocketServer.h
+    src/WebSocketSession.h
 	src/requesthandler/RequestHandler.h
 	src/requesthandler/rpc/Request.h
 	src/requesthandler/rpc/RequestResult.h

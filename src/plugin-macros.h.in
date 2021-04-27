@@ -21,6 +21,8 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #define OBS_WEBSOCKET_VERSION "@CMAKE_PROJECT_VERSION@"
 
+#define OBS_WEBSOCKET_RPC_VERSION @OBS_WEBSOCKET_RPC_VERSION@
+
 #define QT_TO_UTF8(str) str.toUtf8().constData()
 
 #define blog(level, msg, ...) blog(level, "[obs-websocket] " msg, ##__VA_ARGS__)
