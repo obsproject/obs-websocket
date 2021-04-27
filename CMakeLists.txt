@@ -66,11 +66,13 @@ configure_file(
 set(obs-websocket_SOURCES
 	src/obs-websocket.cpp
     src/Config.cpp
+    src/WebSocketServer.cpp
     src/forms/SettingsDialog.cpp)
 
 set(obs-websocket_HEADERS
 	src/obs-websocket.h
     src/Config.h
+    src/WebSocketServer.h
     src/forms/SettingsDialog.h)
 
 

@@ -31,4 +31,9 @@ using OBSDataItemAutoRelease =
 class Config;
 typedef std::shared_ptr<Config> ConfigPtr;
 
+class WebSocketServer;
+typedef std::shared_ptr<WebSocketServer> WebSocketServerPtr;
+
 ConfigPtr GetConfig();
+
+WebSocketServerPtr GetWebSocketServer();

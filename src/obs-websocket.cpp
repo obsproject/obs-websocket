@@ -8,6 +8,7 @@
 
 #include "obs-websocket.h"
 #include "Config.h"
+#include "WebSocketServer.h"
 #include "forms/SettingsDialog.h"
 
 // Auto release definitions
@@ -18,7 +19,8 @@ void ___data_array_dummy_addref(obs_data_array_t*) {}
 void ___output_dummy_addref(obs_output_t*) {}
 
 void ___data_item_dummy_addref(obs_data_item_t*) {}
-void ___data_item_release(obs_data_item_t* dataItem) {
+void ___data_item_release(obs_data_item_t* dataItem)
+{
 	obs_data_item_release(&dataItem);
 }
 
@@ -27,15 +29,19 @@ OBS_DECLARE_MODULE()
 OBS_MODULE_USE_DEFAULT_LOCALE("obs-websocket", "en-US")
 
 ConfigPtr _config;
+WebSocketServerPtr _webSocketServer;
 SettingsDialog *_settingsDialog = nullptr;
 
-bool obs_module_load(void) {
+bool obs_module_load(void)
+{
 	blog(LOG_INFO, "you can haz websockets (version %s)", OBS_WEBSOCKET_VERSION);
 	blog(LOG_INFO, "Qt version (compile-time): %s | Qt version (run-time): %s",
 		QT_VERSION_STR, qVersion());
 
 	_config = ConfigPtr(new Config());
 	_config->Load();
+
+	_webSocketServer = WebSocketServerPtr(new WebSocketServer());
 
 	obs_frontend_push_ui_translation(obs_module_get_string);
 	QMainWindow* mainWindow = (QMainWindow*)obs_frontend_get_main_window();
@@ -52,11 +58,18 @@ bool obs_module_load(void) {
 	return true;
 }
 
-void obs_module_unload() {
+void obs_module_unload()
+{
 	_config.reset();
 	blog(LOG_INFO, "Finished shutting down.");
 }
 
-ConfigPtr GetConfig() {
+ConfigPtr GetConfig()
+{
 	return _config;
+}
+
+WebSocketServerPtr GetWebSocketServer()
+{
+	return _webSocketServer;
 }
