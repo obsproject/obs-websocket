@@ -6,12 +6,12 @@
 #include <QtWidgets/QAction>
 #include <QtWidgets/QMainWindow>
 
-#include "plugin-macros.generated.h"
-
 #include "obs-websocket.h"
 #include "Config.h"
 #include "WebSocketServer.h"
 #include "forms/SettingsDialog.h"
+
+#include "plugin-macros.generated.h"
 
 // Auto release definitions
 void ___source_dummy_addref(obs_source_t*) {}

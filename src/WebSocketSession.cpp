@@ -1,6 +1,6 @@
-#include "plugin-macros.generated.h"
-
 #include "WebSocketSession.h"
+
+#include "plugin-macros.generated.h"
 
 WebSocketSession::WebSocketSession() :
 	incomingMessages(0),

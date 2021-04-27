@@ -1,11 +1,11 @@
 #include <QtConcurrent>
 
-#include "plugin-macros.generated.h"
-
 #include "WebSocketServer.h"
 #include "obs-websocket.h"
 #include "Config.h"
 #include "requesthandler/RequestHandler.h"
+
+#include "plugin-macros.generated.h"
 
 WebSocketServer::WebSocketServer() :
 	QObject(nullptr),
@@ -35,7 +35,7 @@ WebSocketServer::WebSocketServer() :
 		)
 	);
 
-	blog(LOG_INFO, "test");
+	blog(LOG_INFO, "cocks");
 }
 
 WebSocketServer::~WebSocketServer()

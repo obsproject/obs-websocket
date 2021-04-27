@@ -16,8 +16,7 @@ You should have received a copy of the GNU General Public License along
 with this program. If not, see <https://www.gnu.org/licenses/>
 */
 
-#ifndef PLUGINNAME_H
-#define PLUGINNAME_H
+#pragma once
 
 #define OBS_WEBSOCKET_VERSION "5.0.0"
 
@@ -26,5 +25,3 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #define QT_TO_UTF8(str) str.toUtf8().constData()
 
 #define blog(level, msg, ...) blog(level, "[obs-websocket] " msg, ##__VA_ARGS__)
-
-#endif

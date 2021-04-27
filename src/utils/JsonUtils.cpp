@@ -1,7 +1,8 @@
+#include "Utils.h"
 // For AutoRelease types
 #include "../obs-websocket.h"
 
-#include "Utils.h"
+#include "../plugin-macros.generated.h"
 
 bool Utils::Json::JsonArrayIsValidObsArray(json j)
 {

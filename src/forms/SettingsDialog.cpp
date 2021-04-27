@@ -4,12 +4,12 @@
 #include <QClipboard>
 #include <QTime>
 
-#include "../plugin-macros.generated.h"
-
 #include "SettingsDialog.h"
 #include "../obs-websocket.h"
 #include "../Config.h"
 #include "../WebSocketServer.h"
+
+#include "../plugin-macros.generated.h"
 
 SettingsDialog::SettingsDialog(QWidget* parent) :
 	QDialog(parent, Qt::Dialog),
