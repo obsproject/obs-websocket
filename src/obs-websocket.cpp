@@ -61,6 +61,7 @@ bool obs_module_load(void)
 void obs_module_unload()
 {
 	_config.reset();
+	_webSocketServer.reset();
 	blog(LOG_INFO, "Finished shutting down.");
 }
 
