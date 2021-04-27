@@ -51,6 +51,11 @@ find_package(LibObs REQUIRED)
 find_package(Qt5 REQUIRED COMPONENTS Core Widgets Concurrent)
 
 
+# Find nlohmann
+set(JSON_BuildTests OFF CACHE INTERNAL "")
+add_subdirectory(deps/json)
+
+
 # Configure files
 configure_file(
 	src/plugin-macros.h.in
@@ -99,7 +104,8 @@ target_link_libraries(obs-websocket
 	libobs
 	Qt5::Core
 	Qt5::Widgets
-	Qt5::Concurrent)
+	Qt5::Concurrent
+    nlohmann_json::nlohmann_json)
 
 
 # Windows-specific build settings and tasks
