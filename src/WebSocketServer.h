@@ -18,6 +18,36 @@ class WebSocketServer : public QObject
 	Q_OBJECT
 
 	public:
+		enum WebsocketCloseCode: std::uint16_t {
+			UnknownReason = 4000,
+			// The server was unable to decode the incoming websocket message
+			MessageDecodeError = 4001,
+			// The specified `messageType` was invalid
+			UnknownMessageType = 4002,
+			// The client sent a websocket message without first sending `Identify` message
+			NotIdentified = 4003,
+			// The client sent an `Identify` message while already identified
+			AlreadyIdentified = 4004,
+			// The authentication attempt (via `Identify`) failed
+			AuthenticationFailed = 4005,
+			// There was an invalid parameter the client's `Identify` message
+			InvalidIdentifyParameter = 4006,
+			// A `Request` or `RequestBatch` was missing its `requestId`
+			RequestMissingRequestId = 4007,
+			// The websocket session has been invalidated by the obs-websocket server.
+			SessionInvalidated = 4008,
+			// The server detected the usage of an old version of the obs-websocket protocol.
+			UnsupportedProtocolVersion = 4009,
+		};
+
+		struct WebSocketState {
+			websocketpp::connection_hdl hdl;
+			std::string remoteAddress;
+			uint64_t durationSeconds;
+			uint64_t incomingMessages;
+			uint64_t outgoingMessages;
+		};
+
 		WebSocketServer();
 		~WebSocketServer();
 
@@ -28,14 +58,6 @@ class WebSocketServer : public QObject
 		bool IsListening() {
 			return _server.is_listening();
 		}
-
-		struct WebSocketState {
-			websocketpp::connection_hdl hdl;
-			std::string remoteAddress;
-			uint64_t durationSeconds;
-			uint64_t incomingMessages;
-			uint64_t outgoingMessages;
-		};
 
 		std::vector<WebSocketState> GetWebSocketSessions();
 
