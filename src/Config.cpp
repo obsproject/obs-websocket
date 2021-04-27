@@ -3,7 +3,7 @@
 
 #include "Config.h"
 
-#define CONFIG_SECTION_NAME "obs-websocket"
+#define CONFIG_SECTION_NAME "OBSWebSocket"
 
 #define PARAM_ENABLED "ServerEnabled"
 #define PARAM_PORT "ServerPort"
