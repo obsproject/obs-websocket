@@ -1,3 +1,5 @@
+#include "plugin-macros.generated.h"
+
 #include "WebSocketSession.h"
 
 WebSocketSession::WebSocketSession() :

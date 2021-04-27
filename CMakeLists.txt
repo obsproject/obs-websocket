@@ -89,7 +89,7 @@ set(obs-websocket_HEADERS
 	src/requesthandler/rpc/Request.h
 	src/requesthandler/rpc/RequestResult.h
 	src/forms/SettingsDialog.h
-	src/utils/JsonUtils.h)
+	src/utils/Utils.h)
 
 
 # Platform-independent build settings

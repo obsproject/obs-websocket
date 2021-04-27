@@ -27,4 +27,4 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #define blog(level, msg, ...) blog(level, "[obs-websocket] " msg, ##__VA_ARGS__)
 
-#endif // PLUGINNAME_H
+#endif

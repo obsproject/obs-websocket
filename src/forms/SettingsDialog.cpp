@@ -4,6 +4,8 @@
 #include <QClipboard>
 #include <QTime>
 
+#include "../plugin-macros.generated.h"
+
 #include "SettingsDialog.h"
 #include "../obs-websocket.h"
 #include "../Config.h"

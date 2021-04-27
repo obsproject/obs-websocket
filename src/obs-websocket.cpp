@@ -6,6 +6,8 @@
 #include <QtWidgets/QAction>
 #include <QtWidgets/QMainWindow>
 
+#include "plugin-macros.generated.h"
+
 #include "obs-websocket.h"
 #include "Config.h"
 #include "WebSocketServer.h"

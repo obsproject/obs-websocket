@@ -1,6 +1,8 @@
 #include <QTime>
 #include <obs-frontend-api.h>
 
+#include "plugin-macros.generated.h"
+
 #include "Config.h"
 
 #define CONFIG_SECTION_NAME "OBSWebSocket"

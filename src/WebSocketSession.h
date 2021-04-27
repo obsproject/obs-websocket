@@ -2,8 +2,6 @@
 
 #include <atomic>
 
-#include "plugin-macros.generated.h"
-
 class WebSocketSession
 {
 	public:

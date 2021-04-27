@@ -1,6 +1,9 @@
-#include "JsonUtils.h"
+// For AutoRelease types
+#include "../obs-websocket.h"
 
-bool JsonUtils::JsonArrayIsValidObsArray(json j)
+#include "Utils.h"
+
+bool Utils::Json::JsonArrayIsValidObsArray(json j)
 {
 	for (auto it : j) {
 		if (!it.is_object())
@@ -54,7 +57,7 @@ void obs_data_set_json_object_item(obs_data_t *d, json j)
 	}
 }
 
-obs_data_t *JsonUtils::JsonToObsData(json j)
+obs_data_t *Utils::Json::JsonToObsData(json j)
 {
 	obs_data_t *data = obs_data_create();
 
@@ -93,7 +96,7 @@ void set_json_bool(json *j, const char *name, obs_data_item_t *item)
 void set_json_object(json *j, const char *name, obs_data_item_t *item, bool includeDefault)
 {
 	obs_data_t *obj = obs_data_item_get_obj(item);
-	j->emplace(name, JsonUtils::ObsDataToJson(obj, includeDefault));
+	j->emplace(name, Utils::Json::ObsDataToJson(obj, includeDefault));
 	obs_data_release(obj);
 }
 void set_json_array(json *j, const char *name, obs_data_item_t *item, bool includeDefault)
@@ -104,14 +107,14 @@ void set_json_array(json *j, const char *name, obs_data_item_t *item, bool inclu
 
 	for (size_t idx = 0; idx < count; idx++) {
 		OBSDataAutoRelease subItem = obs_data_array_item(array, idx);
-		json jItem = JsonUtils::ObsDataToJson(subItem, includeDefault);
+		json jItem = Utils::Json::ObsDataToJson(subItem, includeDefault);
 		jArray.push_back(jItem);
 	}
 
 	j->emplace(name, jArray);
 }
 
-json JsonUtils::ObsDataToJson(obs_data_t *d, bool includeDefault)
+json Utils::Json::ObsDataToJson(obs_data_t *d, bool includeDefault)
 {
 	json j;
 	obs_data_item_t *item = nullptr;

@@ -9,7 +9,6 @@
 #include <websocketpp/server.hpp>
 
 #include "WebSocketSession.h"
-#include "requesthandler/RequestHandler.h"
 
 using json = nlohmann::json;
 
@@ -65,19 +64,21 @@ class WebSocketServer : public QObject
 			return &_threadPool;
 		}
 
+		std::string GetConnectUrl();
+
 	public Q_SLOTS:
 		void BroadcastEvent(uint64_t requiredIntent, std::string eventType, json eventData = nullptr);
 
 	private:
+		WebSocketSession *GetWebSocketSession(websocketpp::connection_hdl hdl);
+
 		void onOpen(websocketpp::connection_hdl hdl);
 		void onClose(websocketpp::connection_hdl hdl);
-		void onMessage(websocketpp::connection_hdl hdl);
-
-		WebSocketSession *GetWebSocketSession(websocketpp::connection_hdl hdl);
+		void onMessage(websocketpp::connection_hdl hdl, websocketpp::server<websocketpp::config::asio>::message_ptr message);
 
 		websocketpp::server<websocketpp::config::asio> _server;
 		QThreadPool _threadPool;
-
 		QMutex _sessionMutex;
 		std::map<websocketpp::connection_hdl, WebSocketSession, std::owner_less<websocketpp::connection_hdl>> _sessions;
+		uint16_t _serverPort;
 };

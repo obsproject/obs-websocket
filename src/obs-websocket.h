@@ -3,8 +3,6 @@
 #include <obs.hpp>
 #include <memory>
 
-#include "plugin-macros.generated.h"
-
 // Autorelease object declarations
 void ___source_dummy_addref(obs_source_t*);
 void ___sceneitem_dummy_addref(obs_sceneitem_t*);
