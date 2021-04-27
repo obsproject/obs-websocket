@@ -1,26 +1,26 @@
 name: 'Generate docs'
 
 on:
-    push:
-        paths-ignore:
-            - 'docs/**'
-        branches:
-            - master
+  push:
+    paths-ignore:
+      - 'docs/**'
+    branches:
+      - master
 
 jobs:
-    docs-build:
-        name: 'Generate docs [Ubuntu]'
-        runs-on: ubuntu-latest
-        if: ${{ github.ref == 'refs/heads/master' }}
-        env: 
-            CHECKOUT_REF: github.ref
-            GH_TOKEN: github.token
-        steps:
-            - name: 'Checkout'
-              uses: actions/checkout@v2
-              with:
-                path: ${{ github.workspace }}/obs-websocket
-            - name: 'Generate docs'
-              working-directory: ${{ github.workspace }}/obs-websocket
-              run: |
-                ./CI/generate-docs.sh
+  docs-build:
+    name: 'Generate docs [Ubuntu]'
+    runs-on: ubuntu-latest
+    if: ${{ github.ref == 'refs/heads/master' }}
+    env: 
+      CHECKOUT_REF: github.ref
+      GH_TOKEN: github.token
+    steps:
+      - name: 'Checkout'
+        uses: actions/checkout@v2
+        with:
+          path: ${{ github.workspace }}/obs-websocket
+      - name: 'Generate docs'
+        working-directory: ${{ github.workspace }}/obs-websocket
+        run: |
+          ./CI/generate-docs.sh
