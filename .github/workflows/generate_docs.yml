@@ -13,8 +13,8 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.ref == 'refs/heads/master' }}
     env: 
-      CHECKOUT_REF: github.ref
-      GH_TOKEN: github.token
+      CHECKOUT_REF: ${{ github.ref }}
+      GH_TOKEN: ${{ github.token }}
     steps:
       - name: 'Checkout'
         uses: actions/checkout@v2
