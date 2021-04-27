@@ -2,10 +2,12 @@
 #include <obs-frontend-api.h>
 #include <QtWidgets/QMessageBox>
 #include <QClipboard>
+#include <QTime>
 
 #include "SettingsDialog.h"
 #include "../obs-websocket.h"
 #include "../Config.h"
+#include "../WebSocketServer.h"
 
 SettingsDialog::SettingsDialog(QWidget* parent) :
 	QDialog(parent, Qt::Dialog),
@@ -55,20 +57,28 @@ void SettingsDialog::ToggleShowHide()
 
 void SettingsDialog::FillSessionTable()
 {
-	int rowCount = 5;
+	auto webSocketServer = GetWebSocketServer();
+	if (!webSocketServer) {
+		blog(LOG_ERROR, "Unable to fetch websocket server instance!");
+		return;
+	}
+
+	auto webSocketSessions = webSocketServer->GetWebSocketSessions();
+	size_t rowCount = webSocketSessions.size();
 
 	obs_frontend_push_ui_translation(obs_module_get_string);
 	QString kickButtonText = QObject::tr("OBSWebSocket.SessionTable.KickButtonText");
 	obs_frontend_pop_ui_translation();
 	ui->websocketSessionTable->setRowCount(rowCount);
-	for (int i = 0; i < 5; i++) {
-		QTableWidgetItem *addressItem = new QTableWidgetItem("test");
+	size_t i = 0;
+	for (auto session : webSocketSessions) {
+		QTableWidgetItem *addressItem = new QTableWidgetItem(QString::fromStdString(session.remoteAddress));
 		ui->websocketSessionTable->setItem(i, 0, addressItem);
 
-		QTableWidgetItem *durationItem = new QTableWidgetItem("test");
+		QTableWidgetItem *durationItem = new QTableWidgetItem(QTime(0, 0, session.durationSeconds).toString("hh:mm:ss"));
 		ui->websocketSessionTable->setItem(i, 1, durationItem);
 
-		QTableWidgetItem *statsItem = new QTableWidgetItem("test");
+		QTableWidgetItem *statsItem = new QTableWidgetItem(QString("%1/%2").arg(session.incomingMessages).arg(session.outgoingMessages));
 		ui->websocketSessionTable->setItem(i, 2, statsItem);
 
 		QPushButton *invalidateButton = new QPushButton(kickButtonText, this);
@@ -79,6 +89,11 @@ void SettingsDialog::FillSessionTable()
 		invalidateButtonLayout->setContentsMargins(0, 0, 0, 0);
 		invalidateButtonWidget->setLayout(invalidateButtonLayout);
 		ui->websocketSessionTable->setCellWidget(i, 3, invalidateButtonWidget);
+		connect(invalidateButton, &QPushButton::clicked, [=]() {
+			webSocketServer->InvalidateSession(session.hdl);
+		});
+
+		i++;
 	}
 }
 
