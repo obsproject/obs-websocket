@@ -70,23 +70,23 @@ configure_file(
 # Inlude sources
 set(obs-websocket_SOURCES
 	src/obs-websocket.cpp
-    src/Config.cpp
-    src/WebSocketServer.cpp
-    src/requesthandler/RequestHandler.cpp
-    src/requesthandler/rpc/Request.cpp
-    src/requesthandler/rpc/RequestResult.cpp
-    src/forms/SettingsDialog.cpp
-    src/utils/JsonUtils.cpp)
+	src/Config.cpp
+	src/WebSocketServer.cpp
+	src/requesthandler/RequestHandler.cpp
+	src/requesthandler/rpc/Request.cpp
+	src/requesthandler/rpc/RequestResult.cpp
+	src/forms/SettingsDialog.cpp
+	src/utils/JsonUtils.cpp)
 
 set(obs-websocket_HEADERS
 	src/obs-websocket.h
-    src/Config.h
-    src/WebSocketServer.h
-    src/requesthandler/RequestHandler.h
-    src/requesthandler/rpc/Request.h
-    src/requesthandler/rpc/RequestResult.h
-    src/forms/SettingsDialog.h
-    src/utils/JsonUtils.h)
+	src/Config.h
+	src/WebSocketServer.h
+	src/requesthandler/RequestHandler.h
+	src/requesthandler/rpc/Request.h
+	src/requesthandler/rpc/RequestResult.h
+	src/forms/SettingsDialog.h
+	src/utils/JsonUtils.h)
 
 
 # Platform-independent build settings
@@ -107,7 +107,7 @@ target_link_libraries(obs-websocket
 	Qt5::Core
 	Qt5::Widgets
 	Qt5::Concurrent
-    nlohmann_json::nlohmann_json)
+	nlohmann_json::nlohmann_json)
 
 
 # Windows-specific build settings and tasks
