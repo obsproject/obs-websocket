@@ -3,7 +3,7 @@ name: 'Generate docs'
 on:
   push:
     paths-ignore:
-      - 'docs/**'
+      - 'docs/generated/**'
     branches:
       - master
 
