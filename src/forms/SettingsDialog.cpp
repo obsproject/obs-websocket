@@ -33,7 +33,7 @@ void SettingsDialog::showEvent(QShowEvent* event)
 {
 	auto conf = GetConfig();
 	if (!conf) {
-		blog(LOG_INFO, "Unable to retreive config!");
+		blog(LOG_ERROR, "Unable to retreive config!");
 		return;
 	}
 
@@ -101,7 +101,7 @@ void SettingsDialog::FormAccepted()
 {
 	auto conf = GetConfig();
 	if (!conf) {
-		blog(LOG_INFO, "Unable to retreive config!");
+		blog(LOG_ERROR, "Unable to retreive config!");
 		return;
 	}
 
