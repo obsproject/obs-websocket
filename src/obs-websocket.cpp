@@ -57,12 +57,16 @@ bool obs_module_load(void)
 	// Loading finished
 	blog(LOG_INFO, "Module loaded.");
 
+	if (_config->ServerEnabled)
+		_webSocketServer->Start();
+
 	return true;
 }
 
 void obs_module_unload()
 {
 	blog(LOG_INFO, "Shutting down...");
+
 	if (_webSocketServer->IsListening()) {
 		blog(LOG_INFO, "WebSocket server is running. Stopping...");
 		_webSocketServer->Stop();

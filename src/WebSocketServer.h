@@ -2,7 +2,7 @@
 
 #include <QObject>
 #include <QThreadPool>
-#include <QMutex>
+#include <mutex>
 
 #include <nlohmann/json.hpp>
 #include <websocketpp/config/asio_no_tls.hpp>
@@ -12,10 +12,8 @@
 
 using json = nlohmann::json;
 
-class WebSocketServer : public QObject
+class WebSocketServer
 {
-	Q_OBJECT
-
 	public:
 		enum WebsocketCloseCode: std::uint16_t {
 			UnknownReason = 4000,
@@ -66,19 +64,22 @@ class WebSocketServer : public QObject
 
 		std::string GetConnectUrl();
 
-	public Q_SLOTS:
 		void BroadcastEvent(uint64_t requiredIntent, std::string eventType, json eventData = nullptr);
 
 	private:
+		void ServerRunner();
 		WebSocketSession *GetWebSocketSession(websocketpp::connection_hdl hdl);
 
 		void onOpen(websocketpp::connection_hdl hdl);
 		void onClose(websocketpp::connection_hdl hdl);
 		void onMessage(websocketpp::connection_hdl hdl, websocketpp::server<websocketpp::config::asio>::message_ptr message);
 
+		std::thread _serverThread;
 		websocketpp::server<websocketpp::config::asio> _server;
 		QThreadPool _threadPool;
-		QMutex _sessionMutex;
+		std::mutex _sessionMutex;
 		std::map<websocketpp::connection_hdl, WebSocketSession, std::owner_less<websocketpp::connection_hdl>> _sessions;
 		uint16_t _serverPort;
+		std::string _authenticationSecret;
+		std::string _authenticationSalt;
 };

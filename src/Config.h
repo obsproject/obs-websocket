@@ -19,5 +19,5 @@ class Config {
 		QString ServerPassword;
 
 	private:
-		;
+
 };
