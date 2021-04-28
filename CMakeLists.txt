@@ -78,7 +78,8 @@ set(obs-websocket_SOURCES
 	src/requesthandler/rpc/Request.cpp
 	src/requesthandler/rpc/RequestResult.cpp
 	src/forms/SettingsDialog.cpp
-	src/utils/JsonUtils.cpp)
+	src/utils/Json.cpp
+    src/utils/Crypto.cpp)
 
 set(obs-websocket_HEADERS
 	src/obs-websocket.h
