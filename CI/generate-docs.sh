@@ -18,6 +18,11 @@ if git diff --quiet; then
 	exit 0
 fi
 
+# Exit if we aren't a CI run to prevent messing with the current git config
+if [ -z "${IS_CI}" ]; then
+	exit 0
+fi
+
 REMOTE_URL="$(git config remote.origin.url)"
 TARGET_REPO=${REMOTE_URL/https:\/\/github.com\//github.com/}
 GITHUB_REPO=https://${GH_TOKEN:-git}@${TARGET_REPO}

@@ -15,6 +15,7 @@ jobs:
     env: 
       CHECKOUT_REF: ${{ github.ref }}
       GH_TOKEN: ${{ github.token }}
+      IS_CI: "true"
     steps:
       - name: 'Checkout'
         uses: actions/checkout@v2
