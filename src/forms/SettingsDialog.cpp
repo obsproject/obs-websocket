@@ -36,7 +36,7 @@ void SettingsDialog::showEvent(QShowEvent* event)
 {
 	auto conf = GetConfig();
 	if (!conf) {
-		blog(LOG_ERROR, "Unable to retreive config!");
+		blog(LOG_ERROR, "[showEvent] Unable to retreive config!");
 		return;
 	}
 
@@ -62,7 +62,7 @@ void SettingsDialog::FillSessionTable()
 {
 	auto webSocketServer = GetWebSocketServer();
 	if (!webSocketServer) {
-		blog(LOG_ERROR, "Unable to fetch websocket server instance!");
+		blog(LOG_ERROR, "[FillSessionTable] Unable to fetch websocket server instance!");
 		return;
 	}
 
@@ -105,7 +105,7 @@ void SettingsDialog::FormAccepted()
 {
 	auto conf = GetConfig();
 	if (!conf) {
-		blog(LOG_ERROR, "Unable to retreive config!");
+		blog(LOG_ERROR, "[FormAccepted] Unable to retreive config!");
 		return;
 	}
 

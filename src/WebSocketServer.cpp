@@ -45,29 +45,29 @@ WebSocketServer::~WebSocketServer()
 
 void WebSocketServer::ServerRunner()
 {
-	blog(LOG_INFO, "IO thread started.");
+	blog(LOG_INFO, "[ServerRunner] IO thread started.");
 	try {
 		_server.run();
 	} catch (websocketpp::exception const & e) {
-		blog(LOG_ERROR, "websocketpp instance returned an error: %s", e.what());
+		blog(LOG_ERROR, "[ServerRunner] websocketpp instance returned an error: %s", e.what());
 	} catch (const std::exception & e) {
-		blog(LOG_ERROR, "websocketpp instance returned an error: %s", e.what());
+		blog(LOG_ERROR, "[ServerRunner] websocketpp instance returned an error: %s", e.what());
 	} catch (...) {
-		blog(LOG_ERROR, "websocketpp instance returned an error");
+		blog(LOG_ERROR, "[ServerRunner] websocketpp instance returned an error");
 	}
-	blog(LOG_INFO, "IO thread exited.");
+	blog(LOG_INFO, "[ServerRunner] IO thread exited.");
 }
 
 void WebSocketServer::Start()
 {
 	if (_server.is_listening()) {
-		blog(LOG_WARNING, "Call to Start() but the server is already listening.");
+		blog(LOG_WARNING, "[Start] Call to Start() but the server is already listening.");
 		return;
 	}
 
 	auto conf = GetConfig();
 	if (!conf) {
-		blog(LOG_ERROR, "Unable to retreive config!");
+		blog(LOG_ERROR, "[Start] Unable to retreive config!");
 		return;
 	}
 
@@ -82,7 +82,7 @@ void WebSocketServer::Start()
 
 	if (errorCode) {
 		std::string errorCodeMessage = errorCode.message();
-		blog(LOG_INFO, "Listen failed: %s", errorCodeMessage.c_str());
+		blog(LOG_INFO, "[Start] Listen failed: %s", errorCodeMessage.c_str());
 		return;
 	}
 
@@ -90,12 +90,13 @@ void WebSocketServer::Start()
 
 	_serverThread = std::thread(&WebSocketServer::ServerRunner, this);
 
-	blog(LOG_INFO, "Server started successfully on port %d", _serverPort);
+	blog(LOG_INFO, "[Start] Server started successfully on port %d", _serverPort);
 }
 
 void WebSocketServer::Stop()
 {
 	if (!_server.is_listening()) {
+		blog(LOG_WARNING, "[Stop] Call to Stop() but the server is not listening.");
 		return;
 	}
 
@@ -118,12 +119,12 @@ void WebSocketServer::Stop()
 
 	_serverThread.join();
 
-	blog(LOG_INFO, "Server stopped successfully");
+	blog(LOG_INFO, "[Stop] Server stopped successfully");
 }
 
 void WebSocketServer::InvalidateSession(websocketpp::connection_hdl hdl)
 {
-	blog(LOG_INFO, "Invalidating a session.");
+	blog(LOG_INFO, "[InvalidateSession] Invalidating a session.");
 	_server.close(hdl, WebSocketCloseCode::SessionInvalidated, "Your session has been invalidated.");
 }
 

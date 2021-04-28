@@ -36,8 +36,8 @@ SettingsDialog *_settingsDialog = nullptr;
 
 bool obs_module_load(void)
 {
-	blog(LOG_INFO, "you can haz websockets (Version: %s | RPC Version: %d)", OBS_WEBSOCKET_VERSION, OBS_WEBSOCKET_RPC_VERSION);
-	blog(LOG_INFO, "Qt version (compile-time): %s | Qt version (run-time): %s",
+	blog(LOG_INFO, "[obs_module_load] you can haz websockets (Version: %s | RPC Version: %d)", OBS_WEBSOCKET_VERSION, OBS_WEBSOCKET_RPC_VERSION);
+	blog(LOG_INFO, "[obs_module_load] Qt version (compile-time): %s | Qt version (run-time): %s",
 		QT_VERSION_STR, qVersion());
 
 	_config = ConfigPtr(new Config());
@@ -55,7 +55,7 @@ bool obs_module_load(void)
 	QObject::connect(menuAction, &QAction::triggered, [] { _settingsDialog->ToggleShowHide(); });
 
 	// Loading finished
-	blog(LOG_INFO, "Module loaded.");
+	blog(LOG_INFO, "[obs_module_load] Module loaded.");
 
 	if (_config->ServerEnabled)
 		_webSocketServer->Start();
@@ -65,16 +65,16 @@ bool obs_module_load(void)
 
 void obs_module_unload()
 {
-	blog(LOG_INFO, "Shutting down...");
+	blog(LOG_INFO, "[obs_module_unload] Shutting down...");
 
 	if (_webSocketServer->IsListening()) {
-		blog(LOG_INFO, "WebSocket server is running. Stopping...");
+		blog(LOG_INFO, "[obs_module_unload] WebSocket server is running. Stopping...");
 		_webSocketServer->Stop();
 	}
 
 	_config.reset();
 	_webSocketServer.reset();
-	blog(LOG_INFO, "Finished shutting down.");
+	blog(LOG_INFO, "[obs_module_unload] Finished shutting down.");
 }
 
 ConfigPtr GetConfig()
