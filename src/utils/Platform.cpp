@@ -1,9 +1,13 @@
+#include <QCoreApplication>
+#include <QCommandLineParser>
 #include <QNetworkInterface>
 #include <QHostAddress>
 
 #include "Utils.h"
 
 #include "../plugin-macros.generated.h"
+
+#include <QDebug>
 
 std::string Utils::Platform::GetLocalAddress()
 {
@@ -37,4 +41,17 @@ std::string Utils::Platform::GetLocalAddress()
 		return validAddresses[0].toStdString();
 
 	return "0.0.0.0";
+}
+
+QString Utils::Platform::GetCommandLineArgument(QString arg)
+{
+	QCommandLineParser parser;
+	QCommandLineOption cmdlineOption(arg, arg, arg, "");
+	parser.addOption(cmdlineOption);
+	parser.parse(QCoreApplication::arguments());
+
+	if (!parser.isSet(cmdlineOption))
+		return "";
+
+	return parser.value(cmdlineOption);
 }

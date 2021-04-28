@@ -52,6 +52,15 @@ void SettingsDialog::showEvent(QShowEvent *event)
 	ui->serverPasswordLineEdit->setEnabled(conf->AuthRequired);
 	ui->serverPortSpinBox->setValue(conf->ServerPort);
 
+	if (conf->PortOverridden) {
+		ui->serverPortSpinBox->setEnabled(false);
+	}
+
+	if (conf->PasswordOverridden) {
+		ui->enableAuthenticationCheckBox->setEnabled(false);
+		ui->serverPasswordLineEdit->setEnabled(false);
+	}
+
 	FillSessionTable();
 
 	sessionTableTimer->start(1000);

@@ -36,6 +36,8 @@ Here is a list of available web clients: (compatible with tablets and other touc
 
 It is **highly recommended** to protect obs-websocket with a password against unauthorized control. To do this, open the "Websocket server settings" dialog under OBS' "Tools" menu. In the settings dialogs, you can enable or disable authentication and set a password for it.
 
+(Psst. You can use `--websocket_port` and `--websocket_password` on the command line to override the configured values.)
+
 ### Possible use cases
 
 - Remote control OBS from a phone or tablet on the same local network

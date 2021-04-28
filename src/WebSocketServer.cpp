@@ -2,6 +2,7 @@
 #include <thread>
 #include <QtConcurrent>
 #include <QDateTime>
+#include <QTime>
 
 #include "WebSocketServer.h"
 #include "obs-websocket.h"
@@ -14,6 +15,9 @@
 WebSocketServer::WebSocketServer() :
 	_sessions()
 {
+	// Randomize the random number generator
+	qsrand(QTime::currentTime().msec());
+
 	_server.get_alog().clear_channels(websocketpp::log::alevel::all);
 	_server.get_elog().clear_channels(websocketpp::log::elevel::all);
 	_server.init_asio();

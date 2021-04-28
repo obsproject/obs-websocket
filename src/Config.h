@@ -11,6 +11,9 @@ class Config {
 		void SetDefaultsToGlobalStore();
 		config_t* GetConfigStore();
 
+		bool PortOverridden;
+		bool PasswordOverridden;
+
 		bool ServerEnabled;
 		uint16_t ServerPort;
 		bool DebugEnabled;

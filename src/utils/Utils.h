@@ -22,5 +22,6 @@ namespace Utils {
 
 	namespace Platform {
 		std::string GetLocalAddress();
+		QString GetCommandLineArgument(QString arg);
 	}
 }
