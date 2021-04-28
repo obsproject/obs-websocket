@@ -124,6 +124,7 @@ void SettingsDialog::FormAccepted()
 
 	bool needsRestart = false;
 
+	// I decided not to restart the server if debug is changed. Might mess with peoples' scripts
 	if (conf->ServerEnabled != ui->enableWebSocketServerCheckBox->isChecked()) {
 		needsRestart = true;
 	} else if (conf->AuthRequired != ui->enableAuthenticationCheckBox->isChecked()) {

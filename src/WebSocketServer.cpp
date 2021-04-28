@@ -14,7 +14,8 @@
 WebSocketServer::WebSocketServer() :
 	_sessions()
 {
-	_server.get_alog().clear_channels(websocketpp::log::alevel::frame_header | websocketpp::log::alevel::frame_payload | websocketpp::log::alevel::control);
+	_server.get_alog().clear_channels(websocketpp::log::alevel::all);
+	_server.get_elog().clear_channels(websocketpp::log::elevel::all);
 	_server.init_asio();
 
 #ifndef _WIN32
@@ -76,10 +77,21 @@ void WebSocketServer::Start()
 	_authenticationSalt = Utils::Crypto::GenerateSalt();
 	_authenticationSecret = Utils::Crypto::GenerateSecret(conf->ServerPassword.toStdString(), _authenticationSalt);
 
+	// Set log levels if debug is enabled
+	if (conf->DebugEnabled) {
+		_server.get_alog().set_channels(websocketpp::log::alevel::all);
+		_server.get_alog().clear_channels(websocketpp::log::alevel::frame_header | websocketpp::log::alevel::frame_payload | websocketpp::log::alevel::control);
+		_server.get_elog().set_channels(websocketpp::log::elevel::all);
+		_server.get_alog().clear_channels(websocketpp::log::elevel::info);
+	} else {
+		_server.get_alog().clear_channels(websocketpp::log::alevel::all);
+		_server.get_elog().clear_channels(websocketpp::log::elevel::all);
+	}
+
 	_server.reset();
 
 	websocketpp::lib::error_code errorCode;
-	_server.listen(_serverPort, errorCode);
+	_server.listen(websocketpp::lib::asio::ip::tcp::v4(), _serverPort, errorCode);
 
 	if (errorCode) {
 		std::string errorCodeMessage = errorCode.message();
@@ -185,12 +197,19 @@ WebSocketSession *WebSocketServer::GetWebSocketSession(websocketpp::connection_h
 
 void WebSocketServer::onOpen(websocketpp::connection_hdl hdl)
 {
-	;
+	auto conn = _server.get_con_from_hdl(hdl);
+
+	std::unique_lock<std::mutex> lock(_sessionMutex);
+	_sessions[hdl].SetRemoteAddress(conn->get_remote_endpoint());
+	_sessions[hdl].SetConnectedAt(QDateTime::currentSecsSinceEpoch());
+	lock.unlock();
 }
 
 void WebSocketServer::onClose(websocketpp::connection_hdl hdl)
 {
-	;
+	std::unique_lock<std::mutex> lock(_sessionMutex);
+	_sessions.erase(hdl);
+	lock.unlock();
 }
 
 void WebSocketServer::onMessage(websocketpp::connection_hdl hdl, websocketpp::server<websocketpp::config::asio>::message_ptr message)
