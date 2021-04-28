@@ -20,11 +20,11 @@ jobs:
     if: contains(github.event.head_commit.message, '[skip ci]') != true
     env:
       build_config: 'RelWithDebInfo'
-      DEPS_CACHE_VERSION: '1' # Change whenever updating OBS dependencies URL, in order to force a cache reset
+      DEPS_CACHE_VERSION: '2' # Change whenever updating OBS dependencies URL, in order to force a cache reset
       DEPS_BASE_PATH: 'D:\obsdependencies'
       DEPS_PATH_32: '${DEPS_BASE_PATH}\win32'
       DEPS_PATH_64: '${DEPS_BASE_PATH}\win64'
-      QT_CACHE_VERSION: '1' # Change whenever updating Qt dependency URL, in order to force a cache reset
+      QT_CACHE_VERSION: '2' # Change whenever updating Qt dependency URL, in order to force a cache reset
       QT_BASE_DIR: 'D:\QtDep'
       QTDIR32: '${QT_BASE_DIR}\5.15.2\msvc2019'
       QTDIR64: '${QT_BASE_DIR}\5.15.2\msvc2019_64'
@@ -39,9 +39,9 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ${QT_BASE_DIR}
-          key: 'qtdep-"${QT_CACHE_VERSION}" | "${{ runner.os }}"'
+          key: 'qtdep-"${{ env.QT_CACHE_VERSION }}" | "${{ runner.os }}"'
           restore-keys: |
-            qtdep-"${QT_CACHE_VERSION}" | "${{ runner.os }}"
+            qtdep-"${{ env.QT_CACHE_VERSION }}" | "${{ runner.os }}"
       - name: 'Download Qt'
         working-directory: ${{ github.workspace }}/obs-websocket
         run: |
