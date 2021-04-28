@@ -122,12 +122,10 @@ void WebSocketServer::Stop()
 
 	_threadPool.waitForDone();
 
-	// This can deadlock the thread that it is running on. Bad but kinda required.
+	// This can delay the thread that it is running on. Bad but kinda required.
 	while (_sessions.size() > 0) {
 		std::this_thread::sleep_for(std::chrono::milliseconds(10));
 	}
-
-	_server.stop();
 
 	_serverThread.join();
 
