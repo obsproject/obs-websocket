@@ -3,6 +3,7 @@
 #include "plugin-macros.generated.h"
 
 WebSocketSession::WebSocketSession() :
+	_remoteAddress(""),
 	_connectedAt(0),
 	_incomingMessages(0),
 	_outgoingMessages(0),
@@ -14,6 +15,19 @@ WebSocketSession::WebSocketSession() :
 	_ignoreNonFatalRequestChecks(false),
 	_eventSubscriptions(0)
 {
+}
+
+std::string WebSocketSession::RemoteAddress()
+{
+	std::lock_guard<std::mutex> lock(_remoteAddressMutex);
+	std::string ret(_remoteAddress);
+	return ret;
+}
+
+void WebSocketSession::SetRemoteAddress(std::string address)
+{
+	std::lock_guard<std::mutex> lock(_remoteAddressMutex);
+	_remoteAddress = address;
 }
 
 uint64_t WebSocketSession::ConnectedAt()
