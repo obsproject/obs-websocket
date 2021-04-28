@@ -103,7 +103,7 @@ void WebSocketServer::Start()
 
 	_serverThread = std::thread(&WebSocketServer::ServerRunner, this);
 
-	blog(LOG_INFO, "[Start] Server started successfully on port %d", _serverPort);
+	blog(LOG_INFO, "[Start] Server started successfully on port %d. Possible connect address: %s", _serverPort, Utils::Platform::GetLocalAddress().c_str());
 }
 
 void WebSocketServer::Stop()

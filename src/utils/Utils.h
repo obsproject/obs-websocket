@@ -19,4 +19,8 @@ namespace Utils {
 		std::string GenerateSecret(std::string password, std::string salt);
 		bool CheckAuthenticationString(std::string secret, std::string challenge, std::string authenticationString);
 	}
+
+	namespace Platform {
+		std::string GetLocalAddress();
+	}
 }

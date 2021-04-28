@@ -48,7 +48,7 @@ find_package(LibObs REQUIRED)
 
 
 # Find Qt5
-find_package(Qt5 REQUIRED COMPONENTS Core Widgets Concurrent)
+find_package(Qt5 REQUIRED COMPONENTS Core Widgets Network Concurrent)
 
 
 # Find nlohmann
@@ -78,7 +78,8 @@ set(obs-websocket_SOURCES
 	src/requesthandler/rpc/RequestResult.cpp
 	src/forms/SettingsDialog.cpp
 	src/utils/Json.cpp
-    src/utils/Crypto.cpp)
+    src/utils/Crypto.cpp
+    src/utils/Platform.cpp)
 
 set(obs-websocket_HEADERS
 	src/obs-websocket.h
@@ -101,6 +102,7 @@ include_directories(
 	"${LIBOBS_INCLUDE_DIR}/../UI/obs-frontend-api"
 	${Qt5Core_INCLUDES}
 	${Qt5Widgets_INCLUDES}
+    ${Qt5Network_INCLUDES}
 	${Qt5Concurrent_INCLUDES}
 	"${CMAKE_SOURCE_DIR}/deps/asio/asio/include"
 	"${CMAKE_SOURCE_DIR}/deps/websocketpp")
@@ -109,6 +111,7 @@ target_link_libraries(obs-websocket
 	libobs
 	Qt5::Core
 	Qt5::Widgets
+    Qt5::Network
 	Qt5::Concurrent
 	nlohmann_json::nlohmann_json)
 
