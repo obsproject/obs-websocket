@@ -35,7 +35,7 @@ uint64_t WebSocketSession::ConnectedAt()
 	return _connectedAt.load();
 }
 
-void WebSocketSession::SetConnectedAt(uint64_t at);
+void WebSocketSession::SetConnectedAt(uint64_t at)
 {
 	_connectedAt.store(at);
 }

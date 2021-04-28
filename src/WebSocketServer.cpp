@@ -1,6 +1,7 @@
 #include <chrono>
 #include <thread>
 #include <QtConcurrent>
+#include <QDateTime>
 
 #include "WebSocketServer.h"
 #include "obs-websocket.h"
@@ -126,9 +127,21 @@ void WebSocketServer::InvalidateSession(websocketpp::connection_hdl hdl)
 	_server.close(hdl, WebSocketCloseCode::SessionInvalidated, "Your session has been invalidated.");
 }
 
-std::vector<WebSocketServer::WebSocketState> WebSocketServer::GetWebSocketSessions()
+std::vector<WebSocketServer::WebSocketSessionState> WebSocketServer::GetWebSocketSessions()
 {
-	std::vector<WebSocketServer::WebSocketState> webSocketSessions;
+	std::vector<WebSocketServer::WebSocketSessionState> webSocketSessions;
+
+	std::unique_lock<std::mutex> lock(_sessionMutex);
+	for (auto & [hdl, session] : _sessions) {
+		uint64_t connectedAt = session.ConnectedAt();
+		uint64_t incomingMessages = session.IncomingMessages();
+		uint64_t outgoingMessages = session.OutgoingMessages();
+		std::string remoteAddress = session.RemoteAddress();
+		
+		webSocketSessions.emplace_back(WebSocketSessionState{hdl, remoteAddress, connectedAt, incomingMessages, outgoingMessages});
+	}
+	lock.unlock();
+
 	return webSocketSessions;
 }
 
