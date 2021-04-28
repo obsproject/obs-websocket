@@ -42,10 +42,10 @@ class WebSocketServer
 			MsgPack
 		};
 
-		struct WebSocketState {
+		struct WebSocketSessionState {
 			websocketpp::connection_hdl hdl;
 			std::string remoteAddress;
-			uint64_t durationSeconds;
+			uint64_t connectedAt;
 			uint64_t incomingMessages;
 			uint64_t outgoingMessages;
 		};
@@ -61,7 +61,7 @@ class WebSocketServer
 			return _server.is_listening();
 		}
 
-		std::vector<WebSocketState> GetWebSocketSessions();
+		std::vector<WebSocketSessionState> GetWebSocketSessions();
 
 		QThreadPool *GetThreadPool() {
 			return &_threadPool;

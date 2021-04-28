@@ -77,7 +77,8 @@ void SettingsDialog::FillSessionTable()
 		QTableWidgetItem *addressItem = new QTableWidgetItem(QString::fromStdString(session.remoteAddress));
 		ui->websocketSessionTable->setItem(i, 0, addressItem);
 
-		QTableWidgetItem *durationItem = new QTableWidgetItem(QTime(0, 0, session.durationSeconds).toString("hh:mm:ss"));
+		uint64_t sessionDuration = QDateTime::toTime_t() - session.connectedAt;
+		QTableWidgetItem *durationItem = new QTableWidgetItem(QTime(0, 0, sessionDuration).toString("hh:mm:ss"));
 		ui->websocketSessionTable->setItem(i, 1, durationItem);
 
 		QTableWidgetItem *statsItem = new QTableWidgetItem(QString("%1/%2").arg(session.incomingMessages).arg(session.outgoingMessages));
