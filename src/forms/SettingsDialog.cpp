@@ -2,6 +2,7 @@
 #include <obs-frontend-api.h>
 #include <QtWidgets/QMessageBox>
 #include <QClipboard>
+#include <QDateTime>
 #include <QTime>
 
 #include "SettingsDialog.h"
@@ -77,7 +78,7 @@ void SettingsDialog::FillSessionTable()
 		QTableWidgetItem *addressItem = new QTableWidgetItem(QString::fromStdString(session.remoteAddress));
 		ui->websocketSessionTable->setItem(i, 0, addressItem);
 
-		uint64_t sessionDuration = QDateTime::toTime_t() - session.connectedAt;
+		uint64_t sessionDuration = QDateTime::currentSecsSinceEpoch() - session.connectedAt;
 		QTableWidgetItem *durationItem = new QTableWidgetItem(QTime(0, 0, sessionDuration).toString("hh:mm:ss"));
 		ui->websocketSessionTable->setItem(i, 1, durationItem);
 
