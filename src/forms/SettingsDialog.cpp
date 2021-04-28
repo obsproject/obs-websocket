@@ -14,7 +14,8 @@
 
 SettingsDialog::SettingsDialog(QWidget* parent) :
 	QDialog(parent, Qt::Dialog),
-	ui(new Ui::SettingsDialog)
+	ui(new Ui::SettingsDialog),
+	sessionTableTimer(new QTimer)
 {
 	ui->setupUi(this);
 	ui->websocketSessionTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Fixed);
@@ -25,14 +26,17 @@ SettingsDialog::SettingsDialog(QWidget* parent) :
 		this, &SettingsDialog::EnableAuthenticationCheckBoxChanged);
 	connect(ui->copyPasswordButton, &QPushButton::clicked,
 		this, &SettingsDialog::CopyPasswordButtonClicked);
+	connect(sessionTableTimer, &QTimer::timeout,
+		this, &SettingsDialog::FillSessionTable);
 }
 
 SettingsDialog::~SettingsDialog()
 {
 	delete ui;
+	delete sessionTableTimer;
 }
 
-void SettingsDialog::showEvent(QShowEvent* event)
+void SettingsDialog::showEvent(QShowEvent *event)
 {
 	auto conf = GetConfig();
 	if (!conf) {
@@ -48,6 +52,14 @@ void SettingsDialog::showEvent(QShowEvent* event)
 	ui->serverPasswordLineEdit->setEnabled(conf->AuthRequired);
 
 	FillSessionTable();
+
+	sessionTableTimer->start(1000);
+}
+
+void SettingsDialog::closeEvent(QCloseEvent *event)
+{
+	if (sessionTableTimer->isActive())
+		sessionTableTimer->stop();
 }
 
 void SettingsDialog::ToggleShowHide()
