@@ -40,7 +40,8 @@ WebSocketServer::WebSocketServer() :
 
 WebSocketServer::~WebSocketServer()
 {
-	Stop();
+	if (_server.is_listening())
+		Stop();
 }
 
 void WebSocketServer::ServerRunner()
