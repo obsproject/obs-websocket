@@ -122,7 +122,8 @@ void WebSocketServer::Stop()
 
 void WebSocketServer::InvalidateSession(websocketpp::connection_hdl hdl)
 {
-	;
+	blog(LOG_INFO, "Invalidating a session.");
+	_server.close(hdl, WebSocketCloseCode::SessionInvalidated, "Your session has been invalidated.");
 }
 
 std::vector<WebSocketServer::WebSocketState> WebSocketServer::GetWebSocketSessions()

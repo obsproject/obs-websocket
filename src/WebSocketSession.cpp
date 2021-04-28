@@ -3,95 +3,107 @@
 #include "plugin-macros.generated.h"
 
 WebSocketSession::WebSocketSession() :
-	incomingMessages(0),
-	outgoingMessages(0),
-	rpcVersion(OBS_WEBSOCKET_RPC_VERSION),
-	isIdentified(false),
-	ignoreInvalidMessages(false),
-	ignoreNonFatalRequestChecks(false),
-	eventSubscriptions(0)
+	_incomingMessages(0),
+	_outgoingMessages(0),
+	_encoding(0),
+	_challenge(""),
+	_rpcVersion(OBS_WEBSOCKET_RPC_VERSION),
+	_isIdentified(false),
+	_ignoreInvalidMessages(false),
+	_ignoreNonFatalRequestChecks(false),
+	_eventSubscriptions(0)
 {
+}
+
+uint64_t WebSocketSession::IncomingMessages()
+{
+	return _incomingMessages.load();
+}
+
+void WebSocketSession::IncrementIncomingMessages()
+{
+	_incomingMessages++;
+}
+
+uint64_t WebSocketSession::OutgoingMessages()
+{
+	return _outgoingMessages.load();
+}
+
+void WebSocketSession::IncrementOutgoingMessages()
+{
+	_outgoingMessages++;
+}
+
+uint8_t WebSocketSession::GetEncoding()
+{
+	return _encoding.load();
+}
+
+void WebSocketSession::SetEncoding(uint8_t encoding)
+{
+	_encoding.store(encoding);
 }
 
 std::string WebSocketSession::Challenge()
 {
-	std::lock_guard<std::mutex> lock(challengeMutex);
-	std::string ret(challenge);
+	std::lock_guard<std::mutex> lock(_challengeMutex);
+	std::string ret(_challenge);
 	return ret;
 }
 
 void WebSocketSession::SetChallenge(std::string challengeString)
 {
-	std::lock_guard<std::mutex> lock(challengeMutex);
-	challenge = challengeString;
-}
-
-uint64_t WebSocketSession::IncomingMessages()
-{
-	return incomingMessages.load();
-}
-
-void WebSocketSession::IncrementIncomingMessages()
-{
-	incomingMessages++;
-}
-
-uint64_t WebSocketSession::OutgoingMessages()
-{
-	return outgoingMessages.load();
-}
-
-void WebSocketSession::IncrementOutgoingMessages()
-{
-	outgoingMessages++;
+	std::lock_guard<std::mutex> lock(_challengeMutex);
+	_challenge = challengeString;
 }
 
 uint8_t WebSocketSession::RpcVersion()
 {
-	return rpcVersion.load();
+	return _rpcVersion.load();
 }
 
 void WebSocketSession::SetRpcVersion(uint8_t version)
 {
-	rpcVersion.store(version);
+	_rpcVersion.store(version);
 }
 
 bool WebSocketSession::IsIdentified()
 {
-	return isIdentified.load();
+	return _isIdentified.load();
 }
 
 void WebSocketSession::SetIsIdentified(bool identified)
 {
-	isIdentified.store(identified);
+	_isIdentified.store(identified);
 }
 
 bool WebSocketSession::IgnoreInvalidMessages()
 {
-	return ignoreInvalidMessages.load();
+	return _ignoreInvalidMessages.load();
 }
 
 void WebSocketSession::SetIgnoreInvalidMessages(bool ignore)
 {
-	ignoreInvalidMessages.store(ignore);
+	_ignoreInvalidMessages.store(ignore);
 }
 
 bool WebSocketSession::IgnoreNonFatalRequestChecks()
 {
-	return ignoreNonFatalRequestChecks.load();
+	return _ignoreNonFatalRequestChecks.load();
 }
 
 void WebSocketSession::SetIgnoreNonFatalRequestChecks(bool ignore)
 {
-	ignoreNonFatalRequestChecks.store(ignore);
+	_ignoreNonFatalRequestChecks.store(ignore);
 }
 
 uint64_t WebSocketSession::EventSubscriptions()
 {
-	return eventSubscriptions.load();
+	return _eventSubscriptions.load();
 }
 
 void WebSocketSession::SetEventSubscriptions(uint64_t subscriptions)
 {
-	eventSubscriptions.store(subscriptions);
+	_eventSubscriptions.store(subscriptions);
 }

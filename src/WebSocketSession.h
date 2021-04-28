@@ -9,14 +9,17 @@ class WebSocketSession
 	public:
 		WebSocketSession();
 
-		std::string Challenge();
-		void SetChallenge(std::string challenge);
-
 		uint64_t IncomingMessages();
 		void IncrementIncomingMessages();
 
 		uint64_t OutgoingMessages();
 		void IncrementOutgoingMessages();
+
+		uint8_t GetEncoding();
+		void SetEncoding(uint8_t encoding);
+
+		std::string Challenge();
+		void SetChallenge(std::string challenge);
 
 		uint8_t RpcVersion();
 		void SetRpcVersion(uint8_t version);
@@ -34,13 +37,14 @@ class WebSocketSession
 		void SetEventSubscriptions(uint64_t subscriptions);
 
 	private:
-		std::mutex challengeMutex;
-		std::string challenge;
-		std::atomic<uint64_t> incomingMessages;
-		std::atomic<uint64_t> outgoingMessages;
-		std::atomic<uint8_t> rpcVersion;
-		std::atomic<bool> isIdentified;
-		std::atomic<bool> ignoreInvalidMessages;
-		std::atomic<bool> ignoreNonFatalRequestChecks;
-		std::atomic<uint64_t> eventSubscriptions;
+		std::atomic<uint64_t> _incomingMessages;
+		std::atomic<uint64_t> _outgoingMessages;
+		std::atomic<uint8_t> _encoding;
+		std::mutex _challengeMutex;
+		std::string _challenge;
+		std::atomic<uint8_t> _rpcVersion;
+		std::atomic<bool> _isIdentified;
+		std::atomic<bool> _ignoreInvalidMessages;
+		std::atomic<bool> _ignoreNonFatalRequestChecks;
+		std::atomic<uint64_t> _eventSubscriptions;
 };

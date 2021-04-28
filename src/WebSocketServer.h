@@ -15,7 +15,7 @@ using json = nlohmann::json;
 class WebSocketServer
 {
 	public:
-		enum WebsocketCloseCode: std::uint16_t {
+		enum WebSocketCloseCode: uint16_t {
 			UnknownReason = 4000,
 			// The server was unable to decode the incoming websocket message
 			MessageDecodeError = 4001,
@@ -35,6 +35,11 @@ class WebSocketServer
 			SessionInvalidated = 4008,
 			// The server detected the usage of an old version of the obs-websocket protocol.
 			UnsupportedProtocolVersion = 4009,
+		};
+
+		enum WebSocketEncoding: uint8_t {
+			Json,
+			MsgPack
 		};
 
 		struct WebSocketState {
