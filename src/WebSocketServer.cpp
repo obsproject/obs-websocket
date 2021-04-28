@@ -104,7 +104,18 @@ void WebSocketServer::Stop()
 
 	std::unique_lock<std::mutex> lock(_sessionMutex);
 	for (auto const& [hdl, session] : _sessions) {
-		_server.close(hdl, websocketpp::close::status::going_away, "Server stopping.");
+		websocketpp::lib::error_code errorCode;
+		_server.pause_reading(hdl, errorCode);
+		if (errorCode) {
+			blog(LOG_INFO, "[Stop] Error: %s", errorCode.message().c_str());
+			continue;
+		}
+
+		_server.close(hdl, websocketpp::close::status::going_away, "Server stopping.", errorCode);
+		if (errorCode) {
+			blog(LOG_INFO, "[Stop] Error: %s", errorCode.message().c_str());
+			continue;
+		}
 	}
 	lock.unlock();
 
@@ -125,7 +136,19 @@ void WebSocketServer::Stop()
 void WebSocketServer::InvalidateSession(websocketpp::connection_hdl hdl)
 {
 	blog(LOG_INFO, "[InvalidateSession] Invalidating a session.");
+
+	websocketpp::lib::error_code errorCode;
+	_server.pause_reading(hdl);
+	if (errorCode) {
+		blog(LOG_INFO, "[InvalidateSession] Error: %s", errorCode.message().c_str());
+		return;
+	}
+
 	_server.close(hdl, WebSocketCloseCode::SessionInvalidated, "Your session has been invalidated.");
+	if (errorCode) {
+		blog(LOG_INFO, "[InvalidateSession] Error: %s", errorCode.message().c_str());
+		return;
+	}
 }
 
 std::vector<WebSocketServer::WebSocketSessionState> WebSocketServer::GetWebSocketSessions()
