@@ -50,6 +50,7 @@ void SettingsDialog::showEvent(QShowEvent *event)
 	ui->enableAuthenticationCheckBox->setChecked(conf->AuthRequired);
 	ui->serverPasswordLineEdit->setText(conf->ServerPassword);
 	ui->serverPasswordLineEdit->setEnabled(conf->AuthRequired);
+	ui->serverPortSpinBox->setValue(conf->ServerPort);
 
 	FillSessionTable();
 
@@ -121,13 +122,34 @@ void SettingsDialog::FormAccepted()
 		return;
 	}
 
+	bool needsRestart = false;
+
+	if (conf->ServerEnabled != ui->enableWebSocketServerCheckBox->isChecked()) {
+		needsRestart = true;
+	} else if (conf->AuthRequired != ui->enableAuthenticationCheckBox->isChecked()) {
+		needsRestart = true;
+	} else if (conf->ServerPassword != ui->serverPasswordLineEdit->text()) {
+		needsRestart = true;
+	} else if (conf->ServerPort != ui->serverPortSpinBox->value()) {
+		needsRestart = true;
+	}
+
 	conf->ServerEnabled = ui->enableWebSocketServerCheckBox->isChecked();
 	conf->AlertsEnabled = ui->enableSystemTrayAlertsCheckBox->isChecked();
 	conf->DebugEnabled = ui->enableDebugLoggingCheckBox->isChecked();
 	conf->AuthRequired = ui->enableAuthenticationCheckBox->isChecked();
 	conf->ServerPassword = ui->serverPasswordLineEdit->text();
+	conf->ServerPort = ui->serverPortSpinBox->value();
 
 	conf->Save();
+
+	if (needsRestart) {
+		auto server = GetWebSocketServer();
+		server->Stop();
+		if (conf->ServerEnabled) {
+			server->Start();
+		}
+	}
 }
 
 void SettingsDialog::EnableAuthenticationCheckBoxChanged()
