@@ -3,6 +3,7 @@
 #include "plugin-macros.generated.h"
 
 WebSocketSession::WebSocketSession() :
+	_connectedAt(0),
 	_incomingMessages(0),
 	_outgoingMessages(0),
 	_encoding(0),
@@ -13,6 +14,16 @@ WebSocketSession::WebSocketSession() :
 	_ignoreNonFatalRequestChecks(false),
 	_eventSubscriptions(0)
 {
+}
+
+uint64_t WebSocketSession::ConnectedAt()
+{
+	return _connectedAt.load();
+}
+
+void WebSocketSession::SetConnectedAt(uint64_t at);
+{
+	_connectedAt.store(at);
 }
 
 uint64_t WebSocketSession::IncomingMessages()

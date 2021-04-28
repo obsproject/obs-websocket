@@ -9,6 +9,9 @@ class WebSocketSession
 	public:
 		WebSocketSession();
 
+		uint64_t ConnectedAt();
+		void SetConnectedAt(uint64_t at);
+
 		uint64_t IncomingMessages();
 		void IncrementIncomingMessages();
 
@@ -37,6 +40,7 @@ class WebSocketSession
 		void SetEventSubscriptions(uint64_t subscriptions);
 
 	private:
+		std::atomic<uint64_t> _connectedAt;
 		std::atomic<uint64_t> _incomingMessages;
 		std::atomic<uint64_t> _outgoingMessages;
 		std::atomic<uint8_t> _encoding;
