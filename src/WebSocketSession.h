@@ -1,11 +1,16 @@
 #pragma once
 
+#include <mutex>
+#include <string>
 #include <atomic>
 
 class WebSocketSession
 {
 	public:
 		WebSocketSession();
+
+		std::string Challenge();
+		void SetChallenge(std::string challenge);
 
 		uint64_t IncomingMessages();
 		void IncrementIncomingMessages();
@@ -29,6 +34,8 @@ class WebSocketSession
 		void SetEventSubscriptions(uint64_t subscriptions);
 
 	private:
+		std::mutex challengeMutex;
+		std::string challenge;
 		std::atomic<uint64_t> incomingMessages;
 		std::atomic<uint64_t> outgoingMessages;
 		std::atomic<uint8_t> rpcVersion;

@@ -13,6 +13,19 @@ WebSocketSession::WebSocketSession() :
 {
 }
 
+std::string WebSocketSession::Challenge()
+{
+	std::lock_guard<std::mutex> lock(challengeMutex);
+	std::string ret(challenge);
+	return ret;
+}
+
+void WebSocketSession::SetChallenge(std::string challengeString)
+{
+	std::lock_guard<std::mutex> lock(challengeMutex);
+	challenge = challengeString;
+}
+
 uint64_t WebSocketSession::IncomingMessages()
 {
 	return incomingMessages.load();
