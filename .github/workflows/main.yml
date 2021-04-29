@@ -24,8 +24,7 @@ jobs:
       DEPS_BASE_PATH: 'D:\obsdependencies'
       DEPS_PATH_32: 'D:\obsdependencies\win32'
       DEPS_PATH_64: 'D:\obsdependencies\win64'
-      QT_CACHE_VERSION: '3' # Change whenever updating Qt dependency URL, in order to force a cache reset
-      QT_ARCHIVE_FILE: 'Qt_5.15.2.7z'
+      QT_CACHE_VERSION: '4' # Change whenever updating Qt dependency URL, in order to force a cache reset
       QT_BASE_DIR: 'D:\QtDep'
       QTDIR32: 'D:\QtDep\5.15.2\msvc2019'
       QTDIR64: 'D:\QtDep\5.15.2\msvc2019_64'
@@ -39,19 +38,17 @@ jobs:
         id: qtcache
         uses: actions/cache@v2
         with:
-          path: ${{ env.QT_BASE_DIR }}\${{ env.QT_ARCHIVE_FILE }}
+          path: ${{ env.QT_BASE_DIR }}\**
           key: 'qtdep-${{ env.QT_CACHE_VERSION }} | ${{ runner.os }}'
           restore-keys: |
             qtdep-${{ env.QT_CACHE_VERSION }} | ${{ runner.os }}
-      - name: 'Download Qt'
+      - name: 'Download and Extract Qt'
         if: steps.qtcache.outputs.cache-hit != 'true'
         run: |
           mkdir ${{ env.QT_BASE_DIR }}
-          cd ${{ env.QT_BASE_DIR }}
-          curl -kLO https://tt2468.net/dl/${{ env.QT_ARCHIVE_FILE }} -f --retry 5 -C -
-      - name: 'Extract Qt'
-        run: |
-          7z x ${{ env.QT_BASE_DIR }}\${{ env.QT_ARCHIVE_FILE }} -o${{ env.QT_BASE_DIR }}
+          cd D:\
+          curl -kLO https://tt2468.net/dl/Qt_5.15.2.7z -f --retry 5 -C -
+          7z x Qt_5.15.2.7z -o${{ env.QT_BASE_DIR }}
           dir ${{ env.QT_BASE_DIR }}
       - name: 'Restore cached OBS Studio dependencies'
         id: obscache
@@ -68,3 +65,4 @@ jobs:
           cd D:\
           curl -o dependencies.zip -kLO https://cdn-fastly.obsproject.com/downloads/dependencies2019.zip -f --retry 5 -C -
           7z x dependencies.zip -o${{ env.DEPS_BASE_PATH }}
+          dir ${{ env.DEPS_BASE_PATH }}
