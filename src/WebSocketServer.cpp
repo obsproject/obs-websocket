@@ -218,19 +218,20 @@ void WebSocketServer::BroadcastEvent(uint64_t requiredIntent, std::string eventT
 			if (!it.second.IsIdentified())
 				continue;
 			if ((it.second.EventSubscriptions() & requiredIntent) != 0) {
+				websocketpp::lib::error_code errorCode;
 				switch (it.second.Encoding()) {
 					case WebSocketEncoding::Json:
 						if (messageJson.empty()) {
 							messageJson = eventMessage.dump();
 						}
-						_server.send((websocketpp::connection_hdl)it.first, messageJson, websocketpp::frame::opcode::text);
+						_server.send((websocketpp::connection_hdl)it.first, messageJson, websocketpp::frame::opcode::text, errorCode);
 						break;
 					case WebSocketEncoding::MsgPack:
 						if (messageMsgPack.empty()) {
 							auto msgPackData = json::to_msgpack(eventMessage);
 							messageMsgPack = std::string(msgPackData.begin(), msgPackData.end());
 						}
-						_server.send((websocketpp::connection_hdl)it.first, messageMsgPack, websocketpp::frame::opcode::binary);
+						_server.send((websocketpp::connection_hdl)it.first, messageMsgPack, websocketpp::frame::opcode::binary, errorCode);
 						break;
 				}
 			}
