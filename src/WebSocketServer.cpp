@@ -187,7 +187,8 @@ std::vector<WebSocketServer::WebSocketSessionState> WebSocketServer::GetWebSocke
 
 std::string WebSocketServer::GetConnectUrl()
 {
-	return "";
+	QString ret = QString("ws://%1:%2").arg(QString::fromStdString(Utils::Platform::GetLocalAddress())).arg(_serverPort);
+	return ret.toStdString();
 }
 
 void WebSocketServer::BroadcastEvent(uint64_t requiredIntent, std::string eventType, json eventData)
