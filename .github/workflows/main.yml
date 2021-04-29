@@ -19,7 +19,7 @@ jobs:
     runs-on: [windows-latest]
     if: contains(github.event.head_commit.message, '[skip ci]') != true
     env:
-      QT_CACHE_VERSION: '1' # Change whenever updating OBS dependencies URL, in order to force a cache reset
+      QT_CACHE_VERSION: '2' # Change whenever updating OBS dependencies URL, in order to force a cache reset
       QT_VERSION: '5.15.2'
       WINDOWS_DEPS_CACHE_VERSION: '1' # Change whenever updating Qt dependency URL, in order to force a cache reset
       WINDOWS_DEPS_VERSION: '2019'
@@ -65,14 +65,16 @@ jobs:
         id: qtcache
         uses: actions/cache@v2
         with:
-          path: ${{ github.workspace }}\cmbuild\QT\**
+          path: Qt_${{ env.QT_VERSION }}.7z
           key: 'qtdep-${{ env.QT_CACHE_VERSION }} | ${{ runner.os }}'
           restore-keys: |
             qtdep-${{ env.QT_CACHE_VERSION }} | ${{ runner.os }}
-      - name: 'Install Prerequisite: QT'
+      - name: 'Download Prerequisite: Qt'
         if: steps.qtcache.outputs.cache-hit != 'true'
         run: |
           curl -kLO https://tt2468.net/dl/Qt_${{ env.QT_VERSION }}.7z -f --retry 5 -C -
+      - name: 'Extract Prerequisite: Qt'
+        run: |
           7z x Qt_${{ env.QT_VERSION }}.7z -o"${{ github.workspace }}\cmbuild\QT"
       - name: 'Restore Cached OBS-Studio Dependencies'
         id: obscache
@@ -324,5 +326,5 @@ jobs:
         if: success()
         uses: actions/upload-artifact@v2-preview
         with:
-          name: '${{ env.GIT_HASH }}-linux'
+          name: '${{ env.GIT_HASH }}-Ubuntu64'
           path: '${{ github.workspace }}/obs-websocket/package/*.deb'
