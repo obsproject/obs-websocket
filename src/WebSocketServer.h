@@ -35,6 +35,8 @@ class WebSocketServer
 			SessionInvalidated = 4008,
 			// The server detected the usage of an old version of the obs-websocket protocol.
 			UnsupportedProtocolVersion = 4009,
+			// The requested `Content-Type` specified in the request HTTP header is invalid.
+			InvalidContentType = 4010,
 		};
 
 		enum WebSocketEncoding: uint8_t {

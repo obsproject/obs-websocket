@@ -45,16 +45,16 @@ These steps should be followed precisely. Failure to connect to the server as in
   - HTTP request headers can be used to set the websocket communication type. The default format is JSON. Example headers:
     - `Content-Type: application/json`
     - `Content-Type: application/msgpack` *Not currently planned for v5.0.0*
-  - If an invalid `Content-Type` is specified, the connection will be closed.
+  - If an invalid `Content-Type` is specified, the connection will be closed with `WebSocketCloseCode::InvalidContentType` after upgrade (but before `Hello`).
 
 - Once the connection is upgraded, the websocket server will immediately send a [`Hello`](#hello) message to the client.
 
 - The client listens for the `Hello` and responds with an [`Identify`](#identify) containing all appropriate session parameters.
 
 - The server receives and processes the `Identify`.
-  - If authentication is required and the `Identify` does not contain an `authentication` string, or the string is not correct, the connection is dropped with `WebsocketCloseCode::AuthenticationFailed`
-  - If the client has requested an `rpcVersion` which the server cannot use, the connection is dropped with `WebsocketCloseCode::UnsupportedProtocolVersion`
-  - If any other parameters are malformed (invalid type, etc), the connection is dropped with `WebsocketCloseCode::InvalidIdentifyParameter`
+  - If authentication is required and the `Identify` does not contain an `authentication` string, or the string is not correct, the connection is dropped with `WebSocketCloseCode::AuthenticationFailed`
+  - If the client has requested an `rpcVersion` which the server cannot use, the connection is dropped with `WebSocketCloseCode::UnsupportedProtocolVersion`
+  - If any other parameters are malformed (invalid type, etc), the connection is dropped with `WebSocketCloseCode::InvalidIdentifyParameter`
 
 - Once identification is processed on the server, the server responds to the client with an [`Identified`](#identified).
 
@@ -63,9 +63,9 @@ These steps should be followed precisely. Failure to connect to the server as in
 - At any time after a client has been identified, it may send a `Reidentify` message to update certain allowed session parameters. The server will respond in the same way it does during initial identification.
 
 #### Connection Notes
-- The obs-websocket server listens for any messages containing a `request-type` field in the first level JSON from unidentified clients. If a message matches, the connection is dropped with `WebsocketCloseCode::UnsupportedProtocolVersion`.
-- If a message with a `messageType` is not recognized to the obs-websocket server, the connection is dropped with `WebsocketCloseCode::UnknownMessageType`.
-- At no point may the client send any message other than a single `Identify` before it has received an `Identified`. Breaking this rule will result in the connection being dropped by the server with `WebsocketCloseCode::NotIdentified`.
+- The obs-websocket server listens for any messages containing a `request-type` field in the first level JSON from unidentified clients. If a message matches, the connection is dropped with `WebSocketCloseCode::UnsupportedProtocolVersion`.
+- If a message with a `messageType` is not recognized to the obs-websocket server, the connection is dropped with `WebSocketCloseCode::UnknownMessageType`.
+- At no point may the client send any message other than a single `Identify` before it has received an `Identified`. Breaking this rule will result in the connection being dropped by the server with `WebSocketCloseCode::NotIdentified`.
 - The `Hello` object contains an `rpcVersion` field, which is the latest RPC version that the server supports.
   - If the server's version is is older than the client's, the client is allowed the capability to support older RPC versions. The client determines which RPC version it hopes to communicate on, and sends it via the `rpcVersion` field in the `Identify`.
   - If the server's version is newer than the client's, the client sends its highest supported version in its `Identify` in hopes that the server is backwards compatible to that version.
@@ -101,7 +101,7 @@ These are the enumeration definitions for various codes used by obs-websocket.
 
 #### RequestStatus Enum
 ```cpp
-enum RequestStatus: std::uint16_t {
+enum RequestStatus: uint16_t {
 	Unknown = 0,
 
 	// For internal use to signify a successful parameter check
@@ -215,9 +215,9 @@ enum RequestStatus: std::uint16_t {
 };
 ```
 
-#### WebsocketCloseCode Enum
+#### WebSocketCloseCode Enum
 ```cpp
-enum WebsocketCloseCode: std::uint16_t {
+enum WebSocketCloseCode: uint16_t {
 	UnknownReason = 4000,
 
 	// The server was unable to decode the incoming websocket message
@@ -238,6 +238,8 @@ enum WebsocketCloseCode: std::uint16_t {
 	SessionInvalidated = 4008,
 	// The server detected the usage of an old version of the obs-websocket protocol.
 	UnsupportedProtocolVersion = 4009,
+    // The requested `Content-Type` is invalid.
+    InvalidContentType = 4010,
 };
 ```
 
@@ -317,11 +319,11 @@ Authentication is not required
 }
 ```
 - `rpcVersion` is the version number that the client would like the obs-websocket server to use.
-- When `ignoreInvalidMessages` is true, the socket will not be closed for `WebsocketCloseCode` `MessageDecodeError`, `UnknownMessageType`, or `RequestMissingRequestId`. Instead, the message will be logged and dropped.
+- When `ignoreInvalidMessages` is true, the socket will not be closed for `WebSocketCloseCode` `MessageDecodeError`, `UnknownMessageType`, or `RequestMissingRequestId`. Instead, the message will be logged and dropped.
 - When `ignoreNonFatalRequestChecks` is true, requests will ignore checks which are not critical to the function of the request. Eg calling `DeleteScene` when the target scene does not exist would still return `RequestStatus::Success` if this flag is enabled.
 - When `eventWhitelist` is specified, only the specified events will be sent to the client.
 - When `eventBlacklist` is specified, all events except those specified will be sent to the client.
-- Only `eventWhitelist` or `eventBlacklist` may be provided. If both are provided, the connection will be closed with `WebsocketCloseCode::InvalidIdentifyParameter`.
+- Only `eventWhitelist` or `eventBlacklist` may be provided. If both are provided, the connection will be closed with `WebSocketCloseCode::InvalidIdentifyParameter`.
 
 **Example Message:**
 ```json
