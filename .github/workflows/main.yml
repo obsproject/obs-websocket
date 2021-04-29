@@ -20,37 +20,36 @@ jobs:
     if: contains(github.event.head_commit.message, '[skip ci]') != true
     env:
       build_config: 'RelWithDebInfo'
-      DEPS_CACHE_VERSION: '1' # Change whenever updating OBS dependencies URL, in order to force a cache reset
-      DEPS_BASE_PATH: '${{ github.workspace }}\obsdependencies'
-      DEPS_PATH_32: '${DEPS_BASE_PATH}\win32'
-      DEPS_PATH_64: '${DEPS_BASE_PATH}\win64'
-      QT_CACHE_VERSION: '1' # Change whenever updating Qt dependency URL, in order to force a cache reset
+      DEPS_CACHE_VERSION: '2' # Change whenever updating OBS dependencies URL, in order to force a cache reset
+      DEPS_BASE_PATH: 'D:\obsdependencies'
+      DEPS_PATH_32: 'D:\obsdependencies\win32'
+      DEPS_PATH_64: 'D:\obsdependencies\win64'
+      QT_CACHE_VERSION: '2' # Change whenever updating Qt dependency URL, in order to force a cache reset
       QT_ARCHIVE_FILE: 'Qt_5.15.2.7z'
-      QT_BASE_DIR: '${{ github.workspace }}\QtDep'
-      QTDIR32: '${QT_BASE_DIR}\5.15.2\msvc2019'
-      QTDIR64: '${QT_BASE_DIR}\5.15.2\msvc2019_64'
-      OBS_PATH: '${{ github.workspace }}\obs-studio'
+      QT_BASE_DIR: 'D:\QtDep'
+      QTDIR32: 'D:\QtDep\5.15.2\msvc2019'
+      QTDIR64: 'D:\QtDep\5.15.2\msvc2019_64'
+      OBS_PATH: 'D:\obs-studio'
     steps:
       - name: 'Checkout'
         uses: actions/checkout@v2
         with:
-          path: ${{ github.workspace }}/obs-websocket
           submodules: 'recursive'
       - name: 'Restore cached Qt archive file'
         id: qtcache
         uses: actions/cache@v2
         with:
-          path: ${QT_BASE_DIR}\${QT_ARCHIVE_FILE}
+          path: ${{ env.QT_BASE_DIR }}\${{ env.QT_ARCHIVE_FILE }}
           key: 'qtdep-${{ env.QT_CACHE_VERSION }} | ${{ runner.os }}'
           restore-keys: |
             qtdep-${{ env.QT_CACHE_VERSION }} | ${{ runner.os }}
       - name: 'Download Qt'
-        if: steps.cache.outputs.cache-hit != 'true'
-        working-directory: ${QT_BASE_DIR}
+        if: steps.qtcache.outputs.cache-hit != 'true'
+        working-directory: ${{ env.QT_BASE_DIR }}
         run: |
           curl -kLO https://tt2468.net/dl/${{ env.QT_ARCHIVE_FILE }} -f --retry 5 -C -
       - name: 'Extract Qt'
         working-directory: ${QT_BASE_DIR}
         run: |
-          7z x ${{ env.QT_ARCHIVE_FILE }} -o%QT_BASE_DIR%
-          dir %QT_BASE_DIR%
+          7z x ${{ env.QT_ARCHIVE_FILE }} -o ${{ env.QT_BASE_DIR }}
+          dir ${{ env.QT_BASE_DIR }}
