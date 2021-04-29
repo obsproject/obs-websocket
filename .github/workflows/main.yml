@@ -142,7 +142,7 @@ jobs:
           mkdir package
           cd package
           7z a "${{ env.WIN_FILENAME }}.zip"  "..\release\*"
-          iscc ..\installer\installer.iss /O. /F"${{ env.WIN_FILENAME }}-Installer"
+          iscc ..\installer\installer-windows.generated.iss /O. /F"${{ env.WIN_FILENAME }}-Installer"
       - name: 'Publish ${{ env.WIN_FILENAME }}.zip'
         if: success()
         uses: actions/upload-artifact@v2-preview
