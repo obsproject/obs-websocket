@@ -53,3 +53,18 @@ jobs:
         run: |
           7z x ${{ env.QT_BASE_DIR }}\${{ env.QT_ARCHIVE_FILE }} -o${{ env.QT_BASE_DIR }}
           dir ${{ env.QT_BASE_DIR }}
+      - name: 'Restore cached OBS Studio dependencies'
+        id: obscache
+        uses: actions/cache@v2
+        with:
+          path: ${{ env.DEPS_BASE_PATH }}\**
+          key: 'obsdep-${{ env.DEPS_CACHE_VERSION }} | ${{ runner.os }}'
+          restore-keys: |
+            obsdep-${{ env.DEPS_CACHE_VERSION }} | ${{ runner.os }}
+      - name: 'Download and Extract deps'
+        if: steps.obscache.outputs.cache-hit != 'true'
+        run: |
+          mkdir ${{ env.DEPS_BASE_PATH }}
+          cd D:\
+          curl -o dependencies.zip -kLO https://cdn-fastly.obsproject.com/downloads/dependencies2019.zip -f --retry 5 -C -
+          7z x dependencies.zip -o${{ env.DEPS_BASE_PATH }}
