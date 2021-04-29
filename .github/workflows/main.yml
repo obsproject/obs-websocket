@@ -256,7 +256,12 @@ jobs:
            python3-dev \
            qtbase5-dev \
            libqt5svg5-dev \
-           swig
+           swig \
+           libxcb-randr0-dev \
+           libxcb-xfixes0-dev \
+           libx11-xcb-dev \
+           libxcb1-dev \
+           libxss-dev \
       - name: 'Configure OBS-Studio'
         working-directory: ${{ github.workspace }}/obs-studio
         shell: bash
