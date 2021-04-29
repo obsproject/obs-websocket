@@ -42,9 +42,9 @@ jobs:
         working-directory: ${{ github.workspace }}/obs-studio
         run: |
           git fetch --prune --unshallow
-          echo ::set-env name=OBS_GIT_BRANCH::$(git rev-parse --abbrev-ref HEAD)
-          echo ::set-env name=OBS_GIT_HASH::$(git rev-parse --short HEAD)
-          echo ::set-env name=OBS_GIT_TAG::$(git describe --tags --abbrev=0)
+          echo "OBS_GIT_BRANCH=$(git rev-parse --abbrev-ref HEAD)" >> $GITHUB_ENV
+          echo "OBS_GIT_HASH=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+          echo "OBS_GIT_TAG=$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
       - name: 'Checkout last OBS-Studio release (${{ env.OBS_GIT_TAG }})'
         shell: bash
         working-directory: ${{ github.workspace }}/obs-studio
@@ -56,9 +56,9 @@ jobs:
         working-directory: ${{ github.workspace }}/obs-websocket
         run: |
           git fetch --prune --unshallow
-          echo ::set-env name=GIT_BRANCH::${{ github.event.pull_request.head.ref }}
-          echo ::set-env name=GIT_HASH::$(git rev-parse --short HEAD)
-          echo ::set-env name=GIT_TAG::$(git describe --tags --abbrev=0)
+          echo "GIT_BRANCH=${{ github.event.pull_request.head.ref }}" >> $GITHUB_ENV
+          echo "GIT_HASH=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+          echo "GIT_TAG=$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
       - name: 'Install prerequisite: QT'
         run: |
           curl -kLO https://tt2468.net/dl/Qt_${{ env.QT_VERSION }}.7z -f --retry 5 -C -
@@ -135,7 +135,7 @@ jobs:
         shell: bash
         run: |
           FILENAME="obs-websocket-${{ env.GIT_HASH }}-Windows"
-          echo "::set-env name=FILENAME::$FILENAME"
+          echo "FILENAME=$FILENAME" >> $GITHUB_ENV
       - name: 'Package obs-websocket'
         working-directory: ${{ github.workspace }}/obs-websocket
         run: |
