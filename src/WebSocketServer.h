@@ -2,6 +2,7 @@
 
 #include <QObject>
 #include <QThreadPool>
+#include <QString>
 #include <mutex>
 
 #include <nlohmann/json.hpp>
@@ -71,7 +72,7 @@ class WebSocketServer : QObject
 			return &_threadPool;
 		}
 
-		std::string GetConnectUrl();
+		QString GetConnectString();
 
 	public Q_SLOTS:
 		void BroadcastEvent(uint64_t requiredIntent, std::string eventType, json eventData = nullptr);
@@ -94,6 +95,7 @@ class WebSocketServer : QObject
 		std::mutex _sessionMutex;
 		std::map<websocketpp::connection_hdl, WebSocketSession, std::owner_less<websocketpp::connection_hdl>> _sessions;
 		uint16_t _serverPort;
+		QString _serverPassword;
 		bool _debugEnabled;
 		bool _authenticationRequired;
 		std::string _authenticationSecret;

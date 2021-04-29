@@ -79,6 +79,7 @@ void WebSocketServer::Start()
 	}
 
 	_serverPort = conf->ServerPort;
+	_serverPassword = conf->ServerPassword;
 	_debugEnabled = conf->DebugEnabled;
 	_authenticationRequired = conf->AuthRequired;
 	_authenticationSalt = Utils::Crypto::GenerateSalt();
@@ -187,10 +188,14 @@ std::vector<WebSocketServer::WebSocketSessionState> WebSocketServer::GetWebSocke
 	return webSocketSessions;
 }
 
-std::string WebSocketServer::GetConnectUrl()
+QString WebSocketServer::GetConnectString()
 {
-	QString ret = QString("ws://%1:%2").arg(QString::fromStdString(Utils::Platform::GetLocalAddress())).arg(_serverPort);
-	return ret.toStdString();
+	QString ret;
+	if (_authenticationRequired)
+		ret = QString("obswebsocket|%1:%2|%3").arg(QString::fromStdString(Utils::Platform::GetLocalAddress())).arg(_serverPort).arg(_serverPassword);
+	else
+		ret = QString("obswebsocket|%1:%2").arg(QString::fromStdString(Utils::Platform::GetLocalAddress())).arg(_serverPort);
+	return ret;
 }
 
 void WebSocketServer::BroadcastEvent(uint64_t requiredIntent, std::string eventType, json eventData)
@@ -207,6 +212,7 @@ void WebSocketServer::BroadcastEvent(uint64_t requiredIntent, std::string eventT
 		std::string messageJson;
 		std::string messageMsgPack;
 
+		// Recurse connected sessions and send the event to suitable sessions.
 		std::unique_lock<std::mutex> lock(_sessionMutex);
 		for (auto & it : _sessions) {
 			if (!it.second.IsIdentified())
