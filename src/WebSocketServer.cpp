@@ -194,7 +194,35 @@ std::string WebSocketServer::GetConnectUrl()
 
 void WebSocketServer::BroadcastEvent(uint64_t requiredIntent, std::string eventType, json eventData)
 {
-	;
+	QtConcurrent::run(&_threadPool, [=]() {
+		json eventMessage;
+		eventMessage["messageType"] = "Event";
+		eventMessage["eventType"] = eventType;
+		if (eventData.is_object())
+			eventMessage["eventData"] = eventData;
+
+		// I hate to have to encode all supported types, but it's more efficient at scale than doing it per-session.
+		std::string messageJson = eventMessage.dump();
+		auto messageMsgPack = json::to_msgpack(eventMessage);
+		std::string messageMsgPackString(messageMsgPack.begin(), messageMsgPack.end());
+
+		std::unique_lock<std::mutex> lock(_sessionMutex);
+		for (auto & it : _sessions) {
+			if (!it.second.IsIdentified())
+				continue;
+			if ((it.second.EventSubscriptions() & requiredIntent) != 0) {
+				switch (it.second.Encoding()) {
+					case WebSocketEncoding::Json:
+						_server.send((websocketpp::connection_hdl)it.first, messageJson, websocketpp::frame::opcode::text);
+						break;
+					case WebSocketEncoding::MsgPack:
+						_server.send((websocketpp::connection_hdl)it.first, messageMsgPackString, websocketpp::frame::opcode::binary);
+						break;
+				}
+			}
+		}
+		lock.unlock();
+	});
 }
 
 void WebSocketServer::onOpen(websocketpp::connection_hdl hdl)
