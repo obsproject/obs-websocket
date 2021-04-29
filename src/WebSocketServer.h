@@ -76,6 +76,11 @@ class WebSocketServer : QObject
 	public Q_SLOTS:
 		void BroadcastEvent(uint64_t requiredIntent, std::string eventType, json eventData = nullptr);
 
+	signals:
+		void ClientIdentified(const WebSocketSessionState state);
+		void ClientDisconnected(const WebSocketSessionState state, const uint16_t closeCode);
+		void IdentifiedClientDisconnected(const WebSocketSessionState state, const uint16_t closeCode);
+
 	private:
 		void ServerRunner();
 

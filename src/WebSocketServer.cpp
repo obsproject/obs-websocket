@@ -196,16 +196,16 @@ std::string WebSocketServer::GetConnectUrl()
 void WebSocketServer::BroadcastEvent(uint64_t requiredIntent, std::string eventType, json eventData)
 {
 	QtConcurrent::run(&_threadPool, [=]() {
+		// Populate message object
 		json eventMessage;
 		eventMessage["messageType"] = "Event";
 		eventMessage["eventType"] = eventType;
 		if (eventData.is_object())
 			eventMessage["eventData"] = eventData;
 
-		// I hate to have to encode all supported types, but it's more efficient at scale than doing it per-session.
-		std::string messageJson = eventMessage.dump();
-		auto messageMsgPack = json::to_msgpack(eventMessage);
-		std::string messageMsgPackString(messageMsgPack.begin(), messageMsgPack.end());
+		// Initialize objects. The broadcast process only dumps the data when its needed.
+		std::string messageJson;
+		std::string messageMsgPack;
 
 		std::unique_lock<std::mutex> lock(_sessionMutex);
 		for (auto & it : _sessions) {
@@ -214,10 +214,17 @@ void WebSocketServer::BroadcastEvent(uint64_t requiredIntent, std::string eventT
 			if ((it.second.EventSubscriptions() & requiredIntent) != 0) {
 				switch (it.second.Encoding()) {
 					case WebSocketEncoding::Json:
+						if (messageJson.empty()) {
+							messageJson = eventMessage.dump();
+						}
 						_server.send((websocketpp::connection_hdl)it.first, messageJson, websocketpp::frame::opcode::text);
 						break;
 					case WebSocketEncoding::MsgPack:
-						_server.send((websocketpp::connection_hdl)it.first, messageMsgPackString, websocketpp::frame::opcode::binary);
+						if (messageMsgPack.empty()) {
+							auto msgPackData = json::to_msgpack(eventMessage);
+							messageMsgPack = std::string(msgPackData.begin(), msgPackData.end());
+						}
+						_server.send((websocketpp::connection_hdl)it.first, messageMsgPack, websocketpp::frame::opcode::binary);
 						break;
 				}
 			}
@@ -278,9 +285,28 @@ void WebSocketServer::onClose(websocketpp::connection_hdl hdl)
 {
 	auto conn = _server.get_con_from_hdl(hdl);
 
+	// Get info from the session and then delete it
 	std::unique_lock<std::mutex> lock(_sessionMutex);
+	auto &session = _sessions[hdl];
+	bool isIdentified = session.IsIdentified();
+	uint64_t connectedAt = session.ConnectedAt();
+	uint64_t incomingMessages = session.IncomingMessages();
+	uint64_t outgoingMessages = session.OutgoingMessages();
+	std::string remoteAddress = session.RemoteAddress();
 	_sessions.erase(hdl);
 	lock.unlock();
+
+	// Build SessionState object for signal
+	WebSocketSessionState state;
+	state.remoteAddress = remoteAddress;
+	state.connectedAt = connectedAt;
+	state.incomingMessages = incomingMessages;
+	state.outgoingMessages = outgoingMessages;
+
+	// Emit signals
+	emit ClientDisconnected(state, conn->get_local_close_code());
+	if (isIdentified)
+		emit IdentifiedClientDisconnected(state, conn->get_local_close_code());
 }
 
 void WebSocketServer::onMessage(websocketpp::connection_hdl hdl, websocketpp::server<websocketpp::config::asio>::message_ptr message)
