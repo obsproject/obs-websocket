@@ -90,7 +90,7 @@ void WebSocketServer::Start()
 		_server.get_alog().set_channels(websocketpp::log::alevel::all);
 		_server.get_alog().clear_channels(websocketpp::log::alevel::frame_header | websocketpp::log::alevel::frame_payload | websocketpp::log::alevel::control);
 		_server.get_elog().set_channels(websocketpp::log::elevel::all);
-		_server.get_alog().clear_channels(websocketpp::log::elevel::info);
+		_server.get_alog().clear_channels(websocketpp::log::elevel::devel | websocketpp::log::elevel::library);
 	} else {
 		_server.get_alog().clear_channels(websocketpp::log::alevel::all);
 		_server.get_elog().clear_channels(websocketpp::log::elevel::all);
@@ -340,14 +340,14 @@ void WebSocketServer::onMessage(websocketpp::connection_hdl hdl, websocketpp::se
 		// Check for invalid opcode and decode
 		websocketpp::lib::error_code errorCode;
 		if (session.Encoding() == WebSocketEncoding::Json) {
-			if (opcode != websocketpp::frame::opcode::binary) {
+			if (opcode != websocketpp::frame::opcode::text) {
 				if (!session.IgnoreInvalidMessages()) {
 					_server.close(hdl, WebSocketCloseCode::MessageDecodeError, "The session encoding is set to Json, but the client sent a binary message.", errorCode);
 				}
 				return;
 			}
 			try {
-				incomingMessage = json::from_msgpack(payload);
+				incomingMessage = json::parse(payload);
 			} catch (json::parse_error& e) {
 				if (!session.IgnoreInvalidMessages()) {
 					_server.close(hdl, WebSocketCloseCode::MessageDecodeError, std::string("Unable to decode Json: ") + e.what(), errorCode);
@@ -355,14 +355,14 @@ void WebSocketServer::onMessage(websocketpp::connection_hdl hdl, websocketpp::se
 				return;
 			}
 		} else if (session.Encoding() == WebSocketEncoding::MsgPack) {
-			if (opcode != websocketpp::frame::opcode::text) {
+			if (opcode != websocketpp::frame::opcode::binary) {
 				if (!session.IgnoreInvalidMessages()) {
 					_server.close(hdl, WebSocketCloseCode::MessageDecodeError, "The session encoding is set to MsgPack, but the client sent a text message.", errorCode);
 				}
 				return;
 			}
 			try {
-				incomingMessage = json::parse(payload);
+				incomingMessage = json::from_msgpack(payload);
 			} catch (json::parse_error& e) {
 				if (!session.IgnoreInvalidMessages()) {
 					_server.close(hdl, WebSocketCloseCode::MessageDecodeError, std::string("Unable to decode MsgPack: ") + e.what(), errorCode);
