@@ -12,8 +12,10 @@
 
 using json = nlohmann::json;
 
-class WebSocketServer
+class WebSocketServer : QObject
 {
+	Q_OBJECT
+
 	public:
 		enum WebSocketCloseCode: uint16_t {
 			UnknownReason = 4000,
@@ -71,11 +73,11 @@ class WebSocketServer
 
 		std::string GetConnectUrl();
 
+	public Q_SLOTS:
 		void BroadcastEvent(uint64_t requiredIntent, std::string eventType, json eventData = nullptr);
 
 	private:
 		void ServerRunner();
-		WebSocketSession *GetWebSocketSession(websocketpp::connection_hdl hdl);
 
 		void onOpen(websocketpp::connection_hdl hdl);
 		void onClose(websocketpp::connection_hdl hdl);

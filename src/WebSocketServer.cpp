@@ -13,6 +13,7 @@
 #include "plugin-macros.generated.h"
 
 WebSocketServer::WebSocketServer() :
+	QObject(nullptr),
 	_sessions()
 {
 	// Randomize the random number generator
@@ -194,11 +195,6 @@ std::string WebSocketServer::GetConnectUrl()
 void WebSocketServer::BroadcastEvent(uint64_t requiredIntent, std::string eventType, json eventData)
 {
 	;
-}
-
-WebSocketSession *WebSocketServer::GetWebSocketSession(websocketpp::connection_hdl hdl)
-{
-	return new WebSocketSession();
 }
 
 void WebSocketServer::onOpen(websocketpp::connection_hdl hdl)
