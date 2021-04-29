@@ -79,12 +79,13 @@ void WebSocketServer::Start()
 	}
 
 	_serverPort = conf->ServerPort;
+	_debugEnabled = conf->DebugEnabled;
 	_authenticationRequired = conf->AuthRequired;
 	_authenticationSalt = Utils::Crypto::GenerateSalt();
 	_authenticationSecret = Utils::Crypto::GenerateSecret(conf->ServerPassword.toStdString(), _authenticationSalt);
 
 	// Set log levels if debug is enabled
-	if (conf->DebugEnabled) {
+	if (_debugEnabled) {
 		_server.get_alog().set_channels(websocketpp::log::alevel::all);
 		_server.get_alog().clear_channels(websocketpp::log::alevel::frame_header | websocketpp::log::alevel::frame_payload | websocketpp::log::alevel::control);
 		_server.get_elog().set_channels(websocketpp::log::elevel::all);

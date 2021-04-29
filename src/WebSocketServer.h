@@ -89,6 +89,7 @@ class WebSocketServer : QObject
 		std::mutex _sessionMutex;
 		std::map<websocketpp::connection_hdl, WebSocketSession, std::owner_less<websocketpp::connection_hdl>> _sessions;
 		uint16_t _serverPort;
+		bool _debugEnabled;
 		bool _authenticationRequired;
 		std::string _authenticationSecret;
 		std::string _authenticationSalt;
