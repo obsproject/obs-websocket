@@ -50,7 +50,7 @@ jobs:
           cd ${{ env.QT_BASE_DIR }}
           curl -kLO https://tt2468.net/dl/${{ env.QT_ARCHIVE_FILE }} -f --retry 5 -C -
       - name: 'Extract Qt'
-        working-directory: ${QT_BASE_DIR}
         run: |
+          cd ${{ env.QT_BASE_DIR }}
           7z x ${{ env.QT_ARCHIVE_FILE }} -o ${{ env.QT_BASE_DIR }}
           dir ${{ env.QT_BASE_DIR }}
