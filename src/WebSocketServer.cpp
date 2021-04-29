@@ -78,6 +78,7 @@ void WebSocketServer::Start()
 	}
 
 	_serverPort = conf->ServerPort;
+	_authenticationRequired = conf->AuthRequired;
 	_authenticationSalt = Utils::Crypto::GenerateSalt();
 	_authenticationSecret = Utils::Crypto::GenerateSecret(conf->ServerPassword.toStdString(), _authenticationSalt);
 
@@ -204,9 +205,43 @@ void WebSocketServer::onOpen(websocketpp::connection_hdl hdl)
 	auto conn = _server.get_con_from_hdl(hdl);
 
 	std::unique_lock<std::mutex> lock(_sessionMutex);
-	_sessions[hdl].SetRemoteAddress(conn->get_remote_endpoint());
-	_sessions[hdl].SetConnectedAt(QDateTime::currentSecsSinceEpoch());
+	auto &session = _sessions[hdl];
 	lock.unlock();
+
+	session.SetRemoteAddress(conn->get_remote_endpoint());
+	session.SetConnectedAt(QDateTime::currentSecsSinceEpoch());
+	std::string contentType = conn->get_request_header("Content-Type");
+	if (contentType == "") {
+		;
+	} else if (contentType == "application/json") {
+		session.SetEncoding(WebSocketEncoding::Json);
+	} else if (contentType == "application/msgpack") {
+		session.SetEncoding(WebSocketEncoding::MsgPack);
+	} else {
+		conn->close(WebSocketCloseCode::InvalidContentType, "Your HTTP `Content-Type` header specifies an invalid encoding type.");
+		return;
+	}
+
+	json helloMessage;
+	helloMessage["messageType"] = "Hello";
+	helloMessage["obsWebSocketVersion"] = OBS_WEBSOCKET_VERSION;
+	helloMessage["rpcVersion"] = OBS_WEBSOCKET_RPC_VERSION;
+	// todo: Add request and event lists
+	if (_authenticationRequired) {
+		std::string sessionChallenge = Utils::Crypto::GenerateSalt();
+		session.SetChallenge(sessionChallenge);
+		helloMessage["authentication"] = {};
+		helloMessage["authentication"]["challenge"] = sessionChallenge;
+		helloMessage["authentication"]["salt"] = _authenticationSalt;
+	}
+
+	auto sessionEncoding = session.Encoding();
+	if (sessionEncoding == WebSocketEncoding::Json) {
+		conn->send(helloMessage.dump());
+	} else if (sessionEncoding == WebSocketEncoding::MsgPack) {
+		auto message = json::to_msgpack(helloMessage);
+		conn->send(message.data(), sizeof(message[0]) * message.size());
+	}
 }
 
 void WebSocketServer::onClose(websocketpp::connection_hdl hdl)

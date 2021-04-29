@@ -21,7 +21,7 @@ class WebSocketSession
 		uint64_t OutgoingMessages();
 		void IncrementOutgoingMessages();
 
-		uint8_t GetEncoding();
+		uint8_t Encoding();
 		void SetEncoding(uint8_t encoding);
 
 		std::string Challenge();

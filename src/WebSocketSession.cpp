@@ -60,7 +60,7 @@ void WebSocketSession::IncrementOutgoingMessages()
 	_outgoingMessages++;
 }
 
-uint8_t WebSocketSession::GetEncoding()
+uint8_t WebSocketSession::Encoding()
 {
 	return _encoding.load();
 }
