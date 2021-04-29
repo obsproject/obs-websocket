@@ -321,5 +321,49 @@ void WebSocketServer::onClose(websocketpp::connection_hdl hdl)
 
 void WebSocketServer::onMessage(websocketpp::connection_hdl hdl, websocketpp::server<websocketpp::config::asio>::message_ptr message)
 {
-	;
+	auto opcode = message->get_opcode();
+	std::string payload = message->get_payload();
+	QtConcurrent::run(&_threadPool, [=]() {
+		std::unique_lock<std::mutex> lock(_sessionMutex);
+		auto &session = _sessions[hdl];
+		lock.unlock();
+
+		json incomingMessage;
+
+		// Check for invalid opcode and decode
+		websocketpp::lib::error_code errorCode;
+		if (session.Encoding() == WebSocketEncoding::Json) {
+			if (opcode != websocketpp::frame::opcode::binary) {
+				if (!session.IgnoreInvalidMessages()) {
+					_server.close(hdl, WebSocketCloseCode::MessageDecodeError, "The session encoding is set to Json, but the client sent a binary message.", errorCode);
+				}
+				return;
+			}
+			try {
+				incomingMessage = json::from_msgpack(payload);
+			} catch (json::parse_error& e) {
+				if (!session.IgnoreInvalidMessages()) {
+					_server.close(hdl, WebSocketCloseCode::MessageDecodeError, std::string("Unable to decode Json: ") + e.what(), errorCode);
+				}
+				return;
+			}
+		} else if (session.Encoding() == WebSocketEncoding::MsgPack) {
+			if (opcode != websocketpp::frame::opcode::text) {
+				if (!session.IgnoreInvalidMessages()) {
+					_server.close(hdl, WebSocketCloseCode::MessageDecodeError, "The session encoding is set to MsgPack, but the client sent a text message.", errorCode);
+				}
+				return;
+			}
+			try {
+				incomingMessage = json::parse(payload);
+			} catch (json::parse_error& e) {
+				if (!session.IgnoreInvalidMessages()) {
+					_server.close(hdl, WebSocketCloseCode::MessageDecodeError, std::string("Unable to decode Json: ") + e.what(), errorCode);
+				}
+				return;
+			}
+		}
+
+		
+	});
 }
