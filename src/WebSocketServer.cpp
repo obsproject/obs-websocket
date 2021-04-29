@@ -5,9 +5,9 @@
 #include <QTime>
 
 #include "WebSocketServer.h"
+#include "WebSocketProtocol.h"
 #include "obs-websocket.h"
 #include "Config.h"
-#include "requesthandler/RequestHandler.h"
 #include "utils/Utils.h"
 
 #include "plugin-macros.generated.h"
