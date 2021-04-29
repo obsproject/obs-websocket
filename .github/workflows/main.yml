@@ -15,7 +15,7 @@ on:
 
 jobs:
   windows:
-    name: 'Windows 32+64bit'
+    name: 'Windows 32/64-bit'
     runs-on: [windows-latest]
     if: contains(github.event.head_commit.message, '[skip ci]') != true
     env:
@@ -175,3 +175,148 @@ jobs:
         with:
           name: '${{ env.GIT_HASH }}-Windows-Installer'
           path: ${{ github.workspace }}/obs-websocket/package/*.exe
+  ubuntu64:
+    name: "Linux/Ubuntu 64-bit"
+    runs-on: [ubuntu-latest]
+    if: contains(github.event.head_commit.message, '[skip ci]') != true
+    steps:
+      - name: 'Checkout obs-websocket'
+        uses: actions/checkout@v2
+        with:
+          path: ${{ github.workspace }}/obs-websocket
+          submodules: 'recursive'
+      - name: 'Checkout OBS-Studio'
+        uses: actions/checkout@v2
+        with:
+          repository: obsproject/obs-studio
+          path: ${{ github.workspace }}/obs-studio
+          submodules: 'recursive'
+      - name: 'Get OBS-Studio Git Info'
+        shell: bash
+        working-directory: ${{ github.workspace }}/obs-studio
+        run: |
+          git fetch --prune --unshallow
+          echo "OBS_GIT_BRANCH=$(git rev-parse --abbrev-ref HEAD)" >> $GITHUB_ENV
+          echo "OBS_GIT_HASH=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+          echo "OBS_GIT_TAG=$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
+      - name: 'Checkout last OBS-Studio release (${{ env.OBS_GIT_TAG }})'
+        shell: bash
+        working-directory: ${{ github.workspace }}/obs-studio
+        run: |
+          git checkout ${{ env.OBS_GIT_TAG }}
+          git submodule update
+      - name: 'Get obs-websocket git info'
+        working-directory: ${{ github.workspace }}/obs-websocket
+        run: |
+          git fetch --prune --unshallow
+          echo "GIT_BRANCH=${{ github.event.pull_request.head.ref }}" >> $GITHUB_ENV
+          echo "GIT_HASH=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+          echo "GIT_TAG=$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
+      - name: 'Install prerequisites (Apt)'
+        shell: bash
+        run: |
+          sudo dpkg --add-architecture amd64
+          sudo apt-get -qq update
+          sudo apt-get install -y \
+           build-essential \
+           checkinstall \
+           cmake \
+           libasound2-dev \
+           libavcodec-dev \
+           libavdevice-dev \
+           libavfilter-dev \
+           libavformat-dev \
+           libavutil-dev \
+           libcurl4-openssl-dev \
+           libfdk-aac-dev \
+           libfontconfig-dev \
+           libfreetype6-dev \
+           libgl1-mesa-dev \
+           libjack-jackd2-dev \
+           libjansson-dev \
+           libluajit-5.1-dev \
+           libpulse-dev \
+           libqt5x11extras5-dev \
+           libspeexdsp-dev \
+           libswresample-dev \
+           libswscale-dev \
+           libudev-dev \
+           libv4l-dev \
+           libva-dev \
+           libvlc-dev \
+           libx11-dev \
+           libx264-dev \
+           libxcb-randr0-dev \
+           libxcb-shm0-dev \
+           libxcb-xinerama0-dev \
+           libxcomposite-dev \
+           libxinerama-dev \
+           libmbedtls-dev \
+           pkg-config \
+           python3-dev \
+           qtbase5-dev \
+           libqt5svg5-dev \
+           swig
+      - name: 'Configure OBS-Studio'
+        working-directory: ${{ github.workspace }}/obs-studio
+        shell: bash
+        run: |
+          mkdir ./build
+          cd ./build
+          cmake -DDISABLE_PLUGINS=YES -DENABLE_SCRIPTING=NO -DUNIX_STRUCTURE=YES -DCMAKE_INSTALL_PREFIX=/usr -DBUILD_BROWSER=OFF ..
+      - name: 'Build OBS-Studio'
+        working-directory: ${{ github.workspace }}/obs-studio
+        shell: bash
+        run: |
+          set -e
+          cd ./build
+          make -j4 libobs obs-frontend-api
+      - name: 'Install OBS-Studio'
+        working-directory: ${{ github.workspace }}/obs-studio
+        shell: bash
+        run: |
+          cd ./build
+          sudo cp ./libobs/libobs.so /usr/lib
+          sudo cp ./UI/obs-frontend-api/libobs-frontend-api.so /usr/lib
+          sudo mkdir -p /usr/include/obs
+          sudo cp ../UI/obs-frontend-api/obs-frontend-api.h /usr/include/obs/obs-frontend-api.h
+      - name: 'Configure obs-websocket'
+        working-directory: ${{ github.workspace }}/obs-websocket
+        shell: bash
+        run: |
+          mkdir ./build
+          cd ./build
+          cmake -DLIBOBS_INCLUDE_DIR=${{ github.workspace }}/obs-studio/libobs -DCMAKE_INSTALL_PREFIX=/usr -DUSE_UBUNTU_FIX=TRUE ..
+      - name: 'Build obs-websocket'
+        working-directory: ${{ github.workspace }}/obs-websocket
+        shell: bash
+        run: |
+          set -e
+          cd ./build
+          make -j4
+      - name: 'Set PR Artifact Filename'
+        shell: bash
+        run: |
+          FILENAME="obs-websocket-1-${{ env.GIT_HASH }}-1_amd64.deb"
+          echo "FILENAME=$FILENAME" >> $GITHUB_ENV
+      - name: 'Package ${{ env.FILENAME }}'
+        if: success()
+        working-directory: ${{ github.workspace }}/obs-websocket
+        shell: bash
+        run: |
+          VERSION="1-${{ env.GIT_HASH }}-git"
+          cd ./build
+          sudo checkinstall -y --type=debian --fstrans=no -nodoc \
+              --backup=no --deldoc=yes --install=no --pkgname=obs-websocket --pkgversion=$VERSION \
+              --pkglicense="GPLv2.0" --maintainer="${{ github.event.pusher.email }}" --pkggroup="video" \
+              --pkgsource="${{ github.event.repository.html_url }}" \
+              --requires="obs-studio,libqt5core5a,libqt5widgets5,libqt5network5,libqt5concurrent5,qt5-image-formats-plugins" \
+              --pakdir="../package"
+          sudo chmod ao+r ../package/*
+          cd -
+      - name: 'Publish ${{ env.FILENAME }}'
+        if: success()
+        uses: actions/upload-artifact@v2-preview
+        with:
+          name: '${{ env.GIT_HASH }}-linux'
+          path: '${{ github.workspace }}/obs-websocket/package/*.deb'
