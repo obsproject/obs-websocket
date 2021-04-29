@@ -20,11 +20,11 @@ jobs:
     if: contains(github.event.head_commit.message, '[skip ci]') != true
     env:
       build_config: 'RelWithDebInfo'
-      DEPS_CACHE_VERSION: '2' # Change whenever updating OBS dependencies URL, in order to force a cache reset
+      DEPS_CACHE_VERSION: '3' # Change whenever updating OBS dependencies URL, in order to force a cache reset
       DEPS_BASE_PATH: 'D:\obsdependencies'
       DEPS_PATH_32: 'D:\obsdependencies\win32'
       DEPS_PATH_64: 'D:\obsdependencies\win64'
-      QT_CACHE_VERSION: '2' # Change whenever updating Qt dependency URL, in order to force a cache reset
+      QT_CACHE_VERSION: '3' # Change whenever updating Qt dependency URL, in order to force a cache reset
       QT_ARCHIVE_FILE: 'Qt_5.15.2.7z'
       QT_BASE_DIR: 'D:\QtDep'
       QTDIR32: 'D:\QtDep\5.15.2\msvc2019'
@@ -45,8 +45,9 @@ jobs:
             qtdep-${{ env.QT_CACHE_VERSION }} | ${{ runner.os }}
       - name: 'Download Qt'
         if: steps.qtcache.outputs.cache-hit != 'true'
-        working-directory: ${{ env.QT_BASE_DIR }}
         run: |
+          mkdir ${{ env.QT_BASE_DIR }}
+          cd ${{ env.QT_BASE_DIR }}
           curl -kLO https://tt2468.net/dl/${{ env.QT_ARCHIVE_FILE }} -f --retry 5 -C -
       - name: 'Extract Qt'
         working-directory: ${QT_BASE_DIR}
