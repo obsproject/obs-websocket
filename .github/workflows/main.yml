@@ -19,25 +19,27 @@ jobs:
     runs-on: [windows-latest]
     if: contains(github.event.head_commit.message, '[skip ci]') != true
     env:
+      QT_CACHE_VERSION: '1' # Change whenever updating OBS dependencies URL, in order to force a cache reset
       QT_VERSION: '5.15.2'
+      WINDOWS_DEPS_CACHE_VERSION: '1' # Change whenever updating Qt dependency URL, in order to force a cache reset
       WINDOWS_DEPS_VERSION: '2019'
       CMAKE_GENERATOR: "Visual Studio 16 2019"
       CMAKE_SYSTEM_VERSION: "10.0"
     steps:
       - name: 'Add msbuild to PATH'
         uses: microsoft/setup-msbuild@v1.0.2
-      - name: 'Checkout'
+      - name: 'Checkout obs-websocket'
         uses: actions/checkout@v2
         with:
           path: ${{ github.workspace }}/obs-websocket
           submodules: 'recursive'
-      - name: 'Checkout OBS'
+      - name: 'Checkout OBS-Studio'
         uses: actions/checkout@v2
         with:
           repository: obsproject/obs-studio
           path: ${{ github.workspace }}/obs-studio
           submodules: 'recursive'
-      - name: 'Get OBS-Studio git info'
+      - name: 'Get OBS-Studio Git Info'
         shell: bash
         working-directory: ${{ github.workspace }}/obs-studio
         run: |
@@ -51,7 +53,7 @@ jobs:
         run: |
           git checkout ${{ env.OBS_GIT_TAG }}
           git submodule update
-      - name: 'Get obs-websocket git info'
+      - name: 'Get obs-websocket Git Info'
         shell: bash
         working-directory: ${{ github.workspace }}/obs-websocket
         run: |
@@ -59,15 +61,33 @@ jobs:
           echo "GIT_BRANCH=${{ github.event.pull_request.head.ref }}" >> $GITHUB_ENV
           echo "GIT_HASH=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
           echo "GIT_TAG=$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
-      - name: 'Install prerequisite: QT'
+      - name: 'Restore Cached Qt'
+        id: qtcache
+        uses: actions/cache@v2
+        with:
+          path: ${{ github.workspace }}\cmbuild\QT\**
+          key: 'qtdep-${{ env.QT_CACHE_VERSION }} | ${{ runner.os }}'
+          restore-keys: |
+            qtdep-${{ env.QT_CACHE_VERSION }} | ${{ runner.os }}
+      - name: 'Install Prerequisite: QT'
+        if: steps.qtcache.outputs.cache-hit != 'true'
         run: |
           curl -kLO https://tt2468.net/dl/Qt_${{ env.QT_VERSION }}.7z -f --retry 5 -C -
           7z x Qt_${{ env.QT_VERSION }}.7z -o"${{ github.workspace }}\cmbuild\QT"
-      - name: 'Install prerequisite: Pre-built OBS dependencies'
+      - name: 'Restore Cached OBS-Studio Dependencies'
+        id: obscache
+        uses: actions/cache@v2
+        with:
+          path: ${{ github.workspace }}\cmbuild\deps\**
+          key: 'obsdep-${{ env.WINDOWS_DEPS_CACHE_VERSION }} | ${{ runner.os }}'
+          restore-keys: |
+            obsdep-${{ env.WINDOWS_DEPS_CACHE_VERSION }} | ${{ runner.os }}
+      - name: 'Install Prerequisite: Pre-built OBS-Studio dependencies'
+        if: steps.obscache.outputs.cache-hit != 'true'
         run: |
           curl -kLO https://cdn-fastly.obsproject.com/downloads/dependencies${{ env.WINDOWS_DEPS_VERSION }}.zip -f --retry 5 -C -
           7z x dependencies${{ env.WINDOWS_DEPS_VERSION }}.zip -o"${{ github.workspace }}\cmbuild\deps"
-      - name: 'Restore OBS 32-bit build v${{ env.OBS_GIT_TAG }} from cache'
+      - name: 'Restore OBS-Studio 32-bit Build v${{ env.OBS_GIT_TAG }} from Cache'
         id: build-cache-obs-32
         uses: actions/cache@v2
         env:
@@ -77,7 +97,7 @@ jobs:
           key: ${{ runner.os }}-${{ env.CACHE_NAME }}-${{ env.OBS_GIT_TAG }}
           restore-keys: |
             ${{ runner.os }}-${{ env.CACHE_NAME }}-
-      - name: 'Configure OBS 32-bit'
+      - name: 'Configure OBS-Studio 32-bit'
         if: steps.build-cache-obs-32.outputs.cache-hit != 'true'
         working-directory: ${{ github.workspace }}/obs-studio
         run: |
@@ -90,7 +110,7 @@ jobs:
         run: |
           msbuild /m /p:Configuration=RelWithDebInfo .\build32\libobs\libobs.vcxproj
           msbuild /m /p:Configuration=RelWithDebInfo .\build32\UI\obs-frontend-api\obs-frontend-api.vcxproj
-      - name: 'Restore OBS 64-bit build v${{ env.OBS_GIT_TAG }} from cache'
+      - name: 'Restore OBS-Studio 64-bit Build v${{ env.OBS_GIT_TAG }} from Cache'
         id: build-cache-obs-64
         uses: actions/cache@v1
         env:
@@ -100,7 +120,7 @@ jobs:
           key: ${{ runner.os }}-${{ env.CACHE_NAME }}-${{ env.OBS_GIT_TAG }}
           restore-keys: |
             ${{ runner.os }}-${{ env.CACHE_NAME }}-
-      - name: 'Configure OBS 64-bit'
+      - name: 'Configure OBS-Studio 64-bit'
         if: steps.build-cache-obs-64.outputs.cache-hit != 'true'
         working-directory: ${{ github.workspace }}/obs-studio
         run: |
@@ -131,11 +151,11 @@ jobs:
       - name: 'Build obs-websocket 64-bit'
         working-directory: ${{ github.workspace }}/obs-websocket
         run: msbuild /m /p:Configuration=RelWithDebInfo .\build64\obs-websocket.sln
-      - name: 'Set PR artifact filename'
+      - name: 'Set PR Artifact Filename'
         shell: bash
         run: |
           FILENAME="obs-websocket-${{ env.GIT_HASH }}-Windows"
-          echo "FILENAME=$FILENAME" >> $GITHUB_ENV
+          echo "WIN_FILENAME=$FILENAME" >> $GITHUB_ENV
       - name: 'Package obs-websocket'
         working-directory: ${{ github.workspace }}/obs-websocket
         run: |
