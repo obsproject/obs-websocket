@@ -52,29 +52,29 @@ WebSocketServer::~WebSocketServer()
 
 void WebSocketServer::ServerRunner()
 {
-	blog(LOG_INFO, "[ServerRunner] IO thread started.");
+	blog(LOG_INFO, "[WebSocketServer::ServerRunner] IO thread started.");
 	try {
 		_server.run();
 	} catch (websocketpp::exception const & e) {
-		blog(LOG_ERROR, "[ServerRunner] websocketpp instance returned an error: %s", e.what());
+		blog(LOG_ERROR, "[WebSocketServer::ServerRunner] websocketpp instance returned an error: %s", e.what());
 	} catch (const std::exception & e) {
-		blog(LOG_ERROR, "[ServerRunner] websocketpp instance returned an error: %s", e.what());
+		blog(LOG_ERROR, "[WebSocketServer::ServerRunner] websocketpp instance returned an error: %s", e.what());
 	} catch (...) {
-		blog(LOG_ERROR, "[ServerRunner] websocketpp instance returned an error");
+		blog(LOG_ERROR, "[WebSocketServer::ServerRunner] websocketpp instance returned an error");
 	}
-	blog(LOG_INFO, "[ServerRunner] IO thread exited.");
+	blog(LOG_INFO, "[WebSocketServer::ServerRunner] IO thread exited.");
 }
 
 void WebSocketServer::Start()
 {
 	if (_server.is_listening()) {
-		blog(LOG_WARNING, "[Start] Call to Start() but the server is already listening.");
+		blog(LOG_WARNING, "[WebSocketServer::Start] Call to Start() but the server is already listening.");
 		return;
 	}
 
 	auto conf = GetConfig();
 	if (!conf) {
-		blog(LOG_ERROR, "[Start] Unable to retreive config!");
+		blog(LOG_ERROR, "[WebSocketServer::Start] Unable to retreive config!");
 		return;
 	}
 
@@ -102,7 +102,7 @@ void WebSocketServer::Start()
 
 	if (errorCode) {
 		std::string errorCodeMessage = errorCode.message();
-		blog(LOG_INFO, "[Start] Listen failed: %s", errorCodeMessage.c_str());
+		blog(LOG_INFO, "[WebSocketServer::Start] Listen failed: %s", errorCodeMessage.c_str());
 		return;
 	}
 
@@ -110,13 +110,13 @@ void WebSocketServer::Start()
 
 	_serverThread = std::thread(&WebSocketServer::ServerRunner, this);
 
-	blog(LOG_INFO, "[Start] Server started successfully on port %d. Possible connect address: %s", _serverPort, Utils::Platform::GetLocalAddress().c_str());
+	blog(LOG_INFO, "[WebSocketServer::Start] Server started successfully on port %d. Possible connect address: %s", _serverPort, Utils::Platform::GetLocalAddress().c_str());
 }
 
 void WebSocketServer::Stop()
 {
 	if (!_server.is_listening()) {
-		blog(LOG_WARNING, "[Stop] Call to Stop() but the server is not listening.");
+		blog(LOG_WARNING, "[WebSocketServer::Stop] Call to Stop() but the server is not listening.");
 		return;
 	}
 
@@ -127,13 +127,13 @@ void WebSocketServer::Stop()
 		websocketpp::lib::error_code errorCode;
 		_server.pause_reading(hdl, errorCode);
 		if (errorCode) {
-			blog(LOG_INFO, "[Stop] Error: %s", errorCode.message().c_str());
+			blog(LOG_INFO, "[WebSocketServer::Stop] Error: %s", errorCode.message().c_str());
 			continue;
 		}
 
 		_server.close(hdl, websocketpp::close::status::going_away, "Server stopping.", errorCode);
 		if (errorCode) {
-			blog(LOG_INFO, "[Stop] Error: %s", errorCode.message().c_str());
+			blog(LOG_INFO, "[WebSocketServer::Stop] Error: %s", errorCode.message().c_str());
 			continue;
 		}
 	}
@@ -148,23 +148,23 @@ void WebSocketServer::Stop()
 
 	_serverThread.join();
 
-	blog(LOG_INFO, "[Stop] Server stopped successfully");
+	blog(LOG_INFO, "[WebSocketServer::Stop] Server stopped successfully");
 }
 
 void WebSocketServer::InvalidateSession(websocketpp::connection_hdl hdl)
 {
-	blog(LOG_INFO, "[InvalidateSession] Invalidating a session.");
+	blog(LOG_INFO, "[WebSocketServer::InvalidateSession] Invalidating a session.");
 
 	websocketpp::lib::error_code errorCode;
-	_server.pause_reading(hdl);
+	_server.pause_reading(hdl, errorCode);
 	if (errorCode) {
-		blog(LOG_INFO, "[InvalidateSession] Error: %s", errorCode.message().c_str());
+		blog(LOG_INFO, "[WebSocketServer::InvalidateSession] Error: %s", errorCode.message().c_str());
 		return;
 	}
 
-	_server.close(hdl, WebSocketCloseCode::SessionInvalidated, "Your session has been invalidated.");
+	_server.close(hdl, WebSocketCloseCode::SessionInvalidated, "Your session has been invalidated.", errorCode);
 	if (errorCode) {
-		blog(LOG_INFO, "[InvalidateSession] Error: %s", errorCode.message().c_str());
+		blog(LOG_INFO, "[WebSocketServer::InvalidateSession] Error: %s", errorCode.message().c_str());
 		return;
 	}
 }
@@ -230,10 +230,12 @@ void WebSocketServer::onOpen(websocketpp::connection_hdl hdl)
 {
 	auto conn = _server.get_con_from_hdl(hdl);
 
+	// Build new session
 	std::unique_lock<std::mutex> lock(_sessionMutex);
 	auto &session = _sessions[hdl];
 	lock.unlock();
 
+	// Configure session details
 	session.SetRemoteAddress(conn->get_remote_endpoint());
 	session.SetConnectedAt(QDateTime::currentSecsSinceEpoch());
 	std::string contentType = conn->get_request_header("Content-Type");
@@ -248,6 +250,7 @@ void WebSocketServer::onOpen(websocketpp::connection_hdl hdl)
 		return;
 	}
 
+	// Build `Hello`
 	json helloMessage;
 	helloMessage["messageType"] = "Hello";
 	helloMessage["obsWebSocketVersion"] = OBS_WEBSOCKET_VERSION;
@@ -261,6 +264,7 @@ void WebSocketServer::onOpen(websocketpp::connection_hdl hdl)
 		helloMessage["authentication"]["salt"] = _authenticationSalt;
 	}
 
+	// Send object to client
 	auto sessionEncoding = session.Encoding();
 	if (sessionEncoding == WebSocketEncoding::Json) {
 		conn->send(helloMessage.dump());
@@ -272,6 +276,8 @@ void WebSocketServer::onOpen(websocketpp::connection_hdl hdl)
 
 void WebSocketServer::onClose(websocketpp::connection_hdl hdl)
 {
+	auto conn = _server.get_con_from_hdl(hdl);
+
 	std::unique_lock<std::mutex> lock(_sessionMutex);
 	_sessions.erase(hdl);
 	lock.unlock();
