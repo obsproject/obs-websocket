@@ -279,12 +279,15 @@ void WebSocketServer::onOpen(websocketpp::connection_hdl hdl)
 	}
 
 	// Send object to client
+	websocketpp::lib::error_code errorCode;
 	auto sessionEncoding = session.Encoding();
 	if (sessionEncoding == WebSocketEncoding::Json) {
-		conn->send(helloMessage.dump());
+		std::string helloMessageJson = helloMessage.dump();
+		_server.send(hdl, helloMessageJson, websocketpp::frame::opcode::text, errorCode);
 	} else if (sessionEncoding == WebSocketEncoding::MsgPack) {
-		auto message = json::to_msgpack(helloMessage);
-		conn->send(message.data(), sizeof(message[0]) * message.size());
+		auto msgPackData = json::to_msgpack(helloMessage);
+		std::string messageMsgPack(msgPackData.begin(), msgPackData.end());
+		_server.send(hdl, messageMsgPack, websocketpp::frame::opcode::binary, errorCode);
 	}
 }
 
