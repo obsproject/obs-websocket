@@ -225,6 +225,7 @@ void WebSocketServer::BroadcastEvent(uint64_t requiredIntent, std::string eventT
 							messageJson = eventMessage.dump();
 						}
 						_server.send((websocketpp::connection_hdl)it.first, messageJson, websocketpp::frame::opcode::text, errorCode);
+						it.second.IncrementOutgoingMessages();
 						break;
 					case WebSocketEncoding::MsgPack:
 						if (messageMsgPack.empty()) {
@@ -232,11 +233,14 @@ void WebSocketServer::BroadcastEvent(uint64_t requiredIntent, std::string eventT
 							messageMsgPack = std::string(msgPackData.begin(), msgPackData.end());
 						}
 						_server.send((websocketpp::connection_hdl)it.first, messageMsgPack, websocketpp::frame::opcode::binary, errorCode);
+						it.second.IncrementOutgoingMessages();
 						break;
 				}
 			}
 		}
 		lock.unlock();
+		if (_debugEnabled)
+			blog(LOG_INFO, "[WebSocketServer::BroadcastEvent] Outgoing event:\n%s", eventMessage.dump(2).c_str());
 	});
 }
 
@@ -289,6 +293,7 @@ void WebSocketServer::onOpen(websocketpp::connection_hdl hdl)
 		std::string messageMsgPack(msgPackData.begin(), msgPackData.end());
 		_server.send(hdl, messageMsgPack, websocketpp::frame::opcode::binary, errorCode);
 	}
+	session.IncrementOutgoingMessages();
 }
 
 void WebSocketServer::onClose(websocketpp::connection_hdl hdl)
@@ -328,6 +333,8 @@ void WebSocketServer::onMessage(websocketpp::connection_hdl hdl, websocketpp::se
 		auto &session = _sessions[hdl];
 		lock.unlock();
 
+		session.IncrementIncomingMessages();
+
 		json incomingMessage;
 
 		// Check for invalid opcode and decode
@@ -358,12 +365,13 @@ void WebSocketServer::onMessage(websocketpp::connection_hdl hdl, websocketpp::se
 				incomingMessage = json::parse(payload);
 			} catch (json::parse_error& e) {
 				if (!session.IgnoreInvalidMessages()) {
-					_server.close(hdl, WebSocketCloseCode::MessageDecodeError, std::string("Unable to decode Json: ") + e.what(), errorCode);
+					_server.close(hdl, WebSocketCloseCode::MessageDecodeError, std::string("Unable to decode MsgPack: ") + e.what(), errorCode);
 				}
 				return;
 			}
 		}
 
-		
+		if (_debugEnabled)
+			blog(LOG_INFO, "[WebSocketServer::onMessage] Incoming message (decoded):\n%s", incomingMessage.dump(2).c_str());
 	});
 }
