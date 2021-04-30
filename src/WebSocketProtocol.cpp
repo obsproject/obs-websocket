@@ -49,6 +49,7 @@ WebSocketProtocol::ProcessResult WebSocketProtocol::ProcessMessage(SessionPtr se
 	} else if (messageType == "RequestBatch") {
 		;
 	} else if (messageType == "Identify") {
+		std::unique_lock<std::mutex> sessionLock(session->OperationMutex);
 		if (session->IsIdentified()) {
 			if (!session->IgnoreInvalidMessages()) {
 				ret.closeCode = WebSocketServer::WebSocketCloseCode::AlreadyIdentified;
@@ -87,7 +88,7 @@ WebSocketProtocol::ProcessResult WebSocketProtocol::ProcessMessage(SessionPtr se
 		ret.result["negotiatedRpcVersion"] = session->RpcVersion();
 		return ret;
 	} else if (messageType == "Reidentify") {
-		;
+		std::unique_lock<std::mutex> sessionLock(session->OperationMutex);
 	} else {
 		if (!session->IgnoreInvalidMessages()) {
 			ret.closeCode = WebSocketServer::WebSocketCloseCode::UnknownMessageType;

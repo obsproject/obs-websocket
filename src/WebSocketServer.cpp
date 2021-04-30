@@ -253,6 +253,7 @@ void WebSocketServer::onOpen(websocketpp::connection_hdl hdl)
 	// Build new session
 	std::unique_lock<std::mutex> lock(_sessionMutex);
 	SessionPtr session = _sessions[hdl] = std::make_shared<WebSocketSession>();
+	std::unique_lock<std::mutex> sessionLock(session->OperationMutex);
 	lock.unlock();
 
 	// Configure session details
@@ -283,6 +284,8 @@ void WebSocketServer::onOpen(websocketpp::connection_hdl hdl)
 		helloMessage["authentication"]["challenge"] = sessionChallenge;
 		helloMessage["authentication"]["salt"] = AuthenticationSalt;
 	}
+
+	sessionLock.unlock();
 
 	// Send object to client
 	websocketpp::lib::error_code errorCode;

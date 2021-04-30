@@ -42,6 +42,8 @@ class WebSocketSession
 		uint64_t EventSubscriptions();
 		void SetEventSubscriptions(uint64_t subscriptions);
 
+		std::mutex OperationMutex;
+
 	private:
 		std::mutex _remoteAddressMutex;
 		std::string _remoteAddress;
