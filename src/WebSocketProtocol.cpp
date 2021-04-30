@@ -138,6 +138,15 @@ WebSocketProtocol::ProcessResult WebSocketProtocol::ProcessMessage(SessionPtr se
 		return ret;
 	} else if (messageType == "Reidentify") {
 		std::unique_lock<std::mutex> sessionLock(session->OperationMutex);
+
+		WebSocketProtocol::ProcessResult parameterResult = SetSessionParameters(session, incomingMessage);
+		if (ret.closeCode != WebSocketServer::WebSocketCloseCode::DontClose) {
+			return parameterResult;
+		}
+
+		ret.result["messageType"] = "Identified";
+		ret.result["negotiatedRpcVersion"] = session->RpcVersion();
+		return ret;
 	} else {
 		if (!session->IgnoreInvalidMessages()) {
 			ret.closeCode = WebSocketServer::WebSocketCloseCode::UnknownMessageType;
