@@ -1,8 +1,12 @@
+#include <obs-module.h>
+
 #include "WebSocketSession.h"
 
 #include "plugin-macros.generated.h"
 
 WebSocketSession::WebSocketSession() :
+	_ref(0),
+	_deleted(false),
 	_remoteAddress(""),
 	_connectedAt(0),
 	_incomingMessages(0),
@@ -15,6 +19,31 @@ WebSocketSession::WebSocketSession() :
 	_ignoreNonFatalRequestChecks(false),
 	_eventSubscriptions(0)
 {
+}
+
+bool WebSocketSession::AddRef()
+{
+	std::lock_guard<std::mutex> lock(_refMutex);
+	if (_deleted)
+		return false;
+	_ref++;
+	return true;
+}
+
+void WebSocketSession::DelRef()
+{
+	std::lock_guard<std::mutex> lock(_refMutex);
+	if (_ref == 0) {
+		blog(LOG_ERROR, "[WebSocketSession::DelRef] Failed to de-increment ref - already 0");
+		return;
+	}
+	_ref--;
+}
+
+void WebSocketSession::SetDeleted()
+{
+	std::lock_guard<std::mutex> lock(_refMutex);
+	_deleted = true;
 }
 
 std::string WebSocketSession::RemoteAddress()
