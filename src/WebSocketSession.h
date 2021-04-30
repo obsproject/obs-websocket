@@ -9,10 +9,6 @@ class WebSocketSession
 	public:
 		WebSocketSession();
 
-		bool AddRef();
-		void DelRef();
-		void SetDeleted();
-
 		std::string RemoteAddress();
 		void SetRemoteAddress(std::string address);
 
@@ -47,9 +43,6 @@ class WebSocketSession
 		void SetEventSubscriptions(uint64_t subscriptions);
 
 	private:
-		std::mutex _refMutex;
-		uint64_t _ref;
-		bool _deleted;
 		std::mutex _remoteAddressMutex;
 		std::string _remoteAddress;
 		std::atomic<uint64_t> _connectedAt;

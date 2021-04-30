@@ -4,14 +4,14 @@
 
 #include "plugin-macros.generated.h"
 
-WebSocketProtocol::ProcessResult SetSessionParameters(WebSocketSession *session, json incomingMessage)
+WebSocketProtocol::ProcessResult SetSessionParameters(SessionPtr session, json incomingMessage)
 {
 	WebSocketProtocol::ProcessResult ret;
 
 	return ret;
 }
 
-WebSocketProtocol::ProcessResult WebSocketProtocol::ProcessMessage(websocketpp::connection_hdl hdl, WebSocketSession *session, json incomingMessage)
+WebSocketProtocol::ProcessResult WebSocketProtocol::ProcessMessage(SessionPtr session, json incomingMessage)
 {
 	WebSocketProtocol::ProcessResult ret;
 

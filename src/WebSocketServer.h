@@ -4,6 +4,7 @@
 #include <QThreadPool>
 #include <QString>
 #include <mutex>
+#include <memory>
 
 #include <nlohmann/json.hpp>
 #include <websocketpp/config/asio_no_tls.hpp>
@@ -12,6 +13,7 @@
 #include "WebSocketSession.h"
 
 using json = nlohmann::json;
+typedef std::shared_ptr<WebSocketSession> SessionPtr;
 
 class WebSocketServer : QObject
 {
@@ -100,7 +102,7 @@ class WebSocketServer : QObject
 		websocketpp::server<websocketpp::config::asio> _server;
 		QThreadPool _threadPool;
 		std::mutex _sessionMutex;
-		std::map<websocketpp::connection_hdl, WebSocketSession, std::owner_less<websocketpp::connection_hdl>> _sessions;
+		std::map<websocketpp::connection_hdl, SessionPtr, std::owner_less<websocketpp::connection_hdl>> _sessions;
 		uint16_t _serverPort;
 		QString _serverPassword;
 		bool _debugEnabled;

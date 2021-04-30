@@ -14,5 +14,5 @@ namespace WebSocketProtocol {
 		json result;
 	};
 
-	ProcessResult ProcessMessage(websocketpp::connection_hdl hdl, WebSocketSession *session, json incomingMessage);
+	ProcessResult ProcessMessage(SessionPtr session, json incomingMessage);
 }
