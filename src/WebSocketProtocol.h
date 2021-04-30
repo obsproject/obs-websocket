@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <nlohmann/json.hpp>
 
 #include "WebSocketServer.h"
 #include "WebSocketSession.h"
@@ -13,5 +14,5 @@ namespace WebSocketProtocol {
 		json result;
 	};
 
-	ProcessResult Process(websocketpp::connection_hdl hdl, WebSocketSession *session, json incomingMessage);
+	ProcessResult ProcessMessage(websocketpp::connection_hdl hdl, WebSocketSession *session, json incomingMessage);
 }

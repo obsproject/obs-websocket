@@ -343,32 +343,30 @@ void WebSocketServer::onMessage(websocketpp::connection_hdl hdl, websocketpp::se
 		uint8_t sessionEncoding = session.Encoding();
 		if (sessionEncoding == WebSocketEncoding::Json) {
 			if (opcode != websocketpp::frame::opcode::text) {
-				if (!session.IgnoreInvalidMessages()) {
+				if (!session.IgnoreInvalidMessages())
 					_server.close(hdl, WebSocketCloseCode::MessageDecodeError, "The session encoding is set to Json, but the client sent a binary message.", errorCode);
-				}
 				return;
 			}
+
 			try {
 				incomingMessage = json::parse(payload);
 			} catch (json::parse_error& e) {
-				if (!session.IgnoreInvalidMessages()) {
+				if (!session.IgnoreInvalidMessages())
 					_server.close(hdl, WebSocketCloseCode::MessageDecodeError, std::string("Unable to decode Json: ") + e.what(), errorCode);
-				}
 				return;
 			}
 		} else if (sessionEncoding == WebSocketEncoding::MsgPack) {
 			if (opcode != websocketpp::frame::opcode::binary) {
-				if (!session.IgnoreInvalidMessages()) {
+				if (!session.IgnoreInvalidMessages())
 					_server.close(hdl, WebSocketCloseCode::MessageDecodeError, "The session encoding is set to MsgPack, but the client sent a text message.", errorCode);
-				}
 				return;
 			}
+
 			try {
 				incomingMessage = json::from_msgpack(payload);
 			} catch (json::parse_error& e) {
-				if (!session.IgnoreInvalidMessages()) {
+				if (!session.IgnoreInvalidMessages())
 					_server.close(hdl, WebSocketCloseCode::MessageDecodeError, std::string("Unable to decode MsgPack: ") + e.what(), errorCode);
-				}
 				return;
 			}
 		}
@@ -376,7 +374,7 @@ void WebSocketServer::onMessage(websocketpp::connection_hdl hdl, websocketpp::se
 		if (_debugEnabled)
 			blog(LOG_INFO, "[WebSocketServer::onMessage] Incoming message (decoded):\n%s", incomingMessage.dump(2).c_str());
 
-		WebSocketProtocol::ProcessResult ret = WebSocketProtocol::Process(hdl, &session, incomingMessage);
+		WebSocketProtocol::ProcessResult ret = WebSocketProtocol::ProcessMessage(hdl, &session, incomingMessage);
 
 		if (ret.closeCode) {
 			websocketpp::lib::error_code errorCode;
@@ -396,9 +394,11 @@ void WebSocketServer::onMessage(websocketpp::connection_hdl hdl, websocketpp::se
 			}
 			session.IncrementOutgoingMessages();
 
-			if (errorCode) {
+			if (_debugEnabled)
+				blog(LOG_INFO, "[WebSocketServer::onMessage] Outgoing message:\n%s", ret.result.dump(2).c_str());
+
+			if (errorCode)
 				blog(LOG_WARNING, "[WebSocketServer::onMessage] Sending message to client failed: %s", errorCode.message().c_str());
-			}
 		}
 	});
 }
