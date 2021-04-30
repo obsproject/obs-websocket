@@ -7,7 +7,7 @@
 bool IsSupportedRpcVersion(uint8_t requestedVersion)
 {
 	for (auto version : WebSocketProtocol::SupportedRpcVersions) {
-		if (requestedVersion = version)
+		if (requestedVersion == version)
 			return true;
 	}
 	return false;
