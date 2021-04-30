@@ -8,9 +8,9 @@
 #include "requesthandler/RequestHandler.h"
 
 namespace WebSocketProtocol {
-	const std::vector<uint8_t> SupportedRpcVersions(
+	const std::vector<uint8_t> SupportedRpcVersions{
 		1
-	);
+	};
 
 	struct ProcessResult {
 		WebSocketServer::WebSocketCloseCode closeCode = WebSocketServer::WebSocketCloseCode::DontClose;
