@@ -81,8 +81,6 @@ WebSocketProtocol::ProcessResult WebSocketProtocol::ProcessMessage(websocketpp::
 			return parameterResult;
 		}
 
-		blog(LOG_INFO, "Identified!");
-
 		session->SetIsIdentified(true);
 
 		ret.result["messageType"] = "Identified";
