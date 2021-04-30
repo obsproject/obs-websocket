@@ -19,10 +19,13 @@ class WebSocketServer : QObject
 
 	public:
 		enum WebSocketCloseCode: uint16_t {
+			// Internal only
+			DontClose = 0,
+			// Reserved
 			UnknownReason = 4000,
 			// The server was unable to decode the incoming websocket message
 			MessageDecodeError = 4001,
-			// The specified `messageType` was invalid
+			// The specified `messageType` was invalid or missing
 			UnknownMessageType = 4002,
 			// The client sent a websocket message without first sending `Identify` message
 			NotIdentified = 4003,
@@ -74,6 +77,10 @@ class WebSocketServer : QObject
 
 		QString GetConnectString();
 
+		bool AuthenticationRequired;
+		std::string AuthenticationSecret;
+		std::string AuthenticationSalt;
+
 	public Q_SLOTS:
 		void BroadcastEvent(uint64_t requiredIntent, std::string eventType, json eventData = nullptr);
 
@@ -97,7 +104,4 @@ class WebSocketServer : QObject
 		uint16_t _serverPort;
 		QString _serverPassword;
 		bool _debugEnabled;
-		bool _authenticationRequired;
-		std::string _authenticationSecret;
-		std::string _authenticationSalt;
 };

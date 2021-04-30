@@ -9,7 +9,7 @@
 
 namespace WebSocketProtocol {
 	struct ProcessResult {
-		WebSocketServer::WebSocketCloseCode closeCode;
+		WebSocketServer::WebSocketCloseCode closeCode = WebSocketServer::WebSocketCloseCode::DontClose;
 		std::string closeReason;
 		json result;
 	};

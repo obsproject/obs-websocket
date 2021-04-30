@@ -81,9 +81,9 @@ void WebSocketServer::Start()
 	_serverPort = conf->ServerPort;
 	_serverPassword = conf->ServerPassword;
 	_debugEnabled = conf->DebugEnabled;
-	_authenticationRequired = conf->AuthRequired;
-	_authenticationSalt = Utils::Crypto::GenerateSalt();
-	_authenticationSecret = Utils::Crypto::GenerateSecret(conf->ServerPassword.toStdString(), _authenticationSalt);
+	AuthenticationRequired = conf->AuthRequired;
+	AuthenticationSalt = Utils::Crypto::GenerateSalt();
+	AuthenticationSecret = Utils::Crypto::GenerateSecret(conf->ServerPassword.toStdString(), AuthenticationSalt);
 
 	// Set log levels if debug is enabled
 	if (_debugEnabled) {
@@ -191,7 +191,7 @@ std::vector<WebSocketServer::WebSocketSessionState> WebSocketServer::GetWebSocke
 QString WebSocketServer::GetConnectString()
 {
 	QString ret;
-	if (_authenticationRequired)
+	if (AuthenticationRequired)
 		ret = QString("obswebsocket|%1:%2|%3").arg(QString::fromStdString(Utils::Platform::GetLocalAddress())).arg(_serverPort).arg(_serverPassword);
 	else
 		ret = QString("obswebsocket|%1:%2").arg(QString::fromStdString(Utils::Platform::GetLocalAddress())).arg(_serverPort);
@@ -275,12 +275,12 @@ void WebSocketServer::onOpen(websocketpp::connection_hdl hdl)
 	helloMessage["obsWebSocketVersion"] = OBS_WEBSOCKET_VERSION;
 	helloMessage["rpcVersion"] = OBS_WEBSOCKET_RPC_VERSION;
 	// todo: Add request and event lists
-	if (_authenticationRequired) {
+	if (AuthenticationRequired) {
 		std::string sessionChallenge = Utils::Crypto::GenerateSalt();
 		session.SetChallenge(sessionChallenge);
 		helloMessage["authentication"] = {};
 		helloMessage["authentication"]["challenge"] = sessionChallenge;
-		helloMessage["authentication"]["salt"] = _authenticationSalt;
+		helloMessage["authentication"]["salt"] = AuthenticationSalt;
 	}
 
 	// Send object to client
@@ -344,7 +344,7 @@ void WebSocketServer::onMessage(websocketpp::connection_hdl hdl, websocketpp::se
 		if (sessionEncoding == WebSocketEncoding::Json) {
 			if (opcode != websocketpp::frame::opcode::text) {
 				if (!session.IgnoreInvalidMessages())
-					_server.close(hdl, WebSocketCloseCode::MessageDecodeError, "The session encoding is set to Json, but the client sent a binary message.", errorCode);
+					_server.close(hdl, WebSocketCloseCode::MessageDecodeError, "Your session encoding is set to Json, but a binary message was received.", errorCode);
 				return;
 			}
 
@@ -358,7 +358,7 @@ void WebSocketServer::onMessage(websocketpp::connection_hdl hdl, websocketpp::se
 		} else if (sessionEncoding == WebSocketEncoding::MsgPack) {
 			if (opcode != websocketpp::frame::opcode::binary) {
 				if (!session.IgnoreInvalidMessages())
-					_server.close(hdl, WebSocketCloseCode::MessageDecodeError, "The session encoding is set to MsgPack, but the client sent a text message.", errorCode);
+					_server.close(hdl, WebSocketCloseCode::MessageDecodeError, "Your session encoding is set to MsgPack, but a text message was received.", errorCode);
 				return;
 			}
 
@@ -376,13 +376,13 @@ void WebSocketServer::onMessage(websocketpp::connection_hdl hdl, websocketpp::se
 
 		WebSocketProtocol::ProcessResult ret = WebSocketProtocol::ProcessMessage(hdl, &session, incomingMessage);
 
-		if (ret.closeCode) {
+		if (ret.closeCode != WebSocketCloseCode::DontClose) {
 			websocketpp::lib::error_code errorCode;
 			_server.close(hdl, ret.closeCode, ret.closeReason, errorCode);
 			return;
 		}
 
-		if (ret.result) {
+		if (!ret.result.is_null()) {
 			websocketpp::lib::error_code errorCode;
 			if (sessionEncoding == WebSocketEncoding::Json) {
 				std::string helloMessageJson = ret.result.dump();
