@@ -4,9 +4,45 @@
 
 #include "plugin-macros.generated.h"
 
+bool IsSupportedRpcVersion(uint8_t requestedVersion)
+{
+	for (auto version : WebSocketProtocol::SupportedRpcVersions) {
+		if (requestedVersion = version)
+			return true;
+	}
+	return false;
+}
+
 WebSocketProtocol::ProcessResult SetSessionParameters(SessionPtr session, json incomingMessage)
 {
 	WebSocketProtocol::ProcessResult ret;
+
+	if (incomingMessage.contains("ignoreInvalidMessages")) {
+		if (!incomingMessage["ignoreInvalidMessages"].is_boolean()) {
+			ret.closeCode = WebSocketServer::WebSocketCloseCode::InvalidIdentifyParameter;
+			ret.closeReason = "You specified `ignoreInvalidMessages` but the value is not boolean.";
+			return ret;
+		}
+		session->SetIgnoreInvalidMessages(incomingMessage["ignoreInvalidMessages"]);
+	}
+
+	if (incomingMessage.contains("ignoreNonFatalRequestChecks")) {
+		if (!incomingMessage["ignoreNonFatalRequestChecks"].is_boolean()) {
+			ret.closeCode = WebSocketServer::WebSocketCloseCode::InvalidIdentifyParameter;
+			ret.closeReason = "You specified `ignoreNonFatalRequestChecks` but the value is not boolean.";
+			return ret;
+		}
+		session->SetIgnoreNonFatalRequestChecks(incomingMessage["ignoreNonFatalRequestChecks"]);
+	}
+
+	if (incomingMessage.contains("eventSubscriptions")) {
+		if (!incomingMessage["eventSubscriptions"].is_number_unsigned()) {
+			ret.closeCode = WebSocketServer::WebSocketCloseCode::InvalidIdentifyParameter;
+			ret.closeReason = "You specified `eventSubscriptions` but the value is not an unsigned integer.";
+			return ret;
+		}
+		session->SetEventSubscriptions(incomingMessage["eventSubscriptions"]);
+	}
 
 	return ret;
 }
@@ -76,6 +112,19 @@ WebSocketProtocol::ProcessResult WebSocketProtocol::ProcessMessage(SessionPtr se
 				return ret;
 			}
 		}
+
+		if (!incomingMessage.contains("rpcVersion") || !incomingMessage["rpcVersion"].is_number_unsigned()) {
+			ret.closeCode = WebSocketServer::WebSocketCloseCode::InvalidIdentifyParameter;
+			ret.closeReason = "Your Identify is missing `rpcVersion` or is not an integer.";
+			return ret;
+		}
+		uint8_t requestedRpcVersion = incomingMessage["rpcVersion"];
+		if (!IsSupportedRpcVersion(requestedRpcVersion)) {
+			ret.closeCode = WebSocketServer::WebSocketCloseCode::UnsupportedProtocolVersion;
+			ret.closeReason = "Your requested RPC version is not supported by this server.";
+			return ret;
+		}
+		session->SetRpcVersion(requestedRpcVersion);
 
 		WebSocketProtocol::ProcessResult parameterResult = SetSessionParameters(session, incomingMessage);
 		if (ret.closeCode != WebSocketServer::WebSocketCloseCode::DontClose) {
