@@ -180,8 +180,9 @@ std::vector<WebSocketServer::WebSocketSessionState> WebSocketServer::GetWebSocke
 		uint64_t incomingMessages = session->IncomingMessages();
 		uint64_t outgoingMessages = session->OutgoingMessages();
 		std::string remoteAddress = session->RemoteAddress();
+		bool isIdentified = session->IsIdentified();
 		
-		webSocketSessions.emplace_back(WebSocketSessionState{hdl, remoteAddress, connectedAt, incomingMessages, outgoingMessages});
+		webSocketSessions.emplace_back(WebSocketSessionState{hdl, remoteAddress, connectedAt, incomingMessages, outgoingMessages, isIdentified});
 	}
 	lock.unlock();
 
@@ -276,8 +277,8 @@ void WebSocketServer::onOpen(websocketpp::connection_hdl hdl)
 	helloMessage["messageType"] = "Hello";
 	helloMessage["obsWebSocketVersion"] = OBS_WEBSOCKET_VERSION;
 	helloMessage["rpcVersion"] = OBS_WEBSOCKET_RPC_VERSION;
-	helloMessage["availableRequests"] = WebSocketProtocol::GetRequestList();
-	helloMessage["availableEvents"] = WebSocketProtocol::GetEventList();
+	//helloMessage["availableRequests"] = WebSocketProtocol::GetRequestList();
+	//helloMessage["availableEvents"] = WebSocketProtocol::GetEventList();
 	if (AuthenticationRequired) {
 		std::string sessionChallenge = Utils::Crypto::GenerateSalt();
 		session->SetChallenge(sessionChallenge);
@@ -323,6 +324,7 @@ void WebSocketServer::onClose(websocketpp::connection_hdl hdl)
 	state.connectedAt = connectedAt;
 	state.incomingMessages = incomingMessages;
 	state.outgoingMessages = outgoingMessages;
+	state.isIdentified = isIdentified;
 
 	// Emit signals
 	emit ClientDisconnected(state, conn->get_local_close_code());

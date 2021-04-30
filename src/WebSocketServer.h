@@ -58,6 +58,7 @@ class WebSocketServer : QObject
 			uint64_t connectedAt;
 			uint64_t incomingMessages;
 			uint64_t outgoingMessages;
+			bool isIdentified;
 		};
 
 		WebSocketServer();

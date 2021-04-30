@@ -4,6 +4,8 @@
 #include <QClipboard>
 #include <QDateTime>
 #include <QTime>
+#include <QPixmap>
+#include <QIcon>
 
 #include "SettingsDialog.h"
 #include "../obs-websocket.h"
@@ -18,7 +20,8 @@ SettingsDialog::SettingsDialog(QWidget* parent) :
 	sessionTableTimer(new QTimer)
 {
 	ui->setupUi(this);
-	ui->websocketSessionTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Fixed);
+	ui->websocketSessionTable->horizontalHeader()->resizeSection(3, 100);
+	ui->websocketSessionTable->horizontalHeader()->resizeSection(4, 100);
 
 	connect(ui->buttonBox, &QDialogButtonBox::accepted,
 		this, &SettingsDialog::FormAccepted);
@@ -91,9 +94,16 @@ void SettingsDialog::FillSessionTable()
 	auto webSocketSessions = webSocketServer->GetWebSocketSessions();
 	size_t rowCount = webSocketSessions.size();
 
+	// Manually setting the pixmap size *might* break with highdpi. Not sure though
+	QIcon checkIcon = style()->standardIcon(QStyle::SP_DialogOkButton);
+	QPixmap checkIconPixmap = checkIcon.pixmap(QSize(25, 25));
+	QIcon crossIcon = style()->standardIcon(QStyle::SP_DialogCancelButton);
+	QPixmap crossIconPixmap = crossIcon.pixmap(QSize(25, 25));
+
 	obs_frontend_push_ui_translation(obs_module_get_string);
 	QString kickButtonText = QObject::tr("OBSWebSocket.SessionTable.KickButtonText");
 	obs_frontend_pop_ui_translation();
+
 	ui->websocketSessionTable->setRowCount(rowCount);
 	size_t i = 0;
 	for (auto session : webSocketSessions) {
@@ -107,6 +117,15 @@ void SettingsDialog::FillSessionTable()
 		QTableWidgetItem *statsItem = new QTableWidgetItem(QString("%1/%2").arg(session.incomingMessages).arg(session.outgoingMessages));
 		ui->websocketSessionTable->setItem(i, 2, statsItem);
 
+		QLabel *identifiedLabel = new QLabel();
+		identifiedLabel->setAlignment(Qt::AlignCenter);
+		if (session.isIdentified) {
+			identifiedLabel->setPixmap(checkIconPixmap);
+		} else {
+			identifiedLabel->setPixmap(crossIconPixmap);
+		}
+		ui->websocketSessionTable->setCellWidget(i, 3, identifiedLabel);
+
 		QPushButton *invalidateButton = new QPushButton(kickButtonText, this);
 		QWidget *invalidateButtonWidget = new QWidget();
 		QHBoxLayout *invalidateButtonLayout = new QHBoxLayout(invalidateButtonWidget);
@@ -114,7 +133,7 @@ void SettingsDialog::FillSessionTable()
 		invalidateButtonLayout->setAlignment(Qt::AlignCenter);
 		invalidateButtonLayout->setContentsMargins(0, 0, 0, 0);
 		invalidateButtonWidget->setLayout(invalidateButtonLayout);
-		ui->websocketSessionTable->setCellWidget(i, 3, invalidateButtonWidget);
+		ui->websocketSessionTable->setCellWidget(i, 4, invalidateButtonWidget);
 		connect(invalidateButton, &QPushButton::clicked, [=]() {
 			webSocketServer->InvalidateSession(session.hdl);
 		});

@@ -6,19 +6,19 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>600</width>
+    <width>675</width>
     <height>437</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>600</width>
-    <height>437</height>
+    <width>675</width>
+    <height>0</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>600</width>
+    <width>675</width>
     <height>16777215</height>
    </size>
   </property>
@@ -156,7 +156,7 @@
          <bool>false</bool>
         </property>
         <attribute name="horizontalHeaderMinimumSectionSize">
-         <number>135</number>
+         <number>100</number>
         </attribute>
         <attribute name="horizontalHeaderDefaultSectionSize">
          <number>135</number>
@@ -180,6 +180,11 @@
         <column>
          <property name="text">
           <string>OBSWebSocket.SessionTable.MessagesInOutColumnTitle</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>OBSWebSocket.SessionTable.IdentifiedTitle</string>
          </property>
         </column>
         <column>
