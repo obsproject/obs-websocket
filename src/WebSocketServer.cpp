@@ -198,6 +198,7 @@ QString WebSocketServer::GetConnectString()
 	return ret;
 }
 
+// It isn't consistent to directly call the WebSocketServer from the events system, but it would also be dumb to make it unnecessarily complicated.
 void WebSocketServer::BroadcastEvent(uint64_t requiredIntent, std::string eventType, json eventData)
 {
 	QtConcurrent::run(&_threadPool, [=]() {
@@ -339,7 +340,8 @@ void WebSocketServer::onMessage(websocketpp::connection_hdl hdl, websocketpp::se
 
 		// Check for invalid opcode and decode
 		websocketpp::lib::error_code errorCode;
-		if (session.Encoding() == WebSocketEncoding::Json) {
+		uint8_t sessionEncoding = session.Encoding();
+		if (sessionEncoding == WebSocketEncoding::Json) {
 			if (opcode != websocketpp::frame::opcode::text) {
 				if (!session.IgnoreInvalidMessages()) {
 					_server.close(hdl, WebSocketCloseCode::MessageDecodeError, "The session encoding is set to Json, but the client sent a binary message.", errorCode);
@@ -354,7 +356,7 @@ void WebSocketServer::onMessage(websocketpp::connection_hdl hdl, websocketpp::se
 				}
 				return;
 			}
-		} else if (session.Encoding() == WebSocketEncoding::MsgPack) {
+		} else if (sessionEncoding == WebSocketEncoding::MsgPack) {
 			if (opcode != websocketpp::frame::opcode::binary) {
 				if (!session.IgnoreInvalidMessages()) {
 					_server.close(hdl, WebSocketCloseCode::MessageDecodeError, "The session encoding is set to MsgPack, but the client sent a text message.", errorCode);
@@ -373,5 +375,30 @@ void WebSocketServer::onMessage(websocketpp::connection_hdl hdl, websocketpp::se
 
 		if (_debugEnabled)
 			blog(LOG_INFO, "[WebSocketServer::onMessage] Incoming message (decoded):\n%s", incomingMessage.dump(2).c_str());
+
+		WebSocketProtocol::ProcessResult ret = WebSocketProtocol::Process(hdl, &session, incomingMessage);
+
+		if (ret.closeCode) {
+			websocketpp::lib::error_code errorCode;
+			_server.close(hdl, ret.closeCode, ret.closeReason, errorCode);
+			return;
+		}
+
+		if (ret.result) {
+			websocketpp::lib::error_code errorCode;
+			if (sessionEncoding == WebSocketEncoding::Json) {
+				std::string helloMessageJson = ret.result.dump();
+				_server.send(hdl, helloMessageJson, websocketpp::frame::opcode::text, errorCode);
+			} else if (sessionEncoding == WebSocketEncoding::MsgPack) {
+				auto msgPackData = json::to_msgpack(ret.result);
+				std::string messageMsgPack(msgPackData.begin(), msgPackData.end());
+				_server.send(hdl, messageMsgPack, websocketpp::frame::opcode::binary, errorCode);
+			}
+			session.IncrementOutgoingMessages();
+
+			if (errorCode) {
+				blog(LOG_WARNING, "[WebSocketServer::onMessage] Sending message to client failed: %s", errorCode.message().c_str());
+			}
+		}
 	});
 }
