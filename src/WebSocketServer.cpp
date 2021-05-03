@@ -239,6 +239,8 @@ void WebSocketServer::BroadcastEvent(uint64_t requiredIntent, std::string eventT
 						it.second->IncrementOutgoingMessages();
 						break;
 				}
+				if (errorCode)
+					blog(LOG_ERROR, "[WebSocketServer::BroadcastEvent] Error sending event message: %s", errorCode.message().c_str());
 			}
 		}
 		lock.unlock();

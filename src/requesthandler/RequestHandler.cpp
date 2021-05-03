@@ -4,7 +4,9 @@
 
 const std::map<std::string, RequestMethodHandler> RequestHandler::_handlerMap
 {
+	// General
 	{"GetVersion", &RequestHandler::GetVersion},
+	{"BroadcastCustomEvent", &RequestHandler::BroadcastCustomEvent},
 };
 
 RequestResult RequestHandler::ProcessRequest(const Request& request)

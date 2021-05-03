@@ -16,6 +16,8 @@ namespace RequestStatus {
 
 		// A required request parameter is missing
 		MissingRequestParameter = 300,
+		// The request does not have a valid requestData object.
+		MissingRequestData = 301,
 
 		// Generic invalid request parameter message
 		InvalidRequestParameter = 400,

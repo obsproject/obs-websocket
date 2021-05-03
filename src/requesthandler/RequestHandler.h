@@ -15,6 +15,7 @@ class RequestHandler {
 
 	private:
 		RequestResult GetVersion(const Request&);
+		RequestResult BroadcastCustomEvent(const Request&);
 
 		static const std::map<std::string, RequestMethodHandler> _handlerMap;
 };
