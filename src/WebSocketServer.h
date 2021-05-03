@@ -4,7 +4,6 @@
 #include <QThreadPool>
 #include <QString>
 #include <mutex>
-#include <memory>
 
 #include <nlohmann/json.hpp>
 #include <websocketpp/config/asio_no_tls.hpp>
@@ -13,7 +12,6 @@
 #include "WebSocketSession.h"
 
 using json = nlohmann::json;
-typedef std::shared_ptr<WebSocketSession> SessionPtr;
 
 class WebSocketServer : QObject
 {
@@ -37,8 +35,8 @@ class WebSocketServer : QObject
 			AuthenticationFailed = 4005,
 			// There was an invalid parameter the client's `Identify` message
 			InvalidIdentifyParameter = 4006,
-			// A `Request` or `RequestBatch` was missing its `requestId`
-			RequestMissingRequestId = 4007,
+			// A `Request` or `RequestBatch` was missing its `requestId` or `requestType`
+			RequestMissingRequiredField = 4007,
 			// The websocket session has been invalidated by the obs-websocket server.
 			SessionInvalidated = 4008,
 			// The server detected the usage of an old version of the obs-websocket protocol.

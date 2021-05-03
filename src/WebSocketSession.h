@@ -3,6 +3,10 @@
 #include <mutex>
 #include <string>
 #include <atomic>
+#include <memory>
+
+class WebSocketSession;
+typedef std::shared_ptr<WebSocketSession> SessionPtr;
 
 class WebSocketSession
 {

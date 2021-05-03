@@ -67,7 +67,7 @@ WebSocketProtocol::ProcessResult WebSocketProtocol::ProcessMessage(SessionPtr se
 		}
 		if (!session->IgnoreInvalidMessages()) {
 			ret.closeCode = WebSocketServer::WebSocketCloseCode::UnknownMessageType;
-			ret.closeReason = "Your request is missing a `messageType`";
+			ret.closeReason = "Your request is missing a `messageType`.";
 		}
 		return ret;
 	}
@@ -81,7 +81,44 @@ WebSocketProtocol::ProcessResult WebSocketProtocol::ProcessMessage(SessionPtr se
 	}
 
 	if (messageType == "Request") {
-		;
+		// RequestID checking has to be done here where we are able to close the connection.
+		if (!incomingMessage.contains("requestId")) {
+			if (!session->IgnoreInvalidMessages()) {
+				ret.closeCode = WebSocketServer::WebSocketCloseCode::RequestMissingRequiredField;
+				ret.closeReason = "Your request is missing a `requestId`.";
+			}
+			return ret;
+		}
+
+		if (!incomingMessage.contains("requestType")) {
+			if (!session->IgnoreInvalidMessages()) {
+				ret.closeCode = WebSocketServer::WebSocketCloseCode::RequestMissingRequiredField;
+				ret.closeReason = "Your request is missing a `requestType`.";
+			}
+			return ret;
+		}
+
+		auto requestHandler = RequestHandler(session);
+		RequestHandler::RequestResult result;
+		if (incomingMessage.contains("requestData")) {
+			result = requestHandler.ProcessRequest(incomingMessage["requestType"], incomingMessage["requestData"]);
+		} else {
+			result = requestHandler.ProcessRequest(incomingMessage["requestType"]);
+		}
+
+		ret.result["messageType"] = "RequestResponse";
+		ret.result["requestType"] = incomingMessage["requestType"];
+		ret.result["requestId"] = incomingMessage["requestId"];
+		ret.result["requestStatus"] = {
+			{"result", result.statusCode == RequestHandler::RequestStatus::Success},
+			{"code", result.statusCode}
+		};
+		if (result.comment != "")
+			ret.result["requestStatus"]["comment"] = result.comment;
+		if (!result.responseData.is_null())
+			ret.result["responseData"] = result.responseData;
+		
+		return ret;
 	} else if (messageType == "RequestBatch") {
 		;
 	} else if (messageType == "Identify") {
@@ -154,6 +191,20 @@ WebSocketProtocol::ProcessResult WebSocketProtocol::ProcessMessage(SessionPtr se
 		}
 		return ret;
 	}
+
+	return ret;
+}
+
+std::vector<std::string> WebSocketProtocol::GetRequestList()
+{
+	std::vector<std::string> ret;
+
+	return ret;
+}
+
+std::vector<std::string> WebSocketProtocol::GetEventList()
+{
+	std::vector<std::string> ret;
 
 	return ret;
 }
