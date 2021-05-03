@@ -5,20 +5,18 @@
 #include <QString>
 #include <mutex>
 
-#include <nlohmann/json.hpp>
+#include "utils/Utils.h"
 #include <websocketpp/config/asio_no_tls.hpp>
 #include <websocketpp/server.hpp>
 
 #include "WebSocketSession.h"
-
-using json = nlohmann::json;
 
 class WebSocketServer : QObject
 {
 	Q_OBJECT
 
 	public:
-		enum WebSocketCloseCode: uint16_t {
+		enum WebSocketCloseCode {
 			// Internal only
 			DontClose = 0,
 			// Reserved
@@ -45,7 +43,7 @@ class WebSocketServer : QObject
 			InvalidContentType = 4010,
 		};
 
-		enum WebSocketEncoding: uint8_t {
+		enum WebSocketEncoding {
 			Json,
 			MsgPack
 		};

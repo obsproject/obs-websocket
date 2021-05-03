@@ -1,27 +1,23 @@
-#include <obs.hpp>
-#include <obs-frontend-api.h>
-
 #include "RequestHandler.h"
 
 #include "../plugin-macros.generated.h"
 
-RequestHandler::RequestHandler(bool ignoreNonFatalRequestChecks, uint8_t rpcVersion) :
-	_ignoreNonFatalRequestChecks(ignoreNonFatalRequestChecks),
-	_rpcVersion(rpcVersion)
+const std::map<std::string, RequestMethodHandler> RequestHandler::_handlerMap
 {
-}
+	{"GetVersion", &RequestHandler::GetVersion},
+};
 
-RequestHandler::RequestHandler(SessionPtr session) :
-	_ignoreNonFatalRequestChecks(session->IgnoreNonFatalRequestChecks()),
-	_rpcVersion(session->RpcVersion())
+RequestResult RequestHandler::ProcessRequest(const Request& request)
 {
-}
+	if (!request.RequestData.is_null() && !request.RequestData.is_object())
+		return RequestResult::Error(RequestStatus::InvalidRequestParameterDataType, "Your request data is not an object.");
 
-RequestHandler::RequestResult RequestHandler::ProcessRequest(std::string requestType, json requestData)
-{
-	RequestHandler::RequestResult ret;
+	RequestMethodHandler handler;
+	try {
+		handler = _handlerMap.at(request.RequestType);
+	} catch (const std::out_of_range& oor) {
+		return RequestResult::Error(RequestStatus::UnknownRequestType, "Your request type is not valid.");
+	}
 
-	ret.statusCode = RequestHandler::RequestStatus::Success;
-
-	return ret;
+	return std::bind(handler, this, std::placeholders::_1)(request);
 }

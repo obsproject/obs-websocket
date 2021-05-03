@@ -1,5 +1,3 @@
-#include <obs-module.h>
-
 #include "WebSocketSession.h"
 
 #include "plugin-macros.generated.h"
@@ -70,6 +68,29 @@ uint8_t WebSocketSession::Encoding()
 void WebSocketSession::SetEncoding(uint8_t encoding)
 {
 	_encoding.store(encoding);
+}
+
+bool WebSocketSession::AuthenticationRequired()
+{
+	return _authenticationRequired.load();
+}
+
+void WebSocketSession::SetAuthenticationRequired(bool required)
+{
+	_authenticationRequired.store(required);
+}
+
+std::string WebSocketSession::Secret()
+{
+	std::lock_guard<std::mutex> lock(_secretMutex);
+	std::string ret(_secret);
+	return ret;
+}
+
+void WebSocketSession::SetSecret(std::string secret)
+{
+	std::lock_guard<std::mutex> lock(_secretMutex);
+	_secret = secret;
 }
 
 std::string WebSocketSession::Challenge()

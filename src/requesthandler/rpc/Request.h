@@ -1,13 +1,13 @@
 #pragma once
 
-#include <nlohmann/json.hpp>
+#include "../../utils/Utils.h"
 
-#include "../RequestHandler.h"
-
-class Request
+struct Request
 {
-	public:
-		;
-	private:
-		;
+	Request(uint8_t rpcVersion, bool ignoreNonFatalRequestChecks, std::string requestType, json requestData = nullptr);
+
+	uint8_t RpcVersion;
+	bool IgnoreNonFatalRequestChecks;
+	std::string RequestType;
+	json RequestData;
 };

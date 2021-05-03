@@ -4,11 +4,11 @@
 #include <QDateTime>
 #include <QTime>
 
+#include "obs-websocket.h"
+
 #include "WebSocketServer.h"
 #include "WebSocketProtocol.h"
-#include "obs-websocket.h"
 #include "Config.h"
-#include "utils/Utils.h"
 
 #include "plugin-macros.generated.h"
 
@@ -260,6 +260,7 @@ void WebSocketServer::onOpen(websocketpp::connection_hdl hdl)
 	// Configure session details
 	session->SetRemoteAddress(conn->get_remote_endpoint());
 	session->SetConnectedAt(QDateTime::currentSecsSinceEpoch());
+	session->SetAuthenticationRequired(AuthenticationRequired);
 	std::string contentType = conn->get_request_header("Content-Type");
 	if (contentType == "") {
 		;
@@ -280,6 +281,7 @@ void WebSocketServer::onOpen(websocketpp::connection_hdl hdl)
 	helloMessage["availableRequests"] = WebSocketProtocol::GetRequestList();
 	helloMessage["availableEvents"] = WebSocketProtocol::GetEventList();
 	if (AuthenticationRequired) {
+		session->SetSecret(AuthenticationSecret);
 		std::string sessionChallenge = Utils::Crypto::GenerateSalt();
 		session->SetChallenge(sessionChallenge);
 		helloMessage["authentication"] = {};

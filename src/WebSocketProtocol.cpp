@@ -1,7 +1,8 @@
 #include "WebSocketProtocol.h"
-#include "obs-websocket.h"
-#include "utils/Utils.h"
+#include "requesthandler/RequestHandler.h"
+#include "requesthandler/rpc/RequestStatus.h"
 
+#include "utils/Utils.h"
 #include "plugin-macros.generated.h"
 
 bool IsSupportedRpcVersion(uint8_t requestedVersion)
@@ -98,25 +99,22 @@ WebSocketProtocol::ProcessResult WebSocketProtocol::ProcessMessage(SessionPtr se
 			return ret;
 		}
 
-		auto requestHandler = RequestHandler(session);
-		RequestHandler::RequestResult result;
-		if (incomingMessage.contains("requestData")) {
-			result = requestHandler.ProcessRequest(incomingMessage["requestType"], incomingMessage["requestData"]);
-		} else {
-			result = requestHandler.ProcessRequest(incomingMessage["requestType"]);
-		}
+		RequestHandler requestHandler;
+		Request request(session->RpcVersion(), session->IgnoreNonFatalRequestChecks(), incomingMessage["requestType"], incomingMessage["requestData"]);
+
+		RequestResult requestResult = requestHandler.ProcessRequest(request);
 
 		ret.result["messageType"] = "RequestResponse";
 		ret.result["requestType"] = incomingMessage["requestType"];
 		ret.result["requestId"] = incomingMessage["requestId"];
 		ret.result["requestStatus"] = {
-			{"result", result.statusCode == RequestHandler::RequestStatus::Success},
-			{"code", result.statusCode}
+			{"result", requestResult.StatusCode == RequestStatus::Success},
+			{"code", requestResult.StatusCode}
 		};
-		if (result.comment != "")
-			ret.result["requestStatus"]["comment"] = result.comment;
-		if (!result.responseData.is_null())
-			ret.result["responseData"] = result.responseData;
+		if (!requestResult.Comment.empty())
+			ret.result["requestStatus"]["comment"] = requestResult.Comment;
+		if (requestResult.ResponseData.is_object())
+			ret.result["responseData"] = requestResult.ResponseData;
 		
 		return ret;
 	} else if (messageType == "RequestBatch") {
@@ -131,19 +129,13 @@ WebSocketProtocol::ProcessResult WebSocketProtocol::ProcessMessage(SessionPtr se
 			return ret;
 		}
 
-		auto webSocketServer = GetWebSocketServer();
-		if (!webSocketServer) {
-			blog(LOG_ERROR, "[WebSocketProtocol::ProcessMessage] Unable to fetch websocket server instance!");
-			return ret;
-		}
-
-		if (webSocketServer->AuthenticationRequired) {
+		if (session->AuthenticationRequired()) {
 			if (!incomingMessage.contains("authentication")) {
 				ret.closeCode = WebSocketServer::WebSocketCloseCode::InvalidIdentifyParameter;
 				ret.closeReason = "Your `Identify` payload is missing an `authentication` string, however authentication is required.";
 				return ret;
 			}
-			if (!Utils::Crypto::CheckAuthenticationString(webSocketServer->AuthenticationSecret, session->Challenge(), incomingMessage["authentication"])) {
+			if (!Utils::Crypto::CheckAuthenticationString(session->Secret(), session->Challenge(), incomingMessage["authentication"])) {
 				ret.closeCode = WebSocketServer::WebSocketCloseCode::AuthenticationFailed;
 				ret.closeReason = "Authentication failed.";
 				return ret;

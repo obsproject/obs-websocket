@@ -28,6 +28,12 @@ class WebSocketSession
 		uint8_t Encoding();
 		void SetEncoding(uint8_t encoding);
 
+		bool AuthenticationRequired();
+		void SetAuthenticationRequired(bool required);
+
+		std::string Secret();
+		void SetSecret(std::string secret);
+
 		std::string Challenge();
 		void SetChallenge(std::string challenge);
 
@@ -55,6 +61,9 @@ class WebSocketSession
 		std::atomic<uint64_t> _incomingMessages;
 		std::atomic<uint64_t> _outgoingMessages;
 		std::atomic<uint8_t> _encoding;
+		std::atomic<bool> _authenticationRequired;
+		std::mutex _secretMutex;
+		std::string _secret;
 		std::mutex _challengeMutex;
 		std::string _challenge;
 		std::atomic<uint8_t> _rpcVersion;

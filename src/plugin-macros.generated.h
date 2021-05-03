@@ -18,10 +18,11 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #pragma once
 
+#include <util/base.h>
+#define blog(level, msg, ...) blog(level, "[obs-websocket] " msg, ##__VA_ARGS__)
+
 #define OBS_WEBSOCKET_VERSION "5.0.0"
 
 #define OBS_WEBSOCKET_RPC_VERSION 1
 
 #define QT_TO_UTF8(str) str.toUtf8().constData()
-
-#define blog(level, msg, ...) blog(level, "[obs-websocket] " msg, ##__VA_ARGS__)

@@ -6,7 +6,6 @@
 
 #include "WebSocketServer.h"
 #include "WebSocketSession.h"
-#include "requesthandler/RequestHandler.h"
 
 namespace WebSocketProtocol {
 	const std::vector<uint8_t> SupportedRpcVersions{
