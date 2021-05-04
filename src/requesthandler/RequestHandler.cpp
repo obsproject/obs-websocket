@@ -14,6 +14,9 @@ RequestResult RequestHandler::ProcessRequest(const Request& request)
 	if (!request.RequestData.is_null() && !request.RequestData.is_object())
 		return RequestResult::Error(RequestStatus::InvalidRequestParameterDataType, "Your request data is not an object.");
 
+	if (request.RequestType.empty())
+		return RequestResult::Error(RequestStatus::MissingRequestType, "Your request is missing a `requestType`");
+
 	RequestMethodHandler handler;
 	try {
 		handler = _handlerMap.at(request.RequestType);

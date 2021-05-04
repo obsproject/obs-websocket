@@ -9,6 +9,8 @@ namespace RequestStatus {
 
 		Success = 100,
 
+		// The `requestType` field is missing from the request data
+		MissingRequestType = 203,
 		// The request type is invalid (does not exist)
 		UnknownRequestType = 204,
 		// Generic error code (comment is expected to be provided)

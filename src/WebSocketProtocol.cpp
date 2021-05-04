@@ -91,12 +91,8 @@ WebSocketProtocol::ProcessResult WebSocketProtocol::ProcessMessage(SessionPtr se
 			return ret;
 		}
 
-		if (!incomingMessage.contains("requestType")) {
-			if (!session->IgnoreInvalidMessages()) {
-				ret.closeCode = WebSocketServer::WebSocketCloseCode::RequestMissingRequiredField;
-				ret.closeReason = "Your request is missing a `requestType`.";
-			}
-			return ret;
+		if (!incomingMessage["requestType"].is_string()) {
+			incomingMessage["requestType"] = "";
 		}
 
 		RequestHandler requestHandler;
@@ -118,7 +114,60 @@ WebSocketProtocol::ProcessResult WebSocketProtocol::ProcessMessage(SessionPtr se
 		
 		return ret;
 	} else if (messageType == "RequestBatch") {
-		;
+		// RequestID checking has to be done here where we are able to close the connection.
+		if (!incomingMessage.contains("requestId")) {
+			if (!session->IgnoreInvalidMessages()) {
+				ret.closeCode = WebSocketServer::WebSocketCloseCode::RequestMissingRequiredField;
+				ret.closeReason = "Your request batch is missing a `requestId`.";
+			}
+			return ret;
+		}
+
+		if (!incomingMessage["requests"].is_array()) {
+			if (!session->IgnoreInvalidMessages()) {
+				ret.closeCode = WebSocketServer::WebSocketCloseCode::RequestMissingRequiredField;
+				ret.closeReason = "Your request batch is missing a `requests` or it is not an array.";
+			}
+			return ret;
+		}
+
+		auto requests = incomingMessage["requests"].get<std::vector<json>>();
+		json results = json::array();
+
+		RequestHandler requestHandler;
+		for (auto requestJson : requests) {
+			if (!requestJson["requestType"].is_string())
+				requestJson["requestType"] = "";
+
+			Request request(session->RpcVersion(), session->IgnoreNonFatalRequestChecks(), requestJson["requestType"], requestJson["requestData"]);
+
+			RequestResult requestResult = requestHandler.ProcessRequest(request);
+
+			json result;
+			result["requestType"] = requestJson["requestType"];
+
+			if (requestJson.contains("requestId"))
+				result["requestId"] = requestJson["requestId"];
+
+			result["requestStatus"] = {
+				{"result", requestResult.StatusCode == RequestStatus::Success},
+				{"code", requestResult.StatusCode}
+			};
+
+			if (!requestResult.Comment.empty())
+				result["requestStatus"]["comment"] = requestResult.Comment;
+
+			if (requestResult.ResponseData.is_object())
+				result["responseData"] = requestResult.ResponseData;
+
+			results.push_back(result);
+		}
+
+		ret.result["messageType"] = "RequestBatchResponse";
+		ret.result["requestId"] = incomingMessage["requestId"];
+		ret.result["results"] = results;
+
+		return ret;
 	} else if (messageType == "Identify") {
 		std::unique_lock<std::mutex> sessionLock(session->OperationMutex);
 		if (session->IsIdentified()) {
