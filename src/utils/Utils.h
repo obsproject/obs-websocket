@@ -24,4 +24,8 @@ namespace Utils {
 		std::string GetLocalAddress();
 		QString GetCommandLineArgument(QString arg);
 	}
+
+	namespace Obs {
+		;
+	}
 }

@@ -81,7 +81,8 @@ set(obs-websocket_SOURCES
 	src/forms/SettingsDialog.cpp
 	src/utils/Json.cpp
     src/utils/Crypto.cpp
-    src/utils/Platform.cpp)
+    src/utils/Platform.cpp
+    src/utils/Obs.cpp)
 
 set(obs-websocket_HEADERS
 	src/obs-websocket.h
