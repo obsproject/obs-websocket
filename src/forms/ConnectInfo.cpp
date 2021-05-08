@@ -1,0 +1,120 @@
+#include <obs-module.h>
+#include <obs-frontend-api.h>
+#include <QClipboard>
+#include <QPainter>
+#include "../../deps/qr/cpp/QrCode.hpp"
+
+#include "ConnectInfo.h"
+#include "../obs-websocket.h"
+#include "../Config.h"
+#include "../utils/Utils.h"
+
+#include "../plugin-macros.generated.h"
+
+ConnectInfo::ConnectInfo(QWidget* parent) :
+	QDialog(parent, Qt::Dialog),
+	ui(new Ui::ConnectInfo)
+{
+	ui->setupUi(this);
+
+	connect(ui->copyServerIpButton, &QPushButton::clicked,
+		this, &ConnectInfo::CopyServerIpButtonClicked);
+	connect(ui->copyServerPortButton, &QPushButton::clicked,
+		this, &ConnectInfo::CopyServerPortButtonClicked);
+	connect(ui->copyServerPasswordButton, &QPushButton::clicked,
+		this, &ConnectInfo::CopyServerPasswordButtonClicked);
+}
+
+ConnectInfo::~ConnectInfo()
+{
+	delete ui;
+}
+
+void ConnectInfo::showEvent(QShowEvent *event)
+{
+	auto conf = GetConfig();
+	if (!conf) {
+		blog(LOG_ERROR, "[ConnectInfo::showEvent] Unable to retreive config!");
+		return;
+	}
+
+	QString serverIp = QString::fromStdString(Utils::Platform::GetLocalAddress());
+	ui->serverIpLineEdit->setText(serverIp);
+
+	QString serverPort = QString::number(conf->ServerPort);
+	ui->serverPortLineEdit->setText(serverPort);
+
+	QString serverPassword;
+	if (conf->AuthRequired) {
+		ui->copyServerPasswordButton->setEnabled(true);
+		serverPassword = conf->ServerPassword;
+	} else {
+		ui->copyServerPasswordButton->setEnabled(false);
+		obs_frontend_push_ui_translation(obs_module_get_string);
+		serverPassword = QObject::tr("OBSWebSocket.ConnectInfo.ServerPasswordPlaceholderText");
+		obs_frontend_pop_ui_translation();
+	}
+	ui->serverPasswordLineEdit->setText(serverPassword);
+
+	QString connectString;
+	if (conf->AuthRequired)
+		connectString = QString("obswebsocket|%1:%2|%3").arg(serverIp).arg(serverPort).arg(serverPassword);
+	else
+		connectString = QString("obswebsocket|%1:%2").arg(serverIp).arg(serverPort);
+	DrawQr(connectString);
+}
+
+void ConnectInfo::CopyServerIpButtonClicked()
+{
+	SetClipboardText(ui->serverIpLineEdit->text());
+	ui->serverIpLineEdit->selectAll();
+}
+
+void ConnectInfo::CopyServerPortButtonClicked()
+{
+	SetClipboardText(ui->serverPortLineEdit->text());
+	ui->serverPortLineEdit->selectAll();
+}
+
+void ConnectInfo::CopyServerPasswordButtonClicked()
+{
+	SetClipboardText(ui->serverPasswordLineEdit->text());
+	ui->serverPasswordLineEdit->selectAll();
+}
+
+void ConnectInfo::SetClipboardText(QString text)
+{
+	QClipboard *clipboard = QGuiApplication::clipboard();
+	clipboard->setText(text);
+}
+
+void ConnectInfo::DrawQr(QString qrText)
+{
+	QPixmap map(230, 230);
+	map.fill(Qt::white);
+	QPainter painter(&map);
+	
+	qrcodegen::QrCode qr = qrcodegen::QrCode::encodeText(QT_TO_UTF8(qrText), qrcodegen::QrCode::Ecc::MEDIUM);
+	const int s = qr.getSize() > 0 ? qr.getSize() : 1;
+	const double w = map.width();
+	const double h = map.height();
+	const double aspect = w/h;
+	const double size = ((aspect > 1.0) ? h : w);
+	const double scale = size / (s+2);
+	painter.setPen(Qt::NoPen);
+	painter.setBrush(Qt::black);
+
+	for (int y = 0; y < s; y++) {
+		for (int x = 0; x < s; x++) {
+			const int color = qr.getModule(x, y);
+			if (0x0 != color) {
+				const double ry1 = (y + 1) * scale;
+				const double rx1 = (x + 1) * scale;
+				QRectF r(rx1, ry1, scale, scale);
+				painter.drawRects(&r, 1);
+			}
+		}
+	}
+
+	ui->qrCodeLabel->setPixmap(map);
+}

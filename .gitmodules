@@ -7,3 +7,6 @@
 [submodule "deps/json"]
 	path = deps/json
 	url = https://github.com/nlohmann/json.git
+[submodule "deps/qr"]
+	path = deps/qr
+	url = https://github.com/nayuki/QR-Code-generator.git

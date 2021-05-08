@@ -1,11 +1,8 @@
 #include <obs-module.h>
 #include <obs-frontend-api.h>
 #include <QtWidgets/QMessageBox>
-#include <QClipboard>
 #include <QDateTime>
 #include <QTime>
-#include <QPixmap>
-#include <QIcon>
 
 #include "SettingsDialog.h"
 #include "../obs-websocket.h"
@@ -17,25 +14,29 @@
 SettingsDialog::SettingsDialog(QWidget* parent) :
 	QDialog(parent, Qt::Dialog),
 	ui(new Ui::SettingsDialog),
+	connectInfo(new ConnectInfo),
 	sessionTableTimer(new QTimer)
 {
 	ui->setupUi(this);
 	ui->websocketSessionTable->horizontalHeader()->resizeSection(3, 100);
 	ui->websocketSessionTable->horizontalHeader()->resizeSection(4, 100);
 
-	connect(ui->buttonBox, &QDialogButtonBox::accepted,
-		this, &SettingsDialog::FormAccepted);
-	connect(ui->enableAuthenticationCheckBox, &QCheckBox::stateChanged,
-		this, &SettingsDialog::EnableAuthenticationCheckBoxChanged);
-	connect(ui->copyPasswordButton, &QPushButton::clicked,
-		this, &SettingsDialog::CopyPasswordButtonClicked);
 	connect(sessionTableTimer, &QTimer::timeout,
 		this, &SettingsDialog::FillSessionTable);
+	connect(ui->buttonBox, &QDialogButtonBox::clicked,
+		this, &SettingsDialog::DialogButtonClicked);
+	connect(ui->enableAuthenticationCheckBox, &QCheckBox::stateChanged,
+		this, &SettingsDialog::EnableAuthenticationCheckBoxChanged);
+	connect(ui->generatePasswordButton, &QPushButton::clicked,
+		this, &SettingsDialog::GeneratePasswordButtonClicked);
+	connect(ui->showConnectInfoButton, &QPushButton::clicked,
+		this, &SettingsDialog::ShowConnectInfoButtonClicked);
 }
 
 SettingsDialog::~SettingsDialog()
 {
 	delete ui;
+	delete connectInfo;
 	delete sessionTableTimer;
 }
 
@@ -43,7 +44,7 @@ void SettingsDialog::showEvent(QShowEvent *event)
 {
 	auto conf = GetConfig();
 	if (!conf) {
-		blog(LOG_ERROR, "[showEvent] Unable to retreive config!");
+		blog(LOG_ERROR, "[SettingsDialog::showEvent] Unable to retreive config!");
 		return;
 	}
 
@@ -73,6 +74,8 @@ void SettingsDialog::closeEvent(QCloseEvent *event)
 {
 	if (sessionTableTimer->isActive())
 		sessionTableTimer->stop();
+
+	connectInfo->hide();
 }
 
 void SettingsDialog::ToggleShowHide()
@@ -83,11 +86,61 @@ void SettingsDialog::ToggleShowHide()
 		setVisible(false);
 }
 
+void SettingsDialog::DialogButtonClicked(QAbstractButton *button)
+{
+	if (button == ui->buttonBox->button(QDialogButtonBox::Ok)) {
+		SaveFormData();
+	} else if (button == ui->buttonBox->button(QDialogButtonBox::Apply)) {
+		SaveFormData();
+	}
+}
+
+void SettingsDialog::SaveFormData()
+{
+	connectInfo->hide();
+
+	auto conf = GetConfig();
+	if (!conf) {
+		blog(LOG_ERROR, "[SettingsDialog::SaveFormData] Unable to retreive config!");
+		return;
+	}
+
+	bool needsRestart = false;
+
+	// I decided not to restart the server if debug is changed. Might mess with peoples' scripts
+	if (conf->ServerEnabled != ui->enableWebSocketServerCheckBox->isChecked()) {
+		needsRestart = true;
+	} else if (conf->AuthRequired != ui->enableAuthenticationCheckBox->isChecked()) {
+		needsRestart = true;
+	} else if (conf->ServerPassword != ui->serverPasswordLineEdit->text()) {
+		needsRestart = true;
+	} else if (conf->ServerPort != ui->serverPortSpinBox->value()) {
+		needsRestart = true;
+	}
+
+	conf->ServerEnabled = ui->enableWebSocketServerCheckBox->isChecked();
+	conf->AlertsEnabled = ui->enableSystemTrayAlertsCheckBox->isChecked();
+	conf->DebugEnabled = ui->enableDebugLoggingCheckBox->isChecked();
+	conf->AuthRequired = ui->enableAuthenticationCheckBox->isChecked();
+	conf->ServerPassword = ui->serverPasswordLineEdit->text();
+	conf->ServerPort = ui->serverPortSpinBox->value();
+
+	conf->Save();
+
+	if (needsRestart) {
+		auto server = GetWebSocketServer();
+		server->Stop();
+		if (conf->ServerEnabled) {
+			server->Start();
+		}
+	}
+}
+
 void SettingsDialog::FillSessionTable()
 {
 	auto webSocketServer = GetWebSocketServer();
 	if (!webSocketServer) {
-		blog(LOG_ERROR, "[FillSessionTable] Unable to fetch websocket server instance!");
+		blog(LOG_ERROR, "[SettingsDialog::FillSessionTable] Unable to fetch websocket server instance!");
 		return;
 	}
 
@@ -142,59 +195,28 @@ void SettingsDialog::FillSessionTable()
 	}
 }
 
-void SettingsDialog::FormAccepted()
-{
-	auto conf = GetConfig();
-	if (!conf) {
-		blog(LOG_ERROR, "[FormAccepted] Unable to retreive config!");
-		return;
-	}
-
-	bool needsRestart = false;
-
-	// I decided not to restart the server if debug is changed. Might mess with peoples' scripts
-	if (conf->ServerEnabled != ui->enableWebSocketServerCheckBox->isChecked()) {
-		needsRestart = true;
-	} else if (conf->AuthRequired != ui->enableAuthenticationCheckBox->isChecked()) {
-		needsRestart = true;
-	} else if (conf->ServerPassword != ui->serverPasswordLineEdit->text()) {
-		needsRestart = true;
-	} else if (conf->ServerPort != ui->serverPortSpinBox->value()) {
-		needsRestart = true;
-	}
-
-	conf->ServerEnabled = ui->enableWebSocketServerCheckBox->isChecked();
-	conf->AlertsEnabled = ui->enableSystemTrayAlertsCheckBox->isChecked();
-	conf->DebugEnabled = ui->enableDebugLoggingCheckBox->isChecked();
-	conf->AuthRequired = ui->enableAuthenticationCheckBox->isChecked();
-	conf->ServerPassword = ui->serverPasswordLineEdit->text();
-	conf->ServerPort = ui->serverPortSpinBox->value();
-
-	conf->Save();
-
-	if (needsRestart) {
-		auto server = GetWebSocketServer();
-		server->Stop();
-		if (conf->ServerEnabled) {
-			server->Start();
-		}
-	}
-}
-
 void SettingsDialog::EnableAuthenticationCheckBoxChanged()
 {
 	if (ui->enableAuthenticationCheckBox->isChecked()) {
 		ui->serverPasswordLineEdit->setEnabled(true);
-		ui->copyPasswordButton->setEnabled(true);
+		ui->generatePasswordButton->setEnabled(true);
 	} else {
 		ui->serverPasswordLineEdit->setEnabled(false);
-		ui->copyPasswordButton->setEnabled(false);
+		ui->generatePasswordButton->setEnabled(false);
 	}
 }
 
-void SettingsDialog::CopyPasswordButtonClicked()
+void SettingsDialog::GeneratePasswordButtonClicked()
 {
-	QClipboard *clipboard = QGuiApplication::clipboard();
-	clipboard->setText(ui->serverPasswordLineEdit->text());
+	QString newPassword = Utils::Crypto::GeneratePassword();
+	ui->serverPasswordLineEdit->setText(newPassword);
 	ui->serverPasswordLineEdit->selectAll();
+}
+
+void SettingsDialog::ShowConnectInfoButtonClicked()
+{
+	connectInfo->show();
+	connectInfo->activateWindow();
+	connectInfo->raise();
+	connectInfo->setFocus();
 }

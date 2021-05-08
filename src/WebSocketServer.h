@@ -74,8 +74,6 @@ class WebSocketServer : QObject
 			return &_threadPool;
 		}
 
-		QString GetConnectString();
-
 		bool AuthenticationRequired;
 		std::string AuthenticationSecret;
 		std::string AuthenticationSalt;

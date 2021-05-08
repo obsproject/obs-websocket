@@ -53,3 +53,25 @@ bool Utils::Crypto::CheckAuthenticationString(std::string secret, std::string ch
 
 	return (authenticationString == expectedAuthenticationString);
 }
+
+QString Utils::Crypto::GeneratePassword(size_t length)
+{
+	QString ret;
+	int rand;
+
+	for (size_t i = 0; i < length; i++) {
+		while (true) {
+			rand = qrand() % ((0x7a + 1) - 0x30) + 0x30;
+			if (
+				(rand >= 0x30 && rand <= 0x39) ||
+				(rand >= 0x41 && rand <= 0x5A) ||
+				(rand >= 0x61 && rand <= 0x7A)
+			)
+				break;
+		}
+
+		ret += QString(rand);
+	}
+
+	return ret;
+}

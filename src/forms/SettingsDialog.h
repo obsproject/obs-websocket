@@ -3,6 +3,7 @@
 #include <QtWidgets/QDialog>
 #include <QTimer>
 
+#include "ConnectInfo.h"
 #include "ui_SettingsDialog.h"
 
 class SettingsDialog : public QDialog
@@ -17,12 +18,15 @@ public:
 	void ToggleShowHide();
 
 private Q_SLOTS:
-	void FormAccepted();
-	void EnableAuthenticationCheckBoxChanged();
-	void CopyPasswordButtonClicked();
+	void DialogButtonClicked(QAbstractButton *button);
+	void SaveFormData();
 	void FillSessionTable();
+	void EnableAuthenticationCheckBoxChanged();
+	void GeneratePasswordButtonClicked();
+	void ShowConnectInfoButtonClicked();
 
 private:
 	Ui::SettingsDialog *ui;
+	ConnectInfo *connectInfo;
 	QTimer *sessionTableTimer;
 };

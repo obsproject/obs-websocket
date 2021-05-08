@@ -14,6 +14,7 @@ class Config {
 		bool PortOverridden;
 		bool PasswordOverridden;
 
+		bool FirstLoad;
 		bool ServerEnabled;
 		uint16_t ServerPort;
 		bool DebugEnabled;

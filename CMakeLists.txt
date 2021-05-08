@@ -79,10 +79,12 @@ set(obs-websocket_SOURCES
 	src/requesthandler/rpc/Request.cpp
     src/requesthandler/rpc/RequestResult.cpp
 	src/forms/SettingsDialog.cpp
+    src/forms/ConnectInfo.cpp
 	src/utils/Json.cpp
     src/utils/Crypto.cpp
     src/utils/Platform.cpp
-    src/utils/Obs.cpp)
+    src/utils/Obs.cpp
+    deps/qr/cpp/QrCode.cpp)
 
 set(obs-websocket_HEADERS
 	src/obs-websocket.h
@@ -95,7 +97,9 @@ set(obs-websocket_HEADERS
     src/requesthandler/rpc/RequestResult.h
     src/requesthandler/rpc/RequestStatus.h
 	src/forms/SettingsDialog.h
-	src/utils/Utils.h)
+    src/forms/ConnectInfo.h
+	src/utils/Utils.h
+    deps/qr/cpp/QrCode.hpp)
 
 
 # Platform-independent build settings

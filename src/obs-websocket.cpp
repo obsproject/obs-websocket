@@ -5,6 +5,7 @@
 #include <QtCore/QTimer>
 #include <QtWidgets/QAction>
 #include <QtWidgets/QMainWindow>
+#include <QTime>
 
 #include "obs-websocket.h"
 #include "Config.h"
@@ -40,6 +41,10 @@ bool obs_module_load(void)
 	blog(LOG_INFO, "[obs_module_load] Qt version (compile-time): %s | Qt version (run-time): %s",
 		QT_VERSION_STR, qVersion());
 
+	// Randomize the random number generator
+	qsrand(QTime::currentTime().msec());
+
+	// Create the config object then load the parameters from storage
 	_config = ConfigPtr(new Config());
 	_config->Load();
 
@@ -67,6 +72,7 @@ void obs_module_unload()
 {
 	blog(LOG_INFO, "[obs_module_unload] Shutting down...");
 
+	_config->FirstLoad = false;
 	_config->Save();
 
 	if (_webSocketServer->IsListening()) {

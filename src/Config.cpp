@@ -7,6 +7,7 @@
 
 #define CONFIG_SECTION_NAME "OBSWebSocket"
 
+#define PARAM_FIRSTLOAD "FirstLoad"
 #define PARAM_ENABLED "ServerEnabled"
 #define PARAM_PORT "ServerPort"
 #define PARAM_DEBUG "DebugEnabled"
@@ -17,14 +18,8 @@
 #define CMDLINE_WEBSOCKET_PORT "websocket_port"
 #define CMDLINE_WEBSOCKET_PASSWORD "websocket_password"
 
-std::vector<std::string> GetCmdlineArgs()
-{
-	struct obs_cmdline_args args = obs_get_cmdline_args();
-	std::vector<std::string> ret(args.argv + 1, args.argv + args.argc);
-	return ret;
-}
-
 Config::Config() :
+	FirstLoad(true),
 	PortOverridden(false),
 	PasswordOverridden(false),
 	ServerEnabled(true),
@@ -45,6 +40,7 @@ void Config::Load()
 		return;
 	}
 
+	FirstLoad = config_get_bool(obsConfig, CONFIG_SECTION_NAME, PARAM_FIRSTLOAD);
 	ServerEnabled = config_get_bool(obsConfig, CONFIG_SECTION_NAME, PARAM_ENABLED);
 	DebugEnabled = config_get_bool(obsConfig, CONFIG_SECTION_NAME, PARAM_DEBUG);
 	AlertsEnabled = config_get_bool(obsConfig, CONFIG_SECTION_NAME, PARAM_ALERTS);
@@ -72,7 +68,11 @@ void Config::Load()
 		ServerPassword = passwordArgument;
 	} else {
 		AuthRequired = config_get_bool(obsConfig, CONFIG_SECTION_NAME, PARAM_AUTHREQUIRED);
-		ServerPassword = config_get_string(obsConfig, CONFIG_SECTION_NAME, PARAM_PASSWORD);
+		if (FirstLoad) {
+			ServerPassword = Utils::Crypto::GeneratePassword();
+		} else {
+			ServerPassword = config_get_string(obsConfig, CONFIG_SECTION_NAME, PARAM_PASSWORD);
+		}
 	}
 }
 
@@ -84,6 +84,7 @@ void Config::Save()
 		return;
 	}
 
+	config_set_bool(obsConfig, CONFIG_SECTION_NAME, PARAM_FIRSTLOAD, FirstLoad);
 	config_set_bool(obsConfig, CONFIG_SECTION_NAME, PARAM_ENABLED, ServerEnabled);
 	if (!PortOverridden) {
 		config_set_uint(obsConfig, CONFIG_SECTION_NAME, PARAM_PORT, ServerPort);
@@ -106,6 +107,7 @@ void Config::SetDefaultsToGlobalStore()
 		return;
 	}
 
+	config_set_default_bool(obsConfig, CONFIG_SECTION_NAME, PARAM_FIRSTLOAD, FirstLoad);
 	config_set_default_bool(obsConfig, CONFIG_SECTION_NAME, PARAM_ENABLED, ServerEnabled);
 	config_set_default_uint(obsConfig, CONFIG_SECTION_NAME, PARAM_PORT, ServerPort);
 	config_set_default_bool(obsConfig, CONFIG_SECTION_NAME, PARAM_DEBUG, DebugEnabled);

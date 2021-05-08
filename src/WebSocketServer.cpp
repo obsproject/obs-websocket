@@ -2,7 +2,6 @@
 #include <thread>
 #include <QtConcurrent>
 #include <QDateTime>
-#include <QTime>
 
 #include "obs-websocket.h"
 
@@ -16,9 +15,6 @@ WebSocketServer::WebSocketServer() :
 	QObject(nullptr),
 	_sessions()
 {
-	// Randomize the random number generator
-	qsrand(QTime::currentTime().msec());
-
 	_server.get_alog().clear_channels(websocketpp::log::alevel::all);
 	_server.get_elog().clear_channels(websocketpp::log::elevel::all);
 	_server.init_asio();
@@ -187,16 +183,6 @@ std::vector<WebSocketServer::WebSocketSessionState> WebSocketServer::GetWebSocke
 	lock.unlock();
 
 	return webSocketSessions;
-}
-
-QString WebSocketServer::GetConnectString()
-{
-	QString ret;
-	if (AuthenticationRequired)
-		ret = QString("obswebsocket|%1:%2|%3").arg(QString::fromStdString(Utils::Platform::GetLocalAddress())).arg(_serverPort).arg(_serverPassword);
-	else
-		ret = QString("obswebsocket|%1:%2").arg(QString::fromStdString(Utils::Platform::GetLocalAddress())).arg(_serverPort);
-	return ret;
 }
 
 // It isn't consistent to directly call the WebSocketServer from the events system, but it would also be dumb to make it unnecessarily complicated.
