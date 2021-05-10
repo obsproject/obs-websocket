@@ -74,6 +74,7 @@ set(obs-websocket_SOURCES
 	src/WebSocketServer.cpp
     src/WebSocketProtocol.cpp
     src/WebSocketSession.cpp
+    src/eventhandler/EventHandler.cpp
 	src/requesthandler/RequestHandler.cpp
     src/requesthandler/RequestHandler_General.cpp
 	src/requesthandler/rpc/Request.cpp
@@ -92,6 +93,7 @@ set(obs-websocket_HEADERS
 	src/WebSocketServer.h
     src/WebSocketProtocol.h
     src/WebSocketSession.h
+    src/eventhandler/EventHandler.h
 	src/requesthandler/RequestHandler.h
 	src/requesthandler/rpc/Request.h
     src/requesthandler/rpc/RequestResult.h

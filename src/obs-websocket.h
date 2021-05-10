@@ -32,6 +32,11 @@ typedef std::shared_ptr<Config> ConfigPtr;
 class WebSocketServer;
 typedef std::shared_ptr<WebSocketServer> WebSocketServerPtr;
 
+class EventHandler;
+typedef std::shared_ptr<EventHandler> EventHandlerPtr;
+
 ConfigPtr GetConfig();
 
 WebSocketServerPtr GetWebSocketServer();
+
+EventHandlerPtr GetEventHandler();

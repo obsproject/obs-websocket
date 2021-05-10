@@ -10,6 +10,7 @@
 #include "obs-websocket.h"
 #include "Config.h"
 #include "WebSocketServer.h"
+#include "eventhandler/EventHandler.h"
 #include "forms/SettingsDialog.h"
 
 #include "plugin-macros.generated.h"
