@@ -21,7 +21,6 @@ void ___sceneitem_dummy_addref(obs_sceneitem_t*) {}
 void ___data_dummy_addref(obs_data_t*) {}
 void ___data_array_dummy_addref(obs_data_array_t*) {}
 void ___output_dummy_addref(obs_output_t*) {}
-
 void ___data_item_dummy_addref(obs_data_item_t*) {}
 void ___data_item_release(obs_data_item_t* dataItem)
 {
@@ -34,6 +33,7 @@ OBS_MODULE_USE_DEFAULT_LOCALE("obs-websocket", "en-US")
 
 ConfigPtr _config;
 WebSocketServerPtr _webSocketServer;
+EventHandlerPtr _eventHandler;
 SettingsDialog *_settingsDialog = nullptr;
 
 bool obs_module_load(void)
@@ -50,6 +50,8 @@ bool obs_module_load(void)
 	_config->Load();
 
 	_webSocketServer = WebSocketServerPtr(new WebSocketServer());
+
+	_eventHandler = EventHandlerPtr(new EventHandler(_webSocketServer));
 
 	obs_frontend_push_ui_translation(obs_module_get_string);
 	QMainWindow* mainWindow = (QMainWindow*)obs_frontend_get_main_window();
@@ -73,16 +75,18 @@ void obs_module_unload()
 {
 	blog(LOG_INFO, "[obs_module_unload] Shutting down...");
 
-	_config->FirstLoad = false;
-	_config->Save();
-
 	if (_webSocketServer->IsListening()) {
 		blog(LOG_INFO, "[obs_module_unload] WebSocket server is running. Stopping...");
 		_webSocketServer->Stop();
 	}
-
-	_config.reset();
 	_webSocketServer.reset();
+
+	_eventHandler.reset();
+
+	_config->FirstLoad = false;
+	_config->Save();
+	_config.reset();
+
 	blog(LOG_INFO, "[obs_module_unload] Finished shutting down.");
 }
 
@@ -94,4 +98,9 @@ ConfigPtr GetConfig()
 WebSocketServerPtr GetWebSocketServer()
 {
 	return _webSocketServer;
+}
+
+EventHandlerPtr GetEventHandler()
+{
+	return _eventHandler;
 }
