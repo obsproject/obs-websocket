@@ -25,5 +25,8 @@ class EventHandler
 		WebSocketServerPtr _webSocketServer;
 		os_cpu_usage_info_t *_cpuUsageInfo;
 
+		void ConnectSourceSignals(obs_source_t *source);
+		void DisconnectSourceSignals(obs_source_t *source);
+
 		static void OnFrontendEvent(enum obs_frontend_event event, void *private_data);
 };

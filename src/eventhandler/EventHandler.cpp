@@ -1,18 +1,52 @@
 #include "EventHandler.h"
 
+#include "../plugin-macros.generated.h"
+
 EventHandler::EventHandler(WebSocketServerPtr webSocketServer) :
 	_webSocketServer(webSocketServer)
 {
+	blog(LOG_INFO, "[EventHandler::EventHandler] Setting up event handlers...");
+
 	_cpuUsageInfo = os_cpu_usage_info_start();
 
 	obs_frontend_add_event_callback(EventHandler::OnFrontendEvent, this);
+
+	signal_handler_t* coreSignalHandler = obs_get_signal_handler();
+	if (coreSignalHandler) {
+		//signal_handler_connect(coreSignalHandler, "source_create", OnSourceCreate, this);
+		//signal_handler_connect(coreSignalHandler, "source_destroy", OnSourceDestroy, this);
+	}
+
+	obs_enum_sources([](void* param, obs_source_t* source) {
+		auto eventHandler = reinterpret_cast<EventHandler*>(param);
+		eventHandler->ConnectSourceSignals(source);
+		return true;
+	}, this);
+
+	blog(LOG_INFO, "[EventHandler::EventHandler] Finished.");
 }
 
 EventHandler::~EventHandler()
 {
+	blog(LOG_INFO, "[EventHandler::~EventHandler] Removing event handlers...");
+
 	os_cpu_usage_info_destroy(_cpuUsageInfo);
 
 	obs_frontend_remove_event_callback(EventHandler::OnFrontendEvent, this);
+
+	signal_handler_t* coreSignalHandler = obs_get_signal_handler();
+	if (coreSignalHandler) {
+		//signal_handler_disconnect(coreSignalHandler, "source_destroy", OnSourceDestroy, this);
+		//signal_handler_disconnect(coreSignalHandler, "source_create", OnSourceCreate, this);
+	}
+
+	obs_enum_sources([](void* param, obs_source_t* source) {
+		auto eventHandler = reinterpret_cast<EventHandler*>(param);
+		eventHandler->DisconnectSourceSignals(source);
+		return true;
+	}, this);
+
+	blog(LOG_INFO, "[EventHandler::~EventHandler] Finished.");
 }
 
 std::string EventHandler::GetCalldataString(const calldata_t *data, const char* name)
@@ -20,6 +54,24 @@ std::string EventHandler::GetCalldataString(const calldata_t *data, const char* 
 	const char* value = nullptr;
 	calldata_get_string(data, name, &value);
 	return value;
+}
+
+void EventHandler::ConnectSourceSignals(obs_source_t *source)
+{
+	if (!source || obs_source_removed(source))
+		return;
+
+	DisconnectSourceSignals(source);
+
+	signal_handler_t* sh = obs_source_get_signal_handler(source);
+}
+	
+void EventHandler::DisconnectSourceSignals(obs_source_t *source)
+{
+	if (!source)
+		return;
+
+	signal_handler_t* sh = obs_source_get_signal_handler(source);
 }
 
 void EventHandler::OnFrontendEvent(enum obs_frontend_event event, void *private_data) {
