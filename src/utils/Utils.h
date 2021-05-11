@@ -1,9 +1,9 @@
 #pragma once
 
+#include <obs.hpp>
 #include <string>
 #include <QString>
 #include <nlohmann/json.hpp>
-#include <obs-data.h>
 
 using json = nlohmann::json;
 
@@ -27,6 +27,10 @@ namespace Utils {
 	}
 
 	namespace Obs {
-		;
+		namespace DataHelper {
+			std::string GetSourceTypeString(obs_source_t *source);
+			std::string GetSourceMonitorTypeString(obs_source_t *source);
+			std::string GetSourceMediaStateString(obs_source_t *source);
+		}
 	}
 }
