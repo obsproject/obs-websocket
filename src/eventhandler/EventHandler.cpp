@@ -15,6 +15,13 @@ EventHandler::~EventHandler()
 	obs_frontend_remove_event_callback(EventHandler::OnFrontendEvent, this);
 }
 
+std::string EventHandler::GetCalldataString(const calldata_t *data, const char* name)
+{
+	const char* value = nullptr;
+	calldata_get_string(data, name, &value);
+	return value;
+}
+
 void EventHandler::OnFrontendEvent(enum obs_frontend_event event, void *private_data) {
 	auto eventHandler = reinterpret_cast<EventHandler*>(private_data);
 

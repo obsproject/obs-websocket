@@ -13,6 +13,14 @@ class EventHandler
 		EventHandler(WebSocketServerPtr webSocketServer);
 		~EventHandler();
 
+		template <typename T> T* GetCalldataPointer(const calldata_t *data, const char* name) {
+			void* ptr = nullptr;
+			calldata_get_ptr(data, name, &ptr);
+			return reinterpret_cast<T*>(ptr);
+		}
+
+		static std::string GetCalldataString(const calldata_t *data, const char* name);
+
 	private:
 		WebSocketServerPtr _webSocketServer;
 		os_cpu_usage_info_t *_cpuUsageInfo;
