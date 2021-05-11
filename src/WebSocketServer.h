@@ -79,7 +79,7 @@ class WebSocketServer : QObject
 		std::string AuthenticationSalt;
 
 	public Q_SLOTS:
-		void BroadcastEvent(uint64_t requiredIntent, std::string eventType, json eventData = nullptr);
+		void BroadcastEvent(uint64_t requiredIntent, std::string eventType, json eventData = nullptr, uint8_t rpcVersion = 0);
 
 	signals:
 		void ClientIdentified(const WebSocketSessionState state);

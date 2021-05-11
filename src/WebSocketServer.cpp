@@ -186,7 +186,7 @@ std::vector<WebSocketServer::WebSocketSessionState> WebSocketServer::GetWebSocke
 }
 
 // It isn't consistent to directly call the WebSocketServer from the events system, but it would also be dumb to make it unnecessarily complicated.
-void WebSocketServer::BroadcastEvent(uint64_t requiredIntent, std::string eventType, json eventData)
+void WebSocketServer::BroadcastEvent(uint64_t requiredIntent, std::string eventType, json eventData, uint8_t rpcVersion)
 {
 	if (!_server.is_listening())
 		return;
@@ -207,6 +207,9 @@ void WebSocketServer::BroadcastEvent(uint64_t requiredIntent, std::string eventT
 		std::unique_lock<std::mutex> lock(_sessionMutex);
 		for (auto & it : _sessions) {
 			if (!it.second->IsIdentified()) {
+				continue;
+			}
+			if (rpcVersion && it.second->RpcVersion() != rpcVersion) {
 				continue;
 			}
 			if ((it.second->EventSubscriptions() & requiredIntent) != 0) {
