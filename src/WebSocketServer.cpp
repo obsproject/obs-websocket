@@ -188,6 +188,9 @@ std::vector<WebSocketServer::WebSocketSessionState> WebSocketServer::GetWebSocke
 // It isn't consistent to directly call the WebSocketServer from the events system, but it would also be dumb to make it unnecessarily complicated.
 void WebSocketServer::BroadcastEvent(uint64_t requiredIntent, std::string eventType, json eventData)
 {
+	if (!_server.is_listening())
+		return;
+
 	QtConcurrent::run(&_threadPool, [=]() {
 		// Populate message object
 		json eventMessage;
