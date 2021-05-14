@@ -242,10 +242,3 @@ std::vector<std::string> WebSocketProtocol::GetRequestList()
 
 	return requestHandler.GetRequestList();
 }
-
-std::vector<std::string> WebSocketProtocol::GetEventList()
-{
-	std::vector<std::string> ret;
-
-	return ret;
-}

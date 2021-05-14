@@ -273,7 +273,6 @@ void WebSocketServer::onOpen(websocketpp::connection_hdl hdl)
 	helloMessage["obsWebSocketVersion"] = OBS_WEBSOCKET_VERSION;
 	helloMessage["rpcVersion"] = OBS_WEBSOCKET_RPC_VERSION;
 	helloMessage["availableRequests"] = WebSocketProtocol::GetRequestList();
-	helloMessage["availableEvents"] = WebSocketProtocol::GetEventList();
 	if (AuthenticationRequired) {
 		session->SetSecret(AuthenticationSecret);
 		std::string sessionChallenge = Utils::Crypto::GenerateSalt();
