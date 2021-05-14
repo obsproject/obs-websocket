@@ -6,7 +6,7 @@
 
 #include "../obs-websocket.h"
 #include "../WebSocketServer.h"
-#include "types/EventSubscriptions.h"
+#include "types/EventSubscription.h"
 
 template <typename T> T* GetCalldataPointer(const calldata_t *data, const char* name) {
 	void* ptr = nullptr;
@@ -26,6 +26,8 @@ class EventHandler
 		WebSocketServerPtr _webSocketServer;
 		os_cpu_usage_info_t *_cpuUsageInfo;
 
+		std::atomic<bool> _obsLoaded;
+
 		void ConnectSourceSignals(obs_source_t *source);
 		void DisconnectSourceSignals(obs_source_t *source);
 
@@ -34,10 +36,12 @@ class EventHandler
 
 		// Signal handler: libobs
 		static void SourceCreatedMultiHandler(void *param, calldata_t *data);
+		static void SourceDestroyedMultiHandler(void *param, calldata_t *data);
 		static void SourceRemovedMultiHandler(void *param, calldata_t *data);
 
 		// Signal handler: source
 		static void SourceRenamedMultiHandler(void *param, calldata_t *data);
+
 
 		// General
 		void HandleExitStarted();
@@ -56,4 +60,15 @@ class EventHandler
 		void HandleCurrentSceneChanged();
 		void HandleCurrentPreviewSceneChanged();
 		void HandleSceneListReindexed();
+
+		// Inputs
+		void HandleInputCreated(obs_source_t *source);
+		void HandleInputRemoved(obs_source_t *source);
+		void HandleInputNameChanged(obs_source_t *source, std::string oldInputName, std::string inputName);
+		static void HandleInputActiveStateChanged(void *param, calldata_t *data); // Direct callback
+		static void HandleInputShowStateChanged(void *param, calldata_t *data); // Direct callback
+		static void HandleInputMuteStateChanged(void *param, calldata_t *data); // Direct callback
+		static void HandleInputVolumeChanged(void *param, calldata_t *data); // Direct callback
+		static void HandleInputAudioSyncOffsetChanged(void *param, calldata_t *data); // Direct callback
+		static void HandleInputAudioTracksChanged(void *param, calldata_t *data); // Direct callback
 };

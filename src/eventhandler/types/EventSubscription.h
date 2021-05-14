@@ -1,7 +1,7 @@
 #pragma once
 
-namespace EventSubscriptions {
-	enum EventSubscriptions {
+namespace EventSubscription {
+	enum EventSubscription {
 		// Set subscriptions to 0 to disable all events
 		None = 0,
 		// Receive events in the `General` category
@@ -24,5 +24,7 @@ namespace EventSubscriptions {
 		MediaInputs = (1 << 8),
 		// Receive all event categories
 		All = (General | Config | Scenes | Inputs | Transitions | Filters | Outputs | SceneItems | MediaInputs),
+		// InputVolumeMeters event (high-volume)
+		InputVolumeMeters = (1 << 9),
 	};
 };

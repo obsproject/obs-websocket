@@ -1,5 +1,5 @@
 #include "WebSocketSession.h"
-#include "eventhandler/types/EventSubscriptions.h"
+#include "eventhandler/types/EventSubscription.h"
 
 #include "plugin-macros.generated.h"
 
@@ -14,7 +14,7 @@ WebSocketSession::WebSocketSession() :
 	_isIdentified(false),
 	_ignoreInvalidMessages(false),
 	_ignoreNonFatalRequestChecks(false),
-	_eventSubscriptions(EventSubscriptions::All)
+	_eventSubscriptions(EventSubscription::All)
 {
 }
 

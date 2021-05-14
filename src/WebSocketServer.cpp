@@ -8,6 +8,7 @@
 #include "WebSocketServer.h"
 #include "WebSocketProtocol.h"
 #include "Config.h"
+#include "eventhandler/types/EventSubscription.h"
 
 #include "plugin-macros.generated.h"
 
@@ -236,7 +237,7 @@ void WebSocketServer::BroadcastEvent(uint64_t requiredIntent, std::string eventT
 			}
 		}
 		lock.unlock();
-		if (_debugEnabled)
+		if (_debugEnabled && (EventSubscription::All & requiredIntent) != 0) // Don't log high volume events
 			blog(LOG_INFO, "[WebSocketServer::BroadcastEvent] Outgoing event:\n%s", eventMessage.dump(2).c_str());
 	});
 }
