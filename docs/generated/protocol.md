@@ -249,7 +249,7 @@ enum WebSocketCloseCode {
 
 #### EventSubscriptions Enum
 ```cpp
-enum EventSubscriptions {
+enum EventSubscription {
     // Set subscriptions to 0 to disable all events
     None = 0,
     // Receive events in the `General` category
@@ -346,7 +346,7 @@ Authentication is not required
   "authentication": string(optional),
   "ignoreInvalidMessages": bool(optional) = false,
   "ignoreNonFatalRequestChecks": bool(optional) = false,
-  "eventSubscriptions": number(optional) = (EventSubscriptions::All)
+  "eventSubscriptions": number(optional) = (EventSubscription::All)
 }
 ```
 - `rpcVersion` is the version number that the client would like the obs-websocket server to use.
@@ -399,7 +399,7 @@ Authentication is not required
 {
   "ignoreInvalidMessages": bool(optional) = false,
   "ignoreNonFatalRequestChecks": bool(optional) = false,
-  "eventSubscriptions": number(optional) = (EventSubscriptions::All)
+  "eventSubscriptions": number(optional) = (EventSubscription::All)
 }
 ```
 - Only the listed parameters may be changed after initial identification. To change a parameter not listed, you must reconnect to the obs-websocket server.
