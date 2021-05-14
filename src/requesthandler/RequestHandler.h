@@ -12,6 +12,7 @@ typedef RequestResult(RequestHandler::*RequestMethodHandler)(const Request&);
 class RequestHandler {
 	public:
 		RequestResult ProcessRequest(const Request& request);
+		std::vector<std::string> GetRequestList();
 
 	private:
 		RequestResult GetVersion(const Request&);

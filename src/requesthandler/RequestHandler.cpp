@@ -26,3 +26,13 @@ RequestResult RequestHandler::ProcessRequest(const Request& request)
 
 	return std::bind(handler, this, std::placeholders::_1)(request);
 }
+
+std::vector<std::string> RequestHandler::GetRequestList()
+{
+	std::vector<std::string> ret;
+	for (auto const& [key, val] : _handlerMap) {
+		ret.push_back(key);
+	}
+
+	return ret;
+}
