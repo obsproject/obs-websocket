@@ -27,16 +27,21 @@ namespace Utils {
 	}
 
 	namespace Obs {
-		namespace DataHelper {
+		namespace StringHelper {
 			std::string GetSourceTypeString(obs_source_t *source);
-			std::string GetSourceMonitorTypeString(obs_source_t *source);
-			std::string GetSourceMediaStateString(obs_source_t *source);
+			std::string GetInputMonitorTypeString(obs_source_t *input);
+			std::string GetMediaInputStateString(obs_source_t *input);
+		}
+
+		namespace DataHelper {
+			;
 		}
 
 		namespace ListHelper {
 			std::vector<std::string> GetSceneCollectionList();
 			std::vector<std::string> GetProfileList();
 			std::vector<json> GetSceneList();
+			std::vector<json> GetTransitionList();
 		}
 	}
 }

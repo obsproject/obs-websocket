@@ -239,9 +239,6 @@ void EventHandler::SourceDestroyedMultiHandler(void *param, calldata_t *data)
 {
 	auto eventHandler = reinterpret_cast<EventHandler*>(param);
 
-	if (!eventHandler->_obsLoaded.load())
-		return;
-
 	// We can't use any smart types because releasing the source will cause infinite recursion
 	obs_source_t *source = GetCalldataPointer<obs_source_t>(data, "source");
 	if (!source)
@@ -249,6 +246,9 @@ void EventHandler::SourceDestroyedMultiHandler(void *param, calldata_t *data)
 
 	// Disconnect all signals from the source
 	eventHandler->DisconnectSourceSignals(source);
+
+	if (!eventHandler->_obsLoaded.load())
+		return;
 
 	switch (obs_source_get_type(source)) {
 		case OBS_SOURCE_TYPE_INPUT:

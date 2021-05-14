@@ -20,7 +20,6 @@ void EventHandler::HandleInputRemoved(obs_source_t *source)
 {
 	json eventData;
 	eventData["inputName"] = obs_source_get_name(source);
-	eventData["inputKind"] = obs_source_get_id(source);
 	_webSocketServer->BroadcastEvent(EventSubscription::Inputs, "InputRemoved", eventData);
 }
 

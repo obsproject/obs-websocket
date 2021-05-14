@@ -71,4 +71,9 @@ class EventHandler
 		static void HandleInputVolumeChanged(void *param, calldata_t *data); // Direct callback
 		static void HandleInputAudioSyncOffsetChanged(void *param, calldata_t *data); // Direct callback
 		static void HandleInputAudioTracksChanged(void *param, calldata_t *data); // Direct callback
+
+		// Transitions
+		void HandleTransitionCreated(obs_source_t *source);
+		void HandleTransitionRemoved(obs_source_t *source);
+		void HandleTransitionNameChanged(obs_source_t *source, std::string oldTransitionName, std::string transitionName);
 };
