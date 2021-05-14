@@ -4,8 +4,15 @@
 
 void EventHandler::HandleInputCreated(obs_source_t *source)
 {
+	std::string inputKind = obs_source_get_id(source);
+	OBSDataAutoRelease inputSettings = obs_source_get_settings(source);
+	OBSDataAutoRelease defaultInputSettings = obs_get_source_defaults(inputKind.c_str());
+
 	json eventData;
 	eventData["inputName"] = obs_source_get_name(source);
+	eventData["inputKind"] = inputKind;
+	eventData["inputSettings"] = Utils::Json::ObsDataToJson(inputSettings);
+	eventData["defaultInputSettings"] = Utils::Json::ObsDataToJson(defaultInputSettings, true);
 	_webSocketServer->BroadcastEvent(EventSubscription::Inputs, "InputCreated", eventData);
 }
 
@@ -13,6 +20,7 @@ void EventHandler::HandleInputRemoved(obs_source_t *source)
 {
 	json eventData;
 	eventData["inputName"] = obs_source_get_name(source);
+	eventData["inputKind"] = obs_source_get_id(source);
 	_webSocketServer->BroadcastEvent(EventSubscription::Inputs, "InputRemoved", eventData);
 }
 
