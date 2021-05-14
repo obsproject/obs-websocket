@@ -94,6 +94,7 @@ set(obs-websocket_HEADERS
     src/WebSocketProtocol.h
     src/WebSocketSession.h
     src/eventhandler/EventHandler.h
+    src/eventhandler/types/EventSubscriptions.h
 	src/requesthandler/RequestHandler.h
 	src/requesthandler/rpc/Request.h
     src/requesthandler/rpc/RequestResult.h

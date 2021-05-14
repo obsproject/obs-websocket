@@ -6,6 +6,7 @@
 
 #include "../obs-websocket.h"
 #include "../WebSocketServer.h"
+#include "types/EventSubscriptions.h"
 
 class EventHandler
 {
