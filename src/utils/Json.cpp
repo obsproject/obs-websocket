@@ -117,7 +117,7 @@ void set_json_array(json *j, const char *name, obs_data_item_t *item, bool inclu
 
 json Utils::Json::ObsDataToJson(obs_data_t *d, bool includeDefault)
 {
-	json j;
+	json j = json::object();
 	obs_data_item_t *item = nullptr;
 
 	for (item = obs_data_first(d); item; obs_data_item_next(&item)) {
