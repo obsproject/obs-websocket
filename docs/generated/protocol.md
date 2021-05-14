@@ -103,123 +103,123 @@ These are the enumeration definitions for various codes used by obs-websocket.
 
 #### RequestStatus Enum
 ```cpp
-enum RequestStatus: uint16_t {
-	Unknown = 0,
+enum RequestStatus {
+    Unknown = 0,
 
-	// For internal use to signify a successful parameter check
-	NoError = 10,
+    // For internal use to signify a successful parameter check
+    NoError = 10,
 
-	Success = 100,
+    Success = 100,
 
-	// The request is denied because the client is not authenticated
-	AuthenticationMissing = 200,
-	// Connection has already been authenticated (for modules utilizing a request to provide authentication)
-	AlreadyAuthenticated = 201,
-	// Authentication request was denied (for modules utilizing a request to provide authentication)
-	AuthenticationDenied = 202,
-	// The `requestType` field is missing from the request data
-	RequestTypeMissing = 203,
-	// The request type is invalid (does not exist)
-	InvalidRequestType = 204,
-	// Generic error code (comment is expected to be provided)
-	GenericError = 205,
+    // The `requestType` field is missing from the request data
+    MissingRequestType = 203,
+    // The request type is invalid (does not exist)
+    UnknownRequestType = 204,
+    // Generic error code (comment is expected to be provided)
+    GenericError = 205,
 
-	// A required request parameter is missing
-	MissingRequestParameter = 300,
+    // A required request parameter is missing
+    MissingRequestParameter = 300,
+    // The request does not have a valid requestData object.
+    MissingRequestData = 301,
 
-	// Generic invalid request parameter message
-	InvalidRequestParameter = 400,
-	// A request parameter has the wrong data type
-	InvalidRequestParameterDataType = 401,
-	// A request parameter (float or int) is out of valid range
-	RequestParameterOutOfRange = 402,
-	// A request parameter (string or array) is empty and cannot be
-	RequestParameterEmpty = 403,
+    // Generic invalid request parameter message
+    InvalidRequestParameter = 400,
+    // A request parameter has the wrong data type
+    InvalidRequestParameterDataType = 401,
+    // A request parameter (float or int) is out of valid range
+    RequestParameterOutOfRange = 402,
+    // A request parameter (string or array) is empty and cannot be
+    RequestParameterEmpty = 403,
 
-	// An output is running and cannot be in order to perform the request (generic)
-	OutputRunning = 500,
-	// An output is not running and should be
-	OutputNotRunning = 501,
-	// Stream is running and cannot be
-	StreamRunning = 502,
-	// Stream is not running and should be
-	StreamNotRunning = 503,
-	// Record is running and cannot be
-	RecordRunning = 504,
-	// Record is not running and should be
-	RecordNotRunning = 505,
-	// Record is paused and cannot be
-	RecordPaused = 506,
-	// Replay buffer is running and cannot be
-	ReplayBufferRunning = 507,
-	// Replay buffer is not running and should be
-	ReplayBufferNotRunning = 508,
-	// Replay buffer is disabled and cannot be
-	ReplayBufferDisabled = 509,
-	// Studio mode is active and cannot be
-	StudioModeActive = 510,
-	// Studio mode is not active and should be
-	StudioModeNotActive = 511,
+    // An output is running and cannot be in order to perform the request (generic)
+    OutputRunning = 500,
+    // An output is not running and should be
+    OutputNotRunning = 501,
+    // Stream is running and cannot be
+    StreamRunning = 502,
+    // Stream is not running and should be
+    StreamNotRunning = 503,
+    // Record is running and cannot be
+    RecordRunning = 504,
+    // Record is not running and should be
+    RecordNotRunning = 505,
+    // Record is paused and cannot be
+    RecordPaused = 506,
+    // Replay buffer is running and cannot be
+    ReplayBufferRunning = 507,
+    // Replay buffer is not running and should be
+    ReplayBufferNotRunning = 508,
+    // Replay buffer is disabled and cannot be
+    ReplayBufferDisabled = 509,
+    // Studio mode is active and cannot be
+    StudioModeActive = 510,
+    // Studio mode is not active and should be
+    StudioModeNotActive = 511,
+    // Virtualcam is running and cannot be
+    VirtualcamRunning = 512,
+    // Virtualcam is not running and should be
+    VirtualcamNotRunning = 513,
 
-	// The specified source (obs_source_t) was of the invalid type (Eg. input instead of scene)
-	InvalidSourceType = 600,
-	// The specified source (obs_source_t) was not found (generic for input, filter, transition, scene)
-	SourceNotFound = 601,
-	// The specified source (obs_source_t) already exists. Applicable to inputs, filters, transitions, scenes
-	SourceAlreadyExists = 602,
-	// The specified input (obs_source_t-OBS_SOURCE_TYPE_FILTER) was not found
-	InputNotFound = 603,
-	// The specified input (obs_source_t-OBS_SOURCE_TYPE_INPUT) had the wrong kind
-	InvalidInputKind = 604,
-	// The specified filter (obs_source_t-OBS_SOURCE_TYPE_FILTER) was not found
-	FilterNotFound = 605,
-	// The specified transition (obs_source_t-OBS_SOURCE_TYPE_TRANSITION) was not found
-	TransitionNotFound = 606,
-	// The specified transition (obs_source_t-OBS_SOURCE_TYPE_TRANSITION) does not support setting its position (transition is of fixed type)
-	TransitionDurationFixed = 607,
-	// The specified scene (obs_source_t-OBS_SOURCE_TYPE_SCENE), (obs_scene_t) was not found
-	SceneNotFound = 608,
-	// The specified scene item (obs_sceneitem_t) was not found
-	SceneItemNotFound = 609,
-	// The specified scene collection was not found
-	SceneCollectionNotFound = 610,
-	// The specified profile was not found
-	ProfileNotFound = 611,
-	// The specified output (obs_output_t) was not found
-	OutputNotFound = 612,
-	// The specified encoder (obs_encoder_t) was not found
-	EncoderNotFound = 613,
-	// The specified service (obs_service_t) was not found
-	ServiceNotFound = 614,
-	// The specified hotkey was not found
-	HotkeyNotFound = 615,
-	// The specified directory was not found
-	DirectoryNotFound = 616,
-	// The specified config item (obs_config_t) was not found. Could be section or parameter name.
-	ConfigParameterNotFound = 617,
-	// The specified property (obs_properties_t) was not found
-	PropertyNotFound = 618
+    // The specified source (obs_source_t) was of the invalid type (Eg. input instead of scene)
+    InvalidSourceType = 600,
+    // The specified source (obs_source_t) was not found (generic for input, filter, transition, scene)
+    SourceNotFound = 601,
+    // The specified source (obs_source_t) already exists. Applicable to inputs, filters, transitions, scenes
+    SourceAlreadyExists = 602,
+    // The specified input (obs_source_t-OBS_SOURCE_TYPE_FILTER) was not found
+    InputNotFound = 603,
+    // The specified input (obs_source_t-OBS_SOURCE_TYPE_INPUT) had the wrong kind
+    InvalidInputKind = 604,
+    // The specified filter (obs_source_t-OBS_SOURCE_TYPE_FILTER) was not found
+    FilterNotFound = 605,
+    // The specified transition (obs_source_t-OBS_SOURCE_TYPE_TRANSITION) was not found
+    TransitionNotFound = 606,
+    // The specified transition (obs_source_t-OBS_SOURCE_TYPE_TRANSITION) does not support setting its position (transition is of fixed type)
+    TransitionDurationFixed = 607,
+    // The specified scene (obs_source_t-OBS_SOURCE_TYPE_SCENE), (obs_scene_t) was not found
+    SceneNotFound = 608,
+    // The specified scene item (obs_sceneitem_t) was not found
+    SceneItemNotFound = 609,
+    // The specified scene collection was not found
+    SceneCollectionNotFound = 610,
+    // The specified profile was not found
+    ProfileNotFound = 611,
+    // The specified output (obs_output_t) was not found
+    OutputNotFound = 612,
+    // The specified encoder (obs_encoder_t) was not found
+    EncoderNotFound = 613,
+    // The specified service (obs_service_t) was not found
+    ServiceNotFound = 614,
+    // The specified hotkey was not found
+    HotkeyNotFound = 615,
+    // The specified directory was not found
+    DirectoryNotFound = 616,
+    // The specified config item (obs_config_t) was not found. Could be section or parameter name
+    ConfigParameterNotFound = 617,
+    // The specified property (obs_properties_t) was not found
+    PropertyNotFound = 618,
 
-	// Processing the request failed unexpectedly
-	RequestProcessingFailed = 700,
-	// Starting the Output failed
-	OutputStartFailed = 701,
-	// Duplicating the scene item failed
-	SceneItemDuplicationFailed = 702,
-	// Rendering the screenshot failed
-	ScreenshotRenderFailed = 703,
-	// Encoding the screenshot failed
-	ScreenshotEncodeFailed = 704,
-	// Saving the screenshot failed
-	ScreenshotSaveFailed = 705,
-	// Creating the directory failed
-	DirectoryCreationFailed = 706,
+    // Processing the request failed unexpectedly
+    RequestProcessingFailed = 700,
+    // Starting the Output failed
+    OutputStartFailed = 701,
+    // Duplicating the scene item failed
+    SceneItemDuplicationFailed = 702,
+    // Rendering the screenshot failed
+    ScreenshotRenderFailed = 703,
+    // Encoding the screenshot failed
+    ScreenshotEncodeFailed = 704,
+    // Saving the screenshot failed
+    ScreenshotSaveFailed = 705,
+    // Creating the directory failed
+    DirectoryCreationFailed = 706,
 };
 ```
 
 #### WebSocketCloseCode Enum
 ```cpp
-enum WebSocketCloseCode: uint16_t {
+enum WebSocketCloseCode {
     // Internal only
     DontClose = 0,
     // Reserved
@@ -236,8 +236,8 @@ enum WebSocketCloseCode: uint16_t {
     AuthenticationFailed = 4005,
     // There was an invalid parameter the client's `Identify` message
     InvalidIdentifyParameter = 4006,
-    // A `Request` or `RequestBatch` was missing its `requestId`
-    RequestMissingRequestId = 4007,
+    // A `Request` or `RequestBatch` was missing its `requestId` or `requestType`
+    RequestMissingRequiredField = 4007,
     // The websocket session has been invalidated by the obs-websocket server.
     SessionInvalidated = 4008,
     // The server detected the usage of an old version of the obs-websocket protocol.
@@ -249,14 +249,34 @@ enum WebSocketCloseCode: uint16_t {
 
 #### EventSubscriptions Enum
 ```cpp
-enum EventSubscriptions: uint64_t {
+enum EventSubscriptions {
+    // Set subscriptions to 0 to disable all events
     None = 0,
+    // Receive events in the `General` category
     General = (1 << 0),
-}
+    // Receive events in the `Config` category
+    Config = (1 << 1),
+    // Receive events in the `Scenes` category
+    Scenes = (1 << 2),
+    // Receive events in the `Inputs` category
+    Inputs = (1 << 3),
+    // Receive events in the `Transitions` category
+    Transitions = (1 << 4),
+    // Receive events in the `Filters` category
+    Filters = (1 << 5),
+    // Receive events in the `Outputs` category
+    Outputs = (1 << 6),
+    // Receive events in the `Scene Items` category
+    SceneItems = (1 << 7),
+    // Receive events in the `MediaInputs` category
+    MediaInputs = (1 << 8),
+    // Receive all event categories (default subscription setting)
+    All = (General | Config | Scenes | Inputs | Transitions | Filters | Outputs | SceneItems | MediaInputs),
+};
 ```
 Subscriptions are a bitmask system.
 
-In many languages, to generate a bitmask for `General` and `(not defined yet)`, you would do: `subscriptions = ((1 << 0) | (1 << 2))`
+In many languages, to generate a bitmask that subscribes to `General` and `Scenes`, you would do: `subscriptions = ((1 << 0) | (1 << 2))`
 
 
 ## Message Types
@@ -281,7 +301,6 @@ The following message types are the base message types which may be sent to and 
 {
   "obsWebsocketVersion": string,
   "rpcVersion": number,
-  "availableEvents": array<string>,
   "availableRequests": array<string>,
   "authentication": object(optional)
 }
@@ -296,7 +315,6 @@ Authentication is required
   "websocketVersion": "5.0.0",
   "rpcVersion": 1,
   "availableRequests": ["GetVersion"],
-  "availableEvents": ["Exiting"],
   "authentication": {
     "challenge": "+IxH4CnCiqpX1rM9scsNynZzbOe4KhDeYcTNS3PDaeY=",
     "salt": "lM1GncleQOaCu9lT1yeUZhFYnqhsLLP1G5lAGo3ixaI="
@@ -310,8 +328,7 @@ Authentication is not required
   "messageType": "Hello",
   "websocketVersion": "5.0.0",
   "rpcVersion": 1,
-  "availableRequests": ["GetVersion"],
-  "availableEvents": ["Exiting"]
+  "availableRequests": ["GetVersion"]
 }
 ```
 
@@ -329,7 +346,7 @@ Authentication is not required
   "authentication": string(optional),
   "ignoreInvalidMessages": bool(optional) = false,
   "ignoreNonFatalRequestChecks": bool(optional) = false,
-  "eventSubscriptions": number(optional) = (all not high volume)
+  "eventSubscriptions": number(optional) = (EventSubscriptions::All)
 }
 ```
 - `rpcVersion` is the version number that the client would like the obs-websocket server to use.
@@ -343,7 +360,7 @@ Authentication is not required
   "messageType": "Identify",
   "rpcVersion": 1,
   "authentication": "Dj6cLS+jrNA0HpCArRg0Z/Fc+YHdt2FQfAvgD1mip6Y=",
-  "eventSubscriptions": 3
+  "eventSubscriptions": 33
 }
 ```
 
@@ -382,7 +399,7 @@ Authentication is not required
 {
   "ignoreInvalidMessages": bool(optional) = false,
   "ignoreNonFatalRequestChecks": bool(optional) = false,
-  "eventSubscriptions": number(optional) = (all not high volume)
+  "eventSubscriptions": number(optional) = (EventSubscriptions::All)
 }
 ```
 - Only the listed parameters may be changed after initial identification. To change a parameter not listed, you must reconnect to the obs-websocket server.
