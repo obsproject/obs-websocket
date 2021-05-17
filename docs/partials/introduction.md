@@ -35,4 +35,4 @@ auth_response_hash = binary_sha256(auth_response_string)
 auth_response = base64_encode(auth_response_hash)
 ```
 
-You can also refer to any of the client libraries listed on the [README](README.md) for examples of how to authenticate.
+You can also refer to any of the [client libraries](https://github.com/Palakis/obs-websocket#for-developers) listed on the README for examples of how to authenticate.
