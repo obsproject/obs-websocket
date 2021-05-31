@@ -100,7 +100,8 @@ RpcResponse WSRequestHandler::CreateScene(const RpcRequest& request) {
 	if (source) {
 		return request.failed("scene with this name already exists");
 	}
-	obs_scene_create(sceneName);
+	obs_scene_t *createdScene = obs_scene_create(sceneName);
+	obs_scene_release(createdScene);
 	return request.success();
 }
 
