@@ -8,6 +8,15 @@
 #include "../WebSocketServer.h"
 #include "types/EventSubscription.h"
 
+enum ObsOutputState {
+	OBS_WEBSOCKET_OUTPUT_STARTING,
+	OBS_WEBSOCKET_OUTPUT_STARTED,
+	OBS_WEBSOCKET_OUTPUT_STOPPING,
+	OBS_WEBSOCKET_OUTPUT_STOPPED,
+	OBS_WEBSOCKET_OUTPUT_PAUSED,
+	OBS_WEBSOCKET_OUTPUT_RESUMED
+};
+
 template <typename T> T* GetCalldataPointer(const calldata_t *data, const char* name) {
 	void* ptr = nullptr;
 	calldata_get_ptr(data, name, &ptr);
@@ -76,4 +85,10 @@ class EventHandler
 		void HandleTransitionCreated(obs_source_t *source);
 		void HandleTransitionRemoved(obs_source_t *source);
 		void HandleTransitionNameChanged(obs_source_t *source, std::string oldTransitionName, std::string transitionName);
+
+		// Outputs
+		void HandleStreamStateChanged(ObsOutputState state);
+		void HandleRecordStateChanged(ObsOutputState state);
+		void HandleReplayBufferStateChanged(ObsOutputState state);
+		void HandleVirtualcamStateChanged(ObsOutputState state);
 };

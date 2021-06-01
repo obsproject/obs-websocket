@@ -172,32 +172,46 @@ void EventHandler::OnFrontendEvent(enum obs_frontend_event event, void *private_
 
 		// Outputs
 		case OBS_FRONTEND_EVENT_STREAMING_STARTING:
+			eventHandler->HandleStreamStateChanged(OBS_WEBSOCKET_OUTPUT_STARTING);
 			break;
 		case OBS_FRONTEND_EVENT_STREAMING_STARTED:
+			eventHandler->HandleStreamStateChanged(OBS_WEBSOCKET_OUTPUT_STARTED);
 			break;
 		case OBS_FRONTEND_EVENT_STREAMING_STOPPING:
+			eventHandler->HandleStreamStateChanged(OBS_WEBSOCKET_OUTPUT_STOPPING);
 			break;
 		case OBS_FRONTEND_EVENT_STREAMING_STOPPED:
+			eventHandler->HandleStreamStateChanged(OBS_WEBSOCKET_OUTPUT_STOPPED);
 			break;
 		case OBS_FRONTEND_EVENT_RECORDING_STARTING:
+			eventHandler->HandleRecordStateChanged(OBS_WEBSOCKET_OUTPUT_STARTING);
 			break;
 		case OBS_FRONTEND_EVENT_RECORDING_STARTED:
+			eventHandler->HandleRecordStateChanged(OBS_WEBSOCKET_OUTPUT_STARTED);
 			break;
 		case OBS_FRONTEND_EVENT_RECORDING_STOPPING:
+			eventHandler->HandleRecordStateChanged(OBS_WEBSOCKET_OUTPUT_STOPPING);
 			break;
 		case OBS_FRONTEND_EVENT_RECORDING_STOPPED:
+			eventHandler->HandleRecordStateChanged(OBS_WEBSOCKET_OUTPUT_STOPPED);
 			break;
 		case OBS_FRONTEND_EVENT_REPLAY_BUFFER_STARTING:
+			eventHandler->HandleReplayBufferStateChanged(OBS_WEBSOCKET_OUTPUT_STARTING);
 			break;
 		case OBS_FRONTEND_EVENT_REPLAY_BUFFER_STARTED:
+			eventHandler->HandleReplayBufferStateChanged(OBS_WEBSOCKET_OUTPUT_STARTED);
 			break;
 		case OBS_FRONTEND_EVENT_REPLAY_BUFFER_STOPPING:
+			eventHandler->HandleReplayBufferStateChanged(OBS_WEBSOCKET_OUTPUT_STOPPING);
 			break;
 		case OBS_FRONTEND_EVENT_REPLAY_BUFFER_STOPPED:
+			eventHandler->HandleReplayBufferStateChanged(OBS_WEBSOCKET_OUTPUT_STOPPED);
 			break;
 		case OBS_FRONTEND_EVENT_VIRTUALCAM_STARTED:
+			eventHandler->HandleVirtualcamStateChanged(OBS_WEBSOCKET_OUTPUT_STARTED);
 			break;
 		case OBS_FRONTEND_EVENT_VIRTUALCAM_STOPPED:
+			eventHandler->HandleVirtualcamStateChanged(OBS_WEBSOCKET_OUTPUT_STOPPED);
 			break;
 
 		default:

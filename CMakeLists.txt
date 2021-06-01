@@ -80,6 +80,10 @@ set(obs-websocket_SOURCES
     src/eventhandler/EventHandler_Scenes.cpp
     src/eventhandler/EventHandler_Inputs.cpp
     src/eventhandler/EventHandler_Transitions.cpp
+    src/eventhandler/EventHandler_Filters.cpp
+    src/eventhandler/EventHandler_Outputs.cpp
+    src/eventhandler/EventHandler_SceneItems.cpp
+    src/eventhandler/EventHandler_MediaInputs.cpp
 	src/requesthandler/RequestHandler.cpp
     src/requesthandler/RequestHandler_General.cpp
 	src/requesthandler/rpc/Request.cpp
