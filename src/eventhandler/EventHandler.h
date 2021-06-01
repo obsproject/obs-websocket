@@ -17,6 +17,15 @@ enum ObsOutputState {
 	OBS_WEBSOCKET_OUTPUT_RESUMED
 };
 
+enum ObsMediaInputAction {
+	OBS_WEBSOCKET_MEDIA_INPUT_ACTION_PAUSE,
+	OBS_WEBSOCKET_MEDIA_INPUT_ACTION_PLAY,
+	OBS_WEBSOCKET_MEDIA_INPUT_ACTION_RESTART,
+	OBS_WEBSOCKET_MEDIA_INPUT_ACTION_STOP,
+	OBS_WEBSOCKET_MEDIA_INPUT_ACTION_NEXT,
+	OBS_WEBSOCKET_MEDIA_INPUT_ACTION_PREVIOUS
+};
+
 template <typename T> T* GetCalldataPointer(const calldata_t *data, const char* name) {
 	void* ptr = nullptr;
 	calldata_get_ptr(data, name, &ptr);
@@ -50,6 +59,12 @@ class EventHandler
 
 		// Signal handler: source
 		static void SourceRenamedMultiHandler(void *param, calldata_t *data);
+		static void SourceMediaPauseMultiHandler(void *param, calldata_t *data);
+		static void SourceMediaPlayMultiHandler(void *param, calldata_t *data);
+		static void SourceMediaRestartMultiHandler(void *param, calldata_t *data);
+		static void SourceMediaStopMultiHandler(void *param, calldata_t *data);
+		static void SourceMediaNextMultiHandler(void *param, calldata_t *data);
+		static void SourceMediaPreviousMultiHandler(void *param, calldata_t *data);
 
 
 		// General
@@ -91,4 +106,9 @@ class EventHandler
 		void HandleRecordStateChanged(ObsOutputState state);
 		void HandleReplayBufferStateChanged(ObsOutputState state);
 		void HandleVirtualcamStateChanged(ObsOutputState state);
+
+		// Media Inputs
+		static void HandleMediaInputPlaybackStarted(void *param, calldata_t *data); // Direct callback
+		static void HandleMediaInputPlaybackEnded(void *param, calldata_t *data); // Direct callback
+		void HandleMediaInputActionTriggered(obs_source_t *source, ObsMediaInputAction action);
 };

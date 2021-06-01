@@ -72,6 +72,14 @@ void EventHandler::ConnectSourceSignals(obs_source_t *source) // These signals a
 	signal_handler_connect(sh, "volume", HandleInputVolumeChanged, this);
 	signal_handler_connect(sh, "audio_sync", HandleInputAudioSyncOffsetChanged, this);
 	signal_handler_connect(sh, "audio_mixers", HandleInputAudioTracksChanged, this);
+	signal_handler_connect(sh, "media_started", HandleMediaInputPlaybackStarted, this);
+	signal_handler_connect(sh, "media_ended", HandleMediaInputPlaybackEnded, this);
+	signal_handler_connect(sh, "media_pause", SourceMediaPauseMultiHandler, this);
+	signal_handler_connect(sh, "media_play", SourceMediaPlayMultiHandler, this);
+	signal_handler_connect(sh, "media_restart", SourceMediaRestartMultiHandler, this);
+	signal_handler_connect(sh, "media_stopped", SourceMediaStopMultiHandler, this);
+	signal_handler_connect(sh, "media_next", SourceMediaNextMultiHandler, this);
+	signal_handler_connect(sh, "media_previous", SourceMediaPreviousMultiHandler, this);
 }
 	
 void EventHandler::DisconnectSourceSignals(obs_source_t *source)
@@ -90,6 +98,14 @@ void EventHandler::DisconnectSourceSignals(obs_source_t *source)
 	signal_handler_disconnect(sh, "volume", HandleInputVolumeChanged, this);
 	signal_handler_disconnect(sh, "audio_sync", HandleInputAudioSyncOffsetChanged, this);
 	signal_handler_disconnect(sh, "audio_mixers", HandleInputAudioTracksChanged, this);
+	signal_handler_disconnect(sh, "media_started", HandleMediaInputPlaybackStarted, this);
+	signal_handler_disconnect(sh, "media_ended", HandleMediaInputPlaybackEnded, this);
+	signal_handler_disconnect(sh, "media_pause", SourceMediaPauseMultiHandler, this);
+	signal_handler_disconnect(sh, "media_play", SourceMediaPlayMultiHandler, this);
+	signal_handler_disconnect(sh, "media_restart", SourceMediaRestartMultiHandler, this);
+	signal_handler_disconnect(sh, "media_stopped", SourceMediaStopMultiHandler, this);
+	signal_handler_disconnect(sh, "media_next", SourceMediaNextMultiHandler, this);
+	signal_handler_disconnect(sh, "media_previous", SourceMediaPreviousMultiHandler, this);
 }
 
 void EventHandler::OnFrontendEvent(enum obs_frontend_event event, void *private_data)
@@ -230,7 +246,7 @@ void EventHandler::SourceCreatedMultiHandler(void *param, calldata_t *data)
 	if (!source)
 		return;
 
-	// Connect all signals from the source
+	// Connect all signals to the source
 	eventHandler->ConnectSourceSignals(source);
 
 	switch (obs_source_get_type(source)) {
