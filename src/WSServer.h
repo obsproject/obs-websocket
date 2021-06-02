@@ -53,6 +53,8 @@ public:
 	}
 
 private:
+	void serverRunner();
+
 	void onOpen(connection_hdl hdl);
 	void onMessage(connection_hdl hdl, server::message_ptr message);
 	void onClose(connection_hdl hdl);
@@ -61,6 +63,7 @@ private:
 	void notifyConnection(QString clientIp);
 	void notifyDisconnection(QString clientIp);
 
+	std::thread _serverThread;
 	server _server;
 	quint16 _serverPort;
 	bool _lockToIPv4;

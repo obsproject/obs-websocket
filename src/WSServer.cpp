@@ -60,6 +60,21 @@ WSServer::~WSServer()
 	stop();
 }
 
+void WSServer::serverRunner()
+{
+	blog(LOG_INFO, "IO thread started.");
+	try {
+		_server.run();
+	} catch (websocketpp::exception const & e) {
+		blog(LOG_ERROR, "websocketpp instance returned an error: %s", e.what());
+	} catch (const std::exception & e) {
+		blog(LOG_ERROR, "websocketpp instance returned an error: %s", e.what());
+	} catch (...) {
+		blog(LOG_ERROR, "websocketpp instance returned an error");
+	}
+	blog(LOG_INFO, "IO thread exited.");
+}
+
 void WSServer::start(quint16 port, bool lockToIPv4)
 {
 	if (_server.is_listening() && (port == _serverPort && _lockToIPv4 == lockToIPv4)) {
@@ -102,11 +117,7 @@ void WSServer::start(quint16 port, bool lockToIPv4)
 
 	_server.start_accept();
 
-	QtConcurrent::run([=]() {
-		blog(LOG_INFO, "io thread started");
-		_server.run();
-		blog(LOG_INFO, "io thread exited");
-	});
+	_serverThread = std::thread(&WSServer::serverRunner, this);
 
 	blog(LOG_INFO, "server started successfully on port %d", _serverPort);
 }
@@ -119,7 +130,18 @@ void WSServer::stop()
 
 	_server.stop_listening();
 	for (connection_hdl hdl : _connections) {
-		_server.close(hdl, websocketpp::close::status::going_away, "Server stopping");
+		websocketpp::lib::error_code errorCode;
+		_server.pause_reading(hdl, errorCode);
+		if (errorCode) {
+			blog(LOG_ERROR, "Error: %s", errorCode.message().c_str());
+			continue;
+		}
+
+		_server.close(hdl, websocketpp::close::status::going_away, "Server stopping", errorCode);
+		if (errorCode) {
+			blog(LOG_ERROR, "Error: %s", errorCode.message().c_str());
+			continue;
+		}
 	}
 
 	_threadPool.waitForDone();
@@ -127,6 +149,8 @@ void WSServer::stop()
 	while (_connections.size() > 0) {
 		std::this_thread::sleep_for(std::chrono::milliseconds(10));
 	}
+
+	_serverThread.join();
 
 	blog(LOG_INFO, "server stopped successfully");
 }
