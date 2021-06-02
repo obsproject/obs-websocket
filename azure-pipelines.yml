@@ -41,6 +41,7 @@ jobs:
     QT_BASE_DIR: 'D:\QtDep'
     QTDIR32: '$(QT_BASE_DIR)\5.15.2\msvc2019'
     QTDIR64: '$(QT_BASE_DIR)\5.15.2\msvc2019_64'
+    OBS_CAHCE_VERSION: '1'
     OBS_PATH: 'D:\obs-studio'
   steps:
     - checkout: self
@@ -73,9 +74,9 @@ jobs:
     - task: Cache@2
       displayName: Restore cached OBS Studio builds
       inputs:
-        key: 'obs | "$(Agent.OS)"'
+        key: 'obs-"$(OBS_CACHE_VERSION)" | "$(Agent.OS)"'
         restoreKeys: |
-          obs | "$(Agent.OS)"
+          obs-"$(OBS_CACHE_VERSION)" | "$(Agent.OS)"
         path: $(OBS_PATH)
 
     - script: ./CI/windows/prepare-obs-windows.cmd
