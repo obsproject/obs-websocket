@@ -36,6 +36,7 @@ set(obs-websocket_SOURCES
 	src/WSRequestHandler_SceneItems.cpp
 	src/WSRequestHandler_Sources.cpp
 	src/WSRequestHandler_Streaming.cpp
+	src/WSRequestHandler_VirtualCam.cpp
 	src/WSRequestHandler_StudioMode.cpp
 	src/WSRequestHandler_Transitions.cpp
 	src/WSRequestHandler_Outputs.cpp

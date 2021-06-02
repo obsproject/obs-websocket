@@ -163,6 +163,12 @@ const QHash<QString, RpcMethodHandler> WSRequestHandler::messageMap{
 	{ "GetStreamSettings", &WSRequestHandler::GetStreamSettings },
 	{ "SaveStreamSettings", &WSRequestHandler::SaveStreamSettings },
 	{ "SendCaptions", &WSRequestHandler::SendCaptions },
+	
+	// Category: VirtualCam
+	{ "GetVirtualCamStatus", &WSRequestHandler::GetVirtualCamStatus },
+	{ "StartStopVirtualCam", &WSRequestHandler::StartStopVirtualCam },
+	{ "StartVirtualCam", &WSRequestHandler::StartVirtualCam },
+	{ "StopVirtualCam", &WSRequestHandler::StopVirtualCam },
 
 	// Category: Studio Mode
 	{ "GetStudioModeStatus", &WSRequestHandler::GetStudioModeStatus },

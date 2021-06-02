@@ -202,6 +202,14 @@ void WSEvents::FrontendEventHandler(enum obs_frontend_event event, void* private
 			owner->OnRecordingResumed();
 			break;
 
+		case OBS_FRONTEND_EVENT_VIRTUALCAM_STARTED:
+			owner->OnVirtualCamStarted();
+			break;
+
+		case OBS_FRONTEND_EVENT_VIRTUALCAM_STOPPED:
+			owner->OnVirtualCamStopped();
+			break;
+
 		case OBS_FRONTEND_EVENT_REPLAY_BUFFER_STARTING:
 			owner->OnReplayStarting();
 			break;
@@ -422,12 +430,21 @@ uint64_t WSEvents::getRecordingTime() {
 	return getOutputRunningTime(recordingOutput);
 }
 
+uint64_t WSEvents::getVirtualCamTime() {
+	OBSOutputAutoRelease virtualCamOutput = obs_frontend_get_virtualcam_output();
+	return getOutputRunningTime(virtualCamOutput);
+}
+
 QString WSEvents::getStreamingTimecode() {
 	return Utils::nsToTimestamp(getStreamingTime());
 }
 
 QString WSEvents::getRecordingTimecode() {
 	return Utils::nsToTimestamp(getRecordingTime());
+}
+
+QString WSEvents::getVirtualCamTimecode() {
+	return Utils::nsToTimestamp(getVirtualCamTime());
 }
 
 OBSDataAutoRelease getMediaSourceData(calldata_t* data) {
@@ -762,6 +779,30 @@ void WSEvents::OnRecordingPaused() {
  */
 void WSEvents::OnRecordingResumed() {
 	broadcastUpdate("RecordingResumed");
+}
+
+/**
+ * Virtual cam started successfully.
+ *
+ * @api events
+ * @name VirtualCamStarted
+ * @category virtual cam
+ * @since unreleased
+ */
+void WSEvents::OnVirtualCamStarted() {
+	broadcastUpdate("VirtualCamStarted");
+}
+
+/**
+ * Virtual cam stopped successfully.
+ *
+ * @api events
+ * @name VirtualCamStopped
+ * @category virtual cam
+ * @since unreleased
+ */
+void WSEvents::OnVirtualCamStopped() {
+	broadcastUpdate("VirtualCamStopped");
 }
 
 /**
