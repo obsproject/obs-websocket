@@ -82,6 +82,9 @@ You can also refer to any of the [client libraries](https://github.com/Palakis/o
     + [RecordingStopped](#recordingstopped)
     + [RecordingPaused](#recordingpaused)
     + [RecordingResumed](#recordingresumed)
+  * [Virtual Cam](#virtual-cam)
+    + [VirtualCamStarted](#virtualcamstarted)
+    + [VirtualCamStopped](#virtualcamstopped)
   * [Replay Buffer](#replay-buffer)
     + [ReplayStarting](#replaystarting)
     + [ReplayStarted](#replaystarted)
@@ -270,6 +273,11 @@ You can also refer to any of the [client libraries](https://github.com/Palakis/o
     + [SetTransitionSettings](#settransitionsettings)
     + [ReleaseTBar](#releasetbar)
     + [SetTBarPosition](#settbarposition)
+  * [Virtual Cam](#virtual-cam-1)
+    + [GetVirtualCamStatus](#getvirtualcamstatus)
+    + [StartStopVirtualCam](#startstopvirtualcam)
+    + [StartVirtualCam](#startvirtualcam)
+    + [StopVirtualCam](#stopvirtualcam)
 
 <!-- tocstop -->
 
@@ -776,6 +784,34 @@ _No additional response items._
 - Added in v4.7.0
 
 Current recording resumed
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+## Virtual Cam
+
+### VirtualCamStarted
+
+
+- Unreleased
+
+Virtual cam started successfully.
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+### VirtualCamStopped
+
+
+- Unreleased
+
+Virtual cam stopped successfully.
 
 **Response Items:**
 
@@ -4011,9 +4047,11 @@ _No specified parameters._
 | `streaming` | _boolean_ | Current streaming status. |
 | `recording` | _boolean_ | Current recording status. |
 | `recording-paused` | _boolean_ | If recording is paused. |
+| `virtualcam` | _boolean_ | Current virtual cam status. |
 | `preview-only` | _boolean_ | Always false. Retrocompatibility with OBSRemote. |
 | `stream-timecode` | _String (optional)_ | Time elapsed since streaming started (only present if currently streaming). |
 | `rec-timecode` | _String (optional)_ | Time elapsed since recording started (only present if currently recording). |
+| `virtualcam-timecode` | _String (optional)_ | Time elapsed since virtual cam started (only present if virtual cam currently active). |
 
 
 ---
@@ -4517,6 +4555,82 @@ If your code needs to perform multiple successive T-Bar moves (e.g. : in an anim
 | `position` | _double_ | T-Bar position. This value must be between 0.0 and 1.0. |
 | `release` | _boolean (optional)_ | Whether or not the T-Bar gets released automatically after setting its new position (like a user releasing their mouse button after moving the T-Bar). Call `ReleaseTBar` manually if you set `release` to false. Defaults to true. |
 
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+## Virtual Cam
+
+### GetVirtualCamStatus
+
+
+- Unreleased
+
+Get current virtual cam status.
+
+**Request Fields:**
+
+_No specified parameters._
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `isVirtualCam` | _boolean_ | Current virtual camera status. |
+| `virtualCamTimecode` | _String (optional)_ | Time elapsed since virtual cam started (only present if virtual cam currently active). |
+
+
+---
+
+### StartStopVirtualCam
+
+
+- Unreleased
+
+Toggle virtual cam on or off (depending on the current virtual cam state).
+
+**Request Fields:**
+
+_No specified parameters._
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+### StartVirtualCam
+
+
+- Unreleased
+
+Start virtual cam.
+Will return an `error` if virtual cam is already active.
+
+**Request Fields:**
+
+_No specified parameters._
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+### StopVirtualCam
+
+
+- Unreleased
+
+Stop virtual cam.
+Will return an `error` if virtual cam is not active.
+
+**Request Fields:**
+
+_No specified parameters._
 
 **Response Items:**
 

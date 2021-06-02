@@ -1667,6 +1667,74 @@
         "examples": []
       }
     ],
+    "virtual cam": [
+      {
+        "subheads": [],
+        "description": "Virtual cam started successfully.",
+        "api": "events",
+        "name": "VirtualCamStarted",
+        "category": "virtual cam",
+        "since": "unreleased",
+        "names": [
+          {
+            "name": "",
+            "description": "VirtualCamStarted"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "virtual cam"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "unreleased"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "VirtualCamStarted"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Virtual cam stopped successfully.",
+        "api": "events",
+        "name": "VirtualCamStopped",
+        "category": "virtual cam",
+        "since": "unreleased",
+        "names": [
+          {
+            "name": "",
+            "description": "VirtualCamStopped"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "virtual cam"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "unreleased"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "VirtualCamStopped"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      }
+    ],
     "replay buffer": [
       {
         "subheads": [],
@@ -10141,9 +10209,11 @@
           "{boolean} `streaming` Current streaming status.",
           "{boolean} `recording` Current recording status.",
           "{boolean} `recording-paused` If recording is paused.",
+          "{boolean} `virtualcam` Current virtual cam status.",
           "{boolean} `preview-only` Always false. Retrocompatibility with OBSRemote.",
           "{String (optional)} `stream-timecode` Time elapsed since streaming started (only present if currently streaming).",
-          "{String (optional)} `rec-timecode` Time elapsed since recording started (only present if currently recording)."
+          "{String (optional)} `rec-timecode` Time elapsed since recording started (only present if currently recording).",
+          "{String (optional)} `virtualcam-timecode` Time elapsed since virtual cam started (only present if virtual cam currently active)."
         ],
         "api": "requests",
         "name": "GetStreamingStatus",
@@ -10167,6 +10237,11 @@
           },
           {
             "type": "boolean",
+            "name": "virtualcam",
+            "description": "Current virtual cam status."
+          },
+          {
+            "type": "boolean",
             "name": "preview-only",
             "description": "Always false. Retrocompatibility with OBSRemote."
           },
@@ -10179,6 +10254,11 @@
             "type": "String (optional)",
             "name": "rec-timecode",
             "description": "Time elapsed since recording started (only present if currently recording)."
+          },
+          {
+            "type": "String (optional)",
+            "name": "virtualcam-timecode",
+            "description": "Time elapsed since virtual cam started (only present if virtual cam currently active)."
           }
         ],
         "names": [
@@ -11344,6 +11424,156 @@
           "text": "SetTBarPosition"
         },
         "lead": "Set the manual position of the T-Bar (in Studio Mode) to the specified value. Will return an error if OBS is not in studio mode or if the current transition doesn't support T-Bar control.",
+        "type": "class",
+        "examples": []
+      }
+    ],
+    "virtual cam": [
+      {
+        "subheads": [],
+        "description": "Get current virtual cam status.",
+        "return": [
+          "{boolean} `isVirtualCam` Current virtual camera status.",
+          "{String (optional)} `virtualCamTimecode` Time elapsed since virtual cam started (only present if virtual cam currently active)."
+        ],
+        "api": "requests",
+        "name": "GetVirtualCamStatus",
+        "category": "virtual cam",
+        "since": "unreleased",
+        "returns": [
+          {
+            "type": "boolean",
+            "name": "isVirtualCam",
+            "description": "Current virtual camera status."
+          },
+          {
+            "type": "String (optional)",
+            "name": "virtualCamTimecode",
+            "description": "Time elapsed since virtual cam started (only present if virtual cam currently active)."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "GetVirtualCamStatus"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "virtual cam"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "unreleased"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "GetVirtualCamStatus"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Toggle virtual cam on or off (depending on the current virtual cam state).",
+        "api": "requests",
+        "name": "StartStopVirtualCam",
+        "category": "virtual cam",
+        "since": "unreleased",
+        "names": [
+          {
+            "name": "",
+            "description": "StartStopVirtualCam"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "virtual cam"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "unreleased"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "StartStopVirtualCam"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Start virtual cam.\nWill return an `error` if virtual cam is already active.",
+        "api": "requests",
+        "name": "StartVirtualCam",
+        "category": "virtual cam",
+        "since": "unreleased",
+        "names": [
+          {
+            "name": "",
+            "description": "StartVirtualCam"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "virtual cam"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "unreleased"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "StartVirtualCam"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Stop virtual cam.\nWill return an `error` if virtual cam is not active.",
+        "api": "requests",
+        "name": "StopVirtualCam",
+        "category": "virtual cam",
+        "since": "unreleased",
+        "names": [
+          {
+            "name": "",
+            "description": "StopVirtualCam"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "virtual cam"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "unreleased"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "StopVirtualCam"
+        },
+        "lead": "",
         "type": "class",
         "examples": []
       }
