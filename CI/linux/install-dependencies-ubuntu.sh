@@ -21,6 +21,6 @@ ls /usr/include/
 ls /usr/include/obs/
 
 # Dirty hack
-sudo wget -O /usr/include/obs/obs-frontend-api.h https://raw.githubusercontent.com/obsproject/obs-studio/26.1.2/UI/obs-frontend-api/obs-frontend-api.h
+sudo wget -O /usr/include/obs/obs-frontend-api.h https://raw.githubusercontent.com/obsproject/obs-studio/27.0.0/UI/obs-frontend-api/obs-frontend-api.h
 
 sudo ldconfig
