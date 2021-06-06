@@ -11,10 +11,12 @@
 
 #include "../plugin-macros.generated.h"
 
-QString GetToolTipIcon()
+QString GetToolTipIconHtml()
 {
 	bool lightTheme = QApplication::palette().text().color().redF() < 0.5;
-	return lightTheme ? ":toolTip/images/help.svg" : ":toolTip/images/help_light.svg";
+	QString iconFile = lightTheme ? ":toolTip/images/help.svg" : ":toolTip/images/help_light.svg";
+	QString iconTemplate = "<html> <img src='%1' style=' vertical-align: bottom; ' /></html>";
+	return iconTemplate.arg(iconFile);
 }
 
 SettingsDialog::SettingsDialog(QWidget* parent) :
@@ -27,7 +29,7 @@ SettingsDialog::SettingsDialog(QWidget* parent) :
 	ui->websocketSessionTable->horizontalHeader()->resizeSection(3, 100); // Resize Session Table column widths
 	ui->websocketSessionTable->horizontalHeader()->resizeSection(4, 100);
 
-	ui->enableDebugLoggingToolTipLabel->setPixmap(QPixmap(GetToolTipIcon())); // Set the appropriate tooltip icon for the theme
+	ui->enableDebugLoggingToolTipLabel->setText(GetToolTipIconHtml()); // Set the appropriate tooltip icon for the theme
 
 	connect(sessionTableTimer, &QTimer::timeout,
 		this, &SettingsDialog::FillSessionTable);

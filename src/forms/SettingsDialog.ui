@@ -97,9 +97,6 @@
           <property name="toolTip">
            <string>OBSWebSocket.Settings.DebugEnableHoverText</string>
           </property>
-          <property name="pixmap">
-           <pixmap resource="resources.qrc">:/toolTip/images/help.svg</pixmap>
-          </property>
          </widget>
         </item>
         <item>
