@@ -7,7 +7,7 @@ if not exist %OBS_PATH% (
     echo obs-studio directory does not exist
     git clone https://github.com/obsproject/obs-studio %OBS_PATH%
     cd /D %OBS_PATH%\
-    git describe --tags --abbrev=0 --exclude="*-rc*" > "%OBS_PATH%\obs-studio-latest-tag.txt"
+    git describe --tags --abbrev=0 > "%OBS_PATH%\obs-studio-latest-tag.txt"
     set /p OBS_LATEST_TAG=<"%OBS_PATH%\obs-studio-latest-tag.txt"
 )
 
