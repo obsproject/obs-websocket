@@ -215,6 +215,24 @@ void SettingsDialog::GeneratePasswordButtonClicked()
 
 void SettingsDialog::ShowConnectInfoButtonClicked()
 {
+	if (obs_video_active()) {
+		QMessageBox msgBox;
+		msgBox.setWindowTitle(obs_module_text("OBSWebSocket.Settings.ShowConnectInfoWarningTitle"));
+		msgBox.setText(obs_module_text("OBSWebSocket.Settings.ShowConnectInfoWarningMessage"));
+		msgBox.setInformativeText(obs_module_text("OBSWebSocket.Settings.ShowConnectInfoWarningInfoText"));
+		msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+		msgBox.setDefaultButton(QMessageBox::No);
+		int ret = msgBox.exec();
+
+		switch (ret) {
+			case QMessageBox::Yes:
+				break;
+			case QMessageBox::No:
+			default:
+				return;
+		}
+	}
+
 	connectInfo->show();
 	connectInfo->activateWindow();
 	connectInfo->raise();
