@@ -7,6 +7,12 @@ const std::map<std::string, RequestMethodHandler> RequestHandler::_handlerMap
 	// General
 	{"GetVersion", &RequestHandler::GetVersion},
 	{"BroadcastCustomEvent", &RequestHandler::BroadcastCustomEvent},
+	{"GetHotkeyList", &RequestHandler::GetHotkeyList},
+	{"TriggerHotkeyByName", &RequestHandler::TriggerHotkeyByName},
+	{"TriggerHotkeyByKeySequence", &RequestHandler::TriggerHotkeyByKeySequence},
+	{"GetStudioModeEnabled", &RequestHandler::GetStudioModeEnabled},
+	{"SetStudioModeEnabled", &RequestHandler::SetStudioModeEnabled},
+	{"Sleep", &RequestHandler::Sleep},
 };
 
 RequestResult RequestHandler::ProcessRequest(const Request& request)

@@ -97,6 +97,8 @@ namespace RequestStatus {
 		ConfigParameterNotFound = 617,
 		// The specified property (obs_properties_t) was not found
 		PropertyNotFound = 618,
+		// The specififed key (OBS_KEY_*) was not found
+		KeyNotFound = 619,
 
 		// Processing the request failed unexpectedly
 		RequestProcessingFailed = 700,
@@ -112,5 +114,7 @@ namespace RequestStatus {
 		ScreenshotSaveFailed = 705,
 		// Creating the directory failed
 		DirectoryCreationFailed = 706,
+		// The combination of request parameters cannot be used to perform an action
+		CannotAct = 707,
 	};
 };

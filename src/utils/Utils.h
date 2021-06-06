@@ -29,20 +29,23 @@ namespace Utils {
 
 	namespace Obs {
 		namespace StringHelper {
+			std::string GetObsVersionString();
 			std::string GetSourceTypeString(obs_source_t *source);
 			std::string GetInputMonitorTypeString(obs_source_t *input);
 			std::string GetMediaInputStateString(obs_source_t *input);
 		}
 
-		namespace DataHelper {
-			;
-		}
-
 		namespace ListHelper {
 			std::vector<std::string> GetSceneCollectionList();
 			std::vector<std::string> GetProfileList();
+			std::vector<obs_hotkey_t *> GetHotkeyList();
+			std::vector<std::string> GetHotkeyNameList();
 			std::vector<json> GetSceneList();
 			std::vector<json> GetTransitionList();
+		}
+
+		namespace SearchHelper {
+			obs_hotkey_t *GetHotkeyByName(std::string name);
 		}
 	}
 }

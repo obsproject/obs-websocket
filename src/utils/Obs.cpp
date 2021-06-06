@@ -25,6 +25,19 @@ std::vector<std::string> ConvertStringArray(char **array)
 	return ret;
 }
 
+std::string Utils::Obs::StringHelper::GetObsVersionString()
+{
+	uint32_t version = obs_get_version();
+
+	uint8_t major, minor, patch;
+	major = (version >> 24) & 0xFF;
+	minor = (version >> 16) & 0xFF;
+	patch = version & 0xFF;
+
+	QString combined = QString("%1.%2.%3").arg(major).arg(minor).arg(patch);
+	return combined.toStdString();
+}
+
 std::string Utils::Obs::StringHelper::GetSourceTypeString(obs_source_t *source)
 {
 	obs_source_type sourceType = obs_source_get_type(source);
@@ -83,6 +96,33 @@ std::vector<std::string> Utils::Obs::ListHelper::GetProfileList()
 	return ret;
 }
 
+std::vector<obs_hotkey_t *> Utils::Obs::ListHelper::GetHotkeyList()
+{
+	std::vector<obs_hotkey_t *> ret;
+
+	obs_enum_hotkeys([](void* data, obs_hotkey_id id, obs_hotkey_t* hotkey) {
+		auto ret = reinterpret_cast<std::vector<obs_hotkey_t *> *>(data);
+
+		ret->push_back(hotkey);
+
+		return true;
+	}, &ret);
+
+	return ret;
+}
+
+std::vector<std::string> Utils::Obs::ListHelper::GetHotkeyNameList()
+{
+	auto hotkeys = GetHotkeyList();
+
+	std::vector<std::string> ret;
+	for (auto hotkey : hotkeys) {
+		ret.push_back(obs_hotkey_get_name(hotkey));
+	}
+
+	return ret;
+}
+
 std::vector<json> Utils::Obs::ListHelper::GetSceneList()
 {
 	obs_frontend_source_list sceneList = {};
@@ -120,4 +160,16 @@ std::vector<json> Utils::Obs::ListHelper::GetTransitionList()
 	obs_frontend_source_list_free(&transitionList);
 
 	return ret;
+}
+
+obs_hotkey_t *Utils::Obs::SearchHelper::GetHotkeyByName(std::string name)
+{
+	auto hotkeys = ListHelper::GetHotkeyList();
+
+	for (auto hotkey : hotkeys) {
+		if (obs_hotkey_get_name(hotkey) == name)
+			return hotkey;
+	}
+
+	return nullptr;
 }
