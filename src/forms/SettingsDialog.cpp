@@ -118,7 +118,7 @@ void SettingsDialog::SaveFormData()
 	(conf->DebugEnabled != ui->enableDebugLoggingCheckBox->isChecked()) ||
 	(conf->AuthRequired != ui->enableAuthenticationCheckBox->isChecked()) ||
 	(conf->ServerPassword != ui->serverPasswordLineEdit->text()) ||
-	(conf->ServerPort != ui->serverPortSpinBox->value()) {
+	(conf->ServerPort != ui->serverPortSpinBox->value())) {
 		needsRestart = true;
 	}
 
