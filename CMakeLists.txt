@@ -29,6 +29,7 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 
+set(CMAKE_AUTORCC ON) # For resources.qrc
 
 # Tell websocketpp not to use system boost
 add_definitions(-DASIO_STANDALONE)
@@ -90,6 +91,7 @@ set(obs-websocket_SOURCES
     src/requesthandler/rpc/RequestResult.cpp
 	src/forms/SettingsDialog.cpp
     src/forms/ConnectInfo.cpp
+    src/forms/resources.qrc
 	src/utils/Json.cpp
     src/utils/Crypto.cpp
     src/utils/Platform.cpp
