@@ -106,15 +106,11 @@ void SettingsDialog::SaveFormData()
 	}
 
 	bool needsRestart = false;
-
-	// I decided not to restart the server if debug is changed. Might mess with peoples' scripts
-	if (conf->ServerEnabled != ui->enableWebSocketServerCheckBox->isChecked()) {
-		needsRestart = true;
-	} else if (conf->AuthRequired != ui->enableAuthenticationCheckBox->isChecked()) {
-		needsRestart = true;
-	} else if (conf->ServerPassword != ui->serverPasswordLineEdit->text()) {
-		needsRestart = true;
-	} else if (conf->ServerPort != ui->serverPortSpinBox->value()) {
+	if ((conf->ServerEnabled != ui->enableWebSocketServerCheckBox->isChecked()) ||
+	(conf->DebugEnabled != ui->enableDebugLoggingCheckBox->isChecked()) ||
+	(conf->AuthRequired != ui->enableAuthenticationCheckBox->isChecked()) ||
+	(conf->ServerPassword != ui->serverPasswordLineEdit->text()) ||
+	(conf->ServerPort != ui->serverPortSpinBox->value()) {
 		needsRestart = true;
 	}
 
