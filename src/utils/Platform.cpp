@@ -55,3 +55,13 @@ QString Utils::Platform::GetCommandLineArgument(QString arg)
 
 	return parser.value(cmdlineOption);
 }
+
+bool Utils::Platform::GetCommandLineFlagSet(QString arg)
+{
+	QCommandLineParser parser;
+	QCommandLineOption cmdlineOption(arg, arg, arg, "");
+	parser.addOption(cmdlineOption);
+	parser.parse(QCoreApplication::arguments());
+
+	return parser.isSet(cmdlineOption);
+}

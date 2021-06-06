@@ -17,6 +17,7 @@
 
 #define CMDLINE_WEBSOCKET_PORT "websocket_port"
 #define CMDLINE_WEBSOCKET_PASSWORD "websocket_password"
+#define CMDLINE_WEBSOCKET_DEBUG "websocket_debug"
 
 Config::Config() :
 	FirstLoad(true),
@@ -42,7 +43,6 @@ void Config::Load()
 
 	FirstLoad = config_get_bool(obsConfig, CONFIG_SECTION_NAME, PARAM_FIRSTLOAD);
 	ServerEnabled = config_get_bool(obsConfig, CONFIG_SECTION_NAME, PARAM_ENABLED);
-	DebugEnabled = config_get_bool(obsConfig, CONFIG_SECTION_NAME, PARAM_DEBUG);
 	AlertsEnabled = config_get_bool(obsConfig, CONFIG_SECTION_NAME, PARAM_ALERTS);
 
 	QString portArgument = Utils::Platform::GetCommandLineArgument(CMDLINE_WEBSOCKET_PORT);
@@ -74,6 +74,9 @@ void Config::Load()
 			ServerPassword = config_get_string(obsConfig, CONFIG_SECTION_NAME, PARAM_PASSWORD);
 		}
 	}
+
+	if (Utils::Platform::GetCommandLineFlagSet(CMDLINE_WEBSOCKET_DEBUG)) // Debug does not persist on reload, so we let people override it with a flag.
+		DebugEnabled = true;
 }
 
 void Config::Save()
@@ -89,7 +92,6 @@ void Config::Save()
 	if (!PortOverridden) {
 		config_set_uint(obsConfig, CONFIG_SECTION_NAME, PARAM_PORT, ServerPort);
 	}
-	config_set_bool(obsConfig, CONFIG_SECTION_NAME, PARAM_DEBUG, DebugEnabled);
 	config_set_bool(obsConfig, CONFIG_SECTION_NAME, PARAM_ALERTS, AlertsEnabled);
 	if (!PasswordOverridden) {
 		config_set_bool(obsConfig, CONFIG_SECTION_NAME, PARAM_AUTHREQUIRED, AuthRequired);
@@ -110,7 +112,6 @@ void Config::SetDefaultsToGlobalStore()
 	config_set_default_bool(obsConfig, CONFIG_SECTION_NAME, PARAM_FIRSTLOAD, FirstLoad);
 	config_set_default_bool(obsConfig, CONFIG_SECTION_NAME, PARAM_ENABLED, ServerEnabled);
 	config_set_default_uint(obsConfig, CONFIG_SECTION_NAME, PARAM_PORT, ServerPort);
-	config_set_default_bool(obsConfig, CONFIG_SECTION_NAME, PARAM_DEBUG, DebugEnabled);
 	config_set_default_bool(obsConfig, CONFIG_SECTION_NAME, PARAM_ALERTS, AlertsEnabled);
 	config_set_default_bool(obsConfig, CONFIG_SECTION_NAME, PARAM_AUTHREQUIRED, AuthRequired);
 	config_set_default_string(obsConfig, CONFIG_SECTION_NAME, PARAM_PASSWORD, QT_TO_UTF8(ServerPassword));

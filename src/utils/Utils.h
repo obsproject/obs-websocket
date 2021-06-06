@@ -24,6 +24,7 @@ namespace Utils {
 	namespace Platform {
 		std::string GetLocalAddress();
 		QString GetCommandLineArgument(QString arg);
+		bool GetCommandLineFlagSet(QString arg);
 	}
 
 	namespace Obs {
