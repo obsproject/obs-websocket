@@ -19,6 +19,4 @@ namespace WebSocketProtocol {
 	};
 
 	ProcessResult ProcessMessage(SessionPtr session, json incomingMessage);
-
-	std::vector<std::string> GetRequestList();
 }

@@ -235,10 +235,3 @@ WebSocketProtocol::ProcessResult WebSocketProtocol::ProcessMessage(SessionPtr se
 
 	return ret;
 }
-
-std::vector<std::string> WebSocketProtocol::GetRequestList()
-{
-	RequestHandler requestHandler;
-
-	return requestHandler.GetRequestList();
-}
