@@ -301,7 +301,6 @@ The following message types are the base message types which may be sent to and 
 {
   "obsWebsocketVersion": string,
   "rpcVersion": number,
-  "availableRequests": array<string>,
   "authentication": object(optional)
 }
 ```
@@ -314,7 +313,6 @@ Authentication is required
   "messageType": "Hello",
   "websocketVersion": "5.0.0",
   "rpcVersion": 1,
-  "availableRequests": ["GetVersion"],
   "authentication": {
     "challenge": "+IxH4CnCiqpX1rM9scsNynZzbOe4KhDeYcTNS3PDaeY=",
     "salt": "lM1GncleQOaCu9lT1yeUZhFYnqhsLLP1G5lAGo3ixaI="
@@ -327,8 +325,7 @@ Authentication is not required
 {
   "messageType": "Hello",
   "websocketVersion": "5.0.0",
-  "rpcVersion": 1,
-  "availableRequests": ["GetVersion"]
+  "rpcVersion": 1
 }
 ```
 
