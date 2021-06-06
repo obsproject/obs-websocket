@@ -29,7 +29,11 @@ SettingsDialog::SettingsDialog(QWidget* parent) :
 	ui->websocketSessionTable->horizontalHeader()->resizeSection(3, 100); // Resize Session Table column widths
 	ui->websocketSessionTable->horizontalHeader()->resizeSection(4, 100);
 
-	ui->enableDebugLoggingToolTipLabel->setText(GetToolTipIconHtml()); // Set the appropriate tooltip icon for the theme
+	// Remove the ? button on dialogs on Windows
+	setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
+
+	// Set the appropriate tooltip icon for the theme
+	ui->enableDebugLoggingToolTipLabel->setText(GetToolTipIconHtml());
 
 	connect(sessionTableTimer, &QTimer::timeout,
 		this, &SettingsDialog::FillSessionTable);
