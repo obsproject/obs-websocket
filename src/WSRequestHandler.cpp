@@ -121,9 +121,12 @@ const QHash<QString, RpcMethodHandler> WSRequestHandler::messageMap{
 	{ "GetSourceTypesList", &WSRequestHandler::GetSourceTypesList },
 	{ "GetVolume", &WSRequestHandler::GetVolume },
 	{ "SetVolume", &WSRequestHandler::SetVolume },
+	{ "SetAudioTracks", &WSRequestHandler::SetAudioTracks },
+	{ "GetAudioTracks", &WSRequestHandler::GetAudioTracks },
 	{ "GetMute", &WSRequestHandler::GetMute },
 	{ "SetMute", &WSRequestHandler::SetMute },
 	{ "ToggleMute", &WSRequestHandler::ToggleMute },
+	{ "GetSourceActive", &WSRequestHandler::GetSourceActive },
 	{ "GetAudioActive", &WSRequestHandler::GetAudioActive },
 	{ "SetSourceName", &WSRequestHandler::SetSourceName },
 	{ "SetSyncOffset", &WSRequestHandler::SetSyncOffset },
@@ -160,6 +163,12 @@ const QHash<QString, RpcMethodHandler> WSRequestHandler::messageMap{
 	{ "GetStreamSettings", &WSRequestHandler::GetStreamSettings },
 	{ "SaveStreamSettings", &WSRequestHandler::SaveStreamSettings },
 	{ "SendCaptions", &WSRequestHandler::SendCaptions },
+	
+	// Category: VirtualCam
+	{ "GetVirtualCamStatus", &WSRequestHandler::GetVirtualCamStatus },
+	{ "StartStopVirtualCam", &WSRequestHandler::StartStopVirtualCam },
+	{ "StartVirtualCam", &WSRequestHandler::StartVirtualCam },
+	{ "StopVirtualCam", &WSRequestHandler::StopVirtualCam },
 
 	// Category: Studio Mode
 	{ "GetStudioModeStatus", &WSRequestHandler::GetStudioModeStatus },

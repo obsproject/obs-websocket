@@ -36,6 +36,7 @@ set(obs-websocket_SOURCES
 	src/WSRequestHandler_SceneItems.cpp
 	src/WSRequestHandler_Sources.cpp
 	src/WSRequestHandler_Streaming.cpp
+	src/WSRequestHandler_VirtualCam.cpp
 	src/WSRequestHandler_StudioMode.cpp
 	src/WSRequestHandler_Transitions.cpp
 	src/WSRequestHandler_Outputs.cpp
@@ -72,8 +73,8 @@ include_directories(
 	"${LIBOBS_INCLUDE_DIR}/../UI/obs-frontend-api"
 	${Qt5Core_INCLUDES}
 	${Qt5Widgets_INCLUDES}
-	"${CMAKE_SOURCE_DIR}/deps/asio/asio/include"
-	"${CMAKE_SOURCE_DIR}/deps/websocketpp")
+	"${CMAKE_CURRENT_SOURCE_DIR}/deps/asio/asio/include"
+	"${CMAKE_CURRENT_SOURCE_DIR}/deps/websocketpp")
 
 target_link_libraries(obs-websocket
 	libobs
@@ -84,9 +85,9 @@ target_link_libraries(obs-websocket
 
 # --- Windows-specific build settings and tasks ---
 if(WIN32)
-	if(NOT DEFINED OBS_FRONTEND_LIB)
-		set(OBS_FRONTEND_LIB "OBS_FRONTEND_LIB-NOTFOUND" CACHE FILEPATH "OBS frontend library")
-		message(FATAL_ERROR "Could not find OBS Frontend API's library !")
+	set(OBS_FRONTEND_LIB "NOTFOUND" CACHE FILEPATH "OBS frontend library")
+	if(OBS_FRONTEND_LIB STREQUAL "NOTFOUND")
+		message(FATAL_ERROR "OBS Frontend API library not found!")
 	endif()
 
     if(MSVC)
@@ -116,67 +117,70 @@ if(WIN32)
 	set(RELEASE_DIR "${PROJECT_SOURCE_DIR}/release")
 
 	add_custom_command(TARGET obs-websocket POST_BUILD
-		# If config is Release, package release files
-		COMMAND if $<CONFIG:Release>==1 (
+		# If config is Release or RelWithDebInfo, package release files
+		COMMAND if $<OR:$<CONFIG:Release>,$<CONFIG:RelWithDebInfo>>==1 (
 			"${CMAKE_COMMAND}" -E make_directory
-			"${RELEASE_DIR}/data/obs-plugins/obs-websocket"
-			"${RELEASE_DIR}/obs-plugins/${ARCH_NAME}")
+			"${RELEASE_DIR}/obs-plugins/${ARCH_NAME}"
+		)
 
-		COMMAND if $<CONFIG:Release>==1 ("${CMAKE_COMMAND}" -E copy_directory
+		COMMAND if $<OR:$<CONFIG:Release>,$<CONFIG:RelWithDebInfo>>==1 (
+			"${CMAKE_COMMAND}" -E copy_directory
 			"${PROJECT_SOURCE_DIR}/data"
-			"${RELEASE_DIR}/data/obs-plugins/obs-websocket")
+			"${RELEASE_DIR}/data/obs-plugins/obs-websocket"
+		)
 
-		COMMAND if $<CONFIG:Release>==1 ("${CMAKE_COMMAND}" -E copy
-			"$<TARGET_FILE:obs-websocket>"
-			"${RELEASE_DIR}/obs-plugins/${ARCH_NAME}")
-
-		# In Release mode, copy Qt image format plugins
-		COMMAND if $<CONFIG:Release>==1 (
+		COMMAND if $<OR:$<CONFIG:Release>,$<CONFIG:RelWithDebInfo>>==1 (
 			"${CMAKE_COMMAND}" -E copy
+			"$<TARGET_FILE:obs-websocket>"
+			"${RELEASE_DIR}/obs-plugins/${ARCH_NAME}"
+		)
+
+		# In Release or RelWithDebInfo mode, copy Qt image format plugins
+		COMMAND if $<OR:$<CONFIG:Release>,$<CONFIG:RelWithDebInfo>>==1 (
+			"${CMAKE_COMMAND}" -E make_directory
+			"${RELEASE_DIR}/bin/${ARCH_NAME}/imageformats"
+		)
+		COMMAND if $<OR:$<CONFIG:Release>,$<CONFIG:RelWithDebInfo>>==1 (
+			"${CMAKE_COMMAND}" -E copy
+			"${QTDIR}/plugins/imageformats/qicns.dll"
+			"${QTDIR}/plugins/imageformats/qico.dll"
 			"${QTDIR}/plugins/imageformats/qjpeg.dll"
-			"${RELEASE_DIR}/bin/${ARCH_NAME}/imageformats/qjpeg.dll")
+			"${QTDIR}/plugins/imageformats/qtiff.dll"
+			"${QTDIR}/plugins/imageformats/qwbmp.dll"
+			"${QTDIR}/plugins/imageformats/qwebp.dll"
+			"${RELEASE_DIR}/bin/${ARCH_NAME}/imageformats"
+		)
+
+		# If config is RelWithDebInfo, package PDB file for target
 		COMMAND if $<CONFIG:RelWithDebInfo>==1 (
 			"${CMAKE_COMMAND}" -E copy
-			"${QTDIR}/plugins/imageformats/qjpeg.dll"
-			"${RELEASE_DIR}/bin/${ARCH_NAME}/imageformats/qjpeg.dll")
-
-		# If config is RelWithDebInfo, package release files
-		COMMAND if $<CONFIG:RelWithDebInfo>==1 (
-			"${CMAKE_COMMAND}" -E make_directory
-			"${RELEASE_DIR}/data/obs-plugins/obs-websocket"
-			"${RELEASE_DIR}/obs-plugins/${ARCH_NAME}")
-
-		COMMAND if $<CONFIG:RelWithDebInfo>==1 ("${CMAKE_COMMAND}" -E copy_directory
-			"${PROJECT_SOURCE_DIR}/data"
-			"${RELEASE_DIR}/data/obs-plugins/obs-websocket")
-
-		COMMAND if $<CONFIG:RelWithDebInfo>==1 ("${CMAKE_COMMAND}" -E copy
-			"$<TARGET_FILE:obs-websocket>"
-			"${RELEASE_DIR}/obs-plugins/${ARCH_NAME}")
-
-		COMMAND if $<CONFIG:RelWithDebInfo>==1 ("${CMAKE_COMMAND}" -E copy
 			"$<TARGET_PDB_FILE:obs-websocket>"
-			"${RELEASE_DIR}/obs-plugins/${ARCH_NAME}")
+			"${RELEASE_DIR}/obs-plugins/${ARCH_NAME}"
+		)
 
-		# Copy to obs-studio dev environment for immediate testing
+		# In the Debug configuration, copy to obs-studio dev environment for immediate testing
 		COMMAND if $<CONFIG:Debug>==1 (
 			"${CMAKE_COMMAND}" -E copy
 				"$<TARGET_FILE:obs-websocket>"
-				"${LIBOBS_INCLUDE_DIR}/../${OBS_BUILDDIR_ARCH}/rundir/$<CONFIG>/obs-plugins/${ARCH_NAME}")
+				"${LIBOBS_INCLUDE_DIR}/../${OBS_BUILDDIR_ARCH}/rundir/$<CONFIG>/obs-plugins/${ARCH_NAME}"
+		)
 
 		COMMAND if $<CONFIG:Debug>==1 (
 			"${CMAKE_COMMAND}" -E copy
-				"$<TARGET_PDB_FILE:obs-websocket>"
-				"${LIBOBS_INCLUDE_DIR}/../${OBS_BUILDDIR_ARCH}/rundir/$<CONFIG>/obs-plugins/${ARCH_NAME}")
+			"$<TARGET_PDB_FILE:obs-websocket>"
+			"${LIBOBS_INCLUDE_DIR}/../${OBS_BUILDDIR_ARCH}/rundir/$<CONFIG>/obs-plugins/${ARCH_NAME}"
+		)
 
 		COMMAND if $<CONFIG:Debug>==1 (
 			"${CMAKE_COMMAND}" -E make_directory
-				"${LIBOBS_INCLUDE_DIR}/../${OBS_BUILDDIR_ARCH}/rundir/$<CONFIG>/data/obs-plugins/obs-websocket")
+			"${LIBOBS_INCLUDE_DIR}/../${OBS_BUILDDIR_ARCH}/rundir/$<CONFIG>/data/obs-plugins/obs-websocket"
+		)
 
 		COMMAND if $<CONFIG:Debug>==1 (
 			"${CMAKE_COMMAND}" -E copy_directory
-				"${PROJECT_SOURCE_DIR}/data"
-				"${LIBOBS_INCLUDE_DIR}/../${OBS_BUILDDIR_ARCH}/rundir/$<CONFIG>/data/obs-plugins/obs-websocket")
+			"${PROJECT_SOURCE_DIR}/data"
+			"${LIBOBS_INCLUDE_DIR}/../${OBS_BUILDDIR_ARCH}/rundir/$<CONFIG>/data/obs-plugins/obs-websocket"
+		)
 	)
 	# --- End of sub-section ---
 
@@ -192,8 +196,11 @@ if(UNIX AND NOT APPLE)
 
 	file(GLOB locale_files data/locale/*.ini)
 
-        set(CMAKE_INSTALL_DEFAULT_DIRECTORY_PERMISSIONS
-		OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_WRITE GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
+    set(CMAKE_INSTALL_DEFAULT_DIRECTORY_PERMISSIONS
+		OWNER_READ OWNER_WRITE OWNER_EXECUTE
+		GROUP_READ GROUP_WRITE GROUP_EXECUTE
+		WORLD_READ WORLD_EXECUTE
+	)
 
 	if(${USE_UBUNTU_FIX})
 		install(TARGETS obs-websocket LIBRARY

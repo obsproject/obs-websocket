@@ -37,7 +37,7 @@ auth_response_hash = binary_sha256(auth_response_string)
 auth_response = base64_encode(auth_response_hash)
 ```
 
-You can also refer to any of the client libraries listed on the [README](README.md) for examples of how to authenticate.
+You can also refer to any of the [client libraries](https://github.com/Palakis/obs-websocket#for-developers) listed on the README for examples of how to authenticate.
 
 
 
@@ -82,6 +82,9 @@ You can also refer to any of the client libraries listed on the [README](README.
     + [RecordingStopped](#recordingstopped)
     + [RecordingPaused](#recordingpaused)
     + [RecordingResumed](#recordingresumed)
+  * [Virtual Cam](#virtual-cam)
+    + [VirtualCamStarted](#virtualcamstarted)
+    + [VirtualCamStopped](#virtualcamstopped)
   * [Replay Buffer](#replay-buffer)
     + [ReplayStarting](#replaystarting)
     + [ReplayStarted](#replaystarted)
@@ -161,9 +164,12 @@ You can also refer to any of the client libraries listed on the [README](README.
     + [GetSourceTypesList](#getsourcetypeslist)
     + [GetVolume](#getvolume)
     + [SetVolume](#setvolume)
+    + [SetTracks](#settracks)
+    + [GetTracks](#gettracks)
     + [GetMute](#getmute)
     + [SetMute](#setmute)
     + [ToggleMute](#togglemute)
+    + [GetSourceActive](#getsourceactive)
     + [GetAudioActive](#getaudioactive)
     + [SetSourceName](#setsourcename)
     + [SetSyncOffset](#setsyncoffset)
@@ -267,6 +273,11 @@ You can also refer to any of the client libraries listed on the [README](README.
     + [SetTransitionSettings](#settransitionsettings)
     + [ReleaseTBar](#releasetbar)
     + [SetTBarPosition](#settbarposition)
+  * [Virtual Cam](#virtual-cam-1)
+    + [GetVirtualCamStatus](#getvirtualcamstatus)
+    + [StartStopVirtualCam](#startstopvirtualcam)
+    + [StartVirtualCam](#startvirtualcam)
+    + [StopVirtualCam](#stopvirtualcam)
 
 <!-- tocstop -->
 
@@ -345,7 +356,7 @@ These are complex types, such as `Source` and `Scene`, which are used as argumen
 | `flags.encoded` | _boolean_ | Output is encoded |
 | `flags.multiTrack` | _boolean_ | Output uses several audio tracks |
 | `flags.service` | _boolean_ | Output uses a service |
-| `settings` | _Object_ | Output name |
+| `settings` | _Object_ | Output settings |
 | `active` | _boolean_ | Output status (active or not) |
 | `reconnecting` | _boolean_ | Output reconnection status (reconnecting or not) |
 | `congestion` | _double_ | Output congestion |
@@ -513,7 +524,7 @@ A transition (other than "cut") has begun.
 | `name` | _String_ | Transition name. |
 | `type` | _String_ | Transition type. |
 | `duration` | _int_ | Transition duration (in milliseconds). Will be -1 for any transition with a fixed duration, such as a Stinger, due to limitations of the OBS API. |
-| `from-scene` | _String_ | Source scene of the transition |
+| `from-scene` | _String (optional)_ | Source scene of the transition |
 | `to-scene` | _String_ | Destination scene of the transition |
 
 
@@ -553,7 +564,7 @@ A stinger transition has finished playing its video.
 | `name` | _String_ | Transition name. |
 | `type` | _String_ | Transition type. |
 | `duration` | _int_ | Transition duration (in milliseconds). |
-| `from-scene` | _String_ | Source scene of the transition |
+| `from-scene` | _String (optional)_ | Source scene of the transition |
 | `to-scene` | _String_ | Destination scene of the transition |
 
 
@@ -780,6 +791,34 @@ _No additional response items._
 
 ---
 
+## Virtual Cam
+
+### VirtualCamStarted
+
+
+- Unreleased
+
+Virtual cam started successfully.
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+### VirtualCamStopped
+
+
+- Unreleased
+
+Virtual cam stopped successfully.
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
 ## Replay Buffer
 
 ### ReplayStarting
@@ -947,6 +986,7 @@ The volume of a source has changed.
 | ---- | :---: | ------------|
 | `sourceName` | _String_ | Source name |
 | `volume` | _float_ | Source volume |
+| `volumeDb` | _float_ | Source volume in Decibel |
 
 
 ---
@@ -1809,13 +1849,14 @@ _No additional response items._
 - Added in v4.9.0
 
 Pause or play a media source. Supports ffmpeg and vlc media sources (as of OBS v25.0.8)
+Note :Leaving out `playPause` toggles the current pause state
 
 **Request Fields:**
 
 | Name | Type  | Description |
 | ---- | :---: | ------------|
 | `sourceName` | _String_ | Source name. |
-| `playPause` | _boolean_ | Whether to pause or play the source. `false` for play, `true` for pause. |
+| `playPause` | _boolean_ | (optional) Whether to pause or play the source. `false` for play, `true` for pause. |
 
 
 **Response Items:**
@@ -2172,6 +2213,56 @@ _No additional response items._
 
 ---
 
+### SetTracks
+
+
+- Unreleased
+
+Changes whether an audio track is active for a source.
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sourceName` | _String_ | Source name. |
+| `track` | _int_ | Audio tracks 1-6. |
+| `active` | _boolean_ | Whether audio track is active or not. |
+
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+### GetTracks
+
+
+- Unreleased
+
+Gets whether an audio track is active for a source.
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sourceName` | _String_ | Source name. |
+
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `track1` | _boolean_ |  |
+| `track2` | _boolean_ |  |
+| `track3` | _boolean_ |  |
+| `track4` | _boolean_ |  |
+| `track5` | _boolean_ |  |
+| `track6` | _boolean_ |  |
+
+
+---
+
 ### GetMute
 
 
@@ -2234,6 +2325,29 @@ Inverts the mute status of a specified source.
 **Response Items:**
 
 _No additional response items._
+
+---
+
+### GetSourceActive
+
+
+- Unreleased
+
+Get the source's active status of a specified source (if it is showing in the final mix).
+
+**Request Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sourceName` | _String_ | Source name. |
+
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `sourceActive` | _boolean_ | Source active status of the source. |
+
 
 ---
 
@@ -3698,7 +3812,7 @@ Creates a scene item in a scene. In other words, this is how you add a source in
 | ---- | :---: | ------------|
 | `sceneName` | _String_ | Name of the scene to create the scene item in |
 | `sourceName` | _String_ | Name of the source to be added |
-| `setVisible` | _boolean_ | Whether to make the sceneitem visible on creation or not. Default `true` |
+| `setVisible` | _boolean (optional)_ | Whether to make the sceneitem visible on creation or not. Default `true` |
 
 
 **Response Items:**
@@ -3836,7 +3950,7 @@ Changes the order of scene items in the requested scene.
 | Name | Type  | Description |
 | ---- | :---: | ------------|
 | `scene` | _String (optional)_ | Name of the scene to reorder (defaults to current). |
-| `items` | _Array&lt;Scene&gt;_ | Ordered list of objects with name and/or id specified. Id preferred due to uniqueness per scene |
+| `items` | _Array&lt;Object&gt;_ | Ordered list of objects with name and/or id specified. Id preferred due to uniqueness per scene |
 | `items.*.id` | _int (optional)_ | Id of a specific scene item. Unique on a scene by scene basis. |
 | `items.*.name` | _String (optional)_ | Name of a scene item. Sufficiently unique if no scene items share sources within the scene. |
 
@@ -3933,9 +4047,11 @@ _No specified parameters._
 | `streaming` | _boolean_ | Current streaming status. |
 | `recording` | _boolean_ | Current recording status. |
 | `recording-paused` | _boolean_ | If recording is paused. |
+| `virtualcam` | _boolean_ | Current virtual cam status. |
 | `preview-only` | _boolean_ | Always false. Retrocompatibility with OBSRemote. |
 | `stream-timecode` | _String (optional)_ | Time elapsed since streaming started (only present if currently streaming). |
 | `rec-timecode` | _String (optional)_ | Time elapsed since recording started (only present if currently recording). |
+| `virtualcam-timecode` | _String (optional)_ | Time elapsed since virtual cam started (only present if virtual cam currently active). |
 
 
 ---
@@ -4439,6 +4555,82 @@ If your code needs to perform multiple successive T-Bar moves (e.g. : in an anim
 | `position` | _double_ | T-Bar position. This value must be between 0.0 and 1.0. |
 | `release` | _boolean (optional)_ | Whether or not the T-Bar gets released automatically after setting its new position (like a user releasing their mouse button after moving the T-Bar). Call `ReleaseTBar` manually if you set `release` to false. Defaults to true. |
 
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+## Virtual Cam
+
+### GetVirtualCamStatus
+
+
+- Unreleased
+
+Get current virtual cam status.
+
+**Request Fields:**
+
+_No specified parameters._
+
+**Response Items:**
+
+| Name | Type  | Description |
+| ---- | :---: | ------------|
+| `isVirtualCam` | _boolean_ | Current virtual camera status. |
+| `virtualCamTimecode` | _String (optional)_ | Time elapsed since virtual cam started (only present if virtual cam currently active). |
+
+
+---
+
+### StartStopVirtualCam
+
+
+- Unreleased
+
+Toggle virtual cam on or off (depending on the current virtual cam state).
+
+**Request Fields:**
+
+_No specified parameters._
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+### StartVirtualCam
+
+
+- Unreleased
+
+Start virtual cam.
+Will return an `error` if virtual cam is already active.
+
+**Request Fields:**
+
+_No specified parameters._
+
+**Response Items:**
+
+_No additional response items._
+
+---
+
+### StopVirtualCam
+
+
+- Unreleased
+
+Stop virtual cam.
+Will return an `error` if virtual cam is not active.
+
+**Request Fields:**
+
+_No specified parameters._
 
 **Response Items:**
 

@@ -316,6 +316,96 @@ RpcResponse WSRequestHandler::SetVolume(const RpcRequest& request)
 }
 
 /**
+* Changes whether an audio track is active for a source.
+*
+* @param {String} `sourceName` Source name.
+* @param {int} `track` Audio tracks 1-6.
+* @param {boolean} `active` Whether audio track is active or not.
+*
+* @api requests
+* @name SetTracks
+* @category sources
+* @since unreleased
+*/
+RpcResponse WSRequestHandler::SetAudioTracks(const RpcRequest& request)
+ {
+	if (!request.hasField("sourceName") || !request.hasField("track") || !request.hasField("active")) {
+		return request.failed("missing request parameters");
+	}
+
+	QString sourceName = obs_data_get_string(request.parameters(), "sourceName");
+	bool active = obs_data_get_bool(request.parameters(), "active");
+	int track = obs_data_get_int(request.parameters(), "track")-1;
+
+	if (sourceName.isEmpty() || track > 5 || track < 0) {
+		return request.failed("invalid request parameters");
+	}
+
+	OBSSourceAutoRelease source = obs_get_source_by_name(sourceName.toUtf8());
+	if (!source) {
+		return request.failed("specified source doesn't exist");
+	}
+
+	uint32_t mixers = obs_source_get_audio_mixers(source);
+
+	if (active && !(mixers & (1 << track)))
+		mixers |= (1 << track);
+	else if (mixers & (1 << track))
+		mixers &= ~(1 << track);
+
+	obs_source_set_audio_mixers(source, mixers);
+
+	return request.success();
+}
+
+
+/**
+* Gets whether an audio track is active for a source.
+*
+* @param {String} `sourceName` Source name.
+* 
+* @return {boolean} `track1`
+* @return {boolean} `track2`
+* @return {boolean} `track3`
+* @return {boolean} `track4`
+* @return {boolean} `track5`
+* @return {boolean} `track6`
+*
+* @api requests
+* @name GetTracks
+* @category sources
+* @since unreleased
+*/
+RpcResponse WSRequestHandler::GetAudioTracks(const RpcRequest& request)
+{
+	if (!request.hasField("sourceName")) {
+		return request.failed("missing request parameters");
+	}
+
+	QString sourceName = obs_data_get_string(request.parameters(), "sourceName");
+	if (sourceName.isEmpty()) {
+		return request.failed("invalid request parameters");
+	}
+
+	OBSSourceAutoRelease source = obs_get_source_by_name(sourceName.toUtf8());
+	if (!source) {
+		return request.failed("specified source doesn't exist");
+	}
+
+	uint32_t mixers = obs_source_get_audio_mixers(source);
+
+	OBSDataAutoRelease response = obs_data_create();
+	obs_data_set_string(response, "name", obs_source_get_name(source));
+	obs_data_set_bool(response, "track1", mixers & (1 << 0));
+	obs_data_set_bool(response, "track2", mixers & (1 << 1));
+	obs_data_set_bool(response, "track3", mixers & (1 << 2));
+	obs_data_set_bool(response, "track4", mixers & (1 << 3));
+	obs_data_set_bool(response, "track5", mixers & (1 << 4));
+	obs_data_set_bool(response, "track6", mixers & (1 << 5));
+	return request.success(response);
+}
+
+/**
 * Get the mute status of a specified source.
 *
 * @param {String} `source` Source name.
@@ -412,6 +502,40 @@ RpcResponse WSRequestHandler::ToggleMute(const RpcRequest& request)
 
 	obs_source_set_muted(source, !obs_source_muted(source));
 	return request.success();
+}
+
+/**
+* Get the source's active status of a specified source (if it is showing in the final mix).
+*
+* @param {String} `sourceName` Source name.
+*
+* @return {boolean} `sourceActive` Source active status of the source.
+*
+* @api requests
+* @name GetSourceActive
+* @category sources
+* @since unreleased
+*/
+RpcResponse WSRequestHandler::GetSourceActive(const RpcRequest& request)
+{
+	if (!request.hasField("sourceName")) {
+		return request.failed("missing request parameters");
+	}
+
+	QString sourceName = obs_data_get_string(request.parameters(), "sourceName");
+	if (sourceName.isEmpty()) {
+		return request.failed("invalid request parameters");
+	}
+
+	OBSSourceAutoRelease source = obs_get_source_by_name(sourceName.toUtf8());
+	if (!source) {
+		return request.failed("specified source doesn't exist");
+	}
+
+	OBSDataAutoRelease response = obs_data_create();
+	obs_data_set_bool(response, "sourceActive", obs_source_active(source));
+
+	return request.success(response);
 }
 
 /**

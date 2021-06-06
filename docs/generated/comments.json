@@ -366,7 +366,7 @@
         "{boolean} `flags.encoded` Output is encoded",
         "{boolean} `flags.multiTrack` Output uses several audio tracks",
         "{boolean} `flags.service` Output uses a service",
-        "{Object} `settings` Output name",
+        "{Object} `settings` Output settings",
         "{boolean} `active` Output status (active or not)",
         "{boolean} `reconnecting` Output reconnection status (reconnecting or not)",
         "{double} `congestion` Output congestion",
@@ -433,7 +433,7 @@
         {
           "type": "Object",
           "name": "settings",
-          "description": "Output name"
+          "description": "Output settings"
         },
         {
           "type": "boolean",
@@ -861,7 +861,7 @@
           "{String} `name` Transition name.",
           "{String} `type` Transition type.",
           "{int} `duration` Transition duration (in milliseconds). Will be -1 for any transition with a fixed duration, such as a Stinger, due to limitations of the OBS API.",
-          "{String} `from-scene` Source scene of the transition",
+          "{String (optional)} `from-scene` Source scene of the transition",
           "{String} `to-scene` Destination scene of the transition"
         ],
         "api": "events",
@@ -885,7 +885,7 @@
             "description": "Transition duration (in milliseconds). Will be -1 for any transition with a fixed duration, such as a Stinger, due to limitations of the OBS API."
           },
           {
-            "type": "String",
+            "type": "String (optional)",
             "name": "from-scene",
             "description": "Source scene of the transition"
           },
@@ -989,7 +989,7 @@
           "{String} `name` Transition name.",
           "{String} `type` Transition type.",
           "{int} `duration` Transition duration (in milliseconds).",
-          "{String} `from-scene` Source scene of the transition",
+          "{String (optional)} `from-scene` Source scene of the transition",
           "{String} `to-scene` Destination scene of the transition"
         ],
         "api": "events",
@@ -1013,7 +1013,7 @@
             "description": "Transition duration (in milliseconds)."
           },
           {
-            "type": "String",
+            "type": "String (optional)",
             "name": "from-scene",
             "description": "Source scene of the transition"
           },
@@ -1667,6 +1667,74 @@
         "examples": []
       }
     ],
+    "virtual cam": [
+      {
+        "subheads": [],
+        "description": "Virtual cam started successfully.",
+        "api": "events",
+        "name": "VirtualCamStarted",
+        "category": "virtual cam",
+        "since": "unreleased",
+        "names": [
+          {
+            "name": "",
+            "description": "VirtualCamStarted"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "virtual cam"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "unreleased"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "VirtualCamStarted"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Virtual cam stopped successfully.",
+        "api": "events",
+        "name": "VirtualCamStopped",
+        "category": "virtual cam",
+        "since": "unreleased",
+        "names": [
+          {
+            "name": "",
+            "description": "VirtualCamStopped"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "virtual cam"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "unreleased"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "VirtualCamStopped"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      }
+    ],
     "replay buffer": [
       {
         "subheads": [],
@@ -2118,7 +2186,8 @@
         "description": "The volume of a source has changed.",
         "return": [
           "{String} `sourceName` Source name",
-          "{float} `volume` Source volume"
+          "{float} `volume` Source volume",
+          "{float} `volumeDb` Source volume in Decibel"
         ],
         "api": "events",
         "name": "SourceVolumeChanged",
@@ -2134,6 +2203,11 @@
             "type": "float",
             "name": "volume",
             "description": "Source volume"
+          },
+          {
+            "type": "float",
+            "name": "volumeDb",
+            "description": "Source volume in Decibel"
           }
         ],
         "names": [
@@ -4441,10 +4515,10 @@
     "media control": [
       {
         "subheads": [],
-        "description": "Pause or play a media source. Supports ffmpeg and vlc media sources (as of OBS v25.0.8)",
+        "description": "Pause or play a media source. Supports ffmpeg and vlc media sources (as of OBS v25.0.8)\nNote :Leaving out `playPause` toggles the current pause state",
         "param": [
           "{String} `sourceName` Source name.",
-          "{boolean} `playPause` Whether to pause or play the source. `false` for play, `true` for pause."
+          "{boolean} `playPause` (optional) Whether to pause or play the source. `false` for play, `true` for pause."
         ],
         "api": "requests",
         "name": "PlayPauseMedia",
@@ -4459,7 +4533,7 @@
           {
             "type": "boolean",
             "name": "playPause",
-            "description": "Whether to pause or play the source. `false` for play, `true` for pause."
+            "description": "(optional) Whether to pause or play the source. `false` for play, `true` for pause."
           }
         ],
         "names": [
@@ -5339,6 +5413,142 @@
       },
       {
         "subheads": [],
+        "description": "Changes whether an audio track is active for a source.",
+        "param": [
+          "{String} `sourceName` Source name.",
+          "{int} `track` Audio tracks 1-6.",
+          "{boolean} `active` Whether audio track is active or not."
+        ],
+        "api": "requests",
+        "name": "SetTracks",
+        "category": "sources",
+        "since": "unreleased",
+        "params": [
+          {
+            "type": "String",
+            "name": "sourceName",
+            "description": "Source name."
+          },
+          {
+            "type": "int",
+            "name": "track",
+            "description": "Audio tracks 1-6."
+          },
+          {
+            "type": "boolean",
+            "name": "active",
+            "description": "Whether audio track is active or not."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "SetTracks"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "sources"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "unreleased"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "SetTracks"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Gets whether an audio track is active for a source.",
+        "param": "{String} `sourceName` Source name.",
+        "return": [
+          "{boolean} `track1`",
+          "{boolean} `track2`",
+          "{boolean} `track3`",
+          "{boolean} `track4`",
+          "{boolean} `track5`",
+          "{boolean} `track6`"
+        ],
+        "api": "requests",
+        "name": "GetTracks",
+        "category": "sources",
+        "since": "unreleased",
+        "returns": [
+          {
+            "type": "boolean",
+            "name": "track1",
+            "description": ""
+          },
+          {
+            "type": "boolean",
+            "name": "track2",
+            "description": ""
+          },
+          {
+            "type": "boolean",
+            "name": "track3",
+            "description": ""
+          },
+          {
+            "type": "boolean",
+            "name": "track4",
+            "description": ""
+          },
+          {
+            "type": "boolean",
+            "name": "track5",
+            "description": ""
+          },
+          {
+            "type": "boolean",
+            "name": "track6",
+            "description": ""
+          }
+        ],
+        "params": [
+          {
+            "type": "String",
+            "name": "sourceName",
+            "description": "Source name."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "GetTracks"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "sources"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "unreleased"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "GetTracks"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
         "description": "Get the mute status of a specified source.",
         "param": "{String} `source` Source name.",
         "return": [
@@ -5479,6 +5689,55 @@
         "heading": {
           "level": 2,
           "text": "ToggleMute"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Get the source's active status of a specified source (if it is showing in the final mix).",
+        "param": "{String} `sourceName` Source name.",
+        "return": "{boolean} `sourceActive` Source active status of the source.",
+        "api": "requests",
+        "name": "GetSourceActive",
+        "category": "sources",
+        "since": "unreleased",
+        "returns": [
+          {
+            "type": "boolean",
+            "name": "sourceActive",
+            "description": "Source active status of the source."
+          }
+        ],
+        "params": [
+          {
+            "type": "String",
+            "name": "sourceName",
+            "description": "Source name."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "GetSourceActive"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "sources"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "unreleased"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "GetSourceActive"
         },
         "lead": "",
         "type": "class",
@@ -9393,7 +9652,7 @@
         "param": [
           "{String} `sceneName` Name of the scene to create the scene item in",
           "{String} `sourceName` Name of the source to be added",
-          "{boolean} `setVisible` Whether to make the sceneitem visible on creation or not. Default `true`"
+          "{boolean (optional)} `setVisible` Whether to make the sceneitem visible on creation or not. Default `true`"
         ],
         "return": "{int} `itemId` Numerical ID of the created scene item",
         "api": "requests",
@@ -9419,7 +9678,7 @@
             "description": "Name of the source to be added"
           },
           {
-            "type": "boolean",
+            "type": "boolean (optional)",
             "name": "setVisible",
             "description": "Whether to make the sceneitem visible on creation or not. Default `true`"
           }
@@ -9732,7 +9991,7 @@
         "description": "Changes the order of scene items in the requested scene.",
         "param": [
           "{String (optional)} `scene` Name of the scene to reorder (defaults to current).",
-          "{Array<Scene>} `items` Ordered list of objects with name and/or id specified. Id preferred due to uniqueness per scene",
+          "{Array<Object>} `items` Ordered list of objects with name and/or id specified. Id preferred due to uniqueness per scene",
           "{int (optional)} `items.*.id` Id of a specific scene item. Unique on a scene by scene basis.",
           "{String (optional)} `items.*.name` Name of a scene item. Sufficiently unique if no scene items share sources within the scene."
         ],
@@ -9747,7 +10006,7 @@
             "description": "Name of the scene to reorder (defaults to current)."
           },
           {
-            "type": "Array<Scene>",
+            "type": "Array<Object>",
             "name": "items",
             "description": "Ordered list of objects with name and/or id specified. Id preferred due to uniqueness per scene"
           },
@@ -9950,9 +10209,11 @@
           "{boolean} `streaming` Current streaming status.",
           "{boolean} `recording` Current recording status.",
           "{boolean} `recording-paused` If recording is paused.",
+          "{boolean} `virtualcam` Current virtual cam status.",
           "{boolean} `preview-only` Always false. Retrocompatibility with OBSRemote.",
           "{String (optional)} `stream-timecode` Time elapsed since streaming started (only present if currently streaming).",
-          "{String (optional)} `rec-timecode` Time elapsed since recording started (only present if currently recording)."
+          "{String (optional)} `rec-timecode` Time elapsed since recording started (only present if currently recording).",
+          "{String (optional)} `virtualcam-timecode` Time elapsed since virtual cam started (only present if virtual cam currently active)."
         ],
         "api": "requests",
         "name": "GetStreamingStatus",
@@ -9976,6 +10237,11 @@
           },
           {
             "type": "boolean",
+            "name": "virtualcam",
+            "description": "Current virtual cam status."
+          },
+          {
+            "type": "boolean",
             "name": "preview-only",
             "description": "Always false. Retrocompatibility with OBSRemote."
           },
@@ -9988,6 +10254,11 @@
             "type": "String (optional)",
             "name": "rec-timecode",
             "description": "Time elapsed since recording started (only present if currently recording)."
+          },
+          {
+            "type": "String (optional)",
+            "name": "virtualcam-timecode",
+            "description": "Time elapsed since virtual cam started (only present if virtual cam currently active)."
           }
         ],
         "names": [
@@ -11153,6 +11424,156 @@
           "text": "SetTBarPosition"
         },
         "lead": "Set the manual position of the T-Bar (in Studio Mode) to the specified value. Will return an error if OBS is not in studio mode or if the current transition doesn't support T-Bar control.",
+        "type": "class",
+        "examples": []
+      }
+    ],
+    "virtual cam": [
+      {
+        "subheads": [],
+        "description": "Get current virtual cam status.",
+        "return": [
+          "{boolean} `isVirtualCam` Current virtual camera status.",
+          "{String (optional)} `virtualCamTimecode` Time elapsed since virtual cam started (only present if virtual cam currently active)."
+        ],
+        "api": "requests",
+        "name": "GetVirtualCamStatus",
+        "category": "virtual cam",
+        "since": "unreleased",
+        "returns": [
+          {
+            "type": "boolean",
+            "name": "isVirtualCam",
+            "description": "Current virtual camera status."
+          },
+          {
+            "type": "String (optional)",
+            "name": "virtualCamTimecode",
+            "description": "Time elapsed since virtual cam started (only present if virtual cam currently active)."
+          }
+        ],
+        "names": [
+          {
+            "name": "",
+            "description": "GetVirtualCamStatus"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "virtual cam"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "unreleased"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "GetVirtualCamStatus"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Toggle virtual cam on or off (depending on the current virtual cam state).",
+        "api": "requests",
+        "name": "StartStopVirtualCam",
+        "category": "virtual cam",
+        "since": "unreleased",
+        "names": [
+          {
+            "name": "",
+            "description": "StartStopVirtualCam"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "virtual cam"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "unreleased"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "StartStopVirtualCam"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Start virtual cam.\nWill return an `error` if virtual cam is already active.",
+        "api": "requests",
+        "name": "StartVirtualCam",
+        "category": "virtual cam",
+        "since": "unreleased",
+        "names": [
+          {
+            "name": "",
+            "description": "StartVirtualCam"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "virtual cam"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "unreleased"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "StartVirtualCam"
+        },
+        "lead": "",
+        "type": "class",
+        "examples": []
+      },
+      {
+        "subheads": [],
+        "description": "Stop virtual cam.\nWill return an `error` if virtual cam is not active.",
+        "api": "requests",
+        "name": "StopVirtualCam",
+        "category": "virtual cam",
+        "since": "unreleased",
+        "names": [
+          {
+            "name": "",
+            "description": "StopVirtualCam"
+          }
+        ],
+        "categories": [
+          {
+            "name": "",
+            "description": "virtual cam"
+          }
+        ],
+        "sinces": [
+          {
+            "name": "",
+            "description": "unreleased"
+          }
+        ],
+        "heading": {
+          "level": 2,
+          "text": "StopVirtualCam"
+        },
+        "lead": "",
         "type": "class",
         "examples": []
       }

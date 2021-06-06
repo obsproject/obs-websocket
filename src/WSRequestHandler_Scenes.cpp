@@ -100,7 +100,8 @@ RpcResponse WSRequestHandler::CreateScene(const RpcRequest& request) {
 	if (source) {
 		return request.failed("scene with this name already exists");
 	}
-	obs_scene_create(sceneName);
+	obs_scene_t *createdScene = obs_scene_create(sceneName);
+	obs_scene_release(createdScene);
 	return request.success();
 }
 
@@ -108,7 +109,7 @@ RpcResponse WSRequestHandler::CreateScene(const RpcRequest& request) {
 * Changes the order of scene items in the requested scene.
 *
 * @param {String (optional)} `scene` Name of the scene to reorder (defaults to current).
-* @param {Array<Scene>} `items` Ordered list of objects with name and/or id specified. Id preferred due to uniqueness per scene
+* @param {Array<Object>} `items` Ordered list of objects with name and/or id specified. Id preferred due to uniqueness per scene
 * @param {int (optional)} `items.*.id` Id of a specific scene item. Unique on a scene by scene basis.
 * @param {String (optional)} `items.*.name` Name of a scene item. Sufficiently unique if no scene items share sources within the scene.
 *
