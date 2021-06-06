@@ -271,7 +271,7 @@ jobs:
         run: |
           mkdir ./build
           cd ./build
-          cmake -DDISABLE_PLUGINS=YES -DENABLE_SCRIPTING=NO -DUNIX_STRUCTURE=YES -DCMAKE_INSTALL_PREFIX=/usr -DBUILD_BROWSER=OFF -DENABLE_PIPEWIRE=OFF ..
+          cmake -DDISABLE_PLUGINS=YES -DENABLE_SCRIPTING=NO -DUNIX_STRUCTURE=YES -DCMAKE_INSTALL_PREFIX=/usr ..
       - name: 'Build OBS-Studio'
         working-directory: ${{ github.workspace }}/obs-studio
         shell: bash
