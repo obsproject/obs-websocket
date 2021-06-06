@@ -49,7 +49,7 @@ find_package(LibObs REQUIRED)
 
 
 # Find Qt5
-find_package(Qt5 REQUIRED COMPONENTS Core Widgets Network Concurrent)
+find_package(Qt5 REQUIRED COMPONENTS Core Widgets Svg Concurrent Network)
 
 
 # Find nlohmann
@@ -125,8 +125,9 @@ include_directories(
 	"${LIBOBS_INCLUDE_DIR}/../UI/obs-frontend-api"
 	${Qt5Core_INCLUDES}
 	${Qt5Widgets_INCLUDES}
-    ${Qt5Network_INCLUDES}
+    ${Qt5Svg_INCLUDES}
 	${Qt5Concurrent_INCLUDES}
+    ${Qt5Network_INCLUDES}
 	"${CMAKE_SOURCE_DIR}/deps/asio/asio/include"
 	"${CMAKE_SOURCE_DIR}/deps/websocketpp")
 
@@ -134,8 +135,9 @@ target_link_libraries(obs-websocket
 	libobs
 	Qt5::Core
 	Qt5::Widgets
-    Qt5::Network
+    Qt5::Svg
 	Qt5::Concurrent
+    Qt5::Network
 	nlohmann_json::nlohmann_json)
 
 
