@@ -132,6 +132,7 @@ void SettingsDialog::SaveFormData()
 	conf->Save();
 
 	if (needsRestart) {
+		blog(LOG_INFO, "[SettingsDialog::SaveFormData] A setting was changed which requires a server restart.");
 		auto server = GetWebSocketServer();
 		server->Stop();
 		if (conf->ServerEnabled) {
