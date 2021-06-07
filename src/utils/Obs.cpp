@@ -38,6 +38,22 @@ std::string Utils::Obs::StringHelper::GetObsVersionString()
 	return combined.toStdString();
 }
 
+std::string Utils::Obs::StringHelper::GetCurrentSceneCollection()
+{
+	char *sceneCollectionName = obs_frontend_get_current_scene_collection();
+	std::string ret = sceneCollectionName;
+	bfree(sceneCollectionName);
+	return ret;
+}
+
+std::string Utils::Obs::StringHelper::GetCurrentProfile()
+{
+	char *profileName = obs_frontend_get_current_profile();
+	std::string ret = profileName;
+	bfree(profileName);
+	return ret;
+}
+
 std::string Utils::Obs::StringHelper::GetSourceTypeString(obs_source_t *source)
 {
 	obs_source_type sourceType = obs_source_get_type(source);

@@ -30,6 +30,8 @@ namespace Utils {
 	namespace Obs {
 		namespace StringHelper {
 			std::string GetObsVersionString();
+			std::string GetCurrentSceneCollection();
+			std::string GetCurrentProfile();
 			std::string GetSourceTypeString(obs_source_t *source);
 			std::string GetInputMonitorTypeString(obs_source_t *input);
 			std::string GetMediaInputStateString(obs_source_t *input);
