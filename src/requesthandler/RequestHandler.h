@@ -17,6 +17,7 @@ class RequestHandler {
 		std::vector<std::string> GetRequestList();
 
 	private:
+		// General
 		RequestResult GetVersion(const Request&);
 		RequestResult BroadcastCustomEvent(const Request&);
 		RequestResult GetHotkeyList(const Request&);
@@ -25,6 +26,14 @@ class RequestHandler {
 		RequestResult GetStudioModeEnabled(const Request&);
 		RequestResult SetStudioModeEnabled(const Request&);
 		RequestResult Sleep(const Request&);
+
+		// Config
+		RequestResult GetSceneCollectionList(const Request&);
+		RequestResult SetCurrentSceneCollection(const Request&);
+		RequestResult GetProfileList(const Request&);
+		RequestResult SetCurrentProfile(const Request&);
+		RequestResult GetProfileParameter(const Request&);
+		RequestResult SetProfileParameter(const Request&);
 
 		static const std::map<std::string, RequestMethodHandler> _handlerMap;
 };

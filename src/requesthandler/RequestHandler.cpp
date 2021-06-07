@@ -13,6 +13,14 @@ const std::map<std::string, RequestMethodHandler> RequestHandler::_handlerMap
 	{"GetStudioModeEnabled", &RequestHandler::GetStudioModeEnabled},
 	{"SetStudioModeEnabled", &RequestHandler::SetStudioModeEnabled},
 	{"Sleep", &RequestHandler::Sleep},
+
+	// Config
+	{"GetSceneCollectionList", &RequestHandler::GetSceneCollectionList},
+	{"SetCurrentSceneCollection", &RequestHandler::SetCurrentSceneCollection},
+	{"GetProfileList", &RequestHandler::GetProfileList},
+	{"SetCurrentProfile", &RequestHandler::SetCurrentProfile},
+	{"GetProfileParameter", &RequestHandler::GetProfileParameter},
+	{"SetProfileParameter", &RequestHandler::SetProfileParameter},
 };
 
 RequestResult RequestHandler::ProcessRequest(const Request& request)

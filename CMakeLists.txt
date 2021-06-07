@@ -87,6 +87,7 @@ set(obs-websocket_SOURCES
     src/eventhandler/EventHandler_MediaInputs.cpp
 	src/requesthandler/RequestHandler.cpp
     src/requesthandler/RequestHandler_General.cpp
+    src/requesthandler/RequestHandler_Config.cpp
 	src/requesthandler/rpc/Request.cpp
     src/requesthandler/rpc/RequestResult.cpp
 	src/forms/SettingsDialog.cpp
