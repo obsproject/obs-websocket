@@ -204,7 +204,8 @@ RpcResponse WSRequestHandler::SetSceneTransitionOverride(const RpcRequest& reque
 	}
 
 	QString transitionName = obs_data_get_string(request.parameters(), "transitionName");
-	if (!Utils::GetTransitionFromName(transitionName)) {
+	OBSSourceAutoRelease transition = Utils::GetTransitionFromName(transitionName);
+	if (!transition) {
 		return request.failed("requested transition does not exist");
 	}
 
