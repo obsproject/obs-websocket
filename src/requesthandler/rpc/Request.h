@@ -11,7 +11,7 @@ struct Request
 
 	const bool HasRequestData() const
 	{
-		return RequestData.is_object();
+		return RequestData.is_object() && !RequestData.empty();
 	}
 
 	const bool ValidateBasic(const std::string keyName, RequestStatus::RequestStatus &statusCode, std::string &comment) const;
