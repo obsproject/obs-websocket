@@ -93,7 +93,7 @@ namespace RequestStatus {
 		HotkeyNotFound = 615,
 		// The specified directory was not found
 		DirectoryNotFound = 616,
-		// The specified config item (obs_config_t) was not found. Could be section or parameter name
+		// The specified config item (config_t) was not found. Could be section or parameter name
 		ConfigParameterNotFound = 617,
 		// The specified property (obs_properties_t) was not found
 		PropertyNotFound = 618,
