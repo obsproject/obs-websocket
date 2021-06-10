@@ -483,7 +483,7 @@ RpcResponse WSRequestHandler::ExecuteBatch(const RpcRequest& request) {
  * @api requests
  * @name Sleep
  * @category general
- * @since unreleased
+ * @since 4.9.1
  */
 RpcResponse WSRequestHandler::Sleep(const RpcRequest& request) {
 	if (!request.hasField("sleepMillis")) {

@@ -325,7 +325,7 @@ RpcResponse WSRequestHandler::SetVolume(const RpcRequest& request)
 * @api requests
 * @name SetTracks
 * @category sources
-* @since unreleased
+* @since 4.9.1
 */
 RpcResponse WSRequestHandler::SetAudioTracks(const RpcRequest& request)
  {
@@ -374,7 +374,7 @@ RpcResponse WSRequestHandler::SetAudioTracks(const RpcRequest& request)
 * @api requests
 * @name GetTracks
 * @category sources
-* @since unreleased
+* @since 4.9.1
 */
 RpcResponse WSRequestHandler::GetAudioTracks(const RpcRequest& request)
 {
@@ -514,7 +514,7 @@ RpcResponse WSRequestHandler::ToggleMute(const RpcRequest& request)
 * @api requests
 * @name GetSourceActive
 * @category sources
-* @since unreleased
+* @since 4.9.1
 */
 RpcResponse WSRequestHandler::GetSourceActive(const RpcRequest& request)
 {
