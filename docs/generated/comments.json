@@ -1674,7 +1674,7 @@
         "api": "events",
         "name": "VirtualCamStarted",
         "category": "virtual cam",
-        "since": "unreleased",
+        "since": "4.9.1",
         "names": [
           {
             "name": "",
@@ -1690,7 +1690,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "unreleased"
+            "description": "4.9.1"
           }
         ],
         "heading": {
@@ -1707,7 +1707,7 @@
         "api": "events",
         "name": "VirtualCamStopped",
         "category": "virtual cam",
-        "since": "unreleased",
+        "since": "4.9.1",
         "names": [
           {
             "name": "",
@@ -1723,7 +1723,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "unreleased"
+            "description": "4.9.1"
           }
         ],
         "heading": {
@@ -4477,7 +4477,7 @@
         "api": "requests",
         "name": "Sleep",
         "category": "general",
-        "since": "unreleased",
+        "since": "4.9.1",
         "params": [
           {
             "type": "int",
@@ -4500,7 +4500,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "unreleased"
+            "description": "4.9.1"
           }
         ],
         "heading": {
@@ -5422,7 +5422,7 @@
         "api": "requests",
         "name": "SetTracks",
         "category": "sources",
-        "since": "unreleased",
+        "since": "4.9.1",
         "params": [
           {
             "type": "String",
@@ -5455,7 +5455,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "unreleased"
+            "description": "4.9.1"
           }
         ],
         "heading": {
@@ -5481,7 +5481,7 @@
         "api": "requests",
         "name": "GetTracks",
         "category": "sources",
-        "since": "unreleased",
+        "since": "4.9.1",
         "returns": [
           {
             "type": "boolean",
@@ -5536,7 +5536,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "unreleased"
+            "description": "4.9.1"
           }
         ],
         "heading": {
@@ -5702,7 +5702,7 @@
         "api": "requests",
         "name": "GetSourceActive",
         "category": "sources",
-        "since": "unreleased",
+        "since": "4.9.1",
         "returns": [
           {
             "type": "boolean",
@@ -5732,7 +5732,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "unreleased"
+            "description": "4.9.1"
           }
         ],
         "heading": {
@@ -11439,7 +11439,7 @@
         "api": "requests",
         "name": "GetVirtualCamStatus",
         "category": "virtual cam",
-        "since": "unreleased",
+        "since": "4.9.1",
         "returns": [
           {
             "type": "boolean",
@@ -11467,7 +11467,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "unreleased"
+            "description": "4.9.1"
           }
         ],
         "heading": {
@@ -11484,7 +11484,7 @@
         "api": "requests",
         "name": "StartStopVirtualCam",
         "category": "virtual cam",
-        "since": "unreleased",
+        "since": "4.9.1",
         "names": [
           {
             "name": "",
@@ -11500,7 +11500,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "unreleased"
+            "description": "4.9.1"
           }
         ],
         "heading": {
@@ -11517,7 +11517,7 @@
         "api": "requests",
         "name": "StartVirtualCam",
         "category": "virtual cam",
-        "since": "unreleased",
+        "since": "4.9.1",
         "names": [
           {
             "name": "",
@@ -11533,7 +11533,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "unreleased"
+            "description": "4.9.1"
           }
         ],
         "heading": {
@@ -11550,7 +11550,7 @@
         "api": "requests",
         "name": "StopVirtualCam",
         "category": "virtual cam",
-        "since": "unreleased",
+        "since": "4.9.1",
         "names": [
           {
             "name": "",
@@ -11566,7 +11566,7 @@
         "sinces": [
           {
             "name": "",
-            "description": "unreleased"
+            "description": "4.9.1"
           }
         ],
         "heading": {

@@ -1,6 +1,6 @@
 <!-- This file was generated based on handlebars templates. Do not edit directly! -->
 
-# obs-websocket 4.9.0 protocol reference
+# obs-websocket 4.9.1 protocol reference
 
 # General Introduction
 Messages are exchanged between the client and the server as JSON objects.
@@ -796,7 +796,7 @@ _No additional response items._
 ### VirtualCamStarted
 
 
-- Unreleased
+- Added in v4.9.1
 
 Virtual cam started successfully.
 
@@ -809,7 +809,7 @@ _No additional response items._
 ### VirtualCamStopped
 
 
-- Unreleased
+- Added in v4.9.1
 
 Virtual cam stopped successfully.
 
@@ -1824,7 +1824,7 @@ Executes a list of requests sequentially (one-by-one on the same thread).
 ### Sleep
 
 
-- Unreleased
+- Added in v4.9.1
 
 Waits for the specified duration. Designed to be used in `ExecuteBatch` operations.
 
@@ -2216,7 +2216,7 @@ _No additional response items._
 ### SetTracks
 
 
-- Unreleased
+- Added in v4.9.1
 
 Changes whether an audio track is active for a source.
 
@@ -2238,7 +2238,7 @@ _No additional response items._
 ### GetTracks
 
 
-- Unreleased
+- Added in v4.9.1
 
 Gets whether an audio track is active for a source.
 
@@ -2331,7 +2331,7 @@ _No additional response items._
 ### GetSourceActive
 
 
-- Unreleased
+- Added in v4.9.1
 
 Get the source's active status of a specified source (if it is showing in the final mix).
 
@@ -4567,7 +4567,7 @@ _No additional response items._
 ### GetVirtualCamStatus
 
 
-- Unreleased
+- Added in v4.9.1
 
 Get current virtual cam status.
 
@@ -4588,7 +4588,7 @@ _No specified parameters._
 ### StartStopVirtualCam
 
 
-- Unreleased
+- Added in v4.9.1
 
 Toggle virtual cam on or off (depending on the current virtual cam state).
 
@@ -4605,7 +4605,7 @@ _No additional response items._
 ### StartVirtualCam
 
 
-- Unreleased
+- Added in v4.9.1
 
 Start virtual cam.
 Will return an `error` if virtual cam is already active.
@@ -4623,7 +4623,7 @@ _No additional response items._
 ### StopVirtualCam
 
 
-- Unreleased
+- Added in v4.9.1
 
 Stop virtual cam.
 Will return an `error` if virtual cam is not active.
