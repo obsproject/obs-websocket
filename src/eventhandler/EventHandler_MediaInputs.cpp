@@ -20,7 +20,7 @@ void EventHandler::SourceMediaPauseMultiHandler(void *param, calldata_t *data)
 {
 	auto eventHandler = reinterpret_cast<EventHandler*>(param);
 
-	OBSSource source = GetCalldataPointer<obs_source_t>(data, "source");
+	obs_source_t *source = GetCalldataPointer<obs_source_t>(data, "source");
 	if (!source)
 		return;
 
@@ -34,7 +34,7 @@ void EventHandler::SourceMediaPlayMultiHandler(void *param, calldata_t *data)
 {
 	auto eventHandler = reinterpret_cast<EventHandler*>(param);
 
-	OBSSource source = GetCalldataPointer<obs_source_t>(data, "source");
+	obs_source_t *source = GetCalldataPointer<obs_source_t>(data, "source");
 	if (!source)
 		return;
 
@@ -48,7 +48,7 @@ void EventHandler::SourceMediaRestartMultiHandler(void *param, calldata_t *data)
 {
 	auto eventHandler = reinterpret_cast<EventHandler*>(param);
 
-	OBSSource source = GetCalldataPointer<obs_source_t>(data, "source");
+	obs_source_t *source = GetCalldataPointer<obs_source_t>(data, "source");
 	if (!source)
 		return;
 
@@ -62,7 +62,7 @@ void EventHandler::SourceMediaStopMultiHandler(void *param, calldata_t *data)
 {
 	auto eventHandler = reinterpret_cast<EventHandler*>(param);
 
-	OBSSource source = GetCalldataPointer<obs_source_t>(data, "source");
+	obs_source_t *source = GetCalldataPointer<obs_source_t>(data, "source");
 	if (!source)
 		return;
 
@@ -76,7 +76,7 @@ void EventHandler::SourceMediaNextMultiHandler(void *param, calldata_t *data)
 {
 	auto eventHandler = reinterpret_cast<EventHandler*>(param);
 
-	OBSSource source = GetCalldataPointer<obs_source_t>(data, "source");
+	obs_source_t *source = GetCalldataPointer<obs_source_t>(data, "source");
 	if (!source)
 		return;
 
@@ -90,7 +90,7 @@ void EventHandler::SourceMediaPreviousMultiHandler(void *param, calldata_t *data
 {
 	auto eventHandler = reinterpret_cast<EventHandler*>(param);
 
-	OBSSource source = GetCalldataPointer<obs_source_t>(data, "source");
+	obs_source_t *source = GetCalldataPointer<obs_source_t>(data, "source");
 	if (!source)
 		return;
 
@@ -104,7 +104,7 @@ void EventHandler::HandleMediaInputPlaybackStarted(void *param, calldata_t *data
 {
 	auto eventHandler = reinterpret_cast<EventHandler*>(param);
 
-	OBSSource source = GetCalldataPointer<obs_source_t>(data, "source");
+	obs_source_t *source = GetCalldataPointer<obs_source_t>(data, "source");
 	if (!source)
 		return;
 
@@ -120,7 +120,7 @@ void EventHandler::HandleMediaInputPlaybackEnded(void *param, calldata_t *data)
 {
 	auto eventHandler = reinterpret_cast<EventHandler*>(param);
 
-	OBSSource source = GetCalldataPointer<obs_source_t>(data, "source");
+	obs_source_t *source = GetCalldataPointer<obs_source_t>(data, "source");
 	if (!source)
 		return;
 

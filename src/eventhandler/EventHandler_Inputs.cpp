@@ -35,7 +35,7 @@ void EventHandler::HandleInputActiveStateChanged(void *param, calldata_t *data)
 {
 	auto eventHandler = reinterpret_cast<EventHandler*>(param);
 
-	OBSSource source = GetCalldataPointer<obs_source_t>(data, "source");
+	obs_source_t *source = GetCalldataPointer<obs_source_t>(data, "source");
 	if (!source)
 		return;
 
@@ -52,7 +52,7 @@ void EventHandler::HandleInputShowStateChanged(void *param, calldata_t *data)
 {
 	auto eventHandler = reinterpret_cast<EventHandler*>(param);
 
-	OBSSource source = GetCalldataPointer<obs_source_t>(data, "source");
+	obs_source_t *source = GetCalldataPointer<obs_source_t>(data, "source");
 	if (!source)
 		return;
 
@@ -69,7 +69,7 @@ void EventHandler::HandleInputMuteStateChanged(void *param, calldata_t *data)
 {
 	auto eventHandler = reinterpret_cast<EventHandler*>(param);
 
-	OBSSource source = GetCalldataPointer<obs_source_t>(data, "source");
+	obs_source_t *source = GetCalldataPointer<obs_source_t>(data, "source");
 	if (!source)
 		return;
 
@@ -86,7 +86,7 @@ void EventHandler::HandleInputVolumeChanged(void *param, calldata_t *data)
 {
 	auto eventHandler = reinterpret_cast<EventHandler*>(param);
 
-	OBSSource source = GetCalldataPointer<obs_source_t>(data, "source");
+	obs_source_t *source = GetCalldataPointer<obs_source_t>(data, "source");
 	if (!source)
 		return;
 
@@ -113,7 +113,7 @@ void EventHandler::HandleInputAudioSyncOffsetChanged(void *param, calldata_t *da
 {
 	auto eventHandler = reinterpret_cast<EventHandler*>(param);
 
-	OBSSource source = GetCalldataPointer<obs_source_t>(data, "source");
+	obs_source_t *source = GetCalldataPointer<obs_source_t>(data, "source");
 	if (!source)
 		return;
 
@@ -134,7 +134,7 @@ void EventHandler::HandleInputAudioTracksChanged(void *param, calldata_t *data)
 {
 	auto eventHandler = reinterpret_cast<EventHandler*>(param);
 
-	OBSSource source = GetCalldataPointer<obs_source_t>(data, "source");
+	obs_source_t *source = GetCalldataPointer<obs_source_t>(data, "source");
 	if (!source)
 		return;
 
