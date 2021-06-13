@@ -161,7 +161,7 @@ std::vector<json> Utils::Obs::ListHelper::GetSceneList()
 		obs_source_t *scene = sceneList.sources.array[i];
 		json sceneJson;
 		sceneJson["sceneName"] = obs_source_get_name(scene);
-		sceneJson["sceneIndex"] = i;
+		sceneJson["sceneIndex"] = sceneList.sources.num - (i + 1);
 		ret.push_back(sceneJson);
 	}
 
