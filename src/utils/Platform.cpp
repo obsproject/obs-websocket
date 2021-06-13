@@ -78,12 +78,25 @@ bool Utils::Platform::GetCommandLineFlagSet(QString arg)
 	return parser.isSet(cmdlineOption);
 }
 
+struct SystemTrayNotification {
+	QSystemTrayIcon::MessageIcon icon;
+	QString title;
+	QString body;
+};
+
 void Utils::Platform::SendTrayNotification(QSystemTrayIcon::MessageIcon icon, QString title, QString body)
 {
 	if (!QSystemTrayIcon::isSystemTrayAvailable() || !QSystemTrayIcon::supportsMessages())
 		return;
 
-	void *systemTrayPtr = obs_frontend_get_system_tray();
-	auto systemTray = reinterpret_cast<QSystemTrayIcon*>(systemTrayPtr);
-	systemTray->showMessage(title, body, icon);
+	SystemTrayNotification *notification = new SystemTrayNotification{icon, title, body};
+
+	obs_queue_task(OBS_TASK_UI, [](void* param) {
+		void *systemTrayPtr = obs_frontend_get_system_tray();
+		auto systemTray = reinterpret_cast<QSystemTrayIcon*>(systemTrayPtr);
+
+		auto notification = reinterpret_cast<SystemTrayNotification*>(param);
+		systemTray->showMessage(notification->title, notification->body, notification->icon);
+		delete notification;
+	}, (void*)notification, false);
 }
