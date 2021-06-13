@@ -170,6 +170,46 @@ std::vector<json> Utils::Obs::ListHelper::GetSceneList()
 	return ret;
 }
 
+std::vector<json> Utils::Obs::ListHelper::GetSceneItemList(obs_scene_t *scene, bool basic)
+{
+	std::vector<json> ret;
+
+	if (basic) {
+		obs_scene_enum_items(scene, [](obs_scene_t* scene, obs_sceneitem_t* sceneItem, void* param) {
+			auto ret = reinterpret_cast<std::vector<json>*>(param);
+
+			json item;
+			item["sceneItemId"] = obs_sceneitem_get_id(sceneItem);
+			// Should be slightly faster than calling obs_sceneitem_get_order_position()
+			item["sceneItemIndex"] = ret->size();
+
+			ret->push_back(item);
+
+			return true;
+		}, &ret);
+	} else {
+		obs_scene_enum_items(scene, [](obs_scene_t* scene, obs_sceneitem_t* sceneItem, void* param) {
+			auto ret = reinterpret_cast<std::vector<json>*>(param);
+
+			OBSSource itemSource = obs_sceneitem_get_source(sceneItem);
+
+			json item;
+			item["sceneItemId"] = obs_sceneitem_get_id(sceneItem);
+			item["sceneItemIndex"] = ret->size();
+			item["sourceName"] = obs_source_get_name(itemSource);
+			item["sourceType"] = StringHelper::GetSourceTypeString(itemSource);
+			if (obs_source_get_type(itemSource) == OBS_SOURCE_TYPE_INPUT)
+				item["inputKind"] = obs_source_get_id(itemSource);
+
+			ret->push_back(item);
+
+			return true;
+		}, &ret);
+	}
+
+	return ret;
+}
+
 std::vector<json> Utils::Obs::ListHelper::GetTransitionList()
 {
 	obs_frontend_source_list transitionList = {};

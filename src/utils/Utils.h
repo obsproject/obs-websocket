@@ -44,6 +44,7 @@ namespace Utils {
 			std::vector<obs_hotkey_t *> GetHotkeyList();
 			std::vector<std::string> GetHotkeyNameList();
 			std::vector<json> GetSceneList();
+			std::vector<json> GetSceneItemList(obs_scene_t *scene, bool basic = false);
 			std::vector<json> GetTransitionList();
 		}
 
