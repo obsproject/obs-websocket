@@ -132,8 +132,6 @@ void EventHandler::OnFrontendEvent(enum obs_frontend_event event, void *private_
 {
 	auto eventHandler = reinterpret_cast<EventHandler*>(private_data);
 
-	blog(LOG_INFO, "Frontend event");
-
 	if (!eventHandler->_obsLoaded.load()) {
 		if (event == OBS_FRONTEND_EVENT_FINISHED_LOADING) {
 			blog(LOG_INFO, "[EventHandler::OnFrontendEvent] OBS has finished loading. Connecting final handlers and enabling events...");
@@ -217,7 +215,6 @@ void EventHandler::OnFrontendEvent(enum obs_frontend_event event, void *private_
 			eventHandler->HandleCurrentPreviewSceneChanged();
 			break;
 		case OBS_FRONTEND_EVENT_SCENE_LIST_CHANGED:
-			blog(LOG_INFO, "scene list changed");
 			eventHandler->HandleSceneListChanged();
 			break;
 
