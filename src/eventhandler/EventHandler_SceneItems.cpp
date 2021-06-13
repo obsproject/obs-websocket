@@ -18,6 +18,7 @@ void EventHandler::HandleSceneItemCreated(void *param, calldata_t *data)
 	eventData["sceneName"] = obs_source_get_name(obs_scene_get_source(scene));
 	eventData["inputName"] = obs_source_get_name(obs_sceneitem_get_source(sceneItem));
 	eventData["sceneItemId"] = obs_sceneitem_get_id(sceneItem);
+	eventData["sceneItemIndex"] = obs_sceneitem_get_order_position(sceneItem);
 	eventHandler->_webSocketServer->BroadcastEvent(EventSubscription::SceneItems, "SceneItemCreated", eventData);
 }
 
@@ -37,6 +38,7 @@ void EventHandler::HandleSceneItemRemoved(void *param, calldata_t *data)
 	eventData["sceneName"] = obs_source_get_name(obs_scene_get_source(scene));
 	eventData["inputName"] = obs_source_get_name(obs_sceneitem_get_source(sceneItem));
 	eventData["sceneItemId"] = obs_sceneitem_get_id(sceneItem);
+	eventData["sceneItemIndex"] = obs_sceneitem_get_order_position(sceneItem);
 	eventHandler->_webSocketServer->BroadcastEvent(EventSubscription::SceneItems, "SceneItemRemoved", eventData);
 }
 
