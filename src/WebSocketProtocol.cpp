@@ -1,7 +1,11 @@
+#include <obs-module.h>
+
 #include "WebSocketProtocol.h"
 #include "requesthandler/RequestHandler.h"
 #include "requesthandler/rpc/RequestStatus.h"
 
+#include "obs-websocket.h"
+#include "Config.h"
 #include "utils/Utils.h"
 #include "plugin-macros.generated.h"
 
@@ -185,6 +189,14 @@ WebSocketProtocol::ProcessResult WebSocketProtocol::ProcessMessage(SessionPtr se
 				return ret;
 			}
 			if (!Utils::Crypto::CheckAuthenticationString(session->Secret(), session->Challenge(), incomingMessage["authentication"])) {
+				auto conf = GetConfig();
+				if (conf && conf->AlertsEnabled) {
+					obs_frontend_push_ui_translation(obs_module_get_string);
+					QString title = QObject::tr("OBSWebSocket.TrayNotification.AuthenticationFailed.Title");
+					QString body = QObject::tr("OBSWebSocket.TrayNotification.AuthenticationFailed.Body");
+					obs_frontend_pop_ui_translation();
+					Utils::Platform::SendTrayNotification(QSystemTrayIcon::Warning, title, body);
+				}
 				ret.closeCode = WebSocketServer::WebSocketCloseCode::AuthenticationFailed;
 				ret.closeReason = "Authentication failed.";
 				return ret;
@@ -210,6 +222,15 @@ WebSocketProtocol::ProcessResult WebSocketProtocol::ProcessMessage(SessionPtr se
 		}
 
 		session->SetIsIdentified(true);
+
+		auto conf = GetConfig();
+		if (conf && conf->AlertsEnabled) {
+			obs_frontend_push_ui_translation(obs_module_get_string);
+			QString title = QObject::tr("OBSWebSocket.TrayNotification.Identified.Title");
+			QString body = QObject::tr("OBSWebSocket.TrayNotification.Identified.Body");
+			obs_frontend_pop_ui_translation();
+			Utils::Platform::SendTrayNotification(QSystemTrayIcon::Information, title, body);
+		}
 
 		ret.result["messageType"] = "Identified";
 		ret.result["negotiatedRpcVersion"] = session->RpcVersion();

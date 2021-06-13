@@ -82,6 +82,7 @@ class WebSocketServer : QObject
 		void BroadcastEvent(uint64_t requiredIntent, std::string eventType, json eventData = nullptr, uint8_t rpcVersion = 0);
 
 	signals:
+		void ClientConnected(const WebSocketSessionState state);
 		void ClientDisconnected(const WebSocketSessionState state, const uint16_t closeCode);
 
 	private:
