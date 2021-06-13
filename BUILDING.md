@@ -63,4 +63,4 @@ This will result in a ready-to-use `obs-websocket.pkg` installer in the `release
 
 ## Automated Builds
 
-[![Build Status](https://dev.azure.com/Palakis/obs-websocket/_apis/build/status/Palakis.obs-websocket?branchName=4.x-current)](https://dev.azure.com/Palakis/obs-websocket/_build/latest?definitionId=2&branchName=4.x-current)
+![Github Actions](https://github.com/Palakis/obs-websocket/actions/workflows/main.yml/badge.svg?branch=master)
