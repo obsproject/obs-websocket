@@ -23,7 +23,8 @@ SettingsDialog::SettingsDialog(QWidget* parent) :
 	QDialog(parent, Qt::Dialog),
 	ui(new Ui::SettingsDialog),
 	connectInfo(new ConnectInfo),
-	sessionTableTimer(new QTimer)
+	sessionTableTimer(new QTimer),
+	passwordManuallyEdited(false)
 {
 	ui->setupUi(this);
 	ui->websocketSessionTable->horizontalHeader()->resizeSection(3, 100); // Resize Session Table column widths
@@ -45,6 +46,8 @@ SettingsDialog::SettingsDialog(QWidget* parent) :
 		this, &SettingsDialog::GeneratePasswordButtonClicked);
 	connect(ui->showConnectInfoButton, &QPushButton::clicked,
 		this, &SettingsDialog::ShowConnectInfoButtonClicked);
+	connect(ui->serverPasswordLineEdit, &QLineEdit::textEdited,
+		this, &SettingsDialog::PasswordEdited);
 }
 
 SettingsDialog::~SettingsDialog()
@@ -78,6 +81,8 @@ void SettingsDialog::showEvent(QShowEvent *event)
 		ui->enableAuthenticationCheckBox->setEnabled(false);
 		ui->serverPasswordLineEdit->setEnabled(false);
 	}
+
+	passwordManuallyEdited = false;
 
 	FillSessionTable();
 
@@ -117,6 +122,26 @@ void SettingsDialog::SaveFormData()
 	if (!conf) {
 		blog(LOG_ERROR, "[SettingsDialog::SaveFormData] Unable to retreive config!");
 		return;
+	}
+
+	// Show a confirmation box to the user if they attempt to provide their own password
+	if (passwordManuallyEdited && (conf->ServerPassword != ui->serverPasswordLineEdit->text())) {
+		QMessageBox msgBox;
+		msgBox.setWindowTitle(obs_module_text("OBSWebSocket.Settings.Save.UserPasswordWarningTitle"));
+		msgBox.setText(obs_module_text("OBSWebSocket.Settings.Save.UserPasswordWarningMessage"));
+		msgBox.setInformativeText(obs_module_text("OBSWebSocket.Settings.Save.UserPasswordWarningInfoText"));
+		msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+		msgBox.setDefaultButton(QMessageBox::No);
+		int ret = msgBox.exec();
+
+		switch (ret) {
+			case QMessageBox::Yes:
+				break;
+			case QMessageBox::No:
+			default:
+				ui->serverPasswordLineEdit->setText(conf->ServerPassword);
+				return;
+		}
 	}
 
 	bool needsRestart = false;
@@ -222,6 +247,7 @@ void SettingsDialog::GeneratePasswordButtonClicked()
 	QString newPassword = Utils::Crypto::GeneratePassword();
 	ui->serverPasswordLineEdit->setText(newPassword);
 	ui->serverPasswordLineEdit->selectAll();
+	passwordManuallyEdited = false;
 }
 
 void SettingsDialog::ShowConnectInfoButtonClicked()
@@ -248,4 +274,9 @@ void SettingsDialog::ShowConnectInfoButtonClicked()
 	connectInfo->activateWindow();
 	connectInfo->raise();
 	connectInfo->setFocus();
+}
+
+void SettingsDialog::PasswordEdited()
+{
+	passwordManuallyEdited = true;
 }

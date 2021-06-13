@@ -24,9 +24,11 @@ private Q_SLOTS:
 	void EnableAuthenticationCheckBoxChanged();
 	void GeneratePasswordButtonClicked();
 	void ShowConnectInfoButtonClicked();
+	void PasswordEdited();
 
 private:
 	Ui::SettingsDialog *ui;
 	ConnectInfo *connectInfo;
 	QTimer *sessionTableTimer;
+	bool passwordManuallyEdited;
 };
