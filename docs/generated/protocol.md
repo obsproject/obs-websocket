@@ -46,7 +46,7 @@ These steps should be followed precisely. Failure to connect to the server as in
 - Initial HTTP request made to obs-websocket server.
   - HTTP request headers can be used to set the websocket communication type. The default format is JSON. Example headers:
     - `Content-Type: application/json`
-    - `Content-Type: application/msgpack` *Not currently planned for v5.0.0*
+    - `Content-Type: application/msgpack`
   - If an invalid `Content-Type` is specified, the connection will be closed with [`WebSocketCloseCode::InvalidContentType`](#websocketclosecode-enum) after upgrade (but before [`Hello`](#hello)).
 
 - Once the connection is upgraded, the websocket server will immediately send a [`Hello`](#hello) message to the client.
@@ -195,10 +195,12 @@ enum RequestStatus {
     HotkeyNotFound = 615,
     // The specified directory was not found
     DirectoryNotFound = 616,
-    // The specified config item (obs_config_t) was not found. Could be section or parameter name
+    // The specified config item (config_t) was not found. Could be section or parameter name
     ConfigParameterNotFound = 617,
     // The specified property (obs_properties_t) was not found
     PropertyNotFound = 618,
+    // The specififed key (OBS_KEY_*) was not found
+    KeyNotFound = 619,
 
     // Processing the request failed unexpectedly
     RequestProcessingFailed = 700,
@@ -214,6 +216,8 @@ enum RequestStatus {
     ScreenshotSaveFailed = 705,
     // Creating the directory failed
     DirectoryCreationFailed = 706,
+    // The combination of request parameters cannot be used to perform an action
+    CannotAct = 707,
 };
 ```
 
@@ -270,8 +274,14 @@ enum EventSubscription {
     SceneItems = (1 << 7),
     // Receive events in the `MediaInputs` category
     MediaInputs = (1 << 8),
-    // Receive all event categories (default subscription setting)
+    // Receive all event categories
     All = (General | Config | Scenes | Inputs | Transitions | Filters | Outputs | SceneItems | MediaInputs),
+    // InputVolumeMeters event (high-volume)
+    InputVolumeMeters = (1 << 9),
+    // InputActiveStateChanged event (high-volume)
+    InputActiveStateChanged = (1 << 10),
+    // InputShowStateChanged event (high-volume)
+    InputShowStateChanged = (1 << 11),
 };
 ```
 Subscriptions are a bitmask system.
@@ -299,7 +309,7 @@ The following message types are the base message types which may be sent to and 
 **Additional Base Object Fields:**
 ```
 {
-  "obsWebsocketVersion": string,
+  "obsWebSocketVersion": string,
   "rpcVersion": number,
   "authentication": object(optional)
 }
@@ -311,7 +321,7 @@ Authentication is required
 ```json
 {
   "messageType": "Hello",
-  "websocketVersion": "5.0.0",
+  "obsWebSocketVersion": "5.0.0",
   "rpcVersion": 1,
   "authentication": {
     "challenge": "+IxH4CnCiqpX1rM9scsNynZzbOe4KhDeYcTNS3PDaeY=",
@@ -324,7 +334,7 @@ Authentication is not required
 ```json
 {
   "messageType": "Hello",
-  "websocketVersion": "5.0.0",
+  "obsWebSocketVersion": "5.0.0",
   "rpcVersion": 1
 }
 ```
