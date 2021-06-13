@@ -102,7 +102,7 @@ std::string Utils::Obs::StringHelper::GetLastReplayBufferFilePath()
 	calldata_t cd = {0};
 	proc_handler_t *ph = obs_output_get_proc_handler(output);
 	proc_handler_call(ph, "get_last_replay", &cd);
-	std::string ret = calldata_string(&cd, "path");
+	auto ret = calldata_string(&cd, "path");
 	calldata_free(&cd);
 	obs_output_release(output);
 	return ret;
