@@ -46,9 +46,9 @@ void EventHandler::HandleCurrentPreviewSceneChanged()
 	_webSocketServer->BroadcastEvent(EventSubscription::Scenes, "CurrentPreviewSceneChanged", eventData);
 }
 
-void EventHandler::HandleSceneListReindexed()
+void EventHandler::HandleSceneListChanged()
 {
 	json eventData;
 	eventData["scenes"] = Utils::Obs::ListHelper::GetSceneList();
-	_webSocketServer->BroadcastEvent(EventSubscription::Scenes, "SceneListReindexed", eventData);
+	_webSocketServer->BroadcastEvent(EventSubscription::Scenes, "SceneListChanged", eventData);
 }

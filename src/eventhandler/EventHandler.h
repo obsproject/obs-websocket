@@ -82,7 +82,7 @@ class EventHandler
 		void HandleSceneNameChanged(obs_source_t *source, std::string oldSceneName, std::string sceneName);
 		void HandleCurrentSceneChanged();
 		void HandleCurrentPreviewSceneChanged();
-		void HandleSceneListReindexed();
+		void HandleSceneListChanged();
 
 		// Inputs
 		void HandleInputCreated(obs_source_t *source);

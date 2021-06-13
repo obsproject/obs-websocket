@@ -218,7 +218,7 @@ void EventHandler::OnFrontendEvent(enum obs_frontend_event event, void *private_
 			break;
 		case OBS_FRONTEND_EVENT_SCENE_LIST_CHANGED:
 			blog(LOG_INFO, "scene list changed");
-			eventHandler->HandleSceneListReindexed();
+			eventHandler->HandleSceneListChanged();
 			break;
 
 		// Transitions
