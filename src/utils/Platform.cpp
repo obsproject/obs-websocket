@@ -3,11 +3,11 @@
 #include <QNetworkInterface>
 #include <QHostAddress>
 
+#include <obs-frontend-api.h>
+
 #include "Utils.h"
 
 #include "../plugin-macros.generated.h"
-
-#include <QDebug>
 
 std::string Utils::Platform::GetLocalAddress()
 {
@@ -76,4 +76,14 @@ bool Utils::Platform::GetCommandLineFlagSet(QString arg)
 	parser.parse(QCoreApplication::arguments());
 
 	return parser.isSet(cmdlineOption);
+}
+
+void Utils::Platform::SendTrayNotification(QSystemTrayIcon::MessageIcon icon, QString title, QString body)
+{
+	if (!QSystemTrayIcon::isSystemTrayAvailable() || !QSystemTrayIcon::supportsMessages())
+		return;
+
+	void *systemTrayPtr = obs_frontend_get_system_tray();
+	auto systemTray = reinterpret_cast<QSystemTrayIcon*>(systemTrayPtr);
+	systemTray->showMessage(title, body, icon);
 }
