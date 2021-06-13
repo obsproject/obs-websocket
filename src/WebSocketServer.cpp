@@ -323,8 +323,6 @@ void WebSocketServer::onClose(websocketpp::connection_hdl hdl)
 
 	// Emit signals
 	emit ClientDisconnected(state, conn->get_local_close_code());
-	if (isIdentified)
-		emit IdentifiedClientDisconnected(state, conn->get_local_close_code());
 }
 
 void WebSocketServer::onMessage(websocketpp::connection_hdl hdl, websocketpp::server<websocketpp::config::asio>::message_ptr message)
