@@ -229,6 +229,9 @@ void EventHandler::OnFrontendEvent(enum obs_frontend_event event, void *private_
 		case OBS_FRONTEND_EVENT_VIRTUALCAM_STOPPED:
 			eventHandler->HandleVirtualcamStateChanged(OBS_WEBSOCKET_OUTPUT_STOPPED);
 			break;
+		case OBS_FRONTEND_EVENT_REPLAY_BUFFER_SAVED:
+			eventHandler->HandleReplayBufferSaved();
+			break;
 
 		default:
 			break;

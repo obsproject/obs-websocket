@@ -62,3 +62,10 @@ void EventHandler::HandleVirtualcamStateChanged(ObsOutputState state)
 	eventData["outputState"] = GetOutputStateString(state);
 	_webSocketServer->BroadcastEvent(EventSubscription::Outputs, "VirtualcamStateChanged", eventData);
 }
+
+void EventHandler::HandleReplayBufferSaved()
+{
+	json eventData;
+	eventData["savedReplayPath"] = Utils::Obs::StringHelper::GetLastReplayBufferFilePath();
+	_webSocketServer->BroadcastEvent(EventSubscription::Outputs, "ReplayBufferSaved", eventData);
+}

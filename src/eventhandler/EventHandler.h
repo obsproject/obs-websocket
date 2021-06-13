@@ -106,6 +106,7 @@ class EventHandler
 		void HandleRecordStateChanged(ObsOutputState state);
 		void HandleReplayBufferStateChanged(ObsOutputState state);
 		void HandleVirtualcamStateChanged(ObsOutputState state);
+		void HandleReplayBufferSaved();
 
 		// Media Inputs
 		static void HandleMediaInputPlaybackStarted(void *param, calldata_t *data); // Direct callback
