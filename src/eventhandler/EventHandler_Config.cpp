@@ -5,7 +5,7 @@
 void EventHandler::HandleCurrentSceneCollectionChanged()
 {
 	json eventData;
-	eventData["sceneCollectionName"] = obs_frontend_get_current_scene_collection();
+	eventData["sceneCollectionName"] = Utils::Obs::StringHelper::GetCurrentSceneCollection();
 	_webSocketServer->BroadcastEvent(EventSubscription::Config, "CurrentSceneCollectionChanged", eventData);
 }
 
@@ -19,7 +19,7 @@ void EventHandler::HandleSceneCollectionListChanged()
 void EventHandler::HandleCurrentProfileChanged()
 {
 	json eventData;
-	eventData["profileName"] = obs_frontend_get_current_profile();
+	eventData["profileName"] = Utils::Obs::StringHelper::GetCurrentProfile();
 	_webSocketServer->BroadcastEvent(EventSubscription::Config, "CurrentProfileChanged", eventData);
 }
 
