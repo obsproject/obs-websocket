@@ -2,14 +2,6 @@
 
 #include "../plugin-macros.generated.h"
 
-std::string GetCalldataString(const calldata_t *data, const char* name)
-{
-	const char* value = calldata_string(data, name);
-	if (!value)
-		return "";
-	return value;
-}
-
 EventHandler::EventHandler(WebSocketServerPtr webSocketServer) :
 	_webSocketServer(webSocketServer),
 	_obsLoaded(false)
@@ -380,8 +372,8 @@ void EventHandler::SourceRenamedMultiHandler(void *param, calldata_t *data)
 	if (!source)
 		return;
 
-	std::string oldSourceName = GetCalldataString(data, "prev_name");
-	std::string sourceName = GetCalldataString(data, "new_name");
+	std::string oldSourceName = calldata_string(data, "prev_name");
+	std::string sourceName = calldata_string(data, "new_name");
 	if (oldSourceName.empty() || sourceName.empty())
 		return;
 

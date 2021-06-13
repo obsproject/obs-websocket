@@ -27,12 +27,10 @@ enum ObsMediaInputAction {
 };
 
 template <typename T> T* GetCalldataPointer(const calldata_t *data, const char* name) {
-	void* ptr = nullptr;
+	void *ptr = nullptr;
 	calldata_get_ptr(data, name, &ptr);
 	return reinterpret_cast<T*>(ptr);
 }
-
-std::string GetCalldataString(const calldata_t *data, const char* name);
 
 class EventHandler
 {
