@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-You'll need [Qt 5.15.2 on Windows/Mac](https://download.qt.io/official_releases/qt/5.10/) or Qt 5.12.8 on Linux,
+You'll need [Qt 5.15.2 on Windows/Mac](https://download.qt.io/official_releases/qt/5.15/5.15.2/) or Qt 5.12.8 on Linux,
 [CMake](https://cmake.org/download/) and a working [OBS Studio development environment](https://obsproject.com/wiki/install-instructions) installed on your
 computer.
 
