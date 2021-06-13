@@ -21,6 +21,9 @@ const std::map<std::string, RequestMethodHandler> RequestHandler::_handlerMap
 	{"SetCurrentProfile", &RequestHandler::SetCurrentProfile},
 	{"GetProfileParameter", &RequestHandler::GetProfileParameter},
 	{"SetProfileParameter", &RequestHandler::SetProfileParameter},
+
+	// Sources
+	{"GetSourceActive", &RequestHandler::GetSourceActive},
 };
 
 RequestResult RequestHandler::ProcessRequest(const Request& request)
