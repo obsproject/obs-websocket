@@ -107,6 +107,14 @@ class EventHandler
 		void HandleVirtualcamStateChanged(ObsOutputState state);
 		void HandleReplayBufferSaved();
 
+		// Scene Items
+		static void HandleSceneItemCreated(void *param, calldata_t *data); // Direct callback
+		static void HandleSceneItemRemoved(void *param, calldata_t *data); // Direct callback
+		static void HandleSceneItemListReindexed(void *param, calldata_t *data); // Direct callback
+		static void HandleSceneItemEnableStateChanged(void *param, calldata_t *data); // Direct callback
+		static void HandleSceneItemLockStateChanged(void *param, calldata_t *data); // Direct callback
+		static void HandleSceneItemTransformChanged(void *param, calldata_t *data); // Direct callback
+
 		// Media Inputs
 		static void HandleMediaInputPlaybackStarted(void *param, calldata_t *data); // Direct callback
 		static void HandleMediaInputPlaybackEnded(void *param, calldata_t *data); // Direct callback
