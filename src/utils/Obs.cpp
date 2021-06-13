@@ -96,6 +96,18 @@ std::string Utils::Obs::StringHelper::GetMediaInputStateString(obs_source_t *inp
 	}
 }
 
+std::string Utils::Obs::StringHelper::GetLastReplayBufferFilePath()
+{
+	obs_output_t *output = obs_frontend_get_replay_buffer_output();
+	calldata_t cd = {0};
+	proc_handler_t *ph = obs_output_get_proc_handler(output);
+	proc_handler_call(ph, "get_last_replay", &cd);
+	std::string ret = calldata_string(&cd, "path");
+	calldata_free(&cd);
+	obs_output_release(output);
+	return ret;
+}
+
 std::vector<std::string> Utils::Obs::ListHelper::GetSceneCollectionList()
 {
 	char** sceneCollections = obs_frontend_get_scene_collections();

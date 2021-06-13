@@ -35,6 +35,7 @@ namespace Utils {
 			std::string GetSourceTypeString(obs_source_t *source);
 			std::string GetInputMonitorTypeString(obs_source_t *input);
 			std::string GetMediaInputStateString(obs_source_t *input);
+			std::string GetLastReplayBufferFilePath();
 		}
 
 		namespace ListHelper {
