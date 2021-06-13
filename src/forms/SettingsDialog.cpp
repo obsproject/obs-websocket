@@ -189,6 +189,7 @@ void SettingsDialog::FillSessionTable()
 	QIcon crossIcon = style()->standardIcon(QStyle::SP_DialogCancelButton);
 	QPixmap crossIconPixmap = crossIcon.pixmap(QSize(25, 25));
 
+	// Todo: Make a util for translations so that we don't need to import a bunch of obs libraries in order to use them.
 	obs_frontend_push_ui_translation(obs_module_get_string);
 	QString kickButtonText = QObject::tr("OBSWebSocket.SessionTable.KickButtonText");
 	obs_frontend_pop_ui_translation();
