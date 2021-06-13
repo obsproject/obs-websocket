@@ -16,8 +16,6 @@ EventHandler::EventHandler(WebSocketServerPtr webSocketServer) :
 {
 	blog(LOG_INFO, "[EventHandler::EventHandler] Setting up event handlers...");
 
-	_cpuUsageInfo = os_cpu_usage_info_start();
-
 	obs_frontend_add_event_callback(OnFrontendEvent, this);
 
 	signal_handler_t* coreSignalHandler = obs_get_signal_handler();
@@ -36,8 +34,6 @@ EventHandler::EventHandler(WebSocketServerPtr webSocketServer) :
 EventHandler::~EventHandler()
 {
 	blog(LOG_INFO, "[EventHandler::~EventHandler] Removing event handlers...");
-
-	os_cpu_usage_info_destroy(_cpuUsageInfo);
 
 	obs_frontend_remove_event_callback(OnFrontendEvent, this);
 

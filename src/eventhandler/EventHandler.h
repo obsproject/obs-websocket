@@ -42,7 +42,6 @@ class EventHandler
 
 	private:
 		WebSocketServerPtr _webSocketServer;
-		os_cpu_usage_info_t *_cpuUsageInfo;
 
 		std::atomic<bool> _obsLoaded;
 
