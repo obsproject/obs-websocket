@@ -25,7 +25,18 @@ void EventHandler::HandleSceneItemRemoved(void *param, calldata_t *data)
 {
 	auto eventHandler = reinterpret_cast<EventHandler*>(param);
 
+	obs_scene_t *scene = GetCalldataPointer<obs_scene_t>(data, "scene");
+	if (!scene)
+		return;
+
+	obs_sceneitem_t *sceneItem = GetCalldataPointer<obs_sceneitem_t>(data, "item");
+	if (!sceneItem)
+		return;
+
 	json eventData;
+	eventData["sceneName"] = obs_source_get_name(obs_scene_get_source(scene));
+	eventData["inputName"] = obs_source_get_name(obs_sceneitem_get_source(sceneItem));
+	eventData["sceneItemId"] = obs_sceneitem_get_id(sceneItem);
 	eventHandler->_webSocketServer->BroadcastEvent(EventSubscription::SceneItems, "SceneItemRemoved", eventData);
 }
 
@@ -33,7 +44,13 @@ void EventHandler::HandleSceneItemListReindexed(void *param, calldata_t *data)
 {
 	auto eventHandler = reinterpret_cast<EventHandler*>(param);
 
+	obs_scene_t *scene = GetCalldataPointer<obs_scene_t>(data, "scene");
+	if (!scene)
+		return;
+
 	json eventData;
+	eventData["sceneName"] = obs_source_get_name(obs_scene_get_source(scene));
+	eventData["sceneItems"] = Utils::Obs::ListHelper::GetSceneItemList(scene, false);
 	eventHandler->_webSocketServer->BroadcastEvent(EventSubscription::SceneItems, "SceneItemReindexed", eventData);
 }
 
