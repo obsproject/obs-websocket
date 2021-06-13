@@ -349,7 +349,7 @@ void WebSocketServer::onClose(websocketpp::connection_hdl hdl)
 	if (isIdentified && (conn->get_local_close_code() != websocketpp::close::status::going_away) && conf->AlertsEnabled) {
 		obs_frontend_push_ui_translation(obs_module_get_string);
 		QString title = QObject::tr("OBSWebSocket.TrayNotification.Disconnected.Title");
-		QString body = QObject::tr("OBSWebSocket.TrayNotification.Disconnected.Body");
+		QString body = QObject::tr("OBSWebSocket.TrayNotification.Disconnected.Body").arg(QString::fromStdString(remoteAddress));
 		obs_frontend_pop_ui_translation();
 		Utils::Platform::SendTrayNotification(QSystemTrayIcon::Information, title, body);
 	}

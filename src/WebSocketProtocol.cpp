@@ -193,7 +193,7 @@ WebSocketProtocol::ProcessResult WebSocketProtocol::ProcessMessage(SessionPtr se
 				if (conf && conf->AlertsEnabled) {
 					obs_frontend_push_ui_translation(obs_module_get_string);
 					QString title = QObject::tr("OBSWebSocket.TrayNotification.AuthenticationFailed.Title");
-					QString body = QObject::tr("OBSWebSocket.TrayNotification.AuthenticationFailed.Body");
+					QString body = QObject::tr("OBSWebSocket.TrayNotification.AuthenticationFailed.Body").arg(QString::fromStdString(session->RemoteAddress()));
 					obs_frontend_pop_ui_translation();
 					Utils::Platform::SendTrayNotification(QSystemTrayIcon::Warning, title, body);
 				}
@@ -227,7 +227,7 @@ WebSocketProtocol::ProcessResult WebSocketProtocol::ProcessMessage(SessionPtr se
 		if (conf && conf->AlertsEnabled) {
 			obs_frontend_push_ui_translation(obs_module_get_string);
 			QString title = QObject::tr("OBSWebSocket.TrayNotification.Identified.Title");
-			QString body = QObject::tr("OBSWebSocket.TrayNotification.Identified.Body");
+			QString body = QObject::tr("OBSWebSocket.TrayNotification.Identified.Body").arg(QString::fromStdString(session->RemoteAddress()));
 			obs_frontend_pop_ui_translation();
 			Utils::Platform::SendTrayNotification(QSystemTrayIcon::Information, title, body);
 		}
