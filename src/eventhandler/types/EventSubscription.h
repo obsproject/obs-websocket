@@ -26,5 +26,9 @@ namespace EventSubscription {
 		All = (General | Config | Scenes | Inputs | Transitions | Filters | Outputs | SceneItems | MediaInputs),
 		// InputVolumeMeters event (high-volume)
 		InputVolumeMeters = (1 << 9),
+		// InputActiveStateChanged event (high-volume)
+		InputActiveStateChanged = (1 << 10),
+		// InputShowStateChanged event (high-volume)
+		InputShowStateChanged = (1 << 11),
 	};
 };

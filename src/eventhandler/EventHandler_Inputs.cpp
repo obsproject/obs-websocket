@@ -45,7 +45,7 @@ void EventHandler::HandleInputActiveStateChanged(void *param, calldata_t *data)
 	json eventData;
 	eventData["inputName"] = obs_source_get_name(source);
 	eventData["videoActive"] = obs_source_active(source);
-	eventHandler->_webSocketServer->BroadcastEvent(EventSubscription::Inputs, "InputActiveStateChanged", eventData);
+	eventHandler->_webSocketServer->BroadcastEvent(EventSubscription::InputActiveStateChanged, "InputActiveStateChanged", eventData);
 }
 
 void EventHandler::HandleInputShowStateChanged(void *param, calldata_t *data)
@@ -62,7 +62,7 @@ void EventHandler::HandleInputShowStateChanged(void *param, calldata_t *data)
 	json eventData;
 	eventData["inputName"] = obs_source_get_name(source);
 	eventData["videoShowing"] = obs_source_showing(source);
-	eventHandler->_webSocketServer->BroadcastEvent(EventSubscription::Inputs, "InputShowStateChanged", eventData);
+	eventHandler->_webSocketServer->BroadcastEvent(EventSubscription::InputShowStateChanged, "InputShowStateChanged", eventData);
 }
 
 void EventHandler::HandleInputMuteStateChanged(void *param, calldata_t *data)
