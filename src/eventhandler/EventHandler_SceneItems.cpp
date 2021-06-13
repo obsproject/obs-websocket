@@ -60,7 +60,20 @@ void EventHandler::HandleSceneItemEnableStateChanged(void *param, calldata_t *da
 {
 	auto eventHandler = reinterpret_cast<EventHandler*>(param);
 
+	obs_scene_t *scene = GetCalldataPointer<obs_scene_t>(data, "scene");
+	if (!scene)
+		return;
+
+	obs_sceneitem_t *sceneItem = GetCalldataPointer<obs_sceneitem_t>(data, "item");
+	if (!sceneItem)
+		return;
+
+	bool sceneItemEnabled = calldata_bool(data, "visible");
+
 	json eventData;
+	eventData["sceneName"] = obs_source_get_name(obs_scene_get_source(scene));
+	eventData["sceneItemId"] = obs_sceneitem_get_id(sceneItem);
+	eventData["sceneItemEnabled"] = sceneItemEnabled;
 	eventHandler->_webSocketServer->BroadcastEvent(EventSubscription::SceneItems, "SceneItemEnableStateChanged", eventData);
 }
 
@@ -68,7 +81,20 @@ void EventHandler::HandleSceneItemLockStateChanged(void *param, calldata_t *data
 {
 	auto eventHandler = reinterpret_cast<EventHandler*>(param);
 
+	obs_scene_t *scene = GetCalldataPointer<obs_scene_t>(data, "scene");
+	if (!scene)
+		return;
+
+	obs_sceneitem_t *sceneItem = GetCalldataPointer<obs_sceneitem_t>(data, "item");
+	if (!sceneItem)
+		return;
+
+	bool sceneItemLocked = calldata_bool(data, "locked");
+
 	json eventData;
+	eventData["sceneName"] = obs_source_get_name(obs_scene_get_source(scene));
+	eventData["sceneItemId"] = obs_sceneitem_get_id(sceneItem);
+	eventData["sceneItemLocked"] = sceneItemLocked;
 	eventHandler->_webSocketServer->BroadcastEvent(EventSubscription::SceneItems, "SceneItemLockStateChanged", eventData);
 }
 

@@ -94,9 +94,7 @@ void EventHandler::HandleInputVolumeChanged(void *param, calldata_t *data)
 		return;
 
 	// Volume must be grabbed from the calldata. Running obs_source_get_volume() will return the previous value.
-	double inputVolumeMul = 0;
-	if (!calldata_get_float(data, "volume", &inputVolumeMul))
-		return;
+	double inputVolumeMul = calldata_float(data, "volume");
 
 	double inputVolumeDb = obs_mul_to_db(inputVolumeMul);
 	if (inputVolumeDb == -INFINITY)
@@ -120,9 +118,7 @@ void EventHandler::HandleInputAudioSyncOffsetChanged(void *param, calldata_t *da
 	if (obs_source_get_type(source) != OBS_SOURCE_TYPE_INPUT)
 		return;
 
-	long long inputAudioSyncOffset = 0;
-	if (!calldata_get_int(data, "offset", &inputAudioSyncOffset))
-		return;
+	long long inputAudioSyncOffset = calldata_int(data, "offset");
 
 	json eventData;
 	eventData["inputName"] = obs_source_get_name(source);
@@ -141,10 +137,7 @@ void EventHandler::HandleInputAudioTracksChanged(void *param, calldata_t *data)
 	if (obs_source_get_type(source) != OBS_SOURCE_TYPE_INPUT)
 		return;
 
-	long long tracks;
-	if (!calldata_get_int(data, "mixers", &tracks)) {
-		return;
-	}
+	long long tracks = calldata_int(data, "mixers");
 
 	json inputAudioTracks;
 	for (size_t i = 0; i < MAX_AUDIO_MIXES; i++) {
