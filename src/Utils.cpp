@@ -28,13 +28,13 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 Q_DECLARE_METATYPE(OBSScene);
 
-obs_data_array_t* Utils::StringListToArray(char** strings, char* key) {
+obs_data_array_t* Utils::StringListToArray(char** strings, const char* key) {
 	if (!strings)
 		return obs_data_array_create();
 
 	obs_data_array_t* list = obs_data_array_create();
 
-	char* value = "";
+	const char* value = "";
 	for (int i = 0; value != nullptr; i++) {
 		value = strings[i];
 
