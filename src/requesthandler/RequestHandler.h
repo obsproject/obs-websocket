@@ -38,6 +38,8 @@ class RequestHandler {
 
 		// Sources
 		RequestResult GetSourceActive(const Request&);
+		RequestResult GetSourceScreenshot(const Request&);
+		RequestResult SaveSourceScreenshot(const Request&);
 
 		static const std::map<std::string, RequestMethodHandler> _handlerMap;
 };

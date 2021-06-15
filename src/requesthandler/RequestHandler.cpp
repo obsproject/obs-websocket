@@ -24,6 +24,8 @@ const std::map<std::string, RequestMethodHandler> RequestHandler::_handlerMap
 
 	// Sources
 	{"GetSourceActive", &RequestHandler::GetSourceActive},
+	{"GetSourceScreenshot", &RequestHandler::GetSourceScreenshot},
+	{"SaveSourceScreenshot", &RequestHandler::SaveSourceScreenshot},
 };
 
 RequestResult RequestHandler::ProcessRequest(const Request& request)
