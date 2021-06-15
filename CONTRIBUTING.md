@@ -16,9 +16,9 @@ Localization happens on [Crowdin](https://crowdin.com/project/obs-websocket)
 
 * Request and Event names should use MixedCaps names. Keep naming conformity of request naming using similar terms like `Get`, `Set`, `Get[x]List`, `Start[x]`, `Toggle[x]`.
 
-* Request and Event json properties should use camelCase. For more detailed info on property naming, see [here](https://gist.github.com/tt2468/59390b99e7841b28f56dffb3dd622ec9)
+* Request and Event json properties/fields should use camelCase. Try to use existing property names.
 
-* Code is indented with Tabs. Assume they are 8 columns wide
+* Code is indented with Tabs. Assume they are 4 columns wide
 
 * 80 columns max code width. (Comments/docs can be larger)
 
@@ -30,23 +30,31 @@ These are required to automatically generate the [protocol specification documen
 * Favor return-early code and avoid wrapping huge portions of code in conditionals. As an example, this:
 ```cpp
 if (success) {
-    return req->SendOKResponse();
+    return RequestResult::Success();
 } else {
-    return req->SendErrorResponse("something went wrong");
+    return RequestResult::Error(RequestStatus::GenericError);
 }
 ```
 is better like this:
 ```cpp
 if (!success) {
-    return req->SendErrorResponse("something went wrong");
+    return RequestResult::Error(RequestStatus::GenericError);
 }
-return req->SendOKResponse();
+return RequestResult::Success();
 ```
+
+* Try to use the [built-in](https://github.com/Palakis/obs-websocket/blob/master/src/requesthandler/rpc/Request.h) request checks when possible.
+    * Refer to existing requests for usage examples.
 
 * Some example common response/request property names are:
     * `sceneName` - The name of a scene
-    * `sourceName` - The name of a source
-    * `fromScene` - From a scene - scene name
+    * `inputName` - The name of an input
+    * `sourceName` - The name of a source (only for when multiple source types apply)
+    * `sceneItemEnabled` - Whether a scene item is enabled
+
+* Response parameters which have no attributed data due to an invalid state should be set to `null` (versus being left out)
+    * For example, when `GetSceneList` is called and OBS is not in studio mode, `currentPreviewSceneName` will be `null`
+    * If a request's core response data depends on a state, an error should be thrown unless `ignoreNonFatalRequestChecks` is set. See `GetCurrentPreviewScene` as an example.
 
 ### Commit Guidelines
 
@@ -64,19 +72,17 @@ return req->SendOKResponse();
 **Example commit:**
 
 ```
-Requests: Add GetTransitionPosition
+Requests: Add GetSceneList
 
-Adds a new request called `GetTransitionPosition` which gets the current
-transition's state from 0.0f to 1.0f. Works with both auto and manual
-transitions.
+Adds a new request called `GetSceneList` which returns the current
+scene, along with an array of objects, each one with a scene name
+and index.
 ```
 
 ### Pull Requests
 
 * Pull Requests must never be based off your fork's main branch (in this case, `master`).
     * Start your work in a newly named branch based on the upstream main one (e.g.: `feature/cool-new-feature`, `bugfix/fix-palakis-mistakes`, ...)
-
-* Only open a pull request if you are ready to show off your work.
 
 * If your work is not done yet, but for any reason you need to PR it (like collecting discussions, testing with CI, getting testers),
     create it as a Draft Pull Request (open the little arrow menu next to the "Create pull request" button, then select "Create draft pull request").
