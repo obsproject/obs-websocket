@@ -47,6 +47,8 @@ class RequestHandler {
 		RequestResult SetCurrentProgramScene(const Request&);
 		RequestResult GetCurrentPreviewScene(const Request&);
 		RequestResult SetCurrentPreviewScene(const Request&);
+		RequestResult SetSceneName(const Request&);
+		RequestResult CreateScene(const Request&);
 
 		static const std::map<std::string, RequestMethodHandler> _handlerMap;
 };

@@ -93,3 +93,54 @@ RequestResult RequestHandler::SetCurrentPreviewScene(const Request& request)
 
 	return RequestResult::Success();
 }
+
+RequestResult RequestHandler::SetSceneName(const Request& request)
+{
+	RequestStatus::RequestStatus statusCode;
+	std::string comment;
+	if (!request.ValidateString("sceneName", statusCode, comment)) {
+		return RequestResult::Error(statusCode, comment);
+	}
+
+	if (!request.ValidateString("newSceneName", statusCode, comment)) {
+		return RequestResult::Error(statusCode, comment);
+	}
+
+	std::string sceneName = request.RequestData["sceneName"];
+	std::string newSceneName = request.RequestData["newSceneName"];
+
+	OBSSourceAutoRelease scene = obs_get_source_by_name(sceneName.c_str());
+	if (!scene)
+		return RequestResult::Error(RequestStatus::SceneNotFound);
+
+	if (obs_source_get_type(scene) != OBS_SOURCE_TYPE_SCENE)
+		return RequestResult::Error(RequestStatus::InvalidSourceType, "The specified source is not a scene.");
+
+	OBSSourceAutoRelease existingSource = obs_get_source_by_name(newSceneName.c_str());
+	if (existingSource)
+		return RequestResult::Error(RequestStatus::SourceAlreadyExists, "A source already exists by that new scene name.");
+
+	obs_source_set_name(scene, newSceneName.c_str());
+
+	return RequestResult::Success();
+}
+
+RequestResult RequestHandler::CreateScene(const Request& request)
+{
+	RequestStatus::RequestStatus statusCode;
+	std::string comment;
+	if (!request.ValidateString("sceneName", statusCode, comment)) {
+		return RequestResult::Error(statusCode, comment);
+	}
+
+	std::string sceneName = request.RequestData["sceneName"];
+
+	OBSSourceAutoRelease scene = obs_get_source_by_name(sceneName.c_str());
+	if (scene)
+		return RequestResult::Error(RequestStatus::SourceAlreadyExists, "A source already exists by that scene name.");
+
+	obs_scene_t *createdScene = obs_scene_create(sceneName.c_str());
+	obs_scene_release(createdScene);
+
+	return RequestResult::Success();
+}
