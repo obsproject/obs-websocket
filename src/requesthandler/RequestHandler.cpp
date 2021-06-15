@@ -29,6 +29,10 @@ const std::map<std::string, RequestMethodHandler> RequestHandler::_handlerMap
 
 	// Scenes
 	{"GetSceneList", &RequestHandler::GetSceneList},
+	{"GetCurrentProgramScene", &RequestHandler::GetCurrentProgramScene},
+	{"SetCurrentProgramScene", &RequestHandler::SetCurrentProgramScene},
+	{"GetCurrentPreviewScene", &RequestHandler::GetCurrentPreviewScene},
+	{"SetCurrentPreviewScene", &RequestHandler::SetCurrentPreviewScene},
 };
 
 RequestResult RequestHandler::ProcessRequest(const Request& request)
