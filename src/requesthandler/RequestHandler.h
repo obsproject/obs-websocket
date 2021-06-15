@@ -41,5 +41,8 @@ class RequestHandler {
 		RequestResult GetSourceScreenshot(const Request&);
 		RequestResult SaveSourceScreenshot(const Request&);
 
+		// Scenes
+		RequestResult GetSceneList(const Request&);
+
 		static const std::map<std::string, RequestMethodHandler> _handlerMap;
 };
