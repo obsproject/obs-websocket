@@ -4,6 +4,7 @@
 
 json GetDefaultJsonObject(json requestData)
 {
+	// Always provide an object to prevent exceptions while running checks in requests
 	if (!requestData.is_object())
 		return json::object();
 	else
@@ -26,7 +27,7 @@ const bool Request::ValidateBasic(const std::string keyName, RequestStatus::Requ
 		return false;
 	}
 
-	if (!RequestData.contains(keyName)) {
+	if (!RequestData.contains(keyName) || RequestData[keyName].is_null()) {
 		statusCode = RequestStatus::MissingRequestParameter;
 		comment = std::string("Your request is missing the `") + keyName + "` parameter.";
 		return false;
