@@ -1,1 +1,797 @@
-{}
+{
+  "true For internal use to signify a successful parameter check": {
+    "miscellaneous": [
+      {
+        "subheads": [],
+        "api": "true For internal use to signify a successful parameter check",
+        "name": "",
+        "heading": {
+          "level": 2,
+          "text": ""
+        },
+        "examples": [],
+        "category": "miscellaneous"
+      }
+    ]
+  },
+  "true The `requestType` field is missing from the request data": {
+    "miscellaneous": [
+      {
+        "subheads": [],
+        "api": "true The `requestType` field is missing from the request data",
+        "name": "",
+        "heading": {
+          "level": 2,
+          "text": ""
+        },
+        "examples": [],
+        "category": "miscellaneous"
+      }
+    ]
+  },
+  "true The request type is invalid (does not exist)": {
+    "miscellaneous": [
+      {
+        "subheads": [],
+        "api": "true The request type is invalid (does not exist)",
+        "name": "",
+        "heading": {
+          "level": 2,
+          "text": ""
+        },
+        "examples": [],
+        "category": "miscellaneous"
+      }
+    ]
+  },
+  "true Generic error code (comment is expected to be provided)": {
+    "miscellaneous": [
+      {
+        "subheads": [],
+        "api": "true Generic error code (comment is expected to be provided)",
+        "name": "",
+        "heading": {
+          "level": 2,
+          "text": ""
+        },
+        "examples": [],
+        "category": "miscellaneous"
+      }
+    ]
+  },
+  "true A required request parameter is missing": {
+    "miscellaneous": [
+      {
+        "subheads": [],
+        "api": "true A required request parameter is missing",
+        "name": "",
+        "heading": {
+          "level": 2,
+          "text": ""
+        },
+        "examples": [],
+        "category": "miscellaneous"
+      }
+    ]
+  },
+  "true The request does not have a valid requestData object.": {
+    "miscellaneous": [
+      {
+        "subheads": [],
+        "api": "true The request does not have a valid requestData object.",
+        "name": "",
+        "heading": {
+          "level": 2,
+          "text": ""
+        },
+        "examples": [],
+        "category": "miscellaneous"
+      }
+    ]
+  },
+  "true Generic invalid request parameter message": {
+    "miscellaneous": [
+      {
+        "subheads": [],
+        "api": "true Generic invalid request parameter message",
+        "name": "",
+        "heading": {
+          "level": 2,
+          "text": ""
+        },
+        "examples": [],
+        "category": "miscellaneous"
+      }
+    ]
+  },
+  "true A request parameter has the wrong data type": {
+    "miscellaneous": [
+      {
+        "subheads": [],
+        "api": "true A request parameter has the wrong data type",
+        "name": "",
+        "heading": {
+          "level": 2,
+          "text": ""
+        },
+        "examples": [],
+        "category": "miscellaneous"
+      }
+    ]
+  },
+  "true A request parameter (float or int) is out of valid range": {
+    "miscellaneous": [
+      {
+        "subheads": [],
+        "api": "true A request parameter (float or int) is out of valid range",
+        "name": "",
+        "heading": {
+          "level": 2,
+          "text": ""
+        },
+        "examples": [],
+        "category": "miscellaneous"
+      }
+    ]
+  },
+  "true A request parameter (string or array) is empty and cannot be": {
+    "miscellaneous": [
+      {
+        "subheads": [],
+        "api": "true A request parameter (string or array) is empty and cannot be",
+        "name": "",
+        "heading": {
+          "level": 2,
+          "text": ""
+        },
+        "examples": [],
+        "category": "miscellaneous"
+      }
+    ]
+  },
+  "true There are too many request parameters (eg. a request takes two optionals, where only one is allowed at a time)": {
+    "miscellaneous": [
+      {
+        "subheads": [],
+        "api": "true There are too many request parameters (eg. a request takes two optionals, where only one is allowed at a time)",
+        "name": "",
+        "heading": {
+          "level": 2,
+          "text": ""
+        },
+        "examples": [],
+        "category": "miscellaneous"
+      }
+    ]
+  },
+  "true An output is running and cannot be in order to perform the request (generic)": {
+    "miscellaneous": [
+      {
+        "subheads": [],
+        "api": "true An output is running and cannot be in order to perform the request (generic)",
+        "name": "",
+        "heading": {
+          "level": 2,
+          "text": ""
+        },
+        "examples": [],
+        "category": "miscellaneous"
+      }
+    ]
+  },
+  "true An output is not running and should be": {
+    "miscellaneous": [
+      {
+        "subheads": [],
+        "api": "true An output is not running and should be",
+        "name": "",
+        "heading": {
+          "level": 2,
+          "text": ""
+        },
+        "examples": [],
+        "category": "miscellaneous"
+      }
+    ]
+  },
+  "true Stream is running and cannot be": {
+    "miscellaneous": [
+      {
+        "subheads": [],
+        "api": "true Stream is running and cannot be",
+        "name": "",
+        "heading": {
+          "level": 2,
+          "text": ""
+        },
+        "examples": [],
+        "category": "miscellaneous"
+      }
+    ]
+  },
+  "true Stream is not running and should be": {
+    "miscellaneous": [
+      {
+        "subheads": [],
+        "api": "true Stream is not running and should be",
+        "name": "",
+        "heading": {
+          "level": 2,
+          "text": ""
+        },
+        "examples": [],
+        "category": "miscellaneous"
+      }
+    ]
+  },
+  "true Record is running and cannot be": {
+    "miscellaneous": [
+      {
+        "subheads": [],
+        "api": "true Record is running and cannot be",
+        "name": "",
+        "heading": {
+          "level": 2,
+          "text": ""
+        },
+        "examples": [],
+        "category": "miscellaneous"
+      }
+    ]
+  },
+  "true Record is not running and should be": {
+    "miscellaneous": [
+      {
+        "subheads": [],
+        "api": "true Record is not running and should be",
+        "name": "",
+        "heading": {
+          "level": 2,
+          "text": ""
+        },
+        "examples": [],
+        "category": "miscellaneous"
+      }
+    ]
+  },
+  "true Record is paused and cannot be": {
+    "miscellaneous": [
+      {
+        "subheads": [],
+        "api": "true Record is paused and cannot be",
+        "name": "",
+        "heading": {
+          "level": 2,
+          "text": ""
+        },
+        "examples": [],
+        "category": "miscellaneous"
+      }
+    ]
+  },
+  "true Replay buffer is running and cannot be": {
+    "miscellaneous": [
+      {
+        "subheads": [],
+        "api": "true Replay buffer is running and cannot be",
+        "name": "",
+        "heading": {
+          "level": 2,
+          "text": ""
+        },
+        "examples": [],
+        "category": "miscellaneous"
+      }
+    ]
+  },
+  "true Replay buffer is not running and should be": {
+    "miscellaneous": [
+      {
+        "subheads": [],
+        "api": "true Replay buffer is not running and should be",
+        "name": "",
+        "heading": {
+          "level": 2,
+          "text": ""
+        },
+        "examples": [],
+        "category": "miscellaneous"
+      }
+    ]
+  },
+  "true Replay buffer is disabled and cannot be": {
+    "miscellaneous": [
+      {
+        "subheads": [],
+        "api": "true Replay buffer is disabled and cannot be",
+        "name": "",
+        "heading": {
+          "level": 2,
+          "text": ""
+        },
+        "examples": [],
+        "category": "miscellaneous"
+      }
+    ]
+  },
+  "true Studio mode is active and cannot be": {
+    "miscellaneous": [
+      {
+        "subheads": [],
+        "api": "true Studio mode is active and cannot be",
+        "name": "",
+        "heading": {
+          "level": 2,
+          "text": ""
+        },
+        "examples": [],
+        "category": "miscellaneous"
+      }
+    ]
+  },
+  "true Studio mode is not active and should be": {
+    "miscellaneous": [
+      {
+        "subheads": [],
+        "api": "true Studio mode is not active and should be",
+        "name": "",
+        "heading": {
+          "level": 2,
+          "text": ""
+        },
+        "examples": [],
+        "category": "miscellaneous"
+      }
+    ]
+  },
+  "true Virtualcam is running and cannot be": {
+    "miscellaneous": [
+      {
+        "subheads": [],
+        "api": "true Virtualcam is running and cannot be",
+        "name": "",
+        "heading": {
+          "level": 2,
+          "text": ""
+        },
+        "examples": [],
+        "category": "miscellaneous"
+      }
+    ]
+  },
+  "true Virtualcam is not running and should be": {
+    "miscellaneous": [
+      {
+        "subheads": [],
+        "api": "true Virtualcam is not running and should be",
+        "name": "",
+        "heading": {
+          "level": 2,
+          "text": ""
+        },
+        "examples": [],
+        "category": "miscellaneous"
+      }
+    ]
+  },
+  "true The specified source (obs_source_t) was of the invalid type (Eg. input instead of scene)": {
+    "miscellaneous": [
+      {
+        "subheads": [],
+        "api": "true The specified source (obs_source_t) was of the invalid type (Eg. input instead of scene)",
+        "name": "",
+        "heading": {
+          "level": 2,
+          "text": ""
+        },
+        "examples": [],
+        "category": "miscellaneous"
+      }
+    ]
+  },
+  "true The specified source (obs_source_t) was not found (generic for input, filter, transition, scene)": {
+    "miscellaneous": [
+      {
+        "subheads": [],
+        "api": "true The specified source (obs_source_t) was not found (generic for input, filter, transition, scene)",
+        "name": "",
+        "heading": {
+          "level": 2,
+          "text": ""
+        },
+        "examples": [],
+        "category": "miscellaneous"
+      }
+    ]
+  },
+  "true The specified source (obs_source_t) already exists. Applicable to inputs, filters, transitions, scenes": {
+    "miscellaneous": [
+      {
+        "subheads": [],
+        "api": "true The specified source (obs_source_t) already exists. Applicable to inputs, filters, transitions, scenes",
+        "name": "",
+        "heading": {
+          "level": 2,
+          "text": ""
+        },
+        "examples": [],
+        "category": "miscellaneous"
+      }
+    ]
+  },
+  "true The specified input (obs_source_t-OBS_SOURCE_TYPE_FILTER) was not found": {
+    "miscellaneous": [
+      {
+        "subheads": [],
+        "api": "true The specified input (obs_source_t-OBS_SOURCE_TYPE_FILTER) was not found",
+        "name": "",
+        "heading": {
+          "level": 2,
+          "text": ""
+        },
+        "examples": [],
+        "category": "miscellaneous"
+      }
+    ]
+  },
+  "true The specified input (obs_source_t-OBS_SOURCE_TYPE_INPUT) had the wrong kind": {
+    "miscellaneous": [
+      {
+        "subheads": [],
+        "api": "true The specified input (obs_source_t-OBS_SOURCE_TYPE_INPUT) had the wrong kind",
+        "name": "",
+        "heading": {
+          "level": 2,
+          "text": ""
+        },
+        "examples": [],
+        "category": "miscellaneous"
+      }
+    ]
+  },
+  "true The specified filter (obs_source_t-OBS_SOURCE_TYPE_FILTER) was not found": {
+    "miscellaneous": [
+      {
+        "subheads": [],
+        "api": "true The specified filter (obs_source_t-OBS_SOURCE_TYPE_FILTER) was not found",
+        "name": "",
+        "heading": {
+          "level": 2,
+          "text": ""
+        },
+        "examples": [],
+        "category": "miscellaneous"
+      }
+    ]
+  },
+  "true The specified transition (obs_source_t-OBS_SOURCE_TYPE_TRANSITION) was not found": {
+    "miscellaneous": [
+      {
+        "subheads": [],
+        "api": "true The specified transition (obs_source_t-OBS_SOURCE_TYPE_TRANSITION) was not found",
+        "name": "",
+        "heading": {
+          "level": 2,
+          "text": ""
+        },
+        "examples": [],
+        "category": "miscellaneous"
+      }
+    ]
+  },
+  "true The specified transition (obs_source_t-OBS_SOURCE_TYPE_TRANSITION) does not support setting its position (transition is of fixed type)": {
+    "miscellaneous": [
+      {
+        "subheads": [],
+        "api": "true The specified transition (obs_source_t-OBS_SOURCE_TYPE_TRANSITION) does not support setting its position (transition is of fixed type)",
+        "name": "",
+        "heading": {
+          "level": 2,
+          "text": ""
+        },
+        "examples": [],
+        "category": "miscellaneous"
+      }
+    ]
+  },
+  "true The specified scene (obs_source_t-OBS_SOURCE_TYPE_SCENE), (obs_scene_t) was not found": {
+    "miscellaneous": [
+      {
+        "subheads": [],
+        "api": "true The specified scene (obs_source_t-OBS_SOURCE_TYPE_SCENE), (obs_scene_t) was not found",
+        "name": "",
+        "heading": {
+          "level": 2,
+          "text": ""
+        },
+        "examples": [],
+        "category": "miscellaneous"
+      }
+    ]
+  },
+  "true The specified scene item (obs_sceneitem_t) was not found": {
+    "miscellaneous": [
+      {
+        "subheads": [],
+        "api": "true The specified scene item (obs_sceneitem_t) was not found",
+        "name": "",
+        "heading": {
+          "level": 2,
+          "text": ""
+        },
+        "examples": [],
+        "category": "miscellaneous"
+      }
+    ]
+  },
+  "true The specified scene collection was not found": {
+    "miscellaneous": [
+      {
+        "subheads": [],
+        "api": "true The specified scene collection was not found",
+        "name": "",
+        "heading": {
+          "level": 2,
+          "text": ""
+        },
+        "examples": [],
+        "category": "miscellaneous"
+      }
+    ]
+  },
+  "true The specified profile was not found": {
+    "miscellaneous": [
+      {
+        "subheads": [],
+        "api": "true The specified profile was not found",
+        "name": "",
+        "heading": {
+          "level": 2,
+          "text": ""
+        },
+        "examples": [],
+        "category": "miscellaneous"
+      }
+    ]
+  },
+  "true The specified output (obs_output_t) was not found": {
+    "miscellaneous": [
+      {
+        "subheads": [],
+        "api": "true The specified output (obs_output_t) was not found",
+        "name": "",
+        "heading": {
+          "level": 2,
+          "text": ""
+        },
+        "examples": [],
+        "category": "miscellaneous"
+      }
+    ]
+  },
+  "true The specified encoder (obs_encoder_t) was not found": {
+    "miscellaneous": [
+      {
+        "subheads": [],
+        "api": "true The specified encoder (obs_encoder_t) was not found",
+        "name": "",
+        "heading": {
+          "level": 2,
+          "text": ""
+        },
+        "examples": [],
+        "category": "miscellaneous"
+      }
+    ]
+  },
+  "true The specified service (obs_service_t) was not found": {
+    "miscellaneous": [
+      {
+        "subheads": [],
+        "api": "true The specified service (obs_service_t) was not found",
+        "name": "",
+        "heading": {
+          "level": 2,
+          "text": ""
+        },
+        "examples": [],
+        "category": "miscellaneous"
+      }
+    ]
+  },
+  "true The specified hotkey was not found": {
+    "miscellaneous": [
+      {
+        "subheads": [],
+        "api": "true The specified hotkey was not found",
+        "name": "",
+        "heading": {
+          "level": 2,
+          "text": ""
+        },
+        "examples": [],
+        "category": "miscellaneous"
+      }
+    ]
+  },
+  "true The specified directory was not found": {
+    "miscellaneous": [
+      {
+        "subheads": [],
+        "api": "true The specified directory was not found",
+        "name": "",
+        "heading": {
+          "level": 2,
+          "text": ""
+        },
+        "examples": [],
+        "category": "miscellaneous"
+      }
+    ]
+  },
+  "true The specified config item (config_t) was not found. Could be section or parameter name": {
+    "miscellaneous": [
+      {
+        "subheads": [],
+        "api": "true The specified config item (config_t) was not found. Could be section or parameter name",
+        "name": "",
+        "heading": {
+          "level": 2,
+          "text": ""
+        },
+        "examples": [],
+        "category": "miscellaneous"
+      }
+    ]
+  },
+  "true The specified property (obs_properties_t) was not found": {
+    "miscellaneous": [
+      {
+        "subheads": [],
+        "api": "true The specified property (obs_properties_t) was not found",
+        "name": "",
+        "heading": {
+          "level": 2,
+          "text": ""
+        },
+        "examples": [],
+        "category": "miscellaneous"
+      }
+    ]
+  },
+  "true The specififed key (OBS_KEY_*) was not found": {
+    "miscellaneous": [
+      {
+        "subheads": [],
+        "api": "true The specififed key (OBS_KEY_*) was not found",
+        "name": "",
+        "heading": {
+          "level": 2,
+          "text": ""
+        },
+        "examples": [],
+        "category": "miscellaneous"
+      }
+    ]
+  },
+  "true Processing the request failed unexpectedly": {
+    "miscellaneous": [
+      {
+        "subheads": [],
+        "api": "true Processing the request failed unexpectedly",
+        "name": "",
+        "heading": {
+          "level": 2,
+          "text": ""
+        },
+        "examples": [],
+        "category": "miscellaneous"
+      }
+    ]
+  },
+  "true Starting the Output failed": {
+    "miscellaneous": [
+      {
+        "subheads": [],
+        "api": "true Starting the Output failed",
+        "name": "",
+        "heading": {
+          "level": 2,
+          "text": ""
+        },
+        "examples": [],
+        "category": "miscellaneous"
+      }
+    ]
+  },
+  "true Duplicating the scene item failed": {
+    "miscellaneous": [
+      {
+        "subheads": [],
+        "api": "true Duplicating the scene item failed",
+        "name": "",
+        "heading": {
+          "level": 2,
+          "text": ""
+        },
+        "examples": [],
+        "category": "miscellaneous"
+      }
+    ]
+  },
+  "true Rendering the screenshot failed": {
+    "miscellaneous": [
+      {
+        "subheads": [],
+        "api": "true Rendering the screenshot failed",
+        "name": "",
+        "heading": {
+          "level": 2,
+          "text": ""
+        },
+        "examples": [],
+        "category": "miscellaneous"
+      }
+    ]
+  },
+  "true Encoding the screenshot failed": {
+    "miscellaneous": [
+      {
+        "subheads": [],
+        "api": "true Encoding the screenshot failed",
+        "name": "",
+        "heading": {
+          "level": 2,
+          "text": ""
+        },
+        "examples": [],
+        "category": "miscellaneous"
+      }
+    ]
+  },
+  "true Saving the screenshot failed": {
+    "miscellaneous": [
+      {
+        "subheads": [],
+        "api": "true Saving the screenshot failed",
+        "name": "",
+        "heading": {
+          "level": 2,
+          "text": ""
+        },
+        "examples": [],
+        "category": "miscellaneous"
+      }
+    ]
+  },
+  "true Creating the directory failed": {
+    "miscellaneous": [
+      {
+        "subheads": [],
+        "api": "true Creating the directory failed",
+        "name": "",
+        "heading": {
+          "level": 2,
+          "text": ""
+        },
+        "examples": [],
+        "category": "miscellaneous"
+      }
+    ]
+  },
+  "true The combination of request parameters cannot be used to perform an action": {
+    "miscellaneous": [
+      {
+        "subheads": [],
+        "api": "true The combination of request parameters cannot be used to perform an action",
+        "name": "",
+        "heading": {
+          "level": 2,
+          "text": ""
+        },
+        "examples": [],
+        "category": "miscellaneous"
+      }
+    ]
+  }
+}

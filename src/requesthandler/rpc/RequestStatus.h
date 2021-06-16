@@ -4,119 +4,278 @@ namespace RequestStatus {
 	enum RequestStatus {
 		Unknown = 0,
 
-		// For internal use to signify a successful parameter check
+		/**
+		* @api
+		* For internal use to signify a successful parameter check 
+		*/
 		NoError = 10,
 
 		Success = 100,
 
-		// The `requestType` field is missing from the request data
+		/**
+		* @api
+		* The `requestType` field is missing from the request data 
+		*/
 		MissingRequestType = 203,
-		// The request type is invalid (does not exist)
+		/**
+		* @api
+		* The request type is invalid (does not exist) 
+		*/
 		UnknownRequestType = 204,
-		// Generic error code (comment is expected to be provided)
+		/**
+		* @api
+		* Generic error code (comment is expected to be provided) 
+		*/
 		GenericError = 205,
 
-		// A required request parameter is missing
+		/**
+		* @api
+		* A required request parameter is missing 
+		*/
 		MissingRequestParameter = 300,
-		// The request does not have a valid requestData object.
+		/**
+		* @api
+		* The request does not have a valid requestData object. 
+		*/
 		MissingRequestData = 301,
 
-		// Generic invalid request parameter message
+		/**
+		* @api
+		* Generic invalid request parameter message 
+		*/
 		InvalidRequestParameter = 400,
-		// A request parameter has the wrong data type
+		/**
+		* @api
+		* A request parameter has the wrong data type 
+		*/
 		InvalidRequestParameterDataType = 401,
-		// A request parameter (float or int) is out of valid range
+		/**
+		* @api
+		* A request parameter (float or int) is out of valid range 
+		*/
 		RequestParameterOutOfRange = 402,
-		// A request parameter (string or array) is empty and cannot be
+		/**
+		* @api
+		* A request parameter (string or array) is empty and cannot be 
+		*/
 		RequestParameterEmpty = 403,
-		// There are too many request parameters (eg. a request takes two optionals, where only one is allowed at a time)
+		/**
+		* @api
+		* There are too many request parameters (eg. a request takes two optionals, where only one is allowed at a time) 
+		*/
 		TooManyRequestParameters = 404,
 
-		// An output is running and cannot be in order to perform the request (generic)
+		/**
+		* @api
+		* An output is running and cannot be in order to perform the request (generic) 
+		*/
 		OutputRunning = 500,
-		// An output is not running and should be
+		/**
+		* @api
+		* An output is not running and should be 
+		*/
 		OutputNotRunning = 501,
-		// Stream is running and cannot be
+		/**
+		* @api
+		* Stream is running and cannot be 
+		*/
 		StreamRunning = 502,
-		// Stream is not running and should be
+		/**
+		* @api
+		* Stream is not running and should be 
+		*/
 		StreamNotRunning = 503,
-		// Record is running and cannot be
+		/**
+		* @api
+		* Record is running and cannot be 
+		*/
 		RecordRunning = 504,
-		// Record is not running and should be
+		/**
+		* @api
+		* Record is not running and should be 
+		*/
 		RecordNotRunning = 505,
-		// Record is paused and cannot be
+		/**
+		* @api
+		* Record is paused and cannot be 
+		*/
 		RecordPaused = 506,
-		// Replay buffer is running and cannot be
+		/**
+		* @api
+		* Replay buffer is running and cannot be 
+		*/
 		ReplayBufferRunning = 507,
-		// Replay buffer is not running and should be
+		/**
+		* @api
+		* Replay buffer is not running and should be 
+		*/
 		ReplayBufferNotRunning = 508,
-		// Replay buffer is disabled and cannot be
+		/**
+		* @api
+		* Replay buffer is disabled and cannot be 
+		*/
 		ReplayBufferDisabled = 509,
-		// Studio mode is active and cannot be
+		/**
+		* @api
+		* Studio mode is active and cannot be 
+		*/
 		StudioModeActive = 510,
-		// Studio mode is not active and should be
+		/**
+		* @api
+		* Studio mode is not active and should be 
+		*/
 		StudioModeNotActive = 511,
-		// Virtualcam is running and cannot be
+		/**
+		* @api
+		* Virtualcam is running and cannot be 
+		*/
 		VirtualcamRunning = 512,
-		// Virtualcam is not running and should be
+		/**
+		* @api
+		* Virtualcam is not running and should be 
+		*/
 		VirtualcamNotRunning = 513,
 
-		// The specified source (obs_source_t) was of the invalid type (Eg. input instead of scene)
+		/**
+		* @api
+		* The specified source (obs_source_t) was of the invalid type (Eg. input instead of scene) 
+		*/
 		InvalidSourceType = 600,
-		// The specified source (obs_source_t) was not found (generic for input, filter, transition, scene)
+		/**
+		* @api
+		* The specified source (obs_source_t) was not found (generic for input, filter, transition, scene) 
+		*/
 		SourceNotFound = 601,
-		// The specified source (obs_source_t) already exists. Applicable to inputs, filters, transitions, scenes
+		/**
+		* @api
+		* The specified source (obs_source_t) already exists. Applicable to inputs, filters, transitions, scenes 
+		*/
 		SourceAlreadyExists = 602,
-		// The specified input (obs_source_t-OBS_SOURCE_TYPE_FILTER) was not found
+		/**
+		* @api
+		* The specified input (obs_source_t-OBS_SOURCE_TYPE_FILTER) was not found 
+		*/
 		InputNotFound = 603,
-		// The specified input (obs_source_t-OBS_SOURCE_TYPE_INPUT) had the wrong kind
+		/**
+		* @api
+		* The specified input (obs_source_t-OBS_SOURCE_TYPE_INPUT) had the wrong kind 
+		*/
 		InvalidInputKind = 604,
-		// The specified filter (obs_source_t-OBS_SOURCE_TYPE_FILTER) was not found
+		/**
+		* @api
+		* The specified filter (obs_source_t-OBS_SOURCE_TYPE_FILTER) was not found 
+		*/
 		FilterNotFound = 605,
-		// The specified transition (obs_source_t-OBS_SOURCE_TYPE_TRANSITION) was not found
+		/**
+		* @api
+		* The specified transition (obs_source_t-OBS_SOURCE_TYPE_TRANSITION) was not found 
+		*/
 		TransitionNotFound = 606,
-		// The specified transition (obs_source_t-OBS_SOURCE_TYPE_TRANSITION) does not support setting its position (transition is of fixed type)
+		/**
+		* @api
+		* The specified transition (obs_source_t-OBS_SOURCE_TYPE_TRANSITION) does not support setting its position (transition is of fixed type) 
+		*/
 		TransitionDurationFixed = 607,
-		// The specified scene (obs_source_t-OBS_SOURCE_TYPE_SCENE), (obs_scene_t) was not found
+		/**
+		* @api
+		* The specified scene (obs_source_t-OBS_SOURCE_TYPE_SCENE), (obs_scene_t) was not found 
+		*/
 		SceneNotFound = 608,
-		// The specified scene item (obs_sceneitem_t) was not found
+		/**
+		* @api
+		* The specified scene item (obs_sceneitem_t) was not found 
+		*/
 		SceneItemNotFound = 609,
-		// The specified scene collection was not found
+		/**
+		* @api
+		* The specified scene collection was not found 
+		*/
 		SceneCollectionNotFound = 610,
-		// The specified profile was not found
+		/**
+		* @api
+		* The specified profile was not found 
+		*/
 		ProfileNotFound = 611,
-		// The specified output (obs_output_t) was not found
+		/**
+		* @api
+		* The specified output (obs_output_t) was not found 
+		*/
 		OutputNotFound = 612,
-		// The specified encoder (obs_encoder_t) was not found
+		/**
+		* @api
+		* The specified encoder (obs_encoder_t) was not found 
+		*/
 		EncoderNotFound = 613,
-		// The specified service (obs_service_t) was not found
+		/**
+		* @api
+		* The specified service (obs_service_t) was not found 
+		*/
 		ServiceNotFound = 614,
-		// The specified hotkey was not found
+		/**
+		* @api
+		* The specified hotkey was not found 
+		*/
 		HotkeyNotFound = 615,
-		// The specified directory was not found
+		/**
+		* @api
+		* The specified directory was not found 
+		*/
 		DirectoryNotFound = 616,
-		// The specified config item (config_t) was not found. Could be section or parameter name
+		/**
+		* @api
+		* The specified config item (config_t) was not found. Could be section or parameter name 
+		*/
 		ConfigParameterNotFound = 617,
-		// The specified property (obs_properties_t) was not found
+		/**
+		* @api
+		* The specified property (obs_properties_t) was not found 
+		*/
 		PropertyNotFound = 618,
-		// The specififed key (OBS_KEY_*) was not found
+		/**
+		* @api
+		* The specififed key (OBS_KEY_*) was not found 
+		*/
 		KeyNotFound = 619,
 
-		// Processing the request failed unexpectedly
+		/**
+		* @api
+		* Processing the request failed unexpectedly 
+		*/
 		RequestProcessingFailed = 700,
-		// Starting the Output failed
+		/**
+		* @api
+		* Starting the Output failed 
+		*/
 		OutputStartFailed = 701,
-		// Duplicating the scene item failed
+		/**
+		* @api
+		* Duplicating the scene item failed 
+		*/
 		SceneItemDuplicationFailed = 702,
-		// Rendering the screenshot failed
+		/**
+		* @api
+		* Rendering the screenshot failed 
+		*/
 		ScreenshotRenderFailed = 703,
-		// Encoding the screenshot failed
+		/**
+		* @api
+		* Encoding the screenshot failed 
+		*/
 		ScreenshotEncodeFailed = 704,
-		// Saving the screenshot failed
+		/**
+		* @api
+		* Saving the screenshot failed 
+		*/
 		ScreenshotSaveFailed = 705,
-		// Creating the directory failed
+		/**
+		* @api
+		* Creating the directory failed 
+		*/
 		DirectoryCreationFailed = 706,
-		// The combination of request parameters cannot be used to perform an action
+		/**
+		* @api
+		* The combination of request parameters cannot be used to perform an action 
+		*/
 		CannotAct = 707,
 	};
 };
