@@ -51,5 +51,8 @@ class RequestHandler {
 		RequestResult CreateScene(const Request&);
 		RequestResult RemoveScene(const Request&);
 
+		// Inputs
+		RequestResult GetInputList(const Request&);
+
 		static const std::map<std::string, RequestMethodHandler> _handlerMap;
 };

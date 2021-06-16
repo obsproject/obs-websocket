@@ -90,6 +90,7 @@ set(obs-websocket_SOURCES
 	src/requesthandler/RequestHandler_Config.cpp
 	src/requesthandler/RequestHandler_Sources.cpp
 	src/requesthandler/RequestHandler_Scenes.cpp
+    src/requesthandler/RequestHandler_Inputs.cpp
 	src/requesthandler/rpc/Request.cpp
 	src/requesthandler/rpc/RequestResult.cpp
 	src/forms/SettingsDialog.cpp

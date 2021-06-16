@@ -36,6 +36,9 @@ const std::map<std::string, RequestMethodHandler> RequestHandler::_handlerMap
 	{"SetSceneName", &RequestHandler::SetSceneName},
 	{"CreateScene", &RequestHandler::CreateScene},
 	{"RemoveScene", &RequestHandler::RemoveScene},
+
+	// Inputs
+	{"GetInputList", &RequestHandler::GetInputList},
 };
 
 RequestResult RequestHandler::ProcessRequest(const Request& request)
