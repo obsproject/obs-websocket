@@ -39,6 +39,7 @@ const std::map<std::string, RequestMethodHandler> RequestHandler::_handlerMap
 
 	// Inputs
 	{"GetInputList", &RequestHandler::GetInputList},
+	{"GetInputKindList", &RequestHandler::GetInputKindList},
 };
 
 RequestResult RequestHandler::ProcessRequest(const Request& request)

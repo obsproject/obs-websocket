@@ -53,6 +53,7 @@ class RequestHandler {
 
 		// Inputs
 		RequestResult GetInputList(const Request&);
+		RequestResult GetInputKindList(const Request&);
 
 		static const std::map<std::string, RequestMethodHandler> _handlerMap;
 };
