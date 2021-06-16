@@ -58,3 +58,19 @@ RequestResult RequestHandler::GetInputDefaultSettings(const Request& request)
 	responseData["defaultInputSettings"] = Utils::Json::ObsDataToJson(defaultSettings, true);
 	return RequestResult::Success(responseData);
 }
+
+RequestResult RequestHandler::GetInputSettings(const Request& request)
+{
+	RequestStatus::RequestStatus statusCode;
+	std::string comment;
+	OBSSourceAutoRelease input = request.ValidateInput("inputName", statusCode, comment);
+	if (!input)
+		return RequestResult::Error(statusCode, comment);
+
+	OBSDataAutoRelease inputSettings = obs_source_get_settings(input);
+
+	json responseData;
+	responseData["inputSettings"] = Utils::Json::ObsDataToJson(inputSettings);
+	responseData["inputKind"] = obs_source_get_id(input);
+	return RequestResult::Success(responseData);
+}
