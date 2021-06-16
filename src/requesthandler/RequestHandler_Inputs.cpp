@@ -79,10 +79,7 @@ RequestResult RequestHandler::SetInputSettings(const Request& request)
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
 	OBSSourceAutoRelease input = request.ValidateInput("inputName", statusCode, comment);
-	if (!input)
-		return RequestResult::Error(statusCode, comment);
-
-	if (!request.ValidateObject("inputSettings", statusCode, comment, true))
+	if (!input || !request.ValidateObject("inputSettings", statusCode, comment, true))
 		return RequestResult::Error(statusCode, comment);
 
 	bool overlay = true;
@@ -109,6 +106,100 @@ RequestResult RequestHandler::SetInputSettings(const Request& request)
 
 	// Tells any open source properties windows to perform a UI refresh
 	obs_source_update_properties(input);
+
+	return RequestResult::Success();
+}
+
+RequestResult RequestHandler::GetInputMute(const Request& request)
+{
+	RequestStatus::RequestStatus statusCode;
+	std::string comment;
+	OBSSourceAutoRelease input = request.ValidateInput("inputName", statusCode, comment);
+	if (!input)
+		return RequestResult::Error(statusCode, comment);
+
+	json responseData;
+	responseData["inputMuted"] = obs_source_muted(input);
+	return RequestResult::Success(responseData);
+}
+
+RequestResult RequestHandler::SetInputMute(const Request& request)
+{
+	RequestStatus::RequestStatus statusCode;
+	std::string comment;
+	OBSSourceAutoRelease input = request.ValidateInput("inputName", statusCode, comment);
+	if (!input || !request.ValidateBoolean("inputMuted", statusCode, comment))
+		return RequestResult::Error(statusCode, comment);
+
+	obs_source_set_muted(input, request.RequestData["inputMuted"]);
+
+	return RequestResult::Success();
+}
+
+RequestResult RequestHandler::ToggleInputMute(const Request& request)
+{
+	RequestStatus::RequestStatus statusCode;
+	std::string comment;
+	OBSSourceAutoRelease input = request.ValidateInput("inputName", statusCode, comment);
+	if (!input)
+		return RequestResult::Error(statusCode, comment);
+
+	bool inputMuted = !obs_source_muted(input);
+	obs_source_set_muted(input, inputMuted);
+
+	json responseData;
+	responseData["inputMuted"] = inputMuted;
+	return RequestResult::Success(responseData);
+}
+
+RequestResult RequestHandler::GetInputVolume(const Request& request)
+{
+	RequestStatus::RequestStatus statusCode;
+	std::string comment;
+	OBSSourceAutoRelease input = request.ValidateInput("inputName", statusCode, comment);
+	if (!input)
+		return RequestResult::Error(statusCode, comment);
+
+	float inputVolumeMul = obs_source_get_volume(input);
+	float inputVolumeDb = obs_mul_to_db(inputVolumeMul);
+	if (inputVolumeDb == -INFINITY)
+		inputVolumeDb = -100.0;
+
+	json responseData;
+	responseData["inputVolumeMul"] = inputVolumeMul;
+	responseData["inputVolumeDb"] = inputVolumeDb;
+	return RequestResult::Success(responseData);
+}
+
+RequestResult RequestHandler::SetInputVolume(const Request& request)
+{
+	RequestStatus::RequestStatus statusCode;
+	std::string comment;
+	OBSSourceAutoRelease input = request.ValidateInput("inputName", statusCode, comment);
+	if (!input)
+		return RequestResult::Error(statusCode, comment);
+
+	bool hasMul = request.ValidateNumber("inputVolumeMul", statusCode, comment, 0, 20);
+	if (!hasMul && statusCode != RequestStatus::MissingRequestParameter)
+		return RequestResult::Error(statusCode, comment);
+
+	bool hasDb = request.ValidateNumber("inputVolumeDb", statusCode, comment, -100, 26);
+	if (!hasDb && statusCode != RequestStatus::MissingRequestParameter)
+		return RequestResult::Error(statusCode, comment);
+
+	if (hasMul && hasDb)
+		return RequestResult::Error(RequestStatus::TooManyRequestParameters, "You may only specify one volume parameter.");
+
+	if (!hasMul && !hasDb)
+		return RequestResult::Error(RequestStatus::MissingRequestParameter, "You must specify one volume parameter.");
+
+	float inputVolumeMul = 0.0;
+	if (hasMul)
+		inputVolumeMul = request.RequestData["inputVolumeMul"];
+	else
+		inputVolumeMul = obs_db_to_mul(request.RequestData["inputVolumeDb"]);
+
+	obs_source_set_volume(input, inputVolumeMul);
 
 	return RequestResult::Success();
 }

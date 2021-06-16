@@ -43,6 +43,11 @@ const std::map<std::string, RequestMethodHandler> RequestHandler::_handlerMap
 	{"GetInputDefaultSettings", &RequestHandler::GetInputDefaultSettings},
 	{"GetInputSettings", &RequestHandler::GetInputSettings},
 	{"SetInputSettings", &RequestHandler::SetInputSettings},
+	{"GetInputMute", &RequestHandler::GetInputMute},
+	{"SetInputMute", &RequestHandler::SetInputMute},
+	{"ToggleInputMute", &RequestHandler::ToggleInputMute},
+	{"GetInputVolume", &RequestHandler::GetInputVolume},
+	{"SetInputVolume", &RequestHandler::SetInputVolume},
 };
 
 RequestResult RequestHandler::ProcessRequest(const Request& request)
