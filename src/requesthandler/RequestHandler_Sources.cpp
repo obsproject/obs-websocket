@@ -135,7 +135,7 @@ RequestResult RequestHandler::GetSourceScreenshot(const Request& request)
 	uint32_t requestedHeight{0};
 	int compressionQuality{-1};
 
-	if (request.RequestData.contains("imageWidth")) {
+	if (request.RequestData.contains("imageWidth") && !request.RequestData["imageWidth"].is_null()) {
 		if (!request.ValidateNumber("imageWidth", statusCode, comment, 8, 4096)) {
 			return RequestResult::Error(statusCode, comment);
 		}
@@ -143,7 +143,7 @@ RequestResult RequestHandler::GetSourceScreenshot(const Request& request)
 		requestedWidth = request.RequestData["imageWidth"];
 	}
 
-	if (request.RequestData.contains("imageHeight")) {
+	if (request.RequestData.contains("imageHeight") && !request.RequestData["imageHeight"].is_null()) {
 		if (!request.ValidateNumber("imageHeight", statusCode, comment, 8, 4096)) {
 			return RequestResult::Error(statusCode, comment);
 		}
@@ -151,7 +151,7 @@ RequestResult RequestHandler::GetSourceScreenshot(const Request& request)
 		requestedHeight = request.RequestData["imageHeight"];
 	}
 
-	if (request.RequestData.contains("imageCompressionQuality")) {
+	if (request.RequestData.contains("imageCompressionQuality") && !request.RequestData["imageCompressionQuality"].is_null()) {
 		if (!request.ValidateNumber("imageCompressionQuality", statusCode, comment, -1, 100)) {
 			return RequestResult::Error(statusCode, comment);
 		}
@@ -215,7 +215,7 @@ RequestResult RequestHandler::SaveSourceScreenshot(const Request& request)
 	uint32_t requestedHeight{0};
 	int compressionQuality{-1};
 
-	if (request.RequestData.contains("imageWidth")) {
+	if (request.RequestData.contains("imageWidth") && !request.RequestData["imageWidth"].is_null()) {
 		if (!request.ValidateNumber("imageWidth", statusCode, comment, 8, 4096)) {
 			return RequestResult::Error(statusCode, comment);
 		}
@@ -223,7 +223,7 @@ RequestResult RequestHandler::SaveSourceScreenshot(const Request& request)
 		requestedWidth = request.RequestData["imageWidth"];
 	}
 
-	if (request.RequestData.contains("imageHeight")) {
+	if (request.RequestData.contains("imageHeight") && !request.RequestData["imageHeight"].is_null()) {
 		if (!request.ValidateNumber("imageHeight", statusCode, comment, 8, 4096)) {
 			return RequestResult::Error(statusCode, comment);
 		}
@@ -231,7 +231,7 @@ RequestResult RequestHandler::SaveSourceScreenshot(const Request& request)
 		requestedHeight = request.RequestData["imageHeight"];
 	}
 
-	if (request.RequestData.contains("imageCompressionQuality")) {
+	if (request.RequestData.contains("imageCompressionQuality") && !request.RequestData["imageCompressionQuality"].is_null()) {
 		if (!request.ValidateNumber("imageCompressionQuality", statusCode, comment, -1, 100)) {
 			return RequestResult::Error(statusCode, comment);
 		}
