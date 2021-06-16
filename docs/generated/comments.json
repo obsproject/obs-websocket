@@ -793,5 +793,185 @@
         "category": "miscellaneous"
       }
     ]
+  },
+  "true Internal only": {
+    "miscellaneous": [
+      {
+        "subheads": [],
+        "api": "true Internal only",
+        "name": "",
+        "heading": {
+          "level": 2,
+          "text": ""
+        },
+        "examples": [],
+        "category": "miscellaneous"
+      }
+    ]
+  },
+  "true Reserved": {
+    "miscellaneous": [
+      {
+        "subheads": [],
+        "api": "true Reserved",
+        "name": "",
+        "heading": {
+          "level": 2,
+          "text": ""
+        },
+        "examples": [],
+        "category": "miscellaneous"
+      }
+    ]
+  },
+  "true The server was unable to decode the incoming websocket message": {
+    "miscellaneous": [
+      {
+        "subheads": [],
+        "api": "true The server was unable to decode the incoming websocket message",
+        "name": "",
+        "heading": {
+          "level": 2,
+          "text": ""
+        },
+        "examples": [],
+        "category": "miscellaneous"
+      }
+    ]
+  },
+  "true The specified `messageType` was invalid or missing": {
+    "miscellaneous": [
+      {
+        "subheads": [],
+        "api": "true The specified `messageType` was invalid or missing",
+        "name": "",
+        "heading": {
+          "level": 2,
+          "text": ""
+        },
+        "examples": [],
+        "category": "miscellaneous"
+      }
+    ]
+  },
+  "true The client sent a websocket message without first sending `Identify` message": {
+    "miscellaneous": [
+      {
+        "subheads": [],
+        "api": "true The client sent a websocket message without first sending `Identify` message",
+        "name": "",
+        "heading": {
+          "level": 2,
+          "text": ""
+        },
+        "examples": [],
+        "category": "miscellaneous"
+      }
+    ]
+  },
+  "true The client sent an `Identify` message while already identified": {
+    "miscellaneous": [
+      {
+        "subheads": [],
+        "api": "true The client sent an `Identify` message while already identified",
+        "name": "",
+        "heading": {
+          "level": 2,
+          "text": ""
+        },
+        "examples": [],
+        "category": "miscellaneous"
+      }
+    ]
+  },
+  "true The authentication attempt (via `Identify`) failed": {
+    "miscellaneous": [
+      {
+        "subheads": [],
+        "api": "true The authentication attempt (via `Identify`) failed",
+        "name": "",
+        "heading": {
+          "level": 2,
+          "text": ""
+        },
+        "examples": [],
+        "category": "miscellaneous"
+      }
+    ]
+  },
+  "true There was an invalid parameter the client's `Identify` message": {
+    "miscellaneous": [
+      {
+        "subheads": [],
+        "api": "true There was an invalid parameter the client's `Identify` message",
+        "name": "",
+        "heading": {
+          "level": 2,
+          "text": ""
+        },
+        "examples": [],
+        "category": "miscellaneous"
+      }
+    ]
+  },
+  "true A `Request` or `RequestBatch` was missing its `requestId` or `requestType`": {
+    "miscellaneous": [
+      {
+        "subheads": [],
+        "api": "true A `Request` or `RequestBatch` was missing its `requestId` or `requestType`",
+        "name": "",
+        "heading": {
+          "level": 2,
+          "text": ""
+        },
+        "examples": [],
+        "category": "miscellaneous"
+      }
+    ]
+  },
+  "true The websocket session has been invalidated by the obs-websocket server.": {
+    "miscellaneous": [
+      {
+        "subheads": [],
+        "api": "true The websocket session has been invalidated by the obs-websocket server.",
+        "name": "",
+        "heading": {
+          "level": 2,
+          "text": ""
+        },
+        "examples": [],
+        "category": "miscellaneous"
+      }
+    ]
+  },
+  "true The server detected the usage of an old version of the obs-websocket protocol.": {
+    "miscellaneous": [
+      {
+        "subheads": [],
+        "api": "true The server detected the usage of an old version of the obs-websocket protocol.",
+        "name": "",
+        "heading": {
+          "level": 2,
+          "text": ""
+        },
+        "examples": [],
+        "category": "miscellaneous"
+      }
+    ]
+  },
+  "true The requested `Content-Type` specified in the request HTTP header is invalid.": {
+    "miscellaneous": [
+      {
+        "subheads": [],
+        "api": "true The requested `Content-Type` specified in the request HTTP header is invalid.",
+        "name": "",
+        "heading": {
+          "level": 2,
+          "text": ""
+        },
+        "examples": [],
+        "category": "miscellaneous"
+      }
+    ]
   }
 }
