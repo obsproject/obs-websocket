@@ -36,6 +36,7 @@ RequestResult RequestHandler::GetInputList(const Request& request)
 		json inputJson;
 		inputJson["inputName"] = obs_source_get_name(input);
 		inputJson["inputKind"] = inputKind;
+		inputJson["unversionedInputKind"] = obs_source_get_unversioned_id(input);
 
 		inputInfo->inputs.push_back(inputJson);
 		return true;
