@@ -49,6 +49,7 @@ class RequestHandler {
 		RequestResult SetCurrentPreviewScene(const Request&);
 		RequestResult SetSceneName(const Request&);
 		RequestResult CreateScene(const Request&);
+		RequestResult RemoveScene(const Request&);
 
 		static const std::map<std::string, RequestMethodHandler> _handlerMap;
 };

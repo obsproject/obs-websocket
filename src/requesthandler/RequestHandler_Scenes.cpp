@@ -144,3 +144,25 @@ RequestResult RequestHandler::CreateScene(const Request& request)
 
 	return RequestResult::Success();
 }
+
+RequestResult RequestHandler::RemoveScene(const Request& request)
+{
+	RequestStatus::RequestStatus statusCode;
+	std::string comment;
+	if (!request.ValidateString("sceneName", statusCode, comment)) {
+		return RequestResult::Error(statusCode, comment);
+	}
+
+	std::string sceneName = request.RequestData["sceneName"];
+
+	OBSSourceAutoRelease scene = obs_get_source_by_name(sceneName.c_str());
+	if (!scene)
+		return RequestResult::Error(RequestStatus::SceneNotFound);
+
+	if (obs_source_get_type(scene) != OBS_SOURCE_TYPE_SCENE)
+		return RequestResult::Error(RequestStatus::InvalidSourceType, "The specified source is not a scene.");
+
+	obs_source_remove(scene);
+
+	return RequestResult::Success();
+}
