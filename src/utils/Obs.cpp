@@ -231,6 +231,28 @@ std::vector<json> Utils::Obs::ListHelper::GetTransitionList()
 	return ret;
 }
 
+std::vector<std::string> Utils::Obs::ListHelper::GetInputKindList(bool unversioned)
+{
+	std::vector<std::string> ret;
+
+	size_t idx = 0;
+	const char *kind;
+	const char *unversioned_kind;
+	while (obs_enum_input_types2(idx++, &kind, &unversioned_kind)) {
+		uint32_t caps = obs_get_source_output_flags(kind);
+
+		if ((caps & OBS_SOURCE_CAP_DISABLED) != 0)
+			continue;
+
+		if (unversioned)
+			ret.push_back(unversioned_kind);
+		else
+			ret.push_back(kind);
+	}
+
+	return ret;
+}
+
 obs_hotkey_t *Utils::Obs::SearchHelper::GetHotkeyByName(std::string name)
 {
 	auto hotkeys = ListHelper::GetHotkeyList();
