@@ -129,13 +129,12 @@ RequestResult RequestHandler::SetStudioModeEnabled(const Request& request)
 	// Avoid queueing tasks if nothing will change
 	if (obs_frontend_preview_program_mode_active() != request.RequestData["studioModeEnabled"]) {
 		// (Bad) Create a boolean on the stack, then free it after the task is completed. Requires `wait` in obs_queue_task() to be true
-		bool *studioModeEnabled = new bool(request.RequestData["studioModeEnabled"]);
+		bool studioModeEnabled = request.RequestData["studioModeEnabled"];
 		// Queue the task inside of the UI thread to prevent race conditions
 		obs_queue_task(OBS_TASK_UI, [](void* param) {
-			bool studioModeEnabled = (bool*)param;
-			obs_frontend_set_preview_program_mode(&studioModeEnabled);
-		}, studioModeEnabled, true);
-		delete studioModeEnabled;
+			bool *studioModeEnabled = (bool*)param;
+			obs_frontend_set_preview_program_mode(*studioModeEnabled);
+		}, &studioModeEnabled, true);
 	}
 
 	return RequestResult::Success();
