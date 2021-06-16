@@ -56,6 +56,7 @@ class RequestHandler {
 		RequestResult GetInputKindList(const Request&);
 		RequestResult GetInputDefaultSettings(const Request&);
 		RequestResult GetInputSettings(const Request&);
+		RequestResult SetInputSettings(const Request&);
 
 		static const std::map<std::string, RequestMethodHandler> _handlerMap;
 };

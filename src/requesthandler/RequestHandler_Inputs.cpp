@@ -44,9 +44,8 @@ RequestResult RequestHandler::GetInputDefaultSettings(const Request& request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	if (!request.ValidateString("inputKind", statusCode, comment)) {
+	if (!request.ValidateString("inputKind", statusCode, comment))
 		return RequestResult::Error(statusCode, comment);
-	}
 
 	std::string inputKind = request.RequestData["inputKind"];
 
@@ -73,4 +72,43 @@ RequestResult RequestHandler::GetInputSettings(const Request& request)
 	responseData["inputSettings"] = Utils::Json::ObsDataToJson(inputSettings);
 	responseData["inputKind"] = obs_source_get_id(input);
 	return RequestResult::Success(responseData);
+}
+
+RequestResult RequestHandler::SetInputSettings(const Request& request)
+{
+	RequestStatus::RequestStatus statusCode;
+	std::string comment;
+	OBSSourceAutoRelease input = request.ValidateInput("inputName", statusCode, comment);
+	if (!input)
+		return RequestResult::Error(statusCode, comment);
+
+	if (!request.ValidateObject("inputSettings", statusCode, comment, true))
+		return RequestResult::Error(statusCode, comment);
+
+	bool overlay = true;
+	if (request.RequestData.contains("overlay") && !request.RequestData["overlay"].is_null()) {
+		if (!request.ValidateBoolean("overlay", statusCode, comment)) {
+			return RequestResult::Error(statusCode, comment);
+		}
+
+		overlay = request.RequestData["overlay"];
+	}
+
+	// Get the new settings and convert it to obs_data_t*
+	OBSDataAutoRelease newSettings = Utils::Json::JsonToObsData(request.RequestData["inputSettings"]);
+	if (!newSettings)
+		// This should never happen
+		return RequestResult::Error(RequestStatus::RequestProcessingFailed, "An internal data conversion operation failed. Please report this!");
+
+	if (overlay)
+		// Applies the new settings on top of the existing user settings
+		obs_source_update(input, newSettings);
+	else
+		// Clears all user settings (leaving defaults) then applies the new settings
+		obs_source_reset_settings(input, newSettings);
+
+	// Tells any open source properties windows to perform a UI refresh
+	obs_source_update_properties(input);
+
+	return RequestResult::Success();
 }
