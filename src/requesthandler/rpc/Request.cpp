@@ -150,6 +150,7 @@ obs_source_t *Request::ValidateInput(const std::string keyName, RequestStatus::R
 	}
 
 	if (obs_source_get_type(ret) != OBS_SOURCE_TYPE_INPUT) {
+		obs_source_release(ret);
 		statusCode = RequestStatus::InvalidSourceType;
 		comment = "The specified source is not an input.";
 		return nullptr;
