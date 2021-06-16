@@ -6,6 +6,7 @@ void EventHandler::HandleSceneCreated(obs_source_t *source)
 {
 	json eventData;
 	eventData["sceneName"] = obs_source_get_name(source);
+	eventData["isGroup"] = obs_source_is_group(source);
 	_webSocketServer->BroadcastEvent(EventSubscription::Scenes, "SceneCreated", eventData);
 }
 
@@ -13,6 +14,7 @@ void EventHandler::HandleSceneRemoved(obs_source_t *source)
 {
 	json eventData;
 	eventData["sceneName"] = obs_source_get_name(source);
+	eventData["isGroup"] = obs_source_is_group(source);
 	_webSocketServer->BroadcastEvent(EventSubscription::Scenes, "SceneRemoved", eventData);
 }
 
