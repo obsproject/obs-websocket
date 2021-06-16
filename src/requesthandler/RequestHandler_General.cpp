@@ -75,19 +75,15 @@ RequestResult RequestHandler::TriggerHotkeyByKeySequence(const Request& request)
 
 	RequestStatus::RequestStatus statusCode = RequestStatus::NoError;
 	std::string comment;
-	if (!request.ValidateString("keyId", statusCode, comment) && statusCode != RequestStatus::MissingRequestParameter) {
-		if (!request.IgnoreNonFatalRequestChecks)
-			return RequestResult::Error(statusCode, comment);
-	} else if (statusCode != RequestStatus::MissingRequestParameter) {
+	if (request.ValidateString("keyId", statusCode, comment)) {
 		std::string keyId = request.RequestData["keyId"];
 		combo.key = obs_key_from_name(keyId.c_str());
+	} else if (statusCode != RequestStatus::MissingRequestParameter) {
+		return RequestResult::Error(statusCode, comment);
 	}
 
 	statusCode = RequestStatus::NoError;
-	if (!request.ValidateObject("keyModifiers", statusCode, comment)) {
-		if (statusCode != RequestStatus::MissingRequestParameter && statusCode != RequestStatus::RequestParameterEmpty)
-			return RequestResult::Error(statusCode, comment);
-	} else {
+	if (request.ValidateObject("keyModifiers", statusCode, comment, true)) {
 		uint32_t keyModifiers = 0;
 		if (request.RequestData["keyModifiers"].contains("shift") && request.RequestData["keyModifiers"]["shift"].is_boolean() && request.RequestData["keyModifiers"]["shift"].get<bool>())
 			keyModifiers |= INTERACT_SHIFT_KEY;
@@ -98,6 +94,8 @@ RequestResult RequestHandler::TriggerHotkeyByKeySequence(const Request& request)
 		if (request.RequestData["keyModifiers"].contains("command") && request.RequestData["keyModifiers"]["command"].is_boolean() && request.RequestData["keyModifiers"]["command"].get<bool>())
 			keyModifiers |= INTERACT_COMMAND_KEY;
 		combo.modifiers = keyModifiers;
+	} else if (statusCode != RequestStatus::MissingRequestParameter) {
+		return RequestResult::Error(statusCode, comment);
 	}
 
 	if (!combo.modifiers && (combo.key == OBS_KEY_NONE || combo.key >= OBS_KEY_LAST_VALUE))
