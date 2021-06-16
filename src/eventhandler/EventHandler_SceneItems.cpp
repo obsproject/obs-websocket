@@ -22,6 +22,7 @@ void EventHandler::HandleSceneItemCreated(void *param, calldata_t *data)
 	eventHandler->_webSocketServer->BroadcastEvent(EventSubscription::SceneItems, "SceneItemCreated", eventData);
 }
 
+// Will not be emitted if an item is removed due to the parent scene being removed.
 void EventHandler::HandleSceneItemRemoved(void *param, calldata_t *data)
 {
 	auto eventHandler = reinterpret_cast<EventHandler*>(param);
