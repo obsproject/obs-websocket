@@ -11,6 +11,7 @@ void EventHandler::HandleInputCreated(obs_source_t *source)
 	json eventData;
 	eventData["inputName"] = obs_source_get_name(source);
 	eventData["inputKind"] = inputKind;
+	eventData["unversionedInputKind"] = obs_source_get_unversioned_id(source);
 	eventData["inputSettings"] = Utils::Json::ObsDataToJson(inputSettings);
 	eventData["defaultInputSettings"] = Utils::Json::ObsDataToJson(defaultInputSettings, true);
 	_webSocketServer->BroadcastEvent(EventSubscription::Inputs, "InputCreated", eventData);
