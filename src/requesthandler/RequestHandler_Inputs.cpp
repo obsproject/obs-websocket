@@ -39,3 +39,22 @@ RequestResult RequestHandler::GetInputKindList(const Request& request)
 	responseData["inputKinds"] = Utils::Obs::ListHelper::GetInputKindList(unversioned);
 	return RequestResult::Success(responseData);
 }
+
+RequestResult RequestHandler::GetInputDefaultSettings(const Request& request)
+{
+	RequestStatus::RequestStatus statusCode;
+	std::string comment;
+	if (!request.ValidateString("inputKind", statusCode, comment)) {
+		return RequestResult::Error(statusCode, comment);
+	}
+
+	std::string inputKind = request.RequestData["inputKind"];
+
+	OBSDataAutoRelease defaultSettings = obs_get_source_defaults(inputKind.c_str());
+	if (!defaultSettings)
+		return RequestResult::Error(RequestStatus::InvalidInputKind);
+
+	json responseData;
+	responseData["defaultInputSettings"] = Utils::Json::ObsDataToJson(defaultSettings, true);
+	return RequestResult::Success(responseData);
+}
