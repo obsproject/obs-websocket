@@ -139,3 +139,26 @@ const bool Request::ValidateArray(const std::string keyName, RequestStatus::Requ
 
 	return true;
 }
+
+obs_source_t *Request::ValidateInput(const std::string keyName, RequestStatus::RequestStatus &statusCode, std::string &comment) const
+{
+	if (!ValidateString(keyName, statusCode, comment))
+		return nullptr;
+
+	std::string inputName = RequestData[keyName];
+
+	obs_source_t *ret = obs_get_source_by_name(inputName.c_str());
+	if (!ret) {
+		statusCode = RequestStatus::InputNotFound;
+		comment = std::string("No input was found by the name of `") + inputName + "`.";
+		return nullptr;
+	}
+
+	if (obs_source_get_type(ret) != OBS_SOURCE_TYPE_INPUT) {
+		statusCode = RequestStatus::InvalidSourceType;
+		comment = "The specified source is not an input.";
+		return nullptr;
+	}
+
+	return ret;
+}
