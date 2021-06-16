@@ -24,6 +24,30 @@ const std::map<std::string, RequestMethodHandler> RequestHandler::_handlerMap
 
 	// Sources
 	{"GetSourceActive", &RequestHandler::GetSourceActive},
+	{"GetSourceScreenshot", &RequestHandler::GetSourceScreenshot},
+	{"SaveSourceScreenshot", &RequestHandler::SaveSourceScreenshot},
+
+	// Scenes
+	{"GetSceneList", &RequestHandler::GetSceneList},
+	{"GetCurrentProgramScene", &RequestHandler::GetCurrentProgramScene},
+	{"SetCurrentProgramScene", &RequestHandler::SetCurrentProgramScene},
+	{"GetCurrentPreviewScene", &RequestHandler::GetCurrentPreviewScene},
+	{"SetCurrentPreviewScene", &RequestHandler::SetCurrentPreviewScene},
+	{"SetSceneName", &RequestHandler::SetSceneName},
+	{"CreateScene", &RequestHandler::CreateScene},
+	{"RemoveScene", &RequestHandler::RemoveScene},
+
+	// Inputs
+	{"GetInputList", &RequestHandler::GetInputList},
+	{"GetInputKindList", &RequestHandler::GetInputKindList},
+	{"GetInputDefaultSettings", &RequestHandler::GetInputDefaultSettings},
+	{"GetInputSettings", &RequestHandler::GetInputSettings},
+	{"SetInputSettings", &RequestHandler::SetInputSettings},
+	{"GetInputMute", &RequestHandler::GetInputMute},
+	{"SetInputMute", &RequestHandler::SetInputMute},
+	{"ToggleInputMute", &RequestHandler::ToggleInputMute},
+	{"GetInputVolume", &RequestHandler::GetInputVolume},
+	{"SetInputVolume", &RequestHandler::SetInputVolume},
 };
 
 RequestResult RequestHandler::ProcessRequest(const Request& request)

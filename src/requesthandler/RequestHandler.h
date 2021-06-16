@@ -38,6 +38,30 @@ class RequestHandler {
 
 		// Sources
 		RequestResult GetSourceActive(const Request&);
+		RequestResult GetSourceScreenshot(const Request&);
+		RequestResult SaveSourceScreenshot(const Request&);
+
+		// Scenes
+		RequestResult GetSceneList(const Request&);
+		RequestResult GetCurrentProgramScene(const Request&);
+		RequestResult SetCurrentProgramScene(const Request&);
+		RequestResult GetCurrentPreviewScene(const Request&);
+		RequestResult SetCurrentPreviewScene(const Request&);
+		RequestResult SetSceneName(const Request&);
+		RequestResult CreateScene(const Request&);
+		RequestResult RemoveScene(const Request&);
+
+		// Inputs
+		RequestResult GetInputList(const Request&);
+		RequestResult GetInputKindList(const Request&);
+		RequestResult GetInputDefaultSettings(const Request&);
+		RequestResult GetInputSettings(const Request&);
+		RequestResult SetInputSettings(const Request&);
+		RequestResult GetInputMute(const Request&);
+		RequestResult SetInputMute(const Request&);
+		RequestResult ToggleInputMute(const Request&);
+		RequestResult GetInputVolume(const Request&);
+		RequestResult SetInputVolume(const Request&);
 
 		static const std::map<std::string, RequestMethodHandler> _handlerMap;
 };

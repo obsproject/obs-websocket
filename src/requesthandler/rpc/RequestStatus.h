@@ -29,6 +29,8 @@ namespace RequestStatus {
 		RequestParameterOutOfRange = 402,
 		// A request parameter (string or array) is empty and cannot be
 		RequestParameterEmpty = 403,
+		// There are too many request parameters (eg. a request takes two optionals, where only one is allowed at a time)
+		TooManyRequestParameters = 404,
 
 		// An output is running and cannot be in order to perform the request (generic)
 		OutputRunning = 500,

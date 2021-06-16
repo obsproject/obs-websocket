@@ -4,6 +4,7 @@
 
 json GetDefaultJsonObject(json requestData)
 {
+	// Always provide an object to prevent exceptions while running checks in requests
 	if (!requestData.is_object())
 		return json::object();
 	else
@@ -26,7 +27,7 @@ const bool Request::ValidateBasic(const std::string keyName, RequestStatus::Requ
 		return false;
 	}
 
-	if (!RequestData.contains(keyName)) {
+	if (!RequestData.contains(keyName) || RequestData[keyName].is_null()) {
 		statusCode = RequestStatus::MissingRequestParameter;
 		comment = std::string("Your request is missing the `") + keyName + "` parameter.";
 		return false;
@@ -37,9 +38,8 @@ const bool Request::ValidateBasic(const std::string keyName, RequestStatus::Requ
 
 const bool Request::ValidateNumber(const std::string keyName, RequestStatus::RequestStatus &statusCode, std::string &comment, const double minValue, const double maxValue) const
 {
-	if (!ValidateBasic(keyName, statusCode, comment)) {
+	if (!ValidateBasic(keyName, statusCode, comment))
 		return false;
-	}
 
 	if (!RequestData[keyName].is_number()) {
 		statusCode = RequestStatus::InvalidRequestParameterDataType;
@@ -64,9 +64,8 @@ const bool Request::ValidateNumber(const std::string keyName, RequestStatus::Req
 
 const bool Request::ValidateString(const std::string keyName, RequestStatus::RequestStatus &statusCode, std::string &comment, const bool allowEmpty) const
 {
-	if (!ValidateBasic(keyName, statusCode, comment)) {
+	if (!ValidateBasic(keyName, statusCode, comment))
 		return false;
-	}
 
 	if (!RequestData[keyName].is_string()) {
 		statusCode = RequestStatus::InvalidRequestParameterDataType;
@@ -85,9 +84,8 @@ const bool Request::ValidateString(const std::string keyName, RequestStatus::Req
 
 const bool Request::ValidateBoolean(const std::string keyName, RequestStatus::RequestStatus &statusCode, std::string &comment) const
 {
-	if (!ValidateBasic(keyName, statusCode, comment)) {
+	if (!ValidateBasic(keyName, statusCode, comment))
 		return false;
-	}
 
 	if (!RequestData[keyName].is_boolean()) {
 		statusCode = RequestStatus::InvalidRequestParameterDataType;
@@ -100,9 +98,8 @@ const bool Request::ValidateBoolean(const std::string keyName, RequestStatus::Re
 
 const bool Request::ValidateObject(const std::string keyName, RequestStatus::RequestStatus &statusCode, std::string &comment, const bool allowEmpty) const
 {
-	if (!ValidateBasic(keyName, statusCode, comment)) {
+	if (!ValidateBasic(keyName, statusCode, comment))
 		return false;
-	}
 
 	if (!RequestData[keyName].is_object()) {
 		statusCode = RequestStatus::InvalidRequestParameterDataType;
@@ -121,9 +118,8 @@ const bool Request::ValidateObject(const std::string keyName, RequestStatus::Req
 
 const bool Request::ValidateArray(const std::string keyName, RequestStatus::RequestStatus &statusCode, std::string &comment, const bool allowEmpty) const
 {
-	if (!ValidateBasic(keyName, statusCode, comment)) {
+	if (!ValidateBasic(keyName, statusCode, comment))
 		return false;
-	}
 
 	if (!RequestData[keyName].is_array()) {
 		statusCode = RequestStatus::InvalidRequestParameterDataType;
@@ -138,4 +134,28 @@ const bool Request::ValidateArray(const std::string keyName, RequestStatus::Requ
 	}
 
 	return true;
+}
+
+obs_source_t *Request::ValidateInput(const std::string keyName, RequestStatus::RequestStatus &statusCode, std::string &comment) const
+{
+	if (!ValidateString(keyName, statusCode, comment))
+		return nullptr;
+
+	std::string inputName = RequestData[keyName];
+
+	obs_source_t *ret = obs_get_source_by_name(inputName.c_str());
+	if (!ret) {
+		statusCode = RequestStatus::InputNotFound;
+		comment = std::string("No input was found by the name of `") + inputName + "`.";
+		return nullptr;
+	}
+
+	if (obs_source_get_type(ret) != OBS_SOURCE_TYPE_INPUT) {
+		obs_source_release(ret);
+		statusCode = RequestStatus::InvalidSourceType;
+		comment = "The specified source is not an input.";
+		return nullptr;
+	}
+
+	return ret;
 }

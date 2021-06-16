@@ -21,6 +21,8 @@ struct Request
 	const bool ValidateObject(const std::string keyName, RequestStatus::RequestStatus &statusCode, std::string &comment, const bool allowEmpty = false) const;
 	const bool ValidateArray(const std::string keyName, RequestStatus::RequestStatus &statusCode, std::string &comment, const bool allowEmpty = false) const;
 
+	obs_source_t *ValidateInput(const std::string keyName, RequestStatus::RequestStatus &statusCode, std::string &comment) const;
+
 	const uint8_t RpcVersion;
 	const bool IgnoreNonFatalRequestChecks;
 	const std::string RequestType;

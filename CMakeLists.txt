@@ -73,49 +73,51 @@ set(obs-websocket_SOURCES
 	src/obs-websocket.cpp
 	src/Config.cpp
 	src/WebSocketServer.cpp
-    src/WebSocketProtocol.cpp
-    src/WebSocketSession.cpp
-    src/eventhandler/EventHandler.cpp
-    src/eventhandler/EventHandler_General.cpp
-    src/eventhandler/EventHandler_Config.cpp
-    src/eventhandler/EventHandler_Scenes.cpp
-    src/eventhandler/EventHandler_Inputs.cpp
-    src/eventhandler/EventHandler_Transitions.cpp
-    src/eventhandler/EventHandler_Filters.cpp
-    src/eventhandler/EventHandler_Outputs.cpp
-    src/eventhandler/EventHandler_SceneItems.cpp
-    src/eventhandler/EventHandler_MediaInputs.cpp
+	src/WebSocketProtocol.cpp
+	src/WebSocketSession.cpp
+	src/eventhandler/EventHandler.cpp
+	src/eventhandler/EventHandler_General.cpp
+	src/eventhandler/EventHandler_Config.cpp
+	src/eventhandler/EventHandler_Scenes.cpp
+	src/eventhandler/EventHandler_Inputs.cpp
+	src/eventhandler/EventHandler_Transitions.cpp
+	src/eventhandler/EventHandler_Filters.cpp
+	src/eventhandler/EventHandler_Outputs.cpp
+	src/eventhandler/EventHandler_SceneItems.cpp
+	src/eventhandler/EventHandler_MediaInputs.cpp
 	src/requesthandler/RequestHandler.cpp
-    src/requesthandler/RequestHandler_General.cpp
-    src/requesthandler/RequestHandler_Config.cpp
-    src/requesthandler/RequestHandler_Sources.cpp
+	src/requesthandler/RequestHandler_General.cpp
+	src/requesthandler/RequestHandler_Config.cpp
+	src/requesthandler/RequestHandler_Sources.cpp
+	src/requesthandler/RequestHandler_Scenes.cpp
+    src/requesthandler/RequestHandler_Inputs.cpp
 	src/requesthandler/rpc/Request.cpp
-    src/requesthandler/rpc/RequestResult.cpp
+	src/requesthandler/rpc/RequestResult.cpp
 	src/forms/SettingsDialog.cpp
-    src/forms/ConnectInfo.cpp
-    src/forms/resources.qrc
+	src/forms/ConnectInfo.cpp
+	src/forms/resources.qrc
 	src/utils/Json.cpp
-    src/utils/Crypto.cpp
-    src/utils/Platform.cpp
-    src/utils/Obs.cpp
-    deps/qr/cpp/QrCode.cpp)
+	src/utils/Crypto.cpp
+	src/utils/Platform.cpp
+	src/utils/Obs.cpp
+	deps/qr/cpp/QrCode.cpp)
 
 set(obs-websocket_HEADERS
 	src/obs-websocket.h
 	src/Config.h
 	src/WebSocketServer.h
-    src/WebSocketProtocol.h
-    src/WebSocketSession.h
-    src/eventhandler/EventHandler.h
-    src/eventhandler/types/EventSubscription.h
+	src/WebSocketProtocol.h
+	src/WebSocketSession.h
+	src/eventhandler/EventHandler.h
+	src/eventhandler/types/EventSubscription.h
 	src/requesthandler/RequestHandler.h
 	src/requesthandler/rpc/Request.h
-    src/requesthandler/rpc/RequestResult.h
-    src/requesthandler/rpc/RequestStatus.h
+	src/requesthandler/rpc/RequestResult.h
+	src/requesthandler/rpc/RequestStatus.h
 	src/forms/SettingsDialog.h
-    src/forms/ConnectInfo.h
+	src/forms/ConnectInfo.h
 	src/utils/Utils.h
-    deps/qr/cpp/QrCode.hpp)
+	deps/qr/cpp/QrCode.hpp)
 
 
 # Platform-independent build settings
@@ -127,9 +129,9 @@ include_directories(
 	"${LIBOBS_INCLUDE_DIR}/../UI/obs-frontend-api"
 	${Qt5Core_INCLUDES}
 	${Qt5Widgets_INCLUDES}
-    ${Qt5Svg_INCLUDES}
+	${Qt5Svg_INCLUDES}
 	${Qt5Concurrent_INCLUDES}
-    ${Qt5Network_INCLUDES}
+	${Qt5Network_INCLUDES}
 	"${CMAKE_SOURCE_DIR}/deps/asio/asio/include"
 	"${CMAKE_SOURCE_DIR}/deps/websocketpp")
 
@@ -137,9 +139,9 @@ target_link_libraries(obs-websocket
 	libobs
 	Qt5::Core
 	Qt5::Widgets
-    Qt5::Svg
+	Qt5::Svg
 	Qt5::Concurrent
-    Qt5::Network
+	Qt5::Network
 	nlohmann_json::nlohmann_json)
 
 

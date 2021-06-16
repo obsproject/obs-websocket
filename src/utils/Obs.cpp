@@ -162,6 +162,7 @@ std::vector<json> Utils::Obs::ListHelper::GetSceneList()
 		json sceneJson;
 		sceneJson["sceneName"] = obs_source_get_name(scene);
 		sceneJson["sceneIndex"] = sceneList.sources.num - (i + 1);
+		sceneJson["isGroup"] = obs_source_is_group(scene);
 		ret.push_back(sceneJson);
 	}
 
@@ -226,6 +227,64 @@ std::vector<json> Utils::Obs::ListHelper::GetTransitionList()
 	}
 
 	obs_frontend_source_list_free(&transitionList);
+
+	return ret;
+}
+
+struct EnumInputInfo {
+	std::string inputKind;
+	std::vector<json> inputs;
+};
+
+std::vector<json> Utils::Obs::ListHelper::GetInputList(std::string inputKind)
+{
+	EnumInputInfo inputInfo;
+	inputInfo.inputKind = inputKind;
+
+	auto inputEnumProc = [](void *param, obs_source_t *input) {
+		// Sanity check in case the API changes
+		if (obs_source_get_type(input) != OBS_SOURCE_TYPE_INPUT)
+			return true;
+
+		auto inputInfo = reinterpret_cast<EnumInputInfo*>(param);
+
+		std::string inputKind = obs_source_get_id(input);
+
+		if (!inputInfo->inputKind.empty() && inputInfo->inputKind != inputKind)
+			return true;
+
+		json inputJson;
+		inputJson["inputName"] = obs_source_get_name(input);
+		inputJson["inputKind"] = inputKind;
+		inputJson["unversionedInputKind"] = obs_source_get_unversioned_id(input);
+
+		inputInfo->inputs.push_back(inputJson);
+		return true;
+	};
+	// Actually enumerates only public inputs, despite the name
+	obs_enum_sources(inputEnumProc, &inputInfo);
+
+	return inputInfo.inputs;
+}
+
+std::vector<std::string> Utils::Obs::ListHelper::GetInputKindList(bool unversioned)
+{
+	std::vector<std::string> ret;
+
+	size_t idx = 0;
+	const char *kind;
+	const char *unversioned_kind;
+	while (obs_enum_input_types2(idx++, &kind, &unversioned_kind)) {
+		uint32_t caps = obs_get_source_output_flags(kind);
+
+		if ((caps & OBS_SOURCE_CAP_DISABLED) != 0)
+			continue;
+
+		if (unversioned)
+			ret.push_back(unversioned_kind);
+		else
+			ret.push_back(kind);
+	}
 
 	return ret;
 }

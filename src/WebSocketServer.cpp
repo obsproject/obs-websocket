@@ -298,6 +298,9 @@ void WebSocketServer::onOpen(websocketpp::connection_hdl hdl)
 	// Emit signals
 	emit ClientConnected(state);
 
+	// Log connection
+	blog(LOG_INFO, "[WebSocketServer::onOpen] New WebSocket client has connected from %s", session->RemoteAddress().c_str());
+
 	// Send object to client
 	websocketpp::lib::error_code errorCode;
 	auto sessionEncoding = session->Encoding();
@@ -337,6 +340,9 @@ void WebSocketServer::onClose(websocketpp::connection_hdl hdl)
 
 	// Emit signals
 	emit ClientDisconnected(state, conn->get_local_close_code());
+
+	// Log disconnection
+	blog(LOG_INFO, "[WebSocketServer::onClose] WebSocket client %s has disconnected", remoteAddress.c_str());
 
 	// Get config for tray notification
 	auto conf = GetConfig();
