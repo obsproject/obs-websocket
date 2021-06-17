@@ -1,4 +1,34 @@
 {
+  "true For internal use to signify an unknown parameter check": {
+    "miscellaneous": [
+      {
+        "subheads": [],
+        "api": "true For internal use to signify an unknown parameter check",
+        "name": "",
+        "heading": {
+          "level": 2,
+          "text": ""
+        },
+        "examples": [],
+        "category": "miscellaneous"
+      }
+    ]
+  },
+  "true For internal use to signify a no error parameter check": {
+    "miscellaneous": [
+      {
+        "subheads": [],
+        "api": "true For internal use to signify a no error parameter check",
+        "name": "",
+        "heading": {
+          "level": 2,
+          "text": ""
+        },
+        "examples": [],
+        "category": "miscellaneous"
+      }
+    ]
+  },
   "true For internal use to signify a successful parameter check": {
     "miscellaneous": [
       {

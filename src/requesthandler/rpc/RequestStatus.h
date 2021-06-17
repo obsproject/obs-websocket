@@ -2,14 +2,20 @@
 
 namespace RequestStatus {
 	enum RequestStatus {
+		/**
+		* @api
+		* For internal use to signify an unknown parameter check 
+		*/
 		Unknown = 0,
-
+		/**
+		* @api
+		* For internal use to signify a no error parameter check 
+		*/
+		NoError = 10,
 		/**
 		* @api
 		* For internal use to signify a successful parameter check 
 		*/
-		NoError = 10,
-
 		Success = 100,
 
 		/**
