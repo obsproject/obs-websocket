@@ -31,7 +31,7 @@ RpcResponse WSRequestHandler::GetSceneItemList(const RpcRequest& request) {
 
 	OBSScene scene = obs_scene_from_source(sceneSource);
 	if (!scene) {
-		return request.failed("requested scene is invalid or doesnt exist");
+		return request.failed("requested scene is invalid or does not exist");
 	}
 
 	OBSDataArrayAutoRelease sceneItemArray = obs_data_array_create();
@@ -670,7 +670,7 @@ RpcResponse WSRequestHandler::AddSceneItem(const RpcRequest& request) {
 	OBSSourceAutoRelease sceneSource = obs_get_source_by_name(sceneName);
 	OBSScene scene = obs_scene_from_source(sceneSource);
 	if (!scene) {
-		return request.failed("requested scene is invalid or doesnt exist");
+		return request.failed("requested scene is invalid or does not exist");
 	}
 
 	const char* sourceName = obs_data_get_string(request.parameters(), "sourceName");

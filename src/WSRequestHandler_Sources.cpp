@@ -55,7 +55,7 @@ RpcResponse WSRequestHandler::CreateSource(const RpcRequest& request)
 	OBSSourceAutoRelease sceneSource = obs_get_source_by_name(sceneName);
 	OBSScene scene = obs_scene_from_source(sceneSource);
 	if (!scene) {
-		return request.failed("requested scene is invalid or doesnt exist");
+		return request.failed("requested scene is invalid or does not exist");
 	}
 
 	OBSDataAutoRelease sourceSettings = nullptr;
