@@ -62,6 +62,8 @@ class RequestHandler {
 		RequestResult ToggleInputMute(const Request&);
 		RequestResult GetInputVolume(const Request&);
 		RequestResult SetInputVolume(const Request&);
+		RequestResult SetInputName(const Request&);
+		RequestResult CreateInput(const Request&);
 
 		static const std::map<std::string, RequestMethodHandler> _handlerMap;
 };

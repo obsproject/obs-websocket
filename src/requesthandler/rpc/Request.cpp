@@ -136,6 +136,38 @@ const bool Request::ValidateArray(const std::string keyName, RequestStatus::Requ
 	return true;
 }
 
+obs_source_t *Request::ValidateScene(const std::string keyName, RequestStatus::RequestStatus &statusCode, std::string &comment) const
+{
+	if (!ValidateString(keyName, statusCode, comment))
+		return nullptr;
+
+	std::string sceneName = RequestData[keyName];
+
+	obs_source_t *ret = obs_get_source_by_name(sceneName.c_str());
+	if (!ret) {
+		statusCode = RequestStatus::SceneNotFound;
+		comment = std::string("No scene was found by the name of `") + sceneName + "`.";
+		return nullptr;
+	}
+
+	if (obs_source_get_type(ret) != OBS_SOURCE_TYPE_SCENE) {
+		obs_source_release(ret);
+		statusCode = RequestStatus::InvalidSourceType;
+		comment = "The specified source is not a scene.";
+		return nullptr;
+	}
+
+	OBSScene scene = obs_scene_from_source(ret);
+	if (obs_scene_is_group(scene)) {
+		obs_source_release(ret);
+		statusCode = RequestStatus::InvalidSourceType;
+		comment = "The specified source is not a scene.";
+		return nullptr;
+	}
+
+	return ret;
+}
+
 obs_source_t *Request::ValidateInput(const std::string keyName, RequestStatus::RequestStatus &statusCode, std::string &comment) const
 {
 	if (!ValidateString(keyName, statusCode, comment))
