@@ -55,5 +55,10 @@ namespace Utils {
 		namespace SearchHelper {
 			obs_hotkey_t *GetHotkeyByName(std::string name);
 		}
+
+		namespace ActionHelper {
+			obs_sceneitem_t *CreateSceneItem(obs_source_t *input, obs_scene_t *scene, bool sceneItemEnabled = true);
+			obs_sceneitem_t *CreateInput(std::string inputName, std::string inputKind, obs_data_t *inputSettings, obs_scene_t *scene, bool sceneItemEnabled = true);
+		}
 	}
 }

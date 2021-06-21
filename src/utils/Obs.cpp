@@ -3,6 +3,7 @@
 
 #include "Utils.h"
 
+#include "../obs-websocket.h"
 #include "../plugin-macros.generated.h"
 
 #define CASE(x) case x: return #x;
@@ -299,4 +300,60 @@ obs_hotkey_t *Utils::Obs::SearchHelper::GetHotkeyByName(std::string name)
 	}
 
 	return nullptr;
+}
+
+struct CreateSceneItemData {
+	obs_source_t *input;
+	bool sceneItemEnabled;
+	obs_sceneitem_t *sceneItem;
+};
+
+void CreateSceneItemHelper(void *_data, obs_scene_t *scene)
+{
+	auto *data = reinterpret_cast<CreateSceneItemData*>(_data);
+	data->sceneItem = obs_scene_add(scene, data->input);
+	obs_sceneitem_set_visible(data->sceneItem, data->sceneItemEnabled);
+}
+
+obs_sceneitem_t *Utils::Obs::ActionHelper::CreateSceneItem(obs_source_t *input, obs_scene_t *scene, bool sceneItemEnabled)
+{
+	// Sanity check for valid scene
+	if (!(input && scene))
+		return nullptr;
+
+	// Create data struct and populate for scene item creation
+	CreateSceneItemData data;
+	data.input = input;
+	data.sceneItemEnabled = sceneItemEnabled;
+
+	// Enter graphics context and create the scene item
+	obs_enter_graphics();
+	obs_scene_atomic_update(scene, CreateSceneItemHelper, &data);
+	obs_leave_graphics();
+
+	return data.sceneItem;
+}
+
+obs_sceneitem_t *Utils::Obs::ActionHelper::CreateInput(std::string inputName, std::string inputKind, obs_data_t *inputSettings, obs_scene_t *scene, bool sceneItemEnabled)
+{
+	// Create the input
+	OBSSourceAutoRelease input = obs_source_create(inputKind.c_str(), inputName.c_str(), inputSettings, nullptr);
+
+	// Check that everything was created properly
+	if (!input)
+		return nullptr;
+
+	// Apparently not all default input properties actually get applied on creation (smh)
+	uint32_t flags = obs_source_get_output_flags(input);
+	if ((flags & OBS_SOURCE_MONITOR_BY_DEFAULT) != 0)
+		obs_source_set_monitoring_type(input, OBS_MONITORING_TYPE_MONITOR_ONLY);
+
+	// Create a scene item for the input
+	auto ret = CreateSceneItem(input, scene, sceneItemEnabled);
+
+	// If creation failed, remove the input
+	if (!ret)
+		obs_source_remove(input);
+
+	return ret;
 }
