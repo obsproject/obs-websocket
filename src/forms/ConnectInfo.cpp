@@ -1,7 +1,6 @@
-#include <obs-module.h>
-#include <obs-frontend-api.h>
 #include <QClipboard>
 #include <QPainter>
+#include <obs-module.h>
 #include "../../deps/qr/cpp/QrCode.hpp"
 
 #include "ConnectInfo.h"
@@ -50,9 +49,7 @@ void ConnectInfo::showEvent(QShowEvent *event)
 		serverPassword = conf->ServerPassword;
 	} else {
 		ui->copyServerPasswordButton->setEnabled(false);
-		obs_frontend_push_ui_translation(obs_module_get_string);
-		serverPassword = QObject::tr("OBSWebSocket.ConnectInfo.ServerPasswordPlaceholderText");
-		obs_frontend_pop_ui_translation();
+		serverPassword = obs_module_text("OBSWebSocket.ConnectInfo.ServerPasswordPlaceholderText");
 	}
 	ui->serverPasswordLineEdit->setText(serverPassword);
 

@@ -2,7 +2,6 @@
 #include <thread>
 #include <QtConcurrent>
 #include <QDateTime>
-
 #include <obs-module.h>
 #include <obs-frontend-api.h>
 
@@ -353,10 +352,8 @@ void WebSocketServer::onClose(websocketpp::connection_hdl hdl)
 
 	// If previously identified, not going away, and notifications enabled, send a tray notification
 	if (isIdentified && (conn->get_local_close_code() != websocketpp::close::status::going_away) && conf->AlertsEnabled) {
-		obs_frontend_push_ui_translation(obs_module_get_string);
-		QString title = QObject::tr("OBSWebSocket.TrayNotification.Disconnected.Title");
-		QString body = QObject::tr("OBSWebSocket.TrayNotification.Disconnected.Body").arg(QString::fromStdString(remoteAddress));
-		obs_frontend_pop_ui_translation();
+		QString title = obs_module_text("OBSWebSocket.TrayNotification.Disconnected.Title");
+		QString body = QString(obs_module_text("OBSWebSocket.TrayNotification.Disconnected.Body")).arg(QString::fromStdString(remoteAddress));
 		Utils::Platform::SendTrayNotification(QSystemTrayIcon::Information, title, body);
 	}
 }

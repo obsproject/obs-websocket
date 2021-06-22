@@ -66,6 +66,7 @@ WebSocketProtocol::ProcessResult WebSocketProtocol::ProcessMessage(SessionPtr se
 
 	if (!incomingMessage.contains("messageType")) {
 		if (incomingMessage.contains("request-type")) {
+			blog(LOG_WARNING, "Client %s appears to be running a pre-5.0.0 protocol.", session->RemoteAddress().c_str())
 			ret.closeCode = WebSocketServer::WebSocketCloseCode::UnsupportedProtocolVersion;
 			ret.closeReason = "You appear to be attempting to connect with the pre-5.0.0 plugin protocol. Check to make sure your client is updated.";
 			return ret;
@@ -191,10 +192,8 @@ WebSocketProtocol::ProcessResult WebSocketProtocol::ProcessMessage(SessionPtr se
 			if (!Utils::Crypto::CheckAuthenticationString(session->Secret(), session->Challenge(), incomingMessage["authentication"])) {
 				auto conf = GetConfig();
 				if (conf && conf->AlertsEnabled) {
-					obs_frontend_push_ui_translation(obs_module_get_string);
-					QString title = QObject::tr("OBSWebSocket.TrayNotification.AuthenticationFailed.Title");
-					QString body = QObject::tr("OBSWebSocket.TrayNotification.AuthenticationFailed.Body").arg(QString::fromStdString(session->RemoteAddress()));
-					obs_frontend_pop_ui_translation();
+					QString title = obs_module_text("OBSWebSocket.TrayNotification.AuthenticationFailed.Title");
+					QString body = QString(obs_module_text("OBSWebSocket.TrayNotification.AuthenticationFailed.Body")).arg(QString::fromStdString(session->RemoteAddress()));
 					Utils::Platform::SendTrayNotification(QSystemTrayIcon::Warning, title, body);
 				}
 				ret.closeCode = WebSocketServer::WebSocketCloseCode::AuthenticationFailed;
@@ -225,10 +224,8 @@ WebSocketProtocol::ProcessResult WebSocketProtocol::ProcessMessage(SessionPtr se
 
 		auto conf = GetConfig();
 		if (conf && conf->AlertsEnabled) {
-			obs_frontend_push_ui_translation(obs_module_get_string);
-			QString title = QObject::tr("OBSWebSocket.TrayNotification.Identified.Title");
-			QString body = QObject::tr("OBSWebSocket.TrayNotification.Identified.Body").arg(QString::fromStdString(session->RemoteAddress()));
-			obs_frontend_pop_ui_translation();
+			QString title = obs_module_text("OBSWebSocket.TrayNotification.Identified.Title");
+			QString body = QString(obs_module_text("OBSWebSocket.TrayNotification.Identified.Body")).arg(QString::fromStdString(session->RemoteAddress()));
 			Utils::Platform::SendTrayNotification(QSystemTrayIcon::Information, title, body);
 		}
 

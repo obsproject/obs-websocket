@@ -1,8 +1,8 @@
-#include <obs-module.h>
-#include <obs-frontend-api.h>
 #include <QtWidgets/QMessageBox>
 #include <QDateTime>
 #include <QTime>
+#include <obs-module.h>
+#include <obs.hpp>
 
 #include "SettingsDialog.h"
 #include "../obs-websocket.h"
@@ -190,9 +190,7 @@ void SettingsDialog::FillSessionTable()
 	QPixmap crossIconPixmap = crossIcon.pixmap(QSize(25, 25));
 
 	// Todo: Make a util for translations so that we don't need to import a bunch of obs libraries in order to use them.
-	obs_frontend_push_ui_translation(obs_module_get_string);
-	QString kickButtonText = QObject::tr("OBSWebSocket.SessionTable.KickButtonText");
-	obs_frontend_pop_ui_translation();
+	QString kickButtonText = obs_module_text("OBSWebSocket.SessionTable.KickButtonText");
 
 	ui->websocketSessionTable->setRowCount(rowCount);
 	size_t i = 0;

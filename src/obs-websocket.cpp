@@ -1,11 +1,10 @@
-#include <obs-module.h>
-#include <obs-frontend-api.h>
-#include <obs-data.h>
-
 #include <QtCore/QTimer>
 #include <QtWidgets/QAction>
 #include <QtWidgets/QMainWindow>
 #include <QTime>
+#include <obs-module.h>
+#include <obs-data.h>
+#include <obs-frontend-api.h>
 
 #include "obs-websocket.h"
 #include "Config.h"
