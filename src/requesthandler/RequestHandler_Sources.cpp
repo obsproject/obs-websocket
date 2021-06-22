@@ -95,9 +95,8 @@ RequestResult RequestHandler::GetSourceActive(const Request& request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	if (!request.ValidateString("sourceName", statusCode, comment)) {
+	if (!request.ValidateString("sourceName", statusCode, comment))
 		return RequestResult::Error(statusCode, comment);
-	}
 
 	std::string sourceName = request.RequestData["sourceName"];
 
@@ -118,9 +117,8 @@ RequestResult RequestHandler::GetSourceScreenshot(const Request& request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	if (!request.ValidateString("sourceName", statusCode, comment)) {
+	if (!(request.ValidateString("sourceName", statusCode, comment) && request.ValidateString("imageFormat", statusCode, comment)))
 		return RequestResult::Error(statusCode, comment);
-	}
 
 	std::string sourceName = request.RequestData["sourceName"];
 
@@ -131,30 +129,32 @@ RequestResult RequestHandler::GetSourceScreenshot(const Request& request)
 	if (obs_source_get_type(source) != OBS_SOURCE_TYPE_INPUT && obs_source_get_type(source) != OBS_SOURCE_TYPE_SCENE)
 		return RequestResult::Error(RequestStatus::InvalidSourceType, "The specified source is not an input or a scene.");
 
+	std::string imageFormat = request.RequestData["imageFormat"];
+
+	if (!IsImageFormatValid(imageFormat))
+		return RequestResult::Error(RequestStatus::InvalidRequestParameter, "Your specified image format is invalid or not supported by this system.");
+
 	uint32_t requestedWidth{0};
 	uint32_t requestedHeight{0};
 	int compressionQuality{-1};
 
 	if (request.RequestData.contains("imageWidth") && !request.RequestData["imageWidth"].is_null()) {
-		if (!request.ValidateNumber("imageWidth", statusCode, comment, 8, 4096)) {
+		if (!request.ValidateNumber("imageWidth", statusCode, comment, 8, 4096))
 			return RequestResult::Error(statusCode, comment);
-		}
 
 		requestedWidth = request.RequestData["imageWidth"];
 	}
 
 	if (request.RequestData.contains("imageHeight") && !request.RequestData["imageHeight"].is_null()) {
-		if (!request.ValidateNumber("imageHeight", statusCode, comment, 8, 4096)) {
+		if (!request.ValidateNumber("imageHeight", statusCode, comment, 8, 4096))
 			return RequestResult::Error(statusCode, comment);
-		}
 
 		requestedHeight = request.RequestData["imageHeight"];
 	}
 
 	if (request.RequestData.contains("imageCompressionQuality") && !request.RequestData["imageCompressionQuality"].is_null()) {
-		if (!request.ValidateNumber("imageCompressionQuality", statusCode, comment, -1, 100)) {
+		if (!request.ValidateNumber("imageCompressionQuality", statusCode, comment, -1, 100))
 			return RequestResult::Error(statusCode, comment);
-		}
 
 		compressionQuality = request.RequestData["imageCompressionQuality"];
 	}
@@ -165,21 +165,13 @@ RequestResult RequestHandler::GetSourceScreenshot(const Request& request)
 	if (!success)
 		return RequestResult::Error(RequestStatus::ScreenshotRenderFailed);
 
-	if (!request.ValidateString("imageFormat", statusCode, comment)) {
-		return RequestResult::Error(statusCode, comment);
-	}
-
-	std::string imageFormat = request.RequestData["imageFormat"];
-
-	if (!IsImageFormatValid(imageFormat))
-		return RequestResult::Error(RequestStatus::InvalidRequestParameter, "Your specified image format is invalid or not supported by this system.");
-
 	QByteArray encodedImgBytes;
 	QBuffer buffer(&encodedImgBytes);
 	buffer.open(QBuffer::WriteOnly);
 
 	if (!renderedImage.save(&buffer, imageFormat.c_str(), compressionQuality))
 		return RequestResult::Error(RequestStatus::ScreenshotEncodeFailed);
+
 	buffer.close();
 
 	QString encodedPicture = QString("data:image/%1;base64,").arg(imageFormat.c_str()).append(encodedImgBytes.toBase64());
@@ -193,16 +185,10 @@ RequestResult RequestHandler::SaveSourceScreenshot(const Request& request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	if (!request.ValidateString("sourceName", statusCode, comment)) {
+	if (!(request.ValidateString("sourceName", statusCode, comment) && request.ValidateString("imageFilePath", statusCode, comment) && request.ValidateString("imageFormat", statusCode, comment)))
 		return RequestResult::Error(statusCode, comment);
-	}
-
-	if (!request.ValidateString("imageFilePath", statusCode, comment)) {
-		return RequestResult::Error(statusCode, comment);
-	}
 
 	std::string sourceName = request.RequestData["sourceName"];
-	std::string imageFilePath = request.RequestData["imageFilePath"];
 
 	OBSSourceAutoRelease source = obs_get_source_by_name(sourceName.c_str());
 	if (!source)
@@ -211,30 +197,32 @@ RequestResult RequestHandler::SaveSourceScreenshot(const Request& request)
 	if (obs_source_get_type(source) != OBS_SOURCE_TYPE_INPUT && obs_source_get_type(source) != OBS_SOURCE_TYPE_SCENE)
 		return RequestResult::Error(RequestStatus::InvalidSourceType, "The specified source is not an input or a scene.");
 
+	std::string imageFormat = request.RequestData["imageFormat"];
+
+	if (!IsImageFormatValid(imageFormat))
+		return RequestResult::Error(RequestStatus::InvalidRequestParameter, "Your specified image format is invalid or not supported by this system.");
+
 	uint32_t requestedWidth{0};
 	uint32_t requestedHeight{0};
 	int compressionQuality{-1};
 
 	if (request.RequestData.contains("imageWidth") && !request.RequestData["imageWidth"].is_null()) {
-		if (!request.ValidateNumber("imageWidth", statusCode, comment, 8, 4096)) {
+		if (!request.ValidateNumber("imageWidth", statusCode, comment, 8, 4096))
 			return RequestResult::Error(statusCode, comment);
-		}
 
 		requestedWidth = request.RequestData["imageWidth"];
 	}
 
 	if (request.RequestData.contains("imageHeight") && !request.RequestData["imageHeight"].is_null()) {
-		if (!request.ValidateNumber("imageHeight", statusCode, comment, 8, 4096)) {
+		if (!request.ValidateNumber("imageHeight", statusCode, comment, 8, 4096))
 			return RequestResult::Error(statusCode, comment);
-		}
 
 		requestedHeight = request.RequestData["imageHeight"];
 	}
 
 	if (request.RequestData.contains("imageCompressionQuality") && !request.RequestData["imageCompressionQuality"].is_null()) {
-		if (!request.ValidateNumber("imageCompressionQuality", statusCode, comment, -1, 100)) {
+		if (!request.ValidateNumber("imageCompressionQuality", statusCode, comment, -1, 100))
 			return RequestResult::Error(statusCode, comment);
-		}
 
 		compressionQuality = request.RequestData["imageCompressionQuality"];
 	}
@@ -245,14 +233,7 @@ RequestResult RequestHandler::SaveSourceScreenshot(const Request& request)
 	if (!success)
 		return RequestResult::Error(RequestStatus::ScreenshotRenderFailed);
 
-	if (!request.ValidateString("imageFormat", statusCode, comment)) {
-		return RequestResult::Error(statusCode, comment);
-	}
-
-	std::string imageFormat = request.RequestData["imageFormat"];
-
-	if (!IsImageFormatValid(imageFormat))
-		return RequestResult::Error(RequestStatus::InvalidRequestParameter, "Your specified image format is invalid or not supported by this system.");
+	std::string imageFilePath = request.RequestData["imageFilePath"];
 
 	QFileInfo filePathInfo(QString::fromStdString(imageFilePath));
 	if (!filePathInfo.absoluteDir().exists())

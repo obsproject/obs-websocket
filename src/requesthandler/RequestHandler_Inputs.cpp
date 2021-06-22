@@ -9,9 +9,8 @@ RequestResult RequestHandler::GetInputList(const Request& request)
 	if (request.RequestData.contains("inputKind") && !request.RequestData["inputKind"].is_null()) {
 		RequestStatus::RequestStatus statusCode;
 		std::string comment;
-		if (!request.ValidateString("inputKind", statusCode, comment)) {
+		if (!request.ValidateString("inputKind", statusCode, comment))
 			return RequestResult::Error(statusCode, comment);
-		}
 
 		inputKind = request.RequestData["inputKind"];
 	}
@@ -28,9 +27,8 @@ RequestResult RequestHandler::GetInputKindList(const Request& request)
 	if (request.RequestData.contains("unversioned") && !request.RequestData["unversioned"].is_null()) {
 		RequestStatus::RequestStatus statusCode;
 		std::string comment;
-		if (!request.ValidateBoolean("unversioned", statusCode, comment)) {
+		if (!request.ValidateBoolean("unversioned", statusCode, comment))
 			return RequestResult::Error(statusCode, comment);
-		}
 
 		unversioned = request.RequestData["unversioned"];
 	}
@@ -79,14 +77,13 @@ RequestResult RequestHandler::SetInputSettings(const Request& request)
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
 	OBSSourceAutoRelease input = request.ValidateInput("inputName", statusCode, comment);
-	if (!input || !request.ValidateObject("inputSettings", statusCode, comment, true))
+	if (!(input && request.ValidateObject("inputSettings", statusCode, comment, true)))
 		return RequestResult::Error(statusCode, comment);
 
 	bool overlay = true;
 	if (request.RequestData.contains("overlay") && !request.RequestData["overlay"].is_null()) {
-		if (!request.ValidateBoolean("overlay", statusCode, comment)) {
+		if (!request.ValidateBoolean("overlay", statusCode, comment))
 			return RequestResult::Error(statusCode, comment);
-		}
 
 		overlay = request.RequestData["overlay"];
 	}
@@ -128,7 +125,7 @@ RequestResult RequestHandler::SetInputMute(const Request& request)
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
 	OBSSourceAutoRelease input = request.ValidateInput("inputName", statusCode, comment);
-	if (!input || !request.ValidateBoolean("inputMuted", statusCode, comment))
+	if (!(input && request.ValidateBoolean("inputMuted", statusCode, comment)))
 		return RequestResult::Error(statusCode, comment);
 
 	obs_source_set_muted(input, request.RequestData["inputMuted"]);
@@ -209,7 +206,7 @@ RequestResult RequestHandler::SetInputName(const Request& request)
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
 	OBSSourceAutoRelease input = request.ValidateInput("inputName", statusCode, comment);
-	if (!input || !request.ValidateString("newInputName", statusCode, comment))
+	if (!(input && request.ValidateString("newInputName", statusCode, comment)))
 		return RequestResult::Error(statusCode, comment);
 
 	std::string newInputName = request.RequestData["newInputName"];
@@ -225,30 +222,25 @@ RequestResult RequestHandler::SetInputName(const Request& request)
 
 RequestResult RequestHandler::CreateInput(const Request& request)
 {
-	// Initial validation
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
 	OBSSourceAutoRelease sceneSource = request.ValidateScene("sceneName", statusCode, comment);
-	if (!request.ValidateString("inputName", statusCode, comment) ||
-		!request.ValidateString("inputKind", statusCode, comment) ||
-		!sceneSource)
-	{
+	if (!(request.ValidateString("inputName", statusCode, comment) &&
+	request.ValidateString("inputKind", statusCode, comment) &&
+	sceneSource))
 		return RequestResult::Error(statusCode, comment);
-	}
 
-	// Verify that no other inputs share the name
 	std::string inputName = request.RequestData["inputName"];
 	OBSSourceAutoRelease existingInput = obs_get_source_by_name(inputName.c_str());
 	if (existingInput)
 		return RequestResult::Error(RequestStatus::SourceAlreadyExists, "A source already exists by that input name.");
 
-	// Verify that the input kind is valid
 	std::string inputKind = request.RequestData["inputKind"];
+
 	auto kinds = Utils::Obs::ListHelper::GetInputKindList();
 	if (std::find(kinds.begin(), kinds.end(), inputKind) == kinds.end())
 		return RequestResult::Error(RequestStatus::InvalidInputKind, "Your specified input kind is not supported by OBS. Check that your specified kind is properly versioned and that any necessary plugins are loaded.");
 
-	// Get input settings if they exist
 	OBSDataAutoRelease inputSettings = nullptr;
 	if (request.RequestData.contains("inputSettings") && !request.RequestData["inputSettings"].is_null()) {
 		if (!request.ValidateObject("inputSettings", statusCode, comment, true))
@@ -257,10 +249,8 @@ RequestResult RequestHandler::CreateInput(const Request& request)
 		inputSettings = Utils::Json::JsonToObsData(request.RequestData["inputSettings"]);
 	}
 
-	// Get the destination scene
 	OBSScene scene = obs_scene_from_source(sceneSource);
 
-	// Get scene item enable state if it exists
 	bool sceneItemEnabled = true;
 	if (request.RequestData.contains("sceneItemEnabled") && !request.RequestData["sceneItemEnabled"].is_null()) {
 		if (!request.ValidateBoolean("sceneItemEnabled", statusCode, comment))

@@ -7,10 +7,8 @@
 RequestResult RequestHandler::GetSceneCollectionList(const Request& request)
 {
 	json responseData;
-
 	responseData["currentSceneCollectionName"] = Utils::Obs::StringHelper::GetCurrentSceneCollection();
 	responseData["sceneCollections"] = Utils::Obs::ListHelper::GetSceneCollectionList();
-
 	return RequestResult::Success(responseData);
 }
 
@@ -18,17 +16,16 @@ RequestResult RequestHandler::SetCurrentSceneCollection(const Request& request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	if (!request.ValidateString("sceneCollectionName", statusCode, comment)) {
+	if (!request.ValidateString("sceneCollectionName", statusCode, comment))
 		return RequestResult::Error(statusCode, comment);
-	}
 
-	std::string currentSceneCollectionName = Utils::Obs::StringHelper::GetCurrentSceneCollection();
 	std::string sceneCollectionName = request.RequestData["sceneCollectionName"];
 
 	auto sceneCollections = Utils::Obs::ListHelper::GetSceneCollectionList();
 	if (std::find(sceneCollections.begin(), sceneCollections.end(), sceneCollectionName) == sceneCollections.end())
-		return RequestResult::Error(RequestStatus::SceneCollectionNotFound, "Your specified scene collection was not found.");
+		return RequestResult::Error(RequestStatus::SceneCollectionNotFound);
 
+	std::string currentSceneCollectionName = Utils::Obs::StringHelper::GetCurrentSceneCollection();
 	// Avoid queueing tasks if nothing will change
 	if (currentSceneCollectionName != sceneCollectionName) {
 		obs_queue_task(OBS_TASK_UI, [](void* param) {
@@ -42,10 +39,8 @@ RequestResult RequestHandler::SetCurrentSceneCollection(const Request& request)
 RequestResult RequestHandler::GetProfileList(const Request& request)
 {
 	json responseData;
-
 	responseData["currentProfileName"] = Utils::Obs::StringHelper::GetCurrentProfile();
 	responseData["profiles"] = Utils::Obs::ListHelper::GetProfileList();
-
 	return RequestResult::Success(responseData);
 }
 
@@ -53,17 +48,16 @@ RequestResult RequestHandler::SetCurrentProfile(const Request& request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	if (!request.ValidateString("profileName", statusCode, comment)) {
+	if (!request.ValidateString("profileName", statusCode, comment))
 		return RequestResult::Error(statusCode, comment);
-	}
 
-	std::string currentProfileName = Utils::Obs::StringHelper::GetCurrentProfile();
 	std::string profileName = request.RequestData["profileName"];
 
 	auto profiles = Utils::Obs::ListHelper::GetProfileList();
 	if (std::find(profiles.begin(), profiles.end(), profileName) == profiles.end())
-		return RequestResult::Error(RequestStatus::ProfileNotFound, "Your specified profile was not found.");
+		return RequestResult::Error(RequestStatus::ProfileNotFound);
 
+	std::string currentProfileName = Utils::Obs::StringHelper::GetCurrentProfile();
 	// Avoid queueing tasks if nothing will change
 	if (currentProfileName != profileName) {
 		obs_queue_task(OBS_TASK_UI, [](void* param) {
@@ -78,9 +72,8 @@ RequestResult RequestHandler::GetProfileParameter(const Request& request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	if (!request.ValidateString("parameterCategory", statusCode, comment) || !request.ValidateString("parameterName", statusCode, comment)) {
+	if (!(request.ValidateString("parameterCategory", statusCode, comment) && request.ValidateString("parameterName", statusCode, comment)))
 		return RequestResult::Error(statusCode, comment);
-	}
 
 	std::string parameterCategory = request.RequestData["parameterCategory"];
 	std::string parameterName = request.RequestData["parameterName"];
@@ -88,16 +81,8 @@ RequestResult RequestHandler::GetProfileParameter(const Request& request)
 	config_t* profile = obs_frontend_get_profile_config();
 
 	json responseData;
-	if (config_has_default_value(profile, parameterCategory.c_str(), parameterName.c_str())) {
-		responseData["parameterValue"] = 
-		responseData["defaultParameterValue"] = config_get_default_string(profile, parameterCategory.c_str(), parameterName.c_str());
-	} else {
-		if (config_has_user_value(profile, parameterCategory.c_str(), parameterName.c_str()))
-			responseData["parameterValue"] = config_get_string(profile, parameterCategory.c_str(), parameterName.c_str());
-		else
-			responseData["parameterValue"] = nullptr;
-		responseData["defaultParameterValue"] = nullptr;
-	}
+	responseData["parameterValue"] = config_get_string(profile, parameterCategory.c_str(), parameterName.c_str());
+	responseData["defaultParameterValue"] = config_get_default_string(profile, parameterCategory.c_str(), parameterName.c_str());
 
 	return RequestResult::Success(responseData);
 }
@@ -106,10 +91,9 @@ RequestResult RequestHandler::SetProfileParameter(const Request& request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	if (!request.ValidateString("parameterCategory", statusCode, comment) ||
-	!request.ValidateString("parameterName", statusCode, comment)) {
+	if (!(request.ValidateString("parameterCategory", statusCode, comment) &&
+	request.ValidateString("parameterName", statusCode, comment)))
 		return RequestResult::Error(statusCode, comment);
-	}
 
 	std::string parameterCategory = request.RequestData["parameterCategory"];
 	std::string parameterName = request.RequestData["parameterName"];
