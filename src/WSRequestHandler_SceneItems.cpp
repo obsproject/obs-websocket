@@ -648,7 +648,7 @@ RpcResponse WSRequestHandler::DeleteSceneItem(const RpcRequest& request) {
 }
 
 /**
- * Creates a scene item in a scene. In other words, this is how you add a source into a scene.
+ * Creates a scene item in a scene. In other words, this is how you add a source into a scene. A source added in this way is added on top of all the other sources already in that scene.
  *
  * @param {String} `sceneName` Name of the scene to create the scene item in
  * @param {String} `sourceName` Name of the source to be added
