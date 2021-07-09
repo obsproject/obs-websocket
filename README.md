@@ -52,7 +52,8 @@ Here's a list of available language APIs for obs-websocket :
 - Python 3.6+ with asyncio: [simpleobsws](https://github.com/IRLToolkit/simpleobsws) by tt2468
 - Java 8+: [obs-websocket-java](https://github.com/Twasi/websocket-obs-java) by TwasiNET
 - Java 11+: [obs-java-client](https://github.com/harm27/obs-java-client) by harm27
-- Golang: [go-obs-websocket](https://github.com/christopher-dG/go-obs-websocket) by Chris de Graaf
+- Go: [go-obs-websocket](https://github.com/christopher-dG/go-obs-websocket) by Chris de Graaf
+- Go: [goobs](https://github.com/andreykaipov/goobs) by Andrey Kaipov
 - Rust: [obws](https://github.com/dnaka91/obws) by dnaka91
 - Dart: [obs_websocket](https://pub.dev/packages/obs_websocket) by faithoflifedev
 - HTTP API: [obs-websocket-http](https://github.com/IRLToolkit/obs-websocket-http) by tt2468
