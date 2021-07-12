@@ -164,8 +164,8 @@ You can also refer to any of the [client libraries](https://github.com/Palakis/o
     + [GetSourceTypesList](#getsourcetypeslist)
     + [GetVolume](#getvolume)
     + [SetVolume](#setvolume)
-    + [SetTracks](#settracks)
-    + [GetTracks](#gettracks)
+    + [SetAudioTracks](#setaudiotracks)
+    + [GetAudioTracks](#getaudiotracks)
     + [GetMute](#getmute)
     + [SetMute](#setmute)
     + [ToggleMute](#togglemute)
@@ -2213,7 +2213,7 @@ _No additional response items._
 
 ---
 
-### SetTracks
+### SetAudioTracks
 
 
 - Added in v4.9.1
@@ -2235,7 +2235,7 @@ _No additional response items._
 
 ---
 
-### GetTracks
+### GetAudioTracks
 
 
 - Added in v4.9.1
