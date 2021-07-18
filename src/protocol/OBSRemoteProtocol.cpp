@@ -132,7 +132,7 @@ obs_data_t* OBSRemoteProtocol::buildResponse(const char* messageId, const char* 
 	return response;
 }
 
-std::string OBSRemoteProtocol::jsonDataToString(OBSDataAutoRelease data)
+std::string OBSRemoteProtocol::jsonDataToString(obs_data_t *data)
 {
 	std::string responseString = obs_data_get_json(data);
 	return responseString;
