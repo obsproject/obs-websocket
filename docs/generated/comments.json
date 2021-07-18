@@ -5420,7 +5420,7 @@
           "{boolean} `active` Whether audio track is active or not."
         ],
         "api": "requests",
-        "name": "SetTracks",
+        "name": "SetAudioTracks",
         "category": "sources",
         "since": "4.9.1",
         "params": [
@@ -5443,7 +5443,7 @@
         "names": [
           {
             "name": "",
-            "description": "SetTracks"
+            "description": "SetAudioTracks"
           }
         ],
         "categories": [
@@ -5460,7 +5460,7 @@
         ],
         "heading": {
           "level": 2,
-          "text": "SetTracks"
+          "text": "SetAudioTracks"
         },
         "lead": "",
         "type": "class",
@@ -5479,7 +5479,7 @@
           "{boolean} `track6`"
         ],
         "api": "requests",
-        "name": "GetTracks",
+        "name": "GetAudioTracks",
         "category": "sources",
         "since": "4.9.1",
         "returns": [
@@ -5524,7 +5524,7 @@
         "names": [
           {
             "name": "",
-            "description": "GetTracks"
+            "description": "GetAudioTracks"
           }
         ],
         "categories": [
@@ -5541,7 +5541,7 @@
         ],
         "heading": {
           "level": 2,
-          "text": "GetTracks"
+          "text": "GetAudioTracks"
         },
         "lead": "",
         "type": "class",
