@@ -323,7 +323,7 @@ RpcResponse WSRequestHandler::SetVolume(const RpcRequest& request)
 * @param {boolean} `active` Whether audio track is active or not.
 *
 * @api requests
-* @name SetTracks
+* @name SetAudioTracks
 * @category sources
 * @since 4.9.1
 */
@@ -372,7 +372,7 @@ RpcResponse WSRequestHandler::SetAudioTracks(const RpcRequest& request)
 * @return {boolean} `track6`
 *
 * @api requests
-* @name GetTracks
+* @name GetAudioTracks
 * @category sources
 * @since 4.9.1
 */
