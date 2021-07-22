@@ -118,5 +118,7 @@ namespace RequestStatus {
 		DirectoryCreationFailed = 706,
 		// The combination of request parameters cannot be used to perform an action
 		CannotAct = 707,
+		// Creation of a new stream service failed
+		StreamServiceCreationFailed = 708,
 	};
 };

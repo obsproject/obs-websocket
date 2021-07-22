@@ -22,6 +22,8 @@ const std::map<std::string, RequestMethodHandler> RequestHandler::_handlerMap
 	{"SetProfileParameter", &RequestHandler::SetProfileParameter},
 	{"GetVideoSettings", &RequestHandler::GetVideoSettings},
 	{"SetVideoSettings", &RequestHandler::SetVideoSettings},
+	{"GetStreamServiceSettings", &RequestHandler::GetStreamServiceSettings},
+	{"SetStreamServiceSettings", &RequestHandler::SetStreamServiceSettings},
 
 	// Sources
 	{"GetSourceActive", &RequestHandler::GetSourceActive},
@@ -51,6 +53,11 @@ const std::map<std::string, RequestMethodHandler> RequestHandler::_handlerMap
 	{"SetInputVolume", &RequestHandler::SetInputVolume},
 	{"SetInputName", &RequestHandler::SetInputName},
 	{"CreateInput", &RequestHandler::CreateInput},
+
+	// Stream
+	{"GetStreamStatus", &RequestHandler::GetStreamStatus},
+	{"StartStream", &RequestHandler::StartStream},
+	{"StopStream", &RequestHandler::StopStream},
 };
 
 RequestResult RequestHandler::ProcessRequest(const Request& request)

@@ -175,3 +175,55 @@ RequestResult RequestHandler::SetVideoSettings(const Request& request)
 
 	return RequestResult::Error(RequestStatus::MissingRequestParameter, "You must specify at least one video-changing pair.");
 }
+
+RequestResult RequestHandler::GetStreamServiceSettings(const Request& request)
+{
+	json responseData;
+
+	OBSService service = obs_frontend_get_streaming_service();
+	responseData["streamServiceType"] = obs_service_get_type(service);
+	OBSDataAutoRelease serviceSettings = obs_service_get_settings(service);
+	responseData["streamServiceSettings"] = Utils::Json::ObsDataToJson(serviceSettings, true);
+
+	return RequestResult::Success(responseData);
+}
+
+RequestResult RequestHandler::SetStreamServiceSettings(const Request& request)
+{
+	if (obs_frontend_streaming_active())
+		return RequestResult::Error(RequestStatus::StreamRunning);
+
+	RequestStatus::RequestStatus statusCode;
+	std::string comment;
+	if (!(request.ValidateString("streamServiceType", statusCode, comment) && request.ValidateObject("streamServiceSettings", statusCode, comment)))
+		return RequestResult::Error(statusCode, comment);
+
+	OBSService currentStreamService = obs_frontend_get_streaming_service();
+
+	std::string streamServiceType = obs_service_get_type(currentStreamService);
+	std::string requestedStreamServiceType = request.RequestData["streamServiceType"];
+	OBSDataAutoRelease requestedStreamServiceSettings = Utils::Json::JsonToObsData(request.RequestData["streamServiceSettings"]);
+
+	// Don't create a new service if the current service is the same type.
+	if (streamServiceType == requestedStreamServiceType) {
+		OBSDataAutoRelease currentStreamServiceSettings = obs_service_get_settings(currentStreamService);
+
+		OBSDataAutoRelease newStreamServiceSettings = obs_data_create();
+		obs_data_apply(newStreamServiceSettings, currentStreamServiceSettings);
+		obs_data_apply(newStreamServiceSettings, requestedStreamServiceSettings);
+
+		obs_service_update(currentStreamService, newStreamServiceSettings);
+	} else {
+		// TODO: This leaks memory. I have no idea why.
+		OBSService newStreamService = obs_service_create(requestedStreamServiceType.c_str(), "obs_websocket_custom_service", requestedStreamServiceSettings, NULL);
+		// TODO: Check service type here, instead of relying on service creation to fail.
+		if (!newStreamService)
+			return RequestResult::Error(RequestStatus::StreamServiceCreationFailed, "Creating the stream service with the requested streamServiceType failed. It may be an invalid type.");
+
+		obs_frontend_set_streaming_service(newStreamService);
+	}
+
+	obs_frontend_save_streaming_service();
+
+	return RequestResult::Success();
+}

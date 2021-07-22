@@ -37,6 +37,8 @@ class RequestHandler {
 		RequestResult SetProfileParameter(const Request&);
 		RequestResult GetVideoSettings(const Request&);
 		RequestResult SetVideoSettings(const Request&);
+		RequestResult GetStreamServiceSettings(const Request&);
+		RequestResult SetStreamServiceSettings(const Request&);
 
 		// Sources
 		RequestResult GetSourceActive(const Request&);
@@ -66,6 +68,11 @@ class RequestHandler {
 		RequestResult SetInputVolume(const Request&);
 		RequestResult SetInputName(const Request&);
 		RequestResult CreateInput(const Request&);
+
+		// Stream
+		RequestResult GetStreamStatus(const Request&);
+		RequestResult StartStream(const Request&);
+		RequestResult StopStream(const Request&);
 
 		static const std::map<std::string, RequestMethodHandler> _handlerMap;
 };

@@ -1,10 +1,26 @@
+#include <inttypes.h>
+#include <memory>
+#include <string>
+#include <stdexcept>
 #include <obs-frontend-api.h>
+#include <util/util_uint64.h>
 
 #include "Utils.h"
 #include "../obs-websocket.h"
 #include "../plugin-macros.generated.h"
 
 #define CASE(x) case x: return #x;
+
+template<typename ... Args>
+std::string string_format( const std::string& format, Args ... args )
+{
+    int size_s = std::snprintf( nullptr, 0, format.c_str(), args ... ) + 1;
+    if( size_s <= 0 ){ throw std::runtime_error( "Error during formatting." ); }
+    auto size = static_cast<size_t>( size_s );
+    auto buf = std::make_unique<char[]>( size );
+    std::snprintf( buf.get(), size, format.c_str(), args ... );
+    return std::string( buf.get(), buf.get() + size - 1 ); // We don't want the '\0' inside
+}
 
 std::vector<std::string> ConvertStringArray(char **array)
 {
@@ -105,6 +121,40 @@ std::string Utils::Obs::StringHelper::GetLastReplayBufferFilePath()
 	calldata_free(&cd);
 	obs_output_release(output);
 	return ret;
+}
+
+std::string Utils::Obs::StringHelper::GetOutputTimecodeString(obs_output_t *output)
+{
+	if (!output || !obs_output_active(output))
+		return "00:00:00.000";
+
+	video_t* video = obs_output_video(output);
+	uint64_t frameTimeNs = video_output_get_frame_time(video);
+	int totalFrames = obs_output_get_total_frames(output);
+
+	uint64_t ms = (((uint64_t)totalFrames) * frameTimeNs) / 1000000ULL;
+	uint64_t secs = ms / 1000ULL;
+	uint64_t minutes = secs / 60ULL;
+
+	uint64_t hoursPart = minutes / 60ULL;
+	uint64_t minutesPart = minutes % 60ULL;
+	uint64_t secsPart = secs % 60ULL;
+	uint64_t msPart = ms % 1000ULL;
+
+	return string_format("%02" PRIu64 ":%02" PRIu64 ":%02" PRIu64 ".%03" PRIu64, hoursPart, minutesPart, secsPart, msPart);
+}
+
+uint64_t Utils::Obs::NumberHelper::GetOutputDuration(obs_output_t *output)
+{
+	if (!output || !obs_output_active(output))
+		return 0;
+
+	video_t* video = obs_output_video(output);
+	uint64_t frameTimeNs = video_output_get_frame_time(video);
+	int totalFrames = obs_output_get_total_frames(output);
+
+	return util_mul_div64(totalFrames, frameTimeNs, 1000000ULL);
+	//return (((uint64_t)totalFrames) * frameTimeNs) / ;
 }
 
 std::vector<std::string> Utils::Obs::ListHelper::GetSceneCollectionList()

@@ -38,6 +38,11 @@ namespace Utils {
 			std::string GetInputMonitorTypeString(obs_source_t *input);
 			std::string GetMediaInputStateString(obs_source_t *input);
 			std::string GetLastReplayBufferFilePath();
+			std::string GetOutputTimecodeString(obs_output_t *output);
+		}
+
+		namespace NumberHelper {
+			uint64_t GetOutputDuration(obs_output_t *output);
 		}
 
 		namespace ListHelper {
