@@ -2,11 +2,9 @@
 #include <QCommandLineParser>
 #include <QNetworkInterface>
 #include <QHostAddress>
-
 #include <obs-frontend-api.h>
 
 #include "Utils.h"
-
 #include "../plugin-macros.generated.h"
 
 std::string Utils::Platform::GetLocalAddress()

@@ -8,7 +8,6 @@
 #include "../obs-websocket.h"
 #include "../Config.h"
 #include "../WebSocketServer.h"
-
 #include "../plugin-macros.generated.h"
 
 QString GetToolTipIconHtml()

@@ -4,9 +4,9 @@
 #include <obs.hpp>
 #include <obs-frontend-api.h>
 
-#include "../obs-websocket.h"
 #include "rpc/Request.h"
 #include "rpc/RequestResult.h"
+#include "../obs-websocket.h"
 #include "../utils/Utils.h"
 
 class RequestHandler;
@@ -35,6 +35,8 @@ class RequestHandler {
 		RequestResult SetCurrentProfile(const Request&);
 		RequestResult GetProfileParameter(const Request&);
 		RequestResult SetProfileParameter(const Request&);
+		RequestResult GetVideoSettings(const Request&);
+		RequestResult SetVideoSettings(const Request&);
 
 		// Sources
 		RequestResult GetSourceActive(const Request&);

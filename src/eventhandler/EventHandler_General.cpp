@@ -1,5 +1,4 @@
 #include "EventHandler.h"
-
 #include "../plugin-macros.generated.h"
 
 void EventHandler::HandleExitStarted()

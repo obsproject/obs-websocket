@@ -1,10 +1,10 @@
 #pragma once
 
-#include <QtWidgets/QDialog>
+#include <QDialog>
 #include <QTimer>
 
-#include "ConnectInfo.h"
 #include "ui_SettingsDialog.h"
+#include "ConnectInfo.h"
 
 class SettingsDialog : public QDialog
 {

@@ -4,9 +4,9 @@
 #include <obs-frontend-api.h>
 #include <util/platform.h>
 
+#include "types/EventSubscription.h"
 #include "../obs-websocket.h"
 #include "../WebSocketServer.h"
-#include "types/EventSubscription.h"
 
 enum ObsOutputState {
 	OBS_WEBSOCKET_OUTPUT_STARTING,

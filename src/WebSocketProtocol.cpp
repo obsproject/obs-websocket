@@ -1,13 +1,13 @@
 #include <obs-module.h>
 
 #include "WebSocketProtocol.h"
+#include "WebSocketSession.h"
 #include "requesthandler/RequestHandler.h"
 #include "requesthandler/rpc/RequestStatus.h"
-
 #include "obs-websocket.h"
 #include "Config.h"
-#include "utils/Utils.h"
 #include "plugin-macros.generated.h"
+#include "utils/Utils.h"
 
 bool IsSupportedRpcVersion(uint8_t requestedVersion)
 {
@@ -66,7 +66,7 @@ WebSocketProtocol::ProcessResult WebSocketProtocol::ProcessMessage(SessionPtr se
 
 	if (!incomingMessage.contains("messageType")) {
 		if (incomingMessage.contains("request-type")) {
-			blog(LOG_WARNING, "Client %s appears to be running a pre-5.0.0 protocol.", session->RemoteAddress().c_str())
+			blog(LOG_WARNING, "Client %s appears to be running a pre-5.0.0 protocol.", session->RemoteAddress().c_str());
 			ret.closeCode = WebSocketServer::WebSocketCloseCode::UnsupportedProtocolVersion;
 			ret.closeReason = "You appear to be attempting to connect with the pre-5.0.0 plugin protocol. Check to make sure your client is updated.";
 			return ret;

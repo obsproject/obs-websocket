@@ -2,10 +2,11 @@
 
 #include <vector>
 #include <string>
-#include <nlohmann/json.hpp>
 
 #include "WebSocketServer.h"
-#include "WebSocketSession.h"
+
+class WebSocketSession;
+typedef std::shared_ptr<WebSocketSession> SessionPtr;
 
 namespace WebSocketProtocol {
 	const std::vector<uint8_t> SupportedRpcVersions{

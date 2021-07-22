@@ -1,13 +1,12 @@
 #include <QClipboard>
 #include <QPainter>
 #include <obs-module.h>
-#include "../../deps/qr/cpp/QrCode.hpp"
 
 #include "ConnectInfo.h"
+#include "../../deps/qr/cpp/QrCode.hpp"
 #include "../obs-websocket.h"
 #include "../Config.h"
 #include "../utils/Utils.h"
-
 #include "../plugin-macros.generated.h"
 
 ConnectInfo::ConnectInfo(QWidget* parent) :

@@ -1,5 +1,4 @@
 #include "Request.h"
-
 #include "../../plugin-macros.generated.h"
 
 json GetDefaultJsonObject(json requestData)

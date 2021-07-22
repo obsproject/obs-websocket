@@ -1,16 +1,14 @@
 #include <obs-frontend-api.h>
 
 #include "Config.h"
-#include "utils/Utils.h"
-
 #include "plugin-macros.generated.h"
+#include "utils/Utils.h"
 
 #define CONFIG_SECTION_NAME "OBSWebSocket"
 
 #define PARAM_FIRSTLOAD "FirstLoad"
 #define PARAM_ENABLED "ServerEnabled"
 #define PARAM_PORT "ServerPort"
-#define PARAM_DEBUG "DebugEnabled"
 #define PARAM_ALERTS "AlertsEnabled"
 #define PARAM_AUTHREQUIRED "AuthRequred"
 #define PARAM_PASSWORD "ServerPassword"

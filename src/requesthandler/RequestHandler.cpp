@@ -1,5 +1,4 @@
 #include "RequestHandler.h"
-
 #include "../plugin-macros.generated.h"
 
 const std::map<std::string, RequestMethodHandler> RequestHandler::_handlerMap
@@ -21,6 +20,8 @@ const std::map<std::string, RequestMethodHandler> RequestHandler::_handlerMap
 	{"SetCurrentProfile", &RequestHandler::SetCurrentProfile},
 	{"GetProfileParameter", &RequestHandler::GetProfileParameter},
 	{"SetProfileParameter", &RequestHandler::SetProfileParameter},
+	{"GetVideoSettings", &RequestHandler::GetVideoSettings},
+	{"SetVideoSettings", &RequestHandler::SetVideoSettings},
 
 	// Sources
 	{"GetSourceActive", &RequestHandler::GetSourceActive},

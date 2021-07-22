@@ -1,11 +1,10 @@
 #include <QImageWriter>
 
 #include "RequestHandler.h"
-
-#include "../plugin-macros.generated.h"
 #include "../eventhandler/types/EventSubscription.h"
 #include "../obs-websocket.h"
 #include "../WebSocketServer.h"
+#include "../plugin-macros.generated.h"
 
 RequestResult RequestHandler::GetVersion(const Request& request)
 {

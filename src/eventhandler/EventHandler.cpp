@@ -1,5 +1,4 @@
 #include "EventHandler.h"
-
 #include "../plugin-macros.generated.h"
 
 EventHandler::EventHandler(WebSocketServerPtr webSocketServer) :

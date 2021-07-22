@@ -1,7 +1,4 @@
 #include "Utils.h"
-// For AutoRelease types
-#include "../obs-websocket.h"
-
 #include "../plugin-macros.generated.h"
 
 bool Utils::Json::JsonArrayIsValidObsArray(json j)
@@ -18,25 +15,28 @@ void obs_data_set_json_object_item(obs_data_t *d, json j);
 
 void obs_data_set_json_object(obs_data_t *d, const char *key, json j)
 {
-	OBSDataAutoRelease subObj = obs_data_create();
+	obs_data_t *subObj = obs_data_create();
 	obs_data_set_json_object_item(subObj, j);
 	obs_data_set_obj(d, key, subObj);
+	obs_data_release(subObj);
 }
 
 void obs_data_set_json_array(obs_data_t *d, const char *key, json j)
 {
-	OBSDataArrayAutoRelease array = obs_data_array_create();
+	obs_data_array_t *array = obs_data_array_create();
 
 	for (auto& [key, value] : j.items()) {
 		if (!value.is_object())
 			continue;
 
-		OBSDataAutoRelease item = obs_data_create();
+		obs_data_t *item = obs_data_create();
 		obs_data_set_json_object_item(item, value);
 		obs_data_array_push_back(array, item);
+		obs_data_release(item);
 	}
 
 	obs_data_set_array(d, key, array);
+	obs_data_array_release(array);
 }
 
 void obs_data_set_json_object_item(obs_data_t *d, json j)
@@ -103,15 +103,17 @@ void set_json_object(json *j, const char *name, obs_data_item_t *item, bool incl
 void set_json_array(json *j, const char *name, obs_data_item_t *item, bool includeDefault)
 {
 	json jArray = json::array();
-	OBSDataArrayAutoRelease array = obs_data_item_get_array(item);
+	obs_data_array_t *array = obs_data_item_get_array(item);
 	size_t count = obs_data_array_count(array);
 
 	for (size_t idx = 0; idx < count; idx++) {
-		OBSDataAutoRelease subItem = obs_data_array_item(array, idx);
+		obs_data_t *subItem = obs_data_array_item(array, idx);
 		json jItem = Utils::Json::ObsDataToJson(subItem, includeDefault);
+		obs_data_release(subItem);
 		jArray.push_back(jItem);
 	}
 
+	obs_data_array_release(array);
 	j->emplace(name, jArray);
 }
 

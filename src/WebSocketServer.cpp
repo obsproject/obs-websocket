@@ -5,13 +5,11 @@
 #include <obs-module.h>
 #include <obs-frontend-api.h>
 
-#include "obs-websocket.h"
-
 #include "WebSocketServer.h"
 #include "WebSocketProtocol.h"
-#include "Config.h"
 #include "eventhandler/types/EventSubscription.h"
-
+#include "obs-websocket.h"
+#include "Config.h"
 #include "plugin-macros.generated.h"
 
 WebSocketServer::WebSocketServer() :

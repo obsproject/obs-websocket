@@ -1,5 +1,4 @@
 #include "EventHandler.h"
-
 #include "../plugin-macros.generated.h"
 
 void EventHandler::HandleSceneItemCreated(void *param, calldata_t *data)

@@ -1,7 +1,6 @@
 #include <util/config-file.h>
 
 #include "RequestHandler.h"
-
 #include "../plugin-macros.generated.h"
 
 RequestResult RequestHandler::GetSceneCollectionList(const Request& request)
@@ -112,4 +111,67 @@ RequestResult RequestHandler::SetProfileParameter(const Request& request)
 	}
 	
 	return RequestResult::Success();
+}
+
+RequestResult RequestHandler::GetVideoSettings(const Request& request)
+{
+	struct obs_video_info ovi;
+	if (!obs_get_video_info(&ovi))
+		return RequestResult::Error(RequestStatus::RequestProcessingFailed, "Unable to get internal OBS video info.");
+
+	json responseData;
+	responseData["fpsNumerator"] = ovi.fps_num;
+	responseData["fpsDenominator"] = ovi.fps_den;
+	responseData["baseWidth"] = ovi.base_width;
+	responseData["baseHeight"] = ovi.base_height;
+	responseData["outputWidth"] = ovi.output_width;
+	responseData["outputHeight"] = ovi.output_height;
+
+	return RequestResult::Success(responseData);
+}
+
+RequestResult RequestHandler::SetVideoSettings(const Request& request)
+{
+	if (obs_video_active())
+		return RequestResult::Error(RequestStatus::OutputRunning, "Video settings cannot be changed while an output is active.");
+
+	RequestStatus::RequestStatus statusCode = RequestStatus::NoError;
+	std::string comment;
+	bool changeFps = (request.ValidateNumber("fpsNumerator", statusCode, comment, 1) && request.ValidateNumber("fpsDenominator", statusCode, comment, 1));
+	if (!changeFps && statusCode != RequestStatus::MissingRequestParameter)
+		return RequestResult::Error(statusCode, comment);
+
+	bool changeBaseRes = (request.ValidateNumber("baseWidth", statusCode, comment, 8, 4096) && request.ValidateNumber("baseHeight", statusCode, comment, 8, 4096));
+	if (!changeBaseRes && statusCode != RequestStatus::MissingRequestParameter)
+		return RequestResult::Error(statusCode, comment);
+
+	bool changeOutputRes = (request.ValidateNumber("outputWidth", statusCode, comment, 8, 4096) && request.ValidateNumber("outputHeight", statusCode, comment, 8, 4096));
+	if (!changeOutputRes && statusCode != RequestStatus::MissingRequestParameter)
+		return RequestResult::Error(statusCode, comment);
+
+	config_t *config = obs_frontend_get_profile_config();
+
+	if (changeFps) {
+		config_set_uint(config, "Video", "FPSType", 2);
+		config_set_uint(config, "Video", "FPSNum", request.RequestData["fpsNumerator"]);
+		config_set_uint(config, "Video", "FPSDen", request.RequestData["fpsDenominator"]);
+	}
+
+	if (changeBaseRes) {
+		config_set_uint(config, "Video", "BaseCX", request.RequestData["baseWidth"]);
+		config_set_uint(config, "Video", "BaseCY", request.RequestData["baseHeight"]);
+	}
+
+	if (changeOutputRes) {
+		config_set_uint(config, "Video", "OutputCX", request.RequestData["outputWidth"]);
+		config_set_uint(config, "Video", "OutputCY", request.RequestData["outputHeight"]);
+	}
+
+	if (changeFps || changeBaseRes || changeOutputRes) {
+		config_save_safe(config, "tmp", nullptr);
+		obs_frontend_reset_video();
+		return RequestResult::Success();
+	}
+
+	return RequestResult::Error(RequestStatus::MissingRequestParameter, "You must specify at least one video-changing pair.");
 }

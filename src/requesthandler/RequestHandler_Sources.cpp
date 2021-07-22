@@ -4,7 +4,6 @@
 #include <QDir>
 
 #include "RequestHandler.h"
-
 #include "../plugin-macros.generated.h"
 
 QImage TakeSourceScreenshot(obs_source_t *source, bool &success, uint32_t requestedWidth = 0, uint32_t requestedHeight = 0)

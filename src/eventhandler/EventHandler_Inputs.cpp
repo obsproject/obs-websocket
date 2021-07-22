@@ -1,5 +1,4 @@
 #include "EventHandler.h"
-
 #include "../plugin-macros.generated.h"
 
 void EventHandler::HandleInputCreated(obs_source_t *source)

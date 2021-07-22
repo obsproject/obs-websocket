@@ -1,14 +1,13 @@
 #pragma once
 
+#include <mutex>
 #include <QObject>
 #include <QThreadPool>
 #include <QString>
-#include <mutex>
-
-#include "utils/Utils.h"
 #include <websocketpp/config/asio_no_tls.hpp>
 #include <websocketpp/server.hpp>
 
+#include "utils/Utils.h"
 #include "WebSocketSession.h"
 
 class WebSocketServer : QObject

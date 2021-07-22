@@ -1,8 +1,6 @@
-#include <obs.hpp>
 #include <obs-frontend-api.h>
 
 #include "Utils.h"
-
 #include "../obs-websocket.h"
 #include "../plugin-macros.generated.h"
 

@@ -1,9 +1,9 @@
 #pragma once
 
-#include <obs.hpp>
 #include <string>
 #include <QString>
 #include <QSystemTrayIcon>
+#include <obs.hpp>
 #include <nlohmann/json.hpp>
 
 using json = nlohmann::json;

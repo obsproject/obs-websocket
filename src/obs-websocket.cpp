@@ -6,26 +6,12 @@
 #include <obs-data.h>
 #include <obs-frontend-api.h>
 
+#include "plugin-macros.generated.h"
 #include "obs-websocket.h"
 #include "Config.h"
 #include "WebSocketServer.h"
 #include "eventhandler/EventHandler.h"
 #include "forms/SettingsDialog.h"
-
-#include "plugin-macros.generated.h"
-
-// Auto release definitions
-void ___source_dummy_addref(obs_source_t*) {}
-void ___sceneitem_dummy_addref(obs_sceneitem_t*) {}
-void ___data_dummy_addref(obs_data_t*) {}
-void ___data_array_dummy_addref(obs_data_array_t*) {}
-void ___output_dummy_addref(obs_output_t*) {}
-void ___data_item_dummy_addref(obs_data_item_t*) {}
-void ___data_item_release(obs_data_item_t* dataItem)
-{
-	obs_data_item_release(&dataItem);
-}
-
 
 OBS_DECLARE_MODULE()
 OBS_MODULE_USE_DEFAULT_LOCALE("obs-websocket", "en-US")
@@ -34,6 +20,14 @@ ConfigPtr _config;
 WebSocketServerPtr _webSocketServer;
 EventHandlerPtr _eventHandler;
 SettingsDialog *_settingsDialog = nullptr;
+
+void ___source_dummy_addref(obs_source_t*) {}
+void ___sceneitem_dummy_addref(obs_sceneitem_t*) {};
+void ___data_dummy_addref(obs_data_t*) {};
+void ___data_array_dummy_addref(obs_data_array_t*) {};
+void ___output_dummy_addref(obs_output_t*) {};
+void ___data_item_dummy_addref(obs_data_item_t*) {};
+void ___data_item_release(obs_data_item_t* dataItem){ obs_data_item_release(&dataItem); };
 
 bool obs_module_load(void)
 {
