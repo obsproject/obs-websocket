@@ -208,6 +208,7 @@ RequestResult RequestHandler::SetStreamServiceSettings(const Request& request)
 	if (streamServiceType == requestedStreamServiceType) {
 		OBSDataAutoRelease currentStreamServiceSettings = obs_service_get_settings(currentStreamService);
 
+		// TODO: Add `overlay` field
 		OBSDataAutoRelease newStreamServiceSettings = obs_data_create();
 		obs_data_apply(newStreamServiceSettings, currentStreamServiceSettings);
 		obs_data_apply(newStreamServiceSettings, requestedStreamServiceSettings);

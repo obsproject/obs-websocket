@@ -54,7 +54,7 @@ namespace Utils {
 			std::vector<json> GetSceneItemList(obs_scene_t *scene, bool basic = false);
 			std::vector<json> GetTransitionList();
 			std::vector<json> GetInputList(std::string inputKind = "");
-			std::vector<std::string> GetInputKindList(bool unversioned = false);
+			std::vector<std::string> GetInputKindList(bool unversioned = false, bool includeDisabled = false);
 		}
 
 		namespace SearchHelper {

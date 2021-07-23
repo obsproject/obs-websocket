@@ -316,7 +316,7 @@ std::vector<json> Utils::Obs::ListHelper::GetInputList(std::string inputKind)
 	return inputInfo.inputs;
 }
 
-std::vector<std::string> Utils::Obs::ListHelper::GetInputKindList(bool unversioned)
+std::vector<std::string> Utils::Obs::ListHelper::GetInputKindList(bool unversioned, bool includeDisabled)
 {
 	std::vector<std::string> ret;
 
@@ -326,7 +326,7 @@ std::vector<std::string> Utils::Obs::ListHelper::GetInputKindList(bool unversion
 	while (obs_enum_input_types2(idx++, &kind, &unversioned_kind)) {
 		uint32_t caps = obs_get_source_output_flags(kind);
 
-		if ((caps & OBS_SOURCE_CAP_DISABLED) != 0)
+		if (!includeDisabled && (caps & OBS_SOURCE_CAP_DISABLED) != 0)
 			continue;
 
 		if (unversioned)
