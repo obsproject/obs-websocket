@@ -36,7 +36,7 @@ Here is a list of available web clients: (compatible with tablets and other touc
 
 It is **highly recommended** to protect obs-websocket with a password against unauthorized control. To do this, open the "Websocket server settings" dialog under OBS' "Tools" menu. In the settings dialogs, you can enable or disable authentication and set a password for it.
 
-(Psst. You can use `--websocket_port` and `--websocket_password` on the command line to override the configured values.)
+(Psst. You can use `--websocket_port`(value), `--websocket_password`(value), and `--websocket_debug`(flag) on the command line to override the configured values.)
 
 ### Possible use cases
 
@@ -52,7 +52,7 @@ The protocol understood by the server is documented in [PROTOCOL.md](docs/genera
 Here's a list of available language APIs for obs-websocket :
 - (No known apis supporting 5.0.0)
 
-I'd like to know what you're building with or for obs-websocket. If you do something in this fashion, feel free to drop a message in `#project-showoff` in the [discord server!](https://discord.gg/WBaSQ3A)
+We'd like to know what you're building with or for obs-websocket. If you do something in this fashion, feel free to drop a message in `#project-showoff` in the [discord server!](https://discord.gg/WBaSQ3A)
 
 ### Securing obs-websocket (via TLS/SSL)
 
