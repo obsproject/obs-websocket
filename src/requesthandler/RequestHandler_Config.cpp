@@ -79,9 +79,19 @@ RequestResult RequestHandler::GetProfileParameter(const Request& request)
 
 	config_t* profile = obs_frontend_get_profile_config();
 
+	if (!profile)
+		blog(LOG_ERROR, "Profile invalid.");
+
+	std::string parameterValue = config_get_string(profile, parameterCategory.c_str(), parameterName.c_str());
+	std::string defaultParameterValue = config_get_default_string(profile, parameterCategory.c_str(), parameterName.c_str());
+	if (parameterValue.empty())
+		blog(LOG_INFO, "Parameter value is empty.");
+	if (defaultParameterValue.empty())
+		blog(LOG_INFO, "Default parameter value is empty.");
+
 	json responseData;
-	responseData["parameterValue"] = config_get_string(profile, parameterCategory.c_str(), parameterName.c_str());
-	responseData["defaultParameterValue"] = config_get_default_string(profile, parameterCategory.c_str(), parameterName.c_str());
+	responseData["parameterValue"] = parameterValue;
+	responseData["defaultParameterValue"] = defaultParameterValue;
 
 	return RequestResult::Success(responseData);
 }
