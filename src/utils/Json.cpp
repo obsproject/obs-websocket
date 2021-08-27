@@ -1,4 +1,4 @@
-#include "Utils.h"
+#include "Json.h"
 #include "../plugin-macros.generated.h"
 
 bool Utils::Json::JsonArrayIsValidObsArray(json j)

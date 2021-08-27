@@ -1,8 +1,9 @@
 #include <inttypes.h>
+#include <QString>
 #include <obs-frontend-api.h>
 #include <util/util_uint64.h>
 
-#include "Utils.h"
+#include "Obs.h"
 #include "../obs-websocket.h"
 #include "../plugin-macros.generated.h"
 

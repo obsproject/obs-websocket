@@ -97,10 +97,10 @@ set(obs-websocket_SOURCES
 	src/forms/SettingsDialog.cpp
 	src/forms/ConnectInfo.cpp
 	src/forms/resources.qrc
+    src/utils/Crypto.cpp
 	src/utils/Json.cpp
-	src/utils/Crypto.cpp
-	src/utils/Platform.cpp
 	src/utils/Obs.cpp
+    src/utils/Platform.cpp
 	deps/qr/cpp/QrCode.cpp)
 
 set(obs-websocket_HEADERS
@@ -117,6 +117,10 @@ set(obs-websocket_HEADERS
 	src/requesthandler/rpc/RequestStatus.h
 	src/forms/SettingsDialog.h
 	src/forms/ConnectInfo.h
+	src/utils/Crypto.h
+    src/utils/Json.h
+    src/utils/Obs.h
+	src/utils/Platform.h
 	src/utils/Utils.h
 	deps/qr/cpp/QrCode.hpp)
 

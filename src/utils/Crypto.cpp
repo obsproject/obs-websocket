@@ -1,7 +1,7 @@
 #include <QByteArray>
 #include <QCryptographicHash>
 
-#include "Utils.h"
+#include "Crypto.h"
 #include "../plugin-macros.generated.h"
 
 std::string Utils::Crypto::GenerateSalt()

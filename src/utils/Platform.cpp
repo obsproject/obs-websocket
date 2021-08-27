@@ -4,7 +4,7 @@
 #include <QHostAddress>
 #include <obs-frontend-api.h>
 
-#include "Utils.h"
+#include "Platform.h"
 #include "../plugin-macros.generated.h"
 
 std::string Utils::Platform::GetLocalAddress()
