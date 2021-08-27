@@ -35,6 +35,8 @@ class RequestHandler {
 		RequestResult SetCurrentProfile(const Request&);
 		RequestResult GetProfileParameter(const Request&);
 		RequestResult SetProfileParameter(const Request&);
+		RequestResult GetProfilePersistentData(const Request&);
+		RequestResult SetProfilePersistentData(const Request&);
 		RequestResult GetVideoSettings(const Request&);
 		RequestResult SetVideoSettings(const Request&);
 		RequestResult GetStreamServiceSettings(const Request&);

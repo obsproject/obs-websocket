@@ -124,6 +124,50 @@ RequestResult RequestHandler::SetProfileParameter(const Request& request)
 	return RequestResult::Success();
 }
 
+RequestResult RequestHandler::GetProfilePersistentData(const Request& request)
+{
+	RequestStatus::RequestStatus statusCode;
+	std::string comment;
+	if (!request.ValidateString("slotName", statusCode, comment))
+		return RequestResult::Error(statusCode, comment);
+
+	std::string slotName = request.RequestData["slotName"];
+
+	std::string persistentDataPath = Utils::Obs::StringHelper::GetCurrentProfilePath();
+	persistentDataPath += "/obsWebSocketPersistentData.json";
+
+	json responseData;
+	json persistentData;
+	if (!(Utils::Json::GetJsonFileContent(persistentDataPath, persistentData) && persistentData.contains(slotName)))
+		responseData["slotData"] = nullptr;
+	else
+		responseData["slotData"] = persistentData[slotName];
+
+	return RequestResult::Success(responseData);
+}
+
+RequestResult RequestHandler::SetProfilePersistentData(const Request& request)
+{
+	RequestStatus::RequestStatus statusCode;
+	std::string comment;
+	if (!(request.ValidateString("slotName", statusCode, comment) && request.ValidateBasic("slotName", statusCode, comment)))
+		return RequestResult::Error(statusCode, comment);
+
+	std::string slotName = request.RequestData["slotName"];
+	json slotData = request.RequestData["slotData"];
+
+	std::string persistentDataPath = Utils::Obs::StringHelper::GetCurrentProfilePath();
+	persistentDataPath += "/obsWebSocketPersistentData.json";
+
+	json persistentData = json::object();
+	Utils::Json::GetJsonFileContent(persistentDataPath, persistentData);
+	persistentData[slotName] = slotData;
+	if (!Utils::Json::SetJsonFileContent(persistentDataPath, persistentData))
+		return RequestResult::Error(RequestStatus::RequestProcessingFailed, "Unable to write persistent data. No permissions?");
+
+	return RequestResult::Success();
+}
+
 RequestResult RequestHandler::GetVideoSettings(const Request& request)
 {
 	struct obs_video_info ovi;
