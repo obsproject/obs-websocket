@@ -90,17 +90,17 @@ set(obs-websocket_SOURCES
 	src/requesthandler/RequestHandler_Config.cpp
 	src/requesthandler/RequestHandler_Sources.cpp
 	src/requesthandler/RequestHandler_Scenes.cpp
-    src/requesthandler/RequestHandler_Inputs.cpp
-    src/requesthandler/RequestHandler_Stream.cpp
+	src/requesthandler/RequestHandler_Inputs.cpp
+	src/requesthandler/RequestHandler_Stream.cpp
 	src/requesthandler/rpc/Request.cpp
 	src/requesthandler/rpc/RequestResult.cpp
 	src/forms/SettingsDialog.cpp
 	src/forms/ConnectInfo.cpp
 	src/forms/resources.qrc
-    src/utils/Crypto.cpp
+	src/utils/Crypto.cpp
 	src/utils/Json.cpp
 	src/utils/Obs.cpp
-    src/utils/Platform.cpp
+	src/utils/Platform.cpp
 	deps/qr/cpp/QrCode.cpp)
 
 set(obs-websocket_HEADERS
@@ -118,8 +118,8 @@ set(obs-websocket_HEADERS
 	src/forms/SettingsDialog.h
 	src/forms/ConnectInfo.h
 	src/utils/Crypto.h
-    src/utils/Json.h
-    src/utils/Obs.h
+	src/utils/Json.h
+	src/utils/Obs.h
 	src/utils/Platform.h
 	src/utils/Utils.h
 	deps/qr/cpp/QrCode.hpp)
