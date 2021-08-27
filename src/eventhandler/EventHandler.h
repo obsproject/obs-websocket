@@ -7,6 +7,7 @@
 #include "types/EventSubscription.h"
 #include "../obs-websocket.h"
 #include "../WebSocketServer.h"
+#include "../utils/Obs.h"
 
 template <typename T> T* GetCalldataPointer(const calldata_t *data, const char* name) {
 	void *ptr = nullptr;

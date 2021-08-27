@@ -2,7 +2,8 @@
 
 #include "Config.h"
 #include "plugin-macros.generated.h"
-#include "utils/Utils.h"
+#include "utils/Crypto.h"
+#include "utils/Platform.h"
 
 #define CONFIG_SECTION_NAME "OBSWebSocket"
 

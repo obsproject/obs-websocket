@@ -10,6 +10,8 @@
 #include "eventhandler/types/EventSubscription.h"
 #include "obs-websocket.h"
 #include "Config.h"
+#include "utils/Crypto.h"
+#include "utils/Platform.h"
 #include "plugin-macros.generated.h"
 
 WebSocketServer::WebSocketServer() :

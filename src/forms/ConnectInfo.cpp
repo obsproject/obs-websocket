@@ -6,7 +6,7 @@
 #include "../../deps/qr/cpp/QrCode.hpp"
 #include "../obs-websocket.h"
 #include "../Config.h"
-#include "../utils/Utils.h"
+#include "../utils/Platform.h"
 #include "../plugin-macros.generated.h"
 
 ConnectInfo::ConnectInfo(QWidget* parent) :

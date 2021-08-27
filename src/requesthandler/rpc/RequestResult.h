@@ -1,7 +1,7 @@
 #pragma once
 
 #include "RequestStatus.h"
-#include "../../utils/Utils.h"
+#include "../../utils/Json.h"
 
 struct RequestResult
 {

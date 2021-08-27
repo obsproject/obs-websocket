@@ -1,6 +1,7 @@
 #include <QBuffer>
 #include <QImageWriter>
 #include <QFileInfo>
+#include <QImage>
 #include <QDir>
 
 #include "RequestHandler.h"

@@ -7,7 +7,7 @@
 #include "rpc/Request.h"
 #include "rpc/RequestResult.h"
 #include "../obs-websocket.h"
-#include "../utils/Utils.h"
+#include "../utils/Obs.h"
 
 class RequestHandler;
 typedef RequestResult(RequestHandler::*RequestMethodHandler)(const Request&);
