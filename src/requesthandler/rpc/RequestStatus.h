@@ -103,6 +103,16 @@ namespace RequestStatus {
 		KeyNotFound = 619,
 		// The specified data realm (OBS_WEBSOCKET_DATA_REALM_*) was not found
 		DataRealmNotFound = 620,
+		// The scene collection already exists
+		SceneCollectionAlreadyExists = 621,
+		// There are not enough scene collections to perform the action
+		NotEnoughSceneCollections = 622,
+		// The profile already exists
+		ProfileAlreadyExists = 623,
+		// There are not enough profiles to perform the action
+		NotEnoughProfiles = 624,
+		// There are not enough scenes to perform the action
+		NotEnoughScenes = 625,
 
 		// Processing the request failed unexpectedly
 		RequestProcessingFailed = 700,

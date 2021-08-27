@@ -33,8 +33,11 @@ class RequestHandler {
 		RequestResult SetPersistentData(const Request&);
 		RequestResult GetSceneCollectionList(const Request&);
 		RequestResult SetCurrentSceneCollection(const Request&);
+		RequestResult CreateSceneCollection(const Request&);
 		RequestResult GetProfileList(const Request&);
 		RequestResult SetCurrentProfile(const Request&);
+		RequestResult CreateProfile(const Request&);
+		RequestResult RemoveProfile(const Request&);
 		RequestResult GetProfileParameter(const Request&);
 		RequestResult SetProfileParameter(const Request&);
 		RequestResult GetVideoSettings(const Request&);

@@ -1,3 +1,4 @@
+#include <QMainWindow>
 #include <util/config-file.h>
 
 #include "RequestHandler.h"
@@ -91,6 +92,28 @@ RequestResult RequestHandler::SetCurrentSceneCollection(const Request& request)
 	return RequestResult::Success();
 }
 
+RequestResult RequestHandler::CreateSceneCollection(const Request& request)
+{
+	RequestStatus::RequestStatus statusCode;
+	std::string comment;
+	if (!request.ValidateString("sceneCollectionName", statusCode, comment))
+		return RequestResult::Error(statusCode, comment);
+
+	std::string sceneCollectionName = request.RequestData["sceneCollectionName"];
+
+	auto sceneCollections = Utils::Obs::ListHelper::GetSceneCollectionList();
+	if (std::find(sceneCollections.begin(), sceneCollections.end(), sceneCollectionName) != sceneCollections.end())
+		return RequestResult::Error(RequestStatus::SceneCollectionAlreadyExists);
+
+	QMainWindow* mainWindow = reinterpret_cast<QMainWindow*>(obs_frontend_get_main_window());
+	bool success = false;
+	QMetaObject::invokeMethod(mainWindow, "AddSceneCollection", Qt::BlockingQueuedConnection, Q_RETURN_ARG(bool, success), Q_ARG(bool, true), Q_ARG(QString, QString::fromStdString(sceneCollectionName)));
+	if (!success)
+		return RequestResult::Error(RequestStatus::RequestProcessingFailed, "Failed to create the scene collection for an unknown reason");
+
+	return RequestResult::Success();
+}
+
 RequestResult RequestHandler::GetProfileList(const Request& request)
 {
 	json responseData;
@@ -119,6 +142,47 @@ RequestResult RequestHandler::SetCurrentProfile(const Request& request)
 			obs_frontend_set_current_profile(reinterpret_cast<const char*>(param));
 		}, (void*)profileName.c_str(), true);
 	}
+
+	return RequestResult::Success();
+}
+
+RequestResult RequestHandler::CreateProfile(const Request& request)
+{
+	RequestStatus::RequestStatus statusCode;
+	std::string comment;
+	if (!request.ValidateString("profileName", statusCode, comment))
+		return RequestResult::Error(statusCode, comment);
+
+	std::string profileName = request.RequestData["profileName"];
+
+	auto profiles = Utils::Obs::ListHelper::GetProfileList();
+	if (std::find(profiles.begin(), profiles.end(), profileName) != profiles.end())
+		return RequestResult::Error(RequestStatus::ProfileAlreadyExists);
+
+	QMainWindow* mainWindow = reinterpret_cast<QMainWindow*>(obs_frontend_get_main_window());
+	QMetaObject::invokeMethod(mainWindow, "NewProfile", Qt::BlockingQueuedConnection, Q_ARG(QString, QString::fromStdString(profileName)));
+
+	return RequestResult::Success();
+}
+
+RequestResult RequestHandler::RemoveProfile(const Request& request)
+{
+	RequestStatus::RequestStatus statusCode;
+	std::string comment;
+	if (!request.ValidateString("profileName", statusCode, comment))
+		return RequestResult::Error(statusCode, comment);
+
+	std::string profileName = request.RequestData["profileName"];
+
+	auto profiles = Utils::Obs::ListHelper::GetProfileList();
+	if (std::find(profiles.begin(), profiles.end(), profileName) == profiles.end())
+		return RequestResult::Error(RequestStatus::ProfileNotFound);
+
+	if (profiles.size() < 2)
+		return RequestResult::Error(RequestStatus::NotEnoughProfiles);
+
+	QMainWindow* mainWindow = reinterpret_cast<QMainWindow*>(obs_frontend_get_main_window());
+	QMetaObject::invokeMethod(mainWindow, "DeleteProfile", Qt::BlockingQueuedConnection, Q_ARG(QString, QString::fromStdString(profileName)));
 
 	return RequestResult::Success();
 }
