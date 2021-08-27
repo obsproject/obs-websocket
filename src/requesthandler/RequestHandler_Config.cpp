@@ -24,9 +24,9 @@ RequestResult RequestHandler::GetPersistentData(const Request& request)
 	json responseData;
 	json persistentData;
 	if (!(Utils::Json::GetJsonFileContent(persistentDataPath, persistentData) && persistentData.contains(slotName)))
-		responseData["slotData"] = nullptr;
+		responseData["slotValue"] = nullptr;
 	else
-		responseData["slotData"] = persistentData[slotName];
+		responseData["slotValue"] = persistentData[slotName];
 
 	return RequestResult::Success(responseData);
 }
@@ -40,7 +40,7 @@ RequestResult RequestHandler::SetPersistentData(const Request& request)
 
 	std::string realm = request.RequestData["realm"];
 	std::string slotName = request.RequestData["slotName"];
-	json slotData = request.RequestData["slotData"];
+	json slotValue = request.RequestData["slotValue"];
 
 	std::string persistentDataPath = Utils::Obs::StringHelper::GetCurrentProfilePath();
 	if (realm == "OBS_WEBSOCKET_DATA_REALM_GLOBAL")
@@ -52,7 +52,7 @@ RequestResult RequestHandler::SetPersistentData(const Request& request)
 
 	json persistentData = json::object();
 	Utils::Json::GetJsonFileContent(persistentDataPath, persistentData);
-	persistentData[slotName] = slotData;
+	persistentData[slotName] = slotValue;
 	if (!Utils::Json::SetJsonFileContent(persistentDataPath, persistentData))
 		return RequestResult::Error(RequestStatus::RequestProcessingFailed, "Unable to write persistent data. No permissions?");
 
