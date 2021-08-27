@@ -53,13 +53,15 @@ class RequestHandler {
 		RequestResult SetCurrentProgramScene(const Request&);
 		RequestResult GetCurrentPreviewScene(const Request&);
 		RequestResult SetCurrentPreviewScene(const Request&);
-		RequestResult SetSceneName(const Request&);
 		RequestResult CreateScene(const Request&);
 		RequestResult RemoveScene(const Request&);
+		RequestResult SetSceneName(const Request&);
 
 		// Inputs
 		RequestResult GetInputList(const Request&);
 		RequestResult GetInputKindList(const Request&);
+		RequestResult CreateInput(const Request&);
+		RequestResult SetInputName(const Request&);
 		RequestResult GetInputDefaultSettings(const Request&);
 		RequestResult GetInputSettings(const Request&);
 		RequestResult SetInputSettings(const Request&);
@@ -68,8 +70,6 @@ class RequestHandler {
 		RequestResult ToggleInputMute(const Request&);
 		RequestResult GetInputVolume(const Request&);
 		RequestResult SetInputVolume(const Request&);
-		RequestResult SetInputName(const Request&);
-		RequestResult CreateInput(const Request&);
 
 		// Stream
 		RequestResult GetStreamStatus(const Request&);

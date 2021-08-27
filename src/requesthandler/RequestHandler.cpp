@@ -38,13 +38,15 @@ const std::map<std::string, RequestMethodHandler> RequestHandler::_handlerMap
 	{"SetCurrentProgramScene", &RequestHandler::SetCurrentProgramScene},
 	{"GetCurrentPreviewScene", &RequestHandler::GetCurrentPreviewScene},
 	{"SetCurrentPreviewScene", &RequestHandler::SetCurrentPreviewScene},
-	{"SetSceneName", &RequestHandler::SetSceneName},
 	{"CreateScene", &RequestHandler::CreateScene},
 	{"RemoveScene", &RequestHandler::RemoveScene},
+	{"SetSceneName", &RequestHandler::SetSceneName},
 
 	// Inputs
 	{"GetInputList", &RequestHandler::GetInputList},
 	{"GetInputKindList", &RequestHandler::GetInputKindList},
+	{"CreateInput", &RequestHandler::CreateInput},
+	{"SetInputName", &RequestHandler::SetInputName},
 	{"GetInputDefaultSettings", &RequestHandler::GetInputDefaultSettings},
 	{"GetInputSettings", &RequestHandler::GetInputSettings},
 	{"SetInputSettings", &RequestHandler::SetInputSettings},
@@ -53,8 +55,6 @@ const std::map<std::string, RequestMethodHandler> RequestHandler::_handlerMap
 	{"ToggleInputMute", &RequestHandler::ToggleInputMute},
 	{"GetInputVolume", &RequestHandler::GetInputVolume},
 	{"SetInputVolume", &RequestHandler::SetInputVolume},
-	{"SetInputName", &RequestHandler::SetInputName},
-	{"CreateInput", &RequestHandler::CreateInput},
 
 	// Stream
 	{"GetStreamStatus", &RequestHandler::GetStreamStatus},
