@@ -14,14 +14,14 @@ const std::map<std::string, RequestMethodHandler> RequestHandler::_handlerMap
 	{"Sleep", &RequestHandler::Sleep},
 
 	// Config
+	{"GetPersistentData", &RequestHandler::GetPersistentData},
+	{"SetPersistentData", &RequestHandler::SetPersistentData},
 	{"GetSceneCollectionList", &RequestHandler::GetSceneCollectionList},
 	{"SetCurrentSceneCollection", &RequestHandler::SetCurrentSceneCollection},
 	{"GetProfileList", &RequestHandler::GetProfileList},
 	{"SetCurrentProfile", &RequestHandler::SetCurrentProfile},
 	{"GetProfileParameter", &RequestHandler::GetProfileParameter},
 	{"SetProfileParameter", &RequestHandler::SetProfileParameter},
-	{"GetProfilePersistentData", &RequestHandler::GetProfilePersistentData},
-	{"SetProfilePersistentData", &RequestHandler::SetProfilePersistentData},
 	{"GetVideoSettings", &RequestHandler::GetVideoSettings},
 	{"SetVideoSettings", &RequestHandler::SetVideoSettings},
 	{"GetStreamServiceSettings", &RequestHandler::GetStreamServiceSettings},

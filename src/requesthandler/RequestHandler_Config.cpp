@@ -3,6 +3,62 @@
 #include "RequestHandler.h"
 #include "../plugin-macros.generated.h"
 
+RequestResult RequestHandler::GetPersistentData(const Request& request)
+{
+	RequestStatus::RequestStatus statusCode;
+	std::string comment;
+	if (!(request.ValidateString("realm", statusCode, comment) && request.ValidateString("slotName", statusCode, comment)))
+		return RequestResult::Error(statusCode, comment);
+
+	std::string realm = request.RequestData["realm"];
+	std::string slotName = request.RequestData["slotName"];
+
+	std::string persistentDataPath = Utils::Obs::StringHelper::GetCurrentProfilePath();
+	if (realm == "OBS_WEBSOCKET_DATA_REALM_GLOBAL")
+		persistentDataPath += "../../../obsWebSocketPersistentData.json";
+	else if (realm == "OBS_WEBSOCKET_DATA_REALM_PROFILE")
+		persistentDataPath += "/obsWebSocketPersistentData.json";
+	else
+		return RequestResult::Error(RequestStatus::DataRealmNotFound, "You have specified an invalid persistent data realm.");
+
+	json responseData;
+	json persistentData;
+	if (!(Utils::Json::GetJsonFileContent(persistentDataPath, persistentData) && persistentData.contains(slotName)))
+		responseData["slotData"] = nullptr;
+	else
+		responseData["slotData"] = persistentData[slotName];
+
+	return RequestResult::Success(responseData);
+}
+
+RequestResult RequestHandler::SetPersistentData(const Request& request)
+{
+	RequestStatus::RequestStatus statusCode;
+	std::string comment;
+	if (!(request.ValidateString("realm", statusCode, comment) && request.ValidateString("slotName", statusCode, comment) && request.ValidateBasic("slotName", statusCode, comment)))
+		return RequestResult::Error(statusCode, comment);
+
+	std::string realm = request.RequestData["realm"];
+	std::string slotName = request.RequestData["slotName"];
+	json slotData = request.RequestData["slotData"];
+
+	std::string persistentDataPath = Utils::Obs::StringHelper::GetCurrentProfilePath();
+	if (realm == "OBS_WEBSOCKET_DATA_REALM_GLOBAL")
+		persistentDataPath += "../../../obsWebSocketPersistentData.json";
+	else if (realm == "OBS_WEBSOCKET_DATA_REALM_PROFILE")
+		persistentDataPath += "/obsWebSocketPersistentData.json";
+	else
+		return RequestResult::Error(RequestStatus::DataRealmNotFound, "You have specified an invalid persistent data realm.");
+
+	json persistentData = json::object();
+	Utils::Json::GetJsonFileContent(persistentDataPath, persistentData);
+	persistentData[slotName] = slotData;
+	if (!Utils::Json::SetJsonFileContent(persistentDataPath, persistentData))
+		return RequestResult::Error(RequestStatus::RequestProcessingFailed, "Unable to write persistent data. No permissions?");
+
+	return RequestResult::Success();
+}
+
 RequestResult RequestHandler::GetSceneCollectionList(const Request& request)
 {
 	json responseData;
@@ -121,50 +177,6 @@ RequestResult RequestHandler::SetProfileParameter(const Request& request)
 		return RequestResult::Error(RequestStatus::InvalidRequestParameterDataType, "The parameter `parameterValue` must be a string.");
 	}
 	
-	return RequestResult::Success();
-}
-
-RequestResult RequestHandler::GetProfilePersistentData(const Request& request)
-{
-	RequestStatus::RequestStatus statusCode;
-	std::string comment;
-	if (!request.ValidateString("slotName", statusCode, comment))
-		return RequestResult::Error(statusCode, comment);
-
-	std::string slotName = request.RequestData["slotName"];
-
-	std::string persistentDataPath = Utils::Obs::StringHelper::GetCurrentProfilePath();
-	persistentDataPath += "/obsWebSocketPersistentData.json";
-
-	json responseData;
-	json persistentData;
-	if (!(Utils::Json::GetJsonFileContent(persistentDataPath, persistentData) && persistentData.contains(slotName)))
-		responseData["slotData"] = nullptr;
-	else
-		responseData["slotData"] = persistentData[slotName];
-
-	return RequestResult::Success(responseData);
-}
-
-RequestResult RequestHandler::SetProfilePersistentData(const Request& request)
-{
-	RequestStatus::RequestStatus statusCode;
-	std::string comment;
-	if (!(request.ValidateString("slotName", statusCode, comment) && request.ValidateBasic("slotName", statusCode, comment)))
-		return RequestResult::Error(statusCode, comment);
-
-	std::string slotName = request.RequestData["slotName"];
-	json slotData = request.RequestData["slotData"];
-
-	std::string persistentDataPath = Utils::Obs::StringHelper::GetCurrentProfilePath();
-	persistentDataPath += "/obsWebSocketPersistentData.json";
-
-	json persistentData = json::object();
-	Utils::Json::GetJsonFileContent(persistentDataPath, persistentData);
-	persistentData[slotName] = slotData;
-	if (!Utils::Json::SetJsonFileContent(persistentDataPath, persistentData))
-		return RequestResult::Error(RequestStatus::RequestProcessingFailed, "Unable to write persistent data. No permissions?");
-
 	return RequestResult::Success();
 }
 

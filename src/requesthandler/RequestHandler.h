@@ -29,14 +29,14 @@ class RequestHandler {
 		RequestResult Sleep(const Request&);
 
 		// Config
+		RequestResult GetPersistentData(const Request&);
+		RequestResult SetPersistentData(const Request&);
 		RequestResult GetSceneCollectionList(const Request&);
 		RequestResult SetCurrentSceneCollection(const Request&);
 		RequestResult GetProfileList(const Request&);
 		RequestResult SetCurrentProfile(const Request&);
 		RequestResult GetProfileParameter(const Request&);
 		RequestResult SetProfileParameter(const Request&);
-		RequestResult GetProfilePersistentData(const Request&);
-		RequestResult SetProfilePersistentData(const Request&);
 		RequestResult GetVideoSettings(const Request&);
 		RequestResult SetVideoSettings(const Request&);
 		RequestResult GetStreamServiceSettings(const Request&);
