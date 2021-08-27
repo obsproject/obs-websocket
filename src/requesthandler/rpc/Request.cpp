@@ -10,11 +10,12 @@ json GetDefaultJsonObject(json requestData)
 		return requestData;
 }
 
-Request::Request(uint8_t rpcVersion, bool ignoreNonFatalRequestChecks, std::string requestType, json requestData) :
-	RpcVersion(rpcVersion),
-	IgnoreNonFatalRequestChecks(ignoreNonFatalRequestChecks),
-	RequestData(GetDefaultJsonObject(requestData)),
-	RequestType(requestType)
+Request::Request(SessionPtr session, std::string requestType, json requestData) :
+	Session(session),
+	RpcVersion(session->RpcVersion()),
+	IgnoreNonFatalRequestChecks(session->IgnoreNonFatalRequestChecks()),
+	RequestType(requestType),
+	RequestData(GetDefaultJsonObject(requestData))
 {
 }
 

@@ -40,6 +40,16 @@ RequestResult RequestHandler::BroadcastCustomEvent(const Request& request)
 	return RequestResult::Success();
 }
 
+RequestResult RequestHandler::GetStats(const Request& request)
+{
+	json responseData = Utils::Obs::DataHelper::GetStats();
+
+	responseData["webSocketSessionIncomingMessages"] = request.Session->IncomingMessages();
+	responseData["webSocketSessionOutgoingMessages"] = request.Session->OutgoingMessages();
+
+	return RequestResult::Success(responseData);
+}
+
 RequestResult RequestHandler::GetHotkeyList(const Request& request)
 {
 	json responseData;

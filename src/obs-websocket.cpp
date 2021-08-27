@@ -20,6 +20,7 @@ ConfigPtr _config;
 WebSocketServerPtr _webSocketServer;
 EventHandlerPtr _eventHandler;
 SettingsDialog *_settingsDialog = nullptr;
+os_cpu_usage_info_t* _cpuUsageInfo;
 
 void ___source_dummy_addref(obs_source_t*) {}
 void ___sceneitem_dummy_addref(obs_sceneitem_t*) {};
@@ -55,11 +56,13 @@ bool obs_module_load(void)
 	QAction* menuAction = (QAction*)obs_frontend_add_tools_menu_qaction(menuActionText);
 	QObject::connect(menuAction, &QAction::triggered, [] { _settingsDialog->ToggleShowHide(); });
 
-	// Loading finished
-	blog(LOG_INFO, "[obs_module_load] Module loaded.");
+	_cpuUsageInfo = os_cpu_usage_info_start();
 
 	if (_config->ServerEnabled)
 		_webSocketServer->Start();
+
+	// Loading finished
+	blog(LOG_INFO, "[obs_module_load] Module loaded.");
 
 	return true;
 }
@@ -80,6 +83,8 @@ void obs_module_unload()
 	_config->Save();
 	_config.reset();
 
+	os_cpu_usage_info_destroy(_cpuUsageInfo);
+
 	blog(LOG_INFO, "[obs_module_unload] Finished shutting down.");
 }
 
@@ -96,4 +101,9 @@ WebSocketServerPtr GetWebSocketServer()
 EventHandlerPtr GetEventHandler()
 {
 	return _eventHandler;
+}
+
+os_cpu_usage_info_t* GetCpuUsageInfo()
+{
+	return _cpuUsageInfo;
 }

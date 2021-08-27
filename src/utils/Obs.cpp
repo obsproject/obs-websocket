@@ -1,6 +1,7 @@
 #include <inttypes.h>
 #include <QString>
 #include <obs-frontend-api.h>
+#include <util/config-file.h>
 #include <util/util_uint64.h>
 
 #include "Obs.h"
@@ -328,6 +329,29 @@ std::vector<std::string> Utils::Obs::ListHelper::GetInputKindList(bool unversion
 		else
 			ret.push_back(kind);
 	}
+
+	return ret;
+}
+
+json Utils::Obs::DataHelper::GetStats()
+{
+	json ret;
+
+	config_t* currentProfile = obs_frontend_get_profile_config();
+	const char* outputMode = config_get_string(currentProfile, "Output", "Mode");
+	const char* recordPath = strcmp(outputMode, "Advanced") ? config_get_string(currentProfile, "SimpleOutput", "FilePath") : config_get_string(currentProfile, "AdvOut", "RecFilePath");
+
+	video_t* video = obs_get_video();
+
+	ret["cpuUsage"] = os_cpu_usage_info_query(GetCpuUsageInfo());
+	ret["memoryUsage"] = (double)os_get_proc_resident_size() / (1024.0 * 1024.0);
+	ret["availableDiskSpace"] = (double)os_get_free_disk_space(recordPath) / (1024.0 * 1024.0);
+	ret["activeFps"] = obs_get_active_fps();
+	ret["averageFrameRenderTime"] = (double)obs_get_average_frame_time_ns() / 1000000.0;
+	ret["renderSkippedFrames"] = obs_get_lagged_frames();
+	ret["renderTotalFrames"] = obs_get_total_frames();
+	ret["outputSkippedFrames"] = video_output_get_skipped_frames(video);
+	ret["outputTotalFrames"] = video_output_get_total_frames(video);
 
 	return ret;
 }

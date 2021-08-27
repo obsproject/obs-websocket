@@ -6,6 +6,7 @@ const std::map<std::string, RequestMethodHandler> RequestHandler::_handlerMap
 	// General
 	{"GetVersion", &RequestHandler::GetVersion},
 	{"BroadcastCustomEvent", &RequestHandler::BroadcastCustomEvent},
+	{"GetStats", &RequestHandler::GetStats},
 	{"GetHotkeyList", &RequestHandler::GetHotkeyList},
 	{"TriggerHotkeyByName", &RequestHandler::TriggerHotkeyByName},
 	{"TriggerHotkeyByKeySequence", &RequestHandler::TriggerHotkeyByKeySequence},

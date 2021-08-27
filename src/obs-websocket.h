@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <obs.hpp>
+#include <util/platform.h>
 
 // Autorelease object definitions
 void ___source_dummy_addref(obs_source_t*);
@@ -39,3 +40,5 @@ ConfigPtr GetConfig();
 WebSocketServerPtr GetWebSocketServer();
 
 EventHandlerPtr GetEventHandler();
+
+os_cpu_usage_info_t* GetCpuUsageInfo();

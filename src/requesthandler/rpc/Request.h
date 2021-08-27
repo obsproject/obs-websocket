@@ -1,11 +1,12 @@
 #pragma once
 
 #include "RequestStatus.h"
+#include "../../WebSocketSession.h"
 #include "../../utils/Utils.h"
 
 struct Request
 {
-	Request(const uint8_t rpcVersion, const bool ignoreNonFatalRequestChecks, const std::string requestType, const json requestData = nullptr);
+	Request(SessionPtr session, const std::string requestType, const json requestData = nullptr);
 
 	const bool HasRequestData() const
 	{
@@ -22,6 +23,7 @@ struct Request
 	obs_source_t *ValidateScene(const std::string keyName, RequestStatus::RequestStatus &statusCode, std::string &comment) const;
 	obs_source_t *ValidateInput(const std::string keyName, RequestStatus::RequestStatus &statusCode, std::string &comment) const;
 
+	SessionPtr Session;
 	const uint8_t RpcVersion;
 	const bool IgnoreNonFatalRequestChecks;
 	const std::string RequestType;

@@ -101,7 +101,7 @@ WebSocketProtocol::ProcessResult WebSocketProtocol::ProcessMessage(SessionPtr se
 		}
 
 		RequestHandler requestHandler;
-		Request request(session->RpcVersion(), session->IgnoreNonFatalRequestChecks(), incomingMessage["requestType"], incomingMessage["requestData"]);
+		Request request(session, incomingMessage["requestType"], incomingMessage["requestData"]);
 
 		RequestResult requestResult = requestHandler.ProcessRequest(request);
 
@@ -144,7 +144,7 @@ WebSocketProtocol::ProcessResult WebSocketProtocol::ProcessMessage(SessionPtr se
 			if (!requestJson["requestType"].is_string())
 				requestJson["requestType"] = "";
 
-			Request request(session->RpcVersion(), session->IgnoreNonFatalRequestChecks(), requestJson["requestType"], requestJson["requestData"]);
+			Request request(session, requestJson["requestType"], requestJson["requestData"]);
 
 			RequestResult requestResult = requestHandler.ProcessRequest(request);
 

@@ -5,6 +5,25 @@
 
 #include "Json.h"
 
+enum ObsOutputState {
+	OBS_WEBSOCKET_OUTPUT_STARTING,
+	OBS_WEBSOCKET_OUTPUT_STARTED,
+	OBS_WEBSOCKET_OUTPUT_STOPPING,
+	OBS_WEBSOCKET_OUTPUT_STOPPED,
+	OBS_WEBSOCKET_OUTPUT_RECONNECTING,
+	OBS_WEBSOCKET_OUTPUT_PAUSED,
+	OBS_WEBSOCKET_OUTPUT_RESUMED
+};
+
+enum ObsMediaInputAction {
+	OBS_WEBSOCKET_MEDIA_INPUT_ACTION_PAUSE,
+	OBS_WEBSOCKET_MEDIA_INPUT_ACTION_PLAY,
+	OBS_WEBSOCKET_MEDIA_INPUT_ACTION_RESTART,
+	OBS_WEBSOCKET_MEDIA_INPUT_ACTION_STOP,
+	OBS_WEBSOCKET_MEDIA_INPUT_ACTION_NEXT,
+	OBS_WEBSOCKET_MEDIA_INPUT_ACTION_PREVIOUS
+};
+
 namespace Utils {
 	namespace Obs {
 		namespace StringHelper {
@@ -33,6 +52,10 @@ namespace Utils {
 			std::vector<json> GetTransitionList();
 			std::vector<json> GetInputList(std::string inputKind = "");
 			std::vector<std::string> GetInputKindList(bool unversioned = false, bool includeDisabled = false);
+		}
+
+		namespace DataHelper {
+			json GetStats();
 		}
 
 		namespace SearchHelper {
