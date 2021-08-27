@@ -1,4 +1,5 @@
 #include "Json.h"
+#include "Platform.h"
 #include "../plugin-macros.generated.h"
 
 bool Utils::Json::JsonArrayIsValidObsArray(json j)
@@ -151,4 +152,25 @@ json Utils::Json::ObsDataToJson(obs_data_t *d, bool includeDefault)
 	}
 
 	return j;
+}
+
+bool Utils::Json::GetJsonFileContent(std::string fileName, json &content)
+{
+	std::string textContent;
+	if (!Utils::Platform::GetTextFileContent(fileName, textContent))
+		return false;
+
+	try {
+		content = json::parse(textContent);
+	} catch (json::parse_error& e) {
+		blog(LOG_WARNING, "Failed to decode content of JSON file `%s`. Error: %s", fileName.c_str(), e.what()); 
+		return false;
+	}
+	return true;
+}
+
+bool Utils::Json::SetJsonFileContent(std::string fileName, json content, bool createNew)
+{
+	std::string textContent = content.dump(2);
+	return Utils::Platform::SetTextFileContent(fileName, textContent, createNew);
 }
