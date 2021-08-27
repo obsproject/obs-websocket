@@ -80,18 +80,19 @@ RequestResult RequestHandler::GetProfileParameter(const Request& request)
 	config_t* profile = obs_frontend_get_profile_config();
 
 	if (!profile)
-		blog(LOG_ERROR, "Profile invalid.");
-
-	std::string parameterValue = config_get_string(profile, parameterCategory.c_str(), parameterName.c_str());
-	std::string defaultParameterValue = config_get_default_string(profile, parameterCategory.c_str(), parameterName.c_str());
-	if (parameterValue.empty())
-		blog(LOG_INFO, "Parameter value is empty.");
-	if (defaultParameterValue.empty())
-		blog(LOG_INFO, "Default parameter value is empty.");
+		blog(LOG_ERROR, "[RequestHandler::GetProfileParameter] Profile is invalid.");
 
 	json responseData;
-	responseData["parameterValue"] = parameterValue;
-	responseData["defaultParameterValue"] = defaultParameterValue;
+	if (config_has_default_value(profile, parameterCategory.c_str(), parameterName.c_str())) {
+		responseData["parameterValue"] = config_get_string(profile, parameterCategory.c_str(), parameterName.c_str());
+		responseData["defaultParameterValue"] = config_get_default_string(profile, parameterCategory.c_str(), parameterName.c_str());
+	} else if (config_has_user_value(profile, parameterCategory.c_str(), parameterName.c_str())) {
+		responseData["parameterValue"] = config_get_string(profile, parameterCategory.c_str(), parameterName.c_str());
+		responseData["defaultParameterValue"] = nullptr;
+	} else {
+		responseData["parameterValue"] = nullptr;
+		responseData["defaultParameterValue"] = nullptr;
+	}
 
 	return RequestResult::Success(responseData);
 }
