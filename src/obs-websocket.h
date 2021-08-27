@@ -2,7 +2,13 @@
 
 #include <memory>
 #include <obs.hpp>
+#ifdef _MSC_VER
+    #pragma push_macro("strtoll")
+#endif
 #include <util/platform.h>
+#ifdef _MSC_VER
+    #pragma pop_macro("strtoll")
+#endif
 
 // Autorelease object definitions
 void ___source_dummy_addref(obs_source_t*);
