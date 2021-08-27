@@ -55,6 +55,14 @@ std::string Utils::Obs::StringHelper::GetCurrentProfile()
 	return ret;
 }
 
+std::string Utils::Obs::StringHelper::GetCurrentProfilePath()
+{
+	char *profilePath = obs_frontend_get_current_profile_path();
+	std::string ret = profilePath;
+	bfree(profilePath);
+	return ret;
+}
+
 std::string Utils::Obs::StringHelper::GetSourceTypeString(obs_source_t *source)
 {
 	obs_source_type sourceType = obs_source_get_type(source);
