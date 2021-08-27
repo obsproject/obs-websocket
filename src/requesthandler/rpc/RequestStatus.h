@@ -101,6 +101,8 @@ namespace RequestStatus {
 		PropertyNotFound = 618,
 		// The specififed key (OBS_KEY_*) was not found
 		KeyNotFound = 619,
+		// The specified data realm (OBS_WEBSOCKET_DATA_REALM_*) was not found
+		DataRealmNotFound = 620,
 
 		// Processing the request failed unexpectedly
 		RequestProcessingFailed = 700,
