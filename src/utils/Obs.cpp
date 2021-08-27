@@ -197,20 +197,19 @@ std::vector<std::string> Utils::Obs::ListHelper::GetHotkeyNameList()
 
 std::vector<json> Utils::Obs::ListHelper::GetSceneList()
 {
-	obs_frontend_source_list sceneList = {};
-	obs_frontend_get_scenes(&sceneList);
-
 	std::vector<json> ret;
-	for (size_t i = 0; i < sceneList.sources.num; i++) {
-		obs_source_t *scene = sceneList.sources.array[i];
+	auto sceneEnumProc = [](void *param, obs_source_t *scene) {
+		auto ret = reinterpret_cast<std::vector<json>*>(param);
+
 		json sceneJson;
 		sceneJson["sceneName"] = obs_source_get_name(scene);
-		sceneJson["sceneIndex"] = sceneList.sources.num - (i + 1);
 		sceneJson["isGroup"] = obs_source_is_group(scene);
-		ret.push_back(sceneJson);
-	}
 
-	obs_frontend_source_list_free(&sceneList);
+		ret->push_back(sceneJson);
+		return true;
+	};
+
+	obs_enum_scenes(sceneEnumProc, &ret);
 
 	return ret;
 }
@@ -276,7 +275,7 @@ std::vector<json> Utils::Obs::ListHelper::GetTransitionList()
 }
 
 struct EnumInputInfo {
-	std::string inputKind;
+	std::string inputKind; // For searching by input kind
 	std::vector<json> inputs;
 };
 
