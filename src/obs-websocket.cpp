@@ -47,7 +47,7 @@ bool obs_module_load(void)
 	_eventHandler = EventHandlerPtr(new EventHandler(_webSocketServer));
 
 	obs_frontend_push_ui_translation(obs_module_get_string);
-	QMainWindow* mainWindow = (QMainWindow*)obs_frontend_get_main_window();
+	QMainWindow* mainWindow = reinterpret_cast<QMainWindow*>(obs_frontend_get_main_window());
 	_settingsDialog = new SettingsDialog(mainWindow);
 	obs_frontend_pop_ui_translation();
 
