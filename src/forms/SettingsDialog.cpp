@@ -70,6 +70,7 @@ void SettingsDialog::showEvent(QShowEvent *event)
 	ui->enableAuthenticationCheckBox->setChecked(conf->AuthRequired);
 	ui->serverPasswordLineEdit->setText(conf->ServerPassword);
 	ui->serverPasswordLineEdit->setEnabled(conf->AuthRequired);
+	ui->generatePasswordButton->setEnabled(conf->AuthRequired);
 	ui->serverPortSpinBox->setValue(conf->ServerPort);
 
 	if (conf->PortOverridden) {
@@ -79,6 +80,7 @@ void SettingsDialog::showEvent(QShowEvent *event)
 	if (conf->PasswordOverridden) {
 		ui->enableAuthenticationCheckBox->setEnabled(false);
 		ui->serverPasswordLineEdit->setEnabled(false);
+		ui->generatePasswordButton->setEnabled(false);
 	}
 
 	passwordManuallyEdited = false;
