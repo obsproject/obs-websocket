@@ -66,7 +66,7 @@ WebSocketProtocol::ProcessResult WebSocketProtocol::ProcessMessage(SessionPtr se
 
 	if (!incomingMessage.contains("messageType")) {
 		if (incomingMessage.contains("request-type")) {
-			blog(LOG_WARNING, "Client %s appears to be running a pre-5.0.0 protocol.", session->RemoteAddress().c_str());
+			blog(LOG_WARNING, "[WebSocketProtocol::ProcessMessage] Client %s appears to be running a pre-5.0.0 protocol.", session->RemoteAddress().c_str());
 			ret.closeCode = WebSocketServer::WebSocketCloseCode::UnsupportedProtocolVersion;
 			ret.closeReason = "You appear to be attempting to connect with the pre-5.0.0 plugin protocol. Check to make sure your client is updated.";
 			return ret;
