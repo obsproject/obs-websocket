@@ -133,7 +133,7 @@ void WebSocketProtocol::ProcessMessage(SessionPtr session, WebSocketProtocol::Pr
 				Utils::Platform::SendTrayNotification(QSystemTrayIcon::Information, title, body);
 			}
 
-			ret.result["op"] = 3;
+			ret.result["op"] = 2;
 			ret.result["d"]["negotiatedRpcVersion"] = session->RpcVersion();
 			} return;
 		case 3: { // Reidentify
@@ -144,7 +144,7 @@ void WebSocketProtocol::ProcessMessage(SessionPtr session, WebSocketProtocol::Pr
 				return;
 			}
 
-			ret.result["op"] = 3;
+			ret.result["op"] = 2;
 			ret.result["d"]["negotiatedRpcVersion"] = session->RpcVersion();
 			} return;
 		case 6: { // Request
