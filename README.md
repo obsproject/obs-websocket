@@ -32,7 +32,7 @@ brew install obs-websocket
 
 Here is a list of available web clients: (compatible with tablets and other touch interfaces)
 
-- (No known clients supporting 5.0.0)
+- Python 3.7+ (Asyncio): [simpleobsws](https://github.com/IRLToolkit/simpleobsws/tree/master) by IRLToolkit
 
 It is **highly recommended** to protect obs-websocket with a password against unauthorized control. To do this, open the "Websocket server settings" dialog under OBS' "Tools" menu. In the settings dialogs, you can enable or disable authentication and set a password for it.
 
