@@ -20,17 +20,17 @@ obs-websocket provides a feature-rich RPC communication protocol, giving access 
   - [Creating an authentication string](#creating-an-authentication-string)
   - [Enumerations](#enumerations)
 - [Base message types](#message-types)
-  - [Hello](#hello)
-  - [Identify](#identify)
-  - [Identified](#identified)
-  - [Reidentify](#reidentify)
-  - [Event](#event)
-  - [Request](#request)
-  - [RequestResponse](#requestresponse)
-  - [RequestBatch](#requestbatch)
-  - [RequestBatchResponse](#requestbatchresponse)
-- [Requests](#requests)
+  - [OpCode 0 Hello](#hello)
+  - [OpCode 1 Identify](#identify)
+  - [OpCode 2 Identified](#identified)
+  - [OpCode 3 Reidentify](#reidentify)
+  - [OpCode 5 Event](#event)
+  - [OpCode 6 Request](#request)
+  - [OpCode 7 RequestResponse](#requestresponse)
+  - [OpCode 8 RequestBatch](#requestbatch)
+  - [OpCode 9 RequestBatchResponse](#requestbatchresponse)
 - [Events](#events)
+- [Requests](#requests)
 
 
 ## Connecting to obs-websocket
@@ -41,44 +41,44 @@ Here's info on how to connect to obs-websocket
 ### Connection steps
 These steps should be followed precisely. Failure to connect to the server as instructed will likely result in your client being treated in an undefined way.
 
-- Initial HTTP request made to obs-websocket server.
+- Initial HTTP request made to the obs-websocket server.
   - HTTP request headers can be used to set the websocket communication type. The default format is JSON. Example headers:
     - `Content-Type: application/json`
     - `Content-Type: application/msgpack`
-  - If an invalid `Content-Type` is specified, the connection will be closed with [`WebSocketCloseCode::InvalidContentType`](#websocketclosecode-enum) after upgrade (but before [`Hello`](#hello)).
+  - If an invalid `Content-Type` is specified, the connection will be closed with [`WebSocketCloseCode::InvalidContentType`](#websocketclosecode-enum) after upgrade (but before `Hello`).
 
-- Once the connection is upgraded, the websocket server will immediately send a [`Hello`](#hello) message to the client.
+- Once the connection is upgraded, the websocket server will immediately send an [OpCode 0 `Hello`](#hello) message to the client.
 
-- The client listens for the [`Hello`](#hello) and responds with an [`Identify`](#identify) containing all appropriate session parameters.
+- The client listens for the `Hello` and responds with an [OpCode 1 `Identify`](#identify) containing all appropriate session parameters.
+  - If there is an `authentication` key in the `messageData` object, the server requires authentication, and the steps in [Creating an authentication string](#creating-an-authentication-string) should be followed.
+  - If there is no `authentication` key, the resulting `Identify` object sent to the server does not require an `authentication` string.
+  - The client determines if the server's `rpcVersion` is supported, and if not it provides its closest supported version in `Identify`.
 
-- The server receives and processes the [`Identify`](#identify).
-  - If authentication is required and the [`Identify`](#identify) does not contain an `authentication` string, or the string is not correct, the connection is dropped with [`WebSocketCloseCode::AuthenticationFailed`](#websocketclosecode-enum)
-  - If the client has requested an `rpcVersion` which the server cannot use, the connection is dropped with [`WebSocketCloseCode::UnsupportedProtocolVersion`](#websocketclosecode-enum)
+- The server receives and processes the `Identify` sent by the client.
+  - If authentication is required and the `Identify` message data does not contain an `authentication` string, or the string is not correct, the connection is dropped with [`WebSocketCloseCode::AuthenticationFailed`](#websocketclosecode-enum)
+  - If the client has requested an `rpcVersion` which the server cannot use, the connection is dropped with [`WebSocketCloseCode::UnsupportedProtocolVersion`](#websocketclosecode-enum). This system allows both the server and client to have seamless backwards compatability.
   - If any other parameters are malformed (invalid type, etc), the connection is dropped with [`WebSocketCloseCode::InvalidIdentifyParameter`](#websocketclosecode-enum)
 
-- Once identification is processed on the server, the server responds to the client with an [`Identified`](#identified).
+- Once identification is processed on the server, the server responds to the client with an [OpCode 2 `Identified`](#identified).
 
 - The client will begin receiving events from obs-websocket and may now make requests to obs-websocket.
 
-- At any time after a client has been identified, it may send a [`Reidentify`](#reidentify) message to update certain allowed session parameters. The server will respond in the same way it does during initial identification.
+- At any time after a client has been identified, it may send an [OpCode 3 `Reidentify`](#reidentify) message to update certain allowed session parameters. The server will respond in the same way it does during initial identification.
 
 #### Connection Notes
-- The obs-websocket server listens for any messages containing a `request-type` field in the first level JSON from unidentified clients. If a message matches, the connection is dropped with [`WebSocketCloseCode::UnsupportedProtocolVersion`](#websocketclosecode-enum).
+- If the Content Type is `application/msgpack`, all messages must be sent over binary. If it is `application/json`, all messages must be sent over text.
+- The obs-websocket server listens for any messages containing a `request-type` field in the first level JSON from unidentified clients. If a message matches, the connection is dropped with [`WebSocketCloseCode::UnsupportedProtocolVersion`](#websocketclosecode-enum) and a warning is logged.
 - If a message with a `messageType` is not recognized to the obs-websocket server, the connection is dropped with [`WebSocketCloseCode::UnknownMessageType`](#websocketclosecode-enum).
-- At no point may the client send any message other than a single [`Identify`](#identify) before it has received an [`Identified`](#identified). Breaking this rule will result in the connection being dropped by the server with [`WebSocketCloseCode::NotIdentified`](#websocketclosecode-enum).
-- The [`Hello`](#hello) object contains an `rpcVersion` field, which is the latest RPC version that the server supports.
-  - If the server's version is is older than the client's, the client is allowed the capability to support older RPC versions. The client determines which RPC version it hopes to communicate on, and sends it via the `rpcVersion` field in the [`Identify`](#identify).
-  - If the server's version is newer than the client's, the client sends its highest supported version in its [`Identify`](#identify) in hopes that the server is backwards compatible to that version.
-- If the [`Hello`](#hello) does not contain an `authentication` object, the resulting [`Identify`](#identify) object sent to the server does not need to have an `authentication` string.
+- At no point may the client send any message other than a single `Identify` before it has received an `Identified`. Doing so will result in the connection being dropped by the server with [`WebSocketCloseCode::NotIdentified`](#websocketclosecode-enum).
 
 ---
 
 ### Creating an authentication string
-obs-websocket uses SHA256 to transmit authentication credentials. The server starts by sending an object in the `authentication` field of its [`Hello`](#hello). The client processes the authentication challenge and responds via the `authentication` string in [`Identify`](#identify).
+obs-websocket uses SHA256 to transmit authentication credentials. The server starts by sending an object in the `authentication` key of its `Hello` message data. The client processes the authentication challenge and responds via the `authentication` string in the `Identify` message data.
 
 For this guide, we'll be using `supersecretpassword` as the password.
 
-The `authentication` object in [`Hello`](#hello) looks like this (example):
+The `authentication` object in `Hello` looks like this (example):
 ```json
 {
     "challenge": "+IxH4CnCiqpX1rM9scsNynZzbOe4KhDeYcTNS3PDaeY=",
@@ -88,16 +88,96 @@ The `authentication` object in [`Hello`](#hello) looks like this (example):
 
 To generate the authentication string, follow these steps:
 - Concatenate the websocket password with the `salt` provided by the server (`password + salt`)
-- Generate an SHA256 binary hash of the result and encode it with base64, known as a base64 secret.
+- Generate an SHA256 binary hash of the result and base64 encode it, known as a base64 secret.
 - Concatenate the base64 secret with the `challenge` sent by the server (`base64_secret + challenge`)
-- Generate a binary SHA256 hash of that result and encode it to base64. You now have your `authentication` string.
+- Generate a binary SHA256 hash of that result and base64 encode it. You now have your `authentication` string.
 
-For more info on how to create the `authentication` string, refer to the obs-websocket client libraries listed on the [README](README.md).
+For real-world examples of the `authentication` string creation, refer to the obs-websocket client libraries listed on the [README](README.md).
 
 ---
 
 ### Enumerations
 These are the enumeration definitions for various codes used by obs-websocket.
+
+#### WebSocketOpCode Enum
+```cpp
+enum WebSocketOpCode {
+    Hello = 0,
+    Identify = 1,
+    Identified = 2,
+    Reidentify = 3,
+    Event = 5,
+    Request = 6,
+    RequestResponse = 7,
+    RequestBatch = 8,
+    RequestBatchResponse = 9,
+};
+```
+
+#### WebSocketCloseCode Enum
+```cpp
+enum WebSocketCloseCode {
+    // Internal only
+    DontClose = 0,
+    // Reserved
+    UnknownReason = 4000,
+    // The requested `Content-Type` specified in the request HTTP header is invalid.
+    InvalidContentType = 4001,
+    // The server was unable to decode the incoming websocket message
+    MessageDecodeError = 4002,
+    // A data key is missing but required
+    MissingDataKey = 4003,
+    // A data key has an invalid type
+    InvalidDataKeyType = 4004,
+    // The specified `op` was invalid or missing
+    UnknownOpCode = 4005,
+    // The client sent a websocket message without first sending `Identify` message
+    NotIdentified = 4006,
+    // The client sent an `Identify` message while already identified
+    AlreadyIdentified = 4007,
+    // The authentication attempt (via `Identify`) failed
+    AuthenticationFailed = 4008,
+    // The server detected the usage of an old version of the obs-websocket protocol.
+    UnsupportedRpcVersion = 4009,
+    // The websocket session has been invalidated by the obs-websocket server.
+    SessionInvalidated = 4010,
+};
+```
+
+#### EventSubscriptions Enum
+```cpp
+enum EventSubscription {
+    // Set subscriptions to 0 to disable all events
+    None = 0,
+    // Receive events in the `General` category
+    General = (1 << 0),
+    // Receive events in the `Config` category
+    Config = (1 << 1),
+    // Receive events in the `Scenes` category
+    Scenes = (1 << 2),
+    // Receive events in the `Inputs` category
+    Inputs = (1 << 3),
+    // Receive events in the `Transitions` category
+    Transitions = (1 << 4),
+    // Receive events in the `Filters` category
+    Filters = (1 << 5),
+    // Receive events in the `Outputs` category
+    Outputs = (1 << 6),
+    // Receive events in the `Scene Items` category
+    SceneItems = (1 << 7),
+    // Receive events in the `MediaInputs` category
+    MediaInputs = (1 << 8),
+    // Receive all event categories
+    All = (General | Config | Scenes | Inputs | Transitions | Filters | Outputs | SceneItems | MediaInputs),
+    // InputVolumeMeters event (high-volume)
+    InputVolumeMeters = (1 << 9),
+    // InputActiveStateChanged event (high-volume)
+    InputActiveStateChanged = (1 << 10),
+    // InputShowStateChanged event (high-volume)
+    InputShowStateChanged = (1 << 11),
+};
+```
+Subscriptions are a bitmask system. In many languages, to generate a bitmask that subscribes to `General` and `Scenes`, you would do: `subscriptions = ((1 << 0) | (1 << 2))`
 
 #### RequestStatus Enum
 ```cpp
@@ -219,92 +299,26 @@ enum RequestStatus {
 };
 ```
 
-#### WebSocketCloseCode Enum
-```cpp
-enum WebSocketCloseCode {
-    // Internal only
-    DontClose = 0,
-    // Reserved
-    UnknownReason = 4000,
-    // The server was unable to decode the incoming websocket message
-    MessageDecodeError = 4001,
-    // The specified `messageType` was invalid or missing
-    UnknownMessageType = 4002,
-    // The client sent a websocket message without first sending `Identify` message
-    NotIdentified = 4003,
-    // The client sent an `Identify` message while already identified
-    AlreadyIdentified = 4004,
-    // The authentication attempt (via `Identify`) failed
-    AuthenticationFailed = 4005,
-    // There was an invalid parameter the client's `Identify` message
-    InvalidIdentifyParameter = 4006,
-    // A `Request` or `RequestBatch` was missing its `requestId` or `requestType`
-    RequestMissingRequiredField = 4007,
-    // The websocket session has been invalidated by the obs-websocket server.
-    SessionInvalidated = 4008,
-    // The server detected the usage of an old version of the obs-websocket protocol.
-    UnsupportedProtocolVersion = 4009,
-    // The requested `Content-Type` specified in the request HTTP header is invalid.
-    InvalidContentType = 4010,
-};
-```
 
-#### EventSubscriptions Enum
-```cpp
-enum EventSubscription {
-    // Set subscriptions to 0 to disable all events
-    None = 0,
-    // Receive events in the `General` category
-    General = (1 << 0),
-    // Receive events in the `Config` category
-    Config = (1 << 1),
-    // Receive events in the `Scenes` category
-    Scenes = (1 << 2),
-    // Receive events in the `Inputs` category
-    Inputs = (1 << 3),
-    // Receive events in the `Transitions` category
-    Transitions = (1 << 4),
-    // Receive events in the `Filters` category
-    Filters = (1 << 5),
-    // Receive events in the `Outputs` category
-    Outputs = (1 << 6),
-    // Receive events in the `Scene Items` category
-    SceneItems = (1 << 7),
-    // Receive events in the `MediaInputs` category
-    MediaInputs = (1 << 8),
-    // Receive all event categories
-    All = (General | Config | Scenes | Inputs | Transitions | Filters | Outputs | SceneItems | MediaInputs),
-    // InputVolumeMeters event (high-volume)
-    InputVolumeMeters = (1 << 9),
-    // InputActiveStateChanged event (high-volume)
-    InputActiveStateChanged = (1 << 10),
-    // InputShowStateChanged event (high-volume)
-    InputShowStateChanged = (1 << 11),
-};
-```
-Subscriptions are a bitmask system.
+## Message Types (OpCodes)
+The following message types are the low-level message types which may be sent to and from obs-websocket. 
 
-In many languages, to generate a bitmask that subscribes to `General` and `Scenes`, you would do: `subscriptions = ((1 << 0) | (1 << 2))`
-
-
-## Message Types
-The following message types are the base message types which may be sent to and from obs-websocket. 
-
-**Every** message sent from the obs-websocket server or client must contain these fields, known as the base object:
+Messages sent from the obs-websocket server or client may contain these first-level fields, known as the base object:
 ```
 {
-  "messageType": string
+  "op": number,
+  "d": object
 }
 ```
 
 ---
 
-### Hello
+### Hello (OpCode 0)
 - Sent from: obs-websocket
 - Sent to: Freshly connected websocket client
 - Description: First message sent from the server immediately on client connection. Contains authentication information if auth is required. Also contains RPC version for version negotiation.
 
-**Additional Base Object Fields:**
+**Data Fields:**
 ```
 {
   "obsWebSocketVersion": string,
@@ -318,12 +332,14 @@ The following message types are the base message types which may be sent to and 
 Authentication is required
 ```json
 {
-  "messageType": "Hello",
-  "obsWebSocketVersion": "5.0.0",
-  "rpcVersion": 1,
-  "authentication": {
-    "challenge": "+IxH4CnCiqpX1rM9scsNynZzbOe4KhDeYcTNS3PDaeY=",
-    "salt": "lM1GncleQOaCu9lT1yeUZhFYnqhsLLP1G5lAGo3ixaI="
+  "op": 0,
+  "d": {
+    "obsWebSocketVersion": "5.0.0",
+    "rpcVersion": 1,
+    "authentication": {
+      "challenge": "+IxH4CnCiqpX1rM9scsNynZzbOe4KhDeYcTNS3PDaeY=",
+      "salt": "lM1GncleQOaCu9lT1yeUZhFYnqhsLLP1G5lAGo3ixaI="
+    }
   }
 }
 ```
@@ -331,20 +347,22 @@ Authentication is required
 Authentication is not required
 ```json
 {
-  "messageType": "Hello",
-  "obsWebSocketVersion": "5.0.0",
-  "rpcVersion": 1
+  "op": 0,
+  "d": {
+    "obsWebSocketVersion": "5.0.0",
+    "rpcVersion": 1
+  }
 }
 ```
 
 ---
 
-### Identify
+### Identify (OpCode 1)
 - Sent from: Freshly connected websocket client
 - Sent to: obs-websocket
 - Description: Response to `Hello` message, should contain authentication string if authentication is required, along with PubSub subscriptions and other session parameters.
 
-**Additional Base Object Fields:**
+**Data Fields:**
 ```
 {
   "rpcVersion": number,
@@ -362,21 +380,23 @@ Authentication is not required
 **Example Message:**
 ```json
 {
-  "messageType": "Identify",
-  "rpcVersion": 1,
-  "authentication": "Dj6cLS+jrNA0HpCArRg0Z/Fc+YHdt2FQfAvgD1mip6Y=",
-  "eventSubscriptions": 33
+  "op": 1,
+  "d": {
+    "rpcVersion": 1,
+    "authentication": "Dj6cLS+jrNA0HpCArRg0Z/Fc+YHdt2FQfAvgD1mip6Y=",
+    "eventSubscriptions": 33
+  }
 }
 ```
 
 ---
 
-### Identified
+### Identified (OpCode 2)
 - Sent from: obs-websocket
 - Sent to: Freshly identified client
 - Description: The identify request was received and validated, and the connection is now ready for normal operation.
 
-**Additional Base Object Fields:**
+**Data Fields:**
 ```
 {
   "negotiatedRpcVersion": number
@@ -387,19 +407,21 @@ Authentication is not required
 **Example Message:**
 ```json
 {
-  "messageType": "Identified",
-  "negotiatedRpcVersion": 1
+  "op": 2,
+  "d": {
+    "negotiatedRpcVersion": 1
+  }
 }
 ```
 
 ---
 
-### Reidentify
+### Reidentify (OpCode 3)
 - Sent from: Identified client
 - Sent to: obs-websocket
 - Description: Sent at any time after initial identification to update the provided session parameters.
 
-**Additional Base Object Fields:**
+**Data Fields:**
 ```
 {
   "ignoreInvalidMessages": bool(optional) = false,
@@ -411,12 +433,12 @@ Authentication is not required
 
 ---
 
-### Event
+### Event (OpCode 5)
 - Sent from: obs-websocket
 - Sent to: All subscribed and identified clients
 - Description: An event coming from OBS has occured. Eg scene switched, source muted.
 
-**Additional Base Object Fields:**
+**Data Fields:**
 ```
 {
   "eventType": string,
@@ -424,14 +446,27 @@ Authentication is not required
 }
 ```
 
+**Example Message:**
+```json
+{
+  "op": 2,
+  "d": {
+    "eventType": "StudioModeStateChanged",
+    "eventData": {
+      "studioModeEnabled": true
+    }
+  }
+}
+```
+
 ---
 
-### Request
+### Request (OpCode 6)
 - Sent from: Identified client
 - Sent to: obs-websocket
 - Description: Client is making a request to obs-websocket. Eg get current scene, create source.
 
-**Additional Base Object Fields:**
+**Data Fields:**
 ```
 {
   "requestType": string,
@@ -444,23 +479,25 @@ Authentication is not required
 **Example Message:**
 ```json
 {
-  "messageType": "Request",
-  "requestType": "SetCurrentScene",
-  "requestId": "f819dcf0-89cc-11eb-8f0e-382c4ac93b9c",
-  "requestData": {
-    "sceneName": "Scene 12"
+  "op": 6,
+  "d": {
+    "requestType": "SetCurrentScene",
+    "requestId": "f819dcf0-89cc-11eb-8f0e-382c4ac93b9c",
+    "requestData": {
+      "sceneName": "Scene 12"
+    }
   }
 }
 ```
 
 ---
 
-### RequestResponse
+### RequestResponse (OpCode 7)
 - Sent from: obs-websocket
 - Sent to: Identified client which made the request
 - Description: obs-websocket is responding to a request coming from a client.
 
-**Additional Base Object Fields:**
+**Data Fields:**
 ```
 {
   "requestType": string,
@@ -487,12 +524,14 @@ Authentication is not required
 Successful Response
 ```json
 {
-  "messageType": "RequestResponse",
-  "requestType": "SetCurrentScene",
-  "requestId": "f819dcf0-89cc-11eb-8f0e-382c4ac93b9c",
-  "requestStatus": {
-    "result": true,
-    "code": 100
+  "op": 7,
+  "d": {
+    "requestType": "SetCurrentScene",
+    "requestId": "f819dcf0-89cc-11eb-8f0e-382c4ac93b9c",
+    "requestStatus": {
+      "result": true,
+      "code": 100
+    }
   }
 }
 ```
@@ -500,25 +539,27 @@ Successful Response
 Failure Response
 ```json
 {
-  "messageType": "RequestResponse",
-  "requestType": "SetCurrentScene",
-  "requestId": "f819dcf0-89cc-11eb-8f0e-382c4ac93b9c",
-  "requestStatus": {
-    "result": false,
-    "code": 608,
-    "comment": "Parameter: sceneName"
+  "op": 7,
+  "d": {
+    "requestType": "SetCurrentScene",
+    "requestId": "f819dcf0-89cc-11eb-8f0e-382c4ac93b9c",
+    "requestStatus": {
+      "result": false,
+      "code": 608,
+      "comment": "Parameter: sceneName"
+    }
   }
 }
 ```
 
 ---
 
-### RequestBatch
+### RequestBatch (OpCode 8)
 - Sent from: Identified client
 - Sent to: obs-websocket
 - Description: Client is making a batch of requests for obs-websocket. Requests are processed serially (in order) by the server.
 
-**Additional Base Object Fields:**
+**Data Fields:**
 ```
 {
   "requestId": string,
@@ -527,15 +568,16 @@ Failure Response
 }
 ```
 - When `haltOnFailure` is `true`, the processing of requests will be halted on first failure. Returns only the processed requests in [`RequestBatchResponse`](#requestbatchresponse).
+- Requests in the `requests` array follow the same structure as the `Request` payload data format, however `requestId` is an optional key.
 
 ---
 
-### RequestBatchResponse
+### RequestBatchResponse (OpCode 9)
 - Sent from: obs-websocket
 - Sent to: Identified client which made the request
 - Description: obs-websocket is responding to a request batch coming from the client.
 
-**Additional Base Object Fields:**
+**Data Fields:**
 ```
 {
   "requestId": string,

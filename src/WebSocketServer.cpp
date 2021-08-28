@@ -197,10 +197,10 @@ void WebSocketServer::BroadcastEvent(uint64_t requiredIntent, std::string eventT
 	QtConcurrent::run(&_threadPool, [=]() {
 		// Populate message object
 		json eventMessage;
-		eventMessage["messageType"] = "Event";
-		eventMessage["eventType"] = eventType;
+		eventMessage["op"] = 5;
+		eventMessage["d"]["eventType"] = eventType;
 		if (eventData.is_object())
-			eventMessage["eventData"] = eventData;
+			eventMessage["d"]["eventData"] = eventData;
 
 		// Initialize objects. The broadcast process only dumps the data when its needed.
 		std::string messageJson;
@@ -271,18 +271,20 @@ void WebSocketServer::onOpen(websocketpp::connection_hdl hdl)
 	}
 
 	// Build `Hello`
-	json helloMessage;
-	helloMessage["messageType"] = "Hello";
-	helloMessage["obsWebSocketVersion"] = OBS_WEBSOCKET_VERSION;
-	helloMessage["rpcVersion"] = OBS_WEBSOCKET_RPC_VERSION;
+	json helloMessageData;
+	helloMessageData["obsWebSocketVersion"] = OBS_WEBSOCKET_VERSION;
+	helloMessageData["rpcVersion"] = OBS_WEBSOCKET_RPC_VERSION;
 	if (AuthenticationRequired) {
 		session->SetSecret(AuthenticationSecret);
 		std::string sessionChallenge = Utils::Crypto::GenerateSalt();
 		session->SetChallenge(sessionChallenge);
-		helloMessage["authentication"] = {};
-		helloMessage["authentication"]["challenge"] = sessionChallenge;
-		helloMessage["authentication"]["salt"] = AuthenticationSalt;
+		helloMessageData["authentication"] = json::object();
+		helloMessageData["authentication"]["challenge"] = sessionChallenge;
+		helloMessageData["authentication"]["salt"] = AuthenticationSalt;
 	}
+	json helloMessage;
+	helloMessage["op"] = 0;
+	helloMessage["d"] = helloMessageData;
 
 	sessionLock.unlock();
 
@@ -412,8 +414,39 @@ void WebSocketServer::onMessage(websocketpp::connection_hdl hdl, websocketpp::se
 		if (_debugEnabled)
 			blog(LOG_INFO, "[WebSocketServer::onMessage] Incoming message (decoded):\n%s", incomingMessage.dump(2).c_str());
 
-		WebSocketProtocol::ProcessResult ret = WebSocketProtocol::ProcessMessage(session, incomingMessage);
+		WebSocketProtocol::ProcessResult ret;
 
+		// Verify incoming message is an object
+		if (!incomingMessage.is_object()) {
+			if (!session->IgnoreInvalidMessages()) {
+				ret.closeCode = WebSocketServer::WebSocketCloseCode::MessageDecodeError;
+				ret.closeReason = "You sent a non-object payload.";
+				goto skipProcessing;
+			}
+			return;
+		}
+
+		// Disconnect client if 4.x protocol is detected
+		if (!session->IsIdentified() && incomingMessage.contains("request-type")) {
+			blog(LOG_WARNING, "[WebSocketProtocol::ProcessMessage] Client %s appears to be running a pre-5.0.0 protocol.", session->RemoteAddress().c_str());
+			ret.closeCode = WebSocketServer::WebSocketCloseCode::UnsupportedRpcVersion;
+			ret.closeReason = "You appear to be attempting to connect with the pre-5.0.0 plugin protocol. Check to make sure your client is updated.";
+			goto skipProcessing;
+		}
+
+		// Validate op code
+		if (!incomingMessage.contains("op")) {
+			if (!session->IgnoreInvalidMessages()) {
+				ret.closeCode = WebSocketServer::WebSocketCloseCode::UnknownOpCode;
+				ret.closeReason = std::string("Your request is missing an `op`.");
+				goto skipProcessing;
+			}
+			return;
+		}
+
+		WebSocketProtocol::ProcessMessage(session, ret, incomingMessage["op"], incomingMessage["d"]);
+
+skipProcessing:
 		if (ret.closeCode != WebSocketCloseCode::DontClose) {
 			websocketpp::lib::error_code errorCode;
 			_server.close(hdl, ret.closeCode, ret.closeReason, errorCode);

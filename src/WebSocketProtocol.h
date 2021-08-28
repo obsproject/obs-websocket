@@ -19,5 +19,5 @@ namespace WebSocketProtocol {
 		json result;
 	};
 
-	ProcessResult ProcessMessage(SessionPtr session, json incomingMessage);
+	void ProcessMessage(SessionPtr session, ProcessResult &ret, uint8_t opCode, json incomingMessage);
 }

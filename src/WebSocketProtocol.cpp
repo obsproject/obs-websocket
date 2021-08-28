@@ -20,238 +20,226 @@ bool IsSupportedRpcVersion(uint8_t requestedVersion)
 	return false;
 }
 
-WebSocketProtocol::ProcessResult SetSessionParameters(SessionPtr session, json incomingMessage)
+void SetSessionParameters(SessionPtr session, WebSocketProtocol::ProcessResult &ret, json payloadData)
 {
-	WebSocketProtocol::ProcessResult ret;
-
-	if (incomingMessage.contains("ignoreInvalidMessages")) {
-		if (!incomingMessage["ignoreInvalidMessages"].is_boolean()) {
-			ret.closeCode = WebSocketServer::WebSocketCloseCode::InvalidIdentifyParameter;
-			ret.closeReason = "You specified `ignoreInvalidMessages` but the value is not boolean.";
-			return ret;
+	if (payloadData.contains("ignoreInvalidMessages")) {
+		if (!payloadData["ignoreInvalidMessages"].is_boolean()) {
+			ret.closeCode = WebSocketServer::WebSocketCloseCode::InvalidDataKeyType;
+			ret.closeReason = "Your `ignoreInvalidMessages` is not a boolean.";
+			return;
 		}
-		session->SetIgnoreInvalidMessages(incomingMessage["ignoreInvalidMessages"]);
+		session->SetIgnoreInvalidMessages(payloadData["ignoreInvalidMessages"]);
 	}
 
-	if (incomingMessage.contains("ignoreNonFatalRequestChecks")) {
-		if (!incomingMessage["ignoreNonFatalRequestChecks"].is_boolean()) {
-			ret.closeCode = WebSocketServer::WebSocketCloseCode::InvalidIdentifyParameter;
-			ret.closeReason = "You specified `ignoreNonFatalRequestChecks` but the value is not boolean.";
-			return ret;
+	if (payloadData.contains("ignoreNonFatalRequestChecks")) {
+		if (!payloadData["ignoreNonFatalRequestChecks"].is_boolean()) {
+			ret.closeCode = WebSocketServer::WebSocketCloseCode::InvalidDataKeyType;
+			ret.closeReason = "Your `ignoreNonFatalRequestChecks` is not a boolean.";
+			return;
 		}
-		session->SetIgnoreNonFatalRequestChecks(incomingMessage["ignoreNonFatalRequestChecks"]);
+		session->SetIgnoreNonFatalRequestChecks(payloadData["ignoreNonFatalRequestChecks"]);
 	}
 
-	if (incomingMessage.contains("eventSubscriptions")) {
-		if (!incomingMessage["eventSubscriptions"].is_number_unsigned()) {
-			ret.closeCode = WebSocketServer::WebSocketCloseCode::InvalidIdentifyParameter;
-			ret.closeReason = "You specified `eventSubscriptions` but the value is not an unsigned integer.";
-			return ret;
+	if (payloadData.contains("eventSubscriptions")) {
+		if (!payloadData["eventSubscriptions"].is_number_unsigned()) {
+			ret.closeCode = WebSocketServer::WebSocketCloseCode::InvalidDataKeyType;
+			ret.closeReason = "Your `eventSubscriptions` is not an unsigned number.";
+			return;
 		}
-		session->SetEventSubscriptions(incomingMessage["eventSubscriptions"]);
+		session->SetEventSubscriptions(payloadData["eventSubscriptions"]);
 	}
-
-	return ret;
 }
 
-WebSocketProtocol::ProcessResult WebSocketProtocol::ProcessMessage(SessionPtr session, json incomingMessage)
+void WebSocketProtocol::ProcessMessage(SessionPtr session, WebSocketProtocol::ProcessResult &ret, uint8_t opCode, json payloadData)
 {
-	WebSocketProtocol::ProcessResult ret;
-
-	if (!incomingMessage.is_object()) {
-		if (!session->IgnoreInvalidMessages()) {
-			ret.closeCode = WebSocketServer::WebSocketCloseCode::MessageDecodeError;
-			ret.closeReason = "You sent a non-object payload.";
+	if (!payloadData.is_object()) {
+		if (payloadData.is_null()) {
+			ret.closeCode = WebSocketServer::WebSocketCloseCode::MissingDataKey;
+			ret.closeReason = "Your payload is missing data (`d`).";
+		} else {
+			ret.closeCode = WebSocketServer::WebSocketCloseCode::InvalidDataKeyType;
+			ret.closeReason = "Your payload's data (`d`) is not an object.";
 		}
-		return ret;
+		return;
 	}
 
-	if (!incomingMessage.contains("messageType")) {
-		if (incomingMessage.contains("request-type")) {
-			blog(LOG_WARNING, "[WebSocketProtocol::ProcessMessage] Client %s appears to be running a pre-5.0.0 protocol.", session->RemoteAddress().c_str());
-			ret.closeCode = WebSocketServer::WebSocketCloseCode::UnsupportedProtocolVersion;
-			ret.closeReason = "You appear to be attempting to connect with the pre-5.0.0 plugin protocol. Check to make sure your client is updated.";
-			return ret;
-		}
-		if (!session->IgnoreInvalidMessages()) {
-			ret.closeCode = WebSocketServer::WebSocketCloseCode::UnknownMessageType;
-			ret.closeReason = "Your request is missing a `messageType`.";
-		}
-		return ret;
-	}
-
-	std::string messageType = incomingMessage["messageType"];
-
-	if (!session->IsIdentified() && messageType != "Identify") {
+	// Only `Identify` is allowed when not identified
+	if (!session->IsIdentified() && opCode != 1) {
 		ret.closeCode = WebSocketServer::WebSocketCloseCode::NotIdentified;
-		ret.closeReason = "You attempted to send a non-`Identify` message while not identified.";
-		return ret;
+		ret.closeReason = "You attempted to send a non-Identify message while not identified.";
+		return;
 	}
 
-	if (messageType == "Request") {
-		// RequestID checking has to be done here where we are able to close the connection.
-		if (!incomingMessage.contains("requestId")) {
-			if (!session->IgnoreInvalidMessages()) {
-				ret.closeCode = WebSocketServer::WebSocketCloseCode::RequestMissingRequiredField;
-				ret.closeReason = "Your request is missing a `requestId`.";
+	switch (opCode) {
+		case 1: { // Identify
+			std::unique_lock<std::mutex> sessionLock(session->OperationMutex);
+			if (session->IsIdentified()) {
+				if (!session->IgnoreInvalidMessages()) {
+					ret.closeCode = WebSocketServer::WebSocketCloseCode::AlreadyIdentified;
+					ret.closeReason = "You are already Identified with the obs-websocket server.";
+				}
+				return;
 			}
-			return ret;
-		}
 
-		if (!incomingMessage["requestType"].is_string()) {
-			incomingMessage["requestType"] = "";
-		}
-
-		RequestHandler requestHandler;
-		Request request(session, incomingMessage["requestType"], incomingMessage["requestData"]);
-
-		RequestResult requestResult = requestHandler.ProcessRequest(request);
-
-		ret.result["messageType"] = "RequestResponse";
-		ret.result["requestType"] = incomingMessage["requestType"];
-		ret.result["requestId"] = incomingMessage["requestId"];
-		ret.result["requestStatus"] = {
-			{"result", requestResult.StatusCode == RequestStatus::Success},
-			{"code", requestResult.StatusCode}
-		};
-		if (!requestResult.Comment.empty())
-			ret.result["requestStatus"]["comment"] = requestResult.Comment;
-		if (requestResult.ResponseData.is_object())
-			ret.result["responseData"] = requestResult.ResponseData;
-		
-		return ret;
-	} else if (messageType == "RequestBatch") {
-		// RequestID checking has to be done here where we are able to close the connection.
-		if (!incomingMessage.contains("requestId")) {
-			if (!session->IgnoreInvalidMessages()) {
-				ret.closeCode = WebSocketServer::WebSocketCloseCode::RequestMissingRequiredField;
-				ret.closeReason = "Your request batch is missing a `requestId`.";
+			if (session->AuthenticationRequired()) {
+				if (!payloadData.contains("authentication")) {
+					ret.closeCode = WebSocketServer::WebSocketCloseCode::AuthenticationFailed;
+					ret.closeReason = "Your payload's data is missing an `authentication` string, however authentication is required.";
+					return;
+				}
+				if (!Utils::Crypto::CheckAuthenticationString(session->Secret(), session->Challenge(), payloadData["authentication"])) {
+					auto conf = GetConfig();
+					if (conf && conf->AlertsEnabled) {
+						QString title = obs_module_text("OBSWebSocket.TrayNotification.AuthenticationFailed.Title");
+						QString body = QString(obs_module_text("OBSWebSocket.TrayNotification.AuthenticationFailed.Body")).arg(QString::fromStdString(session->RemoteAddress()));
+						Utils::Platform::SendTrayNotification(QSystemTrayIcon::Warning, title, body);
+					}
+					ret.closeCode = WebSocketServer::WebSocketCloseCode::AuthenticationFailed;
+					ret.closeReason = "Authentication failed.";
+					return;
+				}
 			}
-			return ret;
-		}
 
-		if (!incomingMessage["requests"].is_array()) {
-			if (!session->IgnoreInvalidMessages()) {
-				ret.closeCode = WebSocketServer::WebSocketCloseCode::RequestMissingRequiredField;
-				ret.closeReason = "Your request batch is missing a `requests` or it is not an array.";
+			if (!payloadData.contains("rpcVersion")) {
+				ret.closeCode = WebSocketServer::WebSocketCloseCode::MissingDataKey;
+				ret.closeReason = "Your payload's data is missing an `rpcVersion`.";
+				return;
 			}
-			return ret;
-		}
 
-		auto requests = incomingMessage["requests"].get<std::vector<json>>();
-		json results = json::array();
+			if (!payloadData["rpcVersion"].is_number_unsigned()) {
+				ret.closeCode = WebSocketServer::WebSocketCloseCode::InvalidDataKeyType;
+				ret.closeReason = "Your `rpcVersion` is not an unsigned number.";
+			}
 
-		RequestHandler requestHandler;
-		for (auto requestJson : requests) {
-			if (!requestJson["requestType"].is_string())
-				requestJson["requestType"] = "";
+			uint8_t requestedRpcVersion = payloadData["rpcVersion"];
+			if (!IsSupportedRpcVersion(requestedRpcVersion)) {
+				ret.closeCode = WebSocketServer::WebSocketCloseCode::UnsupportedRpcVersion;
+				ret.closeReason = "Your requested RPC version is not supported by this server.";
+				return;
+			}
+			session->SetRpcVersion(requestedRpcVersion);
 
-			Request request(session, requestJson["requestType"], requestJson["requestData"]);
+			SetSessionParameters(session, ret, payloadData);
+			if (ret.closeCode != WebSocketServer::WebSocketCloseCode::DontClose) {
+				return;
+			}
+
+			session->SetIsIdentified(true);
+
+			auto conf = GetConfig();
+			if (conf && conf->AlertsEnabled) {
+				QString title = obs_module_text("OBSWebSocket.TrayNotification.Identified.Title");
+				QString body = QString(obs_module_text("OBSWebSocket.TrayNotification.Identified.Body")).arg(QString::fromStdString(session->RemoteAddress()));
+				Utils::Platform::SendTrayNotification(QSystemTrayIcon::Information, title, body);
+			}
+
+			ret.result["op"] = 3;
+			ret.result["d"]["negotiatedRpcVersion"] = session->RpcVersion();
+			} return;
+		case 3: { // Reidentify
+			std::unique_lock<std::mutex> sessionLock(session->OperationMutex);
+
+			SetSessionParameters(session, ret, payloadData);
+			if (ret.closeCode != WebSocketServer::WebSocketCloseCode::DontClose) {
+				return;
+			}
+
+			ret.result["op"] = 3;
+			ret.result["d"]["negotiatedRpcVersion"] = session->RpcVersion();
+			} return;
+		case 6: { // Request
+			// RequestID checking has to be done here where we are able to close the connection.
+			if (!payloadData.contains("requestId")) {
+				if (!session->IgnoreInvalidMessages()) {
+					ret.closeCode = WebSocketServer::WebSocketCloseCode::MissingDataKey;
+					ret.closeReason = "Your payload data is missing a `requestId`.";
+				}
+				return;
+			}
+
+			RequestHandler requestHandler;
+			Request request(session, payloadData["requestType"], payloadData["requestData"]);
 
 			RequestResult requestResult = requestHandler.ProcessRequest(request);
 
-			json result;
-			result["requestType"] = requestJson["requestType"];
-
-			if (requestJson.contains("requestId"))
-				result["requestId"] = requestJson["requestId"];
-
-			result["requestStatus"] = {
+			json resultPayloadData;
+			resultPayloadData["requestType"] = payloadData["requestType"];
+			resultPayloadData["requestId"] = payloadData["requestId"];
+			resultPayloadData["requestStatus"] = {
 				{"result", requestResult.StatusCode == RequestStatus::Success},
 				{"code", requestResult.StatusCode}
 			};
-
 			if (!requestResult.Comment.empty())
-				result["requestStatus"]["comment"] = requestResult.Comment;
-
+				resultPayloadData["requestStatus"]["comment"] = requestResult.Comment;
 			if (requestResult.ResponseData.is_object())
-				result["responseData"] = requestResult.ResponseData;
-
-			results.push_back(result);
-		}
-
-		ret.result["messageType"] = "RequestBatchResponse";
-		ret.result["requestId"] = incomingMessage["requestId"];
-		ret.result["results"] = results;
-
-		return ret;
-	} else if (messageType == "Identify") {
-		std::unique_lock<std::mutex> sessionLock(session->OperationMutex);
-		if (session->IsIdentified()) {
-			if (!session->IgnoreInvalidMessages()) {
-				ret.closeCode = WebSocketServer::WebSocketCloseCode::AlreadyIdentified;
-				ret.closeReason = "You are already Identified with the obs-websocket server.";
-			}
-			return ret;
-		}
-
-		if (session->AuthenticationRequired()) {
-			if (!incomingMessage.contains("authentication")) {
-				ret.closeCode = WebSocketServer::WebSocketCloseCode::InvalidIdentifyParameter;
-				ret.closeReason = "Your `Identify` payload is missing an `authentication` string, however authentication is required.";
-				return ret;
-			}
-			if (!Utils::Crypto::CheckAuthenticationString(session->Secret(), session->Challenge(), incomingMessage["authentication"])) {
-				auto conf = GetConfig();
-				if (conf && conf->AlertsEnabled) {
-					QString title = obs_module_text("OBSWebSocket.TrayNotification.AuthenticationFailed.Title");
-					QString body = QString(obs_module_text("OBSWebSocket.TrayNotification.AuthenticationFailed.Body")).arg(QString::fromStdString(session->RemoteAddress()));
-					Utils::Platform::SendTrayNotification(QSystemTrayIcon::Warning, title, body);
+				resultPayloadData["responseData"] = requestResult.ResponseData;
+			ret.result["op"] = 7;
+			ret.result["d"] = resultPayloadData;
+			} return;
+		case 8: { // RequestBatch
+			// RequestID checking has to be done here where we are able to close the connection.
+			if (!payloadData.contains("requestId")) {
+				if (!session->IgnoreInvalidMessages()) {
+					ret.closeCode = WebSocketServer::WebSocketCloseCode::MissingDataKey;
+					ret.closeReason = "Your payload data is missing a `requestId`.";
 				}
-				ret.closeCode = WebSocketServer::WebSocketCloseCode::AuthenticationFailed;
-				ret.closeReason = "Authentication failed.";
-				return ret;
+				return;
 			}
-		}
 
-		if (!incomingMessage.contains("rpcVersion") || !incomingMessage["rpcVersion"].is_number_unsigned()) {
-			ret.closeCode = WebSocketServer::WebSocketCloseCode::InvalidIdentifyParameter;
-			ret.closeReason = "Your Identify is missing `rpcVersion` or is not an integer.";
-			return ret;
-		}
-		uint8_t requestedRpcVersion = incomingMessage["rpcVersion"];
-		if (!IsSupportedRpcVersion(requestedRpcVersion)) {
-			ret.closeCode = WebSocketServer::WebSocketCloseCode::UnsupportedProtocolVersion;
-			ret.closeReason = "Your requested RPC version is not supported by this server.";
-			return ret;
-		}
-		session->SetRpcVersion(requestedRpcVersion);
+			if (!payloadData.contains("requests")) {
+				if (!session->IgnoreInvalidMessages()) {
+					ret.closeCode = WebSocketServer::WebSocketCloseCode::MissingDataKey;
+					ret.closeReason = "Your payload data is missing a `requests`.";
+				}
+				return;
+			}
 
-		WebSocketProtocol::ProcessResult parameterResult = SetSessionParameters(session, incomingMessage);
-		if (ret.closeCode != WebSocketServer::WebSocketCloseCode::DontClose) {
-			return parameterResult;
-		}
+			if (!payloadData["requests"].is_array()) {
+				if (!session->IgnoreInvalidMessages()) {
+					ret.closeCode = WebSocketServer::WebSocketCloseCode::InvalidDataKeyType;
+					ret.closeReason = "Your `requests` is not an array.";
+				}
+				return;
+			}
 
-		session->SetIsIdentified(true);
+			std::vector<json> requests = payloadData["requests"];
+			json results = json::array();
 
-		auto conf = GetConfig();
-		if (conf && conf->AlertsEnabled) {
-			QString title = obs_module_text("OBSWebSocket.TrayNotification.Identified.Title");
-			QString body = QString(obs_module_text("OBSWebSocket.TrayNotification.Identified.Body")).arg(QString::fromStdString(session->RemoteAddress()));
-			Utils::Platform::SendTrayNotification(QSystemTrayIcon::Information, title, body);
-		}
+			RequestHandler requestHandler;
+			for (auto requestJson : requests) {
+				Request request(session, requestJson["requestType"], requestJson["requestData"]);
 
-		ret.result["messageType"] = "Identified";
-		ret.result["negotiatedRpcVersion"] = session->RpcVersion();
-		return ret;
-	} else if (messageType == "Reidentify") {
-		std::unique_lock<std::mutex> sessionLock(session->OperationMutex);
+				RequestResult requestResult = requestHandler.ProcessRequest(request);
 
-		WebSocketProtocol::ProcessResult parameterResult = SetSessionParameters(session, incomingMessage);
-		if (ret.closeCode != WebSocketServer::WebSocketCloseCode::DontClose) {
-			return parameterResult;
-		}
+				json result;
+				result["requestType"] = requestJson["requestType"];
 
-		ret.result["messageType"] = "Identified";
-		ret.result["negotiatedRpcVersion"] = session->RpcVersion();
-		return ret;
-	} else {
-		if (!session->IgnoreInvalidMessages()) {
-			ret.closeCode = WebSocketServer::WebSocketCloseCode::UnknownMessageType;
-			ret.closeReason = std::string("Unknown message type: %s") + messageType;
-		}
-		return ret;
+				if (requestJson.contains("requestId"))
+					result["requestId"] = requestJson["requestId"];
+
+				result["requestStatus"] = {
+					{"result", requestResult.StatusCode == RequestStatus::Success},
+					{"code", requestResult.StatusCode}
+				};
+
+				if (!requestResult.Comment.empty())
+					result["requestStatus"]["comment"] = requestResult.Comment;
+
+				if (requestResult.ResponseData.is_object())
+					result["responseData"] = requestResult.ResponseData;
+
+				results.push_back(result);
+			}
+
+			ret.result["op"] = 9;
+			ret.result["d"]["requestId"] = payloadData["requestId"];
+			ret.result["d"]["results"] = results;
+			} return;
+		default:
+			if (!session->IgnoreInvalidMessages()) {
+				ret.closeCode = WebSocketServer::WebSocketCloseCode::UnknownOpCode;
+				ret.closeReason = std::string("Unknown OpCode: %s") + std::to_string(opCode);
+			}
+			return;
 	}
-
-	return ret;
 }

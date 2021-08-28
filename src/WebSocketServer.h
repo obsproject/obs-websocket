@@ -15,33 +15,6 @@ class WebSocketServer : QObject
 	Q_OBJECT
 
 	public:
-		enum WebSocketCloseCode {
-			// Internal only
-			DontClose = 0,
-			// Reserved
-			UnknownReason = 4000,
-			// The server was unable to decode the incoming websocket message
-			MessageDecodeError = 4001,
-			// The specified `messageType` was invalid or missing
-			UnknownMessageType = 4002,
-			// The client sent a websocket message without first sending `Identify` message
-			NotIdentified = 4003,
-			// The client sent an `Identify` message while already identified
-			AlreadyIdentified = 4004,
-			// The authentication attempt (via `Identify`) failed
-			AuthenticationFailed = 4005,
-			// There was an invalid parameter the client's `Identify` message
-			InvalidIdentifyParameter = 4006,
-			// A `Request` or `RequestBatch` was missing its `requestId` or `requestType`
-			RequestMissingRequiredField = 4007,
-			// The websocket session has been invalidated by the obs-websocket server.
-			SessionInvalidated = 4008,
-			// The server detected the usage of an old version of the obs-websocket protocol.
-			UnsupportedProtocolVersion = 4009,
-			// The requested `Content-Type` specified in the request HTTP header is invalid.
-			InvalidContentType = 4010,
-		};
-
 		enum WebSocketEncoding {
 			Json,
 			MsgPack
@@ -54,6 +27,45 @@ class WebSocketServer : QObject
 			uint64_t incomingMessages;
 			uint64_t outgoingMessages;
 			bool isIdentified;
+		};
+
+		enum WebSocketOpCode {
+			Hello = 0,
+			Identify = 1,
+			Identified = 2,
+			Reidentify = 3,
+			Event = 5,
+			Request = 6,
+			RequestResponse = 7,
+			RequestBatch = 8,
+			RequestBatchResponse = 9,
+		};
+
+		enum WebSocketCloseCode {
+			// Internal only
+			DontClose = 0,
+			// Reserved
+			UnknownReason = 4000,
+			// The requested `Content-Type` specified in the request HTTP header is invalid.
+			InvalidContentType = 4001,
+			// The server was unable to decode the incoming websocket message
+			MessageDecodeError = 4002,
+			// A data key is missing but required
+			MissingDataKey = 4003,
+			// A data key has an invalid type
+			InvalidDataKeyType = 4004,
+			// The specified `op` was invalid or missing
+			UnknownOpCode = 4005,
+			// The client sent a websocket message without first sending `Identify` message
+			NotIdentified = 4006,
+			// The client sent an `Identify` message while already identified
+			AlreadyIdentified = 4007,
+			// The authentication attempt (via `Identify`) failed
+			AuthenticationFailed = 4008,
+			// The server detected the usage of an old version of the obs-websocket RPC protocol.
+			UnsupportedRpcVersion = 4009,
+			// The websocket session has been invalidated by the obs-websocket server.
+			SessionInvalidated = 4010,
 		};
 
 		WebSocketServer();
