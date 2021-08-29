@@ -6,6 +6,8 @@ on:
       - 'docs/**'
     branches:
       - master
+    tags:
+      - '[45].[0-9]+.[0-9]+*'
   pull_request:
     paths-ignore:
       - 'docs/**'
@@ -44,7 +46,6 @@ jobs:
         working-directory: ${{ github.workspace }}/obs-studio
         run: |
           git fetch --prune --unshallow
-          echo "OBS_GIT_BRANCH=$(git rev-parse --abbrev-ref HEAD)" >> $GITHUB_ENV
           echo "OBS_GIT_HASH=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
           echo "OBS_GIT_TAG=$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
       - name: 'Checkout last OBS-Studio release (${{ env.OBS_GIT_TAG }})'
@@ -58,9 +59,14 @@ jobs:
         working-directory: ${{ github.workspace }}/obs-websocket
         run: |
           git fetch --prune --unshallow
-          echo "GIT_BRANCH=${{ github.event.pull_request.head.ref }}" >> $GITHUB_ENV
           echo "GIT_HASH=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
           echo "GIT_TAG=$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
+          if [ "${{ env.GIT_TAG }}" ] ; then \
+            VERSION="${{ env.GIT_TAG }}" ; \
+          else \
+            VERSION="${{ env.GIT_HASH }}-git" ; \
+          fi
+          echo "PACKAGE_VERSION=$VERSION" >> $GITHUB_ENV
       - name: 'Restore Cached Qt'
         id: qtcache
         uses: actions/cache@v2
@@ -156,7 +162,11 @@ jobs:
       - name: 'Set PR Artifact Filename'
         shell: bash
         run: |
-          FILENAME="obs-websocket-${{ env.GIT_HASH }}-Windows"
+          if [ "${{ env.GIT_TAG }}" ] ; then \
+            FILENAME="obs-websocket-${{ env.GIT_TAG }}-Windows" ; \
+          else \
+            FILENAME="obs-websocket-${{ env.GIT_HASH }}-git-Windows" ; \
+          fi
           echo "WIN_FILENAME=$FILENAME" >> $GITHUB_ENV
       - name: 'Package obs-websocket'
         working-directory: ${{ github.workspace }}/obs-websocket
@@ -175,7 +185,7 @@ jobs:
         if: success()
         uses: actions/upload-artifact@v2-preview
         with:
-          name: '${{ env.GIT_HASH }}-Windows-Installer'
+          name: 'obs-websocket-${{ env.PACKAGE_VERSION }}-Windows-Installer'
           path: ${{ github.workspace }}/obs-websocket/package/*.exe
   ubuntu64:
     name: "Linux/Ubuntu 64-bit"
@@ -198,7 +208,6 @@ jobs:
         working-directory: ${{ github.workspace }}/obs-studio
         run: |
           git fetch --prune --unshallow
-          echo "OBS_GIT_BRANCH=$(git rev-parse --abbrev-ref HEAD)" >> $GITHUB_ENV
           echo "OBS_GIT_HASH=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
           echo "OBS_GIT_TAG=$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
       - name: 'Checkout last OBS-Studio release (${{ env.OBS_GIT_TAG }})'
@@ -211,9 +220,14 @@ jobs:
         working-directory: ${{ github.workspace }}/obs-websocket
         run: |
           git fetch --prune --unshallow
-          echo "GIT_BRANCH=${{ github.event.pull_request.head.ref }}" >> $GITHUB_ENV
           echo "GIT_HASH=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
           echo "GIT_TAG=$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
+          if [ "${{ env.GIT_TAG }}" ] ; then \
+            VERSION="${{ env.GIT_TAG }}" ; \
+          else \
+            VERSION="${{ env.GIT_HASH }}-git" ; \
+          fi
+          echo "PACKAGE_VERSION=$VERSION" >> $GITHUB_ENV
       - name: 'Install prerequisites (Apt)'
         shell: bash
         run: |
@@ -294,7 +308,11 @@ jobs:
         run: |
           mkdir ./build
           cd ./build
-          cmake -DLIBOBS_INCLUDE_DIR=${{ github.workspace }}/obs-studio/libobs -DCMAKE_INSTALL_PREFIX=/usr -DUSE_UBUNTU_FIX=TRUE ..
+          if [ "${{ env.GIT_TAG }}" ] ; then \
+            cmake -DLIBOBS_INCLUDE_DIR=${{ github.workspace }}/obs-studio/libobs -DCMAKE_INSTALL_PREFIX=/usr -DUSE_UBUNTU_FIX=TRUE -DCMAKE_BUILD_TYPE=Release .. ; \
+          else \
+            cmake -DLIBOBS_INCLUDE_DIR=${{ github.workspace }}/obs-studio/libobs -DCMAKE_INSTALL_PREFIX=/usr -DUSE_UBUNTU_FIX=TRUE .. ; \
+          fi
       - name: 'Build obs-websocket'
         working-directory: ${{ github.workspace }}/obs-websocket
         shell: bash
@@ -305,26 +323,30 @@ jobs:
       - name: 'Set PR Artifact Filename'
         shell: bash
         run: |
-          FILENAME="obs-websocket-1-${{ env.GIT_HASH }}-1_amd64.deb"
+          if [ "${{ env.GIT_TAG }}" ] ; then \
+            FILENAME="obs-websocket-${{ env.GIT_TAG }}-Ubuntu64.deb" ; \
+          else \
+            FILENAME="obs-websocket-${{ env.GIT_HASH }}-git-Ubuntu64.deb" ; \
+          fi
           echo "FILENAME=$FILENAME" >> $GITHUB_ENV
       - name: 'Package ${{ env.FILENAME }}'
         if: success()
         working-directory: ${{ github.workspace }}/obs-websocket
         shell: bash
         run: |
-          VERSION="1-${{ env.GIT_HASH }}-git"
           cd ./build
           sudo checkinstall -y --type=debian --fstrans=no -nodoc \
-              --backup=no --deldoc=yes --install=no --pkgname=obs-websocket --pkgversion=$VERSION \
+              --backup=no --deldoc=yes --install=no --pkgname=obs-websocket --pkgversion=${{ env.PACKAGE_VERSION }} \
               --pkglicense="GPLv2.0" --maintainer="${{ github.event.pusher.email }}" --pkggroup="video" \
               --pkgsource="${{ github.event.repository.html_url }}" \
-              --requires="obs-studio,libqt5core5a,libqt5widgets5,libqt5network5,libqt5concurrent5,qt5-image-formats-plugins" \
+              --requires="obs-studio,libqt5network5,libqt5concurrent5,qt5-image-formats-plugins" \
               --pakdir="../package"
           sudo chmod ao+r ../package/*
+          sudo mv ../package/* ../package/${{ env.FILENAME }}
           cd -
       - name: 'Publish ${{ env.FILENAME }}'
         if: success()
         uses: actions/upload-artifact@v2-preview
         with:
-          name: '${{ env.GIT_HASH }}-Ubuntu64'
+          name: 'obs-websocket-${{ env.PACKAGE_VERSION }}-Ubuntu64'
           path: '${{ github.workspace }}/obs-websocket/package/*.deb'
