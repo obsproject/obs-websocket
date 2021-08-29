@@ -62,9 +62,9 @@ jobs:
           echo "GIT_HASH=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
           echo "GIT_TAG=$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
           if [ "${{ env.GIT_TAG }}" ] ; then \
-            VERSION="${{ env.GIT_TAG }}" ; \
+            VERSION="$(git describe --tags --abbrev=0)" ; \
           else \
-            VERSION="${{ env.GIT_HASH }}-git" ; \
+            VERSION="$(git rev-parse --short HEAD)-git" ; \
           fi
           echo "PACKAGE_VERSION=$VERSION" >> $GITHUB_ENV
       - name: 'Restore Cached Qt'
@@ -223,9 +223,9 @@ jobs:
           echo "GIT_HASH=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
           echo "GIT_TAG=$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
           if [ "${{ env.GIT_TAG }}" ] ; then \
-            VERSION="${{ env.GIT_TAG }}" ; \
+            VERSION="$(git describe --tags --abbrev=0)" ; \
           else \
-            VERSION="${{ env.GIT_HASH }}-git" ; \
+            VERSION="$(git rev-parse --short HEAD)-git" ; \
           fi
           echo "PACKAGE_VERSION=$VERSION" >> $GITHUB_ENV
       - name: 'Install prerequisites (Apt)'
