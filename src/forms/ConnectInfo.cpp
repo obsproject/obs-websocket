@@ -1,5 +1,6 @@
 #include <QClipboard>
 #include <QPainter>
+#include <QUrl>
 #include <obs-module.h>
 
 #include "ConnectInfo.h"
@@ -45,7 +46,7 @@ void ConnectInfo::showEvent(QShowEvent *event)
 	QString serverPassword;
 	if (conf->AuthRequired) {
 		ui->copyServerPasswordButton->setEnabled(true);
-		serverPassword = conf->ServerPassword;
+		serverPassword = QUrl::toPercentEncoding(conf->ServerPassword);
 	} else {
 		ui->copyServerPasswordButton->setEnabled(false);
 		serverPassword = obs_module_text("OBSWebSocket.ConnectInfo.ServerPasswordPlaceholderText");
@@ -54,9 +55,9 @@ void ConnectInfo::showEvent(QShowEvent *event)
 
 	QString connectString;
 	if (conf->AuthRequired)
-		connectString = QString("obswebsocket|%1:%2|%3").arg(serverIp).arg(serverPort).arg(serverPassword);
+		connectString = QString("obsws://%1:%2/%3").arg(serverIp).arg(serverPort).arg(serverPassword);
 	else
-		connectString = QString("obswebsocket|%1:%2").arg(serverIp).arg(serverPort);
+		connectString = QString("obsws://%1:%2").arg(serverIp).arg(serverPort);
 	DrawQr(connectString);
 }
 
