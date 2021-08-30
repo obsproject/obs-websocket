@@ -9,3 +9,4 @@
 .idea
 .vscode
 /docs/node_modules/
+/src/plugin-macros.generated.h
