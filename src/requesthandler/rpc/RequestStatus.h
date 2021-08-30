@@ -113,6 +113,12 @@ namespace RequestStatus {
 		NotEnoughProfiles = 624,
 		// There are not enough scenes to perform the action
 		NotEnoughScenes = 625,
+		// The resource was not found
+		ResourceNotFound = 626,
+		// The type of resource found is invalid
+		InvalidResourceType = 627,
+		// The state of the resource is invalid. For example, if the resource is blocked from being accessed
+		InvalidResourceState = 628,
 
 		// Processing the request failed unexpectedly
 		RequestProcessingFailed = 700,

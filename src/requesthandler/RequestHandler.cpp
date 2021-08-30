@@ -59,9 +59,14 @@ const std::map<std::string, RequestMethodHandler> RequestHandler::_handlerMap
 	{"ToggleInputMute", &RequestHandler::ToggleInputMute},
 	{"GetInputVolume", &RequestHandler::GetInputVolume},
 	{"SetInputVolume", &RequestHandler::SetInputVolume},
+	{"GetInputAudioMonitorType", &RequestHandler::GetInputAudioMonitorType},
+	{"SetInputAudioMonitorType", &RequestHandler::SetInputAudioMonitorType},
+	{"GetInputPropertiesListPropertyItems", &RequestHandler::GetInputPropertiesListPropertyItems},
+	{"PressInputPropertiesButton", &RequestHandler::PressInputPropertiesButton},
 
 	// Stream
 	{"GetStreamStatus", &RequestHandler::GetStreamStatus},
+	{"ToggleStream", &RequestHandler::ToggleStream},
 	{"StartStream", &RequestHandler::StartStream},
 	{"StopStream", &RequestHandler::StopStream},
 };

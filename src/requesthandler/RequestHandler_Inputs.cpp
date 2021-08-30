@@ -268,3 +268,125 @@ RequestResult RequestHandler::SetInputVolume(const Request& request)
 
 	return RequestResult::Success();
 }
+
+RequestResult RequestHandler::GetInputAudioMonitorType(const Request& request)
+{
+	RequestStatus::RequestStatus statusCode;
+	std::string comment;
+	OBSSourceAutoRelease input = request.ValidateInput("inputName", statusCode, comment);
+	if (!input)
+		return RequestResult::Error(statusCode, comment);
+
+	enum obs_monitoring_type monitorType = obs_source_get_monitoring_type(input);
+
+	json responseData;
+	switch (monitorType) {
+		default:
+		case OBS_MONITORING_TYPE_NONE:
+			responseData["monitorType"] = "OBS_WEBSOCKET_MONITOR_TYPE_NONE";
+			break;
+		case OBS_MONITORING_TYPE_MONITOR_ONLY:
+			responseData["monitorType"] = "OBS_WEBSOCKET_MONITOR_TYPE_MONITOR_ONLY";
+			break;
+		case OBS_MONITORING_TYPE_MONITOR_AND_OUTPUT:
+			responseData["monitorType"] = "OBS_WEBSOCKET_MONITOR_TYPE_MONITOR_AND_OUTPUT";
+			break;
+	}
+
+	return RequestResult::Success(responseData);
+}
+
+RequestResult RequestHandler::SetInputAudioMonitorType(const Request& request)
+{
+	RequestStatus::RequestStatus statusCode;
+	std::string comment;
+	OBSSourceAutoRelease input = request.ValidateInput("inputName", statusCode, comment);
+	if (!(input && request.ValidateString("monitorType", statusCode, comment)))
+		return RequestResult::Error(statusCode, comment);
+
+	enum obs_monitoring_type monitorType;
+	std::string monitorTypeString = request.RequestData["monitorType"];
+	if (monitorTypeString == "OBS_WEBSOCKET_MONITOR_TYPE_NONE")
+		monitorType = OBS_MONITORING_TYPE_NONE;
+	else if (monitorTypeString == "OBS_WEBSOCKET_MONITOR_TYPE_MONITOR_ONLY")
+		monitorType = OBS_MONITORING_TYPE_MONITOR_ONLY;
+	else if (monitorTypeString == "OBS_WEBSOCKET_MONITOR_TYPE_MONITOR_AND_OUTPUT")
+		monitorType = OBS_MONITORING_TYPE_MONITOR_AND_OUTPUT;
+	else
+		return RequestResult::Error(RequestStatus::InvalidRequestParameter, std::string("Unknown monitor type: ") + monitorTypeString);
+
+	obs_source_set_monitoring_type(input, monitorType);
+
+	return RequestResult::Success();
+}
+
+std::vector<json> GetListPropertyItems(obs_property_t *property)
+{
+	std::vector<json> ret;
+
+	enum obs_combo_format itemFormat = obs_property_list_format(property);
+	size_t itemCount = obs_property_list_item_count(property);
+
+	for (size_t i = 0; i < itemCount; i++) {
+		json itemData;
+		itemData["itemName"] = obs_property_list_item_name(property, i);
+		itemData["itemEnabled"] = !obs_property_list_item_disabled(property, i);
+		if (itemFormat == OBS_COMBO_FORMAT_INT) {
+			itemData["itemValue"] = obs_property_list_item_int(property, i);
+		} else if (itemFormat == OBS_COMBO_FORMAT_FLOAT) {
+			itemData["itemValue"] = obs_property_list_item_float(property, i);
+		} else if (itemFormat == OBS_COMBO_FORMAT_STRING) {
+			itemData["itemValue"] = obs_property_list_item_string(property, i);
+		}
+		ret.push_back(itemData);
+	}
+
+	return ret;
+}
+
+RequestResult RequestHandler::GetInputPropertiesListPropertyItems(const Request& request)
+{
+	RequestStatus::RequestStatus statusCode;
+	std::string comment;
+	OBSSourceAutoRelease input = request.ValidateInput("inputName", statusCode, comment);
+	if (!(input && request.ValidateString("propertyName", statusCode, comment)))
+		return RequestResult::Error(statusCode, comment);
+
+	std::string propertyName = request.RequestData["propertyName"];
+
+	OBSPropertiesAutoDestroy inputProperties = obs_source_properties(input);
+	obs_property_t *property = obs_properties_get(inputProperties, propertyName.c_str());
+	if (!property)
+		return RequestResult::Error(RequestStatus::ResourceNotFound, "Unable to find a property by that name.");
+	if (obs_property_get_type(property) != OBS_PROPERTY_LIST)
+		return RequestResult::Error(RequestStatus::InvalidResourceType, "The property found is not a list.");
+
+	json responseData;
+	responseData["propertyItems"] = GetListPropertyItems(property);
+
+	return RequestResult::Success(responseData);
+}
+
+RequestResult RequestHandler::PressInputPropertiesButton(const Request& request)
+{
+	RequestStatus::RequestStatus statusCode;
+	std::string comment;
+	OBSSourceAutoRelease input = request.ValidateInput("inputName", statusCode, comment);
+	if (!(input && request.ValidateString("propertyName", statusCode, comment)))
+		return RequestResult::Error(statusCode, comment);
+
+	std::string propertyName = request.RequestData["propertyName"];
+
+	OBSPropertiesAutoDestroy inputProperties = obs_source_properties(input);
+	obs_property_t *property = obs_properties_get(inputProperties, propertyName.c_str());
+	if (!property)
+		return RequestResult::Error(RequestStatus::ResourceNotFound, "Unable to find a property by that name.");
+	if (obs_property_get_type(property) != OBS_PROPERTY_BUTTON)
+		return RequestResult::Error(RequestStatus::InvalidResourceType, "The property found is not a button.");
+	if (!obs_property_enabled(property))
+		return RequestResult::Error(RequestStatus::InvalidResourceState, "The property item found is not enabled.");
+
+	obs_property_button_clicked(property, input);
+
+	return RequestResult::Success();
+}

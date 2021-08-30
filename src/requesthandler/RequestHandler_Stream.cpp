@@ -17,6 +17,20 @@ RequestResult RequestHandler::GetStreamStatus(const Request& request)
 	return RequestResult::Success(responseData);
 }
 
+RequestResult RequestHandler::ToggleStream(const Request& request)
+{
+	json responseData;
+	if (obs_frontend_streaming_active()) {
+		obs_frontend_streaming_stop();
+		responseData["outputActive"] = false;
+	} else {
+		obs_frontend_streaming_start();
+		responseData["outputActive"] = true;
+	}
+
+	return RequestResult::Success(responseData);
+}
+
 RequestResult RequestHandler::StartStream(const Request& request)
 {
 	if (obs_frontend_streaming_active())
