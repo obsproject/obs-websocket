@@ -199,6 +199,7 @@ void WebSocketServer::BroadcastEvent(uint64_t requiredIntent, std::string eventT
 		json eventMessage;
 		eventMessage["op"] = 5;
 		eventMessage["d"]["eventType"] = eventType;
+		eventMessage["d"]["eventIntent"] = requiredIntent;
 		if (eventData.is_object())
 			eventMessage["d"]["eventData"] = eventData;
 

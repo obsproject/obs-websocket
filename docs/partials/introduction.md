@@ -460,9 +460,11 @@ Authentication is not required
 ```
 {
   "eventType": string,
+  "eventIntent": number,
   "eventData": object(optional)
 }
 ```
+- `eventIntent` is the original intent required to be subscribed to in order to receive the event.
 
 **Example Message:**
 ```json
@@ -470,6 +472,7 @@ Authentication is not required
   "op": 2,
   "d": {
     "eventType": "StudioModeStateChanged",
+    "eventIntent": 1,
     "eventData": {
       "studioModeEnabled": true
     }
