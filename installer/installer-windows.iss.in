@@ -1,5 +1,5 @@
 #define MyAppName "obs-websocket"
-#define MyAppVersion "@CMAKE_PROJECT_VERSION@"
+#define MyAppVersion "@OBS_WEBSOCKET_VERSION@"
 #define MyAppPublisher "Stephane Lepin"
 #define MyAppURL "http://github.com/Palakis/obs-websocket"
 
