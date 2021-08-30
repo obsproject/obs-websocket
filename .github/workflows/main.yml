@@ -65,7 +65,7 @@ jobs:
           echo "GIT_TAG=$GIT_TAG" >> $GITHUB_ENV
           if [ "$GIT_TAG" ] ; then \
             VERSION="$GIT_TAG" \
-            VERSION_SUFFIX = $(echo "$GIT_TAG" | cut -c6-20) ; \
+            VERSION_SUFFIX=$(echo "$GIT_TAG" | cut -c6-20) ; \
           else \
             VERSION="$GIT_HASH-git" \
             VERSION_SUFFIX="-$GIT_HASH-git" ; \
@@ -226,7 +226,7 @@ jobs:
           echo "GIT_TAG=$GIT_TAG" >> $GITHUB_ENV
           if [ "$GIT_TAG" ] ; then \
             VERSION="$GIT_TAG" \
-            VERSION_SUFFIX = $(echo "$GIT_TAG" | cut -c6-20) ; \
+            VERSION_SUFFIX=$(echo "$GIT_TAG" | cut -c6-20) ; \
           else \
             VERSION="$GIT_HASH-git" \
             VERSION_SUFFIX="-$GIT_HASH-git" ; \
