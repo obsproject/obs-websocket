@@ -15,6 +15,15 @@ endif()
 unset(_LOC_PATH)
 
 
+# Set correct version string
+if(DEFINED OBS_WEBSOCKET_VERSION_SUFFIX)
+	set(OBS_WEBSOCKET_VERSION "${CMAKE_PROJECT_VERSION}${OBS_WEBSOCKET_VERSION_SUFFIX}")
+	message(WARNING "-----------------------------------\nVersion Suffix provided. OBS_WEBSOCKET_VERSION is now ${OBS_WEBSOCKET_VERSION}\n-----------------------------------")
+else()
+	set(OBS_WEBSOCKET_VERSION "${CMAKE_PROJECT_VERSION}")
+endif()
+
+
 # Allow selection of common build types via UI
 if(NOT CMAKE_BUILD_TYPE)
 	set(CMAKE_BUILD_TYPE "RelWithDebInfo" CACHE STRING
