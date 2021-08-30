@@ -439,7 +439,7 @@ void WebSocketServer::onMessage(websocketpp::connection_hdl hdl, websocketpp::se
 		if (!incomingMessage.contains("op")) {
 			if (!session->IgnoreInvalidMessages()) {
 				ret.closeCode = WebSocketServer::WebSocketCloseCode::UnknownOpCode;
-				ret.closeReason = std::string("Your request is missing an `op`.");
+				ret.closeReason = "Your request is missing an `op`.";
 				goto skipProcessing;
 			}
 			return;
