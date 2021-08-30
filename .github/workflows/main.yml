@@ -164,12 +164,7 @@ jobs:
       - name: 'Set PR Artifact Filename'
         shell: bash
         run: |
-          if [ "${{ env.GIT_TAG }}" ] ; then \
-            FILENAME="obs-websocket-${{ env.GIT_TAG }}-Windows" ; \
-          else \
-            FILENAME="obs-websocket-${{ env.GIT_HASH }}-git-Windows" ; \
-          fi
-          echo "WIN_FILENAME=$FILENAME" >> $GITHUB_ENV
+          echo "WIN_FILENAME=obs-websocket-${{ env.PACKAGE_VERSION }}-Windows" >> $GITHUB_ENV
       - name: 'Package obs-websocket'
         working-directory: ${{ github.workspace }}/obs-websocket
         run: |
@@ -229,7 +224,7 @@ jobs:
           if [ "$GIT_TAG" ] ; then \
             VERSION="$GIT_TAG" ; \
           else \
-            VERSION="$GIT_HASH-git" ; \
+            VERSION="1-$GIT_HASH-git" ; \
           fi
           echo "PACKAGE_VERSION=$VERSION" >> $GITHUB_ENV
       - name: 'Install prerequisites (Apt)'
@@ -327,13 +322,8 @@ jobs:
       - name: 'Set PR Artifact Filename'
         shell: bash
         run: |
-          if [ "${{ env.GIT_TAG }}" ] ; then \
-            FILENAME="obs-websocket-${{ env.GIT_TAG }}-Ubuntu64.deb" ; \
-          else \
-            FILENAME="obs-websocket-${{ env.GIT_HASH }}-git-Ubuntu64.deb" ; \
-          fi
-          echo "FILENAME=$FILENAME" >> $GITHUB_ENV
-      - name: 'Package ${{ env.FILENAME }}'
+          echo "LINUX_FILENAME=obs-websocket-${{ env.PACKAGE_VERSION }}-Ubuntu64.deb" >> $GITHUB_ENV
+      - name: 'Package ${{ env.LINUX_FILENAME }}'
         if: success()
         working-directory: ${{ github.workspace }}/obs-websocket
         shell: bash
@@ -346,9 +336,9 @@ jobs:
               --requires="obs-studio,libqt5network5,libqt5concurrent5,qt5-image-formats-plugins" \
               --pakdir="../package"
           sudo chmod ao+r ../package/*
-          sudo mv ../package/* ../package/${{ env.FILENAME }}
+          sudo mv ../package/* ../package/${{ env.LINUX_FILENAME }}
           cd -
-      - name: 'Publish ${{ env.FILENAME }}'
+      - name: 'Publish ${{ env.LINUX_FILENAME }}'
         if: success()
         uses: actions/upload-artifact@v2-preview
         with:
