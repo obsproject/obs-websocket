@@ -16,7 +16,7 @@ RequestResult RequestHandler::GetPersistentData(const Request& request)
 
 	std::string persistentDataPath = Utils::Obs::StringHelper::GetCurrentProfilePath();
 	if (realm == "OBS_WEBSOCKET_DATA_REALM_GLOBAL")
-		persistentDataPath += "../../../obsWebSocketPersistentData.json";
+		persistentDataPath += "/../../../obsWebSocketPersistentData.json";
 	else if (realm == "OBS_WEBSOCKET_DATA_REALM_PROFILE")
 		persistentDataPath += "/obsWebSocketPersistentData.json";
 	else
@@ -45,7 +45,7 @@ RequestResult RequestHandler::SetPersistentData(const Request& request)
 
 	std::string persistentDataPath = Utils::Obs::StringHelper::GetCurrentProfilePath();
 	if (realm == "OBS_WEBSOCKET_DATA_REALM_GLOBAL")
-		persistentDataPath += "../../../obsWebSocketPersistentData.json";
+		persistentDataPath += "/../../../obsWebSocketPersistentData.json";
 	else if (realm == "OBS_WEBSOCKET_DATA_REALM_PROFILE")
 		persistentDataPath += "/obsWebSocketPersistentData.json";
 	else
