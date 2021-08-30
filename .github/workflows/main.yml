@@ -334,9 +334,14 @@ jobs:
         working-directory: ${{ github.workspace }}/obs-websocket
         shell: bash
         run: |
+          if [ "${{ env.GIT_TAG }}" ] ; then \ # If git hash is used as version, it must be prefixed by `1-` in order to be accepted by checkinstall
+            CHECKINSTALL_VERSION=${{ env.PACKAGE_VERSION }} ; \
+          else \
+            CHECKINSTALL_VERSION="1-${{ env.PACKAGE_VERSION }}" ; \
+          fi
           cd ./build
           sudo checkinstall -y --type=debian --fstrans=no -nodoc \
-              --backup=no --deldoc=yes --install=no --pkgname=obs-websocket --pkgversion=${{ env.PACKAGE_VERSION }} \
+              --backup=no --deldoc=yes --install=no --pkgname=obs-websocket --pkgversion="$CHECKINSTALL_VERSION" \
               --pkglicense="GPLv2.0" --maintainer="${{ github.event.pusher.email }}" --pkggroup="video" \
               --pkgsource="${{ github.event.repository.html_url }}" \
               --requires="obs-studio,libqt5network5,libqt5concurrent5,qt5-image-formats-plugins" \
