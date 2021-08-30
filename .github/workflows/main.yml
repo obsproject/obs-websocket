@@ -61,7 +61,7 @@ jobs:
           git fetch --prune --unshallow
           GIT_HASH=$(git rev-parse --short HEAD)
           echo "GIT_HASH=$GIT_HASH" >> $GITHUB_ENV
-          GIT_TAG=$(git describe --tags --abbrev=0)
+          GIT_TAG=$(git describe --exact-match --tags --abbrev=0) || GIT_TAG=""
           echo "GIT_TAG=$GIT_TAG" >> $GITHUB_ENV
           if [ "$GIT_TAG" ] ; then \
             VERSION="$GIT_TAG" ; \
@@ -224,7 +224,7 @@ jobs:
           git fetch --prune --unshallow
           GIT_HASH=$(git rev-parse --short HEAD)
           echo "GIT_HASH=$GIT_HASH" >> $GITHUB_ENV
-          GIT_TAG=$(git describe --tags --abbrev=0)
+          GIT_TAG=$(git describe --exact-match --tags --abbrev=0) || GIT_TAG=""
           echo "GIT_TAG=$GIT_TAG" >> $GITHUB_ENV
           if [ "$GIT_TAG" ] ; then \
             VERSION="$GIT_TAG" ; \
