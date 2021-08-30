@@ -12,7 +12,7 @@
 
 WebSockets API for OBS Studio.
 
-[![Twitter](https://img.shields.io/twitter/url/https/twitter.com/fold_left.svg?style=social&label=Follow%20%40LePalakis)](https://twitter.com/LePalakis)
+[![CI Multiplatform Build](https://github.com/Palakis/obs-websocket/actions/workflows/main.yml/badge.svg?branch=master)](https://github.com/Palakis/obs-websocket/actions/workflows/main.yml)
 [![Discord](https://img.shields.io/discord/715691013825364120.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/WBaSQ3A)
 [![Financial Contributors on Open Collective](https://opencollective.com/obs-websocket/all/badge.svg?label=financial+contributors)](https://opencollective.com/obs-websocket)
 
