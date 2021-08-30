@@ -1,9 +1,22 @@
 cmake_minimum_required(VERSION 3.16...3.20)
+
+# Version variables
 project(obs-websocket VERSION 5.0.0)
 set(OBS_WEBSOCKET_RPC_VERSION 1)
 
+
+# Set correct version string
+if(DEFINED OBS_WEBSOCKET_VERSION_SUFFIX AND NOT OBS_WEBSOCKET_VERSION_SUFFIX STREQUAL "")
+	set(OBS_WEBSOCKET_VERSION "${CMAKE_PROJECT_VERSION}${OBS_WEBSOCKET_VERSION_SUFFIX}")
+	message(WARNING "-----------------------------------\nVersion Suffix provided. OBS_WEBSOCKET_VERSION is now ${OBS_WEBSOCKET_VERSION}\n-----------------------------------")
+else()
+	set(OBS_WEBSOCKET_VERSION "${CMAKE_PROJECT_VERSION}")
+endif()
+
+
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 
 # Prohibit in-source builds
 file(TO_CMAKE_PATH "${PROJECT_BINARY_DIR}/CMakeLists.txt" _LOC_PATH)
@@ -13,15 +26,6 @@ if(EXISTS "${LOC_PATH}")
 						"remove CMakeCache.txt and CMakeFiles.")
 endif()
 unset(_LOC_PATH)
-
-
-# Set correct version string
-if(DEFINED OBS_WEBSOCKET_VERSION_SUFFIX)
-	set(OBS_WEBSOCKET_VERSION "${CMAKE_PROJECT_VERSION}${OBS_WEBSOCKET_VERSION_SUFFIX}")
-	message(WARNING "-----------------------------------\nVersion Suffix provided. OBS_WEBSOCKET_VERSION is now ${OBS_WEBSOCKET_VERSION}\n-----------------------------------")
-else()
-	set(OBS_WEBSOCKET_VERSION "${CMAKE_PROJECT_VERSION}")
-endif()
 
 
 # Allow selection of common build types via UI
