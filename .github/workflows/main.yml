@@ -64,11 +64,14 @@ jobs:
           GIT_TAG=$(git describe --exact-match --tags --abbrev=0) || GIT_TAG=""
           echo "GIT_TAG=$GIT_TAG" >> $GITHUB_ENV
           if [ "$GIT_TAG" ] ; then \
-            VERSION="$GIT_TAG" ; \
+            VERSION="$GIT_TAG" \
+            VERSION_SUFFIX = $(echo "$GIT_TAG" | cut -c6-20) ; \
           else \
-            VERSION="$GIT_HASH-git" ; \
+            VERSION="$GIT_HASH-git" \
+            VERSION_SUFFIX="-$GIT_HASH-git" ; \
           fi
           echo "PACKAGE_VERSION=$VERSION" >> $GITHUB_ENV
+          echo "CMAKE_VERSION_SUFFIX=$VERSION_SUFFIX" >> $GITHUB_ENV
       - name: 'Restore Cached Qt'
         id: qtcache
         uses: actions/cache@v2
@@ -148,13 +151,13 @@ jobs:
         run: |
           mkdir .\build32
           cd .\build32
-          cmake -G "${{ env.CMAKE_GENERATOR }}" -A Win32 -DCMAKE_SYSTEM_VERSION="${{ env.CMAKE_SYSTEM_VERSION }}" -DQTDIR="${{ github.workspace }}\cmbuild\QT\${{ env.QT_VERSION }}\msvc2019" -DLibObs_DIR="${{ github.workspace }}\obs-studio\build32\libobs" -DLIBOBS_INCLUDE_DIR="${{ github.workspace }}\obs-studio\libobs" -DLIBOBS_LIB="${{ github.workspace }}\obs-studio\build32\libobs\RelWithDebInfo\obs.lib" -DOBS_FRONTEND_LIB="${{ github.workspace }}\obs-studio\build32\UI\obs-frontend-api\RelWithDebInfo\obs-frontend-api.lib" ..
+          cmake -G "${{ env.CMAKE_GENERATOR }}" -A Win32 -DCMAKE_SYSTEM_VERSION="${{ env.CMAKE_SYSTEM_VERSION }}" -DQTDIR="${{ github.workspace }}\cmbuild\QT\${{ env.QT_VERSION }}\msvc2019" -DLibObs_DIR="${{ github.workspace }}\obs-studio\build32\libobs" -DLIBOBS_INCLUDE_DIR="${{ github.workspace }}\obs-studio\libobs" -DLIBOBS_LIB="${{ github.workspace }}\obs-studio\build32\libobs\RelWithDebInfo\obs.lib" -DOBS_FRONTEND_LIB="${{ github.workspace }}\obs-studio\build32\UI\obs-frontend-api\RelWithDebInfo\obs-frontend-api.lib" -DOBS_WEBSOCKET_VERSION_SUFFIX="${{ env.CMAKE_VERSION_SUFFIX }}" ..
       - name: 'Configure obs-websocket 64-bit'
         working-directory: ${{ github.workspace }}/obs-websocket
         run: |
           mkdir .\build64
           cd .\build64
-          cmake -G "${{ env.CMAKE_GENERATOR }}" -A x64 -DCMAKE_SYSTEM_VERSION="${{ env.CMAKE_SYSTEM_VERSION }}" -DQTDIR="${{ github.workspace }}\cmbuild\QT\${{ env.QT_VERSION }}\msvc2019_64" -DLibObs_DIR="${{ github.workspace }}\obs-studio\build64\libobs" -DLIBOBS_INCLUDE_DIR="${{ github.workspace }}\obs-studio\libobs" -DLIBOBS_LIB="${{ github.workspace }}\obs-studio\build64\libobs\RelWithDebInfo\obs.lib" -DOBS_FRONTEND_LIB="${{ github.workspace }}\obs-studio\build64\UI\obs-frontend-api\RelWithDebInfo\obs-frontend-api.lib" ..
+          cmake -G "${{ env.CMAKE_GENERATOR }}" -A x64 -DCMAKE_SYSTEM_VERSION="${{ env.CMAKE_SYSTEM_VERSION }}" -DQTDIR="${{ github.workspace }}\cmbuild\QT\${{ env.QT_VERSION }}\msvc2019_64" -DLibObs_DIR="${{ github.workspace }}\obs-studio\build64\libobs" -DLIBOBS_INCLUDE_DIR="${{ github.workspace }}\obs-studio\libobs" -DLIBOBS_LIB="${{ github.workspace }}\obs-studio\build64\libobs\RelWithDebInfo\obs.lib" -DOBS_FRONTEND_LIB="${{ github.workspace }}\obs-studio\build64\UI\obs-frontend-api\RelWithDebInfo\obs-frontend-api.lib" -DOBS_WEBSOCKET_VERSION_SUFFIX="${{ env.CMAKE_VERSION_SUFFIX }}" ..
       - name: 'Build obs-websocket 32-bit'
         working-directory: ${{ github.workspace }}/obs-websocket
         run: msbuild /m /p:Configuration=RelWithDebInfo .\build32\obs-websocket.sln
@@ -222,11 +225,14 @@ jobs:
           GIT_TAG=$(git describe --exact-match --tags --abbrev=0) || GIT_TAG=""
           echo "GIT_TAG=$GIT_TAG" >> $GITHUB_ENV
           if [ "$GIT_TAG" ] ; then \
-            VERSION="$GIT_TAG" ; \
+            VERSION="$GIT_TAG" \
+            VERSION_SUFFIX = $(echo "$GIT_TAG" | cut -c6-20) ; \
           else \
-            VERSION="1-$GIT_HASH-git" ; \
+            VERSION="$GIT_HASH-git" \
+            VERSION_SUFFIX="-$GIT_HASH-git" ; \
           fi
           echo "PACKAGE_VERSION=$VERSION" >> $GITHUB_ENV
+          echo "CMAKE_VERSION_SUFFIX=$VERSION_SUFFIX" >> $GITHUB_ENV
       - name: 'Install prerequisites (Apt)'
         shell: bash
         run: |
@@ -308,9 +314,9 @@ jobs:
           mkdir ./build
           cd ./build
           if [ "${{ env.GIT_TAG }}" ] ; then \
-            cmake -DLIBOBS_INCLUDE_DIR=${{ github.workspace }}/obs-studio/libobs -DCMAKE_INSTALL_PREFIX=/usr -DUSE_UBUNTU_FIX=TRUE -DCMAKE_BUILD_TYPE=Release .. ; \
+            cmake -DLIBOBS_INCLUDE_DIR=${{ github.workspace }}/obs-studio/libobs -DCMAKE_INSTALL_PREFIX=/usr -DUSE_UBUNTU_FIX=TRUE -DOBS_WEBSOCKET_VERSION_SUFFIX="${{ env.CMAKE_VERSION_SUFFIX }}" -DCMAKE_BUILD_TYPE=Release .. ; \
           else \
-            cmake -DLIBOBS_INCLUDE_DIR=${{ github.workspace }}/obs-studio/libobs -DCMAKE_INSTALL_PREFIX=/usr -DUSE_UBUNTU_FIX=TRUE .. ; \
+            cmake -DLIBOBS_INCLUDE_DIR=${{ github.workspace }}/obs-studio/libobs -DCMAKE_INSTALL_PREFIX=/usr -DUSE_UBUNTU_FIX=TRUE -DOBS_WEBSOCKET_VERSION_SUFFIX="${{ env.CMAKE_VERSION_SUFFIX }}" .. ; \
           fi
       - name: 'Build obs-websocket'
         working-directory: ${{ github.workspace }}/obs-websocket
