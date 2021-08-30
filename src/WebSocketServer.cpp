@@ -26,6 +26,11 @@ WebSocketServer::WebSocketServer() :
 	_server.set_reuse_addr(true);
 #endif
 
+	_server.set_validate_handler(
+		websocketpp::lib::bind(
+			&WebSocketServer::onValidate, this, websocketpp::lib::placeholders::_1
+		)
+	);
 	_server.set_open_handler(
 		websocketpp::lib::bind(
 			&WebSocketServer::onOpen, this, websocketpp::lib::placeholders::_1
@@ -245,6 +250,21 @@ void WebSocketServer::BroadcastEvent(uint64_t requiredIntent, std::string eventT
 	});
 }
 
+bool WebSocketServer::onValidate(websocketpp::connection_hdl hdl)
+{
+	auto conn = _server.get_con_from_hdl(hdl);
+
+	std::vector<std::string> requestedSubprotocols = conn->get_requested_subprotocols();
+	for (auto subprotocol : requestedSubprotocols) {
+		if (subprotocol == "obswebsocket.json" || subprotocol == "obswebsocket.msgpack") {
+			conn->select_subprotocol(subprotocol);
+			break;
+		}
+	}
+
+	return true;
+}
+
 void WebSocketServer::onOpen(websocketpp::connection_hdl hdl)
 {
 	auto conn = _server.get_con_from_hdl(hdl);
@@ -259,16 +279,12 @@ void WebSocketServer::onOpen(websocketpp::connection_hdl hdl)
 	session->SetRemoteAddress(conn->get_remote_endpoint());
 	session->SetConnectedAt(QDateTime::currentSecsSinceEpoch());
 	session->SetAuthenticationRequired(AuthenticationRequired);
-	std::string contentType = conn->get_request_header("Content-Type");
-	if (contentType == "") {
-		;
-	} else if (contentType == "application/json") {
-		session->SetEncoding(WebSocketEncoding::Json);
-	} else if (contentType == "application/msgpack") {
-		session->SetEncoding(WebSocketEncoding::MsgPack);
-	} else {
-		conn->close(WebSocketCloseCode::InvalidContentType, "Your HTTP `Content-Type` header specifies an invalid encoding type.");
-		return;
+	std::string selectedSubprotocol = conn->get_subprotocol();
+	if (!selectedSubprotocol.empty()) {
+		if (selectedSubprotocol == "obswebsocket.json")
+			session->SetEncoding(WebSocketEncoding::Json);
+		else if (selectedSubprotocol == "obswebsocket.msgpack")
+			session->SetEncoding(WebSocketEncoding::MsgPack);
 	}
 
 	// Build `Hello`

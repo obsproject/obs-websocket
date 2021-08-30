@@ -42,10 +42,9 @@ Here's info on how to connect to obs-websocket
 These steps should be followed precisely. Failure to connect to the server as instructed will likely result in your client being treated in an undefined way.
 
 - Initial HTTP request made to the obs-websocket server.
-  - HTTP request headers can be used to set the websocket communication type. The default format is JSON. Example headers:
-    - `Content-Type: application/json`
-    - `Content-Type: application/msgpack`
-  - If an invalid `Content-Type` is specified, the connection will be closed with [`WebSocketCloseCode::InvalidContentType`](#websocketclosecode-enum) after upgrade (but before `Hello`).
+  - The `Sec-WebSocket-Protocol` header can be used to tell obs-websocket which kind of message encoding to use. By default, obs-websocket uses JSON over text. Available subprotocols:
+    - `obswebsocket.json` - JSON over text frames
+    - `obswebsocket.msgpack` - MsgPack over binary frames
 
 - Once the connection is upgraded, the websocket server will immediately send an [OpCode 0 `Hello`](#hello-opcode-0) message to the client.
 
@@ -55,9 +54,9 @@ These steps should be followed precisely. Failure to connect to the server as in
   - The client determines if the server's `rpcVersion` is supported, and if not it provides its closest supported version in `Identify`.
 
 - The server receives and processes the `Identify` sent by the client.
-  - If authentication is required and the `Identify` message data does not contain an `authentication` string, or the string is not correct, the connection is dropped with [`WebSocketCloseCode::AuthenticationFailed`](#websocketclosecode-enum)
-  - If the client has requested an `rpcVersion` which the server cannot use, the connection is dropped with [`WebSocketCloseCode::UnsupportedProtocolVersion`](#websocketclosecode-enum). This system allows both the server and client to have seamless backwards compatability.
-  - If any other parameters are malformed (invalid type, etc), the connection is dropped with [`WebSocketCloseCode::InvalidIdentifyParameter`](#websocketclosecode-enum)
+  - If authentication is required and the `Identify` message data does not contain an `authentication` string, or the string is not correct, the connection is closed with [`WebSocketCloseCode::AuthenticationFailed`](#websocketclosecode-enum)
+  - If the client has requested an `rpcVersion` which the server cannot use, the connection is closed with [`WebSocketCloseCode::UnsupportedRpcVersion`](#websocketclosecode-enum). This system allows both the server and client to have seamless backwards compatability.
+  - If any other parameters are malformed (invalid type, etc), the connection is closed with an appropriate close code.
 
 - Once identification is processed on the server, the server responds to the client with an [OpCode 2 `Identified`](#identified-opcode-2).
 
@@ -66,10 +65,10 @@ These steps should be followed precisely. Failure to connect to the server as in
 - At any time after a client has been identified, it may send an [OpCode 3 `Reidentify`](#reidentify-opcode-3) message to update certain allowed session parameters. The server will respond in the same way it does during initial identification.
 
 #### Connection Notes
-- If the Content Type is `application/msgpack`, all messages must be sent over binary. If it is `application/json`, all messages must be sent over text.
-- The obs-websocket server listens for any messages containing a `request-type` key in the first level JSON from unidentified clients. If a message matches, the connection is dropped with [`WebSocketCloseCode::UnsupportedProtocolVersion`](#websocketclosecode-enum) and a warning is logged.
-- If a message with a `messageType` is not recognized to the obs-websocket server, the connection is dropped with [`WebSocketCloseCode::UnknownMessageType`](#websocketclosecode-enum).
-- At no point may the client send any message other than a single `Identify` before it has received an `Identified`. Doing so will result in the connection being dropped by the server with [`WebSocketCloseCode::NotIdentified`](#websocketclosecode-enum).
+- If a binary frame is received when using the `obswebsocket.json` (default) subprotocol, or a text frame is received while using the `obswebsocket.msgpack` subprotocol, the connection is closed with [`WebSocketCloseCode::MessageDecodeError`](#websocketclosecode-enum).
+- The obs-websocket server listens for any messages containing a `request-type` key in the first level JSON from unidentified clients. If a message matches, the connection is closed with [`WebSocketCloseCode::UnsupportedRpcVersion`](#websocketclosecode-enum) and a warning is logged.
+- If a message with a `messageType` is not recognized to the obs-websocket server, the connection is closed with [`WebSocketCloseCode::UnknownOpCode`](#websocketclosecode-enum).
+- At no point may the client send any message other than a single `Identify` before it has received an `Identified`. Doing so will result in the connection being closed with [`WebSocketCloseCode::NotIdentified`](#websocketclosecode-enum).
 
 ---
 
@@ -121,8 +120,6 @@ enum WebSocketCloseCode {
     DontClose = 0,
     // Reserved
     UnknownReason = 4000,
-    // The requested `Content-Type` specified in the request HTTP header is invalid.
-    InvalidContentType = 4001,
     // The server was unable to decode the incoming websocket message
     MessageDecodeError = 4002,
     // A data key is missing but required
@@ -391,7 +388,7 @@ Authentication is not required
 }
 ```
 - `rpcVersion` is the version number that the client would like the obs-websocket server to use.
-- When `ignoreInvalidMessages` is true, the socket will not be closed for [`WebSocketCloseCode`](#websocketclosecode-enum): `MessageDecodeError`, `UnknownMessageType`, or `RequestMissingRequestId`. Instead, the message will be logged and dropped.
+- When `ignoreInvalidMessages` is true, the socket will not be closed for [`WebSocketCloseCode`](#websocketclosecode-enum): `MessageDecodeError`, `UnknownOpCode`, or `MissingDataKey`. Instead, the message will be logged and ignored.
 - When `ignoreNonFatalRequestChecks` is true, requests will ignore checks which are not critical to the function of the request. Eg calling `DeleteScene` when the target scene does not exist would still return [`RequestStatus::Success`](#requeststatus-enum) if this flag is enabled.
 - `eventSubscriptions` is a bitmask of [`EventSubscriptions`](#eventsubscriptions-enum) items to subscribe to events and event categories at will. By default, all event categories are subscribed, except for events marked as high volume. High volume events must be explicitly subscribed to.
 

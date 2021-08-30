@@ -46,8 +46,6 @@ class WebSocketServer : QObject
 			DontClose = 0,
 			// Reserved
 			UnknownReason = 4000,
-			// The requested `Content-Type` specified in the request HTTP header is invalid.
-			InvalidContentType = 4001,
 			// The server was unable to decode the incoming websocket message
 			MessageDecodeError = 4002,
 			// A data key is missing but required
@@ -99,6 +97,7 @@ class WebSocketServer : QObject
 	private:
 		void ServerRunner();
 
+		bool onValidate(websocketpp::connection_hdl hdl);
 		void onOpen(websocketpp::connection_hdl hdl);
 		void onClose(websocketpp::connection_hdl hdl);
 		void onMessage(websocketpp::connection_hdl hdl, websocketpp::server<websocketpp::config::asio>::message_ptr message);
