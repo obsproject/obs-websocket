@@ -334,8 +334,8 @@ jobs:
         working-directory: ${{ github.workspace }}/obs-websocket
         shell: bash
         run: |
-          if [ "${{ env.GIT_TAG }}" ] ; then \ # If git hash is used as version, it must be prefixed by `1-` in order to be accepted by checkinstall
-            CHECKINSTALL_VERSION=${{ env.PACKAGE_VERSION }} ; \
+          if [ "${{ env.GIT_TAG }}" ] ; then \
+            CHECKINSTALL_VERSION="${{ env.PACKAGE_VERSION }}" ; \
           else \
             CHECKINSTALL_VERSION="1-${{ env.PACKAGE_VERSION }}" ; \
           fi
