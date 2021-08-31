@@ -31,6 +31,7 @@ namespace RequestStatus {
 		RequestParameterEmpty = 403,
 		// There are too many request parameters (eg. a request takes two optionals, where only one is allowed at a time)
 		TooManyRequestParameters = 404,
+		InvalidRequestParameterType = 405,
 
 		// An output is running and cannot be in order to perform the request (generic)
 		OutputRunning = 500,
@@ -60,6 +61,8 @@ namespace RequestStatus {
 		VirtualcamRunning = 512,
 		// Virtualcam is not running and should be
 		VirtualcamNotRunning = 513,
+		OutputPaused = 514,
+		OutputDisabled = 515,
 
 		// The specified source (obs_source_t) was of the invalid type (Eg. input instead of scene)
 		InvalidSourceType = 600,
@@ -119,6 +122,8 @@ namespace RequestStatus {
 		InvalidResourceType = 627,
 		// The state of the resource is invalid. For example, if the resource is blocked from being accessed
 		InvalidResourceState = 628,
+		NotEnoughResources = 629,
+		ResourceAlreadyExists = 630,
 
 		// Processing the request failed unexpectedly
 		RequestProcessingFailed = 700,
@@ -138,5 +143,7 @@ namespace RequestStatus {
 		CannotAct = 707,
 		// Creation of a new stream service failed
 		StreamServiceCreationFailed = 708,
+		ResourceCreationFailed = 709,
+		ResourceActionFailed = 710,
 	};
 };
