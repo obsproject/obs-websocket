@@ -62,6 +62,7 @@ void EventHandler::ConnectSourceSignals(obs_source_t *source) // Applies to inpu
 	signal_handler_connect(sh, "volume", HandleInputVolumeChanged, this);
 	signal_handler_connect(sh, "audio_sync", HandleInputAudioSyncOffsetChanged, this);
 	signal_handler_connect(sh, "audio_mixers", HandleInputAudioTracksChanged, this);
+	//signal_handler_connect(sh, "audio_monitoring", HandleInputAudioMonitorTypeChanged, this);
 
 	if (sourceType == OBS_SOURCE_TYPE_INPUT) {
 		signal_handler_connect(sh, "media_started", HandleMediaInputPlaybackStarted, this);
@@ -101,6 +102,7 @@ void EventHandler::DisconnectSourceSignals(obs_source_t *source)
 	signal_handler_disconnect(sh, "volume", HandleInputVolumeChanged, this);
 	signal_handler_disconnect(sh, "audio_sync", HandleInputAudioSyncOffsetChanged, this);
 	signal_handler_disconnect(sh, "audio_mixers", HandleInputAudioTracksChanged, this);
+	//signal_handler_disconnect(sh, "audio_monitoring", HandleInputAudioMonitorTypeChanged, this);
 	signal_handler_disconnect(sh, "media_started", HandleMediaInputPlaybackStarted, this);
 	signal_handler_disconnect(sh, "media_ended", HandleMediaInputPlaybackEnded, this);
 	signal_handler_disconnect(sh, "media_pause", SourceMediaPauseMultiHandler, this);

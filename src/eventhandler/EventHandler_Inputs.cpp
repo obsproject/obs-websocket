@@ -149,3 +149,36 @@ void EventHandler::HandleInputAudioTracksChanged(void *param, calldata_t *data)
 	eventData["inputAudioTracks"] = inputAudioTracks;
 	eventHandler->_webSocketServer->BroadcastEvent(EventSubscription::Inputs, "InputAudioTracksChanged", eventData);
 }
+
+void EventHandler::HandleInputAudioMonitorTypeChanged(void *param, calldata_t *data)
+{
+	auto eventHandler = reinterpret_cast<EventHandler*>(param);
+
+	obs_source_t *source = GetCalldataPointer<obs_source_t>(data, "source");
+	if (!source)
+		return;
+
+	if (obs_source_get_type(source) != OBS_SOURCE_TYPE_INPUT)
+		return;
+
+	enum obs_monitoring_type monitorType = (obs_monitoring_type)calldata_int(data, "type");
+
+	std::string monitorTypeString;
+	switch (monitorType) {
+		default:
+		case OBS_MONITORING_TYPE_NONE:
+			monitorTypeString = "OBS_WEBSOCKET_MONITOR_TYPE_NONE";
+			break;
+		case OBS_MONITORING_TYPE_MONITOR_ONLY:
+			monitorTypeString = "OBS_WEBSOCKET_MONITOR_TYPE_MONITOR_ONLY";
+			break;
+		case OBS_MONITORING_TYPE_MONITOR_AND_OUTPUT:
+			monitorTypeString = "OBS_WEBSOCKET_MONITOR_TYPE_MONITOR_AND_OUTPUT";
+			break;
+	}
+
+	json eventData;
+	eventData["inputName"] = obs_source_get_name(source);
+	eventData["monitorType"] = monitorTypeString;
+	eventHandler->_webSocketServer->BroadcastEvent(EventSubscription::Inputs, "InputAudioMonitorTypeChanged", eventData);
+}
