@@ -40,6 +40,7 @@ namespace Utils {
 
 		namespace NumberHelper {
 			uint64_t GetOutputDuration(obs_output_t *output);
+			size_t GetSceneCount();
 		}
 
 		namespace ListHelper {

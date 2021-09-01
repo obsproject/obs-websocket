@@ -153,6 +153,24 @@ uint64_t Utils::Obs::NumberHelper::GetOutputDuration(obs_output_t *output)
 	return util_mul_div64(totalFrames, frameTimeNs, 1000000ULL);
 }
 
+size_t Utils::Obs::NumberHelper::GetSceneCount()
+{
+	size_t ret;
+	auto sceneEnumProc = [](void *param, obs_source_t *scene) {
+		auto ret = reinterpret_cast<size_t*>(param);
+
+		if (obs_source_is_group(scene))
+			return true;
+
+		(*ret)++;
+		return true;
+	};
+
+	obs_enum_scenes(sceneEnumProc, &ret);
+
+	return ret;
+}
+
 std::vector<std::string> Utils::Obs::ListHelper::GetSceneCollectionList()
 {
 	char** sceneCollections = obs_frontend_get_scene_collections();
