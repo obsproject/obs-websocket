@@ -79,7 +79,7 @@ RequestResult RequestHandler::CreateScene(const Request& request)
 
 	OBSSourceAutoRelease scene = obs_get_source_by_name(sceneName.c_str());
 	if (scene)
-		return RequestResult::Error(RequestStatus::SourceAlreadyExists, "A source already exists by that scene name.");
+		return RequestResult::Error(RequestStatus::ResourceAlreadyExists, "A source already exists by that scene name.");
 
 	obs_scene_t *createdScene = obs_scene_create(sceneName.c_str());
 	obs_scene_release(createdScene);
@@ -112,7 +112,7 @@ RequestResult RequestHandler::SetSceneName(const Request& request)
 
 	OBSSourceAutoRelease existingSource = obs_get_source_by_name(newSceneName.c_str());
 	if (existingSource)
-		return RequestResult::Error(RequestStatus::SourceAlreadyExists, "A source already exists by that new scene name.");
+		return RequestResult::Error(RequestStatus::ResourceAlreadyExists, "A source already exists by that new scene name.");
 
 	obs_source_set_name(scene, newSceneName.c_str());
 

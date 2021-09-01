@@ -102,10 +102,10 @@ RequestResult RequestHandler::GetSourceActive(const Request& request)
 
 	OBSSourceAutoRelease source = obs_get_source_by_name(sourceName.c_str());
 	if (!source)
-		return RequestResult::Error(RequestStatus::SourceNotFound);
+		return RequestResult::Error(RequestStatus::ResourceNotFound);
 
 	if (obs_source_get_type(source) != OBS_SOURCE_TYPE_INPUT && obs_source_get_type(source) != OBS_SOURCE_TYPE_SCENE)
-		return RequestResult::Error(RequestStatus::InvalidSourceType, "The specified source is not an input or a scene.");
+		return RequestResult::Error(RequestStatus::InvalidResourceType, "The specified source is not an input or a scene.");
 
 	json responseData;
 	responseData["videoActive"] = obs_source_active(source);
@@ -124,10 +124,10 @@ RequestResult RequestHandler::GetSourceScreenshot(const Request& request)
 
 	OBSSourceAutoRelease source = obs_get_source_by_name(sourceName.c_str());
 	if (!source)
-		return RequestResult::Error(RequestStatus::SourceNotFound);
+		return RequestResult::Error(RequestStatus::ResourceNotFound);
 
 	if (obs_source_get_type(source) != OBS_SOURCE_TYPE_INPUT && obs_source_get_type(source) != OBS_SOURCE_TYPE_SCENE)
-		return RequestResult::Error(RequestStatus::InvalidSourceType, "The specified source is not an input or a scene.");
+		return RequestResult::Error(RequestStatus::InvalidResourceType, "The specified source is not an input or a scene.");
 
 	std::string imageFormat = request.RequestData["imageFormat"];
 
@@ -163,14 +163,14 @@ RequestResult RequestHandler::GetSourceScreenshot(const Request& request)
 	QImage renderedImage = TakeSourceScreenshot(source, success, requestedWidth, requestedHeight);
 
 	if (!success)
-		return RequestResult::Error(RequestStatus::ScreenshotRenderFailed);
+		return RequestResult::Error(RequestStatus::RequestProcessingFailed, "Failed to render screenshot.");
 
 	QByteArray encodedImgBytes;
 	QBuffer buffer(&encodedImgBytes);
 	buffer.open(QBuffer::WriteOnly);
 
 	if (!renderedImage.save(&buffer, imageFormat.c_str(), compressionQuality))
-		return RequestResult::Error(RequestStatus::ScreenshotEncodeFailed);
+		return RequestResult::Error(RequestStatus::RequestProcessingFailed, "Failed to encode screenshot.");
 
 	buffer.close();
 
@@ -192,10 +192,10 @@ RequestResult RequestHandler::SaveSourceScreenshot(const Request& request)
 
 	OBSSourceAutoRelease source = obs_get_source_by_name(sourceName.c_str());
 	if (!source)
-		return RequestResult::Error(RequestStatus::SourceNotFound);
+		return RequestResult::Error(RequestStatus::ResourceNotFound, "No source was found by that name.");
 
 	if (obs_source_get_type(source) != OBS_SOURCE_TYPE_INPUT && obs_source_get_type(source) != OBS_SOURCE_TYPE_SCENE)
-		return RequestResult::Error(RequestStatus::InvalidSourceType, "The specified source is not an input or a scene.");
+		return RequestResult::Error(RequestStatus::InvalidResourceType, "The specified source is not an input or a scene.");
 
 	std::string imageFormat = request.RequestData["imageFormat"];
 
@@ -231,18 +231,18 @@ RequestResult RequestHandler::SaveSourceScreenshot(const Request& request)
 	QImage renderedImage = TakeSourceScreenshot(source, success, requestedWidth, requestedHeight);
 
 	if (!success)
-		return RequestResult::Error(RequestStatus::ScreenshotRenderFailed);
+		return RequestResult::Error(RequestStatus::RequestProcessingFailed, "Failed to render screenshot.");
 
 	std::string imageFilePath = request.RequestData["imageFilePath"];
 
 	QFileInfo filePathInfo(QString::fromStdString(imageFilePath));
 	if (!filePathInfo.absoluteDir().exists())
-		return RequestResult::Error(RequestStatus::DirectoryNotFound, "The directory for your file path does not exist.");
+		return RequestResult::Error(RequestStatus::ResourceNotFound, "The directory for your file path does not exist.");
 
 	QString absoluteFilePath = filePathInfo.absoluteFilePath();
 
 	if (!renderedImage.save(absoluteFilePath, imageFormat.c_str(), compressionQuality))
-		return RequestResult::Error(RequestStatus::ScreenshotSaveFailed);
+		return RequestResult::Error(RequestStatus::RequestProcessingFailed, "Failed to save screenshot.");
 
 	return RequestResult::Success();
 }

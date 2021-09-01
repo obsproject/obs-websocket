@@ -66,7 +66,7 @@ RequestResult RequestHandler::TriggerHotkeyByName(const Request& request)
 
 	obs_hotkey_t *hotkey = Utils::Obs::SearchHelper::GetHotkeyByName(request.RequestData["hotkeyName"]);
 	if (!hotkey)
-		return RequestResult::Error(RequestStatus::HotkeyNotFound);
+		return RequestResult::Error(RequestStatus::ResourceNotFound, "No hotkeys were found by that name.");
 
 	obs_hotkey_trigger_routed_callback(obs_hotkey_get_id(hotkey), true);
 

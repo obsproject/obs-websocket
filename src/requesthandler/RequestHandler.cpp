@@ -59,6 +59,8 @@ const std::map<std::string, RequestMethodHandler> RequestHandler::_handlerMap
 	{"ToggleInputMute", &RequestHandler::ToggleInputMute},
 	{"GetInputVolume", &RequestHandler::GetInputVolume},
 	{"SetInputVolume", &RequestHandler::SetInputVolume},
+	{"GetInputAudioSyncOffset", &RequestHandler::GetInputAudioSyncOffset},
+	{"SetInputAudioSyncOffset", &RequestHandler::SetInputAudioSyncOffset},
 	{"GetInputAudioMonitorType", &RequestHandler::GetInputAudioMonitorType},
 	{"SetInputAudioMonitorType", &RequestHandler::SetInputAudioMonitorType},
 	{"GetInputPropertiesListPropertyItems", &RequestHandler::GetInputPropertiesListPropertyItems},
@@ -74,7 +76,7 @@ const std::map<std::string, RequestMethodHandler> RequestHandler::_handlerMap
 RequestResult RequestHandler::ProcessRequest(const Request& request)
 {
 	if (!request.RequestData.is_null() && !request.RequestData.is_object())
-		return RequestResult::Error(RequestStatus::InvalidRequestParameterDataType, "Your request data is not an object.");
+		return RequestResult::Error(RequestStatus::InvalidRequestParameterType, "Your request data is not an object.");
 
 	if (request.RequestType.empty())
 		return RequestResult::Error(RequestStatus::MissingRequestType, "Your request is missing a `requestType`");

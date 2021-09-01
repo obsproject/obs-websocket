@@ -42,7 +42,7 @@ const bool Request::ValidateNumber(const std::string keyName, RequestStatus::Req
 		return false;
 
 	if (!RequestData[keyName].is_number()) {
-		statusCode = RequestStatus::InvalidRequestParameterDataType;
+		statusCode = RequestStatus::InvalidRequestParameterType;
 		comment = std::string("The parameter `") + keyName + "` must be a number.";
 		return false;
 	}
@@ -68,7 +68,7 @@ const bool Request::ValidateString(const std::string keyName, RequestStatus::Req
 		return false;
 
 	if (!RequestData[keyName].is_string()) {
-		statusCode = RequestStatus::InvalidRequestParameterDataType;
+		statusCode = RequestStatus::InvalidRequestParameterType;
 		comment = std::string("The parameter `") + keyName + "` must be a string.";
 		return false;
 	}
@@ -88,7 +88,7 @@ const bool Request::ValidateBoolean(const std::string keyName, RequestStatus::Re
 		return false;
 
 	if (!RequestData[keyName].is_boolean()) {
-		statusCode = RequestStatus::InvalidRequestParameterDataType;
+		statusCode = RequestStatus::InvalidRequestParameterType;
 		comment = std::string("The parameter `") + keyName + "` must be boolean.";
 		return false;
 	}
@@ -102,7 +102,7 @@ const bool Request::ValidateObject(const std::string keyName, RequestStatus::Req
 		return false;
 
 	if (!RequestData[keyName].is_object()) {
-		statusCode = RequestStatus::InvalidRequestParameterDataType;
+		statusCode = RequestStatus::InvalidRequestParameterType;
 		comment = std::string("The parameter `") + keyName + "` must be an object.";
 		return false;
 	}
@@ -122,7 +122,7 @@ const bool Request::ValidateArray(const std::string keyName, RequestStatus::Requ
 		return false;
 
 	if (!RequestData[keyName].is_array()) {
-		statusCode = RequestStatus::InvalidRequestParameterDataType;
+		statusCode = RequestStatus::InvalidRequestParameterType;
 		comment = std::string("The parameter `") + keyName + "` must be an array.";
 		return false;
 	}
@@ -145,14 +145,14 @@ obs_source_t *Request::ValidateScene(const std::string keyName, RequestStatus::R
 
 	obs_source_t *ret = obs_get_source_by_name(sceneName.c_str());
 	if (!ret) {
-		statusCode = RequestStatus::SceneNotFound;
+		statusCode = RequestStatus::ResourceNotFound;
 		comment = std::string("No scene was found by the name of `") + sceneName + "`.";
 		return nullptr;
 	}
 
 	if (obs_source_get_type(ret) != OBS_SOURCE_TYPE_SCENE) {
 		obs_source_release(ret);
-		statusCode = RequestStatus::InvalidSourceType;
+		statusCode = RequestStatus::InvalidResourceType;
 		comment = "The specified source is not a scene.";
 		return nullptr;
 	}
@@ -160,7 +160,7 @@ obs_source_t *Request::ValidateScene(const std::string keyName, RequestStatus::R
 	OBSScene scene = obs_scene_from_source(ret);
 	if (obs_scene_is_group(scene)) {
 		obs_source_release(ret);
-		statusCode = RequestStatus::InvalidSourceType;
+		statusCode = RequestStatus::InvalidResourceType;
 		comment = "The specified source is not a scene.";
 		return nullptr;
 	}
@@ -177,14 +177,14 @@ obs_source_t *Request::ValidateInput(const std::string keyName, RequestStatus::R
 
 	obs_source_t *ret = obs_get_source_by_name(inputName.c_str());
 	if (!ret) {
-		statusCode = RequestStatus::InputNotFound;
+		statusCode = RequestStatus::ResourceNotFound;
 		comment = std::string("No input was found by the name of `") + inputName + "`.";
 		return nullptr;
 	}
 
 	if (obs_source_get_type(ret) != OBS_SOURCE_TYPE_INPUT) {
 		obs_source_release(ret);
-		statusCode = RequestStatus::InvalidSourceType;
+		statusCode = RequestStatus::InvalidResourceType;
 		comment = "The specified source is not an input.";
 		return nullptr;
 	}

@@ -34,7 +34,7 @@ RequestResult RequestHandler::ToggleStream(const Request& request)
 RequestResult RequestHandler::StartStream(const Request& request)
 {
 	if (obs_frontend_streaming_active())
-		return RequestResult::Error(RequestStatus::StreamRunning);
+		return RequestResult::Error(RequestStatus::OutputRunning);
 
 	// TODO: Call signal directly to perform blocking wait
 	obs_frontend_streaming_start();
@@ -45,7 +45,7 @@ RequestResult RequestHandler::StartStream(const Request& request)
 RequestResult RequestHandler::StopStream(const Request& request)
 {
 	if (!obs_frontend_streaming_active())
-		return RequestResult::Error(RequestStatus::StreamNotRunning);
+		return RequestResult::Error(RequestStatus::OutputNotRunning);
 
 	// TODO: Call signal directly to perform blocking wait
 	obs_frontend_streaming_stop();

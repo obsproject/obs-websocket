@@ -74,6 +74,8 @@ class RequestHandler {
 		RequestResult ToggleInputMute(const Request&);
 		RequestResult GetInputVolume(const Request&);
 		RequestResult SetInputVolume(const Request&);
+		RequestResult GetInputAudioSyncOffset(const Request&);
+		RequestResult SetInputAudioSyncOffset(const Request&);
 		RequestResult GetInputAudioMonitorType(const Request&);
 		RequestResult SetInputAudioMonitorType(const Request&);
 		RequestResult GetInputPropertiesListPropertyItems(const Request&);

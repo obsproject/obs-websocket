@@ -50,7 +50,7 @@ RequestResult RequestHandler::CreateInput(const Request& request)
 	std::string inputName = request.RequestData["inputName"];
 	OBSSourceAutoRelease existingInput = obs_get_source_by_name(inputName.c_str());
 	if (existingInput)
-		return RequestResult::Error(RequestStatus::SourceAlreadyExists, "A source already exists by that input name.");
+		return RequestResult::Error(RequestStatus::ResourceAlreadyExists, "A source already exists by that input name.");
 
 	std::string inputKind = request.RequestData["inputKind"];
 
@@ -99,7 +99,7 @@ RequestResult RequestHandler::SetInputName(const Request& request)
 
 	OBSSourceAutoRelease existingSource = obs_get_source_by_name(newInputName.c_str());
 	if (existingSource)
-		return RequestResult::Error(RequestStatus::SourceAlreadyExists, "A source already exists by that new input name.");
+		return RequestResult::Error(RequestStatus::ResourceAlreadyExists, "A source already exists by that new input name.");
 
 	obs_source_set_name(input, newInputName.c_str());
 
@@ -265,6 +265,35 @@ RequestResult RequestHandler::SetInputVolume(const Request& request)
 		inputVolumeMul = obs_db_to_mul(request.RequestData["inputVolumeDb"]);
 
 	obs_source_set_volume(input, inputVolumeMul);
+
+	return RequestResult::Success();
+}
+
+RequestResult RequestHandler::GetInputAudioSyncOffset(const Request& request)
+{
+	RequestStatus::RequestStatus statusCode;
+	std::string comment;
+	OBSSourceAutoRelease input = request.ValidateInput("inputName", statusCode, comment);
+	if (!input)
+		return RequestResult::Error(statusCode, comment);
+
+	json responseData;
+	//									   Offset is stored in nanoseconds in OBS.
+	responseData["inputAudioSyncOffset"] = obs_source_get_sync_offset(input) / 1000000;
+
+	return RequestResult::Success(responseData);
+}
+
+RequestResult RequestHandler::SetInputAudioSyncOffset(const Request& request)
+{
+	RequestStatus::RequestStatus statusCode;
+	std::string comment;
+	OBSSourceAutoRelease input = request.ValidateInput("inputName", statusCode, comment);
+	if (!(input && request.ValidateNumber("inputAudioSyncOffset", statusCode, comment, -950, 20000)))
+		return RequestResult::Error(statusCode, comment);
+
+	int64_t syncOffset = request.RequestData["inputAudioSyncOffset"];
+	obs_source_set_sync_offset(input, syncOffset * 1000000);
 
 	return RequestResult::Success();
 }

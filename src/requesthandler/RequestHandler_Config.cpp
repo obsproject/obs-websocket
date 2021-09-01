@@ -20,7 +20,7 @@ RequestResult RequestHandler::GetPersistentData(const Request& request)
 	else if (realm == "OBS_WEBSOCKET_DATA_REALM_PROFILE")
 		persistentDataPath += "/obsWebSocketPersistentData.json";
 	else
-		return RequestResult::Error(RequestStatus::DataRealmNotFound, "You have specified an invalid persistent data realm.");
+		return RequestResult::Error(RequestStatus::ResourceNotFound, "You have specified an invalid persistent data realm.");
 
 	json responseData;
 	json persistentData;
@@ -49,7 +49,7 @@ RequestResult RequestHandler::SetPersistentData(const Request& request)
 	else if (realm == "OBS_WEBSOCKET_DATA_REALM_PROFILE")
 		persistentDataPath += "/obsWebSocketPersistentData.json";
 	else
-		return RequestResult::Error(RequestStatus::DataRealmNotFound, "You have specified an invalid persistent data realm.");
+		return RequestResult::Error(RequestStatus::ResourceNotFound, "You have specified an invalid persistent data realm.");
 
 	json persistentData = json::object();
 	Utils::Json::GetJsonFileContent(persistentDataPath, persistentData);
@@ -79,7 +79,7 @@ RequestResult RequestHandler::SetCurrentSceneCollection(const Request& request)
 
 	auto sceneCollections = Utils::Obs::ListHelper::GetSceneCollectionList();
 	if (std::find(sceneCollections.begin(), sceneCollections.end(), sceneCollectionName) == sceneCollections.end())
-		return RequestResult::Error(RequestStatus::SceneCollectionNotFound);
+		return RequestResult::Error(RequestStatus::ResourceNotFound);
 
 	std::string currentSceneCollectionName = Utils::Obs::StringHelper::GetCurrentSceneCollection();
 	// Avoid queueing tasks if nothing will change
@@ -103,7 +103,7 @@ RequestResult RequestHandler::CreateSceneCollection(const Request& request)
 
 	auto sceneCollections = Utils::Obs::ListHelper::GetSceneCollectionList();
 	if (std::find(sceneCollections.begin(), sceneCollections.end(), sceneCollectionName) != sceneCollections.end())
-		return RequestResult::Error(RequestStatus::SceneCollectionAlreadyExists);
+		return RequestResult::Error(RequestStatus::ResourceAlreadyExists);
 
 	QMainWindow* mainWindow = reinterpret_cast<QMainWindow*>(obs_frontend_get_main_window());
 	bool success = false;
@@ -133,7 +133,7 @@ RequestResult RequestHandler::SetCurrentProfile(const Request& request)
 
 	auto profiles = Utils::Obs::ListHelper::GetProfileList();
 	if (std::find(profiles.begin(), profiles.end(), profileName) == profiles.end())
-		return RequestResult::Error(RequestStatus::ProfileNotFound);
+		return RequestResult::Error(RequestStatus::ResourceNotFound);
 
 	std::string currentProfileName = Utils::Obs::StringHelper::GetCurrentProfile();
 	// Avoid queueing tasks if nothing will change
@@ -157,7 +157,7 @@ RequestResult RequestHandler::CreateProfile(const Request& request)
 
 	auto profiles = Utils::Obs::ListHelper::GetProfileList();
 	if (std::find(profiles.begin(), profiles.end(), profileName) != profiles.end())
-		return RequestResult::Error(RequestStatus::ProfileAlreadyExists);
+		return RequestResult::Error(RequestStatus::ResourceAlreadyExists);
 
 	QMainWindow* mainWindow = reinterpret_cast<QMainWindow*>(obs_frontend_get_main_window());
 	QMetaObject::invokeMethod(mainWindow, "NewProfile", Qt::BlockingQueuedConnection, Q_ARG(QString, QString::fromStdString(profileName)));
@@ -176,10 +176,10 @@ RequestResult RequestHandler::RemoveProfile(const Request& request)
 
 	auto profiles = Utils::Obs::ListHelper::GetProfileList();
 	if (std::find(profiles.begin(), profiles.end(), profileName) == profiles.end())
-		return RequestResult::Error(RequestStatus::ProfileNotFound);
+		return RequestResult::Error(RequestStatus::ResourceNotFound);
 
 	if (profiles.size() < 2)
-		return RequestResult::Error(RequestStatus::NotEnoughProfiles);
+		return RequestResult::Error(RequestStatus::NotEnoughResources);
 
 	QMainWindow* mainWindow = reinterpret_cast<QMainWindow*>(obs_frontend_get_main_window());
 	QMetaObject::invokeMethod(mainWindow, "DeleteProfile", Qt::BlockingQueuedConnection, Q_ARG(QString, QString::fromStdString(profileName)));
@@ -233,12 +233,12 @@ RequestResult RequestHandler::SetProfileParameter(const Request& request)
 	// Using check helpers here would just make the logic more complicated
 	if (!request.RequestData.contains("parameterValue") || request.RequestData["parameterValue"].is_null()) {
 		if (!config_remove_value(profile, parameterCategory.c_str(), parameterName.c_str()))
-			return RequestResult::Error(RequestStatus::ConfigParameterNotFound);
+			return RequestResult::Error(RequestStatus::ResourceNotFound, "There are no existing instances of that profile parameter.");
 	} else if (request.RequestData["parameterValue"].is_string()) {
 		std::string parameterValue = request.RequestData["parameterValue"];
 		config_set_string(profile, parameterCategory.c_str(), parameterName.c_str(), parameterValue.c_str());
 	} else {
-		return RequestResult::Error(RequestStatus::InvalidRequestParameterDataType, "The parameter `parameterValue` must be a string.");
+		return RequestResult::Error(RequestStatus::InvalidRequestParameterType, "The parameter `parameterValue` must be a string.");
 	}
 	
 	return RequestResult::Success();
@@ -322,7 +322,7 @@ RequestResult RequestHandler::GetStreamServiceSettings(const Request& request)
 RequestResult RequestHandler::SetStreamServiceSettings(const Request& request)
 {
 	if (obs_frontend_streaming_active())
-		return RequestResult::Error(RequestStatus::StreamRunning);
+		return RequestResult::Error(RequestStatus::OutputRunning, "You cannot change stream service settings while streaming.");
 
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
@@ -350,7 +350,7 @@ RequestResult RequestHandler::SetStreamServiceSettings(const Request& request)
 		OBSService newStreamService = obs_service_create(requestedStreamServiceType.c_str(), "obs_websocket_custom_service", requestedStreamServiceSettings, NULL);
 		// TODO: Check service type here, instead of relying on service creation to fail.
 		if (!newStreamService)
-			return RequestResult::Error(RequestStatus::StreamServiceCreationFailed, "Creating the stream service with the requested streamServiceType failed. It may be an invalid type.");
+			return RequestResult::Error(RequestStatus::ResourceCreationFailed, "Creating the stream service with the requested streamServiceType failed. It may be an invalid type.");
 
 		obs_frontend_set_streaming_service(newStreamService);
 	}
