@@ -95,6 +95,9 @@ RequestResult RequestHandler::RemoveScene(const Request& request)
 	if (!scene)
 		return RequestResult::Error(statusCode, comment);
 
+	if (Utils::Obs::NumberHelper::GetSceneCount() < 2)
+		return RequestResult::Error(RequestStatus::NotEnoughResources, "You cannot remove the last scene in the collection.");
+
 	obs_source_remove(scene);
 
 	return RequestResult::Success();
