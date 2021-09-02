@@ -1,5 +1,4 @@
 #include "RequestHandler.h"
-#include "../plugin-macros.generated.h"
 
 RequestResult RequestHandler::GetInputList(const Request& request)
 {
@@ -306,21 +305,8 @@ RequestResult RequestHandler::GetInputAudioMonitorType(const Request& request)
 	if (!input)
 		return RequestResult::Error(statusCode, comment);
 
-	enum obs_monitoring_type monitorType = obs_source_get_monitoring_type(input);
-
 	json responseData;
-	switch (monitorType) {
-		default:
-		case OBS_MONITORING_TYPE_NONE:
-			responseData["monitorType"] = "OBS_WEBSOCKET_MONITOR_TYPE_NONE";
-			break;
-		case OBS_MONITORING_TYPE_MONITOR_ONLY:
-			responseData["monitorType"] = "OBS_WEBSOCKET_MONITOR_TYPE_MONITOR_ONLY";
-			break;
-		case OBS_MONITORING_TYPE_MONITOR_AND_OUTPUT:
-			responseData["monitorType"] = "OBS_WEBSOCKET_MONITOR_TYPE_MONITOR_AND_OUTPUT";
-			break;
-	}
+	responseData["monitorType"] = Utils::Obs::StringHelper::GetInputMonitorTypeString(input);
 
 	return RequestResult::Success(responseData);
 }
@@ -335,11 +321,11 @@ RequestResult RequestHandler::SetInputAudioMonitorType(const Request& request)
 
 	enum obs_monitoring_type monitorType;
 	std::string monitorTypeString = request.RequestData["monitorType"];
-	if (monitorTypeString == "OBS_WEBSOCKET_MONITOR_TYPE_NONE")
+	if (monitorTypeString == "OBS_MONITORING_TYPE_NONE")
 		monitorType = OBS_MONITORING_TYPE_NONE;
-	else if (monitorTypeString == "OBS_WEBSOCKET_MONITOR_TYPE_MONITOR_ONLY")
+	else if (monitorTypeString == "OBS_MONITORING_TYPE_MONITOR_ONLY")
 		monitorType = OBS_MONITORING_TYPE_MONITOR_ONLY;
-	else if (monitorTypeString == "OBS_WEBSOCKET_MONITOR_TYPE_MONITOR_AND_OUTPUT")
+	else if (monitorTypeString == "OBS_MONITORING_TYPE_MONITOR_AND_OUTPUT")
 		monitorType = OBS_MONITORING_TYPE_MONITOR_AND_OUTPUT;
 	else
 		return RequestResult::Error(RequestStatus::InvalidRequestParameter, std::string("Unknown monitor type: ") + monitorTypeString);
