@@ -143,7 +143,7 @@ obs_source_t *Request::ValidateScene(const std::string keyName, RequestStatus::R
 
 	std::string sceneName = RequestData[keyName];
 
-	obs_source_t *ret = obs_get_source_by_name(sceneName.c_str());
+	OBSSourceAutoRelease ret = obs_get_source_by_name(sceneName.c_str());
 	if (!ret) {
 		statusCode = RequestStatus::ResourceNotFound;
 		comment = std::string("No scene was found by the name of `") + sceneName + "`.";
@@ -151,7 +151,6 @@ obs_source_t *Request::ValidateScene(const std::string keyName, RequestStatus::R
 	}
 
 	if (obs_source_get_type(ret) != OBS_SOURCE_TYPE_SCENE) {
-		obs_source_release(ret);
 		statusCode = RequestStatus::InvalidResourceType;
 		comment = "The specified source is not a scene.";
 		return nullptr;
@@ -159,12 +158,12 @@ obs_source_t *Request::ValidateScene(const std::string keyName, RequestStatus::R
 
 	OBSScene scene = obs_scene_from_source(ret);
 	if (obs_scene_is_group(scene)) {
-		obs_source_release(ret);
 		statusCode = RequestStatus::InvalidResourceType;
 		comment = "The specified source is not a scene.";
 		return nullptr;
 	}
 
+	obs_source_addref(ret);
 	return ret;
 }
 
