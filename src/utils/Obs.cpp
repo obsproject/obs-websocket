@@ -119,6 +119,20 @@ std::string Utils::Obs::StringHelper::GetLastReplayBufferFilePath()
 	return ret;
 }
 
+std::string Utils::Obs::StringHelper::GetSceneItemBoundsTypeString(enum obs_bounds_type type)
+{
+	switch (type) {
+		default:
+		CASE(OBS_BOUNDS_NONE)
+		CASE(OBS_BOUNDS_STRETCH)
+		CASE(OBS_BOUNDS_SCALE_INNER)
+		CASE(OBS_BOUNDS_SCALE_OUTER)
+		CASE(OBS_BOUNDS_SCALE_TO_WIDTH)
+		CASE(OBS_BOUNDS_SCALE_TO_HEIGHT)
+		CASE(OBS_BOUNDS_MAX_ONLY)
+	}
+}
+
 std::string Utils::Obs::StringHelper::GetOutputTimecodeString(obs_output_t *output)
 {
 	if (!output || !obs_output_active(output))
@@ -360,6 +374,45 @@ json Utils::Obs::DataHelper::GetStats()
 	ret["renderTotalFrames"] = obs_get_total_frames();
 	ret["outputSkippedFrames"] = video_output_get_skipped_frames(video);
 	ret["outputTotalFrames"] = video_output_get_total_frames(video);
+
+	return ret;
+}
+
+json Utils::Obs::DataHelper::GetSceneItemTransform(obs_sceneitem_t *item)
+{
+	json ret;
+
+	obs_transform_info osi;
+	obs_sceneitem_crop crop;
+	obs_sceneitem_get_info(item, &osi);
+	obs_sceneitem_get_crop(item, &crop);
+
+	OBSSource source = obs_sceneitem_get_source(item);
+	float sourceWidth = float(obs_source_get_width(source));
+	float sourceHeight = float(obs_source_get_height(source));
+
+	ret["sourceWidth"] = sourceWidth;
+	ret["sourceHeight"] = sourceHeight;
+
+	ret["positionX"] = osi.pos.x;
+	ret["positionY"] = osi.pos.y;
+
+	ret["rotation"] = osi.rot;
+
+	ret["width"] = osi.scale.x * sourceWidth;
+	ret["height"] = osi.scale.y * sourceHeight;
+
+	ret["alignment"] = osi.alignment;
+
+	ret["boundsType"] = StringHelper::GetSceneItemBoundsTypeString(osi.bounds_type);
+	ret["boundsAlignment"] = osi.bounds_alignment;
+	ret["boundsWidth"] = osi.bounds.x;
+	ret["boundsHeight"] = osi.bounds.y;
+
+	ret["cropLeft"] = int(crop.left);
+	ret["cropRight"] = int(crop.right);
+	ret["cropTop"] = int(crop.top);
+	ret["cropBottom"] = int(crop.bottom);
 
 	return ret;
 }

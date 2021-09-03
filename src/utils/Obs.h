@@ -35,6 +35,7 @@ namespace Utils {
 			std::string GetInputMonitorTypeString(obs_source_t *input);
 			std::string GetMediaInputStateString(obs_source_t *input);
 			std::string GetLastReplayBufferFilePath();
+			std::string GetSceneItemBoundsTypeString(enum obs_bounds_type type);
 			std::string GetOutputTimecodeString(obs_output_t *output);
 		}
 
@@ -57,6 +58,7 @@ namespace Utils {
 
 		namespace DataHelper {
 			json GetStats();
+			json GetSceneItemTransform(obs_sceneitem_t *item);
 		}
 
 		namespace SearchHelper {
