@@ -70,6 +70,20 @@ RequestResult RequestHandler::RemoveSceneItem(const Request& request)
 	return RequestResult::Success();
 }
 
+RequestResult RequestHandler::GetSceneItemTransform(const Request& request)
+{
+	RequestStatus::RequestStatus statusCode;
+	std::string comment;
+	OBSSceneItemAutoRelease sceneItem = request.ValidateSceneItem("sceneName", "sceneItemId", statusCode, comment);
+	if (!sceneItem)
+		return RequestResult::Error(statusCode, comment);
+
+	json responseData;
+	responseData["sceneItemTransform"] = Utils::Obs::DataHelper::GetSceneItemTransform(sceneItem);
+
+	return RequestResult::Success(responseData);
+}
+
 RequestResult RequestHandler::GetSceneItemEnabled(const Request& request)
 {
 	RequestStatus::RequestStatus statusCode;

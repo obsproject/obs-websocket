@@ -87,6 +87,7 @@ class RequestHandler {
 		RequestResult GetGroupSceneItemList(const Request&);
 		RequestResult CreateSceneItem(const Request&);
 		RequestResult RemoveSceneItem(const Request&);
+		RequestResult GetSceneItemTransform(const Request&);
 		RequestResult GetSceneItemEnabled(const Request&);
 		RequestResult SetSceneItemEnabled(const Request&);
 		RequestResult GetSceneItemLocked(const Request&);

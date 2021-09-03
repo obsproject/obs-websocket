@@ -71,6 +71,7 @@ const std::map<std::string, RequestMethodHandler> RequestHandler::_handlerMap
 	{"GetGroupSceneItemList", &RequestHandler::GetGroupSceneItemList},
 	{"CreateSceneItem", &RequestHandler::CreateSceneItem},
 	{"RemoveSceneItem", &RequestHandler::RemoveSceneItem},
+	{"GetSceneItemTransform", &RequestHandler::GetSceneItemTransform},
 	{"GetSceneItemEnabled", &RequestHandler::GetSceneItemEnabled},
 	{"SetSceneItemEnabled", &RequestHandler::SetSceneItemEnabled},
 	{"GetSceneItemLocked", &RequestHandler::GetSceneItemLocked},
@@ -87,7 +88,7 @@ const std::map<std::string, RequestMethodHandler> RequestHandler::_handlerMap
 
 RequestResult RequestHandler::ProcessRequest(const Request& request)
 {
-	if (!request.RequestData.is_null() && !request.RequestData.is_object())
+	if (!request.RequestData.is_object() && !request.RequestData.is_null())
 		return RequestResult::Error(RequestStatus::InvalidRequestParameterType, "Your request data is not an object.");
 
 	if (request.RequestType.empty())
