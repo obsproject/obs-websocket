@@ -116,14 +116,9 @@ RequestResult RequestHandler::GetSourceScreenshot(const Request& request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	if (!(request.ValidateString("sourceName", statusCode, comment) && request.ValidateString("imageFormat", statusCode, comment)))
+	OBSSourceAutoRelease source = request.ValidateSource("sourceName", statusCode, comment);
+	if (!(source && request.ValidateString("imageFormat", statusCode, comment)))
 		return RequestResult::Error(statusCode, comment);
-
-	std::string sourceName = request.RequestData["sourceName"];
-
-	OBSSourceAutoRelease source = obs_get_source_by_name(sourceName.c_str());
-	if (!source)
-		return RequestResult::Error(RequestStatus::ResourceNotFound);
 
 	if (obs_source_get_type(source) != OBS_SOURCE_TYPE_INPUT && obs_source_get_type(source) != OBS_SOURCE_TYPE_SCENE)
 		return RequestResult::Error(RequestStatus::InvalidResourceType, "The specified source is not an input or a scene.");
@@ -137,22 +132,22 @@ RequestResult RequestHandler::GetSourceScreenshot(const Request& request)
 	uint32_t requestedHeight{0};
 	int compressionQuality{-1};
 
-	if (request.RequestData.contains("imageWidth") && !request.RequestData["imageWidth"].is_null()) {
-		if (!request.ValidateNumber("imageWidth", statusCode, comment, 8, 4096))
+	if (request.Contains("imageWidth")) {
+		if (!request.ValidateOptionalNumber("imageWidth", statusCode, comment, 8, 4096))
 			return RequestResult::Error(statusCode, comment);
 
 		requestedWidth = request.RequestData["imageWidth"];
 	}
 
-	if (request.RequestData.contains("imageHeight") && !request.RequestData["imageHeight"].is_null()) {
-		if (!request.ValidateNumber("imageHeight", statusCode, comment, 8, 4096))
+	if (request.Contains("imageHeight")) {
+		if (!request.ValidateOptionalNumber("imageHeight", statusCode, comment, 8, 4096))
 			return RequestResult::Error(statusCode, comment);
 
 		requestedHeight = request.RequestData["imageHeight"];
 	}
 
-	if (request.RequestData.contains("imageCompressionQuality") && !request.RequestData["imageCompressionQuality"].is_null()) {
-		if (!request.ValidateNumber("imageCompressionQuality", statusCode, comment, -1, 100))
+	if (request.Contains("imageCompressionQuality")) {
+		if (!request.ValidateOptionalNumber("imageCompressionQuality", statusCode, comment, -1, 100))
 			return RequestResult::Error(statusCode, comment);
 
 		compressionQuality = request.RequestData["imageCompressionQuality"];
@@ -184,43 +179,43 @@ RequestResult RequestHandler::SaveSourceScreenshot(const Request& request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	if (!(request.ValidateString("sourceName", statusCode, comment) && request.ValidateString("imageFilePath", statusCode, comment) && request.ValidateString("imageFormat", statusCode, comment)))
+	OBSSourceAutoRelease source = request.ValidateSource("sourceName", statusCode, comment);
+	if (!(source && request.ValidateString("imageFormat", statusCode, comment) && request.ValidateString("imageFilePath", statusCode, comment)))
 		return RequestResult::Error(statusCode, comment);
-
-	std::string sourceName = request.RequestData["sourceName"];
-
-	OBSSourceAutoRelease source = obs_get_source_by_name(sourceName.c_str());
-	if (!source)
-		return RequestResult::Error(RequestStatus::ResourceNotFound, "No source was found by that name.");
 
 	if (obs_source_get_type(source) != OBS_SOURCE_TYPE_INPUT && obs_source_get_type(source) != OBS_SOURCE_TYPE_SCENE)
 		return RequestResult::Error(RequestStatus::InvalidResourceType, "The specified source is not an input or a scene.");
 
 	std::string imageFormat = request.RequestData["imageFormat"];
+	std::string imageFilePath = request.RequestData["imageFilePath"];
 
 	if (!IsImageFormatValid(imageFormat))
 		return RequestResult::Error(RequestStatus::InvalidRequestParameter, "Your specified image format is invalid or not supported by this system.");
+
+	QFileInfo filePathInfo(QString::fromStdString(imageFilePath));
+	if (!filePathInfo.absoluteDir().exists())
+		return RequestResult::Error(RequestStatus::ResourceNotFound, "The directory for your file path does not exist.");
 
 	uint32_t requestedWidth{0};
 	uint32_t requestedHeight{0};
 	int compressionQuality{-1};
 
-	if (request.RequestData.contains("imageWidth") && !request.RequestData["imageWidth"].is_null()) {
-		if (!request.ValidateNumber("imageWidth", statusCode, comment, 8, 4096))
+	if (request.Contains("imageWidth")) {
+		if (!request.ValidateOptionalNumber("imageWidth", statusCode, comment, 8, 4096))
 			return RequestResult::Error(statusCode, comment);
 
 		requestedWidth = request.RequestData["imageWidth"];
 	}
 
-	if (request.RequestData.contains("imageHeight") && !request.RequestData["imageHeight"].is_null()) {
-		if (!request.ValidateNumber("imageHeight", statusCode, comment, 8, 4096))
+	if (request.Contains("imageHeight")) {
+		if (!request.ValidateOptionalNumber("imageHeight", statusCode, comment, 8, 4096))
 			return RequestResult::Error(statusCode, comment);
 
 		requestedHeight = request.RequestData["imageHeight"];
 	}
 
-	if (request.RequestData.contains("imageCompressionQuality") && !request.RequestData["imageCompressionQuality"].is_null()) {
-		if (!request.ValidateNumber("imageCompressionQuality", statusCode, comment, -1, 100))
+	if (request.Contains("imageCompressionQuality")) {
+		if (!request.ValidateOptionalNumber("imageCompressionQuality", statusCode, comment, -1, 100))
 			return RequestResult::Error(statusCode, comment);
 
 		compressionQuality = request.RequestData["imageCompressionQuality"];
@@ -231,12 +226,6 @@ RequestResult RequestHandler::SaveSourceScreenshot(const Request& request)
 
 	if (!success)
 		return RequestResult::Error(RequestStatus::RequestProcessingFailed, "Failed to render screenshot.");
-
-	std::string imageFilePath = request.RequestData["imageFilePath"];
-
-	QFileInfo filePathInfo(QString::fromStdString(imageFilePath));
-	if (!filePathInfo.absoluteDir().exists())
-		return RequestResult::Error(RequestStatus::ResourceNotFound, "The directory for your file path does not exist.");
 
 	QString absoluteFilePath = filePathInfo.absoluteFilePath();
 

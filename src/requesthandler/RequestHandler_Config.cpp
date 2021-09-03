@@ -267,16 +267,16 @@ RequestResult RequestHandler::SetVideoSettings(const Request& request)
 
 	RequestStatus::RequestStatus statusCode = RequestStatus::NoError;
 	std::string comment;
-	bool changeFps = (request.ValidateNumber("fpsNumerator", statusCode, comment, 1) && request.ValidateNumber("fpsDenominator", statusCode, comment, 1));
-	if (!changeFps && statusCode != RequestStatus::MissingRequestParameter)
+	bool changeFps = (request.Contains("fpsNumerator") && request.Contains("fpsDenominator"));
+	if (changeFps && !(request.ValidateOptionalNumber("fpsNumerator", statusCode, comment, 1) && request.ValidateOptionalNumber("fpsDenominator", statusCode, comment, 1)))
 		return RequestResult::Error(statusCode, comment);
 
-	bool changeBaseRes = (request.ValidateNumber("baseWidth", statusCode, comment, 8, 4096) && request.ValidateNumber("baseHeight", statusCode, comment, 8, 4096));
-	if (!changeBaseRes && statusCode != RequestStatus::MissingRequestParameter)
+	bool changeBaseRes = (request.Contains("baseWidth") && request.Contains("baseHeight"));
+	if (changeBaseRes && !(request.ValidateOptionalNumber("baseWidth", statusCode, comment, 8, 4096) && request.ValidateOptionalNumber("baseHeight", statusCode, comment, 8, 4096)))
 		return RequestResult::Error(statusCode, comment);
 
-	bool changeOutputRes = (request.ValidateNumber("outputWidth", statusCode, comment, 8, 4096) && request.ValidateNumber("outputHeight", statusCode, comment, 8, 4096));
-	if (!changeOutputRes && statusCode != RequestStatus::MissingRequestParameter)
+	bool changeOutputRes = (request.Contains("outputWidth") && request.Contains("outputHeight"));
+	if (changeOutputRes && !(request.ValidateOptionalNumber("outputWidth", statusCode, comment, 8, 4096) && request.ValidateOptionalNumber("outputHeight", statusCode, comment, 8, 4096)))
 		return RequestResult::Error(statusCode, comment);
 
 	config_t *config = obs_frontend_get_profile_config();

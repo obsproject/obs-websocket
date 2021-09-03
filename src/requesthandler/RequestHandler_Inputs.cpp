@@ -4,10 +4,10 @@ RequestResult RequestHandler::GetInputList(const Request& request)
 {
 	std::string inputKind;
 
-	if (request.RequestData.contains("inputKind") && !request.RequestData["inputKind"].is_null()) {
+	if (request.Contains("inputKind")) {
 		RequestStatus::RequestStatus statusCode;
 		std::string comment;
-		if (!request.ValidateString("inputKind", statusCode, comment))
+		if (!request.ValidateOptionalString("inputKind", statusCode, comment))
 			return RequestResult::Error(statusCode, comment);
 
 		inputKind = request.RequestData["inputKind"];
@@ -22,10 +22,10 @@ RequestResult RequestHandler::GetInputKindList(const Request& request)
 {
 	bool unversioned = false;
 
-	if (request.RequestData.contains("unversioned") && !request.RequestData["unversioned"].is_null()) {
+	if (request.Contains("unversioned")) {
 		RequestStatus::RequestStatus statusCode;
 		std::string comment;
-		if (!request.ValidateBoolean("unversioned", statusCode, comment))
+		if (!request.ValidateOptionalBoolean("unversioned", statusCode, comment))
 			return RequestResult::Error(statusCode, comment);
 
 		unversioned = request.RequestData["unversioned"];
@@ -41,9 +41,7 @@ RequestResult RequestHandler::CreateInput(const Request& request)
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
 	OBSSourceAutoRelease sceneSource = request.ValidateScene("sceneName", statusCode, comment);
-	if (!(request.ValidateString("inputName", statusCode, comment) &&
-	request.ValidateString("inputKind", statusCode, comment) &&
-	sceneSource))
+	if (!(sceneSource && request.ValidateString("inputName", statusCode, comment) && request.ValidateString("inputKind", statusCode, comment)))
 		return RequestResult::Error(statusCode, comment);
 
 	std::string inputName = request.RequestData["inputName"];
@@ -52,14 +50,13 @@ RequestResult RequestHandler::CreateInput(const Request& request)
 		return RequestResult::Error(RequestStatus::ResourceAlreadyExists, "A source already exists by that input name.");
 
 	std::string inputKind = request.RequestData["inputKind"];
-
 	auto kinds = Utils::Obs::ListHelper::GetInputKindList();
 	if (std::find(kinds.begin(), kinds.end(), inputKind) == kinds.end())
 		return RequestResult::Error(RequestStatus::InvalidInputKind, "Your specified input kind is not supported by OBS. Check that your specified kind is properly versioned and that any necessary plugins are loaded.");
 
 	OBSDataAutoRelease inputSettings = nullptr;
-	if (request.RequestData.contains("inputSettings") && !request.RequestData["inputSettings"].is_null()) {
-		if (!request.ValidateObject("inputSettings", statusCode, comment, true))
+	if (request.Contains("inputSettings")) {
+		if (!request.ValidateOptionalObject("inputSettings", statusCode, comment, true))
 			return RequestResult::Error(statusCode, comment);
 
 		inputSettings = Utils::Json::JsonToObsData(request.RequestData["inputSettings"]);
@@ -68,8 +65,8 @@ RequestResult RequestHandler::CreateInput(const Request& request)
 	OBSScene scene = obs_scene_from_source(sceneSource);
 
 	bool sceneItemEnabled = true;
-	if (request.RequestData.contains("sceneItemEnabled") && !request.RequestData["sceneItemEnabled"].is_null()) {
-		if (!request.ValidateBoolean("sceneItemEnabled", statusCode, comment))
+	if (request.Contains("sceneItemEnabled")) {
+		if (!request.ValidateOptionalBoolean("sceneItemEnabled", statusCode, comment))
 			return RequestResult::Error(statusCode, comment);
 
 		sceneItemEnabled = request.RequestData["sceneItemEnabled"];
@@ -148,8 +145,8 @@ RequestResult RequestHandler::SetInputSettings(const Request& request)
 		return RequestResult::Error(statusCode, comment);
 
 	bool overlay = true;
-	if (request.RequestData.contains("overlay") && !request.RequestData["overlay"].is_null()) {
-		if (!request.ValidateBoolean("overlay", statusCode, comment))
+	if (request.Contains("overlay")) {
+		if (!request.ValidateOptionalBoolean("overlay", statusCode, comment))
 			return RequestResult::Error(statusCode, comment);
 
 		overlay = request.RequestData["overlay"];
@@ -243,12 +240,12 @@ RequestResult RequestHandler::SetInputVolume(const Request& request)
 	if (!input)
 		return RequestResult::Error(statusCode, comment);
 
-	bool hasMul = request.ValidateNumber("inputVolumeMul", statusCode, comment, 0, 20);
-	if (!hasMul && statusCode != RequestStatus::MissingRequestParameter)
+	bool hasMul = request.Contains("inputVolumeMul");
+	if (hasMul && !request.ValidateOptionalNumber("inputVolumeMul", statusCode, comment, 0, 20))
 		return RequestResult::Error(statusCode, comment);
 
-	bool hasDb = request.ValidateNumber("inputVolumeDb", statusCode, comment, -100, 26);
-	if (!hasDb && statusCode != RequestStatus::MissingRequestParameter)
+	bool hasDb = request.Contains("inputVolumeDb");
+	if (hasDb && !request.ValidateOptionalNumber("inputVolumeDb", statusCode, comment, -100, 26))
 		return RequestResult::Error(statusCode, comment);
 
 	if (hasMul && hasDb)
@@ -257,7 +254,7 @@ RequestResult RequestHandler::SetInputVolume(const Request& request)
 	if (!hasMul && !hasDb)
 		return RequestResult::Error(RequestStatus::MissingRequestParameter, "You must specify one volume parameter.");
 
-	float inputVolumeMul = 0.0;
+	float inputVolumeMul;
 	if (hasMul)
 		inputVolumeMul = request.RequestData["inputVolumeMul"];
 	else
