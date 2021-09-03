@@ -2,7 +2,6 @@
 #include <util/config-file.h>
 
 #include "RequestHandler.h"
-#include "../plugin-macros.generated.h"
 
 RequestResult RequestHandler::GetPersistentData(const Request& request)
 {

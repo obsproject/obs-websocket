@@ -1,5 +1,4 @@
 #include "RequestHandler.h"
-#include "../plugin-macros.generated.h"
 
 RequestResult RequestHandler::GetSceneList(const Request& request)
 {

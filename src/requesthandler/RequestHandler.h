@@ -8,6 +8,7 @@
 #include "rpc/RequestResult.h"
 #include "../obs-websocket.h"
 #include "../utils/Obs.h"
+#include "../plugin-macros.generated.h"
 
 class RequestHandler;
 typedef RequestResult(RequestHandler::*RequestMethodHandler)(const Request&);
@@ -80,6 +81,12 @@ class RequestHandler {
 		RequestResult SetInputAudioMonitorType(const Request&);
 		RequestResult GetInputPropertiesListPropertyItems(const Request&);
 		RequestResult PressInputPropertiesButton(const Request&);
+
+		// Scene Items
+		RequestResult GetSceneItemList(const Request&);
+		RequestResult GetGroupSceneItemList(const Request&);
+		RequestResult CreateSceneItem(const Request&);
+		RequestResult RemoveSceneItem(const Request&);
 
 		// Stream
 		RequestResult GetStreamStatus(const Request&);
