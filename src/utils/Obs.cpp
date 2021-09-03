@@ -235,42 +235,32 @@ std::vector<json> Utils::Obs::ListHelper::GetSceneList()
 
 std::vector<json> Utils::Obs::ListHelper::GetSceneItemList(obs_scene_t *scene, bool basic)
 {
-	std::vector<json> ret;
+	std::pair<std::vector<json>, bool> enumData;
+	enumData.second = basic;
 
-	if (basic) {
-		obs_scene_enum_items(scene, [](obs_scene_t* scene, obs_sceneitem_t* sceneItem, void* param) {
-			auto ret = reinterpret_cast<std::vector<json>*>(param);
+	obs_scene_enum_items(scene, [](obs_scene_t* scene, obs_sceneitem_t* sceneItem, void* param) {
+		auto enumData = reinterpret_cast<std::pair<std::vector<json>, bool>*>(param);
 
-			json item;
-			item["sceneItemId"] = obs_sceneitem_get_id(sceneItem);
-			// Should be slightly faster than calling obs_sceneitem_get_order_position()
-			item["sceneItemIndex"] = ret->size();
-
-			ret->push_back(item);
-
-			return true;
-		}, &ret);
-	} else {
-		obs_scene_enum_items(scene, [](obs_scene_t* scene, obs_sceneitem_t* sceneItem, void* param) {
-			auto ret = reinterpret_cast<std::vector<json>*>(param);
-
+		json item;
+		item["sceneItemId"] = obs_sceneitem_get_id(sceneItem);
+		// Should be slightly faster than calling obs_sceneitem_get_order_position()
+		item["sceneItemIndex"] = enumData->first.size();
+		if (!enumData->second) {
 			OBSSource itemSource = obs_sceneitem_get_source(sceneItem);
-
-			json item;
-			item["sceneItemId"] = obs_sceneitem_get_id(sceneItem);
-			item["sceneItemIndex"] = ret->size();
 			item["sourceName"] = obs_source_get_name(itemSource);
 			item["sourceType"] = StringHelper::GetSourceTypeString(itemSource);
 			if (obs_source_get_type(itemSource) == OBS_SOURCE_TYPE_INPUT)
 				item["inputKind"] = obs_source_get_id(itemSource);
+			else if (obs_source_get_type(itemSource) == OBS_SOURCE_TYPE_SCENE)
+				item["isGroup"] = obs_source_is_group(itemSource);
+		}
 
-			ret->push_back(item);
+		enumData->first.push_back(item);
 
-			return true;
-		}, &ret);
-	}
+		return true;
+	}, &enumData);
 
-	return ret;
+	return enumData.first;
 }
 
 std::vector<json> Utils::Obs::ListHelper::GetTransitionList()
@@ -387,7 +377,7 @@ obs_hotkey_t *Utils::Obs::SearchHelper::GetHotkeyByName(std::string name)
 }
 
 struct CreateSceneItemData {
-	obs_source_t *input;
+	obs_source_t *source;
 	bool sceneItemEnabled;
 	obs_sceneitem_t *sceneItem;
 };
@@ -395,19 +385,19 @@ struct CreateSceneItemData {
 void CreateSceneItemHelper(void *_data, obs_scene_t *scene)
 {
 	auto *data = reinterpret_cast<CreateSceneItemData*>(_data);
-	data->sceneItem = obs_scene_add(scene, data->input);
+	data->sceneItem = obs_scene_add(scene, data->source);
 	obs_sceneitem_set_visible(data->sceneItem, data->sceneItemEnabled);
 }
 
-obs_sceneitem_t *Utils::Obs::ActionHelper::CreateSceneItem(obs_source_t *input, obs_scene_t *scene, bool sceneItemEnabled)
+obs_sceneitem_t *Utils::Obs::ActionHelper::CreateSceneItem(obs_source_t *source, obs_scene_t *scene, bool sceneItemEnabled)
 {
 	// Sanity check for valid scene
-	if (!(input && scene))
+	if (!(source && scene))
 		return nullptr;
 
 	// Create data struct and populate for scene item creation
 	CreateSceneItemData data;
-	data.input = input;
+	data.source = source;
 	data.sceneItemEnabled = sceneItemEnabled;
 
 	// Enter graphics context and create the scene item

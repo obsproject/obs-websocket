@@ -64,7 +64,7 @@ namespace Utils {
 		}
 
 		namespace ActionHelper {
-			obs_sceneitem_t *CreateSceneItem(obs_source_t *input, obs_scene_t *scene, bool sceneItemEnabled = true);
+			obs_sceneitem_t *CreateSceneItem(obs_source_t *source, obs_scene_t *scene, bool sceneItemEnabled = true);
 			obs_sceneitem_t *CreateInput(std::string inputName, std::string inputKind, obs_data_t *inputSettings, obs_scene_t *scene, bool sceneItemEnabled = true);
 		}
 	}
