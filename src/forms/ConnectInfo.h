@@ -2,6 +2,8 @@
 
 #include <QtWidgets/QDialog>
 
+#include "../plugin-macros.generated.h"
+
 #include "ui_ConnectInfo.h"
 
 class ConnectInfo : public QDialog

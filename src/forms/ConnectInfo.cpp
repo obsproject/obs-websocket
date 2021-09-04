@@ -8,7 +8,6 @@
 #include "../obs-websocket.h"
 #include "../Config.h"
 #include "../utils/Platform.h"
-#include "../plugin-macros.generated.h"
 
 ConnectInfo::ConnectInfo(QWidget* parent) :
 	QDialog(parent, Qt::Dialog),

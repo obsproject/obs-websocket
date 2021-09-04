@@ -1,6 +1,5 @@
 #include "WebSocketSession.h"
 #include "eventhandler/types/EventSubscription.h"
-#include "plugin-macros.generated.h"
 
 WebSocketSession::WebSocketSession() :
 	_remoteAddress(""),

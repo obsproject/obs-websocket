@@ -9,6 +9,7 @@
 
 #include "utils/Json.h"
 #include "WebSocketSession.h"
+#include "plugin-macros.generated.h"
 
 class WebSocketServer : QObject
 {

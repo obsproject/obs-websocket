@@ -1,7 +1,6 @@
 #include <obs-frontend-api.h>
 
 #include "Config.h"
-#include "plugin-macros.generated.h"
 #include "utils/Crypto.h"
 #include "utils/Platform.h"
 

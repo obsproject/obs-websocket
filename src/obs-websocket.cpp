@@ -6,7 +6,6 @@
 #include <obs-data.h>
 #include <obs-frontend-api.h>
 
-#include "plugin-macros.generated.h"
 #include "obs-websocket.h"
 #include "Config.h"
 #include "WebSocketServer.h"
@@ -34,8 +33,7 @@ void ___properties_dummy_addref(obs_properties_t*) {};
 bool obs_module_load(void)
 {
 	blog(LOG_INFO, "[obs_module_load] you can haz websockets (Version: %s | RPC Version: %d)", OBS_WEBSOCKET_VERSION, OBS_WEBSOCKET_RPC_VERSION);
-	blog(LOG_INFO, "[obs_module_load] Qt version (compile-time): %s | Qt version (run-time): %s",
-		QT_VERSION_STR, qVersion());
+	blog(LOG_INFO, "[obs_module_load] Qt version (compile-time): %s | Qt version (run-time): %s", QT_VERSION_STR, qVersion());
 
 	// Randomize the random number generator
 	qsrand(QTime::currentTime().msec());

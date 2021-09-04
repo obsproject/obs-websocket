@@ -3,8 +3,10 @@
 #include <QDialog>
 #include <QTimer>
 
-#include "ui_SettingsDialog.h"
 #include "ConnectInfo.h"
+#include "../plugin-macros.generated.h"
+
+#include "ui_SettingsDialog.h"
 
 class SettingsDialog : public QDialog
 {

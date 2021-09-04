@@ -8,6 +8,7 @@
 #include "types/EventSubscription.h"
 #include "../obs-websocket.h"
 #include "../utils/Obs.h"
+#include "../plugin-macros.generated.h"
 
 template <typename T> T* GetCalldataPointer(const calldata_t *data, const char* name) {
 	void *ptr = nullptr;
@@ -40,7 +41,7 @@ class EventHandler
 		void ConnectSourceSignals(obs_source_t *source);
 		void DisconnectSourceSignals(obs_source_t *source);
 
-		void BroadcastEvent(uint64_t requiredIntent, std::string eventType, json eventData = nullptr, uint8_t rpcVersion = 1);
+		void BroadcastEvent(uint64_t requiredIntent, std::string eventType, json eventData = nullptr, uint8_t rpcVersion = 0);
 
 		// Signal handler: frontend
 		static void OnFrontendEvent(enum obs_frontend_event event, void *private_data);

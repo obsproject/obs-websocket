@@ -3,6 +3,8 @@
 #include <QString>
 #include <util/config-file.h>
 
+#include "plugin-macros.generated.h"
+
 class Config {
 	public:
 		Config();

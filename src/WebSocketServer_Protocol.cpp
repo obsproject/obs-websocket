@@ -6,9 +6,7 @@
 #include "eventhandler/EventHandler.h"
 #include "obs-websocket.h"
 #include "Config.h"
-#include "plugin-macros.generated.h"
 #include "utils/Crypto.h"
-#include "utils/Json.h"
 #include "utils/Platform.h"
 
 namespace WebSocketOpCode {

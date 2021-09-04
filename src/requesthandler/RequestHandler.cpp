@@ -1,5 +1,4 @@
 #include "RequestHandler.h"
-#include "../plugin-macros.generated.h"
 
 const std::map<std::string, RequestMethodHandler> RequestHandler::_handlerMap
 {

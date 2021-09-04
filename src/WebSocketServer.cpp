@@ -11,7 +11,6 @@
 #include "Config.h"
 #include "utils/Crypto.h"
 #include "utils/Platform.h"
-#include "plugin-macros.generated.h"
 
 WebSocketServer::WebSocketServer() :
 	QObject(nullptr),

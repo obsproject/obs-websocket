@@ -5,6 +5,8 @@
 #include <atomic>
 #include <memory>
 
+#include "plugin-macros.generated.h"
+
 class WebSocketSession;
 typedef std::shared_ptr<WebSocketSession> SessionPtr;
 

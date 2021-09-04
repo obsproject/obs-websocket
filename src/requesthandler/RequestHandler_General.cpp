@@ -1,9 +1,9 @@
 #include <QImageWriter>
 
 #include "RequestHandler.h"
+#include "../WebSocketServer.h"
 #include "../eventhandler/types/EventSubscription.h"
 #include "../obs-websocket.h"
-#include "../WebSocketServer.h"
 
 RequestResult RequestHandler::GetVersion(const Request& request)
 {

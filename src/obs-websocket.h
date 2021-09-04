@@ -10,6 +10,8 @@
     #pragma pop_macro("strtoll")
 #endif
 
+#include "plugin-macros.generated.h"
+
 // Autorelease object definitions
 void ___source_dummy_addref(obs_source_t*);
 void ___sceneitem_dummy_addref(obs_sceneitem_t*);
