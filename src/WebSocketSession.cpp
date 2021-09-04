@@ -11,7 +11,6 @@ WebSocketSession::WebSocketSession() :
 	_rpcVersion(OBS_WEBSOCKET_RPC_VERSION),
 	_isIdentified(false),
 	_ignoreInvalidMessages(false),
-	_ignoreNonFatalRequestChecks(false),
 	_eventSubscriptions(EventSubscription::All)
 {
 }
@@ -133,16 +132,6 @@ bool WebSocketSession::IgnoreInvalidMessages()
 void WebSocketSession::SetIgnoreInvalidMessages(bool ignore)
 {
 	_ignoreInvalidMessages.store(ignore);
-}
-
-bool WebSocketSession::IgnoreNonFatalRequestChecks()
-{
-	return _ignoreNonFatalRequestChecks.load();
-}
-
-void WebSocketSession::SetIgnoreNonFatalRequestChecks(bool ignore)
-{
-	_ignoreNonFatalRequestChecks.store(ignore);
 }
 
 uint64_t WebSocketSession::EventSubscriptions()

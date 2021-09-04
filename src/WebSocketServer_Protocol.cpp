@@ -39,15 +39,6 @@ void WebSocketServer::SetSessionParameters(SessionPtr session, ProcessResult &re
 		session->SetIgnoreInvalidMessages(payloadData["ignoreInvalidMessages"]);
 	}
 
-	if (payloadData.contains("ignoreNonFatalRequestChecks")) {
-		if (!payloadData["ignoreNonFatalRequestChecks"].is_boolean()) {
-			ret.closeCode = WebSocketCloseCode::InvalidDataKeyType;
-			ret.closeReason = "Your `ignoreNonFatalRequestChecks` is not a boolean.";
-			return;
-		}
-		session->SetIgnoreNonFatalRequestChecks(payloadData["ignoreNonFatalRequestChecks"]);
-	}
-
 	if (payloadData.contains("eventSubscriptions")) {
 		if (!payloadData["eventSubscriptions"].is_number_unsigned()) {
 			ret.closeCode = WebSocketCloseCode::InvalidDataKeyType;

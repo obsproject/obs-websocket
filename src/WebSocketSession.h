@@ -48,9 +48,6 @@ class WebSocketSession
 		bool IgnoreInvalidMessages();
 		void SetIgnoreInvalidMessages(bool ignore);
 
-		bool IgnoreNonFatalRequestChecks();
-		void SetIgnoreNonFatalRequestChecks(bool ignore);
-
 		uint64_t EventSubscriptions();
 		void SetEventSubscriptions(uint64_t subscriptions);
 
@@ -71,6 +68,5 @@ class WebSocketSession
 		std::atomic<uint8_t> _rpcVersion;
 		std::atomic<bool> _isIdentified;
 		std::atomic<bool> _ignoreInvalidMessages;
-		std::atomic<bool> _ignoreNonFatalRequestChecks;
 		std::atomic<uint64_t> _eventSubscriptions;
 };

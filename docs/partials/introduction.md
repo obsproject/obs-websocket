@@ -317,13 +317,11 @@ Authentication is not required
   "rpcVersion": number,
   "authentication": string(optional),
   "ignoreInvalidMessages": bool(optional) = false,
-  "ignoreNonFatalRequestChecks": bool(optional) = false,
   "eventSubscriptions": number(optional) = (EventSubscription::All)
 }
 ```
 - `rpcVersion` is the version number that the client would like the obs-websocket server to use.
 - When `ignoreInvalidMessages` is true, the socket will not be closed for [`WebSocketCloseCode`](#websocketclosecode-enum): `MessageDecodeError`, `UnknownOpCode`, or `MissingDataKey`. Instead, the message will be logged and ignored.
-- When `ignoreNonFatalRequestChecks` is true, requests will ignore checks which are not critical to the function of the request. Eg calling `DeleteScene` when the target scene does not exist would still return [`RequestStatus::Success`](#requeststatus-enum) if this flag is enabled.
 - `eventSubscriptions` is a bitmask of [`EventSubscriptions`](#eventsubscriptions-enum) items to subscribe to events and event categories at will. By default, all event categories are subscribed, except for events marked as high volume. High volume events must be explicitly subscribed to.
 
 **Example Message:**
@@ -374,7 +372,6 @@ Authentication is not required
 ```
 {
   "ignoreInvalidMessages": bool(optional) = false,
-  "ignoreNonFatalRequestChecks": bool(optional) = false,
   "eventSubscriptions": number(optional) = (EventSubscription::All)
 }
 ```
