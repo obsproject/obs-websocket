@@ -29,18 +29,6 @@ class WebSocketServer : QObject
 			bool isIdentified;
 		};
 
-		enum WebSocketOpCode {
-			Hello = 0,
-			Identify = 1,
-			Identified = 2,
-			Reidentify = 3,
-			Event = 5,
-			Request = 6,
-			RequestResponse = 7,
-			RequestBatch = 8,
-			RequestBatchResponse = 9,
-		};
-
 		enum WebSocketCloseCode {
 			// Internal only
 			DontClose = 0,
@@ -72,6 +60,7 @@ class WebSocketServer : QObject
 		void Start();
 		void Stop();
 		void InvalidateSession(websocketpp::connection_hdl hdl);
+		void BroadcastEvent(uint64_t requiredIntent, std::string eventType, json eventData = nullptr, uint8_t rpcVersion = 0);
 
 		bool IsListening() {
 			return _server.is_listening();
@@ -87,20 +76,26 @@ class WebSocketServer : QObject
 		std::string AuthenticationSecret;
 		std::string AuthenticationSalt;
 
-	public Q_SLOTS:
-		void BroadcastEvent(uint64_t requiredIntent, std::string eventType, json eventData = nullptr, uint8_t rpcVersion = 0);
-
 	signals:
 		void ClientConnected(const WebSocketSessionState state);
 		void ClientDisconnected(const WebSocketSessionState state, const uint16_t closeCode);
 
 	private:
+		struct ProcessResult {
+			WebSocketCloseCode closeCode = WebSocketCloseCode::DontClose;
+			std::string closeReason;
+			json result;
+		};
+
 		void ServerRunner();
 
 		bool onValidate(websocketpp::connection_hdl hdl);
 		void onOpen(websocketpp::connection_hdl hdl);
 		void onClose(websocketpp::connection_hdl hdl);
 		void onMessage(websocketpp::connection_hdl hdl, websocketpp::server<websocketpp::config::asio>::message_ptr message);
+
+		void SetSessionParameters(SessionPtr session, WebSocketServer::ProcessResult &ret, json payloadData);
+		void ProcessMessage(SessionPtr session, ProcessResult &ret, const uint8_t opCode, json incomingMessage);
 
 		std::thread _serverThread;
 		websocketpp::server<websocketpp::config::asio> _server;

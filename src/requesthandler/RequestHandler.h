@@ -4,8 +4,10 @@
 #include <obs.hpp>
 #include <obs-frontend-api.h>
 
+#include "rpc/RequestStatus.h"
 #include "rpc/Request.h"
 #include "rpc/RequestResult.h"
+#include "../WebSocketSession.h"
 #include "../obs-websocket.h"
 #include "../utils/Obs.h"
 #include "../plugin-macros.generated.h"
@@ -15,6 +17,8 @@ typedef RequestResult(RequestHandler::*RequestMethodHandler)(const Request&);
 
 class RequestHandler {
 	public:
+		RequestHandler(SessionPtr session);
+
 		RequestResult ProcessRequest(const Request& request);
 		std::vector<std::string> GetRequestList();
 
@@ -101,5 +105,6 @@ class RequestHandler {
 		RequestResult StartStream(const Request&);
 		RequestResult StopStream(const Request&);
 
+		SessionPtr _session;
 		static const std::map<std::string, RequestMethodHandler> _handlerMap;
 };

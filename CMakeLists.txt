@@ -86,7 +86,7 @@ set(obs-websocket_SOURCES
 	src/obs-websocket.cpp
 	src/Config.cpp
 	src/WebSocketServer.cpp
-	src/WebSocketProtocol.cpp
+	src/WebSocketServer_Protocol.cpp
 	src/WebSocketSession.cpp
 	src/eventhandler/EventHandler.cpp
 	src/eventhandler/EventHandler_General.cpp
@@ -121,7 +121,6 @@ set(obs-websocket_HEADERS
 	src/obs-websocket.h
 	src/Config.h
 	src/WebSocketServer.h
-	src/WebSocketProtocol.h
 	src/WebSocketSession.h
 	src/eventhandler/EventHandler.h
 	src/eventhandler/types/EventSubscription.h

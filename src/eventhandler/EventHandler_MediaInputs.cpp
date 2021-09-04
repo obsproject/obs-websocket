@@ -112,7 +112,7 @@ void EventHandler::HandleMediaInputPlaybackStarted(void *param, calldata_t *data
 
 	json eventData;
 	eventData["inputName"] = obs_source_get_name(source);
-	eventHandler->_webSocketServer->BroadcastEvent(EventSubscription::MediaInputs, "MediaInputPlaybackStarted", eventData);
+	eventHandler->BroadcastEvent(EventSubscription::MediaInputs, "MediaInputPlaybackStarted", eventData);
 }
 
 void EventHandler::HandleMediaInputPlaybackEnded(void *param, calldata_t *data)
@@ -128,7 +128,7 @@ void EventHandler::HandleMediaInputPlaybackEnded(void *param, calldata_t *data)
 
 	json eventData;
 	eventData["inputName"] = obs_source_get_name(source);
-	eventHandler->_webSocketServer->BroadcastEvent(EventSubscription::MediaInputs, "MediaInputPlaybackEnded", eventData);
+	eventHandler->BroadcastEvent(EventSubscription::MediaInputs, "MediaInputPlaybackEnded", eventData);
 }
 
 void EventHandler::HandleMediaInputActionTriggered(obs_source_t *source, ObsMediaInputAction action)
@@ -136,5 +136,5 @@ void EventHandler::HandleMediaInputActionTriggered(obs_source_t *source, ObsMedi
 	json eventData;
 	eventData["inputName"] = obs_source_get_name(source);
 	eventData["mediaAction"] = GetMediaInputActionString(action);
-	_webSocketServer->BroadcastEvent(EventSubscription::MediaInputs, "MediaInputActionTriggered", eventData);
+	BroadcastEvent(EventSubscription::MediaInputs, "MediaInputActionTriggered", eventData);
 }

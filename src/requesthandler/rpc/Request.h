@@ -1,7 +1,6 @@
 #pragma once
 
 #include "RequestStatus.h"
-#include "../../WebSocketSession.h"
 #include "../../utils/Json.h"
 
 enum ObsWebSocketSceneFilter {
@@ -12,7 +11,7 @@ enum ObsWebSocketSceneFilter {
 
 struct Request
 {
-	Request(SessionPtr session, const std::string requestType, const json requestData = nullptr);
+	Request(const std::string requestType, const json requestData = nullptr);
 
 	// Contains the key and is not null
 	const bool Contains(const std::string keyName) const;
@@ -35,10 +34,7 @@ struct Request
 	obs_source_t *ValidateInput(const std::string keyName, RequestStatus::RequestStatus &statusCode, std::string &comment) const;
 	obs_sceneitem_t *ValidateSceneItem(const std::string sceneKeyName, const std::string sceneItemIdKeyName, RequestStatus::RequestStatus &statusCode, std::string &comment, const ObsWebSocketSceneFilter filter = OBS_WEBSOCKET_SCENE_FILTER_SCENE_ONLY) const;
 
-	SessionPtr Session;
 	const bool HasRequestData;
-	const uint8_t RpcVersion;
-	const bool IgnoreNonFatalRequestChecks;
 	const std::string RequestType;
 	const json RequestData;
 };

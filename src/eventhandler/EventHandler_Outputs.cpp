@@ -35,7 +35,7 @@ void EventHandler::HandleStreamStateChanged(ObsOutputState state)
 	json eventData;
 	eventData["outputActive"] = GetOutputStateActive(state);
 	eventData["outputState"] = GetOutputStateString(state);
-	_webSocketServer->BroadcastEvent(EventSubscription::Outputs, "StreamStateChanged", eventData);
+	BroadcastEvent(EventSubscription::Outputs, "StreamStateChanged", eventData);
 }
 
 void EventHandler::HandleRecordStateChanged(ObsOutputState state)
@@ -43,7 +43,7 @@ void EventHandler::HandleRecordStateChanged(ObsOutputState state)
 	json eventData;
 	eventData["outputActive"] = GetOutputStateActive(state);
 	eventData["outputState"] = GetOutputStateString(state);
-	_webSocketServer->BroadcastEvent(EventSubscription::Outputs, "RecordStateChanged", eventData);
+	BroadcastEvent(EventSubscription::Outputs, "RecordStateChanged", eventData);
 }
 
 void EventHandler::HandleReplayBufferStateChanged(ObsOutputState state)
@@ -51,7 +51,7 @@ void EventHandler::HandleReplayBufferStateChanged(ObsOutputState state)
 	json eventData;
 	eventData["outputActive"] = GetOutputStateActive(state);
 	eventData["outputState"] = GetOutputStateString(state);
-	_webSocketServer->BroadcastEvent(EventSubscription::Outputs, "ReplayBufferStateChanged", eventData);
+	BroadcastEvent(EventSubscription::Outputs, "ReplayBufferStateChanged", eventData);
 }
 
 void EventHandler::HandleVirtualcamStateChanged(ObsOutputState state)
@@ -59,12 +59,12 @@ void EventHandler::HandleVirtualcamStateChanged(ObsOutputState state)
 	json eventData;
 	eventData["outputActive"] = GetOutputStateActive(state);
 	eventData["outputState"] = GetOutputStateString(state);
-	_webSocketServer->BroadcastEvent(EventSubscription::Outputs, "VirtualcamStateChanged", eventData);
+	BroadcastEvent(EventSubscription::Outputs, "VirtualcamStateChanged", eventData);
 }
 
 void EventHandler::HandleReplayBufferSaved()
 {
 	json eventData;
 	eventData["savedReplayPath"] = Utils::Obs::StringHelper::GetLastReplayBufferFilePath();
-	_webSocketServer->BroadcastEvent(EventSubscription::Outputs, "ReplayBufferSaved", eventData);
+	BroadcastEvent(EventSubscription::Outputs, "ReplayBufferSaved", eventData);
 }

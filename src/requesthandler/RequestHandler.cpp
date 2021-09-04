@@ -86,6 +86,11 @@ const std::map<std::string, RequestMethodHandler> RequestHandler::_handlerMap
 	{"StopStream", &RequestHandler::StopStream},
 };
 
+RequestHandler::RequestHandler(SessionPtr session) :
+	_session(session)
+{
+}
+
 RequestResult RequestHandler::ProcessRequest(const Request& request)
 {
 	if (!request.RequestData.is_object() && !request.RequestData.is_null())

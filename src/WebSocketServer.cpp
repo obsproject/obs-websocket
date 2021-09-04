@@ -6,8 +6,7 @@
 #include <obs-frontend-api.h>
 
 #include "WebSocketServer.h"
-#include "WebSocketProtocol.h"
-#include "eventhandler/types/EventSubscription.h"
+#include "eventhandler/EventHandler.h"
 #include "obs-websocket.h"
 #include "Config.h"
 #include "utils/Crypto.h"
@@ -44,6 +43,13 @@ WebSocketServer::WebSocketServer() :
 	_server.set_message_handler(
 		websocketpp::lib::bind(
 			&WebSocketServer::onMessage, this, websocketpp::lib::placeholders::_1, websocketpp::lib::placeholders::_2
+		)
+	);
+
+	auto eventHandler = GetEventHandler();
+	eventHandler->SetBroadcastCallback(
+		std::bind(
+			&WebSocketServer::BroadcastEvent, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4
 		)
 	);
 }
@@ -194,61 +200,6 @@ std::vector<WebSocketServer::WebSocketSessionState> WebSocketServer::GetWebSocke
 }
 
 // It isn't consistent to directly call the WebSocketServer from the events system, but it would also be dumb to make it unnecessarily complicated.
-void WebSocketServer::BroadcastEvent(uint64_t requiredIntent, std::string eventType, json eventData, uint8_t rpcVersion)
-{
-	if (!_server.is_listening())
-		return;
-
-	QtConcurrent::run(&_threadPool, [=]() {
-		// Populate message object
-		json eventMessage;
-		eventMessage["op"] = 5;
-		eventMessage["d"]["eventType"] = eventType;
-		eventMessage["d"]["eventIntent"] = requiredIntent;
-		if (eventData.is_object())
-			eventMessage["d"]["eventData"] = eventData;
-
-		// Initialize objects. The broadcast process only dumps the data when its needed.
-		std::string messageJson;
-		std::string messageMsgPack;
-
-		// Recurse connected sessions and send the event to suitable sessions.
-		std::unique_lock<std::mutex> lock(_sessionMutex);
-		for (auto & it : _sessions) {
-			if (!it.second->IsIdentified()) {
-				continue;
-			}
-			if (rpcVersion && it.second->RpcVersion() != rpcVersion) {
-				continue;
-			}
-			if ((it.second->EventSubscriptions() & requiredIntent) != 0) {
-				websocketpp::lib::error_code errorCode;
-				switch (it.second->Encoding()) {
-					case WebSocketEncoding::Json:
-						if (messageJson.empty()) {
-							messageJson = eventMessage.dump();
-						}
-						_server.send((websocketpp::connection_hdl)it.first, messageJson, websocketpp::frame::opcode::text, errorCode);
-						it.second->IncrementOutgoingMessages();
-						break;
-					case WebSocketEncoding::MsgPack:
-						if (messageMsgPack.empty()) {
-							auto msgPackData = json::to_msgpack(eventMessage);
-							messageMsgPack = std::string(msgPackData.begin(), msgPackData.end());
-						}
-						_server.send((websocketpp::connection_hdl)it.first, messageMsgPack, websocketpp::frame::opcode::binary, errorCode);
-						it.second->IncrementOutgoingMessages();
-						break;
-				}
-				if (errorCode)
-					blog(LOG_ERROR, "[WebSocketServer::BroadcastEvent] Error sending event message: %s", errorCode.message().c_str());
-			}
-		}
-		lock.unlock();
-		if (_debugEnabled && (EventSubscription::All & requiredIntent) != 0) // Don't log high volume events
-			blog(LOG_INFO, "[WebSocketServer::BroadcastEvent] Outgoing event:\n%s", eventMessage.dump(2).c_str());
-	});
-}
 
 bool WebSocketServer::onValidate(websocketpp::connection_hdl hdl)
 {
@@ -340,6 +291,7 @@ void WebSocketServer::onClose(websocketpp::connection_hdl hdl)
 	// Get info from the session and then delete it
 	std::unique_lock<std::mutex> lock(_sessionMutex);
 	SessionPtr session = _sessions[hdl];
+	uint64_t eventSubscriptions = session->EventSubscriptions();
 	bool isIdentified = session->IsIdentified();
 	uint64_t connectedAt = session->ConnectedAt();
 	uint64_t incomingMessages = session->IncomingMessages();
@@ -347,6 +299,12 @@ void WebSocketServer::onClose(websocketpp::connection_hdl hdl)
 	std::string remoteAddress = session->RemoteAddress();
 	_sessions.erase(hdl);
 	lock.unlock();
+
+	// If client was identified, decrement appropriate refs in eventhandler.
+	if (isIdentified) {
+		auto eventHandler = GetEventHandler();
+		eventHandler->ProcessUnsubscription(eventSubscriptions);
+	}
 
 	// Build SessionState object for signal
 	WebSocketSessionState state;
@@ -431,12 +389,12 @@ void WebSocketServer::onMessage(websocketpp::connection_hdl hdl, websocketpp::se
 		if (_debugEnabled)
 			blog(LOG_INFO, "[WebSocketServer::onMessage] Incoming message (decoded):\n%s", incomingMessage.dump(2).c_str());
 
-		WebSocketProtocol::ProcessResult ret;
+		ProcessResult ret;
 
 		// Verify incoming message is an object
 		if (!incomingMessage.is_object()) {
 			if (!session->IgnoreInvalidMessages()) {
-				ret.closeCode = WebSocketServer::WebSocketCloseCode::MessageDecodeError;
+				ret.closeCode = WebSocketCloseCode::MessageDecodeError;
 				ret.closeReason = "You sent a non-object payload.";
 				goto skipProcessing;
 			}
@@ -445,8 +403,8 @@ void WebSocketServer::onMessage(websocketpp::connection_hdl hdl, websocketpp::se
 
 		// Disconnect client if 4.x protocol is detected
 		if (!session->IsIdentified() && incomingMessage.contains("request-type")) {
-			blog(LOG_WARNING, "[WebSocketProtocol::ProcessMessage] Client %s appears to be running a pre-5.0.0 protocol.", session->RemoteAddress().c_str());
-			ret.closeCode = WebSocketServer::WebSocketCloseCode::UnsupportedRpcVersion;
+			blog(LOG_WARNING, "[WebSocketServer::onMessage] Client %s appears to be running a pre-5.0.0 protocol.", session->RemoteAddress().c_str());
+			ret.closeCode = WebSocketCloseCode::UnsupportedRpcVersion;
 			ret.closeReason = "You appear to be attempting to connect with the pre-5.0.0 plugin protocol. Check to make sure your client is updated.";
 			goto skipProcessing;
 		}
@@ -454,14 +412,14 @@ void WebSocketServer::onMessage(websocketpp::connection_hdl hdl, websocketpp::se
 		// Validate op code
 		if (!incomingMessage.contains("op")) {
 			if (!session->IgnoreInvalidMessages()) {
-				ret.closeCode = WebSocketServer::WebSocketCloseCode::UnknownOpCode;
+				ret.closeCode = WebSocketCloseCode::UnknownOpCode;
 				ret.closeReason = "Your request is missing an `op`.";
 				goto skipProcessing;
 			}
 			return;
 		}
 
-		WebSocketProtocol::ProcessMessage(session, ret, incomingMessage["op"], incomingMessage["d"]);
+		ProcessMessage(session, ret, incomingMessage["op"], incomingMessage["d"]);
 
 skipProcessing:
 		if (ret.closeCode != WebSocketCloseCode::DontClose) {

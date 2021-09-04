@@ -10,11 +10,8 @@ json GetDefaultJsonObject(json requestData)
 		return requestData;
 }
 
-Request::Request(SessionPtr session, std::string requestType, json requestData) :
-	Session(session),
+Request::Request(std::string requestType, json requestData) :
 	HasRequestData(requestData.is_object()),
-	RpcVersion(session->RpcVersion()),
-	IgnoreNonFatalRequestChecks(session->IgnoreNonFatalRequestChecks()),
 	RequestType(requestType),
 	RequestData(GetDefaultJsonObject(requestData))
 {

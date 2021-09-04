@@ -6,7 +6,7 @@ void EventHandler::HandleSceneCreated(obs_source_t *source)
 	json eventData;
 	eventData["sceneName"] = obs_source_get_name(source);
 	eventData["isGroup"] = obs_source_is_group(source);
-	_webSocketServer->BroadcastEvent(EventSubscription::Scenes, "SceneCreated", eventData);
+	BroadcastEvent(EventSubscription::Scenes, "SceneCreated", eventData);
 }
 
 void EventHandler::HandleSceneRemoved(obs_source_t *source)
@@ -14,7 +14,7 @@ void EventHandler::HandleSceneRemoved(obs_source_t *source)
 	json eventData;
 	eventData["sceneName"] = obs_source_get_name(source);
 	eventData["isGroup"] = obs_source_is_group(source);
-	_webSocketServer->BroadcastEvent(EventSubscription::Scenes, "SceneRemoved", eventData);
+	BroadcastEvent(EventSubscription::Scenes, "SceneRemoved", eventData);
 }
 
 void EventHandler::HandleSceneNameChanged(obs_source_t *source, std::string oldSceneName, std::string sceneName)
@@ -22,7 +22,7 @@ void EventHandler::HandleSceneNameChanged(obs_source_t *source, std::string oldS
 	json eventData;
 	eventData["oldSceneName"] = oldSceneName;
 	eventData["sceneName"] = sceneName;
-	_webSocketServer->BroadcastEvent(EventSubscription::Scenes, "SceneNameChanged", eventData);
+	BroadcastEvent(EventSubscription::Scenes, "SceneNameChanged", eventData);
 }
 
 void EventHandler::HandleCurrentSceneChanged()
@@ -31,7 +31,7 @@ void EventHandler::HandleCurrentSceneChanged()
 
 	json eventData;
 	eventData["sceneName"] = obs_source_get_name(currentScene);
-	_webSocketServer->BroadcastEvent(EventSubscription::Scenes, "CurrentSceneChanged", eventData);
+	BroadcastEvent(EventSubscription::Scenes, "CurrentSceneChanged", eventData);
 }
 
 void EventHandler::HandleCurrentPreviewSceneChanged()
@@ -44,12 +44,12 @@ void EventHandler::HandleCurrentPreviewSceneChanged()
 
 	json eventData;
 	eventData["sceneName"] = obs_source_get_name(currentPreviewScene);
-	_webSocketServer->BroadcastEvent(EventSubscription::Scenes, "CurrentPreviewSceneChanged", eventData);
+	BroadcastEvent(EventSubscription::Scenes, "CurrentPreviewSceneChanged", eventData);
 }
 
 void EventHandler::HandleSceneListChanged()
 {
 	json eventData;
 	eventData["scenes"] = Utils::Obs::ListHelper::GetSceneList();
-	_webSocketServer->BroadcastEvent(EventSubscription::Scenes, "SceneListChanged", eventData);
+	BroadcastEvent(EventSubscription::Scenes, "SceneListChanged", eventData);
 }

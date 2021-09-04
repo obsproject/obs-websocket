@@ -1,12 +1,12 @@
 #pragma once
 
+#include <atomic>
 #include <obs.hpp>
 #include <obs-frontend-api.h>
 #include <util/platform.h>
 
 #include "types/EventSubscription.h"
 #include "../obs-websocket.h"
-#include "../WebSocketServer.h"
 #include "../utils/Obs.h"
 
 template <typename T> T* GetCalldataPointer(const calldata_t *data, const char* name) {
@@ -18,16 +18,29 @@ template <typename T> T* GetCalldataPointer(const calldata_t *data, const char* 
 class EventHandler
 {
 	public:
-		EventHandler(WebSocketServerPtr webSocketServer);
+		EventHandler();
 		~EventHandler();
 
+		typedef std::function<void(uint64_t, std::string, json, uint8_t)> BroadcastCallback;
+		void SetBroadcastCallback(BroadcastCallback cb);
+
+		void ProcessSubscription(uint64_t eventSubscriptions);
+		void ProcessUnsubscription(uint64_t eventSubscriptions);
+
 	private:
-		WebSocketServerPtr _webSocketServer;
+		BroadcastCallback _broadcastCallback;
 
 		std::atomic<bool> _obsLoaded;
 
+		std::atomic<uint64_t> _inputVolumeMetersRef;
+		std::atomic<uint64_t> _inputActiveStateChangedRef;
+		std::atomic<uint64_t> _inputShowStateChangedRef;
+		std::atomic<uint64_t> _sceneItemTransformChangedRef;
+
 		void ConnectSourceSignals(obs_source_t *source);
 		void DisconnectSourceSignals(obs_source_t *source);
+
+		void BroadcastEvent(uint64_t requiredIntent, std::string eventType, json eventData = nullptr, uint8_t rpcVersion = 1);
 
 		// Signal handler: frontend
 		static void OnFrontendEvent(enum obs_frontend_event event, void *private_data);

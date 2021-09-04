@@ -43,8 +43,8 @@ RequestResult RequestHandler::GetStats(const Request& request)
 {
 	json responseData = Utils::Obs::DataHelper::GetStats();
 
-	responseData["webSocketSessionIncomingMessages"] = request.Session->IncomingMessages();
-	responseData["webSocketSessionOutgoingMessages"] = request.Session->OutgoingMessages();
+	responseData["webSocketSessionIncomingMessages"] = _session->IncomingMessages();
+	responseData["webSocketSessionOutgoingMessages"] = _session->OutgoingMessages();
 
 	return RequestResult::Success(responseData);
 }

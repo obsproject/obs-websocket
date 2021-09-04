@@ -1,9 +1,12 @@
 #include "EventHandler.h"
 #include "../plugin-macros.generated.h"
 
-EventHandler::EventHandler(WebSocketServerPtr webSocketServer) :
-	_webSocketServer(webSocketServer),
-	_obsLoaded(false)
+EventHandler::EventHandler() :
+	_obsLoaded(false),
+	_inputVolumeMetersRef(0),
+	_inputActiveStateChangedRef(0),
+	_inputShowStateChangedRef(0),
+	_sceneItemTransformChangedRef(0)
 {
 	blog(LOG_INFO, "[EventHandler::EventHandler] Setting up event handlers...");
 
@@ -39,6 +42,46 @@ EventHandler::~EventHandler()
 	}
 
 	blog(LOG_INFO, "[EventHandler::~EventHandler] Finished.");
+}
+
+void EventHandler::SetBroadcastCallback(EventHandler::BroadcastCallback cb)
+{
+	_broadcastCallback = cb;
+}
+
+// Function to increment refcounts for high volume event subscriptions
+void EventHandler::ProcessSubscription(uint64_t eventSubscriptions)
+{
+	if ((eventSubscriptions & EventSubscription::InputVolumeMeters) != 0)
+		_inputVolumeMetersRef++;
+	if ((eventSubscriptions & EventSubscription::InputActiveStateChanged) != 0)
+		_inputActiveStateChangedRef++;
+	if ((eventSubscriptions & EventSubscription::InputShowStateChanged) != 0)
+		_inputShowStateChangedRef++;
+	if ((eventSubscriptions & EventSubscription::SceneItemTransformChanged) != 0)
+		_sceneItemTransformChangedRef++;
+}
+
+// Function to decrement refcounts for high volume event subscriptions
+void EventHandler::ProcessUnsubscription(uint64_t eventSubscriptions)
+{
+	if ((eventSubscriptions & EventSubscription::InputVolumeMeters) != 0)
+		_inputVolumeMetersRef--;
+	if ((eventSubscriptions & EventSubscription::InputActiveStateChanged) != 0)
+		_inputActiveStateChangedRef--;
+	if ((eventSubscriptions & EventSubscription::InputShowStateChanged) != 0)
+		_inputShowStateChangedRef--;
+	if ((eventSubscriptions & EventSubscription::SceneItemTransformChanged) != 0)
+		_sceneItemTransformChangedRef--;
+}
+
+// Function required in order to use default arguments
+void EventHandler::BroadcastEvent(uint64_t requiredIntent, std::string eventType, json eventData, uint8_t rpcVersion)
+{
+	if (!_broadcastCallback)
+		return;
+
+	_broadcastCallback(requiredIntent, eventType, eventData, rpcVersion);
 }
 
 void EventHandler::ConnectSourceSignals(obs_source_t *source) // Applies to inputs and scenes

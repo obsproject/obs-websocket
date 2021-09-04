@@ -44,9 +44,10 @@ bool obs_module_load(void)
 	_config = ConfigPtr(new Config());
 	_config->Load();
 
-	_webSocketServer = WebSocketServerPtr(new WebSocketServer());
+	// Initialize event handler before server, as the server configures the event handler.
+	_eventHandler = EventHandlerPtr(new EventHandler());
 
-	_eventHandler = EventHandlerPtr(new EventHandler(_webSocketServer));
+	_webSocketServer = WebSocketServerPtr(new WebSocketServer());
 
 	obs_frontend_push_ui_translation(obs_module_get_string);
 	QMainWindow* mainWindow = reinterpret_cast<QMainWindow*>(obs_frontend_get_main_window());

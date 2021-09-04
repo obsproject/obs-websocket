@@ -18,7 +18,7 @@ void EventHandler::HandleSceneItemCreated(void *param, calldata_t *data)
 	eventData["inputName"] = obs_source_get_name(obs_sceneitem_get_source(sceneItem));
 	eventData["sceneItemId"] = obs_sceneitem_get_id(sceneItem);
 	eventData["sceneItemIndex"] = obs_sceneitem_get_order_position(sceneItem);
-	eventHandler->_webSocketServer->BroadcastEvent(EventSubscription::SceneItems, "SceneItemCreated", eventData);
+	eventHandler->BroadcastEvent(EventSubscription::SceneItems, "SceneItemCreated", eventData);
 }
 
 // Will not be emitted if an item is removed due to the parent scene being removed.
@@ -39,7 +39,7 @@ void EventHandler::HandleSceneItemRemoved(void *param, calldata_t *data)
 	eventData["inputName"] = obs_source_get_name(obs_sceneitem_get_source(sceneItem));
 	eventData["sceneItemId"] = obs_sceneitem_get_id(sceneItem);
 	eventData["sceneItemIndex"] = obs_sceneitem_get_order_position(sceneItem);
-	eventHandler->_webSocketServer->BroadcastEvent(EventSubscription::SceneItems, "SceneItemRemoved", eventData);
+	eventHandler->BroadcastEvent(EventSubscription::SceneItems, "SceneItemRemoved", eventData);
 }
 
 void EventHandler::HandleSceneItemListReindexed(void *param, calldata_t *data)
@@ -53,7 +53,7 @@ void EventHandler::HandleSceneItemListReindexed(void *param, calldata_t *data)
 	json eventData;
 	eventData["sceneName"] = obs_source_get_name(obs_scene_get_source(scene));
 	eventData["sceneItems"] = Utils::Obs::ListHelper::GetSceneItemList(scene, true);
-	eventHandler->_webSocketServer->BroadcastEvent(EventSubscription::SceneItems, "SceneItemListReindexed", eventData);
+	eventHandler->BroadcastEvent(EventSubscription::SceneItems, "SceneItemListReindexed", eventData);
 }
 
 void EventHandler::HandleSceneItemEnableStateChanged(void *param, calldata_t *data)
@@ -74,7 +74,7 @@ void EventHandler::HandleSceneItemEnableStateChanged(void *param, calldata_t *da
 	eventData["sceneName"] = obs_source_get_name(obs_scene_get_source(scene));
 	eventData["sceneItemId"] = obs_sceneitem_get_id(sceneItem);
 	eventData["sceneItemEnabled"] = sceneItemEnabled;
-	eventHandler->_webSocketServer->BroadcastEvent(EventSubscription::SceneItems, "SceneItemEnableStateChanged", eventData);
+	eventHandler->BroadcastEvent(EventSubscription::SceneItems, "SceneItemEnableStateChanged", eventData);
 }
 
 void EventHandler::HandleSceneItemLockStateChanged(void *param, calldata_t *data)
@@ -95,12 +95,15 @@ void EventHandler::HandleSceneItemLockStateChanged(void *param, calldata_t *data
 	eventData["sceneName"] = obs_source_get_name(obs_scene_get_source(scene));
 	eventData["sceneItemId"] = obs_sceneitem_get_id(sceneItem);
 	eventData["sceneItemLocked"] = sceneItemLocked;
-	eventHandler->_webSocketServer->BroadcastEvent(EventSubscription::SceneItems, "SceneItemLockStateChanged", eventData);
+	eventHandler->BroadcastEvent(EventSubscription::SceneItems, "SceneItemLockStateChanged", eventData);
 }
 
 void EventHandler::HandleSceneItemTransformChanged(void *param, calldata_t *data)
 {
 	auto eventHandler = reinterpret_cast<EventHandler*>(param);
+
+	if (!eventHandler->_sceneItemTransformChangedRef.load())
+		return;
 
 	obs_scene_t *scene = GetCalldataPointer<obs_scene_t>(data, "scene");
 	if (!scene)
@@ -114,5 +117,5 @@ void EventHandler::HandleSceneItemTransformChanged(void *param, calldata_t *data
 	eventData["sceneName"] = obs_source_get_name(obs_scene_get_source(scene));
 	eventData["sceneItemId"] = obs_sceneitem_get_id(sceneItem);
 	eventData["sceneItemTransform"] = Utils::Obs::DataHelper::GetSceneItemTransform(sceneItem);
-	eventHandler->_webSocketServer->BroadcastEvent(EventSubscription::SceneItems, "SceneItemTransformChanged", eventData);
+	eventHandler->BroadcastEvent(EventSubscription::SceneItemTransformChanged, "SceneItemTransformChanged", eventData);
 }

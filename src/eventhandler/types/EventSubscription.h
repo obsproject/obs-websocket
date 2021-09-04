@@ -30,5 +30,7 @@ namespace EventSubscription {
 		InputActiveStateChanged = (1 << 10),
 		// InputShowStateChanged event (high-volume)
 		InputShowStateChanged = (1 << 11),
+		// SceneItemTransformChanged event (high-volume)
+		SceneItemTransformChanged = (1 << 12),
 	};
 };

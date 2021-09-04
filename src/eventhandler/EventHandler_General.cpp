@@ -3,12 +3,12 @@
 
 void EventHandler::HandleExitStarted()
 {
-	_webSocketServer->BroadcastEvent(EventSubscription::General, "ExitStarted");
+	BroadcastEvent(EventSubscription::General, "ExitStarted");
 }
 
 void EventHandler::HandleStudioModeStateChanged(bool enabled)
 {
 	json eventData;
 	eventData["studioModeEnabled"] = enabled;
-	_webSocketServer->BroadcastEvent(EventSubscription::General, "StudioModeStateChanged", eventData);
+	BroadcastEvent(EventSubscription::General, "StudioModeStateChanged", eventData);
 }

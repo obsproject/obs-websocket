@@ -13,14 +13,14 @@ void EventHandler::HandleInputCreated(obs_source_t *source)
 	eventData["unversionedInputKind"] = obs_source_get_unversioned_id(source);
 	eventData["inputSettings"] = Utils::Json::ObsDataToJson(inputSettings);
 	eventData["defaultInputSettings"] = Utils::Json::ObsDataToJson(defaultInputSettings, true);
-	_webSocketServer->BroadcastEvent(EventSubscription::Inputs, "InputCreated", eventData);
+	BroadcastEvent(EventSubscription::Inputs, "InputCreated", eventData);
 }
 
 void EventHandler::HandleInputRemoved(obs_source_t *source)
 {
 	json eventData;
 	eventData["inputName"] = obs_source_get_name(source);
-	_webSocketServer->BroadcastEvent(EventSubscription::Inputs, "InputRemoved", eventData);
+	BroadcastEvent(EventSubscription::Inputs, "InputRemoved", eventData);
 }
 
 void EventHandler::HandleInputNameChanged(obs_source_t *source, std::string oldInputName, std::string inputName)
@@ -28,12 +28,15 @@ void EventHandler::HandleInputNameChanged(obs_source_t *source, std::string oldI
 	json eventData;
 	eventData["oldInputName"] = oldInputName;
 	eventData["inputName"] = inputName;
-	_webSocketServer->BroadcastEvent(EventSubscription::Inputs, "InputNameChanged", eventData);
+	BroadcastEvent(EventSubscription::Inputs, "InputNameChanged", eventData);
 }
 
 void EventHandler::HandleInputActiveStateChanged(void *param, calldata_t *data)
 {
 	auto eventHandler = reinterpret_cast<EventHandler*>(param);
+
+	if (!eventHandler->_inputActiveStateChangedRef.load())
+		return;
 
 	obs_source_t *source = GetCalldataPointer<obs_source_t>(data, "source");
 	if (!source)
@@ -45,12 +48,15 @@ void EventHandler::HandleInputActiveStateChanged(void *param, calldata_t *data)
 	json eventData;
 	eventData["inputName"] = obs_source_get_name(source);
 	eventData["videoActive"] = obs_source_active(source);
-	eventHandler->_webSocketServer->BroadcastEvent(EventSubscription::InputActiveStateChanged, "InputActiveStateChanged", eventData);
+	eventHandler->BroadcastEvent(EventSubscription::InputActiveStateChanged, "InputActiveStateChanged", eventData);
 }
 
 void EventHandler::HandleInputShowStateChanged(void *param, calldata_t *data)
 {
 	auto eventHandler = reinterpret_cast<EventHandler*>(param);
+
+	if (!eventHandler->_inputShowStateChangedRef.load())
+		return;
 
 	obs_source_t *source = GetCalldataPointer<obs_source_t>(data, "source");
 	if (!source)
@@ -62,7 +68,7 @@ void EventHandler::HandleInputShowStateChanged(void *param, calldata_t *data)
 	json eventData;
 	eventData["inputName"] = obs_source_get_name(source);
 	eventData["videoShowing"] = obs_source_showing(source);
-	eventHandler->_webSocketServer->BroadcastEvent(EventSubscription::InputShowStateChanged, "InputShowStateChanged", eventData);
+	eventHandler->BroadcastEvent(EventSubscription::InputShowStateChanged, "InputShowStateChanged", eventData);
 }
 
 void EventHandler::HandleInputMuteStateChanged(void *param, calldata_t *data)
@@ -79,7 +85,7 @@ void EventHandler::HandleInputMuteStateChanged(void *param, calldata_t *data)
 	json eventData;
 	eventData["inputName"] = obs_source_get_name(source);
 	eventData["inputMuted"] = obs_source_muted(source);
-	eventHandler->_webSocketServer->BroadcastEvent(EventSubscription::Inputs, "InputMuteStateChanged", eventData);
+	eventHandler->BroadcastEvent(EventSubscription::Inputs, "InputMuteStateChanged", eventData);
 }
 
 void EventHandler::HandleInputVolumeChanged(void *param, calldata_t *data)
@@ -104,7 +110,7 @@ void EventHandler::HandleInputVolumeChanged(void *param, calldata_t *data)
 	eventData["inputName"] = obs_source_get_name(source);
 	eventData["inputVolumeMul"] = inputVolumeMul;
 	eventData["inputVolumeDb"] = inputVolumeDb;
-	eventHandler->_webSocketServer->BroadcastEvent(EventSubscription::Inputs, "InputVolumeChanged", eventData);
+	eventHandler->BroadcastEvent(EventSubscription::Inputs, "InputVolumeChanged", eventData);
 }
 
 void EventHandler::HandleInputAudioSyncOffsetChanged(void *param, calldata_t *data)
@@ -123,7 +129,7 @@ void EventHandler::HandleInputAudioSyncOffsetChanged(void *param, calldata_t *da
 	json eventData;
 	eventData["inputName"] = obs_source_get_name(source);
 	eventData["inputAudioSyncOffset"] = inputAudioSyncOffset / 1000000;
-	eventHandler->_webSocketServer->BroadcastEvent(EventSubscription::Inputs, "InputAudioSyncOffsetChanged", eventData);
+	eventHandler->BroadcastEvent(EventSubscription::Inputs, "InputAudioSyncOffsetChanged", eventData);
 }
 
 void EventHandler::HandleInputAudioTracksChanged(void *param, calldata_t *data)
@@ -147,7 +153,7 @@ void EventHandler::HandleInputAudioTracksChanged(void *param, calldata_t *data)
 	json eventData;
 	eventData["inputName"] = obs_source_get_name(source);
 	eventData["inputAudioTracks"] = inputAudioTracks;
-	eventHandler->_webSocketServer->BroadcastEvent(EventSubscription::Inputs, "InputAudioTracksChanged", eventData);
+	eventHandler->BroadcastEvent(EventSubscription::Inputs, "InputAudioTracksChanged", eventData);
 }
 
 void EventHandler::HandleInputAudioMonitorTypeChanged(void *param, calldata_t *data)
@@ -180,5 +186,5 @@ void EventHandler::HandleInputAudioMonitorTypeChanged(void *param, calldata_t *d
 	json eventData;
 	eventData["inputName"] = obs_source_get_name(source);
 	eventData["monitorType"] = monitorTypeString;
-	eventHandler->_webSocketServer->BroadcastEvent(EventSubscription::Inputs, "InputAudioMonitorTypeChanged", eventData);
+	eventHandler->BroadcastEvent(EventSubscription::Inputs, "InputAudioMonitorTypeChanged", eventData);
 }
