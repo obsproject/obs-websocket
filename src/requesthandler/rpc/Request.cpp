@@ -24,7 +24,7 @@ const bool Request::Contains(const std::string keyName) const
 
 const bool Request::ValidateBasic(const std::string keyName, RequestStatus::RequestStatus &statusCode, std::string &comment) const
 {
-	if (HasRequestData) {
+	if (!HasRequestData) {
 		statusCode = RequestStatus::MissingRequestData;
 		comment = "Your request data is missing or invalid (non-object)";
 		return false;
