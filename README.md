@@ -31,8 +31,7 @@ brew install obs-websocket
 ## Using obs-websocket
 
 Here is a list of available web clients: (compatible with tablets and other touch interfaces)
-
-- Python 3.7+ (Asyncio): [simpleobsws](https://github.com/IRLToolkit/simpleobsws/tree/master) by IRLToolkit
+- (No known clients supporting 5.0.0)
 
 It is **highly recommended** to protect obs-websocket with a password against unauthorized control. To do this, open the "Websocket server settings" dialog under OBS' "Tools" menu. In the settings dialogs, you can enable or disable authentication and set a password for it.
 
@@ -50,7 +49,7 @@ The server is a typical Websockets server running by default on port 4444 (the p
 The protocol understood by the server is documented in [PROTOCOL.md](docs/generated/protocol.md).
 
 Here's a list of available language APIs for obs-websocket :
-- (No known apis supporting 5.0.0)
+- Python 3.7+ (Asyncio): [simpleobsws](https://github.com/IRLToolkit/simpleobsws/tree/master) by IRLToolkit
 
 We'd like to know what you're building with or for obs-websocket. If you do something in this fashion, feel free to drop a message in `#project-showoff` in the [discord server!](https://discord.gg/WBaSQ3A)
 
