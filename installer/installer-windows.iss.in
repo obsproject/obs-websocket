@@ -48,6 +48,17 @@ begin
   );
 end;
 
+// Validate that obs-studio is installed before installing the plugin
+function PrepareToInstall(var NeedsRestart: Boolean): String;
+begin
+  Result := '';
+
+  if not DirExists(ExpandConstant('{app}\obs-plugins')) then
+  begin
+    Result := 'The selected install directory does not appear to be valid. Please install OBS Studio before installing {#MyAppName} or correct your install path.';
+  end;
+end;
+
 // credit where it's due :
 // following function come from https://github.com/Xaymar/obs-studio_amf-encoder-plugin/blob/master/%23Resources/Installer.in.iss#L45
 function GetDirName(Value: string): string;
@@ -56,7 +67,7 @@ var
 begin
   // initialize default path, which will be returned when the following registry
   // key queries fail due to missing keys or for some different reason
-  Result := '{pf}\obs-studio';
+  Result := '{commonpf}\obs-studio';
   // query the first registry value; if this succeeds, return the obtained value
   if RegQueryStringValue(HKLM32, 'SOFTWARE\OBS Studio', '', InstallPath) then
     Result := InstallPath
