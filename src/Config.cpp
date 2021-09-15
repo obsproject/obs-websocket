@@ -10,7 +10,7 @@
 #define PARAM_ENABLED "ServerEnabled"
 #define PARAM_PORT "ServerPort"
 #define PARAM_ALERTS "AlertsEnabled"
-#define PARAM_AUTHREQUIRED "AuthRequred"
+#define PARAM_AUTHREQUIRED "AuthRequired"
 #define PARAM_PASSWORD "ServerPassword"
 
 #define CMDLINE_WEBSOCKET_PORT "websocket_port"
