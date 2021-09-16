@@ -350,7 +350,7 @@ RpcResponse WSRequestHandler::SetAudioTracks(const RpcRequest& request)
 
 	if (active && !(mixers & (1 << track)))
 		mixers |= (1 << track);
-	else if (mixers & (1 << track))
+	else if (!active && (mixers & (1 << track)))
 		mixers &= ~(1 << track);
 
 	obs_source_set_audio_mixers(source, mixers);
