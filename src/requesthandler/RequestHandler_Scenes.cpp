@@ -81,6 +81,9 @@ RequestResult RequestHandler::CreateScene(const Request& request)
 		return RequestResult::Error(RequestStatus::ResourceAlreadyExists, "A source already exists by that scene name.");
 
 	obs_scene_t *createdScene = obs_scene_create(sceneName.c_str());
+	if (!createdScene)
+		return RequestResult::Error(RequestStatus::ResourceCreationFailed, "Failed to create the scene.");
+
 	obs_scene_release(createdScene);
 
 	return RequestResult::Success();

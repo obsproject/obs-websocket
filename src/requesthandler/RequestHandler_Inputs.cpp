@@ -76,7 +76,7 @@ RequestResult RequestHandler::CreateInput(const Request& request)
 	obs_sceneitem_t *sceneItem = Utils::Obs::ActionHelper::CreateInput(inputName, inputKind, inputSettings, scene, sceneItemEnabled);
 
 	if (!sceneItem)
-		return RequestResult::Error(RequestStatus::RequestProcessingFailed, "Creation of the input or scene item failed.");
+		return RequestResult::Error(RequestStatus::ResourceCreationFailed, "Creation of the input or scene item failed.");
 
 	json responseData;
 	responseData["sceneItemId"] = obs_sceneitem_get_id(sceneItem);

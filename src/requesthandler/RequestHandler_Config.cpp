@@ -108,7 +108,7 @@ RequestResult RequestHandler::CreateSceneCollection(const Request& request)
 	bool success = false;
 	QMetaObject::invokeMethod(mainWindow, "AddSceneCollection", Qt::BlockingQueuedConnection, Q_RETURN_ARG(bool, success), Q_ARG(bool, true), Q_ARG(QString, QString::fromStdString(sceneCollectionName)));
 	if (!success)
-		return RequestResult::Error(RequestStatus::RequestProcessingFailed, "Failed to create the scene collection for an unknown reason");
+		return RequestResult::Error(RequestStatus::ResourceCreationFailed, "Failed to create the scene collection.");
 
 	return RequestResult::Success();
 }
@@ -349,7 +349,7 @@ RequestResult RequestHandler::SetStreamServiceSettings(const Request& request)
 		OBSService newStreamService = obs_service_create(requestedStreamServiceType.c_str(), "obs_websocket_custom_service", requestedStreamServiceSettings, NULL);
 		// TODO: Check service type here, instead of relying on service creation to fail.
 		if (!newStreamService)
-			return RequestResult::Error(RequestStatus::ResourceCreationFailed, "Creating the stream service with the requested streamServiceType failed. It may be an invalid type.");
+			return RequestResult::Error(RequestStatus::ResourceCreationFailed, "Failed to create the stream service with the requested streamServiceType. It may be an invalid type.");
 
 		obs_frontend_set_streaming_service(newStreamService);
 	}

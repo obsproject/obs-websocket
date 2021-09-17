@@ -50,6 +50,8 @@ RequestResult RequestHandler::CreateSceneItem(const Request& request)
 		sceneItemEnabled = request.RequestData["sceneItemEnabled"];
 
 	obs_sceneitem_t *sceneItem = Utils::Obs::ActionHelper::CreateSceneItem(source, scene, sceneItemEnabled);
+	if (!sceneItem)
+		return RequestResult::Error(RequestStatus::ResourceCreationFailed, "Failed to create the scene item.");
 
 	json responseData;
 	responseData["sceneItemId"] = obs_sceneitem_get_id(sceneItem);
