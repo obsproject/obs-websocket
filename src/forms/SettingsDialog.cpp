@@ -244,7 +244,7 @@ void SettingsDialog::EnableAuthenticationCheckBoxChanged()
 
 void SettingsDialog::GeneratePasswordButtonClicked()
 {
-	QString newPassword = Utils::Crypto::GeneratePassword();
+	QString newPassword = QString::fromStdString(Utils::Crypto::GeneratePassword());
 	ui->serverPasswordLineEdit->setText(newPassword);
 	ui->serverPasswordLineEdit->selectAll();
 	passwordManuallyEdited = false;

@@ -67,7 +67,7 @@ void Config::Load()
 	} else {
 		AuthRequired = config_get_bool(obsConfig, CONFIG_SECTION_NAME, PARAM_AUTHREQUIRED);
 		if (FirstLoad) {
-			ServerPassword = Utils::Crypto::GeneratePassword();
+			ServerPassword = QString::fromStdString(Utils::Crypto::GeneratePassword());
 		} else {
 			ServerPassword = config_get_string(obsConfig, CONFIG_SECTION_NAME, PARAM_PASSWORD);
 		}

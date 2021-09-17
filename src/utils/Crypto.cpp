@@ -59,13 +59,13 @@ bool Utils::Crypto::CheckAuthenticationString(std::string secret, std::string ch
 	return (authenticationString == expectedAuthenticationString);
 }
 
-QString Utils::Crypto::GeneratePassword(size_t length)
+std::string Utils::Crypto::GeneratePassword(size_t length)
 {
 	// Get OS random number generator
 	QRandomGenerator *rng = QRandomGenerator::system();
 
 	// Fill string with random alphanumeric
-	QString ret;
+	std::string ret;
 	for (size_t i = 0; i < length; i++)
 		ret += allowedChars[rng->bounded(0, allowedCharsCount)];
 
