@@ -90,8 +90,10 @@ void SettingsDialog::showEvent(QShowEvent *event)
 	sessionTableTimer->start(1000);
 }
 
-void SettingsDialog::closeEvent(QCloseEvent *event)
+void SettingsDialog::hideEvent(QHideEvent *event)
 {
+	UNUSED_PARAMETER(event);
+
 	if (sessionTableTimer->isActive())
 		sessionTableTimer->stop();
 
