@@ -70,6 +70,7 @@ class RequestHandler {
 		RequestResult GetInputList(const Request&);
 		RequestResult GetInputKindList(const Request&);
 		RequestResult CreateInput(const Request&);
+		RequestResult RemoveInput(const Request&);
 		RequestResult SetInputName(const Request&);
 		RequestResult GetInputDefaultSettings(const Request&);
 		RequestResult GetInputSettings(const Request&);

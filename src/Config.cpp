@@ -51,7 +51,7 @@ void Config::Load()
 	// future loads use the override flag.
 	if (FirstLoad) {
 		FirstLoad = false;
-		if (!ServerPassword.empty()) {
+		if (!ServerPassword.isEmpty()) {
 			blog(LOG_INFO, "[Config::Load] (FirstLoad) Generating new server password.");
 			ServerPassword = QString::fromStdString(Utils::Crypto::GeneratePassword());
 		} else {

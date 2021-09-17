@@ -83,6 +83,22 @@ RequestResult RequestHandler::CreateInput(const Request& request)
 	return RequestResult::Success(responseData);
 }
 
+RequestResult RequestHandler::RemoveInput(const Request& request)
+{
+	RequestStatus::RequestStatus statusCode;
+	std::string comment;
+	OBSSourceAutoRelease input = request.ValidateInput("inputName", statusCode, comment);
+	if (!input)
+		return RequestResult::Error(statusCode, comment);
+
+	// Some implementations of removing sources release before remove, and some release after.
+	// Releasing afterwards guarantees that we don't accidentally destroy the source before
+	// remove if we happen to hold the last ref (very, very rare)
+	obs_source_remove(input);
+
+	return RequestResult::Success();
+}
+
 RequestResult RequestHandler::SetInputName(const Request& request)
 {
 	RequestStatus::RequestStatus statusCode;
