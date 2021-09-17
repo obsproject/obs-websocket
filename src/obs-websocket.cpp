@@ -1,7 +1,6 @@
 #include <QtCore/QTimer>
 #include <QtWidgets/QAction>
 #include <QtWidgets/QMainWindow>
-#include <QTime>
 #include <obs-module.h>
 #include <obs-data.h>
 #include <obs-frontend-api.h>
@@ -34,9 +33,6 @@ bool obs_module_load(void)
 {
 	blog(LOG_INFO, "[obs_module_load] you can haz websockets (Version: %s | RPC Version: %d)", OBS_WEBSOCKET_VERSION, OBS_WEBSOCKET_RPC_VERSION);
 	blog(LOG_INFO, "[obs_module_load] Qt version (compile-time): %s | Qt version (run-time): %s", QT_VERSION_STR, qVersion());
-
-	// Randomize the random number generator
-	qsrand(QTime::currentTime().msec());
 
 	// Create the config object then load the parameters from storage
 	_config = ConfigPtr(new Config());
