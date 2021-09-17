@@ -117,8 +117,6 @@ void SettingsDialog::DialogButtonClicked(QAbstractButton *button)
 
 void SettingsDialog::SaveFormData()
 {
-	connectInfo->hide();
-
 	auto conf = GetConfig();
 	if (!conf) {
 		blog(LOG_ERROR, "[SettingsDialog::SaveFormData] Unable to retreive config!");
@@ -162,6 +160,8 @@ void SettingsDialog::SaveFormData()
 	conf->ServerPort = ui->serverPortSpinBox->value();
 
 	conf->Save();
+
+	connectInfo->RefreshData();
 
 	if (needsRestart) {
 		blog(LOG_INFO, "[SettingsDialog::SaveFormData] A setting was changed which requires a server restart.");

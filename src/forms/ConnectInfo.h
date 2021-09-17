@@ -14,6 +14,7 @@ public:
 	explicit ConnectInfo(QWidget* parent = 0);
 	~ConnectInfo();
 	void showEvent(QShowEvent *event);
+	void RefreshData();
 
 private Q_SLOTS:
 	void CopyServerIpButtonClicked();

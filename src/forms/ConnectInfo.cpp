@@ -30,6 +30,12 @@ ConnectInfo::~ConnectInfo()
 
 void ConnectInfo::showEvent(QShowEvent *event)
 {
+	UNUSED_PARAMETER(event);
+	RefreshData();
+}
+
+void ConnectInfo::RefreshData()
+{
 	auto conf = GetConfig();
 	if (!conf) {
 		blog(LOG_ERROR, "[ConnectInfo::showEvent] Unable to retreive config!");
