@@ -42,38 +42,50 @@ void Config::Load()
 	FirstLoad = config_get_bool(obsConfig, CONFIG_SECTION_NAME, PARAM_FIRSTLOAD);
 	ServerEnabled = config_get_bool(obsConfig, CONFIG_SECTION_NAME, PARAM_ENABLED);
 	AlertsEnabled = config_get_bool(obsConfig, CONFIG_SECTION_NAME, PARAM_ALERTS);
+	ServerPort = config_get_uint(obsConfig, CONFIG_SECTION_NAME, PARAM_PORT);
+	AuthRequired = config_get_bool(obsConfig, CONFIG_SECTION_NAME, PARAM_AUTHREQUIRED);
+	ServerPassword = config_get_string(obsConfig, CONFIG_SECTION_NAME, PARAM_PASSWORD);
 
+	// Set server password and save it to the config before processing overrides,
+	// so that there is always a true configured password regardless of if
+	// future loads use the override flag.
+	if (FirstLoad) {
+		FirstLoad = false;
+		if (!ServerPassword.empty()) {
+			blog(LOG_INFO, "[Config::Load] (FirstLoad) Generating new server password.");
+			ServerPassword = QString::fromStdString(Utils::Crypto::GeneratePassword());
+		} else {
+			blog(LOG_INFO, "[Config::Load] (FirstLoad) Not generating new password since one is already configured.");
+		}
+		Save();
+	}
+
+	// Process `--websocket_port` override
 	QString portArgument = Utils::Platform::GetCommandLineArgument(CMDLINE_WEBSOCKET_PORT);
 	if (portArgument != "") {
 		bool ok;
 		uint16_t serverPort = portArgument.toUShort(&ok);
 		if (ok) {
-			blog(LOG_INFO, "[Config::Load] Overriding websocket port with: %d", serverPort);
+			blog(LOG_INFO, "[Config::Load] Overriding WebSocket port with: %d", serverPort);
 			PortOverridden = true;
 			ServerPort = serverPort;
 		} else {
-			ServerPort = config_get_uint(obsConfig, CONFIG_SECTION_NAME, PARAM_PORT);
+			blog(LOG_WARNING, "[Config::Load] Not overriding WebSocket port since integer conversion failed.");
 		}
-	} else {
-		ServerPort = config_get_uint(obsConfig, CONFIG_SECTION_NAME, PARAM_PORT);
 	}
 
+	// Process `--websocket_password` override
 	QString passwordArgument = Utils::Platform::GetCommandLineArgument(CMDLINE_WEBSOCKET_PASSWORD);
 	if (passwordArgument != "") {
-		blog(LOG_INFO, "[Config::Load] Overriding websocket password");
+		blog(LOG_INFO, "[Config::Load] Overriding WebSocket password.");
 		PasswordOverridden = true;
 		AuthRequired = true;
 		ServerPassword = passwordArgument;
-	} else {
-		AuthRequired = config_get_bool(obsConfig, CONFIG_SECTION_NAME, PARAM_AUTHREQUIRED);
-		if (FirstLoad) {
-			ServerPassword = QString::fromStdString(Utils::Crypto::GeneratePassword());
-		} else {
-			ServerPassword = config_get_string(obsConfig, CONFIG_SECTION_NAME, PARAM_PASSWORD);
-		}
 	}
 
-	if (Utils::Platform::GetCommandLineFlagSet(CMDLINE_WEBSOCKET_DEBUG)) // Debug does not persist on reload, so we let people override it with a flag.
+	// Process `--websocket_debug` override
+	if (Utils::Platform::GetCommandLineFlagSet(CMDLINE_WEBSOCKET_DEBUG))
+		// Debug does not persist on reload, so we let people override it with a flag.
 		DebugEnabled = true;
 }
 

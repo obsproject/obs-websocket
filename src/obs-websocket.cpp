@@ -75,7 +75,6 @@ void obs_module_unload()
 
 	_eventHandler.reset();
 
-	_config->FirstLoad = false;
 	_config->Save();
 	_config.reset();
 
