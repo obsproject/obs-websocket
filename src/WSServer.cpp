@@ -23,7 +23,6 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <QtCore/QByteArray>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMessageBox>
-#include <QtConcurrent/QtConcurrent>
 #include <obs-frontend-api.h>
 #include <util/platform.h>
 
@@ -207,7 +206,7 @@ void WSServer::onMessage(connection_hdl hdl, server::message_ptr message)
 		return;
 	}
 
-	QtConcurrent::run(&_threadPool, [=]() {
+	_threadPool.start(QRunnable::create([=]() {
 		std::string payload = message->get_payload();
 
 		QMutexLocker locker(&_clMutex);
@@ -234,7 +233,7 @@ void WSServer::onMessage(connection_hdl hdl, server::message_ptr message)
 			blog(LOG_INFO, "server(response): send failed: %s",
 				errorCodeMessage.c_str());
 		}
-	});
+	}));
 }
 
 void WSServer::onClose(connection_hdl hdl)
