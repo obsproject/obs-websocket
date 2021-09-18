@@ -1355,10 +1355,10 @@ void WSEvents::OnSourceAudioMixersChanged(void* param, calldata_t* data) {
 	}
 
 	OBSDataArrayAutoRelease mixers = obs_data_array_create();
-	for (size_t i = 0; i < MAX_AUDIO_MIXES; i++) {
+	for (long long i = 0; i < MAX_AUDIO_MIXES; i++) {
 		OBSDataAutoRelease item = obs_data_create();
 		obs_data_set_int(item, "id", i + 1);
-		obs_data_set_bool(item, "enabled", (1 << i) & audioMixers);
+		obs_data_set_bool(item, "enabled", (audioMixers >> i) & 1);
 		obs_data_array_push_back(mixers, item);
 	}
 
