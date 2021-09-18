@@ -20,7 +20,8 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include <obs-frontend-api.h>
 #include <util/config-file.h>
-#include <QtCore/QString>
+#include <QtCore/QByteArray>
+#include <QtCore/QRandomGenerator>
 #include <QtCore/QSharedPointer>
 
 class Config {
@@ -34,11 +35,11 @@ class Config {
 
 		void MigrateFromGlobalSettings();
 
-		void SetPassword(QString password);
-		bool CheckAuth(QString userChallenge);
-		QString GenerateSalt();
-		static QString GenerateSecret(
-				QString password, QString salt);
+		void SetPassword(QByteArray password);
+		bool CheckAuth(QByteArray userChallenge);
+		QByteArray GenerateSalt();
+		static QByteArray GenerateSecret(
+				QByteArray password, QByteArray salt);
 
 		bool ServerEnabled;
 		uint64_t ServerPort;
@@ -48,12 +49,13 @@ class Config {
 		bool AlertsEnabled;
 
 		bool AuthRequired;
-		QString Secret;
-		QString Salt;
-		QString SessionChallenge;
+		QByteArray Secret;
+		QByteArray Salt;
+		QByteArray SessionChallenge;
 		bool SettingsLoaded;
 
 	private:
 		static void OnFrontendEvent(enum obs_frontend_event event, void* param);
 		static void FirstRunPasswordSetup();
+		QRandomGenerator _rng;
 };

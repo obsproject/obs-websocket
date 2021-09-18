@@ -122,10 +122,8 @@ RpcResponse WSRequestHandler::GetAuthRequired(const RpcRequest& request) {
 	obs_data_set_bool(data, "authRequired", authRequired);
 
 	if (authRequired) {
-		obs_data_set_string(data, "challenge",
-			config->SessionChallenge.toUtf8());
-		obs_data_set_string(data, "salt",
-			config->Salt.toUtf8());
+		obs_data_set_string(data, "challenge", config->SessionChallenge);
+		obs_data_set_string(data, "salt", config->Salt);
 	}
 
 	return request.success(data);
@@ -150,7 +148,7 @@ RpcResponse WSRequestHandler::Authenticate(const RpcRequest& request) {
 		return request.failed("already authenticated");
 	}
 
-	QString auth = obs_data_get_string(request.parameters(), "auth");
+	QByteArray auth = obs_data_get_string(request.parameters(), "auth");
 	if (auth.isEmpty()) {
 		return request.failed("auth not specified!");
 	}

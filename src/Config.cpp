@@ -43,8 +43,6 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include "Config.h"
 
-#define QT_TO_UTF8(str) str.toUtf8().constData()
-
 Config::Config() :
 	ServerEnabled(true),
 	ServerPort(4444),
@@ -56,7 +54,7 @@ Config::Config() :
 	Salt(""),
 	SettingsLoaded(false)
 {
-	qsrand(QTime::currentTime().msec());
+	_rng = QRandomGenerator::securelySeeded();
 
 	SetDefaults();
 	SessionChallenge = GenerateSalt();
@@ -97,10 +95,8 @@ void Config::Save()
 	config_set_bool(obsConfig, SECTION_NAME, PARAM_ALERT, AlertsEnabled);
 
 	config_set_bool(obsConfig, SECTION_NAME, PARAM_AUTHREQUIRED, AuthRequired);
-	config_set_string(obsConfig, SECTION_NAME, PARAM_SECRET,
-		QT_TO_UTF8(Secret));
-	config_set_string(obsConfig, SECTION_NAME, PARAM_SALT,
-		QT_TO_UTF8(Salt));
+	config_set_string(obsConfig, SECTION_NAME, PARAM_SECRET, Secret);
+	config_set_string(obsConfig, SECTION_NAME, PARAM_SALT, Salt);
 
 	config_save(obsConfig);
 }
@@ -125,9 +121,9 @@ void Config::SetDefaults()
 		config_set_default_bool(obsConfig,
 			SECTION_NAME, PARAM_AUTHREQUIRED, AuthRequired);
 		config_set_default_string(obsConfig,
-			SECTION_NAME, PARAM_SECRET, QT_TO_UTF8(Secret));
+			SECTION_NAME, PARAM_SECRET, Secret);
 		config_set_default_string(obsConfig,
-			SECTION_NAME, PARAM_SALT, QT_TO_UTF8(Salt));
+			SECTION_NAME, PARAM_SALT, Salt);
 	}
 }
 
@@ -200,65 +196,39 @@ void Config::MigrateFromGlobalSettings()
 	config_save(destination);
 }
 
-QString Config::GenerateSalt()
+// Generate 32 random characters, encoded as base64
+QByteArray Config::GenerateSalt()
 {
 	// Generate 32 random chars
 	const size_t randomCount = 32;
-	QByteArray randomChars;
-	for (size_t i = 0; i < randomCount; i++) {
-		randomChars.append((char)qrand());
-	}
+	quint64 randBuf[randomCount / sizeof(quint64)];
+	_rng.fillRange(randBuf);
+	auto randomChars = QByteArray::fromRawData(
+		reinterpret_cast<const char*>(randBuf), randomCount);
 
-	// Convert the 32 random chars to a base64 string
-	QString salt = randomChars.toBase64();
-
-	return salt;
+	return randomChars.toBase64();
 }
 
-QString Config::GenerateSecret(QString password, QString salt)
+QByteArray Config::GenerateSecret(QByteArray password, QByteArray salt)
 {
-	// Concatenate the password and the salt
-	QString passAndSalt = "";
-	passAndSalt += password;
-	passAndSalt += salt;
+	auto challengeHash = QCryptographicHash(
+		QCryptographicHash::Algorithm::Sha256);
+	challengeHash.addData(password);
+	challengeHash.addData(salt);
 
-	// Generate a SHA256 hash of the password and salt
-	auto challengeHash = QCryptographicHash::hash(
-		passAndSalt.toUtf8(),
-		QCryptographicHash::Algorithm::Sha256
-	);
-
-	// Encode SHA256 hash to Base64
-	QString challenge = challengeHash.toBase64();
-
-	return challenge;
+	return challengeHash.result().toBase64();
 }
 
-void Config::SetPassword(QString password)
+void Config::SetPassword(QByteArray password)
 {
-	QString newSalt = GenerateSalt();
-	QString newChallenge = GenerateSecret(password, newSalt);
-
+	QByteArray newSalt = GenerateSalt();
 	this->Salt = newSalt;
-	this->Secret = newChallenge;
+	this->Secret = GenerateSecret(password, newSalt);
 }
 
-bool Config::CheckAuth(QString response)
+bool Config::CheckAuth(QByteArray response)
 {
-	// Concatenate auth secret with the challenge sent to the user
-	QString challengeAndResponse = "";
-	challengeAndResponse += Secret;
-	challengeAndResponse += SessionChallenge;
-
-	// Generate a SHA256 hash of challengeAndResponse
-	auto hash = QCryptographicHash::hash(
-		challengeAndResponse.toUtf8(),
-		QCryptographicHash::Algorithm::Sha256
-	);
-
-	// Encode the SHA256 hash to Base64
-	QString expectedResponse = hash.toBase64();
-
+	auto expectedResponse = GenerateSecret(Secret, SessionChallenge);
 	bool authSuccess = false;
 	if (response == expectedResponse) {
 		SessionChallenge = GenerateSalt();

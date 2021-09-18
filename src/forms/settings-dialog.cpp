@@ -108,7 +108,7 @@ void SettingsDialog::FormAccepted() {
 
 	if (ui->authRequired->isChecked()) {
 		if (ui->password->text() != CHANGE_ME) {
-			conf->SetPassword(ui->password->text());
+			conf->SetPassword(ui->password->text().toUtf8());
 		}
 
 		if (!conf->Secret.isEmpty())
