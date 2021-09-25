@@ -145,8 +145,8 @@ void EventHandler::HandleInputAudioTracksChanged(void *param, calldata_t *data)
 	long long tracks = calldata_int(data, "mixers");
 
 	json inputAudioTracks;
-	for (size_t i = 0; i < MAX_AUDIO_MIXES; i++) {
-		inputAudioTracks[std::to_string(i + 1)] = (bool)((1 << i) & tracks);
+	for (long long i = 0; i < MAX_AUDIO_MIXES; i++) {
+		inputAudioTracks[std::to_string(i + 1)] = (bool)((tracks >> i) & 1);
 	}
 
 	json eventData;
