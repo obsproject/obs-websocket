@@ -21,7 +21,7 @@ jobs:
     runs-on: [windows-latest]
     if: contains(github.event.head_commit.message, '[skip ci]') != true
     env:
-      QT_CACHE_VERSION: '2' # Change whenever updating OBS dependencies URL, in order to force a cache reset
+      QT_CACHE_VERSION: '3' # Change whenever updating OBS dependencies URL, in order to force a cache reset
       QT_VERSION: '5.15.2'
       WINDOWS_DEPS_CACHE_VERSION: '1' # Change whenever updating Qt dependency URL, in order to force a cache reset
       WINDOWS_DEPS_VERSION: '2019'
@@ -83,7 +83,7 @@ jobs:
       - name: 'Download Prerequisite: Qt'
         if: steps.qtcache.outputs.cache-hit != 'true'
         run: |
-          curl -kLO https://tt2468.net/dl/Qt_${{ env.QT_VERSION }}.7z -f --retry 5 -C -
+          curl -kLO https://cdn-fastly.obsproject.com/downloads/Qt_${{ env.QT_VERSION }}.7z -f --retry 5 -C -
       - name: 'Extract Prerequisite: Qt'
         run: |
           7z x Qt_${{ env.QT_VERSION }}.7z -o"${{ github.workspace }}\cmbuild\QT"
