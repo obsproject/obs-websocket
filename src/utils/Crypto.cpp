@@ -25,19 +25,15 @@ std::string Utils::Crypto::GenerateSalt()
 
 std::string Utils::Crypto::GenerateSecret(std::string password, std::string salt)
 {
-	// Concatenate the password and the salt
-	QString passAndSalt = "";
-	passAndSalt += QString::fromStdString(password);
-	passAndSalt += QString::fromStdString(salt);
+	// Create challenge hash
+	auto challengeHash = QCryptographicHash(QCryptographicHash::Algorithm::Sha256);
+	// Add password bytes to hash
+	challengeHash.addData(QByteArray::fromStdString(password));
+	// Add salt bytes to hash
+	challengeHash.addData(QByteArray::fromStdString(salt));
 
-	// Generate a SHA256 hash of the password and salt
-	auto challengeHash = QCryptographicHash::hash(
-		passAndSalt.toUtf8(),
-		QCryptographicHash::Algorithm::Sha256
-	);
-
-	// Encode SHA256 hash to Base64
-	return challengeHash.toBase64().toStdString();
+	// Generate SHA256 hash then encode to Base64
+	return challengeHash.result().toBase64().toStdString();
 }
 
 bool Utils::Crypto::CheckAuthenticationString(std::string secret, std::string challenge, std::string authenticationString)
