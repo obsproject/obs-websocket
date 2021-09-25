@@ -4,3 +4,4 @@
 #include "Json.h"
 #include "Obs.h"
 #include "Platform.h"
+#include "Compat.h"
