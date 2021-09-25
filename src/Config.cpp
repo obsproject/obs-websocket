@@ -66,7 +66,7 @@ void Config::Load()
 		bool ok;
 		uint16_t serverPort = portArgument.toUShort(&ok);
 		if (ok) {
-			blog(LOG_INFO, "[Config::Load] Overriding WebSocket port with: %d", serverPort);
+			blog(LOG_INFO, "[Config::Load] --websocket_port passed. Overriding WebSocket port with: %d", serverPort);
 			PortOverridden = true;
 			ServerPort = serverPort;
 		} else {
@@ -77,7 +77,7 @@ void Config::Load()
 	// Process `--websocket_password` override
 	QString passwordArgument = Utils::Platform::GetCommandLineArgument(CMDLINE_WEBSOCKET_PASSWORD);
 	if (passwordArgument != "") {
-		blog(LOG_INFO, "[Config::Load] Overriding WebSocket password.");
+		blog(LOG_INFO, "[Config::Load] --websocket_password passed. Overriding WebSocket password.");
 		PasswordOverridden = true;
 		AuthRequired = true;
 		ServerPassword = passwordArgument;
@@ -86,6 +86,7 @@ void Config::Load()
 	// Process `--websocket_debug` override
 	if (Utils::Platform::GetCommandLineFlagSet(CMDLINE_WEBSOCKET_DEBUG))
 		// Debug does not persist on reload, so we let people override it with a flag.
+		blog(LOG_INFO, "[Config::Load] --websocket_debug passed. Enabling debug logging.");
 		DebugEnabled = true;
 }
 
