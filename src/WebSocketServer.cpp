@@ -1,6 +1,5 @@
 #include <chrono>
 #include <thread>
-#include <QtConcurrent>
 #include <QDateTime>
 #include <obs-module.h>
 #include <obs-frontend-api.h>
@@ -11,6 +10,7 @@
 #include "Config.h"
 #include "utils/Crypto.h"
 #include "utils/Platform.h"
+#include "utils/Compat.h"
 
 WebSocketServer::WebSocketServer() :
 	QObject(nullptr),
@@ -269,6 +269,9 @@ void WebSocketServer::onOpen(websocketpp::connection_hdl hdl)
 	// Log connection
 	blog(LOG_INFO, "[WebSocketServer::onOpen] New WebSocket client has connected from %s", session->RemoteAddress().c_str());
 
+	if (_debugEnabled)
+		blog(LOG_INFO, "[WebSocketServer::onOpen] Sending Op 0 (Hello) message:\n%s", helloMessage.dump(2).c_str());
+
 	// Send object to client
 	websocketpp::lib::error_code errorCode;
 	auto sessionEncoding = session->Encoding();
@@ -338,7 +341,7 @@ void WebSocketServer::onMessage(websocketpp::connection_hdl hdl, websocketpp::se
 {
 	auto opcode = message->get_opcode();
 	std::string payload = message->get_payload();
-	QtConcurrent::run(&_threadPool, [=]() {
+	_threadPool.start(Utils::Compat::CreateFunctionRunnable([=]() {
 		std::unique_lock<std::mutex> lock(_sessionMutex);
 		SessionPtr session;
 		try {
@@ -445,5 +448,5 @@ skipProcessing:
 			if (errorCode)
 				blog(LOG_WARNING, "[WebSocketServer::onMessage] Sending message to client failed: %s", errorCode.message().c_str());
 		}
-	});
+	}));
 }

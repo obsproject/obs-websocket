@@ -62,7 +62,7 @@ find_package(LibObs REQUIRED)
 
 
 # Find Qt5
-find_package(Qt5 REQUIRED COMPONENTS Core Widgets Svg Concurrent Network)
+find_package(Qt5 REQUIRED COMPONENTS Core Widgets Svg Network)
 
 
 # Find nlohmann
@@ -115,6 +115,7 @@ set(obs-websocket_SOURCES
 	src/utils/Json.cpp
 	src/utils/Obs.cpp
 	src/utils/Platform.cpp
+	src/utils/Compat.cpp
 	deps/qr/cpp/QrCode.cpp)
 
 set(obs-websocket_HEADERS
@@ -134,6 +135,7 @@ set(obs-websocket_HEADERS
 	src/utils/Json.h
 	src/utils/Obs.h
 	src/utils/Platform.h
+	src/utils/Compat.h
 	src/utils/Utils.h
 	deps/qr/cpp/QrCode.hpp)
 
@@ -148,7 +150,6 @@ include_directories(
 	${Qt5Core_INCLUDES}
 	${Qt5Widgets_INCLUDES}
 	${Qt5Svg_INCLUDES}
-	${Qt5Concurrent_INCLUDES}
 	${Qt5Network_INCLUDES}
 	"${CMAKE_SOURCE_DIR}/deps/asio/asio/include"
 	"${CMAKE_SOURCE_DIR}/deps/websocketpp")
@@ -158,7 +159,6 @@ target_link_libraries(obs-websocket
 	Qt5::Core
 	Qt5::Widgets
 	Qt5::Svg
-	Qt5::Concurrent
 	Qt5::Network
 	nlohmann_json::nlohmann_json)
 

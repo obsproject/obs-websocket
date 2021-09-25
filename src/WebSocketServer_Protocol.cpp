@@ -1,4 +1,3 @@
-#include <QtConcurrent>
 #include <obs-module.h>
 
 #include "WebSocketServer.h"
@@ -8,6 +7,7 @@
 #include "Config.h"
 #include "utils/Crypto.h"
 #include "utils/Platform.h"
+#include "utils/Compat.h"
 
 namespace WebSocketOpCode {
 	enum WebSocketOpCode: uint8_t {
@@ -261,7 +261,7 @@ void WebSocketServer::BroadcastEvent(uint64_t requiredIntent, std::string eventT
 	if (!_server.is_listening())
 		return;
 
-	QtConcurrent::run(&_threadPool, [=]() {
+	_threadPool.start(Utils::Compat::CreateFunctionRunnable([=]() {
 		// Populate message object
 		json eventMessage;
 		eventMessage["op"] = 5;
@@ -309,5 +309,5 @@ void WebSocketServer::BroadcastEvent(uint64_t requiredIntent, std::string eventT
 		lock.unlock();
 		if (_debugEnabled && (EventSubscription::All & requiredIntent) != 0) // Don't log high volume events
 			blog(LOG_INFO, "[WebSocketServer::BroadcastEvent] Outgoing event:\n%s", eventMessage.dump(2).c_str());
-	});
+	}));
 }
