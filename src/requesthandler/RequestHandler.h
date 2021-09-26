@@ -90,6 +90,7 @@ class RequestHandler {
 		// Scene Items
 		RequestResult GetSceneItemList(const Request&);
 		RequestResult GetGroupSceneItemList(const Request&);
+		RequestResult GetSceneItemId(const Request&);
 		RequestResult CreateSceneItem(const Request&);
 		RequestResult RemoveSceneItem(const Request&);
 		RequestResult GetSceneItemTransform(const Request&);

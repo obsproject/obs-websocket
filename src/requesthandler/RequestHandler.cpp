@@ -69,6 +69,7 @@ const std::map<std::string, RequestMethodHandler> RequestHandler::_handlerMap
 	// Scene Items
 	{"GetSceneItemList", &RequestHandler::GetSceneItemList},
 	{"GetGroupSceneItemList", &RequestHandler::GetGroupSceneItemList},
+	{"GetSceneItemId", &RequestHandler::GetSceneItemId},
 	{"CreateSceneItem", &RequestHandler::CreateSceneItem},
 	{"RemoveSceneItem", &RequestHandler::RemoveSceneItem},
 	{"GetSceneItemTransform", &RequestHandler::GetSceneItemTransform},

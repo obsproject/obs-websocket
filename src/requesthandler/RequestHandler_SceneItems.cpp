@@ -28,6 +28,28 @@ RequestResult RequestHandler::GetGroupSceneItemList(const Request& request)
 	return RequestResult::Success(responseData);
 }
 
+RequestResult RequestHandler::GetSceneItemId(const Request& request)
+{
+	RequestStatus::RequestStatus statusCode;
+	std::string comment;
+	OBSSourceAutoRelease sceneSource = request.ValidateScene("sceneName", statusCode, comment);
+	if (!(sceneSource && request.ValidateString("sourceName", statusCode, comment)))
+		return RequestResult::Error(statusCode, comment);
+
+	OBSScene scene = obs_scene_from_source(sceneSource);
+
+	std::string sourceName = request.RequestData["sourceName"];
+
+	obs_sceneitem_t *item = Utils::Obs::SearchHelper::GetSceneItemByName(scene, sourceName);
+	if (!item)
+		return RequestResult::Error(RequestStatus::ResourceNotFound, "No scene items were found in the specified scene by that name.");
+
+	json responseData;
+	responseData["sceneItemId"] = obs_sceneitem_get_id(item);
+
+	return RequestResult::Success(responseData);
+}
+
 RequestResult RequestHandler::CreateSceneItem(const Request& request)
 {
 	RequestStatus::RequestStatus statusCode;
