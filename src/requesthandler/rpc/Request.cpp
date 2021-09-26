@@ -214,12 +214,12 @@ obs_source_t *Request::ValidateScene(const std::string keyName, RequestStatus::R
 	if (filter == OBS_WEBSOCKET_SCENE_FILTER_SCENE_ONLY && isGroup) {
 		obs_source_release(ret);
 		statusCode = RequestStatus::InvalidResourceType;
-		comment = "The specified source is not a scene.";
+		comment = "The specified source is not a scene. (Is group)";
 		return nullptr;
 	} else if (filter == OBS_WEBSOCKET_SCENE_FILTER_GROUP_ONLY && !isGroup) {
 		obs_source_release(ret);
 		statusCode = RequestStatus::InvalidResourceType;
-		comment = "The specified source is not a group.";
+		comment = "The specified source is not a group. (Is scene)";
 		return nullptr;
 	}
 
