@@ -32,7 +32,7 @@ RequestResult RequestHandler::GetSceneItemId(const Request& request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease sceneSource = request.ValidateScene("sceneName", statusCode, comment, OBS_WEBSOCKET_SCENE_FILTER_SCENE_OR_GROUP);
+	OBSSourceAutoRelease sceneSource = request.ValidateScene("sceneName", statusCode, comment);
 	if (!(sceneSource && request.ValidateString("sourceName", statusCode, comment)))
 		return RequestResult::Error(statusCode, comment);
 
