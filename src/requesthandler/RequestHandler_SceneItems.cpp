@@ -106,7 +106,7 @@ RequestResult RequestHandler::GetSceneItemTransform(const Request& request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSceneItemAutoRelease sceneItem = request.ValidateSceneItem("sceneName", "sceneItemId", statusCode, comment);
+	OBSSceneItemAutoRelease sceneItem = request.ValidateSceneItem("sceneName", "sceneItemId", statusCode, comment, OBS_WEBSOCKET_SCENE_FILTER_SCENE_OR_GROUP);
 	if (!sceneItem)
 		return RequestResult::Error(statusCode, comment);
 
@@ -120,7 +120,7 @@ RequestResult RequestHandler::GetSceneItemEnabled(const Request& request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSceneItemAutoRelease sceneItem = request.ValidateSceneItem("sceneName", "sceneItemId", statusCode, comment);
+	OBSSceneItemAutoRelease sceneItem = request.ValidateSceneItem("sceneName", "sceneItemId", statusCode, comment, OBS_WEBSOCKET_SCENE_FILTER_SCENE_OR_GROUP);
 	if (!sceneItem)
 		return RequestResult::Error(statusCode, comment);
 
@@ -134,7 +134,7 @@ RequestResult RequestHandler::SetSceneItemEnabled(const Request& request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSceneItemAutoRelease sceneItem = request.ValidateSceneItem("sceneName", "sceneItemId", statusCode, comment);
+	OBSSceneItemAutoRelease sceneItem = request.ValidateSceneItem("sceneName", "sceneItemId", statusCode, comment, OBS_WEBSOCKET_SCENE_FILTER_SCENE_OR_GROUP);
 	if (!(sceneItem && request.ValidateBoolean("sceneItemEnabled", statusCode, comment)))
 		return RequestResult::Error(statusCode, comment);
 
@@ -149,7 +149,7 @@ RequestResult RequestHandler::GetSceneItemLocked(const Request& request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSceneItemAutoRelease sceneItem = request.ValidateSceneItem("sceneName", "sceneItemId", statusCode, comment);
+	OBSSceneItemAutoRelease sceneItem = request.ValidateSceneItem("sceneName", "sceneItemId", statusCode, comment, OBS_WEBSOCKET_SCENE_FILTER_SCENE_OR_GROUP);
 	if (!sceneItem)
 		return RequestResult::Error(statusCode, comment);
 
@@ -163,7 +163,7 @@ RequestResult RequestHandler::SetSceneItemLocked(const Request& request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSceneItemAutoRelease sceneItem = request.ValidateSceneItem("sceneName", "sceneItemId", statusCode, comment);
+	OBSSceneItemAutoRelease sceneItem = request.ValidateSceneItem("sceneName", "sceneItemId", statusCode, comment, OBS_WEBSOCKET_SCENE_FILTER_SCENE_OR_GROUP);
 	if (!(sceneItem && request.ValidateBoolean("sceneItemLocked", statusCode, comment)))
 		return RequestResult::Error(statusCode, comment);
 
@@ -178,7 +178,7 @@ RequestResult RequestHandler::GetSceneItemIndex(const Request& request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSceneItemAutoRelease sceneItem = request.ValidateSceneItem("sceneName", "sceneItemId", statusCode, comment);
+	OBSSceneItemAutoRelease sceneItem = request.ValidateSceneItem("sceneName", "sceneItemId", statusCode, comment, OBS_WEBSOCKET_SCENE_FILTER_SCENE_OR_GROUP);
 	if (!sceneItem)
 		return RequestResult::Error(statusCode, comment);
 
@@ -192,7 +192,7 @@ RequestResult RequestHandler::SetSceneItemIndex(const Request& request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSceneItemAutoRelease sceneItem = request.ValidateSceneItem("sceneName", "sceneItemId", statusCode, comment);
+	OBSSceneItemAutoRelease sceneItem = request.ValidateSceneItem("sceneName", "sceneItemId", statusCode, comment, OBS_WEBSOCKET_SCENE_FILTER_SCENE_OR_GROUP);
 	if (!(sceneItem && request.ValidateNumber("sceneItemIndex", statusCode, comment, 0, 8192)))
 		return RequestResult::Error(statusCode, comment);
 
