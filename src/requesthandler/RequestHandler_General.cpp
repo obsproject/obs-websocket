@@ -79,8 +79,8 @@ RequestResult RequestHandler::TriggerHotkeyByKeySequence(const Request& request)
 	RequestStatus::RequestStatus statusCode = RequestStatus::NoError;
 	std::string comment;
 
-	if (request.RequestData.contains("keyId") && !request.RequestData["keyId"].is_null()) {
-		if (!request.ValidateString("keyId", statusCode, comment))
+	if (request.Contains("keyId")) {
+		if (!request.ValidateOptionalString("keyId", statusCode, comment))
 			return RequestResult::Error(statusCode, comment);
 
 		std::string keyId = request.RequestData["keyId"];
@@ -88,8 +88,8 @@ RequestResult RequestHandler::TriggerHotkeyByKeySequence(const Request& request)
 	}
 
 	statusCode = RequestStatus::NoError;
-	if (request.RequestData.contains("keyModifiers") && !request.RequestData["keyModifiers"].is_null()) {
-		if (!request.ValidateObject("keyModifiers", statusCode, comment, true))
+	if (request.Contains("keyModifiers")) {
+		if (!request.ValidateOptionalObject("keyModifiers", statusCode, comment, true))
 			return RequestResult::Error(statusCode, comment);
 
 		const json keyModifiersJson = request.RequestData["keyModifiers"];

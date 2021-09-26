@@ -68,8 +68,11 @@ RequestResult RequestHandler::CreateSceneItem(const Request& request)
 		return RequestResult::Error(RequestStatus::CannotAct, "You cannot create scene item of a scene within itself.");
 
 	bool sceneItemEnabled = true;
-	if (request.RequestData.contains("sceneItemEnabled") && request.RequestData["sceneItemEnabled"].is_boolean())
+	if (request.Contains("sceneItemEnabled")) {
+		if (!request.ValidateOptionalBoolean("sceneItemEnabled", statusCode, comment))
+			return RequestResult::Error(statusCode, comment);
 		sceneItemEnabled = request.RequestData["sceneItemEnabled"];
+	}
 
 	OBSSceneItemAutoRelease sceneItem = Utils::Obs::ActionHelper::CreateSceneItem(source, scene, sceneItemEnabled);
 	if (!sceneItem)
