@@ -221,7 +221,7 @@ std::vector<std::string> Utils::Obs::ListHelper::GetHotkeyNameList()
 
 	std::vector<std::string> ret;
 	for (auto hotkey : hotkeys) {
-		ret.push_back(obs_hotkey_get_name(hotkey));
+		ret.emplace_back(obs_hotkey_get_name(hotkey));
 	}
 
 	return ret;
