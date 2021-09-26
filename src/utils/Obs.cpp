@@ -109,13 +109,12 @@ std::string Utils::Obs::StringHelper::GetMediaInputStateString(obs_source_t *inp
 
 std::string Utils::Obs::StringHelper::GetLastReplayBufferFilePath()
 {
-	obs_output_t *output = obs_frontend_get_replay_buffer_output();
+	OBSOutputAutoRelease output = obs_frontend_get_replay_buffer_output();
 	calldata_t cd = {0};
 	proc_handler_t *ph = obs_output_get_proc_handler(output);
 	proc_handler_call(ph, "get_last_replay", &cd);
 	auto ret = calldata_string(&cd, "path");
 	calldata_free(&cd);
-	obs_output_release(output);
 	return ret;
 }
 
@@ -441,7 +440,7 @@ obs_sceneitem_t *Utils::Obs::SearchHelper::GetSceneItemByName(obs_scene_t *scene
 		return nullptr;
 
 	// Finds first matching scene item in scene, search starts at index 0
-	obs_sceneitem_t *ret = obs_scene_find_source(scene, name.c_str());
+	OBSSceneItem ret = obs_scene_find_source(scene, name.c_str());
 	obs_sceneitem_addref(ret);
 
 	return ret;
@@ -450,7 +449,7 @@ obs_sceneitem_t *Utils::Obs::SearchHelper::GetSceneItemByName(obs_scene_t *scene
 struct CreateSceneItemData {
 	obs_source_t *source;
 	bool sceneItemEnabled;
-	obs_sceneitem_t *sceneItem;
+	OBSSceneItem sceneItem;
 };
 
 void CreateSceneItemHelper(void *_data, obs_scene_t *scene)
@@ -476,6 +475,8 @@ obs_sceneitem_t *Utils::Obs::ActionHelper::CreateSceneItem(obs_source_t *source,
 	obs_scene_atomic_update(scene, CreateSceneItemHelper, &data);
 	obs_leave_graphics();
 
+	obs_sceneitem_addref(data.sceneItem);
+
 	return data.sceneItem;
 }
 
@@ -494,7 +495,7 @@ obs_sceneitem_t *Utils::Obs::ActionHelper::CreateInput(std::string inputName, st
 		obs_source_set_monitoring_type(input, OBS_MONITORING_TYPE_MONITOR_ONLY);
 
 	// Create a scene item for the input
-	auto ret = CreateSceneItem(input, scene, sceneItemEnabled);
+	obs_sceneitem_t *ret = CreateSceneItem(input, scene, sceneItemEnabled);
 
 	// If creation failed, remove the input
 	if (!ret)

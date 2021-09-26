@@ -73,7 +73,7 @@ RequestResult RequestHandler::CreateInput(const Request& request)
 	}
 
 	// Create the input and add it as a scene item to the destination scene
-	obs_sceneitem_t *sceneItem = Utils::Obs::ActionHelper::CreateInput(inputName, inputKind, inputSettings, scene, sceneItemEnabled);
+	OBSSceneItemAutoRelease sceneItem = Utils::Obs::ActionHelper::CreateInput(inputName, inputKind, inputSettings, scene, sceneItemEnabled);
 
 	if (!sceneItem)
 		return RequestResult::Error(RequestStatus::ResourceCreationFailed, "Creation of the input or scene item failed.");

@@ -32,7 +32,7 @@ RequestResult RequestHandler::GetSceneItemId(const Request& request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease sceneSource = request.ValidateScene("sceneName", statusCode, comment);
+	OBSSourceAutoRelease sceneSource = request.ValidateScene("sceneName", statusCode, comment, OBS_WEBSOCKET_SCENE_FILTER_SCENE_OR_GROUP);
 	if (!(sceneSource && request.ValidateString("sourceName", statusCode, comment)))
 		return RequestResult::Error(statusCode, comment);
 
@@ -40,7 +40,7 @@ RequestResult RequestHandler::GetSceneItemId(const Request& request)
 
 	std::string sourceName = request.RequestData["sourceName"];
 
-	obs_sceneitem_t *item = Utils::Obs::SearchHelper::GetSceneItemByName(scene, sourceName);
+	OBSSceneItemAutoRelease item = Utils::Obs::SearchHelper::GetSceneItemByName(scene, sourceName);
 	if (!item)
 		return RequestResult::Error(RequestStatus::ResourceNotFound, "No scene items were found in the specified scene by that name.");
 
@@ -71,7 +71,7 @@ RequestResult RequestHandler::CreateSceneItem(const Request& request)
 	if (request.RequestData.contains("sceneItemEnabled") && request.RequestData["sceneItemEnabled"].is_boolean())
 		sceneItemEnabled = request.RequestData["sceneItemEnabled"];
 
-	obs_sceneitem_t *sceneItem = Utils::Obs::ActionHelper::CreateSceneItem(source, scene, sceneItemEnabled);
+	OBSSceneItemAutoRelease sceneItem = Utils::Obs::ActionHelper::CreateSceneItem(source, scene, sceneItemEnabled);
 	if (!sceneItem)
 		return RequestResult::Error(RequestStatus::ResourceCreationFailed, "Failed to create the scene item.");
 
