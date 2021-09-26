@@ -84,10 +84,11 @@ void Config::Load()
 	}
 
 	// Process `--websocket_debug` override
-	if (Utils::Platform::GetCommandLineFlagSet(CMDLINE_WEBSOCKET_DEBUG))
+	if (Utils::Platform::GetCommandLineFlagSet(CMDLINE_WEBSOCKET_DEBUG)) {
 		// Debug does not persist on reload, so we let people override it with a flag.
 		blog(LOG_INFO, "[Config::Load] --websocket_debug passed. Enabling debug logging.");
 		DebugEnabled = true;
+	}
 }
 
 void Config::Save()
