@@ -94,14 +94,9 @@ RequestResult RequestHandler::GetSourceActive(const Request& request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	if (!request.ValidateString("sourceName", statusCode, comment))
-		return RequestResult::Error(statusCode, comment);
-
-	std::string sourceName = request.RequestData["sourceName"];
-
-	OBSSourceAutoRelease source = obs_get_source_by_name(sourceName.c_str());
+	OBSSourceAutoRelease source = request.ValidateSource("sourceName", statusCode, comment);
 	if (!source)
-		return RequestResult::Error(RequestStatus::ResourceNotFound);
+		return RequestResult::Error(statusCode, comment);
 
 	if (obs_source_get_type(source) != OBS_SOURCE_TYPE_INPUT && obs_source_get_type(source) != OBS_SOURCE_TYPE_SCENE)
 		return RequestResult::Error(RequestStatus::InvalidResourceType, "The specified source is not an input or a scene.");
