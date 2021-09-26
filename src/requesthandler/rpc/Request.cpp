@@ -1,4 +1,5 @@
 #include "Request.h"
+#include "../../obs-websocket.h"
 #include "../../plugin-macros.generated.h"
 
 json GetDefaultJsonObject(json requestData)
@@ -243,15 +244,23 @@ obs_source_t *Request::ValidateInput(const std::string keyName, RequestStatus::R
 
 obs_sceneitem_t *Request::ValidateSceneItem(const std::string sceneKeyName, const std::string sceneItemIdKeyName, RequestStatus::RequestStatus &statusCode, std::string &comment, const ObsWebSocketSceneFilter filter) const
 {
-	OBSSource sceneSource = ValidateScene(sceneKeyName, statusCode, comment, filter);
-	obs_source_release(sceneSource);
+	OBSSourceAutoRelease sceneSource = ValidateScene(sceneKeyName, statusCode, comment, filter);
 	if (!sceneSource)
 		return nullptr;
 
 	if (!ValidateNumber(sceneItemIdKeyName, statusCode, comment, 0))
 		return nullptr;
 
+	
 	OBSScene scene = obs_scene_from_source(sceneSource);
+	if (!scene) {
+		scene = obs_group_from_source(sceneSource);
+		if (!scene) { // This should never happen
+			statusCode = RequestStatus::GenericError;
+			comment = "Somehow the scene was found but the scene object could not be fetched. Please report this to the obs-websocket developers.";
+			return nullptr;
+		}
+	}
 
 	int64_t sceneItemId = RequestData[sceneItemIdKeyName];
 
