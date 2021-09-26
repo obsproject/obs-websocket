@@ -32,11 +32,16 @@ RequestResult RequestHandler::GetSceneItemId(const Request& request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease sceneSource = request.ValidateScene("sceneName", statusCode, comment);
+	OBSSourceAutoRelease sceneSource = request.ValidateScene("sceneName", statusCode, comment, OBS_WEBSOCKET_SCENE_FILTER_SCENE_OR_GROUP);
 	if (!(sceneSource && request.ValidateString("sourceName", statusCode, comment)))
 		return RequestResult::Error(statusCode, comment);
 
 	OBSScene scene = obs_scene_from_source(sceneSource);
+	if (!scene) {
+		scene = obs_group_from_source(sceneSource);
+		if (!scene) // This should never happen
+			return RequestResult::Error(RequestStatus::GenericError, "Somehow the scene was found but the scene object could not be fetched. Please report this to the obs-websocket developers.");
+	}
 
 	std::string sourceName = request.RequestData["sourceName"];
 
