@@ -35,7 +35,7 @@ RequestResult RequestHandler::SetPersistentData(const Request& request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	if (!(request.ValidateString("realm", statusCode, comment) && request.ValidateString("slotName", statusCode, comment) && request.ValidateBasic("slotName", statusCode, comment)))
+	if (!(request.ValidateString("realm", statusCode, comment) && request.ValidateString("slotName", statusCode, comment) && request.ValidateBasic("slotValue", statusCode, comment)))
 		return RequestResult::Error(statusCode, comment);
 
 	std::string realm = request.RequestData["realm"];
