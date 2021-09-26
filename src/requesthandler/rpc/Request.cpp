@@ -11,10 +11,11 @@ json GetDefaultJsonObject(json requestData)
 		return requestData;
 }
 
-Request::Request(std::string requestType, json requestData) :
+Request::Request(std::string requestType, json requestData, ObsWebSocketRequestBatchExecutionType requestBatchExecutionType) :
 	HasRequestData(requestData.is_object()),
 	RequestType(requestType),
-	RequestData(GetDefaultJsonObject(requestData))
+	RequestData(GetDefaultJsonObject(requestData)),
+	RequestBatchExecutionType(requestBatchExecutionType)
 {
 }
 

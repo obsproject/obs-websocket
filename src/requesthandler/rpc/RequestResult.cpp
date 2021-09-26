@@ -3,7 +3,8 @@
 RequestResult::RequestResult(RequestStatus::RequestStatus statusCode, json responseData, std::string comment) :
 	StatusCode(statusCode),
 	ResponseData(responseData),
-	Comment(comment)
+	Comment(comment),
+	SleepFrames(0)
 {
 }
 

@@ -339,7 +339,7 @@ void WebSocketServer::onClose(websocketpp::connection_hdl hdl)
 
 void WebSocketServer::onMessage(websocketpp::connection_hdl hdl, websocketpp::server<websocketpp::config::asio>::message_ptr message)
 {
-	auto opcode = message->get_opcode();
+	auto opCode = message->get_opcode();
 	std::string payload = message->get_payload();
 	_threadPool.start(Utils::Compat::CreateFunctionRunnable([=]() {
 		std::unique_lock<std::mutex> lock(_sessionMutex);
@@ -359,7 +359,7 @@ void WebSocketServer::onMessage(websocketpp::connection_hdl hdl, websocketpp::se
 		websocketpp::lib::error_code errorCode;
 		uint8_t sessionEncoding = session->Encoding();
 		if (sessionEncoding == WebSocketEncoding::Json) {
-			if (opcode != websocketpp::frame::opcode::text) {
+			if (opCode != websocketpp::frame::opcode::text) {
 				if (!session->IgnoreInvalidMessages())
 					_server.close(hdl, WebSocketCloseCode::MessageDecodeError, "Your session encoding is set to Json, but a binary message was received.", errorCode);
 				return;
@@ -373,7 +373,7 @@ void WebSocketServer::onMessage(websocketpp::connection_hdl hdl, websocketpp::se
 				return;
 			}
 		} else if (sessionEncoding == WebSocketEncoding::MsgPack) {
-			if (opcode != websocketpp::frame::opcode::binary) {
+			if (opCode != websocketpp::frame::opcode::binary) {
 				if (!session->IgnoreInvalidMessages())
 					_server.close(hdl, WebSocketCloseCode::MessageDecodeError, "Your session encoding is set to MsgPack, but a text message was received.", errorCode);
 				return;

@@ -214,34 +214,41 @@ void WebSocketServer::ProcessMessage(SessionPtr session, WebSocketServer::Proces
 				return;
 			}
 
-			std::vector<json> requests = payloadData["requests"];
-			json results = json::array();
-
-			RequestHandler requestHandler(session);
-			for (auto requestJson : requests) {
-				Request request(requestJson["requestType"], requestJson["requestData"]);
-
-				RequestResult requestResult = requestHandler.ProcessRequest(request);
-
-				json result;
-				result["requestType"] = requestJson["requestType"];
-
-				if (requestJson.contains("requestId"))
-					result["requestId"] = requestJson["requestId"];
-
-				result["requestStatus"] = {
-					{"result", requestResult.StatusCode == RequestStatus::Success},
-					{"code", requestResult.StatusCode}
-				};
-
-				if (!requestResult.Comment.empty())
-					result["requestStatus"]["comment"] = requestResult.Comment;
-
-				if (requestResult.ResponseData.is_object())
-					result["responseData"] = requestResult.ResponseData;
-
-				results.push_back(result);
+			ObsWebSocketRequestBatchExecutionType executionType = OBS_WEBSOCKET_REQUEST_BATCH_EXECUTION_TYPE_SERIAL_REALTIME;
+			if (payloadData.contains("executionType") && !payloadData["executionType"].is_null()) {
+				if (!payloadData["executionType"].is_string()) {
+					if (!session->IgnoreInvalidMessages()) {
+						ret.closeCode = WebSocketCloseCode::InvalidDataKeyType;
+						ret.closeReason = "Your `executionType` is not a string.";
+					}
+					return;
+				}
+				std::string executionTypeString = payloadData["executionType"];
+				if (executionTypeString == "OBS_WEBSOCKET_REQUEST_BATCH_EXECUTION_TYPE_SERIAL_REALTIME") {
+					executionType = OBS_WEBSOCKET_REQUEST_BATCH_EXECUTION_TYPE_SERIAL_REALTIME;
+				} else if (executionTypeString == "OBS_WEBSOCKET_REQUEST_BATCH_EXECUTION_TYPE_SERIAL_FRAME") {
+					executionType = OBS_WEBSOCKET_REQUEST_BATCH_EXECUTION_TYPE_SERIAL_FRAME;
+				} else if (executionTypeString == "OBS_WEBSOCKET_REQUEST_BATCH_EXECUTION_TYPE_PARALLEL") {
+					if (_threadPool.maxThreadCount() < 2) {
+						if (!session->IgnoreInvalidMessages()) {
+							ret.closeCode = WebSocketCloseCode::UnsupportedFeature;
+							ret.closeReason = "Parallel request batch processing is not available on this system due to limited core count.";
+						}
+						return;
+					}
+					executionType = OBS_WEBSOCKET_REQUEST_BATCH_EXECUTION_TYPE_PARALLEL;
+				} else {
+					if (!session->IgnoreInvalidMessages()) {
+						ret.closeCode = WebSocketCloseCode::InvalidDataKeyValue;
+						ret.closeReason = "Your `executionType`'s value is not recognized.";
+					}
+					return;
+				}
 			}
+
+			std::vector<json> requests = payloadData["requests"];
+			std::vector<json> results;
+			ProcessRequestBatch(session, executionType, requests, results);
 
 			ret.result["op"] = WebSocketOpCode::RequestBatchResponse;
 			ret.result["d"]["requestId"] = payloadData["requestId"];

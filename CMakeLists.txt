@@ -87,6 +87,7 @@ set(obs-websocket_SOURCES
 	src/Config.cpp
 	src/WebSocketServer.cpp
 	src/WebSocketServer_Protocol.cpp
+	src/WebSocketServer_RequestBatchProcessing.cpp
 	src/WebSocketSession.cpp
 	src/eventhandler/EventHandler.cpp
 	src/eventhandler/EventHandler_General.cpp

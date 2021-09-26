@@ -9,6 +9,7 @@
 
 #include "utils/Json.h"
 #include "WebSocketSession.h"
+#include "requesthandler/rpc/Request.h"
 #include "plugin-macros.generated.h"
 
 class WebSocketServer : QObject
@@ -53,6 +54,10 @@ class WebSocketServer : QObject
 			UnsupportedRpcVersion = 4009,
 			// The websocket session has been invalidated by the obs-websocket server.
 			SessionInvalidated = 4010,
+			// A data key's value is invalid, in the case of things like enums.
+			InvalidDataKeyValue = 4011,
+			// A feature is not supported because of hardware/software limitations.
+			UnsupportedFeature = 4012,
 		};
 
 		WebSocketServer();
@@ -97,6 +102,8 @@ class WebSocketServer : QObject
 
 		void SetSessionParameters(SessionPtr session, WebSocketServer::ProcessResult &ret, json payloadData);
 		void ProcessMessage(SessionPtr session, ProcessResult &ret, const uint8_t opCode, json incomingMessage);
+
+		void ProcessRequestBatch(SessionPtr session, ObsWebSocketRequestBatchExecutionType executionType, std::vector<json> &requests, std::vector<json> &results);
 
 		std::thread _serverThread;
 		websocketpp::server<websocketpp::config::asio> _server;

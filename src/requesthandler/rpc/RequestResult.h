@@ -11,4 +11,5 @@ struct RequestResult
 	RequestStatus::RequestStatus StatusCode;
 	json ResponseData;
 	std::string Comment;
+	size_t SleepFrames;
 };
