@@ -63,6 +63,7 @@ namespace Utils {
 
 		namespace SearchHelper {
 			obs_hotkey_t *GetHotkeyByName(std::string name);
+			obs_sceneitem_t *GetSceneItemByName(obs_scene_t *scene, std::string name); // Increments ref. Use OBSSceneItemAutoRelease
 		}
 
 		namespace ActionHelper {

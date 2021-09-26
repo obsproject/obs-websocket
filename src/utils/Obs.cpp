@@ -421,6 +421,9 @@ json Utils::Obs::DataHelper::GetSceneItemTransform(obs_sceneitem_t *item)
 
 obs_hotkey_t *Utils::Obs::SearchHelper::GetHotkeyByName(std::string name)
 {
+	if (name.empty())
+		return nullptr;
+
 	auto hotkeys = ListHelper::GetHotkeyList();
 
 	for (auto hotkey : hotkeys) {
@@ -429,6 +432,19 @@ obs_hotkey_t *Utils::Obs::SearchHelper::GetHotkeyByName(std::string name)
 	}
 
 	return nullptr;
+}
+
+// Increments item ref. Use OBSSceneItemAutoRelease
+obs_sceneitem_t *Utils::Obs::SearchHelper::GetSceneItemByName(obs_scene_t *scene, std::string name)
+{
+	if (name.empty())
+		return nullptr;
+
+	// Finds first matching scene item in scene, search starts at index 0
+	obs_sceneitem_t *ret = obs_scene_find_source(scene, name.c_str());
+	obs_sceneitem_addref(ret);
+
+	return ret;
 }
 
 struct CreateSceneItemData {
