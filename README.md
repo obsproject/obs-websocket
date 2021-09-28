@@ -50,6 +50,7 @@ The protocol understood by the server is documented in [PROTOCOL.md](docs/genera
 
 Here's a list of available language APIs for obs-websocket :
 - Python 3.7+ (Asyncio): [simpleobsws](https://github.com/IRLToolkit/simpleobsws/tree/master) by IRLToolkit
+- Rust: [obws](https://github.com/dnaka91/obws/tree/v5-api) by dnaka91
 
 We'd like to know what you're building with or for obs-websocket. If you do something in this fashion, feel free to drop a message in `#project-showoff` in the [discord server!](https://discord.gg/WBaSQ3A)
 
