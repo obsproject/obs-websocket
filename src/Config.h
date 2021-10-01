@@ -19,8 +19,8 @@ class Config {
 		bool FirstLoad;
 		bool ServerEnabled;
 		uint16_t ServerPort;
-		bool DebugEnabled;
-		bool AlertsEnabled;
+		std::atomic<bool> DebugEnabled;
+		std::atomic<bool> AlertsEnabled;
 		bool AuthRequired;
 		QString ServerPassword;
 

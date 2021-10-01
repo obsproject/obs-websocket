@@ -102,3 +102,8 @@ os_cpu_usage_info_t* GetCpuUsageInfo()
 {
 	return _cpuUsageInfo;
 }
+
+bool IsDebugMode()
+{
+	return !_config || _config->DebugEnabled;
+}

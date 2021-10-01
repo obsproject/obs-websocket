@@ -53,3 +53,5 @@ WebSocketServerPtr GetWebSocketServer();
 EventHandlerPtr GetEventHandler();
 
 os_cpu_usage_info_t* GetCpuUsageInfo();
+
+bool IsDebugMode();
