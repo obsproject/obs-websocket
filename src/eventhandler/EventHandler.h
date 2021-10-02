@@ -24,12 +24,15 @@ class EventHandler
 
 		typedef std::function<void(uint64_t, std::string, json, uint8_t)> BroadcastCallback;
 		void SetBroadcastCallback(BroadcastCallback cb);
+		typedef std::function<void()> ObsLoadedCallback;
+		void SetObsLoadedCallback(ObsLoadedCallback cb);
 
 		void ProcessSubscription(uint64_t eventSubscriptions);
 		void ProcessUnsubscription(uint64_t eventSubscriptions);
 
 	private:
 		BroadcastCallback _broadcastCallback;
+		ObsLoadedCallback _obsLoadedCallback;
 
 		std::atomic<bool> _obsLoaded;
 

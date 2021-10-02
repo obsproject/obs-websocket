@@ -5,18 +5,33 @@
 #include "obs-websocket.h"
 #include "utils/Compat.h"
 
+struct SerialFrameRequest
+{
+	Request request;
+	const json inputVariables;
+	const json outputVariables;
+
+	SerialFrameRequest(const std::string &requestType, const json &requestData, const json &inputVariables, const json &outputVariables) :
+		request(requestType, requestData, OBS_WEBSOCKET_REQUEST_BATCH_EXECUTION_TYPE_SERIAL_FRAME),
+		inputVariables(inputVariables),
+		outputVariables(outputVariables)
+	{}
+};
+
 struct SerialFrameBatch
 {
-	RequestHandler *requestHandler;
+	RequestHandler &requestHandler;
+	json &variables;
 	size_t frameCount;
 	size_t sleepUntilFrame;
-	std::queue<Request> requests;
+	std::queue<SerialFrameRequest> requests;
 	std::vector<RequestResult> results;
 	std::mutex conditionMutex;
 	std::condition_variable condition;
 
-	SerialFrameBatch(RequestHandler *requestHandler) :
+	SerialFrameBatch(RequestHandler &requestHandler, json &variables) :
 		requestHandler(requestHandler),
+		variables(variables),
 		frameCount(0),
 		sleepUntilFrame(0)
 	{}
@@ -24,19 +39,73 @@ struct SerialFrameBatch
 
 struct ParallelBatchResults
 {
-	RequestHandler *requestHandler;
+	RequestHandler &requestHandler;
 	size_t requestCount;
 	std::mutex resultsMutex;
 	std::vector<json> results;
 	std::condition_variable condition;
 
-	ParallelBatchResults(RequestHandler *requestHandler, size_t requestCount) :
+	ParallelBatchResults(RequestHandler &requestHandler, size_t requestCount) :
 		requestHandler(requestHandler),
 		requestCount(requestCount)
 	{}
 };
 
-json ConstructRequestResult(RequestResult requestResult, json requestJson)
+
+
+bool PreProcessVariables(const json &variables, const json &inputVariables, json &requestData)
+{
+	if (variables.empty() || inputVariables.empty() || !inputVariables.is_object() || !requestData.is_object())
+		return !requestData.empty();
+
+	for (auto it = inputVariables.begin(); it != inputVariables.end(); ++it) {
+		std::string key = it.key();
+
+		if (!variables.contains(key)) {
+			if (IsDebugMode())
+				blog(LOG_WARNING, "[WebSocketServer::ProcessRequestBatch] inputVariables requested variable `%s`, but it does not exist. Skipping!", key.c_str());
+			continue;
+		}
+
+		if (!it.value().is_string()) {
+			if (IsDebugMode())
+				blog(LOG_WARNING, "[WebSocketServer::ProcessRequestBatch] Value of item `%s` in inputVariables is not a string. Skipping!", key.c_str());
+			continue;
+		}
+
+		std::string value = it.value();
+		requestData[value] = variables[key];
+	}
+
+	return !requestData.empty();
+}
+
+void PostProcessVariables(json &variables, const json &outputVariables, const json &responseData)
+{
+	if (outputVariables.empty() || !outputVariables.is_object() || responseData.empty())
+		return;
+
+	for (auto it = outputVariables.begin(); it != outputVariables.end(); ++it) {
+		std::string key = it.key();
+
+		if (!responseData.contains(key)) {
+			if (IsDebugMode())
+				blog(LOG_WARNING, "[WebSocketServer::ProcessRequestBatch] outputVariables requested responseData item `%s`, but it does not exist. Skipping!", key.c_str());
+			continue;
+		}
+
+		if (!it.value().is_string()) {
+			if (IsDebugMode())
+				blog(LOG_WARNING, "[WebSocketServer::ProcessRequestBatch] Value of item `%s` in outputVariables is not a string. Skipping!", key.c_str());
+			continue;
+		}
+
+		std::string value = it.value();
+		variables[key] = responseData[value];
+	}
+}
+
+json ConstructRequestResult(RequestResult requestResult, const json &requestJson)
 {
 	json ret;
 
@@ -82,9 +151,13 @@ void ObsTickCallback(void *param, float)
 	// Begin recursing any unprocessed requests
 	while (!serialFrameBatch->requests.empty()) {
 		// Fetch first in queue
-		Request request = serialFrameBatch->requests.front();
+		SerialFrameRequest frameRequest = serialFrameBatch->requests.front();
+		// Pre-process batch variables
+		frameRequest.request.HasRequestData = PreProcessVariables(serialFrameBatch->variables, frameRequest.inputVariables, frameRequest.request.RequestData);
 		// Process request and get result
-		RequestResult requestResult = serialFrameBatch->requestHandler->ProcessRequest(request);
+		RequestResult requestResult = serialFrameBatch->requestHandler.ProcessRequest(frameRequest.request);
+		// Post-process batch variables
+		PostProcessVariables(serialFrameBatch->variables, frameRequest.outputVariables, requestResult.ResponseData);
 		// Add to results vector
 		serialFrameBatch->results.push_back(requestResult);
 		// Remove from front of queue
@@ -105,27 +178,31 @@ void ObsTickCallback(void *param, float)
 	profile_end("obs-websocket-request-batch-frame-tick");
 }
 
-void WebSocketServer::ProcessRequestBatch(SessionPtr session, ObsWebSocketRequestBatchExecutionType executionType, std::vector<json> &requests, std::vector<json> &results)
+void WebSocketServer::ProcessRequestBatch(SessionPtr session, ObsWebSocketRequestBatchExecutionType executionType, std::vector<json> &requests, std::vector<json> &results, json &variables)
 {
 	RequestHandler requestHandler(session);
 	if (executionType == OBS_WEBSOCKET_REQUEST_BATCH_EXECUTION_TYPE_SERIAL_REALTIME) {
 		// Recurse all requests in batch serially, processing the request then moving to the next one
 		for (auto requestJson : requests) {
-			Request request(requestJson["requestType"], requestJson["requestData"], executionType);
+			Request request(requestJson["requestType"], requestJson["requestData"], OBS_WEBSOCKET_REQUEST_BATCH_EXECUTION_TYPE_SERIAL_REALTIME);
+
+			request.HasRequestData = PreProcessVariables(variables, requestJson["inputVariables"], request.RequestData);
 
 			RequestResult requestResult = requestHandler.ProcessRequest(request);
+
+			PostProcessVariables(variables, requestJson["outputVariables"], requestResult.ResponseData);
 
 			json result = ConstructRequestResult(requestResult, requestJson);
 
 			results.push_back(result);
 		}
 	} else if (executionType == OBS_WEBSOCKET_REQUEST_BATCH_EXECUTION_TYPE_SERIAL_FRAME) {
-		SerialFrameBatch serialFrameBatch(&requestHandler);
+		SerialFrameBatch serialFrameBatch(requestHandler, variables);
 
 		// Create Request objects in the worker thread (avoid unnecessary processing in graphics thread)
 		for (auto requestJson : requests) {
-			Request request(requestJson["requestType"], requestJson["requestData"], executionType);
-			serialFrameBatch.requests.push(request);
+			SerialFrameRequest frameRequest(requestJson["requestType"], requestJson["requestData"], requestJson["inputVariables"], requestJson["outputVariables"]);
+			serialFrameBatch.requests.push(frameRequest);
 		}
 
 		// Create a callback entry for the graphics thread to execute on each video frame
@@ -145,14 +222,14 @@ void WebSocketServer::ProcessRequestBatch(SessionPtr session, ObsWebSocketReques
 			i++;
 		}
 	} else if (executionType == OBS_WEBSOCKET_REQUEST_BATCH_EXECUTION_TYPE_PARALLEL) {
-		ParallelBatchResults parallelResults(&requestHandler, requests.size());
+		ParallelBatchResults parallelResults(requestHandler, requests.size());
 
 		// Submit each request as a task to the thread pool to be processed ASAP
 		for (auto requestJson : requests) {
 			_threadPool.start(Utils::Compat::CreateFunctionRunnable([&parallelResults, &executionType, requestJson]() {
-				Request request(requestJson["requestType"], requestJson["requestData"], executionType);
+				Request request(requestJson["requestType"], requestJson["requestData"], OBS_WEBSOCKET_REQUEST_BATCH_EXECUTION_TYPE_PARALLEL);
 
-				RequestResult requestResult = parallelResults.requestHandler->ProcessRequest(request);
+				RequestResult requestResult = parallelResults.requestHandler.ProcessRequest(request);
 
 				json result = ConstructRequestResult(requestResult, requestJson);
 

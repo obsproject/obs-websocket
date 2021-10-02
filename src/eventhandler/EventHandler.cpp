@@ -48,6 +48,11 @@ void EventHandler::SetBroadcastCallback(EventHandler::BroadcastCallback cb)
 	_broadcastCallback = cb;
 }
 
+void EventHandler::SetObsLoadedCallback(EventHandler::ObsLoadedCallback cb)
+{
+	_obsLoadedCallback = cb;
+}
+
 // Function to increment refcounts for high volume event subscriptions
 void EventHandler::ProcessSubscription(uint64_t eventSubscriptions)
 {
@@ -189,6 +194,9 @@ void EventHandler::OnFrontendEvent(enum obs_frontend_event event, void *private_
 			}, private_data);
 
 			blog(LOG_INFO, "[EventHandler::OnFrontendEvent] Finished.");
+
+			if (eventHandler->_obsLoadedCallback)
+				eventHandler->_obsLoadedCallback();
 		} else {
 			return;
 		}

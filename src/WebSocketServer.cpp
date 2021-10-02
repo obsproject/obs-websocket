@@ -51,6 +51,12 @@ WebSocketServer::WebSocketServer() :
 			&WebSocketServer::BroadcastEvent, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4
 		)
 	);
+
+	eventHandler->SetObsLoadedCallback(
+		std::bind(
+			&WebSocketServer::onObsLoaded, this
+		)
+	);
 }
 
 WebSocketServer::~WebSocketServer()
@@ -198,7 +204,20 @@ std::vector<WebSocketServer::WebSocketSessionState> WebSocketServer::GetWebSocke
 	return webSocketSessions;
 }
 
-// It isn't consistent to directly call the WebSocketServer from the events system, but it would also be dumb to make it unnecessarily complicated.
+void WebSocketServer::onObsLoaded()
+{
+	auto conf = GetConfig();
+	if (!conf) {
+		blog(LOG_ERROR, "[WebSocketServer::onObsLoaded] Unable to retreive config!");
+		return;
+	}
+
+	if (conf->ServerEnabled) {
+		if (conf->DebugEnabled)
+			blog(LOG_INFO, "[WebSocketServer::onObsLoaded] Server is enabled in configuration. Starting server...");
+		Start();
+	}
+}
 
 bool WebSocketServer::onValidate(websocketpp::connection_hdl hdl)
 {

@@ -28,7 +28,7 @@ bool IsSupportedRpcVersion(uint8_t requestedVersion)
 	return (requestedVersion == 1);
 }
 
-void WebSocketServer::SetSessionParameters(SessionPtr session, ProcessResult &ret, json payloadData)
+void WebSocketServer::SetSessionParameters(SessionPtr session, ProcessResult &ret, const json &payloadData)
 {
 	if (payloadData.contains("ignoreInvalidMessages")) {
 		if (!payloadData["ignoreInvalidMessages"].is_boolean()) {
@@ -49,7 +49,7 @@ void WebSocketServer::SetSessionParameters(SessionPtr session, ProcessResult &re
 	}
 }
 
-void WebSocketServer::ProcessMessage(SessionPtr session, WebSocketServer::ProcessResult &ret, uint8_t opCode, json payloadData)
+void WebSocketServer::ProcessMessage(SessionPtr session, WebSocketServer::ProcessResult &ret, uint8_t opCode, json &payloadData)
 {
 	if (!payloadData.is_object()) {
 		if (payloadData.is_null()) {
@@ -236,6 +236,7 @@ void WebSocketServer::ProcessMessage(SessionPtr session, WebSocketServer::Proces
 						}
 						return;
 					}
+
 					executionType = OBS_WEBSOCKET_REQUEST_BATCH_EXECUTION_TYPE_PARALLEL;
 				} else {
 					if (!session->IgnoreInvalidMessages()) {
@@ -246,9 +247,28 @@ void WebSocketServer::ProcessMessage(SessionPtr session, WebSocketServer::Proces
 				}
 			}
 
+			if (payloadData.contains("variables") && !payloadData.is_null()) {
+				if (!payloadData.is_object()) {
+					if (!session->IgnoreInvalidMessages()) {
+						ret.closeCode = WebSocketCloseCode::InvalidDataKeyType;
+						ret.closeReason = "Your `variables` is not an object.";
+					}
+					return;
+				}
+
+				if (executionType == OBS_WEBSOCKET_REQUEST_BATCH_EXECUTION_TYPE_PARALLEL) {
+					if (!session->IgnoreInvalidMessages()) {
+						ret.closeCode = WebSocketCloseCode::UnsupportedFeature;
+						ret.closeReason = "Variables are not supported in PARALLEL mode.";
+					}
+					return;
+				}
+			}
+
 			std::vector<json> requests = payloadData["requests"];
+			json variables = payloadData["variables"];
 			std::vector<json> results;
-			ProcessRequestBatch(session, executionType, requests, results);
+			ProcessRequestBatch(session, executionType, requests, results, variables);
 
 			ret.result["op"] = WebSocketOpCode::RequestBatchResponse;
 			ret.result["d"]["requestId"] = payloadData["requestId"];
@@ -263,6 +283,7 @@ void WebSocketServer::ProcessMessage(SessionPtr session, WebSocketServer::Proces
 	}
 }
 
+// It isn't consistent to directly call the WebSocketServer from the events system, but it would also be dumb to make it unnecessarily complicated.
 void WebSocketServer::BroadcastEvent(uint64_t requiredIntent, std::string eventType, json eventData, uint8_t rpcVersion)
 {
 	if (!_server.is_listening())

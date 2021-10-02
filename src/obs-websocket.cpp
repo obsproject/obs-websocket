@@ -54,9 +54,6 @@ bool obs_module_load(void)
 
 	_cpuUsageInfo = os_cpu_usage_info_start();
 
-	if (_config->ServerEnabled)
-		_webSocketServer->Start();
-
 	// Loading finished
 	blog(LOG_INFO, "[obs_module_load] Module loaded.");
 

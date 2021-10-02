@@ -95,15 +95,16 @@ class WebSocketServer : QObject
 
 		void ServerRunner();
 
+		void onObsLoaded();
 		bool onValidate(websocketpp::connection_hdl hdl);
 		void onOpen(websocketpp::connection_hdl hdl);
 		void onClose(websocketpp::connection_hdl hdl);
 		void onMessage(websocketpp::connection_hdl hdl, websocketpp::server<websocketpp::config::asio>::message_ptr message);
 
-		void SetSessionParameters(SessionPtr session, WebSocketServer::ProcessResult &ret, json payloadData);
-		void ProcessMessage(SessionPtr session, ProcessResult &ret, const uint8_t opCode, json incomingMessage);
+		void SetSessionParameters(SessionPtr session, WebSocketServer::ProcessResult &ret, const json &payloadData);
+		void ProcessMessage(SessionPtr session, ProcessResult &ret, const uint8_t opCode, json &payloadData);
 
-		void ProcessRequestBatch(SessionPtr session, ObsWebSocketRequestBatchExecutionType executionType, std::vector<json> &requests, std::vector<json> &results);
+		void ProcessRequestBatch(SessionPtr session, ObsWebSocketRequestBatchExecutionType executionType, std::vector<json> &requests, std::vector<json> &results, json &variables);
 
 		std::thread _serverThread;
 		websocketpp::server<websocketpp::config::asio> _server;
