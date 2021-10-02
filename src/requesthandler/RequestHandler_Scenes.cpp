@@ -5,7 +5,10 @@ RequestResult RequestHandler::GetSceneList(const Request& request)
 	json responseData;
 
 	OBSSourceAutoRelease currentProgramScene = obs_frontend_get_current_scene();
-	responseData["currentProgramSceneName"] = obs_source_get_name(currentProgramScene);
+	if (currentProgramScene)
+		responseData["currentProgramSceneName"] = obs_source_get_name(currentProgramScene);
+	else
+		responseData["currentProgramSceneName"] = nullptr;
 
 	OBSSourceAutoRelease currentPreviewScene = obs_frontend_get_current_preview_scene();
 	if (currentPreviewScene)
