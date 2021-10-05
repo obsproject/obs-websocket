@@ -165,3 +165,32 @@ RequestResult RequestHandler::Sleep(const Request& request)
 		return RequestResult::Error(RequestStatus::UnsupportedRequestBatchExecutionType);
 	}
 }
+
+RequestResult RequestHandler::Compare(const Request& request)
+{
+	RequestStatus::RequestStatus statusCode;
+	std::string comment;
+	if (!(request.ValidateBasic("compareValueOne", statusCode, comment) && request.ValidateBasic("compareValueTwo", statusCode, comment) && request.ValidateNumber("newRequestIndex", statusCode, comment, 0)))
+		return RequestResult::Error(statusCode, comment);
+
+	if (!(request.RequestBatchExecutionType == OBS_WEBSOCKET_REQUEST_BATCH_EXECUTION_TYPE_SERIAL_REALTIME || request.RequestBatchExecutionType == OBS_WEBSOCKET_REQUEST_BATCH_EXECUTION_TYPE_SERIAL_FRAME))
+		return RequestResult::Error(RequestStatus::UnsupportedRequestBatchExecutionType);
+
+	bool invert = false;
+	if (request.Contains("compareInvert")) {
+		if (!request.ValidateOptionalBoolean("compareInvert", statusCode, comment))
+			return RequestResult::Error(statusCode, comment);
+		invert = request.RequestData["compareInvert"];
+	}
+
+	bool result = (request.RequestData["compareValueOne"] == request.RequestData["compareValueTwo"]);
+	if (invert)
+		result = !result;
+
+	json responseData;
+	responseData["compareResult"] = result;
+	RequestResult ret = RequestResult::Success(responseData);
+	if (result)
+		ret.NewRequestIndex = request.RequestData["newRequestIndex"];
+	return ret;
+}
