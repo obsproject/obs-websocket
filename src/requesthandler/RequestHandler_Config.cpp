@@ -67,6 +67,7 @@ RequestResult RequestHandler::GetSceneCollectionList(const Request& request)
 	return RequestResult::Success(responseData);
 }
 
+// Does not return until collection has finished switching
 RequestResult RequestHandler::SetCurrentSceneCollection(const Request& request)
 {
 	RequestStatus::RequestStatus statusCode;
