@@ -12,7 +12,6 @@ const std::map<std::string, RequestMethodHandler> RequestHandler::_handlerMap
 	{"GetStudioModeEnabled", &RequestHandler::GetStudioModeEnabled},
 	{"SetStudioModeEnabled", &RequestHandler::SetStudioModeEnabled},
 	{"Sleep", &RequestHandler::Sleep},
-	{"Compare", &RequestHandler::Compare},
 
 	// Config
 	{"GetPersistentData", &RequestHandler::GetPersistentData},

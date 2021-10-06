@@ -33,7 +33,6 @@ class RequestHandler {
 		RequestResult GetStudioModeEnabled(const Request&);
 		RequestResult SetStudioModeEnabled(const Request&);
 		RequestResult Sleep(const Request&);
-		RequestResult Compare(const Request&);
 
 		// Config
 		RequestResult GetPersistentData(const Request&);

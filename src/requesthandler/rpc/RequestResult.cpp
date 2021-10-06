@@ -4,8 +4,7 @@ RequestResult::RequestResult(RequestStatus::RequestStatus statusCode, json respo
 	StatusCode(statusCode),
 	ResponseData(responseData),
 	Comment(comment),
-	SleepFrames(0),
-	NewRequestIndex(0)
+	SleepFrames(0)
 {
 }
 

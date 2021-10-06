@@ -12,5 +12,4 @@ struct RequestResult
 	json ResponseData;
 	std::string Comment;
 	size_t SleepFrames;
-	size_t NewRequestIndex;
 };
