@@ -69,8 +69,10 @@ class EventHandler
 		void HandleStudioModeStateChanged(bool enabled);
 
 		// Config
+		void HandleCurrentSceneCollectionChanging();
 		void HandleCurrentSceneCollectionChanged();
 		void HandleSceneCollectionListChanged();
+		void HandleCurrentProfileChanging();
 		void HandleCurrentProfileChanged();
 		void HandleProfileListChanged();
 
