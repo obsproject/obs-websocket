@@ -58,6 +58,7 @@ Here's a list of available language APIs for obs-websocket :
 - Dart: [obs_websocket](https://pub.dev/packages/obs_websocket) by faithoflifedev
 - HTTP API: [obs-websocket-http](https://github.com/IRLToolkit/obs-websocket-http) by tt2468
 - CLI: [obs-cli](https://github.com/leafac/obs-cli) by leafac
+- Godot: [obs-websocket-gd](https://github.com/you-win/obs-websocket-gd) by you-win
 
 I'd like to know what you're building with or for obs-websocket. If you do something in this fashion, feel free to drop a message in `#project-showoff` in the [discord server!](https://discord.gg/WBaSQ3A)
 
