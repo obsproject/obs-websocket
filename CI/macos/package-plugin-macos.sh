@@ -27,6 +27,10 @@ install_name_tool \
 		@executable_path/../Frameworks/QtGui.framework/Versions/5/QtGui \
 	-change /tmp/obsdeps/lib/QtCore.framework/Versions/5/QtCore \
 		@executable_path/../Frameworks/QtCore.framework/Versions/5/QtCore \
+	-change /tmp/obsdeps/lib/QtNetwork.framework/Versions/5/QtNetwork \
+		@executable_path/../Frameworks/QtNetwork.framework/Versions/5/QtNetwork \
+	-change /tmp/obsdeps/lib/QtSvg.framework/Versions/5/QtSvg \
+		@executable_path/../Frameworks/QtSvg.framework/Versions/5/QtSvg \
 	./build/obs-websocket.so
 
 # Check if replacement worked
