@@ -93,6 +93,7 @@ class RequestHandler {
 		RequestResult GetSceneItemId(const Request&);
 		RequestResult CreateSceneItem(const Request&);
 		RequestResult RemoveSceneItem(const Request&);
+		RequestResult DuplicateSceneItem(const Request&);
 		RequestResult GetSceneItemTransform(const Request&);
 		RequestResult GetSceneItemEnabled(const Request&);
 		RequestResult SetSceneItemEnabled(const Request&);

@@ -102,6 +102,50 @@ RequestResult RequestHandler::RemoveSceneItem(const Request& request)
 	return RequestResult::Success();
 }
 
+RequestResult RequestHandler::DuplicateSceneItem(const Request& request)
+{
+	RequestStatus::RequestStatus statusCode;
+	std::string comment;
+	OBSSceneItemAutoRelease sceneItem = request.ValidateSceneItem("sceneName", "sceneItemId", statusCode, comment);
+	if (!sceneItem)
+		return RequestResult::Error(statusCode, comment);
+
+	// Get destination scene
+	obs_scene_t *destinationScene;
+	if (request.Contains("destinationSceneName")) {
+		destinationScene = request.ValidateScene2("destinationSceneName", statusCode, comment);
+		if (!destinationScene)
+			return RequestResult::Error(statusCode, comment);
+	} else {
+		destinationScene = obs_sceneitem_get_scene(sceneItem);
+		obs_scene_addref(destinationScene);
+	}
+
+	if (obs_sceneitem_is_group(sceneItem) && obs_sceneitem_get_scene(sceneItem) == destinationScene) {
+		obs_scene_release(destinationScene);
+		return RequestResult::Error(RequestStatus::ResourceCreationFailed, "Scenes may only have one instance of a group.");
+	}
+
+	// Get scene item details
+	OBSSource sceneItemSource = obs_sceneitem_get_source(sceneItem);
+	bool sceneItemEnabled = obs_sceneitem_visible(sceneItem);
+	obs_transform_info sceneItemTransform;
+	obs_sceneitem_crop sceneItemCrop;
+	obs_sceneitem_get_info(sceneItem, &sceneItemTransform);
+	obs_sceneitem_get_crop(sceneItem, &sceneItemCrop);
+
+	// Create the new item
+	OBSSceneItemAutoRelease newSceneItem = Utils::Obs::ActionHelper::CreateSceneItem(sceneItemSource, destinationScene, sceneItemEnabled, &sceneItemTransform, &sceneItemCrop);
+	obs_scene_release(destinationScene);
+	if (!newSceneItem)
+		return RequestResult::Error(RequestStatus::ResourceCreationFailed, "Failed to create the scene item.");
+
+	json responseData;
+	responseData["sceneItemId"] = obs_sceneitem_get_id(newSceneItem);
+
+	return RequestResult::Success(responseData);
+}
+
 RequestResult RequestHandler::GetSceneItemTransform(const Request& request)
 {
 	RequestStatus::RequestStatus statusCode;
