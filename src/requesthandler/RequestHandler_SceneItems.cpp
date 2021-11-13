@@ -160,6 +160,142 @@ RequestResult RequestHandler::GetSceneItemTransform(const Request& request)
 	return RequestResult::Success(responseData);
 }
 
+RequestResult RequestHandler::SetSceneItemTransform(const Request& request)
+{
+	RequestStatus::RequestStatus statusCode;
+	std::string comment;
+	OBSSceneItemAutoRelease sceneItem = request.ValidateSceneItem("sceneName", "sceneItemId", statusCode, comment, OBS_WEBSOCKET_SCENE_FILTER_SCENE_OR_GROUP);
+	if (!(sceneItem && request.ValidateObject("sceneItemTransform", statusCode, comment)))
+		return RequestResult::Error(statusCode, comment);
+
+	// Create a fake request to use checks on the sub object
+	Request r("", request.RequestData["sceneItemTransform"]);
+
+	bool transformChanged = false;
+	bool cropChanged = false;
+	obs_transform_info sceneItemTransform;
+	obs_sceneitem_crop sceneItemCrop;
+	obs_sceneitem_get_info(sceneItem, &sceneItemTransform);
+	obs_sceneitem_get_crop(sceneItem, &sceneItemCrop);
+
+	OBSSource source = obs_sceneitem_get_source(sceneItem);
+	float sourceWidth = float(obs_source_get_width(source));
+	float sourceHeight = float(obs_source_get_height(source));
+
+	if (r.Contains("positionX")) {
+		if (!r.ValidateOptionalNumber("positionX", statusCode, comment, -90001.0, 90001.0))
+			return RequestResult::Error(statusCode, comment);
+		sceneItemTransform.pos.x = r.RequestData["positionX"];
+		transformChanged = true;
+	}
+	if (r.Contains("positionY")) {
+		if (!r.ValidateOptionalNumber("positionY", statusCode, comment, -90001.0, 90001.0))
+			return RequestResult::Error(statusCode, comment);
+		sceneItemTransform.pos.y = r.RequestData["positionY"];
+		transformChanged = true;
+	}
+
+	if (r.Contains("rotation")) {
+		if (!r.ValidateOptionalNumber("rotation", statusCode, comment, -360.0, 360.0))
+			return RequestResult::Error(statusCode, comment);
+		sceneItemTransform.rot = r.RequestData["rotation"];
+		transformChanged = true;
+	}
+
+	if (r.Contains("scaleX")) {
+		if (!r.ValidateOptionalNumber("scaleX", statusCode, comment))
+			return RequestResult::Error(statusCode, comment);
+		float scaleX = r.RequestData["scaleX"];
+		if (!(-90001.0 < (scaleX * sourceWidth) < 90001.0))
+			return RequestResult::Error(RequestStatus::RequestParameterOutOfRange, "The parameter scaleX is too small or large for the current source resolution.");
+		sceneItemTransform.scale.x = scaleX;
+		transformChanged = true;
+	}
+	if (r.Contains("scaleY")) {
+		if (!r.ValidateOptionalNumber("scaleY", statusCode, comment, -90001.0, 90001.0))
+			return RequestResult::Error(statusCode, comment);
+		float scaleY = r.RequestData["scaleY"];
+		if (!(-90001.0 < (scaleY * sourceHeight) < 90001.0))
+			return RequestResult::Error(RequestStatus::RequestParameterOutOfRange, "The parameter scaleY is too small or large for the current source resolution.");
+		sceneItemTransform.scale.y = scaleY;
+		transformChanged = true;
+	}
+
+	if (r.Contains("alignment")) {
+		if (!r.ValidateOptionalNumber("alignment", statusCode, comment, 0, std::numeric_limits<uint32_t>::max()))
+			return RequestResult::Error(statusCode, comment);
+		sceneItemTransform.alignment = r.RequestData["alignment"];
+		transformChanged = true;
+	}
+
+	if (r.Contains("boundsType")) {
+		if (!r.ValidateOptionalString("boundsType", statusCode, comment))
+			return RequestResult::Error(statusCode, comment);
+		std::string boundsTypeString = r.RequestData["boundsType"];
+		enum obs_bounds_type boundsType = Utils::Obs::EnumHelper::GetSceneItemBoundsType(boundsTypeString);
+		if (boundsType == OBS_BOUNDS_NONE && boundsTypeString != "OBS_BOUNDS_NONE")
+			return RequestResult::Error(RequestStatus::InvalidRequestParameter, "The parameter boundsType has an invalid value.");
+		sceneItemTransform.bounds_type = boundsType;
+		transformChanged = true;
+	}
+
+	if (r.Contains("boundsAlignment")) {
+		if (!r.ValidateOptionalNumber("boundsAlignment", statusCode, comment, 0, std::numeric_limits<uint32_t>::max()))
+			return RequestResult::Error(statusCode, comment);
+		sceneItemTransform.bounds_alignment = r.RequestData["boundsAlignment"];
+		transformChanged = true;
+	}
+
+	if (r.Contains("boundsWidth")) {
+		if (!r.ValidateOptionalNumber("boundsWidth", statusCode, comment, 1.0, 90001.0))
+			return RequestResult::Error(statusCode, comment);
+		sceneItemTransform.bounds.x = r.RequestData["boundsWidth"];
+		transformChanged = true;
+	}
+	if (r.Contains("boundsHeight")) {
+		if (!r.ValidateOptionalNumber("boundsHeight", statusCode, comment, 1.0, 90001.0))
+			return RequestResult::Error(statusCode, comment);
+		sceneItemTransform.bounds.y = r.RequestData["boundsHeight"];
+		transformChanged = true;
+	}
+
+	if (r.Contains("cropLeft")) {
+		if (!r.ValidateOptionalNumber("cropLeft", statusCode, comment, 0.0, 100000.0))
+			return RequestResult::Error(statusCode, comment);
+		sceneItemCrop.left = r.RequestData["cropLeft"];
+		cropChanged = true;
+	}
+	if (r.Contains("cropRight")) {
+		if (!r.ValidateOptionalNumber("cropRight", statusCode, comment, 0.0, 100000.0))
+			return RequestResult::Error(statusCode, comment);
+		sceneItemCrop.right = r.RequestData["cropRight"];
+		cropChanged = true;
+	}
+	if (r.Contains("cropTop")) {
+		if (!r.ValidateOptionalNumber("cropTop", statusCode, comment, 0.0, 100000.0))
+			return RequestResult::Error(statusCode, comment);
+		sceneItemCrop.top = r.RequestData["cropTop"];
+		cropChanged = true;
+	}
+	if (r.Contains("cropBottom")) {
+		if (!r.ValidateOptionalNumber("cropBottom", statusCode, comment, 0.0, 100000.0))
+			return RequestResult::Error(statusCode, comment);
+		sceneItemCrop.bottom = r.RequestData["cropBottom"];
+		cropChanged = true;
+	}
+
+	if (!transformChanged && !cropChanged)
+		return RequestResult::Error(RequestStatus::CannotAct, "You have not provided any valid transform changes.");
+
+	if (transformChanged)
+		obs_sceneitem_set_info(sceneItem, &sceneItemTransform);
+
+	if (cropChanged)
+		obs_sceneitem_set_crop(sceneItem, &sceneItemCrop);
+
+	return RequestResult::Success();
+}
+
 RequestResult RequestHandler::GetSceneItemEnabled(const Request& request)
 {
 	RequestStatus::RequestStatus statusCode;
