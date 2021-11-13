@@ -447,19 +447,28 @@ obs_sceneitem_t *Utils::Obs::SearchHelper::GetSceneItemByName(obs_scene_t *scene
 }
 
 struct CreateSceneItemData {
-	obs_source_t *source;
-	bool sceneItemEnabled;
-	OBSSceneItem sceneItem;
+	obs_source_t *source; // In
+	bool sceneItemEnabled; // In
+	obs_transform_info *sceneItemTransform = nullptr; // In
+	obs_sceneitem_crop *sceneItemCrop = nullptr; // In
+	OBSSceneItem sceneItem; // Out
 };
 
 void CreateSceneItemHelper(void *_data, obs_scene_t *scene)
 {
 	auto *data = reinterpret_cast<CreateSceneItemData*>(_data);
 	data->sceneItem = obs_scene_add(scene, data->source);
+
+	if (data->sceneItemTransform)
+		obs_sceneitem_set_info(data->sceneItem, data->sceneItemTransform);
+
+	if (data->sceneItemCrop)
+		obs_sceneitem_set_crop(data->sceneItem, data->sceneItemCrop);
+
 	obs_sceneitem_set_visible(data->sceneItem, data->sceneItemEnabled);
 }
 
-obs_sceneitem_t *Utils::Obs::ActionHelper::CreateSceneItem(obs_source_t *source, obs_scene_t *scene, bool sceneItemEnabled)
+obs_sceneitem_t *Utils::Obs::ActionHelper::CreateSceneItem(obs_source_t *source, obs_scene_t *scene, bool sceneItemEnabled, obs_transform_info *sceneItemTransform, obs_sceneitem_crop *sceneItemCrop)
 {
 	// Sanity check for valid scene
 	if (!(source && scene))
@@ -469,6 +478,8 @@ obs_sceneitem_t *Utils::Obs::ActionHelper::CreateSceneItem(obs_source_t *source,
 	CreateSceneItemData data;
 	data.source = source;
 	data.sceneItemEnabled = sceneItemEnabled;
+	data.sceneItemTransform = sceneItemTransform;
+	data.sceneItemCrop = sceneItemCrop;
 
 	// Enter graphics context and create the scene item
 	obs_enter_graphics();
