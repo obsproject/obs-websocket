@@ -10,6 +10,8 @@
 
 #define CASE(x) case x: return #x;
 
+#define RET_COMPARE(str, x) if (str == #x) return x;
+
 std::vector<std::string> ConvertStringArray(char **array)
 {
 	std::vector<std::string> ret;
@@ -152,6 +154,19 @@ std::string Utils::Obs::StringHelper::GetOutputTimecodeString(obs_output_t *outp
 
 	QString formatted = QString::asprintf("%02" PRIu64 ":%02" PRIu64 ":%02" PRIu64 ".%03" PRIu64, hoursPart, minutesPart, secsPart, msPart);
 	return formatted.toStdString();
+}
+
+enum obs_bounds_type Utils::Obs::EnumHelper::GetSceneItemBoundsType(std::string boundsType)
+{
+	RET_COMPARE(boundsType, OBS_BOUNDS_NONE);
+	RET_COMPARE(boundsType, OBS_BOUNDS_STRETCH);
+	RET_COMPARE(boundsType, OBS_BOUNDS_SCALE_INNER);
+	RET_COMPARE(boundsType, OBS_BOUNDS_SCALE_OUTER);
+	RET_COMPARE(boundsType, OBS_BOUNDS_SCALE_TO_WIDTH);
+	RET_COMPARE(boundsType, OBS_BOUNDS_SCALE_TO_HEIGHT);
+	RET_COMPARE(boundsType, OBS_BOUNDS_MAX_ONLY);
+
+	return OBS_BOUNDS_NONE;
 }
 
 uint64_t Utils::Obs::NumberHelper::GetOutputDuration(obs_output_t *output)
@@ -399,6 +414,9 @@ json Utils::Obs::DataHelper::GetSceneItemTransform(obs_sceneitem_t *item)
 	ret["positionY"] = osi.pos.y;
 
 	ret["rotation"] = osi.rot;
+
+	ret["scaleX"] = osi.scale.x;
+	ret["scaleY"] = osi.scale.y;
 
 	ret["width"] = osi.scale.x * sourceWidth;
 	ret["height"] = osi.scale.y * sourceHeight;

@@ -39,6 +39,10 @@ namespace Utils {
 			std::string GetOutputTimecodeString(obs_output_t *output);
 		}
 
+		namespace EnumHelper {
+			enum obs_bounds_type GetSceneItemBoundsType(std::string boundsType);
+		}
+
 		namespace NumberHelper {
 			uint64_t GetOutputDuration(obs_output_t *output);
 			size_t GetSceneCount();
