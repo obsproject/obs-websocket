@@ -39,6 +39,7 @@ struct Request
 	// All return values have incremented refcounts
 	obs_source_t *ValidateSource(const std::string &keyName, RequestStatus::RequestStatus &statusCode, std::string &comment) const;
 	obs_source_t *ValidateScene(const std::string &keyName, RequestStatus::RequestStatus &statusCode, std::string &comment, const ObsWebSocketSceneFilter filter = OBS_WEBSOCKET_SCENE_FILTER_SCENE_ONLY) const;
+	obs_scene_t *ValidateScene2(const std::string &keyName, RequestStatus::RequestStatus &statusCode, std::string &comment, const ObsWebSocketSceneFilter filter = OBS_WEBSOCKET_SCENE_FILTER_SCENE_ONLY) const;
 	obs_source_t *ValidateInput(const std::string &keyName, RequestStatus::RequestStatus &statusCode, std::string &comment) const;
 	obs_sceneitem_t *ValidateSceneItem(const std::string &sceneKeyName, const std::string &sceneItemIdKeyName, RequestStatus::RequestStatus &statusCode, std::string &comment, const ObsWebSocketSceneFilter filter = OBS_WEBSOCKET_SCENE_FILTER_SCENE_ONLY) const;
 

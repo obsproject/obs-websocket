@@ -235,6 +235,40 @@ obs_source_t *Request::ValidateScene(const std::string &keyName, RequestStatus::
 	return ret;
 }
 
+obs_scene_t *Request::ValidateScene2(const std::string &keyName, RequestStatus::RequestStatus &statusCode, std::string &comment, const ObsWebSocketSceneFilter filter) const
+{
+	OBSSourceAutoRelease sceneSource = ValidateSource(keyName, statusCode, comment);
+	if (!sceneSource)
+		return nullptr;
+
+	if (obs_source_get_type(sceneSource) != OBS_SOURCE_TYPE_SCENE) {
+		statusCode = RequestStatus::InvalidResourceType;
+		comment = "The specified source is not a scene.";
+		return nullptr;
+	}
+
+	bool isGroup = obs_source_is_group(sceneSource);
+	if (isGroup) {
+		if (filter == OBS_WEBSOCKET_SCENE_FILTER_SCENE_ONLY) {
+			statusCode = RequestStatus::InvalidResourceType;
+			comment = "The specified source is not a scene. (Is group)";
+			return nullptr;
+		}
+		OBSScene ret = obs_group_from_source(sceneSource);
+		obs_scene_addref(ret);
+		return ret;
+	} else {
+		if (filter == OBS_WEBSOCKET_SCENE_FILTER_GROUP_ONLY) {
+			statusCode = RequestStatus::InvalidResourceType;
+			comment = "The specified source is not a group. (Is scene)";
+			return nullptr;
+		}
+		OBSScene ret = obs_scene_from_source(sceneSource);
+		obs_scene_addref(ret);
+		return ret;
+	}
+}
+
 obs_source_t *Request::ValidateInput(const std::string &keyName, RequestStatus::RequestStatus &statusCode, std::string &comment) const
 {
 	obs_source_t *ret = ValidateSource(keyName, statusCode, comment);
@@ -259,7 +293,6 @@ obs_sceneitem_t *Request::ValidateSceneItem(const std::string &sceneKeyName, con
 
 	if (!ValidateNumber(sceneItemIdKeyName, statusCode, comment, 0))
 		return nullptr;
-
 	
 	OBSScene scene = obs_scene_from_source(sceneSource);
 	if (!scene) {
