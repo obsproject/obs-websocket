@@ -64,12 +64,10 @@ std::string Utils::Obs::StringHelper::GetCurrentProfilePath()
 
 std::string Utils::Obs::StringHelper::GetCurrentRecordOutputPath()
 {
-	//char *recordOutputPath = obs_frontend_get_current_record_output_path();
-	//std::string ret = recordOutputPath;
-	//bfree(recordOutputPath);
-	//return ret;
-
-	return "";
+	char *recordOutputPath = obs_frontend_get_current_record_output_path();
+	std::string ret = recordOutputPath;
+	bfree(recordOutputPath);
+	return ret;
 }
 
 std::string Utils::Obs::StringHelper::GetSourceType(obs_source_t *source)
