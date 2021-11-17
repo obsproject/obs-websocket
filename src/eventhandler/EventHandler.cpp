@@ -264,18 +264,18 @@ void EventHandler::OnFrontendEvent(enum obs_frontend_event event, void *private_
 			break;
 
 		// Config
-		//case OBS_FRONTEND_EVENT_SCENE_COLLECTION_CHANGING:
-		//	eventHandler->HandleCurrentSceneCollectionChanging();
-		//	break;
+		case OBS_FRONTEND_EVENT_SCENE_COLLECTION_CHANGING:
+			eventHandler->HandleCurrentSceneCollectionChanging();
+			break;
 		case OBS_FRONTEND_EVENT_SCENE_COLLECTION_CHANGED:
 			eventHandler->HandleCurrentSceneCollectionChanged();
 			break;
 		case OBS_FRONTEND_EVENT_SCENE_COLLECTION_LIST_CHANGED:
 			eventHandler->HandleSceneCollectionListChanged();
 			break;
-		//case OBS_FRONTEND_EVENT_PROFILE_CHANGING:
-		//	eventHandler->HandleCurrentProfileChanging();
-		//	break;
+		case OBS_FRONTEND_EVENT_PROFILE_CHANGING:
+			eventHandler->HandleCurrentProfileChanging();
+			break;
 		case OBS_FRONTEND_EVENT_PROFILE_CHANGED:
 			eventHandler->HandleCurrentProfileChanged();
 			break;
