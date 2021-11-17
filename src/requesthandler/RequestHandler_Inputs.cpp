@@ -365,6 +365,8 @@ std::vector<json> GetListPropertyItems(obs_property_t *property)
 			itemData["itemValue"] = obs_property_list_item_float(property, i);
 		} else if (itemFormat == OBS_COMBO_FORMAT_STRING) {
 			itemData["itemValue"] = obs_property_list_item_string(property, i);
+		} else {
+			itemData["itemValue"] = json::null();
 		}
 		ret.push_back(itemData);
 	}

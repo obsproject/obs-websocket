@@ -15,6 +15,9 @@ RequestResult RequestHandler::GetMediaInputStatus(const Request& request)
 	if (mediaState == OBS_MEDIA_STATE_PLAYING || mediaState == OBS_MEDIA_STATE_PAUSED) {
 		responseData["mediaDuration"] = obs_source_media_get_duration(input);
 		responseData["mediaCursor"] = obs_source_media_get_time(input);
+	} else {
+		responseData["mediaDuration"] = json::null();
+		responseData["mediaCursor"] = json::null();
 	}
 
 	return RequestResult::Success(responseData);

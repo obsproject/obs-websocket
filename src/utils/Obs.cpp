@@ -283,8 +283,12 @@ std::vector<json> Utils::Obs::ListHelper::GetSceneItemList(obs_scene_t *scene, b
 			item["sourceType"] = StringHelper::GetSourceType(itemSource);
 			if (obs_source_get_type(itemSource) == OBS_SOURCE_TYPE_INPUT)
 				item["inputKind"] = obs_source_get_id(itemSource);
-			else if (obs_source_get_type(itemSource) == OBS_SOURCE_TYPE_SCENE)
+			else
+				item["inputKind"] = json::null();
+			if (obs_source_get_type(itemSource) == OBS_SOURCE_TYPE_SCENE)
 				item["isGroup"] = obs_source_is_group(itemSource);
+			else
+				item["isGroup"] = json::null();
 		}
 
 		enumData->first.push_back(item);

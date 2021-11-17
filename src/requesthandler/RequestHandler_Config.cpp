@@ -208,10 +208,10 @@ RequestResult RequestHandler::GetProfileParameter(const Request& request)
 		responseData["defaultParameterValue"] = config_get_default_string(profile, parameterCategory.c_str(), parameterName.c_str());
 	} else if (config_has_user_value(profile, parameterCategory.c_str(), parameterName.c_str())) {
 		responseData["parameterValue"] = config_get_string(profile, parameterCategory.c_str(), parameterName.c_str());
-		responseData["defaultParameterValue"] = nullptr;
+		responseData["defaultParameterValue"] = json::null();
 	} else {
-		responseData["parameterValue"] = nullptr;
-		responseData["defaultParameterValue"] = nullptr;
+		responseData["parameterValue"] = json::null();
+		responseData["defaultParameterValue"] = json::null();
 	}
 
 	return RequestResult::Success(responseData);
