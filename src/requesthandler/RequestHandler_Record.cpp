@@ -4,11 +4,13 @@ RequestResult RequestHandler::GetRecordStatus(const Request& request)
 {
 	OBSOutputAutoRelease recordOutput = obs_frontend_get_streaming_output();
 
+	uint64_t outputDuration = Utils::Obs::NumberHelper::GetOutputDuration(recordOutput);
+
 	json responseData;
 	responseData["outputActive"] = obs_output_active(recordOutput);
 	responseData["outputPaused"] = obs_output_paused(recordOutput);
-	responseData["outputTimecode"] = Utils::Obs::StringHelper::GetOutputTimecodeString(recordOutput);
-	responseData["outputDuration"] = Utils::Obs::NumberHelper::GetOutputDuration(recordOutput);
+	responseData["outputTimecode"] = Utils::Obs::StringHelper::DurationToTimecode(outputDuration);
+	responseData["outputDuration"] = outputDuration;
 	responseData["outputBytes"] = (uint64_t)obs_output_get_total_bytes(recordOutput);
 
 	return RequestResult::Success(responseData);

@@ -144,16 +144,8 @@ std::string Utils::Obs::StringHelper::GetSceneItemBoundsTypeString(enum obs_boun
 	}
 }
 
-std::string Utils::Obs::StringHelper::GetOutputTimecodeString(obs_output_t *output)
+std::string Utils::Obs::StringHelper::DurationToTimecode(uint64_t ms)
 {
-	if (!output || !obs_output_active(output))
-		return "00:00:00.000";
-
-	video_t* video = obs_output_video(output);
-	uint64_t frameTimeNs = video_output_get_frame_time(video);
-	int totalFrames = obs_output_get_total_frames(output);
-
-	uint64_t ms = util_mul_div64(totalFrames, frameTimeNs, 1000000ULL);
 	uint64_t secs = ms / 1000ULL;
 	uint64_t minutes = secs / 60ULL;
 

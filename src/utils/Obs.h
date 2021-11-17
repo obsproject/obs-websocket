@@ -37,7 +37,7 @@ namespace Utils {
 			std::string GetMediaInputStateString(obs_source_t *input);
 			std::string GetLastReplayBufferFilePath();
 			std::string GetSceneItemBoundsTypeString(enum obs_bounds_type type);
-			std::string GetOutputTimecodeString(obs_output_t *output);
+			std::string DurationToTimecode(uint64_t);
 		}
 
 		namespace EnumHelper {
