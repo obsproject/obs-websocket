@@ -9,7 +9,7 @@ RequestResult RequestHandler::GetMediaInputStatus(const Request& request)
 		return RequestResult::Error(statusCode, comment);
 
 	json responseData;
-	responseData["mediaState"] = Utils::Obs::StringHelper::GetMediaInputStateString(input);
+	responseData["mediaState"] = Utils::Obs::StringHelper::GetMediaInputState(input);
 
 	auto mediaState = obs_source_media_get_state(input);
 	if (mediaState == OBS_MEDIA_STATE_PLAYING || mediaState == OBS_MEDIA_STATE_PAUSED) {

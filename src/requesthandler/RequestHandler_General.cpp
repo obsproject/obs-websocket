@@ -8,7 +8,7 @@
 RequestResult RequestHandler::GetVersion(const Request& request)
 {
 	json responseData;
-	responseData["obsVersion"] = Utils::Obs::StringHelper::GetObsVersionString();
+	responseData["obsVersion"] = Utils::Obs::StringHelper::GetObsVersion();
 	responseData["obsWebSocketVersion"] = OBS_WEBSOCKET_VERSION;
 	responseData["rpcVersion"] = OBS_WEBSOCKET_RPC_VERSION;
 	responseData["availableRequests"] = GetRequestList();

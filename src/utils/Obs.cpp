@@ -30,7 +30,7 @@ std::vector<std::string> ConvertStringArray(char **array)
 	return ret;
 }
 
-std::string Utils::Obs::StringHelper::GetObsVersionString()
+std::string Utils::Obs::StringHelper::GetObsVersion()
 {
 	uint32_t version = obs_get_version();
 
@@ -77,7 +77,7 @@ std::string Utils::Obs::StringHelper::GetCurrentRecordOutputPath()
 	return "";
 }
 
-std::string Utils::Obs::StringHelper::GetSourceTypeString(obs_source_t *source)
+std::string Utils::Obs::StringHelper::GetSourceType(obs_source_t *source)
 {
 	obs_source_type sourceType = obs_source_get_type(source);
 
@@ -90,7 +90,7 @@ std::string Utils::Obs::StringHelper::GetSourceTypeString(obs_source_t *source)
 	}
 }
 
-std::string Utils::Obs::StringHelper::GetInputMonitorTypeString(obs_source_t *input)
+std::string Utils::Obs::StringHelper::GetInputMonitorType(obs_source_t *input)
 {
 	obs_monitoring_type monitorType = obs_source_get_monitoring_type(input);
 
@@ -102,7 +102,7 @@ std::string Utils::Obs::StringHelper::GetInputMonitorTypeString(obs_source_t *in
 	}
 }
 
-std::string Utils::Obs::StringHelper::GetMediaInputStateString(obs_source_t *input)
+std::string Utils::Obs::StringHelper::GetMediaInputState(obs_source_t *input)
 {
 	obs_media_state mediaState = obs_source_media_get_state(input);
 
@@ -130,7 +130,7 @@ std::string Utils::Obs::StringHelper::GetLastReplayBufferFilePath()
 	return ret;
 }
 
-std::string Utils::Obs::StringHelper::GetSceneItemBoundsTypeString(enum obs_bounds_type type)
+std::string Utils::Obs::StringHelper::GetSceneItemBoundsType(enum obs_bounds_type type)
 {
 	switch (type) {
 		default:
@@ -280,7 +280,7 @@ std::vector<json> Utils::Obs::ListHelper::GetSceneItemList(obs_scene_t *scene, b
 		if (!enumData->second) {
 			OBSSource itemSource = obs_sceneitem_get_source(sceneItem);
 			item["sourceName"] = obs_source_get_name(itemSource);
-			item["sourceType"] = StringHelper::GetSourceTypeString(itemSource);
+			item["sourceType"] = StringHelper::GetSourceType(itemSource);
 			if (obs_source_get_type(itemSource) == OBS_SOURCE_TYPE_INPUT)
 				item["inputKind"] = obs_source_get_id(itemSource);
 			else if (obs_source_get_type(itemSource) == OBS_SOURCE_TYPE_SCENE)
@@ -425,7 +425,7 @@ json Utils::Obs::DataHelper::GetSceneItemTransform(obs_sceneitem_t *item)
 
 	ret["alignment"] = osi.alignment;
 
-	ret["boundsType"] = StringHelper::GetSceneItemBoundsTypeString(osi.bounds_type);
+	ret["boundsType"] = StringHelper::GetSceneItemBoundsType(osi.bounds_type);
 	ret["boundsAlignment"] = osi.bounds_alignment;
 	ret["boundsWidth"] = osi.bounds.x;
 	ret["boundsHeight"] = osi.bounds.y;

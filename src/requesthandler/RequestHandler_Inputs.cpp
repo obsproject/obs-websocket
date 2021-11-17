@@ -319,7 +319,7 @@ RequestResult RequestHandler::GetInputAudioMonitorType(const Request& request)
 		return RequestResult::Error(statusCode, comment);
 
 	json responseData;
-	responseData["monitorType"] = Utils::Obs::StringHelper::GetInputMonitorTypeString(input);
+	responseData["monitorType"] = Utils::Obs::StringHelper::GetInputMonitorType(input);
 
 	return RequestResult::Success(responseData);
 }
