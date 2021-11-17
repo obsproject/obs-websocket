@@ -21,7 +21,7 @@ On Debian/Ubuntu :
 
 ```shell
 sudo apt-get install libboost-all-dev
-git clone --recursive https://github.com/Palakis/obs-websocket.git
+git clone --recursive https://github.com/obs-websocket/obs-websocket.git
 cd obs-websocket
 mkdir build && cd build
 cmake -DLIBOBS_INCLUDE_DIR="<path to the libobs sub-folder in obs-studio's source code>" -DCMAKE_INSTALL_PREFIX=/usr -DUSE_UBUNTU_FIX=true ..
@@ -51,7 +51,7 @@ Of course, you're encouraged to dig through the contents of these scripts to
 look for issues or specificities.
 
 ```shell
-git clone --recursive https://github.com/Palakis/obs-websocket.git
+git clone --recursive https://github.com/obs-websocket/obs-websocket.git
 cd obs-websocket
 ./CI/install-dependencies-macos.sh
 ./CI/install-build-obs-macos.sh
@@ -63,4 +63,4 @@ This will result in a ready-to-use `obs-websocket.pkg` installer in the `release
 
 ## Automated Builds
 
-![Github Actions](https://github.com/Palakis/obs-websocket/actions/workflows/main.yml/badge.svg?branch=master)
+![Github Actions](https://github.com/obs-websocket/obs-websocket/actions/workflows/main.yml/badge.svg?branch=master)

@@ -97,6 +97,12 @@ const std::map<std::string, RequestMethodHandler> RequestHandler::_handlerMap
 	{"PauseRecord", &RequestHandler::PauseRecord},
 	{"ResumeRecord", &RequestHandler::ResumeRecord},
 	//{"GetRecordDirectory", &RequestHandler::GetRecordDirectory},
+
+	// Media Inputs
+	{"GetMediaInputStatus", &RequestHandler::GetMediaInputStatus},
+	{"SetMediaInputCursor", &RequestHandler::SetMediaInputCursor},
+	{"OffsetMediaInputCursor", &RequestHandler::OffsetMediaInputCursor},
+	{"TriggerMediaInputAction", &RequestHandler::TriggerMediaInputAction},
 };
 
 RequestHandler::RequestHandler(SessionPtr session) :

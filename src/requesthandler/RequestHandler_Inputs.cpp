@@ -319,7 +319,7 @@ RequestResult RequestHandler::GetInputAudioMonitorType(const Request& request)
 		return RequestResult::Error(statusCode, comment);
 
 	json responseData;
-	responseData["monitorType"] = Utils::Obs::StringHelper::GetInputMonitorTypeString(input);
+	responseData["monitorType"] = Utils::Obs::StringHelper::GetInputMonitorType(input);
 
 	return RequestResult::Success(responseData);
 }
@@ -365,6 +365,8 @@ std::vector<json> GetListPropertyItems(obs_property_t *property)
 			itemData["itemValue"] = obs_property_list_item_float(property, i);
 		} else if (itemFormat == OBS_COMBO_FORMAT_STRING) {
 			itemData["itemValue"] = obs_property_list_item_string(property, i);
+		} else {
+			itemData["itemValue"] = nullptr;
 		}
 		ret.push_back(itemData);
 	}

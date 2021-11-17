@@ -23,10 +23,10 @@ RequestResult RequestHandler::GetPersistentData(const Request& request)
 
 	json responseData;
 	json persistentData;
-	if (!(Utils::Json::GetJsonFileContent(persistentDataPath, persistentData) && persistentData.contains(slotName)))
-		responseData["slotValue"] = nullptr;
-	else
+	if (Utils::Json::GetJsonFileContent(persistentDataPath, persistentData) && persistentData.contains(slotName))
 		responseData["slotValue"] = persistentData[slotName];
+	else
+		responseData["slotValue"] = nullptr;
 
 	return RequestResult::Success(responseData);
 }
@@ -347,7 +347,7 @@ RequestResult RequestHandler::SetStreamServiceSettings(const Request& request)
 		obs_service_update(currentStreamService, newStreamServiceSettings);
 	} else {
 		// TODO: This leaks memory. I have no idea why.
-		OBSService newStreamService = obs_service_create(requestedStreamServiceType.c_str(), "obs_websocket_custom_service", requestedStreamServiceSettings, NULL);
+		OBSService newStreamService = obs_service_create(requestedStreamServiceType.c_str(), "obs_websocket_custom_service", requestedStreamServiceSettings, nullptr);
 		// TODO: Check service type here, instead of relying on service creation to fail.
 		if (!newStreamService)
 			return RequestResult::Error(RequestStatus::ResourceCreationFailed, "Failed to create the stream service with the requested streamServiceType. It may be an invalid type.");

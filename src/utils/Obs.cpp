@@ -30,7 +30,7 @@ std::vector<std::string> ConvertStringArray(char **array)
 	return ret;
 }
 
-std::string Utils::Obs::StringHelper::GetObsVersionString()
+std::string Utils::Obs::StringHelper::GetObsVersion()
 {
 	uint32_t version = obs_get_version();
 
@@ -77,7 +77,7 @@ std::string Utils::Obs::StringHelper::GetCurrentRecordOutputPath()
 	return "";
 }
 
-std::string Utils::Obs::StringHelper::GetSourceTypeString(obs_source_t *source)
+std::string Utils::Obs::StringHelper::GetSourceType(obs_source_t *source)
 {
 	obs_source_type sourceType = obs_source_get_type(source);
 
@@ -90,7 +90,7 @@ std::string Utils::Obs::StringHelper::GetSourceTypeString(obs_source_t *source)
 	}
 }
 
-std::string Utils::Obs::StringHelper::GetInputMonitorTypeString(obs_source_t *input)
+std::string Utils::Obs::StringHelper::GetInputMonitorType(obs_source_t *input)
 {
 	obs_monitoring_type monitorType = obs_source_get_monitoring_type(input);
 
@@ -102,7 +102,7 @@ std::string Utils::Obs::StringHelper::GetInputMonitorTypeString(obs_source_t *in
 	}
 }
 
-std::string Utils::Obs::StringHelper::GetMediaInputStateString(obs_source_t *input)
+std::string Utils::Obs::StringHelper::GetMediaInputState(obs_source_t *input)
 {
 	obs_media_state mediaState = obs_source_media_get_state(input);
 
@@ -130,7 +130,7 @@ std::string Utils::Obs::StringHelper::GetLastReplayBufferFilePath()
 	return ret;
 }
 
-std::string Utils::Obs::StringHelper::GetSceneItemBoundsTypeString(enum obs_bounds_type type)
+std::string Utils::Obs::StringHelper::GetSceneItemBoundsType(enum obs_bounds_type type)
 {
 	switch (type) {
 		default:
@@ -144,16 +144,8 @@ std::string Utils::Obs::StringHelper::GetSceneItemBoundsTypeString(enum obs_boun
 	}
 }
 
-std::string Utils::Obs::StringHelper::GetOutputTimecodeString(obs_output_t *output)
+std::string Utils::Obs::StringHelper::DurationToTimecode(uint64_t ms)
 {
-	if (!output || !obs_output_active(output))
-		return "00:00:00.000";
-
-	video_t* video = obs_output_video(output);
-	uint64_t frameTimeNs = video_output_get_frame_time(video);
-	int totalFrames = obs_output_get_total_frames(output);
-
-	uint64_t ms = util_mul_div64(totalFrames, frameTimeNs, 1000000ULL);
 	uint64_t secs = ms / 1000ULL;
 	uint64_t minutes = secs / 60ULL;
 
@@ -177,6 +169,18 @@ enum obs_bounds_type Utils::Obs::EnumHelper::GetSceneItemBoundsType(std::string 
 	RET_COMPARE(boundsType, OBS_BOUNDS_MAX_ONLY);
 
 	return OBS_BOUNDS_NONE;
+}
+
+enum ObsMediaInputAction Utils::Obs::EnumHelper::GetMediaInputAction(std::string mediaAction)
+{
+	RET_COMPARE(mediaAction, OBS_WEBSOCKET_MEDIA_INPUT_ACTION_PLAY);
+	RET_COMPARE(mediaAction, OBS_WEBSOCKET_MEDIA_INPUT_ACTION_PAUSE);
+	RET_COMPARE(mediaAction, OBS_WEBSOCKET_MEDIA_INPUT_ACTION_STOP);
+	RET_COMPARE(mediaAction, OBS_WEBSOCKET_MEDIA_INPUT_ACTION_RESTART);
+	RET_COMPARE(mediaAction, OBS_WEBSOCKET_MEDIA_INPUT_ACTION_NEXT);
+	RET_COMPARE(mediaAction, OBS_WEBSOCKET_MEDIA_INPUT_ACTION_PREVIOUS);
+
+	return OBS_WEBSOCKET_MEDIA_INPUT_ACTION_NONE;
 }
 
 uint64_t Utils::Obs::NumberHelper::GetOutputDuration(obs_output_t *output)
@@ -288,11 +292,15 @@ std::vector<json> Utils::Obs::ListHelper::GetSceneItemList(obs_scene_t *scene, b
 		if (!enumData->second) {
 			OBSSource itemSource = obs_sceneitem_get_source(sceneItem);
 			item["sourceName"] = obs_source_get_name(itemSource);
-			item["sourceType"] = StringHelper::GetSourceTypeString(itemSource);
+			item["sourceType"] = StringHelper::GetSourceType(itemSource);
 			if (obs_source_get_type(itemSource) == OBS_SOURCE_TYPE_INPUT)
 				item["inputKind"] = obs_source_get_id(itemSource);
-			else if (obs_source_get_type(itemSource) == OBS_SOURCE_TYPE_SCENE)
+			else
+				item["inputKind"] = nullptr;
+			if (obs_source_get_type(itemSource) == OBS_SOURCE_TYPE_SCENE)
 				item["isGroup"] = obs_source_is_group(itemSource);
+			else
+				item["isGroup"] = nullptr;
 		}
 
 		enumData->first.push_back(item);
@@ -433,7 +441,7 @@ json Utils::Obs::DataHelper::GetSceneItemTransform(obs_sceneitem_t *item)
 
 	ret["alignment"] = osi.alignment;
 
-	ret["boundsType"] = StringHelper::GetSceneItemBoundsTypeString(osi.bounds_type);
+	ret["boundsType"] = StringHelper::GetSceneItemBoundsType(osi.bounds_type);
 	ret["boundsAlignment"] = osi.bounds_alignment;
 	ret["boundsWidth"] = osi.bounds.x;
 	ret["boundsHeight"] = osi.bounds.y;

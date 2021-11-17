@@ -1,7 +1,7 @@
 #define MyAppName "obs-websocket"
 #define MyAppVersion "@OBS_WEBSOCKET_VERSION@"
 #define MyAppPublisher "Stephane Lepin"
-#define MyAppURL "http://github.com/Palakis/obs-websocket"
+#define MyAppURL "http://github.com/obs-websocket/obs-websocket"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
