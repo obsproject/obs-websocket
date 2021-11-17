@@ -119,6 +119,9 @@ class RequestHandler {
 		RequestResult ResumeRecord(const Request&);
 		RequestResult GetRecordDirectory(const Request&);
 
+		// Media Inputs
+		RequestResult GetMediaInputStatus(const Request&);
+
 		SessionPtr _session;
 		static const std::map<std::string, RequestMethodHandler> _handlerMap;
 };
