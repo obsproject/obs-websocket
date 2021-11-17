@@ -29,21 +29,20 @@ These are required to automatically generate the [protocol specification documen
 
 * Favor return-early code and avoid wrapping huge portions of code in conditionals. As an example, this:
 ```cpp
-if (success) {
+if (success)
     return RequestResult::Success();
-} else {
+else
     return RequestResult::Error(RequestStatus::GenericError);
-}
 ```
 is better like this:
 ```cpp
-if (!success) {
+if (!success)
     return RequestResult::Error(RequestStatus::GenericError);
-}
+
 return RequestResult::Success();
 ```
 
-* Try to use the [built-in](https://github.com/Palakis/obs-websocket/blob/master/src/requesthandler/rpc/Request.h) request checks when possible.
+* Try to use the [built-in](https://github.com/obs-websocket/obs-websocket/blob/master/src/requesthandler/rpc/Request.h) request checks when possible.
     * Refer to existing requests for usage examples.
 
 * Some example common response/request property names are:
@@ -54,12 +53,14 @@ return RequestResult::Success();
 
 * Response parameters which have no attributed data due to an invalid state should be set to `null` (versus being left out)
     * For example, when `GetSceneList` is called and OBS is not in studio mode, `currentPreviewSceneName` will be `null`
-    * If a request's core response data depends on a state, an error should be thrown unless `ignoreNonFatalRequestChecks` is set. See `GetCurrentPreviewScene` as an example.
+    * If a request's core response data depends on a state, an error should be thrown. See `GetCurrentPreviewScene` as an example.
+
+* In general, try to match the style of existing code as best as possible. We try our best to keep a consistent code style, and may suggest nitpicks as necessary.
 
 ### Commit Guidelines
 
 * Commits follow the 50/72 standard:
-    * 50 characters max for the commit title (excluding scope name)
+    * 50 characters suggested max for the commit title (absolute maximum 72 including scope)
     * One empty line after the title
     * Description wrapped to 72 columns max width per line.
 
