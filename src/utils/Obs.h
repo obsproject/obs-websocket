@@ -16,10 +16,11 @@ enum ObsOutputState {
 };
 
 enum ObsMediaInputAction {
-	OBS_WEBSOCKET_MEDIA_INPUT_ACTION_PAUSE,
+	OBS_WEBSOCKET_MEDIA_INPUT_ACTION_NONE,
 	OBS_WEBSOCKET_MEDIA_INPUT_ACTION_PLAY,
-	OBS_WEBSOCKET_MEDIA_INPUT_ACTION_RESTART,
+	OBS_WEBSOCKET_MEDIA_INPUT_ACTION_PAUSE,
 	OBS_WEBSOCKET_MEDIA_INPUT_ACTION_STOP,
+	OBS_WEBSOCKET_MEDIA_INPUT_ACTION_RESTART,
 	OBS_WEBSOCKET_MEDIA_INPUT_ACTION_NEXT,
 	OBS_WEBSOCKET_MEDIA_INPUT_ACTION_PREVIOUS
 };
@@ -42,6 +43,7 @@ namespace Utils {
 
 		namespace EnumHelper {
 			enum obs_bounds_type GetSceneItemBoundsType(std::string boundsType);
+			enum ObsMediaInputAction GetMediaInputAction(std::string mediaAction);
 		}
 
 		namespace NumberHelper {

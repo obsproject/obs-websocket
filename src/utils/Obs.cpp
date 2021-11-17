@@ -171,6 +171,18 @@ enum obs_bounds_type Utils::Obs::EnumHelper::GetSceneItemBoundsType(std::string 
 	return OBS_BOUNDS_NONE;
 }
 
+enum ObsMediaInputAction Utils::Obs::EnumHelper::GetMediaInputAction(std::string mediaAction)
+{
+	RET_COMPARE(mediaAction, OBS_WEBSOCKET_MEDIA_INPUT_ACTION_PLAY);
+	RET_COMPARE(mediaAction, OBS_WEBSOCKET_MEDIA_INPUT_ACTION_PAUSE);
+	RET_COMPARE(mediaAction, OBS_WEBSOCKET_MEDIA_INPUT_ACTION_STOP);
+	RET_COMPARE(mediaAction, OBS_WEBSOCKET_MEDIA_INPUT_ACTION_RESTART);
+	RET_COMPARE(mediaAction, OBS_WEBSOCKET_MEDIA_INPUT_ACTION_NEXT);
+	RET_COMPARE(mediaAction, OBS_WEBSOCKET_MEDIA_INPUT_ACTION_PREVIOUS);
+
+	return OBS_WEBSOCKET_MEDIA_INPUT_ACTION_NONE;
+}
+
 uint64_t Utils::Obs::NumberHelper::GetOutputDuration(obs_output_t *output)
 {
 	if (!output || !obs_output_active(output))
@@ -284,11 +296,11 @@ std::vector<json> Utils::Obs::ListHelper::GetSceneItemList(obs_scene_t *scene, b
 			if (obs_source_get_type(itemSource) == OBS_SOURCE_TYPE_INPUT)
 				item["inputKind"] = obs_source_get_id(itemSource);
 			else
-				item["inputKind"] = json::null();
+				item["inputKind"] = nullptr;
 			if (obs_source_get_type(itemSource) == OBS_SOURCE_TYPE_SCENE)
 				item["isGroup"] = obs_source_is_group(itemSource);
 			else
-				item["isGroup"] = json::null();
+				item["isGroup"] = nullptr;
 		}
 
 		enumData->first.push_back(item);

@@ -23,10 +23,10 @@ RequestResult RequestHandler::GetPersistentData(const Request& request)
 
 	json responseData;
 	json persistentData;
-	if (!(Utils::Json::GetJsonFileContent(persistentDataPath, persistentData) && persistentData.contains(slotName)))
-		responseData["slotValue"] = nullptr;
-	else
+	if (Utils::Json::GetJsonFileContent(persistentDataPath, persistentData) && persistentData.contains(slotName))
 		responseData["slotValue"] = persistentData[slotName];
+	else
+		responseData["slotValue"] = nullptr;
 
 	return RequestResult::Success(responseData);
 }
@@ -208,10 +208,10 @@ RequestResult RequestHandler::GetProfileParameter(const Request& request)
 		responseData["defaultParameterValue"] = config_get_default_string(profile, parameterCategory.c_str(), parameterName.c_str());
 	} else if (config_has_user_value(profile, parameterCategory.c_str(), parameterName.c_str())) {
 		responseData["parameterValue"] = config_get_string(profile, parameterCategory.c_str(), parameterName.c_str());
-		responseData["defaultParameterValue"] = json::null();
+		responseData["defaultParameterValue"] = nullptr;
 	} else {
-		responseData["parameterValue"] = json::null();
-		responseData["defaultParameterValue"] = json::null();
+		responseData["parameterValue"] = nullptr;
+		responseData["defaultParameterValue"] = nullptr;
 	}
 
 	return RequestResult::Success(responseData);
@@ -347,7 +347,7 @@ RequestResult RequestHandler::SetStreamServiceSettings(const Request& request)
 		obs_service_update(currentStreamService, newStreamServiceSettings);
 	} else {
 		// TODO: This leaks memory. I have no idea why.
-		OBSService newStreamService = obs_service_create(requestedStreamServiceType.c_str(), "obs_websocket_custom_service", requestedStreamServiceSettings, NULL);
+		OBSService newStreamService = obs_service_create(requestedStreamServiceType.c_str(), "obs_websocket_custom_service", requestedStreamServiceSettings, nullptr);
 		// TODO: Check service type here, instead of relying on service creation to fail.
 		if (!newStreamService)
 			return RequestResult::Error(RequestStatus::ResourceCreationFailed, "Failed to create the stream service with the requested streamServiceType. It may be an invalid type.");
