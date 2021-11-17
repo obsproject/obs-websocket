@@ -100,6 +100,9 @@ const std::map<std::string, RequestMethodHandler> RequestHandler::_handlerMap
 
 	// Media Inputs
 	{"GetMediaInputStatus", &RequestHandler::GetMediaInputStatus},
+	{"SetMediaInputCursor", &RequestHandler::SetMediaInputCursor},
+	{"OffsetMediaInputCursor", &RequestHandler::OffsetMediaInputCursor},
+	{"TriggerMediaInputAction", &RequestHandler::TriggerMediaInputAction},
 };
 
 RequestHandler::RequestHandler(SessionPtr session) :
