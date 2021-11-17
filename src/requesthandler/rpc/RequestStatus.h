@@ -46,6 +46,8 @@ namespace RequestStatus {
 		StudioModeActive = 504,
 		// Studio mode is not active and should be
 		StudioModeNotActive = 505,
+		// An output is not paused and should be
+		OutputNotPaused = 506,
 
 		// The resource was not found
 		ResourceNotFound = 600,

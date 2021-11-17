@@ -87,6 +87,16 @@ const std::map<std::string, RequestMethodHandler> RequestHandler::_handlerMap
 	{"ToggleStream", &RequestHandler::ToggleStream},
 	{"StartStream", &RequestHandler::StartStream},
 	{"StopStream", &RequestHandler::StopStream},
+
+	// Record
+	{"GetRecordStatus", &RequestHandler::GetRecordStatus},
+	{"ToggleRecord", &RequestHandler::ToggleRecord},
+	{"StartRecord", &RequestHandler::StartRecord},
+	{"StopRecord", &RequestHandler::StopRecord},
+	{"ToggleRecordPause", &RequestHandler::ToggleRecordPause},
+	{"PauseRecord", &RequestHandler::PauseRecord},
+	{"ResumeRecord", &RequestHandler::ResumeRecord},
+	//{"GetRecordDirectory", &RequestHandler::GetRecordDirectory},
 };
 
 RequestHandler::RequestHandler(SessionPtr session) :

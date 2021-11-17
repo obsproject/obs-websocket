@@ -109,6 +109,16 @@ class RequestHandler {
 		RequestResult StartStream(const Request&);
 		RequestResult StopStream(const Request&);
 
+		// Record
+		RequestResult GetRecordStatus(const Request&);
+		RequestResult ToggleRecord(const Request&);
+		RequestResult StartRecord(const Request&);
+		RequestResult StopRecord(const Request&);
+		RequestResult ToggleRecordPause(const Request&);
+		RequestResult PauseRecord(const Request&);
+		RequestResult ResumeRecord(const Request&);
+		RequestResult GetRecordDirectory(const Request&);
+
 		SessionPtr _session;
 		static const std::map<std::string, RequestMethodHandler> _handlerMap;
 };

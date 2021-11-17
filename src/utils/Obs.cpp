@@ -67,6 +67,16 @@ std::string Utils::Obs::StringHelper::GetCurrentProfilePath()
 	return ret;
 }
 
+std::string Utils::Obs::StringHelper::GetCurrentRecordOutputPath()
+{
+	//char *recordOutputPath = obs_frontend_get_current_record_output_path();
+	//std::string ret = recordOutputPath;
+	//bfree(recordOutputPath);
+	//return ret;
+
+	return "";
+}
+
 std::string Utils::Obs::StringHelper::GetSourceTypeString(obs_source_t *source)
 {
 	obs_source_type sourceType = obs_source_get_type(source);
