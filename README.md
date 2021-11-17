@@ -1,9 +1,5 @@
 # obs-websocket
 
-<p align="center">
-  <img src="/.github/images/obsws_logo.png" width=150 align="center">
-</p>
-
 WebSockets API for OBS Studio.
 
 [![Build Status](https://dev.azure.com/Palakis/obs-websocket/_apis/build/status/Palakis.obs-websocket?branchName=4.x-current)](https://dev.azure.com/Palakis/obs-websocket/_build/latest?definitionId=2&branchName=4.x-current)
