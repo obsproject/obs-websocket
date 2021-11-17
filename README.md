@@ -12,13 +12,13 @@
 
 WebSockets API for OBS Studio.
 
-[![CI Multiplatform Build](https://github.com/Palakis/obs-websocket/actions/workflows/main.yml/badge.svg?branch=master)](https://github.com/Palakis/obs-websocket/actions/workflows/main.yml)
+[![CI Multiplatform Build](https://github.com/obs-websocket/obs-websocket/actions/workflows/main.yml/badge.svg?branch=master)](https://github.com/obs-websocket/obs-websocket/actions/workflows/main.yml)
 [![Discord](https://img.shields.io/discord/715691013825364120.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/WBaSQ3A)
 [![Financial Contributors on Open Collective](https://opencollective.com/obs-websocket/all/badge.svg?label=financial+contributors)](https://opencollective.com/obs-websocket)
 
 ## Downloads
 
-Binaries for Windows, MacOS, and Linux are available in the [Releases](https://github.com/Palakis/obs-websocket/releases) section.
+Binaries for Windows, MacOS, and Linux are available in the [Releases](https://github.com/obs-websocket/obs-websocket/releases) section.
 
 ### Homebrew
 
@@ -75,7 +75,7 @@ Please join the localization project on [Crowdin](https://crowdin.com/project/ob
 ### Code Contributors
 
 This project exists thanks to all the people who contribute. [Contribute](CONTRIBUTING.md).
-<a href="https://github.com/Palakis/obs-websocket/graphs/contributors"><img src="https://opencollective.com/obs-websocket/contributors.svg?width=890&button=false" /></a>
+<a href="https://github.com/obs-websocket/obs-websocket/graphs/contributors"><img src="https://opencollective.com/obs-websocket/contributors.svg?width=890&button=false" /></a>
 
 ### Financial Contributors
 
