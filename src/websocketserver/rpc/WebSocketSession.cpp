@@ -1,5 +1,5 @@
 #include "WebSocketSession.h"
-#include "eventhandler/types/EventSubscription.h"
+#include "../../eventhandler/types/EventSubscription.h"
 
 WebSocketSession::WebSocketSession() :
 	_remoteAddress(""),

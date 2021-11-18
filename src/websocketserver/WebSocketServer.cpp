@@ -5,12 +5,12 @@
 #include <obs-frontend-api.h>
 
 #include "WebSocketServer.h"
-#include "eventhandler/EventHandler.h"
-#include "obs-websocket.h"
-#include "Config.h"
-#include "utils/Crypto.h"
-#include "utils/Platform.h"
-#include "utils/Compat.h"
+#include "../eventhandler/EventHandler.h"
+#include "../obs-websocket.h"
+#include "../Config.h"
+#include "../utils/Crypto.h"
+#include "../utils/Platform.h"
+#include "../utils/Compat.h"
 
 WebSocketServer::WebSocketServer() :
 	QObject(nullptr),

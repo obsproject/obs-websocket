@@ -7,10 +7,10 @@
 #include <websocketpp/config/asio_no_tls.hpp>
 #include <websocketpp/server.hpp>
 
-#include "utils/Json.h"
-#include "WebSocketSession.h"
-#include "requesthandler/rpc/Request.h"
-#include "plugin-macros.generated.h"
+#include "rpc/WebSocketSession.h"
+#include "../utils/Json.h"
+#include "../requesthandler/rpc/Request.h"
+#include "../plugin-macros.generated.h"
 
 class WebSocketServer : QObject
 {

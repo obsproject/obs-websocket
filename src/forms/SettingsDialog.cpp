@@ -7,7 +7,7 @@
 #include "SettingsDialog.h"
 #include "../obs-websocket.h"
 #include "../Config.h"
-#include "../WebSocketServer.h"
+#include "../websocketserver/WebSocketServer.h"
 #include "../utils/Crypto.h"
 
 QString GetToolTipIconHtml()

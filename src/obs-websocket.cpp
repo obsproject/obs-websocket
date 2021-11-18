@@ -7,7 +7,7 @@
 
 #include "obs-websocket.h"
 #include "Config.h"
-#include "WebSocketServer.h"
+#include "websocketserver/WebSocketServer.h"
 #include "eventhandler/EventHandler.h"
 #include "forms/SettingsDialog.h"
 

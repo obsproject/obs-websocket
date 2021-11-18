@@ -1,7 +1,7 @@
 #include <QImageWriter>
 
 #include "RequestHandler.h"
-#include "../WebSocketServer.h"
+#include "../websocketserver/WebSocketServer.h"
 #include "../eventhandler/types/EventSubscription.h"
 #include "../obs-websocket.h"
 

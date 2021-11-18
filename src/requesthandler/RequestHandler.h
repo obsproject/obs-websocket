@@ -7,7 +7,7 @@
 #include "rpc/RequestStatus.h"
 #include "rpc/Request.h"
 #include "rpc/RequestResult.h"
-#include "../WebSocketSession.h"
+#include "../websocketserver/rpc/WebSocketSession.h"
 #include "../obs-websocket.h"
 #include "../utils/Obs.h"
 #include "../plugin-macros.generated.h"

@@ -85,10 +85,10 @@ configure_file(
 set(obs-websocket_SOURCES
 	src/obs-websocket.cpp
 	src/Config.cpp
-	src/WebSocketServer.cpp
-	src/WebSocketServer_Protocol.cpp
-	src/WebSocketServer_RequestBatchProcessing.cpp
-	src/WebSocketSession.cpp
+	src/websocketserver/WebSocketServer.cpp
+	src/websocketserver/WebSocketServer_Protocol.cpp
+	src/websocketserver/WebSocketServer_RequestBatchProcessing.cpp
+	src/websocketserver/rpc/WebSocketSession.cpp
 	src/eventhandler/EventHandler.cpp
 	src/eventhandler/EventHandler_General.cpp
 	src/eventhandler/EventHandler_Config.cpp
@@ -124,8 +124,8 @@ set(obs-websocket_SOURCES
 set(obs-websocket_HEADERS
 	src/obs-websocket.h
 	src/Config.h
-	src/WebSocketServer.h
-	src/WebSocketSession.h
+	src/websocketserver/WebSocketServer.h
+	src/websocketserver/rpc/WebSocketSession.h
 	src/eventhandler/EventHandler.h
 	src/eventhandler/types/EventSubscription.h
 	src/requesthandler/RequestHandler.h

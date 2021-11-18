@@ -1,13 +1,13 @@
 #include <obs-module.h>
 
 #include "WebSocketServer.h"
-#include "requesthandler/RequestHandler.h"
-#include "eventhandler/EventHandler.h"
-#include "obs-websocket.h"
-#include "Config.h"
-#include "utils/Crypto.h"
-#include "utils/Platform.h"
-#include "utils/Compat.h"
+#include "../requesthandler/RequestHandler.h"
+#include "../eventhandler/EventHandler.h"
+#include "../obs-websocket.h"
+#include "../Config.h"
+#include "../utils/Crypto.h"
+#include "../utils/Platform.h"
+#include "../utils/Compat.h"
 
 namespace WebSocketOpCode {
 	enum WebSocketOpCode: uint8_t {

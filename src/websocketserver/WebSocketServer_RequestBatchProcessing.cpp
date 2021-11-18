@@ -1,9 +1,9 @@
 #include <util/profiler.h>
 
 #include "WebSocketServer.h"
-#include "requesthandler/RequestHandler.h"
-#include "obs-websocket.h"
-#include "utils/Compat.h"
+#include "../requesthandler/RequestHandler.h"
+#include "../obs-websocket.h"
+#include "../utils/Compat.h"
 
 struct SerialFrameRequest
 {
