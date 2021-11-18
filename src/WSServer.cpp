@@ -124,12 +124,20 @@ void WSServer::start(quint16 port, bool lockToIPv4)
 
 void WSServer::stop()
 {
+	auto config = GetConfig();
+	if (config && config->DebugEnabled)
+		blog(LOG_INFO, "[WSServer::stop] Stopping...");
+
 	if (!_server.is_listening()) {
+		if (config && config->DebugEnabled)
+			blog(LOG_INFO, "[WSServer::stop] Server not listening.");
 		return;
 	}
 
 	_server.stop_listening();
 	for (connection_hdl hdl : _connections) {
+		if (config && config->DebugEnabled)
+			blog(LOG_INFO, "[WSServer::stop] Closing an active connection...");
 		websocketpp::lib::error_code errorCode;
 		_server.pause_reading(hdl, errorCode);
 		if (errorCode) {
@@ -142,17 +150,24 @@ void WSServer::stop()
 			blog(LOG_ERROR, "Error: %s", errorCode.message().c_str());
 			continue;
 		}
+		if (config && config->DebugEnabled)
+			blog(LOG_INFO, "[WSServer::stop] Finished closing connection.");
 	}
 
+	if (config && config->DebugEnabled)
+		blog(LOG_INFO, "[WSServer::stop] Stopping thread pool...");
 	_threadPool.waitForDone();
 
-	while (_connections.size() > 0) {
+	if (config && config->DebugEnabled)
+		blog(LOG_INFO, "[WSServer::stop] Waiting for all connections to close...");
+	while (_connections.size() > 0)
 		std::this_thread::sleep_for(std::chrono::milliseconds(10));
-	}
 
+	if (config && config->DebugEnabled)
+		blog(LOG_INFO, "[WSServer::stop] Performing join on IO thread...");
 	_serverThread.join();
 
-	blog(LOG_INFO, "server stopped successfully");
+	blog(LOG_INFO, "Server stopped successfully.");
 }
 
 void WSServer::broadcast(const RpcEvent& event)
