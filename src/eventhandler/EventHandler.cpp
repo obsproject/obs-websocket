@@ -132,7 +132,7 @@ void EventHandler::ConnectSourceSignals(obs_source_t *source) // Applies to inpu
 		signal_handler_connect(sh, "item_transform", HandleSceneItemTransformChanged, this);
 	}
 }
-	
+
 void EventHandler::DisconnectSourceSignals(obs_source_t *source)
 {
 	if (!source)
@@ -299,6 +299,12 @@ void EventHandler::OnFrontendEvent(enum obs_frontend_event event, void *private_
 			break;
 		case OBS_FRONTEND_EVENT_RECORDING_STOPPED:
 			eventHandler->HandleRecordStateChanged(OBS_WEBSOCKET_OUTPUT_STOPPED);
+			break;
+		case OBS_FRONTEND_EVENT_RECORDING_PAUSED:
+			eventHandler->HandleRecordStateChanged(OBS_WEBSOCKET_OUTPUT_PAUSED);
+			break;
+		case OBS_FRONTEND_EVENT_RECORDING_UNPAUSED:
+			eventHandler->HandleRecordStateChanged(OBS_WEBSOCKET_OUTPUT_RESUMED);
 			break;
 		case OBS_FRONTEND_EVENT_REPLAY_BUFFER_STARTING:
 			eventHandler->HandleReplayBufferStateChanged(OBS_WEBSOCKET_OUTPUT_STARTING);
