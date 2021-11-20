@@ -54,6 +54,9 @@ using OBSPropertiesAutoDestroy = OBSRef<obs_properties_t*, ___properties_dummy_a
 class Config;
 typedef std::shared_ptr<Config> ConfigPtr;
 
+class WebSocketApi;
+typedef std::shared_ptr<WebSocketApi> WebSocketApiPtr;
+
 class WebSocketServer;
 typedef std::shared_ptr<WebSocketServer> WebSocketServerPtr;
 
@@ -62,10 +65,12 @@ typedef std::shared_ptr<EventHandler> EventHandlerPtr;
 
 ConfigPtr GetConfig();
 
+WebSocketApiPtr GetWebSocketApi();
+
 WebSocketServerPtr GetWebSocketServer();
 
 EventHandlerPtr GetEventHandler();
 
 os_cpu_usage_info_t* GetCpuUsageInfo();
 
-bool IsDebugMode();
+bool IsDebugEnabled();

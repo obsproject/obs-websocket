@@ -85,6 +85,7 @@ configure_file(
 set(obs-websocket_SOURCES
 	src/obs-websocket.cpp
 	src/Config.cpp
+	src/WebSocketApi.cpp
 	src/websocketserver/WebSocketServer.cpp
 	src/websocketserver/WebSocketServer_Protocol.cpp
 	src/websocketserver/WebSocketServer_RequestBatchProcessing.cpp
@@ -124,6 +125,7 @@ set(obs-websocket_SOURCES
 set(obs-websocket_HEADERS
 	src/obs-websocket.h
 	src/Config.h
+	src/WebSocketApi.h
 	src/websocketserver/WebSocketServer.h
 	src/websocketserver/rpc/WebSocketSession.h
 	src/eventhandler/EventHandler.h
@@ -140,6 +142,7 @@ set(obs-websocket_HEADERS
 	src/utils/Platform.h
 	src/utils/Compat.h
 	src/utils/Utils.h
+	lib/obs-websocket-api.h
 	deps/qr/cpp/QrCode.hpp)
 
 

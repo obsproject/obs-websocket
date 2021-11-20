@@ -81,13 +81,13 @@ bool PreProcessVariables(const json &variables, const json &inputVariables, json
 		std::string key = it.key();
 
 		if (!variables.contains(key)) {
-			if (IsDebugMode())
+			if (IsDebugEnabled())
 				blog(LOG_WARNING, "[WebSocketServer::ProcessRequestBatch] inputVariables requested variable `%s`, but it does not exist. Skipping!", key.c_str());
 			continue;
 		}
 
 		if (!it.value().is_string()) {
-			if (IsDebugMode())
+			if (IsDebugEnabled())
 				blog(LOG_WARNING, "[WebSocketServer::ProcessRequestBatch] Value of item `%s` in inputVariables is not a string. Skipping!", key.c_str());
 			continue;
 		}
@@ -108,13 +108,13 @@ void PostProcessVariables(json &variables, const json &outputVariables, const js
 		std::string key = it.key();
 
 		if (!responseData.contains(key)) {
-			if (IsDebugMode())
+			if (IsDebugEnabled())
 				blog(LOG_WARNING, "[WebSocketServer::ProcessRequestBatch] outputVariables requested responseData item `%s`, but it does not exist. Skipping!", key.c_str());
 			continue;
 		}
 
 		if (!it.value().is_string()) {
-			if (IsDebugMode())
+			if (IsDebugEnabled())
 				blog(LOG_WARNING, "[WebSocketServer::ProcessRequestBatch] Value of item `%s` in outputVariables is not a string. Skipping!", key.c_str());
 			continue;
 		}

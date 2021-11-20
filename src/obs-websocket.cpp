@@ -26,6 +26,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include "obs-websocket.h"
 #include "Config.h"
+#include "WebSocketApi.h"
 #include "websocketserver/WebSocketServer.h"
 #include "eventhandler/EventHandler.h"
 #include "forms/SettingsDialog.h"
@@ -34,6 +35,7 @@ OBS_DECLARE_MODULE()
 OBS_MODULE_USE_DEFAULT_LOCALE("obs-websocket", "en-US")
 
 ConfigPtr _config;
+WebSocketApiPtr _webSocketApi;
 WebSocketServerPtr _webSocketServer;
 EventHandlerPtr _eventHandler;
 SettingsDialog *_settingsDialog = nullptr;
@@ -49,6 +51,8 @@ void ___data_item_dummy_addref(obs_data_item_t*) {};
 void ___data_item_release(obs_data_item_t* dataItem){ obs_data_item_release(&dataItem); };
 void ___properties_dummy_addref(obs_properties_t*) {};
 
+void WebSocketApiEventCallback(std::string vendorName, std::string eventType, obs_data_t *obsEventData);
+
 bool obs_module_load(void)
 {
 	blog(LOG_INFO, "[obs_module_load] you can haz websockets (Version: %s | RPC Version: %d)", OBS_WEBSOCKET_VERSION, OBS_WEBSOCKET_RPC_VERSION);
@@ -60,6 +64,8 @@ bool obs_module_load(void)
 
 	// Initialize event handler before server, as the server configures the event handler.
 	_eventHandler = EventHandlerPtr(new EventHandler());
+
+	_webSocketApi = WebSocketApiPtr(new WebSocketApi(WebSocketApiEventCallback));
 
 	_webSocketServer = WebSocketServerPtr(new WebSocketServer());
 
@@ -92,6 +98,8 @@ void obs_module_unload()
 
 	_eventHandler.reset();
 
+	_webSocketApi.reset();
+
 	_config->Save();
 	_config.reset();
 
@@ -103,6 +111,11 @@ void obs_module_unload()
 ConfigPtr GetConfig()
 {
 	return _config;
+}
+
+WebSocketApiPtr GetWebSocketApi()
+{
+	return _webSocketApi;
 }
 
 WebSocketServerPtr GetWebSocketServer()
@@ -120,7 +133,19 @@ os_cpu_usage_info_t* GetCpuUsageInfo()
 	return _cpuUsageInfo;
 }
 
-bool IsDebugMode()
+bool IsDebugEnabled()
 {
 	return !_config || _config->DebugEnabled;
+}
+
+void WebSocketApiEventCallback(std::string vendorName, std::string eventType, obs_data_t *obsEventData)
+{
+	json eventData = Utils::Json::ObsDataToJson(obsEventData);
+
+	json broadcastEventData;
+	broadcastEventData["vendorName"] = vendorName;
+	broadcastEventData["eventType"] = eventType;
+	broadcastEventData["eventData"] = eventData;
+
+	_webSocketServer->BroadcastEvent(EventSubscription::ExternalPlugins, "ExternalPluginEvent", broadcastEventData);
 }

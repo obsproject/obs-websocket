@@ -26,7 +26,8 @@ EventHandler::EventHandler() :
 	_inputShowStateChangedRef(0),
 	_sceneItemTransformChangedRef(0)
 {
-	blog(LOG_INFO, "[EventHandler::EventHandler] Setting up event handlers...");
+	if (IsDebugEnabled())
+		blog(LOG_INFO, "[EventHandler::EventHandler] Setting up...");
 
 	obs_frontend_add_event_callback(OnFrontendEvent, this);
 
@@ -40,12 +41,14 @@ EventHandler::EventHandler() :
 		blog(LOG_ERROR, "[EventHandler::EventHandler] Unable to get libobs signal handler!");
 	}
 
-	blog(LOG_INFO, "[EventHandler::EventHandler] Finished.");
+	if (IsDebugEnabled())
+		blog(LOG_INFO, "[EventHandler::EventHandler] Finished.");
 }
 
 EventHandler::~EventHandler()
 {
-	blog(LOG_INFO, "[EventHandler::~EventHandler] Removing event handlers...");
+	if (IsDebugEnabled())
+		blog(LOG_INFO, "[EventHandler::~EventHandler] Shutting down...");
 
 	obs_frontend_remove_event_callback(OnFrontendEvent, this);
 
@@ -59,7 +62,8 @@ EventHandler::~EventHandler()
 		blog(LOG_ERROR, "[EventHandler::~EventHandler] Unable to get libobs signal handler!");
 	}
 
-	blog(LOG_INFO, "[EventHandler::~EventHandler] Finished.");
+	if (IsDebugEnabled())
+		blog(LOG_INFO, "[EventHandler::~EventHandler] Finished.");
 }
 
 void EventHandler::SetBroadcastCallback(EventHandler::BroadcastCallback cb)

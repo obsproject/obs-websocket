@@ -41,8 +41,6 @@ namespace EventSubscription {
 		SceneItems = (1 << 7),
 		// Receive events in the `MediaInputs` category
 		MediaInputs = (1 << 8),
-		// Receive all event categories
-		All = (General | Config | Scenes | Inputs | Transitions | Filters | Outputs | SceneItems | MediaInputs),
 		// InputVolumeMeters event (high-volume)
 		InputVolumeMeters = (1 << 9),
 		// InputActiveStateChanged event (high-volume)
@@ -51,5 +49,10 @@ namespace EventSubscription {
 		InputShowStateChanged = (1 << 11),
 		// SceneItemTransformChanged event (high-volume)
 		SceneItemTransformChanged = (1 << 12),
+		// Receive events from external OBS plugins
+		ExternalPlugins = (1 << 13),
+
+		// Receive all event categories (exclude high-volume)
+		All = (General | Config | Scenes | Inputs | Transitions | Filters | Outputs | SceneItems | MediaInputs | ExternalPlugins),
 	};
 };

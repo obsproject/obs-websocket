@@ -142,6 +142,9 @@ json Utils::Json::ObsDataToJson(obs_data_t *d, bool includeDefault)
 	json j = json::object();
 	obs_data_item_t *item = nullptr;
 
+	if (!d)
+		return j;
+
 	for (item = obs_data_first(d); item; obs_data_item_next(&item)) {
 		enum obs_data_type type = obs_data_item_gettype(item);
 		const char *name = obs_data_item_get_name(item);
