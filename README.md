@@ -1,16 +1,10 @@
 # obs-websocket
 
-## YOU HAVE STUMBLED UPON THE DEV BRANCH FOR V5.0.0
-
-- You can find the main protocol spec here: [PROTOCOL.md](docs/generated/protocol.md).
-- You can find the planned requests sheet [here](https://docs.google.com/spreadsheets/d/1LfCZrbT8e7cSaKo_TuPDd-CJiptL7RSuo8iE63vMmMs/edit?usp=sharing)
-
-
 <p align="center">
   <img src="/.github/images/obsws_logo.png" width=150 align="center">
 </p>
 
-WebSockets API for OBS Studio.
+WebSocket API for OBS Studio.
 
 [![CI Multiplatform Build](https://github.com/obsproject/obs-websocket/actions/workflows/main.yml/badge.svg?branch=master)](https://github.com/obs-websocket/obs-websocket/actions/workflows/main.yml)
 [![Discord](https://img.shields.io/discord/715691013825364120.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/WBaSQ3A)
