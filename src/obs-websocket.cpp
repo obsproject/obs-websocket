@@ -91,7 +91,7 @@ void obs_module_unload()
 	blog(LOG_INFO, "[obs_module_unload] Shutting down...");
 
 	if (_webSocketServer->IsListening()) {
-		blog(LOG_INFO, "[obs_module_unload] WebSocket server is running. Stopping...");
+		blog_debug("[obs_module_unload] WebSocket server is running. Stopping...");
 		_webSocketServer->Stop();
 	}
 	_webSocketServer.reset();

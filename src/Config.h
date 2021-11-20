@@ -39,7 +39,7 @@ class Config {
 		bool ServerEnabled;
 		uint16_t ServerPort;
 		std::atomic<bool> DebugEnabled;
-		std::atomic<bool> AlertsEnabled;
+		bool AlertsEnabled;
 		bool AuthRequired;
 		QString ServerPassword;
 

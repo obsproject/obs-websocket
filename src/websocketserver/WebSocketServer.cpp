@@ -114,13 +114,12 @@ void WebSocketServer::Start()
 
 	_serverPort = conf->ServerPort;
 	_serverPassword = conf->ServerPassword;
-	_debugEnabled = conf->DebugEnabled;
 	AuthenticationRequired = conf->AuthRequired;
 	AuthenticationSalt = Utils::Crypto::GenerateSalt();
 	AuthenticationSecret = Utils::Crypto::GenerateSecret(conf->ServerPassword.toStdString(), AuthenticationSalt);
 
 	// Set log levels if debug is enabled
-	if (_debugEnabled) {
+	if (IsDebugEnabled()) {
 		_server.get_alog().set_channels(websocketpp::log::alevel::all);
 		_server.get_alog().clear_channels(websocketpp::log::alevel::frame_header | websocketpp::log::alevel::frame_payload | websocketpp::log::alevel::control);
 		_server.get_elog().set_channels(websocketpp::log::elevel::all);
@@ -232,8 +231,7 @@ void WebSocketServer::onObsLoaded()
 	}
 
 	if (conf->ServerEnabled) {
-		if (conf->DebugEnabled)
-			blog(LOG_INFO, "[WebSocketServer::onObsLoaded] Server is enabled in configuration. Starting server...");
+		blog(LOG_INFO, "[WebSocketServer::onObsLoaded] WebSocket server is enabled, starting...");
 		Start();
 	}
 }
@@ -307,8 +305,7 @@ void WebSocketServer::onOpen(websocketpp::connection_hdl hdl)
 	// Log connection
 	blog(LOG_INFO, "[WebSocketServer::onOpen] New WebSocket client has connected from %s", session->RemoteAddress().c_str());
 
-	if (_debugEnabled)
-		blog(LOG_INFO, "[WebSocketServer::onOpen] Sending Op 0 (Hello) message:\n%s", helloMessage.dump(2).c_str());
+	blog_debug("[WebSocketServer::onOpen] Sending Op 0 (Hello) message:\n%s", helloMessage.dump(2).c_str());
 
 	// Send object to client
 	websocketpp::lib::error_code errorCode;
@@ -426,8 +423,7 @@ void WebSocketServer::onMessage(websocketpp::connection_hdl hdl, websocketpp::se
 			}
 		}
 
-		if (_debugEnabled)
-			blog(LOG_INFO, "[WebSocketServer::onMessage] Incoming message (decoded):\n%s", incomingMessage.dump(2).c_str());
+		blog_debug("[WebSocketServer::onMessage] Incoming message (decoded):\n%s", incomingMessage.dump(2).c_str());
 
 		ProcessResult ret;
 
@@ -480,8 +476,7 @@ skipProcessing:
 			}
 			session->IncrementOutgoingMessages();
 
-			if (_debugEnabled)
-				blog(LOG_INFO, "[WebSocketServer::onMessage] Outgoing message:\n%s", ret.result.dump(2).c_str());
+			blog_debug("[WebSocketServer::onMessage] Outgoing message:\n%s", ret.result.dump(2).c_str());
 
 			if (errorCode)
 				blog(LOG_WARNING, "[WebSocketServer::onMessage] Sending message to client failed: %s", errorCode.message().c_str());

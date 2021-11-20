@@ -19,8 +19,7 @@ WebSocketApi::Vendor *get_vendor(calldata_t *cd)
 WebSocketApi::WebSocketApi(EventCallback cb) :
 	_eventCallback(cb)
 {
-	if (IsDebugEnabled())
-		blog(LOG_INFO, "[WebSocketApi::WebSocketApi] Setting up...");
+	blog_debug("[WebSocketApi::WebSocketApi] Setting up...");
 
 	_procHandler = proc_handler_create();
 
@@ -34,25 +33,21 @@ WebSocketApi::WebSocketApi(EventCallback cb) :
 
 	proc_handler_add(ph, "bool obs_websocket_api_get_ph(out ptr ph)", &get_ph_cb, this);
 
-	if (IsDebugEnabled())
-		blog(LOG_INFO, "[WebSocketApi::WebSocketApi] Finished.");
+	blog_debug("[WebSocketApi::WebSocketApi] Finished.");
 }
 
 WebSocketApi::~WebSocketApi()
 {
-	if (IsDebugEnabled())
-		blog(LOG_INFO, "[WebSocketApi::~WebSocketApi] Shutting down...");
+	blog_debug("[WebSocketApi::~WebSocketApi] Shutting down...");
 
 	proc_handler_destroy(_procHandler);
 
 	for (auto vendor : _vendors) {
-		if (IsDebugEnabled())
-			blog(LOG_INFO, "[WebSocketApi::~WebSocketApi] Deleting vendor: %s", vendor.first.c_str());
+		blog_debug("[WebSocketApi::~WebSocketApi] Deleting vendor: %s", vendor.first.c_str());
 		delete vendor.second;
 	}
 
-	if (IsDebugEnabled())
-		blog(LOG_INFO, "[WebSocketApi::~WebSocketApi] Finished.");
+	blog_debug("[WebSocketApi::~WebSocketApi] Finished.");
 }
 
 enum WebSocketApi::RequestReturnCode WebSocketApi::PerformVendorRequest(std::string vendorName, std::string requestType, obs_data_t *requestData, obs_data_t *responseData)
@@ -112,8 +107,7 @@ void WebSocketApi::vendor_register_cb(void *priv_data, calldata_t *cd)
 
 	c->_vendors[vendorName] = v;
 
-	if (IsDebugEnabled())
-		blog(LOG_INFO, "[WebSocketApi::vendor_register_cb] [vendorName: %s] Registered new vendor.", v->_name.c_str());
+	blog_debug("[WebSocketApi::vendor_register_cb] [vendorName: %s] Registered new vendor.", v->_name.c_str());
 
 	calldata_set_ptr(cd, "vendor", static_cast<void*>(v));
 
@@ -151,8 +145,7 @@ void WebSocketApi::vendor_request_register_cb(void *priv_data, calldata_t *cd)
 
 	v->_requests[requestType] = *cb;
 
-	if (IsDebugEnabled())
-		blog(LOG_INFO, "[WebSocketApi::vendor_request_register_cb] [vendorName: %s] Registered new vendor request: %s", v->_name.c_str(), requestType);
+	blog_debug("[WebSocketApi::vendor_request_register_cb] [vendorName: %s] Registered new vendor request: %s", v->_name.c_str(), requestType);
 
 	RETURN_SUCCESS();
 }
@@ -180,8 +173,7 @@ void WebSocketApi::vendor_request_unregister_cb(void *priv_data, calldata_t *cd)
 
 	v->_requests.erase(requestType);
 
-	if (IsDebugEnabled())
-		blog(LOG_INFO, "[WebSocketApi::vendor_request_unregister_cb] [vendorName: %s] Unregistered vendor request: %s", v->_name.c_str(), requestType);
+	blog_debug("[WebSocketApi::vendor_request_unregister_cb] [vendorName: %s] Unregistered vendor request: %s", v->_name.c_str(), requestType);
 
 	RETURN_SUCCESS();
 }

@@ -306,8 +306,6 @@ std::vector<json> Utils::Obs::ListHelper::GetSceneItemList(obs_scene_t *scene, b
 		item["sceneItemId"] = obs_sceneitem_get_id(sceneItem);
 		// Should be slightly faster than calling obs_sceneitem_get_order_position()
 		item["sceneItemIndex"] = enumData->first.size();
-		//OBSSource itemSourcee = obs_sceneitem_get_source(sceneItem);
-		//blog(LOG_INFO, "source name: %s | item refs: %lu", obs_source_get_name(itemSourcee), obs_source_get_sceneitem_count(itemSourcee));
 		if (!enumData->second) {
 			OBSSource itemSource = obs_sceneitem_get_source(sceneItem);
 			item["sourceName"] = obs_source_get_name(itemSource);

@@ -132,5 +132,4 @@ class WebSocketServer : QObject
 		std::map<websocketpp::connection_hdl, SessionPtr, std::owner_less<websocketpp::connection_hdl>> _sessions;
 		uint16_t _serverPort;
 		QString _serverPassword;
-		bool _debugEnabled;
 };

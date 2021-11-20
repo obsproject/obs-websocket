@@ -26,8 +26,7 @@ EventHandler::EventHandler() :
 	_inputShowStateChangedRef(0),
 	_sceneItemTransformChangedRef(0)
 {
-	if (IsDebugEnabled())
-		blog(LOG_INFO, "[EventHandler::EventHandler] Setting up...");
+	blog_debug("[EventHandler::EventHandler] Setting up...");
 
 	obs_frontend_add_event_callback(OnFrontendEvent, this);
 
@@ -41,14 +40,12 @@ EventHandler::EventHandler() :
 		blog(LOG_ERROR, "[EventHandler::EventHandler] Unable to get libobs signal handler!");
 	}
 
-	if (IsDebugEnabled())
-		blog(LOG_INFO, "[EventHandler::EventHandler] Finished.");
+	blog_debug("[EventHandler::EventHandler] Finished.");
 }
 
 EventHandler::~EventHandler()
 {
-	if (IsDebugEnabled())
-		blog(LOG_INFO, "[EventHandler::~EventHandler] Shutting down...");
+	blog_debug("[EventHandler::~EventHandler] Shutting down...");
 
 	obs_frontend_remove_event_callback(OnFrontendEvent, this);
 
@@ -62,8 +59,7 @@ EventHandler::~EventHandler()
 		blog(LOG_ERROR, "[EventHandler::~EventHandler] Unable to get libobs signal handler!");
 	}
 
-	if (IsDebugEnabled())
-		blog(LOG_INFO, "[EventHandler::~EventHandler] Finished.");
+	blog_debug("[EventHandler::~EventHandler] Finished.");
 }
 
 void EventHandler::SetBroadcastCallback(EventHandler::BroadcastCallback cb)
@@ -197,7 +193,7 @@ void EventHandler::OnFrontendEvent(enum obs_frontend_event event, void *private_
 
 	if (!eventHandler->_obsLoaded.load()) {
 		if (event == OBS_FRONTEND_EVENT_FINISHED_LOADING) {
-			blog(LOG_INFO, "[EventHandler::OnFrontendEvent] OBS has finished loading. Connecting final handlers and enabling events...");
+			blog_debug("[EventHandler::OnFrontendEvent] OBS has finished loading. Connecting final handlers and enabling events...");
 			// Connect source signals and enable events only after OBS has fully loaded (to reduce extra logging).
 			eventHandler->_obsLoaded.store(true);
 
@@ -216,7 +212,7 @@ void EventHandler::OnFrontendEvent(enum obs_frontend_event event, void *private_
 				return true;
 			}, private_data);
 
-			blog(LOG_INFO, "[EventHandler::OnFrontendEvent] Finished.");
+			blog_debug("[EventHandler::OnFrontendEvent] Finished.");
 
 			if (eventHandler->_obsLoadedCallback)
 				eventHandler->_obsLoadedCallback();
@@ -230,7 +226,7 @@ void EventHandler::OnFrontendEvent(enum obs_frontend_event event, void *private_
 		case OBS_FRONTEND_EVENT_EXIT:
 			eventHandler->HandleExitStarted();
 
-			blog(LOG_INFO, "[EventHandler::OnFrontendEvent] OBS is unloading. Disabling events...");
+			blog_debug("[EventHandler::OnFrontendEvent] OBS is unloading. Disabling events...");
 			// Disconnect source signals and disable events when OBS starts unloading (to reduce extra logging).
 			eventHandler->_obsLoaded.store(false);
 
@@ -249,7 +245,7 @@ void EventHandler::OnFrontendEvent(enum obs_frontend_event event, void *private_
 				return true;
 			}, private_data);
 
-			blog(LOG_INFO, "[EventHandler::OnFrontendEvent] Finished.");
+			blog_debug("[EventHandler::OnFrontendEvent] Finished.");
 
 			break;
 		case OBS_FRONTEND_EVENT_STUDIO_MODE_ENABLED:
