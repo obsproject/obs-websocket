@@ -107,16 +107,18 @@ void SettingsDialog::showEvent(QShowEvent *event)
 	FillSessionTable();
 
 	sessionTableTimer->start(1000);
+
+	UNUSED_PARAMETER(event);
 }
 
 void SettingsDialog::hideEvent(QHideEvent *event)
 {
-	UNUSED_PARAMETER(event);
-
 	if (sessionTableTimer->isActive())
 		sessionTableTimer->stop();
 
 	connectInfo->hide();
+
+	UNUSED_PARAMETER(event);
 }
 
 void SettingsDialog::ToggleShowHide()

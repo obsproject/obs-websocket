@@ -41,6 +41,8 @@ void EventHandler::HandleSceneNameChanged(obs_source_t *source, std::string oldS
 	eventData["oldSceneName"] = oldSceneName;
 	eventData["sceneName"] = sceneName;
 	BroadcastEvent(EventSubscription::Scenes, "SceneNameChanged", eventData);
+
+	UNUSED_PARAMETER(source);
 }
 
 void EventHandler::HandleCurrentSceneChanged()

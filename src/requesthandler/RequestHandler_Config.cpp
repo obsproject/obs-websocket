@@ -84,6 +84,8 @@ RequestResult RequestHandler::GetSceneCollectionList(const Request& request)
 	responseData["currentSceneCollectionName"] = Utils::Obs::StringHelper::GetCurrentSceneCollection();
 	responseData["sceneCollections"] = Utils::Obs::ListHelper::GetSceneCollectionList();
 	return RequestResult::Success(responseData);
+
+	UNUSED_PARAMETER(request);
 }
 
 // Does not return until collection has finished switching
@@ -139,6 +141,8 @@ RequestResult RequestHandler::GetProfileList(const Request& request)
 	responseData["currentProfileName"] = Utils::Obs::StringHelper::GetCurrentProfile();
 	responseData["profiles"] = Utils::Obs::ListHelper::GetProfileList();
 	return RequestResult::Success(responseData);
+
+	UNUSED_PARAMETER(request);
 }
 
 RequestResult RequestHandler::SetCurrentProfile(const Request& request)
@@ -278,6 +282,8 @@ RequestResult RequestHandler::GetVideoSettings(const Request& request)
 	responseData["outputHeight"] = ovi.output_height;
 
 	return RequestResult::Success(responseData);
+
+	UNUSED_PARAMETER(request);
 }
 
 RequestResult RequestHandler::SetVideoSettings(const Request& request)
@@ -336,6 +342,8 @@ RequestResult RequestHandler::GetStreamServiceSettings(const Request& request)
 	responseData["streamServiceSettings"] = Utils::Json::ObsDataToJson(serviceSettings, true);
 
 	return RequestResult::Success(responseData);
+
+	UNUSED_PARAMETER(request);
 }
 
 RequestResult RequestHandler::SetStreamServiceSettings(const Request& request)

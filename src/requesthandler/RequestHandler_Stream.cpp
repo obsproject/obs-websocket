@@ -35,6 +35,8 @@ RequestResult RequestHandler::GetStreamStatus(const Request& request)
 	responseData["outputTotalFrames"] = obs_output_get_total_frames(streamOutput);
 
 	return RequestResult::Success(responseData);
+
+	UNUSED_PARAMETER(request);
 }
 
 RequestResult RequestHandler::ToggleStream(const Request& request)
@@ -49,6 +51,8 @@ RequestResult RequestHandler::ToggleStream(const Request& request)
 	}
 
 	return RequestResult::Success(responseData);
+
+	UNUSED_PARAMETER(request);
 }
 
 RequestResult RequestHandler::StartStream(const Request& request)
@@ -60,6 +64,8 @@ RequestResult RequestHandler::StartStream(const Request& request)
 	obs_frontend_streaming_start();
 
 	return RequestResult::Success();
+
+	UNUSED_PARAMETER(request);
 }
 
 RequestResult RequestHandler::StopStream(const Request& request)
@@ -71,4 +77,6 @@ RequestResult RequestHandler::StopStream(const Request& request)
 	obs_frontend_streaming_stop();
 
 	return RequestResult::Success();
+
+	UNUSED_PARAMETER(request);
 }

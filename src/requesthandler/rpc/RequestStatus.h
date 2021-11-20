@@ -90,4 +90,4 @@ namespace RequestStatus {
 		// The combination of request parameters cannot be used to perform an action
 		CannotAct = 703,
 	};
-};
+}

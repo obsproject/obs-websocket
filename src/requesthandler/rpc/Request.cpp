@@ -46,12 +46,12 @@ Request::Request(const std::string &requestType, const json &requestData, const 
 {
 }
 
-const bool Request::Contains(const std::string &keyName) const
+bool Request::Contains(const std::string &keyName) const
 {
 	return (RequestData.contains(keyName) && !RequestData[keyName].is_null());
 }
 
-const bool Request::ValidateBasic(const std::string &keyName, RequestStatus::RequestStatus &statusCode, std::string &comment) const
+bool Request::ValidateBasic(const std::string &keyName, RequestStatus::RequestStatus &statusCode, std::string &comment) const
 {
 	if (!HasRequestData) {
 		statusCode = RequestStatus::MissingRequestData;
@@ -68,7 +68,7 @@ const bool Request::ValidateBasic(const std::string &keyName, RequestStatus::Req
 	return true;
 }
 
-const bool Request::ValidateOptionalNumber(const std::string &keyName, RequestStatus::RequestStatus &statusCode, std::string &comment, const double minValue, const double maxValue) const
+bool Request::ValidateOptionalNumber(const std::string &keyName, RequestStatus::RequestStatus &statusCode, std::string &comment, const double minValue, const double maxValue) const
 {
 	if (!RequestData[keyName].is_number()) {
 		statusCode = RequestStatus::InvalidRequestParameterType;
@@ -91,7 +91,7 @@ const bool Request::ValidateOptionalNumber(const std::string &keyName, RequestSt
 	return true;
 }
 
-const bool Request::ValidateNumber(const std::string &keyName, RequestStatus::RequestStatus &statusCode, std::string &comment, const double minValue, const double maxValue) const
+bool Request::ValidateNumber(const std::string &keyName, RequestStatus::RequestStatus &statusCode, std::string &comment, const double minValue, const double maxValue) const
 {
 	if (!ValidateBasic(keyName, statusCode, comment))
 		return false;
@@ -102,7 +102,7 @@ const bool Request::ValidateNumber(const std::string &keyName, RequestStatus::Re
 	return true;
 }
 
-const bool Request::ValidateOptionalString(const std::string &keyName, RequestStatus::RequestStatus &statusCode, std::string &comment, const bool allowEmpty) const
+bool Request::ValidateOptionalString(const std::string &keyName, RequestStatus::RequestStatus &statusCode, std::string &comment, const bool allowEmpty) const
 {
 	if (!RequestData[keyName].is_string()) {
 		statusCode = RequestStatus::InvalidRequestParameterType;
@@ -119,7 +119,7 @@ const bool Request::ValidateOptionalString(const std::string &keyName, RequestSt
 	return true;
 }
 
-const bool Request::ValidateString(const std::string &keyName, RequestStatus::RequestStatus &statusCode, std::string &comment, const bool allowEmpty) const
+bool Request::ValidateString(const std::string &keyName, RequestStatus::RequestStatus &statusCode, std::string &comment, const bool allowEmpty) const
 {
 	if (!ValidateBasic(keyName, statusCode, comment))
 		return false;
@@ -130,7 +130,7 @@ const bool Request::ValidateString(const std::string &keyName, RequestStatus::Re
 	return true;
 }
 
-const bool Request::ValidateOptionalBoolean(const std::string &keyName, RequestStatus::RequestStatus &statusCode, std::string &comment) const
+bool Request::ValidateOptionalBoolean(const std::string &keyName, RequestStatus::RequestStatus &statusCode, std::string &comment) const
 {
 	if (!RequestData[keyName].is_boolean()) {
 		statusCode = RequestStatus::InvalidRequestParameterType;
@@ -141,7 +141,7 @@ const bool Request::ValidateOptionalBoolean(const std::string &keyName, RequestS
 	return true;
 }
 
-const bool Request::ValidateBoolean(const std::string &keyName, RequestStatus::RequestStatus &statusCode, std::string &comment) const
+bool Request::ValidateBoolean(const std::string &keyName, RequestStatus::RequestStatus &statusCode, std::string &comment) const
 {
 	if (!ValidateBasic(keyName, statusCode, comment))
 		return false;
@@ -152,7 +152,7 @@ const bool Request::ValidateBoolean(const std::string &keyName, RequestStatus::R
 	return true;
 }
 
-const bool Request::ValidateOptionalObject(const std::string &keyName, RequestStatus::RequestStatus &statusCode, std::string &comment, const bool allowEmpty) const
+bool Request::ValidateOptionalObject(const std::string &keyName, RequestStatus::RequestStatus &statusCode, std::string &comment, const bool allowEmpty) const
 {
 	if (!RequestData[keyName].is_object()) {
 		statusCode = RequestStatus::InvalidRequestParameterType;
@@ -169,7 +169,7 @@ const bool Request::ValidateOptionalObject(const std::string &keyName, RequestSt
 	return true;
 }
 
-const bool Request::ValidateObject(const std::string &keyName, RequestStatus::RequestStatus &statusCode, std::string &comment, const bool allowEmpty) const
+bool Request::ValidateObject(const std::string &keyName, RequestStatus::RequestStatus &statusCode, std::string &comment, const bool allowEmpty) const
 {
 	if (!ValidateBasic(keyName, statusCode, comment))
 		return false;
@@ -180,7 +180,7 @@ const bool Request::ValidateObject(const std::string &keyName, RequestStatus::Re
 	return true;
 }
 
-const bool Request::ValidateOptionalArray(const std::string &keyName, RequestStatus::RequestStatus &statusCode, std::string &comment, const bool allowEmpty) const
+bool Request::ValidateOptionalArray(const std::string &keyName, RequestStatus::RequestStatus &statusCode, std::string &comment, const bool allowEmpty) const
 {
 	if (!RequestData[keyName].is_array()) {
 		statusCode = RequestStatus::InvalidRequestParameterType;
@@ -197,7 +197,7 @@ const bool Request::ValidateOptionalArray(const std::string &keyName, RequestSta
 	return true;
 }
 
-const bool Request::ValidateArray(const std::string &keyName, RequestStatus::RequestStatus &statusCode, std::string &comment, const bool allowEmpty) const
+bool Request::ValidateArray(const std::string &keyName, RequestStatus::RequestStatus &statusCode, std::string &comment, const bool allowEmpty) const
 {
 	if (!ValidateBasic(keyName, statusCode, comment))
 		return false;

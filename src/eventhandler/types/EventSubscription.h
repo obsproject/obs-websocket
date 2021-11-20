@@ -55,4 +55,4 @@ namespace EventSubscription {
 		// Receive all event categories (exclude high-volume)
 		All = (General | Config | Scenes | Inputs | Transitions | Filters | Outputs | SceneItems | MediaInputs | ExternalPlugins),
 	};
-};
+}

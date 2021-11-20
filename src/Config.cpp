@@ -37,9 +37,9 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #define CMDLINE_WEBSOCKET_DEBUG "websocket_debug"
 
 Config::Config() :
-	FirstLoad(true),
 	PortOverridden(false),
 	PasswordOverridden(false),
+	FirstLoad(true),
 	ServerEnabled(true),
 	ServerPort(4444),
 	DebugEnabled(false),

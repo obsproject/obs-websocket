@@ -40,6 +40,8 @@ RequestResult RequestHandler::GetVersion(const Request& request)
 	responseData["supportedImageFormats"] = supportedImageFormats;
 
 	return RequestResult::Success(responseData);
+
+	UNUSED_PARAMETER(request);
 }
 
 RequestResult RequestHandler::BroadcastCustomEvent(const Request& request)
@@ -66,6 +68,8 @@ RequestResult RequestHandler::GetStats(const Request& request)
 	responseData["webSocketSessionOutgoingMessages"] = _session->OutgoingMessages();
 
 	return RequestResult::Success(responseData);
+
+	UNUSED_PARAMETER(request);
 }
 
 RequestResult RequestHandler::GetHotkeyList(const Request& request)
@@ -73,6 +77,8 @@ RequestResult RequestHandler::GetHotkeyList(const Request& request)
 	json responseData;
 	responseData["hotkeys"] = Utils::Obs::ListHelper::GetHotkeyNameList();
 	return RequestResult::Success(responseData);
+
+	UNUSED_PARAMETER(request);
 }
 
 RequestResult RequestHandler::TriggerHotkeyByName(const Request& request)
@@ -140,6 +146,8 @@ RequestResult RequestHandler::GetStudioModeEnabled(const Request& request)
 	json responseData;
 	responseData["studioModeEnabled"] = obs_frontend_preview_program_mode_active();
 	return RequestResult::Success(responseData);
+
+	UNUSED_PARAMETER(request);
 }
 
 RequestResult RequestHandler::SetStudioModeEnabled(const Request& request)

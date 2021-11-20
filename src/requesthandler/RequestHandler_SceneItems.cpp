@@ -225,7 +225,8 @@ RequestResult RequestHandler::SetSceneItemTransform(const Request& request)
 		if (!r.ValidateOptionalNumber("scaleX", statusCode, comment))
 			return RequestResult::Error(statusCode, comment);
 		float scaleX = r.RequestData["scaleX"];
-		if (!(-90001.0 < (scaleX * sourceWidth) < 90001.0))
+		float finalWidth = scaleX * sourceWidth;
+		if (!(finalWidth > -90001.0 && finalWidth < 90001.0))
 			return RequestResult::Error(RequestStatus::RequestParameterOutOfRange, "The parameter scaleX is too small or large for the current source resolution.");
 		sceneItemTransform.scale.x = scaleX;
 		transformChanged = true;
@@ -234,7 +235,8 @@ RequestResult RequestHandler::SetSceneItemTransform(const Request& request)
 		if (!r.ValidateOptionalNumber("scaleY", statusCode, comment, -90001.0, 90001.0))
 			return RequestResult::Error(statusCode, comment);
 		float scaleY = r.RequestData["scaleY"];
-		if (!(-90001.0 < (scaleY * sourceHeight) < 90001.0))
+		float finalHeight = scaleY * sourceHeight;
+		if (!(finalHeight > -90001.0 && finalHeight < 90001.0))
 			return RequestResult::Error(RequestStatus::RequestParameterOutOfRange, "The parameter scaleY is too small or large for the current source resolution.");
 		sceneItemTransform.scale.y = scaleY;
 		transformChanged = true;

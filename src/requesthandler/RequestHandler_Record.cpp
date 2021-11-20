@@ -33,6 +33,8 @@ RequestResult RequestHandler::GetRecordStatus(const Request& request)
 	responseData["outputBytes"] = (uint64_t)obs_output_get_total_bytes(recordOutput);
 
 	return RequestResult::Success(responseData);
+
+	UNUSED_PARAMETER(request);
 }
 
 RequestResult RequestHandler::ToggleRecord(const Request& request)
@@ -47,6 +49,8 @@ RequestResult RequestHandler::ToggleRecord(const Request& request)
 	}
 
 	return RequestResult::Success(responseData);
+
+	UNUSED_PARAMETER(request);
 }
 
 RequestResult RequestHandler::StartRecord(const Request& request)
@@ -58,6 +62,8 @@ RequestResult RequestHandler::StartRecord(const Request& request)
 	obs_frontend_recording_start();
 
 	return RequestResult::Success();
+
+	UNUSED_PARAMETER(request);
 }
 
 RequestResult RequestHandler::StopRecord(const Request& request)
@@ -69,6 +75,8 @@ RequestResult RequestHandler::StopRecord(const Request& request)
 	obs_frontend_recording_stop();
 
 	return RequestResult::Success();
+
+	UNUSED_PARAMETER(request);
 }
 
 RequestResult RequestHandler::ToggleRecordPause(const Request& request)
@@ -83,6 +91,8 @@ RequestResult RequestHandler::ToggleRecordPause(const Request& request)
 	}
 
 	return RequestResult::Success(responseData);
+
+	UNUSED_PARAMETER(request);
 }
 
 RequestResult RequestHandler::PauseRecord(const Request& request)
@@ -94,6 +104,8 @@ RequestResult RequestHandler::PauseRecord(const Request& request)
 	obs_frontend_recording_pause(true);
 
 	return RequestResult::Success();
+
+	UNUSED_PARAMETER(request);
 }
 
 RequestResult RequestHandler::ResumeRecord(const Request& request)
@@ -105,6 +117,8 @@ RequestResult RequestHandler::ResumeRecord(const Request& request)
 	obs_frontend_recording_pause(false);
 
 	return RequestResult::Success();
+
+	UNUSED_PARAMETER(request);
 }
 
 RequestResult RequestHandler::GetRecordDirectory(const Request& request)
@@ -113,4 +127,6 @@ RequestResult RequestHandler::GetRecordDirectory(const Request& request)
 	responseData["recordDirectory"] = Utils::Obs::StringHelper::GetCurrentRecordOutputPath();
 
 	return RequestResult::Success(responseData);
+
+	UNUSED_PARAMETER(request);
 }

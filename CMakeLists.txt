@@ -275,6 +275,8 @@ endif()
 if(UNIX AND NOT APPLE)
 	include(GNUInstallDirs)
 
+	target_compile_options(obs-websocket PRIVATE -Wall -Wextra -Wpedantic -Werror -Wno-missing-field-initializers)
+
 	set_target_properties(obs-websocket PROPERTIES PREFIX "")
 	target_link_libraries(obs-websocket obs-frontend-api)
 

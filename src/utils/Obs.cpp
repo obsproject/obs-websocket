@@ -258,6 +258,8 @@ std::vector<obs_hotkey_t *> Utils::Obs::ListHelper::GetHotkeyList()
 		ret->push_back(hotkey);
 
 		return true;
+
+		UNUSED_PARAMETER(id);
 	}, &ret);
 
 	return ret;
@@ -323,6 +325,8 @@ std::vector<json> Utils::Obs::ListHelper::GetSceneItemList(obs_scene_t *scene, b
 		enumData->first.push_back(item);
 
 		return true;
+
+		UNUSED_PARAMETER(scene);
 	}, &enumData);
 
 	return enumData.first;

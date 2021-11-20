@@ -47,6 +47,8 @@ void EventHandler::HandleInputNameChanged(obs_source_t *source, std::string oldI
 	eventData["oldInputName"] = oldInputName;
 	eventData["inputName"] = inputName;
 	BroadcastEvent(EventSubscription::Inputs, "InputNameChanged", eventData);
+
+	UNUSED_PARAMETER(source);
 }
 
 void EventHandler::HandleInputActiveStateChanged(void *param, calldata_t *data)

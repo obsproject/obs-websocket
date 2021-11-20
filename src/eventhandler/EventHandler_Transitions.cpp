@@ -41,4 +41,6 @@ void EventHandler::HandleTransitionNameChanged(obs_source_t *source, std::string
 	eventData["oldTransitionName"] = oldTransitionName;
 	eventData["transitionName"] = transitionName;
 	BroadcastEvent(EventSubscription::Transitions, "TransitionNameChanged", eventData);
+
+	UNUSED_PARAMETER(source);
 }

@@ -40,7 +40,7 @@ namespace WebSocketOpCode {
 		RequestBatch = 8,
 		RequestBatchResponse = 9,
 	};
-};
+}
 
 bool IsSupportedRpcVersion(uint8_t requestedVersion)
 {
