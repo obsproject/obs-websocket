@@ -1,6 +1,6 @@
 <!--- Please fill out the following template, which will help other contributors review your Pull Request. -->
 
-<!--- Make sure you’ve read the contribution guidelines here: https://github.com/obs-websocket/obs-websocket/blob/master/CONTRIBUTING.md -->
+<!--- Make sure you’ve read the contribution guidelines here: https://github.com/obsproject/obs-websocket/blob/master/CONTRIBUTING.md -->
 
 ### Description
 <!--- Describe your changes. -->
@@ -27,7 +27,7 @@ Tested OS(s):
 ### Checklist:
 <!--- Go over all the following points, and put an `x` in all the boxes that apply. -->
 <!--- If you're unsure about any of these, don't hesitate to ask. We're here to help! -->
--  [ ] I have read the [**contributing** document](https://github.com/obs-websocket/obs-websocket/blob/4.x-current/CONTRIBUTING.md).
+-  [ ] I have read the [**contributing** document](https://github.com/obsproject/obs-websocket/blob/4.x-current/CONTRIBUTING.md).
 -  [ ] My code is not on the master branch.
 -  [ ] The code has been tested.
 -  [ ] All commit messages are properly formatted and commits squashed where appropriate.

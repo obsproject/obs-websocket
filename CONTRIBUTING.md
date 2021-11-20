@@ -42,7 +42,7 @@ if (!success)
 return RequestResult::Success();
 ```
 
-* Try to use the [built-in](https://github.com/obs-websocket/obs-websocket/blob/master/src/requesthandler/rpc/Request.h) request checks when possible.
+* Try to use the [built-in](https://github.com/obsproject/obs-websocket/blob/master/src/requesthandler/rpc/Request.h) request checks when possible.
     * Refer to existing requests for usage examples.
 
 * Some example common response/request property names are:
