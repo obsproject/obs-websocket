@@ -21,13 +21,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include <memory>
 #include <obs.hpp>
-#ifdef _MSC_VER
-    #pragma push_macro("strtoll")
-#endif
 #include <util/platform.h>
-#ifdef _MSC_VER
-    #pragma pop_macro("strtoll")
-#endif
 
 #include "utils/Obs.h"
 #include "plugin-macros.generated.h"
