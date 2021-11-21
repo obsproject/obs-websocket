@@ -19,7 +19,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include "RequestHandler.h"
 
-RequestResult RequestHandler::GetStreamStatus(const Request& request)
+RequestResult RequestHandler::GetStreamStatus(const Request&)
 {
 	OBSOutputAutoRelease streamOutput = obs_frontend_get_streaming_output();
 
@@ -35,11 +35,9 @@ RequestResult RequestHandler::GetStreamStatus(const Request& request)
 	responseData["outputTotalFrames"] = obs_output_get_total_frames(streamOutput);
 
 	return RequestResult::Success(responseData);
-
-	UNUSED_PARAMETER(request);
 }
 
-RequestResult RequestHandler::ToggleStream(const Request& request)
+RequestResult RequestHandler::ToggleStream(const Request&)
 {
 	json responseData;
 	if (obs_frontend_streaming_active()) {
@@ -51,11 +49,9 @@ RequestResult RequestHandler::ToggleStream(const Request& request)
 	}
 
 	return RequestResult::Success(responseData);
-
-	UNUSED_PARAMETER(request);
 }
 
-RequestResult RequestHandler::StartStream(const Request& request)
+RequestResult RequestHandler::StartStream(const Request&)
 {
 	if (obs_frontend_streaming_active())
 		return RequestResult::Error(RequestStatus::OutputRunning);
@@ -64,11 +60,9 @@ RequestResult RequestHandler::StartStream(const Request& request)
 	obs_frontend_streaming_start();
 
 	return RequestResult::Success();
-
-	UNUSED_PARAMETER(request);
 }
 
-RequestResult RequestHandler::StopStream(const Request& request)
+RequestResult RequestHandler::StopStream(const Request&)
 {
 	if (!obs_frontend_streaming_active())
 		return RequestResult::Error(RequestStatus::OutputNotRunning);
@@ -77,6 +71,4 @@ RequestResult RequestHandler::StopStream(const Request& request)
 	obs_frontend_streaming_stop();
 
 	return RequestResult::Success();
-
-	UNUSED_PARAMETER(request);
 }

@@ -19,7 +19,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include "RequestHandler.h"
 
-RequestResult RequestHandler::GetSceneList(const Request& request)
+RequestResult RequestHandler::GetSceneList(const Request&)
 {
 	json responseData;
 
@@ -38,19 +38,15 @@ RequestResult RequestHandler::GetSceneList(const Request& request)
 	responseData["scenes"] = Utils::Obs::ListHelper::GetSceneList();
 
 	return RequestResult::Success(responseData);
-
-	UNUSED_PARAMETER(request);
 }
 
-RequestResult RequestHandler::GetCurrentProgramScene(const Request& request)
+RequestResult RequestHandler::GetCurrentProgramScene(const Request&)
 {
 	json responseData;
 	OBSSourceAutoRelease currentProgramScene = obs_frontend_get_current_scene();
 	responseData["currentProgramSceneName"] = obs_source_get_name(currentProgramScene);
 
 	return RequestResult::Success(responseData);
-
-	UNUSED_PARAMETER(request);
 }
 
 RequestResult RequestHandler::SetCurrentProgramScene(const Request& request)
@@ -66,7 +62,7 @@ RequestResult RequestHandler::SetCurrentProgramScene(const Request& request)
 	return RequestResult::Success();
 }
 
-RequestResult RequestHandler::GetCurrentPreviewScene(const Request& request)
+RequestResult RequestHandler::GetCurrentPreviewScene(const Request&)
 {
 	if (!obs_frontend_preview_program_mode_active())
 		return RequestResult::Error(RequestStatus::StudioModeNotActive);
@@ -77,8 +73,6 @@ RequestResult RequestHandler::GetCurrentPreviewScene(const Request& request)
 	responseData["currentPreviewSceneName"] = obs_source_get_name(currentPreviewScene);
 
 	return RequestResult::Success(responseData);
-
-	UNUSED_PARAMETER(request);
 }
 
 RequestResult RequestHandler::SetCurrentPreviewScene(const Request& request)

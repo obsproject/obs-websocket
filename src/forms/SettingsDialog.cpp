@@ -75,7 +75,7 @@ SettingsDialog::~SettingsDialog()
 	delete sessionTableTimer;
 }
 
-void SettingsDialog::showEvent(QShowEvent *event)
+void SettingsDialog::showEvent(QShowEvent *)
 {
 	auto conf = GetConfig();
 	if (!conf) {
@@ -107,18 +107,14 @@ void SettingsDialog::showEvent(QShowEvent *event)
 	FillSessionTable();
 
 	sessionTableTimer->start(1000);
-
-	UNUSED_PARAMETER(event);
 }
 
-void SettingsDialog::hideEvent(QHideEvent *event)
+void SettingsDialog::hideEvent(QHideEvent *)
 {
 	if (sessionTableTimer->isActive())
 		sessionTableTimer->stop();
 
 	connectInfo->hide();
-
-	UNUSED_PARAMETER(event);
 }
 
 void SettingsDialog::ToggleShowHide()

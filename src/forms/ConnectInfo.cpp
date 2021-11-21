@@ -47,9 +47,8 @@ ConnectInfo::~ConnectInfo()
 	delete ui;
 }
 
-void ConnectInfo::showEvent(QShowEvent *event)
+void ConnectInfo::showEvent(QShowEvent *)
 {
-	UNUSED_PARAMETER(event);
 	RefreshData();
 }
 

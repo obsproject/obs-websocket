@@ -35,12 +35,10 @@ void EventHandler::HandleTransitionRemoved(obs_source_t *source)
 	BroadcastEvent(EventSubscription::Transitions, "TransitionRemoved", eventData);
 }
 
-void EventHandler::HandleTransitionNameChanged(obs_source_t *source, std::string oldTransitionName, std::string transitionName)
+void EventHandler::HandleTransitionNameChanged(obs_source_t *, std::string oldTransitionName, std::string transitionName)
 {
 	json eventData;
 	eventData["oldTransitionName"] = oldTransitionName;
 	eventData["transitionName"] = transitionName;
 	BroadcastEvent(EventSubscription::Transitions, "TransitionNameChanged", eventData);
-
-	UNUSED_PARAMETER(source);
 }

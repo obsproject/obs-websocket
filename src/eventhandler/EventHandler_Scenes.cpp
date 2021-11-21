@@ -35,14 +35,12 @@ void EventHandler::HandleSceneRemoved(obs_source_t *source)
 	BroadcastEvent(EventSubscription::Scenes, "SceneRemoved", eventData);
 }
 
-void EventHandler::HandleSceneNameChanged(obs_source_t *source, std::string oldSceneName, std::string sceneName)
+void EventHandler::HandleSceneNameChanged(obs_source_t *, std::string oldSceneName, std::string sceneName)
 {
 	json eventData;
 	eventData["oldSceneName"] = oldSceneName;
 	eventData["sceneName"] = sceneName;
 	BroadcastEvent(EventSubscription::Scenes, "SceneNameChanged", eventData);
-
-	UNUSED_PARAMETER(source);
 }
 
 void EventHandler::HandleCurrentSceneChanged()

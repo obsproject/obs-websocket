@@ -24,7 +24,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include "../eventhandler/types/EventSubscription.h"
 #include "../obs-websocket.h"
 
-RequestResult RequestHandler::GetVersion(const Request& request)
+RequestResult RequestHandler::GetVersion(const Request&)
 {
 	json responseData;
 	responseData["obsVersion"] = Utils::Obs::StringHelper::GetObsVersion();
@@ -40,8 +40,6 @@ RequestResult RequestHandler::GetVersion(const Request& request)
 	responseData["supportedImageFormats"] = supportedImageFormats;
 
 	return RequestResult::Success(responseData);
-
-	UNUSED_PARAMETER(request);
 }
 
 RequestResult RequestHandler::BroadcastCustomEvent(const Request& request)
@@ -60,7 +58,7 @@ RequestResult RequestHandler::BroadcastCustomEvent(const Request& request)
 	return RequestResult::Success();
 }
 
-RequestResult RequestHandler::GetStats(const Request& request)
+RequestResult RequestHandler::GetStats(const Request&)
 {
 	json responseData = Utils::Obs::DataHelper::GetStats();
 
@@ -68,17 +66,13 @@ RequestResult RequestHandler::GetStats(const Request& request)
 	responseData["webSocketSessionOutgoingMessages"] = _session->OutgoingMessages();
 
 	return RequestResult::Success(responseData);
-
-	UNUSED_PARAMETER(request);
 }
 
-RequestResult RequestHandler::GetHotkeyList(const Request& request)
+RequestResult RequestHandler::GetHotkeyList(const Request&)
 {
 	json responseData;
 	responseData["hotkeys"] = Utils::Obs::ListHelper::GetHotkeyNameList();
 	return RequestResult::Success(responseData);
-
-	UNUSED_PARAMETER(request);
 }
 
 RequestResult RequestHandler::TriggerHotkeyByName(const Request& request)
@@ -141,13 +135,11 @@ RequestResult RequestHandler::TriggerHotkeyByKeySequence(const Request& request)
 	return RequestResult::Success();
 }
 
-RequestResult RequestHandler::GetStudioModeEnabled(const Request& request)
+RequestResult RequestHandler::GetStudioModeEnabled(const Request&)
 {
 	json responseData;
 	responseData["studioModeEnabled"] = obs_frontend_preview_program_mode_active();
 	return RequestResult::Success(responseData);
-
-	UNUSED_PARAMETER(request);
 }
 
 RequestResult RequestHandler::SetStudioModeEnabled(const Request& request)

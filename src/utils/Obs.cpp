@@ -252,14 +252,12 @@ std::vector<obs_hotkey_t *> Utils::Obs::ListHelper::GetHotkeyList()
 {
 	std::vector<obs_hotkey_t *> ret;
 
-	obs_enum_hotkeys([](void* data, obs_hotkey_id id, obs_hotkey_t* hotkey) {
+	obs_enum_hotkeys([](void* data, obs_hotkey_id, obs_hotkey_t* hotkey) {
 		auto ret = reinterpret_cast<std::vector<obs_hotkey_t *> *>(data);
 
 		ret->push_back(hotkey);
 
 		return true;
-
-		UNUSED_PARAMETER(id);
 	}, &ret);
 
 	return ret;
@@ -301,7 +299,7 @@ std::vector<json> Utils::Obs::ListHelper::GetSceneItemList(obs_scene_t *scene, b
 	std::pair<std::vector<json>, bool> enumData;
 	enumData.second = basic;
 
-	obs_scene_enum_items(scene, [](obs_scene_t* scene, obs_sceneitem_t* sceneItem, void* param) {
+	obs_scene_enum_items(scene, [](obs_scene_t*, obs_sceneitem_t* sceneItem, void* param) {
 		auto enumData = reinterpret_cast<std::pair<std::vector<json>, bool>*>(param);
 
 		json item;
@@ -325,8 +323,6 @@ std::vector<json> Utils::Obs::ListHelper::GetSceneItemList(obs_scene_t *scene, b
 		enumData->first.push_back(item);
 
 		return true;
-
-		UNUSED_PARAMETER(scene);
 	}, &enumData);
 
 	return enumData.first;

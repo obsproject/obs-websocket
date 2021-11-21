@@ -19,7 +19,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include "RequestHandler.h"
 
-RequestResult RequestHandler::GetRecordStatus(const Request& request)
+RequestResult RequestHandler::GetRecordStatus(const Request&)
 {
 	OBSOutputAutoRelease recordOutput = obs_frontend_get_streaming_output();
 
@@ -33,11 +33,9 @@ RequestResult RequestHandler::GetRecordStatus(const Request& request)
 	responseData["outputBytes"] = (uint64_t)obs_output_get_total_bytes(recordOutput);
 
 	return RequestResult::Success(responseData);
-
-	UNUSED_PARAMETER(request);
 }
 
-RequestResult RequestHandler::ToggleRecord(const Request& request)
+RequestResult RequestHandler::ToggleRecord(const Request&)
 {
 	json responseData;
 	if (obs_frontend_recording_active()) {
@@ -49,11 +47,9 @@ RequestResult RequestHandler::ToggleRecord(const Request& request)
 	}
 
 	return RequestResult::Success(responseData);
-
-	UNUSED_PARAMETER(request);
 }
 
-RequestResult RequestHandler::StartRecord(const Request& request)
+RequestResult RequestHandler::StartRecord(const Request&)
 {
 	if (obs_frontend_recording_active())
 		return RequestResult::Error(RequestStatus::OutputRunning);
@@ -62,11 +58,9 @@ RequestResult RequestHandler::StartRecord(const Request& request)
 	obs_frontend_recording_start();
 
 	return RequestResult::Success();
-
-	UNUSED_PARAMETER(request);
 }
 
-RequestResult RequestHandler::StopRecord(const Request& request)
+RequestResult RequestHandler::StopRecord(const Request&)
 {
 	if (!obs_frontend_recording_active())
 		return RequestResult::Error(RequestStatus::OutputNotRunning);
@@ -75,11 +69,9 @@ RequestResult RequestHandler::StopRecord(const Request& request)
 	obs_frontend_recording_stop();
 
 	return RequestResult::Success();
-
-	UNUSED_PARAMETER(request);
 }
 
-RequestResult RequestHandler::ToggleRecordPause(const Request& request)
+RequestResult RequestHandler::ToggleRecordPause(const Request&)
 {
 	json responseData;
 	if (obs_frontend_recording_paused()) {
@@ -91,11 +83,9 @@ RequestResult RequestHandler::ToggleRecordPause(const Request& request)
 	}
 
 	return RequestResult::Success(responseData);
-
-	UNUSED_PARAMETER(request);
 }
 
-RequestResult RequestHandler::PauseRecord(const Request& request)
+RequestResult RequestHandler::PauseRecord(const Request&)
 {
 	if (obs_frontend_recording_paused())
 		return RequestResult::Error(RequestStatus::OutputPaused);
@@ -104,11 +94,9 @@ RequestResult RequestHandler::PauseRecord(const Request& request)
 	obs_frontend_recording_pause(true);
 
 	return RequestResult::Success();
-
-	UNUSED_PARAMETER(request);
 }
 
-RequestResult RequestHandler::ResumeRecord(const Request& request)
+RequestResult RequestHandler::ResumeRecord(const Request&)
 {
 	if (!obs_frontend_recording_paused())
 		return RequestResult::Error(RequestStatus::OutputNotPaused);
@@ -117,16 +105,12 @@ RequestResult RequestHandler::ResumeRecord(const Request& request)
 	obs_frontend_recording_pause(false);
 
 	return RequestResult::Success();
-
-	UNUSED_PARAMETER(request);
 }
 
-RequestResult RequestHandler::GetRecordDirectory(const Request& request)
+RequestResult RequestHandler::GetRecordDirectory(const Request&)
 {
 	json responseData;
 	responseData["recordDirectory"] = Utils::Obs::StringHelper::GetCurrentRecordOutputPath();
 
 	return RequestResult::Success(responseData);
-
-	UNUSED_PARAMETER(request);
 }

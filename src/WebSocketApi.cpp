@@ -114,7 +114,7 @@ void WebSocketApi::vendor_register_cb(void *priv_data, calldata_t *cd)
 	RETURN_SUCCESS();
 }
 
-void WebSocketApi::vendor_request_register_cb(void *priv_data, calldata_t *cd)
+void WebSocketApi::vendor_request_register_cb(void *, calldata_t *cd)
 {
 	Vendor *v = get_vendor(cd);
 	if (!v)
@@ -146,11 +146,9 @@ void WebSocketApi::vendor_request_register_cb(void *priv_data, calldata_t *cd)
 	blog_debug("[WebSocketApi::vendor_request_register_cb] [vendorName: %s] Registered new vendor request: %s", v->_name.c_str(), requestType);
 
 	RETURN_SUCCESS();
-
-	UNUSED_PARAMETER(priv_data);
 }
 
-void WebSocketApi::vendor_request_unregister_cb(void *priv_data, calldata_t *cd)
+void WebSocketApi::vendor_request_unregister_cb(void *, calldata_t *cd)
 {
 	Vendor *v = get_vendor(cd);
 	if (!v)
@@ -174,8 +172,6 @@ void WebSocketApi::vendor_request_unregister_cb(void *priv_data, calldata_t *cd)
 	blog_debug("[WebSocketApi::vendor_request_unregister_cb] [vendorName: %s] Unregistered vendor request: %s", v->_name.c_str(), requestType);
 
 	RETURN_SUCCESS();
-
-	UNUSED_PARAMETER(priv_data);
 }
 
 void WebSocketApi::vendor_event_emit_cb(void *priv_data, calldata_t *cd)

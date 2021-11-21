@@ -41,14 +41,12 @@ void EventHandler::HandleInputRemoved(obs_source_t *source)
 	BroadcastEvent(EventSubscription::Inputs, "InputRemoved", eventData);
 }
 
-void EventHandler::HandleInputNameChanged(obs_source_t *source, std::string oldInputName, std::string inputName)
+void EventHandler::HandleInputNameChanged(obs_source_t *, std::string oldInputName, std::string inputName)
 {
 	json eventData;
 	eventData["oldInputName"] = oldInputName;
 	eventData["inputName"] = inputName;
 	BroadcastEvent(EventSubscription::Inputs, "InputNameChanged", eventData);
-
-	UNUSED_PARAMETER(source);
 }
 
 void EventHandler::HandleInputActiveStateChanged(void *param, calldata_t *data)
