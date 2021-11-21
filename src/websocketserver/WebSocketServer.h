@@ -58,7 +58,7 @@ class WebSocketServer : QObject
 		void Start();
 		void Stop();
 		void InvalidateSession(websocketpp::connection_hdl hdl);
-		void BroadcastEvent(uint64_t requiredIntent, std::string eventType, json eventData = nullptr, uint8_t rpcVersion = 0);
+		void BroadcastEvent(uint64_t requiredIntent, const std::string &eventType, const json &eventData = nullptr, uint8_t rpcVersion = 0);
 
 		bool IsListening() {
 			return _server.is_listening();
@@ -69,10 +69,6 @@ class WebSocketServer : QObject
 		QThreadPool *GetThreadPool() {
 			return &_threadPool;
 		}
-
-		bool AuthenticationRequired;
-		std::string AuthenticationSecret;
-		std::string AuthenticationSalt;
 
 	signals:
 		void ClientConnected(WebSocketSessionState state);
@@ -93,16 +89,22 @@ class WebSocketServer : QObject
 		void onClose(websocketpp::connection_hdl hdl);
 		void onMessage(websocketpp::connection_hdl hdl, websocketpp::server<websocketpp::config::asio>::message_ptr message);
 
-		void SetSessionParameters(SessionPtr session, WebSocketServer::ProcessResult &ret, json &payloadData);
-		void ProcessMessage(SessionPtr session, ProcessResult &ret, WebSocketOpCode::WebSocketOpCode opCode, json &payloadData);
+		void SetSessionParameters(SessionPtr session, WebSocketServer::ProcessResult &ret, const json &payloadData);
+		void ProcessMessage(SessionPtr session, ProcessResult &ret, WebSocketOpCode::WebSocketOpCode opCode, const json &payloadData);
 
-		void ProcessRequestBatch(SessionPtr session, ObsWebSocketRequestBatchExecutionType executionType, std::vector<json> &requests, std::vector<json> &results, json &variables);
+		void ProcessRequestBatch(SessionPtr session, ObsWebSocketRequestBatchExecutionType executionType, const std::vector<json> &requests, std::vector<json> &results, json &variables);
+
+		QThreadPool _threadPool;
 
 		std::thread _serverThread;
 		websocketpp::server<websocketpp::config::asio> _server;
-		QThreadPool _threadPool;
-		std::mutex _sessionMutex;
-		std::map<websocketpp::connection_hdl, SessionPtr, std::owner_less<websocketpp::connection_hdl>> _sessions;
 		uint16_t _serverPort;
 		QString _serverPassword;
+		bool _authenticationRequired;
+
+		std::string _authenticationSecret;
+		std::string _authenticationSalt;
+
+		std::mutex _sessionMutex;
+		std::map<websocketpp::connection_hdl, SessionPtr, std::owner_less<websocketpp::connection_hdl>> _sessions;
 };

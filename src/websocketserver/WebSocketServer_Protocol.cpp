@@ -33,7 +33,7 @@ bool IsSupportedRpcVersion(uint8_t requestedVersion)
 	return (requestedVersion == 1);
 }
 
-void WebSocketServer::SetSessionParameters(SessionPtr session, ProcessResult &ret, json &payloadData)
+void WebSocketServer::SetSessionParameters(SessionPtr session, ProcessResult &ret, const json &payloadData)
 {
 	if (payloadData.contains("ignoreInvalidMessages")) {
 		if (!payloadData["ignoreInvalidMessages"].is_boolean()) {
@@ -54,7 +54,7 @@ void WebSocketServer::SetSessionParameters(SessionPtr session, ProcessResult &re
 	}
 }
 
-void WebSocketServer::ProcessMessage(SessionPtr session, WebSocketServer::ProcessResult &ret, WebSocketOpCode::WebSocketOpCode opCode, json &payloadData)
+void WebSocketServer::ProcessMessage(SessionPtr session, WebSocketServer::ProcessResult &ret, WebSocketOpCode::WebSocketOpCode opCode, const json &payloadData)
 {
 	if (!payloadData.is_object()) {
 		if (payloadData.is_null()) {
@@ -289,7 +289,7 @@ void WebSocketServer::ProcessMessage(SessionPtr session, WebSocketServer::Proces
 }
 
 // It isn't consistent to directly call the WebSocketServer from the events system, but it would also be dumb to make it unnecessarily complicated.
-void WebSocketServer::BroadcastEvent(uint64_t requiredIntent, std::string eventType, json eventData, uint8_t rpcVersion)
+void WebSocketServer::BroadcastEvent(uint64_t requiredIntent, const std::string &eventType, const json &eventData, uint8_t rpcVersion)
 {
 	if (!_server.is_listening())
 		return;

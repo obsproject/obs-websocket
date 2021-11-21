@@ -114,9 +114,10 @@ void WebSocketServer::Start()
 
 	_serverPort = conf->ServerPort;
 	_serverPassword = conf->ServerPassword;
-	AuthenticationRequired = conf->AuthRequired;
-	AuthenticationSalt = Utils::Crypto::GenerateSalt();
-	AuthenticationSecret = Utils::Crypto::GenerateSecret(conf->ServerPassword.toStdString(), AuthenticationSalt);
+	_authenticationRequired = conf->AuthRequired;
+
+	_authenticationSalt = Utils::Crypto::GenerateSalt();
+	_authenticationSecret = Utils::Crypto::GenerateSecret(conf->ServerPassword.toStdString(), _authenticationSalt);
 
 	// Set log levels if debug is enabled
 	if (IsDebugEnabled()) {
@@ -264,7 +265,7 @@ void WebSocketServer::onOpen(websocketpp::connection_hdl hdl)
 	// Configure session details
 	session->SetRemoteAddress(conn->get_remote_endpoint());
 	session->SetConnectedAt(QDateTime::currentSecsSinceEpoch());
-	session->SetAuthenticationRequired(AuthenticationRequired);
+	session->SetAuthenticationRequired(_authenticationRequired);
 	std::string selectedSubprotocol = conn->get_subprotocol();
 	if (!selectedSubprotocol.empty()) {
 		if (selectedSubprotocol == "obswebsocket.json")
@@ -277,13 +278,13 @@ void WebSocketServer::onOpen(websocketpp::connection_hdl hdl)
 	json helloMessageData;
 	helloMessageData["obsWebSocketVersion"] = OBS_WEBSOCKET_VERSION;
 	helloMessageData["rpcVersion"] = OBS_WEBSOCKET_RPC_VERSION;
-	if (AuthenticationRequired) {
-		session->SetSecret(AuthenticationSecret);
+	if (_authenticationRequired) {
+		session->SetSecret(_authenticationSecret);
 		std::string sessionChallenge = Utils::Crypto::GenerateSalt();
 		session->SetChallenge(sessionChallenge);
 		helloMessageData["authentication"] = json::object();
 		helloMessageData["authentication"]["challenge"] = sessionChallenge;
-		helloMessageData["authentication"]["salt"] = AuthenticationSalt;
+		helloMessageData["authentication"]["salt"] = _authenticationSalt;
 	}
 	json helloMessage;
 	helloMessage["op"] = 0;

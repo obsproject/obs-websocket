@@ -193,7 +193,7 @@ void ObsTickCallback(void *param, float)
 	profile_end("obs-websocket-request-batch-frame-tick");
 }
 
-void WebSocketServer::ProcessRequestBatch(SessionPtr session, ObsWebSocketRequestBatchExecutionType executionType, std::vector<json> &requests, std::vector<json> &results, json &variables)
+void WebSocketServer::ProcessRequestBatch(SessionPtr session, ObsWebSocketRequestBatchExecutionType executionType, const std::vector<json> &requests, std::vector<json> &results, json &variables)
 {
 	RequestHandler requestHandler(session);
 	if (executionType == OBS_WEBSOCKET_REQUEST_BATCH_EXECUTION_TYPE_SERIAL_REALTIME) {
