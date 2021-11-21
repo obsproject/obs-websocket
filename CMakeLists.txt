@@ -133,9 +133,9 @@ set(obs-websocket_HEADERS
 	src/eventhandler/EventHandler.h
 	src/eventhandler/types/EventSubscription.h
 	src/requesthandler/RequestHandler.h
+	src/requesthandler/types/RequestStatus.h
 	src/requesthandler/rpc/Request.h
 	src/requesthandler/rpc/RequestResult.h
-	src/requesthandler/rpc/RequestStatus.h
 	src/forms/SettingsDialog.h
 	src/forms/ConnectInfo.h
 	src/utils/Crypto.h

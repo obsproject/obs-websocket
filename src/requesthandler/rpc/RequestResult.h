@@ -19,7 +19,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #pragma once
 
-#include "RequestStatus.h"
+#include "../types/RequestStatus.h"
 #include "../../utils/Json.h"
 
 struct RequestResult

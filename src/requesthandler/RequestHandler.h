@@ -23,9 +23,9 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <obs.hpp>
 #include <obs-frontend-api.h>
 
-#include "rpc/RequestStatus.h"
 #include "rpc/Request.h"
 #include "rpc/RequestResult.h"
+#include "types/RequestStatus.h"
 #include "../websocketserver/rpc/WebSocketSession.h"
 #include "../obs-websocket.h"
 #include "../utils/Obs.h"
