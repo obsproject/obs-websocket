@@ -81,7 +81,7 @@ inline obs_websocket_vendor obs_websocket_register_vendor(const char *vendor_nam
 }
 
 // Registers a new request for a vendor
-inline bool obs_websocket_register_request(obs_websocket_vendor vendor, const char *request_type, obs_websocket_request_callback_function request_callback, void* priv_data)
+inline bool obs_websocket_vendor_register_request(obs_websocket_vendor vendor, const char *request_type, obs_websocket_request_callback_function request_callback, void* priv_data)
 {
 	calldata_t cd = {0};
 
@@ -99,7 +99,7 @@ inline bool obs_websocket_register_request(obs_websocket_vendor vendor, const ch
 }
 
 // Unregisters an existing vendor request
-inline bool obs_websocket_unregister_request(obs_websocket_vendor vendor, const char *request_type)
+inline bool obs_websocket_vendor_unregister_request(obs_websocket_vendor vendor, const char *request_type)
 {
 	calldata_t cd = {0};
 
@@ -113,7 +113,7 @@ inline bool obs_websocket_unregister_request(obs_websocket_vendor vendor, const 
 
 // Does not affect event_data refcount.
 // Emits an event under the vendor's name
-inline bool obs_websocket_emit_event(obs_websocket_vendor vendor, const char *event_name, obs_data_t *event_data)
+inline bool obs_websocket_vendor_emit_event(obs_websocket_vendor vendor, const char *event_name, obs_data_t *event_data)
 {
 	calldata_t cd = {0};
 
