@@ -1,7 +1,14 @@
+root = true
+
 [*]
+end_of_line = lf
 insert_final_newline = true
 
 [*.{c,cpp,h,hpp}]
+indent_style = tab
+indent_size = 4
+
+[CMakeLists.txt]
 indent_style = tab
 indent_size = 4
 

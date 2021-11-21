@@ -1,6 +1,6 @@
 <!--- Please fill out the following template, which will help other contributors review your Pull Request. -->
 
-<!--- Make sure you’ve read the contribution guidelines here: https://github.com/obsproject/obs-websocket/blob/master/CONTRIBUTING.md -->
+<!--- Make sure you’ve read the contribution guidelines here: https://github.com/obsproject/obs-websocket/wiki/Contributing-Guidelines -->
 
 ### Description
 <!--- Describe your changes. -->
@@ -18,18 +18,17 @@ Tested OS(s):
 <!--- What types of changes does your PR introduce? Uncomment all that apply -->
 
 <!--- - Bug fix (non-breaking change which fixes an issue) -->
-<!--- - New request/event (non-breaking) -->
-<!--- - Documentation change (a change to documentation pages) -->
-<!--- - Enhancement (modification to a current event/request which adds functionality) -->
 <!--- - Performance enhancement (non-breaking change which improves efficiency) -->
 <!--- - Code cleanup (non-breaking change which makes code smaller or more readable) -->
+<!--- - New request/event (non-breaking) -->
+<!--- - Documentation change (a change to documentation pages) -->
+<!--- - Other Enhancement (anything not applicable to what is listed) -->
 
 ### Checklist:
 <!--- Go over all the following points, and put an `x` in all the boxes that apply. -->
 <!--- If you're unsure about any of these, don't hesitate to ask. We're here to help! -->
--  [ ] I have read the [**contributing** document](https://github.com/obsproject/obs-websocket/blob/4.x-current/CONTRIBUTING.md).
--  [ ] My code is not on the master branch.
--  [ ] The code has been tested.
+-  [ ] I have read the [Contributing Guidelines](https://github.com/obsproject/obs-websocket/wiki/Contributing-Guidelines).
 -  [ ] All commit messages are properly formatted and commits squashed where appropriate.
+-  [ ] My code is not on the `master` branch.
+-  [ ] The code has been tested.
 -  [ ] I have included updates to all appropriate documentation.
-
