@@ -75,8 +75,8 @@ class WebSocketServer : QObject
 		std::string AuthenticationSalt;
 
 	signals:
-		void ClientConnected(const WebSocketSessionState state);
-		void ClientDisconnected(const WebSocketSessionState state, const uint16_t closeCode);
+		void ClientConnected(WebSocketSessionState state);
+		void ClientDisconnected(WebSocketSessionState state, uint16_t closeCode);
 
 	private:
 		struct ProcessResult {
@@ -93,8 +93,8 @@ class WebSocketServer : QObject
 		void onClose(websocketpp::connection_hdl hdl);
 		void onMessage(websocketpp::connection_hdl hdl, websocketpp::server<websocketpp::config::asio>::message_ptr message);
 
-		void SetSessionParameters(SessionPtr session, WebSocketServer::ProcessResult &ret, const json &payloadData);
-		void ProcessMessage(SessionPtr session, ProcessResult &ret, const uint8_t opCode, json &payloadData);
+		void SetSessionParameters(SessionPtr session, WebSocketServer::ProcessResult &ret, json &payloadData);
+		void ProcessMessage(SessionPtr session, ProcessResult &ret, WebSocketOpCode::WebSocketOpCode opCode, json &payloadData);
 
 		void ProcessRequestBatch(SessionPtr session, ObsWebSocketRequestBatchExecutionType executionType, std::vector<json> &requests, std::vector<json> &results, json &variables);
 

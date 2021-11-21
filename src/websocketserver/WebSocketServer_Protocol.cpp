@@ -33,7 +33,7 @@ bool IsSupportedRpcVersion(uint8_t requestedVersion)
 	return (requestedVersion == 1);
 }
 
-void WebSocketServer::SetSessionParameters(SessionPtr session, ProcessResult &ret, const json &payloadData)
+void WebSocketServer::SetSessionParameters(SessionPtr session, ProcessResult &ret, json &payloadData)
 {
 	if (payloadData.contains("ignoreInvalidMessages")) {
 		if (!payloadData["ignoreInvalidMessages"].is_boolean()) {
@@ -54,7 +54,7 @@ void WebSocketServer::SetSessionParameters(SessionPtr session, ProcessResult &re
 	}
 }
 
-void WebSocketServer::ProcessMessage(SessionPtr session, WebSocketServer::ProcessResult &ret, uint8_t opCode, json &payloadData)
+void WebSocketServer::ProcessMessage(SessionPtr session, WebSocketServer::ProcessResult &ret, WebSocketOpCode::WebSocketOpCode opCode, json &payloadData)
 {
 	if (!payloadData.is_object()) {
 		if (payloadData.is_null()) {
