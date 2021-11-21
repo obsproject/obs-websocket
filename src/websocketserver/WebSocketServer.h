@@ -27,6 +27,8 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <websocketpp/server.hpp>
 
 #include "rpc/WebSocketSession.h"
+#include "types/WebSocketCloseCode.h"
+#include "types/WebSocketOpCode.h"
 #include "../utils/Json.h"
 #include "../requesthandler/rpc/Request.h"
 #include "../plugin-macros.generated.h"
@@ -48,35 +50,6 @@ class WebSocketServer : QObject
 			uint64_t incomingMessages;
 			uint64_t outgoingMessages;
 			bool isIdentified;
-		};
-
-		enum WebSocketCloseCode {
-			// Internal only
-			DontClose = 0,
-			// Reserved
-			UnknownReason = 4000,
-			// The server was unable to decode the incoming websocket message
-			MessageDecodeError = 4002,
-			// A data key is missing but required
-			MissingDataKey = 4003,
-			// A data key has an invalid type
-			InvalidDataKeyType = 4004,
-			// The specified `op` was invalid or missing
-			UnknownOpCode = 4005,
-			// The client sent a websocket message without first sending `Identify` message
-			NotIdentified = 4006,
-			// The client sent an `Identify` message while already identified
-			AlreadyIdentified = 4007,
-			// The authentication attempt (via `Identify`) failed
-			AuthenticationFailed = 4008,
-			// The server detected the usage of an old version of the obs-websocket RPC protocol.
-			UnsupportedRpcVersion = 4009,
-			// The websocket session has been invalidated by the obs-websocket server.
-			SessionInvalidated = 4010,
-			// A data key's value is invalid, in the case of things like enums.
-			InvalidDataKeyValue = 4011,
-			// A feature is not supported because of hardware/software limitations.
-			UnsupportedFeature = 4012,
 		};
 
 		WebSocketServer();
@@ -107,7 +80,7 @@ class WebSocketServer : QObject
 
 	private:
 		struct ProcessResult {
-			WebSocketCloseCode closeCode = WebSocketCloseCode::DontClose;
+			WebSocketCloseCode::WebSocketCloseCode closeCode = WebSocketCloseCode::DontClose;
 			std::string closeReason;
 			json result;
 		};

@@ -127,6 +127,8 @@ set(obs-websocket_HEADERS
 	src/Config.h
 	src/WebSocketApi.h
 	src/websocketserver/WebSocketServer.h
+	src/websocketserver/types/WebSocketCloseCode.h
+	src/websocketserver/types/WebSocketOpCode.h
 	src/websocketserver/rpc/WebSocketSession.h
 	src/eventhandler/EventHandler.h
 	src/eventhandler/types/EventSubscription.h
