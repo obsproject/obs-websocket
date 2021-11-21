@@ -146,6 +146,15 @@ void SettingsDialog::SaveFormData()
 		return;
 	}
 
+	if (ui->serverPasswordLineEdit->text().length() < 6) {
+		QMessageBox msgBox;
+		msgBox.setWindowTitle(obs_module_text("OBSWebSocket.Settings.Save.PasswordInvalidErrorTitle"));
+		msgBox.setText(obs_module_text("OBSWebSocket.Settings.Save.PasswordInvalidErrorMessage"));
+		msgBox.setStandardButtons(QMessageBox::Ok);
+		msgBox.exec();
+		return;
+	}
+
 	// Show a confirmation box to the user if they attempt to provide their own password
 	if (passwordManuallyEdited && (conf->ServerPassword != ui->serverPasswordLineEdit->text())) {
 		QMessageBox msgBox;
