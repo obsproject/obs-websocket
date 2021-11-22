@@ -75,7 +75,7 @@ namespace Utils {
 				typedef std::unique_ptr<Meter> MeterPtr;
 
 				public:
-					Handler(UpdateCallback cb, uint64_t updatePeriod = 60);
+					Handler(UpdateCallback cb, uint64_t updatePeriod = 50);
 					~Handler();
 
 				private:
