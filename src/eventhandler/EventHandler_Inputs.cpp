@@ -49,6 +49,13 @@ void EventHandler::HandleInputNameChanged(obs_source_t *, std::string oldInputNa
 	BroadcastEvent(EventSubscription::Inputs, "InputNameChanged", eventData);
 }
 
+void EventHandler::HandleInputVolumeMeters(std::vector<json> inputs)
+{
+	json eventData;
+	eventData["inputs"] = inputs;
+	BroadcastEvent(EventSubscription::InputVolumeMeters, "InputVolumeMeters", eventData);
+}
+
 void EventHandler::HandleInputActiveStateChanged(void *param, calldata_t *data)
 {
 	auto eventHandler = reinterpret_cast<EventHandler*>(param);

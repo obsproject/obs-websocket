@@ -24,6 +24,12 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include "Json.h"
 
+template <typename T> T* GetCalldataPointer(const calldata_t *data, const char* name) {
+	void *ptr = nullptr;
+	calldata_get_ptr(data, name, &ptr);
+	return reinterpret_cast<T*>(ptr);
+}
+
 enum ObsOutputState {
 	OBS_WEBSOCKET_OUTPUT_STARTING,
 	OBS_WEBSOCKET_OUTPUT_STARTED,

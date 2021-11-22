@@ -27,13 +27,8 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include "types/EventSubscription.h"
 #include "../obs-websocket.h"
 #include "../utils/Obs.h"
+#include "../utils/ObsVolumeMeter.h"
 #include "../plugin-macros.generated.h"
-
-template <typename T> T* GetCalldataPointer(const calldata_t *data, const char* name) {
-	void *ptr = nullptr;
-	calldata_get_ptr(data, name, &ptr);
-	return reinterpret_cast<T*>(ptr);
-}
 
 class EventHandler
 {
@@ -55,6 +50,7 @@ class EventHandler
 
 		std::atomic<bool> _obsLoaded;
 
+		std::unique_ptr<Utils::Obs::VolumeMeter::Handler> _inputVolumeMetersHandler;
 		std::atomic<uint64_t> _inputVolumeMetersRef;
 		std::atomic<uint64_t> _inputActiveStateChangedRef;
 		std::atomic<uint64_t> _inputShowStateChangedRef;
@@ -107,6 +103,7 @@ class EventHandler
 		void HandleInputCreated(obs_source_t *source);
 		void HandleInputRemoved(obs_source_t *source);
 		void HandleInputNameChanged(obs_source_t *source, std::string oldInputName, std::string inputName);
+		void HandleInputVolumeMeters(std::vector<json> inputs); // AudioMeter::Handler callback
 		static void HandleInputActiveStateChanged(void *param, calldata_t *data); // Direct callback
 		static void HandleInputShowStateChanged(void *param, calldata_t *data); // Direct callback
 		static void HandleInputMuteStateChanged(void *param, calldata_t *data); // Direct callback

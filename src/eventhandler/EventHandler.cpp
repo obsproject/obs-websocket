@@ -75,8 +75,14 @@ void EventHandler::SetObsLoadedCallback(EventHandler::ObsLoadedCallback cb)
 // Function to increment refcounts for high volume event subscriptions
 void EventHandler::ProcessSubscription(uint64_t eventSubscriptions)
 {
-	if ((eventSubscriptions & EventSubscription::InputVolumeMeters) != 0)
-		_inputVolumeMetersRef++;
+	if ((eventSubscriptions & EventSubscription::InputVolumeMeters) != 0) {
+		if (_inputVolumeMetersRef.fetch_add(1) == 0) {
+			if (_inputVolumeMetersHandler)
+				blog(LOG_WARNING, "[EventHandler::ProcessSubscription] Input volume meter handler already exists!");
+			else
+				_inputVolumeMetersHandler = std::make_unique<Utils::Obs::VolumeMeter::Handler>(std::bind(&EventHandler::HandleInputVolumeMeters, this, std::placeholders::_1));
+		}
+	}
 	if ((eventSubscriptions & EventSubscription::InputActiveStateChanged) != 0)
 		_inputActiveStateChangedRef++;
 	if ((eventSubscriptions & EventSubscription::InputShowStateChanged) != 0)
@@ -88,8 +94,10 @@ void EventHandler::ProcessSubscription(uint64_t eventSubscriptions)
 // Function to decrement refcounts for high volume event subscriptions
 void EventHandler::ProcessUnsubscription(uint64_t eventSubscriptions)
 {
-	if ((eventSubscriptions & EventSubscription::InputVolumeMeters) != 0)
-		_inputVolumeMetersRef--;
+	if ((eventSubscriptions & EventSubscription::InputVolumeMeters) != 0) {
+		if (_inputVolumeMetersRef.fetch_sub(1) == 1)
+			_inputVolumeMetersHandler.reset();
+	}
 	if ((eventSubscriptions & EventSubscription::InputActiveStateChanged) != 0)
 		_inputActiveStateChangedRef--;
 	if ((eventSubscriptions & EventSubscription::InputShowStateChanged) != 0)

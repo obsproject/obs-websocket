@@ -118,6 +118,7 @@ set(obs-websocket_SOURCES
 	src/utils/Crypto.cpp
 	src/utils/Json.cpp
 	src/utils/Obs.cpp
+	src/utils/ObsVolumeMeter.cpp
 	src/utils/Platform.cpp
 	src/utils/Compat.cpp
 	deps/qr/cpp/QrCode.cpp)
@@ -141,6 +142,8 @@ set(obs-websocket_HEADERS
 	src/utils/Crypto.h
 	src/utils/Json.h
 	src/utils/Obs.h
+	src/utils/ObsVolumeMeter.h
+	src/utils/ObsVolumeMeter_Helpers.h
 	src/utils/Platform.h
 	src/utils/Compat.h
 	src/utils/Utils.h
