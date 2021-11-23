@@ -22,6 +22,21 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include "RequestHandler.h"
 
+/**
+ * Gets the value of a "slot" from the selected persistent data realm.
+ *
+ * @requestField realm    | String | The data realm to select. `OBS_WEBSOCKET_DATA_REALM_GLOBAL` or `OBS_WEBSOCKET_DATA_REALM_PROFILE` | None
+ * @requestField slotName | String | The name of the slot to retrieve data from                                                        | None
+ *
+ * @responseField slotValue | String | Value associated with the slot. `null` if not set
+ *
+ * @requestType GetPersistentData
+ * @complexity 2
+ * @rpcVersion 1
+ * @initialVersion 5.0.0
+ * @category config
+ * @api requests
+ */
 RequestResult RequestHandler::GetPersistentData(const Request& request)
 {
 	RequestStatus::RequestStatus statusCode;
@@ -50,6 +65,20 @@ RequestResult RequestHandler::GetPersistentData(const Request& request)
 	return RequestResult::Success(responseData);
 }
 
+/**
+ * Sets the value of a "slot" from the selected persistent data realm.
+ *
+ * @requestField realm     | String | The data realm to select. `OBS_WEBSOCKET_DATA_REALM_GLOBAL` or `OBS_WEBSOCKET_DATA_REALM_PROFILE` | None
+ * @requestField slotName  | String | The name of the slot to retrieve data from                                                        | None
+ * @requestField slotValue | Any    | The value to apply to the slot                                                                    | None
+ *
+ * @requestType SetPersistentData
+ * @complexity 2
+ * @rpcVersion 1
+ * @initialVersion 5.0.0
+ * @category config
+ * @api requests
+ */
 RequestResult RequestHandler::SetPersistentData(const Request& request)
 {
 	RequestStatus::RequestStatus statusCode;
@@ -78,6 +107,19 @@ RequestResult RequestHandler::SetPersistentData(const Request& request)
 	return RequestResult::Success();
 }
 
+/**
+ * Gets an array of all scene collections
+ *
+ * @responseField currentSceneCollectionName | String        | The name of the current scene collection
+ * @responseField sceneCollections           | Array<String> | Array of all available scene collections
+ *
+ * @requestType GetSceneCollectionList
+ * @complexity 1
+ * @rpcVersion 1
+ * @initialVersion 5.0.0
+ * @category config
+ * @api requests
+ */
 RequestResult RequestHandler::GetSceneCollectionList(const Request&)
 {
 	json responseData;
@@ -86,7 +128,20 @@ RequestResult RequestHandler::GetSceneCollectionList(const Request&)
 	return RequestResult::Success(responseData);
 }
 
-// Does not return until collection has finished switching
+/**
+ * Switches to a scene collection.
+ *
+ * Note: This will block until the collection has finished changing.
+ *
+ * @requestField sceneCollectionName | String | Name of the scene collection to switch to | None
+ *
+ * @requestType SetCurrentSceneCollection
+ * @complexity 1
+ * @rpcVersion 1
+ * @initialVersion 5.0.0
+ * @category config
+ * @api requests
+ */
 RequestResult RequestHandler::SetCurrentSceneCollection(const Request& request)
 {
 	RequestStatus::RequestStatus statusCode;
@@ -111,6 +166,20 @@ RequestResult RequestHandler::SetCurrentSceneCollection(const Request& request)
 	return RequestResult::Success();
 }
 
+/**
+ * Creates a new scene collection, switching to it in the process.
+ *
+ * Note: This will block until the collection has finished changing.
+ *
+ * @requestField sceneCollectionName | String | Name for the new scene collection | None
+ *
+ * @requestType CreateSceneCollection
+ * @complexity 1
+ * @rpcVersion 1
+ * @initialVersion 5.0.0
+ * @category config
+ * @api requests
+ */
 RequestResult RequestHandler::CreateSceneCollection(const Request& request)
 {
 	RequestStatus::RequestStatus statusCode;
@@ -133,6 +202,19 @@ RequestResult RequestHandler::CreateSceneCollection(const Request& request)
 	return RequestResult::Success();
 }
 
+/**
+ * Gets an array of all profiles
+ *
+ * @responseField currentProfileName | String        | The name of the current profile
+ * @responseField profiles           | Array<String> | Array of all available profiles
+ *
+ * @requestType GetProfileList
+ * @complexity 1
+ * @rpcVersion 1
+ * @initialVersion 5.0.0
+ * @category config
+ * @api requests
+ */
 RequestResult RequestHandler::GetProfileList(const Request&)
 {
 	json responseData;
@@ -141,6 +223,18 @@ RequestResult RequestHandler::GetProfileList(const Request&)
 	return RequestResult::Success(responseData);
 }
 
+/**
+ * Switches to a profile.
+ *
+ * @requestField profileName | String | Name of the profile to switch to | None
+ *
+ * @requestType SetCurrentProfile
+ * @complexity 1
+ * @rpcVersion 1
+ * @initialVersion 5.0.0
+ * @category config
+ * @api requests
+ */
 RequestResult RequestHandler::SetCurrentProfile(const Request& request)
 {
 	RequestStatus::RequestStatus statusCode;
@@ -165,6 +259,18 @@ RequestResult RequestHandler::SetCurrentProfile(const Request& request)
 	return RequestResult::Success();
 }
 
+/**
+ * Creates a new profile, switching to it in the process
+ *
+ * @requestField profileName | String | Name for the new profile | None
+ *
+ * @requestType CreateProfile
+ * @complexity 1
+ * @rpcVersion 1
+ * @initialVersion 5.0.0
+ * @category config
+ * @api requests
+ */
 RequestResult RequestHandler::CreateProfile(const Request& request)
 {
 	RequestStatus::RequestStatus statusCode;
@@ -184,6 +290,18 @@ RequestResult RequestHandler::CreateProfile(const Request& request)
 	return RequestResult::Success();
 }
 
+/**
+ * Removes a profile. If the current profile is chosen, it will change to a different profile first.
+ *
+ * @requestField profileName | String | Name of the profile to remove | None
+ *
+ * @requestType RemoveProfile
+ * @complexity 1
+ * @rpcVersion 1
+ * @initialVersion 5.0.0
+ * @category config
+ * @api requests
+ */
 RequestResult RequestHandler::RemoveProfile(const Request& request)
 {
 	RequestStatus::RequestStatus statusCode;
@@ -206,6 +324,22 @@ RequestResult RequestHandler::RemoveProfile(const Request& request)
 	return RequestResult::Success();
 }
 
+/**
+ * Gets a parameter from the current profile's configuration.
+ *
+ * @requestField parameterCategory | String | Category of the parameter to get | None
+ * @requestField parameterName     | String | Name of the parameter to get     | None
+ *
+ * @responseField parameterValue        | String | Value associated with the parameter. `null` if not set and no default
+ * @responseField defaultParameterValue | String | Default value associated with the parameter. `null` if no default
+ *
+ * @requestType GetProfileParameter
+ * @complexity 3
+ * @rpcVersion 1
+ * @initialVersion 5.0.0
+ * @category config
+ * @api requests
+ */
 RequestResult RequestHandler::GetProfileParameter(const Request& request)
 {
 	RequestStatus::RequestStatus statusCode;
@@ -236,6 +370,20 @@ RequestResult RequestHandler::GetProfileParameter(const Request& request)
 	return RequestResult::Success(responseData);
 }
 
+/**
+ * Sets the value of a parameter in the current profile's configuration.
+ *
+ * @requestField parameterCategory | String | Category of the parameter to set                    | None
+ * @requestField parameterName     | String | Name of the parameter to set                        | None
+ * @requestField parameterValue    | String | Value of the parameter to set. Use `null` to delete | None
+ *
+ * @requestType SetProfileParameter
+ * @complexity 3
+ * @rpcVersion 1
+ * @initialVersion 5.0.0
+ * @category config
+ * @api requests
+ */
 RequestResult RequestHandler::SetProfileParameter(const Request& request)
 {
 	RequestStatus::RequestStatus statusCode;
@@ -263,6 +411,25 @@ RequestResult RequestHandler::SetProfileParameter(const Request& request)
 	return RequestResult::Success();
 }
 
+/**
+ * Gets the current video settings.
+ *
+ * Note: To get the true FPS value, divide the FPS numerator by the FPS denominator. Example: `60000/1001`
+ *
+ * @responseField fpsNumerator   | Number | Numerator of the fractional FPS value
+ * @responseField fpsDenominator | Number | Denominator of the fractional FPS value
+ * @responseField baseWidth      | Number | Width of the base (canvas) resolution in pixels
+ * @responseField baseHeight     | Number | Height of the base (canvas) resolution in pixels
+ * @responseField outputWidth    | Number | Width of the output resolution in pixels
+ * @responseField outputHeight   | Number | Height of the output resolution in pixels
+ *
+ * @requestType GetVideoSettings
+ * @complexity 2
+ * @rpcVersion 1
+ * @initialVersion 5.0.0
+ * @category config
+ * @api requests
+ */
 RequestResult RequestHandler::GetVideoSettings(const Request&)
 {
 	struct obs_video_info ovi;
@@ -280,6 +447,25 @@ RequestResult RequestHandler::GetVideoSettings(const Request&)
 	return RequestResult::Success(responseData);
 }
 
+/**
+ * Sets the current video settings.
+ *
+ * Note: Fields must be specified in pairs. For example, you cannot set only `baseWidth` without needing to specify `baseHeight`.
+ *
+ * @requestField fpsNumerator   | Number | Numerator of the fractional FPS value            | >= 1          | Not changed
+ * @requestField fpsDenominator | Number | Denominator of the fractional FPS value          | >= 1          | Not changed
+ * @requestField baseWidth      | Number | Width of the base (canvas) resolution in pixels  | >= 1, <= 4096 | Not changed
+ * @requestField baseHeight     | Number | Height of the base (canvas) resolution in pixels | >= 1, <= 4096 | Not changed
+ * @requestField outputWidth    | Number | Width of the output resolution in pixels         | >= 1, <= 4096 | Not changed
+ * @requestField outputHeight   | Number | Height of the output resolution in pixels        | >= 1, <= 4096 | Not changed
+ *
+ * @requestType SetVideoSettings
+ * @complexity 2
+ * @rpcVersion 1
+ * @initialVersion 5.0.0
+ * @category config
+ * @api requests
+ */
 RequestResult RequestHandler::SetVideoSettings(const Request& request)
 {
 	if (obs_video_active())
@@ -326,6 +512,19 @@ RequestResult RequestHandler::SetVideoSettings(const Request& request)
 	return RequestResult::Error(RequestStatus::MissingRequestParameter, "You must specify at least one video-changing pair.");
 }
 
+/**
+ * Gets the current stream service settings (stream destination).
+ *
+ * @responseField streamServiceType     | String | Stream service type, like `rtmp_custom` or `rtmp_common`
+ * @responseField streamServiceSettings | Object | Stream service settings
+ *
+ * @requestType GetStreamServiceSettings
+ * @complexity 4
+ * @rpcVersion 1
+ * @initialVersion 5.0.0
+ * @category config
+ * @api requests
+ */
 RequestResult RequestHandler::GetStreamServiceSettings(const Request&)
 {
 	json responseData;
@@ -338,6 +537,21 @@ RequestResult RequestHandler::GetStreamServiceSettings(const Request&)
 	return RequestResult::Success(responseData);
 }
 
+/**
+ * Sets the current stream service settings (stream destination).
+ *
+ * Note: Simple RTMP settings can be set with type `rtmp_custom` and the settings fields `server` and `key`.
+ *
+ * @requestField streamServiceType     | String | Type of stream service to apply. Example: `rtmp_common` or `rtmp_custom` | None
+ * @requestField streamServiceSettings | Object | Settings to apply to the service                                         | None
+ *
+ * @requestType SetStreamServiceSettings
+ * @complexity 4
+ * @rpcVersion 1
+ * @initialVersion 5.0.0
+ * @category config
+ * @api requests
+ */
 RequestResult RequestHandler::SetStreamServiceSettings(const Request& request)
 {
 	if (obs_frontend_streaming_active())
