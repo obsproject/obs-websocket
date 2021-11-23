@@ -61,7 +61,7 @@ RequestResult RequestHandler::GetVersion(const Request&)
 /**
  * Broadcasts a `CustomEvent` to all WebSocket clients. Receivers are clients which are identified and subscribed.
  *
- * @requestField eventData | Object | Data payload to emit to all receivers | None
+ * @requestField eventData | Object | Data payload to emit to all receivers
  *
  * @requestType BroadcastCustomEvent
  * @complexity 1
@@ -140,7 +140,7 @@ RequestResult RequestHandler::GetHotkeyList(const Request&)
 /**
  * Triggers a hotkey using its name. See `GetHotkeyList`
  *
- * @requestField hotkeyName | String | Name of the hotkey to trigger | None
+ * @requestField hotkeyName | String | Name of the hotkey to trigger
  *
  * @requestType TriggerHotkeyByName
  * @complexity 3
@@ -168,12 +168,12 @@ RequestResult RequestHandler::TriggerHotkeyByName(const Request& request)
 /**
  * Triggers a hotkey using a sequence of keys.
  *
- * @requestField keyId                | String  | The OBS key ID to use. See https://github.com/obsproject/obs-studio/blob/master/libobs/obs-hotkeys.h | None | Not pressed
- * @requestField keyModifiers         | Object  | Object containing key modifiers to apply                                                             | None | Ignored
- * @requestField keyModifiers.shift   | Boolean | Press Shift                                                                                          | None | Not pressed
- * @requestField keyModifiers.control | Boolean | Press CTRL                                                                                           | None | Not pressed
- * @requestField keyModifiers.alt     | Boolean | Press ALT                                                                                            | None | Not pressed
- * @requestField keyModifiers.command | Boolean | Press CMD (Mac)                                                                                      | None | Not pressed
+ * @requestField keyId                | String  | The OBS key ID to use. See https://github.com/obsproject/obs-studio/blob/master/libobs/obs-hotkeys.h | Not pressed
+ * @requestField keyModifiers         | Object  | Object containing key modifiers to apply                                                             | Ignored
+ * @requestField keyModifiers.shift   | Boolean | Press Shift                                                                                          | Not pressed
+ * @requestField keyModifiers.control | Boolean | Press CTRL                                                                                           | Not pressed
+ * @requestField keyModifiers.alt     | Boolean | Press ALT                                                                                            | Not pressed
+ * @requestField keyModifiers.command | Boolean | Press CMD (Mac)                                                                                      | Not pressed
  *
  * @requestType TriggerHotkeyByKeySequence
  * @complexity 4
@@ -248,7 +248,7 @@ RequestResult RequestHandler::GetStudioModeEnabled(const Request&)
 /**
  * Enables or disables studio mode
  *
- * @requestField studioModeEnabled | Boolean | True == Enabled, False == Disabled | None
+ * @requestField studioModeEnabled | Boolean | True == Enabled, False == Disabled
  *
  * @requestType SetStudioModeEnabled
  * @complexity 1
@@ -281,8 +281,8 @@ RequestResult RequestHandler::SetStudioModeEnabled(const Request& request)
 /**
  * Sleeps for a time duration or number of frames. Only available in request batches with types `SERIAL_REALTIME` or `SERIAL_FRAME`.
  *
- * @requestField sleepMillis | Number | Number of milliseconds to sleep for (if `SERIAL_REALTIME` mode) | None
- * @requestField sleepFrames | Number | Number of frames to sleep for (if `SERIAL_FRAME` mode)          | None
+ * @requestField sleepMillis | Number | Number of milliseconds to sleep for (if `SERIAL_REALTIME` mode) | >= 0, <= 50000
+ * @requestField sleepFrames | Number | Number of frames to sleep for (if `SERIAL_FRAME` mode) | >= 0, <= 10000
  *
  * @requestType Sleep
  * @complexity 2

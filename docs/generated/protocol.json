@@ -4,8 +4,8 @@
     {
       "description": "Gets the value of a \"slot\" from the selected persistent data realm.",
       "requestType": "GetPersistentData",
-      "complexity": "2",
-      "rpcVersion": "1",
+      "complexity": 2,
+      "rpcVersion": 1,
       "initialVersion": "5.0.0",
       "category": "config",
       "requestFields": [
@@ -14,16 +14,16 @@
           "valueType": "String",
           "valueDescription": "The data realm to select. `OBS_WEBSOCKET_DATA_REALM_GLOBAL` or `OBS_WEBSOCKET_DATA_REALM_PROFILE`",
           "valueRestrictions": null,
-          "valueOptional": true,
-          "valueOptionalBehavior": "None"
+          "valueOptional": false,
+          "valueOptionalBehavior": null
         },
         {
           "valueName": "slotName",
           "valueType": "String",
           "valueDescription": "The name of the slot to retrieve data from",
           "valueRestrictions": null,
-          "valueOptional": true,
-          "valueOptionalBehavior": "None"
+          "valueOptional": false,
+          "valueOptionalBehavior": null
         }
       ],
       "responseFields": [
@@ -37,8 +37,8 @@
     {
       "description": "Sets the value of a \"slot\" from the selected persistent data realm.",
       "requestType": "SetPersistentData",
-      "complexity": "2",
-      "rpcVersion": "1",
+      "complexity": 2,
+      "rpcVersion": 1,
       "initialVersion": "5.0.0",
       "category": "config",
       "requestFields": [
@@ -47,34 +47,36 @@
           "valueType": "String",
           "valueDescription": "The data realm to select. `OBS_WEBSOCKET_DATA_REALM_GLOBAL` or `OBS_WEBSOCKET_DATA_REALM_PROFILE`",
           "valueRestrictions": null,
-          "valueOptional": true,
-          "valueOptionalBehavior": "None"
+          "valueOptional": false,
+          "valueOptionalBehavior": null
         },
         {
           "valueName": "slotName",
           "valueType": "String",
           "valueDescription": "The name of the slot to retrieve data from",
           "valueRestrictions": null,
-          "valueOptional": true,
-          "valueOptionalBehavior": "None"
+          "valueOptional": false,
+          "valueOptionalBehavior": null
         },
         {
           "valueName": "slotValue",
           "valueType": "Any",
           "valueDescription": "The value to apply to the slot",
           "valueRestrictions": null,
-          "valueOptional": true,
-          "valueOptionalBehavior": "None"
+          "valueOptional": false,
+          "valueOptionalBehavior": null
         }
-      ]
+      ],
+      "responseFields": []
     },
     {
       "description": "Gets an array of all scene collections",
       "requestType": "GetSceneCollectionList",
-      "complexity": "1",
-      "rpcVersion": "1",
+      "complexity": 1,
+      "rpcVersion": 1,
       "initialVersion": "5.0.0",
       "category": "config",
+      "requestFields": [],
       "responseFields": [
         {
           "valueName": "currentSceneCollectionName",
@@ -91,8 +93,8 @@
     {
       "description": "Switches to a scene collection.\n\nNote: This will block until the collection has finished changing.",
       "requestType": "SetCurrentSceneCollection",
-      "complexity": "1",
-      "rpcVersion": "1",
+      "complexity": 1,
+      "rpcVersion": 1,
       "initialVersion": "5.0.0",
       "category": "config",
       "requestFields": [
@@ -101,16 +103,17 @@
           "valueType": "String",
           "valueDescription": "Name of the scene collection to switch to",
           "valueRestrictions": null,
-          "valueOptional": true,
-          "valueOptionalBehavior": "None"
+          "valueOptional": false,
+          "valueOptionalBehavior": null
         }
-      ]
+      ],
+      "responseFields": []
     },
     {
       "description": "Creates a new scene collection, switching to it in the process.\n\nNote: This will block until the collection has finished changing.",
       "requestType": "CreateSceneCollection",
-      "complexity": "1",
-      "rpcVersion": "1",
+      "complexity": 1,
+      "rpcVersion": 1,
       "initialVersion": "5.0.0",
       "category": "config",
       "requestFields": [
@@ -119,18 +122,20 @@
           "valueType": "String",
           "valueDescription": "Name for the new scene collection",
           "valueRestrictions": null,
-          "valueOptional": true,
-          "valueOptionalBehavior": "None"
+          "valueOptional": false,
+          "valueOptionalBehavior": null
         }
-      ]
+      ],
+      "responseFields": []
     },
     {
       "description": "Gets an array of all profiles",
       "requestType": "GetProfileList",
-      "complexity": "1",
-      "rpcVersion": "1",
+      "complexity": 1,
+      "rpcVersion": 1,
       "initialVersion": "5.0.0",
       "category": "config",
+      "requestFields": [],
       "responseFields": [
         {
           "valueName": "currentProfileName",
@@ -147,8 +152,8 @@
     {
       "description": "Switches to a profile.",
       "requestType": "SetCurrentProfile",
-      "complexity": "1",
-      "rpcVersion": "1",
+      "complexity": 1,
+      "rpcVersion": 1,
       "initialVersion": "5.0.0",
       "category": "config",
       "requestFields": [
@@ -157,16 +162,17 @@
           "valueType": "String",
           "valueDescription": "Name of the profile to switch to",
           "valueRestrictions": null,
-          "valueOptional": true,
-          "valueOptionalBehavior": "None"
+          "valueOptional": false,
+          "valueOptionalBehavior": null
         }
-      ]
+      ],
+      "responseFields": []
     },
     {
       "description": "Creates a new profile, switching to it in the process",
       "requestType": "CreateProfile",
-      "complexity": "1",
-      "rpcVersion": "1",
+      "complexity": 1,
+      "rpcVersion": 1,
       "initialVersion": "5.0.0",
       "category": "config",
       "requestFields": [
@@ -175,16 +181,17 @@
           "valueType": "String",
           "valueDescription": "Name for the new profile",
           "valueRestrictions": null,
-          "valueOptional": true,
-          "valueOptionalBehavior": "None"
+          "valueOptional": false,
+          "valueOptionalBehavior": null
         }
-      ]
+      ],
+      "responseFields": []
     },
     {
       "description": "Removes a profile. If the current profile is chosen, it will change to a different profile first.",
       "requestType": "RemoveProfile",
-      "complexity": "1",
-      "rpcVersion": "1",
+      "complexity": 1,
+      "rpcVersion": 1,
       "initialVersion": "5.0.0",
       "category": "config",
       "requestFields": [
@@ -193,16 +200,17 @@
           "valueType": "String",
           "valueDescription": "Name of the profile to remove",
           "valueRestrictions": null,
-          "valueOptional": true,
-          "valueOptionalBehavior": "None"
+          "valueOptional": false,
+          "valueOptionalBehavior": null
         }
-      ]
+      ],
+      "responseFields": []
     },
     {
       "description": "Gets a parameter from the current profile's configuration.",
       "requestType": "GetProfileParameter",
-      "complexity": "3",
-      "rpcVersion": "1",
+      "complexity": 3,
+      "rpcVersion": 1,
       "initialVersion": "5.0.0",
       "category": "config",
       "requestFields": [
@@ -211,16 +219,16 @@
           "valueType": "String",
           "valueDescription": "Category of the parameter to get",
           "valueRestrictions": null,
-          "valueOptional": true,
-          "valueOptionalBehavior": "None"
+          "valueOptional": false,
+          "valueOptionalBehavior": null
         },
         {
           "valueName": "parameterName",
           "valueType": "String",
           "valueDescription": "Name of the parameter to get",
           "valueRestrictions": null,
-          "valueOptional": true,
-          "valueOptionalBehavior": "None"
+          "valueOptional": false,
+          "valueOptionalBehavior": null
         }
       ],
       "responseFields": [
@@ -239,8 +247,8 @@
     {
       "description": "Sets the value of a parameter in the current profile's configuration.",
       "requestType": "SetProfileParameter",
-      "complexity": "3",
-      "rpcVersion": "1",
+      "complexity": 3,
+      "rpcVersion": 1,
       "initialVersion": "5.0.0",
       "category": "config",
       "requestFields": [
@@ -249,34 +257,36 @@
           "valueType": "String",
           "valueDescription": "Category of the parameter to set",
           "valueRestrictions": null,
-          "valueOptional": true,
-          "valueOptionalBehavior": "None"
+          "valueOptional": false,
+          "valueOptionalBehavior": null
         },
         {
           "valueName": "parameterName",
           "valueType": "String",
           "valueDescription": "Name of the parameter to set",
           "valueRestrictions": null,
-          "valueOptional": true,
-          "valueOptionalBehavior": "None"
+          "valueOptional": false,
+          "valueOptionalBehavior": null
         },
         {
           "valueName": "parameterValue",
           "valueType": "String",
           "valueDescription": "Value of the parameter to set. Use `null` to delete",
           "valueRestrictions": null,
-          "valueOptional": true,
-          "valueOptionalBehavior": "None"
+          "valueOptional": false,
+          "valueOptionalBehavior": null
         }
-      ]
+      ],
+      "responseFields": []
     },
     {
       "description": "Gets the current video settings.\n\nNote: To get the true FPS value, divide the FPS numerator by the FPS denominator. Example: `60000/1001`",
       "requestType": "GetVideoSettings",
-      "complexity": "2",
-      "rpcVersion": "1",
+      "complexity": 2,
+      "rpcVersion": 1,
       "initialVersion": "5.0.0",
       "category": "config",
+      "requestFields": [],
       "responseFields": [
         {
           "valueName": "fpsNumerator",
@@ -313,8 +323,8 @@
     {
       "description": "Sets the current video settings.\n\nNote: Fields must be specified in pairs. For example, you cannot set only `baseWidth` without needing to specify `baseHeight`.",
       "requestType": "SetVideoSettings",
-      "complexity": "2",
-      "rpcVersion": "1",
+      "complexity": 2,
+      "rpcVersion": 1,
       "initialVersion": "5.0.0",
       "category": "config",
       "requestFields": [
@@ -323,58 +333,60 @@
           "valueType": "Number",
           "valueDescription": "Numerator of the fractional FPS value",
           "valueRestrictions": ">= 1",
-          "valueOptional": true,
-          "valueOptionalBehavior": "Not changed"
+          "valueOptional": false,
+          "valueOptionalBehavior": null
         },
         {
           "valueName": "fpsDenominator",
           "valueType": "Number",
           "valueDescription": "Denominator of the fractional FPS value",
           "valueRestrictions": ">= 1",
-          "valueOptional": true,
-          "valueOptionalBehavior": "Not changed"
+          "valueOptional": false,
+          "valueOptionalBehavior": null
         },
         {
           "valueName": "baseWidth",
           "valueType": "Number",
           "valueDescription": "Width of the base (canvas) resolution in pixels",
           "valueRestrictions": ">= 1, <= 4096",
-          "valueOptional": true,
-          "valueOptionalBehavior": "Not changed"
+          "valueOptional": false,
+          "valueOptionalBehavior": null
         },
         {
           "valueName": "baseHeight",
           "valueType": "Number",
           "valueDescription": "Height of the base (canvas) resolution in pixels",
           "valueRestrictions": ">= 1, <= 4096",
-          "valueOptional": true,
-          "valueOptionalBehavior": "Not changed"
+          "valueOptional": false,
+          "valueOptionalBehavior": null
         },
         {
           "valueName": "outputWidth",
           "valueType": "Number",
           "valueDescription": "Width of the output resolution in pixels",
           "valueRestrictions": ">= 1, <= 4096",
-          "valueOptional": true,
-          "valueOptionalBehavior": "Not changed"
+          "valueOptional": false,
+          "valueOptionalBehavior": null
         },
         {
           "valueName": "outputHeight",
           "valueType": "Number",
           "valueDescription": "Height of the output resolution in pixels",
           "valueRestrictions": ">= 1, <= 4096",
-          "valueOptional": true,
-          "valueOptionalBehavior": "Not changed"
+          "valueOptional": false,
+          "valueOptionalBehavior": null
         }
-      ]
+      ],
+      "responseFields": []
     },
     {
       "description": "Gets the current stream service settings (stream destination).",
       "requestType": "GetStreamServiceSettings",
-      "complexity": "4",
-      "rpcVersion": "1",
+      "complexity": 4,
+      "rpcVersion": 1,
       "initialVersion": "5.0.0",
       "category": "config",
+      "requestFields": [],
       "responseFields": [
         {
           "valueName": "streamServiceType",
@@ -391,8 +403,8 @@
     {
       "description": "Sets the current stream service settings (stream destination).\n\nNote: Simple RTMP settings can be set with type `rtmp_custom` and the settings fields `server` and `key`.",
       "requestType": "SetStreamServiceSettings",
-      "complexity": "4",
-      "rpcVersion": "1",
+      "complexity": 4,
+      "rpcVersion": 1,
       "initialVersion": "5.0.0",
       "category": "config",
       "requestFields": [
@@ -401,26 +413,28 @@
           "valueType": "String",
           "valueDescription": "Type of stream service to apply. Example: `rtmp_common` or `rtmp_custom`",
           "valueRestrictions": null,
-          "valueOptional": true,
-          "valueOptionalBehavior": "None"
+          "valueOptional": false,
+          "valueOptionalBehavior": null
         },
         {
           "valueName": "streamServiceSettings",
           "valueType": "Object",
           "valueDescription": "Settings to apply to the service",
           "valueRestrictions": null,
-          "valueOptional": true,
-          "valueOptionalBehavior": "None"
+          "valueOptional": false,
+          "valueOptionalBehavior": null
         }
-      ]
+      ],
+      "responseFields": []
     },
     {
       "description": "Gets data about the current plugin and RPC version.",
       "requestType": "GetVersion",
-      "complexity": "1",
-      "rpcVersion": "1",
+      "complexity": 1,
+      "rpcVersion": 1,
       "initialVersion": "5.0.0",
       "category": "general",
+      "requestFields": [],
       "responseFields": [
         {
           "valueName": "obsVersion",
@@ -447,8 +461,8 @@
     {
       "description": "Broadcasts a `CustomEvent` to all WebSocket clients. Receivers are clients which are identified and subscribed.",
       "requestType": "BroadcastCustomEvent",
-      "complexity": "1",
-      "rpcVersion": "1",
+      "complexity": 1,
+      "rpcVersion": 1,
       "initialVersion": "5.0.0",
       "category": "general",
       "requestFields": [
@@ -457,18 +471,20 @@
           "valueType": "Object",
           "valueDescription": "Data payload to emit to all receivers",
           "valueRestrictions": null,
-          "valueOptional": true,
-          "valueOptionalBehavior": "None"
+          "valueOptional": false,
+          "valueOptionalBehavior": null
         }
-      ]
+      ],
+      "responseFields": []
     },
     {
       "description": "Gets statistics about OBS, obs-websocket, and the current session.",
       "requestType": "GetStats",
-      "complexity": "2",
-      "rpcVersion": "1",
+      "complexity": 2,
+      "rpcVersion": 1,
       "initialVersion": "5.0.0",
       "category": "general",
+      "requestFields": [],
       "responseFields": [
         {
           "valueName": "cpuUsage",
@@ -530,10 +546,11 @@
     {
       "description": "Gets an array of all hotkey names in OBS",
       "requestType": "GetHotkeyList",
-      "complexity": "3",
-      "rpcVersion": "1",
+      "complexity": 3,
+      "rpcVersion": 1,
       "initialVersion": "5.0.0",
       "category": "general",
+      "requestFields": [],
       "responseFields": [
         {
           "valueName": "hotkeys",
@@ -545,8 +562,8 @@
     {
       "description": "Triggers a hotkey using its name. See `GetHotkeyList`",
       "requestType": "TriggerHotkeyByName",
-      "complexity": "3",
-      "rpcVersion": "1",
+      "complexity": 3,
+      "rpcVersion": 1,
       "initialVersion": "5.0.0",
       "category": "general",
       "requestFields": [
@@ -555,16 +572,17 @@
           "valueType": "String",
           "valueDescription": "Name of the hotkey to trigger",
           "valueRestrictions": null,
-          "valueOptional": true,
-          "valueOptionalBehavior": "None"
+          "valueOptional": false,
+          "valueOptionalBehavior": null
         }
-      ]
+      ],
+      "responseFields": []
     },
     {
       "description": "Triggers a hotkey using a sequence of keys.",
       "requestType": "TriggerHotkeyByKeySequence",
-      "complexity": "4",
-      "rpcVersion": "1",
+      "complexity": 4,
+      "rpcVersion": 1,
       "initialVersion": "5.0.0",
       "category": "general",
       "requestFields": [
@@ -573,58 +591,60 @@
           "valueType": "String",
           "valueDescription": "The OBS key ID to use. See https://github.com/obsproject/obs-studio/blob/master/libobs/obs-hotkeys.h",
           "valueRestrictions": null,
-          "valueOptional": true,
-          "valueOptionalBehavior": "None"
+          "valueOptional": false,
+          "valueOptionalBehavior": null
         },
         {
           "valueName": "keyModifiers",
           "valueType": "Object",
           "valueDescription": "Object containing key modifiers to apply",
           "valueRestrictions": null,
-          "valueOptional": true,
-          "valueOptionalBehavior": "None"
+          "valueOptional": false,
+          "valueOptionalBehavior": null
         },
         {
           "valueName": "keyModifiers.shift",
           "valueType": "Boolean",
           "valueDescription": "Press Shift",
           "valueRestrictions": null,
-          "valueOptional": true,
-          "valueOptionalBehavior": "None"
+          "valueOptional": false,
+          "valueOptionalBehavior": null
         },
         {
           "valueName": "keyModifiers.control",
           "valueType": "Boolean",
           "valueDescription": "Press CTRL",
           "valueRestrictions": null,
-          "valueOptional": true,
-          "valueOptionalBehavior": "None"
+          "valueOptional": false,
+          "valueOptionalBehavior": null
         },
         {
           "valueName": "keyModifiers.alt",
           "valueType": "Boolean",
           "valueDescription": "Press ALT",
           "valueRestrictions": null,
-          "valueOptional": true,
-          "valueOptionalBehavior": "None"
+          "valueOptional": false,
+          "valueOptionalBehavior": null
         },
         {
           "valueName": "keyModifiers.command",
           "valueType": "Boolean",
           "valueDescription": "Press CMD (Mac)",
           "valueRestrictions": null,
-          "valueOptional": true,
-          "valueOptionalBehavior": "None"
+          "valueOptional": false,
+          "valueOptionalBehavior": null
         }
-      ]
+      ],
+      "responseFields": []
     },
     {
       "description": "Gets whether studio is enabled.",
       "requestType": "GetStudioModeEnabled",
-      "complexity": "1",
-      "rpcVersion": "1",
+      "complexity": 1,
+      "rpcVersion": 1,
       "initialVersion": "5.0.0",
       "category": "general",
+      "requestFields": [],
       "responseFields": [
         {
           "valueName": "studioModeEnabled",
@@ -636,8 +656,8 @@
     {
       "description": "Enables or disables studio mode",
       "requestType": "SetStudioModeEnabled",
-      "complexity": "1",
-      "rpcVersion": "1",
+      "complexity": 1,
+      "rpcVersion": 1,
       "initialVersion": "5.0.0",
       "category": "general",
       "requestFields": [
@@ -646,16 +666,17 @@
           "valueType": "Boolean",
           "valueDescription": "True == Enabled, False == Disabled",
           "valueRestrictions": null,
-          "valueOptional": true,
-          "valueOptionalBehavior": "None"
+          "valueOptional": false,
+          "valueOptionalBehavior": null
         }
-      ]
+      ],
+      "responseFields": []
     },
     {
       "description": "Sleeps for a time duration or number of frames. Only available in request batches with types `SERIAL_REALTIME` or `SERIAL_FRAME`.",
       "requestType": "Sleep",
-      "complexity": "2",
-      "rpcVersion": "1",
+      "complexity": 2,
+      "rpcVersion": 1,
       "initialVersion": "5.0.0",
       "category": "general",
       "requestFields": [
@@ -663,7 +684,7 @@
           "valueName": "sleepMillis",
           "valueType": "Number",
           "valueDescription": "Number of milliseconds to sleep for (if `SERIAL_REALTIME` mode)",
-          "valueRestrictions": null,
+          "valueRestrictions": ">= 0, <= 50000",
           "valueOptional": false,
           "valueOptionalBehavior": null
         },
@@ -671,12 +692,136 @@
           "valueName": "sleepFrames",
           "valueType": "Number",
           "valueDescription": "Number of frames to sleep for (if `SERIAL_FRAME` mode)",
-          "valueRestrictions": null,
+          "valueRestrictions": ">= 0, <= 10000",
           "valueOptional": false,
           "valueOptionalBehavior": null
         }
-      ]
+      ],
+      "responseFields": []
     }
   ],
-  "events": []
+  "events": [
+    {
+      "description": "The current scene collection has begun changing.\n\nNote: We recommend using this event to trigger a pause of all polling requests, as performing any requests during a\nscene collection change is considered undefined behavior and can cause crashes!",
+      "eventType": "CurrentSceneCollectionChanging",
+      "eventSubscription": "Config",
+      "complexity": 1,
+      "rpcVersion": 1,
+      "initialVersion": "5.0.0",
+      "category": "config",
+      "dataFields": [
+        {
+          "valueName": "sceneCollectionName",
+          "valueType": "String",
+          "valueDescription": "Name of the current scene collection"
+        }
+      ]
+    },
+    {
+      "description": "The current scene collection has changed.\n\nNote: If polling has been paused during `CurrentSceneCollectionChanging`, this is the que to restart polling.",
+      "eventType": "CurrentSceneCollectionChanged",
+      "eventSubscription": "Config",
+      "complexity": 1,
+      "rpcVersion": 1,
+      "initialVersion": "5.0.0",
+      "category": "config",
+      "dataFields": [
+        {
+          "valueName": "sceneCollectionName",
+          "valueType": "String",
+          "valueDescription": "Name of the new scene collection"
+        }
+      ]
+    },
+    {
+      "description": "The scene collection list has changed.",
+      "eventType": "SceneCollectionListChanged",
+      "eventSubscription": "Config",
+      "complexity": 1,
+      "rpcVersion": 1,
+      "initialVersion": "5.0.0",
+      "category": "config",
+      "dataFields": [
+        {
+          "valueName": "sceneCollections",
+          "valueType": "Array<String>",
+          "valueDescription": "Updated list of scene collections"
+        }
+      ]
+    },
+    {
+      "description": "The current profile has begun changing.",
+      "eventType": "CurrentProfileChanging",
+      "eventSubscription": "Config",
+      "complexity": 1,
+      "rpcVersion": 1,
+      "initialVersion": "5.0.0",
+      "category": "config",
+      "dataFields": [
+        {
+          "valueName": "profileName",
+          "valueType": "String",
+          "valueDescription": "Name of the current profile"
+        }
+      ]
+    },
+    {
+      "description": "The current profile has changed.",
+      "eventType": "CurrentProfileChanged",
+      "eventSubscription": "Config",
+      "complexity": 1,
+      "rpcVersion": 1,
+      "initialVersion": "5.0.0",
+      "category": "config",
+      "dataFields": [
+        {
+          "valueName": "profileName",
+          "valueType": "String",
+          "valueDescription": "Name of the new profile"
+        }
+      ]
+    },
+    {
+      "description": "The profile list has changed.",
+      "eventType": "ProfileListChanged",
+      "eventSubscription": "Config",
+      "complexity": 1,
+      "rpcVersion": 1,
+      "initialVersion": "5.0.0",
+      "category": "config",
+      "dataFields": [
+        {
+          "valueName": "profiles",
+          "valueType": "Array<String>",
+          "valueDescription": "Updated list of profiles"
+        }
+      ]
+    },
+    {
+      "description": "OBS has begun the shutdown process.",
+      "eventType": "ExitStarted",
+      "eventSubscription": "General",
+      "complexity": 1,
+      "rpcVersion": 1,
+      "initialVersion": "5.0.0",
+      "category": "general",
+      "dataFields": []
+    },
+    {
+      "description": "Studio mode has been enabled or disabled.",
+      "eventType": "StudioModeStateChanged",
+      "eventSubscription": "General",
+      "complexity": 1,
+      "rpcVersion": 1,
+      "initialVersion": "5.0.0",
+      "category": "general",
+      "dataFields": [
+        {
+          "valueName": "studioModeEnabled",
+          "valueType": "Boolean",
+          "valueDescription": "True == Enabled, False == Disabled"
+        }
+      ]
+    }
+  ]
 }

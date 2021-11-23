@@ -1,3 +1,5 @@
+import logging
+logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 import os
 import sys
 import json
@@ -43,12 +45,14 @@ def get_request_fields(fields):
         field_out['valueType'] = components[1]
         field_out['valueDescription'] = components[2]
         valueOptionalOffset = 3
+        # If value type is a number, restrictions are required. Else, should not be added.
         if field_out['valueType'].lower() == 'number':
+            # In the case of a number, the optional component gets pushed back.
             valueOptionalOffset += 1
             field_out['valueRestrictions'] = components[3] if components[3].lower() != 'none' else None
         else:
             field_out['valueRestrictions'] = None
-        if len(components) <= valueOptionalOffset and components[valueOptionalOffset].lower() != 'none':
+        if len(components) <= valueOptionalOffset or components[valueOptionalOffset].lower() != 'none':
             field_out['valueOptional'] = False
             field_out['valueOptionalBehavior'] = None
         else:
@@ -92,51 +96,67 @@ for comment in comments_raw:
         pass
     elif api == 'requests':
         if not validate_fields(comment, ['description', 'requestType', 'complexity', 'rpcVersion', 'initialVersion', 'category']):
-            print('WARNING: Failed to process request comment due to missing field(s):\n{}'.format(comment))
+            logging.warning('Failed to process request comment due to missing field(s):\n{}'.format(comment))
             continue
 
         req = {}
         #                                    Recombines the header back into one string, allowing multi-line descriptions.
         req['description'] = field_to_string(comment.get('lead', '')) + field_to_string(comment['description'])
         req['requestType'] = field_to_string(comment['requestType'])
-        req['complexity'] = field_to_string(int(comment['complexity']))
-        req['rpcVersion'] = field_to_string(int(comment['rpcVersion']))
+        req['complexity'] = int(field_to_string(comment['complexity']))
+        req['rpcVersion'] = int(field_to_string(comment['rpcVersion']))
         req['initialVersion'] = field_to_string(comment['initialVersion'])
         req['category'] = field_to_string(comment['category'])
 
-        if 'requestField' in comment:
-            req['requestFields'] = get_request_fields(comment['requestField'])
-        else:
-            req['requestFields'] = []
+        try:
+            if 'requestField' in comment:
+                req['requestFields'] = get_request_fields(comment['requestField'])
+            else:
+                req['requestFields'] = []
+        except:
+            logging.exception('Failed to process request `{}` request fields due to error:\n'.format(req['requestType']))
+            continue
 
-        if 'responseField' in comment:
-            req['responseFields'] = get_response_fields(comment['responseField'])
-        else:
-            req['responseFields'] = []
+        try:
+            if 'responseField' in comment:
+                req['responseFields'] = get_response_fields(comment['responseField'])
+            else:
+                req['responseFields'] = []
+        except:
+            logging.exception('Failed to process request `{}` request fields due to error:\n'.format(req['requestType']))
+            continue
+
+        logging.info('Processed request: {}'.format(req['requestType']))
 
         requests.append(req)
     elif api == 'events':
         if not validate_fields(comment, ['description', 'eventType', 'eventSubscription', 'complexity', 'rpcVersion', 'initialVersion', 'category']):
-            print('WARNING: Failed to process event comment due to missing field(s):\n{}'.format(comment))
+            logging.warning('Failed to process event comment due to missing field(s):\n{}'.format(comment))
             continue
 
         eve = {}
         eve['description'] = field_to_string(comment.get('lead', '')) + field_to_string(comment['description'])
         eve['eventType'] = field_to_string(comment['eventType'])
         eve['eventSubscription'] = field_to_string(comment['eventSubscription'])
-        eve['complexity'] = field_to_string(int(comment['complexity']))
-        eve['rpcVersion'] = field_to_string(int(comment['rpcVersion']))
+        eve['complexity'] = int(field_to_string(comment['complexity']))
+        eve['rpcVersion'] = int(field_to_string(comment['rpcVersion']))
         eve['initialVersion'] = field_to_string(comment['initialVersion'])
         eve['category'] = field_to_string(comment['category'])
 
-        if 'dataField' in comment:
-            eve['dataFields'] = get_response_fields(comment['dataField'])
-        else:
-            req['dataFields'] = []
+        try:
+            if 'dataField' in comment:
+                eve['dataFields'] = get_response_fields(comment['dataField'])
+            else:
+                eve['dataFields'] = []
+        except:
+            logging.exception('Failed to process event `{}` data fields due to error:\n'.format(req['eventType']))
+            continue
+
+        logging.info('Processed event: {}'.format(eve['eventType']))
 
         events.append(eve)
     else:
-        print('WARNING: Comment with unknown api: {}'.format(api))
+        logging.warning('Comment with unknown api: {}'.format(api))
 
 finalObject = {'enums': enums, 'requests': requests, 'events': events}
 

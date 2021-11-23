@@ -25,8 +25,8 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 /**
  * Gets the value of a "slot" from the selected persistent data realm.
  *
- * @requestField realm    | String | The data realm to select. `OBS_WEBSOCKET_DATA_REALM_GLOBAL` or `OBS_WEBSOCKET_DATA_REALM_PROFILE` | None
- * @requestField slotName | String | The name of the slot to retrieve data from                                                        | None
+ * @requestField realm    | String | The data realm to select. `OBS_WEBSOCKET_DATA_REALM_GLOBAL` or `OBS_WEBSOCKET_DATA_REALM_PROFILE`
+ * @requestField slotName | String | The name of the slot to retrieve data from
  *
  * @responseField slotValue | String | Value associated with the slot. `null` if not set
  *
@@ -68,9 +68,9 @@ RequestResult RequestHandler::GetPersistentData(const Request& request)
 /**
  * Sets the value of a "slot" from the selected persistent data realm.
  *
- * @requestField realm     | String | The data realm to select. `OBS_WEBSOCKET_DATA_REALM_GLOBAL` or `OBS_WEBSOCKET_DATA_REALM_PROFILE` | None
- * @requestField slotName  | String | The name of the slot to retrieve data from                                                        | None
- * @requestField slotValue | Any    | The value to apply to the slot                                                                    | None
+ * @requestField realm     | String | The data realm to select. `OBS_WEBSOCKET_DATA_REALM_GLOBAL` or `OBS_WEBSOCKET_DATA_REALM_PROFILE`
+ * @requestField slotName  | String | The name of the slot to retrieve data from
+ * @requestField slotValue | Any    | The value to apply to the slot
  *
  * @requestType SetPersistentData
  * @complexity 2
@@ -133,7 +133,7 @@ RequestResult RequestHandler::GetSceneCollectionList(const Request&)
  *
  * Note: This will block until the collection has finished changing.
  *
- * @requestField sceneCollectionName | String | Name of the scene collection to switch to | None
+ * @requestField sceneCollectionName | String | Name of the scene collection to switch to
  *
  * @requestType SetCurrentSceneCollection
  * @complexity 1
@@ -171,7 +171,7 @@ RequestResult RequestHandler::SetCurrentSceneCollection(const Request& request)
  *
  * Note: This will block until the collection has finished changing.
  *
- * @requestField sceneCollectionName | String | Name for the new scene collection | None
+ * @requestField sceneCollectionName | String | Name for the new scene collection
  *
  * @requestType CreateSceneCollection
  * @complexity 1
@@ -226,7 +226,7 @@ RequestResult RequestHandler::GetProfileList(const Request&)
 /**
  * Switches to a profile.
  *
- * @requestField profileName | String | Name of the profile to switch to | None
+ * @requestField profileName | String | Name of the profile to switch to
  *
  * @requestType SetCurrentProfile
  * @complexity 1
@@ -262,7 +262,7 @@ RequestResult RequestHandler::SetCurrentProfile(const Request& request)
 /**
  * Creates a new profile, switching to it in the process
  *
- * @requestField profileName | String | Name for the new profile | None
+ * @requestField profileName | String | Name for the new profile
  *
  * @requestType CreateProfile
  * @complexity 1
@@ -293,7 +293,7 @@ RequestResult RequestHandler::CreateProfile(const Request& request)
 /**
  * Removes a profile. If the current profile is chosen, it will change to a different profile first.
  *
- * @requestField profileName | String | Name of the profile to remove | None
+ * @requestField profileName | String | Name of the profile to remove
  *
  * @requestType RemoveProfile
  * @complexity 1
@@ -327,8 +327,8 @@ RequestResult RequestHandler::RemoveProfile(const Request& request)
 /**
  * Gets a parameter from the current profile's configuration.
  *
- * @requestField parameterCategory | String | Category of the parameter to get | None
- * @requestField parameterName     | String | Name of the parameter to get     | None
+ * @requestField parameterCategory | String | Category of the parameter to get
+ * @requestField parameterName     | String | Name of the parameter to get
  *
  * @responseField parameterValue        | String | Value associated with the parameter. `null` if not set and no default
  * @responseField defaultParameterValue | String | Default value associated with the parameter. `null` if no default
@@ -373,9 +373,9 @@ RequestResult RequestHandler::GetProfileParameter(const Request& request)
 /**
  * Sets the value of a parameter in the current profile's configuration.
  *
- * @requestField parameterCategory | String | Category of the parameter to set                    | None
- * @requestField parameterName     | String | Name of the parameter to set                        | None
- * @requestField parameterValue    | String | Value of the parameter to set. Use `null` to delete | None
+ * @requestField parameterCategory | String | Category of the parameter to set
+ * @requestField parameterName     | String | Name of the parameter to set
+ * @requestField parameterValue    | String | Value of the parameter to set. Use `null` to delete
  *
  * @requestType SetProfileParameter
  * @complexity 3
@@ -542,8 +542,8 @@ RequestResult RequestHandler::GetStreamServiceSettings(const Request&)
  *
  * Note: Simple RTMP settings can be set with type `rtmp_custom` and the settings fields `server` and `key`.
  *
- * @requestField streamServiceType     | String | Type of stream service to apply. Example: `rtmp_common` or `rtmp_custom` | None
- * @requestField streamServiceSettings | Object | Settings to apply to the service                                         | None
+ * @requestField streamServiceType     | String | Type of stream service to apply. Example: `rtmp_common` or `rtmp_custom`
+ * @requestField streamServiceSettings | Object | Settings to apply to the service
  *
  * @requestType SetStreamServiceSettings
  * @complexity 4
