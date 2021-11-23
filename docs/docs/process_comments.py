@@ -24,6 +24,7 @@ def validate_fields(data, fields):
             return False
     return True
 
+# Get the individual components of a `requestField` or `responseField` or `dataField` entry
 def get_components(data):
     ret = []
     components_raw = data.split('|')
@@ -31,6 +32,7 @@ def get_components(data):
         ret.append(component.strip())
     return ret
 
+# Convert all request fields from raw to final
 def get_request_fields(fields):
     fields = field_to_array(fields)
     ret = []
@@ -43,10 +45,10 @@ def get_request_fields(fields):
         valueOptionalOffset = 3
         if field_out['valueType'].lower() == 'number':
             valueOptionalOffset += 1
-            field_out['valueRestrictions'] = components[3] if components[3] != 'None' else None
+            field_out['valueRestrictions'] = components[3] if components[3].lower() != 'none' else None
         else:
             field_out['valueRestrictions'] = None
-        if len(components) <= valueOptionalOffset:
+        if len(components) <= valueOptionalOffset and components[valueOptionalOffset].lower() != 'none':
             field_out['valueOptional'] = False
             field_out['valueOptionalBehavior'] = None
         else:
@@ -55,6 +57,7 @@ def get_request_fields(fields):
         ret.append(field_out)
     return ret
 
+# Convert all response (or event data) fields from raw to final
 def get_response_fields(fields):
     fields = field_to_array(fields)
     ret = []
@@ -66,6 +69,8 @@ def get_response_fields(fields):
         field_out['valueDescription'] = components[2]
         ret.append(field_out)
     return ret
+
+#######################################################################################################################
 
 # Open the raw comments output file
 with open('../work/comments.json', 'r') as f:
@@ -87,9 +92,11 @@ for comment in comments_raw:
         pass
     elif api == 'requests':
         if not validate_fields(comment, ['description', 'requestType', 'complexity', 'rpcVersion', 'initialVersion', 'category']):
-            print('WARNING: Failed to process request comment:\n{}'.format(comment))
+            print('WARNING: Failed to process request comment due to missing field(s):\n{}'.format(comment))
             continue
+
         req = {}
+        #                                    Recombines the header back into one string, allowing multi-line descriptions.
         req['description'] = field_to_string(comment.get('lead', '')) + field_to_string(comment['description'])
         req['requestType'] = field_to_string(comment['requestType'])
         req['complexity'] = field_to_string(int(comment['complexity']))
@@ -99,18 +106,24 @@ for comment in comments_raw:
 
         if 'requestField' in comment:
             req['requestFields'] = get_request_fields(comment['requestField'])
+        else:
+            req['requestFields'] = []
 
         if 'responseField' in comment:
             req['responseFields'] = get_response_fields(comment['responseField'])
+        else:
+            req['responseFields'] = []
 
         requests.append(req)
     elif api == 'events':
-        if not validate_fields(comment, ['description', 'eventType', 'complexity', 'rpcVersion', 'initialVersion', 'category']):
-            print('WARNING: Failed to process event comment:\n{}'.format(comment))
+        if not validate_fields(comment, ['description', 'eventType', 'eventSubscription', 'complexity', 'rpcVersion', 'initialVersion', 'category']):
+            print('WARNING: Failed to process event comment due to missing field(s):\n{}'.format(comment))
             continue
+
         eve = {}
         eve['description'] = field_to_string(comment.get('lead', '')) + field_to_string(comment['description'])
         eve['eventType'] = field_to_string(comment['eventType'])
+        eve['eventSubscription'] = field_to_string(comment['eventSubscription'])
         eve['complexity'] = field_to_string(int(comment['complexity']))
         eve['rpcVersion'] = field_to_string(int(comment['rpcVersion']))
         eve['initialVersion'] = field_to_string(comment['initialVersion'])
@@ -118,8 +131,12 @@ for comment in comments_raw:
 
         if 'dataField' in comment:
             eve['dataFields'] = get_response_fields(comment['dataField'])
+        else:
+            req['dataFields'] = []
 
         events.append(eve)
+    else:
+        print('WARNING: Comment with unknown api: {}'.format(api))
 
 finalObject = {'enums': enums, 'requests': requests, 'events': events}
 
