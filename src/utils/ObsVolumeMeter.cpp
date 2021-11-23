@@ -58,7 +58,8 @@ Utils::Obs::VolumeMeter::Meter::~Meter()
 
 bool Utils::Obs::VolumeMeter::Meter::InputValid()
 {
-	return !obs_weak_source_expired(_input);
+	// return !obs_weak_source_expired(_input);
+	return true;
 }
 
 json Utils::Obs::VolumeMeter::Meter::GetMeterData()
