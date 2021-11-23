@@ -1,0 +1,682 @@
+{
+  "enums": [],
+  "requests": [
+    {
+      "description": "Gets the value of a \"slot\" from the selected persistent data realm.",
+      "requestType": "GetPersistentData",
+      "complexity": "2",
+      "rpcVersion": "1",
+      "initialVersion": "5.0.0",
+      "category": "config",
+      "requestFields": [
+        {
+          "valueName": "realm",
+          "valueType": "String",
+          "valueDescription": "The data realm to select. `OBS_WEBSOCKET_DATA_REALM_GLOBAL` or `OBS_WEBSOCKET_DATA_REALM_PROFILE`",
+          "valueRestrictions": null,
+          "valueOptional": true,
+          "valueOptionalBehavior": "None"
+        },
+        {
+          "valueName": "slotName",
+          "valueType": "String",
+          "valueDescription": "The name of the slot to retrieve data from",
+          "valueRestrictions": null,
+          "valueOptional": true,
+          "valueOptionalBehavior": "None"
+        }
+      ],
+      "responseFields": [
+        {
+          "valueName": "slotValue",
+          "valueType": "String",
+          "valueDescription": "Value associated with the slot. `null` if not set"
+        }
+      ]
+    },
+    {
+      "description": "Sets the value of a \"slot\" from the selected persistent data realm.",
+      "requestType": "SetPersistentData",
+      "complexity": "2",
+      "rpcVersion": "1",
+      "initialVersion": "5.0.0",
+      "category": "config",
+      "requestFields": [
+        {
+          "valueName": "realm",
+          "valueType": "String",
+          "valueDescription": "The data realm to select. `OBS_WEBSOCKET_DATA_REALM_GLOBAL` or `OBS_WEBSOCKET_DATA_REALM_PROFILE`",
+          "valueRestrictions": null,
+          "valueOptional": true,
+          "valueOptionalBehavior": "None"
+        },
+        {
+          "valueName": "slotName",
+          "valueType": "String",
+          "valueDescription": "The name of the slot to retrieve data from",
+          "valueRestrictions": null,
+          "valueOptional": true,
+          "valueOptionalBehavior": "None"
+        },
+        {
+          "valueName": "slotValue",
+          "valueType": "Any",
+          "valueDescription": "The value to apply to the slot",
+          "valueRestrictions": null,
+          "valueOptional": true,
+          "valueOptionalBehavior": "None"
+        }
+      ]
+    },
+    {
+      "description": "Gets an array of all scene collections",
+      "requestType": "GetSceneCollectionList",
+      "complexity": "1",
+      "rpcVersion": "1",
+      "initialVersion": "5.0.0",
+      "category": "config",
+      "responseFields": [
+        {
+          "valueName": "currentSceneCollectionName",
+          "valueType": "String",
+          "valueDescription": "The name of the current scene collection"
+        },
+        {
+          "valueName": "sceneCollections",
+          "valueType": "Array<String>",
+          "valueDescription": "Array of all available scene collections"
+        }
+      ]
+    },
+    {
+      "description": "Switches to a scene collection.\n\nNote: This will block until the collection has finished changing.",
+      "requestType": "SetCurrentSceneCollection",
+      "complexity": "1",
+      "rpcVersion": "1",
+      "initialVersion": "5.0.0",
+      "category": "config",
+      "requestFields": [
+        {
+          "valueName": "sceneCollectionName",
+          "valueType": "String",
+          "valueDescription": "Name of the scene collection to switch to",
+          "valueRestrictions": null,
+          "valueOptional": true,
+          "valueOptionalBehavior": "None"
+        }
+      ]
+    },
+    {
+      "description": "Creates a new scene collection, switching to it in the process.\n\nNote: This will block until the collection has finished changing.",
+      "requestType": "CreateSceneCollection",
+      "complexity": "1",
+      "rpcVersion": "1",
+      "initialVersion": "5.0.0",
+      "category": "config",
+      "requestFields": [
+        {
+          "valueName": "sceneCollectionName",
+          "valueType": "String",
+          "valueDescription": "Name for the new scene collection",
+          "valueRestrictions": null,
+          "valueOptional": true,
+          "valueOptionalBehavior": "None"
+        }
+      ]
+    },
+    {
+      "description": "Gets an array of all profiles",
+      "requestType": "GetProfileList",
+      "complexity": "1",
+      "rpcVersion": "1",
+      "initialVersion": "5.0.0",
+      "category": "config",
+      "responseFields": [
+        {
+          "valueName": "currentProfileName",
+          "valueType": "String",
+          "valueDescription": "The name of the current profile"
+        },
+        {
+          "valueName": "profiles",
+          "valueType": "Array<String>",
+          "valueDescription": "Array of all available profiles"
+        }
+      ]
+    },
+    {
+      "description": "Switches to a profile.",
+      "requestType": "SetCurrentProfile",
+      "complexity": "1",
+      "rpcVersion": "1",
+      "initialVersion": "5.0.0",
+      "category": "config",
+      "requestFields": [
+        {
+          "valueName": "profileName",
+          "valueType": "String",
+          "valueDescription": "Name of the profile to switch to",
+          "valueRestrictions": null,
+          "valueOptional": true,
+          "valueOptionalBehavior": "None"
+        }
+      ]
+    },
+    {
+      "description": "Creates a new profile, switching to it in the process",
+      "requestType": "CreateProfile",
+      "complexity": "1",
+      "rpcVersion": "1",
+      "initialVersion": "5.0.0",
+      "category": "config",
+      "requestFields": [
+        {
+          "valueName": "profileName",
+          "valueType": "String",
+          "valueDescription": "Name for the new profile",
+          "valueRestrictions": null,
+          "valueOptional": true,
+          "valueOptionalBehavior": "None"
+        }
+      ]
+    },
+    {
+      "description": "Removes a profile. If the current profile is chosen, it will change to a different profile first.",
+      "requestType": "RemoveProfile",
+      "complexity": "1",
+      "rpcVersion": "1",
+      "initialVersion": "5.0.0",
+      "category": "config",
+      "requestFields": [
+        {
+          "valueName": "profileName",
+          "valueType": "String",
+          "valueDescription": "Name of the profile to remove",
+          "valueRestrictions": null,
+          "valueOptional": true,
+          "valueOptionalBehavior": "None"
+        }
+      ]
+    },
+    {
+      "description": "Gets a parameter from the current profile's configuration.",
+      "requestType": "GetProfileParameter",
+      "complexity": "3",
+      "rpcVersion": "1",
+      "initialVersion": "5.0.0",
+      "category": "config",
+      "requestFields": [
+        {
+          "valueName": "parameterCategory",
+          "valueType": "String",
+          "valueDescription": "Category of the parameter to get",
+          "valueRestrictions": null,
+          "valueOptional": true,
+          "valueOptionalBehavior": "None"
+        },
+        {
+          "valueName": "parameterName",
+          "valueType": "String",
+          "valueDescription": "Name of the parameter to get",
+          "valueRestrictions": null,
+          "valueOptional": true,
+          "valueOptionalBehavior": "None"
+        }
+      ],
+      "responseFields": [
+        {
+          "valueName": "parameterValue",
+          "valueType": "String",
+          "valueDescription": "Value associated with the parameter. `null` if not set and no default"
+        },
+        {
+          "valueName": "defaultParameterValue",
+          "valueType": "String",
+          "valueDescription": "Default value associated with the parameter. `null` if no default"
+        }
+      ]
+    },
+    {
+      "description": "Sets the value of a parameter in the current profile's configuration.",
+      "requestType": "SetProfileParameter",
+      "complexity": "3",
+      "rpcVersion": "1",
+      "initialVersion": "5.0.0",
+      "category": "config",
+      "requestFields": [
+        {
+          "valueName": "parameterCategory",
+          "valueType": "String",
+          "valueDescription": "Category of the parameter to set",
+          "valueRestrictions": null,
+          "valueOptional": true,
+          "valueOptionalBehavior": "None"
+        },
+        {
+          "valueName": "parameterName",
+          "valueType": "String",
+          "valueDescription": "Name of the parameter to set",
+          "valueRestrictions": null,
+          "valueOptional": true,
+          "valueOptionalBehavior": "None"
+        },
+        {
+          "valueName": "parameterValue",
+          "valueType": "String",
+          "valueDescription": "Value of the parameter to set. Use `null` to delete",
+          "valueRestrictions": null,
+          "valueOptional": true,
+          "valueOptionalBehavior": "None"
+        }
+      ]
+    },
+    {
+      "description": "Gets the current video settings.\n\nNote: To get the true FPS value, divide the FPS numerator by the FPS denominator. Example: `60000/1001`",
+      "requestType": "GetVideoSettings",
+      "complexity": "2",
+      "rpcVersion": "1",
+      "initialVersion": "5.0.0",
+      "category": "config",
+      "responseFields": [
+        {
+          "valueName": "fpsNumerator",
+          "valueType": "Number",
+          "valueDescription": "Numerator of the fractional FPS value"
+        },
+        {
+          "valueName": "fpsDenominator",
+          "valueType": "Number",
+          "valueDescription": "Denominator of the fractional FPS value"
+        },
+        {
+          "valueName": "baseWidth",
+          "valueType": "Number",
+          "valueDescription": "Width of the base (canvas) resolution in pixels"
+        },
+        {
+          "valueName": "baseHeight",
+          "valueType": "Number",
+          "valueDescription": "Height of the base (canvas) resolution in pixels"
+        },
+        {
+          "valueName": "outputWidth",
+          "valueType": "Number",
+          "valueDescription": "Width of the output resolution in pixels"
+        },
+        {
+          "valueName": "outputHeight",
+          "valueType": "Number",
+          "valueDescription": "Height of the output resolution in pixels"
+        }
+      ]
+    },
+    {
+      "description": "Sets the current video settings.\n\nNote: Fields must be specified in pairs. For example, you cannot set only `baseWidth` without needing to specify `baseHeight`.",
+      "requestType": "SetVideoSettings",
+      "complexity": "2",
+      "rpcVersion": "1",
+      "initialVersion": "5.0.0",
+      "category": "config",
+      "requestFields": [
+        {
+          "valueName": "fpsNumerator",
+          "valueType": "Number",
+          "valueDescription": "Numerator of the fractional FPS value",
+          "valueRestrictions": ">= 1",
+          "valueOptional": true,
+          "valueOptionalBehavior": "Not changed"
+        },
+        {
+          "valueName": "fpsDenominator",
+          "valueType": "Number",
+          "valueDescription": "Denominator of the fractional FPS value",
+          "valueRestrictions": ">= 1",
+          "valueOptional": true,
+          "valueOptionalBehavior": "Not changed"
+        },
+        {
+          "valueName": "baseWidth",
+          "valueType": "Number",
+          "valueDescription": "Width of the base (canvas) resolution in pixels",
+          "valueRestrictions": ">= 1, <= 4096",
+          "valueOptional": true,
+          "valueOptionalBehavior": "Not changed"
+        },
+        {
+          "valueName": "baseHeight",
+          "valueType": "Number",
+          "valueDescription": "Height of the base (canvas) resolution in pixels",
+          "valueRestrictions": ">= 1, <= 4096",
+          "valueOptional": true,
+          "valueOptionalBehavior": "Not changed"
+        },
+        {
+          "valueName": "outputWidth",
+          "valueType": "Number",
+          "valueDescription": "Width of the output resolution in pixels",
+          "valueRestrictions": ">= 1, <= 4096",
+          "valueOptional": true,
+          "valueOptionalBehavior": "Not changed"
+        },
+        {
+          "valueName": "outputHeight",
+          "valueType": "Number",
+          "valueDescription": "Height of the output resolution in pixels",
+          "valueRestrictions": ">= 1, <= 4096",
+          "valueOptional": true,
+          "valueOptionalBehavior": "Not changed"
+        }
+      ]
+    },
+    {
+      "description": "Gets the current stream service settings (stream destination).",
+      "requestType": "GetStreamServiceSettings",
+      "complexity": "4",
+      "rpcVersion": "1",
+      "initialVersion": "5.0.0",
+      "category": "config",
+      "responseFields": [
+        {
+          "valueName": "streamServiceType",
+          "valueType": "String",
+          "valueDescription": "Stream service type, like `rtmp_custom` or `rtmp_common`"
+        },
+        {
+          "valueName": "streamServiceSettings",
+          "valueType": "Object",
+          "valueDescription": "Stream service settings"
+        }
+      ]
+    },
+    {
+      "description": "Sets the current stream service settings (stream destination).\n\nNote: Simple RTMP settings can be set with type `rtmp_custom` and the settings fields `server` and `key`.",
+      "requestType": "SetStreamServiceSettings",
+      "complexity": "4",
+      "rpcVersion": "1",
+      "initialVersion": "5.0.0",
+      "category": "config",
+      "requestFields": [
+        {
+          "valueName": "streamServiceType",
+          "valueType": "String",
+          "valueDescription": "Type of stream service to apply. Example: `rtmp_common` or `rtmp_custom`",
+          "valueRestrictions": null,
+          "valueOptional": true,
+          "valueOptionalBehavior": "None"
+        },
+        {
+          "valueName": "streamServiceSettings",
+          "valueType": "Object",
+          "valueDescription": "Settings to apply to the service",
+          "valueRestrictions": null,
+          "valueOptional": true,
+          "valueOptionalBehavior": "None"
+        }
+      ]
+    },
+    {
+      "description": "Gets data about the current plugin and RPC version.",
+      "requestType": "GetVersion",
+      "complexity": "1",
+      "rpcVersion": "1",
+      "initialVersion": "5.0.0",
+      "category": "general",
+      "responseFields": [
+        {
+          "valueName": "obsVersion",
+          "valueType": "String",
+          "valueDescription": "Current OBS Studio version"
+        },
+        {
+          "valueName": "obsWebSocketVersion",
+          "valueType": "String",
+          "valueDescription": "Current obs-websocket version"
+        },
+        {
+          "valueName": "rpcVersion",
+          "valueType": "Number",
+          "valueDescription": "Current latest obs-websocket RPC version"
+        },
+        {
+          "valueName": "availableRequests",
+          "valueType": "Array<String>",
+          "valueDescription": "Array of available RPC requests for the currently negotiated RPC version"
+        }
+      ]
+    },
+    {
+      "description": "Broadcasts a `CustomEvent` to all WebSocket clients. Receivers are clients which are identified and subscribed.",
+      "requestType": "BroadcastCustomEvent",
+      "complexity": "1",
+      "rpcVersion": "1",
+      "initialVersion": "5.0.0",
+      "category": "general",
+      "requestFields": [
+        {
+          "valueName": "eventData",
+          "valueType": "Object",
+          "valueDescription": "Data payload to emit to all receivers",
+          "valueRestrictions": null,
+          "valueOptional": true,
+          "valueOptionalBehavior": "None"
+        }
+      ]
+    },
+    {
+      "description": "Gets statistics about OBS, obs-websocket, and the current session.",
+      "requestType": "GetStats",
+      "complexity": "2",
+      "rpcVersion": "1",
+      "initialVersion": "5.0.0",
+      "category": "general",
+      "responseFields": [
+        {
+          "valueName": "cpuUsage",
+          "valueType": "Number",
+          "valueDescription": "Current CPU usage in percent"
+        },
+        {
+          "valueName": "memoryUsage",
+          "valueType": "Number",
+          "valueDescription": "Amount of memory in MB currently being used by OBS"
+        },
+        {
+          "valueName": "availableDiskSpace",
+          "valueType": "Number",
+          "valueDescription": "Available disk space on the device being used for recording storage"
+        },
+        {
+          "valueName": "activeFps",
+          "valueType": "Number",
+          "valueDescription": "Current FPS being rendered"
+        },
+        {
+          "valueName": "averageFrameRenderTime",
+          "valueType": "Number",
+          "valueDescription": "Average time in milliseconds that OBS is taking to render a frame"
+        },
+        {
+          "valueName": "renderSkippedFrames",
+          "valueType": "Number",
+          "valueDescription": "Number of frames skipped by OBS in the render thread"
+        },
+        {
+          "valueName": "renderTotalFrames",
+          "valueType": "Number",
+          "valueDescription": "Total number of frames outputted by the render thread"
+        },
+        {
+          "valueName": "outputSkippedFrames",
+          "valueType": "Number",
+          "valueDescription": "Number of frames skipped by OBS in the output thread"
+        },
+        {
+          "valueName": "outputTotalFrames",
+          "valueType": "Number",
+          "valueDescription": "Total number of frames outputted by the output thread"
+        },
+        {
+          "valueName": "webSocketSessionIncomingMessages",
+          "valueType": "Number",
+          "valueDescription": "Total number of messages received by obs-websocket from the client"
+        },
+        {
+          "valueName": "webSocketSessionOutgoingMessages",
+          "valueType": "Number",
+          "valueDescription": "Total number of messages sent by obs-websocket to the client"
+        }
+      ]
+    },
+    {
+      "description": "Gets an array of all hotkey names in OBS",
+      "requestType": "GetHotkeyList",
+      "complexity": "3",
+      "rpcVersion": "1",
+      "initialVersion": "5.0.0",
+      "category": "general",
+      "responseFields": [
+        {
+          "valueName": "hotkeys",
+          "valueType": "Array<String>",
+          "valueDescription": "Array of hotkey names"
+        }
+      ]
+    },
+    {
+      "description": "Triggers a hotkey using its name. See `GetHotkeyList`",
+      "requestType": "TriggerHotkeyByName",
+      "complexity": "3",
+      "rpcVersion": "1",
+      "initialVersion": "5.0.0",
+      "category": "general",
+      "requestFields": [
+        {
+          "valueName": "hotkeyName",
+          "valueType": "String",
+          "valueDescription": "Name of the hotkey to trigger",
+          "valueRestrictions": null,
+          "valueOptional": true,
+          "valueOptionalBehavior": "None"
+        }
+      ]
+    },
+    {
+      "description": "Triggers a hotkey using a sequence of keys.",
+      "requestType": "TriggerHotkeyByKeySequence",
+      "complexity": "4",
+      "rpcVersion": "1",
+      "initialVersion": "5.0.0",
+      "category": "general",
+      "requestFields": [
+        {
+          "valueName": "keyId",
+          "valueType": "String",
+          "valueDescription": "The OBS key ID to use. See https://github.com/obsproject/obs-studio/blob/master/libobs/obs-hotkeys.h",
+          "valueRestrictions": null,
+          "valueOptional": true,
+          "valueOptionalBehavior": "None"
+        },
+        {
+          "valueName": "keyModifiers",
+          "valueType": "Object",
+          "valueDescription": "Object containing key modifiers to apply",
+          "valueRestrictions": null,
+          "valueOptional": true,
+          "valueOptionalBehavior": "None"
+        },
+        {
+          "valueName": "keyModifiers.shift",
+          "valueType": "Boolean",
+          "valueDescription": "Press Shift",
+          "valueRestrictions": null,
+          "valueOptional": true,
+          "valueOptionalBehavior": "None"
+        },
+        {
+          "valueName": "keyModifiers.control",
+          "valueType": "Boolean",
+          "valueDescription": "Press CTRL",
+          "valueRestrictions": null,
+          "valueOptional": true,
+          "valueOptionalBehavior": "None"
+        },
+        {
+          "valueName": "keyModifiers.alt",
+          "valueType": "Boolean",
+          "valueDescription": "Press ALT",
+          "valueRestrictions": null,
+          "valueOptional": true,
+          "valueOptionalBehavior": "None"
+        },
+        {
+          "valueName": "keyModifiers.command",
+          "valueType": "Boolean",
+          "valueDescription": "Press CMD (Mac)",
+          "valueRestrictions": null,
+          "valueOptional": true,
+          "valueOptionalBehavior": "None"
+        }
+      ]
+    },
+    {
+      "description": "Gets whether studio is enabled.",
+      "requestType": "GetStudioModeEnabled",
+      "complexity": "1",
+      "rpcVersion": "1",
+      "initialVersion": "5.0.0",
+      "category": "general",
+      "responseFields": [
+        {
+          "valueName": "studioModeEnabled",
+          "valueType": "Boolean",
+          "valueDescription": "Whether studio mode is enabled"
+        }
+      ]
+    },
+    {
+      "description": "Enables or disables studio mode",
+      "requestType": "SetStudioModeEnabled",
+      "complexity": "1",
+      "rpcVersion": "1",
+      "initialVersion": "5.0.0",
+      "category": "general",
+      "requestFields": [
+        {
+          "valueName": "studioModeEnabled",
+          "valueType": "Boolean",
+          "valueDescription": "True == Enabled, False == Disabled",
+          "valueRestrictions": null,
+          "valueOptional": true,
+          "valueOptionalBehavior": "None"
+        }
+      ]
+    },
+    {
+      "description": "Sleeps for a time duration or number of frames. Only available in request batches with types `SERIAL_REALTIME` or `SERIAL_FRAME`.",
+      "requestType": "Sleep",
+      "complexity": "2",
+      "rpcVersion": "1",
+      "initialVersion": "5.0.0",
+      "category": "general",
+      "requestFields": [
+        {
+          "valueName": "sleepMillis",
+          "valueType": "Number",
+          "valueDescription": "Number of milliseconds to sleep for (if `SERIAL_REALTIME` mode)",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        },
+        {
+          "valueName": "sleepFrames",
+          "valueType": "Number",
+          "valueDescription": "Number of frames to sleep for (if `SERIAL_FRAME` mode)",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        }
+      ]
+    }
+  ],
+  "events": []
+}
