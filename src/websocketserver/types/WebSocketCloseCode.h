@@ -77,86 +77,86 @@ namespace WebSocketCloseCode {
 		*/
 		InvalidDataKeyType = 4004,
 		/**
-		* The specified `op` was invalid or missing.
+		* A data field's value is invalid.
 		*
-		* @enumIdentifier UnknownOpCode
+		* @enumIdentifier InvalidDataKeyValue
 		* @enumValue 4005
 		* @enumType WebSocketCloseCode
 		* @rpcVersion 1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		UnknownOpCode = 4005,
+		InvalidDataKeyValue = 4005,
 		/**
-		* The client sent a websocket message without first sending `Identify` message.
+		* The specified `op` was invalid or missing.
 		*
-		* @enumIdentifier NotIdentified
+		* @enumIdentifier UnknownOpCode
 		* @enumValue 4006
 		* @enumType WebSocketCloseCode
 		* @rpcVersion 1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		NotIdentified = 4006,
+		UnknownOpCode = 4006,
 		/**
-		* The client sent an `Identify` message while already identified.
+		* The client sent a websocket message without first sending `Identify` message.
 		*
-		* Note: Once a client has identified, only `Reidentify` may be used to change session parameters.
-		*
-		* @enumIdentifier AlreadyIdentified
+		* @enumIdentifier NotIdentified
 		* @enumValue 4007
 		* @enumType WebSocketCloseCode
 		* @rpcVersion 1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		AlreadyIdentified = 4007,
+		NotIdentified = 4007,
 		/**
-		* The authentication attempt (via `Identify`) failed.
+		* The client sent an `Identify` message while already identified.
 		*
-		* @enumIdentifier AuthenticationFailed
+		* Note: Once a client has identified, only `Reidentify` may be used to change session parameters.
+		*
+		* @enumIdentifier AlreadyIdentified
 		* @enumValue 4008
 		* @enumType WebSocketCloseCode
 		* @rpcVersion 1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		AuthenticationFailed = 4008,
+		AlreadyIdentified = 4008,
 		/**
-		* The server detected the usage of an old version of the obs-websocket RPC protocol.
+		* The authentication attempt (via `Identify`) failed.
 		*
-		* @enumIdentifier UnsupportedRpcVersion
+		* @enumIdentifier AuthenticationFailed
 		* @enumValue 4009
 		* @enumType WebSocketCloseCode
 		* @rpcVersion 1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		UnsupportedRpcVersion = 4009,
+		AuthenticationFailed = 4009,
 		/**
-		* The websocket session has been invalidated by the obs-websocket server.
+		* The server detected the usage of an old version of the obs-websocket RPC protocol.
 		*
-		* Note: This is the code used by the `Kick` button in the UI Session List. If you receive this code, you must not automatically reconnect.
-		*
-		* @enumIdentifier SessionInvalidated
+		* @enumIdentifier UnsupportedRpcVersion
 		* @enumValue 4010
 		* @enumType WebSocketCloseCode
 		* @rpcVersion 1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		SessionInvalidated = 4010,
+		UnsupportedRpcVersion = 4010,
 		/**
-		* A data field's value is invalid.
+		* The websocket session has been invalidated by the obs-websocket server.
 		*
-		* @enumIdentifier InvalidDataKeyValue
+		* Note: This is the code used by the `Kick` button in the UI Session List. If you receive this code, you must not automatically reconnect.
+		*
+		* @enumIdentifier SessionInvalidated
 		* @enumValue 4011
 		* @enumType WebSocketCloseCode
 		* @rpcVersion 1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		InvalidDataKeyValue = 4011,
+		SessionInvalidated = 4011,
 		/**
 		* A requested feature is not supported due to hardware/software limitations.
 		*
