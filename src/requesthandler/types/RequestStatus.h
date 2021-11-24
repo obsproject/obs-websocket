@@ -219,49 +219,50 @@ namespace RequestStatus {
 		*/
 		OutputPaused = 502,
 		/**
-		* An output is disabled and should not be.
+		* An output is not paused and should be.
 		*
-		* @enumIdentifier OutputDisabled
+		* @enumIdentifier OutputNotPaused
 		* @enumValue 503
 		* @enumType RequestStatus
 		* @rpcVersion 1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		OutputDisabled = 503,
+		OutputNotPaused = 503,
 		/**
-		* Studio mode is active and cannot be.
+		* An output is disabled and should not be.
 		*
-		* @enumIdentifier StudioModeActive
+		* @enumIdentifier OutputDisabled
 		* @enumValue 504
 		* @enumType RequestStatus
 		* @rpcVersion 1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		StudioModeActive = 504,
+		OutputDisabled = 504,
 		/**
-		* Studio mode is not active and should be.
+		* Studio mode is active and cannot be.
 		*
-		* @enumIdentifier StudioModeNotActive
+		* @enumIdentifier StudioModeActive
 		* @enumValue 505
 		* @enumType RequestStatus
 		* @rpcVersion 1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		StudioModeNotActive = 505,
+		StudioModeActive = 505,
 		/**
-		* An output is not paused and should be.
+		* Studio mode is not active and should be.
 		*
-		* @enumIdentifier OutputNotPaused
+		* @enumIdentifier StudioModeNotActive
 		* @enumValue 506
 		* @enumType RequestStatus
 		* @rpcVersion 1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		OutputNotPaused = 506,
+		StudioModeNotActive = 506,
+		
 
 		/**
 		* The resource was not found.
