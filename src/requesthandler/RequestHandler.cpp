@@ -132,7 +132,7 @@ RequestHandler::RequestHandler(SessionPtr session) :
 RequestResult RequestHandler::ProcessRequest(const Request& request)
 {
 	if (!request.RequestData.is_object() && !request.RequestData.is_null())
-		return RequestResult::Error(RequestStatus::InvalidRequestParameterType, "Your request data is not an object.");
+		return RequestResult::Error(RequestStatus::InvalidRequestFieldType, "Your request data is not an object.");
 
 	if (request.RequestType.empty())
 		return RequestResult::Error(RequestStatus::MissingRequestType, "Your request is missing a `requestType`");

@@ -7,7 +7,7 @@ obs-websocket provides a feature-rich RPC communication protocol, giving access 
 ### Design Goals
 - Abstraction of identification, events, requests, and batch requests into dedicated message types
 - Conformity of request naming using similar terms like `Get`, `Set`, `Get[x]List`, `Start[x]`, `Toggle[x]`
-- Conformity of OBS data key names like `sourceName`, `sourceKind`, `sourceType`, `sceneName`, `sceneItemName`
+- Conformity of OBS data field names like `sourceName`, `sourceKind`, `sourceType`, `sceneName`, `sceneItemName`
 - Error code response system - integer corrosponds to type of error, with optional comment
 - Possible support for multiple message encoding options: JSON and MessagePack
 - PubSub system - Allow clients to specify which events they do or don't want to receive from OBS
@@ -48,8 +48,8 @@ These steps should be followed precisely. Failure to connect to the server as in
 - Once the connection is upgraded, the websocket server will immediately send an [OpCode 0 `Hello`](#hello-opcode-0) message to the client.
 
 - The client listens for the `Hello` and responds with an [OpCode 1 `Identify`](#identify-opcode-1) containing all appropriate session parameters.
-  - If there is an `authentication` key in the `messageData` object, the server requires authentication, and the steps in [Creating an authentication string](#creating-an-authentication-string) should be followed.
-  - If there is no `authentication` key, the resulting `Identify` object sent to the server does not require an `authentication` string.
+  - If there is an `authentication` field in the `messageData` object, the server requires authentication, and the steps in [Creating an authentication string](#creating-an-authentication-string) should be followed.
+  - If there is no `authentication` field, the resulting `Identify` object sent to the server does not require an `authentication` string.
   - The client determines if the server's `rpcVersion` is supported, and if not it provides its closest supported version in `Identify`.
 
 - The server receives and processes the `Identify` sent by the client.
@@ -65,14 +65,14 @@ These steps should be followed precisely. Failure to connect to the server as in
 
 #### Connection Notes
 - If a binary frame is received when using the `obswebsocket.json` (default) subprotocol, or a text frame is received while using the `obswebsocket.msgpack` subprotocol, the connection is closed with `WebSocketCloseCode::MessageDecodeError`.
-- The obs-websocket server listens for any messages containing a `request-type` key in the first level JSON from unidentified clients. If a message matches, the connection is closed with `WebSocketCloseCode::UnsupportedRpcVersion` and a warning is logged.
+- The obs-websocket server listens for any messages containing a `request-type` field in the first level JSON from unidentified clients. If a message matches, the connection is closed with `WebSocketCloseCode::UnsupportedRpcVersion` and a warning is logged.
 - If a message with a `messageType` is not recognized to the obs-websocket server, the connection is closed with `WebSocketCloseCode::UnknownOpCode`.
 - At no point may the client send any message other than a single `Identify` before it has received an `Identified`. Doing so will result in the connection being closed with `WebSocketCloseCode::NotIdentified`.
 
 ---
 
 ### Creating an authentication string
-obs-websocket uses SHA256 to transmit authentication credentials. The server starts by sending an object in the `authentication` key of its `Hello` message data. The client processes the authentication challenge and responds via the `authentication` string in the `Identify` message data.
+obs-websocket uses SHA256 to transmit authentication credentials. The server starts by sending an object in the `authentication` field of its `Hello` message data. The client processes the authentication challenge and responds via the `authentication` string in the `Identify` message data.
 
 For this guide, we'll be using `supersecretpassword` as the password.
 
@@ -96,7 +96,7 @@ For real-world examples of the `authentication` string creation, refer to the ob
 ## Message Types (OpCodes)
 The following message types are the low-level message types which may be sent to and from obs-websocket. 
 
-Messages sent from the obs-websocket server or client may contain these first-level keys, known as the base object:
+Messages sent from the obs-websocket server or client may contain these first-level fields, known as the base object:
 ```
 {
   "op": number,
@@ -104,7 +104,7 @@ Messages sent from the obs-websocket server or client may contain these first-le
 }
 ```
 - `op` is a `WebSocketOpCode` OpCode.
-- `d` is an object of the data keys associated with the operation.
+- `d` is an object of the data fields associated with the operation.
 
 ---
 
@@ -364,7 +364,7 @@ Failure Response
 }
 ```
 - When `haltOnFailure` is `true`, the processing of requests will be halted on first failure. Returns only the processed requests in [`RequestBatchResponse`](#requestbatchresponse-opcode-9).
-- Requests in the `requests` array follow the same structure as the `Request` payload data format, however `requestId` is an optional key.
+- Requests in the `requests` array follow the same structure as the `Request` payload data format, however `requestId` is an optional field.
 
 ---
 

@@ -37,7 +37,7 @@ void WebSocketServer::SetSessionParameters(SessionPtr session, ProcessResult &re
 {
 	if (payloadData.contains("ignoreInvalidMessages")) {
 		if (!payloadData["ignoreInvalidMessages"].is_boolean()) {
-			ret.closeCode = WebSocketCloseCode::InvalidDataKeyType;
+			ret.closeCode = WebSocketCloseCode::InvalidDataFieldType;
 			ret.closeReason = "Your `ignoreInvalidMessages` is not a boolean.";
 			return;
 		}
@@ -46,7 +46,7 @@ void WebSocketServer::SetSessionParameters(SessionPtr session, ProcessResult &re
 
 	if (payloadData.contains("eventSubscriptions")) {
 		if (!payloadData["eventSubscriptions"].is_number_unsigned()) {
-			ret.closeCode = WebSocketCloseCode::InvalidDataKeyType;
+			ret.closeCode = WebSocketCloseCode::InvalidDataFieldType;
 			ret.closeReason = "Your `eventSubscriptions` is not an unsigned number.";
 			return;
 		}
@@ -58,10 +58,10 @@ void WebSocketServer::ProcessMessage(SessionPtr session, WebSocketServer::Proces
 {
 	if (!payloadData.is_object()) {
 		if (payloadData.is_null()) {
-			ret.closeCode = WebSocketCloseCode::MissingDataKey;
+			ret.closeCode = WebSocketCloseCode::MissingDataField;
 			ret.closeReason = "Your payload is missing data (`d`).";
 		} else {
-			ret.closeCode = WebSocketCloseCode::InvalidDataKeyType;
+			ret.closeCode = WebSocketCloseCode::InvalidDataFieldType;
 			ret.closeReason = "Your payload's data (`d`) is not an object.";
 		}
 		return;
@@ -105,13 +105,13 @@ void WebSocketServer::ProcessMessage(SessionPtr session, WebSocketServer::Proces
 			}
 
 			if (!payloadData.contains("rpcVersion")) {
-				ret.closeCode = WebSocketCloseCode::MissingDataKey;
+				ret.closeCode = WebSocketCloseCode::MissingDataField;
 				ret.closeReason = "Your payload's data is missing an `rpcVersion`.";
 				return;
 			}
 
 			if (!payloadData["rpcVersion"].is_number_unsigned()) {
-				ret.closeCode = WebSocketCloseCode::InvalidDataKeyType;
+				ret.closeCode = WebSocketCloseCode::InvalidDataFieldType;
 				ret.closeReason = "Your `rpcVersion` is not an unsigned number.";
 			}
 
@@ -168,7 +168,7 @@ void WebSocketServer::ProcessMessage(SessionPtr session, WebSocketServer::Proces
 			// RequestID checking has to be done here where we are able to close the connection.
 			if (!payloadData.contains("requestId")) {
 				if (!session->IgnoreInvalidMessages()) {
-					ret.closeCode = WebSocketCloseCode::MissingDataKey;
+					ret.closeCode = WebSocketCloseCode::MissingDataField;
 					ret.closeReason = "Your payload data is missing a `requestId`.";
 				}
 				return;
@@ -197,7 +197,7 @@ void WebSocketServer::ProcessMessage(SessionPtr session, WebSocketServer::Proces
 			// RequestID checking has to be done here where we are able to close the connection.
 			if (!payloadData.contains("requestId")) {
 				if (!session->IgnoreInvalidMessages()) {
-					ret.closeCode = WebSocketCloseCode::MissingDataKey;
+					ret.closeCode = WebSocketCloseCode::MissingDataField;
 					ret.closeReason = "Your payload data is missing a `requestId`.";
 				}
 				return;
@@ -205,7 +205,7 @@ void WebSocketServer::ProcessMessage(SessionPtr session, WebSocketServer::Proces
 
 			if (!payloadData.contains("requests")) {
 				if (!session->IgnoreInvalidMessages()) {
-					ret.closeCode = WebSocketCloseCode::MissingDataKey;
+					ret.closeCode = WebSocketCloseCode::MissingDataField;
 					ret.closeReason = "Your payload data is missing a `requests`.";
 				}
 				return;
@@ -213,7 +213,7 @@ void WebSocketServer::ProcessMessage(SessionPtr session, WebSocketServer::Proces
 
 			if (!payloadData["requests"].is_array()) {
 				if (!session->IgnoreInvalidMessages()) {
-					ret.closeCode = WebSocketCloseCode::InvalidDataKeyType;
+					ret.closeCode = WebSocketCloseCode::InvalidDataFieldType;
 					ret.closeReason = "Your `requests` is not an array.";
 				}
 				return;
@@ -223,7 +223,7 @@ void WebSocketServer::ProcessMessage(SessionPtr session, WebSocketServer::Proces
 			if (payloadData.contains("executionType") && !payloadData["executionType"].is_null()) {
 				if (!payloadData["executionType"].is_number_unsigned()) {
 					if (!session->IgnoreInvalidMessages()) {
-						ret.closeCode = WebSocketCloseCode::InvalidDataKeyType;
+						ret.closeCode = WebSocketCloseCode::InvalidDataFieldType;
 						ret.closeReason = "Your `executionType` is not a number.";
 					}
 					return;
@@ -232,7 +232,7 @@ void WebSocketServer::ProcessMessage(SessionPtr session, WebSocketServer::Proces
 				uint8_t executionType = payloadData["executionType"];
 				if (!RequestBatchExecutionType::IsValid(executionType) || executionType == RequestBatchExecutionType::None) {
 					if (!session->IgnoreInvalidMessages()) {
-						ret.closeCode = WebSocketCloseCode::InvalidDataKeyValue;
+						ret.closeCode = WebSocketCloseCode::InvalidDataFieldValue;
 						ret.closeReason = "Your `executionType` has an invalid value.";
 					}
 				}
@@ -250,7 +250,7 @@ void WebSocketServer::ProcessMessage(SessionPtr session, WebSocketServer::Proces
 			if (payloadData.contains("variables") && !payloadData.is_null()) {
 				if (!payloadData.is_object()) {
 					if (!session->IgnoreInvalidMessages()) {
-						ret.closeCode = WebSocketCloseCode::InvalidDataKeyType;
+						ret.closeCode = WebSocketCloseCode::InvalidDataFieldType;
 						ret.closeReason = "Your `variables` is not an object.";
 					}
 					return;

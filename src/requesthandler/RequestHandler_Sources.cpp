@@ -140,7 +140,7 @@ RequestResult RequestHandler::GetSourceScreenshot(const Request& request)
 	std::string imageFormat = request.RequestData["imageFormat"];
 
 	if (!IsImageFormatValid(imageFormat))
-		return RequestResult::Error(RequestStatus::InvalidRequestParameter, "Your specified image format is invalid or not supported by this system.");
+		return RequestResult::Error(RequestStatus::InvalidRequestField, "Your specified image format is invalid or not supported by this system.");
 
 	uint32_t requestedWidth{0};
 	uint32_t requestedHeight{0};
@@ -204,7 +204,7 @@ RequestResult RequestHandler::SaveSourceScreenshot(const Request& request)
 	std::string imageFilePath = request.RequestData["imageFilePath"];
 
 	if (!IsImageFormatValid(imageFormat))
-		return RequestResult::Error(RequestStatus::InvalidRequestParameter, "Your specified image format is invalid or not supported by this system.");
+		return RequestResult::Error(RequestStatus::InvalidRequestField, "Your specified image format is invalid or not supported by this system.");
 
 	QFileInfo filePathInfo(QString::fromStdString(imageFilePath));
 	if (!filePathInfo.absoluteDir().exists())

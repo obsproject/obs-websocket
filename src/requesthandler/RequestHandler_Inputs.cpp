@@ -284,10 +284,10 @@ RequestResult RequestHandler::SetInputVolume(const Request& request)
 		return RequestResult::Error(statusCode, comment);
 
 	if (hasMul && hasDb)
-		return RequestResult::Error(RequestStatus::TooManyRequestParameters, "You may only specify one volume parameter.");
+		return RequestResult::Error(RequestStatus::TooManyRequestFields, "You may only specify one volume field.");
 
 	if (!hasMul && !hasDb)
-		return RequestResult::Error(RequestStatus::MissingRequestParameter, "You must specify one volume parameter.");
+		return RequestResult::Error(RequestStatus::MissingRequestField, "You must specify one volume field.");
 
 	float inputVolumeMul;
 	if (hasMul)
@@ -360,7 +360,7 @@ RequestResult RequestHandler::SetInputAudioMonitorType(const Request& request)
 	else if (monitorTypeString == "OBS_MONITORING_TYPE_MONITOR_AND_OUTPUT")
 		monitorType = OBS_MONITORING_TYPE_MONITOR_AND_OUTPUT;
 	else
-		return RequestResult::Error(RequestStatus::InvalidRequestParameter, std::string("Unknown monitor type: ") + monitorTypeString);
+		return RequestResult::Error(RequestStatus::InvalidRequestField, std::string("Unknown monitor type: ") + monitorTypeString);
 
 	obs_source_set_monitoring_type(input, monitorType);
 

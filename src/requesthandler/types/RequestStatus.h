@@ -34,7 +34,7 @@ namespace RequestStatus {
 		Unknown = 0,
 
 		/**
-		* For internal use to signify a successful parameter check.
+		* For internal use to signify a successful field check.
 		*
 		* @enumIdentifier NoError
 		* @enumValue 10
@@ -105,16 +105,16 @@ namespace RequestStatus {
 		UnsupportedRequestBatchExecutionType = 206,
 
 		/**
-		* A required request parameter is missing.
+		* A required request field is missing.
 		*
-		* @enumIdentifier MissingRequestParameter
+		* @enumIdentifier MissingRequestField
 		* @enumValue 300
 		* @enumType RequestStatus
 		* @rpcVersion 1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		MissingRequestParameter = 300,
+		MissingRequestField = 300,
 		/**
 		* The request does not have a valid requestData object.
 		*
@@ -128,62 +128,62 @@ namespace RequestStatus {
 		MissingRequestData = 301,
 
 		/**
-		* Generic invalid request parameter message.
+		* Generic invalid request field message.
 		*
 		* Note: A comment is required to be provided by obs-websocket.
 		*
-		* @enumIdentifier InvalidRequestParameter
+		* @enumIdentifier InvalidRequestField
 		* @enumValue 400
 		* @enumType RequestStatus
 		* @rpcVersion 1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		InvalidRequestParameter = 400,
+		InvalidRequestField = 400,
 		/**
-		* A request parameter has the wrong data type.
+		* A request field has the wrong data type.
 		*
-		* @enumIdentifier InvalidRequestParameterType
+		* @enumIdentifier InvalidRequestFieldType
 		* @enumValue 401
 		* @enumType RequestStatus
 		* @rpcVersion 1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		InvalidRequestParameterType = 401,
+		InvalidRequestFieldType = 401,
 		/**
-		* A request parameter (number) is outside of the allowed range.
+		* A request field (number) is outside of the allowed range.
 		*
-		* @enumIdentifier RequestParameterOutOfRange
+		* @enumIdentifier RequestFieldOutOfRange
 		* @enumValue 402
 		* @enumType RequestStatus
 		* @rpcVersion 1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		RequestParameterOutOfRange = 402,
+		RequestFieldOutOfRange = 402,
 		/**
-		* A request parameter (string or array) is empty and cannot be.
+		* A request field (string or array) is empty and cannot be.
 		*
-		* @enumIdentifier RequestParameterEmpty
+		* @enumIdentifier RequestFieldEmpty
 		* @enumValue 403
 		* @enumType RequestStatus
 		* @rpcVersion 1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		RequestParameterEmpty = 403,
+		RequestFieldEmpty = 403,
 		/**
-		* There are too many request parameters (eg. a request takes two optionals, where only one is allowed at a time).
+		* There are too many request fields (eg. a request takes two optionals, where only one is allowed at a time).
 		*
-		* @enumIdentifier TooManyRequestParameters
+		* @enumIdentifier TooManyRequestFields
 		* @enumValue 404
 		* @enumType RequestStatus
 		* @rpcVersion 1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		TooManyRequestParameters = 404,
+		TooManyRequestFields = 404,
 
 		/**
 		* An output is running and cannot be in order to perform the request.
@@ -368,7 +368,7 @@ namespace RequestStatus {
 		*/
 		RequestProcessingFailed = 702,
 		/**
-		* The combination of request parameters cannot be used to perform an action.
+		* The combination of request fields cannot be used to perform an action.
 		*
 		* @enumIdentifier CannotAct
 		* @enumValue 703

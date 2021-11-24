@@ -57,36 +57,36 @@ namespace WebSocketCloseCode {
 		/**
 		* A data field is required but missing from the payload.
 		*
-		* @enumIdentifier MissingDataKey
+		* @enumIdentifier MissingDataField
 		* @enumValue 4003
 		* @enumType WebSocketCloseCode
 		* @rpcVersion 1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		MissingDataKey = 4003,
+		MissingDataField = 4003,
 		/**
 		* A data field's value type is invalid.
 		*
-		* @enumIdentifier InvalidDataKeyType
+		* @enumIdentifier InvalidDataFieldType
 		* @enumValue 4004
 		* @enumType WebSocketCloseCode
 		* @rpcVersion 1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		InvalidDataKeyType = 4004,
+		InvalidDataFieldType = 4004,
 		/**
 		* A data field's value is invalid.
 		*
-		* @enumIdentifier InvalidDataKeyValue
+		* @enumIdentifier InvalidDataFieldValue
 		* @enumValue 4005
 		* @enumType WebSocketCloseCode
 		* @rpcVersion 1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		InvalidDataKeyValue = 4005,
+		InvalidDataFieldValue = 4005,
 		/**
 		* The specified `op` was invalid or missing.
 		*

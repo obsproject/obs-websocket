@@ -405,7 +405,7 @@ RequestResult RequestHandler::SetProfileParameter(const Request& request)
 		std::string parameterValue = request.RequestData["parameterValue"];
 		config_set_string(profile, parameterCategory.c_str(), parameterName.c_str(), parameterValue.c_str());
 	} else {
-		return RequestResult::Error(RequestStatus::InvalidRequestParameterType, "The parameter `parameterValue` must be a string.");
+		return RequestResult::Error(RequestStatus::InvalidRequestFieldType, "The field `parameterValue` must be a string.");
 	}
 	
 	return RequestResult::Success();
@@ -509,7 +509,7 @@ RequestResult RequestHandler::SetVideoSettings(const Request& request)
 		return RequestResult::Success();
 	}
 
-	return RequestResult::Error(RequestStatus::MissingRequestParameter, "You must specify at least one video-changing pair.");
+	return RequestResult::Error(RequestStatus::MissingRequestField, "You must specify at least one video-changing pair.");
 }
 
 /**

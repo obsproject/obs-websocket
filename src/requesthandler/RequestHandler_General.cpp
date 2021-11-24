@@ -216,7 +216,7 @@ RequestResult RequestHandler::TriggerHotkeyByKeySequence(const Request& request)
 	}
 
 	if (!combo.modifiers && (combo.key == OBS_KEY_NONE || combo.key >= OBS_KEY_LAST_VALUE))
-		return RequestResult::Error(RequestStatus::CannotAct, "Your provided request parameters cannot be used to trigger a hotkey.");
+		return RequestResult::Error(RequestStatus::CannotAct, "Your provided request fields cannot be used to trigger a hotkey.");
 
 	// Apparently things break when you don't start by setting the combo to false
 	obs_hotkey_inject_event(combo, false);
