@@ -1,5 +1,197 @@
 {
-  "enums": [],
+  "enums": [
+    {
+      "enumType": "RequestStatus",
+      "enumIdentifiers": [
+        {
+          "description": "Unknown status, should never be used.",
+          "enumIdentifier": "Unknown",
+          "rpcVersion": 1,
+          "initialVersion": "5.0.0"
+        },
+        {
+          "description": "For internal use to signify a successful parameter check.",
+          "enumIdentifier": "NoError",
+          "rpcVersion": 1,
+          "initialVersion": "5.0.0"
+        },
+        {
+          "description": "The request has succeeded.",
+          "enumIdentifier": "Success",
+          "rpcVersion": 1,
+          "initialVersion": "5.0.0"
+        },
+        {
+          "description": "The `requestType` field is missing from the request data.",
+          "enumIdentifier": "MissingRequestType",
+          "rpcVersion": 1,
+          "initialVersion": "5.0.0"
+        },
+        {
+          "description": "The request type is invalid or does not exist.",
+          "enumIdentifier": "UnknownRequestType",
+          "rpcVersion": 1,
+          "initialVersion": "5.0.0"
+        },
+        {
+          "description": "Generic error code.\n\nNote: A comment is required to be provided by obs-websocket.",
+          "enumIdentifier": "GenericError",
+          "rpcVersion": 1,
+          "initialVersion": "5.0.0"
+        },
+        {
+          "description": "The request batch execution type is not supported.",
+          "enumIdentifier": "UnsupportedRequestBatchExecutionType",
+          "rpcVersion": 1,
+          "initialVersion": "5.0.0"
+        },
+        {
+          "description": "A required request parameter is missing.",
+          "enumIdentifier": "MissingRequestParameter",
+          "rpcVersion": 1,
+          "initialVersion": "5.0.0"
+        },
+        {
+          "description": "The request does not have a valid requestData object.",
+          "enumIdentifier": "MissingRequestData",
+          "rpcVersion": 1,
+          "initialVersion": "5.0.0"
+        },
+        {
+          "description": "Generic invalid request parameter message.\n\nNote: A comment is required to be provided by obs-websocket.",
+          "enumIdentifier": "InvalidRequestParameter",
+          "rpcVersion": 1,
+          "initialVersion": "5.0.0"
+        },
+        {
+          "description": "A request parameter has the wrong data type.",
+          "enumIdentifier": "InvalidRequestParameterType",
+          "rpcVersion": 1,
+          "initialVersion": "5.0.0"
+        },
+        {
+          "description": "A request parameter (number) is outside of the allowed range.",
+          "enumIdentifier": "RequestParameterOutOfRange",
+          "rpcVersion": 1,
+          "initialVersion": "5.0.0"
+        },
+        {
+          "description": "A request parameter (string or array) is empty and cannot be.",
+          "enumIdentifier": "RequestParameterEmpty",
+          "rpcVersion": 1,
+          "initialVersion": "5.0.0"
+        },
+        {
+          "description": "There are too many request parameters (eg. a request takes two optionals, where only one is allowed at a time).",
+          "enumIdentifier": "TooManyRequestParameters",
+          "rpcVersion": 1,
+          "initialVersion": "5.0.0"
+        },
+        {
+          "description": "An output is running and cannot be in order to perform the request.",
+          "enumIdentifier": "OutputRunning",
+          "rpcVersion": 1,
+          "initialVersion": "5.0.0"
+        },
+        {
+          "description": "An output is not running and should be.",
+          "enumIdentifier": "OutputNotRunning",
+          "rpcVersion": 1,
+          "initialVersion": "5.0.0"
+        },
+        {
+          "description": "An output is paused and should not be.",
+          "enumIdentifier": "OutputPaused",
+          "rpcVersion": 1,
+          "initialVersion": "5.0.0"
+        },
+        {
+          "description": "An output is disabled and should not be.",
+          "enumIdentifier": "OutputDisabled",
+          "rpcVersion": 1,
+          "initialVersion": "5.0.0"
+        },
+        {
+          "description": "Studio mode is active and cannot be.",
+          "enumIdentifier": "StudioModeActive",
+          "rpcVersion": 1,
+          "initialVersion": "5.0.0"
+        },
+        {
+          "description": "Studio mode is not active and should be.",
+          "enumIdentifier": "StudioModeNotActive",
+          "rpcVersion": 1,
+          "initialVersion": "5.0.0"
+        },
+        {
+          "description": "An output is not paused and should be.",
+          "enumIdentifier": "OutputNotPaused",
+          "rpcVersion": 1,
+          "initialVersion": "5.0.0"
+        },
+        {
+          "description": "The resource was not found.\n\nNote: Resources are any kind of object in obs-websocket, like inputs, profiles, outputs, etc.",
+          "enumIdentifier": "ResourceNotFound",
+          "rpcVersion": 1,
+          "initialVersion": "5.0.0"
+        },
+        {
+          "description": "The resource already exists.",
+          "enumIdentifier": "ResourceAlreadyExists",
+          "rpcVersion": 1,
+          "initialVersion": "5.0.0"
+        },
+        {
+          "description": "The type of resource found is invalid.",
+          "enumIdentifier": "InvalidResourceType",
+          "rpcVersion": 1,
+          "initialVersion": "5.0.0"
+        },
+        {
+          "description": "There are not enough instances of the resource in order to perform the request.",
+          "enumIdentifier": "NotEnoughResources",
+          "rpcVersion": 1,
+          "initialVersion": "5.0.0"
+        },
+        {
+          "description": "The state of the resource is invalid. For example, if the resource is blocked from being accessed.",
+          "enumIdentifier": "InvalidResourceState",
+          "rpcVersion": 1,
+          "initialVersion": "5.0.0"
+        },
+        {
+          "description": "The specified input (obs_source_t-OBS_SOURCE_TYPE_INPUT) had the wrong kind.",
+          "enumIdentifier": "InvalidInputKind",
+          "rpcVersion": 1,
+          "initialVersion": "5.0.0"
+        },
+        {
+          "description": "Creating the resource failed.",
+          "enumIdentifier": "ResourceCreationFailed",
+          "rpcVersion": 1,
+          "initialVersion": "5.0.0"
+        },
+        {
+          "description": "Performing an action on the resource failed.",
+          "enumIdentifier": "ResourceActionFailed",
+          "rpcVersion": 1,
+          "initialVersion": "5.0.0"
+        },
+        {
+          "description": "Processing the request failed unexpectedly.\n\nNote: A comment is required to be provided by obs-websocket.",
+          "enumIdentifier": "RequestProcessingFailed",
+          "rpcVersion": 1,
+          "initialVersion": "5.0.0"
+        },
+        {
+          "description": "The combination of request parameters cannot be used to perform an action.",
+          "enumIdentifier": "CannotAct",
+          "rpcVersion": 1,
+          "initialVersion": "5.0.0"
+        }
+      ]
+    }
+  ],
   "requests": [
     {
       "description": "Gets the value of a \"slot\" from the selected persistent data realm.",

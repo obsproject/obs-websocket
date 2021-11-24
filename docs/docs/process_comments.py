@@ -85,6 +85,7 @@ enums = []
 requests = []
 events = []
 
+enums_raw = {}
 # Process the raw comments
 for comment in comments_raw:
     # Skip unrelated comments like #include
@@ -93,14 +94,31 @@ for comment in comments_raw:
 
     api = comment['api']
     if api == 'enums':
-        pass
+        if not validate_fields(comment, ['description', 'enumIdentifier', 'enumType', 'rpcVersion', 'initialVersion']):
+            logging.warning('Failed to process enum id comment due to missing field(s):\n{}'.format(comment))
+            continue
+
+        enumType = field_to_string(comment['enumType'])
+
+        enum = {}
+        #                                     Recombines the header back into one string, allowing multi-line descriptions.
+        enum['description'] = field_to_string(comment.get('lead', '')) + field_to_string(comment['description'])
+        enum['enumIdentifier'] = field_to_string(comment['enumIdentifier'])
+        enum['rpcVersion'] = int(field_to_string(comment['rpcVersion']))
+        enum['initialVersion'] = field_to_string(comment['initialVersion'])
+
+        if enumType not in enums_raw:
+            enums_raw[enumType] = {'enumIdentifiers': [enum]}
+        else:
+            enums_raw[enumType]['enumIdentifiers'].append(enum)
+
+        logging.info('Processed enum: {}::{}'.format(enumType, enum['enumIdentifier']))
     elif api == 'requests':
         if not validate_fields(comment, ['description', 'requestType', 'complexity', 'rpcVersion', 'initialVersion', 'category']):
             logging.warning('Failed to process request comment due to missing field(s):\n{}'.format(comment))
             continue
 
         req = {}
-        #                                    Recombines the header back into one string, allowing multi-line descriptions.
         req['description'] = field_to_string(comment.get('lead', '')) + field_to_string(comment['description'])
         req['requestType'] = field_to_string(comment['requestType'])
         req['complexity'] = int(field_to_string(comment['complexity']))
@@ -157,6 +175,11 @@ for comment in comments_raw:
         events.append(eve)
     else:
         logging.warning('Comment with unknown api: {}'.format(api))
+
+# Reconfigure enums to match the correct structure
+for enumType in enums_raw.keys():
+    enum = enums_raw[enumType]
+    enums.append({'enumType': enumType, 'enumIdentifiers': enum['enumIdentifiers']})
 
 finalObject = {'enums': enums, 'requests': requests, 'events': events}
 
