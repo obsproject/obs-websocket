@@ -21,73 +21,362 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 namespace RequestStatus {
 	enum RequestStatus {
+		/**
+		* Unknown status, should never be used.
+		*
+		* @enumIdentifier Unknown
+		* @enumValue 0
+		* @enumType RequestStatus
+		* @rpcVersion 1
+		* @initialVersion 5.0.0
+		* @api enums
+		*/
 		Unknown = 0,
 
-		// For internal use to signify a successful parameter check
+		/**
+		* For internal use to signify a successful parameter check.
+		*
+		* @enumIdentifier NoError
+		* @enumValue 10
+		* @enumType RequestStatus
+		* @rpcVersion 1
+		* @initialVersion 5.0.0
+		* @api enums
+		*/
 		NoError = 10,
 
+		/**
+		* The request has succeeded.
+		*
+		* @enumIdentifier Success
+		* @enumValue 100
+		* @enumType RequestStatus
+		* @rpcVersion 1
+		* @initialVersion 5.0.0
+		* @api enums
+		*/
 		Success = 100,
 
-		// The `requestType` field is missing from the request data
+		/**
+		* The `requestType` field is missing from the request data.
+		*
+		* @enumIdentifier MissingRequestType
+		* @enumValue 203
+		* @enumType RequestStatus
+		* @rpcVersion 1
+		* @initialVersion 5.0.0
+		* @api enums
+		*/
 		MissingRequestType = 203,
-		// The request type is invalid or does not exist
+		/**
+		* The request type is invalid or does not exist.
+		*
+		* @enumIdentifier UnknownRequestType
+		* @enumValue 204
+		* @enumType RequestStatus
+		* @rpcVersion 1
+		* @initialVersion 5.0.0
+		* @api enums
+		*/
 		UnknownRequestType = 204,
-		// Generic error code (comment required)
+		/**
+		* Generic error code.
+		*
+		* Note: A comment is required to be provided by obs-websocket.
+		*
+		* @enumIdentifier GenericError
+		* @enumValue 205
+		* @enumType RequestStatus
+		* @rpcVersion 1
+		* @initialVersion 5.0.0
+		* @api enums
+		*/
 		GenericError = 205,
-		// The request batch execution type is not supported
+		/**
+		* The request batch execution type is not supported.
+		*
+		* @enumIdentifier UnsupportedRequestBatchExecutionType
+		* @enumValue 206
+		* @enumType RequestStatus
+		* @rpcVersion 1
+		* @initialVersion 5.0.0
+		* @api enums
+		*/
 		UnsupportedRequestBatchExecutionType = 206,
 
-		// A required request parameter is missing
+		/**
+		* A required request parameter is missing.
+		*
+		* @enumIdentifier MissingRequestParameter
+		* @enumValue 300
+		* @enumType RequestStatus
+		* @rpcVersion 1
+		* @initialVersion 5.0.0
+		* @api enums
+		*/
 		MissingRequestParameter = 300,
-		// The request does not have a valid requestData object.
+		/**
+		* The request does not have a valid requestData object.
+		*
+		* @enumIdentifier MissingRequestData
+		* @enumValue 301
+		* @enumType RequestStatus
+		* @rpcVersion 1
+		* @initialVersion 5.0.0
+		* @api enums
+		*/
 		MissingRequestData = 301,
 
-		// Generic invalid request parameter message (comment required)
+		/**
+		* Generic invalid request parameter message.
+		*
+		* Note: A comment is required to be provided by obs-websocket.
+		*
+		* @enumIdentifier InvalidRequestParameter
+		* @enumValue 400
+		* @enumType RequestStatus
+		* @rpcVersion 1
+		* @initialVersion 5.0.0
+		* @api enums
+		*/
 		InvalidRequestParameter = 400,
-		// A request parameter has the wrong data type
+		/**
+		* A request parameter has the wrong data type.
+		*
+		* @enumIdentifier InvalidRequestParameterType
+		* @enumValue 401
+		* @enumType RequestStatus
+		* @rpcVersion 1
+		* @initialVersion 5.0.0
+		* @api enums
+		*/
 		InvalidRequestParameterType = 401,
-		// A request parameter (float or int) is out of valid range
+		/**
+		* A request parameter (number) is outside of the allowed range.
+		*
+		* @enumIdentifier RequestParameterOutOfRange
+		* @enumValue 402
+		* @enumType RequestStatus
+		* @rpcVersion 1
+		* @initialVersion 5.0.0
+		* @api enums
+		*/
 		RequestParameterOutOfRange = 402,
-		// A request parameter (string or array) is empty and cannot be
+		/**
+		* A request parameter (string or array) is empty and cannot be.
+		*
+		* @enumIdentifier RequestParameterEmpty
+		* @enumValue 403
+		* @enumType RequestStatus
+		* @rpcVersion 1
+		* @initialVersion 5.0.0
+		* @api enums
+		*/
 		RequestParameterEmpty = 403,
-		// There are too many request parameters (eg. a request takes two optionals, where only one is allowed at a time)
+		/**
+		* There are too many request parameters (eg. a request takes two optionals, where only one is allowed at a time).
+		*
+		* @enumIdentifier TooManyRequestParameters
+		* @enumValue 404
+		* @enumType RequestStatus
+		* @rpcVersion 1
+		* @initialVersion 5.0.0
+		* @api enums
+		*/
 		TooManyRequestParameters = 404,
 
-		// An output is running and cannot be in order to perform the request (generic)
+		/**
+		* An output is running and cannot be in order to perform the request.
+		*
+		* @enumIdentifier OutputRunning
+		* @enumValue 500
+		* @enumType RequestStatus
+		* @rpcVersion 1
+		* @initialVersion 5.0.0
+		* @api enums
+		*/
 		OutputRunning = 500,
-		// An output is not running and should be
+		/**
+		* An output is not running and should be.
+		*
+		* @enumIdentifier OutputNotRunning
+		* @enumValue 501
+		* @enumType RequestStatus
+		* @rpcVersion 1
+		* @initialVersion 5.0.0
+		* @api enums
+		*/
 		OutputNotRunning = 501,
-		// An output is paused and should not be
+		/**
+		* An output is paused and should not be.
+		*
+		* @enumIdentifier OutputPaused
+		* @enumValue 502
+		* @enumType RequestStatus
+		* @rpcVersion 1
+		* @initialVersion 5.0.0
+		* @api enums
+		*/
 		OutputPaused = 502,
-		// An output is disabled and should not be
+		/**
+		* An output is disabled and should not be.
+		*
+		* @enumIdentifier OutputDisabled
+		* @enumValue 503
+		* @enumType RequestStatus
+		* @rpcVersion 1
+		* @initialVersion 5.0.0
+		* @api enums
+		*/
 		OutputDisabled = 503,
-		// Studio mode is active and cannot be
+		/**
+		* Studio mode is active and cannot be.
+		*
+		* @enumIdentifier StudioModeActive
+		* @enumValue 504
+		* @enumType RequestStatus
+		* @rpcVersion 1
+		* @initialVersion 5.0.0
+		* @api enums
+		*/
 		StudioModeActive = 504,
-		// Studio mode is not active and should be
+		/**
+		* Studio mode is not active and should be.
+		*
+		* @enumIdentifier StudioModeNotActive
+		* @enumValue 505
+		* @enumType RequestStatus
+		* @rpcVersion 1
+		* @initialVersion 5.0.0
+		* @api enums
+		*/
 		StudioModeNotActive = 505,
-		// An output is not paused and should be
+		/**
+		* An output is not paused and should be.
+		*
+		* @enumIdentifier OutputNotPaused
+		* @enumValue 506
+		* @enumType RequestStatus
+		* @rpcVersion 1
+		* @initialVersion 5.0.0
+		* @api enums
+		*/
 		OutputNotPaused = 506,
 
-		// The resource was not found
+		/**
+		* The resource was not found.
+		*
+		* Note: Resources are any kind of object in obs-websocket, like inputs, profiles, outputs, etc.
+		*
+		* @enumIdentifier ResourceNotFound
+		* @enumValue 600
+		* @enumType RequestStatus
+		* @rpcVersion 1
+		* @initialVersion 5.0.0
+		* @api enums
+		*/
 		ResourceNotFound = 600,
-		// The resource already exists
+		/**
+		* The resource already exists.
+		*
+		* @enumIdentifier ResourceAlreadyExists
+		* @enumValue 601
+		* @enumType RequestStatus
+		* @rpcVersion 1
+		* @initialVersion 5.0.0
+		* @api enums
+		*/
 		ResourceAlreadyExists = 601,
-		// The type of resource found is invalid
+		/**
+		* The type of resource found is invalid.
+		*
+		* @enumIdentifier InvalidResourceType
+		* @enumValue 602
+		* @enumType RequestStatus
+		* @rpcVersion 1
+		* @initialVersion 5.0.0
+		* @api enums
+		*/
 		InvalidResourceType = 602,
-		// There are not enough instances of the resource in order to perform the request
+		/**
+		* There are not enough instances of the resource in order to perform the request.
+		*
+		* @enumIdentifier NotEnoughResources
+		* @enumValue 603
+		* @enumType RequestStatus
+		* @rpcVersion 1
+		* @initialVersion 5.0.0
+		* @api enums
+		*/
 		NotEnoughResources = 603,
-		// The state of the resource is invalid. For example, if the resource is blocked from being accessed
+		/**
+		* The state of the resource is invalid. For example, if the resource is blocked from being accessed.
+		*
+		* @enumIdentifier InvalidResourceState
+		* @enumValue 604
+		* @enumType RequestStatus
+		* @rpcVersion 1
+		* @initialVersion 5.0.0
+		* @api enums
+		*/
 		InvalidResourceState = 604,
-		// The specified input (obs_source_t-OBS_SOURCE_TYPE_INPUT) had the wrong kind
+		/**
+		* The specified input (obs_source_t-OBS_SOURCE_TYPE_INPUT) had the wrong kind.
+		*
+		* @enumIdentifier InvalidInputKind
+		* @enumValue 605
+		* @enumType RequestStatus
+		* @rpcVersion 1
+		* @initialVersion 5.0.0
+		* @api enums
+		*/
 		InvalidInputKind = 605,
 
-		// Creating the resource failed
+		/**
+		* Creating the resource failed.
+		*
+		* @enumIdentifier ResourceCreationFailed
+		* @enumValue 700
+		* @enumType RequestStatus
+		* @rpcVersion 1
+		* @initialVersion 5.0.0
+		* @api enums
+		*/
 		ResourceCreationFailed = 700,
-		// Performing an action on the resource failed
+		/**
+		* Performing an action on the resource failed.
+		*
+		* @enumIdentifier ResourceActionFailed
+		* @enumValue 701
+		* @enumType RequestStatus
+		* @rpcVersion 1
+		* @initialVersion 5.0.0
+		* @api enums
+		*/
 		ResourceActionFailed = 701,
-		// Processing the request failed unexpectedly (comment required)
+		/**
+		* Processing the request failed unexpectedly.
+		*
+		* Note: A comment is required to be provided by obs-websocket.
+		*
+		* @enumIdentifier RequestProcessingFailed
+		* @enumValue 702
+		* @enumType RequestStatus
+		* @rpcVersion 1
+		* @initialVersion 5.0.0
+		* @api enums
+		*/
 		RequestProcessingFailed = 702,
-		// The combination of request parameters cannot be used to perform an action
+		/**
+		* The combination of request parameters cannot be used to perform an action.
+		*
+		* @enumIdentifier CannotAct
+		* @enumValue 703
+		* @enumType RequestStatus
+		* @rpcVersion 1
+		* @initialVersion 5.0.0
+		* @api enums
+		*/
 		CannotAct = 703,
 	};
 }
