@@ -108,7 +108,8 @@ for comment in comments_raw:
         enum['initialVersion'] = field_to_string(comment['initialVersion'])
 
         if 'enumValue' in comment:
-            enum['enumValue'] = int(field_to_string(comment['enumValue']))
+            enumValue = field_to_string(comment['enumValue'])
+            enum['enumValue'] = int(enumValue) if enumValue.isdigit() else enumValue
         else:
             enum['enumValue'] = None
 
