@@ -1,7 +1,25 @@
-# obs-websocket 5.0.0 protocol reference
+# Main Table of Contents
+- [obs-websocket 5.0.0 Protocol](#obs-websocket-500-protocol)
+  - [Connecting to obs-websocket](#connecting-to-obs-websocket)
+    - [Connection steps](#connection-steps)
+    - [Creating an authentication string](#creating-an-authentication-string)
+  - [Base message types](#message-types)
+    - [OpCode 0 Hello](#hello-opcode-0)
+    - [OpCode 1 Identify](#identify-opcode-1)
+    - [OpCode 2 Identified](#identified-opcode-2)
+    - [OpCode 3 Reidentify](#reidentify-opcode-3)
+    - [OpCode 5 Event](#event-opcode-5)
+    - [OpCode 6 Request](#request-opcode-6)
+    - [OpCode 7 RequestResponse](#requestresponse-opcode-7)
+    - [OpCode 8 RequestBatch](#requestbatch-opcode-8)
+    - [OpCode 9 RequestBatchResponse](#requestbatchresponse-opcode-9)
+- [Enums](#enums)
+- [Events](#events)
+- [Requests](#requests)
 
+# obs-websocket 5.0.0 Protocol
 
-## General Introduction
+## General Intro
 obs-websocket provides a feature-rich RPC communication protocol, giving access to much of OBS's feature set. This document contains everything you should know in order to make a connection and use obs-websocket's functionality to the fullest.
 
 ### Design Goals
@@ -12,24 +30,6 @@ obs-websocket provides a feature-rich RPC communication protocol, giving access 
 - Possible support for multiple message encoding options: JSON and MessagePack
 - PubSub system - Allow clients to specify which events they do or don't want to receive from OBS
 - RPC versioning - Client and server negotiate the latest version of the obs-websocket protocol to communicate with.
-
-
-## Table of Contents
-- [Connecting to obs-websocket](#connecting-to-obs-websocket)
-  - [Connection steps](#connection-steps)
-  - [Creating an authentication string](#creating-an-authentication-string)
-- [Base message types](#message-types)
-  - [OpCode 0 Hello](#hello-opcode-0)
-  - [OpCode 1 Identify](#identify-opcode-1)
-  - [OpCode 2 Identified](#identified-opcode-2)
-  - [OpCode 3 Reidentify](#reidentify-opcode-3)
-  - [OpCode 5 Event](#event-opcode-5)
-  - [OpCode 6 Request](#request-opcode-6)
-  - [OpCode 7 RequestResponse](#requestresponse-opcode-7)
-  - [OpCode 8 RequestBatch](#requestbatch-opcode-8)
-  - [OpCode 9 RequestBatchResponse](#requestbatchresponse-opcode-9)
-- [Events](#events)
-- [Requests](#requests)
 
 
 ## Connecting to obs-websocket
