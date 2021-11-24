@@ -20,14 +20,8 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #pragma once
 
 #include "../types/RequestStatus.h"
+#include "../types/RequestBatchExecutionType.h"
 #include "../../utils/Json.h"
-
-enum ObsWebSocketRequestBatchExecutionType {
-	OBS_WEBSOCKET_REQUEST_BATCH_EXECUTION_TYPE_NONE,
-	OBS_WEBSOCKET_REQUEST_BATCH_EXECUTION_TYPE_SERIAL_REALTIME,
-	OBS_WEBSOCKET_REQUEST_BATCH_EXECUTION_TYPE_SERIAL_FRAME,
-	OBS_WEBSOCKET_REQUEST_BATCH_EXECUTION_TYPE_PARALLEL
-};
 
 enum ObsWebSocketSceneFilter {
 	OBS_WEBSOCKET_SCENE_FILTER_SCENE_ONLY,
@@ -38,7 +32,7 @@ enum ObsWebSocketSceneFilter {
 struct Request
 {
 	Request(const std::string &requestType, const json &requestData = nullptr);
-	Request(const std::string &requestType, const json &requestData, const ObsWebSocketRequestBatchExecutionType requestBatchExecutionType);
+	Request(const std::string &requestType, const json &requestData, RequestBatchExecutionType::RequestBatchExecutionType executionType);
 
 	// Contains the key and is not null
 	bool Contains(const std::string &keyName) const;
@@ -65,5 +59,5 @@ struct Request
 	std::string RequestType;
 	bool HasRequestData;
 	json RequestData;
-	ObsWebSocketRequestBatchExecutionType RequestBatchExecutionType;
+	RequestBatchExecutionType::RequestBatchExecutionType ExecutionType;
 };

@@ -34,15 +34,15 @@ Request::Request(const std::string &requestType, const json &requestData) :
 	RequestType(requestType),
 	HasRequestData(requestData.is_object()),
 	RequestData(GetDefaultJsonObject(requestData)),
-	RequestBatchExecutionType(OBS_WEBSOCKET_REQUEST_BATCH_EXECUTION_TYPE_NONE)
+	ExecutionType(RequestBatchExecutionType::None)
 {
 }
 
-Request::Request(const std::string &requestType, const json &requestData, const ObsWebSocketRequestBatchExecutionType requestBatchExecutionType) :
+Request::Request(const std::string &requestType, const json &requestData, RequestBatchExecutionType::RequestBatchExecutionType executionType) :
 	RequestType(requestType),
 	HasRequestData(requestData.is_object()),
 	RequestData(GetDefaultJsonObject(requestData)),
-	RequestBatchExecutionType(requestBatchExecutionType)
+	ExecutionType(executionType)
 {
 }
 

@@ -219,34 +219,29 @@ void WebSocketServer::ProcessMessage(SessionPtr session, WebSocketServer::Proces
 				return;
 			}
 
-			ObsWebSocketRequestBatchExecutionType executionType = OBS_WEBSOCKET_REQUEST_BATCH_EXECUTION_TYPE_SERIAL_REALTIME;
+			RequestBatchExecutionType::RequestBatchExecutionType executionType = RequestBatchExecutionType::SerialRealtime;
 			if (payloadData.contains("executionType") && !payloadData["executionType"].is_null()) {
-				if (!payloadData["executionType"].is_string()) {
+				if (!payloadData["executionType"].is_number_unsigned()) {
 					if (!session->IgnoreInvalidMessages()) {
 						ret.closeCode = WebSocketCloseCode::InvalidDataKeyType;
-						ret.closeReason = "Your `executionType` is not a string.";
+						ret.closeReason = "Your `executionType` is not a number.";
 					}
 					return;
 				}
-				std::string executionTypeString = payloadData["executionType"];
-				if (executionTypeString == "OBS_WEBSOCKET_REQUEST_BATCH_EXECUTION_TYPE_SERIAL_REALTIME") {
-					executionType = OBS_WEBSOCKET_REQUEST_BATCH_EXECUTION_TYPE_SERIAL_REALTIME;
-				} else if (executionTypeString == "OBS_WEBSOCKET_REQUEST_BATCH_EXECUTION_TYPE_SERIAL_FRAME") {
-					executionType = OBS_WEBSOCKET_REQUEST_BATCH_EXECUTION_TYPE_SERIAL_FRAME;
-				} else if (executionTypeString == "OBS_WEBSOCKET_REQUEST_BATCH_EXECUTION_TYPE_PARALLEL") {
-					if (_threadPool.maxThreadCount() < 2) {
-						if (!session->IgnoreInvalidMessages()) {
-							ret.closeCode = WebSocketCloseCode::UnsupportedFeature;
-							ret.closeReason = "Parallel request batch processing is not available on this system due to limited core count.";
-						}
-						return;
-					}
 
-					executionType = OBS_WEBSOCKET_REQUEST_BATCH_EXECUTION_TYPE_PARALLEL;
-				} else {
+				uint8_t executionType = payloadData["executionType"];
+				if (!RequestBatchExecutionType::IsValid(executionType) || executionType == RequestBatchExecutionType::None) {
 					if (!session->IgnoreInvalidMessages()) {
 						ret.closeCode = WebSocketCloseCode::InvalidDataKeyValue;
-						ret.closeReason = "Your `executionType`'s value is not recognized.";
+						ret.closeReason = "Your `executionType` has an invalid value.";
+					}
+				}
+
+				// The thread pool must support 2 or more threads else parallel requests will deadlock.
+				if (executionType == RequestBatchExecutionType::Parallel && _threadPool.maxThreadCount() < 2) {
+					if (!session->IgnoreInvalidMessages()) {
+						ret.closeCode = WebSocketCloseCode::UnsupportedFeature;
+						ret.closeReason = "Parallel request batch processing is not available on this system due to limited core count.";
 					}
 					return;
 				}
@@ -261,10 +256,10 @@ void WebSocketServer::ProcessMessage(SessionPtr session, WebSocketServer::Proces
 					return;
 				}
 
-				if (executionType == OBS_WEBSOCKET_REQUEST_BATCH_EXECUTION_TYPE_PARALLEL) {
+				if (executionType == RequestBatchExecutionType::Parallel) {
 					if (!session->IgnoreInvalidMessages()) {
 						ret.closeCode = WebSocketCloseCode::UnsupportedFeature;
-						ret.closeReason = "Variables are not supported in PARALLEL mode.";
+						ret.closeReason = "Variables are not supported in Parallel mode.";
 					}
 					return;
 				}

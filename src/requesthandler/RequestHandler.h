@@ -26,6 +26,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include "rpc/Request.h"
 #include "rpc/RequestResult.h"
 #include "types/RequestStatus.h"
+#include "types/RequestBatchExecutionType.h"
 #include "../websocketserver/rpc/WebSocketSession.h"
 #include "../obs-websocket.h"
 #include "../utils/Obs.h"

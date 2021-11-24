@@ -296,13 +296,13 @@ RequestResult RequestHandler::Sleep(const Request& request)
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
 
-	if (request.RequestBatchExecutionType == OBS_WEBSOCKET_REQUEST_BATCH_EXECUTION_TYPE_SERIAL_REALTIME) {
+	if (request.ExecutionType == RequestBatchExecutionType::SerialRealtime) {
 		if (!request.ValidateNumber("sleepMillis", statusCode, comment, 0, 50000))
 			return RequestResult::Error(statusCode, comment);
 		int64_t sleepMillis = request.RequestData["sleepMillis"];
 		std::this_thread::sleep_for(std::chrono::milliseconds(sleepMillis));
 		return RequestResult::Success();
-	} else if (request.RequestBatchExecutionType == OBS_WEBSOCKET_REQUEST_BATCH_EXECUTION_TYPE_SERIAL_FRAME) {
+	} else if (request.ExecutionType == RequestBatchExecutionType::SerialFrame) {
 		if (!request.ValidateNumber("sleepFrames", statusCode, comment, 0, 10000))
 			return RequestResult::Error(statusCode, comment);
 		RequestResult ret = RequestResult::Success();
