@@ -107,6 +107,11 @@ for comment in comments_raw:
         enum['rpcVersion'] = int(field_to_string(comment['rpcVersion']))
         enum['initialVersion'] = field_to_string(comment['initialVersion'])
 
+        if 'enumValue' in comment:
+            enum['enumValue'] = int(field_to_string(comment['enumValue']))
+        else:
+            enum['enumValue'] = None
+
         if enumType not in enums_raw:
             enums_raw[enumType] = {'enumIdentifiers': [enum]}
         else:
