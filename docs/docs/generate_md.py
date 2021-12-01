@@ -32,8 +32,8 @@ requestFieldHeader = """
 
 **Request Fields:**
 
-| Name | Type  | Description | Restrictions | Optional? | Default Behavior (If Optional) |
-| ---- | :---: | ----------- | :----------: | :-------: | ------------------------------ |
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
 """
 
 responseFieldHeader = """
@@ -179,9 +179,9 @@ def get_requests(requests):
                 ret += requestFieldHeader
             for requestField in request['requestFields']:
                 valueRestrictions = requestField['valueRestrictions'] if requestField['valueRestrictions'] else 'None'
-                valueOptional = 'Yes' if requestField['valueOptional'] else 'No'
+                valueOptional = '?' if requestField['valueOptional'] else ''
                 valueOptionalBehavior = requestField['valueOptionalBehavior'] if requestField['valueOptional'] and requestField['valueOptionalBehavior'] else 'None'
-                ret += '| {} | {} | {} | {} | {} | {} |\n'.format(requestField['valueName'], requestField['valueType'], requestField['valueDescription'], valueRestrictions, valueOptional, valueOptionalBehavior)
+                ret += '| {}{} | {} | {} | {} | {} |\n'.format(valueOptional, requestField['valueName'], requestField['valueType'], requestField['valueDescription'], valueRestrictions, valueOptionalBehavior)
 
             if request['responseFields']:
                 ret += responseFieldHeader

@@ -956,48 +956,48 @@
           "valueType": "Number",
           "valueDescription": "Numerator of the fractional FPS value",
           "valueRestrictions": ">= 1",
-          "valueOptional": false,
-          "valueOptionalBehavior": null
+          "valueOptional": true,
+          "valueOptionalBehavior": "Not changed"
         },
         {
           "valueName": "fpsDenominator",
           "valueType": "Number",
           "valueDescription": "Denominator of the fractional FPS value",
           "valueRestrictions": ">= 1",
-          "valueOptional": false,
-          "valueOptionalBehavior": null
+          "valueOptional": true,
+          "valueOptionalBehavior": "Not changed"
         },
         {
           "valueName": "baseWidth",
           "valueType": "Number",
           "valueDescription": "Width of the base (canvas) resolution in pixels",
           "valueRestrictions": ">= 1, <= 4096",
-          "valueOptional": false,
-          "valueOptionalBehavior": null
+          "valueOptional": true,
+          "valueOptionalBehavior": "Not changed"
         },
         {
           "valueName": "baseHeight",
           "valueType": "Number",
           "valueDescription": "Height of the base (canvas) resolution in pixels",
           "valueRestrictions": ">= 1, <= 4096",
-          "valueOptional": false,
-          "valueOptionalBehavior": null
+          "valueOptional": true,
+          "valueOptionalBehavior": "Not changed"
         },
         {
           "valueName": "outputWidth",
           "valueType": "Number",
           "valueDescription": "Width of the output resolution in pixels",
           "valueRestrictions": ">= 1, <= 4096",
-          "valueOptional": false,
-          "valueOptionalBehavior": null
+          "valueOptional": true,
+          "valueOptionalBehavior": "Not changed"
         },
         {
           "valueName": "outputHeight",
           "valueType": "Number",
           "valueDescription": "Height of the output resolution in pixels",
           "valueRestrictions": ">= 1, <= 4096",
-          "valueOptional": false,
-          "valueOptionalBehavior": null
+          "valueOptional": true,
+          "valueOptionalBehavior": "Not changed"
         }
       ],
       "responseFields": []
@@ -1222,48 +1222,48 @@
           "valueType": "String",
           "valueDescription": "The OBS key ID to use. See https://github.com/obsproject/obs-studio/blob/master/libobs/obs-hotkeys.h",
           "valueRestrictions": null,
-          "valueOptional": false,
-          "valueOptionalBehavior": null
+          "valueOptional": true,
+          "valueOptionalBehavior": "Not pressed"
         },
         {
           "valueName": "keyModifiers",
           "valueType": "Object",
           "valueDescription": "Object containing key modifiers to apply",
           "valueRestrictions": null,
-          "valueOptional": false,
-          "valueOptionalBehavior": null
+          "valueOptional": true,
+          "valueOptionalBehavior": "Ignored"
         },
         {
           "valueName": "keyModifiers.shift",
           "valueType": "Boolean",
           "valueDescription": "Press Shift",
           "valueRestrictions": null,
-          "valueOptional": false,
-          "valueOptionalBehavior": null
+          "valueOptional": true,
+          "valueOptionalBehavior": "Not pressed"
         },
         {
           "valueName": "keyModifiers.control",
           "valueType": "Boolean",
           "valueDescription": "Press CTRL",
           "valueRestrictions": null,
-          "valueOptional": false,
-          "valueOptionalBehavior": null
+          "valueOptional": true,
+          "valueOptionalBehavior": "Not pressed"
         },
         {
           "valueName": "keyModifiers.alt",
           "valueType": "Boolean",
           "valueDescription": "Press ALT",
           "valueRestrictions": null,
-          "valueOptional": false,
-          "valueOptionalBehavior": null
+          "valueOptional": true,
+          "valueOptionalBehavior": "Not pressed"
         },
         {
           "valueName": "keyModifiers.command",
           "valueType": "Boolean",
           "valueDescription": "Press CMD (Mac)",
           "valueRestrictions": null,
-          "valueOptional": false,
-          "valueOptionalBehavior": null
+          "valueOptional": true,
+          "valueOptionalBehavior": "Not pressed"
         }
       ],
       "responseFields": []

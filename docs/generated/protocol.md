@@ -1429,9 +1429,9 @@ Broadcasts a `CustomEvent` to all WebSocket clients. Receivers are clients which
 
 **Request Fields:**
 
-| Name | Type  | Description | Restrictions | Optional? | Default Behavior (If Optional) |
-| ---- | :---: | ----------- | :----------: | :-------: | ------------------------------ |
-| eventData | Object | Data payload to emit to all receivers | None | No | None |
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| eventData | Object | Data payload to emit to all receivers | None | None |
 
 ---
 
@@ -1490,9 +1490,9 @@ Triggers a hotkey using its name. See `GetHotkeyList`
 
 **Request Fields:**
 
-| Name | Type  | Description | Restrictions | Optional? | Default Behavior (If Optional) |
-| ---- | :---: | ----------- | :----------: | :-------: | ------------------------------ |
-| hotkeyName | String | Name of the hotkey to trigger | None | No | None |
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| hotkeyName | String | Name of the hotkey to trigger | None | None |
 
 ---
 
@@ -1507,14 +1507,14 @@ Triggers a hotkey using a sequence of keys.
 
 **Request Fields:**
 
-| Name | Type  | Description | Restrictions | Optional? | Default Behavior (If Optional) |
-| ---- | :---: | ----------- | :----------: | :-------: | ------------------------------ |
-| keyId | String | The OBS key ID to use. See https://github.com/obsproject/obs-studio/blob/master/libobs/obs-hotkeys.h | None | No | None |
-| keyModifiers | Object | Object containing key modifiers to apply | None | No | None |
-| keyModifiers.shift | Boolean | Press Shift | None | No | None |
-| keyModifiers.control | Boolean | Press CTRL | None | No | None |
-| keyModifiers.alt | Boolean | Press ALT | None | No | None |
-| keyModifiers.command | Boolean | Press CMD (Mac) | None | No | None |
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| ?keyId | String | The OBS key ID to use. See https://github.com/obsproject/obs-studio/blob/master/libobs/obs-hotkeys.h | None | Not pressed |
+| ?keyModifiers | Object | Object containing key modifiers to apply | None | Ignored |
+| ?keyModifiers.shift | Boolean | Press Shift | None | Not pressed |
+| ?keyModifiers.control | Boolean | Press CTRL | None | Not pressed |
+| ?keyModifiers.alt | Boolean | Press ALT | None | Not pressed |
+| ?keyModifiers.command | Boolean | Press CMD (Mac) | None | Not pressed |
 
 ---
 
@@ -1546,9 +1546,9 @@ Enables or disables studio mode
 
 **Request Fields:**
 
-| Name | Type  | Description | Restrictions | Optional? | Default Behavior (If Optional) |
-| ---- | :---: | ----------- | :----------: | :-------: | ------------------------------ |
-| studioModeEnabled | Boolean | True == Enabled, False == Disabled | None | No | None |
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| studioModeEnabled | Boolean | True == Enabled, False == Disabled | None | None |
 
 ---
 
@@ -1563,10 +1563,10 @@ Sleeps for a time duration or number of frames. Only available in request batche
 
 **Request Fields:**
 
-| Name | Type  | Description | Restrictions | Optional? | Default Behavior (If Optional) |
-| ---- | :---: | ----------- | :----------: | :-------: | ------------------------------ |
-| sleepMillis | Number | Number of milliseconds to sleep for (if `SERIAL_REALTIME` mode) | >= 0, <= 50000 | No | None |
-| sleepFrames | Number | Number of frames to sleep for (if `SERIAL_FRAME` mode) | >= 0, <= 10000 | No | None |
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| sleepMillis | Number | Number of milliseconds to sleep for (if `SERIAL_REALTIME` mode) | >= 0, <= 50000 | None |
+| sleepFrames | Number | Number of frames to sleep for (if `SERIAL_FRAME` mode) | >= 0, <= 10000 | None |
 
 
 ## Config
@@ -1582,10 +1582,10 @@ Gets the value of a "slot" from the selected persistent data realm.
 
 **Request Fields:**
 
-| Name | Type  | Description | Restrictions | Optional? | Default Behavior (If Optional) |
-| ---- | :---: | ----------- | :----------: | :-------: | ------------------------------ |
-| realm | String | The data realm to select. `OBS_WEBSOCKET_DATA_REALM_GLOBAL` or `OBS_WEBSOCKET_DATA_REALM_PROFILE` | None | No | None |
-| slotName | String | The name of the slot to retrieve data from | None | No | None |
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| realm | String | The data realm to select. `OBS_WEBSOCKET_DATA_REALM_GLOBAL` or `OBS_WEBSOCKET_DATA_REALM_PROFILE` | None | None |
+| slotName | String | The name of the slot to retrieve data from | None | None |
 
 
 **Response Fields:**
@@ -1607,11 +1607,11 @@ Sets the value of a "slot" from the selected persistent data realm.
 
 **Request Fields:**
 
-| Name | Type  | Description | Restrictions | Optional? | Default Behavior (If Optional) |
-| ---- | :---: | ----------- | :----------: | :-------: | ------------------------------ |
-| realm | String | The data realm to select. `OBS_WEBSOCKET_DATA_REALM_GLOBAL` or `OBS_WEBSOCKET_DATA_REALM_PROFILE` | None | No | None |
-| slotName | String | The name of the slot to retrieve data from | None | No | None |
-| slotValue | Any | The value to apply to the slot | None | No | None |
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| realm | String | The data realm to select. `OBS_WEBSOCKET_DATA_REALM_GLOBAL` or `OBS_WEBSOCKET_DATA_REALM_PROFILE` | None | None |
+| slotName | String | The name of the slot to retrieve data from | None | None |
+| slotValue | Any | The value to apply to the slot | None | None |
 
 ---
 
@@ -1646,9 +1646,9 @@ Note: This will block until the collection has finished changing.
 
 **Request Fields:**
 
-| Name | Type  | Description | Restrictions | Optional? | Default Behavior (If Optional) |
-| ---- | :---: | ----------- | :----------: | :-------: | ------------------------------ |
-| sceneCollectionName | String | Name of the scene collection to switch to | None | No | None |
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| sceneCollectionName | String | Name of the scene collection to switch to | None | None |
 
 ---
 
@@ -1665,9 +1665,9 @@ Note: This will block until the collection has finished changing.
 
 **Request Fields:**
 
-| Name | Type  | Description | Restrictions | Optional? | Default Behavior (If Optional) |
-| ---- | :---: | ----------- | :----------: | :-------: | ------------------------------ |
-| sceneCollectionName | String | Name for the new scene collection | None | No | None |
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| sceneCollectionName | String | Name for the new scene collection | None | None |
 
 ---
 
@@ -1700,9 +1700,9 @@ Switches to a profile.
 
 **Request Fields:**
 
-| Name | Type  | Description | Restrictions | Optional? | Default Behavior (If Optional) |
-| ---- | :---: | ----------- | :----------: | :-------: | ------------------------------ |
-| profileName | String | Name of the profile to switch to | None | No | None |
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| profileName | String | Name of the profile to switch to | None | None |
 
 ---
 
@@ -1717,9 +1717,9 @@ Creates a new profile, switching to it in the process
 
 **Request Fields:**
 
-| Name | Type  | Description | Restrictions | Optional? | Default Behavior (If Optional) |
-| ---- | :---: | ----------- | :----------: | :-------: | ------------------------------ |
-| profileName | String | Name for the new profile | None | No | None |
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| profileName | String | Name for the new profile | None | None |
 
 ---
 
@@ -1734,9 +1734,9 @@ Removes a profile. If the current profile is chosen, it will change to a differe
 
 **Request Fields:**
 
-| Name | Type  | Description | Restrictions | Optional? | Default Behavior (If Optional) |
-| ---- | :---: | ----------- | :----------: | :-------: | ------------------------------ |
-| profileName | String | Name of the profile to remove | None | No | None |
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| profileName | String | Name of the profile to remove | None | None |
 
 ---
 
@@ -1751,10 +1751,10 @@ Gets a parameter from the current profile's configuration.
 
 **Request Fields:**
 
-| Name | Type  | Description | Restrictions | Optional? | Default Behavior (If Optional) |
-| ---- | :---: | ----------- | :----------: | :-------: | ------------------------------ |
-| parameterCategory | String | Category of the parameter to get | None | No | None |
-| parameterName | String | Name of the parameter to get | None | No | None |
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| parameterCategory | String | Category of the parameter to get | None | None |
+| parameterName | String | Name of the parameter to get | None | None |
 
 
 **Response Fields:**
@@ -1777,11 +1777,11 @@ Sets the value of a parameter in the current profile's configuration.
 
 **Request Fields:**
 
-| Name | Type  | Description | Restrictions | Optional? | Default Behavior (If Optional) |
-| ---- | :---: | ----------- | :----------: | :-------: | ------------------------------ |
-| parameterCategory | String | Category of the parameter to set | None | No | None |
-| parameterName | String | Name of the parameter to set | None | No | None |
-| parameterValue | String | Value of the parameter to set. Use `null` to delete | None | No | None |
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| parameterCategory | String | Category of the parameter to set | None | None |
+| parameterName | String | Name of the parameter to set | None | None |
+| parameterValue | String | Value of the parameter to set. Use `null` to delete | None | None |
 
 ---
 
@@ -1822,14 +1822,14 @@ Note: Fields must be specified in pairs. For example, you cannot set only `baseW
 
 **Request Fields:**
 
-| Name | Type  | Description | Restrictions | Optional? | Default Behavior (If Optional) |
-| ---- | :---: | ----------- | :----------: | :-------: | ------------------------------ |
-| fpsNumerator | Number | Numerator of the fractional FPS value | >= 1 | No | None |
-| fpsDenominator | Number | Denominator of the fractional FPS value | >= 1 | No | None |
-| baseWidth | Number | Width of the base (canvas) resolution in pixels | >= 1, <= 4096 | No | None |
-| baseHeight | Number | Height of the base (canvas) resolution in pixels | >= 1, <= 4096 | No | None |
-| outputWidth | Number | Width of the output resolution in pixels | >= 1, <= 4096 | No | None |
-| outputHeight | Number | Height of the output resolution in pixels | >= 1, <= 4096 | No | None |
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| ?fpsNumerator | Number | Numerator of the fractional FPS value | >= 1 | Not changed |
+| ?fpsDenominator | Number | Denominator of the fractional FPS value | >= 1 | Not changed |
+| ?baseWidth | Number | Width of the base (canvas) resolution in pixels | >= 1, <= 4096 | Not changed |
+| ?baseHeight | Number | Height of the base (canvas) resolution in pixels | >= 1, <= 4096 | Not changed |
+| ?outputWidth | Number | Width of the output resolution in pixels | >= 1, <= 4096 | Not changed |
+| ?outputHeight | Number | Height of the output resolution in pixels | >= 1, <= 4096 | Not changed |
 
 ---
 
@@ -1864,9 +1864,9 @@ Note: Simple RTMP settings can be set with type `rtmp_custom` and the settings f
 
 **Request Fields:**
 
-| Name | Type  | Description | Restrictions | Optional? | Default Behavior (If Optional) |
-| ---- | :---: | ----------- | :----------: | :-------: | ------------------------------ |
-| streamServiceType | String | Type of stream service to apply. Example: `rtmp_common` or `rtmp_custom` | None | No | None |
-| streamServiceSettings | Object | Settings to apply to the service | None | No | None |
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| streamServiceType | String | Type of stream service to apply. Example: `rtmp_common` or `rtmp_custom` | None | None |
+| streamServiceSettings | Object | Settings to apply to the service | None | None |
 
 

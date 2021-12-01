@@ -168,12 +168,12 @@ RequestResult RequestHandler::TriggerHotkeyByName(const Request& request)
 /**
  * Triggers a hotkey using a sequence of keys.
  *
- * @requestField keyId                | String  | The OBS key ID to use. See https://github.com/obsproject/obs-studio/blob/master/libobs/obs-hotkeys.h | Not pressed
- * @requestField keyModifiers         | Object  | Object containing key modifiers to apply                                                             | Ignored
- * @requestField keyModifiers.shift   | Boolean | Press Shift                                                                                          | Not pressed
- * @requestField keyModifiers.control | Boolean | Press CTRL                                                                                           | Not pressed
- * @requestField keyModifiers.alt     | Boolean | Press ALT                                                                                            | Not pressed
- * @requestField keyModifiers.command | Boolean | Press CMD (Mac)                                                                                      | Not pressed
+ * @requestField ?keyId                | String  | The OBS key ID to use. See https://github.com/obsproject/obs-studio/blob/master/libobs/obs-hotkeys.h | Not pressed
+ * @requestField ?keyModifiers         | Object  | Object containing key modifiers to apply                                                             | Ignored
+ * @requestField ?keyModifiers.shift   | Boolean | Press Shift                                                                                          | Not pressed
+ * @requestField ?keyModifiers.control | Boolean | Press CTRL                                                                                           | Not pressed
+ * @requestField ?keyModifiers.alt     | Boolean | Press ALT                                                                                            | Not pressed
+ * @requestField ?keyModifiers.command | Boolean | Press CMD (Mac)                                                                                      | Not pressed
  *
  * @requestType TriggerHotkeyByKeySequence
  * @complexity 4

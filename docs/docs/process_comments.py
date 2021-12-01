@@ -41,9 +41,10 @@ def get_request_fields(fields):
     for field in fields:
         components = get_components(field)
         field_out = {}
-        field_out['valueName'] = components[0]
+        field_out['valueName'] = components[0].replace('?', '')
         field_out['valueType'] = components[1]
         field_out['valueDescription'] = components[2]
+
         valueOptionalOffset = 3
         # If value type is a number, restrictions are required. Else, should not be added.
         if field_out['valueType'].lower() == 'number':
@@ -52,12 +53,12 @@ def get_request_fields(fields):
             field_out['valueRestrictions'] = components[3] if components[3].lower() != 'none' else None
         else:
             field_out['valueRestrictions'] = None
-        if len(components) <= valueOptionalOffset or components[valueOptionalOffset].lower() != 'none':
-            field_out['valueOptional'] = False
-            field_out['valueOptionalBehavior'] = None
+
+        field_out['valueOptional'] = components[0].startswith('?')
+        if field_out['valueOptional']:
+            field_out['valueOptionalBehavior'] = components[valueOptionalOffset] if len(components) > valueOptionalOffset else 'Unknown'
         else:
-            field_out['valueOptional'] = True
-            field_out['valueOptionalBehavior'] = components[valueOptionalOffset]
+            field_out['valueOptionalBehavior'] = None
         ret.append(field_out)
     return ret
 

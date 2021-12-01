@@ -452,12 +452,12 @@ RequestResult RequestHandler::GetVideoSettings(const Request&)
  *
  * Note: Fields must be specified in pairs. For example, you cannot set only `baseWidth` without needing to specify `baseHeight`.
  *
- * @requestField fpsNumerator   | Number | Numerator of the fractional FPS value            | >= 1          | Not changed
- * @requestField fpsDenominator | Number | Denominator of the fractional FPS value          | >= 1          | Not changed
- * @requestField baseWidth      | Number | Width of the base (canvas) resolution in pixels  | >= 1, <= 4096 | Not changed
- * @requestField baseHeight     | Number | Height of the base (canvas) resolution in pixels | >= 1, <= 4096 | Not changed
- * @requestField outputWidth    | Number | Width of the output resolution in pixels         | >= 1, <= 4096 | Not changed
- * @requestField outputHeight   | Number | Height of the output resolution in pixels        | >= 1, <= 4096 | Not changed
+ * @requestField ?fpsNumerator   | Number | Numerator of the fractional FPS value            | >= 1          | Not changed
+ * @requestField ?fpsDenominator | Number | Denominator of the fractional FPS value          | >= 1          | Not changed
+ * @requestField ?baseWidth      | Number | Width of the base (canvas) resolution in pixels  | >= 1, <= 4096 | Not changed
+ * @requestField ?baseHeight     | Number | Height of the base (canvas) resolution in pixels | >= 1, <= 4096 | Not changed
+ * @requestField ?outputWidth    | Number | Width of the output resolution in pixels         | >= 1, <= 4096 | Not changed
+ * @requestField ?outputHeight   | Number | Height of the output resolution in pixels        | >= 1, <= 4096 | Not changed
  *
  * @requestType SetVideoSettings
  * @complexity 2
