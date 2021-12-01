@@ -1,4 +1,5 @@
 <!-- This file was automatically generated. Do not edit directly! -->
+
 # Main Table of Contents
 - [obs-websocket 5.0.0 Protocol](#obs-websocket-500-protocol)
   - [Connecting to obs-websocket](#connecting-to-obs-websocket)
@@ -474,7 +475,7 @@ These are enumeration declarations, which are referenced throughout obs-websocke
 The initial message sent by obs-websocket to newly connected clients.
 
 - Identifier Value: `0`
-- Latest Supported RPC Version: `-1`
+- Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
 ---
@@ -484,7 +485,7 @@ The initial message sent by obs-websocket to newly connected clients.
 The message sent by a newly connected client to obs-websocket in response to a `Hello`.
 
 - Identifier Value: `1`
-- Latest Supported RPC Version: `-1`
+- Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
 ---
@@ -494,7 +495,7 @@ The message sent by a newly connected client to obs-websocket in response to a `
 The response sent by obs-websocket to a client after it has successfully identified with obs-websocket.
 
 - Identifier Value: `2`
-- Latest Supported RPC Version: `-1`
+- Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
 ---
@@ -504,7 +505,7 @@ The response sent by obs-websocket to a client after it has successfully identif
 The message sent by an already-identified client to update identification parameters.
 
 - Identifier Value: `3`
-- Latest Supported RPC Version: `-1`
+- Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
 ---
@@ -514,7 +515,7 @@ The message sent by an already-identified client to update identification parame
 The message sent by obs-websocket containing an event payload.
 
 - Identifier Value: `5`
-- Latest Supported RPC Version: `-1`
+- Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
 ---
@@ -524,7 +525,7 @@ The message sent by obs-websocket containing an event payload.
 The message sent by a client to obs-websocket to perform a request.
 
 - Identifier Value: `6`
-- Latest Supported RPC Version: `-1`
+- Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
 ---
@@ -534,7 +535,7 @@ The message sent by a client to obs-websocket to perform a request.
 The message sent by obs-websocket in response to a particular request from a client.
 
 - Identifier Value: `7`
-- Latest Supported RPC Version: `-1`
+- Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
 ---
@@ -544,7 +545,7 @@ The message sent by obs-websocket in response to a particular request from a cli
 The message sent by a client to obs-websocket to perform a batch of requests.
 
 - Identifier Value: `8`
-- Latest Supported RPC Version: `-1`
+- Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
 ---
@@ -554,11 +555,8 @@ The message sent by a client to obs-websocket to perform a batch of requests.
 The message sent by obs-websocket in response to a particular batch of requests from a client.
 
 - Identifier Value: `9`
-- Latest Supported RPC Version: `-1`
+- Latest Supported RPC Version: `1`
 - Added in v5.0.0
-
----
-
 ## WebSocketCloseCode
 
 ### WebSocketCloseCode::DontClose
@@ -566,7 +564,7 @@ The message sent by obs-websocket in response to a particular batch of requests 
 For internal use only to tell the request handler not to perform any close action.
 
 - Identifier Value: `0`
-- Latest Supported RPC Version: `-1`
+- Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
 ---
@@ -576,7 +574,7 @@ For internal use only to tell the request handler not to perform any close actio
 Unknown reason, should never be used.
 
 - Identifier Value: `4000`
-- Latest Supported RPC Version: `-1`
+- Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
 ---
@@ -586,7 +584,7 @@ Unknown reason, should never be used.
 The server was unable to decode the incoming websocket message.
 
 - Identifier Value: `4002`
-- Latest Supported RPC Version: `-1`
+- Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
 ---
@@ -596,7 +594,7 @@ The server was unable to decode the incoming websocket message.
 A data field is required but missing from the payload.
 
 - Identifier Value: `4003`
-- Latest Supported RPC Version: `-1`
+- Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
 ---
@@ -606,7 +604,7 @@ A data field is required but missing from the payload.
 A data field's value type is invalid.
 
 - Identifier Value: `4004`
-- Latest Supported RPC Version: `-1`
+- Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
 ---
@@ -616,7 +614,7 @@ A data field's value type is invalid.
 A data field's value is invalid.
 
 - Identifier Value: `4005`
-- Latest Supported RPC Version: `-1`
+- Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
 ---
@@ -626,7 +624,7 @@ A data field's value is invalid.
 The specified `op` was invalid or missing.
 
 - Identifier Value: `4006`
-- Latest Supported RPC Version: `-1`
+- Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
 ---
@@ -636,7 +634,7 @@ The specified `op` was invalid or missing.
 The client sent a websocket message without first sending `Identify` message.
 
 - Identifier Value: `4007`
-- Latest Supported RPC Version: `-1`
+- Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
 ---
@@ -648,7 +646,7 @@ The client sent an `Identify` message while already identified.
 Note: Once a client has identified, only `Reidentify` may be used to change session parameters.
 
 - Identifier Value: `4008`
-- Latest Supported RPC Version: `-1`
+- Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
 ---
@@ -658,7 +656,7 @@ Note: Once a client has identified, only `Reidentify` may be used to change sess
 The authentication attempt (via `Identify`) failed.
 
 - Identifier Value: `4009`
-- Latest Supported RPC Version: `-1`
+- Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
 ---
@@ -668,7 +666,7 @@ The authentication attempt (via `Identify`) failed.
 The server detected the usage of an old version of the obs-websocket RPC protocol.
 
 - Identifier Value: `4010`
-- Latest Supported RPC Version: `-1`
+- Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
 ---
@@ -680,7 +678,7 @@ The websocket session has been invalidated by the obs-websocket server.
 Note: This is the code used by the `Kick` button in the UI Session List. If you receive this code, you must not automatically reconnect.
 
 - Identifier Value: `4011`
-- Latest Supported RPC Version: `-1`
+- Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
 ---
@@ -690,11 +688,8 @@ Note: This is the code used by the `Kick` button in the UI Session List. If you 
 A requested feature is not supported due to hardware/software limitations.
 
 - Identifier Value: `4012`
-- Latest Supported RPC Version: `-1`
+- Latest Supported RPC Version: `1`
 - Added in v5.0.0
-
----
-
 ## RequestBatchExecutionType
 
 ### RequestBatchExecutionType::None
@@ -702,7 +697,7 @@ A requested feature is not supported due to hardware/software limitations.
 Not a request batch.
 
 - Identifier Value: `0`
-- Latest Supported RPC Version: `-1`
+- Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
 ---
@@ -714,7 +709,7 @@ A request batch which processes all requests serially, as fast as possible.
 Note: To introduce artificial delay, use the `Sleep` request and the `sleepMillis` request field.
 
 - Identifier Value: `1`
-- Latest Supported RPC Version: `-1`
+- Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
 ---
@@ -726,7 +721,7 @@ A request batch type which processes all requests serially, in sync with the gra
 Note: To introduce artificial delay, use the `Sleep` request and the `sleepFrames` request field.
 
 - Identifier Value: `2`
-- Latest Supported RPC Version: `-1`
+- Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
 ---
@@ -739,11 +734,8 @@ Note: This is mainly experimental, and only really shows its colors during reque
 active processing, like `GetSourceScreenshot`.
 
 - Identifier Value: `3`
-- Latest Supported RPC Version: `-1`
+- Latest Supported RPC Version: `1`
 - Added in v5.0.0
-
----
-
 ## RequestStatus
 
 ### RequestStatus::Unknown
@@ -751,7 +743,7 @@ active processing, like `GetSourceScreenshot`.
 Unknown status, should never be used.
 
 - Identifier Value: `0`
-- Latest Supported RPC Version: `-1`
+- Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
 ---
@@ -761,7 +753,7 @@ Unknown status, should never be used.
 For internal use to signify a successful field check.
 
 - Identifier Value: `10`
-- Latest Supported RPC Version: `-1`
+- Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
 ---
@@ -771,7 +763,7 @@ For internal use to signify a successful field check.
 The request has succeeded.
 
 - Identifier Value: `100`
-- Latest Supported RPC Version: `-1`
+- Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
 ---
@@ -781,7 +773,7 @@ The request has succeeded.
 The `requestType` field is missing from the request data.
 
 - Identifier Value: `203`
-- Latest Supported RPC Version: `-1`
+- Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
 ---
@@ -791,7 +783,7 @@ The `requestType` field is missing from the request data.
 The request type is invalid or does not exist.
 
 - Identifier Value: `204`
-- Latest Supported RPC Version: `-1`
+- Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
 ---
@@ -803,7 +795,7 @@ Generic error code.
 Note: A comment is required to be provided by obs-websocket.
 
 - Identifier Value: `205`
-- Latest Supported RPC Version: `-1`
+- Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
 ---
@@ -813,7 +805,7 @@ Note: A comment is required to be provided by obs-websocket.
 The request batch execution type is not supported.
 
 - Identifier Value: `206`
-- Latest Supported RPC Version: `-1`
+- Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
 ---
@@ -823,7 +815,7 @@ The request batch execution type is not supported.
 A required request field is missing.
 
 - Identifier Value: `300`
-- Latest Supported RPC Version: `-1`
+- Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
 ---
@@ -833,7 +825,7 @@ A required request field is missing.
 The request does not have a valid requestData object.
 
 - Identifier Value: `301`
-- Latest Supported RPC Version: `-1`
+- Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
 ---
@@ -845,7 +837,7 @@ Generic invalid request field message.
 Note: A comment is required to be provided by obs-websocket.
 
 - Identifier Value: `400`
-- Latest Supported RPC Version: `-1`
+- Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
 ---
@@ -855,7 +847,7 @@ Note: A comment is required to be provided by obs-websocket.
 A request field has the wrong data type.
 
 - Identifier Value: `401`
-- Latest Supported RPC Version: `-1`
+- Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
 ---
@@ -865,7 +857,7 @@ A request field has the wrong data type.
 A request field (number) is outside of the allowed range.
 
 - Identifier Value: `402`
-- Latest Supported RPC Version: `-1`
+- Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
 ---
@@ -875,7 +867,7 @@ A request field (number) is outside of the allowed range.
 A request field (string or array) is empty and cannot be.
 
 - Identifier Value: `403`
-- Latest Supported RPC Version: `-1`
+- Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
 ---
@@ -885,7 +877,7 @@ A request field (string or array) is empty and cannot be.
 There are too many request fields (eg. a request takes two optionals, where only one is allowed at a time).
 
 - Identifier Value: `404`
-- Latest Supported RPC Version: `-1`
+- Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
 ---
@@ -895,7 +887,7 @@ There are too many request fields (eg. a request takes two optionals, where only
 An output is running and cannot be in order to perform the request.
 
 - Identifier Value: `500`
-- Latest Supported RPC Version: `-1`
+- Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
 ---
@@ -905,7 +897,7 @@ An output is running and cannot be in order to perform the request.
 An output is not running and should be.
 
 - Identifier Value: `501`
-- Latest Supported RPC Version: `-1`
+- Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
 ---
@@ -915,7 +907,7 @@ An output is not running and should be.
 An output is paused and should not be.
 
 - Identifier Value: `502`
-- Latest Supported RPC Version: `-1`
+- Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
 ---
@@ -925,7 +917,7 @@ An output is paused and should not be.
 An output is not paused and should be.
 
 - Identifier Value: `503`
-- Latest Supported RPC Version: `-1`
+- Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
 ---
@@ -935,7 +927,7 @@ An output is not paused and should be.
 An output is disabled and should not be.
 
 - Identifier Value: `504`
-- Latest Supported RPC Version: `-1`
+- Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
 ---
@@ -945,7 +937,7 @@ An output is disabled and should not be.
 Studio mode is active and cannot be.
 
 - Identifier Value: `505`
-- Latest Supported RPC Version: `-1`
+- Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
 ---
@@ -955,7 +947,7 @@ Studio mode is active and cannot be.
 Studio mode is not active and should be.
 
 - Identifier Value: `506`
-- Latest Supported RPC Version: `-1`
+- Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
 ---
@@ -967,7 +959,7 @@ The resource was not found.
 Note: Resources are any kind of object in obs-websocket, like inputs, profiles, outputs, etc.
 
 - Identifier Value: `600`
-- Latest Supported RPC Version: `-1`
+- Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
 ---
@@ -977,7 +969,7 @@ Note: Resources are any kind of object in obs-websocket, like inputs, profiles, 
 The resource already exists.
 
 - Identifier Value: `601`
-- Latest Supported RPC Version: `-1`
+- Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
 ---
@@ -987,7 +979,7 @@ The resource already exists.
 The type of resource found is invalid.
 
 - Identifier Value: `602`
-- Latest Supported RPC Version: `-1`
+- Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
 ---
@@ -997,7 +989,7 @@ The type of resource found is invalid.
 There are not enough instances of the resource in order to perform the request.
 
 - Identifier Value: `603`
-- Latest Supported RPC Version: `-1`
+- Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
 ---
@@ -1007,7 +999,7 @@ There are not enough instances of the resource in order to perform the request.
 The state of the resource is invalid. For example, if the resource is blocked from being accessed.
 
 - Identifier Value: `604`
-- Latest Supported RPC Version: `-1`
+- Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
 ---
@@ -1017,7 +1009,7 @@ The state of the resource is invalid. For example, if the resource is blocked fr
 The specified input (obs_source_t-OBS_SOURCE_TYPE_INPUT) had the wrong kind.
 
 - Identifier Value: `605`
-- Latest Supported RPC Version: `-1`
+- Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
 ---
@@ -1027,7 +1019,7 @@ The specified input (obs_source_t-OBS_SOURCE_TYPE_INPUT) had the wrong kind.
 Creating the resource failed.
 
 - Identifier Value: `700`
-- Latest Supported RPC Version: `-1`
+- Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
 ---
@@ -1037,7 +1029,7 @@ Creating the resource failed.
 Performing an action on the resource failed.
 
 - Identifier Value: `701`
-- Latest Supported RPC Version: `-1`
+- Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
 ---
@@ -1049,7 +1041,7 @@ Processing the request failed unexpectedly.
 Note: A comment is required to be provided by obs-websocket.
 
 - Identifier Value: `702`
-- Latest Supported RPC Version: `-1`
+- Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
 ---
@@ -1059,11 +1051,8 @@ Note: A comment is required to be provided by obs-websocket.
 The combination of request fields cannot be used to perform an action.
 
 - Identifier Value: `703`
-- Latest Supported RPC Version: `-1`
+- Latest Supported RPC Version: `1`
 - Added in v5.0.0
-
----
-
 ## EventSubscription
 
 ### EventSubscription::None
@@ -1071,7 +1060,7 @@ The combination of request fields cannot be used to perform an action.
 Subcription value used to disable all events.
 
 - Identifier Value: `0`
-- Latest Supported RPC Version: `-1`
+- Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
 ---
@@ -1081,7 +1070,7 @@ Subcription value used to disable all events.
 Subscription value to receive events in the `General` category.
 
 - Identifier Value: `(1 << 0)`
-- Latest Supported RPC Version: `-1`
+- Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
 ---
@@ -1091,7 +1080,7 @@ Subscription value to receive events in the `General` category.
 Subscription value to receive events in the `Config` category.
 
 - Identifier Value: `(1 << 1)`
-- Latest Supported RPC Version: `-1`
+- Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
 ---
@@ -1101,7 +1090,7 @@ Subscription value to receive events in the `Config` category.
 Subscription value to receive events in the `Scenes` category.
 
 - Identifier Value: `(1 << 2)`
-- Latest Supported RPC Version: `-1`
+- Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
 ---
@@ -1111,7 +1100,7 @@ Subscription value to receive events in the `Scenes` category.
 Subscription value to receive events in the `Inputs` category.
 
 - Identifier Value: `(1 << 3)`
-- Latest Supported RPC Version: `-1`
+- Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
 ---
@@ -1121,7 +1110,7 @@ Subscription value to receive events in the `Inputs` category.
 Subscription value to receive events in the `Transitions` category.
 
 - Identifier Value: `(1 << 4)`
-- Latest Supported RPC Version: `-1`
+- Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
 ---
@@ -1131,7 +1120,7 @@ Subscription value to receive events in the `Transitions` category.
 Subscription value to receive events in the `Filters` category.
 
 - Identifier Value: `(1 << 5)`
-- Latest Supported RPC Version: `-1`
+- Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
 ---
@@ -1141,7 +1130,7 @@ Subscription value to receive events in the `Filters` category.
 Subscription value to receive events in the `Outputs` category.
 
 - Identifier Value: `(1 << 6)`
-- Latest Supported RPC Version: `-1`
+- Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
 ---
@@ -1151,7 +1140,7 @@ Subscription value to receive events in the `Outputs` category.
 Subscription value to receive events in the `SceneItems` category.
 
 - Identifier Value: `(1 << 7)`
-- Latest Supported RPC Version: `-1`
+- Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
 ---
@@ -1161,7 +1150,7 @@ Subscription value to receive events in the `SceneItems` category.
 Subscription value to receive events in the `MediaInputs` category.
 
 - Identifier Value: `(1 << 8)`
-- Latest Supported RPC Version: `-1`
+- Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
 ---
@@ -1171,7 +1160,7 @@ Subscription value to receive events in the `MediaInputs` category.
 Subscription value to receive the `ExternalPluginEvent` event.
 
 - Identifier Value: `(1 << 9)`
-- Latest Supported RPC Version: `-1`
+- Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
 ---
@@ -1181,7 +1170,7 @@ Subscription value to receive the `ExternalPluginEvent` event.
 Helper to receive all non-high-volume events.
 
 - Identifier Value: `(General | Config | Scenes | Inputs | Transitions | Filters | Outputs | SceneItems | MediaInputs | ExternalPlugins)`
-- Latest Supported RPC Version: `-1`
+- Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
 ---
@@ -1191,7 +1180,7 @@ Helper to receive all non-high-volume events.
 Subscription value to receive the `InputVolumeMeters` high-volume event.
 
 - Identifier Value: `(1 << 16)`
-- Latest Supported RPC Version: `-1`
+- Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
 ---
@@ -1201,7 +1190,7 @@ Subscription value to receive the `InputVolumeMeters` high-volume event.
 Subscription value to receive the `InputActiveStateChanged` high-volume event.
 
 - Identifier Value: `(1 << 17)`
-- Latest Supported RPC Version: `-1`
+- Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
 ---
@@ -1211,7 +1200,7 @@ Subscription value to receive the `InputActiveStateChanged` high-volume event.
 Subscription value to receive the `InputShowStateChanged` high-volume event.
 
 - Identifier Value: `(1 << 18)`
-- Latest Supported RPC Version: `-1`
+- Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
 ---
@@ -1221,11 +1210,8 @@ Subscription value to receive the `InputShowStateChanged` high-volume event.
 Subscription value to receive the `SceneItemTransformChanged` high-volume event.
 
 - Identifier Value: `(1 << 19)`
-- Latest Supported RPC Version: `-1`
+- Latest Supported RPC Version: `1`
 - Added in v5.0.0
-
----
-
 
 
 # Requests
@@ -1259,6 +1245,8 @@ Subscription value to receive the `SceneItemTransformChanged` high-volume event.
   - [SetStreamServiceSettings](#setstreamservicesettings)
 
 
+
+
 ## General
 
 ### GetVersion
@@ -1268,6 +1256,14 @@ Gets data about the current plugin and RPC version.
 - Complexity Rating: `1/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
+
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| obsVersion | String | Current OBS Studio version |
+| obsWebSocketVersion | String | Current obs-websocket version |
+| rpcVersion | Number | Current latest obs-websocket RPC version |
+| availableRequests | Array<String> | Array of available RPC requests for the currently negotiated RPC version |
 
 ---
 
@@ -1279,6 +1275,11 @@ Broadcasts a `CustomEvent` to all WebSocket clients. Receivers are clients which
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
+
+| Name | Type  | Description | Restrictions | Optional? | Default Behavior (If Optional) |
+| ---- | :---: | ----------- | :----------: | :-------: | ------------------------------ |
+| eventData | Object | Data payload to emit to all receivers | None | No | None |
+
 ---
 
 ### GetStats
@@ -1288,6 +1289,21 @@ Gets statistics about OBS, obs-websocket, and the current session.
 - Complexity Rating: `2/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
+
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| cpuUsage | Number | Current CPU usage in percent |
+| memoryUsage | Number | Amount of memory in MB currently being used by OBS |
+| availableDiskSpace | Number | Available disk space on the device being used for recording storage |
+| activeFps | Number | Current FPS being rendered |
+| averageFrameRenderTime | Number | Average time in milliseconds that OBS is taking to render a frame |
+| renderSkippedFrames | Number | Number of frames skipped by OBS in the render thread |
+| renderTotalFrames | Number | Total number of frames outputted by the render thread |
+| outputSkippedFrames | Number | Number of frames skipped by OBS in the output thread |
+| outputTotalFrames | Number | Total number of frames outputted by the output thread |
+| webSocketSessionIncomingMessages | Number | Total number of messages received by obs-websocket from the client |
+| webSocketSessionOutgoingMessages | Number | Total number of messages sent by obs-websocket to the client |
 
 ---
 
@@ -1299,6 +1315,11 @@ Gets an array of all hotkey names in OBS
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| hotkeys | Array<String> | Array of hotkey names |
+
 ---
 
 ### TriggerHotkeyByName
@@ -1308,6 +1329,11 @@ Triggers a hotkey using its name. See `GetHotkeyList`
 - Complexity Rating: `3/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
+
+
+| Name | Type  | Description | Restrictions | Optional? | Default Behavior (If Optional) |
+| ---- | :---: | ----------- | :----------: | :-------: | ------------------------------ |
+| hotkeyName | String | Name of the hotkey to trigger | None | No | None |
 
 ---
 
@@ -1319,6 +1345,16 @@ Triggers a hotkey using a sequence of keys.
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
+
+| Name | Type  | Description | Restrictions | Optional? | Default Behavior (If Optional) |
+| ---- | :---: | ----------- | :----------: | :-------: | ------------------------------ |
+| keyId | String | The OBS key ID to use. See https://github.com/obsproject/obs-studio/blob/master/libobs/obs-hotkeys.h | None | No | None |
+| keyModifiers | Object | Object containing key modifiers to apply | None | No | None |
+| keyModifiers.shift | Boolean | Press Shift | None | No | None |
+| keyModifiers.control | Boolean | Press CTRL | None | No | None |
+| keyModifiers.alt | Boolean | Press ALT | None | No | None |
+| keyModifiers.command | Boolean | Press CMD (Mac) | None | No | None |
+
 ---
 
 ### GetStudioModeEnabled
@@ -1328,6 +1364,11 @@ Gets whether studio is enabled.
 - Complexity Rating: `1/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
+
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| studioModeEnabled | Boolean | Whether studio mode is enabled |
 
 ---
 
@@ -1339,6 +1380,11 @@ Enables or disables studio mode
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
+
+| Name | Type  | Description | Restrictions | Optional? | Default Behavior (If Optional) |
+| ---- | :---: | ----------- | :----------: | :-------: | ------------------------------ |
+| studioModeEnabled | Boolean | True == Enabled, False == Disabled | None | No | None |
+
 ---
 
 ### Sleep
@@ -1349,7 +1395,12 @@ Sleeps for a time duration or number of frames. Only available in request batche
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
----
+
+| Name | Type  | Description | Restrictions | Optional? | Default Behavior (If Optional) |
+| ---- | :---: | ----------- | :----------: | :-------: | ------------------------------ |
+| sleepMillis | Number | Number of milliseconds to sleep for (if `SERIAL_REALTIME` mode) | >= 0, <= 50000 | No | None |
+| sleepFrames | Number | Number of frames to sleep for (if `SERIAL_FRAME` mode) | >= 0, <= 10000 | No | None |
+
 
 ## Config
 
@@ -1361,6 +1412,17 @@ Gets the value of a "slot" from the selected persistent data realm.
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
+
+| Name | Type  | Description | Restrictions | Optional? | Default Behavior (If Optional) |
+| ---- | :---: | ----------- | :----------: | :-------: | ------------------------------ |
+| realm | String | The data realm to select. `OBS_WEBSOCKET_DATA_REALM_GLOBAL` or `OBS_WEBSOCKET_DATA_REALM_PROFILE` | None | No | None |
+| slotName | String | The name of the slot to retrieve data from | None | No | None |
+
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| slotValue | String | Value associated with the slot. `null` if not set |
+
 ---
 
 ### SetPersistentData
@@ -1371,6 +1433,13 @@ Sets the value of a "slot" from the selected persistent data realm.
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
+
+| Name | Type  | Description | Restrictions | Optional? | Default Behavior (If Optional) |
+| ---- | :---: | ----------- | :----------: | :-------: | ------------------------------ |
+| realm | String | The data realm to select. `OBS_WEBSOCKET_DATA_REALM_GLOBAL` or `OBS_WEBSOCKET_DATA_REALM_PROFILE` | None | No | None |
+| slotName | String | The name of the slot to retrieve data from | None | No | None |
+| slotValue | Any | The value to apply to the slot | None | No | None |
+
 ---
 
 ### GetSceneCollectionList
@@ -1380,6 +1449,12 @@ Gets an array of all scene collections
 - Complexity Rating: `1/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
+
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| currentSceneCollectionName | String | The name of the current scene collection |
+| sceneCollections | Array<String> | Array of all available scene collections |
 
 ---
 
@@ -1393,6 +1468,11 @@ Note: This will block until the collection has finished changing.
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
+
+| Name | Type  | Description | Restrictions | Optional? | Default Behavior (If Optional) |
+| ---- | :---: | ----------- | :----------: | :-------: | ------------------------------ |
+| sceneCollectionName | String | Name of the scene collection to switch to | None | No | None |
+
 ---
 
 ### CreateSceneCollection
@@ -1405,6 +1485,11 @@ Note: This will block until the collection has finished changing.
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
+
+| Name | Type  | Description | Restrictions | Optional? | Default Behavior (If Optional) |
+| ---- | :---: | ----------- | :----------: | :-------: | ------------------------------ |
+| sceneCollectionName | String | Name for the new scene collection | None | No | None |
+
 ---
 
 ### GetProfileList
@@ -1414,6 +1499,12 @@ Gets an array of all profiles
 - Complexity Rating: `1/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
+
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| currentProfileName | String | The name of the current profile |
+| profiles | Array<String> | Array of all available profiles |
 
 ---
 
@@ -1425,6 +1516,11 @@ Switches to a profile.
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
+
+| Name | Type  | Description | Restrictions | Optional? | Default Behavior (If Optional) |
+| ---- | :---: | ----------- | :----------: | :-------: | ------------------------------ |
+| profileName | String | Name of the profile to switch to | None | No | None |
+
 ---
 
 ### CreateProfile
@@ -1434,6 +1530,11 @@ Creates a new profile, switching to it in the process
 - Complexity Rating: `1/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
+
+
+| Name | Type  | Description | Restrictions | Optional? | Default Behavior (If Optional) |
+| ---- | :---: | ----------- | :----------: | :-------: | ------------------------------ |
+| profileName | String | Name for the new profile | None | No | None |
 
 ---
 
@@ -1445,6 +1546,11 @@ Removes a profile. If the current profile is chosen, it will change to a differe
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
+
+| Name | Type  | Description | Restrictions | Optional? | Default Behavior (If Optional) |
+| ---- | :---: | ----------- | :----------: | :-------: | ------------------------------ |
+| profileName | String | Name of the profile to remove | None | No | None |
+
 ---
 
 ### GetProfileParameter
@@ -1455,6 +1561,18 @@ Gets a parameter from the current profile's configuration.
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
+
+| Name | Type  | Description | Restrictions | Optional? | Default Behavior (If Optional) |
+| ---- | :---: | ----------- | :----------: | :-------: | ------------------------------ |
+| parameterCategory | String | Category of the parameter to get | None | No | None |
+| parameterName | String | Name of the parameter to get | None | No | None |
+
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| parameterValue | String | Value associated with the parameter. `null` if not set and no default |
+| defaultParameterValue | String | Default value associated with the parameter. `null` if no default |
+
 ---
 
 ### SetProfileParameter
@@ -1464,6 +1582,13 @@ Sets the value of a parameter in the current profile's configuration.
 - Complexity Rating: `3/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
+
+
+| Name | Type  | Description | Restrictions | Optional? | Default Behavior (If Optional) |
+| ---- | :---: | ----------- | :----------: | :-------: | ------------------------------ |
+| parameterCategory | String | Category of the parameter to set | None | No | None |
+| parameterName | String | Name of the parameter to set | None | No | None |
+| parameterValue | String | Value of the parameter to set. Use `null` to delete | None | No | None |
 
 ---
 
@@ -1477,6 +1602,16 @@ Note: To get the true FPS value, divide the FPS numerator by the FPS denominator
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| fpsNumerator | Number | Numerator of the fractional FPS value |
+| fpsDenominator | Number | Denominator of the fractional FPS value |
+| baseWidth | Number | Width of the base (canvas) resolution in pixels |
+| baseHeight | Number | Height of the base (canvas) resolution in pixels |
+| outputWidth | Number | Width of the output resolution in pixels |
+| outputHeight | Number | Height of the output resolution in pixels |
+
 ---
 
 ### SetVideoSettings
@@ -1489,6 +1624,16 @@ Note: Fields must be specified in pairs. For example, you cannot set only `baseW
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
+
+| Name | Type  | Description | Restrictions | Optional? | Default Behavior (If Optional) |
+| ---- | :---: | ----------- | :----------: | :-------: | ------------------------------ |
+| fpsNumerator | Number | Numerator of the fractional FPS value | >= 1 | No | None |
+| fpsDenominator | Number | Denominator of the fractional FPS value | >= 1 | No | None |
+| baseWidth | Number | Width of the base (canvas) resolution in pixels | >= 1, <= 4096 | No | None |
+| baseHeight | Number | Height of the base (canvas) resolution in pixels | >= 1, <= 4096 | No | None |
+| outputWidth | Number | Width of the output resolution in pixels | >= 1, <= 4096 | No | None |
+| outputHeight | Number | Height of the output resolution in pixels | >= 1, <= 4096 | No | None |
+
 ---
 
 ### GetStreamServiceSettings
@@ -1498,6 +1643,12 @@ Gets the current stream service settings (stream destination).
 - Complexity Rating: `4/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
+
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| streamServiceType | String | Stream service type, like `rtmp_custom` or `rtmp_common` |
+| streamServiceSettings | Object | Stream service settings |
 
 ---
 
@@ -1511,8 +1662,11 @@ Note: Simple RTMP settings can be set with type `rtmp_custom` and the settings f
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
----
 
+| Name | Type  | Description | Restrictions | Optional? | Default Behavior (If Optional) |
+| ---- | :---: | ----------- | :----------: | :-------: | ------------------------------ |
+| streamServiceType | String | Type of stream service to apply. Example: `rtmp_common` or `rtmp_custom` | None | No | None |
+| streamServiceSettings | Object | Settings to apply to the service | None | No | None |
 
 
 # Events
@@ -1537,7 +1691,7 @@ Note: Simple RTMP settings can be set with type `rtmp_custom` and the settings f
 OBS has begun the shutdown process.
 
 - Complexity Rating: `1/5`
-- Latest Supported RPC Version: `-1`
+- Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
 ---
@@ -1547,11 +1701,13 @@ OBS has begun the shutdown process.
 Studio mode has been enabled or disabled.
 
 - Complexity Rating: `1/5`
-- Latest Supported RPC Version: `-1`
+- Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
----
 
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| studioModeEnabled | Boolean | True == Enabled, False == Disabled |
 ## Config
 
 ### CurrentSceneCollectionChanging
@@ -1562,8 +1718,13 @@ Note: We recommend using this event to trigger a pause of all polling requests, 
 scene collection change is considered undefined behavior and can cause crashes!
 
 - Complexity Rating: `1/5`
-- Latest Supported RPC Version: `-1`
+- Latest Supported RPC Version: `1`
 - Added in v5.0.0
+
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| sceneCollectionName | String | Name of the current scene collection |
 
 ---
 
@@ -1574,8 +1735,13 @@ The current scene collection has changed.
 Note: If polling has been paused during `CurrentSceneCollectionChanging`, this is the que to restart polling.
 
 - Complexity Rating: `1/5`
-- Latest Supported RPC Version: `-1`
+- Latest Supported RPC Version: `1`
 - Added in v5.0.0
+
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| sceneCollectionName | String | Name of the new scene collection |
 
 ---
 
@@ -1584,8 +1750,13 @@ Note: If polling has been paused during `CurrentSceneCollectionChanging`, this i
 The scene collection list has changed.
 
 - Complexity Rating: `1/5`
-- Latest Supported RPC Version: `-1`
+- Latest Supported RPC Version: `1`
 - Added in v5.0.0
+
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| sceneCollections | Array<String> | Updated list of scene collections |
 
 ---
 
@@ -1594,8 +1765,13 @@ The scene collection list has changed.
 The current profile has begun changing.
 
 - Complexity Rating: `1/5`
-- Latest Supported RPC Version: `-1`
+- Latest Supported RPC Version: `1`
 - Added in v5.0.0
+
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| profileName | String | Name of the current profile |
 
 ---
 
@@ -1604,8 +1780,13 @@ The current profile has begun changing.
 The current profile has changed.
 
 - Complexity Rating: `1/5`
-- Latest Supported RPC Version: `-1`
+- Latest Supported RPC Version: `1`
 - Added in v5.0.0
+
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| profileName | String | Name of the new profile |
 
 ---
 
@@ -1614,10 +1795,12 @@ The current profile has changed.
 The profile list has changed.
 
 - Complexity Rating: `1/5`
-- Latest Supported RPC Version: `-1`
+- Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
----
 
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| profiles | Array<String> | Updated list of profiles |
 
 

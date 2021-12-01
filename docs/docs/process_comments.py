@@ -1,5 +1,5 @@
 import logging
-logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
+logging.basicConfig(level=logging.INFO, format="%(asctime)s [process_comments.py] [%(levelname)s] %(message)s")
 import os
 import sys
 import json
@@ -22,7 +22,7 @@ def field_to_string(field):
 def validate_fields(data, fields):
     for field in fields:
         if field not in data:
-            print('WARNING: Missing required item: {}'.format(field))
+            logging.warning('Missing required item: {}'.format(field))
             return False
     return True
 
@@ -81,7 +81,7 @@ try:
     with open('../versions.json', 'r') as f:
         versions = json.load(f)
 except IOError:
-    print('Failed to get global versions. Versions file not configured?')
+    logging.error('Failed to get global versions. Versions file not configured?')
     os.exit(1)
 
 # Read the raw comments output file
@@ -112,7 +112,9 @@ for comment in comments_raw:
         #                                     Recombines the header back into one string, allowing multi-line descriptions.
         enum['description'] = field_to_string(comment.get('lead', '')) + field_to_string(comment['description'])
         enum['enumIdentifier'] = field_to_string(comment['enumIdentifier'])
-        enum['rpcVersion'] = int(field_to_string(comment['rpcVersion']))
+        rpcVersionRaw = field_to_string(comment['rpcVersion'])
+        enum['rpcVersion'] = versions['rpcVersion'] if rpcVersionRaw == '-1' else int(rpcVersionRaw)
+        enum['deprecated'] = False if rpcVersionRaw == '-1' else True
         enum['initialVersion'] = field_to_string(comment['initialVersion'])
 
         if 'enumValue' in comment:
@@ -138,6 +140,7 @@ for comment in comments_raw:
         req['complexity'] = int(field_to_string(comment['complexity']))
         rpcVersionRaw = field_to_string(comment['rpcVersion'])
         req['rpcVersion'] = versions['rpcVersion'] if rpcVersionRaw == '-1' else int(rpcVersionRaw)
+        req['deprecated'] = False if rpcVersionRaw == '-1' else True
         req['initialVersion'] = field_to_string(comment['initialVersion'])
         req['category'] = field_to_string(comment['category'])
 
@@ -172,7 +175,9 @@ for comment in comments_raw:
         eve['eventType'] = field_to_string(comment['eventType'])
         eve['eventSubscription'] = field_to_string(comment['eventSubscription'])
         eve['complexity'] = int(field_to_string(comment['complexity']))
-        eve['rpcVersion'] = int(field_to_string(comment['rpcVersion']))
+        rpcVersionRaw = field_to_string(comment['rpcVersion'])
+        eve['rpcVersion'] = versions['rpcVersion'] if rpcVersionRaw == '-1' else int(rpcVersionRaw)
+        eve['deprecated'] = False if rpcVersionRaw == '-1' else True
         eve['initialVersion'] = field_to_string(comment['initialVersion'])
         eve['category'] = field_to_string(comment['category'])
 

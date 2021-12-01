@@ -1,5 +1,5 @@
 import logging
-logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
+logging.basicConfig(level=logging.INFO, format="%(asctime)s [generate_md.py] [%(levelname)s] %(message)s")
 import os
 import sys
 import json
@@ -27,6 +27,18 @@ categoryOrder = [
     'Media Inputs',
     'High-Volume'
 ]
+
+requestFieldHeader = """
+
+| Name | Type  | Description | Restrictions | Optional? | Default Behavior (If Optional) |
+| ---- | :---: | ----------- | :----------: | :-------: | ------------------------------ |
+"""
+
+responseFieldHeader = """
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+"""
 
 fragments = []
 
@@ -97,12 +109,14 @@ def get_enums(enums):
             ret += '{}\n\n'.format(enumIdentifier['description'])
             ret += '- Identifier Value: `{}`\n'.format(enumIdentifier['enumValue'])
             ret += '- Latest Supported RPC Version: `{}`\n'.format(enumIdentifier['rpcVersion'])
+            if enumIdentifier['deprecated']:
+                ret += '- **⚠️ Deprecated. ⚠️**\n'
             if enumIdentifier['initialVersion'].lower() == 'unreleased':
                 ret += '- Unreleased\n'
             else:
                 ret += '- Added in v{}\n'.format(enumIdentifier['initialVersion'])
-
-            ret += '\n---\n\n'
+            if enumIdentifier != enum['enumIdentifiers'][-1]:
+                ret += '\n---\n\n'
     return ret
 
 def get_requests_toc(requests):
@@ -134,7 +148,7 @@ def get_requests(requests):
         if not len(requestsOut):
             continue
         categoryFragment = get_fragment(category)
-        ret += '## {}\n\n'.format(category)
+        ret += '\n\n## {}\n\n'.format(category)
         for request in requestsOut:
             requestType = request['requestType']
             requestTypeFragment = get_fragment(requestType)
@@ -142,12 +156,28 @@ def get_requests(requests):
             ret += '{}\n\n'.format(request['description'])
             ret += '- Complexity Rating: `{}/5`\n'.format(request['complexity'])
             ret += '- Latest Supported RPC Version: `{}`\n'.format(request['rpcVersion'])
+            if request['deprecated']:
+                ret += '- **⚠️ Deprecated. ⚠️**\n'
             if request['initialVersion'].lower() == 'unreleased':
                 ret += '- Unreleased\n'
             else:
                 ret += '- Added in v{}\n'.format(request['initialVersion'])
 
-            ret += '\n---\n\n'
+            if request['requestFields']:
+                ret += requestFieldHeader
+            for requestField in request['requestFields']:
+                valueRestrictions = requestField['valueRestrictions'] if requestField['valueRestrictions'] else 'None'
+                valueOptional = 'Yes' if requestField['valueOptional'] else 'No'
+                valueOptionalBehavior = requestField['valueOptionalBehavior'] if requestField['valueOptional'] and requestField['valueOptionalBehavior'] else 'None'
+                ret += '| {} | {} | {} | {} | {} | {} |\n'.format(requestField['valueName'], requestField['valueType'], requestField['valueDescription'], valueRestrictions, valueOptional, valueOptionalBehavior)
+
+            if request['responseFields']:
+                ret += responseFieldHeader
+            for responseField in request['responseFields']:
+                ret += '| {} | {} | {} |\n'.format(responseField['valueName'], responseField['valueType'], responseField['valueDescription'])
+
+            if request != requestsOut[-1]:
+                ret += '\n---\n\n'
     return ret
 
 def get_events_toc(events):
@@ -187,12 +217,20 @@ def get_events(events):
             ret += '{}\n\n'.format(event['description'])
             ret += '- Complexity Rating: `{}/5`\n'.format(event['complexity'])
             ret += '- Latest Supported RPC Version: `{}`\n'.format(event['rpcVersion'])
+            if event['deprecated']:
+                ret += '- **⚠️ Deprecated. ⚠️**\n'
             if event['initialVersion'].lower() == 'unreleased':
                 ret += '- Unreleased\n'
             else:
                 ret += '- Added in v{}\n'.format(event['initialVersion'])
 
-            ret += '\n---\n\n'
+            if event['dataFields']:
+                ret += responseFieldHeader
+            for dataField in event['dataFields']:
+                ret += '| {} | {} | {} |\n'.format(dataField['valueName'], dataField['valueType'], dataField['valueDescription'])
+
+            if event != eventsOut[-1]:
+                ret += '\n---\n\n'
     return ret
 
 # Actual code
@@ -203,17 +241,18 @@ try:
     with open('../versions.json', 'r') as f:
         versions = json.load(f)
 except IOError:
-    print('Failed to get global versions. Versions file not configured?')
+    logging.error('Failed to get global versions. Versions file not configured?')
     os.exit(1)
 
 # Read protocol json
 with open('../generated/protocol.json', 'r') as f:
     protocol = json.load(f)
 
-output = "<!-- This file was automatically generated. Do not edit directly! -->\n"
+output = "<!-- This file was automatically generated. Do not edit directly! -->\n\n"
 
 # Insert introduction partial
 output += read_file('partials/introduction.md')
+logging.info('Inserted introduction section.')
 
 output += '\n\n'
 
@@ -222,6 +261,7 @@ output += read_file('partials/enumsHeader.md')
 output += get_enums_toc(protocol['enums'])
 output += '\n\n'
 output += get_enums(protocol['enums'])
+logging.info('Inserted enums section.')
 
 output += '\n\n'
 
@@ -230,6 +270,7 @@ output += read_file('partials/requestsHeader.md')
 output += get_requests_toc(protocol['requests'])
 output += '\n\n'
 output += get_requests(protocol['requests'])
+logging.info('Inserted requests section.')
 
 output += '\n\n'
 
@@ -238,9 +279,12 @@ output += read_file('partials/eventsHeader.md')
 output += get_events_toc(protocol['events'])
 output += '\n\n'
 output += get_events(protocol['events'])
+logging.info('Inserted events section.')
 
 output += '\n\n'
 
 # Write new protocol MD
 with open('../generated/protocol.md', 'w') as f:
     f.write(output)
+
+logging.info('Finished generating protocol.md.')
