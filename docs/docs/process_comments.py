@@ -76,7 +76,15 @@ def get_response_fields(fields):
 
 #######################################################################################################################
 
-# Open the raw comments output file
+# Read versions json
+try:
+    with open('../versions.json', 'r') as f:
+        versions = json.load(f)
+except IOError:
+    print('Failed to get global versions. Versions file not configured?')
+    os.exit(1)
+
+# Read the raw comments output file
 with open('../work/comments.json', 'r') as f:
     comments_raw = json.load(f)
 
@@ -128,7 +136,8 @@ for comment in comments_raw:
         req['description'] = field_to_string(comment.get('lead', '')) + field_to_string(comment['description'])
         req['requestType'] = field_to_string(comment['requestType'])
         req['complexity'] = int(field_to_string(comment['complexity']))
-        req['rpcVersion'] = int(field_to_string(comment['rpcVersion']))
+        rpcVersionRaw = field_to_string(comment['rpcVersion'])
+        req['rpcVersion'] = versions['rpcVersion'] if rpcVersionRaw == '-1' else int(rpcVersionRaw)
         req['initialVersion'] = field_to_string(comment['initialVersion'])
         req['category'] = field_to_string(comment['category'])
 

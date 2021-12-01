@@ -1,4 +1,23 @@
 <!-- This file was automatically generated. Do not edit directly! -->
+# Main Table of Contents
+- [obs-websocket 5.0.0 Protocol](#obs-websocket-500-protocol)
+  - [Connecting to obs-websocket](#connecting-to-obs-websocket)
+    - [Connection steps](#connection-steps)
+    - [Creating an authentication string](#creating-an-authentication-string)
+  - [Base message types](#message-types)
+    - [OpCode 0 Hello](#hello-opcode-0)
+    - [OpCode 1 Identify](#identify-opcode-1)
+    - [OpCode 2 Identified](#identified-opcode-2)
+    - [OpCode 3 Reidentify](#reidentify-opcode-3)
+    - [OpCode 5 Event](#event-opcode-5)
+    - [OpCode 6 Request](#request-opcode-6)
+    - [OpCode 7 RequestResponse](#requestresponse-opcode-7)
+    - [OpCode 8 RequestBatch](#requestbatch-opcode-8)
+    - [OpCode 9 RequestBatchResponse](#requestbatchresponse-opcode-9)
+- [Enums](#enums)
+- [Events](#events)
+- [Requests](#requests)
+
 # obs-websocket 5.0.0 Protocol
 
 ## General Intro
@@ -12,24 +31,6 @@ obs-websocket provides a feature-rich RPC communication protocol, giving access 
 - Possible support for multiple message encoding options: JSON and MessagePack
 - PubSub system - Allow clients to specify which events they do or don't want to receive from OBS
 - RPC versioning - Client and server negotiate the latest version of the obs-websocket protocol to communicate with.
-
-
-## Main Table of Contents
-- [Connecting to obs-websocket](#connecting-to-obs-websocket)
-  - [Connection steps](#connection-steps)
-  - [Creating an authentication string](#creating-an-authentication-string)
-- [Base message types](#message-types)
-  - [OpCode 0 Hello](#hello-opcode-0)
-  - [OpCode 1 Identify](#identify-opcode-1)
-  - [OpCode 2 Identified](#identified-opcode-2)
-  - [OpCode 3 Reidentify](#reidentify-opcode-3)
-  - [OpCode 5 Event](#event-opcode-5)
-  - [OpCode 6 Request](#request-opcode-6)
-  - [OpCode 7 RequestResponse](#requestresponse-opcode-7)
-  - [OpCode 8 RequestBatch](#requestbatch-opcode-8)
-  - [OpCode 9 RequestBatchResponse](#requestbatchresponse-opcode-9)
-- [Events](#events)
-- [Requests](#requests)
 
 
 ## Connecting to obs-websocket
@@ -385,130 +386,1238 @@ Failure Response
 # Enums
 These are enumeration declarations, which are referenced throughout obs-websocket's protocol.
 
-## Enumerations Table of Contents
+### Enumerations Table of Contents
 - [WebSocketOpCode](#websocketopcode)
-  - [Hello](#websocketopcode-hello)
-  - [Identify](#websocketopcode-identify)
-  - [Identified](#websocketopcode-identified)
-  - [Reidentify](#websocketopcode-reidentify)
-  - [Event](#websocketopcode-event)
-  - [Request](#websocketopcode-request)
-  - [RequestResponse](#websocketopcode-requestresponse)
-  - [RequestBatch](#websocketopcode-requestbatch)
-  - [RequestBatchResponse](#websocketopcode-requestbatchresponse)
+  - [WebSocketOpCode::Hello](#websocketopcodehello)
+  - [WebSocketOpCode::Identify](#websocketopcodeidentify)
+  - [WebSocketOpCode::Identified](#websocketopcodeidentified)
+  - [WebSocketOpCode::Reidentify](#websocketopcodereidentify)
+  - [WebSocketOpCode::Event](#websocketopcodeevent)
+  - [WebSocketOpCode::Request](#websocketopcoderequest)
+  - [WebSocketOpCode::RequestResponse](#websocketopcoderequestresponse)
+  - [WebSocketOpCode::RequestBatch](#websocketopcoderequestbatch)
+  - [WebSocketOpCode::RequestBatchResponse](#websocketopcoderequestbatchresponse)
 - [WebSocketCloseCode](#websocketclosecode)
-  - [DontClose](#websocketclosecode-dontclose)
-  - [UnknownReason](#websocketclosecode-unknownreason)
-  - [MessageDecodeError](#websocketclosecode-messagedecodeerror)
-  - [MissingDataField](#websocketclosecode-missingdatafield)
-  - [InvalidDataFieldType](#websocketclosecode-invaliddatafieldtype)
-  - [InvalidDataFieldValue](#websocketclosecode-invaliddatafieldvalue)
-  - [UnknownOpCode](#websocketclosecode-unknownopcode)
-  - [NotIdentified](#websocketclosecode-notidentified)
-  - [AlreadyIdentified](#websocketclosecode-alreadyidentified)
-  - [AuthenticationFailed](#websocketclosecode-authenticationfailed)
-  - [UnsupportedRpcVersion](#websocketclosecode-unsupportedrpcversion)
-  - [SessionInvalidated](#websocketclosecode-sessioninvalidated)
-  - [UnsupportedFeature](#websocketclosecode-unsupportedfeature)
+  - [WebSocketCloseCode::DontClose](#websocketclosecodedontclose)
+  - [WebSocketCloseCode::UnknownReason](#websocketclosecodeunknownreason)
+  - [WebSocketCloseCode::MessageDecodeError](#websocketclosecodemessagedecodeerror)
+  - [WebSocketCloseCode::MissingDataField](#websocketclosecodemissingdatafield)
+  - [WebSocketCloseCode::InvalidDataFieldType](#websocketclosecodeinvaliddatafieldtype)
+  - [WebSocketCloseCode::InvalidDataFieldValue](#websocketclosecodeinvaliddatafieldvalue)
+  - [WebSocketCloseCode::UnknownOpCode](#websocketclosecodeunknownopcode)
+  - [WebSocketCloseCode::NotIdentified](#websocketclosecodenotidentified)
+  - [WebSocketCloseCode::AlreadyIdentified](#websocketclosecodealreadyidentified)
+  - [WebSocketCloseCode::AuthenticationFailed](#websocketclosecodeauthenticationfailed)
+  - [WebSocketCloseCode::UnsupportedRpcVersion](#websocketclosecodeunsupportedrpcversion)
+  - [WebSocketCloseCode::SessionInvalidated](#websocketclosecodesessioninvalidated)
+  - [WebSocketCloseCode::UnsupportedFeature](#websocketclosecodeunsupportedfeature)
 - [RequestBatchExecutionType](#requestbatchexecutiontype)
-  - [None](#requestbatchexecutiontype-none)
-  - [SerialRealtime](#requestbatchexecutiontype-serialrealtime)
-  - [SerialFrame](#requestbatchexecutiontype-serialframe)
-  - [Parallel](#requestbatchexecutiontype-parallel)
+  - [RequestBatchExecutionType::None](#requestbatchexecutiontypenone)
+  - [RequestBatchExecutionType::SerialRealtime](#requestbatchexecutiontypeserialrealtime)
+  - [RequestBatchExecutionType::SerialFrame](#requestbatchexecutiontypeserialframe)
+  - [RequestBatchExecutionType::Parallel](#requestbatchexecutiontypeparallel)
 - [RequestStatus](#requeststatus)
-  - [Unknown](#requeststatus-unknown)
-  - [NoError](#requeststatus-noerror)
-  - [Success](#requeststatus-success)
-  - [MissingRequestType](#requeststatus-missingrequesttype)
-  - [UnknownRequestType](#requeststatus-unknownrequesttype)
-  - [GenericError](#requeststatus-genericerror)
-  - [UnsupportedRequestBatchExecutionType](#requeststatus-unsupportedrequestbatchexecutiontype)
-  - [MissingRequestField](#requeststatus-missingrequestfield)
-  - [MissingRequestData](#requeststatus-missingrequestdata)
-  - [InvalidRequestField](#requeststatus-invalidrequestfield)
-  - [InvalidRequestFieldType](#requeststatus-invalidrequestfieldtype)
-  - [RequestFieldOutOfRange](#requeststatus-requestfieldoutofrange)
-  - [RequestFieldEmpty](#requeststatus-requestfieldempty)
-  - [TooManyRequestFields](#requeststatus-toomanyrequestfields)
-  - [OutputRunning](#requeststatus-outputrunning)
-  - [OutputNotRunning](#requeststatus-outputnotrunning)
-  - [OutputPaused](#requeststatus-outputpaused)
-  - [OutputNotPaused](#requeststatus-outputnotpaused)
-  - [OutputDisabled](#requeststatus-outputdisabled)
-  - [StudioModeActive](#requeststatus-studiomodeactive)
-  - [StudioModeNotActive](#requeststatus-studiomodenotactive)
-  - [ResourceNotFound](#requeststatus-resourcenotfound)
-  - [ResourceAlreadyExists](#requeststatus-resourcealreadyexists)
-  - [InvalidResourceType](#requeststatus-invalidresourcetype)
-  - [NotEnoughResources](#requeststatus-notenoughresources)
-  - [InvalidResourceState](#requeststatus-invalidresourcestate)
-  - [InvalidInputKind](#requeststatus-invalidinputkind)
-  - [ResourceCreationFailed](#requeststatus-resourcecreationfailed)
-  - [ResourceActionFailed](#requeststatus-resourceactionfailed)
-  - [RequestProcessingFailed](#requeststatus-requestprocessingfailed)
-  - [CannotAct](#requeststatus-cannotact)
+  - [RequestStatus::Unknown](#requeststatusunknown)
+  - [RequestStatus::NoError](#requeststatusnoerror)
+  - [RequestStatus::Success](#requeststatussuccess)
+  - [RequestStatus::MissingRequestType](#requeststatusmissingrequesttype)
+  - [RequestStatus::UnknownRequestType](#requeststatusunknownrequesttype)
+  - [RequestStatus::GenericError](#requeststatusgenericerror)
+  - [RequestStatus::UnsupportedRequestBatchExecutionType](#requeststatusunsupportedrequestbatchexecutiontype)
+  - [RequestStatus::MissingRequestField](#requeststatusmissingrequestfield)
+  - [RequestStatus::MissingRequestData](#requeststatusmissingrequestdata)
+  - [RequestStatus::InvalidRequestField](#requeststatusinvalidrequestfield)
+  - [RequestStatus::InvalidRequestFieldType](#requeststatusinvalidrequestfieldtype)
+  - [RequestStatus::RequestFieldOutOfRange](#requeststatusrequestfieldoutofrange)
+  - [RequestStatus::RequestFieldEmpty](#requeststatusrequestfieldempty)
+  - [RequestStatus::TooManyRequestFields](#requeststatustoomanyrequestfields)
+  - [RequestStatus::OutputRunning](#requeststatusoutputrunning)
+  - [RequestStatus::OutputNotRunning](#requeststatusoutputnotrunning)
+  - [RequestStatus::OutputPaused](#requeststatusoutputpaused)
+  - [RequestStatus::OutputNotPaused](#requeststatusoutputnotpaused)
+  - [RequestStatus::OutputDisabled](#requeststatusoutputdisabled)
+  - [RequestStatus::StudioModeActive](#requeststatusstudiomodeactive)
+  - [RequestStatus::StudioModeNotActive](#requeststatusstudiomodenotactive)
+  - [RequestStatus::ResourceNotFound](#requeststatusresourcenotfound)
+  - [RequestStatus::ResourceAlreadyExists](#requeststatusresourcealreadyexists)
+  - [RequestStatus::InvalidResourceType](#requeststatusinvalidresourcetype)
+  - [RequestStatus::NotEnoughResources](#requeststatusnotenoughresources)
+  - [RequestStatus::InvalidResourceState](#requeststatusinvalidresourcestate)
+  - [RequestStatus::InvalidInputKind](#requeststatusinvalidinputkind)
+  - [RequestStatus::ResourceCreationFailed](#requeststatusresourcecreationfailed)
+  - [RequestStatus::ResourceActionFailed](#requeststatusresourceactionfailed)
+  - [RequestStatus::RequestProcessingFailed](#requeststatusrequestprocessingfailed)
+  - [RequestStatus::CannotAct](#requeststatuscannotact)
 - [EventSubscription](#eventsubscription)
-  - [None](#eventsubscription-none)
-  - [General](#eventsubscription-general)
-  - [Config](#eventsubscription-config)
-  - [Scenes](#eventsubscription-scenes)
-  - [Inputs](#eventsubscription-inputs)
-  - [Transitions](#eventsubscription-transitions)
-  - [Filters](#eventsubscription-filters)
-  - [Outputs](#eventsubscription-outputs)
-  - [SceneItems](#eventsubscription-sceneitems)
-  - [MediaInputs](#eventsubscription-mediainputs)
-  - [ExternalPlugins](#eventsubscription-externalplugins)
-  - [All](#eventsubscription-all)
-  - [InputVolumeMeters](#eventsubscription-inputvolumemeters)
-  - [InputActiveStateChanged](#eventsubscription-inputactivestatechanged)
-  - [InputShowStateChanged](#eventsubscription-inputshowstatechanged)
-  - [SceneItemTransformChanged](#eventsubscription-sceneitemtransformchanged)
+  - [EventSubscription::None](#eventsubscriptionnone)
+  - [EventSubscription::General](#eventsubscriptiongeneral)
+  - [EventSubscription::Config](#eventsubscriptionconfig)
+  - [EventSubscription::Scenes](#eventsubscriptionscenes)
+  - [EventSubscription::Inputs](#eventsubscriptioninputs)
+  - [EventSubscription::Transitions](#eventsubscriptiontransitions)
+  - [EventSubscription::Filters](#eventsubscriptionfilters)
+  - [EventSubscription::Outputs](#eventsubscriptionoutputs)
+  - [EventSubscription::SceneItems](#eventsubscriptionsceneitems)
+  - [EventSubscription::MediaInputs](#eventsubscriptionmediainputs)
+  - [EventSubscription::ExternalPlugins](#eventsubscriptionexternalplugins)
+  - [EventSubscription::All](#eventsubscriptionall)
+  - [EventSubscription::InputVolumeMeters](#eventsubscriptioninputvolumemeters)
+  - [EventSubscription::InputActiveStateChanged](#eventsubscriptioninputactivestatechanged)
+  - [EventSubscription::InputShowStateChanged](#eventsubscriptioninputshowstatechanged)
+  - [EventSubscription::SceneItemTransformChanged](#eventsubscriptionsceneitemtransformchanged)
 
 
-## Requests
+## WebSocketOpCode
 
-## Requests Table of Contents
+### WebSocketOpCode::Hello
+
+The initial message sent by obs-websocket to newly connected clients.
+
+- Identifier Value: `0`
+- Latest Supported RPC Version: `-1`
+- Added in v5.0.0
+
+---
+
+### WebSocketOpCode::Identify
+
+The message sent by a newly connected client to obs-websocket in response to a `Hello`.
+
+- Identifier Value: `1`
+- Latest Supported RPC Version: `-1`
+- Added in v5.0.0
+
+---
+
+### WebSocketOpCode::Identified
+
+The response sent by obs-websocket to a client after it has successfully identified with obs-websocket.
+
+- Identifier Value: `2`
+- Latest Supported RPC Version: `-1`
+- Added in v5.0.0
+
+---
+
+### WebSocketOpCode::Reidentify
+
+The message sent by an already-identified client to update identification parameters.
+
+- Identifier Value: `3`
+- Latest Supported RPC Version: `-1`
+- Added in v5.0.0
+
+---
+
+### WebSocketOpCode::Event
+
+The message sent by obs-websocket containing an event payload.
+
+- Identifier Value: `5`
+- Latest Supported RPC Version: `-1`
+- Added in v5.0.0
+
+---
+
+### WebSocketOpCode::Request
+
+The message sent by a client to obs-websocket to perform a request.
+
+- Identifier Value: `6`
+- Latest Supported RPC Version: `-1`
+- Added in v5.0.0
+
+---
+
+### WebSocketOpCode::RequestResponse
+
+The message sent by obs-websocket in response to a particular request from a client.
+
+- Identifier Value: `7`
+- Latest Supported RPC Version: `-1`
+- Added in v5.0.0
+
+---
+
+### WebSocketOpCode::RequestBatch
+
+The message sent by a client to obs-websocket to perform a batch of requests.
+
+- Identifier Value: `8`
+- Latest Supported RPC Version: `-1`
+- Added in v5.0.0
+
+---
+
+### WebSocketOpCode::RequestBatchResponse
+
+The message sent by obs-websocket in response to a particular batch of requests from a client.
+
+- Identifier Value: `9`
+- Latest Supported RPC Version: `-1`
+- Added in v5.0.0
+
+---
+
+## WebSocketCloseCode
+
+### WebSocketCloseCode::DontClose
+
+For internal use only to tell the request handler not to perform any close action.
+
+- Identifier Value: `0`
+- Latest Supported RPC Version: `-1`
+- Added in v5.0.0
+
+---
+
+### WebSocketCloseCode::UnknownReason
+
+Unknown reason, should never be used.
+
+- Identifier Value: `4000`
+- Latest Supported RPC Version: `-1`
+- Added in v5.0.0
+
+---
+
+### WebSocketCloseCode::MessageDecodeError
+
+The server was unable to decode the incoming websocket message.
+
+- Identifier Value: `4002`
+- Latest Supported RPC Version: `-1`
+- Added in v5.0.0
+
+---
+
+### WebSocketCloseCode::MissingDataField
+
+A data field is required but missing from the payload.
+
+- Identifier Value: `4003`
+- Latest Supported RPC Version: `-1`
+- Added in v5.0.0
+
+---
+
+### WebSocketCloseCode::InvalidDataFieldType
+
+A data field's value type is invalid.
+
+- Identifier Value: `4004`
+- Latest Supported RPC Version: `-1`
+- Added in v5.0.0
+
+---
+
+### WebSocketCloseCode::InvalidDataFieldValue
+
+A data field's value is invalid.
+
+- Identifier Value: `4005`
+- Latest Supported RPC Version: `-1`
+- Added in v5.0.0
+
+---
+
+### WebSocketCloseCode::UnknownOpCode
+
+The specified `op` was invalid or missing.
+
+- Identifier Value: `4006`
+- Latest Supported RPC Version: `-1`
+- Added in v5.0.0
+
+---
+
+### WebSocketCloseCode::NotIdentified
+
+The client sent a websocket message without first sending `Identify` message.
+
+- Identifier Value: `4007`
+- Latest Supported RPC Version: `-1`
+- Added in v5.0.0
+
+---
+
+### WebSocketCloseCode::AlreadyIdentified
+
+The client sent an `Identify` message while already identified.
+
+Note: Once a client has identified, only `Reidentify` may be used to change session parameters.
+
+- Identifier Value: `4008`
+- Latest Supported RPC Version: `-1`
+- Added in v5.0.0
+
+---
+
+### WebSocketCloseCode::AuthenticationFailed
+
+The authentication attempt (via `Identify`) failed.
+
+- Identifier Value: `4009`
+- Latest Supported RPC Version: `-1`
+- Added in v5.0.0
+
+---
+
+### WebSocketCloseCode::UnsupportedRpcVersion
+
+The server detected the usage of an old version of the obs-websocket RPC protocol.
+
+- Identifier Value: `4010`
+- Latest Supported RPC Version: `-1`
+- Added in v5.0.0
+
+---
+
+### WebSocketCloseCode::SessionInvalidated
+
+The websocket session has been invalidated by the obs-websocket server.
+
+Note: This is the code used by the `Kick` button in the UI Session List. If you receive this code, you must not automatically reconnect.
+
+- Identifier Value: `4011`
+- Latest Supported RPC Version: `-1`
+- Added in v5.0.0
+
+---
+
+### WebSocketCloseCode::UnsupportedFeature
+
+A requested feature is not supported due to hardware/software limitations.
+
+- Identifier Value: `4012`
+- Latest Supported RPC Version: `-1`
+- Added in v5.0.0
+
+---
+
+## RequestBatchExecutionType
+
+### RequestBatchExecutionType::None
+
+Not a request batch.
+
+- Identifier Value: `0`
+- Latest Supported RPC Version: `-1`
+- Added in v5.0.0
+
+---
+
+### RequestBatchExecutionType::SerialRealtime
+
+A request batch which processes all requests serially, as fast as possible.
+
+Note: To introduce artificial delay, use the `Sleep` request and the `sleepMillis` request field.
+
+- Identifier Value: `1`
+- Latest Supported RPC Version: `-1`
+- Added in v5.0.0
+
+---
+
+### RequestBatchExecutionType::SerialFrame
+
+A request batch type which processes all requests serially, in sync with the graphics thread. Designed to provide high accuracy for animations.
+
+Note: To introduce artificial delay, use the `Sleep` request and the `sleepFrames` request field.
+
+- Identifier Value: `2`
+- Latest Supported RPC Version: `-1`
+- Added in v5.0.0
+
+---
+
+### RequestBatchExecutionType::Parallel
+
+A request batch type which processes all requests using all available threads in the thread pool.
+
+Note: This is mainly experimental, and only really shows its colors during requests which require lots of
+active processing, like `GetSourceScreenshot`.
+
+- Identifier Value: `3`
+- Latest Supported RPC Version: `-1`
+- Added in v5.0.0
+
+---
+
+## RequestStatus
+
+### RequestStatus::Unknown
+
+Unknown status, should never be used.
+
+- Identifier Value: `0`
+- Latest Supported RPC Version: `-1`
+- Added in v5.0.0
+
+---
+
+### RequestStatus::NoError
+
+For internal use to signify a successful field check.
+
+- Identifier Value: `10`
+- Latest Supported RPC Version: `-1`
+- Added in v5.0.0
+
+---
+
+### RequestStatus::Success
+
+The request has succeeded.
+
+- Identifier Value: `100`
+- Latest Supported RPC Version: `-1`
+- Added in v5.0.0
+
+---
+
+### RequestStatus::MissingRequestType
+
+The `requestType` field is missing from the request data.
+
+- Identifier Value: `203`
+- Latest Supported RPC Version: `-1`
+- Added in v5.0.0
+
+---
+
+### RequestStatus::UnknownRequestType
+
+The request type is invalid or does not exist.
+
+- Identifier Value: `204`
+- Latest Supported RPC Version: `-1`
+- Added in v5.0.0
+
+---
+
+### RequestStatus::GenericError
+
+Generic error code.
+
+Note: A comment is required to be provided by obs-websocket.
+
+- Identifier Value: `205`
+- Latest Supported RPC Version: `-1`
+- Added in v5.0.0
+
+---
+
+### RequestStatus::UnsupportedRequestBatchExecutionType
+
+The request batch execution type is not supported.
+
+- Identifier Value: `206`
+- Latest Supported RPC Version: `-1`
+- Added in v5.0.0
+
+---
+
+### RequestStatus::MissingRequestField
+
+A required request field is missing.
+
+- Identifier Value: `300`
+- Latest Supported RPC Version: `-1`
+- Added in v5.0.0
+
+---
+
+### RequestStatus::MissingRequestData
+
+The request does not have a valid requestData object.
+
+- Identifier Value: `301`
+- Latest Supported RPC Version: `-1`
+- Added in v5.0.0
+
+---
+
+### RequestStatus::InvalidRequestField
+
+Generic invalid request field message.
+
+Note: A comment is required to be provided by obs-websocket.
+
+- Identifier Value: `400`
+- Latest Supported RPC Version: `-1`
+- Added in v5.0.0
+
+---
+
+### RequestStatus::InvalidRequestFieldType
+
+A request field has the wrong data type.
+
+- Identifier Value: `401`
+- Latest Supported RPC Version: `-1`
+- Added in v5.0.0
+
+---
+
+### RequestStatus::RequestFieldOutOfRange
+
+A request field (number) is outside of the allowed range.
+
+- Identifier Value: `402`
+- Latest Supported RPC Version: `-1`
+- Added in v5.0.0
+
+---
+
+### RequestStatus::RequestFieldEmpty
+
+A request field (string or array) is empty and cannot be.
+
+- Identifier Value: `403`
+- Latest Supported RPC Version: `-1`
+- Added in v5.0.0
+
+---
+
+### RequestStatus::TooManyRequestFields
+
+There are too many request fields (eg. a request takes two optionals, where only one is allowed at a time).
+
+- Identifier Value: `404`
+- Latest Supported RPC Version: `-1`
+- Added in v5.0.0
+
+---
+
+### RequestStatus::OutputRunning
+
+An output is running and cannot be in order to perform the request.
+
+- Identifier Value: `500`
+- Latest Supported RPC Version: `-1`
+- Added in v5.0.0
+
+---
+
+### RequestStatus::OutputNotRunning
+
+An output is not running and should be.
+
+- Identifier Value: `501`
+- Latest Supported RPC Version: `-1`
+- Added in v5.0.0
+
+---
+
+### RequestStatus::OutputPaused
+
+An output is paused and should not be.
+
+- Identifier Value: `502`
+- Latest Supported RPC Version: `-1`
+- Added in v5.0.0
+
+---
+
+### RequestStatus::OutputNotPaused
+
+An output is not paused and should be.
+
+- Identifier Value: `503`
+- Latest Supported RPC Version: `-1`
+- Added in v5.0.0
+
+---
+
+### RequestStatus::OutputDisabled
+
+An output is disabled and should not be.
+
+- Identifier Value: `504`
+- Latest Supported RPC Version: `-1`
+- Added in v5.0.0
+
+---
+
+### RequestStatus::StudioModeActive
+
+Studio mode is active and cannot be.
+
+- Identifier Value: `505`
+- Latest Supported RPC Version: `-1`
+- Added in v5.0.0
+
+---
+
+### RequestStatus::StudioModeNotActive
+
+Studio mode is not active and should be.
+
+- Identifier Value: `506`
+- Latest Supported RPC Version: `-1`
+- Added in v5.0.0
+
+---
+
+### RequestStatus::ResourceNotFound
+
+The resource was not found.
+
+Note: Resources are any kind of object in obs-websocket, like inputs, profiles, outputs, etc.
+
+- Identifier Value: `600`
+- Latest Supported RPC Version: `-1`
+- Added in v5.0.0
+
+---
+
+### RequestStatus::ResourceAlreadyExists
+
+The resource already exists.
+
+- Identifier Value: `601`
+- Latest Supported RPC Version: `-1`
+- Added in v5.0.0
+
+---
+
+### RequestStatus::InvalidResourceType
+
+The type of resource found is invalid.
+
+- Identifier Value: `602`
+- Latest Supported RPC Version: `-1`
+- Added in v5.0.0
+
+---
+
+### RequestStatus::NotEnoughResources
+
+There are not enough instances of the resource in order to perform the request.
+
+- Identifier Value: `603`
+- Latest Supported RPC Version: `-1`
+- Added in v5.0.0
+
+---
+
+### RequestStatus::InvalidResourceState
+
+The state of the resource is invalid. For example, if the resource is blocked from being accessed.
+
+- Identifier Value: `604`
+- Latest Supported RPC Version: `-1`
+- Added in v5.0.0
+
+---
+
+### RequestStatus::InvalidInputKind
+
+The specified input (obs_source_t-OBS_SOURCE_TYPE_INPUT) had the wrong kind.
+
+- Identifier Value: `605`
+- Latest Supported RPC Version: `-1`
+- Added in v5.0.0
+
+---
+
+### RequestStatus::ResourceCreationFailed
+
+Creating the resource failed.
+
+- Identifier Value: `700`
+- Latest Supported RPC Version: `-1`
+- Added in v5.0.0
+
+---
+
+### RequestStatus::ResourceActionFailed
+
+Performing an action on the resource failed.
+
+- Identifier Value: `701`
+- Latest Supported RPC Version: `-1`
+- Added in v5.0.0
+
+---
+
+### RequestStatus::RequestProcessingFailed
+
+Processing the request failed unexpectedly.
+
+Note: A comment is required to be provided by obs-websocket.
+
+- Identifier Value: `702`
+- Latest Supported RPC Version: `-1`
+- Added in v5.0.0
+
+---
+
+### RequestStatus::CannotAct
+
+The combination of request fields cannot be used to perform an action.
+
+- Identifier Value: `703`
+- Latest Supported RPC Version: `-1`
+- Added in v5.0.0
+
+---
+
+## EventSubscription
+
+### EventSubscription::None
+
+Subcription value used to disable all events.
+
+- Identifier Value: `0`
+- Latest Supported RPC Version: `-1`
+- Added in v5.0.0
+
+---
+
+### EventSubscription::General
+
+Subscription value to receive events in the `General` category.
+
+- Identifier Value: `(1 << 0)`
+- Latest Supported RPC Version: `-1`
+- Added in v5.0.0
+
+---
+
+### EventSubscription::Config
+
+Subscription value to receive events in the `Config` category.
+
+- Identifier Value: `(1 << 1)`
+- Latest Supported RPC Version: `-1`
+- Added in v5.0.0
+
+---
+
+### EventSubscription::Scenes
+
+Subscription value to receive events in the `Scenes` category.
+
+- Identifier Value: `(1 << 2)`
+- Latest Supported RPC Version: `-1`
+- Added in v5.0.0
+
+---
+
+### EventSubscription::Inputs
+
+Subscription value to receive events in the `Inputs` category.
+
+- Identifier Value: `(1 << 3)`
+- Latest Supported RPC Version: `-1`
+- Added in v5.0.0
+
+---
+
+### EventSubscription::Transitions
+
+Subscription value to receive events in the `Transitions` category.
+
+- Identifier Value: `(1 << 4)`
+- Latest Supported RPC Version: `-1`
+- Added in v5.0.0
+
+---
+
+### EventSubscription::Filters
+
+Subscription value to receive events in the `Filters` category.
+
+- Identifier Value: `(1 << 5)`
+- Latest Supported RPC Version: `-1`
+- Added in v5.0.0
+
+---
+
+### EventSubscription::Outputs
+
+Subscription value to receive events in the `Outputs` category.
+
+- Identifier Value: `(1 << 6)`
+- Latest Supported RPC Version: `-1`
+- Added in v5.0.0
+
+---
+
+### EventSubscription::SceneItems
+
+Subscription value to receive events in the `SceneItems` category.
+
+- Identifier Value: `(1 << 7)`
+- Latest Supported RPC Version: `-1`
+- Added in v5.0.0
+
+---
+
+### EventSubscription::MediaInputs
+
+Subscription value to receive events in the `MediaInputs` category.
+
+- Identifier Value: `(1 << 8)`
+- Latest Supported RPC Version: `-1`
+- Added in v5.0.0
+
+---
+
+### EventSubscription::ExternalPlugins
+
+Subscription value to receive the `ExternalPluginEvent` event.
+
+- Identifier Value: `(1 << 9)`
+- Latest Supported RPC Version: `-1`
+- Added in v5.0.0
+
+---
+
+### EventSubscription::All
+
+Helper to receive all non-high-volume events.
+
+- Identifier Value: `(General | Config | Scenes | Inputs | Transitions | Filters | Outputs | SceneItems | MediaInputs | ExternalPlugins)`
+- Latest Supported RPC Version: `-1`
+- Added in v5.0.0
+
+---
+
+### EventSubscription::InputVolumeMeters
+
+Subscription value to receive the `InputVolumeMeters` high-volume event.
+
+- Identifier Value: `(1 << 16)`
+- Latest Supported RPC Version: `-1`
+- Added in v5.0.0
+
+---
+
+### EventSubscription::InputActiveStateChanged
+
+Subscription value to receive the `InputActiveStateChanged` high-volume event.
+
+- Identifier Value: `(1 << 17)`
+- Latest Supported RPC Version: `-1`
+- Added in v5.0.0
+
+---
+
+### EventSubscription::InputShowStateChanged
+
+Subscription value to receive the `InputShowStateChanged` high-volume event.
+
+- Identifier Value: `(1 << 18)`
+- Latest Supported RPC Version: `-1`
+- Added in v5.0.0
+
+---
+
+### EventSubscription::SceneItemTransformChanged
+
+Subscription value to receive the `SceneItemTransformChanged` high-volume event.
+
+- Identifier Value: `(1 << 19)`
+- Latest Supported RPC Version: `-1`
+- Added in v5.0.0
+
+---
+
+
+
+# Requests
+
+### Requests Table of Contents
 - [General](#general)
-  - [GetVersion](#general-getversion)
-  - [BroadcastCustomEvent](#general-broadcastcustomevent)
-  - [GetStats](#general-getstats)
-  - [GetHotkeyList](#general-gethotkeylist)
-  - [TriggerHotkeyByName](#general-triggerhotkeybyname)
-  - [TriggerHotkeyByKeySequence](#general-triggerhotkeybykeysequence)
-  - [GetStudioModeEnabled](#general-getstudiomodeenabled)
-  - [SetStudioModeEnabled](#general-setstudiomodeenabled)
-  - [Sleep](#general-sleep)
+  - [GetVersion](#getversion)
+  - [BroadcastCustomEvent](#broadcastcustomevent)
+  - [GetStats](#getstats)
+  - [GetHotkeyList](#gethotkeylist)
+  - [TriggerHotkeyByName](#triggerhotkeybyname)
+  - [TriggerHotkeyByKeySequence](#triggerhotkeybykeysequence)
+  - [GetStudioModeEnabled](#getstudiomodeenabled)
+  - [SetStudioModeEnabled](#setstudiomodeenabled)
+  - [Sleep](#sleep)
 - [Config](#config)
-  - [GetPersistentData](#config-getpersistentdata)
-  - [SetPersistentData](#config-setpersistentdata)
-  - [GetSceneCollectionList](#config-getscenecollectionlist)
-  - [SetCurrentSceneCollection](#config-setcurrentscenecollection)
-  - [CreateSceneCollection](#config-createscenecollection)
-  - [GetProfileList](#config-getprofilelist)
-  - [SetCurrentProfile](#config-setcurrentprofile)
-  - [CreateProfile](#config-createprofile)
-  - [RemoveProfile](#config-removeprofile)
-  - [GetProfileParameter](#config-getprofileparameter)
-  - [SetProfileParameter](#config-setprofileparameter)
-  - [GetVideoSettings](#config-getvideosettings)
-  - [SetVideoSettings](#config-setvideosettings)
-  - [GetStreamServiceSettings](#config-getstreamservicesettings)
-  - [SetStreamServiceSettings](#config-setstreamservicesettings)
+  - [GetPersistentData](#getpersistentdata)
+  - [SetPersistentData](#setpersistentdata)
+  - [GetSceneCollectionList](#getscenecollectionlist)
+  - [SetCurrentSceneCollection](#setcurrentscenecollection)
+  - [CreateSceneCollection](#createscenecollection)
+  - [GetProfileList](#getprofilelist)
+  - [SetCurrentProfile](#setcurrentprofile)
+  - [CreateProfile](#createprofile)
+  - [RemoveProfile](#removeprofile)
+  - [GetProfileParameter](#getprofileparameter)
+  - [SetProfileParameter](#setprofileparameter)
+  - [GetVideoSettings](#getvideosettings)
+  - [SetVideoSettings](#setvideosettings)
+  - [GetStreamServiceSettings](#getstreamservicesettings)
+  - [SetStreamServiceSettings](#setstreamservicesettings)
 
 
-## Events
+## General
 
-## Events Table of Contents
-- [General](#general)
-  - [ExitStarted](#general-exitstarted)
-  - [StudioModeStateChanged](#general-studiomodestatechanged)
-- [Config](#config)
-  - [CurrentSceneCollectionChanging](#config-currentscenecollectionchanging)
-  - [CurrentSceneCollectionChanged](#config-currentscenecollectionchanged)
-  - [SceneCollectionListChanged](#config-scenecollectionlistchanged)
-  - [CurrentProfileChanging](#config-currentprofilechanging)
-  - [CurrentProfileChanged](#config-currentprofilechanged)
-  - [ProfileListChanged](#config-profilelistchanged)
+### GetVersion
+
+Gets data about the current plugin and RPC version.
+
+- Complexity Rating: `1/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### BroadcastCustomEvent
+
+Broadcasts a `CustomEvent` to all WebSocket clients. Receivers are clients which are identified and subscribed.
+
+- Complexity Rating: `1/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### GetStats
+
+Gets statistics about OBS, obs-websocket, and the current session.
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### GetHotkeyList
+
+Gets an array of all hotkey names in OBS
+
+- Complexity Rating: `3/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### TriggerHotkeyByName
+
+Triggers a hotkey using its name. See `GetHotkeyList`
+
+- Complexity Rating: `3/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### TriggerHotkeyByKeySequence
+
+Triggers a hotkey using a sequence of keys.
+
+- Complexity Rating: `4/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### GetStudioModeEnabled
+
+Gets whether studio is enabled.
+
+- Complexity Rating: `1/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### SetStudioModeEnabled
+
+Enables or disables studio mode
+
+- Complexity Rating: `1/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### Sleep
+
+Sleeps for a time duration or number of frames. Only available in request batches with types `SERIAL_REALTIME` or `SERIAL_FRAME`.
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+## Config
+
+### GetPersistentData
+
+Gets the value of a "slot" from the selected persistent data realm.
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### SetPersistentData
+
+Sets the value of a "slot" from the selected persistent data realm.
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### GetSceneCollectionList
+
+Gets an array of all scene collections
+
+- Complexity Rating: `1/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### SetCurrentSceneCollection
+
+Switches to a scene collection.
+
+Note: This will block until the collection has finished changing.
+
+- Complexity Rating: `1/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### CreateSceneCollection
+
+Creates a new scene collection, switching to it in the process.
+
+Note: This will block until the collection has finished changing.
+
+- Complexity Rating: `1/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### GetProfileList
+
+Gets an array of all profiles
+
+- Complexity Rating: `1/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### SetCurrentProfile
+
+Switches to a profile.
+
+- Complexity Rating: `1/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### CreateProfile
+
+Creates a new profile, switching to it in the process
+
+- Complexity Rating: `1/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### RemoveProfile
+
+Removes a profile. If the current profile is chosen, it will change to a different profile first.
+
+- Complexity Rating: `1/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### GetProfileParameter
+
+Gets a parameter from the current profile's configuration.
+
+- Complexity Rating: `3/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### SetProfileParameter
+
+Sets the value of a parameter in the current profile's configuration.
+
+- Complexity Rating: `3/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### GetVideoSettings
+
+Gets the current video settings.
+
+Note: To get the true FPS value, divide the FPS numerator by the FPS denominator. Example: `60000/1001`
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### SetVideoSettings
+
+Sets the current video settings.
+
+Note: Fields must be specified in pairs. For example, you cannot set only `baseWidth` without needing to specify `baseHeight`.
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### GetStreamServiceSettings
+
+Gets the current stream service settings (stream destination).
+
+- Complexity Rating: `4/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### SetStreamServiceSettings
+
+Sets the current stream service settings (stream destination).
+
+Note: Simple RTMP settings can be set with type `rtmp_custom` and the settings fields `server` and `key`.
+
+- Complexity Rating: `4/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+
+
+# Events
+
+### Events Table of Contents
+- [General](#general-1)
+  - [ExitStarted](#exitstarted)
+  - [StudioModeStateChanged](#studiomodestatechanged)
+- [Config](#config-1)
+  - [CurrentSceneCollectionChanging](#currentscenecollectionchanging)
+  - [CurrentSceneCollectionChanged](#currentscenecollectionchanged)
+  - [SceneCollectionListChanged](#scenecollectionlistchanged)
+  - [CurrentProfileChanging](#currentprofilechanging)
+  - [CurrentProfileChanged](#currentprofilechanged)
+  - [ProfileListChanged](#profilelistchanged)
+
+
+## General
+
+### ExitStarted
+
+OBS has begun the shutdown process.
+
+- Complexity Rating: `1/5`
+- Latest Supported RPC Version: `-1`
+- Added in v5.0.0
+
+---
+
+### StudioModeStateChanged
+
+Studio mode has been enabled or disabled.
+
+- Complexity Rating: `1/5`
+- Latest Supported RPC Version: `-1`
+- Added in v5.0.0
+
+---
+
+## Config
+
+### CurrentSceneCollectionChanging
+
+The current scene collection has begun changing.
+
+Note: We recommend using this event to trigger a pause of all polling requests, as performing any requests during a
+scene collection change is considered undefined behavior and can cause crashes!
+
+- Complexity Rating: `1/5`
+- Latest Supported RPC Version: `-1`
+- Added in v5.0.0
+
+---
+
+### CurrentSceneCollectionChanged
+
+The current scene collection has changed.
+
+Note: If polling has been paused during `CurrentSceneCollectionChanging`, this is the que to restart polling.
+
+- Complexity Rating: `1/5`
+- Latest Supported RPC Version: `-1`
+- Added in v5.0.0
+
+---
+
+### SceneCollectionListChanged
+
+The scene collection list has changed.
+
+- Complexity Rating: `1/5`
+- Latest Supported RPC Version: `-1`
+- Added in v5.0.0
+
+---
+
+### CurrentProfileChanging
+
+The current profile has begun changing.
+
+- Complexity Rating: `1/5`
+- Latest Supported RPC Version: `-1`
+- Added in v5.0.0
+
+---
+
+### CurrentProfileChanged
+
+The current profile has changed.
+
+- Complexity Rating: `1/5`
+- Latest Supported RPC Version: `-1`
+- Added in v5.0.0
+
+---
+
+### ProfileListChanged
+
+The profile list has changed.
+
+- Complexity Rating: `1/5`
+- Latest Supported RPC Version: `-1`
+- Added in v5.0.0
+
+---
+
 
 

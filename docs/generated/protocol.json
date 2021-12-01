@@ -6,112 +6,112 @@
         {
           "description": "Subcription value used to disable all events.",
           "enumIdentifier": "None",
-          "rpcVersion": 1,
+          "rpcVersion": -1,
           "initialVersion": "5.0.0",
           "enumValue": 0
         },
         {
           "description": "Subscription value to receive events in the `General` category.",
           "enumIdentifier": "General",
-          "rpcVersion": 1,
+          "rpcVersion": -1,
           "initialVersion": "5.0.0",
           "enumValue": "(1 << 0)"
         },
         {
           "description": "Subscription value to receive events in the `Config` category.",
           "enumIdentifier": "Config",
-          "rpcVersion": 1,
+          "rpcVersion": -1,
           "initialVersion": "5.0.0",
           "enumValue": "(1 << 1)"
         },
         {
           "description": "Subscription value to receive events in the `Scenes` category.",
           "enumIdentifier": "Scenes",
-          "rpcVersion": 1,
+          "rpcVersion": -1,
           "initialVersion": "5.0.0",
           "enumValue": "(1 << 2)"
         },
         {
           "description": "Subscription value to receive events in the `Inputs` category.",
           "enumIdentifier": "Inputs",
-          "rpcVersion": 1,
+          "rpcVersion": -1,
           "initialVersion": "5.0.0",
           "enumValue": "(1 << 3)"
         },
         {
           "description": "Subscription value to receive events in the `Transitions` category.",
           "enumIdentifier": "Transitions",
-          "rpcVersion": 1,
+          "rpcVersion": -1,
           "initialVersion": "5.0.0",
           "enumValue": "(1 << 4)"
         },
         {
           "description": "Subscription value to receive events in the `Filters` category.",
           "enumIdentifier": "Filters",
-          "rpcVersion": 1,
+          "rpcVersion": -1,
           "initialVersion": "5.0.0",
           "enumValue": "(1 << 5)"
         },
         {
           "description": "Subscription value to receive events in the `Outputs` category.",
           "enumIdentifier": "Outputs",
-          "rpcVersion": 1,
+          "rpcVersion": -1,
           "initialVersion": "5.0.0",
           "enumValue": "(1 << 6)"
         },
         {
           "description": "Subscription value to receive events in the `SceneItems` category.",
           "enumIdentifier": "SceneItems",
-          "rpcVersion": 1,
+          "rpcVersion": -1,
           "initialVersion": "5.0.0",
           "enumValue": "(1 << 7)"
         },
         {
           "description": "Subscription value to receive events in the `MediaInputs` category.",
           "enumIdentifier": "MediaInputs",
-          "rpcVersion": 1,
+          "rpcVersion": -1,
           "initialVersion": "5.0.0",
           "enumValue": "(1 << 8)"
         },
         {
           "description": "Subscription value to receive the `ExternalPluginEvent` event.",
           "enumIdentifier": "ExternalPlugins",
-          "rpcVersion": 1,
+          "rpcVersion": -1,
           "initialVersion": "5.0.0",
           "enumValue": "(1 << 9)"
         },
         {
           "description": "Helper to receive all non-high-volume events.",
           "enumIdentifier": "All",
-          "rpcVersion": 1,
+          "rpcVersion": -1,
           "initialVersion": "5.0.0",
           "enumValue": "(General | Config | Scenes | Inputs | Transitions | Filters | Outputs | SceneItems | MediaInputs | ExternalPlugins)"
         },
         {
           "description": "Subscription value to receive the `InputVolumeMeters` high-volume event.",
           "enumIdentifier": "InputVolumeMeters",
-          "rpcVersion": 1,
+          "rpcVersion": -1,
           "initialVersion": "5.0.0",
           "enumValue": "(1 << 16)"
         },
         {
           "description": "Subscription value to receive the `InputActiveStateChanged` high-volume event.",
           "enumIdentifier": "InputActiveStateChanged",
-          "rpcVersion": 1,
+          "rpcVersion": -1,
           "initialVersion": "5.0.0",
           "enumValue": "(1 << 17)"
         },
         {
           "description": "Subscription value to receive the `InputShowStateChanged` high-volume event.",
           "enumIdentifier": "InputShowStateChanged",
-          "rpcVersion": 1,
+          "rpcVersion": -1,
           "initialVersion": "5.0.0",
           "enumValue": "(1 << 18)"
         },
         {
           "description": "Subscription value to receive the `SceneItemTransformChanged` high-volume event.",
           "enumIdentifier": "SceneItemTransformChanged",
-          "rpcVersion": 1,
+          "rpcVersion": -1,
           "initialVersion": "5.0.0",
           "enumValue": "(1 << 19)"
         }
@@ -123,28 +123,28 @@
         {
           "description": "Not a request batch.",
           "enumIdentifier": "None",
-          "rpcVersion": 1,
+          "rpcVersion": -1,
           "initialVersion": "5.0.0",
           "enumValue": 0
         },
         {
           "description": "A request batch which processes all requests serially, as fast as possible.\n\nNote: To introduce artificial delay, use the `Sleep` request and the `sleepMillis` request field.",
           "enumIdentifier": "SerialRealtime",
-          "rpcVersion": 1,
+          "rpcVersion": -1,
           "initialVersion": "5.0.0",
           "enumValue": 1
         },
         {
           "description": "A request batch type which processes all requests serially, in sync with the graphics thread. Designed to provide high accuracy for animations.\n\nNote: To introduce artificial delay, use the `Sleep` request and the `sleepFrames` request field.",
           "enumIdentifier": "SerialFrame",
-          "rpcVersion": 1,
+          "rpcVersion": -1,
           "initialVersion": "5.0.0",
           "enumValue": 2
         },
         {
           "description": "A request batch type which processes all requests using all available threads in the thread pool.\n\nNote: This is mainly experimental, and only really shows its colors during requests which require lots of\nactive processing, like `GetSourceScreenshot`.",
           "enumIdentifier": "Parallel",
-          "rpcVersion": 1,
+          "rpcVersion": -1,
           "initialVersion": "5.0.0",
           "enumValue": 3
         }
@@ -156,217 +156,217 @@
         {
           "description": "Unknown status, should never be used.",
           "enumIdentifier": "Unknown",
-          "rpcVersion": 1,
+          "rpcVersion": -1,
           "initialVersion": "5.0.0",
           "enumValue": 0
         },
         {
           "description": "For internal use to signify a successful field check.",
           "enumIdentifier": "NoError",
-          "rpcVersion": 1,
+          "rpcVersion": -1,
           "initialVersion": "5.0.0",
           "enumValue": 10
         },
         {
           "description": "The request has succeeded.",
           "enumIdentifier": "Success",
-          "rpcVersion": 1,
+          "rpcVersion": -1,
           "initialVersion": "5.0.0",
           "enumValue": 100
         },
         {
           "description": "The `requestType` field is missing from the request data.",
           "enumIdentifier": "MissingRequestType",
-          "rpcVersion": 1,
+          "rpcVersion": -1,
           "initialVersion": "5.0.0",
           "enumValue": 203
         },
         {
           "description": "The request type is invalid or does not exist.",
           "enumIdentifier": "UnknownRequestType",
-          "rpcVersion": 1,
+          "rpcVersion": -1,
           "initialVersion": "5.0.0",
           "enumValue": 204
         },
         {
           "description": "Generic error code.\n\nNote: A comment is required to be provided by obs-websocket.",
           "enumIdentifier": "GenericError",
-          "rpcVersion": 1,
+          "rpcVersion": -1,
           "initialVersion": "5.0.0",
           "enumValue": 205
         },
         {
           "description": "The request batch execution type is not supported.",
           "enumIdentifier": "UnsupportedRequestBatchExecutionType",
-          "rpcVersion": 1,
+          "rpcVersion": -1,
           "initialVersion": "5.0.0",
           "enumValue": 206
         },
         {
           "description": "A required request field is missing.",
           "enumIdentifier": "MissingRequestField",
-          "rpcVersion": 1,
+          "rpcVersion": -1,
           "initialVersion": "5.0.0",
           "enumValue": 300
         },
         {
           "description": "The request does not have a valid requestData object.",
           "enumIdentifier": "MissingRequestData",
-          "rpcVersion": 1,
+          "rpcVersion": -1,
           "initialVersion": "5.0.0",
           "enumValue": 301
         },
         {
           "description": "Generic invalid request field message.\n\nNote: A comment is required to be provided by obs-websocket.",
           "enumIdentifier": "InvalidRequestField",
-          "rpcVersion": 1,
+          "rpcVersion": -1,
           "initialVersion": "5.0.0",
           "enumValue": 400
         },
         {
           "description": "A request field has the wrong data type.",
           "enumIdentifier": "InvalidRequestFieldType",
-          "rpcVersion": 1,
+          "rpcVersion": -1,
           "initialVersion": "5.0.0",
           "enumValue": 401
         },
         {
           "description": "A request field (number) is outside of the allowed range.",
           "enumIdentifier": "RequestFieldOutOfRange",
-          "rpcVersion": 1,
+          "rpcVersion": -1,
           "initialVersion": "5.0.0",
           "enumValue": 402
         },
         {
           "description": "A request field (string or array) is empty and cannot be.",
           "enumIdentifier": "RequestFieldEmpty",
-          "rpcVersion": 1,
+          "rpcVersion": -1,
           "initialVersion": "5.0.0",
           "enumValue": 403
         },
         {
           "description": "There are too many request fields (eg. a request takes two optionals, where only one is allowed at a time).",
           "enumIdentifier": "TooManyRequestFields",
-          "rpcVersion": 1,
+          "rpcVersion": -1,
           "initialVersion": "5.0.0",
           "enumValue": 404
         },
         {
           "description": "An output is running and cannot be in order to perform the request.",
           "enumIdentifier": "OutputRunning",
-          "rpcVersion": 1,
+          "rpcVersion": -1,
           "initialVersion": "5.0.0",
           "enumValue": 500
         },
         {
           "description": "An output is not running and should be.",
           "enumIdentifier": "OutputNotRunning",
-          "rpcVersion": 1,
+          "rpcVersion": -1,
           "initialVersion": "5.0.0",
           "enumValue": 501
         },
         {
           "description": "An output is paused and should not be.",
           "enumIdentifier": "OutputPaused",
-          "rpcVersion": 1,
+          "rpcVersion": -1,
           "initialVersion": "5.0.0",
           "enumValue": 502
         },
         {
           "description": "An output is not paused and should be.",
           "enumIdentifier": "OutputNotPaused",
-          "rpcVersion": 1,
+          "rpcVersion": -1,
           "initialVersion": "5.0.0",
           "enumValue": 503
         },
         {
           "description": "An output is disabled and should not be.",
           "enumIdentifier": "OutputDisabled",
-          "rpcVersion": 1,
+          "rpcVersion": -1,
           "initialVersion": "5.0.0",
           "enumValue": 504
         },
         {
           "description": "Studio mode is active and cannot be.",
           "enumIdentifier": "StudioModeActive",
-          "rpcVersion": 1,
+          "rpcVersion": -1,
           "initialVersion": "5.0.0",
           "enumValue": 505
         },
         {
           "description": "Studio mode is not active and should be.",
           "enumIdentifier": "StudioModeNotActive",
-          "rpcVersion": 1,
+          "rpcVersion": -1,
           "initialVersion": "5.0.0",
           "enumValue": 506
         },
         {
           "description": "The resource was not found.\n\nNote: Resources are any kind of object in obs-websocket, like inputs, profiles, outputs, etc.",
           "enumIdentifier": "ResourceNotFound",
-          "rpcVersion": 1,
+          "rpcVersion": -1,
           "initialVersion": "5.0.0",
           "enumValue": 600
         },
         {
           "description": "The resource already exists.",
           "enumIdentifier": "ResourceAlreadyExists",
-          "rpcVersion": 1,
+          "rpcVersion": -1,
           "initialVersion": "5.0.0",
           "enumValue": 601
         },
         {
           "description": "The type of resource found is invalid.",
           "enumIdentifier": "InvalidResourceType",
-          "rpcVersion": 1,
+          "rpcVersion": -1,
           "initialVersion": "5.0.0",
           "enumValue": 602
         },
         {
           "description": "There are not enough instances of the resource in order to perform the request.",
           "enumIdentifier": "NotEnoughResources",
-          "rpcVersion": 1,
+          "rpcVersion": -1,
           "initialVersion": "5.0.0",
           "enumValue": 603
         },
         {
           "description": "The state of the resource is invalid. For example, if the resource is blocked from being accessed.",
           "enumIdentifier": "InvalidResourceState",
-          "rpcVersion": 1,
+          "rpcVersion": -1,
           "initialVersion": "5.0.0",
           "enumValue": 604
         },
         {
           "description": "The specified input (obs_source_t-OBS_SOURCE_TYPE_INPUT) had the wrong kind.",
           "enumIdentifier": "InvalidInputKind",
-          "rpcVersion": 1,
+          "rpcVersion": -1,
           "initialVersion": "5.0.0",
           "enumValue": 605
         },
         {
           "description": "Creating the resource failed.",
           "enumIdentifier": "ResourceCreationFailed",
-          "rpcVersion": 1,
+          "rpcVersion": -1,
           "initialVersion": "5.0.0",
           "enumValue": 700
         },
         {
           "description": "Performing an action on the resource failed.",
           "enumIdentifier": "ResourceActionFailed",
-          "rpcVersion": 1,
+          "rpcVersion": -1,
           "initialVersion": "5.0.0",
           "enumValue": 701
         },
         {
           "description": "Processing the request failed unexpectedly.\n\nNote: A comment is required to be provided by obs-websocket.",
           "enumIdentifier": "RequestProcessingFailed",
-          "rpcVersion": 1,
+          "rpcVersion": -1,
           "initialVersion": "5.0.0",
           "enumValue": 702
         },
         {
           "description": "The combination of request fields cannot be used to perform an action.",
           "enumIdentifier": "CannotAct",
-          "rpcVersion": 1,
+          "rpcVersion": -1,
           "initialVersion": "5.0.0",
           "enumValue": 703
         }
@@ -378,91 +378,91 @@
         {
           "description": "For internal use only to tell the request handler not to perform any close action.",
           "enumIdentifier": "DontClose",
-          "rpcVersion": 1,
+          "rpcVersion": -1,
           "initialVersion": "5.0.0",
           "enumValue": 0
         },
         {
           "description": "Unknown reason, should never be used.",
           "enumIdentifier": "UnknownReason",
-          "rpcVersion": 1,
+          "rpcVersion": -1,
           "initialVersion": "5.0.0",
           "enumValue": 4000
         },
         {
           "description": "The server was unable to decode the incoming websocket message.",
           "enumIdentifier": "MessageDecodeError",
-          "rpcVersion": 1,
+          "rpcVersion": -1,
           "initialVersion": "5.0.0",
           "enumValue": 4002
         },
         {
           "description": "A data field is required but missing from the payload.",
           "enumIdentifier": "MissingDataField",
-          "rpcVersion": 1,
+          "rpcVersion": -1,
           "initialVersion": "5.0.0",
           "enumValue": 4003
         },
         {
           "description": "A data field's value type is invalid.",
           "enumIdentifier": "InvalidDataFieldType",
-          "rpcVersion": 1,
+          "rpcVersion": -1,
           "initialVersion": "5.0.0",
           "enumValue": 4004
         },
         {
           "description": "A data field's value is invalid.",
           "enumIdentifier": "InvalidDataFieldValue",
-          "rpcVersion": 1,
+          "rpcVersion": -1,
           "initialVersion": "5.0.0",
           "enumValue": 4005
         },
         {
           "description": "The specified `op` was invalid or missing.",
           "enumIdentifier": "UnknownOpCode",
-          "rpcVersion": 1,
+          "rpcVersion": -1,
           "initialVersion": "5.0.0",
           "enumValue": 4006
         },
         {
           "description": "The client sent a websocket message without first sending `Identify` message.",
           "enumIdentifier": "NotIdentified",
-          "rpcVersion": 1,
+          "rpcVersion": -1,
           "initialVersion": "5.0.0",
           "enumValue": 4007
         },
         {
           "description": "The client sent an `Identify` message while already identified.\n\nNote: Once a client has identified, only `Reidentify` may be used to change session parameters.",
           "enumIdentifier": "AlreadyIdentified",
-          "rpcVersion": 1,
+          "rpcVersion": -1,
           "initialVersion": "5.0.0",
           "enumValue": 4008
         },
         {
           "description": "The authentication attempt (via `Identify`) failed.",
           "enumIdentifier": "AuthenticationFailed",
-          "rpcVersion": 1,
+          "rpcVersion": -1,
           "initialVersion": "5.0.0",
           "enumValue": 4009
         },
         {
           "description": "The server detected the usage of an old version of the obs-websocket RPC protocol.",
           "enumIdentifier": "UnsupportedRpcVersion",
-          "rpcVersion": 1,
+          "rpcVersion": -1,
           "initialVersion": "5.0.0",
           "enumValue": 4010
         },
         {
           "description": "The websocket session has been invalidated by the obs-websocket server.\n\nNote: This is the code used by the `Kick` button in the UI Session List. If you receive this code, you must not automatically reconnect.",
           "enumIdentifier": "SessionInvalidated",
-          "rpcVersion": 1,
+          "rpcVersion": -1,
           "initialVersion": "5.0.0",
           "enumValue": 4011
         },
         {
           "description": "A requested feature is not supported due to hardware/software limitations.",
           "enumIdentifier": "UnsupportedFeature",
-          "rpcVersion": 1,
+          "rpcVersion": -1,
           "initialVersion": "5.0.0",
           "enumValue": 4012
         }
@@ -474,63 +474,63 @@
         {
           "description": "The initial message sent by obs-websocket to newly connected clients.",
           "enumIdentifier": "Hello",
-          "rpcVersion": 1,
+          "rpcVersion": -1,
           "initialVersion": "5.0.0",
           "enumValue": 0
         },
         {
           "description": "The message sent by a newly connected client to obs-websocket in response to a `Hello`.",
           "enumIdentifier": "Identify",
-          "rpcVersion": 1,
+          "rpcVersion": -1,
           "initialVersion": "5.0.0",
           "enumValue": 1
         },
         {
           "description": "The response sent by obs-websocket to a client after it has successfully identified with obs-websocket.",
           "enumIdentifier": "Identified",
-          "rpcVersion": 1,
+          "rpcVersion": -1,
           "initialVersion": "5.0.0",
           "enumValue": 2
         },
         {
           "description": "The message sent by an already-identified client to update identification parameters.",
           "enumIdentifier": "Reidentify",
-          "rpcVersion": 1,
+          "rpcVersion": -1,
           "initialVersion": "5.0.0",
           "enumValue": 3
         },
         {
           "description": "The message sent by obs-websocket containing an event payload.",
           "enumIdentifier": "Event",
-          "rpcVersion": 1,
+          "rpcVersion": -1,
           "initialVersion": "5.0.0",
           "enumValue": 5
         },
         {
           "description": "The message sent by a client to obs-websocket to perform a request.",
           "enumIdentifier": "Request",
-          "rpcVersion": 1,
+          "rpcVersion": -1,
           "initialVersion": "5.0.0",
           "enumValue": 6
         },
         {
           "description": "The message sent by obs-websocket in response to a particular request from a client.",
           "enumIdentifier": "RequestResponse",
-          "rpcVersion": 1,
+          "rpcVersion": -1,
           "initialVersion": "5.0.0",
           "enumValue": 7
         },
         {
           "description": "The message sent by a client to obs-websocket to perform a batch of requests.",
           "enumIdentifier": "RequestBatch",
-          "rpcVersion": 1,
+          "rpcVersion": -1,
           "initialVersion": "5.0.0",
           "enumValue": 8
         },
         {
           "description": "The message sent by obs-websocket in response to a particular batch of requests from a client.",
           "enumIdentifier": "RequestBatchResponse",
-          "rpcVersion": 1,
+          "rpcVersion": -1,
           "initialVersion": "5.0.0",
           "enumValue": 9
         }
@@ -542,7 +542,7 @@
       "description": "Gets the value of a \"slot\" from the selected persistent data realm.",
       "requestType": "GetPersistentData",
       "complexity": 2,
-      "rpcVersion": 1,
+      "rpcVersion": "1",
       "initialVersion": "5.0.0",
       "category": "config",
       "requestFields": [
@@ -575,7 +575,7 @@
       "description": "Sets the value of a \"slot\" from the selected persistent data realm.",
       "requestType": "SetPersistentData",
       "complexity": 2,
-      "rpcVersion": 1,
+      "rpcVersion": "1",
       "initialVersion": "5.0.0",
       "category": "config",
       "requestFields": [
@@ -610,7 +610,7 @@
       "description": "Gets an array of all scene collections",
       "requestType": "GetSceneCollectionList",
       "complexity": 1,
-      "rpcVersion": 1,
+      "rpcVersion": "1",
       "initialVersion": "5.0.0",
       "category": "config",
       "requestFields": [],
@@ -631,7 +631,7 @@
       "description": "Switches to a scene collection.\n\nNote: This will block until the collection has finished changing.",
       "requestType": "SetCurrentSceneCollection",
       "complexity": 1,
-      "rpcVersion": 1,
+      "rpcVersion": "1",
       "initialVersion": "5.0.0",
       "category": "config",
       "requestFields": [
@@ -650,7 +650,7 @@
       "description": "Creates a new scene collection, switching to it in the process.\n\nNote: This will block until the collection has finished changing.",
       "requestType": "CreateSceneCollection",
       "complexity": 1,
-      "rpcVersion": 1,
+      "rpcVersion": "1",
       "initialVersion": "5.0.0",
       "category": "config",
       "requestFields": [
@@ -669,7 +669,7 @@
       "description": "Gets an array of all profiles",
       "requestType": "GetProfileList",
       "complexity": 1,
-      "rpcVersion": 1,
+      "rpcVersion": "1",
       "initialVersion": "5.0.0",
       "category": "config",
       "requestFields": [],
@@ -690,7 +690,7 @@
       "description": "Switches to a profile.",
       "requestType": "SetCurrentProfile",
       "complexity": 1,
-      "rpcVersion": 1,
+      "rpcVersion": "1",
       "initialVersion": "5.0.0",
       "category": "config",
       "requestFields": [
@@ -709,7 +709,7 @@
       "description": "Creates a new profile, switching to it in the process",
       "requestType": "CreateProfile",
       "complexity": 1,
-      "rpcVersion": 1,
+      "rpcVersion": "1",
       "initialVersion": "5.0.0",
       "category": "config",
       "requestFields": [
@@ -728,7 +728,7 @@
       "description": "Removes a profile. If the current profile is chosen, it will change to a different profile first.",
       "requestType": "RemoveProfile",
       "complexity": 1,
-      "rpcVersion": 1,
+      "rpcVersion": "1",
       "initialVersion": "5.0.0",
       "category": "config",
       "requestFields": [
@@ -747,7 +747,7 @@
       "description": "Gets a parameter from the current profile's configuration.",
       "requestType": "GetProfileParameter",
       "complexity": 3,
-      "rpcVersion": 1,
+      "rpcVersion": "1",
       "initialVersion": "5.0.0",
       "category": "config",
       "requestFields": [
@@ -785,7 +785,7 @@
       "description": "Sets the value of a parameter in the current profile's configuration.",
       "requestType": "SetProfileParameter",
       "complexity": 3,
-      "rpcVersion": 1,
+      "rpcVersion": "1",
       "initialVersion": "5.0.0",
       "category": "config",
       "requestFields": [
@@ -820,7 +820,7 @@
       "description": "Gets the current video settings.\n\nNote: To get the true FPS value, divide the FPS numerator by the FPS denominator. Example: `60000/1001`",
       "requestType": "GetVideoSettings",
       "complexity": 2,
-      "rpcVersion": 1,
+      "rpcVersion": "1",
       "initialVersion": "5.0.0",
       "category": "config",
       "requestFields": [],
@@ -861,7 +861,7 @@
       "description": "Sets the current video settings.\n\nNote: Fields must be specified in pairs. For example, you cannot set only `baseWidth` without needing to specify `baseHeight`.",
       "requestType": "SetVideoSettings",
       "complexity": 2,
-      "rpcVersion": 1,
+      "rpcVersion": "1",
       "initialVersion": "5.0.0",
       "category": "config",
       "requestFields": [
@@ -920,7 +920,7 @@
       "description": "Gets the current stream service settings (stream destination).",
       "requestType": "GetStreamServiceSettings",
       "complexity": 4,
-      "rpcVersion": 1,
+      "rpcVersion": "1",
       "initialVersion": "5.0.0",
       "category": "config",
       "requestFields": [],
@@ -941,7 +941,7 @@
       "description": "Sets the current stream service settings (stream destination).\n\nNote: Simple RTMP settings can be set with type `rtmp_custom` and the settings fields `server` and `key`.",
       "requestType": "SetStreamServiceSettings",
       "complexity": 4,
-      "rpcVersion": 1,
+      "rpcVersion": "1",
       "initialVersion": "5.0.0",
       "category": "config",
       "requestFields": [
@@ -968,7 +968,7 @@
       "description": "Gets data about the current plugin and RPC version.",
       "requestType": "GetVersion",
       "complexity": 1,
-      "rpcVersion": 1,
+      "rpcVersion": "1",
       "initialVersion": "5.0.0",
       "category": "general",
       "requestFields": [],
@@ -999,7 +999,7 @@
       "description": "Broadcasts a `CustomEvent` to all WebSocket clients. Receivers are clients which are identified and subscribed.",
       "requestType": "BroadcastCustomEvent",
       "complexity": 1,
-      "rpcVersion": 1,
+      "rpcVersion": "1",
       "initialVersion": "5.0.0",
       "category": "general",
       "requestFields": [
@@ -1018,7 +1018,7 @@
       "description": "Gets statistics about OBS, obs-websocket, and the current session.",
       "requestType": "GetStats",
       "complexity": 2,
-      "rpcVersion": 1,
+      "rpcVersion": "1",
       "initialVersion": "5.0.0",
       "category": "general",
       "requestFields": [],
@@ -1084,7 +1084,7 @@
       "description": "Gets an array of all hotkey names in OBS",
       "requestType": "GetHotkeyList",
       "complexity": 3,
-      "rpcVersion": 1,
+      "rpcVersion": "1",
       "initialVersion": "5.0.0",
       "category": "general",
       "requestFields": [],
@@ -1100,7 +1100,7 @@
       "description": "Triggers a hotkey using its name. See `GetHotkeyList`",
       "requestType": "TriggerHotkeyByName",
       "complexity": 3,
-      "rpcVersion": 1,
+      "rpcVersion": "1",
       "initialVersion": "5.0.0",
       "category": "general",
       "requestFields": [
@@ -1119,7 +1119,7 @@
       "description": "Triggers a hotkey using a sequence of keys.",
       "requestType": "TriggerHotkeyByKeySequence",
       "complexity": 4,
-      "rpcVersion": 1,
+      "rpcVersion": "1",
       "initialVersion": "5.0.0",
       "category": "general",
       "requestFields": [
@@ -1178,7 +1178,7 @@
       "description": "Gets whether studio is enabled.",
       "requestType": "GetStudioModeEnabled",
       "complexity": 1,
-      "rpcVersion": 1,
+      "rpcVersion": "1",
       "initialVersion": "5.0.0",
       "category": "general",
       "requestFields": [],
@@ -1194,7 +1194,7 @@
       "description": "Enables or disables studio mode",
       "requestType": "SetStudioModeEnabled",
       "complexity": 1,
-      "rpcVersion": 1,
+      "rpcVersion": "1",
       "initialVersion": "5.0.0",
       "category": "general",
       "requestFields": [
@@ -1213,7 +1213,7 @@
       "description": "Sleeps for a time duration or number of frames. Only available in request batches with types `SERIAL_REALTIME` or `SERIAL_FRAME`.",
       "requestType": "Sleep",
       "complexity": 2,
-      "rpcVersion": 1,
+      "rpcVersion": "1",
       "initialVersion": "5.0.0",
       "category": "general",
       "requestFields": [
@@ -1243,7 +1243,7 @@
       "eventType": "CurrentSceneCollectionChanging",
       "eventSubscription": "Config",
       "complexity": 1,
-      "rpcVersion": 1,
+      "rpcVersion": -1,
       "initialVersion": "5.0.0",
       "category": "config",
       "dataFields": [
@@ -1259,7 +1259,7 @@
       "eventType": "CurrentSceneCollectionChanged",
       "eventSubscription": "Config",
       "complexity": 1,
-      "rpcVersion": 1,
+      "rpcVersion": -1,
       "initialVersion": "5.0.0",
       "category": "config",
       "dataFields": [
@@ -1275,7 +1275,7 @@
       "eventType": "SceneCollectionListChanged",
       "eventSubscription": "Config",
       "complexity": 1,
-      "rpcVersion": 1,
+      "rpcVersion": -1,
       "initialVersion": "5.0.0",
       "category": "config",
       "dataFields": [
@@ -1291,7 +1291,7 @@
       "eventType": "CurrentProfileChanging",
       "eventSubscription": "Config",
       "complexity": 1,
-      "rpcVersion": 1,
+      "rpcVersion": -1,
       "initialVersion": "5.0.0",
       "category": "config",
       "dataFields": [
@@ -1307,7 +1307,7 @@
       "eventType": "CurrentProfileChanged",
       "eventSubscription": "Config",
       "complexity": 1,
-      "rpcVersion": 1,
+      "rpcVersion": -1,
       "initialVersion": "5.0.0",
       "category": "config",
       "dataFields": [
@@ -1323,7 +1323,7 @@
       "eventType": "ProfileListChanged",
       "eventSubscription": "Config",
       "complexity": 1,
-      "rpcVersion": 1,
+      "rpcVersion": -1,
       "initialVersion": "5.0.0",
       "category": "config",
       "dataFields": [
@@ -1339,7 +1339,7 @@
       "eventType": "ExitStarted",
       "eventSubscription": "General",
       "complexity": 1,
-      "rpcVersion": 1,
+      "rpcVersion": -1,
       "initialVersion": "5.0.0",
       "category": "general",
       "dataFields": []
@@ -1349,7 +1349,7 @@
       "eventType": "StudioModeStateChanged",
       "eventSubscription": "General",
       "complexity": 1,
-      "rpcVersion": 1,
+      "rpcVersion": -1,
       "initialVersion": "5.0.0",
       "category": "general",
       "dataFields": [

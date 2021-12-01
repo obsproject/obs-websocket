@@ -27,7 +27,7 @@ namespace WebSocketOpCode {
 		* @enumIdentifier Hello
 		* @enumValue 0
 		* @enumType WebSocketOpCode
-		* @rpcVersion 1
+		* @rpcVersion -1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
@@ -38,7 +38,7 @@ namespace WebSocketOpCode {
 		* @enumIdentifier Identify
 		* @enumValue 1
 		* @enumType WebSocketOpCode
-		* @rpcVersion 1
+		* @rpcVersion -1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
@@ -49,7 +49,7 @@ namespace WebSocketOpCode {
 		* @enumIdentifier Identified
 		* @enumValue 2
 		* @enumType WebSocketOpCode
-		* @rpcVersion 1
+		* @rpcVersion -1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
@@ -60,7 +60,7 @@ namespace WebSocketOpCode {
 		* @enumIdentifier Reidentify
 		* @enumValue 3
 		* @enumType WebSocketOpCode
-		* @rpcVersion 1
+		* @rpcVersion -1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
@@ -71,7 +71,7 @@ namespace WebSocketOpCode {
 		* @enumIdentifier Event
 		* @enumValue 5
 		* @enumType WebSocketOpCode
-		* @rpcVersion 1
+		* @rpcVersion -1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
@@ -82,7 +82,7 @@ namespace WebSocketOpCode {
 		* @enumIdentifier Request
 		* @enumValue 6
 		* @enumType WebSocketOpCode
-		* @rpcVersion 1
+		* @rpcVersion -1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
@@ -93,7 +93,7 @@ namespace WebSocketOpCode {
 		* @enumIdentifier RequestResponse
 		* @enumValue 7
 		* @enumType WebSocketOpCode
-		* @rpcVersion 1
+		* @rpcVersion -1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
@@ -104,7 +104,7 @@ namespace WebSocketOpCode {
 		* @enumIdentifier RequestBatch
 		* @enumValue 8
 		* @enumType WebSocketOpCode
-		* @rpcVersion 1
+		* @rpcVersion -1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
@@ -115,7 +115,7 @@ namespace WebSocketOpCode {
 		* @enumIdentifier RequestBatchResponse
 		* @enumValue 9
 		* @enumType WebSocketOpCode
-		* @rpcVersion 1
+		* @rpcVersion -1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/

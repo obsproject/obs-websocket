@@ -29,7 +29,7 @@ namespace RequestBatchExecutionType {
 		* @enumIdentifier None
 		* @enumValue 0
 		* @enumType RequestBatchExecutionType
-		* @rpcVersion 1
+		* @rpcVersion -1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
@@ -42,7 +42,7 @@ namespace RequestBatchExecutionType {
 		* @enumIdentifier SerialRealtime
 		* @enumValue 1
 		* @enumType RequestBatchExecutionType
-		* @rpcVersion 1
+		* @rpcVersion -1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
@@ -56,7 +56,7 @@ namespace RequestBatchExecutionType {
 		* @enumIdentifier SerialFrame
 		* @enumValue 2
 		* @enumType RequestBatchExecutionType
-		* @rpcVersion 1
+		* @rpcVersion -1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
@@ -70,7 +70,7 @@ namespace RequestBatchExecutionType {
 		* @enumIdentifier Parallel
 		* @enumValue 3
 		* @enumType RequestBatchExecutionType
-		* @rpcVersion 1
+		* @rpcVersion -1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/

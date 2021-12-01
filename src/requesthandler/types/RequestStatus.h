@@ -27,7 +27,7 @@ namespace RequestStatus {
 		* @enumIdentifier Unknown
 		* @enumValue 0
 		* @enumType RequestStatus
-		* @rpcVersion 1
+		* @rpcVersion -1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
@@ -39,7 +39,7 @@ namespace RequestStatus {
 		* @enumIdentifier NoError
 		* @enumValue 10
 		* @enumType RequestStatus
-		* @rpcVersion 1
+		* @rpcVersion -1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
@@ -51,7 +51,7 @@ namespace RequestStatus {
 		* @enumIdentifier Success
 		* @enumValue 100
 		* @enumType RequestStatus
-		* @rpcVersion 1
+		* @rpcVersion -1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
@@ -63,7 +63,7 @@ namespace RequestStatus {
 		* @enumIdentifier MissingRequestType
 		* @enumValue 203
 		* @enumType RequestStatus
-		* @rpcVersion 1
+		* @rpcVersion -1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
@@ -74,7 +74,7 @@ namespace RequestStatus {
 		* @enumIdentifier UnknownRequestType
 		* @enumValue 204
 		* @enumType RequestStatus
-		* @rpcVersion 1
+		* @rpcVersion -1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
@@ -87,7 +87,7 @@ namespace RequestStatus {
 		* @enumIdentifier GenericError
 		* @enumValue 205
 		* @enumType RequestStatus
-		* @rpcVersion 1
+		* @rpcVersion -1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
@@ -98,7 +98,7 @@ namespace RequestStatus {
 		* @enumIdentifier UnsupportedRequestBatchExecutionType
 		* @enumValue 206
 		* @enumType RequestStatus
-		* @rpcVersion 1
+		* @rpcVersion -1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
@@ -110,7 +110,7 @@ namespace RequestStatus {
 		* @enumIdentifier MissingRequestField
 		* @enumValue 300
 		* @enumType RequestStatus
-		* @rpcVersion 1
+		* @rpcVersion -1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
@@ -121,7 +121,7 @@ namespace RequestStatus {
 		* @enumIdentifier MissingRequestData
 		* @enumValue 301
 		* @enumType RequestStatus
-		* @rpcVersion 1
+		* @rpcVersion -1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
@@ -135,7 +135,7 @@ namespace RequestStatus {
 		* @enumIdentifier InvalidRequestField
 		* @enumValue 400
 		* @enumType RequestStatus
-		* @rpcVersion 1
+		* @rpcVersion -1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
@@ -146,7 +146,7 @@ namespace RequestStatus {
 		* @enumIdentifier InvalidRequestFieldType
 		* @enumValue 401
 		* @enumType RequestStatus
-		* @rpcVersion 1
+		* @rpcVersion -1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
@@ -157,7 +157,7 @@ namespace RequestStatus {
 		* @enumIdentifier RequestFieldOutOfRange
 		* @enumValue 402
 		* @enumType RequestStatus
-		* @rpcVersion 1
+		* @rpcVersion -1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
@@ -168,7 +168,7 @@ namespace RequestStatus {
 		* @enumIdentifier RequestFieldEmpty
 		* @enumValue 403
 		* @enumType RequestStatus
-		* @rpcVersion 1
+		* @rpcVersion -1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
@@ -179,7 +179,7 @@ namespace RequestStatus {
 		* @enumIdentifier TooManyRequestFields
 		* @enumValue 404
 		* @enumType RequestStatus
-		* @rpcVersion 1
+		* @rpcVersion -1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
@@ -191,7 +191,7 @@ namespace RequestStatus {
 		* @enumIdentifier OutputRunning
 		* @enumValue 500
 		* @enumType RequestStatus
-		* @rpcVersion 1
+		* @rpcVersion -1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
@@ -202,7 +202,7 @@ namespace RequestStatus {
 		* @enumIdentifier OutputNotRunning
 		* @enumValue 501
 		* @enumType RequestStatus
-		* @rpcVersion 1
+		* @rpcVersion -1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
@@ -213,7 +213,7 @@ namespace RequestStatus {
 		* @enumIdentifier OutputPaused
 		* @enumValue 502
 		* @enumType RequestStatus
-		* @rpcVersion 1
+		* @rpcVersion -1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
@@ -224,7 +224,7 @@ namespace RequestStatus {
 		* @enumIdentifier OutputNotPaused
 		* @enumValue 503
 		* @enumType RequestStatus
-		* @rpcVersion 1
+		* @rpcVersion -1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
@@ -235,7 +235,7 @@ namespace RequestStatus {
 		* @enumIdentifier OutputDisabled
 		* @enumValue 504
 		* @enumType RequestStatus
-		* @rpcVersion 1
+		* @rpcVersion -1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
@@ -246,7 +246,7 @@ namespace RequestStatus {
 		* @enumIdentifier StudioModeActive
 		* @enumValue 505
 		* @enumType RequestStatus
-		* @rpcVersion 1
+		* @rpcVersion -1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
@@ -257,7 +257,7 @@ namespace RequestStatus {
 		* @enumIdentifier StudioModeNotActive
 		* @enumValue 506
 		* @enumType RequestStatus
-		* @rpcVersion 1
+		* @rpcVersion -1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
@@ -272,7 +272,7 @@ namespace RequestStatus {
 		* @enumIdentifier ResourceNotFound
 		* @enumValue 600
 		* @enumType RequestStatus
-		* @rpcVersion 1
+		* @rpcVersion -1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
@@ -283,7 +283,7 @@ namespace RequestStatus {
 		* @enumIdentifier ResourceAlreadyExists
 		* @enumValue 601
 		* @enumType RequestStatus
-		* @rpcVersion 1
+		* @rpcVersion -1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
@@ -294,7 +294,7 @@ namespace RequestStatus {
 		* @enumIdentifier InvalidResourceType
 		* @enumValue 602
 		* @enumType RequestStatus
-		* @rpcVersion 1
+		* @rpcVersion -1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
@@ -305,7 +305,7 @@ namespace RequestStatus {
 		* @enumIdentifier NotEnoughResources
 		* @enumValue 603
 		* @enumType RequestStatus
-		* @rpcVersion 1
+		* @rpcVersion -1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
@@ -316,7 +316,7 @@ namespace RequestStatus {
 		* @enumIdentifier InvalidResourceState
 		* @enumValue 604
 		* @enumType RequestStatus
-		* @rpcVersion 1
+		* @rpcVersion -1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
@@ -327,7 +327,7 @@ namespace RequestStatus {
 		* @enumIdentifier InvalidInputKind
 		* @enumValue 605
 		* @enumType RequestStatus
-		* @rpcVersion 1
+		* @rpcVersion -1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
@@ -339,7 +339,7 @@ namespace RequestStatus {
 		* @enumIdentifier ResourceCreationFailed
 		* @enumValue 700
 		* @enumType RequestStatus
-		* @rpcVersion 1
+		* @rpcVersion -1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
@@ -350,7 +350,7 @@ namespace RequestStatus {
 		* @enumIdentifier ResourceActionFailed
 		* @enumValue 701
 		* @enumType RequestStatus
-		* @rpcVersion 1
+		* @rpcVersion -1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
@@ -363,7 +363,7 @@ namespace RequestStatus {
 		* @enumIdentifier RequestProcessingFailed
 		* @enumValue 702
 		* @enumType RequestStatus
-		* @rpcVersion 1
+		* @rpcVersion -1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
@@ -374,7 +374,7 @@ namespace RequestStatus {
 		* @enumIdentifier CannotAct
 		* @enumValue 703
 		* @enumType RequestStatus
-		* @rpcVersion 1
+		* @rpcVersion -1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/

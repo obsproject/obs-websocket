@@ -27,7 +27,7 @@ namespace EventSubscription {
 		* @enumIdentifier None
 		* @enumValue 0
 		* @enumType EventSubscription
-		* @rpcVersion 1
+		* @rpcVersion -1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
@@ -38,7 +38,7 @@ namespace EventSubscription {
 		* @enumIdentifier General
 		* @enumValue (1 << 0)
 		* @enumType EventSubscription
-		* @rpcVersion 1
+		* @rpcVersion -1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
@@ -49,7 +49,7 @@ namespace EventSubscription {
 		* @enumIdentifier Config
 		* @enumValue (1 << 1)
 		* @enumType EventSubscription
-		* @rpcVersion 1
+		* @rpcVersion -1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
@@ -60,7 +60,7 @@ namespace EventSubscription {
 		* @enumIdentifier Scenes
 		* @enumValue (1 << 2)
 		* @enumType EventSubscription
-		* @rpcVersion 1
+		* @rpcVersion -1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
@@ -71,7 +71,7 @@ namespace EventSubscription {
 		* @enumIdentifier Inputs
 		* @enumValue (1 << 3)
 		* @enumType EventSubscription
-		* @rpcVersion 1
+		* @rpcVersion -1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
@@ -82,7 +82,7 @@ namespace EventSubscription {
 		* @enumIdentifier Transitions
 		* @enumValue (1 << 4)
 		* @enumType EventSubscription
-		* @rpcVersion 1
+		* @rpcVersion -1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
@@ -93,7 +93,7 @@ namespace EventSubscription {
 		* @enumIdentifier Filters
 		* @enumValue (1 << 5)
 		* @enumType EventSubscription
-		* @rpcVersion 1
+		* @rpcVersion -1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
@@ -104,7 +104,7 @@ namespace EventSubscription {
 		* @enumIdentifier Outputs
 		* @enumValue (1 << 6)
 		* @enumType EventSubscription
-		* @rpcVersion 1
+		* @rpcVersion -1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
@@ -115,7 +115,7 @@ namespace EventSubscription {
 		* @enumIdentifier SceneItems
 		* @enumValue (1 << 7)
 		* @enumType EventSubscription
-		* @rpcVersion 1
+		* @rpcVersion -1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
@@ -126,7 +126,7 @@ namespace EventSubscription {
 		* @enumIdentifier MediaInputs
 		* @enumValue (1 << 8)
 		* @enumType EventSubscription
-		* @rpcVersion 1
+		* @rpcVersion -1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
@@ -138,7 +138,7 @@ namespace EventSubscription {
 		* @enumIdentifier ExternalPlugins
 		* @enumValue (1 << 9)
 		* @enumType EventSubscription
-		* @rpcVersion 1
+		* @rpcVersion -1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
@@ -150,7 +150,7 @@ namespace EventSubscription {
 		* @enumIdentifier All
 		* @enumValue (General | Config | Scenes | Inputs | Transitions | Filters | Outputs | SceneItems | MediaInputs | ExternalPlugins)
 		* @enumType EventSubscription
-		* @rpcVersion 1
+		* @rpcVersion -1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
@@ -162,7 +162,7 @@ namespace EventSubscription {
 		* @enumIdentifier InputVolumeMeters
 		* @enumValue (1 << 16)
 		* @enumType EventSubscription
-		* @rpcVersion 1
+		* @rpcVersion -1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
@@ -174,7 +174,7 @@ namespace EventSubscription {
 		* @enumIdentifier InputActiveStateChanged
 		* @enumValue (1 << 17)
 		* @enumType EventSubscription
-		* @rpcVersion 1
+		* @rpcVersion -1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
@@ -186,7 +186,7 @@ namespace EventSubscription {
 		* @enumIdentifier InputShowStateChanged
 		* @enumValue (1 << 18)
 		* @enumType EventSubscription
-		* @rpcVersion 1
+		* @rpcVersion -1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
@@ -198,7 +198,7 @@ namespace EventSubscription {
 		* @enumIdentifier SceneItemTransformChanged
 		* @enumValue (1 << 19)
 		* @enumType EventSubscription
-		* @rpcVersion 1
+		* @rpcVersion -1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/

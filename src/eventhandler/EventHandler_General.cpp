@@ -25,7 +25,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
  * @eventType ExitStarted
  * @eventSubscription General
  * @complexity 1
- * @rpcVersion 1
+ * @rpcVersion -1
  * @initialVersion 5.0.0
  * @category general
  * @api events
@@ -43,7 +43,7 @@ void EventHandler::HandleExitStarted()
  * @eventType StudioModeStateChanged
  * @eventSubscription General
  * @complexity 1
- * @rpcVersion 1
+ * @rpcVersion -1
  * @initialVersion 5.0.0
  * @category general
  * @api events

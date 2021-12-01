@@ -27,7 +27,7 @@ namespace WebSocketCloseCode {
 		* @enumIdentifier DontClose
 		* @enumValue 0
 		* @enumType WebSocketCloseCode
-		* @rpcVersion 1
+		* @rpcVersion -1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
@@ -38,7 +38,7 @@ namespace WebSocketCloseCode {
 		* @enumIdentifier UnknownReason
 		* @enumValue 4000
 		* @enumType WebSocketCloseCode
-		* @rpcVersion 1
+		* @rpcVersion -1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
@@ -49,7 +49,7 @@ namespace WebSocketCloseCode {
 		* @enumIdentifier MessageDecodeError
 		* @enumValue 4002
 		* @enumType WebSocketCloseCode
-		* @rpcVersion 1
+		* @rpcVersion -1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
@@ -60,7 +60,7 @@ namespace WebSocketCloseCode {
 		* @enumIdentifier MissingDataField
 		* @enumValue 4003
 		* @enumType WebSocketCloseCode
-		* @rpcVersion 1
+		* @rpcVersion -1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
@@ -71,7 +71,7 @@ namespace WebSocketCloseCode {
 		* @enumIdentifier InvalidDataFieldType
 		* @enumValue 4004
 		* @enumType WebSocketCloseCode
-		* @rpcVersion 1
+		* @rpcVersion -1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
@@ -82,7 +82,7 @@ namespace WebSocketCloseCode {
 		* @enumIdentifier InvalidDataFieldValue
 		* @enumValue 4005
 		* @enumType WebSocketCloseCode
-		* @rpcVersion 1
+		* @rpcVersion -1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
@@ -93,7 +93,7 @@ namespace WebSocketCloseCode {
 		* @enumIdentifier UnknownOpCode
 		* @enumValue 4006
 		* @enumType WebSocketCloseCode
-		* @rpcVersion 1
+		* @rpcVersion -1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
@@ -104,7 +104,7 @@ namespace WebSocketCloseCode {
 		* @enumIdentifier NotIdentified
 		* @enumValue 4007
 		* @enumType WebSocketCloseCode
-		* @rpcVersion 1
+		* @rpcVersion -1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
@@ -117,7 +117,7 @@ namespace WebSocketCloseCode {
 		* @enumIdentifier AlreadyIdentified
 		* @enumValue 4008
 		* @enumType WebSocketCloseCode
-		* @rpcVersion 1
+		* @rpcVersion -1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
@@ -128,7 +128,7 @@ namespace WebSocketCloseCode {
 		* @enumIdentifier AuthenticationFailed
 		* @enumValue 4009
 		* @enumType WebSocketCloseCode
-		* @rpcVersion 1
+		* @rpcVersion -1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
@@ -139,7 +139,7 @@ namespace WebSocketCloseCode {
 		* @enumIdentifier UnsupportedRpcVersion
 		* @enumValue 4010
 		* @enumType WebSocketCloseCode
-		* @rpcVersion 1
+		* @rpcVersion -1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
@@ -152,7 +152,7 @@ namespace WebSocketCloseCode {
 		* @enumIdentifier SessionInvalidated
 		* @enumValue 4011
 		* @enumType WebSocketCloseCode
-		* @rpcVersion 1
+		* @rpcVersion -1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
@@ -163,7 +163,7 @@ namespace WebSocketCloseCode {
 		* @enumIdentifier UnsupportedFeature
 		* @enumValue 4012
 		* @enumType WebSocketCloseCode
-		* @rpcVersion 1
+		* @rpcVersion -1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/

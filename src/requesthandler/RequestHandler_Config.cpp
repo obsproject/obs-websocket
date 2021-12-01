@@ -32,7 +32,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
  *
  * @requestType GetPersistentData
  * @complexity 2
- * @rpcVersion 1
+ * @rpcVersion -1
  * @initialVersion 5.0.0
  * @category config
  * @api requests
@@ -74,7 +74,7 @@ RequestResult RequestHandler::GetPersistentData(const Request& request)
  *
  * @requestType SetPersistentData
  * @complexity 2
- * @rpcVersion 1
+ * @rpcVersion -1
  * @initialVersion 5.0.0
  * @category config
  * @api requests
@@ -115,7 +115,7 @@ RequestResult RequestHandler::SetPersistentData(const Request& request)
  *
  * @requestType GetSceneCollectionList
  * @complexity 1
- * @rpcVersion 1
+ * @rpcVersion -1
  * @initialVersion 5.0.0
  * @category config
  * @api requests
@@ -137,7 +137,7 @@ RequestResult RequestHandler::GetSceneCollectionList(const Request&)
  *
  * @requestType SetCurrentSceneCollection
  * @complexity 1
- * @rpcVersion 1
+ * @rpcVersion -1
  * @initialVersion 5.0.0
  * @category config
  * @api requests
@@ -175,7 +175,7 @@ RequestResult RequestHandler::SetCurrentSceneCollection(const Request& request)
  *
  * @requestType CreateSceneCollection
  * @complexity 1
- * @rpcVersion 1
+ * @rpcVersion -1
  * @initialVersion 5.0.0
  * @category config
  * @api requests
@@ -210,7 +210,7 @@ RequestResult RequestHandler::CreateSceneCollection(const Request& request)
  *
  * @requestType GetProfileList
  * @complexity 1
- * @rpcVersion 1
+ * @rpcVersion -1
  * @initialVersion 5.0.0
  * @category config
  * @api requests
@@ -230,7 +230,7 @@ RequestResult RequestHandler::GetProfileList(const Request&)
  *
  * @requestType SetCurrentProfile
  * @complexity 1
- * @rpcVersion 1
+ * @rpcVersion -1
  * @initialVersion 5.0.0
  * @category config
  * @api requests
@@ -266,7 +266,7 @@ RequestResult RequestHandler::SetCurrentProfile(const Request& request)
  *
  * @requestType CreateProfile
  * @complexity 1
- * @rpcVersion 1
+ * @rpcVersion -1
  * @initialVersion 5.0.0
  * @category config
  * @api requests
@@ -297,7 +297,7 @@ RequestResult RequestHandler::CreateProfile(const Request& request)
  *
  * @requestType RemoveProfile
  * @complexity 1
- * @rpcVersion 1
+ * @rpcVersion -1
  * @initialVersion 5.0.0
  * @category config
  * @api requests
@@ -335,7 +335,7 @@ RequestResult RequestHandler::RemoveProfile(const Request& request)
  *
  * @requestType GetProfileParameter
  * @complexity 3
- * @rpcVersion 1
+ * @rpcVersion -1
  * @initialVersion 5.0.0
  * @category config
  * @api requests
@@ -379,7 +379,7 @@ RequestResult RequestHandler::GetProfileParameter(const Request& request)
  *
  * @requestType SetProfileParameter
  * @complexity 3
- * @rpcVersion 1
+ * @rpcVersion -1
  * @initialVersion 5.0.0
  * @category config
  * @api requests
@@ -425,7 +425,7 @@ RequestResult RequestHandler::SetProfileParameter(const Request& request)
  *
  * @requestType GetVideoSettings
  * @complexity 2
- * @rpcVersion 1
+ * @rpcVersion -1
  * @initialVersion 5.0.0
  * @category config
  * @api requests
@@ -461,7 +461,7 @@ RequestResult RequestHandler::GetVideoSettings(const Request&)
  *
  * @requestType SetVideoSettings
  * @complexity 2
- * @rpcVersion 1
+ * @rpcVersion -1
  * @initialVersion 5.0.0
  * @category config
  * @api requests
@@ -520,7 +520,7 @@ RequestResult RequestHandler::SetVideoSettings(const Request& request)
  *
  * @requestType GetStreamServiceSettings
  * @complexity 4
- * @rpcVersion 1
+ * @rpcVersion -1
  * @initialVersion 5.0.0
  * @category config
  * @api requests
@@ -547,7 +547,7 @@ RequestResult RequestHandler::GetStreamServiceSettings(const Request&)
  *
  * @requestType SetStreamServiceSettings
  * @complexity 4
- * @rpcVersion 1
+ * @rpcVersion -1
  * @initialVersion 5.0.0
  * @category config
  * @api requests

@@ -28,11 +28,27 @@ categoryOrder = [
     'High-Volume'
 ]
 
+fragments = []
+
+# Utils
 #######################################################################################################################
 
 def read_file(fileName):
     with open(fileName, 'r') as f:
         return f.read()
+
+def get_fragment(name, register = True):
+    global fragments
+    testFragmentName = name.replace(' ', '-').replace(':', '').lower()
+    if testFragmentName in fragments:
+        testFragmentName += '-1'
+        increment = 1
+        while testFragmentName in fragments:
+            increment += 1
+            testFragmentName[:-1] = str(increment)
+    if register:
+        fragments.append(testFragmentName)
+    return testFragmentName
 
 def get_category_items(items, category):
     ret = []
@@ -52,11 +68,41 @@ def get_enums_toc(enums):
                 break
         if not enum:
             continue
-        rawType = enumType.replace(' ', '-').lower()
-        ret += '- [{}](#{})\n'.format(enumType, rawType)
+        typeFragment = get_fragment(enumType, False)
+        ret += '- [{}](#{})\n'.format(enumType, typeFragment)
+        for enumIdentifier in enum['enumIdentifiers']:
+            enumIdentifier = enumIdentifier['enumIdentifier']
+            enumIdentifierHeader = '{}::{}'.format(enumType, enumIdentifier)
+            enumIdentifierFragment = get_fragment(enumIdentifierHeader, False)
+            ret += '  - [{}](#{})\n'.format(enumIdentifierHeader, enumIdentifierFragment)
+    return ret
+
+def get_enums(enums):
+    ret = ''
+    for enumType in enumTypeOrder:
+        enum = None
+        for enumIt in enums:
+            if enumIt['enumType'] == enumType:
+                enum = enumIt
+                break
+        if not enum:
+            continue
+        typeFragment = get_fragment(enumType)
+        ret += '## {}\n\n'.format(enumType)
         for enumIdentifier in enum['enumIdentifiers']:
             enumIdentifierString = enumIdentifier['enumIdentifier']
-            ret += '  - [{}](#{}-{})\n'.format(enumIdentifierString, rawType, enumIdentifierString.replace(' ', '-').lower())
+            enumIdentifierHeader = '{}::{}'.format(enumType, enumIdentifierString)
+            enumIdentifierFragment = get_fragment(enumIdentifierHeader, False)
+            ret += '### {}\n\n'.format(enumIdentifierHeader)
+            ret += '{}\n\n'.format(enumIdentifier['description'])
+            ret += '- Identifier Value: `{}`\n'.format(enumIdentifier['enumValue'])
+            ret += '- Latest Supported RPC Version: `{}`\n'.format(enumIdentifier['rpcVersion'])
+            if enumIdentifier['initialVersion'].lower() == 'unreleased':
+                ret += '- Unreleased\n'
+            else:
+                ret += '- Added in v{}\n'.format(enumIdentifier['initialVersion'])
+
+            ret += '\n---\n\n'
     return ret
 
 def get_requests_toc(requests):
@@ -69,11 +115,39 @@ def get_requests_toc(requests):
             requestsOut.append(request)
         if not len(requestsOut):
             continue
-        rawCategory = category.replace(' ', '-').lower()
-        ret += '- [{}](#{})\n'.format(category, rawCategory)
+        categoryFragment = get_fragment(category, False)
+        ret += '- [{}](#{})\n'.format(category, categoryFragment)
         for request in requestsOut:
             requestType = request['requestType']
-            ret += '  - [{}](#{}-{})\n'.format(requestType, rawCategory, requestType.replace(' ', '-').lower())
+            requestTypeFragment = get_fragment(requestType, False)
+            ret += '  - [{}](#{})\n'.format(requestType, requestTypeFragment)
+    return ret
+
+def get_requests(requests):
+    ret = ''
+    for category in categoryOrder:
+        requestsOut = []
+        for request in requests:
+            if request['category'] != category.lower():
+                continue
+            requestsOut.append(request)
+        if not len(requestsOut):
+            continue
+        categoryFragment = get_fragment(category)
+        ret += '## {}\n\n'.format(category)
+        for request in requestsOut:
+            requestType = request['requestType']
+            requestTypeFragment = get_fragment(requestType)
+            ret += '### {}\n\n'.format(requestType)
+            ret += '{}\n\n'.format(request['description'])
+            ret += '- Complexity Rating: `{}/5`\n'.format(request['complexity'])
+            ret += '- Latest Supported RPC Version: `{}`\n'.format(request['rpcVersion'])
+            if request['initialVersion'].lower() == 'unreleased':
+                ret += '- Unreleased\n'
+            else:
+                ret += '- Added in v{}\n'.format(request['initialVersion'])
+
+            ret += '\n---\n\n'
     return ret
 
 def get_events_toc(events):
@@ -86,38 +160,87 @@ def get_events_toc(events):
             eventsOut.append(event)
         if not len(eventsOut):
             continue
-        rawCategory = category.replace(' ', '-').lower()
-        ret += '- [{}](#{})\n'.format(category, rawCategory)
+        categoryFragment = get_fragment(category, False)
+        ret += '- [{}](#{})\n'.format(category, categoryFragment)
         for event in eventsOut:
-            requestType = event['eventType']
-            ret += '  - [{}](#{}-{})\n'.format(requestType, rawCategory, requestType.replace(' ', '-').lower())
+            eventType = event['eventType']
+            eventTypeFragment = get_fragment(eventType, False)
+            ret += '  - [{}](#{})\n'.format(eventType, eventTypeFragment)
     return ret
 
+def get_events(events):
+    ret = ''
+    for category in categoryOrder:
+        eventsOut = []
+        for event in events:
+            if event['category'] != category.lower():
+                continue
+            eventsOut.append(event)
+        if not len(eventsOut):
+            continue
+        categoryFragment = get_fragment(category)
+        ret += '## {}\n\n'.format(category)
+        for event in eventsOut:
+            eventType = event['eventType']
+            eventTypeFragment = get_fragment(eventType)
+            ret += '### {}\n\n'.format(eventType)
+            ret += '{}\n\n'.format(event['description'])
+            ret += '- Complexity Rating: `{}/5`\n'.format(event['complexity'])
+            ret += '- Latest Supported RPC Version: `{}`\n'.format(event['rpcVersion'])
+            if event['initialVersion'].lower() == 'unreleased':
+                ret += '- Unreleased\n'
+            else:
+                ret += '- Added in v{}\n'.format(event['initialVersion'])
+
+            ret += '\n---\n\n'
+    return ret
+
+# Actual code
 #######################################################################################################################
 
+# Read versions json
+try:
+    with open('../versions.json', 'r') as f:
+        versions = json.load(f)
+except IOError:
+    print('Failed to get global versions. Versions file not configured?')
+    os.exit(1)
+
+# Read protocol json
 with open('../generated/protocol.json', 'r') as f:
     protocol = json.load(f)
 
 output = "<!-- This file was automatically generated. Do not edit directly! -->\n"
 
+# Insert introduction partial
 output += read_file('partials/introduction.md')
 
 output += '\n\n'
 
+# Generate enums MD
 output += read_file('partials/enumsHeader.md')
 output += get_enums_toc(protocol['enums'])
+output += '\n\n'
+output += get_enums(protocol['enums'])
 
 output += '\n\n'
 
+# Generate requests MD
 output += read_file('partials/requestsHeader.md')
 output += get_requests_toc(protocol['requests'])
+output += '\n\n'
+output += get_requests(protocol['requests'])
 
 output += '\n\n'
 
+# Generate events MD
 output += read_file('partials/eventsHeader.md')
 output += get_events_toc(protocol['events'])
+output += '\n\n'
+output += get_events(protocol['events'])
 
 output += '\n\n'
 
+# Write new protocol MD
 with open('../generated/protocol.md', 'w') as f:
     f.write(output)

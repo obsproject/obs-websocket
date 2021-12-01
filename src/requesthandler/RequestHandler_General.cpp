@@ -35,7 +35,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
  *
  * @requestType GetVersion
  * @complexity 1
- * @rpcVersion 1
+ * @rpcVersion -1
  * @initialVersion 5.0.0
  * @category general
  * @api requests
@@ -65,7 +65,7 @@ RequestResult RequestHandler::GetVersion(const Request&)
  *
  * @requestType BroadcastCustomEvent
  * @complexity 1
- * @rpcVersion 1
+ * @rpcVersion -1
  * @initialVersion 5.0.0
  * @category general
  * @api requests
@@ -103,7 +103,7 @@ RequestResult RequestHandler::BroadcastCustomEvent(const Request& request)
  *
  * @requestType GetStats
  * @complexity 2
- * @rpcVersion 1
+ * @rpcVersion -1
  * @initialVersion 5.0.0
  * @category general
  * @api requests
@@ -125,7 +125,7 @@ RequestResult RequestHandler::GetStats(const Request&)
  *
  * @requestType GetHotkeyList
  * @complexity 3
- * @rpcVersion 1
+ * @rpcVersion -1
  * @initialVersion 5.0.0
  * @category general
  * @api requests
@@ -144,7 +144,7 @@ RequestResult RequestHandler::GetHotkeyList(const Request&)
  *
  * @requestType TriggerHotkeyByName
  * @complexity 3
- * @rpcVersion 1
+ * @rpcVersion -1
  * @initialVersion 5.0.0
  * @category general
  * @api requests
@@ -177,7 +177,7 @@ RequestResult RequestHandler::TriggerHotkeyByName(const Request& request)
  *
  * @requestType TriggerHotkeyByKeySequence
  * @complexity 4
- * @rpcVersion 1
+ * @rpcVersion -1
  * @initialVersion 5.0.0
  * @category general
  * @api requests
@@ -233,7 +233,7 @@ RequestResult RequestHandler::TriggerHotkeyByKeySequence(const Request& request)
  *
  * @requestType GetStudioModeEnabled
  * @complexity 1
- * @rpcVersion 1
+ * @rpcVersion -1
  * @initialVersion 5.0.0
  * @category general
  * @api requests
@@ -252,7 +252,7 @@ RequestResult RequestHandler::GetStudioModeEnabled(const Request&)
  *
  * @requestType SetStudioModeEnabled
  * @complexity 1
- * @rpcVersion 1
+ * @rpcVersion -1
  * @initialVersion 5.0.0
  * @category general
  * @api requests
@@ -286,7 +286,7 @@ RequestResult RequestHandler::SetStudioModeEnabled(const Request& request)
  *
  * @requestType Sleep
  * @complexity 2
- * @rpcVersion 1
+ * @rpcVersion -1
  * @initialVersion 5.0.0
  * @category general
  * @api requests

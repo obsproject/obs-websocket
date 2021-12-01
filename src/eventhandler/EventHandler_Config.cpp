@@ -30,7 +30,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
  * @eventType CurrentSceneCollectionChanging
  * @eventSubscription Config
  * @complexity 1
- * @rpcVersion 1
+ * @rpcVersion -1
  * @initialVersion 5.0.0
  * @category config
  * @api events
@@ -52,7 +52,7 @@ void EventHandler::HandleCurrentSceneCollectionChanging()
  * @eventType CurrentSceneCollectionChanged
  * @eventSubscription Config
  * @complexity 1
- * @rpcVersion 1
+ * @rpcVersion -1
  * @initialVersion 5.0.0
  * @category config
  * @api events
@@ -72,7 +72,7 @@ void EventHandler::HandleCurrentSceneCollectionChanged()
  * @eventType SceneCollectionListChanged
  * @eventSubscription Config
  * @complexity 1
- * @rpcVersion 1
+ * @rpcVersion -1
  * @initialVersion 5.0.0
  * @category config
  * @api events
@@ -92,7 +92,7 @@ void EventHandler::HandleSceneCollectionListChanged()
  * @eventType CurrentProfileChanging
  * @eventSubscription Config
  * @complexity 1
- * @rpcVersion 1
+ * @rpcVersion -1
  * @initialVersion 5.0.0
  * @category config
  * @api events
@@ -112,7 +112,7 @@ void EventHandler::HandleCurrentProfileChanging()
  * @eventType CurrentProfileChanged
  * @eventSubscription Config
  * @complexity 1
- * @rpcVersion 1
+ * @rpcVersion -1
  * @initialVersion 5.0.0
  * @category config
  * @api events
@@ -132,7 +132,7 @@ void EventHandler::HandleCurrentProfileChanged()
  * @eventType ProfileListChanged
  * @eventSubscription Config
  * @complexity 1
- * @rpcVersion 1
+ * @rpcVersion -1
  * @initialVersion 5.0.0
  * @category config
  * @api events
