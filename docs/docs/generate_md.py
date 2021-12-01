@@ -30,11 +30,23 @@ categoryOrder = [
 
 requestFieldHeader = """
 
+**Request Fields:**
+
 | Name | Type  | Description | Restrictions | Optional? | Default Behavior (If Optional) |
 | ---- | :---: | ----------- | :----------: | :-------: | ------------------------------ |
 """
 
 responseFieldHeader = """
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+"""
+
+dataFieldHeader = """
+
+**Data Fields:**
 
 | Name | Type  | Description |
 | ---- | :---: | ----------- |
@@ -225,7 +237,7 @@ def get_events(events):
                 ret += '- Added in v{}\n'.format(event['initialVersion'])
 
             if event['dataFields']:
-                ret += responseFieldHeader
+                ret += dataFieldHeader
             for dataField in event['dataFields']:
                 ret += '| {} | {} | {} |\n'.format(dataField['valueName'], dataField['valueType'], dataField['valueDescription'])
 
@@ -265,21 +277,21 @@ logging.info('Inserted enums section.')
 
 output += '\n\n'
 
-# Generate requests MD
-output += read_file('partials/requestsHeader.md')
-output += get_requests_toc(protocol['requests'])
-output += '\n\n'
-output += get_requests(protocol['requests'])
-logging.info('Inserted requests section.')
-
-output += '\n\n'
-
 # Generate events MD
 output += read_file('partials/eventsHeader.md')
 output += get_events_toc(protocol['events'])
 output += '\n\n'
 output += get_events(protocol['events'])
 logging.info('Inserted events section.')
+
+output += '\n\n'
+
+# Generate requests MD
+output += read_file('partials/requestsHeader.md')
+output += get_requests_toc(protocol['requests'])
+output += '\n\n'
+output += get_requests(protocol['requests'])
+logging.info('Inserted requests section.')
 
 output += '\n\n'
 

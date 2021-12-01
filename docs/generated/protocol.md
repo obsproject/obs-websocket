@@ -1214,10 +1214,159 @@ Subscription value to receive the `SceneItemTransformChanged` high-volume event.
 - Added in v5.0.0
 
 
+# Events
+
+### Events Table of Contents
+- [General](#general)
+  - [ExitStarted](#exitstarted)
+  - [StudioModeStateChanged](#studiomodestatechanged)
+- [Config](#config)
+  - [CurrentSceneCollectionChanging](#currentscenecollectionchanging)
+  - [CurrentSceneCollectionChanged](#currentscenecollectionchanged)
+  - [SceneCollectionListChanged](#scenecollectionlistchanged)
+  - [CurrentProfileChanging](#currentprofilechanging)
+  - [CurrentProfileChanged](#currentprofilechanged)
+  - [ProfileListChanged](#profilelistchanged)
+
+
+## General
+
+### ExitStarted
+
+OBS has begun the shutdown process.
+
+- Complexity Rating: `1/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### StudioModeStateChanged
+
+Studio mode has been enabled or disabled.
+
+- Complexity Rating: `1/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Data Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| studioModeEnabled | Boolean | True == Enabled, False == Disabled |
+## Config
+
+### CurrentSceneCollectionChanging
+
+The current scene collection has begun changing.
+
+Note: We recommend using this event to trigger a pause of all polling requests, as performing any requests during a
+scene collection change is considered undefined behavior and can cause crashes!
+
+- Complexity Rating: `1/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Data Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| sceneCollectionName | String | Name of the current scene collection |
+
+---
+
+### CurrentSceneCollectionChanged
+
+The current scene collection has changed.
+
+Note: If polling has been paused during `CurrentSceneCollectionChanging`, this is the que to restart polling.
+
+- Complexity Rating: `1/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Data Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| sceneCollectionName | String | Name of the new scene collection |
+
+---
+
+### SceneCollectionListChanged
+
+The scene collection list has changed.
+
+- Complexity Rating: `1/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Data Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| sceneCollections | Array<String> | Updated list of scene collections |
+
+---
+
+### CurrentProfileChanging
+
+The current profile has begun changing.
+
+- Complexity Rating: `1/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Data Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| profileName | String | Name of the current profile |
+
+---
+
+### CurrentProfileChanged
+
+The current profile has changed.
+
+- Complexity Rating: `1/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Data Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| profileName | String | Name of the new profile |
+
+---
+
+### ProfileListChanged
+
+The profile list has changed.
+
+- Complexity Rating: `1/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Data Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| profiles | Array<String> | Updated list of profiles |
+
+
 # Requests
 
 ### Requests Table of Contents
-- [General](#general)
+- [General](#general-1)
   - [GetVersion](#getversion)
   - [BroadcastCustomEvent](#broadcastcustomevent)
   - [GetStats](#getstats)
@@ -1227,7 +1376,7 @@ Subscription value to receive the `SceneItemTransformChanged` high-volume event.
   - [GetStudioModeEnabled](#getstudiomodeenabled)
   - [SetStudioModeEnabled](#setstudiomodeenabled)
   - [Sleep](#sleep)
-- [Config](#config)
+- [Config](#config-1)
   - [GetPersistentData](#getpersistentdata)
   - [SetPersistentData](#setpersistentdata)
   - [GetSceneCollectionList](#getscenecollectionlist)
@@ -1258,6 +1407,8 @@ Gets data about the current plugin and RPC version.
 - Added in v5.0.0
 
 
+**Response Fields:**
+
 | Name | Type  | Description |
 | ---- | :---: | ----------- |
 | obsVersion | String | Current OBS Studio version |
@@ -1276,6 +1427,8 @@ Broadcasts a `CustomEvent` to all WebSocket clients. Receivers are clients which
 - Added in v5.0.0
 
 
+**Request Fields:**
+
 | Name | Type  | Description | Restrictions | Optional? | Default Behavior (If Optional) |
 | ---- | :---: | ----------- | :----------: | :-------: | ------------------------------ |
 | eventData | Object | Data payload to emit to all receivers | None | No | None |
@@ -1290,6 +1443,8 @@ Gets statistics about OBS, obs-websocket, and the current session.
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
+
+**Response Fields:**
 
 | Name | Type  | Description |
 | ---- | :---: | ----------- |
@@ -1316,6 +1471,8 @@ Gets an array of all hotkey names in OBS
 - Added in v5.0.0
 
 
+**Response Fields:**
+
 | Name | Type  | Description |
 | ---- | :---: | ----------- |
 | hotkeys | Array<String> | Array of hotkey names |
@@ -1331,6 +1488,8 @@ Triggers a hotkey using its name. See `GetHotkeyList`
 - Added in v5.0.0
 
 
+**Request Fields:**
+
 | Name | Type  | Description | Restrictions | Optional? | Default Behavior (If Optional) |
 | ---- | :---: | ----------- | :----------: | :-------: | ------------------------------ |
 | hotkeyName | String | Name of the hotkey to trigger | None | No | None |
@@ -1345,6 +1504,8 @@ Triggers a hotkey using a sequence of keys.
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
+
+**Request Fields:**
 
 | Name | Type  | Description | Restrictions | Optional? | Default Behavior (If Optional) |
 | ---- | :---: | ----------- | :----------: | :-------: | ------------------------------ |
@@ -1366,6 +1527,8 @@ Gets whether studio is enabled.
 - Added in v5.0.0
 
 
+**Response Fields:**
+
 | Name | Type  | Description |
 | ---- | :---: | ----------- |
 | studioModeEnabled | Boolean | Whether studio mode is enabled |
@@ -1381,6 +1544,8 @@ Enables or disables studio mode
 - Added in v5.0.0
 
 
+**Request Fields:**
+
 | Name | Type  | Description | Restrictions | Optional? | Default Behavior (If Optional) |
 | ---- | :---: | ----------- | :----------: | :-------: | ------------------------------ |
 | studioModeEnabled | Boolean | True == Enabled, False == Disabled | None | No | None |
@@ -1395,6 +1560,8 @@ Sleeps for a time duration or number of frames. Only available in request batche
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
+
+**Request Fields:**
 
 | Name | Type  | Description | Restrictions | Optional? | Default Behavior (If Optional) |
 | ---- | :---: | ----------- | :----------: | :-------: | ------------------------------ |
@@ -1413,11 +1580,15 @@ Gets the value of a "slot" from the selected persistent data realm.
 - Added in v5.0.0
 
 
+**Request Fields:**
+
 | Name | Type  | Description | Restrictions | Optional? | Default Behavior (If Optional) |
 | ---- | :---: | ----------- | :----------: | :-------: | ------------------------------ |
 | realm | String | The data realm to select. `OBS_WEBSOCKET_DATA_REALM_GLOBAL` or `OBS_WEBSOCKET_DATA_REALM_PROFILE` | None | No | None |
 | slotName | String | The name of the slot to retrieve data from | None | No | None |
 
+
+**Response Fields:**
 
 | Name | Type  | Description |
 | ---- | :---: | ----------- |
@@ -1433,6 +1604,8 @@ Sets the value of a "slot" from the selected persistent data realm.
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
+
+**Request Fields:**
 
 | Name | Type  | Description | Restrictions | Optional? | Default Behavior (If Optional) |
 | ---- | :---: | ----------- | :----------: | :-------: | ------------------------------ |
@@ -1450,6 +1623,8 @@ Gets an array of all scene collections
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
+
+**Response Fields:**
 
 | Name | Type  | Description |
 | ---- | :---: | ----------- |
@@ -1469,6 +1644,8 @@ Note: This will block until the collection has finished changing.
 - Added in v5.0.0
 
 
+**Request Fields:**
+
 | Name | Type  | Description | Restrictions | Optional? | Default Behavior (If Optional) |
 | ---- | :---: | ----------- | :----------: | :-------: | ------------------------------ |
 | sceneCollectionName | String | Name of the scene collection to switch to | None | No | None |
@@ -1486,6 +1663,8 @@ Note: This will block until the collection has finished changing.
 - Added in v5.0.0
 
 
+**Request Fields:**
+
 | Name | Type  | Description | Restrictions | Optional? | Default Behavior (If Optional) |
 | ---- | :---: | ----------- | :----------: | :-------: | ------------------------------ |
 | sceneCollectionName | String | Name for the new scene collection | None | No | None |
@@ -1500,6 +1679,8 @@ Gets an array of all profiles
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
+
+**Response Fields:**
 
 | Name | Type  | Description |
 | ---- | :---: | ----------- |
@@ -1517,6 +1698,8 @@ Switches to a profile.
 - Added in v5.0.0
 
 
+**Request Fields:**
+
 | Name | Type  | Description | Restrictions | Optional? | Default Behavior (If Optional) |
 | ---- | :---: | ----------- | :----------: | :-------: | ------------------------------ |
 | profileName | String | Name of the profile to switch to | None | No | None |
@@ -1531,6 +1714,8 @@ Creates a new profile, switching to it in the process
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
+
+**Request Fields:**
 
 | Name | Type  | Description | Restrictions | Optional? | Default Behavior (If Optional) |
 | ---- | :---: | ----------- | :----------: | :-------: | ------------------------------ |
@@ -1547,6 +1732,8 @@ Removes a profile. If the current profile is chosen, it will change to a differe
 - Added in v5.0.0
 
 
+**Request Fields:**
+
 | Name | Type  | Description | Restrictions | Optional? | Default Behavior (If Optional) |
 | ---- | :---: | ----------- | :----------: | :-------: | ------------------------------ |
 | profileName | String | Name of the profile to remove | None | No | None |
@@ -1562,11 +1749,15 @@ Gets a parameter from the current profile's configuration.
 - Added in v5.0.0
 
 
+**Request Fields:**
+
 | Name | Type  | Description | Restrictions | Optional? | Default Behavior (If Optional) |
 | ---- | :---: | ----------- | :----------: | :-------: | ------------------------------ |
 | parameterCategory | String | Category of the parameter to get | None | No | None |
 | parameterName | String | Name of the parameter to get | None | No | None |
 
+
+**Response Fields:**
 
 | Name | Type  | Description |
 | ---- | :---: | ----------- |
@@ -1583,6 +1774,8 @@ Sets the value of a parameter in the current profile's configuration.
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
+
+**Request Fields:**
 
 | Name | Type  | Description | Restrictions | Optional? | Default Behavior (If Optional) |
 | ---- | :---: | ----------- | :----------: | :-------: | ------------------------------ |
@@ -1602,6 +1795,8 @@ Note: To get the true FPS value, divide the FPS numerator by the FPS denominator
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
+
+**Response Fields:**
 
 | Name | Type  | Description |
 | ---- | :---: | ----------- |
@@ -1625,6 +1820,8 @@ Note: Fields must be specified in pairs. For example, you cannot set only `baseW
 - Added in v5.0.0
 
 
+**Request Fields:**
+
 | Name | Type  | Description | Restrictions | Optional? | Default Behavior (If Optional) |
 | ---- | :---: | ----------- | :----------: | :-------: | ------------------------------ |
 | fpsNumerator | Number | Numerator of the fractional FPS value | >= 1 | No | None |
@@ -1645,6 +1842,8 @@ Gets the current stream service settings (stream destination).
 - Added in v5.0.0
 
 
+**Response Fields:**
+
 | Name | Type  | Description |
 | ---- | :---: | ----------- |
 | streamServiceType | String | Stream service type, like `rtmp_custom` or `rtmp_common` |
@@ -1663,144 +1862,11 @@ Note: Simple RTMP settings can be set with type `rtmp_custom` and the settings f
 - Added in v5.0.0
 
 
+**Request Fields:**
+
 | Name | Type  | Description | Restrictions | Optional? | Default Behavior (If Optional) |
 | ---- | :---: | ----------- | :----------: | :-------: | ------------------------------ |
 | streamServiceType | String | Type of stream service to apply. Example: `rtmp_common` or `rtmp_custom` | None | No | None |
 | streamServiceSettings | Object | Settings to apply to the service | None | No | None |
-
-
-# Events
-
-### Events Table of Contents
-- [General](#general-1)
-  - [ExitStarted](#exitstarted)
-  - [StudioModeStateChanged](#studiomodestatechanged)
-- [Config](#config-1)
-  - [CurrentSceneCollectionChanging](#currentscenecollectionchanging)
-  - [CurrentSceneCollectionChanged](#currentscenecollectionchanged)
-  - [SceneCollectionListChanged](#scenecollectionlistchanged)
-  - [CurrentProfileChanging](#currentprofilechanging)
-  - [CurrentProfileChanged](#currentprofilechanged)
-  - [ProfileListChanged](#profilelistchanged)
-
-
-## General
-
-### ExitStarted
-
-OBS has begun the shutdown process.
-
-- Complexity Rating: `1/5`
-- Latest Supported RPC Version: `1`
-- Added in v5.0.0
-
----
-
-### StudioModeStateChanged
-
-Studio mode has been enabled or disabled.
-
-- Complexity Rating: `1/5`
-- Latest Supported RPC Version: `1`
-- Added in v5.0.0
-
-
-| Name | Type  | Description |
-| ---- | :---: | ----------- |
-| studioModeEnabled | Boolean | True == Enabled, False == Disabled |
-## Config
-
-### CurrentSceneCollectionChanging
-
-The current scene collection has begun changing.
-
-Note: We recommend using this event to trigger a pause of all polling requests, as performing any requests during a
-scene collection change is considered undefined behavior and can cause crashes!
-
-- Complexity Rating: `1/5`
-- Latest Supported RPC Version: `1`
-- Added in v5.0.0
-
-
-| Name | Type  | Description |
-| ---- | :---: | ----------- |
-| sceneCollectionName | String | Name of the current scene collection |
-
----
-
-### CurrentSceneCollectionChanged
-
-The current scene collection has changed.
-
-Note: If polling has been paused during `CurrentSceneCollectionChanging`, this is the que to restart polling.
-
-- Complexity Rating: `1/5`
-- Latest Supported RPC Version: `1`
-- Added in v5.0.0
-
-
-| Name | Type  | Description |
-| ---- | :---: | ----------- |
-| sceneCollectionName | String | Name of the new scene collection |
-
----
-
-### SceneCollectionListChanged
-
-The scene collection list has changed.
-
-- Complexity Rating: `1/5`
-- Latest Supported RPC Version: `1`
-- Added in v5.0.0
-
-
-| Name | Type  | Description |
-| ---- | :---: | ----------- |
-| sceneCollections | Array<String> | Updated list of scene collections |
-
----
-
-### CurrentProfileChanging
-
-The current profile has begun changing.
-
-- Complexity Rating: `1/5`
-- Latest Supported RPC Version: `1`
-- Added in v5.0.0
-
-
-| Name | Type  | Description |
-| ---- | :---: | ----------- |
-| profileName | String | Name of the current profile |
-
----
-
-### CurrentProfileChanged
-
-The current profile has changed.
-
-- Complexity Rating: `1/5`
-- Latest Supported RPC Version: `1`
-- Added in v5.0.0
-
-
-| Name | Type  | Description |
-| ---- | :---: | ----------- |
-| profileName | String | Name of the new profile |
-
----
-
-### ProfileListChanged
-
-The profile list has changed.
-
-- Complexity Rating: `1/5`
-- Latest Supported RPC Version: `1`
-- Added in v5.0.0
-
-
-| Name | Type  | Description |
-| ---- | :---: | ----------- |
-| profiles | Array<String> | Updated list of profiles |
 
 
