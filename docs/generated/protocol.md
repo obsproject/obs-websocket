@@ -1431,7 +1431,7 @@ Broadcasts a `CustomEvent` to all WebSocket clients. Receivers are clients which
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
-| eventData | Object | Data payload to emit to all receivers | None | None |
+| eventData | Object | Data payload to emit to all receivers | None | N/A |
 
 ---
 
@@ -1492,7 +1492,7 @@ Triggers a hotkey using its name. See `GetHotkeyList`
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
-| hotkeyName | String | Name of the hotkey to trigger | None | None |
+| hotkeyName | String | Name of the hotkey to trigger | None | N/A |
 
 ---
 
@@ -1548,7 +1548,7 @@ Enables or disables studio mode
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
-| studioModeEnabled | Boolean | True == Enabled, False == Disabled | None | None |
+| studioModeEnabled | Boolean | True == Enabled, False == Disabled | None | N/A |
 
 ---
 
@@ -1565,8 +1565,8 @@ Sleeps for a time duration or number of frames. Only available in request batche
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
-| sleepMillis | Number | Number of milliseconds to sleep for (if `SERIAL_REALTIME` mode) | >= 0, <= 50000 | None |
-| sleepFrames | Number | Number of frames to sleep for (if `SERIAL_FRAME` mode) | >= 0, <= 10000 | None |
+| sleepMillis | Number | Number of milliseconds to sleep for (if `SERIAL_REALTIME` mode) | >= 0, <= 50000 | N/A |
+| sleepFrames | Number | Number of frames to sleep for (if `SERIAL_FRAME` mode) | >= 0, <= 10000 | N/A |
 
 
 ## Config
@@ -1584,8 +1584,8 @@ Gets the value of a "slot" from the selected persistent data realm.
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
-| realm | String | The data realm to select. `OBS_WEBSOCKET_DATA_REALM_GLOBAL` or `OBS_WEBSOCKET_DATA_REALM_PROFILE` | None | None |
-| slotName | String | The name of the slot to retrieve data from | None | None |
+| realm | String | The data realm to select. `OBS_WEBSOCKET_DATA_REALM_GLOBAL` or `OBS_WEBSOCKET_DATA_REALM_PROFILE` | None | N/A |
+| slotName | String | The name of the slot to retrieve data from | None | N/A |
 
 
 **Response Fields:**
@@ -1609,9 +1609,9 @@ Sets the value of a "slot" from the selected persistent data realm.
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
-| realm | String | The data realm to select. `OBS_WEBSOCKET_DATA_REALM_GLOBAL` or `OBS_WEBSOCKET_DATA_REALM_PROFILE` | None | None |
-| slotName | String | The name of the slot to retrieve data from | None | None |
-| slotValue | Any | The value to apply to the slot | None | None |
+| realm | String | The data realm to select. `OBS_WEBSOCKET_DATA_REALM_GLOBAL` or `OBS_WEBSOCKET_DATA_REALM_PROFILE` | None | N/A |
+| slotName | String | The name of the slot to retrieve data from | None | N/A |
+| slotValue | Any | The value to apply to the slot | None | N/A |
 
 ---
 
@@ -1648,7 +1648,7 @@ Note: This will block until the collection has finished changing.
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
-| sceneCollectionName | String | Name of the scene collection to switch to | None | None |
+| sceneCollectionName | String | Name of the scene collection to switch to | None | N/A |
 
 ---
 
@@ -1667,7 +1667,7 @@ Note: This will block until the collection has finished changing.
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
-| sceneCollectionName | String | Name for the new scene collection | None | None |
+| sceneCollectionName | String | Name for the new scene collection | None | N/A |
 
 ---
 
@@ -1702,7 +1702,7 @@ Switches to a profile.
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
-| profileName | String | Name of the profile to switch to | None | None |
+| profileName | String | Name of the profile to switch to | None | N/A |
 
 ---
 
@@ -1719,7 +1719,7 @@ Creates a new profile, switching to it in the process
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
-| profileName | String | Name for the new profile | None | None |
+| profileName | String | Name for the new profile | None | N/A |
 
 ---
 
@@ -1736,7 +1736,7 @@ Removes a profile. If the current profile is chosen, it will change to a differe
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
-| profileName | String | Name of the profile to remove | None | None |
+| profileName | String | Name of the profile to remove | None | N/A |
 
 ---
 
@@ -1753,8 +1753,8 @@ Gets a parameter from the current profile's configuration.
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
-| parameterCategory | String | Category of the parameter to get | None | None |
-| parameterName | String | Name of the parameter to get | None | None |
+| parameterCategory | String | Category of the parameter to get | None | N/A |
+| parameterName | String | Name of the parameter to get | None | N/A |
 
 
 **Response Fields:**
@@ -1779,9 +1779,9 @@ Sets the value of a parameter in the current profile's configuration.
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
-| parameterCategory | String | Category of the parameter to set | None | None |
-| parameterName | String | Name of the parameter to set | None | None |
-| parameterValue | String | Value of the parameter to set. Use `null` to delete | None | None |
+| parameterCategory | String | Category of the parameter to set | None | N/A |
+| parameterName | String | Name of the parameter to set | None | N/A |
+| parameterValue | String | Value of the parameter to set. Use `null` to delete | None | N/A |
 
 ---
 
@@ -1866,7 +1866,7 @@ Note: Simple RTMP settings can be set with type `rtmp_custom` and the settings f
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
-| streamServiceType | String | Type of stream service to apply. Example: `rtmp_common` or `rtmp_custom` | None | None |
-| streamServiceSettings | Object | Settings to apply to the service | None | None |
+| streamServiceType | String | Type of stream service to apply. Example: `rtmp_common` or `rtmp_custom` | None | N/A |
+| streamServiceSettings | Object | Settings to apply to the service | None | N/A |
 
 

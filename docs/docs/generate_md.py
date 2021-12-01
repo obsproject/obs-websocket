@@ -180,7 +180,7 @@ def get_requests(requests):
             for requestField in request['requestFields']:
                 valueRestrictions = requestField['valueRestrictions'] if requestField['valueRestrictions'] else 'None'
                 valueOptional = '?' if requestField['valueOptional'] else ''
-                valueOptionalBehavior = requestField['valueOptionalBehavior'] if requestField['valueOptional'] and requestField['valueOptionalBehavior'] else 'None'
+                valueOptionalBehavior = requestField['valueOptionalBehavior'] if requestField['valueOptional'] and requestField['valueOptionalBehavior'] else 'N/A'
                 ret += '| {}{} | {} | {} | {} | {} |\n'.format(valueOptional, requestField['valueName'], requestField['valueType'], requestField['valueDescription'], valueRestrictions, valueOptionalBehavior)
 
             if request['responseFields']:
