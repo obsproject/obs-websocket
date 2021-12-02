@@ -1332,6 +1332,566 @@
         }
       ],
       "responseFields": []
+    },
+    {
+      "description": "Gets an array of all inputs in OBS.",
+      "requestType": "GetInputList",
+      "complexity": 2,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "inputs",
+      "requestFields": [
+        {
+          "valueName": "inputKind",
+          "valueType": "String",
+          "valueDescription": "Restrict the array to only inputs of the specified kind",
+          "valueRestrictions": null,
+          "valueOptional": true,
+          "valueOptionalBehavior": "All kinds included"
+        }
+      ],
+      "responseFields": [
+        {
+          "valueName": "inputs",
+          "valueType": "Array<Object>",
+          "valueDescription": "Array of inputs"
+        }
+      ]
+    },
+    {
+      "description": "Gets an array of all available input kinds in OBS.",
+      "requestType": "GetInputKindList",
+      "complexity": 2,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "inputs",
+      "requestFields": [
+        {
+          "valueName": "unversioned",
+          "valueType": "Boolean",
+          "valueDescription": "True == Return all kinds as unversioned, False == Return with version suffixes (if available)",
+          "valueRestrictions": null,
+          "valueOptional": true,
+          "valueOptionalBehavior": "false"
+        }
+      ],
+      "responseFields": [
+        {
+          "valueName": "inputKinds",
+          "valueType": "Array<String>",
+          "valueDescription": "Array of input kinds"
+        }
+      ]
+    },
+    {
+      "description": "Creates a new input, adding it as a scene item to the specified scene.",
+      "requestType": "CreateInput",
+      "complexity": 3,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "inputs",
+      "requestFields": [
+        {
+          "valueName": "sceneName",
+          "valueType": "String",
+          "valueDescription": "Name of the scene to add the input to as a scene item",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        },
+        {
+          "valueName": "inputName",
+          "valueType": "String",
+          "valueDescription": "Name of the new input to created",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        },
+        {
+          "valueName": "inputKind",
+          "valueType": "String",
+          "valueDescription": "The kind of input to be created",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        },
+        {
+          "valueName": "inputSettings",
+          "valueType": "Object",
+          "valueDescription": "Settings object to initialize the input with",
+          "valueRestrictions": null,
+          "valueOptional": true,
+          "valueOptionalBehavior": "Default settings used"
+        },
+        {
+          "valueName": "sceneItemEnabled",
+          "valueType": "Boolean",
+          "valueDescription": "Whether to set the created scene item to enabled or disabled",
+          "valueRestrictions": null,
+          "valueOptional": true,
+          "valueOptionalBehavior": "True"
+        }
+      ],
+      "responseFields": [
+        {
+          "valueName": "sceneItemId",
+          "valueType": "Number",
+          "valueDescription": "ID of the newly created scene item"
+        }
+      ]
+    },
+    {
+      "description": "Removes an existing input.\n\nNote: Will immediately remove all associated scene items.",
+      "requestType": "RemoveInput",
+      "complexity": 2,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "inputs",
+      "requestFields": [
+        {
+          "valueName": "inputName",
+          "valueType": "String",
+          "valueDescription": "Name of the input to remove",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        }
+      ],
+      "responseFields": []
+    },
+    {
+      "description": "Sets the name of an input (rename).",
+      "requestType": "SetInputName",
+      "complexity": 2,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "inputs",
+      "requestFields": [
+        {
+          "valueName": "inputName",
+          "valueType": "String",
+          "valueDescription": "Current input name",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        },
+        {
+          "valueName": "newInputName",
+          "valueType": "String",
+          "valueDescription": "New name for the input",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        }
+      ],
+      "responseFields": []
+    },
+    {
+      "description": "Gets the default settings for an input kind.",
+      "requestType": "GetInputDefaultSettings",
+      "complexity": 3,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "inputs",
+      "requestFields": [
+        {
+          "valueName": "inputKind",
+          "valueType": "String",
+          "valueDescription": "Input kind to get the default settings for",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        }
+      ],
+      "responseFields": [
+        {
+          "valueName": "defaultInputSettings",
+          "valueType": "Object",
+          "valueDescription": "Object of default settings for the input kind"
+        }
+      ]
+    },
+    {
+      "description": "Gets the settings of an input.\n\nNote: Does not include defaults. To create the entire settings object, overlay `inputSettings` over the `defaultInputSettings` provided by `GetInputDefaultSettings`.",
+      "requestType": "GetInputSettings",
+      "complexity": 3,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "inputs",
+      "requestFields": [
+        {
+          "valueName": "inputName",
+          "valueType": "String",
+          "valueDescription": "Name of the input to get the settings of",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        }
+      ],
+      "responseFields": [
+        {
+          "valueName": "inputSettings",
+          "valueType": "Object",
+          "valueDescription": "Object of settings for the input"
+        },
+        {
+          "valueName": "inputKind",
+          "valueType": "String",
+          "valueDescription": "The kind of the input"
+        }
+      ]
+    },
+    {
+      "description": "Sets the settings of an input.",
+      "requestType": "SetInputSettings",
+      "complexity": 3,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "inputs",
+      "requestFields": [
+        {
+          "valueName": "inputName",
+          "valueType": "String",
+          "valueDescription": "Name of the input to set the settings of",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        },
+        {
+          "valueName": "inputSettings",
+          "valueType": "Object",
+          "valueDescription": "Object of settings to apply",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        }
+      ],
+      "responseFields": []
+    },
+    {
+      "description": "Gets the audio mute state of an input.",
+      "requestType": "GetInputMute",
+      "complexity": 2,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "inputs",
+      "requestFields": [
+        {
+          "valueName": "inputName",
+          "valueType": "String",
+          "valueDescription": "Name of input to get the mute state of",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        }
+      ],
+      "responseFields": [
+        {
+          "valueName": "inputMuted",
+          "valueType": "Boolean",
+          "valueDescription": "Whether the input is muted"
+        }
+      ]
+    },
+    {
+      "description": "Sets the audio mute state of an input.",
+      "requestType": "SetInputMute",
+      "complexity": 2,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "inputs",
+      "requestFields": [
+        {
+          "valueName": "inputName",
+          "valueType": "String",
+          "valueDescription": "Name of the input to set the mute state of",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        },
+        {
+          "valueName": "inputMuted",
+          "valueType": "Boolean",
+          "valueDescription": "Whether to mute the input or not",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        }
+      ],
+      "responseFields": []
+    },
+    {
+      "description": "Toggles the audio mute state of an input.",
+      "requestType": "ToggleInputMute",
+      "complexity": 2,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "inputs",
+      "requestFields": [
+        {
+          "valueName": "inputName",
+          "valueType": "String",
+          "valueDescription": "Name of the input to toggle the mute state of",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        }
+      ],
+      "responseFields": [
+        {
+          "valueName": "inputMuted",
+          "valueType": "Boolean",
+          "valueDescription": "Whether the input has been muted or unmuted"
+        }
+      ]
+    },
+    {
+      "description": "Gets the current volume setting of an input.",
+      "requestType": "GetInputVolume",
+      "complexity": 3,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "inputs",
+      "requestFields": [
+        {
+          "valueName": "inputName",
+          "valueType": "String",
+          "valueDescription": "Name of the input to get the volume of",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        }
+      ],
+      "responseFields": [
+        {
+          "valueName": "inputVolumeMul",
+          "valueType": "Number",
+          "valueDescription": "Volume setting in mul"
+        },
+        {
+          "valueName": "inputVolumeDb",
+          "valueType": "Number",
+          "valueDescription": "Volume setting in dB"
+        }
+      ]
+    },
+    {
+      "description": "Sets the volume setting of an input.",
+      "requestType": "SetInputVolume",
+      "complexity": 3,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "inputs",
+      "requestFields": [
+        {
+          "valueName": "inputName",
+          "valueType": "String",
+          "valueDescription": "Name of the input to set the volume of",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        },
+        {
+          "valueName": "inputVolumeMul",
+          "valueType": "Number",
+          "valueDescription": "Volume setting in mul",
+          "valueRestrictions": ">= 0, <= 20",
+          "valueOptional": true,
+          "valueOptionalBehavior": "`inputVolumeDb` should be specified"
+        },
+        {
+          "valueName": "inputVolumeDb",
+          "valueType": "Number",
+          "valueDescription": "Volume setting in dB",
+          "valueRestrictions": ">= -100, <= -26",
+          "valueOptional": true,
+          "valueOptionalBehavior": "`inputVolumeMul` should be specified"
+        }
+      ],
+      "responseFields": []
+    },
+    {
+      "description": "Gets the audio sync offset of an input.\n\nNote: The audio sync offset can be negative too!",
+      "requestType": "GetInputAudioSyncOffset",
+      "complexity": 3,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "inputs",
+      "requestFields": [
+        {
+          "valueName": "inputName",
+          "valueType": "String",
+          "valueDescription": "Name of the input to get the audio sync offset of",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        }
+      ],
+      "responseFields": [
+        {
+          "valueName": "inputAudioSyncOffset",
+          "valueType": "Number",
+          "valueDescription": "Audio sync offset in milliseconds"
+        }
+      ]
+    },
+    {
+      "description": "Sets the audio sync offset of an input.",
+      "requestType": "SetInputAudioSyncOffset",
+      "complexity": 3,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "inputs",
+      "requestFields": [
+        {
+          "valueName": "inputName",
+          "valueType": "String",
+          "valueDescription": "Name of the input to set the audio sync offset of",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        },
+        {
+          "valueName": "inputAudioSyncOffset",
+          "valueType": "Number",
+          "valueDescription": "New audio sync offset in milliseconds",
+          "valueRestrictions": ">= -950, <= 20000",
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        }
+      ],
+      "responseFields": []
+    },
+    {
+      "description": "Gets the audio monitor type of an input.\n\nThe available audio monitor types are:\n- `OBS_MONITORING_TYPE_NONE`\n- `OBS_MONITORING_TYPE_MONITOR_ONLY`\n- `OBS_MONITORING_TYPE_MONITOR_AND_OUTPUT`",
+      "requestType": "GetInputAudioMonitorType",
+      "complexity": 2,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "inputs",
+      "requestFields": [
+        {
+          "valueName": "inputName",
+          "valueType": "String",
+          "valueDescription": "Name of the input to get the audio monitor type of",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        }
+      ],
+      "responseFields": [
+        {
+          "valueName": "monitorType",
+          "valueType": "String",
+          "valueDescription": "Audio monitor type"
+        }
+      ]
+    },
+    {
+      "description": "Sets the audio monitor type of an input.",
+      "requestType": "SetInputAudioMonitorType",
+      "complexity": 2,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "inputs",
+      "requestFields": [
+        {
+          "valueName": "inputName",
+          "valueType": "String",
+          "valueDescription": "Name of the input to set the audio monitor type of",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        },
+        {
+          "valueName": "monitorType",
+          "valueType": "String",
+          "valueDescription": "Audio monitor type",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        }
+      ],
+      "responseFields": []
+    },
+    {
+      "description": "Gets the items of a list property from an input's properties.\n\nNote: Use this in cases where an input provides a dynamic, selectable list of items. For example, display capture, where it provides a list of available displays.",
+      "requestType": "GetInputPropertiesListPropertyItems",
+      "complexity": 4,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "inputs",
+      "requestFields": [
+        {
+          "valueName": "inputName",
+          "valueType": "String",
+          "valueDescription": "Name of the input",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        },
+        {
+          "valueName": "propertyName",
+          "valueType": "String",
+          "valueDescription": "Name of the list property to get the items of",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        }
+      ],
+      "responseFields": [
+        {
+          "valueName": "propertyItems",
+          "valueType": "Array<Object>",
+          "valueDescription": "Array of items in the list property"
+        }
+      ]
+    },
+    {
+      "description": "Presses a button in the properties of an input.\n\nNote: Use this in cases where there is a button in the properties of an input that cannot be accessed in any other way. For example, browser sources, where there is a refresh button.",
+      "requestType": "PressInputPropertiesButton",
+      "complexity": 4,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "inputs",
+      "requestFields": [
+        {
+          "valueName": "inputName",
+          "valueType": "String",
+          "valueDescription": "Name of the input",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        },
+        {
+          "valueName": "propertyName",
+          "valueType": "String",
+          "valueDescription": "Name of the button property to press",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        }
+      ],
+      "responseFields": []
     }
   ],
   "events": [

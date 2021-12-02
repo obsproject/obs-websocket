@@ -9,7 +9,7 @@ Some notes about documenting:
 - The `complexity` comment line is a suggestion to the user about how much knowledge about OBS's inner workings is required to safely use the associated feature. `1` for easy, `5` for megadeath-expert.
 - The `rpcVersion` comment line is used to specify the latest available version that the feature is available in. If a feature is deprecated, then the placeholder value of `-1` should be replaced with the last RPC version that the feature will be available in. Manually specifying an RPC version automatically adds the `Deprecated` line to the entry in `generated/protocol.md`.
 - The description can be multiple lines, but must be contained above the first documentation property (the lines starting with `@`).
-- Value types are in reference to JSON values. The only ones you should use are `Any`, `String`, `Number`, `Array`, `Object`.
+- Value types are in reference to JSON values. The only ones you should use are `Any`, `String`, `Boolean`, `Number`, `Array`, `Object`.
   - `Array` types follow this format: `Array<subtype>`, for example `Array<String>` to specify an array of strings.
 
 Formatting notes:

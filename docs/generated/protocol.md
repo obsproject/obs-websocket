@@ -1392,6 +1392,26 @@ The profile list has changed.
   - [SetVideoSettings](#setvideosettings)
   - [GetStreamServiceSettings](#getstreamservicesettings)
   - [SetStreamServiceSettings](#setstreamservicesettings)
+- [Inputs](#inputs)
+  - [GetInputList](#getinputlist)
+  - [GetInputKindList](#getinputkindlist)
+  - [CreateInput](#createinput)
+  - [RemoveInput](#removeinput)
+  - [SetInputName](#setinputname)
+  - [GetInputDefaultSettings](#getinputdefaultsettings)
+  - [GetInputSettings](#getinputsettings)
+  - [SetInputSettings](#setinputsettings)
+  - [GetInputMute](#getinputmute)
+  - [SetInputMute](#setinputmute)
+  - [ToggleInputMute](#toggleinputmute)
+  - [GetInputVolume](#getinputvolume)
+  - [SetInputVolume](#setinputvolume)
+  - [GetInputAudioSyncOffset](#getinputaudiosyncoffset)
+  - [SetInputAudioSyncOffset](#setinputaudiosyncoffset)
+  - [GetInputAudioMonitorType](#getinputaudiomonitortype)
+  - [SetInputAudioMonitorType](#setinputaudiomonitortype)
+  - [GetInputPropertiesListPropertyItems](#getinputpropertieslistpropertyitems)
+  - [PressInputPropertiesButton](#pressinputpropertiesbutton)
 
 
 
@@ -1868,5 +1888,436 @@ Note: Simple RTMP settings can be set with type `rtmp_custom` and the settings f
 | ---- | :---: | ----------- | :----------------: | ----------------- |
 | streamServiceType | String | Type of stream service to apply. Example: `rtmp_common` or `rtmp_custom` | None | N/A |
 | streamServiceSettings | Object | Settings to apply to the service | None | N/A |
+
+
+## Inputs
+
+### GetInputList
+
+Gets an array of all inputs in OBS.
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| ?inputKind | String | Restrict the array to only inputs of the specified kind | None | All kinds included |
+
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| inputs | Array<Object> | Array of inputs |
+
+---
+
+### GetInputKindList
+
+Gets an array of all available input kinds in OBS.
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| ?unversioned | Boolean | True == Return all kinds as unversioned, False == Return with version suffixes (if available) | None | false |
+
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| inputKinds | Array<String> | Array of input kinds |
+
+---
+
+### CreateInput
+
+Creates a new input, adding it as a scene item to the specified scene.
+
+- Complexity Rating: `3/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| sceneName | String | Name of the scene to add the input to as a scene item | None | N/A |
+| inputName | String | Name of the new input to created | None | N/A |
+| inputKind | String | The kind of input to be created | None | N/A |
+| ?inputSettings | Object | Settings object to initialize the input with | None | Default settings used |
+| ?sceneItemEnabled | Boolean | Whether to set the created scene item to enabled or disabled | None | True |
+
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| sceneItemId | Number | ID of the newly created scene item |
+
+---
+
+### RemoveInput
+
+Removes an existing input.
+
+Note: Will immediately remove all associated scene items.
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| inputName | String | Name of the input to remove | None | N/A |
+
+---
+
+### SetInputName
+
+Sets the name of an input (rename).
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| inputName | String | Current input name | None | N/A |
+| newInputName | String | New name for the input | None | N/A |
+
+---
+
+### GetInputDefaultSettings
+
+Gets the default settings for an input kind.
+
+- Complexity Rating: `3/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| inputKind | String | Input kind to get the default settings for | None | N/A |
+
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| defaultInputSettings | Object | Object of default settings for the input kind |
+
+---
+
+### GetInputSettings
+
+Gets the settings of an input.
+
+Note: Does not include defaults. To create the entire settings object, overlay `inputSettings` over the `defaultInputSettings` provided by `GetInputDefaultSettings`.
+
+- Complexity Rating: `3/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| inputName | String | Name of the input to get the settings of | None | N/A |
+
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| inputSettings | Object | Object of settings for the input |
+| inputKind | String | The kind of the input |
+
+---
+
+### SetInputSettings
+
+Sets the settings of an input.
+
+- Complexity Rating: `3/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| inputName | String | Name of the input to set the settings of | None | N/A |
+| inputSettings | Object | Object of settings to apply | None | N/A |
+
+---
+
+### GetInputMute
+
+Gets the audio mute state of an input.
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| inputName | String | Name of input to get the mute state of | None | N/A |
+
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| inputMuted | Boolean | Whether the input is muted |
+
+---
+
+### SetInputMute
+
+Sets the audio mute state of an input.
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| inputName | String | Name of the input to set the mute state of | None | N/A |
+| inputMuted | Boolean | Whether to mute the input or not | None | N/A |
+
+---
+
+### ToggleInputMute
+
+Toggles the audio mute state of an input.
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| inputName | String | Name of the input to toggle the mute state of | None | N/A |
+
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| inputMuted | Boolean | Whether the input has been muted or unmuted |
+
+---
+
+### GetInputVolume
+
+Gets the current volume setting of an input.
+
+- Complexity Rating: `3/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| inputName | String | Name of the input to get the volume of | None | N/A |
+
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| inputVolumeMul | Number | Volume setting in mul |
+| inputVolumeDb | Number | Volume setting in dB |
+
+---
+
+### SetInputVolume
+
+Sets the volume setting of an input.
+
+- Complexity Rating: `3/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| inputName | String | Name of the input to set the volume of | None | N/A |
+| ?inputVolumeMul | Number | Volume setting in mul | >= 0, <= 20 | `inputVolumeDb` should be specified |
+| ?inputVolumeDb | Number | Volume setting in dB | >= -100, <= -26 | `inputVolumeMul` should be specified |
+
+---
+
+### GetInputAudioSyncOffset
+
+Gets the audio sync offset of an input.
+
+Note: The audio sync offset can be negative too!
+
+- Complexity Rating: `3/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| inputName | String | Name of the input to get the audio sync offset of | None | N/A |
+
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| inputAudioSyncOffset | Number | Audio sync offset in milliseconds |
+
+---
+
+### SetInputAudioSyncOffset
+
+Sets the audio sync offset of an input.
+
+- Complexity Rating: `3/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| inputName | String | Name of the input to set the audio sync offset of | None | N/A |
+| inputAudioSyncOffset | Number | New audio sync offset in milliseconds | >= -950, <= 20000 | N/A |
+
+---
+
+### GetInputAudioMonitorType
+
+Gets the audio monitor type of an input.
+
+The available audio monitor types are:
+- `OBS_MONITORING_TYPE_NONE`
+- `OBS_MONITORING_TYPE_MONITOR_ONLY`
+- `OBS_MONITORING_TYPE_MONITOR_AND_OUTPUT`
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| inputName | String | Name of the input to get the audio monitor type of | None | N/A |
+
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| monitorType | String | Audio monitor type |
+
+---
+
+### SetInputAudioMonitorType
+
+Sets the audio monitor type of an input.
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| inputName | String | Name of the input to set the audio monitor type of | None | N/A |
+| monitorType | String | Audio monitor type | None | N/A |
+
+---
+
+### GetInputPropertiesListPropertyItems
+
+Gets the items of a list property from an input's properties.
+
+Note: Use this in cases where an input provides a dynamic, selectable list of items. For example, display capture, where it provides a list of available displays.
+
+- Complexity Rating: `4/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| inputName | String | Name of the input | None | N/A |
+| propertyName | String | Name of the list property to get the items of | None | N/A |
+
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| propertyItems | Array<Object> | Array of items in the list property |
+
+---
+
+### PressInputPropertiesButton
+
+Presses a button in the properties of an input.
+
+Note: Use this in cases where there is a button in the properties of an input that cannot be accessed in any other way. For example, browser sources, where there is a refresh button.
+
+- Complexity Rating: `4/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| inputName | String | Name of the input | None | N/A |
+| propertyName | String | Name of the button property to press | None | N/A |
 
 
