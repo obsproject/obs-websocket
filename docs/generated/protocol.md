@@ -1392,6 +1392,18 @@ The profile list has changed.
   - [SetVideoSettings](#setvideosettings)
   - [GetStreamServiceSettings](#getstreamservicesettings)
   - [SetStreamServiceSettings](#setstreamservicesettings)
+- [Sources](#sources)
+  - [GetSceneList](#getscenelist)
+  - [GetCurrentProgramScene](#getcurrentprogramscene)
+  - [SetCurrentProgramScene](#setcurrentprogramscene)
+  - [GetCurrentPreviewScene](#getcurrentpreviewscene)
+  - [SetCurrentPreviewScene](#setcurrentpreviewscene)
+  - [CreateScene](#createscene)
+  - [RemoveScene](#removescene)
+  - [SetSceneName](#setscenename)
+  - [GetSourceActive](#getsourceactive)
+  - [GetSourceScreenshot](#getsourcescreenshot)
+  - [GetSourceScreenshot](#getsourcescreenshot)
 - [Inputs](#inputs)
   - [GetInputList](#getinputlist)
   - [GetInputKindList](#getinputkindlist)
@@ -1888,6 +1900,244 @@ Note: Simple RTMP settings can be set with type `rtmp_custom` and the settings f
 | ---- | :---: | ----------- | :----------------: | ----------------- |
 | streamServiceType | String | Type of stream service to apply. Example: `rtmp_common` or `rtmp_custom` | None | N/A |
 | streamServiceSettings | Object | Settings to apply to the service | None | N/A |
+
+
+## Sources
+
+### GetSceneList
+
+Gets an array of all scenes in OBS.
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| scenes | Array<String> | Array of scenes in OBS |
+| currentProgramSceneName | String | Current program scene |
+| currentPreviewSceneName | String | Current preview scene. `null` if not in studio mode |
+
+---
+
+### GetCurrentProgramScene
+
+Gets the current program scene.
+
+- Complexity Rating: `1/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| currentProgramSceneName | String | Current program scene |
+
+---
+
+### SetCurrentProgramScene
+
+Sets the current program scene.
+
+- Complexity Rating: `1/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| sceneName | String | Scene to set as the current program scene | None | N/A |
+
+---
+
+### GetCurrentPreviewScene
+
+Gets the current preview scene.
+
+Only available when studio mode is enabled.
+
+- Complexity Rating: `1/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| currentPreviewSceneName | String | Current preview scene |
+
+---
+
+### SetCurrentPreviewScene
+
+Sets the current preview scene.
+
+Only available when studio mode is enabled.
+
+- Complexity Rating: `1/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| sceneName | String | Scene to set as the current preview scene | None | N/A |
+
+---
+
+### CreateScene
+
+Creates a new scene in OBS.
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| sceneName | String | Name for the new scene | None | N/A |
+
+---
+
+### RemoveScene
+
+Removes a scene from OBS.
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| sceneName | String | Name of the scene to remove | None | N/A |
+
+---
+
+### SetSceneName
+
+Sets the name of a scene (rename).
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| sceneName | String | Name of the scene to be renamed | None | N/A |
+| newSceneName | String | New name for the scene | None | N/A |
+
+---
+
+### GetSourceActive
+
+Gets the active and show state of a source.
+
+**Compatible with inputs and scenes.**
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| sourceName | String | Name of the source to get the active state of | None | N/A |
+
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| videoActive | Boolean | Whether the source is showing in Program |
+| videoShowing | Boolean | Whether the source is showing in the UI (Preview, Projector, Properties) |
+
+---
+
+### GetSourceScreenshot
+
+Gets a Base64-encoded screenshot of a source.
+
+The `imageWidth` and `imageHeight` parameters are treated as "scale to inner", meaning the smallest ratio will be used and the aspect ratio of the original resolution is kept.
+If `imageWidth` and `imageHeight` are not specified, the compressed image will use the full resolution of the source.
+
+**Compatible with inputs and scenes.**
+
+- Complexity Rating: `4/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| sourceName | String | Name of the source to take a screenshot of | None | N/A |
+| imageFormat | String | Image compression format to use. Use `GetVersion` to get compatible image formats | None | N/A |
+| ?imageWidth | Number | Width to scale the screenshot to | >= 8, <= 4096 | Source value is used |
+| ?imageHeight | Number | Height to scale the screenshot to | >= 8, <= 4096 | Source value is used |
+| ?imageCompressionQuality | Number | Compression quality to use. 0 for high compression, 100 for uncompressed. -1 to use "default" (whatever that means, idk) | >= -1, <= 100 | -1 |
+
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| imageData | String | Base64-encoded screenshot |
+
+---
+
+### GetSourceScreenshot
+
+Saves a screenshot of a source to the filesystem.
+
+The `imageWidth` and `imageHeight` parameters are treated as "scale to inner", meaning the smallest ratio will be used and the aspect ratio of the original resolution is kept.
+If `imageWidth` and `imageHeight` are not specified, the compressed image will use the full resolution of the source.
+
+**Compatible with inputs and scenes.**
+
+- Complexity Rating: `3/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| sourceName | String | Name of the source to take a screenshot of | None | N/A |
+| imageFormat | String | Image compression format to use. Use `GetVersion` to get compatible image formats | None | N/A |
+| imageFilePath | String | Path to save the screenshot file to. Eg. `C:\Users\user\Desktop\screenshot.png` | None | N/A |
+| ?imageWidth | Number | Width to scale the screenshot to | >= 8, <= 4096 | Source value is used |
+| ?imageHeight | Number | Height to scale the screenshot to | >= 8, <= 4096 | Source value is used |
+| ?imageCompressionQuality | Number | Compression quality to use. 0 for high compression, 100 for uncompressed. -1 to use "default" (whatever that means, idk) | >= -1, <= 100 | -1 |
+
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| imageData | String | Base64-encoded screenshot |
 
 
 ## Inputs

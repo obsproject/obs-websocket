@@ -1892,6 +1892,330 @@
         }
       ],
       "responseFields": []
+    },
+    {
+      "description": "Gets an array of all scenes in OBS.",
+      "requestType": "GetSceneList",
+      "complexity": 2,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "sources",
+      "requestFields": [],
+      "responseFields": [
+        {
+          "valueName": "scenes",
+          "valueType": "Array<String>",
+          "valueDescription": "Array of scenes in OBS"
+        },
+        {
+          "valueName": "currentProgramSceneName",
+          "valueType": "String",
+          "valueDescription": "Current program scene"
+        },
+        {
+          "valueName": "currentPreviewSceneName",
+          "valueType": "String",
+          "valueDescription": "Current preview scene. `null` if not in studio mode"
+        }
+      ]
+    },
+    {
+      "description": "Gets the current program scene.",
+      "requestType": "GetCurrentProgramScene",
+      "complexity": 1,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "sources",
+      "requestFields": [],
+      "responseFields": [
+        {
+          "valueName": "currentProgramSceneName",
+          "valueType": "String",
+          "valueDescription": "Current program scene"
+        }
+      ]
+    },
+    {
+      "description": "Sets the current program scene.",
+      "requestType": "SetCurrentProgramScene",
+      "complexity": 1,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "sources",
+      "requestFields": [
+        {
+          "valueName": "sceneName",
+          "valueType": "String",
+          "valueDescription": "Scene to set as the current program scene",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        }
+      ],
+      "responseFields": []
+    },
+    {
+      "description": "Gets the current preview scene.\n\nOnly available when studio mode is enabled.",
+      "requestType": "GetCurrentPreviewScene",
+      "complexity": 1,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "sources",
+      "requestFields": [],
+      "responseFields": [
+        {
+          "valueName": "currentPreviewSceneName",
+          "valueType": "String",
+          "valueDescription": "Current preview scene"
+        }
+      ]
+    },
+    {
+      "description": "Sets the current preview scene.\n\nOnly available when studio mode is enabled.",
+      "requestType": "SetCurrentPreviewScene",
+      "complexity": 1,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "sources",
+      "requestFields": [
+        {
+          "valueName": "sceneName",
+          "valueType": "String",
+          "valueDescription": "Scene to set as the current preview scene",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        }
+      ],
+      "responseFields": []
+    },
+    {
+      "description": "Creates a new scene in OBS.",
+      "requestType": "CreateScene",
+      "complexity": 2,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "sources",
+      "requestFields": [
+        {
+          "valueName": "sceneName",
+          "valueType": "String",
+          "valueDescription": "Name for the new scene",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        }
+      ],
+      "responseFields": []
+    },
+    {
+      "description": "Removes a scene from OBS.",
+      "requestType": "RemoveScene",
+      "complexity": 2,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "sources",
+      "requestFields": [
+        {
+          "valueName": "sceneName",
+          "valueType": "String",
+          "valueDescription": "Name of the scene to remove",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        }
+      ],
+      "responseFields": []
+    },
+    {
+      "description": "Sets the name of a scene (rename).",
+      "requestType": "SetSceneName",
+      "complexity": 2,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "sources",
+      "requestFields": [
+        {
+          "valueName": "sceneName",
+          "valueType": "String",
+          "valueDescription": "Name of the scene to be renamed",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        },
+        {
+          "valueName": "newSceneName",
+          "valueType": "String",
+          "valueDescription": "New name for the scene",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        }
+      ],
+      "responseFields": []
+    },
+    {
+      "description": "Gets the active and show state of a source.\n\n**Compatible with inputs and scenes.**",
+      "requestType": "GetSourceActive",
+      "complexity": 2,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "sources",
+      "requestFields": [
+        {
+          "valueName": "sourceName",
+          "valueType": "String",
+          "valueDescription": "Name of the source to get the active state of",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        }
+      ],
+      "responseFields": [
+        {
+          "valueName": "videoActive",
+          "valueType": "Boolean",
+          "valueDescription": "Whether the source is showing in Program"
+        },
+        {
+          "valueName": "videoShowing",
+          "valueType": "Boolean",
+          "valueDescription": "Whether the source is showing in the UI (Preview, Projector, Properties)"
+        }
+      ]
+    },
+    {
+      "description": "Gets a Base64-encoded screenshot of a source.\n\nThe `imageWidth` and `imageHeight` parameters are treated as \"scale to inner\", meaning the smallest ratio will be used and the aspect ratio of the original resolution is kept.\nIf `imageWidth` and `imageHeight` are not specified, the compressed image will use the full resolution of the source.\n\n**Compatible with inputs and scenes.**",
+      "requestType": "GetSourceScreenshot",
+      "complexity": 4,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "sources",
+      "requestFields": [
+        {
+          "valueName": "sourceName",
+          "valueType": "String",
+          "valueDescription": "Name of the source to take a screenshot of",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        },
+        {
+          "valueName": "imageFormat",
+          "valueType": "String",
+          "valueDescription": "Image compression format to use. Use `GetVersion` to get compatible image formats",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        },
+        {
+          "valueName": "imageWidth",
+          "valueType": "Number",
+          "valueDescription": "Width to scale the screenshot to",
+          "valueRestrictions": ">= 8, <= 4096",
+          "valueOptional": true,
+          "valueOptionalBehavior": "Source value is used"
+        },
+        {
+          "valueName": "imageHeight",
+          "valueType": "Number",
+          "valueDescription": "Height to scale the screenshot to",
+          "valueRestrictions": ">= 8, <= 4096",
+          "valueOptional": true,
+          "valueOptionalBehavior": "Source value is used"
+        },
+        {
+          "valueName": "imageCompressionQuality",
+          "valueType": "Number",
+          "valueDescription": "Compression quality to use. 0 for high compression, 100 for uncompressed. -1 to use \"default\" (whatever that means, idk)",
+          "valueRestrictions": ">= -1, <= 100",
+          "valueOptional": true,
+          "valueOptionalBehavior": "-1"
+        }
+      ],
+      "responseFields": [
+        {
+          "valueName": "imageData",
+          "valueType": "String",
+          "valueDescription": "Base64-encoded screenshot"
+        }
+      ]
+    },
+    {
+      "description": "Saves a screenshot of a source to the filesystem.\n\nThe `imageWidth` and `imageHeight` parameters are treated as \"scale to inner\", meaning the smallest ratio will be used and the aspect ratio of the original resolution is kept.\nIf `imageWidth` and `imageHeight` are not specified, the compressed image will use the full resolution of the source.\n\n**Compatible with inputs and scenes.**",
+      "requestType": "GetSourceScreenshot",
+      "complexity": 3,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "sources",
+      "requestFields": [
+        {
+          "valueName": "sourceName",
+          "valueType": "String",
+          "valueDescription": "Name of the source to take a screenshot of",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        },
+        {
+          "valueName": "imageFormat",
+          "valueType": "String",
+          "valueDescription": "Image compression format to use. Use `GetVersion` to get compatible image formats",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        },
+        {
+          "valueName": "imageFilePath",
+          "valueType": "String",
+          "valueDescription": "Path to save the screenshot file to. Eg. `C:\\Users\\user\\Desktop\\screenshot.png`",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        },
+        {
+          "valueName": "imageWidth",
+          "valueType": "Number",
+          "valueDescription": "Width to scale the screenshot to",
+          "valueRestrictions": ">= 8, <= 4096",
+          "valueOptional": true,
+          "valueOptionalBehavior": "Source value is used"
+        },
+        {
+          "valueName": "imageHeight",
+          "valueType": "Number",
+          "valueDescription": "Height to scale the screenshot to",
+          "valueRestrictions": ">= 8, <= 4096",
+          "valueOptional": true,
+          "valueOptionalBehavior": "Source value is used"
+        },
+        {
+          "valueName": "imageCompressionQuality",
+          "valueType": "Number",
+          "valueDescription": "Compression quality to use. 0 for high compression, 100 for uncompressed. -1 to use \"default\" (whatever that means, idk)",
+          "valueRestrictions": ">= -1, <= 100",
+          "valueOptional": true,
+          "valueOptionalBehavior": "-1"
+        }
+      ],
+      "responseFields": [
+        {
+          "valueName": "imageData",
+          "valueType": "String",
+          "valueDescription": "Base64-encoded screenshot"
+        }
+      ]
     }
   ],
   "events": [
