@@ -54,7 +54,7 @@ void WebSocketServer::SetSessionParameters(SessionPtr session, ProcessResult &re
 	}
 }
 
-void WebSocketServer::ProcessMessage(SessionPtr session, WebSocketServer::ProcessResult &ret, WebSocketOpCode::WebSocketOpCode opCode, const json &payloadData)
+void WebSocketServer::ProcessMessage(SessionPtr session, WebSocketServer::ProcessResult &ret, WebSocketOpCode::WebSocketOpCode opCode, json &payloadData)
 {
 	if (!payloadData.is_object()) {
 		if (payloadData.is_null()) {

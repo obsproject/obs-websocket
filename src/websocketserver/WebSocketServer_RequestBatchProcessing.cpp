@@ -74,52 +74,47 @@ struct ParallelBatchResults
 };
 
 
-
-static bool PreProcessVariables(const json &variables, const json &inputVariables, json &requestData)
+// `{"inputName": "inputNameVariable"}` is essentially `inputName = inputNameVariable`
+static void PreProcessVariables(const json &variables, const json &inputVariables, json &requestData)
 {
-	if (variables.empty() || inputVariables.empty() || !inputVariables.is_object() || !requestData.is_object())
-		return !requestData.empty();
-
-	for (auto it = inputVariables.begin(); it != inputVariables.end(); ++it) {
-		std::string key = it.key();
-
-		if (!variables.contains(key)) {
-			blog_debug("[WebSocketServer::ProcessRequestBatch] inputVariables requested variable `%s`, but it does not exist. Skipping!", key.c_str());
-			continue;
-		}
-
-		if (!it.value().is_string()) {
-			blog_debug("[WebSocketServer::ProcessRequestBatch] Value of item `%s` in inputVariables is not a string. Skipping!", key.c_str());
-			continue;
-		}
-
-		std::string value = it.value();
-		requestData[value] = variables[key];
-	}
-
-	return !requestData.empty();
-}
-
-static void PostProcessVariables(json &variables, const json &outputVariables, const json &responseData)
-{
-	if (outputVariables.empty() || !outputVariables.is_object() || responseData.empty())
+	if (variables.empty() || !inputVariables.is_object() || inputVariables.empty() || !requestData.is_object())
 		return;
 
-	for (auto it = outputVariables.begin(); it != outputVariables.end(); ++it) {
-		std::string key = it.key();
-
-		if (!responseData.contains(key)) {
-			blog_debug("[WebSocketServer::ProcessRequestBatch] outputVariables requested responseData item `%s`, but it does not exist. Skipping!", key.c_str());
+	for (auto& [key, value] : inputVariables.items()) {
+		if (!value.is_string()) {
+			blog_debug("[WebSocketServer::ProcessRequestBatch] Value of field `%s` in `inputVariables `is not a string. Skipping!", key.c_str());
 			continue;
 		}
 
-		if (!it.value().is_string()) {
-			blog_debug("[WebSocketServer::ProcessRequestBatch] Value of item `%s` in outputVariables is not a string. Skipping!", key.c_str());
+		std::string valueString = value;
+		if (!variables.contains(valueString)) {
+			blog_debug("[WebSocketServer::ProcessRequestBatch] `inputVariables` requested variable `%s`, but it does not exist. Skipping!", valueString.c_str());
 			continue;
 		}
 
-		std::string value = it.value();
-		variables[key] = responseData[value];
+		requestData[key] = variables[valueString];
+	}
+}
+
+// `{"sceneItemIdVariable": "sceneItemId"}` is essentially `sceneItemIdVariable = sceneItemId`
+static void PostProcessVariables(json &variables, const json &outputVariables, const json &responseData)
+{
+	if (!outputVariables.is_object() || outputVariables.empty() || responseData.empty())
+		return;
+
+	for (auto& [key, value] : outputVariables.items()) {
+		if (!value.is_string()) {
+			blog_debug("[WebSocketServer::ProcessRequestBatch] Value of field `%s` in `outputVariables` is not a string. Skipping!", key.c_str());
+			continue;
+		}
+
+		std::string valueString = value;
+		if (!responseData.contains(valueString)) {
+			blog_debug("[WebSocketServer::ProcessRequestBatch] `outputVariables` requested responseData field `%s`, but it does not exist. Skipping!", valueString.c_str());
+			continue;
+		}
+
+		variables[key] = responseData[valueString];
 	}
 }
 
@@ -169,7 +164,9 @@ static void ObsTickCallback(void *param, float)
 		// Fetch first in queue
 		SerialFrameRequest frameRequest = serialFrameBatch->requests.front();
 		// Pre-process batch variables
-		frameRequest.request.HasRequestData = PreProcessVariables(serialFrameBatch->variables, frameRequest.inputVariables, frameRequest.request.RequestData);
+		PreProcessVariables(serialFrameBatch->variables, frameRequest.inputVariables, frameRequest.request.RequestData);
+		// Determine if there is request data
+		frameRequest.request.HasRequestData = !frameRequest.request.RequestData.empty();
 		// Process request and get result
 		RequestResult requestResult = serialFrameBatch->requestHandler.ProcessRequest(frameRequest.request);
 		// Post-process batch variables
@@ -205,7 +202,9 @@ void WebSocketServer::ProcessRequestBatch(SessionPtr session, RequestBatchExecut
 		for (auto requestJson : requests) {
 			Request request(requestJson["requestType"], requestJson["requestData"], RequestBatchExecutionType::SerialRealtime);
 
-			request.HasRequestData = PreProcessVariables(variables, requestJson["inputVariables"], request.RequestData);
+			PreProcessVariables(variables, requestJson["inputVariables"], request.RequestData);
+
+			request.HasRequestData = !request.RequestData.empty();
 
 			RequestResult requestResult = requestHandler.ProcessRequest(request);
 
