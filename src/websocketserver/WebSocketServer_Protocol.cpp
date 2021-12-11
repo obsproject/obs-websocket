@@ -28,7 +28,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include "../utils/Platform.h"
 #include "../utils/Compat.h"
 
-bool IsSupportedRpcVersion(uint8_t requestedVersion)
+static bool IsSupportedRpcVersion(uint8_t requestedVersion)
 {
 	return (requestedVersion == 1);
 }
@@ -265,10 +265,23 @@ void WebSocketServer::ProcessMessage(SessionPtr session, WebSocketServer::Proces
 				}
 			}
 
+			bool haltOnFailure = false;
+			if (payloadData.contains("haltOnFailure") && !payloadData["haltOnFailure"].is_null()) {
+				if (!payloadData["haltOnFailure"].is_boolean()) {
+					if (!session->IgnoreInvalidMessages()) {
+						ret.closeCode = WebSocketCloseCode::InvalidDataFieldType;
+						ret.closeReason = "Your `haltOnFailure` is not a boolean.";
+					}
+					return;
+				}
+
+				haltOnFailure = payloadData["haltOnFailure"];
+			}
+
 			std::vector<json> requests = payloadData["requests"];
 			json variables = payloadData["variables"];
 			std::vector<json> results;
-			ProcessRequestBatch(session, executionType, requests, results, variables);
+			ProcessRequestBatch(session, executionType, requests, results, variables, haltOnFailure);
 
 			ret.result["op"] = WebSocketOpCode::RequestBatchResponse;
 			ret.result["d"]["requestId"] = payloadData["requestId"];
