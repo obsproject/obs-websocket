@@ -156,13 +156,12 @@ static void ObsTickCallback(void *param, float)
 	serialFrameBatch->frameCount++;
 
 	if (serialFrameBatch->sleepUntilFrame) {
-		if (serialFrameBatch->frameCount < serialFrameBatch->sleepUntilFrame) {
+		if (serialFrameBatch->frameCount < serialFrameBatch->sleepUntilFrame)
 			// Do not process any requests if in "sleep mode"
 			return;
-		} else {
+		else
 			// Reset frame sleep until counter if not being used
 			serialFrameBatch->sleepUntilFrame = 0;
-		}
 	}
 
 	// Begin recursing any unprocessed requests
@@ -194,9 +193,8 @@ static void ObsTickCallback(void *param, float)
 	}
 
 	// If request queue is empty, we can notify the paused worker thread
-	if (serialFrameBatch->requests.empty()) {
+	if (serialFrameBatch->requests.empty())
 		serialFrameBatch->condition.notify_one();
-	}
 }
 
 void WebSocketServer::ProcessRequestBatch(SessionPtr session, RequestBatchExecutionType::RequestBatchExecutionType executionType, const std::vector<json> &requests, std::vector<json> &results, json &variables, bool haltOnFailure)
