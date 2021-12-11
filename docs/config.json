@@ -1,5 +1,0 @@
-{
-    "srcGlob": "./../src/**/*.@(cpp|h)",
-    "srcTemplate": "./protocol.hbs",
-    "outDirectory": "./generated"
-}

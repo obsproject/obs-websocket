@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License along
 with this program. If not, see <https://www.gnu.org/licenses/>
 */
 
-#include <util/profiler.h>
+#include <util/profiler.hpp>
 
 #include "WebSocketServer.h"
 #include "../requesthandler/RequestHandler.h"
@@ -31,7 +31,7 @@ struct SerialFrameRequest
 	const json outputVariables;
 
 	SerialFrameRequest(const std::string &requestType, const json &requestData, const json &inputVariables, const json &outputVariables) :
-		request(requestType, requestData, OBS_WEBSOCKET_REQUEST_BATCH_EXECUTION_TYPE_SERIAL_FRAME),
+		request(requestType, requestData, RequestBatchExecutionType::SerialFrame),
 		inputVariables(inputVariables),
 		outputVariables(outputVariables)
 	{}
@@ -145,7 +145,7 @@ json ConstructRequestResult(RequestResult requestResult, const json &requestJson
 
 void ObsTickCallback(void *param, float)
 {
-	profile_start("obs-websocket-request-batch-frame-tick");
+	ScopeProfiler prof{"obs_websocket_request_batch_frame_tick"};
 
 	auto serialFrameBatch = reinterpret_cast<SerialFrameBatch*>(param);
 
@@ -155,7 +155,6 @@ void ObsTickCallback(void *param, float)
 	if (serialFrameBatch->sleepUntilFrame) {
 		if (serialFrameBatch->frameCount < serialFrameBatch->sleepUntilFrame) {
 			// Do not process any requests if in "sleep mode"
-			profile_end("obs-websocket-request-batch-frame-tick");
 			return;
 		} else {
 			// Reset frame sleep until counter if not being used
@@ -189,17 +188,15 @@ void ObsTickCallback(void *param, float)
 	if (serialFrameBatch->requests.empty()) {
 		serialFrameBatch->condition.notify_one();
 	}
-
-	profile_end("obs-websocket-request-batch-frame-tick");
 }
 
-void WebSocketServer::ProcessRequestBatch(SessionPtr session, ObsWebSocketRequestBatchExecutionType executionType, const std::vector<json> &requests, std::vector<json> &results, json &variables)
+void WebSocketServer::ProcessRequestBatch(SessionPtr session, RequestBatchExecutionType::RequestBatchExecutionType executionType, const std::vector<json> &requests, std::vector<json> &results, json &variables)
 {
 	RequestHandler requestHandler(session);
-	if (executionType == OBS_WEBSOCKET_REQUEST_BATCH_EXECUTION_TYPE_SERIAL_REALTIME) {
+	if (executionType == RequestBatchExecutionType::SerialRealtime) {
 		// Recurse all requests in batch serially, processing the request then moving to the next one
 		for (auto requestJson : requests) {
-			Request request(requestJson["requestType"], requestJson["requestData"], OBS_WEBSOCKET_REQUEST_BATCH_EXECUTION_TYPE_SERIAL_REALTIME);
+			Request request(requestJson["requestType"], requestJson["requestData"], RequestBatchExecutionType::SerialRealtime);
 
 			request.HasRequestData = PreProcessVariables(variables, requestJson["inputVariables"], request.RequestData);
 
@@ -211,7 +208,7 @@ void WebSocketServer::ProcessRequestBatch(SessionPtr session, ObsWebSocketReques
 
 			results.push_back(result);
 		}
-	} else if (executionType == OBS_WEBSOCKET_REQUEST_BATCH_EXECUTION_TYPE_SERIAL_FRAME) {
+	} else if (executionType == RequestBatchExecutionType::SerialFrame) {
 		SerialFrameBatch serialFrameBatch(requestHandler, variables);
 
 		// Create Request objects in the worker thread (avoid unnecessary processing in graphics thread)
@@ -236,13 +233,13 @@ void WebSocketServer::ProcessRequestBatch(SessionPtr session, ObsWebSocketReques
 			results.push_back(ConstructRequestResult(requestResult, requests[i]));
 			i++;
 		}
-	} else if (executionType == OBS_WEBSOCKET_REQUEST_BATCH_EXECUTION_TYPE_PARALLEL) {
+	} else if (executionType == RequestBatchExecutionType::Parallel) {
 		ParallelBatchResults parallelResults(requestHandler, requests.size());
 
 		// Submit each request as a task to the thread pool to be processed ASAP
 		for (auto requestJson : requests) {
 			_threadPool.start(Utils::Compat::CreateFunctionRunnable([&parallelResults, &executionType, requestJson]() {
-				Request request(requestJson["requestType"], requestJson["requestData"], OBS_WEBSOCKET_REQUEST_BATCH_EXECUTION_TYPE_PARALLEL);
+				Request request(requestJson["requestType"], requestJson["requestData"], RequestBatchExecutionType::Parallel);
 
 				RequestResult requestResult = parallelResults.requestHandler.ProcessRequest(request);
 

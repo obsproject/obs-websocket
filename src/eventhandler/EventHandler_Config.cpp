@@ -19,6 +19,22 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include "EventHandler.h"
 
+/**
+ * The current scene collection has begun changing.
+ *
+ * Note: We recommend using this event to trigger a pause of all polling requests, as performing any requests during a
+ * scene collection change is considered undefined behavior and can cause crashes!
+ *
+ * @dataField sceneCollectionName | String | Name of the current scene collection
+ *
+ * @eventType CurrentSceneCollectionChanging
+ * @eventSubscription Config
+ * @complexity 1
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @category config
+ * @api events
+ */
 void EventHandler::HandleCurrentSceneCollectionChanging()
 {
 	json eventData;
@@ -26,6 +42,21 @@ void EventHandler::HandleCurrentSceneCollectionChanging()
 	BroadcastEvent(EventSubscription::Config, "CurrentSceneCollectionChanging", eventData);
 }
 
+/**
+ * The current scene collection has changed.
+ *
+ * Note: If polling has been paused during `CurrentSceneCollectionChanging`, this is the que to restart polling.
+ *
+ * @dataField sceneCollectionName | String | Name of the new scene collection
+ *
+ * @eventType CurrentSceneCollectionChanged
+ * @eventSubscription Config
+ * @complexity 1
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @category config
+ * @api events
+ */
 void EventHandler::HandleCurrentSceneCollectionChanged()
 {
 	json eventData;
@@ -33,6 +64,19 @@ void EventHandler::HandleCurrentSceneCollectionChanged()
 	BroadcastEvent(EventSubscription::Config, "CurrentSceneCollectionChanged", eventData);
 }
 
+/**
+ * The scene collection list has changed.
+ *
+ * @dataField sceneCollections | Array<String> | Updated list of scene collections
+ *
+ * @eventType SceneCollectionListChanged
+ * @eventSubscription Config
+ * @complexity 1
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @category config
+ * @api events
+ */
 void EventHandler::HandleSceneCollectionListChanged()
 {
 	json eventData;
@@ -40,6 +84,19 @@ void EventHandler::HandleSceneCollectionListChanged()
 	BroadcastEvent(EventSubscription::Config, "SceneCollectionListChanged", eventData);
 }
 
+/**
+ * The current profile has begun changing.
+ *
+ * @dataField profileName | String | Name of the current profile
+ *
+ * @eventType CurrentProfileChanging
+ * @eventSubscription Config
+ * @complexity 1
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @category config
+ * @api events
+ */
 void EventHandler::HandleCurrentProfileChanging()
 {
 	json eventData;
@@ -47,6 +104,19 @@ void EventHandler::HandleCurrentProfileChanging()
 	BroadcastEvent(EventSubscription::Config, "CurrentProfileChanging", eventData);
 }
 
+/**
+ * The current profile has changed.
+ *
+ * @dataField profileName | String | Name of the new profile
+ *
+ * @eventType CurrentProfileChanged
+ * @eventSubscription Config
+ * @complexity 1
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @category config
+ * @api events
+ */
 void EventHandler::HandleCurrentProfileChanged()
 {
 	json eventData;
@@ -54,6 +124,19 @@ void EventHandler::HandleCurrentProfileChanged()
 	BroadcastEvent(EventSubscription::Config, "CurrentProfileChanged", eventData);
 }
 
+/**
+ * The profile list has changed.
+ *
+ * @dataField profiles | Array<String> | Updated list of profiles
+ *
+ * @eventType ProfileListChanged
+ * @eventSubscription Config
+ * @complexity 1
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @category config
+ * @api events
+ */
 void EventHandler::HandleProfileListChanged()
 {
 	json eventData;

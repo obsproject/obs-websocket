@@ -21,38 +21,188 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 namespace EventSubscription {
 	enum EventSubscription {
-		// Set subscriptions to 0 to disable all events
+		/**
+		* Subcription value used to disable all events.
+		*
+		* @enumIdentifier None
+		* @enumValue 0
+		* @enumType EventSubscription
+		* @rpcVersion -1
+		* @initialVersion 5.0.0
+		* @api enums
+		*/
 		None = 0,
-		// Receive events in the `General` category
+		/**
+		* Subscription value to receive events in the `General` category.
+		*
+		* @enumIdentifier General
+		* @enumValue (1 << 0)
+		* @enumType EventSubscription
+		* @rpcVersion -1
+		* @initialVersion 5.0.0
+		* @api enums
+		*/
 		General = (1 << 0),
-		// Receive events in the `Config` category
+		/**
+		* Subscription value to receive events in the `Config` category.
+		*
+		* @enumIdentifier Config
+		* @enumValue (1 << 1)
+		* @enumType EventSubscription
+		* @rpcVersion -1
+		* @initialVersion 5.0.0
+		* @api enums
+		*/
 		Config = (1 << 1),
-		// Receive events in the `Scenes` category
+		/**
+		* Subscription value to receive events in the `Scenes` category.
+		*
+		* @enumIdentifier Scenes
+		* @enumValue (1 << 2)
+		* @enumType EventSubscription
+		* @rpcVersion -1
+		* @initialVersion 5.0.0
+		* @api enums
+		*/
 		Scenes = (1 << 2),
-		// Receive events in the `Inputs` category
+		/**
+		* Subscription value to receive events in the `Inputs` category.
+		*
+		* @enumIdentifier Inputs
+		* @enumValue (1 << 3)
+		* @enumType EventSubscription
+		* @rpcVersion -1
+		* @initialVersion 5.0.0
+		* @api enums
+		*/
 		Inputs = (1 << 3),
-		// Receive events in the `Transitions` category
+		/**
+		* Subscription value to receive events in the `Transitions` category.
+		*
+		* @enumIdentifier Transitions
+		* @enumValue (1 << 4)
+		* @enumType EventSubscription
+		* @rpcVersion -1
+		* @initialVersion 5.0.0
+		* @api enums
+		*/
 		Transitions = (1 << 4),
-		// Receive events in the `Filters` category
+		/**
+		* Subscription value to receive events in the `Filters` category.
+		*
+		* @enumIdentifier Filters
+		* @enumValue (1 << 5)
+		* @enumType EventSubscription
+		* @rpcVersion -1
+		* @initialVersion 5.0.0
+		* @api enums
+		*/
 		Filters = (1 << 5),
-		// Receive events in the `Outputs` category
+		/**
+		* Subscription value to receive events in the `Outputs` category.
+		*
+		* @enumIdentifier Outputs
+		* @enumValue (1 << 6)
+		* @enumType EventSubscription
+		* @rpcVersion -1
+		* @initialVersion 5.0.0
+		* @api enums
+		*/
 		Outputs = (1 << 6),
-		// Receive events in the `Scene Items` category
+		/**
+		* Subscription value to receive events in the `SceneItems` category.
+		*
+		* @enumIdentifier SceneItems
+		* @enumValue (1 << 7)
+		* @enumType EventSubscription
+		* @rpcVersion -1
+		* @initialVersion 5.0.0
+		* @api enums
+		*/
 		SceneItems = (1 << 7),
+		/**
+		* Subscription value to receive events in the `MediaInputs` category.
+		*
+		* @enumIdentifier MediaInputs
+		* @enumValue (1 << 8)
+		* @enumType EventSubscription
+		* @rpcVersion -1
+		* @initialVersion 5.0.0
+		* @api enums
+		*/
 		// Receive events in the `MediaInputs` category
 		MediaInputs = (1 << 8),
-		// InputVolumeMeters event (high-volume)
-		InputVolumeMeters = (1 << 9),
-		// InputActiveStateChanged event (high-volume)
-		InputActiveStateChanged = (1 << 10),
-		// InputShowStateChanged event (high-volume)
-		InputShowStateChanged = (1 << 11),
-		// SceneItemTransformChanged event (high-volume)
-		SceneItemTransformChanged = (1 << 12),
+		/**
+		* Subscription value to receive the `ExternalPluginEvent` event.
+		*
+		* @enumIdentifier ExternalPlugins
+		* @enumValue (1 << 9)
+		* @enumType EventSubscription
+		* @rpcVersion -1
+		* @initialVersion 5.0.0
+		* @api enums
+		*/
 		// Receive events from external OBS plugins
-		ExternalPlugins = (1 << 13),
-
+		ExternalPlugins = (1 << 9),
+		/**
+		* Helper to receive all non-high-volume events.
+		*
+		* @enumIdentifier All
+		* @enumValue (General | Config | Scenes | Inputs | Transitions | Filters | Outputs | SceneItems | MediaInputs | ExternalPlugins)
+		* @enumType EventSubscription
+		* @rpcVersion -1
+		* @initialVersion 5.0.0
+		* @api enums
+		*/
 		// Receive all event categories (exclude high-volume)
 		All = (General | Config | Scenes | Inputs | Transitions | Filters | Outputs | SceneItems | MediaInputs | ExternalPlugins),
+		/**
+		* Subscription value to receive the `InputVolumeMeters` high-volume event.
+		*
+		* @enumIdentifier InputVolumeMeters
+		* @enumValue (1 << 16)
+		* @enumType EventSubscription
+		* @rpcVersion -1
+		* @initialVersion 5.0.0
+		* @api enums
+		*/
+		// InputVolumeMeters event (high-volume)
+		InputVolumeMeters = (1 << 16),
+		/**
+		* Subscription value to receive the `InputActiveStateChanged` high-volume event.
+		*
+		* @enumIdentifier InputActiveStateChanged
+		* @enumValue (1 << 17)
+		* @enumType EventSubscription
+		* @rpcVersion -1
+		* @initialVersion 5.0.0
+		* @api enums
+		*/
+		// InputActiveStateChanged event (high-volume)
+		InputActiveStateChanged = (1 << 17),
+		/**
+		* Subscription value to receive the `InputShowStateChanged` high-volume event.
+		*
+		* @enumIdentifier InputShowStateChanged
+		* @enumValue (1 << 18)
+		* @enumType EventSubscription
+		* @rpcVersion -1
+		* @initialVersion 5.0.0
+		* @api enums
+		*/
+		// InputShowStateChanged event (high-volume)
+		InputShowStateChanged = (1 << 18),
+		/**
+		* Subscription value to receive the `SceneItemTransformChanged` high-volume event.
+		*
+		* @enumIdentifier SceneItemTransformChanged
+		* @enumValue (1 << 19)
+		* @enumType EventSubscription
+		* @rpcVersion -1
+		* @initialVersion 5.0.0
+		* @api enums
+		*/
+		// SceneItemTransformChanged event (high-volume)
+		SceneItemTransformChanged = (1 << 19),
 	};
 }

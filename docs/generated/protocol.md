@@ -1,38 +1,37 @@
-<!-- This file was generated based on handlebars templates. Do not edit directly! -->
+<!-- This file was automatically generated. Do not edit directly! -->
 
-# obs-websocket 5.0.0 protocol reference
+# Main Table of Contents
+- [obs-websocket 5.0.0 Protocol](#obs-websocket-500-protocol)
+  - [Connecting to obs-websocket](#connecting-to-obs-websocket)
+    - [Connection steps](#connection-steps)
+    - [Creating an authentication string](#creating-an-authentication-string)
+  - [Base message types](#message-types)
+    - [OpCode 0 Hello](#hello-opcode-0)
+    - [OpCode 1 Identify](#identify-opcode-1)
+    - [OpCode 2 Identified](#identified-opcode-2)
+    - [OpCode 3 Reidentify](#reidentify-opcode-3)
+    - [OpCode 5 Event](#event-opcode-5)
+    - [OpCode 6 Request](#request-opcode-6)
+    - [OpCode 7 RequestResponse](#requestresponse-opcode-7)
+    - [OpCode 8 RequestBatch](#requestbatch-opcode-8)
+    - [OpCode 9 RequestBatchResponse](#requestbatchresponse-opcode-9)
+- [Enums](#enums)
+- [Events](#events)
+- [Requests](#requests)
 
+# obs-websocket 5.0.0 Protocol
 
-## General Introduction
+## General Intro
 obs-websocket provides a feature-rich RPC communication protocol, giving access to much of OBS's feature set. This document contains everything you should know in order to make a connection and use obs-websocket's functionality to the fullest.
 
 ### Design Goals
 - Abstraction of identification, events, requests, and batch requests into dedicated message types
 - Conformity of request naming using similar terms like `Get`, `Set`, `Get[x]List`, `Start[x]`, `Toggle[x]`
-- Conformity of OBS data key names like `sourceName`, `sourceKind`, `sourceType`, `sceneName`, `sceneItemName`
+- Conformity of OBS data field names like `sourceName`, `sourceKind`, `sourceType`, `sceneName`, `sceneItemName`
 - Error code response system - integer corrosponds to type of error, with optional comment
 - Possible support for multiple message encoding options: JSON and MessagePack
 - PubSub system - Allow clients to specify which events they do or don't want to receive from OBS
 - RPC versioning - Client and server negotiate the latest version of the obs-websocket protocol to communicate with.
-
-
-## Table of Contents
-- [Connecting to obs-websocket](#connecting-to-obs-websocket)
-  - [Connection steps](#connection-steps)
-  - [Creating an authentication string](#creating-an-authentication-string)
-  - [Enumerations](#enumerations)
-- [Base message types](#message-types)
-  - [OpCode 0 Hello](#hello-opcode-0)
-  - [OpCode 1 Identify](#identify-opcode-1)
-  - [OpCode 2 Identified](#identified-opcode-2)
-  - [OpCode 3 Reidentify](#reidentify-opcode-3)
-  - [OpCode 5 Event](#event-opcode-5)
-  - [OpCode 6 Request](#request-opcode-6)
-  - [OpCode 7 RequestResponse](#requestresponse-opcode-7)
-  - [OpCode 8 RequestBatch](#requestbatch-opcode-8)
-  - [OpCode 9 RequestBatchResponse](#requestbatchresponse-opcode-9)
-- [Events](#events)
-- [Requests](#requests)
 
 
 ## Connecting to obs-websocket
@@ -51,13 +50,13 @@ These steps should be followed precisely. Failure to connect to the server as in
 - Once the connection is upgraded, the websocket server will immediately send an [OpCode 0 `Hello`](#hello-opcode-0) message to the client.
 
 - The client listens for the `Hello` and responds with an [OpCode 1 `Identify`](#identify-opcode-1) containing all appropriate session parameters.
-  - If there is an `authentication` key in the `messageData` object, the server requires authentication, and the steps in [Creating an authentication string](#creating-an-authentication-string) should be followed.
-  - If there is no `authentication` key, the resulting `Identify` object sent to the server does not require an `authentication` string.
+  - If there is an `authentication` field in the `messageData` object, the server requires authentication, and the steps in [Creating an authentication string](#creating-an-authentication-string) should be followed.
+  - If there is no `authentication` field, the resulting `Identify` object sent to the server does not require an `authentication` string.
   - The client determines if the server's `rpcVersion` is supported, and if not it provides its closest supported version in `Identify`.
 
 - The server receives and processes the `Identify` sent by the client.
-  - If authentication is required and the `Identify` message data does not contain an `authentication` string, or the string is not correct, the connection is closed with [`WebSocketCloseCode::AuthenticationFailed`](#websocketclosecode-enum)
-  - If the client has requested an `rpcVersion` which the server cannot use, the connection is closed with [`WebSocketCloseCode::UnsupportedRpcVersion`](#websocketclosecode-enum). This system allows both the server and client to have seamless backwards compatability.
+  - If authentication is required and the `Identify` message data does not contain an `authentication` string, or the string is not correct, the connection is closed with `WebSocketCloseCode::AuthenticationFailed`
+  - If the client has requested an `rpcVersion` which the server cannot use, the connection is closed with `WebSocketCloseCode::UnsupportedRpcVersion`. This system allows both the server and client to have seamless backwards compatability.
   - If any other parameters are malformed (invalid type, etc), the connection is closed with an appropriate close code.
 
 - Once identification is processed on the server, the server responds to the client with an [OpCode 2 `Identified`](#identified-opcode-2).
@@ -67,15 +66,15 @@ These steps should be followed precisely. Failure to connect to the server as in
 - At any time after a client has been identified, it may send an [OpCode 3 `Reidentify`](#reidentify-opcode-3) message to update certain allowed session parameters. The server will respond in the same way it does during initial identification.
 
 #### Connection Notes
-- If a binary frame is received when using the `obswebsocket.json` (default) subprotocol, or a text frame is received while using the `obswebsocket.msgpack` subprotocol, the connection is closed with [`WebSocketCloseCode::MessageDecodeError`](#websocketclosecode-enum).
-- The obs-websocket server listens for any messages containing a `request-type` key in the first level JSON from unidentified clients. If a message matches, the connection is closed with [`WebSocketCloseCode::UnsupportedRpcVersion`](#websocketclosecode-enum) and a warning is logged.
-- If a message with a `messageType` is not recognized to the obs-websocket server, the connection is closed with [`WebSocketCloseCode::UnknownOpCode`](#websocketclosecode-enum).
-- At no point may the client send any message other than a single `Identify` before it has received an `Identified`. Doing so will result in the connection being closed with [`WebSocketCloseCode::NotIdentified`](#websocketclosecode-enum).
+- If a binary frame is received when using the `obswebsocket.json` (default) subprotocol, or a text frame is received while using the `obswebsocket.msgpack` subprotocol, the connection is closed with `WebSocketCloseCode::MessageDecodeError`.
+- The obs-websocket server listens for any messages containing a `request-type` field in the first level JSON from unidentified clients. If a message matches, the connection is closed with `WebSocketCloseCode::UnsupportedRpcVersion` and a warning is logged.
+- If a message with a `messageType` is not recognized to the obs-websocket server, the connection is closed with `WebSocketCloseCode::UnknownOpCode`.
+- At no point may the client send any message other than a single `Identify` before it has received an `Identified`. Doing so will result in the connection being closed with `WebSocketCloseCode::NotIdentified`.
 
 ---
 
 ### Creating an authentication string
-obs-websocket uses SHA256 to transmit authentication credentials. The server starts by sending an object in the `authentication` key of its `Hello` message data. The client processes the authentication challenge and responds via the `authentication` string in the `Identify` message data.
+obs-websocket uses SHA256 to transmit authentication credentials. The server starts by sending an object in the `authentication` field of its `Hello` message data. The client processes the authentication challenge and responds via the `authentication` string in the `Identify` message data.
 
 For this guide, we'll be using `supersecretpassword` as the password.
 
@@ -95,172 +94,19 @@ To generate the authentication string, follow these steps:
 
 For real-world examples of the `authentication` string creation, refer to the obs-websocket client libraries listed on the [README](README.md).
 
----
-
-### Enumerations
-These are the enumeration definitions for various codes used by obs-websocket.
-
-#### WebSocketOpCode Enum
-```cpp
-enum WebSocketOpCode {
-    Hello = 0,
-    Identify = 1,
-    Identified = 2,
-    Reidentify = 3,
-    Event = 5,
-    Request = 6,
-    RequestResponse = 7,
-    RequestBatch = 8,
-    RequestBatchResponse = 9,
-};
-```
-
-#### WebSocketCloseCode Enum
-```cpp
-enum WebSocketCloseCode {
-    // Internal only
-    DontClose = 0,
-    // Reserved
-    UnknownReason = 4000,
-    // The server was unable to decode the incoming websocket message
-    MessageDecodeError = 4002,
-    // A data key is missing but required
-    MissingDataKey = 4003,
-    // A data key has an invalid type
-    InvalidDataKeyType = 4004,
-    // The specified `op` was invalid or missing
-    UnknownOpCode = 4005,
-    // The client sent a websocket message without first sending `Identify` message
-    NotIdentified = 4006,
-    // The client sent an `Identify` message while already identified
-    AlreadyIdentified = 4007,
-    // The authentication attempt (via `Identify`) failed
-    AuthenticationFailed = 4008,
-    // The server detected the usage of an old version of the obs-websocket protocol.
-    UnsupportedRpcVersion = 4009,
-    // The websocket session has been invalidated by the obs-websocket server.
-    SessionInvalidated = 4010,
-};
-```
-
-#### EventSubscriptions Enum
-```cpp
-enum EventSubscription {
-    // Set subscriptions to 0 to disable all events
-    None = 0,
-    // Receive events in the `General` category
-    General = (1 << 0),
-    // Receive events in the `Config` category
-    Config = (1 << 1),
-    // Receive events in the `Scenes` category
-    Scenes = (1 << 2),
-    // Receive events in the `Inputs` category
-    Inputs = (1 << 3),
-    // Receive events in the `Transitions` category
-    Transitions = (1 << 4),
-    // Receive events in the `Filters` category
-    Filters = (1 << 5),
-    // Receive events in the `Outputs` category
-    Outputs = (1 << 6),
-    // Receive events in the `Scene Items` category
-    SceneItems = (1 << 7),
-    // Receive events in the `MediaInputs` category
-    MediaInputs = (1 << 8),
-    // Receive all event categories
-    All = (General | Config | Scenes | Inputs | Transitions | Filters | Outputs | SceneItems | MediaInputs),
-    // InputVolumeMeters event (high-volume)
-    InputVolumeMeters = (1 << 9),
-    // InputActiveStateChanged event (high-volume)
-    InputActiveStateChanged = (1 << 10),
-    // InputShowStateChanged event (high-volume)
-    InputShowStateChanged = (1 << 11),
-};
-```
-Subscriptions are a bitmask system. In many languages, to generate a bitmask that subscribes to `General` and `Scenes`, you would do: `subscriptions = ((1 << 0) | (1 << 2))`
-
-#### RequestStatus Enum
-```cpp
-enum RequestStatus {
-    Unknown = 0,
-
-    // For internal use to signify a successful parameter check
-    NoError = 10,
-
-    Success = 100,
-
-    // The `requestType` field is missing from the request data
-    MissingRequestType = 203,
-    // The request type is invalid or does not exist
-    UnknownRequestType = 204,
-    // Generic error code (comment required)
-    GenericError = 205,
-
-    // A required request parameter is missing
-    MissingRequestParameter = 300,
-    // The request does not have a valid requestData object.
-    MissingRequestData = 301,
-
-    // Generic invalid request parameter message (comment required)
-    InvalidRequestParameter = 400,
-    // A request parameter has the wrong data type
-    InvalidRequestParameterType = 401,
-    // A request parameter (float or int) is out of valid range
-    RequestParameterOutOfRange = 402,
-    // A request parameter (string or array) is empty and cannot be
-    RequestParameterEmpty = 403,
-    // There are too many request parameters (eg. a request takes two optionals, where only one is allowed at a time)
-    TooManyRequestParameters = 404,
-
-    // An output is running and cannot be in order to perform the request (generic)
-    OutputRunning = 500,
-    // An output is not running and should be
-    OutputNotRunning = 501,
-    // An output is paused and should not be
-    OutputPaused = 502,
-    // An output is disabled and should not be
-    OutputDisabled = 503,
-    // Studio mode is active and cannot be
-    StudioModeActive = 504,
-    // Studio mode is not active and should be
-    StudioModeNotActive = 505,
-
-    // The resource was not found
-    ResourceNotFound = 600,
-    // The resource already exists
-    ResourceAlreadyExists = 601,
-    // The type of resource found is invalid
-    InvalidResourceType = 602,
-    // There are not enough instances of the resource in order to perform the request
-    NotEnoughResources = 603,
-    // The state of the resource is invalid. For example, if the resource is blocked from being accessed
-    InvalidResourceState = 604,
-    // The specified input (obs_source_t-OBS_SOURCE_TYPE_INPUT) had the wrong kind
-    InvalidInputKind = 605,
-
-    // Creating the resource failed
-    ResourceCreationFailed = 700,
-    // Performing an action on the resource failed
-    ResourceActionFailed = 701,
-    // Processing the request failed unexpectedly (comment required)
-    RequestProcessingFailed = 702,
-    // The combination of request parameters cannot be used to perform an action
-    CannotAct = 703,
-};
-```
-
 
 ## Message Types (OpCodes)
 The following message types are the low-level message types which may be sent to and from obs-websocket. 
 
-Messages sent from the obs-websocket server or client may contain these first-level keys, known as the base object:
+Messages sent from the obs-websocket server or client may contain these first-level fields, known as the base object:
 ```
 {
   "op": number,
   "d": object
 }
 ```
-- `op` is a [`WebSocketOpCode` OpCode.](#websocketopcode-enum)
-- `d` is an object of the data keys associated with the operation.
+- `op` is a `WebSocketOpCode` OpCode.
+- `d` is an object of the data fields associated with the operation.
 
 ---
 
@@ -323,8 +169,8 @@ Authentication is not required
 }
 ```
 - `rpcVersion` is the version number that the client would like the obs-websocket server to use.
-- When `ignoreInvalidMessages` is true, the socket will not be closed for [`WebSocketCloseCode`](#websocketclosecode-enum): `MessageDecodeError`, `UnknownOpCode`, or `MissingDataKey`. Instead, the message will be logged and ignored.
-- `eventSubscriptions` is a bitmask of [`EventSubscriptions`](#eventsubscriptions-enum) items to subscribe to events and event categories at will. By default, all event categories are subscribed, except for events marked as high volume. High volume events must be explicitly subscribed to.
+- When `ignoreInvalidMessages` is true, the socket will not be closed for `WebSocketCloseCode`: `MessageDecodeError`, `UnknownOpCode`, or `MissingDataKey`. Instead, the message will be logged and ignored.
+- `eventSubscriptions` is a bitmask of `EventSubscriptions` items to subscribe to events and event categories at will. By default, all event categories are subscribed, except for events marked as high volume. High volume events must be explicitly subscribed to.
 
 **Example Message:**
 ```json
@@ -467,8 +313,8 @@ Authentication is not required
   "comment": string(optional)
 }
 ```
-- `result` is `true` if the request resulted in [`RequestStatus::Success`](#requeststatus-enum). False if otherwise.
-- `code` is a [`RequestStatus`](#requeststatus-enum) code.
+- `result` is `true` if the request resulted in `RequestStatus::Success`. False if otherwise.
+- `code` is a `RequestStatus` code.
 - `comment` may be provided by the server on errors to offer further details on why a request failed.
 
 **Example Messages:**
@@ -515,11 +361,12 @@ Failure Response
 {
   "requestId": string,
   "haltOnFailure": bool(optional) = false,
+  "executionType": number(optional) = RequestBatchExecutionType::SerialRealtime
   "requests": array<object>
 }
 ```
 - When `haltOnFailure` is `true`, the processing of requests will be halted on first failure. Returns only the processed requests in [`RequestBatchResponse`](#requestbatchresponse-opcode-9).
-- Requests in the `requests` array follow the same structure as the `Request` payload data format, however `requestId` is an optional key.
+- Requests in the `requests` array follow the same structure as the `Request` payload data format, however `requestId` is an optional field.
 
 ---
 
@@ -537,23 +384,2190 @@ Failure Response
 ```
 
 
+# Enums
+These are enumeration declarations, which are referenced throughout obs-websocket's protocol.
+
+### Enumerations Table of Contents
+- [WebSocketOpCode](#websocketopcode)
+  - [WebSocketOpCode::Hello](#websocketopcodehello)
+  - [WebSocketOpCode::Identify](#websocketopcodeidentify)
+  - [WebSocketOpCode::Identified](#websocketopcodeidentified)
+  - [WebSocketOpCode::Reidentify](#websocketopcodereidentify)
+  - [WebSocketOpCode::Event](#websocketopcodeevent)
+  - [WebSocketOpCode::Request](#websocketopcoderequest)
+  - [WebSocketOpCode::RequestResponse](#websocketopcoderequestresponse)
+  - [WebSocketOpCode::RequestBatch](#websocketopcoderequestbatch)
+  - [WebSocketOpCode::RequestBatchResponse](#websocketopcoderequestbatchresponse)
+- [WebSocketCloseCode](#websocketclosecode)
+  - [WebSocketCloseCode::DontClose](#websocketclosecodedontclose)
+  - [WebSocketCloseCode::UnknownReason](#websocketclosecodeunknownreason)
+  - [WebSocketCloseCode::MessageDecodeError](#websocketclosecodemessagedecodeerror)
+  - [WebSocketCloseCode::MissingDataField](#websocketclosecodemissingdatafield)
+  - [WebSocketCloseCode::InvalidDataFieldType](#websocketclosecodeinvaliddatafieldtype)
+  - [WebSocketCloseCode::InvalidDataFieldValue](#websocketclosecodeinvaliddatafieldvalue)
+  - [WebSocketCloseCode::UnknownOpCode](#websocketclosecodeunknownopcode)
+  - [WebSocketCloseCode::NotIdentified](#websocketclosecodenotidentified)
+  - [WebSocketCloseCode::AlreadyIdentified](#websocketclosecodealreadyidentified)
+  - [WebSocketCloseCode::AuthenticationFailed](#websocketclosecodeauthenticationfailed)
+  - [WebSocketCloseCode::UnsupportedRpcVersion](#websocketclosecodeunsupportedrpcversion)
+  - [WebSocketCloseCode::SessionInvalidated](#websocketclosecodesessioninvalidated)
+  - [WebSocketCloseCode::UnsupportedFeature](#websocketclosecodeunsupportedfeature)
+- [RequestBatchExecutionType](#requestbatchexecutiontype)
+  - [RequestBatchExecutionType::None](#requestbatchexecutiontypenone)
+  - [RequestBatchExecutionType::SerialRealtime](#requestbatchexecutiontypeserialrealtime)
+  - [RequestBatchExecutionType::SerialFrame](#requestbatchexecutiontypeserialframe)
+  - [RequestBatchExecutionType::Parallel](#requestbatchexecutiontypeparallel)
+- [RequestStatus](#requeststatus)
+  - [RequestStatus::Unknown](#requeststatusunknown)
+  - [RequestStatus::NoError](#requeststatusnoerror)
+  - [RequestStatus::Success](#requeststatussuccess)
+  - [RequestStatus::MissingRequestType](#requeststatusmissingrequesttype)
+  - [RequestStatus::UnknownRequestType](#requeststatusunknownrequesttype)
+  - [RequestStatus::GenericError](#requeststatusgenericerror)
+  - [RequestStatus::UnsupportedRequestBatchExecutionType](#requeststatusunsupportedrequestbatchexecutiontype)
+  - [RequestStatus::MissingRequestField](#requeststatusmissingrequestfield)
+  - [RequestStatus::MissingRequestData](#requeststatusmissingrequestdata)
+  - [RequestStatus::InvalidRequestField](#requeststatusinvalidrequestfield)
+  - [RequestStatus::InvalidRequestFieldType](#requeststatusinvalidrequestfieldtype)
+  - [RequestStatus::RequestFieldOutOfRange](#requeststatusrequestfieldoutofrange)
+  - [RequestStatus::RequestFieldEmpty](#requeststatusrequestfieldempty)
+  - [RequestStatus::TooManyRequestFields](#requeststatustoomanyrequestfields)
+  - [RequestStatus::OutputRunning](#requeststatusoutputrunning)
+  - [RequestStatus::OutputNotRunning](#requeststatusoutputnotrunning)
+  - [RequestStatus::OutputPaused](#requeststatusoutputpaused)
+  - [RequestStatus::OutputNotPaused](#requeststatusoutputnotpaused)
+  - [RequestStatus::OutputDisabled](#requeststatusoutputdisabled)
+  - [RequestStatus::StudioModeActive](#requeststatusstudiomodeactive)
+  - [RequestStatus::StudioModeNotActive](#requeststatusstudiomodenotactive)
+  - [RequestStatus::ResourceNotFound](#requeststatusresourcenotfound)
+  - [RequestStatus::ResourceAlreadyExists](#requeststatusresourcealreadyexists)
+  - [RequestStatus::InvalidResourceType](#requeststatusinvalidresourcetype)
+  - [RequestStatus::NotEnoughResources](#requeststatusnotenoughresources)
+  - [RequestStatus::InvalidResourceState](#requeststatusinvalidresourcestate)
+  - [RequestStatus::InvalidInputKind](#requeststatusinvalidinputkind)
+  - [RequestStatus::ResourceCreationFailed](#requeststatusresourcecreationfailed)
+  - [RequestStatus::ResourceActionFailed](#requeststatusresourceactionfailed)
+  - [RequestStatus::RequestProcessingFailed](#requeststatusrequestprocessingfailed)
+  - [RequestStatus::CannotAct](#requeststatuscannotact)
+- [EventSubscription](#eventsubscription)
+  - [EventSubscription::None](#eventsubscriptionnone)
+  - [EventSubscription::General](#eventsubscriptiongeneral)
+  - [EventSubscription::Config](#eventsubscriptionconfig)
+  - [EventSubscription::Scenes](#eventsubscriptionscenes)
+  - [EventSubscription::Inputs](#eventsubscriptioninputs)
+  - [EventSubscription::Transitions](#eventsubscriptiontransitions)
+  - [EventSubscription::Filters](#eventsubscriptionfilters)
+  - [EventSubscription::Outputs](#eventsubscriptionoutputs)
+  - [EventSubscription::SceneItems](#eventsubscriptionsceneitems)
+  - [EventSubscription::MediaInputs](#eventsubscriptionmediainputs)
+  - [EventSubscription::ExternalPlugins](#eventsubscriptionexternalplugins)
+  - [EventSubscription::All](#eventsubscriptionall)
+  - [EventSubscription::InputVolumeMeters](#eventsubscriptioninputvolumemeters)
+  - [EventSubscription::InputActiveStateChanged](#eventsubscriptioninputactivestatechanged)
+  - [EventSubscription::InputShowStateChanged](#eventsubscriptioninputshowstatechanged)
+  - [EventSubscription::SceneItemTransformChanged](#eventsubscriptionsceneitemtransformchanged)
 
 
-## Requests/Events Table of Contents
+## WebSocketOpCode
 
-<!-- toc -->
+### WebSocketOpCode::Hello
 
-- [Events](#events)
-- [Requests](#requests)
+The initial message sent by obs-websocket to newly connected clients.
 
-<!-- tocstop -->
+- Identifier Value: `0`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
 
-## Events
+---
+
+### WebSocketOpCode::Identify
+
+The message sent by a newly connected client to obs-websocket in response to a `Hello`.
+
+- Identifier Value: `1`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### WebSocketOpCode::Identified
+
+The response sent by obs-websocket to a client after it has successfully identified with obs-websocket.
+
+- Identifier Value: `2`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### WebSocketOpCode::Reidentify
+
+The message sent by an already-identified client to update identification parameters.
+
+- Identifier Value: `3`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### WebSocketOpCode::Event
+
+The message sent by obs-websocket containing an event payload.
+
+- Identifier Value: `5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### WebSocketOpCode::Request
+
+The message sent by a client to obs-websocket to perform a request.
+
+- Identifier Value: `6`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### WebSocketOpCode::RequestResponse
+
+The message sent by obs-websocket in response to a particular request from a client.
+
+- Identifier Value: `7`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### WebSocketOpCode::RequestBatch
+
+The message sent by a client to obs-websocket to perform a batch of requests.
+
+- Identifier Value: `8`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### WebSocketOpCode::RequestBatchResponse
+
+The message sent by obs-websocket in response to a particular batch of requests from a client.
+
+- Identifier Value: `9`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+## WebSocketCloseCode
+
+### WebSocketCloseCode::DontClose
+
+For internal use only to tell the request handler not to perform any close action.
+
+- Identifier Value: `0`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### WebSocketCloseCode::UnknownReason
+
+Unknown reason, should never be used.
+
+- Identifier Value: `4000`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### WebSocketCloseCode::MessageDecodeError
+
+The server was unable to decode the incoming websocket message.
+
+- Identifier Value: `4002`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### WebSocketCloseCode::MissingDataField
+
+A data field is required but missing from the payload.
+
+- Identifier Value: `4003`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### WebSocketCloseCode::InvalidDataFieldType
+
+A data field's value type is invalid.
+
+- Identifier Value: `4004`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### WebSocketCloseCode::InvalidDataFieldValue
+
+A data field's value is invalid.
+
+- Identifier Value: `4005`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### WebSocketCloseCode::UnknownOpCode
+
+The specified `op` was invalid or missing.
+
+- Identifier Value: `4006`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### WebSocketCloseCode::NotIdentified
+
+The client sent a websocket message without first sending `Identify` message.
+
+- Identifier Value: `4007`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### WebSocketCloseCode::AlreadyIdentified
+
+The client sent an `Identify` message while already identified.
+
+Note: Once a client has identified, only `Reidentify` may be used to change session parameters.
+
+- Identifier Value: `4008`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### WebSocketCloseCode::AuthenticationFailed
+
+The authentication attempt (via `Identify`) failed.
+
+- Identifier Value: `4009`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### WebSocketCloseCode::UnsupportedRpcVersion
+
+The server detected the usage of an old version of the obs-websocket RPC protocol.
+
+- Identifier Value: `4010`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### WebSocketCloseCode::SessionInvalidated
+
+The websocket session has been invalidated by the obs-websocket server.
+
+Note: This is the code used by the `Kick` button in the UI Session List. If you receive this code, you must not automatically reconnect.
+
+- Identifier Value: `4011`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### WebSocketCloseCode::UnsupportedFeature
+
+A requested feature is not supported due to hardware/software limitations.
+
+- Identifier Value: `4012`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+## RequestBatchExecutionType
+
+### RequestBatchExecutionType::None
+
+Not a request batch.
+
+- Identifier Value: `0`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### RequestBatchExecutionType::SerialRealtime
+
+A request batch which processes all requests serially, as fast as possible.
+
+Note: To introduce artificial delay, use the `Sleep` request and the `sleepMillis` request field.
+
+- Identifier Value: `1`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### RequestBatchExecutionType::SerialFrame
+
+A request batch type which processes all requests serially, in sync with the graphics thread. Designed to provide high accuracy for animations.
+
+Note: To introduce artificial delay, use the `Sleep` request and the `sleepFrames` request field.
+
+- Identifier Value: `2`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### RequestBatchExecutionType::Parallel
+
+A request batch type which processes all requests using all available threads in the thread pool.
+
+Note: This is mainly experimental, and only really shows its colors during requests which require lots of
+active processing, like `GetSourceScreenshot`.
+
+- Identifier Value: `3`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+## RequestStatus
+
+### RequestStatus::Unknown
+
+Unknown status, should never be used.
+
+- Identifier Value: `0`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### RequestStatus::NoError
+
+For internal use to signify a successful field check.
+
+- Identifier Value: `10`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### RequestStatus::Success
+
+The request has succeeded.
+
+- Identifier Value: `100`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### RequestStatus::MissingRequestType
+
+The `requestType` field is missing from the request data.
+
+- Identifier Value: `203`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### RequestStatus::UnknownRequestType
+
+The request type is invalid or does not exist.
+
+- Identifier Value: `204`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### RequestStatus::GenericError
+
+Generic error code.
+
+Note: A comment is required to be provided by obs-websocket.
+
+- Identifier Value: `205`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### RequestStatus::UnsupportedRequestBatchExecutionType
+
+The request batch execution type is not supported.
+
+- Identifier Value: `206`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### RequestStatus::MissingRequestField
+
+A required request field is missing.
+
+- Identifier Value: `300`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### RequestStatus::MissingRequestData
+
+The request does not have a valid requestData object.
+
+- Identifier Value: `301`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### RequestStatus::InvalidRequestField
+
+Generic invalid request field message.
+
+Note: A comment is required to be provided by obs-websocket.
+
+- Identifier Value: `400`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### RequestStatus::InvalidRequestFieldType
+
+A request field has the wrong data type.
+
+- Identifier Value: `401`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### RequestStatus::RequestFieldOutOfRange
+
+A request field (number) is outside of the allowed range.
+
+- Identifier Value: `402`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### RequestStatus::RequestFieldEmpty
+
+A request field (string or array) is empty and cannot be.
+
+- Identifier Value: `403`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### RequestStatus::TooManyRequestFields
+
+There are too many request fields (eg. a request takes two optionals, where only one is allowed at a time).
+
+- Identifier Value: `404`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### RequestStatus::OutputRunning
+
+An output is running and cannot be in order to perform the request.
+
+- Identifier Value: `500`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### RequestStatus::OutputNotRunning
+
+An output is not running and should be.
+
+- Identifier Value: `501`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### RequestStatus::OutputPaused
+
+An output is paused and should not be.
+
+- Identifier Value: `502`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### RequestStatus::OutputNotPaused
+
+An output is not paused and should be.
+
+- Identifier Value: `503`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### RequestStatus::OutputDisabled
+
+An output is disabled and should not be.
+
+- Identifier Value: `504`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### RequestStatus::StudioModeActive
+
+Studio mode is active and cannot be.
+
+- Identifier Value: `505`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### RequestStatus::StudioModeNotActive
+
+Studio mode is not active and should be.
+
+- Identifier Value: `506`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### RequestStatus::ResourceNotFound
+
+The resource was not found.
+
+Note: Resources are any kind of object in obs-websocket, like inputs, profiles, outputs, etc.
+
+- Identifier Value: `600`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### RequestStatus::ResourceAlreadyExists
+
+The resource already exists.
+
+- Identifier Value: `601`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### RequestStatus::InvalidResourceType
+
+The type of resource found is invalid.
+
+- Identifier Value: `602`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### RequestStatus::NotEnoughResources
+
+There are not enough instances of the resource in order to perform the request.
+
+- Identifier Value: `603`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### RequestStatus::InvalidResourceState
+
+The state of the resource is invalid. For example, if the resource is blocked from being accessed.
+
+- Identifier Value: `604`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### RequestStatus::InvalidInputKind
+
+The specified input (obs_source_t-OBS_SOURCE_TYPE_INPUT) had the wrong kind.
+
+- Identifier Value: `605`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### RequestStatus::ResourceCreationFailed
+
+Creating the resource failed.
+
+- Identifier Value: `700`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### RequestStatus::ResourceActionFailed
+
+Performing an action on the resource failed.
+
+- Identifier Value: `701`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### RequestStatus::RequestProcessingFailed
+
+Processing the request failed unexpectedly.
+
+Note: A comment is required to be provided by obs-websocket.
+
+- Identifier Value: `702`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### RequestStatus::CannotAct
+
+The combination of request fields cannot be used to perform an action.
+
+- Identifier Value: `703`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+## EventSubscription
+
+### EventSubscription::None
+
+Subcription value used to disable all events.
+
+- Identifier Value: `0`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### EventSubscription::General
+
+Subscription value to receive events in the `General` category.
+
+- Identifier Value: `(1 << 0)`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### EventSubscription::Config
+
+Subscription value to receive events in the `Config` category.
+
+- Identifier Value: `(1 << 1)`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### EventSubscription::Scenes
+
+Subscription value to receive events in the `Scenes` category.
+
+- Identifier Value: `(1 << 2)`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### EventSubscription::Inputs
+
+Subscription value to receive events in the `Inputs` category.
+
+- Identifier Value: `(1 << 3)`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### EventSubscription::Transitions
+
+Subscription value to receive events in the `Transitions` category.
+
+- Identifier Value: `(1 << 4)`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### EventSubscription::Filters
+
+Subscription value to receive events in the `Filters` category.
+
+- Identifier Value: `(1 << 5)`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### EventSubscription::Outputs
+
+Subscription value to receive events in the `Outputs` category.
+
+- Identifier Value: `(1 << 6)`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### EventSubscription::SceneItems
+
+Subscription value to receive events in the `SceneItems` category.
+
+- Identifier Value: `(1 << 7)`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### EventSubscription::MediaInputs
+
+Subscription value to receive events in the `MediaInputs` category.
+
+- Identifier Value: `(1 << 8)`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### EventSubscription::ExternalPlugins
+
+Subscription value to receive the `ExternalPluginEvent` event.
+
+- Identifier Value: `(1 << 9)`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### EventSubscription::All
+
+Helper to receive all non-high-volume events.
+
+- Identifier Value: `(General | Config | Scenes | Inputs | Transitions | Filters | Outputs | SceneItems | MediaInputs | ExternalPlugins)`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### EventSubscription::InputVolumeMeters
+
+Subscription value to receive the `InputVolumeMeters` high-volume event.
+
+- Identifier Value: `(1 << 16)`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### EventSubscription::InputActiveStateChanged
+
+Subscription value to receive the `InputActiveStateChanged` high-volume event.
+
+- Identifier Value: `(1 << 17)`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### EventSubscription::InputShowStateChanged
+
+Subscription value to receive the `InputShowStateChanged` high-volume event.
+
+- Identifier Value: `(1 << 18)`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### EventSubscription::SceneItemTransformChanged
+
+Subscription value to receive the `SceneItemTransformChanged` high-volume event.
+
+- Identifier Value: `(1 << 19)`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+# Events
+
+### Events Table of Contents
+- [General](#general)
+  - [ExitStarted](#exitstarted)
+  - [StudioModeStateChanged](#studiomodestatechanged)
+- [Config](#config)
+  - [CurrentSceneCollectionChanging](#currentscenecollectionchanging)
+  - [CurrentSceneCollectionChanged](#currentscenecollectionchanged)
+  - [SceneCollectionListChanged](#scenecollectionlistchanged)
+  - [CurrentProfileChanging](#currentprofilechanging)
+  - [CurrentProfileChanged](#currentprofilechanged)
+  - [ProfileListChanged](#profilelistchanged)
+
+
+## General
+
+### ExitStarted
+
+OBS has begun the shutdown process.
+
+- Complexity Rating: `1/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### StudioModeStateChanged
+
+Studio mode has been enabled or disabled.
+
+- Complexity Rating: `1/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Data Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| studioModeEnabled | Boolean | True == Enabled, False == Disabled |
+## Config
+
+### CurrentSceneCollectionChanging
+
+The current scene collection has begun changing.
+
+Note: We recommend using this event to trigger a pause of all polling requests, as performing any requests during a
+scene collection change is considered undefined behavior and can cause crashes!
+
+- Complexity Rating: `1/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Data Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| sceneCollectionName | String | Name of the current scene collection |
+
+---
+
+### CurrentSceneCollectionChanged
+
+The current scene collection has changed.
+
+Note: If polling has been paused during `CurrentSceneCollectionChanging`, this is the que to restart polling.
+
+- Complexity Rating: `1/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Data Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| sceneCollectionName | String | Name of the new scene collection |
+
+---
+
+### SceneCollectionListChanged
+
+The scene collection list has changed.
+
+- Complexity Rating: `1/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Data Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| sceneCollections | Array<String> | Updated list of scene collections |
+
+---
+
+### CurrentProfileChanging
+
+The current profile has begun changing.
+
+- Complexity Rating: `1/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Data Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| profileName | String | Name of the current profile |
+
+---
+
+### CurrentProfileChanged
+
+The current profile has changed.
+
+- Complexity Rating: `1/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Data Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| profileName | String | Name of the new profile |
+
+---
+
+### ProfileListChanged
+
+The profile list has changed.
+
+- Complexity Rating: `1/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Data Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| profiles | Array<String> | Updated list of profiles |
+
+
+# Requests
+
+### Requests Table of Contents
+- [General](#general-1)
+  - [GetVersion](#getversion)
+  - [BroadcastCustomEvent](#broadcastcustomevent)
+  - [GetStats](#getstats)
+  - [GetHotkeyList](#gethotkeylist)
+  - [TriggerHotkeyByName](#triggerhotkeybyname)
+  - [TriggerHotkeyByKeySequence](#triggerhotkeybykeysequence)
+  - [GetStudioModeEnabled](#getstudiomodeenabled)
+  - [SetStudioModeEnabled](#setstudiomodeenabled)
+  - [Sleep](#sleep)
+- [Config](#config-1)
+  - [GetPersistentData](#getpersistentdata)
+  - [SetPersistentData](#setpersistentdata)
+  - [GetSceneCollectionList](#getscenecollectionlist)
+  - [SetCurrentSceneCollection](#setcurrentscenecollection)
+  - [CreateSceneCollection](#createscenecollection)
+  - [GetProfileList](#getprofilelist)
+  - [SetCurrentProfile](#setcurrentprofile)
+  - [CreateProfile](#createprofile)
+  - [RemoveProfile](#removeprofile)
+  - [GetProfileParameter](#getprofileparameter)
+  - [SetProfileParameter](#setprofileparameter)
+  - [GetVideoSettings](#getvideosettings)
+  - [SetVideoSettings](#setvideosettings)
+  - [GetStreamServiceSettings](#getstreamservicesettings)
+  - [SetStreamServiceSettings](#setstreamservicesettings)
+- [Sources](#sources)
+  - [GetSceneList](#getscenelist)
+  - [GetCurrentProgramScene](#getcurrentprogramscene)
+  - [SetCurrentProgramScene](#setcurrentprogramscene)
+  - [GetCurrentPreviewScene](#getcurrentpreviewscene)
+  - [SetCurrentPreviewScene](#setcurrentpreviewscene)
+  - [CreateScene](#createscene)
+  - [RemoveScene](#removescene)
+  - [SetSceneName](#setscenename)
+  - [GetSourceActive](#getsourceactive)
+  - [GetSourceScreenshot](#getsourcescreenshot)
+  - [GetSourceScreenshot](#getsourcescreenshot)
+- [Inputs](#inputs)
+  - [GetInputList](#getinputlist)
+  - [GetInputKindList](#getinputkindlist)
+  - [CreateInput](#createinput)
+  - [RemoveInput](#removeinput)
+  - [SetInputName](#setinputname)
+  - [GetInputDefaultSettings](#getinputdefaultsettings)
+  - [GetInputSettings](#getinputsettings)
+  - [SetInputSettings](#setinputsettings)
+  - [GetInputMute](#getinputmute)
+  - [SetInputMute](#setinputmute)
+  - [ToggleInputMute](#toggleinputmute)
+  - [GetInputVolume](#getinputvolume)
+  - [SetInputVolume](#setinputvolume)
+  - [GetInputAudioSyncOffset](#getinputaudiosyncoffset)
+  - [SetInputAudioSyncOffset](#setinputaudiosyncoffset)
+  - [GetInputAudioMonitorType](#getinputaudiomonitortype)
+  - [SetInputAudioMonitorType](#setinputaudiomonitortype)
+  - [GetInputPropertiesListPropertyItems](#getinputpropertieslistpropertyitems)
+  - [PressInputPropertiesButton](#pressinputpropertiesbutton)
 
 
 
 
+## General
 
-## Requests
+### GetVersion
+
+Gets data about the current plugin and RPC version.
+
+- Complexity Rating: `1/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| obsVersion | String | Current OBS Studio version |
+| obsWebSocketVersion | String | Current obs-websocket version |
+| rpcVersion | Number | Current latest obs-websocket RPC version |
+| availableRequests | Array<String> | Array of available RPC requests for the currently negotiated RPC version |
+
+---
+
+### BroadcastCustomEvent
+
+Broadcasts a `CustomEvent` to all WebSocket clients. Receivers are clients which are identified and subscribed.
+
+- Complexity Rating: `1/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| eventData | Object | Data payload to emit to all receivers | None | N/A |
+
+---
+
+### GetStats
+
+Gets statistics about OBS, obs-websocket, and the current session.
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| cpuUsage | Number | Current CPU usage in percent |
+| memoryUsage | Number | Amount of memory in MB currently being used by OBS |
+| availableDiskSpace | Number | Available disk space on the device being used for recording storage |
+| activeFps | Number | Current FPS being rendered |
+| averageFrameRenderTime | Number | Average time in milliseconds that OBS is taking to render a frame |
+| renderSkippedFrames | Number | Number of frames skipped by OBS in the render thread |
+| renderTotalFrames | Number | Total number of frames outputted by the render thread |
+| outputSkippedFrames | Number | Number of frames skipped by OBS in the output thread |
+| outputTotalFrames | Number | Total number of frames outputted by the output thread |
+| webSocketSessionIncomingMessages | Number | Total number of messages received by obs-websocket from the client |
+| webSocketSessionOutgoingMessages | Number | Total number of messages sent by obs-websocket to the client |
+
+---
+
+### GetHotkeyList
+
+Gets an array of all hotkey names in OBS
+
+- Complexity Rating: `3/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| hotkeys | Array<String> | Array of hotkey names |
+
+---
+
+### TriggerHotkeyByName
+
+Triggers a hotkey using its name. See `GetHotkeyList`
+
+- Complexity Rating: `3/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| hotkeyName | String | Name of the hotkey to trigger | None | N/A |
+
+---
+
+### TriggerHotkeyByKeySequence
+
+Triggers a hotkey using a sequence of keys.
+
+- Complexity Rating: `4/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| ?keyId | String | The OBS key ID to use. See https://github.com/obsproject/obs-studio/blob/master/libobs/obs-hotkeys.h | None | Not pressed |
+| ?keyModifiers | Object | Object containing key modifiers to apply | None | Ignored |
+| ?keyModifiers.shift | Boolean | Press Shift | None | Not pressed |
+| ?keyModifiers.control | Boolean | Press CTRL | None | Not pressed |
+| ?keyModifiers.alt | Boolean | Press ALT | None | Not pressed |
+| ?keyModifiers.command | Boolean | Press CMD (Mac) | None | Not pressed |
+
+---
+
+### GetStudioModeEnabled
+
+Gets whether studio is enabled.
+
+- Complexity Rating: `1/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| studioModeEnabled | Boolean | Whether studio mode is enabled |
+
+---
+
+### SetStudioModeEnabled
+
+Enables or disables studio mode
+
+- Complexity Rating: `1/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| studioModeEnabled | Boolean | True == Enabled, False == Disabled | None | N/A |
+
+---
+
+### Sleep
+
+Sleeps for a time duration or number of frames. Only available in request batches with types `SERIAL_REALTIME` or `SERIAL_FRAME`.
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| sleepMillis | Number | Number of milliseconds to sleep for (if `SERIAL_REALTIME` mode) | >= 0, <= 50000 | N/A |
+| sleepFrames | Number | Number of frames to sleep for (if `SERIAL_FRAME` mode) | >= 0, <= 10000 | N/A |
+
+
+## Config
+
+### GetPersistentData
+
+Gets the value of a "slot" from the selected persistent data realm.
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| realm | String | The data realm to select. `OBS_WEBSOCKET_DATA_REALM_GLOBAL` or `OBS_WEBSOCKET_DATA_REALM_PROFILE` | None | N/A |
+| slotName | String | The name of the slot to retrieve data from | None | N/A |
+
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| slotValue | String | Value associated with the slot. `null` if not set |
+
+---
+
+### SetPersistentData
+
+Sets the value of a "slot" from the selected persistent data realm.
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| realm | String | The data realm to select. `OBS_WEBSOCKET_DATA_REALM_GLOBAL` or `OBS_WEBSOCKET_DATA_REALM_PROFILE` | None | N/A |
+| slotName | String | The name of the slot to retrieve data from | None | N/A |
+| slotValue | Any | The value to apply to the slot | None | N/A |
+
+---
+
+### GetSceneCollectionList
+
+Gets an array of all scene collections
+
+- Complexity Rating: `1/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| currentSceneCollectionName | String | The name of the current scene collection |
+| sceneCollections | Array<String> | Array of all available scene collections |
+
+---
+
+### SetCurrentSceneCollection
+
+Switches to a scene collection.
+
+Note: This will block until the collection has finished changing.
+
+- Complexity Rating: `1/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| sceneCollectionName | String | Name of the scene collection to switch to | None | N/A |
+
+---
+
+### CreateSceneCollection
+
+Creates a new scene collection, switching to it in the process.
+
+Note: This will block until the collection has finished changing.
+
+- Complexity Rating: `1/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| sceneCollectionName | String | Name for the new scene collection | None | N/A |
+
+---
+
+### GetProfileList
+
+Gets an array of all profiles
+
+- Complexity Rating: `1/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| currentProfileName | String | The name of the current profile |
+| profiles | Array<String> | Array of all available profiles |
+
+---
+
+### SetCurrentProfile
+
+Switches to a profile.
+
+- Complexity Rating: `1/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| profileName | String | Name of the profile to switch to | None | N/A |
+
+---
+
+### CreateProfile
+
+Creates a new profile, switching to it in the process
+
+- Complexity Rating: `1/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| profileName | String | Name for the new profile | None | N/A |
+
+---
+
+### RemoveProfile
+
+Removes a profile. If the current profile is chosen, it will change to a different profile first.
+
+- Complexity Rating: `1/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| profileName | String | Name of the profile to remove | None | N/A |
+
+---
+
+### GetProfileParameter
+
+Gets a parameter from the current profile's configuration.
+
+- Complexity Rating: `3/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| parameterCategory | String | Category of the parameter to get | None | N/A |
+| parameterName | String | Name of the parameter to get | None | N/A |
+
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| parameterValue | String | Value associated with the parameter. `null` if not set and no default |
+| defaultParameterValue | String | Default value associated with the parameter. `null` if no default |
+
+---
+
+### SetProfileParameter
+
+Sets the value of a parameter in the current profile's configuration.
+
+- Complexity Rating: `3/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| parameterCategory | String | Category of the parameter to set | None | N/A |
+| parameterName | String | Name of the parameter to set | None | N/A |
+| parameterValue | String | Value of the parameter to set. Use `null` to delete | None | N/A |
+
+---
+
+### GetVideoSettings
+
+Gets the current video settings.
+
+Note: To get the true FPS value, divide the FPS numerator by the FPS denominator. Example: `60000/1001`
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| fpsNumerator | Number | Numerator of the fractional FPS value |
+| fpsDenominator | Number | Denominator of the fractional FPS value |
+| baseWidth | Number | Width of the base (canvas) resolution in pixels |
+| baseHeight | Number | Height of the base (canvas) resolution in pixels |
+| outputWidth | Number | Width of the output resolution in pixels |
+| outputHeight | Number | Height of the output resolution in pixels |
+
+---
+
+### SetVideoSettings
+
+Sets the current video settings.
+
+Note: Fields must be specified in pairs. For example, you cannot set only `baseWidth` without needing to specify `baseHeight`.
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| ?fpsNumerator | Number | Numerator of the fractional FPS value | >= 1 | Not changed |
+| ?fpsDenominator | Number | Denominator of the fractional FPS value | >= 1 | Not changed |
+| ?baseWidth | Number | Width of the base (canvas) resolution in pixels | >= 1, <= 4096 | Not changed |
+| ?baseHeight | Number | Height of the base (canvas) resolution in pixels | >= 1, <= 4096 | Not changed |
+| ?outputWidth | Number | Width of the output resolution in pixels | >= 1, <= 4096 | Not changed |
+| ?outputHeight | Number | Height of the output resolution in pixels | >= 1, <= 4096 | Not changed |
+
+---
+
+### GetStreamServiceSettings
+
+Gets the current stream service settings (stream destination).
+
+- Complexity Rating: `4/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| streamServiceType | String | Stream service type, like `rtmp_custom` or `rtmp_common` |
+| streamServiceSettings | Object | Stream service settings |
+
+---
+
+### SetStreamServiceSettings
+
+Sets the current stream service settings (stream destination).
+
+Note: Simple RTMP settings can be set with type `rtmp_custom` and the settings fields `server` and `key`.
+
+- Complexity Rating: `4/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| streamServiceType | String | Type of stream service to apply. Example: `rtmp_common` or `rtmp_custom` | None | N/A |
+| streamServiceSettings | Object | Settings to apply to the service | None | N/A |
+
+
+## Sources
+
+### GetSceneList
+
+Gets an array of all scenes in OBS.
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| scenes | Array<String> | Array of scenes in OBS |
+| currentProgramSceneName | String | Current program scene |
+| currentPreviewSceneName | String | Current preview scene. `null` if not in studio mode |
+
+---
+
+### GetCurrentProgramScene
+
+Gets the current program scene.
+
+- Complexity Rating: `1/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| currentProgramSceneName | String | Current program scene |
+
+---
+
+### SetCurrentProgramScene
+
+Sets the current program scene.
+
+- Complexity Rating: `1/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| sceneName | String | Scene to set as the current program scene | None | N/A |
+
+---
+
+### GetCurrentPreviewScene
+
+Gets the current preview scene.
+
+Only available when studio mode is enabled.
+
+- Complexity Rating: `1/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| currentPreviewSceneName | String | Current preview scene |
+
+---
+
+### SetCurrentPreviewScene
+
+Sets the current preview scene.
+
+Only available when studio mode is enabled.
+
+- Complexity Rating: `1/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| sceneName | String | Scene to set as the current preview scene | None | N/A |
+
+---
+
+### CreateScene
+
+Creates a new scene in OBS.
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| sceneName | String | Name for the new scene | None | N/A |
+
+---
+
+### RemoveScene
+
+Removes a scene from OBS.
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| sceneName | String | Name of the scene to remove | None | N/A |
+
+---
+
+### SetSceneName
+
+Sets the name of a scene (rename).
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| sceneName | String | Name of the scene to be renamed | None | N/A |
+| newSceneName | String | New name for the scene | None | N/A |
+
+---
+
+### GetSourceActive
+
+Gets the active and show state of a source.
+
+**Compatible with inputs and scenes.**
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| sourceName | String | Name of the source to get the active state of | None | N/A |
+
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| videoActive | Boolean | Whether the source is showing in Program |
+| videoShowing | Boolean | Whether the source is showing in the UI (Preview, Projector, Properties) |
+
+---
+
+### GetSourceScreenshot
+
+Gets a Base64-encoded screenshot of a source.
+
+The `imageWidth` and `imageHeight` parameters are treated as "scale to inner", meaning the smallest ratio will be used and the aspect ratio of the original resolution is kept.
+If `imageWidth` and `imageHeight` are not specified, the compressed image will use the full resolution of the source.
+
+**Compatible with inputs and scenes.**
+
+- Complexity Rating: `4/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| sourceName | String | Name of the source to take a screenshot of | None | N/A |
+| imageFormat | String | Image compression format to use. Use `GetVersion` to get compatible image formats | None | N/A |
+| ?imageWidth | Number | Width to scale the screenshot to | >= 8, <= 4096 | Source value is used |
+| ?imageHeight | Number | Height to scale the screenshot to | >= 8, <= 4096 | Source value is used |
+| ?imageCompressionQuality | Number | Compression quality to use. 0 for high compression, 100 for uncompressed. -1 to use "default" (whatever that means, idk) | >= -1, <= 100 | -1 |
+
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| imageData | String | Base64-encoded screenshot |
+
+---
+
+### GetSourceScreenshot
+
+Saves a screenshot of a source to the filesystem.
+
+The `imageWidth` and `imageHeight` parameters are treated as "scale to inner", meaning the smallest ratio will be used and the aspect ratio of the original resolution is kept.
+If `imageWidth` and `imageHeight` are not specified, the compressed image will use the full resolution of the source.
+
+**Compatible with inputs and scenes.**
+
+- Complexity Rating: `3/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| sourceName | String | Name of the source to take a screenshot of | None | N/A |
+| imageFormat | String | Image compression format to use. Use `GetVersion` to get compatible image formats | None | N/A |
+| imageFilePath | String | Path to save the screenshot file to. Eg. `C:\Users\user\Desktop\screenshot.png` | None | N/A |
+| ?imageWidth | Number | Width to scale the screenshot to | >= 8, <= 4096 | Source value is used |
+| ?imageHeight | Number | Height to scale the screenshot to | >= 8, <= 4096 | Source value is used |
+| ?imageCompressionQuality | Number | Compression quality to use. 0 for high compression, 100 for uncompressed. -1 to use "default" (whatever that means, idk) | >= -1, <= 100 | -1 |
+
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| imageData | String | Base64-encoded screenshot |
+
+
+## Inputs
+
+### GetInputList
+
+Gets an array of all inputs in OBS.
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| ?inputKind | String | Restrict the array to only inputs of the specified kind | None | All kinds included |
+
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| inputs | Array<Object> | Array of inputs |
+
+---
+
+### GetInputKindList
+
+Gets an array of all available input kinds in OBS.
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| ?unversioned | Boolean | True == Return all kinds as unversioned, False == Return with version suffixes (if available) | None | false |
+
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| inputKinds | Array<String> | Array of input kinds |
+
+---
+
+### CreateInput
+
+Creates a new input, adding it as a scene item to the specified scene.
+
+- Complexity Rating: `3/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| sceneName | String | Name of the scene to add the input to as a scene item | None | N/A |
+| inputName | String | Name of the new input to created | None | N/A |
+| inputKind | String | The kind of input to be created | None | N/A |
+| ?inputSettings | Object | Settings object to initialize the input with | None | Default settings used |
+| ?sceneItemEnabled | Boolean | Whether to set the created scene item to enabled or disabled | None | True |
+
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| sceneItemId | Number | ID of the newly created scene item |
+
+---
+
+### RemoveInput
+
+Removes an existing input.
+
+Note: Will immediately remove all associated scene items.
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| inputName | String | Name of the input to remove | None | N/A |
+
+---
+
+### SetInputName
+
+Sets the name of an input (rename).
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| inputName | String | Current input name | None | N/A |
+| newInputName | String | New name for the input | None | N/A |
+
+---
+
+### GetInputDefaultSettings
+
+Gets the default settings for an input kind.
+
+- Complexity Rating: `3/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| inputKind | String | Input kind to get the default settings for | None | N/A |
+
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| defaultInputSettings | Object | Object of default settings for the input kind |
+
+---
+
+### GetInputSettings
+
+Gets the settings of an input.
+
+Note: Does not include defaults. To create the entire settings object, overlay `inputSettings` over the `defaultInputSettings` provided by `GetInputDefaultSettings`.
+
+- Complexity Rating: `3/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| inputName | String | Name of the input to get the settings of | None | N/A |
+
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| inputSettings | Object | Object of settings for the input |
+| inputKind | String | The kind of the input |
+
+---
+
+### SetInputSettings
+
+Sets the settings of an input.
+
+- Complexity Rating: `3/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| inputName | String | Name of the input to set the settings of | None | N/A |
+| inputSettings | Object | Object of settings to apply | None | N/A |
+
+---
+
+### GetInputMute
+
+Gets the audio mute state of an input.
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| inputName | String | Name of input to get the mute state of | None | N/A |
+
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| inputMuted | Boolean | Whether the input is muted |
+
+---
+
+### SetInputMute
+
+Sets the audio mute state of an input.
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| inputName | String | Name of the input to set the mute state of | None | N/A |
+| inputMuted | Boolean | Whether to mute the input or not | None | N/A |
+
+---
+
+### ToggleInputMute
+
+Toggles the audio mute state of an input.
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| inputName | String | Name of the input to toggle the mute state of | None | N/A |
+
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| inputMuted | Boolean | Whether the input has been muted or unmuted |
+
+---
+
+### GetInputVolume
+
+Gets the current volume setting of an input.
+
+- Complexity Rating: `3/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| inputName | String | Name of the input to get the volume of | None | N/A |
+
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| inputVolumeMul | Number | Volume setting in mul |
+| inputVolumeDb | Number | Volume setting in dB |
+
+---
+
+### SetInputVolume
+
+Sets the volume setting of an input.
+
+- Complexity Rating: `3/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| inputName | String | Name of the input to set the volume of | None | N/A |
+| ?inputVolumeMul | Number | Volume setting in mul | >= 0, <= 20 | `inputVolumeDb` should be specified |
+| ?inputVolumeDb | Number | Volume setting in dB | >= -100, <= -26 | `inputVolumeMul` should be specified |
+
+---
+
+### GetInputAudioSyncOffset
+
+Gets the audio sync offset of an input.
+
+Note: The audio sync offset can be negative too!
+
+- Complexity Rating: `3/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| inputName | String | Name of the input to get the audio sync offset of | None | N/A |
+
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| inputAudioSyncOffset | Number | Audio sync offset in milliseconds |
+
+---
+
+### SetInputAudioSyncOffset
+
+Sets the audio sync offset of an input.
+
+- Complexity Rating: `3/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| inputName | String | Name of the input to set the audio sync offset of | None | N/A |
+| inputAudioSyncOffset | Number | New audio sync offset in milliseconds | >= -950, <= 20000 | N/A |
+
+---
+
+### GetInputAudioMonitorType
+
+Gets the audio monitor type of an input.
+
+The available audio monitor types are:
+- `OBS_MONITORING_TYPE_NONE`
+- `OBS_MONITORING_TYPE_MONITOR_ONLY`
+- `OBS_MONITORING_TYPE_MONITOR_AND_OUTPUT`
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| inputName | String | Name of the input to get the audio monitor type of | None | N/A |
+
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| monitorType | String | Audio monitor type |
+
+---
+
+### SetInputAudioMonitorType
+
+Sets the audio monitor type of an input.
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| inputName | String | Name of the input to set the audio monitor type of | None | N/A |
+| monitorType | String | Audio monitor type | None | N/A |
+
+---
+
+### GetInputPropertiesListPropertyItems
+
+Gets the items of a list property from an input's properties.
+
+Note: Use this in cases where an input provides a dynamic, selectable list of items. For example, display capture, where it provides a list of available displays.
+
+- Complexity Rating: `4/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| inputName | String | Name of the input | None | N/A |
+| propertyName | String | Name of the list property to get the items of | None | N/A |
+
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| propertyItems | Array<Object> | Array of items in the list property |
+
+---
+
+### PressInputPropertiesButton
+
+Presses a button in the properties of an input.
+
+Note: Use this in cases where there is a button in the properties of an input that cannot be accessed in any other way. For example, browser sources, where there is a refresh button.
+
+- Complexity Rating: `4/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| inputName | String | Name of the input | None | N/A |
+| propertyName | String | Name of the button property to press | None | N/A |
 
 

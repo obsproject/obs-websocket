@@ -19,6 +19,20 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include "RequestHandler.h"
 
+/**
+ * Gets an array of all scenes in OBS.
+ *
+ * @responseField scenes                  | Array<String> | Array of scenes in OBS
+ * @responseField currentProgramSceneName | String        | Current program scene
+ * @responseField currentPreviewSceneName | String        | Current preview scene. `null` if not in studio mode
+ *
+ * @requestType GetSceneList
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api requests
+ * @category sources
+ */
 RequestResult RequestHandler::GetSceneList(const Request&)
 {
 	json responseData;
@@ -40,6 +54,18 @@ RequestResult RequestHandler::GetSceneList(const Request&)
 	return RequestResult::Success(responseData);
 }
 
+/**
+ * Gets the current program scene.
+ *
+ * @responseField currentProgramSceneName | String | Current program scene
+ *
+ * @requestType GetCurrentProgramScene
+ * @complexity 1
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api requests
+ * @category sources
+ */
 RequestResult RequestHandler::GetCurrentProgramScene(const Request&)
 {
 	json responseData;
@@ -49,6 +75,18 @@ RequestResult RequestHandler::GetCurrentProgramScene(const Request&)
 	return RequestResult::Success(responseData);
 }
 
+/**
+ * Sets the current program scene.
+ *
+ * @requestField sceneName | String | Scene to set as the current program scene
+ *
+ * @requestType SetCurrentProgramScene
+ * @complexity 1
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api requests
+ * @category sources
+ */
 RequestResult RequestHandler::SetCurrentProgramScene(const Request& request)
 {
 	RequestStatus::RequestStatus statusCode;
@@ -62,6 +100,20 @@ RequestResult RequestHandler::SetCurrentProgramScene(const Request& request)
 	return RequestResult::Success();
 }
 
+/**
+ * Gets the current preview scene.
+ *
+ * Only available when studio mode is enabled.
+ *
+ * @responseField currentPreviewSceneName | String | Current preview scene
+ *
+ * @requestType GetCurrentPreviewScene
+ * @complexity 1
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api requests
+ * @category sources
+ */
 RequestResult RequestHandler::GetCurrentPreviewScene(const Request&)
 {
 	if (!obs_frontend_preview_program_mode_active())
@@ -75,6 +127,20 @@ RequestResult RequestHandler::GetCurrentPreviewScene(const Request&)
 	return RequestResult::Success(responseData);
 }
 
+/**
+ * Sets the current preview scene.
+ *
+ * Only available when studio mode is enabled.
+ *
+ * @requestField sceneName | String | Scene to set as the current preview scene
+ *
+ * @requestType SetCurrentPreviewScene
+ * @complexity 1
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api requests
+ * @category sources
+ */
 RequestResult RequestHandler::SetCurrentPreviewScene(const Request& request)
 {
 	if (!obs_frontend_preview_program_mode_active())
@@ -91,6 +157,18 @@ RequestResult RequestHandler::SetCurrentPreviewScene(const Request& request)
 	return RequestResult::Success();
 }
 
+/**
+ * Creates a new scene in OBS.
+ *
+ * @requestField sceneName | String | Name for the new scene
+ *
+ * @requestType CreateScene
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api requests
+ * @category sources
+ */
 RequestResult RequestHandler::CreateScene(const Request& request)
 {
 	RequestStatus::RequestStatus statusCode;
@@ -113,6 +191,18 @@ RequestResult RequestHandler::CreateScene(const Request& request)
 	return RequestResult::Success();
 }
 
+/**
+ * Removes a scene from OBS.
+ *
+ * @requestField sceneName | String | Name of the scene to remove
+ *
+ * @requestType RemoveScene
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api requests
+ * @category sources
+ */
 RequestResult RequestHandler::RemoveScene(const Request& request)
 {
 	RequestStatus::RequestStatus statusCode;
@@ -129,6 +219,19 @@ RequestResult RequestHandler::RemoveScene(const Request& request)
 	return RequestResult::Success();
 }
 
+/**
+ * Sets the name of a scene (rename).
+ *
+ * @requestField sceneName    | String | Name of the scene to be renamed
+ * @requestField newSceneName | String | New name for the scene
+ *
+ * @requestType SetSceneName
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api requests
+ * @category sources
+ */
 RequestResult RequestHandler::SetSceneName(const Request& request)
 {
 	RequestStatus::RequestStatus statusCode;

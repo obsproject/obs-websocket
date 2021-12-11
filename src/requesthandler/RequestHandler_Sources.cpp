@@ -109,6 +109,23 @@ bool IsImageFormatValid(std::string format)
 	return supportedFormats.contains(format.c_str());
 }
 
+/**
+ * Gets the active and show state of a source.
+ *
+ * **Compatible with inputs and scenes.**
+ *
+ * @requestField sourceName | String | Name of the source to get the active state of
+ *
+ * @responseField videoActive  | Boolean | Whether the source is showing in Program
+ * @responseField videoShowing | Boolean | Whether the source is showing in the UI (Preview, Projector, Properties)
+ *
+ * @requestType GetSourceActive
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api requests
+ * @category sources
+ */
 RequestResult RequestHandler::GetSourceActive(const Request& request)
 {
 	RequestStatus::RequestStatus statusCode;
@@ -126,6 +143,29 @@ RequestResult RequestHandler::GetSourceActive(const Request& request)
 	return RequestResult::Success(responseData);
 }
 
+/**
+ * Gets a Base64-encoded screenshot of a source.
+ *
+ * The `imageWidth` and `imageHeight` parameters are treated as "scale to inner", meaning the smallest ratio will be used and the aspect ratio of the original resolution is kept.
+ * If `imageWidth` and `imageHeight` are not specified, the compressed image will use the full resolution of the source.
+ *
+ * **Compatible with inputs and scenes.**
+ *
+ * @requestField sourceName               | String | Name of the source to take a screenshot of
+ * @requestField imageFormat              | String | Image compression format to use. Use `GetVersion` to get compatible image formats
+ * @requestField ?imageWidth              | Number | Width to scale the screenshot to                                                                                         | >= 8, <= 4096 | Source value is used
+ * @requestField ?imageHeight             | Number | Height to scale the screenshot to                                                                                        | >= 8, <= 4096 | Source value is used
+ * @requestField ?imageCompressionQuality | Number | Compression quality to use. 0 for high compression, 100 for uncompressed. -1 to use "default" (whatever that means, idk) | >= -1, <= 100 | -1
+ *
+ * @responseField imageData | String | Base64-encoded screenshot
+ *
+ * @requestType GetSourceScreenshot
+ * @complexity 4
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api requests
+ * @category sources
+ */
 RequestResult RequestHandler::GetSourceScreenshot(const Request& request)
 {
 	RequestStatus::RequestStatus statusCode;
@@ -140,7 +180,7 @@ RequestResult RequestHandler::GetSourceScreenshot(const Request& request)
 	std::string imageFormat = request.RequestData["imageFormat"];
 
 	if (!IsImageFormatValid(imageFormat))
-		return RequestResult::Error(RequestStatus::InvalidRequestParameter, "Your specified image format is invalid or not supported by this system.");
+		return RequestResult::Error(RequestStatus::InvalidRequestField, "Your specified image format is invalid or not supported by this system.");
 
 	uint32_t requestedWidth{0};
 	uint32_t requestedHeight{0};
@@ -189,6 +229,30 @@ RequestResult RequestHandler::GetSourceScreenshot(const Request& request)
 	return RequestResult::Success(responseData);
 }
 
+/**
+ * Saves a screenshot of a source to the filesystem.
+ *
+ * The `imageWidth` and `imageHeight` parameters are treated as "scale to inner", meaning the smallest ratio will be used and the aspect ratio of the original resolution is kept.
+ * If `imageWidth` and `imageHeight` are not specified, the compressed image will use the full resolution of the source.
+ *
+ * **Compatible with inputs and scenes.**
+ *
+ * @requestField sourceName               | String | Name of the source to take a screenshot of
+ * @requestField imageFormat              | String | Image compression format to use. Use `GetVersion` to get compatible image formats
+ * @requestField imageFilePath            | String | Path to save the screenshot file to. Eg. `C:\Users\user\Desktop\screenshot.png`
+ * @requestField ?imageWidth              | Number | Width to scale the screenshot to                                                                                         | >= 8, <= 4096 | Source value is used
+ * @requestField ?imageHeight             | Number | Height to scale the screenshot to                                                                                        | >= 8, <= 4096 | Source value is used
+ * @requestField ?imageCompressionQuality | Number | Compression quality to use. 0 for high compression, 100 for uncompressed. -1 to use "default" (whatever that means, idk) | >= -1, <= 100 | -1
+ *
+ * @responseField imageData | String | Base64-encoded screenshot
+ *
+ * @requestType GetSourceScreenshot
+ * @complexity 3
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api requests
+ * @category sources
+ */
 RequestResult RequestHandler::SaveSourceScreenshot(const Request& request)
 {
 	RequestStatus::RequestStatus statusCode;
@@ -204,7 +268,7 @@ RequestResult RequestHandler::SaveSourceScreenshot(const Request& request)
 	std::string imageFilePath = request.RequestData["imageFilePath"];
 
 	if (!IsImageFormatValid(imageFormat))
-		return RequestResult::Error(RequestStatus::InvalidRequestParameter, "Your specified image format is invalid or not supported by this system.");
+		return RequestResult::Error(RequestStatus::InvalidRequestField, "Your specified image format is invalid or not supported by this system.");
 
 	QFileInfo filePathInfo(QString::fromStdString(imageFilePath));
 	if (!filePathInfo.absoluteDir().exists())

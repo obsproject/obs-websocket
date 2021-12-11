@@ -102,7 +102,7 @@ RequestResult RequestHandler::TriggerMediaInputAction(const Request& request)
 	switch (mediaAction) {
 		default:
 		case OBS_WEBSOCKET_MEDIA_INPUT_ACTION_NONE:
-			return RequestResult::Error(RequestStatus::InvalidRequestParameter, "You have specified an invalid media input action.");
+			return RequestResult::Error(RequestStatus::InvalidRequestField, "You have specified an invalid media input action.");
 		case OBS_WEBSOCKET_MEDIA_INPUT_ACTION_PLAY:
 			// Shoutout to whoever implemented this API call like this
 			obs_source_media_play_pause(input, false);

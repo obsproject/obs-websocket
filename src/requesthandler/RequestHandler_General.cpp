@@ -24,6 +24,22 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include "../eventhandler/types/EventSubscription.h"
 #include "../obs-websocket.h"
 
+
+/**
+ * Gets data about the current plugin and RPC version.
+ *
+ * @responseField obsVersion          | String        | Current OBS Studio version
+ * @responseField obsWebSocketVersion | String        | Current obs-websocket version
+ * @responseField rpcVersion          | Number        | Current latest obs-websocket RPC version
+ * @responseField availableRequests   | Array<String> | Array of available RPC requests for the currently negotiated RPC version
+ *
+ * @requestType GetVersion
+ * @complexity 1
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @category general
+ * @api requests
+ */
 RequestResult RequestHandler::GetVersion(const Request&)
 {
 	json responseData;
@@ -42,6 +58,18 @@ RequestResult RequestHandler::GetVersion(const Request&)
 	return RequestResult::Success(responseData);
 }
 
+/**
+ * Broadcasts a `CustomEvent` to all WebSocket clients. Receivers are clients which are identified and subscribed.
+ *
+ * @requestField eventData | Object | Data payload to emit to all receivers
+ *
+ * @requestType BroadcastCustomEvent
+ * @complexity 1
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @category general
+ * @api requests
+ */
 RequestResult RequestHandler::BroadcastCustomEvent(const Request& request)
 {
 	RequestStatus::RequestStatus statusCode;
@@ -58,6 +86,28 @@ RequestResult RequestHandler::BroadcastCustomEvent(const Request& request)
 	return RequestResult::Success();
 }
 
+/**
+ * Gets statistics about OBS, obs-websocket, and the current session.
+ *
+ * @responseField cpuUsage                         | Number | Current CPU usage in percent
+ * @responseField memoryUsage                      | Number | Amount of memory in MB currently being used by OBS
+ * @responseField availableDiskSpace               | Number | Available disk space on the device being used for recording storage
+ * @responseField activeFps                        | Number | Current FPS being rendered
+ * @responseField averageFrameRenderTime           | Number | Average time in milliseconds that OBS is taking to render a frame
+ * @responseField renderSkippedFrames              | Number | Number of frames skipped by OBS in the render thread
+ * @responseField renderTotalFrames                | Number | Total number of frames outputted by the render thread
+ * @responseField outputSkippedFrames              | Number | Number of frames skipped by OBS in the output thread
+ * @responseField outputTotalFrames                | Number | Total number of frames outputted by the output thread
+ * @responseField webSocketSessionIncomingMessages | Number | Total number of messages received by obs-websocket from the client
+ * @responseField webSocketSessionOutgoingMessages | Number | Total number of messages sent by obs-websocket to the client
+ *
+ * @requestType GetStats
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @category general
+ * @api requests
+ */
 RequestResult RequestHandler::GetStats(const Request&)
 {
 	json responseData = Utils::Obs::DataHelper::GetStats();
@@ -68,6 +118,18 @@ RequestResult RequestHandler::GetStats(const Request&)
 	return RequestResult::Success(responseData);
 }
 
+/**
+ * Gets an array of all hotkey names in OBS
+ *
+ * @responseField hotkeys | Array<String> | Array of hotkey names
+ *
+ * @requestType GetHotkeyList
+ * @complexity 3
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @category general
+ * @api requests
+ */
 RequestResult RequestHandler::GetHotkeyList(const Request&)
 {
 	json responseData;
@@ -75,6 +137,18 @@ RequestResult RequestHandler::GetHotkeyList(const Request&)
 	return RequestResult::Success(responseData);
 }
 
+/**
+ * Triggers a hotkey using its name. See `GetHotkeyList`
+ *
+ * @requestField hotkeyName | String | Name of the hotkey to trigger
+ *
+ * @requestType TriggerHotkeyByName
+ * @complexity 3
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @category general
+ * @api requests
+ */
 RequestResult RequestHandler::TriggerHotkeyByName(const Request& request)
 {
 	RequestStatus::RequestStatus statusCode;
@@ -91,6 +165,23 @@ RequestResult RequestHandler::TriggerHotkeyByName(const Request& request)
 	return RequestResult::Success();
 }
 
+/**
+ * Triggers a hotkey using a sequence of keys.
+ *
+ * @requestField ?keyId                | String  | The OBS key ID to use. See https://github.com/obsproject/obs-studio/blob/master/libobs/obs-hotkeys.h | Not pressed
+ * @requestField ?keyModifiers         | Object  | Object containing key modifiers to apply                                                             | Ignored
+ * @requestField ?keyModifiers.shift   | Boolean | Press Shift                                                                                          | Not pressed
+ * @requestField ?keyModifiers.control | Boolean | Press CTRL                                                                                           | Not pressed
+ * @requestField ?keyModifiers.alt     | Boolean | Press ALT                                                                                            | Not pressed
+ * @requestField ?keyModifiers.command | Boolean | Press CMD (Mac)                                                                                      | Not pressed
+ *
+ * @requestType TriggerHotkeyByKeySequence
+ * @complexity 4
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @category general
+ * @api requests
+ */
 RequestResult RequestHandler::TriggerHotkeyByKeySequence(const Request& request)
 {
 	obs_key_combination_t combo = {0};
@@ -125,7 +216,7 @@ RequestResult RequestHandler::TriggerHotkeyByKeySequence(const Request& request)
 	}
 
 	if (!combo.modifiers && (combo.key == OBS_KEY_NONE || combo.key >= OBS_KEY_LAST_VALUE))
-		return RequestResult::Error(RequestStatus::CannotAct, "Your provided request parameters cannot be used to trigger a hotkey.");
+		return RequestResult::Error(RequestStatus::CannotAct, "Your provided request fields cannot be used to trigger a hotkey.");
 
 	// Apparently things break when you don't start by setting the combo to false
 	obs_hotkey_inject_event(combo, false);
@@ -135,6 +226,18 @@ RequestResult RequestHandler::TriggerHotkeyByKeySequence(const Request& request)
 	return RequestResult::Success();
 }
 
+/**
+ * Gets whether studio is enabled.
+ *
+ * @responseField studioModeEnabled | Boolean | Whether studio mode is enabled
+ *
+ * @requestType GetStudioModeEnabled
+ * @complexity 1
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @category general
+ * @api requests
+ */
 RequestResult RequestHandler::GetStudioModeEnabled(const Request&)
 {
 	json responseData;
@@ -142,6 +245,18 @@ RequestResult RequestHandler::GetStudioModeEnabled(const Request&)
 	return RequestResult::Success(responseData);
 }
 
+/**
+ * Enables or disables studio mode
+ *
+ * @requestField studioModeEnabled | Boolean | True == Enabled, False == Disabled
+ *
+ * @requestType SetStudioModeEnabled
+ * @complexity 1
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @category general
+ * @api requests
+ */
 RequestResult RequestHandler::SetStudioModeEnabled(const Request& request)
 {
 	RequestStatus::RequestStatus statusCode;
@@ -163,18 +278,31 @@ RequestResult RequestHandler::SetStudioModeEnabled(const Request& request)
 	return RequestResult::Success();
 }
 
+/**
+ * Sleeps for a time duration or number of frames. Only available in request batches with types `SERIAL_REALTIME` or `SERIAL_FRAME`.
+ *
+ * @requestField sleepMillis | Number | Number of milliseconds to sleep for (if `SERIAL_REALTIME` mode) | >= 0, <= 50000
+ * @requestField sleepFrames | Number | Number of frames to sleep for (if `SERIAL_FRAME` mode) | >= 0, <= 10000
+ *
+ * @requestType Sleep
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @category general
+ * @api requests
+ */
 RequestResult RequestHandler::Sleep(const Request& request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
 
-	if (request.RequestBatchExecutionType == OBS_WEBSOCKET_REQUEST_BATCH_EXECUTION_TYPE_SERIAL_REALTIME) {
+	if (request.ExecutionType == RequestBatchExecutionType::SerialRealtime) {
 		if (!request.ValidateNumber("sleepMillis", statusCode, comment, 0, 50000))
 			return RequestResult::Error(statusCode, comment);
 		int64_t sleepMillis = request.RequestData["sleepMillis"];
 		std::this_thread::sleep_for(std::chrono::milliseconds(sleepMillis));
 		return RequestResult::Success();
-	} else if (request.RequestBatchExecutionType == OBS_WEBSOCKET_REQUEST_BATCH_EXECUTION_TYPE_SERIAL_FRAME) {
+	} else if (request.ExecutionType == RequestBatchExecutionType::SerialFrame) {
 		if (!request.ValidateNumber("sleepFrames", statusCode, comment, 0, 10000))
 			return RequestResult::Error(statusCode, comment);
 		RequestResult ret = RequestResult::Success();

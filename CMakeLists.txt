@@ -135,6 +135,7 @@ set(obs-websocket_HEADERS
 	src/eventhandler/types/EventSubscription.h
 	src/requesthandler/RequestHandler.h
 	src/requesthandler/types/RequestStatus.h
+	src/requesthandler/types/RequestBatchExecutionType.h
 	src/requesthandler/rpc/Request.h
 	src/requesthandler/rpc/RequestResult.h
 	src/forms/SettingsDialog.h

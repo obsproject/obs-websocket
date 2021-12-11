@@ -19,6 +19,20 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include "RequestHandler.h"
 
+/**
+ * Gets an array of all inputs in OBS.
+ *
+ * @requestField ?inputKind | String | Restrict the array to only inputs of the specified kind | All kinds included
+ *
+ * @responseField inputs | Array<Object> | Array of inputs
+ *
+ * @requestType GetInputList
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api requests
+ * @category inputs
+ */
 RequestResult RequestHandler::GetInputList(const Request& request)
 {
 	std::string inputKind;
@@ -37,6 +51,20 @@ RequestResult RequestHandler::GetInputList(const Request& request)
 	return RequestResult::Success(responseData);
 }
 
+/**
+ * Gets an array of all available input kinds in OBS.
+ *
+ * @requestField ?unversioned | Boolean | True == Return all kinds as unversioned, False == Return with version suffixes (if available) | false
+ *
+ * @responseField inputKinds | Array<String> | Array of input kinds
+ *
+ * @requestType GetInputKindList
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api requests
+ * @category inputs
+ */
 RequestResult RequestHandler::GetInputKindList(const Request& request)
 {
 	bool unversioned = false;
@@ -55,6 +83,24 @@ RequestResult RequestHandler::GetInputKindList(const Request& request)
 	return RequestResult::Success(responseData);
 }
 
+/**
+ * Creates a new input, adding it as a scene item to the specified scene.
+ *
+ * @requestField sceneName         | String | Name of the scene to add the input to as a scene item
+ * @requestField inputName         | String | Name of the new input to created
+ * @requestField inputKind         | String | The kind of input to be created
+ * @requestField ?inputSettings    | Object | Settings object to initialize the input with                  | Default settings used
+ * @requestField ?sceneItemEnabled | Boolean | Whether to set the created scene item to enabled or disabled | True
+ *
+ * @responseField sceneItemId | Number | ID of the newly created scene item
+ *
+ * @requestType CreateInput
+ * @complexity 3
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api requests
+ * @category inputs
+ */
 RequestResult RequestHandler::CreateInput(const Request& request)
 {
 	RequestStatus::RequestStatus statusCode;
@@ -102,6 +148,20 @@ RequestResult RequestHandler::CreateInput(const Request& request)
 	return RequestResult::Success(responseData);
 }
 
+/**
+ * Removes an existing input.
+ *
+ * Note: Will immediately remove all associated scene items.
+ *
+ * @requestField inputName | String | Name of the input to remove
+ *
+ * @requestType RemoveInput
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api requests
+ * @category inputs
+ */
 RequestResult RequestHandler::RemoveInput(const Request& request)
 {
 	RequestStatus::RequestStatus statusCode;
@@ -118,6 +178,19 @@ RequestResult RequestHandler::RemoveInput(const Request& request)
 	return RequestResult::Success();
 }
 
+/**
+ * Sets the name of an input (rename).
+ *
+ * @requestField inputName    | String | Current input name
+ * @requestField newInputName | String | New name for the input
+ *
+ * @requestType SetInputName
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api requests
+ * @category inputs
+ */
 RequestResult RequestHandler::SetInputName(const Request& request)
 {
 	RequestStatus::RequestStatus statusCode;
@@ -137,6 +210,20 @@ RequestResult RequestHandler::SetInputName(const Request& request)
 	return RequestResult::Success();
 }
 
+/**
+ * Gets the default settings for an input kind.
+ *
+ * @requestField inputKind | String | Input kind to get the default settings for
+ *
+ * @responseField defaultInputSettings | Object | Object of default settings for the input kind
+ *
+ * @requestType GetInputDefaultSettings
+ * @complexity 3
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api requests
+ * @category inputs
+ */
 RequestResult RequestHandler::GetInputDefaultSettings(const Request& request)
 {
 	RequestStatus::RequestStatus statusCode;
@@ -155,6 +242,23 @@ RequestResult RequestHandler::GetInputDefaultSettings(const Request& request)
 	return RequestResult::Success(responseData);
 }
 
+/**
+ * Gets the settings of an input.
+ *
+ * Note: Does not include defaults. To create the entire settings object, overlay `inputSettings` over the `defaultInputSettings` provided by `GetInputDefaultSettings`.
+ *
+ * @requestField inputName | String | Name of the input to get the settings of
+ *
+ * @responseField inputSettings | Object | Object of settings for the input
+ * @responseField inputKind     | String | The kind of the input
+ *
+ * @requestType GetInputSettings
+ * @complexity 3
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api requests
+ * @category inputs
+ */
 RequestResult RequestHandler::GetInputSettings(const Request& request)
 {
 	RequestStatus::RequestStatus statusCode;
@@ -171,6 +275,19 @@ RequestResult RequestHandler::GetInputSettings(const Request& request)
 	return RequestResult::Success(responseData);
 }
 
+/**
+ * Sets the settings of an input.
+ *
+ * @requestField inputName     | String | Name of the input to set the settings of
+ * @requestField inputSettings | Object | Object of settings to apply
+ *
+ * @requestType SetInputSettings
+ * @complexity 3
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api requests
+ * @category inputs
+ */
 RequestResult RequestHandler::SetInputSettings(const Request& request)
 {
 	RequestStatus::RequestStatus statusCode;
@@ -206,6 +323,20 @@ RequestResult RequestHandler::SetInputSettings(const Request& request)
 	return RequestResult::Success();
 }
 
+/**
+ * Gets the audio mute state of an input.
+ *
+ * @requestField inputName | String | Name of input to get the mute state of
+ *
+ * @responseField inputMuted | Boolean | Whether the input is muted
+ *
+ * @requestType GetInputMute
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api requests
+ * @category inputs
+ */
 RequestResult RequestHandler::GetInputMute(const Request& request)
 {
 	RequestStatus::RequestStatus statusCode;
@@ -219,6 +350,19 @@ RequestResult RequestHandler::GetInputMute(const Request& request)
 	return RequestResult::Success(responseData);
 }
 
+/**
+ * Sets the audio mute state of an input.
+ *
+ * @requestField inputName | String | Name of the input to set the mute state of
+ * @requestField inputMuted | Boolean | Whether to mute the input or not
+ *
+ * @requestType SetInputMute
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api requests
+ * @category inputs
+ */
 RequestResult RequestHandler::SetInputMute(const Request& request)
 {
 	RequestStatus::RequestStatus statusCode;
@@ -232,6 +376,20 @@ RequestResult RequestHandler::SetInputMute(const Request& request)
 	return RequestResult::Success();
 }
 
+/**
+ * Toggles the audio mute state of an input.
+ *
+ * @requestField inputName | String | Name of the input to toggle the mute state of
+ *
+ * @responseField inputMuted | Boolean | Whether the input has been muted or unmuted
+ *
+ * @requestType ToggleInputMute
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api requests
+ * @category inputs
+ */
 RequestResult RequestHandler::ToggleInputMute(const Request& request)
 {
 	RequestStatus::RequestStatus statusCode;
@@ -248,6 +406,21 @@ RequestResult RequestHandler::ToggleInputMute(const Request& request)
 	return RequestResult::Success(responseData);
 }
 
+/**
+ * Gets the current volume setting of an input.
+ *
+ * @requestField inputName | String | Name of the input to get the volume of
+ *
+ * @responseField inputVolumeMul | Number | Volume setting in mul
+ * @responseField inputVolumeDb  | Number | Volume setting in dB
+ *
+ * @requestType GetInputVolume
+ * @complexity 3
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api requests
+ * @category inputs
+ */
 RequestResult RequestHandler::GetInputVolume(const Request& request)
 {
 	RequestStatus::RequestStatus statusCode;
@@ -267,6 +440,20 @@ RequestResult RequestHandler::GetInputVolume(const Request& request)
 	return RequestResult::Success(responseData);
 }
 
+/**
+ * Sets the volume setting of an input.
+ *
+ * @requestField inputName       | String | Name of the input to set the volume of
+ * @requestField ?inputVolumeMul | Number | Volume setting in mul | >= 0, <= 20     | `inputVolumeDb` should be specified
+ * @requestField ?inputVolumeDb  | Number | Volume setting in dB  | >= -100, <= -26 | `inputVolumeMul` should be specified
+ *
+ * @requestType SetInputVolume
+ * @complexity 3
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api requests
+ * @category inputs
+ */
 RequestResult RequestHandler::SetInputVolume(const Request& request)
 {
 	RequestStatus::RequestStatus statusCode;
@@ -284,10 +471,10 @@ RequestResult RequestHandler::SetInputVolume(const Request& request)
 		return RequestResult::Error(statusCode, comment);
 
 	if (hasMul && hasDb)
-		return RequestResult::Error(RequestStatus::TooManyRequestParameters, "You may only specify one volume parameter.");
+		return RequestResult::Error(RequestStatus::TooManyRequestFields, "You may only specify one volume field.");
 
 	if (!hasMul && !hasDb)
-		return RequestResult::Error(RequestStatus::MissingRequestParameter, "You must specify one volume parameter.");
+		return RequestResult::Error(RequestStatus::MissingRequestField, "You must specify one volume field.");
 
 	float inputVolumeMul;
 	if (hasMul)
@@ -300,6 +487,22 @@ RequestResult RequestHandler::SetInputVolume(const Request& request)
 	return RequestResult::Success();
 }
 
+/**
+ * Gets the audio sync offset of an input.
+ *
+ * Note: The audio sync offset can be negative too!
+ *
+ * @requestField inputName | String | Name of the input to get the audio sync offset of
+ *
+ * @responseField inputAudioSyncOffset | Number | Audio sync offset in milliseconds
+ *
+ * @requestType GetInputAudioSyncOffset
+ * @complexity 3
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api requests
+ * @category inputs
+ */
 RequestResult RequestHandler::GetInputAudioSyncOffset(const Request& request)
 {
 	RequestStatus::RequestStatus statusCode;
@@ -315,6 +518,19 @@ RequestResult RequestHandler::GetInputAudioSyncOffset(const Request& request)
 	return RequestResult::Success(responseData);
 }
 
+/**
+ * Sets the audio sync offset of an input.
+ *
+ * @requestField inputName            | String | Name of the input to set the audio sync offset of
+ * @requestField inputAudioSyncOffset | Number | New audio sync offset in milliseconds | >= -950, <= 20000
+ *
+ * @requestType SetInputAudioSyncOffset
+ * @complexity 3
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api requests
+ * @category inputs
+ */
 RequestResult RequestHandler::SetInputAudioSyncOffset(const Request& request)
 {
 	RequestStatus::RequestStatus statusCode;
@@ -329,6 +545,25 @@ RequestResult RequestHandler::SetInputAudioSyncOffset(const Request& request)
 	return RequestResult::Success();
 }
 
+/**
+ * Gets the audio monitor type of an input.
+ *
+ * The available audio monitor types are:
+ * - `OBS_MONITORING_TYPE_NONE`
+ * - `OBS_MONITORING_TYPE_MONITOR_ONLY`
+ * - `OBS_MONITORING_TYPE_MONITOR_AND_OUTPUT`
+ *
+ * @requestField inputName | String | Name of the input to get the audio monitor type of
+ *
+ * @responseField monitorType | String | Audio monitor type
+ *
+ * @requestType GetInputAudioMonitorType
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api requests
+ * @category inputs
+ */
 RequestResult RequestHandler::GetInputAudioMonitorType(const Request& request)
 {
 	RequestStatus::RequestStatus statusCode;
@@ -343,6 +578,19 @@ RequestResult RequestHandler::GetInputAudioMonitorType(const Request& request)
 	return RequestResult::Success(responseData);
 }
 
+/**
+ * Sets the audio monitor type of an input.
+ *
+ * @requestField inputName   | String | Name of the input to set the audio monitor type of
+ * @requestField monitorType | String | Audio monitor type
+ *
+ * @requestType SetInputAudioMonitorType
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api requests
+ * @category inputs
+ */
 RequestResult RequestHandler::SetInputAudioMonitorType(const Request& request)
 {
 	RequestStatus::RequestStatus statusCode;
@@ -360,7 +608,7 @@ RequestResult RequestHandler::SetInputAudioMonitorType(const Request& request)
 	else if (monitorTypeString == "OBS_MONITORING_TYPE_MONITOR_AND_OUTPUT")
 		monitorType = OBS_MONITORING_TYPE_MONITOR_AND_OUTPUT;
 	else
-		return RequestResult::Error(RequestStatus::InvalidRequestParameter, std::string("Unknown monitor type: ") + monitorTypeString);
+		return RequestResult::Error(RequestStatus::InvalidRequestField, std::string("Unknown monitor type: ") + monitorTypeString);
 
 	obs_source_set_monitoring_type(input, monitorType);
 
@@ -393,6 +641,23 @@ std::vector<json> GetListPropertyItems(obs_property_t *property)
 	return ret;
 }
 
+/**
+ * Gets the items of a list property from an input's properties.
+ *
+ * Note: Use this in cases where an input provides a dynamic, selectable list of items. For example, display capture, where it provides a list of available displays.
+ *
+ * @requestField inputName    | String | Name of the input
+ * @requestField propertyName | String | Name of the list property to get the items of
+ *
+ * @responseField propertyItems | Array<Object> | Array of items in the list property
+ *
+ * @requestType GetInputPropertiesListPropertyItems
+ * @complexity 4
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api requests
+ * @category inputs
+ */
 RequestResult RequestHandler::GetInputPropertiesListPropertyItems(const Request& request)
 {
 	RequestStatus::RequestStatus statusCode;
@@ -416,6 +681,21 @@ RequestResult RequestHandler::GetInputPropertiesListPropertyItems(const Request&
 	return RequestResult::Success(responseData);
 }
 
+/**
+ * Presses a button in the properties of an input.
+ *
+ * Note: Use this in cases where there is a button in the properties of an input that cannot be accessed in any other way. For example, browser sources, where there is a refresh button.
+ *
+ * @requestField inputName    | String | Name of the input
+ * @requestField propertyName | String | Name of the button property to press
+ *
+ * @requestType PressInputPropertiesButton
+ * @complexity 4
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api requests
+ * @category inputs
+ */
 RequestResult RequestHandler::PressInputPropertiesButton(const Request& request)
 {
 	RequestStatus::RequestStatus statusCode;

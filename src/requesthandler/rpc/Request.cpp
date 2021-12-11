@@ -34,15 +34,15 @@ Request::Request(const std::string &requestType, const json &requestData) :
 	RequestType(requestType),
 	HasRequestData(requestData.is_object()),
 	RequestData(GetDefaultJsonObject(requestData)),
-	RequestBatchExecutionType(OBS_WEBSOCKET_REQUEST_BATCH_EXECUTION_TYPE_NONE)
+	ExecutionType(RequestBatchExecutionType::None)
 {
 }
 
-Request::Request(const std::string &requestType, const json &requestData, const ObsWebSocketRequestBatchExecutionType requestBatchExecutionType) :
+Request::Request(const std::string &requestType, const json &requestData, RequestBatchExecutionType::RequestBatchExecutionType executionType) :
 	RequestType(requestType),
 	HasRequestData(requestData.is_object()),
 	RequestData(GetDefaultJsonObject(requestData)),
-	RequestBatchExecutionType(requestBatchExecutionType)
+	ExecutionType(executionType)
 {
 }
 
@@ -60,8 +60,8 @@ bool Request::ValidateBasic(const std::string &keyName, RequestStatus::RequestSt
 	}
 
 	if (!RequestData.contains(keyName) || RequestData[keyName].is_null()) {
-		statusCode = RequestStatus::MissingRequestParameter;
-		comment = std::string("Your request is missing the `") + keyName + "` parameter.";
+		statusCode = RequestStatus::MissingRequestField;
+		comment = std::string("Your request is missing the `") + keyName + "` field.";
 		return false;
 	}
 
@@ -71,20 +71,20 @@ bool Request::ValidateBasic(const std::string &keyName, RequestStatus::RequestSt
 bool Request::ValidateOptionalNumber(const std::string &keyName, RequestStatus::RequestStatus &statusCode, std::string &comment, const double minValue, const double maxValue) const
 {
 	if (!RequestData[keyName].is_number()) {
-		statusCode = RequestStatus::InvalidRequestParameterType;
-		comment = std::string("The parameter `") + keyName + "` must be a number.";
+		statusCode = RequestStatus::InvalidRequestFieldType;
+		comment = std::string("The field value of `") + keyName + "` must be a number.";
 		return false;
 	}
 
 	double value = RequestData[keyName];
 	if (value < minValue) {
-		statusCode = RequestStatus::RequestParameterOutOfRange;
-		comment = std::string("The parameter `") + keyName + "` is below the minimum of `" + std::to_string(minValue) + "`";
+		statusCode = RequestStatus::RequestFieldOutOfRange;
+		comment = std::string("The field value of `") + keyName + "` is below the minimum of `" + std::to_string(minValue) + "`";
 		return false;
 	}
 	if (value > maxValue) {
-		statusCode = RequestStatus::RequestParameterOutOfRange;
-		comment = std::string("The parameter `") + keyName + "` is above the maximum of `" + std::to_string(maxValue) + "`";
+		statusCode = RequestStatus::RequestFieldOutOfRange;
+		comment = std::string("The field value of `") + keyName + "` is above the maximum of `" + std::to_string(maxValue) + "`";
 		return false;
 	}
 
@@ -105,14 +105,14 @@ bool Request::ValidateNumber(const std::string &keyName, RequestStatus::RequestS
 bool Request::ValidateOptionalString(const std::string &keyName, RequestStatus::RequestStatus &statusCode, std::string &comment, const bool allowEmpty) const
 {
 	if (!RequestData[keyName].is_string()) {
-		statusCode = RequestStatus::InvalidRequestParameterType;
-		comment = std::string("The parameter `") + keyName + "` must be a string.";
+		statusCode = RequestStatus::InvalidRequestFieldType;
+		comment = std::string("The field value of `") + keyName + "` must be a string.";
 		return false;
 	}
 
 	if (RequestData[keyName].get<std::string>().empty() && !allowEmpty) {
-		statusCode = RequestStatus::RequestParameterEmpty;
-		comment = std::string("The parameter `") + keyName + "` must not be empty.";
+		statusCode = RequestStatus::RequestFieldEmpty;
+		comment = std::string("The field value of `") + keyName + "` must not be empty.";
 		return false;
 	}
 
@@ -133,8 +133,8 @@ bool Request::ValidateString(const std::string &keyName, RequestStatus::RequestS
 bool Request::ValidateOptionalBoolean(const std::string &keyName, RequestStatus::RequestStatus &statusCode, std::string &comment) const
 {
 	if (!RequestData[keyName].is_boolean()) {
-		statusCode = RequestStatus::InvalidRequestParameterType;
-		comment = std::string("The parameter `") + keyName + "` must be boolean.";
+		statusCode = RequestStatus::InvalidRequestFieldType;
+		comment = std::string("The field value of `") + keyName + "` must be boolean.";
 		return false;
 	}
 
@@ -155,14 +155,14 @@ bool Request::ValidateBoolean(const std::string &keyName, RequestStatus::Request
 bool Request::ValidateOptionalObject(const std::string &keyName, RequestStatus::RequestStatus &statusCode, std::string &comment, const bool allowEmpty) const
 {
 	if (!RequestData[keyName].is_object()) {
-		statusCode = RequestStatus::InvalidRequestParameterType;
-		comment = std::string("The parameter `") + keyName + "` must be an object.";
+		statusCode = RequestStatus::InvalidRequestFieldType;
+		comment = std::string("The field value of `") + keyName + "` must be an object.";
 		return false;
 	}
 
 	if (RequestData[keyName].empty() && !allowEmpty) {
-		statusCode = RequestStatus::RequestParameterEmpty;
-		comment = std::string("The parameter `") + keyName + "` must not be empty.";
+		statusCode = RequestStatus::RequestFieldEmpty;
+		comment = std::string("The field value of `") + keyName + "` must not be empty.";
 		return false;
 	}
 
@@ -183,14 +183,14 @@ bool Request::ValidateObject(const std::string &keyName, RequestStatus::RequestS
 bool Request::ValidateOptionalArray(const std::string &keyName, RequestStatus::RequestStatus &statusCode, std::string &comment, const bool allowEmpty) const
 {
 	if (!RequestData[keyName].is_array()) {
-		statusCode = RequestStatus::InvalidRequestParameterType;
-		comment = std::string("The parameter `") + keyName + "` must be an array.";
+		statusCode = RequestStatus::InvalidRequestFieldType;
+		comment = std::string("The field value of `") + keyName + "` must be an array.";
 		return false;
 	}
 
 	if (RequestData[keyName].empty() && !allowEmpty) {
-		statusCode = RequestStatus::RequestParameterEmpty;
-		comment = std::string("The parameter `") + keyName + "` must not be empty.";
+		statusCode = RequestStatus::RequestFieldEmpty;
+		comment = std::string("The field value of `") + keyName + "` must not be empty.";
 		return false;
 	}
 

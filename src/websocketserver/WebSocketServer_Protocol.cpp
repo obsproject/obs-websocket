@@ -37,7 +37,7 @@ void WebSocketServer::SetSessionParameters(SessionPtr session, ProcessResult &re
 {
 	if (payloadData.contains("ignoreInvalidMessages")) {
 		if (!payloadData["ignoreInvalidMessages"].is_boolean()) {
-			ret.closeCode = WebSocketCloseCode::InvalidDataKeyType;
+			ret.closeCode = WebSocketCloseCode::InvalidDataFieldType;
 			ret.closeReason = "Your `ignoreInvalidMessages` is not a boolean.";
 			return;
 		}
@@ -46,7 +46,7 @@ void WebSocketServer::SetSessionParameters(SessionPtr session, ProcessResult &re
 
 	if (payloadData.contains("eventSubscriptions")) {
 		if (!payloadData["eventSubscriptions"].is_number_unsigned()) {
-			ret.closeCode = WebSocketCloseCode::InvalidDataKeyType;
+			ret.closeCode = WebSocketCloseCode::InvalidDataFieldType;
 			ret.closeReason = "Your `eventSubscriptions` is not an unsigned number.";
 			return;
 		}
@@ -58,10 +58,10 @@ void WebSocketServer::ProcessMessage(SessionPtr session, WebSocketServer::Proces
 {
 	if (!payloadData.is_object()) {
 		if (payloadData.is_null()) {
-			ret.closeCode = WebSocketCloseCode::MissingDataKey;
+			ret.closeCode = WebSocketCloseCode::MissingDataField;
 			ret.closeReason = "Your payload is missing data (`d`).";
 		} else {
-			ret.closeCode = WebSocketCloseCode::InvalidDataKeyType;
+			ret.closeCode = WebSocketCloseCode::InvalidDataFieldType;
 			ret.closeReason = "Your payload's data (`d`) is not an object.";
 		}
 		return;
@@ -105,13 +105,13 @@ void WebSocketServer::ProcessMessage(SessionPtr session, WebSocketServer::Proces
 			}
 
 			if (!payloadData.contains("rpcVersion")) {
-				ret.closeCode = WebSocketCloseCode::MissingDataKey;
+				ret.closeCode = WebSocketCloseCode::MissingDataField;
 				ret.closeReason = "Your payload's data is missing an `rpcVersion`.";
 				return;
 			}
 
 			if (!payloadData["rpcVersion"].is_number_unsigned()) {
-				ret.closeCode = WebSocketCloseCode::InvalidDataKeyType;
+				ret.closeCode = WebSocketCloseCode::InvalidDataFieldType;
 				ret.closeReason = "Your `rpcVersion` is not an unsigned number.";
 			}
 
@@ -168,7 +168,7 @@ void WebSocketServer::ProcessMessage(SessionPtr session, WebSocketServer::Proces
 			// RequestID checking has to be done here where we are able to close the connection.
 			if (!payloadData.contains("requestId")) {
 				if (!session->IgnoreInvalidMessages()) {
-					ret.closeCode = WebSocketCloseCode::MissingDataKey;
+					ret.closeCode = WebSocketCloseCode::MissingDataField;
 					ret.closeReason = "Your payload data is missing a `requestId`.";
 				}
 				return;
@@ -197,7 +197,7 @@ void WebSocketServer::ProcessMessage(SessionPtr session, WebSocketServer::Proces
 			// RequestID checking has to be done here where we are able to close the connection.
 			if (!payloadData.contains("requestId")) {
 				if (!session->IgnoreInvalidMessages()) {
-					ret.closeCode = WebSocketCloseCode::MissingDataKey;
+					ret.closeCode = WebSocketCloseCode::MissingDataField;
 					ret.closeReason = "Your payload data is missing a `requestId`.";
 				}
 				return;
@@ -205,7 +205,7 @@ void WebSocketServer::ProcessMessage(SessionPtr session, WebSocketServer::Proces
 
 			if (!payloadData.contains("requests")) {
 				if (!session->IgnoreInvalidMessages()) {
-					ret.closeCode = WebSocketCloseCode::MissingDataKey;
+					ret.closeCode = WebSocketCloseCode::MissingDataField;
 					ret.closeReason = "Your payload data is missing a `requests`.";
 				}
 				return;
@@ -213,40 +213,35 @@ void WebSocketServer::ProcessMessage(SessionPtr session, WebSocketServer::Proces
 
 			if (!payloadData["requests"].is_array()) {
 				if (!session->IgnoreInvalidMessages()) {
-					ret.closeCode = WebSocketCloseCode::InvalidDataKeyType;
+					ret.closeCode = WebSocketCloseCode::InvalidDataFieldType;
 					ret.closeReason = "Your `requests` is not an array.";
 				}
 				return;
 			}
 
-			ObsWebSocketRequestBatchExecutionType executionType = OBS_WEBSOCKET_REQUEST_BATCH_EXECUTION_TYPE_SERIAL_REALTIME;
+			RequestBatchExecutionType::RequestBatchExecutionType executionType = RequestBatchExecutionType::SerialRealtime;
 			if (payloadData.contains("executionType") && !payloadData["executionType"].is_null()) {
-				if (!payloadData["executionType"].is_string()) {
+				if (!payloadData["executionType"].is_number_unsigned()) {
 					if (!session->IgnoreInvalidMessages()) {
-						ret.closeCode = WebSocketCloseCode::InvalidDataKeyType;
-						ret.closeReason = "Your `executionType` is not a string.";
+						ret.closeCode = WebSocketCloseCode::InvalidDataFieldType;
+						ret.closeReason = "Your `executionType` is not a number.";
 					}
 					return;
 				}
-				std::string executionTypeString = payloadData["executionType"];
-				if (executionTypeString == "OBS_WEBSOCKET_REQUEST_BATCH_EXECUTION_TYPE_SERIAL_REALTIME") {
-					executionType = OBS_WEBSOCKET_REQUEST_BATCH_EXECUTION_TYPE_SERIAL_REALTIME;
-				} else if (executionTypeString == "OBS_WEBSOCKET_REQUEST_BATCH_EXECUTION_TYPE_SERIAL_FRAME") {
-					executionType = OBS_WEBSOCKET_REQUEST_BATCH_EXECUTION_TYPE_SERIAL_FRAME;
-				} else if (executionTypeString == "OBS_WEBSOCKET_REQUEST_BATCH_EXECUTION_TYPE_PARALLEL") {
-					if (_threadPool.maxThreadCount() < 2) {
-						if (!session->IgnoreInvalidMessages()) {
-							ret.closeCode = WebSocketCloseCode::UnsupportedFeature;
-							ret.closeReason = "Parallel request batch processing is not available on this system due to limited core count.";
-						}
-						return;
-					}
 
-					executionType = OBS_WEBSOCKET_REQUEST_BATCH_EXECUTION_TYPE_PARALLEL;
-				} else {
+				uint8_t executionType = payloadData["executionType"];
+				if (!RequestBatchExecutionType::IsValid(executionType) || executionType == RequestBatchExecutionType::None) {
 					if (!session->IgnoreInvalidMessages()) {
-						ret.closeCode = WebSocketCloseCode::InvalidDataKeyValue;
-						ret.closeReason = "Your `executionType`'s value is not recognized.";
+						ret.closeCode = WebSocketCloseCode::InvalidDataFieldValue;
+						ret.closeReason = "Your `executionType` has an invalid value.";
+					}
+				}
+
+				// The thread pool must support 2 or more threads else parallel requests will deadlock.
+				if (executionType == RequestBatchExecutionType::Parallel && _threadPool.maxThreadCount() < 2) {
+					if (!session->IgnoreInvalidMessages()) {
+						ret.closeCode = WebSocketCloseCode::UnsupportedFeature;
+						ret.closeReason = "Parallel request batch processing is not available on this system due to limited core count.";
 					}
 					return;
 				}
@@ -255,16 +250,16 @@ void WebSocketServer::ProcessMessage(SessionPtr session, WebSocketServer::Proces
 			if (payloadData.contains("variables") && !payloadData["variables"].is_null()) {
 				if (!payloadData.is_object()) {
 					if (!session->IgnoreInvalidMessages()) {
-						ret.closeCode = WebSocketCloseCode::InvalidDataKeyType;
+						ret.closeCode = WebSocketCloseCode::InvalidDataFieldType;
 						ret.closeReason = "Your `variables` is not an object.";
 					}
 					return;
 				}
 
-				if (executionType == OBS_WEBSOCKET_REQUEST_BATCH_EXECUTION_TYPE_PARALLEL) {
+				if (executionType == RequestBatchExecutionType::Parallel) {
 					if (!session->IgnoreInvalidMessages()) {
 						ret.closeCode = WebSocketCloseCode::UnsupportedFeature;
-						ret.closeReason = "Variables are not supported in PARALLEL mode.";
+						ret.closeReason = "Variables are not supported in Parallel mode.";
 					}
 					return;
 				}

@@ -3,13 +3,13 @@ set -e
 echo "-- Generating documentation."
 echo "-- Node version: $(node -v)"
 echo "-- NPM version: $(npm -v)"
+echo "-- Python3 version: $(python3 -V)"
 
 git fetch origin
 git checkout ${CHECKOUT_REF/refs\/heads\//}
 
 cd docs
-npm install
-npm run build
+bash build_docs.sh
 
 echo "-- Documentation successfully generated."
 
