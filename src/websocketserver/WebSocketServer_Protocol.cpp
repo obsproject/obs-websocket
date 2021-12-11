@@ -252,7 +252,7 @@ void WebSocketServer::ProcessMessage(SessionPtr session, WebSocketServer::Proces
 				}
 			}
 
-			if (payloadData.contains("variables") && !payloadData.is_null()) {
+			if (payloadData.contains("variables") && !payloadData["variables"].is_null()) {
 				if (!payloadData.is_object()) {
 					if (!session->IgnoreInvalidMessages()) {
 						ret.closeCode = WebSocketCloseCode::InvalidDataKeyType;
