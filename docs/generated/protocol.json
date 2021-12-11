@@ -142,7 +142,7 @@
           "rpcVersion": "1",
           "deprecated": false,
           "initialVersion": "5.0.0",
-          "enumValue": 0
+          "enumValue": "-1"
         },
         {
           "description": "A request batch which processes all requests serially, as fast as possible.\n\nNote: To introduce artificial delay, use the `Sleep` request and the `sleepMillis` request field.",
@@ -150,7 +150,7 @@
           "rpcVersion": "1",
           "deprecated": false,
           "initialVersion": "5.0.0",
-          "enumValue": 1
+          "enumValue": 0
         },
         {
           "description": "A request batch type which processes all requests serially, in sync with the graphics thread. Designed to provide high accuracy for animations.\n\nNote: To introduce artificial delay, use the `Sleep` request and the `sleepFrames` request field.",
@@ -158,7 +158,7 @@
           "rpcVersion": "1",
           "deprecated": false,
           "initialVersion": "5.0.0",
-          "enumValue": 2
+          "enumValue": 1
         },
         {
           "description": "A request batch type which processes all requests using all available threads in the thread pool.\n\nNote: This is mainly experimental, and only really shows its colors during requests which require lots of\nactive processing, like `GetSourceScreenshot`.",
@@ -166,7 +166,7 @@
           "rpcVersion": "1",
           "deprecated": false,
           "initialVersion": "5.0.0",
-          "enumValue": 3
+          "enumValue": 2
         }
       ]
     },

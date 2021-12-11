@@ -27,26 +27,26 @@ namespace RequestBatchExecutionType {
 		* Not a request batch.
 		*
 		* @enumIdentifier None
-		* @enumValue 0
+		* @enumValue -1
 		* @enumType RequestBatchExecutionType
 		* @rpcVersion -1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		None = 0,
+		None = -1,
 		/**
 		* A request batch which processes all requests serially, as fast as possible.
 		*
 		* Note: To introduce artificial delay, use the `Sleep` request and the `sleepMillis` request field.
 		*
 		* @enumIdentifier SerialRealtime
-		* @enumValue 1
+		* @enumValue 0
 		* @enumType RequestBatchExecutionType
 		* @rpcVersion -1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		SerialRealtime = 1,
+		SerialRealtime = 0,
 		/**
 		* A request batch type which processes all requests serially, in sync with the graphics thread. Designed to
 		* provide high accuracy for animations.
@@ -54,13 +54,13 @@ namespace RequestBatchExecutionType {
 		* Note: To introduce artificial delay, use the `Sleep` request and the `sleepFrames` request field.
 		*
 		* @enumIdentifier SerialFrame
-		* @enumValue 2
+		* @enumValue 1
 		* @enumType RequestBatchExecutionType
 		* @rpcVersion -1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		SerialFrame = 2,
+		SerialFrame = 1,
 		/**
 		* A request batch type which processes all requests using all available threads in the thread pool.
 		*
@@ -68,13 +68,13 @@ namespace RequestBatchExecutionType {
 		* active processing, like `GetSourceScreenshot`.
 		*
 		* @enumIdentifier Parallel
-		* @enumValue 3
+		* @enumValue 2
 		* @enumType RequestBatchExecutionType
 		* @rpcVersion -1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		Parallel = 3,
+		Parallel = 2,
 	};
 
 	inline bool IsValid(uint8_t executionType)

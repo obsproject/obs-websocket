@@ -696,7 +696,7 @@ A requested feature is not supported due to hardware/software limitations.
 
 Not a request batch.
 
-- Identifier Value: `0`
+- Identifier Value: `-1`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
@@ -708,7 +708,7 @@ A request batch which processes all requests serially, as fast as possible.
 
 Note: To introduce artificial delay, use the `Sleep` request and the `sleepMillis` request field.
 
-- Identifier Value: `1`
+- Identifier Value: `0`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
@@ -720,7 +720,7 @@ A request batch type which processes all requests serially, in sync with the gra
 
 Note: To introduce artificial delay, use the `Sleep` request and the `sleepFrames` request field.
 
-- Identifier Value: `2`
+- Identifier Value: `1`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
@@ -733,7 +733,7 @@ A request batch type which processes all requests using all available threads in
 Note: This is mainly experimental, and only really shows its colors during requests which require lots of
 active processing, like `GetSourceScreenshot`.
 
-- Identifier Value: `3`
+- Identifier Value: `2`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 ## RequestStatus
