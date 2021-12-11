@@ -121,4 +121,9 @@ namespace WebSocketOpCode {
 		*/
 		RequestBatchResponse = 9,
 	};
+
+	inline bool IsValid(uint8_t opCode)
+	{
+		return opCode >= Hello && opCode <= RequestBatchResponse;
+	}
 }
