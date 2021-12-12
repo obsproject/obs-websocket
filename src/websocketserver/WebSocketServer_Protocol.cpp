@@ -229,8 +229,8 @@ void WebSocketServer::ProcessMessage(SessionPtr session, WebSocketServer::Proces
 					return;
 				}
 
-				uint8_t executionType = payloadData["executionType"];
-				if (!RequestBatchExecutionType::IsValid(executionType) || executionType == RequestBatchExecutionType::None) {
+				uint8_t requestedExecutionType = payloadData["executionType"];
+				if (!RequestBatchExecutionType::IsValid(requestedExecutionType) || requestedExecutionType == RequestBatchExecutionType::None) {
 					if (!session->IgnoreInvalidMessages()) {
 						ret.closeCode = WebSocketCloseCode::InvalidDataFieldValue;
 						ret.closeReason = "Your `executionType` has an invalid value.";
@@ -238,13 +238,15 @@ void WebSocketServer::ProcessMessage(SessionPtr session, WebSocketServer::Proces
 				}
 
 				// The thread pool must support 2 or more threads else parallel requests will deadlock.
-				if (executionType == RequestBatchExecutionType::Parallel && _threadPool.maxThreadCount() < 2) {
+				if (requestedExecutionType == RequestBatchExecutionType::Parallel && _threadPool.maxThreadCount() < 2) {
 					if (!session->IgnoreInvalidMessages()) {
 						ret.closeCode = WebSocketCloseCode::UnsupportedFeature;
 						ret.closeReason = "Parallel request batch processing is not available on this system due to limited core count.";
 					}
 					return;
 				}
+
+				executionType = (RequestBatchExecutionType::RequestBatchExecutionType)requestedExecutionType;
 			}
 
 			if (payloadData.contains("variables") && !payloadData["variables"].is_null()) {
