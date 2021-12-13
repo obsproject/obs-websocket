@@ -2153,7 +2153,7 @@
     },
     {
       "description": "Saves a screenshot of a source to the filesystem.\n\nThe `imageWidth` and `imageHeight` parameters are treated as \"scale to inner\", meaning the smallest ratio will be used and the aspect ratio of the original resolution is kept.\nIf `imageWidth` and `imageHeight` are not specified, the compressed image will use the full resolution of the source.\n\n**Compatible with inputs and scenes.**",
-      "requestType": "GetSourceScreenshot",
+      "requestType": "SaveSourceScreenshot",
       "complexity": 3,
       "rpcVersion": "1",
       "deprecated": false,

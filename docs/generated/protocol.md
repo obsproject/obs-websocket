@@ -1403,7 +1403,7 @@ The profile list has changed.
   - [SetSceneName](#setscenename)
   - [GetSourceActive](#getsourceactive)
   - [GetSourceScreenshot](#getsourcescreenshot)
-  - [GetSourceScreenshot](#getsourcescreenshot)
+  - [SaveSourceScreenshot](#savesourcescreenshot)
 - [Inputs](#inputs)
   - [GetInputList](#getinputlist)
   - [GetInputKindList](#getinputkindlist)
@@ -2107,7 +2107,7 @@ If `imageWidth` and `imageHeight` are not specified, the compressed image will u
 
 ---
 
-### GetSourceScreenshot
+### SaveSourceScreenshot
 
 Saves a screenshot of a source to the filesystem.
 
