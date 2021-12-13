@@ -245,7 +245,7 @@ Authentication is not required
 **Example Message:**
 ```json
 {
-  "op": 2,
+  "op": 5,
   "d": {
     "eventType": "StudioModeStateChanged",
     "eventIntent": 1,
