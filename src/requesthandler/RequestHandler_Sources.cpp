@@ -246,7 +246,7 @@ RequestResult RequestHandler::GetSourceScreenshot(const Request& request)
  *
  * @responseField imageData | String | Base64-encoded screenshot
  *
- * @requestType GetSourceScreenshot
+ * @requestType SaveSourceScreenshot
  * @complexity 3
  * @rpcVersion -1
  * @initialVersion 5.0.0
