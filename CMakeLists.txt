@@ -88,7 +88,6 @@ set(obs-websocket_SOURCES
 	src/WebSocketApi.cpp
 	src/websocketserver/WebSocketServer.cpp
 	src/websocketserver/WebSocketServer_Protocol.cpp
-	src/websocketserver/WebSocketServer_RequestBatchProcessing.cpp
 	src/websocketserver/rpc/WebSocketSession.cpp
 	src/eventhandler/EventHandler.cpp
 	src/eventhandler/EventHandler_General.cpp
@@ -101,6 +100,7 @@ set(obs-websocket_SOURCES
 	src/eventhandler/EventHandler_SceneItems.cpp
 	src/eventhandler/EventHandler_MediaInputs.cpp
 	src/requesthandler/RequestHandler.cpp
+	src/requesthandler/RequestBatchHandler.cpp
 	src/requesthandler/RequestHandler_General.cpp
 	src/requesthandler/RequestHandler_Config.cpp
 	src/requesthandler/RequestHandler_Sources.cpp
@@ -111,6 +111,7 @@ set(obs-websocket_SOURCES
 	src/requesthandler/RequestHandler_Record.cpp
 	src/requesthandler/RequestHandler_MediaInputs.cpp
 	src/requesthandler/rpc/Request.cpp
+	src/requesthandler/rpc/RequestBatchRequest.cpp
 	src/requesthandler/rpc/RequestResult.cpp
 	src/forms/SettingsDialog.cpp
 	src/forms/ConnectInfo.cpp
@@ -134,9 +135,11 @@ set(obs-websocket_HEADERS
 	src/eventhandler/EventHandler.h
 	src/eventhandler/types/EventSubscription.h
 	src/requesthandler/RequestHandler.h
+	src/requesthandler/RequestBatchHandler.h
 	src/requesthandler/types/RequestStatus.h
 	src/requesthandler/types/RequestBatchExecutionType.h
 	src/requesthandler/rpc/Request.h
+	src/requesthandler/rpc/RequestBatchRequest.h
 	src/requesthandler/rpc/RequestResult.h
 	src/forms/SettingsDialog.h
 	src/forms/ConnectInfo.h

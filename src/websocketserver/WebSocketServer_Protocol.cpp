@@ -18,9 +18,11 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 */
 
 #include <obs-module.h>
+#include <util/profiler.hpp>
 
 #include "WebSocketServer.h"
 #include "../requesthandler/RequestHandler.h"
+#include "../requesthandler/RequestBatchHandler.h"
 #include "../eventhandler/EventHandler.h"
 #include "../obs-websocket.h"
 #include "../Config.h"
@@ -31,6 +33,29 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 static bool IsSupportedRpcVersion(uint8_t requestedVersion)
 {
 	return (requestedVersion == 1);
+}
+
+static json ConstructRequestResult(RequestResult requestResult, const json &requestJson)
+{
+	json ret;
+
+	ret["requestType"] = requestJson["requestType"];
+
+	if (requestJson.contains("requestId") && !requestJson["requestId"].is_null())
+		ret["requestId"] = requestJson["requestId"];
+
+	ret["requestStatus"] = {
+		{"result", requestResult.StatusCode == RequestStatus::Success},
+		{"code", requestResult.StatusCode}
+	};
+
+	if (!requestResult.Comment.empty())
+		ret["requestStatus"]["comment"] = requestResult.Comment;
+
+	if (requestResult.ResponseData.is_object())
+		ret["responseData"] = requestResult.ResponseData;
+
+	return ret;
 }
 
 void WebSocketServer::SetSessionParameters(SessionPtr session, ProcessResult &ret, const json &payloadData)
@@ -281,9 +306,19 @@ void WebSocketServer::ProcessMessage(SessionPtr session, WebSocketServer::Proces
 			}
 
 			std::vector<json> requests = payloadData["requests"];
-			json variables = payloadData["variables"];
+
+			std::vector<RequestBatchRequest> requestsVector;
+			for (auto &requestJson : requests)
+				requestsVector.emplace_back(requestJson["requestType"], requestJson["requestData"], executionType, requestJson["inputVariables"], requestJson["outputVariables"]);
+
+			auto resultsVector = RequestBatchHandler::ProcessRequestBatch(_threadPool, session, executionType, requestsVector, payloadData["variables"], haltOnFailure);
+
+			size_t i = 0;
 			std::vector<json> results;
-			ProcessRequestBatch(session, executionType, requests, results, variables, haltOnFailure);
+			for (auto &requestResult : resultsVector) {
+				results.push_back(ConstructRequestResult(requestResult, requests[i]));
+				i++;
+			}
 
 			ret.result["op"] = WebSocketOpCode::RequestBatchResponse;
 			ret.result["d"]["requestId"] = payloadData["requestId"];

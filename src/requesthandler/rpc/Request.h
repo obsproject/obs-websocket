@@ -31,8 +31,7 @@ enum ObsWebSocketSceneFilter {
 
 struct Request
 {
-	Request(const std::string &requestType, const json &requestData = nullptr);
-	Request(const std::string &requestType, const json &requestData, RequestBatchExecutionType::RequestBatchExecutionType executionType);
+	Request(const std::string &requestType, const json &requestData = nullptr, const RequestBatchExecutionType::RequestBatchExecutionType executionType = RequestBatchExecutionType::None);
 
 	// Contains the key and is not null
 	bool Contains(const std::string &keyName) const;

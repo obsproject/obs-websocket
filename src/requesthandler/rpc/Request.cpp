@@ -19,7 +19,6 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include "Request.h"
 #include "../../obs-websocket.h"
-#include "../../plugin-macros.generated.h"
 
 json GetDefaultJsonObject(const json &requestData)
 {
@@ -30,15 +29,7 @@ json GetDefaultJsonObject(const json &requestData)
 		return requestData;
 }
 
-Request::Request(const std::string &requestType, const json &requestData) :
-	RequestType(requestType),
-	HasRequestData(requestData.is_object()),
-	RequestData(GetDefaultJsonObject(requestData)),
-	ExecutionType(RequestBatchExecutionType::None)
-{
-}
-
-Request::Request(const std::string &requestType, const json &requestData, RequestBatchExecutionType::RequestBatchExecutionType executionType) :
+Request::Request(const std::string &requestType, const json &requestData, const RequestBatchExecutionType::RequestBatchExecutionType executionType) :
 	RequestType(requestType),
 	HasRequestData(requestData.is_object()),
 	RequestData(GetDefaultJsonObject(requestData)),
