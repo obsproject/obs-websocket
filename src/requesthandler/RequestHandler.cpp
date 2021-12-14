@@ -23,8 +23,8 @@ const std::map<std::string, RequestMethodHandler> RequestHandler::_handlerMap
 {
 	// General
 	{"GetVersion", &RequestHandler::GetVersion},
-	{"BroadcastCustomEvent", &RequestHandler::BroadcastCustomEvent},
 	{"GetStats", &RequestHandler::GetStats},
+	{"BroadcastCustomEvent", &RequestHandler::BroadcastCustomEvent},
 	{"GetHotkeyList", &RequestHandler::GetHotkeyList},
 	{"TriggerHotkeyByName", &RequestHandler::TriggerHotkeyByName},
 	{"TriggerHotkeyByKeySequence", &RequestHandler::TriggerHotkeyByKeySequence},

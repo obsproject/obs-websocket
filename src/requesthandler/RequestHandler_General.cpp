@@ -59,34 +59,6 @@ RequestResult RequestHandler::GetVersion(const Request&)
 }
 
 /**
- * Broadcasts a `CustomEvent` to all WebSocket clients. Receivers are clients which are identified and subscribed.
- *
- * @requestField eventData | Object | Data payload to emit to all receivers
- *
- * @requestType BroadcastCustomEvent
- * @complexity 1
- * @rpcVersion -1
- * @initialVersion 5.0.0
- * @category general
- * @api requests
- */
-RequestResult RequestHandler::BroadcastCustomEvent(const Request& request)
-{
-	RequestStatus::RequestStatus statusCode;
-	std::string comment;
-	if (!request.ValidateObject("eventData", statusCode, comment))
-		return RequestResult::Error(statusCode, comment);
-
-	auto webSocketServer = GetWebSocketServer();
-	if (!webSocketServer)
-		return RequestResult::Error(RequestStatus::RequestProcessingFailed, "Unable to send event.");
-
-	webSocketServer->BroadcastEvent(EventSubscription::General, "CustomEvent", request.RequestData["eventData"]);
-
-	return RequestResult::Success();
-}
-
-/**
  * Gets statistics about OBS, obs-websocket, and the current session.
  *
  * @responseField cpuUsage                         | Number | Current CPU usage in percent
@@ -116,6 +88,34 @@ RequestResult RequestHandler::GetStats(const Request&)
 	responseData["webSocketSessionOutgoingMessages"] = _session->OutgoingMessages();
 
 	return RequestResult::Success(responseData);
+}
+
+/**
+ * Broadcasts a `CustomEvent` to all WebSocket clients. Receivers are clients which are identified and subscribed.
+ *
+ * @requestField eventData | Object | Data payload to emit to all receivers
+ *
+ * @requestType BroadcastCustomEvent
+ * @complexity 1
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @category general
+ * @api requests
+ */
+RequestResult RequestHandler::BroadcastCustomEvent(const Request& request)
+{
+	RequestStatus::RequestStatus statusCode;
+	std::string comment;
+	if (!request.ValidateObject("eventData", statusCode, comment))
+		return RequestResult::Error(statusCode, comment);
+
+	auto webSocketServer = GetWebSocketServer();
+	if (!webSocketServer)
+		return RequestResult::Error(RequestStatus::RequestProcessingFailed, "Unable to send event.");
+
+	webSocketServer->BroadcastEvent(EventSubscription::General, "CustomEvent", request.RequestData["eventData"]);
+
+	return RequestResult::Success();
 }
 
 /**
