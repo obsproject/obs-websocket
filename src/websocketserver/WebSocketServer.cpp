@@ -112,10 +112,6 @@ void WebSocketServer::Start()
 		return;
 	}
 
-	_serverPort = conf->ServerPort;
-	_serverPassword = conf->ServerPassword;
-	_authenticationRequired = conf->AuthRequired;
-
 	_authenticationSalt = Utils::Crypto::GenerateSalt();
 	_authenticationSecret = Utils::Crypto::GenerateSecret(conf->ServerPassword.toStdString(), _authenticationSalt);
 
@@ -133,7 +129,7 @@ void WebSocketServer::Start()
 	_server.reset();
 
 	websocketpp::lib::error_code errorCode;
-	_server.listen(websocketpp::lib::asio::ip::tcp::v4(), _serverPort, errorCode);
+	_server.listen(websocketpp::lib::asio::ip::tcp::v4(), conf->ServerPort, errorCode);
 
 	if (errorCode) {
 		std::string errorCodeMessage = errorCode.message();
@@ -145,7 +141,7 @@ void WebSocketServer::Start()
 
 	_serverThread = std::thread(&WebSocketServer::ServerRunner, this);
 
-	blog(LOG_INFO, "[WebSocketServer::Start] Server started successfully on port %d. Possible connect address: %s", _serverPort, Utils::Platform::GetLocalAddress().c_str());
+	blog(LOG_INFO, "[WebSocketServer::Start] Server started successfully on port %d. Possible connect address: %s", conf->ServerPort.load(), Utils::Platform::GetLocalAddress().c_str());
 }
 
 void WebSocketServer::Stop()
@@ -256,6 +252,12 @@ void WebSocketServer::onOpen(websocketpp::connection_hdl hdl)
 {
 	auto conn = _server.get_con_from_hdl(hdl);
 
+	auto conf = GetConfig();
+	if (!conf) {
+		blog(LOG_ERROR, "[WebSocketServer::onOpen] Unable to retreive config!");
+		return;
+	}
+
 	// Build new session
 	std::unique_lock<std::mutex> lock(_sessionMutex);
 	SessionPtr session = _sessions[hdl] = std::make_shared<WebSocketSession>();
@@ -265,7 +267,7 @@ void WebSocketServer::onOpen(websocketpp::connection_hdl hdl)
 	// Configure session details
 	session->SetRemoteAddress(conn->get_remote_endpoint());
 	session->SetConnectedAt(QDateTime::currentSecsSinceEpoch());
-	session->SetAuthenticationRequired(_authenticationRequired);
+	session->SetAuthenticationRequired(conf->AuthRequired);
 	std::string selectedSubprotocol = conn->get_subprotocol();
 	if (!selectedSubprotocol.empty()) {
 		if (selectedSubprotocol == "obswebsocket.json")
@@ -278,7 +280,7 @@ void WebSocketServer::onOpen(websocketpp::connection_hdl hdl)
 	json helloMessageData;
 	helloMessageData["obsWebSocketVersion"] = OBS_WEBSOCKET_VERSION;
 	helloMessageData["rpcVersion"] = OBS_WEBSOCKET_RPC_VERSION;
-	if (_authenticationRequired) {
+	if (conf->AuthRequired) {
 		session->SetSecret(_authenticationSecret);
 		std::string sessionChallenge = Utils::Crypto::GenerateSalt();
 		session->SetChallenge(sessionChallenge);

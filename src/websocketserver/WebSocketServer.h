@@ -96,9 +96,6 @@ class WebSocketServer : QObject
 
 		std::thread _serverThread;
 		websocketpp::server<websocketpp::config::asio> _server;
-		uint16_t _serverPort;
-		QString _serverPassword;
-		bool _authenticationRequired;
 
 		std::string _authenticationSecret;
 		std::string _authenticationSalt;
