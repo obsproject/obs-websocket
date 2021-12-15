@@ -171,14 +171,9 @@ void SettingsDialog::SaveFormData()
 		}
 	}
 
-	bool needsRestart = false;
-	if ((conf->ServerEnabled != ui->enableWebSocketServerCheckBox->isChecked()) ||
-	(conf->DebugEnabled != ui->enableDebugLoggingCheckBox->isChecked()) ||
-	(conf->AuthRequired != ui->enableAuthenticationCheckBox->isChecked()) ||
-	(conf->ServerPassword != ui->serverPasswordLineEdit->text()) ||
-	(conf->ServerPort != ui->serverPortSpinBox->value())) {
-		needsRestart = true;
-	}
+	bool needsRestart = (conf->ServerEnabled != ui->enableWebSocketServerCheckBox->isChecked()) ||
+						(ui->enableAuthenticationCheckBox->isChecked() && conf->ServerPassword != ui->serverPasswordLineEdit->text()) ||
+						(conf->ServerPort != ui->serverPortSpinBox->value());
 
 	conf->ServerEnabled = ui->enableWebSocketServerCheckBox->isChecked();
 	conf->AlertsEnabled = ui->enableSystemTrayAlertsCheckBox->isChecked();
