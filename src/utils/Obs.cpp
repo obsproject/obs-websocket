@@ -277,19 +277,27 @@ std::vector<std::string> Utils::Obs::ListHelper::GetHotkeyNameList()
 
 std::vector<json> Utils::Obs::ListHelper::GetSceneList()
 {
+	obs_frontend_source_list sceneList = {};
+	obs_frontend_get_scenes(&sceneList);
+
 	std::vector<json> ret;
-	auto sceneEnumProc = [](void *param, obs_source_t *scene) {
-		auto ret = reinterpret_cast<std::vector<json>*>(param);
+	for (size_t i = 0; i < sceneList.sources.num; i++) {
+		obs_source_t *scene = sceneList.sources.array[i];
+
+		if (obs_source_is_group(scene))
+			continue;
 
 		json sceneJson;
 		sceneJson["sceneName"] = obs_source_get_name(scene);
-		sceneJson["isGroup"] = obs_source_is_group(scene);
+		sceneJson["sceneIndex"] = sceneList.sources.num - i - 1;
 
-		ret->push_back(sceneJson);
-		return true;
-	};
+		ret.push_back(sceneJson);
+	}
 
-	obs_enum_scenes(sceneEnumProc, &ret);
+	obs_frontend_source_list_free(&sceneList);
+
+	// Reverse the vector order to match other array returns
+	std::reverse(ret.begin(), ret.end());
 
 	return ret;
 }
