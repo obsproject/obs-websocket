@@ -18,6 +18,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 */
 
 #include <inttypes.h>
+#include <algorithm>
 #include <QString>
 #include <obs-frontend-api.h>
 #include <util/config-file.h>
