@@ -1085,26 +1085,6 @@
       ]
     },
     {
-      "description": "Broadcasts a `CustomEvent` to all WebSocket clients. Receivers are clients which are identified and subscribed.",
-      "requestType": "BroadcastCustomEvent",
-      "complexity": 1,
-      "rpcVersion": "1",
-      "deprecated": false,
-      "initialVersion": "5.0.0",
-      "category": "general",
-      "requestFields": [
-        {
-          "valueName": "eventData",
-          "valueType": "Object",
-          "valueDescription": "Data payload to emit to all receivers",
-          "valueRestrictions": null,
-          "valueOptional": false,
-          "valueOptionalBehavior": null
-        }
-      ],
-      "responseFields": []
-    },
-    {
       "description": "Gets statistics about OBS, obs-websocket, and the current session.",
       "requestType": "GetStats",
       "complexity": 2,
@@ -1170,6 +1150,26 @@
           "valueDescription": "Total number of messages sent by obs-websocket to the client"
         }
       ]
+    },
+    {
+      "description": "Broadcasts a `CustomEvent` to all WebSocket clients. Receivers are clients which are identified and subscribed.",
+      "requestType": "BroadcastCustomEvent",
+      "complexity": 1,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "general",
+      "requestFields": [
+        {
+          "valueName": "eventData",
+          "valueType": "Object",
+          "valueDescription": "Data payload to emit to all receivers",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        }
+      ],
+      "responseFields": []
     },
     {
       "description": "Gets an array of all hotkey names in OBS",

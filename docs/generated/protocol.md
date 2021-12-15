@@ -1368,8 +1368,8 @@ The profile list has changed.
 ### Requests Table of Contents
 - [General](#general-1)
   - [GetVersion](#getversion)
-  - [BroadcastCustomEvent](#broadcastcustomevent)
   - [GetStats](#getstats)
+  - [BroadcastCustomEvent](#broadcastcustomevent)
   - [GetHotkeyList](#gethotkeylist)
   - [TriggerHotkeyByName](#triggerhotkeybyname)
   - [TriggerHotkeyByKeySequence](#triggerhotkeybykeysequence)
@@ -1450,23 +1450,6 @@ Gets data about the current plugin and RPC version.
 
 ---
 
-### BroadcastCustomEvent
-
-Broadcasts a `CustomEvent` to all WebSocket clients. Receivers are clients which are identified and subscribed.
-
-- Complexity Rating: `1/5`
-- Latest Supported RPC Version: `1`
-- Added in v5.0.0
-
-
-**Request Fields:**
-
-| Name | Type  | Description | Value Restrictions | ?Default Behavior |
-| ---- | :---: | ----------- | :----------------: | ----------------- |
-| eventData | Object | Data payload to emit to all receivers | None | N/A |
-
----
-
 ### GetStats
 
 Gets statistics about OBS, obs-websocket, and the current session.
@@ -1491,6 +1474,23 @@ Gets statistics about OBS, obs-websocket, and the current session.
 | outputTotalFrames | Number | Total number of frames outputted by the output thread |
 | webSocketSessionIncomingMessages | Number | Total number of messages received by obs-websocket from the client |
 | webSocketSessionOutgoingMessages | Number | Total number of messages sent by obs-websocket to the client |
+
+---
+
+### BroadcastCustomEvent
+
+Broadcasts a `CustomEvent` to all WebSocket clients. Receivers are clients which are identified and subscribed.
+
+- Complexity Rating: `1/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| eventData | Object | Data payload to emit to all receivers | None | N/A |
 
 ---
 
