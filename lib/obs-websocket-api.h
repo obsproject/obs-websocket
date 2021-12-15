@@ -17,8 +17,8 @@ You should have received a copy of the GNU General Public License along
 with this program. If not, see <https://www.gnu.org/licenses/>
 */
 
-#ifndef _OBS_WEBSOCKET_H
-#define _OBS_WEBSOCKET_H
+#ifndef _OBS_WEBSOCKET_API_H
+#define _OBS_WEBSOCKET_API_H
 
 #include <obs.h>
 
@@ -36,7 +36,7 @@ struct obs_websocket_request_callback {
 
 inline proc_handler_t *ph;
 
-inline proc_handler_t *obs_websocket_get_ph(void)
+static inline proc_handler_t *obs_websocket_get_ph(void)
 {
 	proc_handler_t *global_ph = obs_get_proc_handler();
 	assert(global_ph != NULL);
@@ -50,7 +50,7 @@ inline proc_handler_t *obs_websocket_get_ph(void)
 	return ret;
 }
 
-inline bool obs_websocket_run_simple_proc(obs_websocket_vendor vendor, const char *proc_name, calldata_t *cd)
+static inline bool obs_websocket_run_simple_proc(obs_websocket_vendor vendor, const char *proc_name, calldata_t *cd)
 {
 	if (!ph || !vendor || !proc_name || !strlen(proc_name) || !cd)
 		return false;
@@ -63,7 +63,7 @@ inline bool obs_websocket_run_simple_proc(obs_websocket_vendor vendor, const cha
 
 // ALWAYS CALL VIA `obs_module_post_load()` CALLBACK!
 // Registers a new "vendor" (Example: obs-ndi)
-inline obs_websocket_vendor obs_websocket_register_vendor(const char *vendor_name)
+static inline obs_websocket_vendor obs_websocket_register_vendor(const char *vendor_name)
 {
 	ph = obs_websocket_get_ph();
 	if (!ph)
@@ -81,7 +81,7 @@ inline obs_websocket_vendor obs_websocket_register_vendor(const char *vendor_nam
 }
 
 // Registers a new request for a vendor
-inline bool obs_websocket_vendor_register_request(obs_websocket_vendor vendor, const char *request_type, obs_websocket_request_callback_function request_callback, void* priv_data)
+static inline bool obs_websocket_vendor_register_request(obs_websocket_vendor vendor, const char *request_type, obs_websocket_request_callback_function request_callback, void* priv_data)
 {
 	calldata_t cd = {0};
 
@@ -99,7 +99,7 @@ inline bool obs_websocket_vendor_register_request(obs_websocket_vendor vendor, c
 }
 
 // Unregisters an existing vendor request
-inline bool obs_websocket_vendor_unregister_request(obs_websocket_vendor vendor, const char *request_type)
+static inline bool obs_websocket_vendor_unregister_request(obs_websocket_vendor vendor, const char *request_type)
 {
 	calldata_t cd = {0};
 
@@ -113,7 +113,7 @@ inline bool obs_websocket_vendor_unregister_request(obs_websocket_vendor vendor,
 
 // Does not affect event_data refcount.
 // Emits an event under the vendor's name
-inline bool obs_websocket_vendor_emit_event(obs_websocket_vendor vendor, const char *event_name, obs_data_t *event_data)
+static inline bool obs_websocket_vendor_emit_event(obs_websocket_vendor vendor, const char *event_name, obs_data_t *event_data)
 {
 	calldata_t cd = {0};
 
