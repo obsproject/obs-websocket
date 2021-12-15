@@ -36,6 +36,10 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 
 
+# Plugin tests flag
+option(PLUGIN_TESTS "Enable plugin runtime tests" OFF)
+
+
 # Qt build stuff
 set(CMAKE_PREFIX_PATH "${QTDIR}")
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -176,6 +180,10 @@ target_link_libraries(obs-websocket
 	Qt5::Svg
 	Qt5::Network
 	nlohmann_json::nlohmann_json)
+
+if(PLUGIN_TESTS)
+  target_compile_definitions(obs-websocket PRIVATE PLUGIN_TESTS)
+endif()
 
 
 # Windows-specific build settings and tasks

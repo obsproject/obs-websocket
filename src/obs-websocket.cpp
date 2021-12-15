@@ -170,9 +170,7 @@ void WebSocketApiEventCallback(std::string vendorName, std::string eventType, ob
 	_webSocketServer->BroadcastEvent(EventSubscription::Vendors, "VendorEvent", broadcastEventData);
 }
 
-
-#define PLUGIN_API_TEST
-#ifdef PLUGIN_API_TEST
+#ifdef PLUGIN_TESTS
 
 static void test_vendor_request_cb(obs_data_t *requestData, obs_data_t *responseData, void *priv_data)
 {
