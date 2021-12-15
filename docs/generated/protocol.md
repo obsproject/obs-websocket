@@ -164,12 +164,10 @@ Authentication is not required
 {
   "rpcVersion": number,
   "authentication": string(optional),
-  "ignoreInvalidMessages": bool(optional) = false,
   "eventSubscriptions": number(optional) = (EventSubscription::All)
 }
 ```
 - `rpcVersion` is the version number that the client would like the obs-websocket server to use.
-- When `ignoreInvalidMessages` is true, the socket will not be closed for `WebSocketCloseCode`: `MessageDecodeError`, `UnknownOpCode`, or `MissingDataKey`. Instead, the message will be logged and ignored.
 - `eventSubscriptions` is a bitmask of `EventSubscriptions` items to subscribe to events and event categories at will. By default, all event categories are subscribed, except for events marked as high volume. High volume events must be explicitly subscribed to.
 
 **Example Message:**
@@ -219,7 +217,6 @@ Authentication is not required
 **Data Keys:**
 ```
 {
-  "ignoreInvalidMessages": bool(optional) = false,
   "eventSubscriptions": number(optional) = (EventSubscription::All)
 }
 ```
