@@ -150,7 +150,7 @@ void ___properties_dummy_addref(obs_properties_t*) {}
  * @dataField eventType  | String | Vendor-provided event typedef
  * @dataField eventData  | Object | Vendor-provided event data. {} if event does not provide any data
  *
- * @eventSubscription ExternalPlugins
+ * @eventSubscription Vendors
  * @eventType VendorEvent
  * @complexity 3
  * @rpcVersion -1
@@ -167,7 +167,7 @@ void WebSocketApiEventCallback(std::string vendorName, std::string eventType, ob
 	broadcastEventData["eventType"] = eventType;
 	broadcastEventData["eventData"] = eventData;
 
-	_webSocketServer->BroadcastEvent(EventSubscription::ExternalPlugins, "VendorEvent", broadcastEventData);
+	_webSocketServer->BroadcastEvent(EventSubscription::Vendors, "VendorEvent", broadcastEventData);
 }
 
 

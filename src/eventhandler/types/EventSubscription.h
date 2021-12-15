@@ -133,29 +133,29 @@ namespace EventSubscription {
 		// Receive events in the `MediaInputs` category
 		MediaInputs = (1 << 8),
 		/**
-		* Subscription value to receive the `ExternalPluginEvent` event.
+		* Subscription value to receive the `VendorEvent` event.
 		*
-		* @enumIdentifier ExternalPlugins
+		* @enumIdentifier Vendors
 		* @enumValue (1 << 9)
 		* @enumType EventSubscription
 		* @rpcVersion -1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		// Receive events from external OBS plugins
-		ExternalPlugins = (1 << 9),
+		// Receive events from external OBS plugins and scripts
+		Vendors = (1 << 9),
 		/**
 		* Helper to receive all non-high-volume events.
 		*
 		* @enumIdentifier All
-		* @enumValue (General | Config | Scenes | Inputs | Transitions | Filters | Outputs | SceneItems | MediaInputs | ExternalPlugins)
+		* @enumValue (General | Config | Scenes | Inputs | Transitions | Filters | Outputs | SceneItems | MediaInputs | Vendors)
 		* @enumType EventSubscription
 		* @rpcVersion -1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
 		// Receive all event categories (exclude high-volume)
-		All = (General | Config | Scenes | Inputs | Transitions | Filters | Outputs | SceneItems | MediaInputs | ExternalPlugins),
+		All = (General | Config | Scenes | Inputs | Transitions | Filters | Outputs | SceneItems | MediaInputs | Vendors),
 		/**
 		* Subscription value to receive the `InputVolumeMeters` high-volume event.
 		*
