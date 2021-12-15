@@ -25,6 +25,7 @@ const std::map<std::string, RequestMethodHandler> RequestHandler::_handlerMap
 	{"GetVersion", &RequestHandler::GetVersion},
 	{"GetStats", &RequestHandler::GetStats},
 	{"BroadcastCustomEvent", &RequestHandler::BroadcastCustomEvent},
+	{"CallVendorRequest", &RequestHandler::CallVendorRequest},
 	{"GetHotkeyList", &RequestHandler::GetHotkeyList},
 	{"TriggerHotkeyByName", &RequestHandler::TriggerHotkeyByName},
 	{"TriggerHotkeyByKeySequence", &RequestHandler::TriggerHotkeyByKeySequence},

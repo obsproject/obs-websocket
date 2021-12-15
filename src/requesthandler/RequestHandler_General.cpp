@@ -22,6 +22,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include "RequestHandler.h"
 #include "../websocketserver/WebSocketServer.h"
 #include "../eventhandler/types/EventSubscription.h"
+#include "../WebSocketApi.h"
 #include "../obs-websocket.h"
 
 
@@ -111,11 +112,71 @@ RequestResult RequestHandler::BroadcastCustomEvent(const Request& request)
 
 	auto webSocketServer = GetWebSocketServer();
 	if (!webSocketServer)
-		return RequestResult::Error(RequestStatus::RequestProcessingFailed, "Unable to send event.");
+		return RequestResult::Error(RequestStatus::RequestProcessingFailed, "Unable to send event due to internal error.");
 
 	webSocketServer->BroadcastEvent(EventSubscription::General, "CustomEvent", request.RequestData["eventData"]);
 
 	return RequestResult::Success();
+}
+
+/**
+ * Call a request registered to a vendor.
+ *
+ * A vendor is a unique name registered by a third-party plugin or script, which allows for custom requests and events to be added to obs-websocket.
+ * If a plugin or script implements vendor requests or events, documentation is expected to be provided with them.
+ *
+ * @requestField vendorName   | String | Name of the vendor to use
+ * @requestField requestType  | String | The request type to call
+ * @requestField ?requestData | Object | Object containing appropriate request data | {}
+ *
+ * @responseField responseData | Object | Object containing appropriate response data. May be null if vendor request does not implement responses
+ *
+ * @requestType CallVendorRequest
+ * @complexity 3
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @category general
+ * @api requests
+ */
+RequestResult RequestHandler::CallVendorRequest(const Request& request)
+{
+	RequestStatus::RequestStatus statusCode;
+	std::string comment;
+	if (!request.ValidateString("vendorName", statusCode, comment) || !request.ValidateString("requestType", statusCode, comment))
+		return RequestResult::Error(statusCode, comment);
+
+	std::string vendorName = request.RequestData["vendorName"];
+	std::string requestType = request.RequestData["requestType"];
+
+	OBSDataAutoRelease requestData = obs_data_create();
+	if (request.Contains("requestData")) {
+		if (!request.ValidateOptionalObject("requestData", statusCode, comment))
+			return RequestResult::Error(statusCode, comment);
+
+		requestData = Utils::Json::JsonToObsData(request.RequestData["requestData"]);
+	}
+
+	OBSDataAutoRelease obsResponseData = obs_data_create();
+
+	auto webSocketApi = GetWebSocketApi();
+	if (!webSocketApi)
+		return RequestResult::Error(RequestStatus::RequestProcessingFailed, "Unable to call request due to internal error.");
+
+	auto ret = webSocketApi->PerformVendorRequest(vendorName, requestType, requestData, obsResponseData);
+	switch (ret) {
+		default:
+		case WebSocketApi::RequestReturnCode::Normal:
+			break;
+		case WebSocketApi::RequestReturnCode::NoVendor:
+			return RequestResult::Error(RequestStatus::ResourceNotFound, "No vendor was found by that name.");
+		case WebSocketApi::RequestReturnCode::NoVendorRequest:
+			return RequestResult::Error(RequestStatus::ResourceNotFound, "No request was found by that name.");
+	}
+
+	json responseData;
+	responseData["responseData"] = Utils::Json::ObsDataToJson(obsResponseData);
+
+	return RequestResult::Success(responseData);
 }
 
 /**

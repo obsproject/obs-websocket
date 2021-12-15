@@ -55,7 +55,7 @@ enum WebSocketApi::RequestReturnCode WebSocketApi::PerformVendorRequest(std::str
 	std::shared_lock l(_mutex);
 
 	if (_vendors.count(vendorName) == 0)
-		return WEBSOCKET_API_REQUEST_RETURN_CODE_NO_VENDOR;
+		return RequestReturnCode::NoVendor;
 
 	auto v = _vendors[vendorName];
 
@@ -64,7 +64,7 @@ enum WebSocketApi::RequestReturnCode WebSocketApi::PerformVendorRequest(std::str
 	std::shared_lock v_l(v->_mutex);
 
 	if (v->_requests.count(requestType) == 0)
-		return WEBSOCKET_API_REQUEST_RETURN_CODE_NO_VENDOR_REQUEST;
+		return RequestReturnCode::NoVendorRequest;
 
 	auto cb = v->_requests[requestType];
 
@@ -72,7 +72,7 @@ enum WebSocketApi::RequestReturnCode WebSocketApi::PerformVendorRequest(std::str
 
 	cb.callback(requestData, responseData, cb.priv_data);
 
-	return WEBSOCKET_API_REQUEST_RETURN_CODE_NORMAL;
+	return RequestReturnCode::Normal;
 }
 
 void WebSocketApi::get_ph_cb(void *priv_data, calldata_t *cd)

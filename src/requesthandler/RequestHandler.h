@@ -47,6 +47,7 @@ class RequestHandler {
 		RequestResult GetVersion(const Request&);
 		RequestResult GetStats(const Request&);
 		RequestResult BroadcastCustomEvent(const Request&);
+		RequestResult CallVendorRequest(const Request&);
 		RequestResult GetHotkeyList(const Request&);
 		RequestResult TriggerHotkeyByName(const Request&);
 		RequestResult TriggerHotkeyByKeySequence(const Request&);

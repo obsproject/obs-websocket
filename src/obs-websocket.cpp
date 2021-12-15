@@ -138,7 +138,7 @@ void WebSocketApiEventCallback(std::string vendorName, std::string eventType, ob
 	broadcastEventData["eventType"] = eventType;
 	broadcastEventData["eventData"] = eventData;
 
-	_webSocketServer->BroadcastEvent(EventSubscription::ExternalPlugins, "ExternalPluginEvent", broadcastEventData);
+	_webSocketServer->BroadcastEvent(EventSubscription::ExternalPlugins, "VendorEvent", broadcastEventData);
 }
 
 void ___source_dummy_addref(obs_source_t*) {}
@@ -151,3 +151,40 @@ void ___output_dummy_addref(obs_output_t*) {}
 void ___data_item_dummy_addref(obs_data_item_t*) {}
 void ___data_item_release(obs_data_item_t* dataItem){ obs_data_item_release(&dataItem); }
 void ___properties_dummy_addref(obs_properties_t*) {}
+
+
+#define PLUGIN_API_TEST
+#ifdef PLUGIN_API_TEST
+
+static void test_vendor_request_cb(obs_data_t *requestData, obs_data_t *responseData, void *priv_data)
+{
+	blog(LOG_INFO, "[test_vendor_request_cb] Request called!");
+
+	blog(LOG_INFO, "[test_vendor_request_cb] Request data: %s", obs_data_get_json(requestData));
+
+	// Set an item to the response data
+	obs_data_set_string(responseData, "test", "pp");
+
+	// Emit an event with the request data as the event data
+	obs_websocket_vendor_emit_event(priv_data, "TestEvent", requestData);
+}
+
+void obs_module_post_load()
+{
+	blog(LOG_INFO, "[obs_module_post_load] Post load started.");
+
+	auto vendor = obs_websocket_register_vendor("obs-websocket-test");
+	if (!vendor) {
+		blog(LOG_WARNING, "[obs_module_post_load] Failed to create vendor!");
+		return;
+	}
+
+	if (!obs_websocket_vendor_register_request(vendor, "TestRequest", test_vendor_request_cb, vendor)) {
+		blog(LOG_WARNING, "[obs_module_post_load] Failed to register vendor request!");
+		return;
+	}
+
+	blog(LOG_INFO, "[obs_module_post_load] Post load completed.");
+}
+
+#endif

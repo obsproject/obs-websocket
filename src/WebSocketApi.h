@@ -12,9 +12,9 @@
 class WebSocketApi {
 	public:
 		enum RequestReturnCode {
-			WEBSOCKET_API_REQUEST_RETURN_CODE_NORMAL,
-			WEBSOCKET_API_REQUEST_RETURN_CODE_NO_VENDOR,
-			WEBSOCKET_API_REQUEST_RETURN_CODE_NO_VENDOR_REQUEST,
+			Normal,
+			NoVendor,
+			NoVendorRequest,
 		};
 
 		typedef std::function<void(std::string, std::string, obs_data_t*)> EventCallback;
