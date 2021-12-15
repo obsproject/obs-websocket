@@ -19,30 +19,27 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #pragma once
 
+#include <atomic>
 #include <QString>
 #include <util/config-file.h>
 
 #include "plugin-macros.generated.h"
 
-class Config {
-	public:
-		Config();
-		void Load();
-		void Save();
-		void SetDefaultsToGlobalStore();
-		config_t* GetConfigStore();
+struct Config {
+	Config();
+	void Load();
+	void Save();
+	void SetDefaultsToGlobalStore();
+	config_t* GetConfigStore();
 
-		bool PortOverridden;
-		bool PasswordOverridden;
+	std::atomic<bool> PortOverridden;
+	std::atomic<bool> PasswordOverridden;
 
-		bool FirstLoad;
-		bool ServerEnabled;
-		uint16_t ServerPort;
-		std::atomic<bool> DebugEnabled;
-		bool AlertsEnabled;
-		bool AuthRequired;
-		QString ServerPassword;
-
-	private:
-
+	std::atomic<bool> FirstLoad;
+	std::atomic<bool> ServerEnabled;
+	std::atomic<uint16_t> ServerPort;
+	std::atomic<bool> DebugEnabled;
+	std::atomic<bool> AlertsEnabled;
+	std::atomic<bool> AuthRequired;
+	QString ServerPassword;
 };
