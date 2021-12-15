@@ -460,7 +460,7 @@ These are enumeration declarations, which are referenced throughout obs-websocke
   - [EventSubscription::Outputs](#eventsubscriptionoutputs)
   - [EventSubscription::SceneItems](#eventsubscriptionsceneitems)
   - [EventSubscription::MediaInputs](#eventsubscriptionmediainputs)
-  - [EventSubscription::ExternalPlugins](#eventsubscriptionexternalplugins)
+  - [EventSubscription::Vendors](#eventsubscriptionvendors)
   - [EventSubscription::All](#eventsubscriptionall)
   - [EventSubscription::InputVolumeMeters](#eventsubscriptioninputvolumemeters)
   - [EventSubscription::InputActiveStateChanged](#eventsubscriptioninputactivestatechanged)
@@ -1155,9 +1155,9 @@ Subscription value to receive events in the `MediaInputs` category.
 
 ---
 
-### EventSubscription::ExternalPlugins
+### EventSubscription::Vendors
 
-Subscription value to receive the `ExternalPluginEvent` event.
+Subscription value to receive the `VendorEvent` event.
 
 - Identifier Value: `(1 << 9)`
 - Latest Supported RPC Version: `1`
@@ -1169,7 +1169,7 @@ Subscription value to receive the `ExternalPluginEvent` event.
 
 Helper to receive all non-high-volume events.
 
-- Identifier Value: `(General | Config | Scenes | Inputs | Transitions | Filters | Outputs | SceneItems | MediaInputs | ExternalPlugins)`
+- Identifier Value: `(General | Config | Scenes | Inputs | Transitions | Filters | Outputs | SceneItems | MediaInputs | Vendors)`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
