@@ -60,15 +60,6 @@ static json ConstructRequestResult(RequestResult requestResult, const json &requ
 
 void WebSocketServer::SetSessionParameters(SessionPtr session, ProcessResult &ret, const json &payloadData)
 {
-	if (payloadData.contains("ignoreInvalidMessages")) {
-		if (!payloadData["ignoreInvalidMessages"].is_boolean()) {
-			ret.closeCode = WebSocketCloseCode::InvalidDataFieldType;
-			ret.closeReason = "Your `ignoreInvalidMessages` is not a boolean.";
-			return;
-		}
-		session->SetIgnoreInvalidMessages(payloadData["ignoreInvalidMessages"]);
-	}
-
 	if (payloadData.contains("eventSubscriptions")) {
 		if (!payloadData["eventSubscriptions"].is_number_unsigned()) {
 			ret.closeCode = WebSocketCloseCode::InvalidDataFieldType;
@@ -103,10 +94,8 @@ void WebSocketServer::ProcessMessage(SessionPtr session, WebSocketServer::Proces
 		case WebSocketOpCode::Identify: { // Identify
 			std::unique_lock<std::mutex> sessionLock(session->OperationMutex);
 			if (session->IsIdentified()) {
-				if (!session->IgnoreInvalidMessages()) {
-					ret.closeCode = WebSocketCloseCode::AlreadyIdentified;
-					ret.closeReason = "You are already Identified with the obs-websocket server.";
-				}
+				ret.closeCode = WebSocketCloseCode::AlreadyIdentified;
+				ret.closeReason = "You are already Identified with the obs-websocket server.";
 				return;
 			}
 
@@ -192,10 +181,8 @@ void WebSocketServer::ProcessMessage(SessionPtr session, WebSocketServer::Proces
 		case WebSocketOpCode::Request: { // Request
 			// RequestID checking has to be done here where we are able to close the connection.
 			if (!payloadData.contains("requestId")) {
-				if (!session->IgnoreInvalidMessages()) {
-					ret.closeCode = WebSocketCloseCode::MissingDataField;
-					ret.closeReason = "Your payload data is missing a `requestId`.";
-				}
+				ret.closeCode = WebSocketCloseCode::MissingDataField;
+				ret.closeReason = "Your payload data is missing a `requestId`.";
 				return;
 			}
 
@@ -221,53 +208,42 @@ void WebSocketServer::ProcessMessage(SessionPtr session, WebSocketServer::Proces
 		case WebSocketOpCode::RequestBatch: { // RequestBatch
 			// RequestID checking has to be done here where we are able to close the connection.
 			if (!payloadData.contains("requestId")) {
-				if (!session->IgnoreInvalidMessages()) {
-					ret.closeCode = WebSocketCloseCode::MissingDataField;
-					ret.closeReason = "Your payload data is missing a `requestId`.";
-				}
+				ret.closeCode = WebSocketCloseCode::MissingDataField;
+				ret.closeReason = "Your payload data is missing a `requestId`.";
 				return;
 			}
 
 			if (!payloadData.contains("requests")) {
-				if (!session->IgnoreInvalidMessages()) {
-					ret.closeCode = WebSocketCloseCode::MissingDataField;
-					ret.closeReason = "Your payload data is missing a `requests`.";
-				}
+				ret.closeCode = WebSocketCloseCode::MissingDataField;
+				ret.closeReason = "Your payload data is missing a `requests`.";
 				return;
 			}
 
 			if (!payloadData["requests"].is_array()) {
-				if (!session->IgnoreInvalidMessages()) {
-					ret.closeCode = WebSocketCloseCode::InvalidDataFieldType;
-					ret.closeReason = "Your `requests` is not an array.";
-				}
+				ret.closeCode = WebSocketCloseCode::InvalidDataFieldType;
+				ret.closeReason = "Your `requests` is not an array.";
 				return;
 			}
 
 			RequestBatchExecutionType::RequestBatchExecutionType executionType = RequestBatchExecutionType::SerialRealtime;
 			if (payloadData.contains("executionType") && !payloadData["executionType"].is_null()) {
 				if (!payloadData["executionType"].is_number_unsigned()) {
-					if (!session->IgnoreInvalidMessages()) {
-						ret.closeCode = WebSocketCloseCode::InvalidDataFieldType;
-						ret.closeReason = "Your `executionType` is not a number.";
-					}
+					ret.closeCode = WebSocketCloseCode::InvalidDataFieldType;
+					ret.closeReason = "Your `executionType` is not a number.";
 					return;
 				}
 
 				uint8_t requestedExecutionType = payloadData["executionType"];
 				if (!RequestBatchExecutionType::IsValid(requestedExecutionType) || requestedExecutionType == RequestBatchExecutionType::None) {
-					if (!session->IgnoreInvalidMessages()) {
-						ret.closeCode = WebSocketCloseCode::InvalidDataFieldValue;
-						ret.closeReason = "Your `executionType` has an invalid value.";
-					}
+					ret.closeCode = WebSocketCloseCode::InvalidDataFieldValue;
+					ret.closeReason = "Your `executionType` has an invalid value.";
+					return;
 				}
 
 				// The thread pool must support 2 or more threads else parallel requests will deadlock.
 				if (requestedExecutionType == RequestBatchExecutionType::Parallel && _threadPool.maxThreadCount() < 2) {
-					if (!session->IgnoreInvalidMessages()) {
-						ret.closeCode = WebSocketCloseCode::UnsupportedFeature;
-						ret.closeReason = "Parallel request batch processing is not available on this system due to limited core count.";
-					}
+					ret.closeCode = WebSocketCloseCode::UnsupportedFeature;
+					ret.closeReason = "Parallel request batch processing is not available on this system due to limited core count.";
 					return;
 				}
 
@@ -276,18 +252,14 @@ void WebSocketServer::ProcessMessage(SessionPtr session, WebSocketServer::Proces
 
 			if (payloadData.contains("variables") && !payloadData["variables"].is_null()) {
 				if (!payloadData.is_object()) {
-					if (!session->IgnoreInvalidMessages()) {
-						ret.closeCode = WebSocketCloseCode::InvalidDataFieldType;
-						ret.closeReason = "Your `variables` is not an object.";
-					}
+					ret.closeCode = WebSocketCloseCode::InvalidDataFieldType;
+					ret.closeReason = "Your `variables` is not an object.";
 					return;
 				}
 
 				if (executionType == RequestBatchExecutionType::Parallel) {
-					if (!session->IgnoreInvalidMessages()) {
-						ret.closeCode = WebSocketCloseCode::UnsupportedFeature;
-						ret.closeReason = "Variables are not supported in Parallel mode.";
-					}
+					ret.closeCode = WebSocketCloseCode::UnsupportedFeature;
+					ret.closeReason = "Variables are not supported in Parallel mode.";
 					return;
 				}
 			}
@@ -295,10 +267,8 @@ void WebSocketServer::ProcessMessage(SessionPtr session, WebSocketServer::Proces
 			bool haltOnFailure = false;
 			if (payloadData.contains("haltOnFailure") && !payloadData["haltOnFailure"].is_null()) {
 				if (!payloadData["haltOnFailure"].is_boolean()) {
-					if (!session->IgnoreInvalidMessages()) {
-						ret.closeCode = WebSocketCloseCode::InvalidDataFieldType;
-						ret.closeReason = "Your `haltOnFailure` is not a boolean.";
-					}
+					ret.closeCode = WebSocketCloseCode::InvalidDataFieldType;
+					ret.closeReason = "Your `haltOnFailure` is not a boolean.";
 					return;
 				}
 
@@ -325,10 +295,8 @@ void WebSocketServer::ProcessMessage(SessionPtr session, WebSocketServer::Proces
 			ret.result["d"]["results"] = results;
 			} return;
 		default:
-			if (!session->IgnoreInvalidMessages()) {
-				ret.closeCode = WebSocketCloseCode::UnknownOpCode;
-				ret.closeReason = std::string("Unknown OpCode: %s") + std::to_string(opCode);
-			}
+			ret.closeCode = WebSocketCloseCode::UnknownOpCode;
+			ret.closeReason = std::string("Unknown OpCode: %s") + std::to_string(opCode);
 			return;
 	}
 }

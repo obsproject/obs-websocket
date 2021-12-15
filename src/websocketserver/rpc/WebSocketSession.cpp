@@ -29,7 +29,6 @@ WebSocketSession::WebSocketSession() :
 	_challenge(""),
 	_rpcVersion(OBS_WEBSOCKET_RPC_VERSION),
 	_isIdentified(false),
-	_ignoreInvalidMessages(false),
 	_eventSubscriptions(EventSubscription::All)
 {
 }
@@ -141,16 +140,6 @@ bool WebSocketSession::IsIdentified()
 void WebSocketSession::SetIsIdentified(bool identified)
 {
 	_isIdentified.store(identified);
-}
-
-bool WebSocketSession::IgnoreInvalidMessages()
-{
-	return _ignoreInvalidMessages.load();
-}
-
-void WebSocketSession::SetIgnoreInvalidMessages(bool ignore)
-{
-	_ignoreInvalidMessages.store(ignore);
 }
 
 uint64_t WebSocketSession::EventSubscriptions()

@@ -398,30 +398,26 @@ void WebSocketServer::onMessage(websocketpp::connection_hdl hdl, websocketpp::se
 		uint8_t sessionEncoding = session->Encoding();
 		if (sessionEncoding == WebSocketEncoding::Json) {
 			if (opCode != websocketpp::frame::opcode::text) {
-				if (!session->IgnoreInvalidMessages())
-					_server.close(hdl, WebSocketCloseCode::MessageDecodeError, "Your session encoding is set to Json, but a binary message was received.", errorCode);
+				_server.close(hdl, WebSocketCloseCode::MessageDecodeError, "Your session encoding is set to Json, but a binary message was received.", errorCode);
 				return;
 			}
 
 			try {
 				incomingMessage = json::parse(payload);
 			} catch (json::parse_error& e) {
-				if (!session->IgnoreInvalidMessages())
-					_server.close(hdl, WebSocketCloseCode::MessageDecodeError, std::string("Unable to decode Json: ") + e.what(), errorCode);
+				_server.close(hdl, WebSocketCloseCode::MessageDecodeError, std::string("Unable to decode Json: ") + e.what(), errorCode);
 				return;
 			}
 		} else if (sessionEncoding == WebSocketEncoding::MsgPack) {
 			if (opCode != websocketpp::frame::opcode::binary) {
-				if (!session->IgnoreInvalidMessages())
-					_server.close(hdl, WebSocketCloseCode::MessageDecodeError, "Your session encoding is set to MsgPack, but a text message was received.", errorCode);
+				_server.close(hdl, WebSocketCloseCode::MessageDecodeError, "Your session encoding is set to MsgPack, but a text message was received.", errorCode);
 				return;
 			}
 
 			try {
 				incomingMessage = json::from_msgpack(payload);
 			} catch (json::parse_error& e) {
-				if (!session->IgnoreInvalidMessages())
-					_server.close(hdl, WebSocketCloseCode::MessageDecodeError, std::string("Unable to decode MsgPack: ") + e.what(), errorCode);
+				_server.close(hdl, WebSocketCloseCode::MessageDecodeError, std::string("Unable to decode MsgPack: ") + e.what(), errorCode);
 				return;
 			}
 		}
@@ -432,12 +428,9 @@ void WebSocketServer::onMessage(websocketpp::connection_hdl hdl, websocketpp::se
 
 		// Verify incoming message is an object
 		if (!incomingMessage.is_object()) {
-			if (!session->IgnoreInvalidMessages()) {
-				ret.closeCode = WebSocketCloseCode::MessageDecodeError;
-				ret.closeReason = "You sent a non-object payload.";
-				goto skipProcessing;
-			}
-			return;
+			ret.closeCode = WebSocketCloseCode::MessageDecodeError;
+			ret.closeReason = "You sent a non-object payload.";
+			goto skipProcessing;
 		}
 
 		// Disconnect client if 4.x protocol is detected
@@ -450,12 +443,9 @@ void WebSocketServer::onMessage(websocketpp::connection_hdl hdl, websocketpp::se
 
 		// Validate op code
 		if (!incomingMessage.contains("op")) {
-			if (!session->IgnoreInvalidMessages()) {
-				ret.closeCode = WebSocketCloseCode::UnknownOpCode;
-				ret.closeReason = "Your request is missing an `op`.";
-				goto skipProcessing;
-			}
-			return;
+			ret.closeCode = WebSocketCloseCode::UnknownOpCode;
+			ret.closeReason = "Your request is missing an `op`.";
+			goto skipProcessing;
 		}
 
 		ProcessMessage(session, ret, incomingMessage["op"], incomingMessage["d"]);
