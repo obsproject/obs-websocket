@@ -1172,6 +1172,48 @@
       "responseFields": []
     },
     {
+      "description": "Call a request registered to a vendor.\n\nA vendor is a unique name registered by a third-party plugin or script, which allows for custom requests and events to be added to obs-websocket.\nIf a plugin or script implements vendor requests or events, documentation is expected to be provided with them.",
+      "requestType": "CallVendorRequest",
+      "complexity": 3,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "general",
+      "requestFields": [
+        {
+          "valueName": "vendorName",
+          "valueType": "String",
+          "valueDescription": "Name of the vendor to use",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        },
+        {
+          "valueName": "requestType",
+          "valueType": "String",
+          "valueDescription": "The request type to call",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        },
+        {
+          "valueName": "requestData",
+          "valueType": "Object",
+          "valueDescription": "Object containing appropriate request data",
+          "valueRestrictions": null,
+          "valueOptional": true,
+          "valueOptionalBehavior": "{}"
+        }
+      ],
+      "responseFields": [
+        {
+          "valueName": "responseData",
+          "valueType": "Object",
+          "valueDescription": "Object containing appropriate response data. {} if request does not provide any response data"
+        }
+      ]
+    },
+    {
       "description": "Gets an array of all hotkey names in OBS",
       "requestType": "GetHotkeyList",
       "complexity": 3,
@@ -2346,6 +2388,33 @@
           "valueName": "studioModeEnabled",
           "valueType": "Boolean",
           "valueDescription": "True == Enabled, False == Disabled"
+        }
+      ]
+    },
+    {
+      "description": "An event has been emitted from a vendor.\n\nA vendor is a unique name registered by a third-party plugin or script, which allows for custom requests and events to be added to obs-websocket.\nIf a plugin or script implements vendor requests or events, documentation is expected to be provided with them.",
+      "eventType": "VendorEvent",
+      "eventSubscription": "ExternalPlugins",
+      "complexity": 3,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "general",
+      "dataFields": [
+        {
+          "valueName": "vendorName",
+          "valueType": "String",
+          "valueDescription": "Name of the vendor emitting the event"
+        },
+        {
+          "valueName": "eventType",
+          "valueType": "String",
+          "valueDescription": "Vendor-provided event typedef"
+        },
+        {
+          "valueName": "eventData",
+          "valueType": "Object",
+          "valueDescription": "Vendor-provided event data. {} if event does not provide any data"
         }
       ]
     }

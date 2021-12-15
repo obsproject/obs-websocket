@@ -1220,6 +1220,7 @@ Subscription value to receive the `SceneItemTransformChanged` high-volume event.
 - [General](#general)
   - [ExitStarted](#exitstarted)
   - [StudioModeStateChanged](#studiomodestatechanged)
+  - [VendorEvent](#vendorevent)
 - [Config](#config)
   - [CurrentSceneCollectionChanging](#currentscenecollectionchanging)
   - [CurrentSceneCollectionChanged](#currentscenecollectionchanged)
@@ -1255,6 +1256,28 @@ Studio mode has been enabled or disabled.
 | Name | Type  | Description |
 | ---- | :---: | ----------- |
 | studioModeEnabled | Boolean | True == Enabled, False == Disabled |
+
+---
+
+### VendorEvent
+
+An event has been emitted from a vendor.
+
+A vendor is a unique name registered by a third-party plugin or script, which allows for custom requests and events to be added to obs-websocket.
+If a plugin or script implements vendor requests or events, documentation is expected to be provided with them.
+
+- Complexity Rating: `3/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Data Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| vendorName | String | Name of the vendor emitting the event |
+| eventType | String | Vendor-provided event typedef |
+| eventData | Object | Vendor-provided event data. {} if event does not provide any data |
 ## Config
 
 ### CurrentSceneCollectionChanging
@@ -1370,6 +1393,7 @@ The profile list has changed.
   - [GetVersion](#getversion)
   - [GetStats](#getstats)
   - [BroadcastCustomEvent](#broadcastcustomevent)
+  - [CallVendorRequest](#callvendorrequest)
   - [GetHotkeyList](#gethotkeylist)
   - [TriggerHotkeyByName](#triggerhotkeybyname)
   - [TriggerHotkeyByKeySequence](#triggerhotkeybykeysequence)
@@ -1491,6 +1515,35 @@ Broadcasts a `CustomEvent` to all WebSocket clients. Receivers are clients which
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
 | eventData | Object | Data payload to emit to all receivers | None | N/A |
+
+---
+
+### CallVendorRequest
+
+Call a request registered to a vendor.
+
+A vendor is a unique name registered by a third-party plugin or script, which allows for custom requests and events to be added to obs-websocket.
+If a plugin or script implements vendor requests or events, documentation is expected to be provided with them.
+
+- Complexity Rating: `3/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| vendorName | String | Name of the vendor to use | None | N/A |
+| requestType | String | The request type to call | None | N/A |
+| ?requestData | Object | Object containing appropriate request data | None | {} |
+
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| responseData | Object | Object containing appropriate response data. {} if request does not provide any response data |
 
 ---
 

@@ -129,6 +129,35 @@ bool IsDebugEnabled()
 	return !_config || _config->DebugEnabled;
 }
 
+void ___source_dummy_addref(obs_source_t*) {}
+void ___weak_source_dummy_addref(obs_weak_source_t*) {}
+void ___scene_dummy_addref(obs_scene_t*) {}
+void ___sceneitem_dummy_addref(obs_sceneitem_t*) {}
+void ___data_dummy_addref(obs_data_t*) {}
+void ___data_array_dummy_addref(obs_data_array_t*) {}
+void ___output_dummy_addref(obs_output_t*) {}
+void ___data_item_dummy_addref(obs_data_item_t*) {}
+void ___data_item_release(obs_data_item_t* dataItem){ obs_data_item_release(&dataItem); }
+void ___properties_dummy_addref(obs_properties_t*) {}
+
+/**
+ * An event has been emitted from a vendor. 
+ *
+ * A vendor is a unique name registered by a third-party plugin or script, which allows for custom requests and events to be added to obs-websocket.
+ * If a plugin or script implements vendor requests or events, documentation is expected to be provided with them.
+ *
+ * @dataField vendorName | String | Name of the vendor emitting the event
+ * @dataField eventType  | String | Vendor-provided event typedef
+ * @dataField eventData  | Object | Vendor-provided event data. {} if event does not provide any data
+ *
+ * @eventSubscription ExternalPlugins
+ * @eventType VendorEvent
+ * @complexity 3
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api events
+ * @category general
+ */
 void WebSocketApiEventCallback(std::string vendorName, std::string eventType, obs_data_t *obsEventData)
 {
 	json eventData = Utils::Json::ObsDataToJson(obsEventData);
@@ -140,17 +169,6 @@ void WebSocketApiEventCallback(std::string vendorName, std::string eventType, ob
 
 	_webSocketServer->BroadcastEvent(EventSubscription::ExternalPlugins, "VendorEvent", broadcastEventData);
 }
-
-void ___source_dummy_addref(obs_source_t*) {}
-void ___weak_source_dummy_addref(obs_weak_source_t*) {}
-void ___scene_dummy_addref(obs_scene_t*) {}
-void ___sceneitem_dummy_addref(obs_sceneitem_t*) {}
-void ___data_dummy_addref(obs_data_t*) {}
-void ___data_array_dummy_addref(obs_data_array_t*) {}
-void ___output_dummy_addref(obs_output_t*) {}
-void ___data_item_dummy_addref(obs_data_item_t*) {}
-void ___data_item_release(obs_data_item_t* dataItem){ obs_data_item_release(&dataItem); }
-void ___properties_dummy_addref(obs_properties_t*) {}
 
 
 #define PLUGIN_API_TEST

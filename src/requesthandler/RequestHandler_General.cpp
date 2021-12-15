@@ -129,7 +129,7 @@ RequestResult RequestHandler::BroadcastCustomEvent(const Request& request)
  * @requestField requestType  | String | The request type to call
  * @requestField ?requestData | Object | Object containing appropriate request data | {}
  *
- * @responseField responseData | Object | Object containing appropriate response data. May be null if vendor request does not implement responses
+ * @responseField responseData | Object | Object containing appropriate response data. {} if request does not provide any response data
  *
  * @requestType CallVendorRequest
  * @complexity 3
