@@ -29,10 +29,11 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 /**
  * Gets data about the current plugin and RPC version.
  *
- * @responseField obsVersion          | String        | Current OBS Studio version
- * @responseField obsWebSocketVersion | String        | Current obs-websocket version
- * @responseField rpcVersion          | Number        | Current latest obs-websocket RPC version
- * @responseField availableRequests   | Array<String> | Array of available RPC requests for the currently negotiated RPC version
+ * @responseField obsVersion            | String        | Current OBS Studio version
+ * @responseField obsWebSocketVersion   | String        | Current obs-websocket version
+ * @responseField rpcVersion            | Number        | Current latest obs-websocket RPC version
+ * @responseField availableRequests     | Array<String> | Array of available RPC requests for the currently negotiated RPC version
+ * @responseField supportedImageFormats | Array<String> | Image formats available in `GetSourceScreenshot` and `SaveSourceScreenshot` requests.
  *
  * @requestType GetVersion
  * @complexity 1
