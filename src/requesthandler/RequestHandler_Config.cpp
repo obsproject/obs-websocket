@@ -28,7 +28,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
  * @requestField realm    | String | The data realm to select. `OBS_WEBSOCKET_DATA_REALM_GLOBAL` or `OBS_WEBSOCKET_DATA_REALM_PROFILE`
  * @requestField slotName | String | The name of the slot to retrieve data from
  *
- * @responseField slotValue | String | Value associated with the slot. `null` if not set
+ * @responseField slotValue | Any | Value associated with the slot. `null` if not set
  *
  * @requestType GetPersistentData
  * @complexity 2
@@ -407,7 +407,7 @@ RequestResult RequestHandler::SetProfileParameter(const Request& request)
 	} else {
 		return RequestResult::Error(RequestStatus::InvalidRequestFieldType, "The field `parameterValue` must be a string.");
 	}
-	
+
 	return RequestResult::Success();
 }
 
