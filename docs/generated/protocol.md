@@ -1469,6 +1469,7 @@ Gets data about the current plugin and RPC version.
 | obsWebSocketVersion | String | Current obs-websocket version |
 | rpcVersion | Number | Current latest obs-websocket RPC version |
 | availableRequests | Array&lt;String&gt; | Array of available RPC requests for the currently negotiated RPC version |
+| supportedImageFormats | Array&lt;String&gt; | Image formats available in `GetSourceScreenshot` and `SaveSourceScreenshot` requests. |
 
 ---
 

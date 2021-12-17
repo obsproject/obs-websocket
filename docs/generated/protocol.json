@@ -1081,6 +1081,11 @@
           "valueName": "availableRequests",
           "valueType": "Array<String>",
           "valueDescription": "Array of available RPC requests for the currently negotiated RPC version"
+        },
+        {
+          "valueName": "supportedImageFormats",
+          "valueType": "Array<String>",
+          "valueDescription": "Image formats available in `GetSourceScreenshot` and `SaveSourceScreenshot` requests."
         }
       ]
     },
