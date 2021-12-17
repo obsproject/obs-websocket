@@ -178,15 +178,17 @@ def get_requests(requests):
             if request['requestFields']:
                 ret += requestFieldHeader
             for requestField in request['requestFields']:
+                valueType = requestField['valueType'].replace('<', "&lt;").replace('>', "&gt;")
                 valueRestrictions = requestField['valueRestrictions'] if requestField['valueRestrictions'] else 'None'
                 valueOptional = '?' if requestField['valueOptional'] else ''
                 valueOptionalBehavior = requestField['valueOptionalBehavior'] if requestField['valueOptional'] and requestField['valueOptionalBehavior'] else 'N/A'
-                ret += '| {}{} | {} | {} | {} | {} |\n'.format(valueOptional, requestField['valueName'], requestField['valueType'], requestField['valueDescription'], valueRestrictions, valueOptionalBehavior)
+                ret += '| {}{} | {} | {} | {} | {} |\n'.format(valueOptional, requestField['valueName'], valueType, requestField['valueDescription'], valueRestrictions, valueOptionalBehavior)
 
             if request['responseFields']:
                 ret += responseFieldHeader
             for responseField in request['responseFields']:
-                ret += '| {} | {} | {} |\n'.format(responseField['valueName'], responseField['valueType'], responseField['valueDescription'])
+                valueType = responseField['valueType'].replace('<', "&lt;").replace('>', "&gt;")
+                ret += '| {} | {} | {} |\n'.format(responseField['valueName'], valueType, responseField['valueDescription'])
 
             if request != requestsOut[-1]:
                 ret += '\n---\n\n'
@@ -239,7 +241,8 @@ def get_events(events):
             if event['dataFields']:
                 ret += dataFieldHeader
             for dataField in event['dataFields']:
-                ret += '| {} | {} | {} |\n'.format(dataField['valueName'], dataField['valueType'], dataField['valueDescription'])
+                valueType = dataField['valueType'].replace('<', "&lt;").replace('>', "&gt;")
+                ret += '| {} | {} | {} |\n'.format(dataField['valueName'], valueType, dataField['valueDescription'])
 
             if event != eventsOut[-1]:
                 ret += '\n---\n\n'
