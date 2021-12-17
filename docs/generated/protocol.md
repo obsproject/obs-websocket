@@ -1674,7 +1674,7 @@ Gets the value of a "slot" from the selected persistent data realm.
 
 | Name | Type  | Description |
 | ---- | :---: | ----------- |
-| slotValue | String | Value associated with the slot. `null` if not set |
+| slotValue | Any | Value associated with the slot. `null` if not set |
 
 ---
 

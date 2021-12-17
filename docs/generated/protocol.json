@@ -640,7 +640,7 @@
       "responseFields": [
         {
           "valueName": "slotValue",
-          "valueType": "String",
+          "valueType": "Any",
           "valueDescription": "Value associated with the slot. `null` if not set"
         }
       ]
