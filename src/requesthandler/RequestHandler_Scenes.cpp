@@ -31,7 +31,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
  * @rpcVersion -1
  * @initialVersion 5.0.0
  * @api requests
- * @category sources
+ * @category scenes
  */
 RequestResult RequestHandler::GetSceneList(const Request&)
 {
@@ -64,7 +64,7 @@ RequestResult RequestHandler::GetSceneList(const Request&)
  * @rpcVersion -1
  * @initialVersion 5.0.0
  * @api requests
- * @category sources
+ * @category scenes
  */
 RequestResult RequestHandler::GetCurrentProgramScene(const Request&)
 {
@@ -85,7 +85,7 @@ RequestResult RequestHandler::GetCurrentProgramScene(const Request&)
  * @rpcVersion -1
  * @initialVersion 5.0.0
  * @api requests
- * @category sources
+ * @category scenes
  */
 RequestResult RequestHandler::SetCurrentProgramScene(const Request& request)
 {
@@ -112,7 +112,7 @@ RequestResult RequestHandler::SetCurrentProgramScene(const Request& request)
  * @rpcVersion -1
  * @initialVersion 5.0.0
  * @api requests
- * @category sources
+ * @category scenes
  */
 RequestResult RequestHandler::GetCurrentPreviewScene(const Request&)
 {
@@ -139,7 +139,7 @@ RequestResult RequestHandler::GetCurrentPreviewScene(const Request&)
  * @rpcVersion -1
  * @initialVersion 5.0.0
  * @api requests
- * @category sources
+ * @category scenes
  */
 RequestResult RequestHandler::SetCurrentPreviewScene(const Request& request)
 {
@@ -167,7 +167,7 @@ RequestResult RequestHandler::SetCurrentPreviewScene(const Request& request)
  * @rpcVersion -1
  * @initialVersion 5.0.0
  * @api requests
- * @category sources
+ * @category scenes
  */
 RequestResult RequestHandler::CreateScene(const Request& request)
 {
@@ -201,7 +201,7 @@ RequestResult RequestHandler::CreateScene(const Request& request)
  * @rpcVersion -1
  * @initialVersion 5.0.0
  * @api requests
- * @category sources
+ * @category scenes
  */
 RequestResult RequestHandler::RemoveScene(const Request& request)
 {
@@ -230,7 +230,7 @@ RequestResult RequestHandler::RemoveScene(const Request& request)
  * @rpcVersion -1
  * @initialVersion 5.0.0
  * @api requests
- * @category sources
+ * @category scenes
  */
 RequestResult RequestHandler::SetSceneName(const Request& request)
 {
