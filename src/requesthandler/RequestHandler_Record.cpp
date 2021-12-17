@@ -21,7 +21,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 RequestResult RequestHandler::GetRecordStatus(const Request&)
 {
-	OBSOutputAutoRelease recordOutput = obs_frontend_get_streaming_output();
+	OBSOutputAutoRelease recordOutput = obs_frontend_get_recording_output();
 
 	uint64_t outputDuration = Utils::Obs::NumberHelper::GetOutputDuration(recordOutput);
 
