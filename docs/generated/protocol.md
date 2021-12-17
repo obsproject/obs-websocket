@@ -1329,7 +1329,7 @@ The scene collection list has changed.
 
 | Name | Type  | Description |
 | ---- | :---: | ----------- |
-| sceneCollections | Array<String> | Updated list of scene collections |
+| sceneCollections | Array&lt;String&gt; | Updated list of scene collections |
 
 ---
 
@@ -1380,7 +1380,7 @@ The profile list has changed.
 
 | Name | Type  | Description |
 | ---- | :---: | ----------- |
-| profiles | Array<String> | Updated list of profiles |
+| profiles | Array&lt;String&gt; | Updated list of profiles |
 
 
 # Requests
@@ -1468,7 +1468,7 @@ Gets data about the current plugin and RPC version.
 | obsVersion | String | Current OBS Studio version |
 | obsWebSocketVersion | String | Current obs-websocket version |
 | rpcVersion | Number | Current latest obs-websocket RPC version |
-| availableRequests | Array<String> | Array of available RPC requests for the currently negotiated RPC version |
+| availableRequests | Array&lt;String&gt; | Array of available RPC requests for the currently negotiated RPC version |
 
 ---
 
@@ -1558,7 +1558,7 @@ Gets an array of all hotkey names in OBS
 
 | Name | Type  | Description |
 | ---- | :---: | ----------- |
-| hotkeys | Array<String> | Array of hotkey names |
+| hotkeys | Array&lt;String&gt; | Array of hotkey names |
 
 ---
 
@@ -1712,7 +1712,7 @@ Gets an array of all scene collections
 | Name | Type  | Description |
 | ---- | :---: | ----------- |
 | currentSceneCollectionName | String | The name of the current scene collection |
-| sceneCollections | Array<String> | Array of all available scene collections |
+| sceneCollections | Array&lt;String&gt; | Array of all available scene collections |
 
 ---
 
@@ -1768,7 +1768,7 @@ Gets an array of all profiles
 | Name | Type  | Description |
 | ---- | :---: | ----------- |
 | currentProfileName | String | The name of the current profile |
-| profiles | Array<String> | Array of all available profiles |
+| profiles | Array&lt;String&gt; | Array of all available profiles |
 
 ---
 
@@ -2063,7 +2063,7 @@ Gets an array of all scenes in OBS.
 
 | Name | Type  | Description |
 | ---- | :---: | ----------- |
-| scenes | Array<String> | Array of scenes in OBS |
+| scenes | Array&lt;String&gt; | Array of scenes in OBS |
 | currentProgramSceneName | String | Current program scene |
 | currentPreviewSceneName | String | Current preview scene. `null` if not in studio mode |
 
@@ -2214,7 +2214,7 @@ Gets an array of all inputs in OBS.
 
 | Name | Type  | Description |
 | ---- | :---: | ----------- |
-| inputs | Array<Object> | Array of inputs |
+| inputs | Array&lt;Object&gt; | Array of inputs |
 
 ---
 
@@ -2238,7 +2238,7 @@ Gets an array of all available input kinds in OBS.
 
 | Name | Type  | Description |
 | ---- | :---: | ----------- |
-| inputKinds | Array<String> | Array of input kinds |
+| inputKinds | Array&lt;String&gt; | Array of input kinds |
 
 ---
 
@@ -2600,7 +2600,7 @@ Note: Use this in cases where an input provides a dynamic, selectable list of it
 
 | Name | Type  | Description |
 | ---- | :---: | ----------- |
-| propertyItems | Array<Object> | Array of items in the list property |
+| propertyItems | Array&lt;Object&gt; | Array of items in the list property |
 
 ---
 
