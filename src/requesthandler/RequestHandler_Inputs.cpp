@@ -549,6 +549,7 @@ RequestResult RequestHandler::SetInputAudioSyncOffset(const Request& request)
  * Gets the audio monitor type of an input.
  *
  * The available audio monitor types are:
+ *
  * - `OBS_MONITORING_TYPE_NONE`
  * - `OBS_MONITORING_TYPE_MONITOR_ONLY`
  * - `OBS_MONITORING_TYPE_MONITOR_AND_OUTPUT`

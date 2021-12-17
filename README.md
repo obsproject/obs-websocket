@@ -1,3 +1,5 @@
+<!-- markdownlint-disable no-inline-html -->
+
 # obs-websocket
 
 <p align="center">
@@ -27,11 +29,13 @@ It is **highly recommended** to protect obs-websocket with a password against un
 - Automate scene switching with a third-party program (e.g. : auto-pilot, foot pedal, ...)
 
 ### Client software
+
 - (No known clients supporting 5.0.0 at the moment. Send a message in Discord if you have one!)
 
 ### Client libraries (for developers)
 
 Here's a list of available language APIs for obs-websocket:
+
 - Python 3.7+ (Asyncio): [simpleobsws](https://github.com/IRLToolkit/simpleobsws/tree/master) by IRLToolkit
 - Rust: [obws](https://github.com/dnaka91/obws/tree/v5-api) by dnaka91
 

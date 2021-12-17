@@ -1,3 +1,3 @@
 # Events
 
-### Events Table of Contents
+## Events Table of Contents

@@ -29,7 +29,6 @@ categoryOrder = [
 ]
 
 requestFieldHeader = """
-
 **Request Fields:**
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
@@ -37,7 +36,6 @@ requestFieldHeader = """
 """
 
 responseFieldHeader = """
-
 **Response Fields:**
 
 | Name | Type  | Description |
@@ -45,7 +43,6 @@ responseFieldHeader = """
 """
 
 dataFieldHeader = """
-
 **Data Fields:**
 
 | Name | Type  | Description |
@@ -129,6 +126,8 @@ def get_enums(enums):
                 ret += '- Added in v{}\n'.format(enumIdentifier['initialVersion'])
             if enumIdentifier != enum['enumIdentifiers'][-1]:
                 ret += '\n---\n\n'
+            else:
+                ret += '\n'
     return ret
 
 def get_requests_toc(requests):
@@ -142,7 +141,7 @@ def get_requests_toc(requests):
         if not len(requestsOut):
             continue
         categoryFragment = get_fragment(category, False)
-        ret += '- [{}](#{})\n'.format(category, categoryFragment)
+        ret += '- [{} requests](#{}-requests)\n'.format(category, categoryFragment)
         for request in requestsOut:
             requestType = request['requestType']
             requestTypeFragment = get_fragment(requestType, False)
@@ -160,7 +159,7 @@ def get_requests(requests):
         if not len(requestsOut):
             continue
         categoryFragment = get_fragment(category)
-        ret += '\n\n## {}\n\n'.format(category)
+        ret += '## {} requests\n\n'.format(category)
         for request in requestsOut:
             requestType = request['requestType']
             requestTypeFragment = get_fragment(requestType)
@@ -192,6 +191,8 @@ def get_requests(requests):
 
             if request != requestsOut[-1]:
                 ret += '\n---\n\n'
+            else:
+                ret += '\n'
     return ret
 
 def get_events_toc(events):
@@ -205,7 +206,7 @@ def get_events_toc(events):
         if not len(eventsOut):
             continue
         categoryFragment = get_fragment(category, False)
-        ret += '- [{}](#{})\n'.format(category, categoryFragment)
+        ret += '- [{} events](#{}-events)\n'.format(category, categoryFragment)
         for event in eventsOut:
             eventType = event['eventType']
             eventTypeFragment = get_fragment(eventType, False)
@@ -223,7 +224,7 @@ def get_events(events):
         if not len(eventsOut):
             continue
         categoryFragment = get_fragment(category)
-        ret += '## {}\n\n'.format(category)
+        ret += '## {} events\n\n'.format(category)
         for event in eventsOut:
             eventType = event['eventType']
             eventTypeFragment = get_fragment(eventType)
@@ -246,6 +247,8 @@ def get_events(events):
 
             if event != eventsOut[-1]:
                 ret += '\n---\n\n'
+            else:
+                ret += '\n'
     return ret
 
 # Actual code
@@ -263,40 +266,41 @@ except IOError:
 with open('../generated/protocol.json', 'r') as f:
     protocol = json.load(f)
 
-output = "<!-- This file was automatically generated. Do not edit directly! -->\n\n"
+output = "<!-- This file was automatically generated. Do not edit directly! -->\n"
+output += "<!-- markdownlint-disable no-bare-urls -->\n"
 
 # Insert introduction partial
 output += read_file('partials/introduction.md')
 logging.info('Inserted introduction section.')
 
-output += '\n\n'
+output += '\n'
 
 # Generate enums MD
 output += read_file('partials/enumsHeader.md')
+output += '\n'
 output += get_enums_toc(protocol['enums'])
-output += '\n\n'
+output += '\n'
 output += get_enums(protocol['enums'])
 logging.info('Inserted enums section.')
 
-output += '\n\n'
-
 # Generate events MD
 output += read_file('partials/eventsHeader.md')
+output += '\n'
 output += get_events_toc(protocol['events'])
-output += '\n\n'
+output += '\n'
 output += get_events(protocol['events'])
 logging.info('Inserted events section.')
 
-output += '\n\n'
-
 # Generate requests MD
 output += read_file('partials/requestsHeader.md')
+output += '\n'
 output += get_requests_toc(protocol['requests'])
-output += '\n\n'
+output += '\n'
 output += get_requests(protocol['requests'])
 logging.info('Inserted requests section.')
 
-output += '\n\n'
+if output.endswith('\n\n'):
+    output = output[:-1]
 
 # Write new protocol MD
 with open('../generated/protocol.md', 'w') as f:
