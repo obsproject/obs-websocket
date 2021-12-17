@@ -27,7 +27,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <thread>
 #include <obs.hpp>
 
-#include "../obs-websocket.h"
+#include "Obs.h"
 #include "Json.h"
 
 namespace Utils {
