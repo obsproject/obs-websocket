@@ -1952,7 +1952,7 @@
       "responseFields": [
         {
           "valueName": "scenes",
-          "valueType": "Array<String>",
+          "valueType": "Array<Object>",
           "valueDescription": "Array of scenes in OBS"
         },
         {

@@ -2064,7 +2064,7 @@ Gets an array of all scenes in OBS.
 
 | Name | Type  | Description |
 | ---- | :---: | ----------- |
-| scenes | Array&lt;String&gt; | Array of scenes in OBS |
+| scenes | Array&lt;Object&gt; | Array of scenes in OBS |
 | currentProgramSceneName | String | Current program scene |
 | currentPreviewSceneName | String | Current preview scene. `null` if not in studio mode |
 
