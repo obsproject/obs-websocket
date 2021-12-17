@@ -1414,6 +1414,10 @@ The profile list has changed.
   - [GetStreamServiceSettings](#getstreamservicesettings)
   - [SetStreamServiceSettings](#setstreamservicesettings)
 - [Sources](#sources)
+  - [GetSourceActive](#getsourceactive)
+  - [GetSourceScreenshot](#getsourcescreenshot)
+  - [SaveSourceScreenshot](#savesourcescreenshot)
+- [Scenes](#scenes)
   - [GetSceneList](#getscenelist)
   - [GetCurrentProgramScene](#getcurrentprogramscene)
   - [SetCurrentProgramScene](#setcurrentprogramscene)
@@ -1422,9 +1426,6 @@ The profile list has changed.
   - [CreateScene](#createscene)
   - [RemoveScene](#removescene)
   - [SetSceneName](#setscenename)
-  - [GetSourceActive](#getsourceactive)
-  - [GetSourceScreenshot](#getsourcescreenshot)
-  - [SaveSourceScreenshot](#savesourcescreenshot)
 - [Inputs](#inputs)
   - [GetInputList](#getinputlist)
   - [GetInputKindList](#getinputkindlist)
@@ -1954,6 +1955,101 @@ Note: Simple RTMP settings can be set with type `rtmp_custom` and the settings f
 
 ## Sources
 
+### GetSourceActive
+
+Gets the active and show state of a source.
+
+**Compatible with inputs and scenes.**
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| sourceName | String | Name of the source to get the active state of | None | N/A |
+
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| videoActive | Boolean | Whether the source is showing in Program |
+| videoShowing | Boolean | Whether the source is showing in the UI (Preview, Projector, Properties) |
+
+---
+
+### GetSourceScreenshot
+
+Gets a Base64-encoded screenshot of a source.
+
+The `imageWidth` and `imageHeight` parameters are treated as "scale to inner", meaning the smallest ratio will be used and the aspect ratio of the original resolution is kept.
+If `imageWidth` and `imageHeight` are not specified, the compressed image will use the full resolution of the source.
+
+**Compatible with inputs and scenes.**
+
+- Complexity Rating: `4/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| sourceName | String | Name of the source to take a screenshot of | None | N/A |
+| imageFormat | String | Image compression format to use. Use `GetVersion` to get compatible image formats | None | N/A |
+| ?imageWidth | Number | Width to scale the screenshot to | >= 8, <= 4096 | Source value is used |
+| ?imageHeight | Number | Height to scale the screenshot to | >= 8, <= 4096 | Source value is used |
+| ?imageCompressionQuality | Number | Compression quality to use. 0 for high compression, 100 for uncompressed. -1 to use "default" (whatever that means, idk) | >= -1, <= 100 | -1 |
+
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| imageData | String | Base64-encoded screenshot |
+
+---
+
+### SaveSourceScreenshot
+
+Saves a screenshot of a source to the filesystem.
+
+The `imageWidth` and `imageHeight` parameters are treated as "scale to inner", meaning the smallest ratio will be used and the aspect ratio of the original resolution is kept.
+If `imageWidth` and `imageHeight` are not specified, the compressed image will use the full resolution of the source.
+
+**Compatible with inputs and scenes.**
+
+- Complexity Rating: `3/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| sourceName | String | Name of the source to take a screenshot of | None | N/A |
+| imageFormat | String | Image compression format to use. Use `GetVersion` to get compatible image formats | None | N/A |
+| imageFilePath | String | Path to save the screenshot file to. Eg. `C:\Users\user\Desktop\screenshot.png` | None | N/A |
+| ?imageWidth | Number | Width to scale the screenshot to | >= 8, <= 4096 | Source value is used |
+| ?imageHeight | Number | Height to scale the screenshot to | >= 8, <= 4096 | Source value is used |
+| ?imageCompressionQuality | Number | Compression quality to use. 0 for high compression, 100 for uncompressed. -1 to use "default" (whatever that means, idk) | >= -1, <= 100 | -1 |
+
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| imageData | String | Base64-encoded screenshot |
+
+
+## Scenes
+
 ### GetSceneList
 
 Gets an array of all scenes in OBS.
@@ -2094,100 +2190,6 @@ Sets the name of a scene (rename).
 | ---- | :---: | ----------- | :----------------: | ----------------- |
 | sceneName | String | Name of the scene to be renamed | None | N/A |
 | newSceneName | String | New name for the scene | None | N/A |
-
----
-
-### GetSourceActive
-
-Gets the active and show state of a source.
-
-**Compatible with inputs and scenes.**
-
-- Complexity Rating: `2/5`
-- Latest Supported RPC Version: `1`
-- Added in v5.0.0
-
-
-**Request Fields:**
-
-| Name | Type  | Description | Value Restrictions | ?Default Behavior |
-| ---- | :---: | ----------- | :----------------: | ----------------- |
-| sourceName | String | Name of the source to get the active state of | None | N/A |
-
-
-**Response Fields:**
-
-| Name | Type  | Description |
-| ---- | :---: | ----------- |
-| videoActive | Boolean | Whether the source is showing in Program |
-| videoShowing | Boolean | Whether the source is showing in the UI (Preview, Projector, Properties) |
-
----
-
-### GetSourceScreenshot
-
-Gets a Base64-encoded screenshot of a source.
-
-The `imageWidth` and `imageHeight` parameters are treated as "scale to inner", meaning the smallest ratio will be used and the aspect ratio of the original resolution is kept.
-If `imageWidth` and `imageHeight` are not specified, the compressed image will use the full resolution of the source.
-
-**Compatible with inputs and scenes.**
-
-- Complexity Rating: `4/5`
-- Latest Supported RPC Version: `1`
-- Added in v5.0.0
-
-
-**Request Fields:**
-
-| Name | Type  | Description | Value Restrictions | ?Default Behavior |
-| ---- | :---: | ----------- | :----------------: | ----------------- |
-| sourceName | String | Name of the source to take a screenshot of | None | N/A |
-| imageFormat | String | Image compression format to use. Use `GetVersion` to get compatible image formats | None | N/A |
-| ?imageWidth | Number | Width to scale the screenshot to | >= 8, <= 4096 | Source value is used |
-| ?imageHeight | Number | Height to scale the screenshot to | >= 8, <= 4096 | Source value is used |
-| ?imageCompressionQuality | Number | Compression quality to use. 0 for high compression, 100 for uncompressed. -1 to use "default" (whatever that means, idk) | >= -1, <= 100 | -1 |
-
-
-**Response Fields:**
-
-| Name | Type  | Description |
-| ---- | :---: | ----------- |
-| imageData | String | Base64-encoded screenshot |
-
----
-
-### SaveSourceScreenshot
-
-Saves a screenshot of a source to the filesystem.
-
-The `imageWidth` and `imageHeight` parameters are treated as "scale to inner", meaning the smallest ratio will be used and the aspect ratio of the original resolution is kept.
-If `imageWidth` and `imageHeight` are not specified, the compressed image will use the full resolution of the source.
-
-**Compatible with inputs and scenes.**
-
-- Complexity Rating: `3/5`
-- Latest Supported RPC Version: `1`
-- Added in v5.0.0
-
-
-**Request Fields:**
-
-| Name | Type  | Description | Value Restrictions | ?Default Behavior |
-| ---- | :---: | ----------- | :----------------: | ----------------- |
-| sourceName | String | Name of the source to take a screenshot of | None | N/A |
-| imageFormat | String | Image compression format to use. Use `GetVersion` to get compatible image formats | None | N/A |
-| imageFilePath | String | Path to save the screenshot file to. Eg. `C:\Users\user\Desktop\screenshot.png` | None | N/A |
-| ?imageWidth | Number | Width to scale the screenshot to | >= 8, <= 4096 | Source value is used |
-| ?imageHeight | Number | Height to scale the screenshot to | >= 8, <= 4096 | Source value is used |
-| ?imageCompressionQuality | Number | Compression quality to use. 0 for high compression, 100 for uncompressed. -1 to use "default" (whatever that means, idk) | >= -1, <= 100 | -1 |
-
-
-**Response Fields:**
-
-| Name | Type  | Description |
-| ---- | :---: | ----------- |
-| imageData | String | Base64-encoded screenshot |
 
 
 ## Inputs

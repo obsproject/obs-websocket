@@ -1942,7 +1942,7 @@
       "rpcVersion": "1",
       "deprecated": false,
       "initialVersion": "5.0.0",
-      "category": "sources",
+      "category": "scenes",
       "requestFields": [],
       "responseFields": [
         {
@@ -1969,7 +1969,7 @@
       "rpcVersion": "1",
       "deprecated": false,
       "initialVersion": "5.0.0",
-      "category": "sources",
+      "category": "scenes",
       "requestFields": [],
       "responseFields": [
         {
@@ -1986,7 +1986,7 @@
       "rpcVersion": "1",
       "deprecated": false,
       "initialVersion": "5.0.0",
-      "category": "sources",
+      "category": "scenes",
       "requestFields": [
         {
           "valueName": "sceneName",
@@ -2006,7 +2006,7 @@
       "rpcVersion": "1",
       "deprecated": false,
       "initialVersion": "5.0.0",
-      "category": "sources",
+      "category": "scenes",
       "requestFields": [],
       "responseFields": [
         {
@@ -2023,7 +2023,7 @@
       "rpcVersion": "1",
       "deprecated": false,
       "initialVersion": "5.0.0",
-      "category": "sources",
+      "category": "scenes",
       "requestFields": [
         {
           "valueName": "sceneName",
@@ -2043,7 +2043,7 @@
       "rpcVersion": "1",
       "deprecated": false,
       "initialVersion": "5.0.0",
-      "category": "sources",
+      "category": "scenes",
       "requestFields": [
         {
           "valueName": "sceneName",
@@ -2063,7 +2063,7 @@
       "rpcVersion": "1",
       "deprecated": false,
       "initialVersion": "5.0.0",
-      "category": "sources",
+      "category": "scenes",
       "requestFields": [
         {
           "valueName": "sceneName",
@@ -2083,7 +2083,7 @@
       "rpcVersion": "1",
       "deprecated": false,
       "initialVersion": "5.0.0",
-      "category": "sources",
+      "category": "scenes",
       "requestFields": [
         {
           "valueName": "sceneName",
