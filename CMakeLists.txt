@@ -123,6 +123,13 @@ set(obs-websocket_SOURCES
 	src/utils/Crypto.cpp
 	src/utils/Json.cpp
 	src/utils/Obs.cpp
+	src/utils/Obs_StringHelper.cpp
+	src/utils/Obs_EnumHelper.cpp
+	src/utils/Obs_NumberHelper.cpp
+	src/utils/Obs_ListHelper.cpp
+	src/utils/Obs_DataHelper.cpp
+	src/utils/Obs_SearchHelper.cpp
+	src/utils/Obs_ActionHelper.cpp
 	src/utils/ObsVolumeMeter.cpp
 	src/utils/Platform.cpp
 	src/utils/Compat.cpp

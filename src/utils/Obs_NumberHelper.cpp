@@ -17,5 +17,38 @@ You should have received a copy of the GNU General Public License along
 with this program. If not, see <https://www.gnu.org/licenses/>
 */
 
+#include <stdint.h>
+#include <util/util_uint64.h>
+
 #include "Obs.h"
 #include "../plugin-macros.generated.h"
+
+uint64_t Utils::Obs::NumberHelper::GetOutputDuration(obs_output_t *output)
+{
+	if (!output || !obs_output_active(output))
+		return 0;
+
+	video_t* video = obs_output_video(output);
+	uint64_t frameTimeNs = video_output_get_frame_time(video);
+	int totalFrames = obs_output_get_total_frames(output);
+
+	return util_mul_div64(totalFrames, frameTimeNs, 1000000ULL);
+}
+
+size_t Utils::Obs::NumberHelper::GetSceneCount()
+{
+	size_t ret;
+	auto sceneEnumProc = [](void *param, obs_source_t *scene) {
+		auto ret = reinterpret_cast<size_t*>(param);
+
+		if (obs_source_is_group(scene))
+			return true;
+
+		(*ret)++;
+		return true;
+	};
+
+	obs_enum_scenes(sceneEnumProc, &ret);
+
+	return ret;
+}
