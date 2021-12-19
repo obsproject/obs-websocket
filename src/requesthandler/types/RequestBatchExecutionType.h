@@ -77,7 +77,7 @@ namespace RequestBatchExecutionType {
 		Parallel = 2,
 	};
 
-	inline bool IsValid(uint8_t executionType)
+	inline bool IsValid(int executionType)
 	{
 		return executionType >= None && executionType <= Parallel;
 	}
