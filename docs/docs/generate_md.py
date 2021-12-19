@@ -141,7 +141,7 @@ def get_requests_toc(requests):
         if not len(requestsOut):
             continue
         categoryFragment = get_fragment(category, False)
-        ret += '- [{} requests](#{}-requests)\n'.format(category, categoryFragment)
+        ret += '- [{} Requests](#{}-requests)\n'.format(category, categoryFragment)
         for request in requestsOut:
             requestType = request['requestType']
             requestTypeFragment = get_fragment(requestType, False)
@@ -159,7 +159,7 @@ def get_requests(requests):
         if not len(requestsOut):
             continue
         categoryFragment = get_fragment(category)
-        ret += '## {} requests\n\n'.format(category)
+        ret += '## {} Requests\n\n'.format(category)
         for request in requestsOut:
             requestType = request['requestType']
             requestTypeFragment = get_fragment(requestType)
@@ -206,7 +206,7 @@ def get_events_toc(events):
         if not len(eventsOut):
             continue
         categoryFragment = get_fragment(category, False)
-        ret += '- [{} events](#{}-events)\n'.format(category, categoryFragment)
+        ret += '- [{} Events](#{}-events)\n'.format(category, categoryFragment)
         for event in eventsOut:
             eventType = event['eventType']
             eventTypeFragment = get_fragment(eventType, False)
@@ -224,7 +224,7 @@ def get_events(events):
         if not len(eventsOut):
             continue
         categoryFragment = get_fragment(category)
-        ret += '## {} events\n\n'.format(category)
+        ret += '## {} Events\n\n'.format(category)
         for event in eventsOut:
             eventType = event['eventType']
             eventTypeFragment = get_fragment(eventType)
