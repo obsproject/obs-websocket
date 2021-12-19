@@ -2374,6 +2374,7 @@ Sets the settings of an input.
 | ---- | :---: | ----------- | :----------------: | ----------------- |
 | inputName | String | Name of the input to set the settings of | None | N/A |
 | inputSettings | Object | Object of settings to apply | None | N/A |
+| ?overlay | Boolean | True == apply the settings on top of existing ones, False == reset the input to its defaults, then apply settings. | None | true |
 
 ---
 

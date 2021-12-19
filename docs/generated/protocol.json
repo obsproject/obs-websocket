@@ -1619,6 +1619,14 @@
           "valueRestrictions": null,
           "valueOptional": false,
           "valueOptionalBehavior": null
+        },
+        {
+          "valueName": "overlay",
+          "valueType": "Boolean",
+          "valueDescription": "True == apply the settings on top of existing ones, False == reset the input to its defaults, then apply settings.",
+          "valueRestrictions": null,
+          "valueOptional": true,
+          "valueOptionalBehavior": "true"
         }
       ],
       "responseFields": []
