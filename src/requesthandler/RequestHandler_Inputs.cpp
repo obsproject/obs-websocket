@@ -47,7 +47,7 @@ RequestResult RequestHandler::GetInputList(const Request& request)
 	}
 
 	json responseData;
-	responseData["inputs"] = Utils::Obs::ListHelper::GetInputList(inputKind);
+	responseData["inputs"] = Utils::Obs::ArrayHelper::GetInputList(inputKind);
 	return RequestResult::Success(responseData);
 }
 
@@ -79,7 +79,7 @@ RequestResult RequestHandler::GetInputKindList(const Request& request)
 	}
 
 	json responseData;
-	responseData["inputKinds"] = Utils::Obs::ListHelper::GetInputKindList(unversioned);
+	responseData["inputKinds"] = Utils::Obs::ArrayHelper::GetInputKindList(unversioned);
 	return RequestResult::Success(responseData);
 }
 
@@ -115,7 +115,7 @@ RequestResult RequestHandler::CreateInput(const Request& request)
 		return RequestResult::Error(RequestStatus::ResourceAlreadyExists, "A source already exists by that input name.");
 
 	std::string inputKind = request.RequestData["inputKind"];
-	auto kinds = Utils::Obs::ListHelper::GetInputKindList();
+	auto kinds = Utils::Obs::ArrayHelper::GetInputKindList();
 	if (std::find(kinds.begin(), kinds.end(), inputKind) == kinds.end())
 		return RequestResult::Error(RequestStatus::InvalidInputKind, "Your specified input kind is not supported by OBS. Check that your specified kind is properly versioned and that any necessary plugins are loaded.");
 

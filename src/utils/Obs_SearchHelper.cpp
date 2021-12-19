@@ -24,7 +24,7 @@ obs_hotkey_t *Utils::Obs::SearchHelper::GetHotkeyByName(std::string name)
 	if (name.empty())
 		return nullptr;
 
-	auto hotkeys = ListHelper::GetHotkeyList();
+	auto hotkeys = ArrayHelper::GetHotkeyList();
 
 	for (auto hotkey : hotkeys) {
 		if (obs_hotkey_get_name(hotkey) == name)

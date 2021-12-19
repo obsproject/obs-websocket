@@ -44,7 +44,7 @@ RequestResult RequestHandler::GetSceneItemList(const Request& request)
 		return RequestResult::Error(statusCode, comment);
 
 	json responseData;
-	responseData["sceneItems"] = Utils::Obs::ListHelper::GetSceneItemList(obs_scene_from_source(scene));
+	responseData["sceneItems"] = Utils::Obs::ArrayHelper::GetSceneItemList(obs_scene_from_source(scene));
 
 	return RequestResult::Success(responseData);
 }
@@ -76,7 +76,7 @@ RequestResult RequestHandler::GetGroupSceneItemList(const Request& request)
 		return RequestResult::Error(statusCode, comment);
 
 	json responseData;
-	responseData["sceneItems"] = Utils::Obs::ListHelper::GetSceneItemList(obs_group_from_source(scene));
+	responseData["sceneItems"] = Utils::Obs::ArrayHelper::GetSceneItemList(obs_group_from_source(scene));
 
 	return RequestResult::Success(responseData);
 }

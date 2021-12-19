@@ -195,7 +195,7 @@ RequestResult RequestHandler::CallVendorRequest(const Request& request)
 RequestResult RequestHandler::GetHotkeyList(const Request&)
 {
 	json responseData;
-	responseData["hotkeys"] = Utils::Obs::ListHelper::GetHotkeyNameList();
+	responseData["hotkeys"] = Utils::Obs::ArrayHelper::GetHotkeyNameList();
 	return RequestResult::Success(responseData);
 }
 

@@ -80,7 +80,7 @@ void EventHandler::HandleCurrentSceneCollectionChanged()
 void EventHandler::HandleSceneCollectionListChanged()
 {
 	json eventData;
-	eventData["sceneCollections"] = Utils::Obs::ListHelper::GetSceneCollectionList();
+	eventData["sceneCollections"] = Utils::Obs::ArrayHelper::GetSceneCollectionList();
 	BroadcastEvent(EventSubscription::Config, "SceneCollectionListChanged", eventData);
 }
 
@@ -140,6 +140,6 @@ void EventHandler::HandleCurrentProfileChanged()
 void EventHandler::HandleProfileListChanged()
 {
 	json eventData;
-	eventData["profiles"] = Utils::Obs::ListHelper::GetProfileList();
+	eventData["profiles"] = Utils::Obs::ArrayHelper::GetProfileList();
 	BroadcastEvent(EventSubscription::Config, "ProfileListChanged", eventData);
 }

@@ -70,7 +70,7 @@ void EventHandler::HandleSceneItemListReindexed(void *param, calldata_t *data)
 
 	json eventData;
 	eventData["sceneName"] = obs_source_get_name(obs_scene_get_source(scene));
-	eventData["sceneItems"] = Utils::Obs::ListHelper::GetSceneItemList(scene, true);
+	eventData["sceneItems"] = Utils::Obs::ArrayHelper::GetSceneItemList(scene, true);
 	eventHandler->BroadcastEvent(EventSubscription::SceneItems, "SceneItemListReindexed", eventData);
 }
 

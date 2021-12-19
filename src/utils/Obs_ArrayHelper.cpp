@@ -40,7 +40,7 @@ static std::vector<std::string> ConvertStringArray(char **array)
 	return ret;
 }
 
-std::vector<std::string> Utils::Obs::ListHelper::GetSceneCollectionList()
+std::vector<std::string> Utils::Obs::ArrayHelper::GetSceneCollectionList()
 {
 	char** sceneCollections = obs_frontend_get_scene_collections();
 	auto ret = ConvertStringArray(sceneCollections);
@@ -48,7 +48,7 @@ std::vector<std::string> Utils::Obs::ListHelper::GetSceneCollectionList()
 	return ret;
 }
 
-std::vector<std::string> Utils::Obs::ListHelper::GetProfileList()
+std::vector<std::string> Utils::Obs::ArrayHelper::GetProfileList()
 {
 	char** profiles = obs_frontend_get_profiles();
 	auto ret = ConvertStringArray(profiles);
@@ -56,7 +56,7 @@ std::vector<std::string> Utils::Obs::ListHelper::GetProfileList()
 	return ret;
 }
 
-std::vector<obs_hotkey_t *> Utils::Obs::ListHelper::GetHotkeyList()
+std::vector<obs_hotkey_t *> Utils::Obs::ArrayHelper::GetHotkeyList()
 {
 	std::vector<obs_hotkey_t *> ret;
 
@@ -71,7 +71,7 @@ std::vector<obs_hotkey_t *> Utils::Obs::ListHelper::GetHotkeyList()
 	return ret;
 }
 
-std::vector<std::string> Utils::Obs::ListHelper::GetHotkeyNameList()
+std::vector<std::string> Utils::Obs::ArrayHelper::GetHotkeyNameList()
 {
 	auto hotkeys = GetHotkeyList();
 
@@ -82,7 +82,7 @@ std::vector<std::string> Utils::Obs::ListHelper::GetHotkeyNameList()
 	return ret;
 }
 
-std::vector<json> Utils::Obs::ListHelper::GetSceneList()
+std::vector<json> Utils::Obs::ArrayHelper::GetSceneList()
 {
 	obs_frontend_source_list sceneList = {};
 	obs_frontend_get_scenes(&sceneList);
@@ -109,7 +109,7 @@ std::vector<json> Utils::Obs::ListHelper::GetSceneList()
 	return ret;
 }
 
-std::vector<json> Utils::Obs::ListHelper::GetSceneItemList(obs_scene_t *scene, bool basic)
+std::vector<json> Utils::Obs::ArrayHelper::GetSceneItemList(obs_scene_t *scene, bool basic)
 {
 	std::pair<std::vector<json>, bool> enumData;
 	enumData.second = basic;
@@ -143,7 +143,7 @@ std::vector<json> Utils::Obs::ListHelper::GetSceneItemList(obs_scene_t *scene, b
 	return enumData.first;
 }
 
-std::vector<json> Utils::Obs::ListHelper::GetTransitionList()
+std::vector<json> Utils::Obs::ArrayHelper::GetTransitionList()
 {
 	obs_frontend_source_list transitionList = {};
 	obs_frontend_get_transitions(&transitionList);
@@ -168,7 +168,7 @@ struct EnumInputInfo {
 	std::vector<json> inputs;
 };
 
-std::vector<json> Utils::Obs::ListHelper::GetInputList(std::string inputKind)
+std::vector<json> Utils::Obs::ArrayHelper::GetInputList(std::string inputKind)
 {
 	EnumInputInfo inputInfo;
 	inputInfo.inputKind = inputKind;
@@ -199,7 +199,7 @@ std::vector<json> Utils::Obs::ListHelper::GetInputList(std::string inputKind)
 	return inputInfo.inputs;
 }
 
-std::vector<std::string> Utils::Obs::ListHelper::GetInputKindList(bool unversioned, bool includeDisabled)
+std::vector<std::string> Utils::Obs::ArrayHelper::GetInputKindList(bool unversioned, bool includeDisabled)
 {
 	std::vector<std::string> ret;
 

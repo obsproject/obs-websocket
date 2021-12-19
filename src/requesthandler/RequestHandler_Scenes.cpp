@@ -49,7 +49,7 @@ RequestResult RequestHandler::GetSceneList(const Request&)
 	else
 		responseData["currentPreviewSceneName"] = nullptr;
 
-	responseData["scenes"] = Utils::Obs::ListHelper::GetSceneList();
+	responseData["scenes"] = Utils::Obs::ArrayHelper::GetSceneList();
 
 	return RequestResult::Success(responseData);
 }

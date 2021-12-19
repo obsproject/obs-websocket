@@ -68,6 +68,6 @@ void EventHandler::HandleCurrentPreviewSceneChanged()
 void EventHandler::HandleSceneListChanged()
 {
 	json eventData;
-	eventData["scenes"] = Utils::Obs::ListHelper::GetSceneList();
+	eventData["scenes"] = Utils::Obs::ArrayHelper::GetSceneList();
 	BroadcastEvent(EventSubscription::Scenes, "SceneListChanged", eventData);
 }

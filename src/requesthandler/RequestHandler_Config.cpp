@@ -124,7 +124,7 @@ RequestResult RequestHandler::GetSceneCollectionList(const Request&)
 {
 	json responseData;
 	responseData["currentSceneCollectionName"] = Utils::Obs::StringHelper::GetCurrentSceneCollection();
-	responseData["sceneCollections"] = Utils::Obs::ListHelper::GetSceneCollectionList();
+	responseData["sceneCollections"] = Utils::Obs::ArrayHelper::GetSceneCollectionList();
 	return RequestResult::Success(responseData);
 }
 
@@ -151,7 +151,7 @@ RequestResult RequestHandler::SetCurrentSceneCollection(const Request& request)
 
 	std::string sceneCollectionName = request.RequestData["sceneCollectionName"];
 
-	auto sceneCollections = Utils::Obs::ListHelper::GetSceneCollectionList();
+	auto sceneCollections = Utils::Obs::ArrayHelper::GetSceneCollectionList();
 	if (std::find(sceneCollections.begin(), sceneCollections.end(), sceneCollectionName) == sceneCollections.end())
 		return RequestResult::Error(RequestStatus::ResourceNotFound);
 
@@ -189,7 +189,7 @@ RequestResult RequestHandler::CreateSceneCollection(const Request& request)
 
 	std::string sceneCollectionName = request.RequestData["sceneCollectionName"];
 
-	auto sceneCollections = Utils::Obs::ListHelper::GetSceneCollectionList();
+	auto sceneCollections = Utils::Obs::ArrayHelper::GetSceneCollectionList();
 	if (std::find(sceneCollections.begin(), sceneCollections.end(), sceneCollectionName) != sceneCollections.end())
 		return RequestResult::Error(RequestStatus::ResourceAlreadyExists);
 
@@ -219,7 +219,7 @@ RequestResult RequestHandler::GetProfileList(const Request&)
 {
 	json responseData;
 	responseData["currentProfileName"] = Utils::Obs::StringHelper::GetCurrentProfile();
-	responseData["profiles"] = Utils::Obs::ListHelper::GetProfileList();
+	responseData["profiles"] = Utils::Obs::ArrayHelper::GetProfileList();
 	return RequestResult::Success(responseData);
 }
 
@@ -244,7 +244,7 @@ RequestResult RequestHandler::SetCurrentProfile(const Request& request)
 
 	std::string profileName = request.RequestData["profileName"];
 
-	auto profiles = Utils::Obs::ListHelper::GetProfileList();
+	auto profiles = Utils::Obs::ArrayHelper::GetProfileList();
 	if (std::find(profiles.begin(), profiles.end(), profileName) == profiles.end())
 		return RequestResult::Error(RequestStatus::ResourceNotFound);
 
@@ -280,7 +280,7 @@ RequestResult RequestHandler::CreateProfile(const Request& request)
 
 	std::string profileName = request.RequestData["profileName"];
 
-	auto profiles = Utils::Obs::ListHelper::GetProfileList();
+	auto profiles = Utils::Obs::ArrayHelper::GetProfileList();
 	if (std::find(profiles.begin(), profiles.end(), profileName) != profiles.end())
 		return RequestResult::Error(RequestStatus::ResourceAlreadyExists);
 
@@ -311,7 +311,7 @@ RequestResult RequestHandler::RemoveProfile(const Request& request)
 
 	std::string profileName = request.RequestData["profileName"];
 
-	auto profiles = Utils::Obs::ListHelper::GetProfileList();
+	auto profiles = Utils::Obs::ArrayHelper::GetProfileList();
 	if (std::find(profiles.begin(), profiles.end(), profileName) == profiles.end())
 		return RequestResult::Error(RequestStatus::ResourceNotFound);
 

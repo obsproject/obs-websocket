@@ -111,7 +111,7 @@ namespace Utils {
 			size_t GetSceneCount();
 		}
 
-		namespace ListHelper {
+		namespace ArrayHelper {
 			std::vector<std::string> GetSceneCollectionList();
 			std::vector<std::string> GetProfileList();
 			std::vector<obs_hotkey_t *> GetHotkeyList();
