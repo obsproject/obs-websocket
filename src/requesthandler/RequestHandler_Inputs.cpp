@@ -278,8 +278,10 @@ RequestResult RequestHandler::GetInputSettings(const Request& request)
 /**
  * Sets the settings of an input.
  *
- * @requestField inputName     | String | Name of the input to set the settings of
- * @requestField inputSettings | Object | Object of settings to apply
+ * @requestField inputName     | String  | Name of the input to set the settings of
+ * @requestField inputSettings | Object  | Object of settings to apply
+ * @requestField ?overlay	   | Boolean | True == apply the settings on top of existing ones,
+ * 										   False == reset the input to its defaults, then apply settings. | true
  *
  * @requestType SetInputSettings
  * @complexity 3
