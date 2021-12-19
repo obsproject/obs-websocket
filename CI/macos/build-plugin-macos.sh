@@ -17,6 +17,7 @@ fi
 echo "[obs-websocket] Building 'obs-websocket' for macOS."
 mkdir -p build && cd build
 cmake .. \
+ 	-DCMAKE_OSX_DEPLOYMENT_TARGET=10.13 \
 	-DQTDIR=/tmp/obsdeps \
 	-DLIBOBS_INCLUDE_DIR=../../obs-studio/libobs \
 	-DLIBOBS_LIB=../../obs-studio/libobs \
