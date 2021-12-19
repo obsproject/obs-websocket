@@ -22,9 +22,9 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 /**
  * Gets an array of all scenes in OBS.
  *
- * @responseField scenes                  | Array<Object> | Array of scenes in OBS
  * @responseField currentProgramSceneName | String        | Current program scene
  * @responseField currentPreviewSceneName | String        | Current preview scene. `null` if not in studio mode
+ * @responseField scenes                  | Array<Object> | Array of scenes in OBS
  *
  * @requestType GetSceneList
  * @complexity 2

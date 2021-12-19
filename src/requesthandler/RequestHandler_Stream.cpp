@@ -19,6 +19,24 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include "RequestHandler.h"
 
+/**
+ * Gets the status of the stream output.
+ *
+ * @responseField outputActive        | Boolean | Whether the output is active
+ * @responseField outputReconnecting  | Boolean | Whether the output is currently reconnecting
+ * @responseField outputTimecode      | String  | Current formatted timecode string for the output
+ * @responseField outputDuration      | Number  | Current duration in milliseconds for the output
+ * @responseField outputBytes         | Number  | Number of bytes sent by the output
+ * @responseField outputSkippedFrames | Number  | Number of frames skipped by the output's process
+ * @responseField outputTotalFrames   | Number  | Total number of frames delivered by the output's process
+ *
+ * @requestType GetStreamStatus
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api requests
+ * @category stream
+ */
 RequestResult RequestHandler::GetStreamStatus(const Request&)
 {
 	OBSOutputAutoRelease streamOutput = obs_frontend_get_streaming_output();
@@ -37,6 +55,18 @@ RequestResult RequestHandler::GetStreamStatus(const Request&)
 	return RequestResult::Success(responseData);
 }
 
+/**
+ * Toggles the status of the stream output.
+ *
+ * @responseField outputActive | Boolean | New state of the stream output
+ *
+ * @requestType ToggleStream
+ * @complexity 1
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api requests
+ * @category stream
+ */
 RequestResult RequestHandler::ToggleStream(const Request&)
 {
 	json responseData;
@@ -51,6 +81,16 @@ RequestResult RequestHandler::ToggleStream(const Request&)
 	return RequestResult::Success(responseData);
 }
 
+/**
+ * Starts the stream output.
+ *
+ * @requestType StartStream
+ * @complexity 1
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api requests
+ * @category stream
+ */
 RequestResult RequestHandler::StartStream(const Request&)
 {
 	if (obs_frontend_streaming_active())
@@ -62,6 +102,16 @@ RequestResult RequestHandler::StartStream(const Request&)
 	return RequestResult::Success();
 }
 
+/**
+ * Stops the stream output.
+ *
+ * @requestType StopStream
+ * @complexity 1
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api requests
+ * @category stream
+ */
 RequestResult RequestHandler::StopStream(const Request&)
 {
 	if (!obs_frontend_streaming_active())

@@ -19,6 +19,22 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include "RequestHandler.h"
 
+/**
+ * Gets a list of all scene items in a scene.
+ *
+ * Scenes only
+ *
+ * @requestField sceneName | String | Name of the scene to get the items of
+ *
+ * @responseField sceneItems | Array<Object> | Array of scene items in the scene
+ *
+ * @requestType GetSceneItemList
+ * @complexity 3
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api requests
+ * @category scene items
+ */
 RequestResult RequestHandler::GetSceneItemList(const Request& request)
 {
 	RequestStatus::RequestStatus statusCode;
@@ -33,6 +49,24 @@ RequestResult RequestHandler::GetSceneItemList(const Request& request)
 	return RequestResult::Success(responseData);
 }
 
+/**
+ * Basically GetSceneItemList, but for groups.
+ *
+ * Using groups at all in OBS is discouraged, as they are very broken under the hood.
+ *
+ * Groups only
+ *
+ * @requestField sceneName | String | Name of the group to get the items of
+ *
+ * @responseField sceneItems | Array<Object> | Array of scene items in the group
+ *
+ * @requestType GetGroupItemList
+ * @complexity 3
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api requests
+ * @category scene items
+ */
 RequestResult RequestHandler::GetGroupSceneItemList(const Request& request)
 {
 	RequestStatus::RequestStatus statusCode;
@@ -47,6 +81,23 @@ RequestResult RequestHandler::GetGroupSceneItemList(const Request& request)
 	return RequestResult::Success(responseData);
 }
 
+/**
+ * Searches a scene for a source, and returns its id.
+ *
+ * Scenes and Groups
+ *
+ * @requestField sceneName  | String | Name of the scene or group to search in
+ * @requestField sourceName | String | Name of the source to find
+ *
+ * @responseField sceneItemId | Number | Numeric ID of the scene item
+ *
+ * @requestType GetSceneItemId
+ * @complexity 3
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api requests
+ * @category scene items
+ */
 RequestResult RequestHandler::GetSceneItemId(const Request& request)
 {
 	RequestStatus::RequestStatus statusCode;
@@ -74,6 +125,24 @@ RequestResult RequestHandler::GetSceneItemId(const Request& request)
 	return RequestResult::Success(responseData);
 }
 
+/**
+ * Creates a new scene item using a source.
+ *
+ * Scenes only
+ *
+ * @requestField sceneName         | String  | Name of the scene to create the new item in
+ * @requestField sourceName        | String  | Name of the source to add to the scene
+ * @requestField ?sceneItemEnabled | Boolean | Enable state to apply to the scene item on creation | True
+ *
+ * @responseField sceneItemId | Number | Numeric ID of the scene item
+ *
+ * @requestType CreateSceneItem
+ * @complexity 3
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api requests
+ * @category scene items
+ */
 RequestResult RequestHandler::CreateSceneItem(const Request& request)
 {
 	RequestStatus::RequestStatus statusCode;
@@ -108,6 +177,21 @@ RequestResult RequestHandler::CreateSceneItem(const Request& request)
 	return RequestResult::Success(responseData);
 }
 
+/**
+ * Removes a scene item from a scene.
+ *
+ * Scenes only
+ *
+ * @requestField sceneName   | String | Name of the scene the item is in
+ * @requestField sceneItemId | Number | Numeric ID of the scene item | >= 0
+ *
+ * @requestType RemoveSceneItem
+ * @complexity 3
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api requests
+ * @category scene items
+ */
 RequestResult RequestHandler::RemoveSceneItem(const Request& request)
 {
 	RequestStatus::RequestStatus statusCode;
@@ -121,6 +205,24 @@ RequestResult RequestHandler::RemoveSceneItem(const Request& request)
 	return RequestResult::Success();
 }
 
+/**
+ * Duplicates a scene item, copying all transform and crop info.
+ *
+ * Scenes only
+ *
+ * @requestField sceneName             | String | Name of the scene the item is in
+ * @requestField sceneItemId           | Number | Numeric ID of the scene item | >= 0
+ * @requestField ?destinationSceneName | String | Name of the scene to create the duplicated item in | `sceneName` is assumed
+ *
+ * @responseField sceneItemId | Number | Numeric ID of the duplicated scene item
+ *
+ * @requestType DuplicateSceneItem
+ * @complexity 3
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api requests
+ * @category scene items
+ */
 RequestResult RequestHandler::DuplicateSceneItem(const Request& request)
 {
 	RequestStatus::RequestStatus statusCode;
@@ -165,6 +267,23 @@ RequestResult RequestHandler::DuplicateSceneItem(const Request& request)
 	return RequestResult::Success(responseData);
 }
 
+/**
+ * Gets the transform and crop info of a scene item.
+ *
+ * Scenes and Groups
+ *
+ * @requestField sceneName   | String | Name of the scene the item is in
+ * @requestField sceneItemId | Number | Numeric ID of the scene item | >= 0
+ *
+ * @responseField sceneItemTransform | Object | Object containing scene item transform info
+ *
+ * @requestType GetSceneItemTransform
+ * @complexity 3
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api requests
+ * @category scene items
+ */
 RequestResult RequestHandler::GetSceneItemTransform(const Request& request)
 {
 	RequestStatus::RequestStatus statusCode;
@@ -179,6 +298,20 @@ RequestResult RequestHandler::GetSceneItemTransform(const Request& request)
 	return RequestResult::Success(responseData);
 }
 
+/**
+ * Sets the transform and crop info of a scene item.
+ *
+ * @requestField sceneName          | String | Name of the scene the item is in
+ * @requestField sceneItemId        | Number | Numeric ID of the scene item | >= 0
+ * @requestField sceneItemTransform | Object | Object containing scene item transform info to update
+ *
+ * @requestType SetSceneItemTransform
+ * @complexity 3
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api requests
+ * @category scene items
+ */
 RequestResult RequestHandler::SetSceneItemTransform(const Request& request)
 {
 	RequestStatus::RequestStatus statusCode;
@@ -317,6 +450,23 @@ RequestResult RequestHandler::SetSceneItemTransform(const Request& request)
 	return RequestResult::Success();
 }
 
+/**
+ * Gets the enable state of a scene item.
+ *
+ * Scenes and Groups
+ *
+ * @requestField sceneName   | String | Name of the scene the item is in
+ * @requestField sceneItemId | Number | Numeric ID of the scene item | >= 0
+ *
+ * @responseField sceneItemEnabled | Boolean | Whether the scene item is enabled. `true` for enabled, `false` for disabled
+ *
+ * @requestType GetSceneItemEnabled
+ * @complexity 3
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api requests
+ * @category scene items
+ */
 RequestResult RequestHandler::GetSceneItemEnabled(const Request& request)
 {
 	RequestStatus::RequestStatus statusCode;
@@ -331,6 +481,22 @@ RequestResult RequestHandler::GetSceneItemEnabled(const Request& request)
 	return RequestResult::Success(responseData);
 }
 
+/**
+ * Sets the enable state of a scene item.
+ *
+ * Scenes and Groups
+ *
+ * @requestField sceneName        | String  | Name of the scene the item is in
+ * @requestField sceneItemId      | Number  | Numeric ID of the scene item | >= 0
+ * @requestField sceneItemEnabled | Boolean | New enable state of the scene item
+ *
+ * @requestType SetSceneItemEnabled
+ * @complexity 3
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api requests
+ * @category scene items
+ */
 RequestResult RequestHandler::SetSceneItemEnabled(const Request& request)
 {
 	RequestStatus::RequestStatus statusCode;
@@ -346,6 +512,23 @@ RequestResult RequestHandler::SetSceneItemEnabled(const Request& request)
 	return RequestResult::Success();
 }
 
+/**
+ * Gets the lock state of a scene item.
+ *
+ * Scenes and Groups
+ *
+ * @requestField sceneName   | String | Name of the scene the item is in
+ * @requestField sceneItemId | Number | Numeric ID of the scene item | >= 0
+ *
+ * @responseField sceneItemLocked | Boolean | Whether the scene item is locked. `true` for locked, `false` for unlocked
+ *
+ * @requestType GetSceneItemLocked
+ * @complexity 3
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api requests
+ * @category scene items
+ */
 RequestResult RequestHandler::GetSceneItemLocked(const Request& request)
 {
 	RequestStatus::RequestStatus statusCode;
@@ -360,6 +543,22 @@ RequestResult RequestHandler::GetSceneItemLocked(const Request& request)
 	return RequestResult::Success(responseData);
 }
 
+/**
+ * Sets the lock state of a scene item.
+ *
+ * Scenes and Group
+ *
+ * @requestField sceneName       | String | Name of the scene the item is in
+ * @requestField sceneItemId     | Number | Numeric ID of the scene item | >= 0
+ * @requestField sceneItemLocked | Boolean | New lock state of the scene item
+ *
+ * @requestType SetSceneItemLocked
+ * @complexity 3
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api requests
+ * @category scene items
+ */
 RequestResult RequestHandler::SetSceneItemLocked(const Request& request)
 {
 	RequestStatus::RequestStatus statusCode;
@@ -375,6 +574,25 @@ RequestResult RequestHandler::SetSceneItemLocked(const Request& request)
 	return RequestResult::Success();
 }
 
+/**
+ * Gets the index position of a scene item in a scene.
+ *
+ * An index of 0 is at the bottom of the source list in the UI.
+ *
+ * Scenes and Groups
+ *
+ * @requestField sceneName   | String | Name of the scene the item is in
+ * @requestField sceneItemId | Number | Numeric ID of the scene item | >= 0
+ *
+ * @responseField sceneItemIndex | Number | Index position of the scene item
+ *
+ * @requestType GetSceneItemIndex
+ * @complexity 3
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api requests
+ * @category scene items
+ */
 RequestResult RequestHandler::GetSceneItemIndex(const Request& request)
 {
 	RequestStatus::RequestStatus statusCode;
@@ -389,6 +607,22 @@ RequestResult RequestHandler::GetSceneItemIndex(const Request& request)
 	return RequestResult::Success(responseData);
 }
 
+/**
+ * Sets the index position of a scene item in a scene.
+ *
+ * Scenes and Groups
+ *
+ * @requestField sceneName      | String | Name of the scene the item is in
+ * @requestField sceneItemId    | Number | Numeric ID of the scene item         | >= 0
+ * @requestField sceneItemIndex | Number | New index position of the scene item | >= 0
+ *
+ * @requestType SetSceneItemIndex
+ * @complexity 3
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api requests
+ * @category scene items
+ */
 RequestResult RequestHandler::SetSceneItemIndex(const Request& request)
 {
 	RequestStatus::RequestStatus statusCode;
