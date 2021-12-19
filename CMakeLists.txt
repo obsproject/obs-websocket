@@ -127,7 +127,7 @@ set(obs-websocket_SOURCES
 	src/utils/Obs_EnumHelper.cpp
 	src/utils/Obs_NumberHelper.cpp
 	src/utils/Obs_ListHelper.cpp
-	src/utils/Obs_DataHelper.cpp
+	src/utils/Obs_ObjectHelper.cpp
 	src/utils/Obs_SearchHelper.cpp
 	src/utils/Obs_ActionHelper.cpp
 	src/utils/ObsVolumeMeter.cpp

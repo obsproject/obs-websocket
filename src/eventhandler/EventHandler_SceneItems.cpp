@@ -134,6 +134,6 @@ void EventHandler::HandleSceneItemTransformChanged(void *param, calldata_t *data
 	json eventData;
 	eventData["sceneName"] = obs_source_get_name(obs_scene_get_source(scene));
 	eventData["sceneItemId"] = obs_sceneitem_get_id(sceneItem);
-	eventData["sceneItemTransform"] = Utils::Obs::DataHelper::GetSceneItemTransform(sceneItem);
+	eventData["sceneItemTransform"] = Utils::Obs::ObjectHelper::GetSceneItemTransform(sceneItem);
 	eventHandler->BroadcastEvent(EventSubscription::SceneItemTransformChanged, "SceneItemTransformChanged", eventData);
 }

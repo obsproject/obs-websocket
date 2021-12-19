@@ -123,7 +123,7 @@ namespace Utils {
 			std::vector<std::string> GetInputKindList(bool unversioned = false, bool includeDisabled = false);
 		}
 
-		namespace DataHelper {
+		namespace ObjectHelper {
 			json GetStats();
 			json GetSceneItemTransform(obs_sceneitem_t *item);
 		}

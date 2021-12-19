@@ -293,7 +293,7 @@ RequestResult RequestHandler::GetSceneItemTransform(const Request& request)
 		return RequestResult::Error(statusCode, comment);
 
 	json responseData;
-	responseData["sceneItemTransform"] = Utils::Obs::DataHelper::GetSceneItemTransform(sceneItem);
+	responseData["sceneItemTransform"] = Utils::Obs::ObjectHelper::GetSceneItemTransform(sceneItem);
 
 	return RequestResult::Success(responseData);
 }

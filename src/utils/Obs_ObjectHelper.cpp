@@ -23,7 +23,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include "../obs-websocket.h"
 #include "../plugin-macros.generated.h"
 
-json Utils::Obs::DataHelper::GetStats()
+json Utils::Obs::ObjectHelper::GetStats()
 {
 	json ret;
 
@@ -46,7 +46,7 @@ json Utils::Obs::DataHelper::GetStats()
 	return ret;
 }
 
-json Utils::Obs::DataHelper::GetSceneItemTransform(obs_sceneitem_t *item)
+json Utils::Obs::ObjectHelper::GetSceneItemTransform(obs_sceneitem_t *item)
 {
 	json ret;
 

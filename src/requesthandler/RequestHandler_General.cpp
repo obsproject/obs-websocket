@@ -84,7 +84,7 @@ RequestResult RequestHandler::GetVersion(const Request&)
  */
 RequestResult RequestHandler::GetStats(const Request&)
 {
-	json responseData = Utils::Obs::DataHelper::GetStats();
+	json responseData = Utils::Obs::ObjectHelper::GetStats();
 
 	responseData["webSocketSessionIncomingMessages"] = _session->IncomingMessages();
 	responseData["webSocketSessionOutgoingMessages"] = _session->OutgoingMessages();
