@@ -296,7 +296,7 @@ void WebSocketServer::ProcessMessage(SessionPtr session, WebSocketServer::Proces
 			} return;
 		default:
 			ret.closeCode = WebSocketCloseCode::UnknownOpCode;
-			ret.closeReason = std::string("Unknown OpCode: %s") + std::to_string(opCode);
+			ret.closeReason = std::string("Unknown OpCode: ") + std::to_string(opCode);
 			return;
 	}
 }
