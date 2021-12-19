@@ -152,3 +152,17 @@ std::string Utils::Obs::StringHelper::DurationToTimecode(uint64_t ms)
 	QString formatted = QString::asprintf("%02" PRIu64 ":%02" PRIu64 ":%02" PRIu64 ".%03" PRIu64, hoursPart, minutesPart, secsPart, msPart);
 	return formatted.toStdString();
 }
+
+std::string Utils::Obs::StringHelper::GetOutputState(ObsOutputState state)
+{
+	switch (state) {
+		default:
+		CASE(OBS_WEBSOCKET_OUTPUT_UNKNOWN)
+		CASE(OBS_WEBSOCKET_OUTPUT_STARTING)
+		CASE(OBS_WEBSOCKET_OUTPUT_STARTED)
+		CASE(OBS_WEBSOCKET_OUTPUT_STOPPING)
+		CASE(OBS_WEBSOCKET_OUTPUT_STOPPED)
+		CASE(OBS_WEBSOCKET_OUTPUT_PAUSED)
+		CASE(OBS_WEBSOCKET_OUTPUT_RESUMED)
+	}
+}

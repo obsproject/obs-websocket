@@ -66,13 +66,14 @@ template <typename T> T* GetCalldataPointer(const calldata_t *data, const char* 
 }
 
 enum ObsOutputState {
+	OBS_WEBSOCKET_OUTPUT_UNKNOWN,
 	OBS_WEBSOCKET_OUTPUT_STARTING,
 	OBS_WEBSOCKET_OUTPUT_STARTED,
 	OBS_WEBSOCKET_OUTPUT_STOPPING,
 	OBS_WEBSOCKET_OUTPUT_STOPPED,
 	OBS_WEBSOCKET_OUTPUT_RECONNECTING,
 	OBS_WEBSOCKET_OUTPUT_PAUSED,
-	OBS_WEBSOCKET_OUTPUT_RESUMED
+	OBS_WEBSOCKET_OUTPUT_RESUMED,
 };
 
 enum ObsMediaInputAction {
@@ -82,7 +83,7 @@ enum ObsMediaInputAction {
 	OBS_WEBSOCKET_MEDIA_INPUT_ACTION_STOP,
 	OBS_WEBSOCKET_MEDIA_INPUT_ACTION_RESTART,
 	OBS_WEBSOCKET_MEDIA_INPUT_ACTION_NEXT,
-	OBS_WEBSOCKET_MEDIA_INPUT_ACTION_PREVIOUS
+	OBS_WEBSOCKET_MEDIA_INPUT_ACTION_PREVIOUS,
 };
 
 namespace Utils {
@@ -99,6 +100,7 @@ namespace Utils {
 			std::string GetLastReplayBufferFilePath();
 			std::string GetSceneItemBoundsType(enum obs_bounds_type type);
 			std::string DurationToTimecode(uint64_t);
+			std::string GetOutputState(ObsOutputState state);
 		}
 
 		namespace EnumHelper {
