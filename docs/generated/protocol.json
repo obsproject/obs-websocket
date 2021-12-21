@@ -342,6 +342,14 @@
           "enumValue": 506
         },
         {
+          "description": "Starting the output failed.",
+          "enumIdentifier": "OutputStartFailed",
+          "rpcVersion": "1",
+          "deprecated": false,
+          "initialVersion": "5.0.0",
+          "enumValue": 507
+        },
+        {
           "description": "The resource was not found.\n\nNote: Resources are any kind of object in obs-websocket, like inputs, profiles, outputs, etc.",
           "enumIdentifier": "ResourceNotFound",
           "rpcVersion": "1",
@@ -1949,6 +1957,484 @@
       "responseFields": []
     },
     {
+      "description": "Gets a list of all scene items in a scene.\n\nScenes only",
+      "requestType": "GetSceneItemList",
+      "complexity": 3,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "scene items",
+      "requestFields": [
+        {
+          "valueName": "sceneName",
+          "valueType": "String",
+          "valueDescription": "Name of the scene to get the items of",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        }
+      ],
+      "responseFields": [
+        {
+          "valueName": "sceneItems",
+          "valueType": "Array<Object>",
+          "valueDescription": "Array of scene items in the scene"
+        }
+      ]
+    },
+    {
+      "description": "Basically GetSceneItemList, but for groups.\n\nUsing groups at all in OBS is discouraged, as they are very broken under the hood.\n\nGroups only",
+      "requestType": "GetGroupItemList",
+      "complexity": 3,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "scene items",
+      "requestFields": [
+        {
+          "valueName": "sceneName",
+          "valueType": "String",
+          "valueDescription": "Name of the group to get the items of",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        }
+      ],
+      "responseFields": [
+        {
+          "valueName": "sceneItems",
+          "valueType": "Array<Object>",
+          "valueDescription": "Array of scene items in the group"
+        }
+      ]
+    },
+    {
+      "description": "Searches a scene for a source, and returns its id.\n\nScenes and Groups",
+      "requestType": "GetSceneItemId",
+      "complexity": 3,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "scene items",
+      "requestFields": [
+        {
+          "valueName": "sceneName",
+          "valueType": "String",
+          "valueDescription": "Name of the scene or group to search in",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        },
+        {
+          "valueName": "sourceName",
+          "valueType": "String",
+          "valueDescription": "Name of the source to find",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        }
+      ],
+      "responseFields": [
+        {
+          "valueName": "sceneItemId",
+          "valueType": "Number",
+          "valueDescription": "Numeric ID of the scene item"
+        }
+      ]
+    },
+    {
+      "description": "Creates a new scene item using a source.\n\nScenes only",
+      "requestType": "CreateSceneItem",
+      "complexity": 3,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "scene items",
+      "requestFields": [
+        {
+          "valueName": "sceneName",
+          "valueType": "String",
+          "valueDescription": "Name of the scene to create the new item in",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        },
+        {
+          "valueName": "sourceName",
+          "valueType": "String",
+          "valueDescription": "Name of the source to add to the scene",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        },
+        {
+          "valueName": "sceneItemEnabled",
+          "valueType": "Boolean",
+          "valueDescription": "Enable state to apply to the scene item on creation",
+          "valueRestrictions": null,
+          "valueOptional": true,
+          "valueOptionalBehavior": "True"
+        }
+      ],
+      "responseFields": [
+        {
+          "valueName": "sceneItemId",
+          "valueType": "Number",
+          "valueDescription": "Numeric ID of the scene item"
+        }
+      ]
+    },
+    {
+      "description": "Removes a scene item from a scene.\n\nScenes only",
+      "requestType": "RemoveSceneItem",
+      "complexity": 3,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "scene items",
+      "requestFields": [
+        {
+          "valueName": "sceneName",
+          "valueType": "String",
+          "valueDescription": "Name of the scene the item is in",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        },
+        {
+          "valueName": "sceneItemId",
+          "valueType": "Number",
+          "valueDescription": "Numeric ID of the scene item",
+          "valueRestrictions": ">= 0",
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        }
+      ],
+      "responseFields": []
+    },
+    {
+      "description": "Duplicates a scene item, copying all transform and crop info.\n\nScenes only",
+      "requestType": "DuplicateSceneItem",
+      "complexity": 3,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "scene items",
+      "requestFields": [
+        {
+          "valueName": "sceneName",
+          "valueType": "String",
+          "valueDescription": "Name of the scene the item is in",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        },
+        {
+          "valueName": "sceneItemId",
+          "valueType": "Number",
+          "valueDescription": "Numeric ID of the scene item",
+          "valueRestrictions": ">= 0",
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        },
+        {
+          "valueName": "destinationSceneName",
+          "valueType": "String",
+          "valueDescription": "Name of the scene to create the duplicated item in",
+          "valueRestrictions": null,
+          "valueOptional": true,
+          "valueOptionalBehavior": "`sceneName` is assumed"
+        }
+      ],
+      "responseFields": [
+        {
+          "valueName": "sceneItemId",
+          "valueType": "Number",
+          "valueDescription": "Numeric ID of the duplicated scene item"
+        }
+      ]
+    },
+    {
+      "description": "Gets the transform and crop info of a scene item.\n\nScenes and Groups",
+      "requestType": "GetSceneItemTransform",
+      "complexity": 3,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "scene items",
+      "requestFields": [
+        {
+          "valueName": "sceneName",
+          "valueType": "String",
+          "valueDescription": "Name of the scene the item is in",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        },
+        {
+          "valueName": "sceneItemId",
+          "valueType": "Number",
+          "valueDescription": "Numeric ID of the scene item",
+          "valueRestrictions": ">= 0",
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        }
+      ],
+      "responseFields": [
+        {
+          "valueName": "sceneItemTransform",
+          "valueType": "Object",
+          "valueDescription": "Object containing scene item transform info"
+        }
+      ]
+    },
+    {
+      "description": "Sets the transform and crop info of a scene item.",
+      "requestType": "SetSceneItemTransform",
+      "complexity": 3,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "scene items",
+      "requestFields": [
+        {
+          "valueName": "sceneName",
+          "valueType": "String",
+          "valueDescription": "Name of the scene the item is in",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        },
+        {
+          "valueName": "sceneItemId",
+          "valueType": "Number",
+          "valueDescription": "Numeric ID of the scene item",
+          "valueRestrictions": ">= 0",
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        },
+        {
+          "valueName": "sceneItemTransform",
+          "valueType": "Object",
+          "valueDescription": "Object containing scene item transform info to update",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        }
+      ],
+      "responseFields": []
+    },
+    {
+      "description": "Gets the enable state of a scene item.\n\nScenes and Groups",
+      "requestType": "GetSceneItemEnabled",
+      "complexity": 3,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "scene items",
+      "requestFields": [
+        {
+          "valueName": "sceneName",
+          "valueType": "String",
+          "valueDescription": "Name of the scene the item is in",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        },
+        {
+          "valueName": "sceneItemId",
+          "valueType": "Number",
+          "valueDescription": "Numeric ID of the scene item",
+          "valueRestrictions": ">= 0",
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        }
+      ],
+      "responseFields": [
+        {
+          "valueName": "sceneItemEnabled",
+          "valueType": "Boolean",
+          "valueDescription": "Whether the scene item is enabled. `true` for enabled, `false` for disabled"
+        }
+      ]
+    },
+    {
+      "description": "Sets the enable state of a scene item.\n\nScenes and Groups",
+      "requestType": "SetSceneItemEnabled",
+      "complexity": 3,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "scene items",
+      "requestFields": [
+        {
+          "valueName": "sceneName",
+          "valueType": "String",
+          "valueDescription": "Name of the scene the item is in",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        },
+        {
+          "valueName": "sceneItemId",
+          "valueType": "Number",
+          "valueDescription": "Numeric ID of the scene item",
+          "valueRestrictions": ">= 0",
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        },
+        {
+          "valueName": "sceneItemEnabled",
+          "valueType": "Boolean",
+          "valueDescription": "New enable state of the scene item",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        }
+      ],
+      "responseFields": []
+    },
+    {
+      "description": "Gets the lock state of a scene item.\n\nScenes and Groups",
+      "requestType": "GetSceneItemLocked",
+      "complexity": 3,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "scene items",
+      "requestFields": [
+        {
+          "valueName": "sceneName",
+          "valueType": "String",
+          "valueDescription": "Name of the scene the item is in",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        },
+        {
+          "valueName": "sceneItemId",
+          "valueType": "Number",
+          "valueDescription": "Numeric ID of the scene item",
+          "valueRestrictions": ">= 0",
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        }
+      ],
+      "responseFields": [
+        {
+          "valueName": "sceneItemLocked",
+          "valueType": "Boolean",
+          "valueDescription": "Whether the scene item is locked. `true` for locked, `false` for unlocked"
+        }
+      ]
+    },
+    {
+      "description": "Sets the lock state of a scene item.\n\nScenes and Group",
+      "requestType": "SetSceneItemLocked",
+      "complexity": 3,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "scene items",
+      "requestFields": [
+        {
+          "valueName": "sceneName",
+          "valueType": "String",
+          "valueDescription": "Name of the scene the item is in",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        },
+        {
+          "valueName": "sceneItemId",
+          "valueType": "Number",
+          "valueDescription": "Numeric ID of the scene item",
+          "valueRestrictions": ">= 0",
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        },
+        {
+          "valueName": "sceneItemLocked",
+          "valueType": "Boolean",
+          "valueDescription": "New lock state of the scene item",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        }
+      ],
+      "responseFields": []
+    },
+    {
+      "description": "Gets the index position of a scene item in a scene.\n\nAn index of 0 is at the bottom of the source list in the UI.\n\nScenes and Groups",
+      "requestType": "GetSceneItemIndex",
+      "complexity": 3,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "scene items",
+      "requestFields": [
+        {
+          "valueName": "sceneName",
+          "valueType": "String",
+          "valueDescription": "Name of the scene the item is in",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        },
+        {
+          "valueName": "sceneItemId",
+          "valueType": "Number",
+          "valueDescription": "Numeric ID of the scene item",
+          "valueRestrictions": ">= 0",
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        }
+      ],
+      "responseFields": [
+        {
+          "valueName": "sceneItemIndex",
+          "valueType": "Number",
+          "valueDescription": "Index position of the scene item"
+        }
+      ]
+    },
+    {
+      "description": "Sets the index position of a scene item in a scene.\n\nScenes and Groups",
+      "requestType": "SetSceneItemIndex",
+      "complexity": 3,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "scene items",
+      "requestFields": [
+        {
+          "valueName": "sceneName",
+          "valueType": "String",
+          "valueDescription": "Name of the scene the item is in",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        },
+        {
+          "valueName": "sceneItemId",
+          "valueType": "Number",
+          "valueDescription": "Numeric ID of the scene item",
+          "valueRestrictions": ">= 0",
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        },
+        {
+          "valueName": "sceneItemIndex",
+          "valueType": "Number",
+          "valueDescription": "New index position of the scene item",
+          "valueRestrictions": ">= 0",
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        }
+      ],
+      "responseFields": []
+    },
+    {
       "description": "Gets an array of all scenes in OBS.",
       "requestType": "GetSceneList",
       "complexity": 2,
@@ -1959,11 +2445,6 @@
       "requestFields": [],
       "responseFields": [
         {
-          "valueName": "scenes",
-          "valueType": "Array<Object>",
-          "valueDescription": "Array of scenes in OBS"
-        },
-        {
           "valueName": "currentProgramSceneName",
           "valueType": "String",
           "valueDescription": "Current program scene"
@@ -1972,6 +2453,11 @@
           "valueName": "currentPreviewSceneName",
           "valueType": "String",
           "valueDescription": "Current preview scene. `null` if not in studio mode"
+        },
+        {
+          "valueName": "scenes",
+          "valueType": "Array<Object>",
+          "valueDescription": "Array of scenes in OBS"
         }
       ]
     },
@@ -2271,6 +2757,92 @@
           "valueDescription": "Base64-encoded screenshot"
         }
       ]
+    },
+    {
+      "description": "Gets the status of the stream output.",
+      "requestType": "GetStreamStatus",
+      "complexity": 2,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "stream",
+      "requestFields": [],
+      "responseFields": [
+        {
+          "valueName": "outputActive",
+          "valueType": "Boolean",
+          "valueDescription": "Whether the output is active"
+        },
+        {
+          "valueName": "outputReconnecting",
+          "valueType": "Boolean",
+          "valueDescription": "Whether the output is currently reconnecting"
+        },
+        {
+          "valueName": "outputTimecode",
+          "valueType": "String",
+          "valueDescription": "Current formatted timecode string for the output"
+        },
+        {
+          "valueName": "outputDuration",
+          "valueType": "Number",
+          "valueDescription": "Current duration in milliseconds for the output"
+        },
+        {
+          "valueName": "outputBytes",
+          "valueType": "Number",
+          "valueDescription": "Number of bytes sent by the output"
+        },
+        {
+          "valueName": "outputSkippedFrames",
+          "valueType": "Number",
+          "valueDescription": "Number of frames skipped by the output's process"
+        },
+        {
+          "valueName": "outputTotalFrames",
+          "valueType": "Number",
+          "valueDescription": "Total number of frames delivered by the output's process"
+        }
+      ]
+    },
+    {
+      "description": "Toggles the status of the stream output.",
+      "requestType": "ToggleStream",
+      "complexity": 1,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "stream",
+      "requestFields": [],
+      "responseFields": [
+        {
+          "valueName": "outputActive",
+          "valueType": "Boolean",
+          "valueDescription": "New state of the stream output"
+        }
+      ]
+    },
+    {
+      "description": "Starts the stream output.",
+      "requestType": "StartStream",
+      "complexity": 1,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "stream",
+      "requestFields": [],
+      "responseFields": []
+    },
+    {
+      "description": "Stops the stream output.",
+      "requestType": "StopStream",
+      "complexity": 1,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "stream",
+      "requestFields": [],
+      "responseFields": []
     }
   ],
   "events": [

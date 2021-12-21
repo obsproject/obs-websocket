@@ -436,6 +436,7 @@ These are enumeration declarations, which are referenced throughout obs-websocke
   - [RequestStatus::OutputDisabled](#requeststatusoutputdisabled)
   - [RequestStatus::StudioModeActive](#requeststatusstudiomodeactive)
   - [RequestStatus::StudioModeNotActive](#requeststatusstudiomodenotactive)
+  - [RequestStatus::OutputStartFailed](#requeststatusoutputstartfailed)
   - [RequestStatus::ResourceNotFound](#requeststatusresourcenotfound)
   - [RequestStatus::ResourceAlreadyExists](#requeststatusresourcealreadyexists)
   - [RequestStatus::InvalidResourceType](#requeststatusinvalidresourcetype)
@@ -949,6 +950,16 @@ Studio mode is not active and should be.
 
 ---
 
+### RequestStatus::OutputStartFailed
+
+Starting the output failed.
+
+- Identifier Value: `507`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
 ### RequestStatus::ResourceNotFound
 
 The resource was not found.
@@ -1446,6 +1457,26 @@ The profile list has changed.
   - [SetInputAudioMonitorType](#setinputaudiomonitortype)
   - [GetInputPropertiesListPropertyItems](#getinputpropertieslistpropertyitems)
   - [PressInputPropertiesButton](#pressinputpropertiesbutton)
+- [Scene Items](#scene-items)
+  - [GetSceneItemList](#getsceneitemlist)
+  - [GetGroupItemList](#getgroupitemlist)
+  - [GetSceneItemId](#getsceneitemid)
+  - [CreateSceneItem](#createsceneitem)
+  - [RemoveSceneItem](#removesceneitem)
+  - [DuplicateSceneItem](#duplicatesceneitem)
+  - [GetSceneItemTransform](#getsceneitemtransform)
+  - [SetSceneItemTransform](#setsceneitemtransform)
+  - [GetSceneItemEnabled](#getsceneitemenabled)
+  - [SetSceneItemEnabled](#setsceneitemenabled)
+  - [GetSceneItemLocked](#getsceneitemlocked)
+  - [SetSceneItemLocked](#setsceneitemlocked)
+  - [GetSceneItemIndex](#getsceneitemindex)
+  - [SetSceneItemIndex](#setsceneitemindex)
+- [Stream](#stream)
+  - [GetStreamStatus](#getstreamstatus)
+  - [ToggleStream](#togglestream)
+  - [StartStream](#startstream)
+  - [StopStream](#stopstream)
 
 
 
@@ -2064,9 +2095,9 @@ Gets an array of all scenes in OBS.
 
 | Name | Type  | Description |
 | ---- | :---: | ----------- |
-| scenes | Array&lt;Object&gt; | Array of scenes in OBS |
 | currentProgramSceneName | String | Current program scene |
 | currentPreviewSceneName | String | Current preview scene. `null` if not in studio mode |
+| scenes | Array&lt;Object&gt; | Array of scenes in OBS |
 
 ---
 
@@ -2623,5 +2654,416 @@ Note: Use this in cases where there is a button in the properties of an input th
 | ---- | :---: | ----------- | :----------------: | ----------------- |
 | inputName | String | Name of the input | None | N/A |
 | propertyName | String | Name of the button property to press | None | N/A |
+
+
+## Scene Items
+
+### GetSceneItemList
+
+Gets a list of all scene items in a scene.
+
+Scenes only
+
+- Complexity Rating: `3/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| sceneName | String | Name of the scene to get the items of | None | N/A |
+
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| sceneItems | Array&lt;Object&gt; | Array of scene items in the scene |
+
+---
+
+### GetGroupItemList
+
+Basically GetSceneItemList, but for groups.
+
+Using groups at all in OBS is discouraged, as they are very broken under the hood.
+
+Groups only
+
+- Complexity Rating: `3/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| sceneName | String | Name of the group to get the items of | None | N/A |
+
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| sceneItems | Array&lt;Object&gt; | Array of scene items in the group |
+
+---
+
+### GetSceneItemId
+
+Searches a scene for a source, and returns its id.
+
+Scenes and Groups
+
+- Complexity Rating: `3/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| sceneName | String | Name of the scene or group to search in | None | N/A |
+| sourceName | String | Name of the source to find | None | N/A |
+
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| sceneItemId | Number | Numeric ID of the scene item |
+
+---
+
+### CreateSceneItem
+
+Creates a new scene item using a source.
+
+Scenes only
+
+- Complexity Rating: `3/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| sceneName | String | Name of the scene to create the new item in | None | N/A |
+| sourceName | String | Name of the source to add to the scene | None | N/A |
+| ?sceneItemEnabled | Boolean | Enable state to apply to the scene item on creation | None | True |
+
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| sceneItemId | Number | Numeric ID of the scene item |
+
+---
+
+### RemoveSceneItem
+
+Removes a scene item from a scene.
+
+Scenes only
+
+- Complexity Rating: `3/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| sceneName | String | Name of the scene the item is in | None | N/A |
+| sceneItemId | Number | Numeric ID of the scene item | >= 0 | N/A |
+
+---
+
+### DuplicateSceneItem
+
+Duplicates a scene item, copying all transform and crop info.
+
+Scenes only
+
+- Complexity Rating: `3/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| sceneName | String | Name of the scene the item is in | None | N/A |
+| sceneItemId | Number | Numeric ID of the scene item | >= 0 | N/A |
+| ?destinationSceneName | String | Name of the scene to create the duplicated item in | None | `sceneName` is assumed |
+
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| sceneItemId | Number | Numeric ID of the duplicated scene item |
+
+---
+
+### GetSceneItemTransform
+
+Gets the transform and crop info of a scene item.
+
+Scenes and Groups
+
+- Complexity Rating: `3/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| sceneName | String | Name of the scene the item is in | None | N/A |
+| sceneItemId | Number | Numeric ID of the scene item | >= 0 | N/A |
+
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| sceneItemTransform | Object | Object containing scene item transform info |
+
+---
+
+### SetSceneItemTransform
+
+Sets the transform and crop info of a scene item.
+
+- Complexity Rating: `3/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| sceneName | String | Name of the scene the item is in | None | N/A |
+| sceneItemId | Number | Numeric ID of the scene item | >= 0 | N/A |
+| sceneItemTransform | Object | Object containing scene item transform info to update | None | N/A |
+
+---
+
+### GetSceneItemEnabled
+
+Gets the enable state of a scene item.
+
+Scenes and Groups
+
+- Complexity Rating: `3/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| sceneName | String | Name of the scene the item is in | None | N/A |
+| sceneItemId | Number | Numeric ID of the scene item | >= 0 | N/A |
+
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| sceneItemEnabled | Boolean | Whether the scene item is enabled. `true` for enabled, `false` for disabled |
+
+---
+
+### SetSceneItemEnabled
+
+Sets the enable state of a scene item.
+
+Scenes and Groups
+
+- Complexity Rating: `3/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| sceneName | String | Name of the scene the item is in | None | N/A |
+| sceneItemId | Number | Numeric ID of the scene item | >= 0 | N/A |
+| sceneItemEnabled | Boolean | New enable state of the scene item | None | N/A |
+
+---
+
+### GetSceneItemLocked
+
+Gets the lock state of a scene item.
+
+Scenes and Groups
+
+- Complexity Rating: `3/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| sceneName | String | Name of the scene the item is in | None | N/A |
+| sceneItemId | Number | Numeric ID of the scene item | >= 0 | N/A |
+
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| sceneItemLocked | Boolean | Whether the scene item is locked. `true` for locked, `false` for unlocked |
+
+---
+
+### SetSceneItemLocked
+
+Sets the lock state of a scene item.
+
+Scenes and Group
+
+- Complexity Rating: `3/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| sceneName | String | Name of the scene the item is in | None | N/A |
+| sceneItemId | Number | Numeric ID of the scene item | >= 0 | N/A |
+| sceneItemLocked | Boolean | New lock state of the scene item | None | N/A |
+
+---
+
+### GetSceneItemIndex
+
+Gets the index position of a scene item in a scene.
+
+An index of 0 is at the bottom of the source list in the UI.
+
+Scenes and Groups
+
+- Complexity Rating: `3/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| sceneName | String | Name of the scene the item is in | None | N/A |
+| sceneItemId | Number | Numeric ID of the scene item | >= 0 | N/A |
+
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| sceneItemIndex | Number | Index position of the scene item |
+
+---
+
+### SetSceneItemIndex
+
+Sets the index position of a scene item in a scene.
+
+Scenes and Groups
+
+- Complexity Rating: `3/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| sceneName | String | Name of the scene the item is in | None | N/A |
+| sceneItemId | Number | Numeric ID of the scene item | >= 0 | N/A |
+| sceneItemIndex | Number | New index position of the scene item | >= 0 | N/A |
+
+
+## Stream
+
+### GetStreamStatus
+
+Gets the status of the stream output.
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| outputActive | Boolean | Whether the output is active |
+| outputReconnecting | Boolean | Whether the output is currently reconnecting |
+| outputTimecode | String | Current formatted timecode string for the output |
+| outputDuration | Number | Current duration in milliseconds for the output |
+| outputBytes | Number | Number of bytes sent by the output |
+| outputSkippedFrames | Number | Number of frames skipped by the output's process |
+| outputTotalFrames | Number | Total number of frames delivered by the output's process |
+
+---
+
+### ToggleStream
+
+Toggles the status of the stream output.
+
+- Complexity Rating: `1/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| outputActive | Boolean | New state of the stream output |
+
+---
+
+### StartStream
+
+Starts the stream output.
+
+- Complexity Rating: `1/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### StopStream
+
+Stops the stream output.
+
+- Complexity Rating: `1/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
 
 
