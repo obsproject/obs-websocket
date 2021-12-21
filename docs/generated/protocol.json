@@ -342,14 +342,6 @@
           "enumValue": 506
         },
         {
-          "description": "Starting the output failed.",
-          "enumIdentifier": "OutputStartFailed",
-          "rpcVersion": "1",
-          "deprecated": false,
-          "initialVersion": "5.0.0",
-          "enumValue": 507
-        },
-        {
           "description": "The resource was not found.\n\nNote: Resources are any kind of object in obs-websocket, like inputs, profiles, outputs, etc.",
           "enumIdentifier": "ResourceNotFound",
           "rpcVersion": "1",

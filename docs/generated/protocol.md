@@ -436,7 +436,6 @@ These are enumeration declarations, which are referenced throughout obs-websocke
   - [RequestStatus::OutputDisabled](#requeststatusoutputdisabled)
   - [RequestStatus::StudioModeActive](#requeststatusstudiomodeactive)
   - [RequestStatus::StudioModeNotActive](#requeststatusstudiomodenotactive)
-  - [RequestStatus::OutputStartFailed](#requeststatusoutputstartfailed)
   - [RequestStatus::ResourceNotFound](#requeststatusresourcenotfound)
   - [RequestStatus::ResourceAlreadyExists](#requeststatusresourcealreadyexists)
   - [RequestStatus::InvalidResourceType](#requeststatusinvalidresourcetype)
@@ -945,16 +944,6 @@ Studio mode is active and cannot be.
 Studio mode is not active and should be.
 
 - Identifier Value: `506`
-- Latest Supported RPC Version: `1`
-- Added in v5.0.0
-
----
-
-### RequestStatus::OutputStartFailed
-
-Starting the output failed.
-
-- Identifier Value: `507`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
