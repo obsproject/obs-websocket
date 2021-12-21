@@ -22,8 +22,8 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <algorithm>
 
 #include "Obs.h"
-#include "ObsVolumeMeter.h"
-#include "ObsVolumeMeter_Helpers.h"
+#include "Obs_VolumeMeter.h"
+#include "Obs_VolumeMeter_Helpers.h"
 #include "../obs-websocket.h"
 
 Utils::Obs::VolumeMeter::Meter::Meter(obs_source_t *input) :
