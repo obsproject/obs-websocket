@@ -262,17 +262,6 @@ namespace RequestStatus {
 		* @api enums
 		*/
 		StudioModeNotActive = 506,
-		/**
-		* Starting the output failed.
-		*
-		* @enumIdentifier OutputStartFailed
-		* @enumValue 507
-		* @enumType RequestStatus
-		* @rpcVersion -1
-		* @initialVersion 5.0.0
-		* @api enums
-		*/
-		OutputStartFailed = 507,
 		
 
 		/**
