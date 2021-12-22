@@ -359,11 +359,6 @@ jobs:
     name: "macOS 64-bit"
     runs-on: [macos-latest]
     if: contains(github.event.head_commit.message, '[skip ci]') != true
-    env:
-      MACOS_DEPS_CACHE_VERSION: "1" # Change whenever updating Qt dependency URL, in order to force a cache reset
-      MACOS_DEPS_VERSION: "2020-12-22"
-      QT_CACHE_VERSION: "1" # Change whenever updating OBS dependencies URL, in order to force a cache reset
-      QT_VERSION: "5.15.2"
     steps:
       - name: "Checkout obs-websocket"
         uses: actions/checkout@v2
@@ -413,28 +408,6 @@ jobs:
           curl -L -O http://s.sudre.free.fr/Software/files/Packages.dmg
           sudo hdiutil attach ./Packages.dmg
           sudo installer -pkg /Volumes/Packages\ 1.2.9/Install\ Packages.pkg -target /
-      # - name: "Restore Cached OBS-Studio Dependencies"
-      #   id: obscache
-      #   uses: actions/cache@v2
-      #   with:
-      #     path: ${{ github.workspace }}\cmbuild\deps\**
-      #     key: "obsdep-${{ env.MACOS_DEPS_CACHE_VERSION }} | ${{ runner.os }}"
-      #     restore-keys: |
-      #       obsdep-${{ env.MACOS_DEPS_CACHE_VERSION }} | ${{ runner.os }}
-      # - name: "Install Prerequisite: OBS Deps ${{ env.MACOS_DEPS_VERSION }}"
-      #   # if: steps.obscache.outputs.cache-hit != 'true'
-      #   working-directory: ${{ github.workspace }}/obs-websocket
-      #   shell: bash
-      #   run: |
-      #     wget --quiet --retry-connrefused --waitretry=1 https://github.com/obsproject/obs-deps/releases/download/${{ env.MACOS_DEPS_VERSION }}/macos-deps-${{ env.MACOS_DEPS_VERSION }}.tar.gz
-      #     tar -xf ./macos-deps-${{ env.MACOS_DEPS_VERSION }}.tar.gz -C /tmp
-      # - name: "Install Prerequisite: Qt ${{ env.QT_VERSION }}"
-      #   shell: bash
-      #   working-directory: ${{ github.workspace }}/obs-websocket
-      #   run: |
-      #     curl -L -O https://github.com/obsproject/obs-deps/releases/download/${{ env.MACOS_DEPS_VERSION }}/macos-qt-${{ env.QT_VERSION }}-${{ env.MACOS_DEPS_VERSION }}.tar.gz
-      #     tar -xf ./macos-qt-${{ env.QT_VERSION }}-${{ env.MACOS_DEPS_VERSION }}.tar.gz -C "/tmp"
-      #     xattr -r -d com.apple.quarantine /tmp/obsdeps
       - name: "Build OBS-Studio"
         working-directory: ${{ github.workspace }}/obs-studio
         shell: bash
