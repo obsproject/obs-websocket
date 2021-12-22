@@ -414,14 +414,15 @@ jobs:
         working-directory: ${{ github.workspace }}/obs-websocket
         shell: bash
         run: |
+          mkdir /tmp/obsdeps
           curl -L -O https://github.com/obsproject/obs-deps/releases/download/${{ env.MACOS_DEPS_VERSION }}/macos-deps-qt-${{ env.MACOS_DEPS_VERSION }}-universal.tar.xz
-          tar -xf macos-deps-qt-${{ env.MACOS_DEPS_VERSION }}-universal.tar.xz -C "/tmp"
+          tar -xf macos-deps-qt-${{ env.MACOS_DEPS_VERSION }}-universal.tar.xz -C "/tmp/obsdeps"
       - name: "Install Prerequisite: Pre-built OBS-Studio dependencies"
         working-directory: ${{ github.workspace }}/obs-websocket
         shell: bash
         run: |
           curl -L -O https://github.com/obsproject/obs-deps/releases/download/${{ env.MACOS_DEPS_VERSION }}/macos-deps-${{ env.MACOS_DEPS_VERSION }}-universal.tar.xz
-          tar -xf macos-deps-${{ env.MACOS_DEPS_VERSION }}-universal.tar.xz -C "/tmp"
+          tar -xf macos-deps-${{ env.MACOS_DEPS_VERSION }}-universal.tar.xz -C "/tmp/obsdeps"
           xattr -r -d com.apple.quarantine /tmp/obsdeps
       - name: "Configue OBS-Studio"
         working-directory: ${{ github.workspace }}/obs-studio
