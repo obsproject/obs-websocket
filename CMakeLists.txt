@@ -110,6 +110,8 @@ set(obs-websocket_SOURCES
 	src/requesthandler/RequestHandler_Sources.cpp
 	src/requesthandler/RequestHandler_Scenes.cpp
 	src/requesthandler/RequestHandler_Inputs.cpp
+	src/requesthandler/RequestHandler_Transitions.cpp
+	src/requesthandler/RequestHandler_Filters.cpp
 	src/requesthandler/RequestHandler_SceneItems.cpp
 	src/requesthandler/RequestHandler_Stream.cpp
 	src/requesthandler/RequestHandler_Record.cpp
