@@ -516,23 +516,23 @@ jobs:
             --asc-provider "${{ secrets.AC_PROVIDER_SHORTNAME }}" \
             --file "./release/${{ env.MACOS_FILENAME }}.zip")
             
-        	rm ./release/${{ env.FILENAME }}.zip
+          rm ./release/${{ env.FILENAME }}.zip
           
-      	  REQUEST_UUID=$(echo $UPLOAD_RESULT | awk -F ' = ' '/RequestUUID/ {print $2}')
+          REQUEST_UUID=$(echo $UPLOAD_RESULT | awk -F ' = ' '/RequestUUID/ {print $2}')
 
           # Pieces of code borrowed from rednoah/notarized-app
-        	while sleep 30 && date; do
-        		CHECK_RESULT=$(xcrun altool \
-        			--notarization-info "$REQUEST_UUID" \
-        			--username "${{ secrets.AC_USERNAME }}" \
-        			--password "${{ secretsAC_PASSWORD }}" \
-        			--asc-provider "${{ secrets.AC_PROVIDER_SHORTNAME }}")
+          while sleep 30 && date; do
+            CHECK_RESULT=$(xcrun altool \
+              --notarization-info "$REQUEST_UUID" \
+              --username "${{ secrets.AC_USERNAME }}" \
+              --password "${{ secretsAC_PASSWORD }}" \
+              --asc-provider "${{ secrets.AC_PROVIDER_SHORTNAME }}")
 
-        		if ! grep -q "Status: in progress" <<< "$CHECK_RESULT"; then
-        			xcrun stapler staple ./release/${{ env.MACOS_FILENAME }}
-        			break
-        		fi
-        	done
+            if ! grep -q "Status: in progress" <<< "$CHECK_RESULT"; then
+              xcrun stapler staple ./release/${{ env.MACOS_FILENAME }}
+              break
+            fi
+          done
       - name: "Publish ${{ env.MACOS_FILENAME }}"
         if: success()
         uses: actions/upload-artifact@v2-preview
