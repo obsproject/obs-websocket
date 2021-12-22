@@ -56,7 +56,8 @@ bool obs_module_load(void)
 	// Initialize event handler before server, as the server configures the event handler.
 	_eventHandler = EventHandlerPtr(new EventHandler());
 
-	_webSocketApi = WebSocketApiPtr(new WebSocketApi(WebSocketApiEventCallback));
+	_webSocketApi = WebSocketApiPtr(new WebSocketApi());
+	_webSocketApi->SetEventCallback(WebSocketApiEventCallback);
 
 	_webSocketServer = WebSocketServerPtr(new WebSocketServer());
 

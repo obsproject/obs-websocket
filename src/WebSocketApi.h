@@ -25,8 +25,10 @@ class WebSocketApi {
 			std::map<std::string, obs_websocket_request_callback> _requests;
 		};
 	
-		WebSocketApi(EventCallback cb);
+		WebSocketApi();
 		~WebSocketApi();
+
+		void SetEventCallback(EventCallback cb);
 
 		enum RequestReturnCode PerformVendorRequest(std::string vendorName, std::string requestName, obs_data_t *requestData, obs_data_t *responseData);
 
