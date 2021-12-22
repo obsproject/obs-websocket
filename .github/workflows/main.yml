@@ -465,6 +465,7 @@ jobs:
       - name: "Build obs-websocket"
         working-directory: ${{ github.workspace }}/obs-websocket
         shell: bash
+        run: |
           set -e
           cd ./build
           make -j4
