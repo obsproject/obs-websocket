@@ -390,6 +390,7 @@ jobs:
           git checkout ${{ env.OBS_GIT_TAG }}
           git submodule update
       - name: "Get obs-websocket git info"
+        shell: bash
         working-directory: ${{ github.workspace }}/obs-websocket
         run: |
           git fetch --prune --unshallow
@@ -408,7 +409,7 @@ jobs:
           echo "CMAKE_VERSION_SUFFIX=$VERSION_SUFFIX" >> $GITHUB_ENV
       - name: "Install prerequisites (Brew)"
         shell: bash
-         run: |
+        run: |
           brew install \
             jack \
             speexdsp \
