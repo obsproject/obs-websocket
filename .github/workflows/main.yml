@@ -359,6 +359,8 @@ jobs:
     name: "macOS 64-bit"
     runs-on: [macos-latest]
     if: contains(github.event.head_commit.message, '[skip ci]') != true
+    env:
+      MACOS_DEPS_VERSION: "2021-12-05"
     steps:
       - name: "Checkout obs-websocket"
         uses: actions/checkout@v2
@@ -408,6 +410,19 @@ jobs:
           curl -L -O http://s.sudre.free.fr/Software/files/Packages.dmg
           sudo hdiutil attach ./Packages.dmg
           sudo installer -pkg /Volumes/Packages\ 1.2.9/Install\ Packages.pkg -target /
+      - name: "Install Prerequisite: QT"
+        working-directory: ${{ github.workspace }}/obs-websocket
+        shell: bash
+        run: |
+          curl -L -O https://github.com/obsproject/obs-deps/releases/download/${{ env.MACOS_DEPS_VERSION }}/macos-deps-qt-${{ env.MACOS_DEPS_VERSION }}-universal.tar.xz
+          tar -xf macos-deps-qt-${{ env.MACOS_DEPS_VERSION }}-universal.tar.xz -C "/tmp"
+      - name: "Install Prerequisite: Pre-built OBS-Studio dependencies"
+        working-directory: ${{ github.workspace }}/obs-websocket
+        shell: bash
+        run: |
+          curl -L -O https://github.com/obsproject/obs-deps/releases/download/${{ env.MACOS_DEPS_VERSION }}/macos-deps-${{ env.MACOS_DEPS_VERSION }}-universal.tar.xz
+          tar -xf macos-deps-${{ env.MACOS_DEPS_VERSION }}-universal.tar.xz -C "/tmp"
+          xattr -r -d com.apple.quarantine /tmp/obsdeps
       - name: "Configue OBS-Studio"
         working-directory: ${{ github.workspace }}/obs-studio
         shell: bash
