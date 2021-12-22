@@ -1,5 +1,5 @@
 /*
-obs-websocket
+obs-websocket FORK
 Copyright (C) 2016-2021 Stephane Lepin <stephane.lepin@gmail.com>
 Copyright (C) 2020-2021 Kyle Manning <tt2468@gmail.com>
 
