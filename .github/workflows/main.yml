@@ -419,7 +419,7 @@ jobs:
       - name: "Install Packages"
         shell: bash
         run: |
-        	curl -L -O http://s.sudre.free.fr/Software/files/Packages.dmg
+          curl -L -O http://s.sudre.free.fr/Software/files/Packages.dmg
           sudo hdiutil attach ./Packages.dmg
           sudo installer -pkg /Volumes/Packages\ 1.2.9/Install\ Packages.pkg -target /
       # - name: "Restore Cached OBS-Studio Dependencies"
