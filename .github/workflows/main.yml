@@ -447,7 +447,9 @@ jobs:
       - name: "Build OBS-Studio"
         working-directory: ${{ github.workspace }}/obs-studio
         shell: bash
-        run: ./CI/full-build-macos.sh -b
+        run: |
+          export TERM=xterm-256color
+          ./CI/full-build-macos.sh -b
       - name: "Configure obs-websocket"
         working-directory: ${{ github.workspace }}/obs-websocket
         shell: bash
