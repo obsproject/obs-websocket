@@ -25,6 +25,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <QString>
 #include <websocketpp/config/asio_no_tls.hpp>
 #include <websocketpp/server.hpp>
+#include <asio.hpp>
 
 #include "rpc/WebSocketSession.h"
 #include "types/WebSocketCloseCode.h"

@@ -465,6 +465,11 @@ jobs:
           set -e
           cd ./build
           make -j4
+      - name: "Sign plugin binary"
+        shell: bash
+        working-directory: ${{ github.workspace }}/obs-websocket
+        run: |
+          codesign --sign "$CODE_SIGNING_IDENTITY" ./build/obs-websocket.so
       - name: "Set PR Artifact Filename"
         shell: bash
         run: |
@@ -489,9 +494,48 @@ jobs:
           	./build/obs-websocket.so
           packagesbuild ./CI/macos/obs-websocket.pkgproj
           mv ./release/obs-websocket.pkg ./release/${{ env.MACOS_FILENAME_UNSIGNED }}
-      - name: "Publish ${{ env.MACOS_FILENAME_UNSIGNED }}"
+      - name: "Sign plugin package"
+        shell: bash
+        working-directory: ${{ github.workspace }}/obs-websocket
+        run: |
+          productsign \
+            --sign "${{ secrets.INSTALLER_SIGNING_IDENTITY }}"
+            ./release/${{ env.MACOS_FILENAME_UNSIGNED }}
+            ./release/${{ env.MACOS_FILENAME }}
+            
+          rm ./release/${{ env.MACOS_FILENAME_UNSIGNED }}
+      - name: "Notarize package"
+        shell: bash
+        working-directory: ${{ github.workspace }}/obs-websocket
+        run: |
+          zip -r ./release/${{ env.MACOS_FILENAME }}.zip ./release/${{ env.MACOS_FILENAME }}.pkg
+          UPLOAD_RESULT=$(xcrun altool --notarize-app \
+            --primary-bundle-id "fr.palakis.obs-websocket" \
+            --username "${{ secrets.AC_USERNAME }}" \
+            --password "${{ secrets.AC_PASSWORD }}" \
+            --asc-provider "${{ secrets.AC_PROVIDER_SHORTNAME }}" \
+            --file "./release/${{ env.MACOS_FILENAME }}.zip")
+            
+        	rm ./release/${{ env.FILENAME }}.zip
+          
+      	  REQUEST_UUID=$(echo $UPLOAD_RESULT | awk -F ' = ' '/RequestUUID/ {print $2}')
+
+          # Pieces of code borrowed from rednoah/notarized-app
+        	while sleep 30 && date; do
+        		CHECK_RESULT=$(xcrun altool \
+        			--notarization-info "$REQUEST_UUID" \
+        			--username "${{ secrets.AC_USERNAME }}" \
+        			--password "${{ secretsAC_PASSWORD }}" \
+        			--asc-provider "${{ secrets.AC_PROVIDER_SHORTNAME }}")
+
+        		if ! grep -q "Status: in progress" <<< "$CHECK_RESULT"; then
+        			xcrun stapler staple ./release/${{ env.MACOS_FILENAME }}
+        			break
+        		fi
+        	done
+      - name: "Publish ${{ env.MACOS_FILENAME }}"
         if: success()
         uses: actions/upload-artifact@v2-preview
         with:
           name: "obs-websocket-${{ env.PACKAGE_VERSION }}-macOS"
-          path: "${{ github.workspace }}/obs-websocket/release/*.pkg"
+          path: "${{ github.workspace }}/obs-websocket/release/${{ env.MACOS_FILENAME }}.pkg"
