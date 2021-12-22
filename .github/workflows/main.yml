@@ -469,7 +469,7 @@ jobs:
         uses: apple-actions/import-codesign-certs@253ddeeac23f2bdad1646faac5c8c2832e800071
         with:
           p12-file-base64: ${{ secrets.MACOS_SIGNING_CERT }}
-          p12-password: ${{ secrets.MACOS_SIGNING_CERT_PASSWORD }
+          p12-password: ${{ secrets.MACOS_SIGNING_CERT_PASSWORD }}
       - name: "Sign plugin binary"
         shell: bash
         working-directory: ${{ github.workspace }}/obs-websocket
