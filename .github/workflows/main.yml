@@ -525,7 +525,7 @@ jobs:
             CHECK_RESULT=$(xcrun altool \
               --notarization-info "$REQUEST_UUID" \
               --username "${{ secrets.AC_USERNAME }}" \
-              --password "${{ secretsAC_PASSWORD }}" \
+              --password "${{ secrets.AC_PASSWORD }}" \
               --asc-provider "${{ secrets.AC_PROVIDER_SHORTNAME }}")
 
             if ! grep -q "Status: in progress" <<< "$CHECK_RESULT"; then
