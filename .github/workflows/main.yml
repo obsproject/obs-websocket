@@ -407,15 +407,6 @@ jobs:
           fi
           echo "PACKAGE_VERSION=$VERSION" >> $GITHUB_ENV
           echo "CMAKE_VERSION_SUFFIX=$VERSION_SUFFIX" >> $GITHUB_ENV
-      - name: "Install prerequisites (Brew)"
-        shell: bash
-        run: |
-          brew install \
-            jack \
-            speexdsp \
-            cmake \
-            freetype \
-            fdk-aac \
       - name: "Install Packages"
         shell: bash
         run: |
@@ -430,20 +421,20 @@ jobs:
       #     key: "obsdep-${{ env.MACOS_DEPS_CACHE_VERSION }} | ${{ runner.os }}"
       #     restore-keys: |
       #       obsdep-${{ env.MACOS_DEPS_CACHE_VERSION }} | ${{ runner.os }}
-      - name: "Install Prerequisite: OBS Deps ${{ env.MACOS_DEPS_VERSION }}"
-        # if: steps.obscache.outputs.cache-hit != 'true'
-        working-directory: ${{ github.workspace }}/obs-websocket
-        shell: bash
-        run: |
-          wget --quiet --retry-connrefused --waitretry=1 https://github.com/obsproject/obs-deps/releases/download/${{ env.MACOS_DEPS_VERSION }}/macos-deps-${{ env.MACOS_DEPS_VERSION }}.tar.gz
-          tar -xf ./macos-deps-${{ env.MACOS_DEPS_VERSION }}.tar.gz -C /tmp
-      - name: "Install Prerequisite: Qt ${{ env.QT_VERSION }}"
-        shell: bash
-        working-directory: ${{ github.workspace }}/obs-websocket
-        run: |
-          curl -L -O https://github.com/obsproject/obs-deps/releases/download/${{ env.MACOS_DEPS_VERSION }}/macos-qt-${{ env.QT_VERSION }}-${{ env.MACOS_DEPS_VERSION }}.tar.gz
-          tar -xf ./macos-qt-${{ env.QT_VERSION }}-${{ env.MACOS_DEPS_VERSION }}.tar.gz -C "/tmp"
-          xattr -r -d com.apple.quarantine /tmp/obsdeps
+      # - name: "Install Prerequisite: OBS Deps ${{ env.MACOS_DEPS_VERSION }}"
+      #   # if: steps.obscache.outputs.cache-hit != 'true'
+      #   working-directory: ${{ github.workspace }}/obs-websocket
+      #   shell: bash
+      #   run: |
+      #     wget --quiet --retry-connrefused --waitretry=1 https://github.com/obsproject/obs-deps/releases/download/${{ env.MACOS_DEPS_VERSION }}/macos-deps-${{ env.MACOS_DEPS_VERSION }}.tar.gz
+      #     tar -xf ./macos-deps-${{ env.MACOS_DEPS_VERSION }}.tar.gz -C /tmp
+      # - name: "Install Prerequisite: Qt ${{ env.QT_VERSION }}"
+      #   shell: bash
+      #   working-directory: ${{ github.workspace }}/obs-websocket
+      #   run: |
+      #     curl -L -O https://github.com/obsproject/obs-deps/releases/download/${{ env.MACOS_DEPS_VERSION }}/macos-qt-${{ env.QT_VERSION }}-${{ env.MACOS_DEPS_VERSION }}.tar.gz
+      #     tar -xf ./macos-qt-${{ env.QT_VERSION }}-${{ env.MACOS_DEPS_VERSION }}.tar.gz -C "/tmp"
+      #     xattr -r -d com.apple.quarantine /tmp/obsdeps
       - name: "Build OBS-Studio"
         working-directory: ${{ github.workspace }}/obs-studio
         shell: bash
