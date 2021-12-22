@@ -408,23 +408,26 @@ jobs:
           curl -L -O http://s.sudre.free.fr/Software/files/Packages.dmg
           sudo hdiutil attach ./Packages.dmg
           sudo installer -pkg /Volumes/Packages\ 1.2.9/Install\ Packages.pkg -target /
-      - name: "Restore OBS-Studio Build v${{ env.OBS_GIT_TAG }} from Cache"
-        id: build-cache-obs-64
-        uses: actions/cache@v1
-        env:
-          CACHE_NAME: "build-cache-obs-64"
-        with:
-          path: ${{ github.workspace }}/obs-studio/build
-          key: ${{ runner.os }}-${{ env.CACHE_NAME }}-${{ env.OBS_GIT_TAG }}
-          restore-keys: |
-            ${{ runner.os }}-${{ env.CACHE_NAME }}-
-      - name: "Build OBS-Studio"
-        if: steps.build-cache-obs-64.outputs.cache-hit != 'true'
+      - name: "Configue OBS-Studio"
         working-directory: ${{ github.workspace }}/obs-studio
         shell: bash
         run: |
-          export TERM=xterm-256color
-          ./CI/full-build-macos.sh -b
+          mkdir ./build
+          cd ./build
+          cmake .. \
+          	-DQTDIR=/tmp/obsdeps \
+          	-DDepsPath=/tmp/obsdeps \
+          	-DCMAKE_OSX_DEPLOYMENT_TARGET=10.13 \
+          	-DDISABLE_PLUGINS=true \
+          	-DENABLE_SCRIPTING=0 \
+          	-DCMAKE_PREFIX_PATH=/tmp/obsdeps/lib/cmake \
+      - name: "Build OBS-Studio"
+        working-directory: ${{ github.workspace }}/obs-studio
+        shell: bash
+        run: |
+          set -e
+          cd ./build
+          make -j4 libobs obs-frontend-api
       - name: "Configure obs-websocket"
         working-directory: ${{ github.workspace }}/obs-websocket
         shell: bash
