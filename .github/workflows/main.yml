@@ -466,7 +466,7 @@ jobs:
           cd ./build
           make -j4
       - name: "Install Apple Developer Certificate"
-        uses: apple-actions/import-codesign-certs
+        uses: apple-actions/import-codesign-certs@v1
         with:
           p12-file-base64: ${{ secrets.MACOS_SIGNING_CERT }}
           p12-password: ${{ secrets.MACOS_SIGNING_CERT_PASSWORD }}
