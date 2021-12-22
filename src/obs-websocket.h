@@ -35,23 +35,23 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 class Config;
 typedef std::shared_ptr<Config> ConfigPtr;
 
+class EventHandler;
+typedef std::shared_ptr<EventHandler> EventHandlerPtr;
+
 class WebSocketApi;
 typedef std::shared_ptr<WebSocketApi> WebSocketApiPtr;
 
 class WebSocketServer;
 typedef std::shared_ptr<WebSocketServer> WebSocketServerPtr;
 
-class EventHandler;
-typedef std::shared_ptr<EventHandler> EventHandlerPtr;
+os_cpu_usage_info_t* GetCpuUsageInfo();
 
 ConfigPtr GetConfig();
+
+EventHandlerPtr GetEventHandler();
 
 WebSocketApiPtr GetWebSocketApi();
 
 WebSocketServerPtr GetWebSocketServer();
-
-EventHandlerPtr GetEventHandler();
-
-os_cpu_usage_info_t* GetCpuUsageInfo();
 
 bool IsDebugEnabled();

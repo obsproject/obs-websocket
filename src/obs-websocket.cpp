@@ -35,12 +35,12 @@ OBS_MODULE_AUTHOR("OBSProject")
 const char *obs_module_name(void) { return "obs-websocket"; }
 const char *obs_module_description(void) { return obs_module_text("OBSWebSocket.Plugin.Description"); }
 
+os_cpu_usage_info_t* _cpuUsageInfo;
 ConfigPtr _config;
+EventHandlerPtr _eventHandler;
 WebSocketApiPtr _webSocketApi;
 WebSocketServerPtr _webSocketServer;
-EventHandlerPtr _eventHandler;
 SettingsDialog *_settingsDialog = nullptr;
-os_cpu_usage_info_t* _cpuUsageInfo;
 
 void WebSocketApiEventCallback(std::string vendorName, std::string eventType, obs_data_t *obsEventData);
 
@@ -49,32 +49,35 @@ bool obs_module_load(void)
 	blog(LOG_INFO, "[obs_module_load] you can haz websockets (Version: %s | RPC Version: %d)", OBS_WEBSOCKET_VERSION, OBS_WEBSOCKET_RPC_VERSION);
 	blog(LOG_INFO, "[obs_module_load] Qt version (compile-time): %s | Qt version (run-time): %s", QT_VERSION_STR, qVersion());
 
-	// Create the config object then load the parameters from storage
+	// Initialize the cpu stats
+	_cpuUsageInfo = os_cpu_usage_info_start();
+
+	// Create the config manager then load the parameters from storage
 	_config = ConfigPtr(new Config());
 	_config->Load();
 
-	// Initialize event handler before server, as the server configures the event handler.
+	// Initialize the event handler
 	_eventHandler = EventHandlerPtr(new EventHandler());
 
+	// Initialize the plugin/script API
 	_webSocketApi = WebSocketApiPtr(new WebSocketApi());
 	_webSocketApi->SetEventCallback(WebSocketApiEventCallback);
 
+	// Initialize the WebSocket server
 	_webSocketServer = WebSocketServerPtr(new WebSocketServer());
 
+	// Initialize the settings dialog
 	obs_frontend_push_ui_translation(obs_module_get_string);
 	QMainWindow* mainWindow = reinterpret_cast<QMainWindow*>(obs_frontend_get_main_window());
 	_settingsDialog = new SettingsDialog(mainWindow);
 	obs_frontend_pop_ui_translation();
 
+	// Add the settings dialog to the tools menu
 	const char* menuActionText = obs_module_text("OBSWebSocket.Settings.DialogTitle");
 	QAction* menuAction = (QAction*)obs_frontend_add_tools_menu_qaction(menuActionText);
 	QObject::connect(menuAction, &QAction::triggered, [] { _settingsDialog->ToggleShowHide(); });
 
-	_cpuUsageInfo = os_cpu_usage_info_start();
-
-	// Loading finished
 	blog(LOG_INFO, "[obs_module_load] Module loaded.");
-
 	return true;
 }
 
@@ -82,27 +85,44 @@ void obs_module_unload()
 {
 	blog(LOG_INFO, "[obs_module_unload] Shutting down...");
 
+	// Shutdown the WebSocket server if it is running
 	if (_webSocketServer->IsListening()) {
 		blog_debug("[obs_module_unload] WebSocket server is running. Stopping...");
 		_webSocketServer->Stop();
 	}
+
+	// Destroy the WebSocket server
 	_webSocketServer.reset();
 
-	_eventHandler.reset();
-
+	// Destroy the plugin/script api
 	_webSocketApi.reset();
 
+	// Destroy the event handler
+	_eventHandler.reset();
+
+	// Save and destroy the config manager
 	_config->Save();
 	_config.reset();
 
+	// Destroy the cpu stats
 	os_cpu_usage_info_destroy(_cpuUsageInfo);
 
 	blog(LOG_INFO, "[obs_module_unload] Finished shutting down.");
 }
 
+os_cpu_usage_info_t* GetCpuUsageInfo()
+{
+	return _cpuUsageInfo;
+}
+
 ConfigPtr GetConfig()
 {
 	return _config;
+}
+
+EventHandlerPtr GetEventHandler()
+{
+	return _eventHandler;
 }
 
 WebSocketApiPtr GetWebSocketApi()
@@ -113,16 +133,6 @@ WebSocketApiPtr GetWebSocketApi()
 WebSocketServerPtr GetWebSocketServer()
 {
 	return _webSocketServer;
-}
-
-EventHandlerPtr GetEventHandler()
-{
-	return _eventHandler;
-}
-
-os_cpu_usage_info_t* GetCpuUsageInfo()
-{
-	return _cpuUsageInfo;
 }
 
 bool IsDebugEnabled()
