@@ -408,7 +408,18 @@ jobs:
           curl -L -O http://s.sudre.free.fr/Software/files/Packages.dmg
           sudo hdiutil attach ./Packages.dmg
           sudo installer -pkg /Volumes/Packages\ 1.2.9/Install\ Packages.pkg -target /
+      - name: "Restore OBS-Studio Build v${{ env.OBS_GIT_TAG }} from Cache"
+        id: build-cache-obs-64
+        uses: actions/cache@v1
+        env:
+          CACHE_NAME: "build-cache-obs-64"
+        with:
+          path: ${{ github.workspace }}/obs-studio/build
+          key: ${{ runner.os }}-${{ env.CACHE_NAME }}-${{ env.OBS_GIT_TAG }}
+          restore-keys: |
+            ${{ runner.os }}-${{ env.CACHE_NAME }}-
       - name: "Build OBS-Studio"
+        if: steps.build-cache-obs-64.outputs.cache-hit != 'true'
         working-directory: ${{ github.workspace }}/obs-studio
         shell: bash
         run: |
