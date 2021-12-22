@@ -22,7 +22,6 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <atomic>
 #include <obs.hpp>
 #include <obs-frontend-api.h>
-#include <util/platform.h>
 
 #include "types/EventSubscription.h"
 #include "../obs-websocket.h"
