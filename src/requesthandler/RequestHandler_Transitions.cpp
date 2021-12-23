@@ -18,3 +18,10 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 */
 
 #include "RequestHandler.h"
+
+RequestResult RequestHandler::GetTransitionKindList(const Request&)
+{
+	json responseData;
+	responseData["transitionKinds"] = Utils::Obs::ArrayHelper::GetTransitionKindList();
+	return RequestResult::Success(responseData);
+}

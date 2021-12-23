@@ -86,6 +86,9 @@ const std::map<std::string, RequestMethodHandler> RequestHandler::_handlerMap
 	{"GetInputPropertiesListPropertyItems", &RequestHandler::GetInputPropertiesListPropertyItems},
 	{"PressInputPropertiesButton", &RequestHandler::PressInputPropertiesButton},
 
+	// Transitions
+	{"GetTransitionKindList", &RequestHandler::GetTransitionKindList},
+
 	// Scene Items
 	{"GetSceneItemList", &RequestHandler::GetSceneItemList},
 	{"GetGroupSceneItemList", &RequestHandler::GetGroupSceneItemList},

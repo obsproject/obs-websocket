@@ -108,6 +108,9 @@ class RequestHandler {
 		RequestResult GetInputPropertiesListPropertyItems(const Request&);
 		RequestResult PressInputPropertiesButton(const Request&);
 
+		// Transitions
+		RequestResult GetTransitionKindList(const Request&);
+
 		// Scene Items
 		RequestResult GetSceneItemList(const Request&);
 		RequestResult GetGroupSceneItemList(const Request&);
