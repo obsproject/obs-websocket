@@ -120,9 +120,10 @@ namespace Utils {
 			std::vector<std::string> GetHotkeyNameList();
 			std::vector<json> GetSceneList();
 			std::vector<json> GetSceneItemList(obs_scene_t *scene, bool basic = false);
-			std::vector<json> GetTransitionList();
 			std::vector<json> GetInputList(std::string inputKind = "");
 			std::vector<std::string> GetInputKindList(bool unversioned = false, bool includeDisabled = false);
+			std::vector<std::string> GetTransitionKindList();
+			std::vector<json> GetSceneTransitionList();
 		}
 
 		namespace ObjectHelper {
