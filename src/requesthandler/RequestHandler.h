@@ -110,6 +110,9 @@ class RequestHandler {
 
 		// Transitions
 		RequestResult GetTransitionKindList(const Request&);
+		RequestResult GetSceneTransitionList(const Request&);
+		RequestResult GetCurrentSceneTransition(const Request&);
+		RequestResult SetCurrentSceneTransition(const Request&);
 
 		// Scene Items
 		RequestResult GetSceneItemList(const Request&);

@@ -88,6 +88,9 @@ const std::map<std::string, RequestMethodHandler> RequestHandler::_handlerMap
 
 	// Transitions
 	{"GetTransitionKindList", &RequestHandler::GetTransitionKindList},
+	{"GetSceneTransitionList", &RequestHandler::GetSceneTransitionList},
+	{"GetCurrentSceneTransition", &RequestHandler::GetCurrentSceneTransition},
+	{"SetCurrentSceneTransition", &RequestHandler::SetCurrentSceneTransition},
 
 	// Scene Items
 	{"GetSceneItemList", &RequestHandler::GetSceneItemList},
