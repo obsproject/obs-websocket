@@ -442,6 +442,7 @@ These are enumeration declarations, which are referenced throughout obs-websocke
   - [RequestStatus::NotEnoughResources](#requeststatusnotenoughresources)
   - [RequestStatus::InvalidResourceState](#requeststatusinvalidresourcestate)
   - [RequestStatus::InvalidInputKind](#requeststatusinvalidinputkind)
+  - [RequestStatus::ResourceNotConfigurable](#requeststatusresourcenotconfigurable)
   - [RequestStatus::ResourceCreationFailed](#requeststatusresourcecreationfailed)
   - [RequestStatus::ResourceActionFailed](#requeststatusresourceactionfailed)
   - [RequestStatus::RequestProcessingFailed](#requeststatusrequestprocessingfailed)
@@ -1006,6 +1007,18 @@ The state of the resource is invalid. For example, if the resource is blocked fr
 The specified input (obs_source_t-OBS_SOURCE_TYPE_INPUT) had the wrong kind.
 
 - Identifier Value: `605`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### RequestStatus::ResourceNotConfigurable
+
+The resource does not support being configured.
+
+This is particularly relevant to transitions, where they do not always have changeable settings.
+
+- Identifier Value: `606`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 

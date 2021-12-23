@@ -390,6 +390,14 @@
           "enumValue": 605
         },
         {
+          "description": "The resource does not support being configured.\n\nThis is particularly relevant to transitions, where they do not always have changeable settings.",
+          "enumIdentifier": "ResourceNotConfigurable",
+          "rpcVersion": "1",
+          "deprecated": false,
+          "initialVersion": "5.0.0",
+          "enumValue": 606
+        },
+        {
           "description": "Creating the resource failed.",
           "enumIdentifier": "ResourceCreationFailed",
           "rpcVersion": "1",
