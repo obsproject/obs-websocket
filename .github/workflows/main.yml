@@ -436,7 +436,7 @@ jobs:
           	-DCMAKE_OSX_DEPLOYMENT_TARGET=10.13 \
           	-DDISABLE_PLUGINS=true \
           	-DENABLE_SCRIPTING=0 \
-          	-DCMAKE_PREFIX_PATH=/tmp/obsdeps/lib/cmake \
+          	-DCMAKE_PREFIX_PATH=/tmp/obsdeps/lib/cmake
       - name: "Build OBS-Studio"
         working-directory: ${{ github.workspace }}/obs-studio
         shell: bash
