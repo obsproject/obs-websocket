@@ -91,6 +91,9 @@ const std::map<std::string, RequestMethodHandler> RequestHandler::_handlerMap
 	{"GetSceneTransitionList", &RequestHandler::GetSceneTransitionList},
 	{"GetCurrentSceneTransition", &RequestHandler::GetCurrentSceneTransition},
 	{"SetCurrentSceneTransition", &RequestHandler::SetCurrentSceneTransition},
+	{"SetCurrentSceneTransitionDuration", &RequestHandler::SetCurrentSceneTransitionDuration},
+	{"SetCurrentSceneTransitionSettings", &RequestHandler::SetCurrentSceneTransitionSettings},
+	{"TriggerStudioModeTransition", &RequestHandler::TriggerStudioModeTransition},
 
 	// Scene Items
 	{"GetSceneItemList", &RequestHandler::GetSceneItemList},

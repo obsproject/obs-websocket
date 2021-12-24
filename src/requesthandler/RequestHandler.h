@@ -113,6 +113,9 @@ class RequestHandler {
 		RequestResult GetSceneTransitionList(const Request&);
 		RequestResult GetCurrentSceneTransition(const Request&);
 		RequestResult SetCurrentSceneTransition(const Request&);
+		RequestResult SetCurrentSceneTransitionDuration(const Request&);
+		RequestResult SetCurrentSceneTransitionSettings(const Request&);
+		RequestResult TriggerStudioModeTransition(const Request&);
 
 		// Scene Items
 		RequestResult GetSceneItemList(const Request&);

@@ -92,3 +92,65 @@ RequestResult RequestHandler::SetCurrentSceneTransition(const Request& request)
 
 	return RequestResult::Success();
 }
+
+RequestResult RequestHandler::SetCurrentSceneTransitionDuration(const Request& request)
+{
+	RequestStatus::RequestStatus statusCode;
+	std::string comment;
+	if (!request.ValidateNumber("transitionDuration", statusCode, comment, 50, 20000))
+		return RequestResult::Error(statusCode, comment);
+
+	int transitionDuration = request.RequestData["transitionDuration"];
+
+	obs_frontend_set_transition_duration(transitionDuration);
+
+	return RequestResult::Success();
+}
+
+RequestResult RequestHandler::SetCurrentSceneTransitionSettings(const Request& request)
+{
+	RequestStatus::RequestStatus statusCode;
+	std::string comment;
+	if (!request.ValidateObject("transitionSettings", statusCode, comment, true))
+		return RequestResult::Error(statusCode, comment);
+
+	OBSSourceAutoRelease transition = obs_frontend_get_current_transition();
+	if (!transition)
+		return RequestResult::Error(RequestStatus::InvalidResourceState, "OBS does not currently have a scene transition set."); // This should not happen!
+
+	if (!obs_source_configurable(transition))
+		return RequestResult::Error(RequestStatus::ResourceNotConfigurable, "The current transition does not support custom settings.");
+
+	bool overlay = true;
+	if (request.Contains("overlay")) {
+		if (!request.ValidateOptionalBoolean("overlay", statusCode, comment))
+			return RequestResult::Error(statusCode, comment);
+
+		overlay = request.RequestData["overlay"];
+	}
+
+	OBSDataAutoRelease newSettings = Utils::Json::JsonToObsData(request.RequestData["transitionSettings"]);
+	if (!newSettings)
+		return RequestResult::Error(RequestStatus::RequestProcessingFailed, "An internal data conversion operation failed. Please report this!");
+
+	if (overlay)
+		obs_source_update(transition, newSettings);
+	else
+		obs_source_reset_settings(transition, newSettings);
+
+	obs_source_update_properties(transition);
+
+	return RequestResult::Success();
+}
+
+RequestResult RequestHandler::TriggerStudioModeTransition(const Request&)
+{
+	if (!obs_frontend_preview_program_mode_active())
+		return RequestResult::Error(RequestStatus::StudioModeNotActive);
+
+	OBSSourceAutoRelease previewScene = obs_frontend_get_current_preview_scene();
+
+	obs_frontend_set_current_scene(previewScene);
+
+	return RequestResult::Success();
+}
