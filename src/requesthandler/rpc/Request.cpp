@@ -297,22 +297,12 @@ obs_source_t *Request::ValidateInput(const std::string &keyName, RequestStatus::
 
 obs_sceneitem_t *Request::ValidateSceneItem(const std::string &sceneKeyName, const std::string &sceneItemIdKeyName, RequestStatus::RequestStatus &statusCode, std::string &comment, const ObsWebSocketSceneFilter filter) const
 {
-	OBSSourceAutoRelease sceneSource = ValidateScene(sceneKeyName, statusCode, comment, filter);
-	if (!sceneSource)
+	OBSSceneAutoRelease scene = ValidateScene2(sceneKeyName, statusCode, comment, filter);
+	if (!scene)
 		return nullptr;
 
 	if (!ValidateNumber(sceneItemIdKeyName, statusCode, comment, 0))
 		return nullptr;
-	
-	OBSScene scene = obs_scene_from_source(sceneSource);
-	if (!scene) {
-		scene = obs_group_from_source(sceneSource);
-		if (!scene) { // This should never happen
-			statusCode = RequestStatus::GenericError;
-			comment = "Somehow the scene was found but the scene object could not be fetched. Please report this to the obs-websocket developers.";
-			return nullptr;
-		}
-	}
 
 	int64_t sceneItemId = RequestData[sceneItemIdKeyName];
 
