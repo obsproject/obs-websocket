@@ -289,58 +289,6 @@ RequestResult RequestHandler::TriggerHotkeyByKeySequence(const Request& request)
 }
 
 /**
- * Gets whether studio is enabled.
- *
- * @responseField studioModeEnabled | Boolean | Whether studio mode is enabled
- *
- * @requestType GetStudioModeEnabled
- * @complexity 1
- * @rpcVersion -1
- * @initialVersion 5.0.0
- * @category general
- * @api requests
- */
-RequestResult RequestHandler::GetStudioModeEnabled(const Request&)
-{
-	json responseData;
-	responseData["studioModeEnabled"] = obs_frontend_preview_program_mode_active();
-	return RequestResult::Success(responseData);
-}
-
-/**
- * Enables or disables studio mode
- *
- * @requestField studioModeEnabled | Boolean | True == Enabled, False == Disabled
- *
- * @requestType SetStudioModeEnabled
- * @complexity 1
- * @rpcVersion -1
- * @initialVersion 5.0.0
- * @category general
- * @api requests
- */
-RequestResult RequestHandler::SetStudioModeEnabled(const Request& request)
-{
-	RequestStatus::RequestStatus statusCode;
-	std::string comment;
-	if (!request.ValidateBoolean("studioModeEnabled", statusCode, comment))
-		return RequestResult::Error(statusCode, comment);
-
-	// Avoid queueing tasks if nothing will change
-	if (obs_frontend_preview_program_mode_active() != request.RequestData["studioModeEnabled"]) {
-		// (Bad) Create a boolean then pass it as a reference to the task. Requires `wait` in obs_queue_task() to be true, else undefined behavior
-		bool studioModeEnabled = request.RequestData["studioModeEnabled"];
-		// Queue the task inside of the UI thread to prevent race conditions
-		obs_queue_task(OBS_TASK_UI, [](void* param) {
-			auto studioModeEnabled = (bool*)param;
-			obs_frontend_set_preview_program_mode(*studioModeEnabled);
-		}, &studioModeEnabled, true);
-	}
-
-	return RequestResult::Success();
-}
-
-/**
  * Sleeps for a time duration or number of frames. Only available in request batches with types `SERIAL_REALTIME` or `SERIAL_FRAME`.
  *
  * @requestField sleepMillis | Number | Number of milliseconds to sleep for (if `SERIAL_REALTIME` mode) | >= 0, <= 50000

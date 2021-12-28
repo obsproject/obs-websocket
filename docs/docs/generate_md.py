@@ -25,6 +25,7 @@ categoryOrder = [
     'Stream',
     'Record',
     'Media Inputs',
+    'Ui',
     'High-Volume'
 ]
 
