@@ -457,7 +457,7 @@ jobs:
           	-DLIBOBS_LIB=../../obs-studio/libobs \
           	-DOBS_FRONTEND_LIB="$(pwd)/../../obs-studio/build/UI/obs-frontend-api/libobs-frontend-api.dylib" \
           	-DCMAKE_BUILD_TYPE=RelWithDebInfo \
-          	-DCMAKE_INSTALL_PREFIX=/usr \
+          	-DCMAKE_INSTALL_PREFIX=/usr
       - name: "Build obs-websocket"
         working-directory: ${{ github.workspace }}/obs-websocket
         shell: bash
@@ -470,11 +470,12 @@ jobs:
         with:
           p12-file-base64: ${{ secrets.MACOS_SIGNING_CERT }}
           p12-password: ${{ secrets.MACOS_SIGNING_CERT_PASSWORD }}
+          create-keychain: false
       - name: "Sign plugin binary"
         shell: bash
         working-directory: ${{ github.workspace }}/obs-websocket
         run: |
-          codesign --sign "${{ secrets.INSTALLER_SIGNING_IDENTITY }}" --keychain "/Users/runner/Library/Keychains/signing_temp.keychain-db" ./build/obs-websocket.so
+          codesign --sign "${{ secrets.INSTALLER_SIGNING_IDENTITY }}" ./build/obs-websocket.so
       - name: "Set PR Artifact Filename"
         shell: bash
         run: |
