@@ -122,7 +122,7 @@ for comment in comments_raw:
             enumValue = field_to_string(comment['enumValue'])
             enum['enumValue'] = int(enumValue) if enumValue.isdigit() else enumValue
         else:
-            enum['enumValue'] = None
+            enum['enumValue'] = enum['enumIdentifier']
 
         if enumType not in enums_raw:
             enums_raw[enumType] = {'enumIdentifiers': [enum]}

@@ -77,12 +77,75 @@ enum ObsOutputState {
 };
 
 enum ObsMediaInputAction {
+	/**
+	* No action.
+	*
+	* @enumIdentifier OBS_WEBSOCKET_MEDIA_INPUT_ACTION_NONE
+	* @enumType ObsMediaInputAction
+	* @rpcVersion 1
+	* @initialVersion 5.0.0
+	* @api enums
+	*/
 	OBS_WEBSOCKET_MEDIA_INPUT_ACTION_NONE,
+	/**
+	* Play the media input.
+	*
+	* @enumIdentifier OBS_WEBSOCKET_MEDIA_INPUT_ACTION_PLAY
+	* @enumType ObsMediaInputAction
+	* @rpcVersion 1
+	* @initialVersion 5.0.0
+	* @api enums
+	*/
 	OBS_WEBSOCKET_MEDIA_INPUT_ACTION_PLAY,
+	/**
+	* Pause the media input.
+	*
+	* @enumIdentifier OBS_WEBSOCKET_MEDIA_INPUT_ACTION_PAUSE
+	* @enumType ObsMediaInputAction
+	* @rpcVersion 1
+	* @initialVersion 5.0.0
+	* @api enums
+	*/
 	OBS_WEBSOCKET_MEDIA_INPUT_ACTION_PAUSE,
+	/**
+	* Stop the media input.
+	*
+	* @enumIdentifier OBS_WEBSOCKET_MEDIA_INPUT_ACTION_STOP
+	* @enumType ObsMediaInputAction
+	* @rpcVersion 1
+	* @initialVersion 5.0.0
+	* @api enums
+	*/
 	OBS_WEBSOCKET_MEDIA_INPUT_ACTION_STOP,
+	/**
+	* Restart the media input.
+	*
+	* @enumIdentifier OBS_WEBSOCKET_MEDIA_INPUT_ACTION_RESTART
+	* @enumType ObsMediaInputAction
+	* @rpcVersion 1
+	* @initialVersion 5.0.0
+	* @api enums
+	*/
 	OBS_WEBSOCKET_MEDIA_INPUT_ACTION_RESTART,
+	/**
+	* Go to the next playlist item.
+	*
+	* @enumIdentifier OBS_WEBSOCKET_MEDIA_INPUT_ACTION_NEXT
+	* @enumType ObsMediaInputAction
+	* @rpcVersion 1
+	* @initialVersion 5.0.0
+	* @api enums
+	*/
 	OBS_WEBSOCKET_MEDIA_INPUT_ACTION_NEXT,
+	/**
+	* Go to the previous playlist item.
+	*
+	* @enumIdentifier OBS_WEBSOCKET_MEDIA_INPUT_ACTION_PREVIOUS
+	* @enumType ObsMediaInputAction
+	* @rpcVersion 1
+	* @initialVersion 5.0.0
+	* @api enums
+	*/
 	OBS_WEBSOCKET_MEDIA_INPUT_ACTION_PREVIOUS,
 };
 
