@@ -24,7 +24,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
  *
  * Similar to `GetInputKindList`
  *
- * @responseField transitionKinds | Vector<String> | Array of transition kinds
+ * @responseField transitionKinds | Array<String> | Array of transition kinds
  *
  * @requestType GetTransitionKindList
  * @complexity 2
@@ -45,7 +45,7 @@ RequestResult RequestHandler::GetTransitionKindList(const Request&)
  *
  * @responseField currentSceneTransitionName | String         | Name of the current scene transition. Can be null
  * @responseField currentSceneTransitionKind | String         | Kind of the current scene transition. Can be null
- * @responseField transitions                | Vector<Object> | Array of transitions
+ * @responseField transitions                | Array<Object> | Array of transitions
  *
  * @requestType GetSceneTransitionList
  * @complexity 3
