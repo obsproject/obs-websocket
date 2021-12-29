@@ -550,4 +550,4 @@ jobs:
         uses: actions/upload-artifact@v2-preview
         with:
           name: "obs-websocket-${{ env.PACKAGE_VERSION }}-macOS"
-          path: "${{ github.workspace }}/obs-websocket/release/${{ env.MACOS_FILENAME }}.pkg"
+          path: "${{ github.workspace }}/obs-websocket/release/${{ env.MACOS_FILENAME }}"
