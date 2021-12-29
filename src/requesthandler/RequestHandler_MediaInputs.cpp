@@ -25,6 +25,32 @@ bool IsMediaTimeValid(obs_source_t *input)
 	return mediaState == OBS_MEDIA_STATE_PLAYING || mediaState == OBS_MEDIA_STATE_PAUSED;
 }
 
+/**
+ * Gets the status of a media input.
+ *
+ * Media States:
+ * - `OBS_MEDIA_STATE_NONE`
+ * - `OBS_MEDIA_STATE_PLAYING`
+ * - `OBS_MEDIA_STATE_OPENING`
+ * - `OBS_MEDIA_STATE_BUFFERING`
+ * - `OBS_MEDIA_STATE_PAUSED`
+ * - `OBS_MEDIA_STATE_STOPPED`
+ * - `OBS_MEDIA_STATE_ENDED`
+ * - `OBS_MEDIA_STATE_ERROR`
+ *
+ * @requestField inputName | String | Name of the media input
+ *
+ * @responseField mediaState    | String | State of the media input
+ * @responseField mediaDuration | Number | Total duration of the playing media in milliseconds. `null` if not playing
+ * @responseField mediaCursor   | Number | Position of the cursor in milliseconds. `null` if not playing
+ *
+ * @requestType GetMediaInputStatus
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api requests
+ * @category media inputs
+ */
 RequestResult RequestHandler::GetMediaInputStatus(const Request& request)
 {
 	RequestStatus::RequestStatus statusCode;
@@ -47,6 +73,21 @@ RequestResult RequestHandler::GetMediaInputStatus(const Request& request)
 	return RequestResult::Success(responseData);
 }
 
+/**
+ * Sets the cursor position of a media input.
+ *
+ * This request does not perform bounds checking of the cursor position.
+ *
+ * @requestField inputName   | String | Name of the media input
+ * @requestField mediaCursor | Number | New cursor position to set | >= 0
+ *
+ * @requestType SetMediaInputCursor
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api requests
+ * @category media inputs
+ */
 RequestResult RequestHandler::SetMediaInputCursor(const Request& request)
 {
 	RequestStatus::RequestStatus statusCode;
@@ -66,6 +107,21 @@ RequestResult RequestHandler::SetMediaInputCursor(const Request& request)
 	return RequestResult::Success();
 }
 
+/**
+ * Offsets the current cursor position of a media input by the specified value.
+ *
+ * This request does not perform bounds checking of the cursor position.
+ *
+ * @requestField inputName         | String | Name of the media input
+ * @requestField mediaCursorOffset | Number | Value to offset the current cursor position by | None
+ *
+ * @requestType OffsetMediaInputCursor
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api requests
+ * @category media inputs
+ */
 RequestResult RequestHandler::OffsetMediaInputCursor(const Request& request)
 {
 	RequestStatus::RequestStatus statusCode;
@@ -88,6 +144,19 @@ RequestResult RequestHandler::OffsetMediaInputCursor(const Request& request)
 	return RequestResult::Success();
 }
 
+/**
+ * Triggers an action on a media input.
+ *
+ * @requestField inputName   | String | Name of the media input
+ * @requestField mediaAction | String | Identifier of the `ObsMediaInputAction` enum
+ *
+ * @requestType TriggerMediaInputAction
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api requests
+ * @category media inputs
+ */
 RequestResult RequestHandler::TriggerMediaInputAction(const Request& request)
 {
 	RequestStatus::RequestStatus statusCode;
