@@ -69,8 +69,8 @@ body:
     label: obs-websocket Version
     description: What version of obs-websocket are you using?
     options:
+    - 5.0.0-alpha3
     - 5.0.0-alpha2
-    - 5.0.0-alpha1
     - 4.9.1
     - 4.9.0
     - Git
