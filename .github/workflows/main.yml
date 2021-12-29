@@ -520,7 +520,7 @@ jobs:
         shell: bash
         working-directory: ${{ github.workspace }}/obs-websocket
         run: |
-          zip -r ./release/${{ env.MACOS_FILENAME }}.zip ./release/${{ env.MACOS_FILENAME }}.pkg
+          zip -r ./release/${{ env.MACOS_FILENAME }}.zip ./release/${{ env.MACOS_FILENAME }}
           UPLOAD_RESULT=$(xcrun altool --notarize-app \
             --primary-bundle-id "fr.palakis.obs-websocket" \
             --username "${{ secrets.AC_USERNAME }}" \
