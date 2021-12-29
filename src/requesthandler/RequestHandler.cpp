@@ -29,8 +29,6 @@ const std::map<std::string, RequestMethodHandler> RequestHandler::_handlerMap
 	{"GetHotkeyList", &RequestHandler::GetHotkeyList},
 	{"TriggerHotkeyByName", &RequestHandler::TriggerHotkeyByName},
 	{"TriggerHotkeyByKeySequence", &RequestHandler::TriggerHotkeyByKeySequence},
-	{"GetStudioModeEnabled", &RequestHandler::GetStudioModeEnabled},
-	{"SetStudioModeEnabled", &RequestHandler::SetStudioModeEnabled},
 	{"Sleep", &RequestHandler::Sleep},
 
 	// Config
@@ -132,6 +130,10 @@ const std::map<std::string, RequestMethodHandler> RequestHandler::_handlerMap
 	{"SetMediaInputCursor", &RequestHandler::SetMediaInputCursor},
 	{"OffsetMediaInputCursor", &RequestHandler::OffsetMediaInputCursor},
 	{"TriggerMediaInputAction", &RequestHandler::TriggerMediaInputAction},
+
+	// Ui
+	{"GetStudioModeEnabled", &RequestHandler::GetStudioModeEnabled},
+	{"SetStudioModeEnabled", &RequestHandler::SetStudioModeEnabled},
 };
 
 RequestHandler::RequestHandler(SessionPtr session) :

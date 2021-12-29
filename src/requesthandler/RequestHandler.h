@@ -51,8 +51,6 @@ class RequestHandler {
 		RequestResult GetHotkeyList(const Request&);
 		RequestResult TriggerHotkeyByName(const Request&);
 		RequestResult TriggerHotkeyByKeySequence(const Request&);
-		RequestResult GetStudioModeEnabled(const Request&);
-		RequestResult SetStudioModeEnabled(const Request&);
 		RequestResult Sleep(const Request&);
 
 		// Config
@@ -154,6 +152,10 @@ class RequestHandler {
 		RequestResult SetMediaInputCursor(const Request&);
 		RequestResult OffsetMediaInputCursor(const Request&);
 		RequestResult TriggerMediaInputAction(const Request&);
+
+		// Ui
+		RequestResult GetStudioModeEnabled(const Request&);
+		RequestResult SetStudioModeEnabled(const Request&);
 
 		SessionPtr _session;
 		static const std::map<std::string, RequestMethodHandler> _handlerMap;
