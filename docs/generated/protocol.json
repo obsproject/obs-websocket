@@ -432,6 +432,67 @@
       ]
     },
     {
+      "enumType": "ObsMediaInputAction",
+      "enumIdentifiers": [
+        {
+          "description": "No action.",
+          "enumIdentifier": "OBS_WEBSOCKET_MEDIA_INPUT_ACTION_NONE",
+          "rpcVersion": 1,
+          "deprecated": true,
+          "initialVersion": "5.0.0",
+          "enumValue": "OBS_WEBSOCKET_MEDIA_INPUT_ACTION_NONE"
+        },
+        {
+          "description": "Play the media input.",
+          "enumIdentifier": "OBS_WEBSOCKET_MEDIA_INPUT_ACTION_PLAY",
+          "rpcVersion": 1,
+          "deprecated": true,
+          "initialVersion": "5.0.0",
+          "enumValue": "OBS_WEBSOCKET_MEDIA_INPUT_ACTION_PLAY"
+        },
+        {
+          "description": "Pause the media input.",
+          "enumIdentifier": "OBS_WEBSOCKET_MEDIA_INPUT_ACTION_PAUSE",
+          "rpcVersion": 1,
+          "deprecated": true,
+          "initialVersion": "5.0.0",
+          "enumValue": "OBS_WEBSOCKET_MEDIA_INPUT_ACTION_PAUSE"
+        },
+        {
+          "description": "Stop the media input.",
+          "enumIdentifier": "OBS_WEBSOCKET_MEDIA_INPUT_ACTION_STOP",
+          "rpcVersion": 1,
+          "deprecated": true,
+          "initialVersion": "5.0.0",
+          "enumValue": "OBS_WEBSOCKET_MEDIA_INPUT_ACTION_STOP"
+        },
+        {
+          "description": "Restart the media input.",
+          "enumIdentifier": "OBS_WEBSOCKET_MEDIA_INPUT_ACTION_RESTART",
+          "rpcVersion": 1,
+          "deprecated": true,
+          "initialVersion": "5.0.0",
+          "enumValue": "OBS_WEBSOCKET_MEDIA_INPUT_ACTION_RESTART"
+        },
+        {
+          "description": "Go to the next playlist item.",
+          "enumIdentifier": "OBS_WEBSOCKET_MEDIA_INPUT_ACTION_NEXT",
+          "rpcVersion": 1,
+          "deprecated": true,
+          "initialVersion": "5.0.0",
+          "enumValue": "OBS_WEBSOCKET_MEDIA_INPUT_ACTION_NEXT"
+        },
+        {
+          "description": "Go to the previous playlist item.",
+          "enumIdentifier": "OBS_WEBSOCKET_MEDIA_INPUT_ACTION_PREVIOUS",
+          "rpcVersion": 1,
+          "deprecated": true,
+          "initialVersion": "5.0.0",
+          "enumValue": "OBS_WEBSOCKET_MEDIA_INPUT_ACTION_PREVIOUS"
+        }
+      ]
+    },
+    {
       "enumType": "WebSocketCloseCode",
       "enumIdentifiers": [
         {
@@ -1920,6 +1981,246 @@
       "responseFields": []
     },
     {
+      "description": "Gets the status of a media input.\n\nMedia States:\n- `OBS_MEDIA_STATE_NONE`\n- `OBS_MEDIA_STATE_PLAYING`\n- `OBS_MEDIA_STATE_OPENING`\n- `OBS_MEDIA_STATE_BUFFERING`\n- `OBS_MEDIA_STATE_PAUSED`\n- `OBS_MEDIA_STATE_STOPPED`\n- `OBS_MEDIA_STATE_ENDED`\n- `OBS_MEDIA_STATE_ERROR`",
+      "requestType": "GetMediaInputStatus",
+      "complexity": 2,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "media inputs",
+      "requestFields": [
+        {
+          "valueName": "inputName",
+          "valueType": "String",
+          "valueDescription": "Name of the media input",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        }
+      ],
+      "responseFields": [
+        {
+          "valueName": "mediaState",
+          "valueType": "String",
+          "valueDescription": "State of the media input"
+        },
+        {
+          "valueName": "mediaDuration",
+          "valueType": "Number",
+          "valueDescription": "Total duration of the playing media in milliseconds. `null` if not playing"
+        },
+        {
+          "valueName": "mediaCursor",
+          "valueType": "Number",
+          "valueDescription": "Position of the cursor in milliseconds. `null` if not playing"
+        }
+      ]
+    },
+    {
+      "description": "Sets the cursor position of a media input.\n\nThis request does not perform bounds checking of the cursor position.",
+      "requestType": "SetMediaInputCursor",
+      "complexity": 2,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "media inputs",
+      "requestFields": [
+        {
+          "valueName": "inputName",
+          "valueType": "String",
+          "valueDescription": "Name of the media input",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        },
+        {
+          "valueName": "mediaCursor",
+          "valueType": "Number",
+          "valueDescription": "New cursor position to set",
+          "valueRestrictions": ">= 0",
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        }
+      ],
+      "responseFields": []
+    },
+    {
+      "description": "Offsets the current cursor position of a media input by the specified value.\n\nThis request does not perform bounds checking of the cursor position.",
+      "requestType": "OffsetMediaInputCursor",
+      "complexity": 2,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "media inputs",
+      "requestFields": [
+        {
+          "valueName": "inputName",
+          "valueType": "String",
+          "valueDescription": "Name of the media input",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        },
+        {
+          "valueName": "mediaCursorOffset",
+          "valueType": "Number",
+          "valueDescription": "Value to offset the current cursor position by",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        }
+      ],
+      "responseFields": []
+    },
+    {
+      "description": "Triggers an action on a media input.",
+      "requestType": "TriggerMediaInputAction",
+      "complexity": 2,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "media inputs",
+      "requestFields": [
+        {
+          "valueName": "inputName",
+          "valueType": "String",
+          "valueDescription": "Name of the media input",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        },
+        {
+          "valueName": "mediaAction",
+          "valueType": "String",
+          "valueDescription": "Identifier of the `ObsMediaInputAction` enum",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        }
+      ],
+      "responseFields": []
+    },
+    {
+      "description": "Gets the status of the record output.",
+      "requestType": "GetRecordStatus",
+      "complexity": 2,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "record",
+      "requestFields": [],
+      "responseFields": [
+        {
+          "valueName": "outputActive",
+          "valueType": "Boolean",
+          "valueDescription": "Whether the output is active"
+        },
+        {
+          "valueName": "ouputPaused",
+          "valueType": "Boolean",
+          "valueDescription": "Whether the output is paused"
+        },
+        {
+          "valueName": "outputTimecode",
+          "valueType": "String",
+          "valueDescription": "Current formatted timecode string for the output"
+        },
+        {
+          "valueName": "outputDuration",
+          "valueType": "Number",
+          "valueDescription": "Current duration in milliseconds for the output"
+        },
+        {
+          "valueName": "outputBytes",
+          "valueType": "Number",
+          "valueDescription": "Number of bytes sent by the output"
+        }
+      ]
+    },
+    {
+      "description": "Toggles the status of the record output.",
+      "requestType": "ToggleRecord",
+      "complexity": 1,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "record",
+      "requestFields": [],
+      "responseFields": []
+    },
+    {
+      "description": "Starts the record output.",
+      "requestType": "StartRecord",
+      "complexity": 1,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "record",
+      "requestFields": [],
+      "responseFields": []
+    },
+    {
+      "description": "Stops the record output.",
+      "requestType": "StopRecord",
+      "complexity": 1,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "record",
+      "requestFields": [],
+      "responseFields": []
+    },
+    {
+      "description": "Toggles pause on the record output.",
+      "requestType": "ToggleRecordPause",
+      "complexity": 1,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "record",
+      "requestFields": [],
+      "responseFields": []
+    },
+    {
+      "description": "Pauses the record output.",
+      "requestType": "PauseRecord",
+      "complexity": 1,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "record",
+      "requestFields": [],
+      "responseFields": []
+    },
+    {
+      "description": "Resumes the record output.",
+      "requestType": "ResumeRecord",
+      "complexity": 1,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "record",
+      "requestFields": [],
+      "responseFields": []
+    },
+    {
+      "description": "Gets the current directory that the record output is set to.",
+      "requestType": "GetRecordDirectory",
+      "complexity": 1,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "record",
+      "requestFields": [],
+      "responseFields": [
+        {
+          "valueName": "recordDirectory",
+          "valueType": "String",
+          "valueDescription": "Output directory"
+        }
+      ]
+    },
+    {
       "description": "Gets a list of all scene items in a scene.\n\nScenes only",
       "requestType": "GetSceneItemList",
       "complexity": 3,
@@ -2804,6 +3105,171 @@
       "deprecated": false,
       "initialVersion": "5.0.0",
       "category": "stream",
+      "requestFields": [],
+      "responseFields": []
+    },
+    {
+      "description": "Gets an array of all available transition kinds.\n\nSimilar to `GetInputKindList`",
+      "requestType": "GetTransitionKindList",
+      "complexity": 2,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "transitions",
+      "requestFields": [],
+      "responseFields": [
+        {
+          "valueName": "transitionKinds",
+          "valueType": "Vector<String>",
+          "valueDescription": "Array of transition kinds"
+        }
+      ]
+    },
+    {
+      "description": "Gets an array of all scene transitions in OBS.",
+      "requestType": "GetSceneTransitionList",
+      "complexity": 3,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "transitions",
+      "requestFields": [],
+      "responseFields": [
+        {
+          "valueName": "currentSceneTransitionName",
+          "valueType": "String",
+          "valueDescription": "Name of the current scene transition. Can be null"
+        },
+        {
+          "valueName": "currentSceneTransitionKind",
+          "valueType": "String",
+          "valueDescription": "Kind of the current scene transition. Can be null"
+        },
+        {
+          "valueName": "transitions",
+          "valueType": "Vector<Object>",
+          "valueDescription": "Array of transitions"
+        }
+      ]
+    },
+    {
+      "description": "Gets information about the current scene transition.",
+      "requestType": "GetCurrentSceneTransition",
+      "complexity": 2,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "transitions",
+      "requestFields": [],
+      "responseFields": [
+        {
+          "valueName": "transitionName",
+          "valueType": "String",
+          "valueDescription": "Name of the transition"
+        },
+        {
+          "valueName": "transitionKind",
+          "valueType": "String",
+          "valueDescription": "Kind of the transition"
+        },
+        {
+          "valueName": "transitionFixed",
+          "valueType": "Boolean",
+          "valueDescription": "Whether the transition uses a fixed (unconfigurable) duration"
+        },
+        {
+          "valueName": "transitionDuration",
+          "valueType": "Number",
+          "valueDescription": "Configured transition duration in milliseconds. `null` if transition is fixed"
+        },
+        {
+          "valueName": "transitionConfigurable",
+          "valueType": "Boolean",
+          "valueDescription": "Whether the transition supports being configured"
+        },
+        {
+          "valueName": "transitionSettings",
+          "valueType": "Object",
+          "valueDescription": "Object of settings for the transition. `null` if transition is not configurable"
+        }
+      ]
+    },
+    {
+      "description": "Sets the current scene transition.\n\nSmall note: While the namespace of scene transitions is generally unique, that uniqueness is not a guarantee as it is with other resources like inputs.",
+      "requestType": "SetCurrentSceneTransition",
+      "complexity": 2,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "transitions",
+      "requestFields": [
+        {
+          "valueName": "transitionName",
+          "valueType": "String",
+          "valueDescription": "Name of the transition to make active",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        }
+      ],
+      "responseFields": []
+    },
+    {
+      "description": "Sets the duration of the current scene transition, if it is not fixed.",
+      "requestType": "SetCurrentSceneTransitionDuration",
+      "complexity": 2,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "transitions",
+      "requestFields": [
+        {
+          "valueName": "transitionDuration",
+          "valueType": "Number",
+          "valueDescription": "Duration in milliseconds",
+          "valueRestrictions": ">= 50, <= 20000",
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        }
+      ],
+      "responseFields": []
+    },
+    {
+      "description": "Sets the settings of the current scene transition.",
+      "requestType": "SetCurrentSceneTransitionSettings",
+      "complexity": 3,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "transitions",
+      "requestFields": [
+        {
+          "valueName": "transitionSettings",
+          "valueType": "Object",
+          "valueDescription": "Settings object to apply to the transition. Can be `{}`",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        },
+        {
+          "valueName": "overlay",
+          "valueType": "Boolean",
+          "valueDescription": "Whether to overlay over the current settings or replace them",
+          "valueRestrictions": null,
+          "valueOptional": true,
+          "valueOptionalBehavior": "true"
+        }
+      ],
+      "responseFields": []
+    },
+    {
+      "description": "Triggers the current scene transition. Same functionality as the `Transition` button in studio mode.",
+      "requestType": "TriggerStudioModeTransition",
+      "complexity": 1,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "transitions",
       "requestFields": [],
       "responseFields": []
     },

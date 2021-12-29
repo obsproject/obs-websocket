@@ -1457,6 +1457,14 @@ The profile list has changed.
   - [SetInputAudioMonitorType](#setinputaudiomonitortype)
   - [GetInputPropertiesListPropertyItems](#getinputpropertieslistpropertyitems)
   - [PressInputPropertiesButton](#pressinputpropertiesbutton)
+- [Transitions](#transitions)
+  - [GetTransitionKindList](#gettransitionkindlist)
+  - [GetSceneTransitionList](#getscenetransitionlist)
+  - [GetCurrentSceneTransition](#getcurrentscenetransition)
+  - [SetCurrentSceneTransition](#setcurrentscenetransition)
+  - [SetCurrentSceneTransitionDuration](#setcurrentscenetransitionduration)
+  - [SetCurrentSceneTransitionSettings](#setcurrentscenetransitionsettings)
+  - [TriggerStudioModeTransition](#triggerstudiomodetransition)
 - [Scene Items](#scene-items)
   - [GetSceneItemList](#getsceneitemlist)
   - [GetGroupItemList](#getgroupitemlist)
@@ -1477,6 +1485,20 @@ The profile list has changed.
   - [ToggleStream](#togglestream)
   - [StartStream](#startstream)
   - [StopStream](#stopstream)
+- [Record](#record)
+  - [GetRecordStatus](#getrecordstatus)
+  - [ToggleRecord](#togglerecord)
+  - [StartRecord](#startrecord)
+  - [StopRecord](#stoprecord)
+  - [ToggleRecordPause](#togglerecordpause)
+  - [PauseRecord](#pauserecord)
+  - [ResumeRecord](#resumerecord)
+  - [GetRecordDirectory](#getrecorddirectory)
+- [Media Inputs](#media-inputs)
+  - [GetMediaInputStatus](#getmediainputstatus)
+  - [SetMediaInputCursor](#setmediainputcursor)
+  - [OffsetMediaInputCursor](#offsetmediainputcursor)
+  - [TriggerMediaInputAction](#triggermediainputaction)
 - [Ui](#ui)
   - [GetStudioModeEnabled](#getstudiomodeenabled)
   - [SetStudioModeEnabled](#setstudiomodeenabled)
@@ -2625,6 +2647,131 @@ Note: Use this in cases where there is a button in the properties of an input th
 | propertyName | String | Name of the button property to press | None | N/A |
 
 
+## Transitions
+
+### GetTransitionKindList
+
+Gets an array of all available transition kinds.
+
+Similar to `GetInputKindList`
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| transitionKinds | Vector&lt;String&gt; | Array of transition kinds |
+
+---
+
+### GetSceneTransitionList
+
+Gets an array of all scene transitions in OBS.
+
+- Complexity Rating: `3/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| currentSceneTransitionName | String | Name of the current scene transition. Can be null |
+| currentSceneTransitionKind | String | Kind of the current scene transition. Can be null |
+| transitions | Vector&lt;Object&gt; | Array of transitions |
+
+---
+
+### GetCurrentSceneTransition
+
+Gets information about the current scene transition.
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| transitionName | String | Name of the transition |
+| transitionKind | String | Kind of the transition |
+| transitionFixed | Boolean | Whether the transition uses a fixed (unconfigurable) duration |
+| transitionDuration | Number | Configured transition duration in milliseconds. `null` if transition is fixed |
+| transitionConfigurable | Boolean | Whether the transition supports being configured |
+| transitionSettings | Object | Object of settings for the transition. `null` if transition is not configurable |
+
+---
+
+### SetCurrentSceneTransition
+
+Sets the current scene transition.
+
+Small note: While the namespace of scene transitions is generally unique, that uniqueness is not a guarantee as it is with other resources like inputs.
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| transitionName | String | Name of the transition to make active | None | N/A |
+
+---
+
+### SetCurrentSceneTransitionDuration
+
+Sets the duration of the current scene transition, if it is not fixed.
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| transitionDuration | Number | Duration in milliseconds | >= 50, <= 20000 | N/A |
+
+---
+
+### SetCurrentSceneTransitionSettings
+
+Sets the settings of the current scene transition.
+
+- Complexity Rating: `3/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| transitionSettings | Object | Settings object to apply to the transition. Can be `{}` | None | N/A |
+| ?overlay | Boolean | Whether to overlay over the current settings or replace them | None | true |
+
+---
+
+### TriggerStudioModeTransition
+
+Triggers the current scene transition. Same functionality as the `Transition` button in studio mode.
+
+- Complexity Rating: `1/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
 ## Scene Items
 
 ### GetSceneItemList
@@ -3034,6 +3181,200 @@ Stops the stream output.
 - Complexity Rating: `1/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
+
+
+## Record
+
+### GetRecordStatus
+
+Gets the status of the record output.
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| outputActive | Boolean | Whether the output is active |
+| ouputPaused | Boolean | Whether the output is paused |
+| outputTimecode | String | Current formatted timecode string for the output |
+| outputDuration | Number | Current duration in milliseconds for the output |
+| outputBytes | Number | Number of bytes sent by the output |
+
+---
+
+### ToggleRecord
+
+Toggles the status of the record output.
+
+- Complexity Rating: `1/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### StartRecord
+
+Starts the record output.
+
+- Complexity Rating: `1/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### StopRecord
+
+Stops the record output.
+
+- Complexity Rating: `1/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### ToggleRecordPause
+
+Toggles pause on the record output.
+
+- Complexity Rating: `1/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### PauseRecord
+
+Pauses the record output.
+
+- Complexity Rating: `1/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### ResumeRecord
+
+Resumes the record output.
+
+- Complexity Rating: `1/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### GetRecordDirectory
+
+Gets the current directory that the record output is set to.
+
+- Complexity Rating: `1/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| recordDirectory | String | Output directory |
+
+
+## Media Inputs
+
+### GetMediaInputStatus
+
+Gets the status of a media input.
+
+Media States:
+- `OBS_MEDIA_STATE_NONE`
+- `OBS_MEDIA_STATE_PLAYING`
+- `OBS_MEDIA_STATE_OPENING`
+- `OBS_MEDIA_STATE_BUFFERING`
+- `OBS_MEDIA_STATE_PAUSED`
+- `OBS_MEDIA_STATE_STOPPED`
+- `OBS_MEDIA_STATE_ENDED`
+- `OBS_MEDIA_STATE_ERROR`
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| inputName | String | Name of the media input | None | N/A |
+
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| mediaState | String | State of the media input |
+| mediaDuration | Number | Total duration of the playing media in milliseconds. `null` if not playing |
+| mediaCursor | Number | Position of the cursor in milliseconds. `null` if not playing |
+
+---
+
+### SetMediaInputCursor
+
+Sets the cursor position of a media input.
+
+This request does not perform bounds checking of the cursor position.
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| inputName | String | Name of the media input | None | N/A |
+| mediaCursor | Number | New cursor position to set | >= 0 | N/A |
+
+---
+
+### OffsetMediaInputCursor
+
+Offsets the current cursor position of a media input by the specified value.
+
+This request does not perform bounds checking of the cursor position.
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| inputName | String | Name of the media input | None | N/A |
+| mediaCursorOffset | Number | Value to offset the current cursor position by | None | N/A |
+
+---
+
+### TriggerMediaInputAction
+
+Triggers an action on a media input.
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| inputName | String | Name of the media input | None | N/A |
+| mediaAction | String | Identifier of the `ObsMediaInputAction` enum | None | N/A |
 
 
 ## Ui
