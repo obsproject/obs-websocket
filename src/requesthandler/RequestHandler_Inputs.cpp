@@ -489,6 +489,61 @@ RequestResult RequestHandler::SetInputVolume(const Request& request)
 }
 
 /**
+ * Gets the audio balance of an input.
+ *
+ * @requestField inputName | String | Name of the input to get the audio balance of
+ *
+ * @responseField inputAudioBalance | Number | Audio balance value from 0.0-1.0
+ *
+ * @requestType GetInputAudioBalance
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api requests
+ * @category inputs
+ */
+RequestResult RequestHandler::GetInputAudioBalance(const Request& request)
+{
+	RequestStatus::RequestStatus statusCode;
+	std::string comment;
+	OBSSourceAutoRelease input = request.ValidateInput("inputName", statusCode, comment);
+	if (!input)
+		return RequestResult::Error(statusCode, comment);
+
+	json responseData;
+	responseData["inputAudioBalance"] = obs_source_get_balance_value(input);
+
+	return RequestResult::Success(responseData);
+}
+
+/**
+ * Sets the audio balance of an input.
+ *
+ * @requestField inputName         | String | Name of the input to set the audio balance of
+ * @requestField inputAudioBalance | Number | New audio balance value | >= 0.0, <= 1.0
+ *
+ * @requestType SetInputAudioBalance
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api requests
+ * @category inputs
+ */
+RequestResult RequestHandler::SetInputAudioBalance(const Request& request)
+{
+	RequestStatus::RequestStatus statusCode;
+	std::string comment;
+	OBSSourceAutoRelease input = request.ValidateInput("inputName", statusCode, comment);
+	if (!(input && request.ValidateNumber("inputAudioBalance", statusCode, comment, 0.0, 1.0)))
+		return RequestResult::Error(statusCode, comment);
+
+	float inputAudioBalance = request.RequestData["inputAudioBalance"];
+	obs_source_set_balance_value(input, inputAudioBalance);
+
+	return RequestResult::Success();
+}
+
+/**
  * Gets the audio sync offset of an input.
  *
  * Note: The audio sync offset can be negative too!
