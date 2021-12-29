@@ -1407,8 +1407,6 @@ The profile list has changed.
   - [GetHotkeyList](#gethotkeylist)
   - [TriggerHotkeyByName](#triggerhotkeybyname)
   - [TriggerHotkeyByKeySequence](#triggerhotkeybykeysequence)
-  - [GetStudioModeEnabled](#getstudiomodeenabled)
-  - [SetStudioModeEnabled](#setstudiomodeenabled)
   - [Sleep](#sleep)
 - [Config](#config-1)
   - [GetPersistentData](#getpersistentdata)
@@ -1479,6 +1477,9 @@ The profile list has changed.
   - [ToggleStream](#togglestream)
   - [StartStream](#startstream)
   - [StopStream](#stopstream)
+- [Ui](#ui)
+  - [GetStudioModeEnabled](#getstudiomodeenabled)
+  - [SetStudioModeEnabled](#setstudiomodeenabled)
 
 
 
@@ -1632,40 +1633,6 @@ Triggers a hotkey using a sequence of keys.
 | ?keyModifiers.control | Boolean | Press CTRL | None | Not pressed |
 | ?keyModifiers.alt | Boolean | Press ALT | None | Not pressed |
 | ?keyModifiers.command | Boolean | Press CMD (Mac) | None | Not pressed |
-
----
-
-### GetStudioModeEnabled
-
-Gets whether studio is enabled.
-
-- Complexity Rating: `1/5`
-- Latest Supported RPC Version: `1`
-- Added in v5.0.0
-
-
-**Response Fields:**
-
-| Name | Type  | Description |
-| ---- | :---: | ----------- |
-| studioModeEnabled | Boolean | Whether studio mode is enabled |
-
----
-
-### SetStudioModeEnabled
-
-Enables or disables studio mode
-
-- Complexity Rating: `1/5`
-- Latest Supported RPC Version: `1`
-- Added in v5.0.0
-
-
-**Request Fields:**
-
-| Name | Type  | Description | Value Restrictions | ?Default Behavior |
-| ---- | :---: | ----------- | :----------------: | ----------------- |
-| studioModeEnabled | Boolean | True == Enabled, False == Disabled | None | N/A |
 
 ---
 
@@ -3067,5 +3034,40 @@ Stops the stream output.
 - Complexity Rating: `1/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
+
+
+## Ui
+
+### GetStudioModeEnabled
+
+Gets whether studio is enabled.
+
+- Complexity Rating: `1/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| studioModeEnabled | Boolean | Whether studio mode is enabled |
+
+---
+
+### SetStudioModeEnabled
+
+Enables or disables studio mode
+
+- Complexity Rating: `1/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| studioModeEnabled | Boolean | True == Enabled, False == Disabled | None | N/A |
 
 

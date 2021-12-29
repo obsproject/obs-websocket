@@ -1324,43 +1324,6 @@
       "responseFields": []
     },
     {
-      "description": "Gets whether studio is enabled.",
-      "requestType": "GetStudioModeEnabled",
-      "complexity": 1,
-      "rpcVersion": "1",
-      "deprecated": false,
-      "initialVersion": "5.0.0",
-      "category": "general",
-      "requestFields": [],
-      "responseFields": [
-        {
-          "valueName": "studioModeEnabled",
-          "valueType": "Boolean",
-          "valueDescription": "Whether studio mode is enabled"
-        }
-      ]
-    },
-    {
-      "description": "Enables or disables studio mode",
-      "requestType": "SetStudioModeEnabled",
-      "complexity": 1,
-      "rpcVersion": "1",
-      "deprecated": false,
-      "initialVersion": "5.0.0",
-      "category": "general",
-      "requestFields": [
-        {
-          "valueName": "studioModeEnabled",
-          "valueType": "Boolean",
-          "valueDescription": "True == Enabled, False == Disabled",
-          "valueRestrictions": null,
-          "valueOptional": false,
-          "valueOptionalBehavior": null
-        }
-      ],
-      "responseFields": []
-    },
-    {
       "description": "Sleeps for a time duration or number of frames. Only available in request batches with types `SERIAL_REALTIME` or `SERIAL_FRAME`.",
       "requestType": "Sleep",
       "complexity": 2,
@@ -2842,6 +2805,43 @@
       "initialVersion": "5.0.0",
       "category": "stream",
       "requestFields": [],
+      "responseFields": []
+    },
+    {
+      "description": "Gets whether studio is enabled.",
+      "requestType": "GetStudioModeEnabled",
+      "complexity": 1,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "ui",
+      "requestFields": [],
+      "responseFields": [
+        {
+          "valueName": "studioModeEnabled",
+          "valueType": "Boolean",
+          "valueDescription": "Whether studio mode is enabled"
+        }
+      ]
+    },
+    {
+      "description": "Enables or disables studio mode",
+      "requestType": "SetStudioModeEnabled",
+      "complexity": 1,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "ui",
+      "requestFields": [
+        {
+          "valueName": "studioModeEnabled",
+          "valueType": "Boolean",
+          "valueDescription": "True == Enabled, False == Disabled",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        }
+      ],
       "responseFields": []
     }
   ],
