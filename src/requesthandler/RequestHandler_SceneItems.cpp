@@ -193,6 +193,7 @@ RequestResult RequestHandler::RemoveSceneItem(const Request& request)
 	if (!sceneItem)
 		return RequestResult::Error(statusCode, comment);
 
+	// Makes the UI log `User Removed source '[source]' from scene '(null)'`. This is not a problem, just a side effect.
 	obs_sceneitem_remove(sceneItem);
 
 	return RequestResult::Success();
