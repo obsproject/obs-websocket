@@ -465,26 +465,20 @@ jobs:
           set -e
           cd ./build
           make -j4
-      - name: "Install Apple Developer Certificate"
+      - name: "Install Application Signing Certificate"
         uses: apple-actions/import-codesign-certs@v1
         with:
-          p12-file-base64: ${{ secrets.MACOS_SIGNING_CERT }}
-          p12-password: ${{ secrets.MACOS_SIGNING_CERT_PASSWORD }}
+          p12-file-base64: ${{ secrets.APPLICATION_CERTIFICATE }}
+          p12-password: ${{ secrets.APPLICATION_CERTIFICATE_PASSWORD }}
+      - name: "Install Installer Signing Certificate"
+        uses: apple-actions/import-codesign-certs@v1
+        with:
+          p12-file-base64: ${{ secrets.INSTALLER_CERTIFICATE }}
+          p12-password: ${{ secrets.INSTALLER_CERTIFICATE_PASSWORD }}
           create-keychain: false
       - name: "Sign plugin binary"
         shell: bash
         working-directory: ${{ github.workspace }}/obs-websocket
-        run: |
-          codesign --sign "${{ secrets.INSTALLER_SIGNING_IDENTITY }}" ./build/obs-websocket.so
-      - name: "Set PR Artifact Filename"
-        shell: bash
-        run: |
-          echo "MACOS_FILENAME=obs-websocket-${{ env.PACKAGE_VERSION }}-macOS.pkg" >> $GITHUB_ENV
-          echo "MACOS_FILENAME_UNSIGNED=obs-websocket-${{ env.PACKAGE_VERSION }}-macOS-Unsigned.pkg" >> $GITHUB_ENV
-      - name: "Package ${{ env.MACOS_FILENAME_UNSIGNED }}"
-        if: success()
-        working-directory: ${{ github.workspace }}/obs-websocket
-        shell: bash
         run: |
           install_name_tool \
           	-change /tmp/obsdeps/lib/QtWidgets.framework/Versions/5/QtWidgets \
@@ -498,6 +492,17 @@ jobs:
           	-change /tmp/obsdeps/lib/QtSvg.framework/Versions/5/QtSvg \
           		@executable_path/../Frameworks/QtSvg.framework/Versions/5/QtSvg \
           	./build/obs-websocket.so
+          codesign --sign "${{ secrets.APPLICATION_CERTIFICATE_IDENTITY }}" ./build/obs-websocket.so
+      - name: "Set PR Artifact Filename"
+        shell: bash
+        run: |
+          echo "MACOS_FILENAME=obs-websocket-${{ env.PACKAGE_VERSION }}-macOS.pkg" >> $GITHUB_ENV
+          echo "MACOS_FILENAME_UNSIGNED=obs-websocket-${{ env.PACKAGE_VERSION }}-macOS-Unsigned.pkg" >> $GITHUB_ENV
+      - name: "Package ${{ env.MACOS_FILENAME_UNSIGNED }}"
+        if: success()
+        working-directory: ${{ github.workspace }}/obs-websocket
+        shell: bash
+        run: |
           packagesbuild ./CI/macos/obs-websocket.pkgproj
           mv ./release/obs-websocket.pkg ./release/${{ env.MACOS_FILENAME_UNSIGNED }}
       - name: "Sign plugin package"
@@ -505,8 +510,8 @@ jobs:
         working-directory: ${{ github.workspace }}/obs-websocket
         run: |
           productsign \
-            --sign "${{ secrets.INSTALLER_SIGNING_IDENTITY }}"
-            ./release/${{ env.MACOS_FILENAME_UNSIGNED }}
+            --sign "${{ secrets.INSTALLER_CERTIFICATE_IDENTITY }}" \
+            ./release/${{ env.MACOS_FILENAME_UNSIGNED }} \
             ./release/${{ env.MACOS_FILENAME }}
           rm ./release/${{ env.MACOS_FILENAME_UNSIGNED }}
       - name: "Notarize package"
