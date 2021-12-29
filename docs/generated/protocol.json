@@ -92,6 +92,14 @@
           "enumValue": "(1 << 9)"
         },
         {
+          "description": "Subscription value to receive events in the `Ui` category.",
+          "enumIdentifier": "Ui",
+          "rpcVersion": "1",
+          "deprecated": false,
+          "initialVersion": "5.0.0",
+          "enumValue": "(1 << 10)"
+        },
+        {
           "description": "Helper to receive all non-high-volume events.",
           "enumIdentifier": "All",
           "rpcVersion": "1",
@@ -897,7 +905,7 @@
     {
       "description": "Gets a parameter from the current profile's configuration.",
       "requestType": "GetProfileParameter",
-      "complexity": 3,
+      "complexity": 4,
       "rpcVersion": "1",
       "deprecated": false,
       "initialVersion": "5.0.0",
@@ -936,7 +944,7 @@
     {
       "description": "Sets the value of a parameter in the current profile's configuration.",
       "requestType": "SetProfileParameter",
-      "complexity": 3,
+      "complexity": 4,
       "rpcVersion": "1",
       "deprecated": false,
       "initialVersion": "5.0.0",
@@ -3426,23 +3434,6 @@
       "dataFields": []
     },
     {
-      "description": "Studio mode has been enabled or disabled.",
-      "eventType": "StudioModeStateChanged",
-      "eventSubscription": "General",
-      "complexity": 1,
-      "rpcVersion": "1",
-      "deprecated": false,
-      "initialVersion": "5.0.0",
-      "category": "general",
-      "dataFields": [
-        {
-          "valueName": "studioModeEnabled",
-          "valueType": "Boolean",
-          "valueDescription": "True == Enabled, False == Disabled"
-        }
-      ]
-    },
-    {
       "description": "An input has been created.",
       "eventType": "InputCreated",
       "eventSubscription": "Inputs",
@@ -4131,6 +4122,23 @@
           "valueName": "scenes",
           "valueType": "Array<Object>",
           "valueDescription": "Updated array of scenes"
+        }
+      ]
+    },
+    {
+      "description": "Studio mode has been enabled or disabled.",
+      "eventType": "StudioModeStateChanged",
+      "eventSubscription": "Ui",
+      "complexity": 1,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "ui",
+      "dataFields": [
+        {
+          "valueName": "studioModeEnabled",
+          "valueType": "Boolean",
+          "valueDescription": "True == Enabled, False == Disabled"
         }
       ]
     },

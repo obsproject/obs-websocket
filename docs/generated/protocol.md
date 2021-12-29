@@ -459,6 +459,7 @@ These are enumeration declarations, which are referenced throughout obs-websocke
   - [EventSubscription::SceneItems](#eventsubscriptionsceneitems)
   - [EventSubscription::MediaInputs](#eventsubscriptionmediainputs)
   - [EventSubscription::Vendors](#eventsubscriptionvendors)
+  - [EventSubscription::Ui](#eventsubscriptionui)
   - [EventSubscription::All](#eventsubscriptionall)
   - [EventSubscription::InputVolumeMeters](#eventsubscriptioninputvolumemeters)
   - [EventSubscription::InputActiveStateChanged](#eventsubscriptioninputactivestatechanged)
@@ -1175,6 +1176,16 @@ Subscription value to receive the `VendorEvent` event.
 
 ---
 
+### EventSubscription::Ui
+
+Subscription value to receive events in the `Ui` category.
+
+- Identifier Value: `(1 << 10)`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
 ### EventSubscription::All
 
 Helper to receive all non-high-volume events.
@@ -1229,7 +1240,6 @@ Subscription value to receive the `SceneItemTransformChanged` high-volume event.
 ### Events Table of Contents
 - [General](#general)
   - [ExitStarted](#exitstarted)
-  - [StudioModeStateChanged](#studiomodestatechanged)
   - [VendorEvent](#vendorevent)
 - [Config](#config)
   - [CurrentSceneCollectionChanging](#currentscenecollectionchanging)
@@ -1274,6 +1284,8 @@ Subscription value to receive the `SceneItemTransformChanged` high-volume event.
   - [MediaInputPlaybackStarted](#mediainputplaybackstarted)
   - [MediaInputPlaybackEnded](#mediainputplaybackended)
   - [MediaInputActionTriggered](#mediainputactiontriggered)
+- [Ui](#ui)
+  - [StudioModeStateChanged](#studiomodestatechanged)
 
 
 ## General
@@ -1285,23 +1297,6 @@ OBS has begun the shutdown process.
 - Complexity Rating: `1/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
-
----
-
-### StudioModeStateChanged
-
-Studio mode has been enabled or disabled.
-
-- Complexity Rating: `1/5`
-- Latest Supported RPC Version: `1`
-- Added in v5.0.0
-
-
-**Data Fields:**
-
-| Name | Type  | Description |
-| ---- | :---: | ----------- |
-| studioModeEnabled | Boolean | True == Enabled, False == Disabled |
 
 ---
 
@@ -1998,6 +1993,22 @@ An action has been performed on an input.
 | ---- | :---: | ----------- |
 | inputName | String | Name of the input |
 | mediaAction | String | Action performed on the input. See `ObsMediaInputAction` enum |
+## Ui
+
+### StudioModeStateChanged
+
+Studio mode has been enabled or disabled.
+
+- Complexity Rating: `1/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Data Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| studioModeEnabled | Boolean | True == Enabled, False == Disabled |
 
 
 # Requests
@@ -2103,7 +2114,7 @@ An action has been performed on an input.
   - [SetMediaInputCursor](#setmediainputcursor)
   - [OffsetMediaInputCursor](#offsetmediainputcursor)
   - [TriggerMediaInputAction](#triggermediainputaction)
-- [Ui](#ui)
+- [Ui](#ui-1)
   - [GetStudioModeEnabled](#getstudiomodeenabled)
   - [SetStudioModeEnabled](#setstudiomodeenabled)
 
@@ -2454,7 +2465,7 @@ Removes a profile. If the current profile is chosen, it will change to a differe
 
 Gets a parameter from the current profile's configuration.
 
-- Complexity Rating: `3/5`
+- Complexity Rating: `4/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
@@ -2480,7 +2491,7 @@ Gets a parameter from the current profile's configuration.
 
 Sets the value of a parameter in the current profile's configuration.
 
-- Complexity Rating: `3/5`
+- Complexity Rating: `4/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
