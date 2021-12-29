@@ -19,6 +19,23 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include "EventHandler.h"
 
+/**
+ * An input has been created.
+ *
+ * @dataField inputName            | String | Name of the input
+ * @dataField inputKind            | String | The kind of the input
+ * @dataField unversionedInputKind | String | The unversioned kind of input (aka no `_v2` stuff)
+ * @dataField inputSettings        | Object | The settings configured to the input when it was created
+ * @dataField defaultInputSettings | Object | The default settings for the input
+ *
+ * @eventType InputCreated
+ * @eventSubscription Inputs
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api events
+ * @category inputs
+ */
 void EventHandler::HandleInputCreated(obs_source_t *source)
 {
 	std::string inputKind = obs_source_get_id(source);
@@ -34,6 +51,19 @@ void EventHandler::HandleInputCreated(obs_source_t *source)
 	BroadcastEvent(EventSubscription::Inputs, "InputCreated", eventData);
 }
 
+/**
+ * An input has been removed.
+ *
+ * @dataField inputName | String | Name of the input
+ *
+ * @eventType InputRemoved
+ * @eventSubscription Inputs
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api events
+ * @category inputs
+ */
 void EventHandler::HandleInputRemoved(obs_source_t *source)
 {
 	json eventData;
@@ -41,6 +71,20 @@ void EventHandler::HandleInputRemoved(obs_source_t *source)
 	BroadcastEvent(EventSubscription::Inputs, "InputRemoved", eventData);
 }
 
+/**
+ * The name of an input has changed.
+ *
+ * @dataField oldInputName | String | Old name of the input
+ * @dataField inputName    | String | New name of the input
+ *
+ * @eventType InputNameChanged
+ * @eventSubscription Inputs
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api events
+ * @category inputs
+ */
 void EventHandler::HandleInputNameChanged(obs_source_t *, std::string oldInputName, std::string inputName)
 {
 	json eventData;
@@ -49,13 +93,22 @@ void EventHandler::HandleInputNameChanged(obs_source_t *, std::string oldInputNa
 	BroadcastEvent(EventSubscription::Inputs, "InputNameChanged", eventData);
 }
 
-void EventHandler::HandleInputVolumeMeters(std::vector<json> inputs)
-{
-	json eventData;
-	eventData["inputs"] = inputs;
-	BroadcastEvent(EventSubscription::InputVolumeMeters, "InputVolumeMeters", eventData);
-}
-
+/**
+ * An input's active state has changed.
+ *
+ * When an input is active, it means it's being shown by the program feed.
+ *
+ * @dataField inputName   | String  | Name of the input
+ * @dataField videoActive | Boolean | Whether the input is active
+ *
+ * @eventType InputActiveStateChanged
+ * @eventSubscription InputActiveStateChanged
+ * @complexity 3
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api events
+ * @category inputs
+ */
 void EventHandler::HandleInputActiveStateChanged(void *param, calldata_t *data)
 {
 	auto eventHandler = reinterpret_cast<EventHandler*>(param);
@@ -76,6 +129,22 @@ void EventHandler::HandleInputActiveStateChanged(void *param, calldata_t *data)
 	eventHandler->BroadcastEvent(EventSubscription::InputActiveStateChanged, "InputActiveStateChanged", eventData);
 }
 
+/**
+ * An input's show state has changed.
+ *
+ * When an input is showing, it means it's being shown by the preview or a dialog.
+ *
+ * @dataField inputName    | String  | Name of the input
+ * @dataField videoShowing | Boolean | Whether the input is showing
+ *
+ * @eventType InputShowStateChanged
+ * @eventSubscription InputShowStateChanged
+ * @complexity 3
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api events
+ * @category inputs
+ */
 void EventHandler::HandleInputShowStateChanged(void *param, calldata_t *data)
 {
 	auto eventHandler = reinterpret_cast<EventHandler*>(param);
@@ -96,6 +165,20 @@ void EventHandler::HandleInputShowStateChanged(void *param, calldata_t *data)
 	eventHandler->BroadcastEvent(EventSubscription::InputShowStateChanged, "InputShowStateChanged", eventData);
 }
 
+/**
+ * An input's mute state has changed.
+ *
+ * @dataField inputName  | String  | Name of the input
+ * @dataField inputMuted | Boolean | Whether the input is muted
+ *
+ * @eventType InputMuteStateChanged
+ * @eventSubscription Inputs
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api events
+ * @category inputs
+ */
 void EventHandler::HandleInputMuteStateChanged(void *param, calldata_t *data)
 {
 	auto eventHandler = reinterpret_cast<EventHandler*>(param);
@@ -113,6 +196,21 @@ void EventHandler::HandleInputMuteStateChanged(void *param, calldata_t *data)
 	eventHandler->BroadcastEvent(EventSubscription::Inputs, "InputMuteStateChanged", eventData);
 }
 
+/**
+ * An input's volume level has changed.
+ *
+ * @dataField inputName      | String | Name of the input
+ * @dataField inputVolumeMul | Number | New volume level in multimap
+ * @dataField inputVolumeDb  | Number | New volume level in dB
+ *
+ * @eventType InputVolumeChanged
+ * @eventSubscription Inputs
+ * @complexity 3
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api events
+ * @category inputs
+ */
 void EventHandler::HandleInputVolumeChanged(void *param, calldata_t *data)
 {
 	auto eventHandler = reinterpret_cast<EventHandler*>(param);
@@ -138,6 +236,20 @@ void EventHandler::HandleInputVolumeChanged(void *param, calldata_t *data)
 	eventHandler->BroadcastEvent(EventSubscription::Inputs, "InputVolumeChanged", eventData);
 }
 
+/**
+ * The sync offset of an input has changed.
+ *
+ * @dataField inputName            | String | Name of the input
+ * @dataField inputAudioSyncOffset | Number | New sync offset in milliseconds
+ *
+ * @eventType InputAudioSyncOffsetChanged
+ * @eventSubscription Inputs
+ * @complexity 3
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api events
+ * @category inputs
+ */
 void EventHandler::HandleInputAudioSyncOffsetChanged(void *param, calldata_t *data)
 {
 	auto eventHandler = reinterpret_cast<EventHandler*>(param);
@@ -157,6 +269,20 @@ void EventHandler::HandleInputAudioSyncOffsetChanged(void *param, calldata_t *da
 	eventHandler->BroadcastEvent(EventSubscription::Inputs, "InputAudioSyncOffsetChanged", eventData);
 }
 
+/**
+ * The audio tracks of an input have changed.
+ *
+ * @dataField inputName        | String         | Name of the input
+ * @dataField inputAudioTracks | Array<Boolean> | Array of audio tracks along with their associated enable states
+ *
+ * @eventType InputAudioTracksChanged
+ * @eventSubscription Inputs
+ * @complexity 3
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api events
+ * @category inputs
+ */
 void EventHandler::HandleInputAudioTracksChanged(void *param, calldata_t *data)
 {
 	auto eventHandler = reinterpret_cast<EventHandler*>(param);
@@ -181,6 +307,25 @@ void EventHandler::HandleInputAudioTracksChanged(void *param, calldata_t *data)
 	eventHandler->BroadcastEvent(EventSubscription::Inputs, "InputAudioTracksChanged", eventData);
 }
 
+/**
+ * The monitor type of an input has changed.
+ *
+ * Available types are:
+ * - `OBS_MONITORING_TYPE_NONE`
+ * - `OBS_MONITORING_TYPE_MONITOR_ONLY`
+ * - `OBS_MONITORING_TYPE_MONITOR_AND_OUTPUT`
+ *
+ * @dataField inputName   | String | Name of the input
+ * @dataField monitorType | String | New monitor type of the input
+ *
+ * @eventType InputAudioMonitorTypeChanged
+ * @eventSubscription Inputs
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api events
+ * @category inputs
+ */
 void EventHandler::HandleInputAudioMonitorTypeChanged(void *param, calldata_t *data)
 {
 	auto eventHandler = reinterpret_cast<EventHandler*>(param);
@@ -194,22 +339,30 @@ void EventHandler::HandleInputAudioMonitorTypeChanged(void *param, calldata_t *d
 
 	enum obs_monitoring_type monitorType = (obs_monitoring_type)calldata_int(data, "type");
 
-	std::string monitorTypeString;
-	switch (monitorType) {
-		default:
-		case OBS_MONITORING_TYPE_NONE:
-			monitorTypeString = "OBS_WEBSOCKET_MONITOR_TYPE_NONE";
-			break;
-		case OBS_MONITORING_TYPE_MONITOR_ONLY:
-			monitorTypeString = "OBS_WEBSOCKET_MONITOR_TYPE_MONITOR_ONLY";
-			break;
-		case OBS_MONITORING_TYPE_MONITOR_AND_OUTPUT:
-			monitorTypeString = "OBS_WEBSOCKET_MONITOR_TYPE_MONITOR_AND_OUTPUT";
-			break;
-	}
+	std::string monitorTypeString = Utils::Obs::StringHelper::GetInputMonitorType(monitorType);
 
 	json eventData;
 	eventData["inputName"] = obs_source_get_name(source);
 	eventData["monitorType"] = monitorTypeString;
 	eventHandler->BroadcastEvent(EventSubscription::Inputs, "InputAudioMonitorTypeChanged", eventData);
+}
+
+/**
+ * A high-volume event providing volume levels of all active inputs every 50 milliseconds.
+ *
+ * @dataField inputs | Array<Object> | Array of active inputs with their associated volume levels
+ *
+ * @eventType InputVolumeMeters
+ * @eventSubscription InputVolumeMeters
+ * @complexity 4
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api events
+ * @category inputs
+ */
+void EventHandler::HandleInputVolumeMeters(std::vector<json> inputs)
+{
+	json eventData;
+	eventData["inputs"] = inputs;
+	BroadcastEvent(EventSubscription::InputVolumeMeters, "InputVolumeMeters", eventData);
 }

@@ -34,6 +34,20 @@ static bool GetOutputStateActive(ObsOutputState state) {
 	}
 }
 
+/**
+ * The state of the stream output has changed.
+ *
+ * @dataField outputActive | Boolean | Whether the output is active
+ * @dataField outputState  | String  | The specific state of the output
+ *
+ * @eventType StreamStateChanged
+ * @eventSubscription Outputs
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api events
+ * @category outputs
+ */
 void EventHandler::HandleStreamStateChanged(ObsOutputState state)
 {
 	json eventData;
@@ -42,6 +56,20 @@ void EventHandler::HandleStreamStateChanged(ObsOutputState state)
 	BroadcastEvent(EventSubscription::Outputs, "StreamStateChanged", eventData);
 }
 
+/**
+ * The state of the record output has changed.
+ *
+ * @dataField outputActive | Boolean | Whether the output is active
+ * @dataField outputState  | String  | The specific state of the output
+ *
+ * @eventType RecordStateChanged
+ * @eventSubscription Outputs
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api events
+ * @category outputs
+ */
 void EventHandler::HandleRecordStateChanged(ObsOutputState state)
 {
 	json eventData;
@@ -50,6 +78,20 @@ void EventHandler::HandleRecordStateChanged(ObsOutputState state)
 	BroadcastEvent(EventSubscription::Outputs, "RecordStateChanged", eventData);
 }
 
+/**
+ * The state of the replay buffer output has changed.
+ *
+ * @dataField outputActive | Boolean | Whether the output is active
+ * @dataField outputState  | String  | The specific state of the output
+ *
+ * @eventType ReplayBufferStateChanged
+ * @eventSubscription Outputs
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api events
+ * @category outputs
+ */
 void EventHandler::HandleReplayBufferStateChanged(ObsOutputState state)
 {
 	json eventData;
@@ -58,6 +100,20 @@ void EventHandler::HandleReplayBufferStateChanged(ObsOutputState state)
 	BroadcastEvent(EventSubscription::Outputs, "ReplayBufferStateChanged", eventData);
 }
 
+/**
+ * The state of the virtualcam output has changed.
+ *
+ * @dataField outputActive | Boolean | Whether the output is active
+ * @dataField outputState  | String  | The specific state of the output
+ *
+ * @eventType VirtualcamStateChanged
+ * @eventSubscription Outputs
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api events
+ * @category outputs
+ */
 void EventHandler::HandleVirtualcamStateChanged(ObsOutputState state)
 {
 	json eventData;
@@ -66,6 +122,19 @@ void EventHandler::HandleVirtualcamStateChanged(ObsOutputState state)
 	BroadcastEvent(EventSubscription::Outputs, "VirtualcamStateChanged", eventData);
 }
 
+/**
+ * The replay buffer has been saved.
+ *
+ * @dataField savedReplayPath | String | Path of the saved replay file
+ *
+ * @eventType ReplayBufferSaved
+ * @eventSubscription Outputs
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api events
+ * @category outputs
+ */
 void EventHandler::HandleReplayBufferSaved()
 {
 	json eventData;

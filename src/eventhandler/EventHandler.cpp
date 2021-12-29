@@ -379,10 +379,6 @@ void EventHandler::SourceCreatedMultiHandler(void *param, calldata_t *data)
 		case OBS_SOURCE_TYPE_INPUT:
 			eventHandler->HandleInputCreated(source);
 			break;
-		case OBS_SOURCE_TYPE_FILTER:
-			break;
-		case OBS_SOURCE_TYPE_TRANSITION:
-			break;
 		case OBS_SOURCE_TYPE_SCENE:
 			eventHandler->HandleSceneCreated(source);
 			break;
@@ -413,10 +409,6 @@ void EventHandler::SourceDestroyedMultiHandler(void *param, calldata_t *data)
 			// We have to call `InputRemoved` with source_destroy because source_removed is not called when an input's last scene item is removed
 			eventHandler->HandleInputRemoved(source);
 			break;
-		case OBS_SOURCE_TYPE_FILTER:
-			break;
-		case OBS_SOURCE_TYPE_TRANSITION:
-			break;
 		case OBS_SOURCE_TYPE_SCENE:
 			break;
 		default:
@@ -437,10 +429,6 @@ void EventHandler::SourceRemovedMultiHandler(void *param, calldata_t *data)
 
 	switch (obs_source_get_type(source)) {
 		case OBS_SOURCE_TYPE_INPUT:
-			break;
-		case OBS_SOURCE_TYPE_FILTER:
-			break;
-		case OBS_SOURCE_TYPE_TRANSITION:
 			break;
 		case OBS_SOURCE_TYPE_SCENE:
 			// Scenes emit the `removed` signal when they are removed from OBS, as expected

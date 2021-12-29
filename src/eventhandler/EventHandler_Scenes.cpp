@@ -19,6 +19,20 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include "EventHandler.h"
 
+/**
+ * A new scene has been created.
+ *
+ * @dataField sceneName | String  | Name of the new scene
+ * @dataField isGroup   | Boolean | Whether the new scene is a group
+ *
+ * @eventType SceneCreated
+ * @eventSubscription Scenes
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api events
+ * @category scenes
+ */
 void EventHandler::HandleSceneCreated(obs_source_t *source)
 {
 	json eventData;
@@ -27,6 +41,20 @@ void EventHandler::HandleSceneCreated(obs_source_t *source)
 	BroadcastEvent(EventSubscription::Scenes, "SceneCreated", eventData);
 }
 
+/**
+ * A scene has been removed.
+ *
+ * @dataField sceneName | String  | Name of the removed scene
+ * @dataField isGroup   | Boolean | Whether the scene was a group
+ *
+ * @eventType SceneRemoved
+ * @eventSubscription Scenes
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api events
+ * @category scenes
+ */
 void EventHandler::HandleSceneRemoved(obs_source_t *source)
 {
 	json eventData;
@@ -35,6 +63,20 @@ void EventHandler::HandleSceneRemoved(obs_source_t *source)
 	BroadcastEvent(EventSubscription::Scenes, "SceneRemoved", eventData);
 }
 
+/**
+ * The name of a scene has changed.
+ *
+ * @dataField oldSceneName | String | Old name of the scene
+ * @dataField sceneName    | String | New name of the scene
+ *
+ * @eventType SceneNameChanged
+ * @eventSubscription Scenes
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api events
+ * @category scenes
+ */
 void EventHandler::HandleSceneNameChanged(obs_source_t *, std::string oldSceneName, std::string sceneName)
 {
 	json eventData;
@@ -43,6 +85,19 @@ void EventHandler::HandleSceneNameChanged(obs_source_t *, std::string oldSceneNa
 	BroadcastEvent(EventSubscription::Scenes, "SceneNameChanged", eventData);
 }
 
+/**
+ * The current program scene has changed.
+ *
+ * @dataField sceneName | String | Name of the scene that was switched to
+ *
+ * @eventType CurrentSceneChanged
+ * @eventSubscription Scenes
+ * @complexity 1
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api events
+ * @category scenes
+ */
 void EventHandler::HandleCurrentSceneChanged()
 {
 	OBSSourceAutoRelease currentScene = obs_frontend_get_current_scene();
@@ -52,6 +107,19 @@ void EventHandler::HandleCurrentSceneChanged()
 	BroadcastEvent(EventSubscription::Scenes, "CurrentSceneChanged", eventData);
 }
 
+/**
+ * The current preview scene has changed.
+ *
+ * @dataField sceneName | String | Name of the scene that was switched to
+ *
+ * @eventType CurrentPreviewSceneChanged
+ * @eventSubscription Scenes
+ * @complexity 1
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api events
+ * @category scenes
+ */
 void EventHandler::HandleCurrentPreviewSceneChanged()
 {
 	OBSSourceAutoRelease currentPreviewScene = obs_frontend_get_current_preview_scene();
@@ -65,6 +133,21 @@ void EventHandler::HandleCurrentPreviewSceneChanged()
 	BroadcastEvent(EventSubscription::Scenes, "CurrentPreviewSceneChanged", eventData);
 }
 
+/**
+ * The list of scenes has changed.
+ *
+ * TODO: Make OBS fire this event when scenes are reordered.
+ *
+ * @dataField scenes | Array<Object> | Updated array of scenes
+ *
+ * @eventType SceneListChanged
+ * @eventSubscription Scenes
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api events
+ * @category scenes
+ */
 void EventHandler::HandleSceneListChanged()
 {
 	json eventData;
