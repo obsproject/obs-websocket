@@ -334,7 +334,7 @@ RequestResult RequestHandler::RemoveProfile(const Request& request)
  * @responseField defaultParameterValue | String | Default value associated with the parameter. `null` if no default
  *
  * @requestType GetProfileParameter
- * @complexity 3
+ * @complexity 4
  * @rpcVersion -1
  * @initialVersion 5.0.0
  * @category config
@@ -378,7 +378,7 @@ RequestResult RequestHandler::GetProfileParameter(const Request& request)
  * @requestField parameterValue    | String | Value of the parameter to set. Use `null` to delete
  *
  * @requestType SetProfileParameter
- * @complexity 3
+ * @complexity 4
  * @rpcVersion -1
  * @initialVersion 5.0.0
  * @category config
