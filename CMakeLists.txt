@@ -103,6 +103,7 @@ set(obs-websocket_SOURCES
 	src/eventhandler/EventHandler_Outputs.cpp
 	src/eventhandler/EventHandler_SceneItems.cpp
 	src/eventhandler/EventHandler_MediaInputs.cpp
+	src/eventhandler/EventHandler_Ui.cpp
 	src/requesthandler/RequestHandler.cpp
 	src/requesthandler/RequestBatchHandler.cpp
 	src/requesthandler/RequestHandler_General.cpp
