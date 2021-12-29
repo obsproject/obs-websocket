@@ -85,16 +85,21 @@ std::string Utils::Obs::StringHelper::GetSourceType(obs_source_t *source)
 	}
 }
 
-std::string Utils::Obs::StringHelper::GetInputMonitorType(obs_source_t *input)
+std::string Utils::Obs::StringHelper::GetInputMonitorType(enum obs_monitoring_type monitorType)
 {
-	obs_monitoring_type monitorType = obs_source_get_monitoring_type(input);
-
 	switch (monitorType) {
 		default:
 		CASE(OBS_MONITORING_TYPE_NONE)
 		CASE(OBS_MONITORING_TYPE_MONITOR_ONLY)
 		CASE(OBS_MONITORING_TYPE_MONITOR_AND_OUTPUT)
 	}
+}
+
+std::string Utils::Obs::StringHelper::GetInputMonitorType(obs_source_t *input)
+{
+	obs_monitoring_type monitorType = obs_source_get_monitoring_type(input);
+
+	return GetInputMonitorType(monitorType);
 }
 
 std::string Utils::Obs::StringHelper::GetMediaInputState(obs_source_t *input)

@@ -158,6 +158,7 @@ namespace Utils {
 			std::string GetCurrentProfilePath();
 			std::string GetCurrentRecordOutputPath();
 			std::string GetSourceType(obs_source_t *source);
+			std::string GetInputMonitorType(enum obs_monitoring_type monitorType);
 			std::string GetInputMonitorType(obs_source_t *input);
 			std::string GetMediaInputState(obs_source_t *input);
 			std::string GetLastReplayBufferFilePath();
