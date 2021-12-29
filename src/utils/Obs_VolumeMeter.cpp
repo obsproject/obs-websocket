@@ -278,9 +278,7 @@ Utils::Obs::VolumeMeter::Handler::~Handler()
 	signal_handler_disconnect(sh, "source_deactivate", Handler::InputDeactivateCallback, this);
 
 	if (_running) {
-		_mutex.lock();
 		_running = false;
-		_mutex.unlock();
 		_cond.notify_all();
 	}
 

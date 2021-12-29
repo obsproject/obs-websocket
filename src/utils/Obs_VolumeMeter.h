@@ -87,7 +87,7 @@ namespace Utils {
 
 					std::mutex _mutex;
 					std::condition_variable _cond;
-					bool _running;
+					std::atomic<bool> _running;
 					std::thread _updateThread;
 
 					void UpdateThread();
