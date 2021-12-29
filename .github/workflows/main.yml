@@ -474,7 +474,7 @@ jobs:
         shell: bash
         working-directory: ${{ github.workspace }}/obs-websocket
         run: |
-          codesign --sign "${{ secrets.INSTALLER_SIGNING_IDENTITY }}" ./build/obs-websocket.so
+          codesign --sign "${{ secrets.INSTALLER_SIGNING_IDENTITY }}" --keychain "/Users/runner/Library/Keychains/signing_temp.keychain-db" ./build/obs-websocket.so
       - name: "Set PR Artifact Filename"
         shell: bash
         run: |
