@@ -201,6 +201,32 @@ std::vector<std::string> Utils::Obs::ArrayHelper::GetInputKindList(bool unversio
 	return ret;
 }
 
+std::vector<json> Utils::Obs::ArrayHelper::GetListPropertyItems(obs_property_t *property)
+{
+	std::vector<json> ret;
+
+	enum obs_combo_format itemFormat = obs_property_list_format(property);
+	size_t itemCount = obs_property_list_item_count(property);
+
+	for (size_t i = 0; i < itemCount; i++) {
+		json itemData;
+		itemData["itemName"] = obs_property_list_item_name(property, i);
+		itemData["itemEnabled"] = !obs_property_list_item_disabled(property, i);
+		if (itemFormat == OBS_COMBO_FORMAT_INT) {
+			itemData["itemValue"] = obs_property_list_item_int(property, i);
+		} else if (itemFormat == OBS_COMBO_FORMAT_FLOAT) {
+			itemData["itemValue"] = obs_property_list_item_float(property, i);
+		} else if (itemFormat == OBS_COMBO_FORMAT_STRING) {
+			itemData["itemValue"] = obs_property_list_item_string(property, i);
+		} else {
+			itemData["itemValue"] = nullptr;
+		}
+		ret.push_back(itemData);
+	}
+
+	return ret;
+}
+
 std::vector<std::string> Utils::Obs::ArrayHelper::GetTransitionKindList()
 {
 	std::vector<std::string> ret;

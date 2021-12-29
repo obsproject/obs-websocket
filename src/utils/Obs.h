@@ -122,6 +122,7 @@ namespace Utils {
 			std::vector<json> GetSceneItemList(obs_scene_t *scene, bool basic = false);
 			std::vector<json> GetInputList(std::string inputKind = "");
 			std::vector<std::string> GetInputKindList(bool unversioned = false, bool includeDisabled = false);
+			std::vector<json> GetListPropertyItems(obs_property_t *property);
 			std::vector<std::string> GetTransitionKindList();
 			std::vector<json> GetSceneTransitionList();
 		}
