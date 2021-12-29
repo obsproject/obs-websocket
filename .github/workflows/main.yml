@@ -528,7 +528,7 @@ jobs:
             --asc-provider "${{ secrets.AC_PROVIDER_SHORTNAME }}" \
             --file "./release/${{ env.MACOS_FILENAME }}.zip")
             
-          rm ./release/${{ env.FILENAME }}.zip
+          rm ./release/${{ env.MACOS_FILENAME }}.zip
 
           REQUEST_UUID=$(echo $UPLOAD_RESULT | awk -F ' = ' '/RequestUUID/ {print $2}')
 
