@@ -130,7 +130,6 @@ namespace EventSubscription {
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		// Receive events in the `MediaInputs` category
 		MediaInputs = (1 << 8),
 		/**
 		* Subscription value to receive the `VendorEvent` event.
@@ -142,8 +141,18 @@ namespace EventSubscription {
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		// Receive events from external OBS plugins and scripts
 		Vendors = (1 << 9),
+		/**
+		* Subscription value to receive events in the `Ui` category.
+		*
+		* @enumIdentifier Ui
+		* @enumValue (1 << 10)
+		* @enumType EventSubscription
+		* @rpcVersion -1
+		* @initialVersion 5.0.0
+		* @api enums
+		*/
+		Ui = (1 << 10),
 		/**
 		* Helper to receive all non-high-volume events.
 		*
@@ -154,8 +163,7 @@ namespace EventSubscription {
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		// Receive all event categories (exclude high-volume)
-		All = (General | Config | Scenes | Inputs | Transitions | Filters | Outputs | SceneItems | MediaInputs | Vendors),
+		All = (General | Config | Scenes | Inputs | Transitions | Filters | Outputs | SceneItems | MediaInputs | Ui | Vendors),
 		/**
 		* Subscription value to receive the `InputVolumeMeters` high-volume event.
 		*
@@ -166,7 +174,6 @@ namespace EventSubscription {
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		// InputVolumeMeters event (high-volume)
 		InputVolumeMeters = (1 << 16),
 		/**
 		* Subscription value to receive the `InputActiveStateChanged` high-volume event.
@@ -178,7 +185,6 @@ namespace EventSubscription {
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		// InputActiveStateChanged event (high-volume)
 		InputActiveStateChanged = (1 << 17),
 		/**
 		* Subscription value to receive the `InputShowStateChanged` high-volume event.
@@ -190,7 +196,6 @@ namespace EventSubscription {
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		// InputShowStateChanged event (high-volume)
 		InputShowStateChanged = (1 << 18),
 		/**
 		* Subscription value to receive the `SceneItemTransformChanged` high-volume event.
@@ -202,7 +207,6 @@ namespace EventSubscription {
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		// SceneItemTransformChanged event (high-volume)
 		SceneItemTransformChanged = (1 << 19),
 	};
 }
