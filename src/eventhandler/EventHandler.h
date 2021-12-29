@@ -94,7 +94,7 @@ class EventHandler
 		void HandleSceneCreated(obs_source_t *source);
 		void HandleSceneRemoved(obs_source_t *source);
 		void HandleSceneNameChanged(obs_source_t *source, std::string oldSceneName, std::string sceneName);
-		void HandleCurrentSceneChanged();
+		void HandleCurrentProgramSceneChanged();
 		void HandleCurrentPreviewSceneChanged();
 		void HandleSceneListChanged();
 

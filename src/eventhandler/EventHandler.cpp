@@ -285,7 +285,7 @@ void EventHandler::OnFrontendEvent(enum obs_frontend_event event, void *private_
 
 		// Scenes
 		case OBS_FRONTEND_EVENT_SCENE_CHANGED:
-			eventHandler->HandleCurrentSceneChanged();
+			eventHandler->HandleCurrentProgramSceneChanged();
 			break;
 		case OBS_FRONTEND_EVENT_PREVIEW_SCENE_CHANGED:
 			eventHandler->HandleCurrentPreviewSceneChanged();

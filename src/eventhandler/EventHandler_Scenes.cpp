@@ -90,7 +90,7 @@ void EventHandler::HandleSceneNameChanged(obs_source_t *, std::string oldSceneNa
  *
  * @dataField sceneName | String | Name of the scene that was switched to
  *
- * @eventType CurrentSceneChanged
+ * @eventType CurrentProgramSceneChanged
  * @eventSubscription Scenes
  * @complexity 1
  * @rpcVersion -1
@@ -98,13 +98,13 @@ void EventHandler::HandleSceneNameChanged(obs_source_t *, std::string oldSceneNa
  * @api events
  * @category scenes
  */
-void EventHandler::HandleCurrentSceneChanged()
+void EventHandler::HandleCurrentProgramSceneChanged()
 {
 	OBSSourceAutoRelease currentScene = obs_frontend_get_current_scene();
 
 	json eventData;
 	eventData["sceneName"] = obs_source_get_name(currentScene);
-	BroadcastEvent(EventSubscription::Scenes, "CurrentSceneChanged", eventData);
+	BroadcastEvent(EventSubscription::Scenes, "CurrentProgramSceneChanged", eventData);
 }
 
 /**
