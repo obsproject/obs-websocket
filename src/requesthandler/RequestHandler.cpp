@@ -134,6 +134,9 @@ const std::map<std::string, RequestMethodHandler> RequestHandler::_handlerMap
 	// Ui
 	{"GetStudioModeEnabled", &RequestHandler::GetStudioModeEnabled},
 	{"SetStudioModeEnabled", &RequestHandler::SetStudioModeEnabled},
+	{"OpenInputPropertiesDialog", &RequestHandler::OpenInputPropertiesDialog},
+	{"OpenInputFiltersDialog", &RequestHandler::OpenInputFiltersDialog},
+	{"OpenInputInteractDialog", &RequestHandler::OpenInputInteractDialog},
 };
 
 RequestHandler::RequestHandler(SessionPtr session) :
