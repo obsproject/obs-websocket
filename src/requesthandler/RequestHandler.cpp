@@ -123,7 +123,7 @@ const std::map<std::string, RequestMethodHandler> RequestHandler::_handlerMap
 	{"ToggleRecordPause", &RequestHandler::ToggleRecordPause},
 	{"PauseRecord", &RequestHandler::PauseRecord},
 	{"ResumeRecord", &RequestHandler::ResumeRecord},
-	//{"GetRecordDirectory", &RequestHandler::GetRecordDirectory},
+	{"GetRecordDirectory", &RequestHandler::GetRecordDirectory},
 
 	// Media Inputs
 	{"GetMediaInputStatus", &RequestHandler::GetMediaInputStatus},
