@@ -461,7 +461,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-build-cache-obs-
       - name: "Configue OBS-Studio"
-        if: steps.build-cache-obs.outputs.cache-hit != 'true'
+        # if: steps.build-cache-obs.outputs.cache-hit != 'true'
         working-directory: ${{ github.workspace }}/obs-studio
         shell: bash
         run: |
