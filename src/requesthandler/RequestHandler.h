@@ -156,6 +156,9 @@ class RequestHandler {
 		// Ui
 		RequestResult GetStudioModeEnabled(const Request&);
 		RequestResult SetStudioModeEnabled(const Request&);
+		RequestResult OpenInputPropertiesDialog(const Request&);
+		RequestResult OpenInputFiltersDialog(const Request&);
+		RequestResult OpenInputInteractDialog(const Request&);
 
 		SessionPtr _session;
 		static const std::map<std::string, RequestMethodHandler> _handlerMap;

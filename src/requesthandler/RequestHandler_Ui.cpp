@@ -70,3 +70,81 @@ RequestResult RequestHandler::SetStudioModeEnabled(const Request& request)
 
 	return RequestResult::Success();
 }
+
+/**
+ * Opens the properties dialog of an input.
+ *
+ * @requestField inputName | String | Name of the input to open the dialog of
+ *
+ * @requestType OpenInputPropertiesDialog
+ * @complexity 1
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @category ui
+ * @api requests
+ */
+RequestResult RequestHandler::OpenInputPropertiesDialog(const Request& request)
+{
+	RequestStatus::RequestStatus statusCode;
+	std::string comment;
+	OBSSourceAutoRelease input = request.ValidateInput("inputName", statusCode, comment);
+	if (!input)
+		return RequestResult::Error(statusCode, comment);
+
+	obs_frontend_open_source_properties(input);
+
+	return RequestResult::Success();
+}
+
+/**
+ * Opens the filters dialog of an input.
+ *
+ * @requestField inputName | String | Name of the input to open the dialog of
+ *
+ * @requestType OpenInputFiltersDialog
+ * @complexity 1
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @category ui
+ * @api requests
+ */
+RequestResult RequestHandler::OpenInputFiltersDialog(const Request& request)
+{
+	RequestStatus::RequestStatus statusCode;
+	std::string comment;
+	OBSSourceAutoRelease input = request.ValidateInput("inputName", statusCode, comment);
+	if (!input)
+		return RequestResult::Error(statusCode, comment);
+
+	obs_frontend_open_source_filters(input);
+
+	return RequestResult::Success();
+}
+
+/**
+ * Opens the interact dialog of an input.
+ *
+ * @requestField inputName | String | Name of the input to open the dialog of
+ *
+ * @requestType OpenInputInteractDialog
+ * @complexity 1
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @category ui
+ * @api requests
+ */
+RequestResult RequestHandler::OpenInputInteractDialog(const Request& request)
+{
+	RequestStatus::RequestStatus statusCode;
+	std::string comment;
+	OBSSourceAutoRelease input = request.ValidateInput("inputName", statusCode, comment);
+	if (!input)
+		return RequestResult::Error(statusCode, comment);
+
+	if (!(obs_source_get_output_flags(input) & OBS_SOURCE_INTERACTION))
+		return RequestResult::Error(RequestStatus::InvalidResourceState, "The specified input does not support interaction.");
+
+	obs_frontend_open_source_interaction(input);
+
+	return RequestResult::Success();
+}
