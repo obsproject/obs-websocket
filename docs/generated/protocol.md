@@ -2064,6 +2064,7 @@ Studio mode has been enabled or disabled.
   - [SaveSourceScreenshot](#savesourcescreenshot)
 - [Scenes](#scenes-1)
   - [GetSceneList](#getscenelist)
+  - [GetGroupList](#getgrouplist)
   - [GetCurrentProgramScene](#getcurrentprogramscene)
   - [SetCurrentProgramScene](#setcurrentprogramscene)
   - [GetCurrentPreviewScene](#getcurrentpreviewscene)
@@ -2727,7 +2728,26 @@ Gets an array of all scenes in OBS.
 | ---- | :---: | ----------- |
 | currentProgramSceneName | String | Current program scene |
 | currentPreviewSceneName | String | Current preview scene. `null` if not in studio mode |
-| scenes | Array&lt;Object&gt; | Array of scenes in OBS |
+| scenes | Array&lt;Object&gt; | Array of scenes |
+
+---
+
+### GetGroupList
+
+Gets an array of all groups in OBS.
+
+Groups in OBS are actually scenes, but renamed and modified. In obs-websocket, we treat them as scenes where we can.
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| groups | Array&lt;String&gt; | Array of group names |
 
 ---
 

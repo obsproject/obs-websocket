@@ -2783,7 +2783,24 @@
         {
           "valueName": "scenes",
           "valueType": "Array<Object>",
-          "valueDescription": "Array of scenes in OBS"
+          "valueDescription": "Array of scenes"
+        }
+      ]
+    },
+    {
+      "description": "Gets an array of all groups in OBS.\n\nGroups in OBS are actually scenes, but renamed and modified. In obs-websocket, we treat them as scenes where we can.",
+      "requestType": "GetGroupList",
+      "complexity": 2,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "scenes",
+      "requestFields": [],
+      "responseFields": [
+        {
+          "valueName": "groups",
+          "valueType": "Array<String>",
+          "valueDescription": "Array of group names"
         }
       ]
     },
