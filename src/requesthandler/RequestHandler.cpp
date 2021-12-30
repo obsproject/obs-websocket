@@ -67,7 +67,7 @@ const std::map<std::string, RequestMethodHandler> RequestHandler::_handlerMap
 	{"GetInputList", &RequestHandler::GetInputList},
 	{"GetInputKindList", &RequestHandler::GetInputKindList},
 	{"CreateInput", &RequestHandler::CreateInput},
-	//{"RemoveInput", &RequestHandler::RemoveInput}, // Disabled for now. Pending obs-studio#5276
+	{"RemoveInput", &RequestHandler::RemoveInput},
 	{"SetInputName", &RequestHandler::SetInputName},
 	{"GetInputDefaultSettings", &RequestHandler::GetInputDefaultSettings},
 	{"GetInputSettings", &RequestHandler::GetInputSettings},
