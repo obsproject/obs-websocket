@@ -91,9 +91,6 @@ std::vector<json> Utils::Obs::ArrayHelper::GetSceneList()
 	for (size_t i = 0; i < sceneList.sources.num; i++) {
 		obs_source_t *scene = sceneList.sources.array[i];
 
-		if (obs_source_is_group(scene))
-			continue;
-
 		json sceneJson;
 		sceneJson["sceneName"] = obs_source_get_name(scene);
 		sceneJson["sceneIndex"] = sceneList.sources.num - i - 1;
@@ -105,6 +102,26 @@ std::vector<json> Utils::Obs::ArrayHelper::GetSceneList()
 
 	// Reverse the vector order to match other array returns
 	std::reverse(ret.begin(), ret.end());
+
+	return ret;
+}
+
+std::vector<std::string> Utils::Obs::ArrayHelper::GetGroupList()
+{
+	std::vector<std::string> ret;
+
+	auto cb = [](void *priv_data, obs_source_t *scene) {
+		auto ret = static_cast<std::vector<std::string>*>(priv_data);
+
+		if (!obs_source_is_group(scene))
+			return true;
+
+		ret->emplace_back(obs_source_get_name(scene));
+
+		return true;
+	};
+
+	obs_enum_scenes(cb, &ret);
 
 	return ret;
 }

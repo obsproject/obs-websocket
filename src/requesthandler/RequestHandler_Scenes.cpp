@@ -24,7 +24,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
  *
  * @responseField currentProgramSceneName | String        | Current program scene
  * @responseField currentPreviewSceneName | String        | Current preview scene. `null` if not in studio mode
- * @responseField scenes                  | Array<Object> | Array of scenes in OBS
+ * @responseField scenes                  | Array<Object> | Array of scenes
  *
  * @requestType GetSceneList
  * @complexity 2
@@ -50,6 +50,29 @@ RequestResult RequestHandler::GetSceneList(const Request&)
 		responseData["currentPreviewSceneName"] = nullptr;
 
 	responseData["scenes"] = Utils::Obs::ArrayHelper::GetSceneList();
+
+	return RequestResult::Success(responseData);
+}
+
+/**
+ * Gets an array of all groups in OBS.
+ *
+ * Groups in OBS are actually scenes, but renamed and modified. In obs-websocket, we treat them as scenes where we can.
+ *
+ * @responseField groups | Array<String> | Array of group names
+ *
+ * @requestType GetGroupList
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api requests
+ * @category scenes
+ */
+RequestResult RequestHandler::GetGroupList(const Request&)
+{
+	json responseData;
+
+	responseData["groups"] = Utils::Obs::ArrayHelper::GetGroupList();
 
 	return RequestResult::Success(responseData);
 }

@@ -77,6 +77,7 @@ class RequestHandler {
 
 		// Scenes
 		RequestResult GetSceneList(const Request&);
+		RequestResult GetGroupList(const Request&);
 		RequestResult GetCurrentProgramScene(const Request&);
 		RequestResult SetCurrentProgramScene(const Request&);
 		RequestResult GetCurrentPreviewScene(const Request&);

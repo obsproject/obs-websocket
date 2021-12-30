@@ -55,6 +55,7 @@ const std::map<std::string, RequestMethodHandler> RequestHandler::_handlerMap
 
 	// Scenes
 	{"GetSceneList", &RequestHandler::GetSceneList},
+	{"GetGroupList", &RequestHandler::GetGroupList},
 	{"GetCurrentProgramScene", &RequestHandler::GetCurrentProgramScene},
 	{"SetCurrentProgramScene", &RequestHandler::SetCurrentProgramScene},
 	{"GetCurrentPreviewScene", &RequestHandler::GetCurrentPreviewScene},
