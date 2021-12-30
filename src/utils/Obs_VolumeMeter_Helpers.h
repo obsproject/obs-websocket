@@ -56,7 +56,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 		r = fmaxf(r, x4_mem[3]);   \
 	} while (false)
 
-float GetSamplePeak(__m128 previousSamples, const float *samples, size_t sampleCount)
+static float GetSamplePeak(__m128 previousSamples, const float *samples, size_t sampleCount)
 {
 	__m128 peak = previousSamples;
 	for (size_t i = 0; (i + 3) < sampleCount; i += 4) {
@@ -69,7 +69,7 @@ float GetSamplePeak(__m128 previousSamples, const float *samples, size_t sampleC
 	return ret;
 }
 
-float GetTruePeak(__m128 previousSamples, const float *samples, size_t sampleCount)
+static float GetTruePeak(__m128 previousSamples, const float *samples, size_t sampleCount)
 {
 	const __m128 m3 = _mm_set_ps(-0.155915f, 0.935489f, 0.233872f, -0.103943f);
 	const __m128 m1 = _mm_set_ps(-0.216236f, 0.756827f, 0.504551f, -0.189207f);
