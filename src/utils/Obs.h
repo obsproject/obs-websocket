@@ -62,7 +62,7 @@ using OBSWeakServiceAutoRelease = OBSRef<obs_weak_service_t *, ___weak_service_d
 template <typename T> T* GetCalldataPointer(const calldata_t *data, const char* name) {
 	void *ptr = nullptr;
 	calldata_get_ptr(data, name, &ptr);
-	return reinterpret_cast<T*>(ptr);
+	return static_cast<T*>(ptr);
 }
 
 enum ObsOutputState {

@@ -199,7 +199,7 @@ void EventHandler::DisconnectSourceSignals(obs_source_t *source)
 
 void EventHandler::OnFrontendEvent(enum obs_frontend_event event, void *private_data)
 {
-	auto eventHandler = reinterpret_cast<EventHandler*>(private_data);
+	auto eventHandler = static_cast<EventHandler*>(private_data);
 
 	if (!eventHandler->_obsLoaded.load()) {
 		if (event == OBS_FRONTEND_EVENT_FINISHED_LOADING) {
@@ -210,14 +210,14 @@ void EventHandler::OnFrontendEvent(enum obs_frontend_event event, void *private_
 			// In the case that plugins become hotloadable, this will have to go back into `EventHandler::EventHandler()`
 			// Enumerate inputs and connect each one
 			obs_enum_sources([](void* param, obs_source_t* source) {
-				auto eventHandler = reinterpret_cast<EventHandler*>(param);
+				auto eventHandler = static_cast<EventHandler*>(param);
 				eventHandler->ConnectSourceSignals(source);
 				return true;
 			}, private_data);
 
 			// Enumerate scenes and connect each one
 			obs_enum_scenes([](void* param, obs_source_t* source) {
-				auto eventHandler = reinterpret_cast<EventHandler*>(param);
+				auto eventHandler = static_cast<EventHandler*>(param);
 				eventHandler->ConnectSourceSignals(source);
 				return true;
 			}, private_data);
@@ -243,14 +243,14 @@ void EventHandler::OnFrontendEvent(enum obs_frontend_event event, void *private_
 			// In the case that plugins become hotloadable, this will have to go back into `EventHandler::~EventHandler()`
 			// Enumerate inputs and disconnect each one
 			obs_enum_sources([](void* param, obs_source_t* source) {
-				auto eventHandler = reinterpret_cast<EventHandler*>(param);
+				auto eventHandler = static_cast<EventHandler*>(param);
 				eventHandler->DisconnectSourceSignals(source);
 				return true;
 			}, private_data);
 
 			// Enumerate scenes and disconnect each one
 			obs_enum_scenes([](void* param, obs_source_t* source) {
-				auto eventHandler = reinterpret_cast<EventHandler*>(param);
+				auto eventHandler = static_cast<EventHandler*>(param);
 				eventHandler->DisconnectSourceSignals(source);
 				return true;
 			}, private_data);
@@ -365,7 +365,7 @@ void EventHandler::OnFrontendEvent(enum obs_frontend_event event, void *private_
 // Only called for creation of a public source
 void EventHandler::SourceCreatedMultiHandler(void *param, calldata_t *data)
 {
-	auto eventHandler = reinterpret_cast<EventHandler*>(param);
+	auto eventHandler = static_cast<EventHandler*>(param);
 
 	// Don't react to signals until OBS has finished loading
 	if (!eventHandler->_obsLoaded.load())
@@ -392,7 +392,7 @@ void EventHandler::SourceCreatedMultiHandler(void *param, calldata_t *data)
 // Only called for destruction of a public source
 void EventHandler::SourceDestroyedMultiHandler(void *param, calldata_t *data)
 {
-	auto eventHandler = reinterpret_cast<EventHandler*>(param);
+	auto eventHandler = static_cast<EventHandler*>(param);
 
 	// We can't use any smart types here because releasing the source will cause infinite recursion
 	obs_source_t *source = GetCalldataPointer<obs_source_t>(data, "source");
@@ -420,7 +420,7 @@ void EventHandler::SourceDestroyedMultiHandler(void *param, calldata_t *data)
 
 void EventHandler::SourceRemovedMultiHandler(void *param, calldata_t *data)
 {
-	auto eventHandler = reinterpret_cast<EventHandler*>(param);
+	auto eventHandler = static_cast<EventHandler*>(param);
 
 	if (!eventHandler->_obsLoaded.load())
 		return;
@@ -443,7 +443,7 @@ void EventHandler::SourceRemovedMultiHandler(void *param, calldata_t *data)
 
 void EventHandler::SourceRenamedMultiHandler(void *param, calldata_t *data)
 {
-	auto eventHandler = reinterpret_cast<EventHandler*>(param);
+	auto eventHandler = static_cast<EventHandler*>(param);
 
 	if (!eventHandler->_obsLoaded.load())
 		return;

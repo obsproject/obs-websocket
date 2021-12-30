@@ -29,7 +29,7 @@ struct CreateSceneItemData {
 
 void CreateSceneItemHelper(void *_data, obs_scene_t *scene)
 {
-	auto *data = reinterpret_cast<CreateSceneItemData*>(_data);
+	auto *data = static_cast<CreateSceneItemData*>(_data);
 	data->sceneItem = obs_scene_add(scene, data->source);
 
 	if (data->sceneItemTransform)

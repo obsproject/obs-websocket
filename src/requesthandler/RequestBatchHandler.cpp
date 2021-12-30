@@ -109,7 +109,7 @@ static void ObsTickCallback(void *param, float)
 {
 	ScopeProfiler prof{"obs_websocket_request_batch_frame_tick"};
 
-	auto serialFrameBatch = reinterpret_cast<SerialFrameBatch*>(param);
+	auto serialFrameBatch = static_cast<SerialFrameBatch*>(param);
 
 	// Increment frame count
 	serialFrameBatch->frameCount++;

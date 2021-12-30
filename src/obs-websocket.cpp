@@ -68,7 +68,7 @@ bool obs_module_load(void)
 
 	// Initialize the settings dialog
 	obs_frontend_push_ui_translation(obs_module_get_string);
-	QMainWindow* mainWindow = reinterpret_cast<QMainWindow*>(obs_frontend_get_main_window());
+	QMainWindow* mainWindow = static_cast<QMainWindow*>(obs_frontend_get_main_window());
 	_settingsDialog = new SettingsDialog(mainWindow);
 	obs_frontend_pop_ui_translation();
 

@@ -159,7 +159,7 @@ RequestResult RequestHandler::SetCurrentSceneCollection(const Request& request)
 	// Avoid queueing tasks if nothing will change
 	if (currentSceneCollectionName != sceneCollectionName) {
 		obs_queue_task(OBS_TASK_UI, [](void* param) {
-			obs_frontend_set_current_scene_collection(reinterpret_cast<const char*>(param));
+			obs_frontend_set_current_scene_collection(static_cast<const char*>(param));
 		}, (void*)sceneCollectionName.c_str(), true);
 	}
 
@@ -193,7 +193,7 @@ RequestResult RequestHandler::CreateSceneCollection(const Request& request)
 	if (std::find(sceneCollections.begin(), sceneCollections.end(), sceneCollectionName) != sceneCollections.end())
 		return RequestResult::Error(RequestStatus::ResourceAlreadyExists);
 
-	QMainWindow* mainWindow = reinterpret_cast<QMainWindow*>(obs_frontend_get_main_window());
+	QMainWindow* mainWindow = static_cast<QMainWindow*>(obs_frontend_get_main_window());
 	bool success = false;
 	QMetaObject::invokeMethod(mainWindow, "AddSceneCollection", Qt::BlockingQueuedConnection, Q_RETURN_ARG(bool, success), Q_ARG(bool, true), Q_ARG(QString, QString::fromStdString(sceneCollectionName)));
 	if (!success)
@@ -252,7 +252,7 @@ RequestResult RequestHandler::SetCurrentProfile(const Request& request)
 	// Avoid queueing tasks if nothing will change
 	if (currentProfileName != profileName) {
 		obs_queue_task(OBS_TASK_UI, [](void* param) {
-			obs_frontend_set_current_profile(reinterpret_cast<const char*>(param));
+			obs_frontend_set_current_profile(static_cast<const char*>(param));
 		}, (void*)profileName.c_str(), true);
 	}
 
@@ -284,7 +284,7 @@ RequestResult RequestHandler::CreateProfile(const Request& request)
 	if (std::find(profiles.begin(), profiles.end(), profileName) != profiles.end())
 		return RequestResult::Error(RequestStatus::ResourceAlreadyExists);
 
-	QMainWindow* mainWindow = reinterpret_cast<QMainWindow*>(obs_frontend_get_main_window());
+	QMainWindow* mainWindow = static_cast<QMainWindow*>(obs_frontend_get_main_window());
 	QMetaObject::invokeMethod(mainWindow, "NewProfile", Qt::BlockingQueuedConnection, Q_ARG(QString, QString::fromStdString(profileName)));
 
 	return RequestResult::Success();
@@ -318,7 +318,7 @@ RequestResult RequestHandler::RemoveProfile(const Request& request)
 	if (profiles.size() < 2)
 		return RequestResult::Error(RequestStatus::NotEnoughResources);
 
-	QMainWindow* mainWindow = reinterpret_cast<QMainWindow*>(obs_frontend_get_main_window());
+	QMainWindow* mainWindow = static_cast<QMainWindow*>(obs_frontend_get_main_window());
 	QMetaObject::invokeMethod(mainWindow, "DeleteProfile", Qt::BlockingQueuedConnection, Q_ARG(QString, QString::fromStdString(profileName)));
 
 	return RequestResult::Success();

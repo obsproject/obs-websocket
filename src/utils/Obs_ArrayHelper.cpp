@@ -61,7 +61,7 @@ std::vector<obs_hotkey_t *> Utils::Obs::ArrayHelper::GetHotkeyList()
 	std::vector<obs_hotkey_t *> ret;
 
 	obs_enum_hotkeys([](void* data, obs_hotkey_id, obs_hotkey_t* hotkey) {
-		auto ret = reinterpret_cast<std::vector<obs_hotkey_t *> *>(data);
+		auto ret = static_cast<std::vector<obs_hotkey_t *> *>(data);
 
 		ret->push_back(hotkey);
 
@@ -132,7 +132,7 @@ std::vector<json> Utils::Obs::ArrayHelper::GetSceneItemList(obs_scene_t *scene, 
 	enumData.second = basic;
 
 	obs_scene_enum_items(scene, [](obs_scene_t*, obs_sceneitem_t* sceneItem, void* param) {
-		auto enumData = reinterpret_cast<std::pair<std::vector<json>, bool>*>(param);
+		auto enumData = static_cast<std::pair<std::vector<json>, bool>*>(param);
 
 		json item;
 		item["sceneItemId"] = obs_sceneitem_get_id(sceneItem);
@@ -175,7 +175,7 @@ std::vector<json> Utils::Obs::ArrayHelper::GetInputList(std::string inputKind)
 		if (obs_source_get_type(input) != OBS_SOURCE_TYPE_INPUT)
 			return true;
 
-		auto inputInfo = reinterpret_cast<EnumInputInfo*>(param);
+		auto inputInfo = static_cast<EnumInputInfo*>(param);
 
 		std::string inputKind = obs_source_get_id(input);
 

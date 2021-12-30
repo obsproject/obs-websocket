@@ -39,7 +39,7 @@ size_t Utils::Obs::NumberHelper::GetSceneCount()
 {
 	size_t ret;
 	auto sceneEnumProc = [](void *param, obs_source_t *scene) {
-		auto ret = reinterpret_cast<size_t*>(param);
+		auto ret = static_cast<size_t*>(param);
 
 		if (obs_source_is_group(scene))
 			return true;
