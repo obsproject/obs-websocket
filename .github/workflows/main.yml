@@ -383,6 +383,15 @@ jobs:
           git fetch --prune --unshallow
           echo "OBS_GIT_HASH=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
           echo "OBS_GIT_TAG=$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
+      - name: "Restore OBS-Studio Build v${{ env.OBS_GIT_TAG }} from Cache"
+        if: steps.cache-obs-build.outputs.cache-hit != 'true'
+        id: cache-obs-build
+        uses: actions/cache@v2
+        with:
+          path: ${{ github.workspace }}/obs-studio
+          key: ${{ runner.os }}-cache-obs-build-${{ env.OBS_GIT_TAG }}
+          restore-keys: |
+            ${{ runner.os }}-cache-obs-build
       - name: "Checkout last OBS-Studio release (${{ env.OBS_GIT_TAG }})"
         shell: bash
         working-directory: ${{ github.workspace }}/obs-studio
@@ -452,16 +461,8 @@ jobs:
         run: tar -xf macos-deps-${{ env.MACOS_DEPS_VERSION }}-universal.tar.xz -C "/tmp/obsdeps"
       - run: xattr -r -d com.apple.quarantine /tmp/obsdeps
         shell: bash
-      - name: "Restore OBS-Studio Build v${{ env.OBS_GIT_TAG }} from Cache"
-        id: build-cache-obs
-        uses: actions/cache@v2
-        with:
-          path: ${{ github.workspace }}/obs-studio/build
-          key: ${{ runner.os }}-build-cache-obs-${{ env.OBS_GIT_TAG }}
-          restore-keys: |
-            ${{ runner.os }}-build-cache-obs-
       - name: "Configue OBS-Studio"
-        # if: steps.build-cache-obs.outputs.cache-hit != 'true'
+        if: steps.cache-obs-build.outputs.cache-hit != 'true'
         working-directory: ${{ github.workspace }}/obs-studio
         shell: bash
         run: |
@@ -475,7 +476,7 @@ jobs:
           	-DENABLE_SCRIPTING=0 \
           	-DCMAKE_PREFIX_PATH=/tmp/obsdeps/lib/cmake
       - name: "Build OBS-Studio"
-        if: steps.build-cache-obs.outputs.cache-hit != 'true'
+        if: steps.cache-obs-build.outputs.cache-hit != 'true'
         working-directory: ${{ github.workspace }}/obs-studio
         shell: bash
         run: |
