@@ -413,7 +413,7 @@ jobs:
           curl -L -O http://s.sudre.free.fr/Software/files/Packages.dmg
           sudo hdiutil attach ./Packages.dmg
           sudo installer -pkg /Volumes/Packages\ 1.2.9/Install\ Packages.pkg -target /
-      - run: mkdir /tmp/obsdeps
+      - run: mkdir -p /tmp/obsdeps
         shell: bash
       - name: "Restore Cached Qt"
         id: qtcache
@@ -465,7 +465,7 @@ jobs:
         working-directory: ${{ github.workspace }}/obs-studio
         shell: bash
         run: |
-          mkdir ./build
+          mkdir -p ./build
           cd ./build
           cmake .. \
           	-DQTDIR=/tmp/obsdeps \
