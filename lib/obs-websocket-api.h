@@ -22,6 +22,8 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include <obs.h>
 
+#define OBS_WEBSOCKET_API_VERSION 1
+
 #ifdef __cplusplus
 extern "C" {
 #endif
