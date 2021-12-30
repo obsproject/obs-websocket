@@ -361,6 +361,9 @@ jobs:
     if: contains(github.event.head_commit.message, '[skip ci]') != true
     env:
       MACOS_DEPS_VERSION: "2021-12-05"
+      MACOS_DEPS_CACHE_VERSION:
+        "1" # Change whenever updating dependencies version, in order to force a cache reset
+        # May not be necessary
     steps:
       - name: "Checkout obs-websocket"
         uses: actions/checkout@v2
@@ -410,21 +413,59 @@ jobs:
           curl -L -O http://s.sudre.free.fr/Software/files/Packages.dmg
           sudo hdiutil attach ./Packages.dmg
           sudo installer -pkg /Volumes/Packages\ 1.2.9/Install\ Packages.pkg -target /
-      - name: "Install Prerequisite: QT"
+            - name: Restore
+        uses: actions/cache@v2
+        with:
+          path: ${{ github.workspace }}/obs-studio
+      - run: mkdir /tmp/obsdeps
+        shell: bash
+      - name: "Restore Cached Qt"
+        id: qtcache
+        uses: actions/cache@v2
+        with:
+          path: ${{ github.workspace }}/obs-websocket/macos-deps-qt-${{ env.MACOS_DEPS_VERSION }}-universal.tar.xz
+          key: "qtdep-${{ env.MACOS_DEPS_CACHE_VERSION }} | ${{ runner.os }}"
+          restore-keys: | # May not be necessary
+            qtdep-${{ env.MACOS_DEPS_CACHE_VERSION }} | ${{ runner.os }}
+      - name: "Download Prerequisite: Qt"
+        if: steps.qtcache.outputs.cache-hit != 'true'
         working-directory: ${{ github.workspace }}/obs-websocket
         shell: bash
-        run: |
-          mkdir /tmp/obsdeps
-          curl -L -O https://github.com/obsproject/obs-deps/releases/download/${{ env.MACOS_DEPS_VERSION }}/macos-deps-qt-${{ env.MACOS_DEPS_VERSION }}-universal.tar.xz
-          tar -xf macos-deps-qt-${{ env.MACOS_DEPS_VERSION }}-universal.tar.xz -C "/tmp/obsdeps"
-      - name: "Install Prerequisite: Pre-built OBS-Studio dependencies"
+        run: curl -L -O https://github.com/obsproject/obs-deps/releases/download/${{ env.MACOS_DEPS_VERSION }}/macos-deps-qt-${{ env.MACOS_DEPS_VERSION }}-universal.tar.xz
+      - name: "Extract Prerequisite: Qt"
+        working-directory: ${{ github.workspace }}/obs-websocket
+        shell: bash
+        run: tar -xf macos-deps-qt-${{ env.MACOS_DEPS_VERSION }}-universal.tar.xz -C "/tmp/obsdeps"
+      - name: "Restore Cached Pre-built OBS-Studio Dependencies"
+        id: obscache
+        uses: actions/cache@v2
+        with:
+          path: ${{ github.workspace }}/obs-websocket/macos-deps-${{ env.MACOS_DEPS_VERSION }}-universal.tar.xz
+          key: "obsdeps-${{ env.MACOS_DEPS_CACHE_VERSION }} | ${{ runner.os }}"
+          restore-keys: | # May not be necessary
+            obsdeps-${{ env.MACOS_DEPS_CACHE_VERSION }} | ${{ runner.os }}
+      - name: "Download Prerequisite: Pre-built OBS-Studio dependencies"
+        if: steps.obscache.outputs.cache-hit != 'true'
         working-directory: ${{ github.workspace }}/obs-websocket
         shell: bash
         run: |
           curl -L -O https://github.com/obsproject/obs-deps/releases/download/${{ env.MACOS_DEPS_VERSION }}/macos-deps-${{ env.MACOS_DEPS_VERSION }}-universal.tar.xz
-          tar -xf macos-deps-${{ env.MACOS_DEPS_VERSION }}-universal.tar.xz -C "/tmp/obsdeps"
-          xattr -r -d com.apple.quarantine /tmp/obsdeps
+      - name: "Extract Prerequisite: Pre-built OBS-Studio dependencies"
+        working-directory: ${{ github.workspace }}/obs-websocket
+        shell: bash
+        run: tar -xf macos-deps-${{ env.MACOS_DEPS_VERSION }}-universal.tar.xz -C "/tmp/obsdeps"
+      - run: xattr -r -d com.apple.quarantine /tmp/obsdeps
+        shell: bash
+      - name: "Restore OBS-Studio Build v${{ env.OBS_GIT_TAG }} from Cache"
+        id: build-cache-obs
+        uses: actions/cache@v2
+        with:
+          path: ${{ github.workspace }}/obs-studio/build
+          key: ${{ runner.os }}-build-cache-obs-${{ env.OBS_GIT_TAG }}
+          restore-keys: |
+            ${{ runner.os }}-build-cache-obs-
       - name: "Configue OBS-Studio"
+        if: steps.build-cache-obs.outputs.cache-hit != 'true'
         working-directory: ${{ github.workspace }}/obs-studio
         shell: bash
         run: |
@@ -438,6 +479,7 @@ jobs:
           	-DENABLE_SCRIPTING=0 \
           	-DCMAKE_PREFIX_PATH=/tmp/obsdeps/lib/cmake
       - name: "Build OBS-Studio"
+        if: steps.build-cache-obs.outputs.cache-hit != 'true'
         working-directory: ${{ github.workspace }}/obs-studio
         shell: bash
         run: |
