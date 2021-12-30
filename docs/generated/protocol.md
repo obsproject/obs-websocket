@@ -1263,6 +1263,7 @@ Subscription value to receive the `SceneItemTransformChanged` high-volume event.
   - [InputShowStateChanged](#inputshowstatechanged)
   - [InputMuteStateChanged](#inputmutestatechanged)
   - [InputVolumeChanged](#inputvolumechanged)
+  - [InputAudioBalanceChanged](#inputaudiobalancechanged)
   - [InputAudioSyncOffsetChanged](#inputaudiosyncoffsetchanged)
   - [InputAudioTracksChanged](#inputaudiotrackschanged)
   - [InputAudioMonitorTypeChanged](#inputaudiomonitortypechanged)
@@ -1666,6 +1667,24 @@ An input's volume level has changed.
 
 ---
 
+### InputAudioBalanceChanged
+
+The audio balance value of an input has changed.
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Data Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| inputName | String | Name of the affected input |
+| inputAudioBalance | Number | New audio balance value of the input |
+
+---
+
 ### InputAudioSyncOffsetChanged
 
 The sync offset of an input has changed.
@@ -2066,6 +2085,8 @@ Studio mode has been enabled or disabled.
   - [ToggleInputMute](#toggleinputmute)
   - [GetInputVolume](#getinputvolume)
   - [SetInputVolume](#setinputvolume)
+  - [GetInputAudioBalance](#getinputaudiobalance)
+  - [SetInputAudioBalance](#setinputaudiobalance)
   - [GetInputAudioSyncOffset](#getinputaudiosyncoffset)
   - [SetInputAudioSyncOffset](#setinputaudiosyncoffset)
   - [GetInputAudioMonitorType](#getinputaudiomonitortype)
@@ -3125,6 +3146,48 @@ Sets the volume setting of an input.
 | inputName | String | Name of the input to set the volume of | None | N/A |
 | ?inputVolumeMul | Number | Volume setting in mul | >= 0, <= 20 | `inputVolumeDb` should be specified |
 | ?inputVolumeDb | Number | Volume setting in dB | >= -100, <= -26 | `inputVolumeMul` should be specified |
+
+---
+
+### GetInputAudioBalance
+
+Gets the audio balance of an input.
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| inputName | String | Name of the input to get the audio balance of | None | N/A |
+
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| inputAudioBalance | Number | Audio balance value from 0.0-1.0 |
+
+---
+
+### SetInputAudioBalance
+
+Sets the audio balance of an input.
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| inputName | String | Name of the input to set the audio balance of | None | N/A |
+| inputAudioBalance | Number | New audio balance value | >= 0.0, <= 1.0 | N/A |
 
 ---
 

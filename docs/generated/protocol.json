@@ -1819,6 +1819,60 @@
       "responseFields": []
     },
     {
+      "description": "Gets the audio balance of an input.",
+      "requestType": "GetInputAudioBalance",
+      "complexity": 2,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "inputs",
+      "requestFields": [
+        {
+          "valueName": "inputName",
+          "valueType": "String",
+          "valueDescription": "Name of the input to get the audio balance of",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        }
+      ],
+      "responseFields": [
+        {
+          "valueName": "inputAudioBalance",
+          "valueType": "Number",
+          "valueDescription": "Audio balance value from 0.0-1.0"
+        }
+      ]
+    },
+    {
+      "description": "Sets the audio balance of an input.",
+      "requestType": "SetInputAudioBalance",
+      "complexity": 2,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "inputs",
+      "requestFields": [
+        {
+          "valueName": "inputName",
+          "valueType": "String",
+          "valueDescription": "Name of the input to set the audio balance of",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        },
+        {
+          "valueName": "inputAudioBalance",
+          "valueType": "Number",
+          "valueDescription": "New audio balance value",
+          "valueRestrictions": ">= 0.0, <= 1.0",
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        }
+      ],
+      "responseFields": []
+    },
+    {
       "description": "Gets the audio sync offset of an input.\n\nNote: The audio sync offset can be negative too!",
       "requestType": "GetInputAudioSyncOffset",
       "complexity": 3,
@@ -3659,6 +3713,28 @@
           "valueName": "inputVolumeDb",
           "valueType": "Number",
           "valueDescription": "New volume level in dB"
+        }
+      ]
+    },
+    {
+      "description": "The audio balance value of an input has changed.",
+      "eventType": "InputAudioBalanceChanged",
+      "eventSubscription": "Inputs",
+      "complexity": 2,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "inputs",
+      "dataFields": [
+        {
+          "valueName": "inputName",
+          "valueType": "String",
+          "valueDescription": "Name of the affected input"
+        },
+        {
+          "valueName": "inputAudioBalance",
+          "valueType": "Number",
+          "valueDescription": "New audio balance value of the input"
         }
       ]
     },
