@@ -600,6 +600,9 @@ RequestResult RequestHandler::SetInputAudioMonitorType(const Request& request)
 	if (!(input && request.ValidateString("monitorType", statusCode, comment)))
 		return RequestResult::Error(statusCode, comment);
 
+	if (!obs_audio_monitoring_available())
+		return RequestResult::Error(RequestStatus::InvalidResourceState, "Audio monitoring is not available on this platform.");
+
 	enum obs_monitoring_type monitorType;
 	std::string monitorTypeString = request.RequestData["monitorType"];
 	if (monitorTypeString == "OBS_MONITORING_TYPE_NONE")
