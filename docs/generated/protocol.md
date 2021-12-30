@@ -2117,6 +2117,9 @@ Studio mode has been enabled or disabled.
 - [Ui](#ui-1)
   - [GetStudioModeEnabled](#getstudiomodeenabled)
   - [SetStudioModeEnabled](#setstudiomodeenabled)
+  - [OpenInputPropertiesDialog](#openinputpropertiesdialog)
+  - [OpenInputFiltersDialog](#openinputfiltersdialog)
+  - [OpenInputInteractDialog](#openinputinteractdialog)
 
 
 
@@ -4025,5 +4028,56 @@ Enables or disables studio mode
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
 | studioModeEnabled | Boolean | True == Enabled, False == Disabled | None | N/A |
+
+---
+
+### OpenInputPropertiesDialog
+
+Opens the properties dialog of an input.
+
+- Complexity Rating: `1/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| inputName | String | Name of the input to open the dialog of | None | N/A |
+
+---
+
+### OpenInputFiltersDialog
+
+Opens the filters dialog of an input.
+
+- Complexity Rating: `1/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| inputName | String | Name of the input to open the dialog of | None | N/A |
+
+---
+
+### OpenInputInteractDialog
+
+Opens the interact dialog of an input.
+
+- Complexity Rating: `1/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| inputName | String | Name of the input to open the dialog of | None | N/A |
 
 
