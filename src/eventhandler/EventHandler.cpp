@@ -134,6 +134,7 @@ void EventHandler::ConnectSourceSignals(obs_source_t *source) // Applies to inpu
 	signal_handler_connect(sh, "hide", HandleInputShowStateChanged, this);
 	signal_handler_connect(sh, "mute", HandleInputMuteStateChanged, this);
 	signal_handler_connect(sh, "volume", HandleInputVolumeChanged, this);
+	signal_handler_connect(sh, "audio_balance", HandleInputAudioBalanceChanged, this);
 	signal_handler_connect(sh, "audio_sync", HandleInputAudioSyncOffsetChanged, this);
 	signal_handler_connect(sh, "audio_mixers", HandleInputAudioTracksChanged, this);
 	signal_handler_connect(sh, "audio_monitoring", HandleInputAudioMonitorTypeChanged, this);
@@ -174,6 +175,7 @@ void EventHandler::DisconnectSourceSignals(obs_source_t *source)
 	signal_handler_disconnect(sh, "hide", HandleInputShowStateChanged, this);
 	signal_handler_disconnect(sh, "mute", HandleInputMuteStateChanged, this);
 	signal_handler_disconnect(sh, "volume", HandleInputVolumeChanged, this);
+	signal_handler_disconnect(sh, "audio_balance", HandleInputAudioBalanceChanged, this);
 	signal_handler_disconnect(sh, "audio_sync", HandleInputAudioSyncOffsetChanged, this);
 	signal_handler_disconnect(sh, "audio_mixers", HandleInputAudioTracksChanged, this);
 	signal_handler_disconnect(sh, "audio_monitoring", HandleInputAudioMonitorTypeChanged, this);

@@ -107,6 +107,7 @@ class EventHandler
 		static void HandleInputShowStateChanged(void *param, calldata_t *data); // Direct callback
 		static void HandleInputMuteStateChanged(void *param, calldata_t *data); // Direct callback
 		static void HandleInputVolumeChanged(void *param, calldata_t *data); // Direct callback
+		static void HandleInputAudioBalanceChanged(void *param, calldata_t *data); // Direct callback
 		static void HandleInputAudioSyncOffsetChanged(void *param, calldata_t *data); // Direct callback
 		static void HandleInputAudioTracksChanged(void *param, calldata_t *data); // Direct callback
 		static void HandleInputAudioMonitorTypeChanged(void *param, calldata_t *data); // Direct callback

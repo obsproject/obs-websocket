@@ -77,6 +77,8 @@ const std::map<std::string, RequestMethodHandler> RequestHandler::_handlerMap
 	{"ToggleInputMute", &RequestHandler::ToggleInputMute},
 	{"GetInputVolume", &RequestHandler::GetInputVolume},
 	{"SetInputVolume", &RequestHandler::SetInputVolume},
+	{"GetInputAudioBalance", &RequestHandler::GetInputAudioBalance},
+	{"SetInputAudioBalance", &RequestHandler::SetInputAudioBalance},
 	{"GetInputAudioSyncOffset", &RequestHandler::GetInputAudioSyncOffset},
 	{"SetInputAudioSyncOffset", &RequestHandler::SetInputAudioSyncOffset},
 	{"GetInputAudioMonitorType", &RequestHandler::GetInputAudioMonitorType},
