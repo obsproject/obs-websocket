@@ -19,7 +19,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #pragma once
 
-#include <map>
+#include <unordered_map>
 #include <obs.hpp>
 #include <obs-frontend-api.h>
 
@@ -165,5 +165,5 @@ class RequestHandler {
 		RequestResult OpenInputInteractDialog(const Request&);
 
 		SessionPtr _session;
-		static const std::map<std::string, RequestMethodHandler> _handlerMap;
+		static const std::unordered_map<std::string, RequestMethodHandler> _handlerMap;
 };

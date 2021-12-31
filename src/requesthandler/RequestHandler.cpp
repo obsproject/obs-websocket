@@ -19,7 +19,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include "RequestHandler.h"
 
-const std::map<std::string, RequestMethodHandler> RequestHandler::_handlerMap
+const std::unordered_map<std::string, RequestMethodHandler> RequestHandler::_handlerMap
 {
 	// General
 	{"GetVersion", &RequestHandler::GetVersion},
