@@ -305,8 +305,8 @@ void EventHandler::HandleInputAudioSyncOffsetChanged(void *param, calldata_t *da
 /**
  * The audio tracks of an input have changed.
  *
- * @dataField inputName        | String         | Name of the input
- * @dataField inputAudioTracks | Array<Boolean> | Array of audio tracks along with their associated enable states
+ * @dataField inputName        | String | Name of the input
+ * @dataField inputAudioTracks | Object | Object of audio tracks along with their associated enable states
  *
  * @eventType InputAudioTracksChanged
  * @eventSubscription Inputs
