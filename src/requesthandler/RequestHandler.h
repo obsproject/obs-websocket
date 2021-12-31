@@ -107,6 +107,7 @@ class RequestHandler {
 		RequestResult GetInputAudioMonitorType(const Request&);
 		RequestResult SetInputAudioMonitorType(const Request&);
 		RequestResult GetInputAudioTracks(const Request&);
+		RequestResult SetInputAudioTracks(const Request&);
 		RequestResult GetInputPropertiesListPropertyItems(const Request&);
 		RequestResult PressInputPropertiesButton(const Request&);
 

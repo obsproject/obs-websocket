@@ -89,6 +89,7 @@ const std::unordered_map<std::string, RequestMethodHandler> RequestHandler::_han
 	{"GetInputAudioMonitorType", &RequestHandler::GetInputAudioMonitorType},
 	{"SetInputAudioMonitorType", &RequestHandler::SetInputAudioMonitorType},
 	{"GetInputAudioTracks", &RequestHandler::GetInputAudioTracks},
+	{"SetInputAudioTracks", &RequestHandler::SetInputAudioTracks},
 	{"GetInputPropertiesListPropertyItems", &RequestHandler::GetInputPropertiesListPropertyItems},
 	{"PressInputPropertiesButton", &RequestHandler::PressInputPropertiesButton},
 

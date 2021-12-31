@@ -715,7 +715,7 @@ RequestResult RequestHandler::SetInputAudioMonitorType(const Request& request)
  * @responseField inputAudioTracks | Object | Object of audio tracks and associated enable states
  *
  * @requestType GetInputAudioTracks
- * @complexity 3
+ * @complexity 2
  * @rpcVersion -1
  * @initialVersion 5.0.0
  * @api requests
@@ -743,6 +743,57 @@ RequestResult RequestHandler::GetInputAudioTracks(const Request& request)
 	responseData["inputAudioTracks"] = inputAudioTracks;
 
 	return RequestResult::Success(responseData);
+}
+
+/**
+ * Sets the enable state of audio tracks of an input.
+ *
+ * @requestField inputName        | String | Name of the input
+ * @requestField inputAudioTracks | Object | Track settings to apply
+ *
+ * @requestType SetInputAudioTracks
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api requests
+ * @category inputs
+ */
+RequestResult RequestHandler::SetInputAudioTracks(const Request& request)
+{
+	RequestStatus::RequestStatus statusCode;
+	std::string comment;
+	OBSSourceAutoRelease input = request.ValidateInput("inputName", statusCode, comment);
+	if (!input || !request.ValidateObject("inputAudioTracks", statusCode, comment))
+		return RequestResult::Error(statusCode, comment);
+
+	if (!(obs_source_get_output_flags(input) & OBS_SOURCE_AUDIO))
+		return RequestResult::Error(RequestStatus::InvalidResourceState, "The specified input does not support audio.");
+
+	json inputAudioTracks = request.RequestData["inputAudioTracks"];
+
+	long long mixers = obs_source_get_audio_mixers(input);
+
+	for (long long i = 0; i < MAX_AUDIO_MIXES; i++) {
+		std::string track = std::to_string(i + 1);
+
+		if (!Utils::Json::Contains(inputAudioTracks, track))
+			continue;
+
+		if (!inputAudioTracks[track].is_boolean())
+			return RequestResult::Error(RequestStatus::InvalidRequestFieldType, "The value of one of your tracks is not a boolean.");
+
+		bool enabled = inputAudioTracks[track];
+
+		if (enabled)
+			mixers |= (1 << i);
+		else
+			mixers &= ~(1 << i);
+	}
+
+	// Decided that checking if tracks have actually changed is unnecessary
+	obs_source_set_audio_mixers(input, mixers);
+
+	return RequestResult::Success();
 }
 
 /**
