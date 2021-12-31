@@ -1983,7 +1983,7 @@
     {
       "description": "Gets the enable state of all audio tracks of an input.",
       "requestType": "GetInputAudioTracks",
-      "complexity": 3,
+      "complexity": 2,
       "rpcVersion": "1",
       "deprecated": false,
       "initialVersion": "5.0.0",
@@ -2005,6 +2005,34 @@
           "valueDescription": "Object of audio tracks and associated enable states"
         }
       ]
+    },
+    {
+      "description": "Sets the enable state of audio tracks of an input.",
+      "requestType": "SetInputAudioTracks",
+      "complexity": 2,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "inputs",
+      "requestFields": [
+        {
+          "valueName": "inputName",
+          "valueType": "String",
+          "valueDescription": "Name of the input",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        },
+        {
+          "valueName": "inputAudioTracks",
+          "valueType": "Object",
+          "valueDescription": "Track settings to apply",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        }
+      ],
+      "responseFields": []
     },
     {
       "description": "Gets the items of a list property from an input's properties.\n\nNote: Use this in cases where an input provides a dynamic, selectable list of items. For example, display capture, where it provides a list of available displays.",

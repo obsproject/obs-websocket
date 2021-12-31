@@ -2093,6 +2093,7 @@ Studio mode has been enabled or disabled.
   - [GetInputAudioMonitorType](#getinputaudiomonitortype)
   - [SetInputAudioMonitorType](#setinputaudiomonitortype)
   - [GetInputAudioTracks](#getinputaudiotracks)
+  - [SetInputAudioTracks](#setinputaudiotracks)
   - [GetInputPropertiesListPropertyItems](#getinputpropertieslistpropertyitems)
   - [PressInputPropertiesButton](#pressinputpropertiesbutton)
 - [Transitions](#transitions)
@@ -3307,7 +3308,7 @@ Sets the audio monitor type of an input.
 
 Gets the enable state of all audio tracks of an input.
 
-- Complexity Rating: `3/5`
+- Complexity Rating: `2/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
@@ -3324,6 +3325,24 @@ Gets the enable state of all audio tracks of an input.
 | Name | Type  | Description |
 | ---- | :---: | ----------- |
 | inputAudioTracks | Object | Object of audio tracks and associated enable states |
+
+---
+
+### SetInputAudioTracks
+
+Sets the enable state of audio tracks of an input.
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| inputName | String | Name of the input | None | N/A |
+| inputAudioTracks | Object | Track settings to apply | None | N/A |
 
 ---
 
