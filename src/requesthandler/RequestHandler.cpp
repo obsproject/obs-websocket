@@ -17,6 +17,10 @@ You should have received a copy of the GNU General Public License along
 with this program. If not, see <https://www.gnu.org/licenses/>
 */
 
+#ifdef PLUGIN_TESTS
+#include <util/profiler.hpp>
+#endif
+
 #include "RequestHandler.h"
 
 const std::unordered_map<std::string, RequestMethodHandler> RequestHandler::_handlerMap
@@ -150,6 +154,10 @@ RequestHandler::RequestHandler(SessionPtr session) :
 
 RequestResult RequestHandler::ProcessRequest(const Request& request)
 {
+#ifdef PLUGIN_TESTS
+	ScopeProfiler prof{"obs_websocket_request_processing"};
+#endif
+
 	if (!request.RequestData.is_object() && !request.RequestData.is_null())
 		return RequestResult::Error(RequestStatus::InvalidRequestFieldType, "Your request data is not an object.");
 
