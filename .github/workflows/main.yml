@@ -383,15 +383,6 @@ jobs:
           git fetch --prune --unshallow
           echo "OBS_GIT_HASH=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
           echo "OBS_GIT_TAG=$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
-      - name: "Restore OBS-Studio Build v${{ env.OBS_GIT_TAG }} from Cache"
-        if: steps.cache-obs-build.outputs.cache-hit != 'true'
-        id: cache-obs-build
-        uses: actions/cache@v2
-        with:
-          path: ${{ github.workspace }}/obs-studio
-          key: ${{ runner.os }}-cache-obs-build-${{ env.OBS_GIT_TAG }}
-          restore-keys: |
-            ${{ runner.os }}-cache-obs-build
       - name: "Checkout last OBS-Studio release (${{ env.OBS_GIT_TAG }})"
         shell: bash
         working-directory: ${{ github.workspace }}/obs-studio
