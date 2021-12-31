@@ -316,7 +316,7 @@ jobs:
           if [ "${{ env.GIT_TAG }}" ] ; then \
             cmake -DLIBOBS_INCLUDE_DIR=${{ github.workspace }}/obs-studio/libobs -DCMAKE_INSTALL_PREFIX=/usr -DUSE_UBUNTU_FIX=TRUE -DOBS_WEBSOCKET_VERSION_SUFFIX="${{ env.CMAKE_VERSION_SUFFIX }}" -DCMAKE_BUILD_TYPE=Release .. ; \
           else \
-            cmake -DLIBOBS_INCLUDE_DIR=${{ github.workspace }}/obs-studio/libobs -DCMAKE_INSTALL_PREFIX=/usr -DUSE_UBUNTU_FIX=TRUE -DOBS_WEBSOCKET_VERSION_SUFFIX="${{ env.CMAKE_VERSION_SUFFIX }}" .. ; \
+            cmake -DLIBOBS_INCLUDE_DIR=${{ github.workspace }}/obs-studio/libobs -DCMAKE_INSTALL_PREFIX=/usr -DUSE_UBUNTU_FIX=TRUE -DOBS_WEBSOCKET_VERSION_SUFFIX="${{ env.CMAKE_VERSION_SUFFIX }}" -DPLUGIN_TESTS=TRUE .. ; \
           fi
       - name: 'Build obs-websocket'
         working-directory: ${{ github.workspace }}/obs-websocket
