@@ -106,6 +106,7 @@ class RequestHandler {
 		RequestResult SetInputAudioSyncOffset(const Request&);
 		RequestResult GetInputAudioMonitorType(const Request&);
 		RequestResult SetInputAudioMonitorType(const Request&);
+		RequestResult GetInputAudioTracks(const Request&);
 		RequestResult GetInputPropertiesListPropertyItems(const Request&);
 		RequestResult PressInputPropertiesButton(const Request&);
 

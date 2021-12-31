@@ -84,6 +84,7 @@ const std::map<std::string, RequestMethodHandler> RequestHandler::_handlerMap
 	{"SetInputAudioSyncOffset", &RequestHandler::SetInputAudioSyncOffset},
 	{"GetInputAudioMonitorType", &RequestHandler::GetInputAudioMonitorType},
 	{"SetInputAudioMonitorType", &RequestHandler::SetInputAudioMonitorType},
+	{"GetInputAudioTracks", &RequestHandler::GetInputAudioTracks},
 	{"GetInputPropertiesListPropertyItems", &RequestHandler::GetInputPropertiesListPropertyItems},
 	{"PressInputPropertiesButton", &RequestHandler::PressInputPropertiesButton},
 
