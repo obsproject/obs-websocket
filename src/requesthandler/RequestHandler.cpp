@@ -118,6 +118,8 @@ const std::unordered_map<std::string, RequestMethodHandler> RequestHandler::_han
 	{"SetSceneItemLocked", &RequestHandler::SetSceneItemLocked},
 	{"GetSceneItemIndex", &RequestHandler::GetSceneItemIndex},
 	{"SetSceneItemIndex", &RequestHandler::SetSceneItemIndex},
+	{"GetSceneItemBlendMode", &RequestHandler::GetSceneItemBlendMode},
+	{"SetSceneItemBlendMode", &RequestHandler::SetSceneItemBlendMode},
 
 	// Stream
 	{"GetStreamStatus", &RequestHandler::GetStreamStatus},

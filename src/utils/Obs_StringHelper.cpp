@@ -142,6 +142,20 @@ std::string Utils::Obs::StringHelper::GetSceneItemBoundsType(enum obs_bounds_typ
 	}
 }
 
+std::string Utils::Obs::StringHelper::GetSceneItemBlendMode(enum obs_blending_type mode)
+{
+	switch (mode) {
+		default:
+		CASE(OBS_BLEND_NORMAL)
+		CASE(OBS_BLEND_ADDITIVE)
+		CASE(OBS_BLEND_SUBTRACT)
+		CASE(OBS_BLEND_SCREEN)
+		CASE(OBS_BLEND_MULTIPLY)
+		CASE(OBS_BLEND_LIGHTEN)
+		CASE(OBS_BLEND_DARKEN)
+	}
+}
+
 std::string Utils::Obs::StringHelper::DurationToTimecode(uint64_t ms)
 {
 	uint64_t secs = ms / 1000ULL;

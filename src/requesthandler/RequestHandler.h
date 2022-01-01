@@ -136,6 +136,8 @@ class RequestHandler {
 		RequestResult SetSceneItemLocked(const Request&);
 		RequestResult GetSceneItemIndex(const Request&);
 		RequestResult SetSceneItemIndex(const Request&);
+		RequestResult GetSceneItemBlendMode(const Request&);
+		RequestResult SetSceneItemBlendMode(const Request&);
 
 		// Stream
 		RequestResult GetStreamStatus(const Request&);

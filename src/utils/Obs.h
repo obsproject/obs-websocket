@@ -163,6 +163,7 @@ namespace Utils {
 			std::string GetMediaInputState(obs_source_t *input);
 			std::string GetLastReplayBufferFilePath();
 			std::string GetSceneItemBoundsType(enum obs_bounds_type type);
+			std::string GetSceneItemBlendMode(enum obs_blending_type mode);
 			std::string DurationToTimecode(uint64_t);
 			std::string GetOutputState(ObsOutputState state);
 		}
@@ -170,6 +171,7 @@ namespace Utils {
 		namespace EnumHelper {
 			enum obs_bounds_type GetSceneItemBoundsType(std::string boundsType);
 			enum ObsMediaInputAction GetMediaInputAction(std::string mediaAction);
+			enum obs_blending_type GetSceneItemBlendMode(std::string mode);
 		}
 
 		namespace NumberHelper {
