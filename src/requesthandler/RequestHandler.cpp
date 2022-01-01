@@ -71,6 +71,7 @@ const std::unordered_map<std::string, RequestMethodHandler> RequestHandler::_han
 	// Inputs
 	{"GetInputList", &RequestHandler::GetInputList},
 	{"GetInputKindList", &RequestHandler::GetInputKindList},
+	{"GetSpecialInputs", &RequestHandler::GetSpecialInputs},
 	{"CreateInput", &RequestHandler::CreateInput},
 	{"RemoveInput", &RequestHandler::RemoveInput},
 	{"SetInputName", &RequestHandler::SetInputName},

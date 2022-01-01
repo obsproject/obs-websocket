@@ -84,6 +84,43 @@ RequestResult RequestHandler::GetInputKindList(const Request& request)
 }
 
 /**
+ * Gets the names of all special inputs.
+ *
+ * @responseField desktop1 | String | Name of the Desktop Audio input
+ * @responseField desktop2 | String | Name of the Desktop Audio 2 input
+ * @responseField mic1     | String | Name of the Mic/Auxiliary Audio input
+ * @responseField mic2     | String | Name of the Mic/Auxiliary Audio 2 input
+ * @responseField mic3     | String | Name of the Mic/Auxiliary Audio 3 input
+ * @responseField mic4     | String | Name of the Mic/Auxiliary Audio 4 input
+ *
+ * @requestType GetSpecialInputs
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api requests
+ * @category inputs
+ */
+RequestResult RequestHandler::GetSpecialInputs(const Request&)
+{
+	json responseData;
+
+	std::vector<std::string> channels = {"desktop1", "desktop2", "mic1", "mic2", "mic3", "mic4"};
+
+	size_t channelId = 1;
+	for (auto &channel : channels) {
+		OBSSourceAutoRelease input = obs_get_output_source(channelId);
+		if (!input)
+			responseData[channel] = nullptr;
+		else
+			responseData[channel] = obs_source_get_name(input);
+
+		channelId++;
+	}
+
+	return RequestResult::Success(responseData);
+}
+
+/**
  * Creates a new input, adding it as a scene item to the specified scene.
  *
  * @requestField sceneName         | String | Name of the scene to add the input to as a scene item
