@@ -440,7 +440,6 @@ jobs:
         shell: bash
       - name: 'Install Prerequisite: Qt'
         if: steps.deps-cache.outputs.cache-hit != 'true'
-        working-directory: ${{ github.workspace }}/obs-websocket
         shell: bash
         run: |
           curl -L -O https://github.com/obsproject/obs-deps/releases/download/${{ env.MACOS_DEPS_VERSION }}/macos-deps-qt-${{ env.MACOS_DEPS_VERSION }}-universal.tar.xz
