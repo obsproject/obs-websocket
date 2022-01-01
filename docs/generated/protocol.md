@@ -2075,6 +2075,7 @@ Studio mode has been enabled or disabled.
 - [Inputs](#inputs-1)
   - [GetInputList](#getinputlist)
   - [GetInputKindList](#getinputkindlist)
+  - [GetSpecialInputs](#getspecialinputs)
   - [CreateInput](#createinput)
   - [RemoveInput](#removeinput)
   - [SetInputName](#setinputname)
@@ -2119,6 +2120,8 @@ Studio mode has been enabled or disabled.
   - [SetSceneItemLocked](#setsceneitemlocked)
   - [GetSceneItemIndex](#getsceneitemindex)
   - [SetSceneItemIndex](#setsceneitemindex)
+  - [GetSceneItemBlendMode](#getsceneitemblendmode)
+  - [SetSceneItemBlendMode](#setsceneitemblendmode)
 - [Stream](#stream)
   - [GetStreamStatus](#getstreamstatus)
   - [ToggleStream](#togglestream)
@@ -2923,6 +2926,28 @@ Gets an array of all available input kinds in OBS.
 | Name | Type  | Description |
 | ---- | :---: | ----------- |
 | inputKinds | Array&lt;String&gt; | Array of input kinds |
+
+---
+
+### GetSpecialInputs
+
+Gets the names of all special inputs.
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| desktop1 | String | Name of the Desktop Audio input |
+| desktop2 | String | Name of the Desktop Audio 2 input |
+| mic1 | String | Name of the Mic/Auxiliary Audio input |
+| mic2 | String | Name of the Mic/Auxiliary Audio 2 input |
+| mic3 | String | Name of the Mic/Auxiliary Audio 3 input |
+| mic4 | String | Name of the Mic/Auxiliary Audio 4 input |
 
 ---
 
@@ -3865,6 +3890,64 @@ Scenes and Groups
 | sceneName | String | Name of the scene the item is in | None | N/A |
 | sceneItemId | Number | Numeric ID of the scene item | >= 0 | N/A |
 | sceneItemIndex | Number | New index position of the scene item | >= 0 | N/A |
+
+---
+
+### GetSceneItemBlendMode
+
+Gets the blend mode of a scene item.
+
+Blend modes:
+
+- `OBS_BLEND_NORMAL`
+- `OBS_BLEND_ADDITIVE`
+- `OBS_BLEND_SUBTRACT`
+- `OBS_BLEND_SCREEN`
+- `OBS_BLEND_MULTIPLY`
+- `OBS_BLEND_LIGHTEN`
+- `OBS_BLEND_DARKEN`
+
+Scenes and Groups
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| sceneName | String | Name of the scene the item is in | None | N/A |
+| sceneItemId | Number | Numeric ID of the scene item | >= 0 | N/A |
+
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| sceneItemBlendMode | String | Current blend mode |
+
+---
+
+### SetSceneItemBlendMode
+
+Sets the blend mode of a scene item.
+
+Scenes and Groups
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| sceneName | String | Name of the scene the item is in | None | N/A |
+| sceneItemId | Number | Numeric ID of the scene item | >= 0 | N/A |
+| sceneItemBlendMode | String | New blend mode | None | N/A |
 
 
 ## Stream

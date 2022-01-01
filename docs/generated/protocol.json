@@ -1473,6 +1473,48 @@
       ]
     },
     {
+      "description": "Gets the names of all special inputs.",
+      "requestType": "GetSpecialInputs",
+      "complexity": 2,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "inputs",
+      "requestFields": [],
+      "responseFields": [
+        {
+          "valueName": "desktop1",
+          "valueType": "String",
+          "valueDescription": "Name of the Desktop Audio input"
+        },
+        {
+          "valueName": "desktop2",
+          "valueType": "String",
+          "valueDescription": "Name of the Desktop Audio 2 input"
+        },
+        {
+          "valueName": "mic1",
+          "valueType": "String",
+          "valueDescription": "Name of the Mic/Auxiliary Audio input"
+        },
+        {
+          "valueName": "mic2",
+          "valueType": "String",
+          "valueDescription": "Name of the Mic/Auxiliary Audio 2 input"
+        },
+        {
+          "valueName": "mic3",
+          "valueType": "String",
+          "valueDescription": "Name of the Mic/Auxiliary Audio 3 input"
+        },
+        {
+          "valueName": "mic4",
+          "valueType": "String",
+          "valueDescription": "Name of the Mic/Auxiliary Audio 4 input"
+        }
+      ]
+    },
+    {
       "description": "Creates a new input, adding it as a scene item to the specified scene.",
       "requestType": "CreateInput",
       "complexity": 3,
@@ -2808,6 +2850,76 @@
           "valueType": "Number",
           "valueDescription": "New index position of the scene item",
           "valueRestrictions": ">= 0",
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        }
+      ],
+      "responseFields": []
+    },
+    {
+      "description": "Gets the blend mode of a scene item.\n\nBlend modes:\n\n- `OBS_BLEND_NORMAL`\n- `OBS_BLEND_ADDITIVE`\n- `OBS_BLEND_SUBTRACT`\n- `OBS_BLEND_SCREEN`\n- `OBS_BLEND_MULTIPLY`\n- `OBS_BLEND_LIGHTEN`\n- `OBS_BLEND_DARKEN`\n\nScenes and Groups",
+      "requestType": "GetSceneItemBlendMode",
+      "complexity": 2,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "scene items",
+      "requestFields": [
+        {
+          "valueName": "sceneName",
+          "valueType": "String",
+          "valueDescription": "Name of the scene the item is in",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        },
+        {
+          "valueName": "sceneItemId",
+          "valueType": "Number",
+          "valueDescription": "Numeric ID of the scene item",
+          "valueRestrictions": ">= 0",
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        }
+      ],
+      "responseFields": [
+        {
+          "valueName": "sceneItemBlendMode",
+          "valueType": "String",
+          "valueDescription": "Current blend mode"
+        }
+      ]
+    },
+    {
+      "description": "Sets the blend mode of a scene item.\n\nScenes and Groups",
+      "requestType": "SetSceneItemBlendMode",
+      "complexity": 2,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "scene items",
+      "requestFields": [
+        {
+          "valueName": "sceneName",
+          "valueType": "String",
+          "valueDescription": "Name of the scene the item is in",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        },
+        {
+          "valueName": "sceneItemId",
+          "valueType": "Number",
+          "valueDescription": "Numeric ID of the scene item",
+          "valueRestrictions": ">= 0",
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        },
+        {
+          "valueName": "sceneItemBlendMode",
+          "valueType": "String",
+          "valueDescription": "New blend mode",
+          "valueRestrictions": null,
           "valueOptional": false,
           "valueOptionalBehavior": null
         }
