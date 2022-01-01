@@ -6,7 +6,6 @@ on:
       - 'docs/**'
     branches:
       - master
-      - v5-macos-ci
     tags:
       - '[45].[0-9]+.[0-9]+*'
   pull_request:
@@ -362,9 +361,7 @@ jobs:
     if: contains(github.event.head_commit.message, '[skip ci]') != true
     env:
       MACOS_DEPS_VERSION: '2021-12-05'
-      MACOS_DEPS_CACHE_VERSION:
-        '2' # Change whenever updating dependencies version, in order to force a cache reset
-        # May not be necessary
+      MACOS_DEPS_CACHE_VERSION: '1' # Change whenever updating dependencies version, in order to force a cache reset
     steps:
       - name: 'Checkout obs-websocket'
         uses: actions/checkout@v2
@@ -427,7 +424,7 @@ jobs:
           curl -L -O http://s.sudre.free.fr/Software/files/Packages.dmg
           sudo hdiutil attach ./Packages.dmg
           sudo installer -pkg /Volumes/Packages\ 1.2.9/Install\ Packages.pkg -target /
-      - name: 'Restore Cached Dependencies'
+      - name: 'Restore Cached Qt & OBS-Studio dependencies'
         id: deps-cache
         uses: actions/cache@v2
         with:
