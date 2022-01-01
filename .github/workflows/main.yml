@@ -363,7 +363,7 @@ jobs:
     env:
       MACOS_DEPS_VERSION: '2021-12-05'
       MACOS_DEPS_CACHE_VERSION:
-        '1' # Change whenever updating dependencies version, in order to force a cache reset
+        '2' # Change whenever updating dependencies version, in order to force a cache reset
         # May not be necessary
     steps:
       - name: 'Checkout obs-websocket'
@@ -431,11 +431,11 @@ jobs:
         id: deps-cache
         uses: actions/cache@v2
         with:
-          path: /tmp/obsdeps/**
+          path: ${{ github.workspace }}/obsdeps/**
           key: 'deps-cache-${{ env.MACOS_DEPS_CACHE_VERSION }} | ${{ runner.os }}'
           restore-keys: | # May not be necessary
             deps-cache-${{ env.MACOS_DEPS_CACHE_VERSION }} | ${{ runner.os }}
-      - run: mkdir -p /tmp/obsdeps
+      - run: mkdir -p obsdeps
         if: steps.deps-cache.outputs.cache-hit != 'true'
         shell: bash
       - name: 'Install Prerequisite: Qt'
@@ -444,15 +444,14 @@ jobs:
         shell: bash
         run: |
           curl -L -O https://github.com/obsproject/obs-deps/releases/download/${{ env.MACOS_DEPS_VERSION }}/macos-deps-qt-${{ env.MACOS_DEPS_VERSION }}-universal.tar.xz
-          tar -xf macos-deps-qt-${{ env.MACOS_DEPS_VERSION }}-universal.tar.xz -C "/tmp/obsdeps"
+          tar -xf macos-deps-qt-${{ env.MACOS_DEPS_VERSION }}-universal.tar.xz -C "./obsdeps"
       - name: 'Install Prerequisite: Pre-built OBS-Studio dependencies'
         if: steps.deps-cache.outputs.cache-hit != 'true'
-        working-directory: ${{ github.workspace }}/obs-websocket
         shell: bash
         run: |
           curl -L -O https://github.com/obsproject/obs-deps/releases/download/${{ env.MACOS_DEPS_VERSION }}/macos-deps-${{ env.MACOS_DEPS_VERSION }}-universal.tar.xz
-          tar -xf macos-deps-${{ env.MACOS_DEPS_VERSION }}-universal.tar.xz -C "/tmp/obsdeps"
-      - run: xattr -r -d com.apple.quarantine /tmp/obsdeps
+          tar -xf macos-deps-${{ env.MACOS_DEPS_VERSION }}-universal.tar.xz -C "./obsdeps"
+      - run: xattr -r -d com.apple.quarantine ./obsdeps
         shell: bash
       - name: 'Configue OBS-Studio'
         if: steps.cache-obs-build.outputs.cache-hit != 'true'
@@ -462,12 +461,12 @@ jobs:
           mkdir -p ./build
           cd ./build
           cmake .. \
-          	-DQTDIR=/tmp/obsdeps \
-          	-DDepsPath=/tmp/obsdeps \
+          	-DQTDIR=../../obsdeps \
+          	-DDepsPath=../../obsdeps \
           	-DCMAKE_OSX_DEPLOYMENT_TARGET=10.13 \
           	-DDISABLE_PLUGINS=true \
           	-DENABLE_SCRIPTING=0 \
-          	-DCMAKE_PREFIX_PATH=/tmp/obsdeps/lib/cmake
+          	-DCMAKE_PREFIX_PATH=../../obsdeps/lib/cmake
       - name: 'Build OBS-Studio'
         if: steps.cache-obs-build.outputs.cache-hit != 'true'
         working-directory: ${{ github.workspace }}/obs-studio
@@ -484,7 +483,7 @@ jobs:
           cd build
           cmake .. \
            	-DCMAKE_OSX_DEPLOYMENT_TARGET=10.13 \
-          	-DQTDIR=/tmp/obsdeps \
+          	-DQTDIR=../../obsdeps \
           	-DLIBOBS_INCLUDE_DIR=../../obs-studio/libobs \
           	-DLIBOBS_LIB=../../obs-studio/libobs \
           	-DOBS_FRONTEND_LIB="$(pwd)/../../obs-studio/build/UI/obs-frontend-api/libobs-frontend-api.dylib" \
