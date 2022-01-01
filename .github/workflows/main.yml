@@ -460,12 +460,12 @@ jobs:
           mkdir -p ./build
           cd ./build
           cmake .. \
-          	-DQTDIR=../../obsdeps \
-          	-DDepsPath=../../obsdeps \
+          	-DQTDIR=${{ github.workspace }}/obsdeps \
+          	-DDepsPath=${{ github.workspace }}/obsdeps \
           	-DCMAKE_OSX_DEPLOYMENT_TARGET=10.13 \
           	-DDISABLE_PLUGINS=true \
           	-DENABLE_SCRIPTING=0 \
-          	-DCMAKE_PREFIX_PATH=../../obsdeps/lib/cmake
+          	-DCMAKE_PREFIX_PATH=${{ github.workspace }}/obsdeps/lib/cmake
       - name: 'Build OBS-Studio'
         if: steps.cache-obs-build.outputs.cache-hit != 'true'
         working-directory: ${{ github.workspace }}/obs-studio
@@ -482,10 +482,10 @@ jobs:
           cd build
           cmake .. \
            	-DCMAKE_OSX_DEPLOYMENT_TARGET=10.13 \
-          	-DQTDIR=../../obsdeps \
-          	-DLIBOBS_INCLUDE_DIR=../../obs-studio/libobs \
-          	-DLIBOBS_LIB=../../obs-studio/libobs \
-          	-DOBS_FRONTEND_LIB="$(pwd)/../../obs-studio/build/UI/obs-frontend-api/libobs-frontend-api.dylib" \
+          	-DQTDIR=${{ github.workspace }}/obsdeps \
+          	-DLIBOBS_INCLUDE_DIR=${{ github.workspace }}/obs-studio/libobs \
+          	-DLIBOBS_LIB=${{ github.workspace }}/obs-studio/libobs \
+          	-DOBS_FRONTEND_LIB="${{ github.workspace }}/obs-studio/build/UI/obs-frontend-api/libobs-frontend-api.dylib" \
           	-DCMAKE_BUILD_TYPE=RelWithDebInfo \
           	-DCMAKE_INSTALL_PREFIX=/usr
       - name: 'Build obs-websocket'
