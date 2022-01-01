@@ -431,7 +431,7 @@ jobs:
         id: deps-cache
         uses: actions/cache@v2
         with:
-          path: /tmp/obsdeps
+          path: /tmp/obsdeps/**
           key: 'deps-cache-${{ env.MACOS_DEPS_CACHE_VERSION }} | ${{ runner.os }}'
           restore-keys: | # May not be necessary
             deps-cache-${{ env.MACOS_DEPS_CACHE_VERSION }} | ${{ runner.os }}
