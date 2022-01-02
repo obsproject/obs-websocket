@@ -675,8 +675,6 @@ RequestResult RequestHandler::GetSceneItemBlendMode(const Request& request)
 	return RequestResult::Success(responseData);
 }
 
-
-
 /**
  * Sets the blend mode of a scene item.
  *
