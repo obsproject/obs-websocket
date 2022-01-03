@@ -123,6 +123,9 @@ class RequestHandler {
 		RequestResult SetCurrentSceneTransitionSettings(const Request&);
 		RequestResult TriggerStudioModeTransition(const Request&);
 
+		// Filters
+		RequestResult GetSourceFilter(const Request&);
+
 		// Scene Items
 		RequestResult GetSceneItemList(const Request&);
 		RequestResult GetGroupSceneItemList(const Request&);

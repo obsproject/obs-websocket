@@ -29,6 +29,12 @@ enum ObsWebSocketSceneFilter {
 	OBS_WEBSOCKET_SCENE_FILTER_SCENE_OR_GROUP,
 };
 
+// We return filters as a pair because `obs_filter_get_parent()` is apparently volatile
+struct FilterPair {
+	OBSSourceAutoRelease source;
+	OBSSourceAutoRelease filter;
+};
+
 struct Request
 {
 	Request(const std::string &requestType, const json &requestData = nullptr, const RequestBatchExecutionType::RequestBatchExecutionType executionType = RequestBatchExecutionType::None);
@@ -53,6 +59,7 @@ struct Request
 	obs_source_t *ValidateScene(const std::string &keyName, RequestStatus::RequestStatus &statusCode, std::string &comment, const ObsWebSocketSceneFilter filter = OBS_WEBSOCKET_SCENE_FILTER_SCENE_ONLY) const;
 	obs_scene_t *ValidateScene2(const std::string &keyName, RequestStatus::RequestStatus &statusCode, std::string &comment, const ObsWebSocketSceneFilter filter = OBS_WEBSOCKET_SCENE_FILTER_SCENE_ONLY) const;
 	obs_source_t *ValidateInput(const std::string &keyName, RequestStatus::RequestStatus &statusCode, std::string &comment) const;
+	FilterPair ValidateFilter(const std::string &sourceKeyName, const std::string &filterKeyName, RequestStatus::RequestStatus &statusCode, std::string &comment) const;
 	obs_sceneitem_t *ValidateSceneItem(const std::string &sceneKeyName, const std::string &sceneItemIdKeyName, RequestStatus::RequestStatus &statusCode, std::string &comment, const ObsWebSocketSceneFilter filter = OBS_WEBSOCKET_SCENE_FILTER_SCENE_ONLY) const;
 
 	std::string RequestType;

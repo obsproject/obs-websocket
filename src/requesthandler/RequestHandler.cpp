@@ -105,6 +105,9 @@ const std::unordered_map<std::string, RequestMethodHandler> RequestHandler::_han
 	{"SetCurrentSceneTransitionSettings", &RequestHandler::SetCurrentSceneTransitionSettings},
 	{"TriggerStudioModeTransition", &RequestHandler::TriggerStudioModeTransition},
 
+	// Filters
+	{"GetSourceFilter", &RequestHandler::GetSourceFilter},
+
 	// Scene Items
 	{"GetSceneItemList", &RequestHandler::GetSceneItemList},
 	{"GetGroupSceneItemList", &RequestHandler::GetGroupSceneItemList},

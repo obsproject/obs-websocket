@@ -295,6 +295,27 @@ obs_source_t *Request::ValidateInput(const std::string &keyName, RequestStatus::
 	return ret;
 }
 
+FilterPair Request::ValidateFilter(const std::string &sourceKeyName, const std::string &filterKeyName, RequestStatus::RequestStatus &statusCode, std::string &comment) const
+{
+	obs_source_t *source = ValidateSource(sourceKeyName, statusCode, comment);
+	if (!source)
+		return FilterPair{source, nullptr};
+
+	if (!ValidateString(filterKeyName, statusCode, comment))
+		return FilterPair{source, nullptr};
+
+	std::string filterName = RequestData[filterKeyName];
+
+	obs_source_t *filter = obs_source_get_filter_by_name(source, filterName.c_str());
+	if (!filter) {
+		statusCode = RequestStatus::ResourceNotFound;
+		comment = std::string("No filter was found in the source `") + RequestData[sourceKeyName].get<std::string>() + "` with the name `" + filterName + "`.";
+		return FilterPair{source, nullptr};
+	}
+
+	return FilterPair{source, filter};
+}
+
 obs_sceneitem_t *Request::ValidateSceneItem(const std::string &sceneKeyName, const std::string &sceneItemIdKeyName, RequestStatus::RequestStatus &statusCode, std::string &comment, const ObsWebSocketSceneFilter filter) const
 {
 	OBSSceneAutoRelease scene = ValidateScene2(sceneKeyName, statusCode, comment, filter);

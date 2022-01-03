@@ -177,6 +177,7 @@ namespace Utils {
 		namespace NumberHelper {
 			uint64_t GetOutputDuration(obs_output_t *output);
 			size_t GetSceneCount();
+			size_t GetSourceFilterIndex(obs_source_t *source, obs_source_t *filter);
 		}
 
 		namespace ArrayHelper {
