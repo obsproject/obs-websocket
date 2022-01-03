@@ -1130,6 +1130,55 @@
       "responseFields": []
     },
     {
+      "description": "Gets the info for a specific source filter.",
+      "requestType": "GetSourceFilter",
+      "complexity": 2,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "filters",
+      "requestFields": [
+        {
+          "valueName": "sourceName",
+          "valueType": "String",
+          "valueDescription": "Name of the source",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        },
+        {
+          "valueName": "filterName",
+          "valueType": "String",
+          "valueDescription": "Name of the filter",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        }
+      ],
+      "responseFields": [
+        {
+          "valueName": "filterEnabled",
+          "valueType": "Boolean",
+          "valueDescription": "Whether the filter is enabled"
+        },
+        {
+          "valueName": "filterIndex",
+          "valueType": "Number",
+          "valueDescription": "Index of the filter in the list, beginning at 0"
+        },
+        {
+          "valueName": "filterKind",
+          "valueType": "String",
+          "valueDescription": "The kind of filter"
+        },
+        {
+          "valueName": "filterSettings",
+          "valueType": "Object",
+          "valueDescription": "Settings object associated with the filter"
+        }
+      ]
+    },
+    {
       "description": "Gets data about the current plugin and RPC version.",
       "requestType": "GetVersion",
       "complexity": 1,

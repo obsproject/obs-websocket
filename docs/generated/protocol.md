@@ -2105,6 +2105,8 @@ Studio mode has been enabled or disabled.
   - [SetCurrentSceneTransitionDuration](#setcurrentscenetransitionduration)
   - [SetCurrentSceneTransitionSettings](#setcurrentscenetransitionsettings)
   - [TriggerStudioModeTransition](#triggerstudiomodetransition)
+- [Filters](#filters)
+  - [GetSourceFilter](#getsourcefilter)
 - [Scene Items](#scene-items-1)
   - [GetSceneItemList](#getsceneitemlist)
   - [GetGroupItemList](#getgroupitemlist)
@@ -3540,6 +3542,35 @@ Triggers the current scene transition. Same functionality as the `Transition` bu
 - Complexity Rating: `1/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
+
+
+## Filters
+
+### GetSourceFilter
+
+Gets the info for a specific source filter.
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| sourceName | String | Name of the source | None | N/A |
+| filterName | String | Name of the filter | None | N/A |
+
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| filterEnabled | Boolean | Whether the filter is enabled |
+| filterIndex | Number | Index of the filter in the list, beginning at 0 |
+| filterKind | String | The kind of filter |
+| filterSettings | Object | Settings object associated with the filter |
 
 
 ## Scene Items
