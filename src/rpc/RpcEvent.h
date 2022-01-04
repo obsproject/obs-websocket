@@ -18,7 +18,6 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #pragma once
 
-#include <optional>
 #include <obs-data.h>
 #include <QtCore/QString>
 
@@ -29,7 +28,7 @@ class RpcEvent
 public:
 	explicit RpcEvent(
 		const QString& updateType,
-		std::optional<uint64_t> streamTime, std::optional<uint64_t> recordingTime,
+		uint64_t streamTime, uint64_t recordingTime,
 		obs_data_t* additionalFields = nullptr
 	);
 
@@ -38,12 +37,12 @@ public:
 		return _updateType;
 	}
 
-	const std::optional<uint64_t> streamTime() const
+	const uint64_t streamTime() const
 	{
 		return _streamTime;
 	}
 
-	const std::optional<uint64_t> recordingTime() const
+	const uint64_t recordingTime() const
 	{
 		return _recordingTime;
 	}
@@ -55,7 +54,7 @@ public:
 
 private:
 	QString _updateType;
-	std::optional<uint64_t> _streamTime;
-	std::optional<uint64_t> _recordingTime;
+	uint64_t _streamTime;
+	uint64_t _recordingTime;
 	OBSDataAutoRelease _additionalFields;
 };

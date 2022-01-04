@@ -64,15 +64,15 @@ std::string OBSRemoteProtocol::encodeEvent(const RpcEvent& event)
 	QString updateType = event.updateType();
 	obs_data_set_string(eventData, "update-type", updateType.toUtf8().constData());
 
-	std::optional<uint64_t> streamTime = event.streamTime();
-	if (streamTime.has_value()) {
-		QString streamingTimecode = Utils::nsToTimestamp(streamTime.value());
+	auto streamTime = event.streamTime();
+	if (streamTime) {
+		QString streamingTimecode = Utils::nsToTimestamp(streamTime);
 		obs_data_set_string(eventData, "stream-timecode", streamingTimecode.toUtf8().constData());
 	}
 
-	std::optional<uint64_t> recordingTime = event.recordingTime();
-	if (recordingTime.has_value()) {
-		QString recordingTimecode = Utils::nsToTimestamp(recordingTime.value());
+	auto recordingTime = event.recordingTime();
+	if (recordingTime) {
+		QString recordingTimecode = Utils::nsToTimestamp(recordingTime);
 		obs_data_set_string(eventData, "rec-timecode", recordingTimecode.toUtf8().constData());
 	}
 

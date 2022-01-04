@@ -252,14 +252,14 @@ void WSEvents::broadcastUpdate(const char* updateType,
 	if (!_srv->isListening()) {
 		return;
 	}
-	std::optional<uint64_t> streamTime;
+	uint64_t streamTime = 0;
 	if (obs_frontend_streaming_active()) {
-		streamTime = std::make_optional(getStreamingTime());
+		streamTime = getStreamingTime();
 	}
 
-	std::optional<uint64_t> recordingTime;
+	uint64_t recordingTime;
 	if (obs_frontend_recording_active()) {
-		recordingTime = std::make_optional(getRecordingTime());
+		recordingTime = getRecordingTime();
 	}
 
 	RpcEvent event(QString(updateType), streamTime, recordingTime, additionalFields);
