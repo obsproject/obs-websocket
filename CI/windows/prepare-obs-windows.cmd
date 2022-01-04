@@ -5,7 +5,7 @@ SETLOCAL EnableDelayedExpansion
 REM If obs-studio directory does not exist, clone the git repo
 if not exist %OBS_PATH% (
     echo obs-studio directory does not exist
-    git clone https://github.com/obsproject/obs-studio %OBS_PATH%
+    git clone -b 27.1.3 https://github.com/obsproject/obs-studio %OBS_PATH%
     cd /D %OBS_PATH%\
     git describe --tags --abbrev=0 > "%OBS_PATH%\obs-studio-latest-tag.txt"
     REM set /p OBS_LATEST_TAG=<"%OBS_PATH%\obs-studio-latest-tag.txt"
@@ -16,8 +16,8 @@ REM Prepare OBS Studio builds
 
 echo Running CMake...
 cd /D %OBS_PATH%
-echo   git checkout %OBS_LATEST_TAG%
-git checkout %OBS_LATEST_TAG%
+REM echo   git checkout %OBS_LATEST_TAG%
+REM git checkout %OBS_LATEST_TAG%
 echo:
 
 if not exist build32 mkdir build32
