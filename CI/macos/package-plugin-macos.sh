@@ -19,7 +19,7 @@ VERSION="$GIT_HASH-$GIT_BRANCH_OR_TAG"
 FILENAME_UNSIGNED="obs-websocket-$VERSION-Unsigned.pkg"
 FILENAME="obs-websocket-$VERSION.pkg"
 
-echo "[obs-websocket] Modifying obs-websocket.so linking"
+echo "[obs-websocket] Modifying obs-websocket-compat.so linking"
 install_name_tool \
 	-change /tmp/obsdeps/lib/QtWidgets.framework/Versions/5/QtWidgets \
 		@executable_path/../Frameworks/QtWidgets.framework/Versions/5/QtWidgets \
@@ -27,15 +27,15 @@ install_name_tool \
 		@executable_path/../Frameworks/QtGui.framework/Versions/5/QtGui \
 	-change /tmp/obsdeps/lib/QtCore.framework/Versions/5/QtCore \
 		@executable_path/../Frameworks/QtCore.framework/Versions/5/QtCore \
-	./build/obs-websocket.so
+	./build/obs-websocket-compat.so
 
 # Check if replacement worked
 echo "[obs-websocket] Dependencies for obs-websocket"
-otool -L ./build/obs-websocket.so
+otool -L ./build/obs-websocket-compat.so
 
 if [[ "$RELEASE_MODE" == "True" ]]; then
-	echo "[obs-websocket] Signing plugin binary: obs-websocket.so"
-	codesign --sign "$CODE_SIGNING_IDENTITY" ./build/obs-websocket.so
+	echo "[obs-websocket] Signing plugin binary: obs-websocket-compat.so"
+	codesign --sign "$CODE_SIGNING_IDENTITY" ./build/obs-websocket-compat.so
 else
 	echo "[obs-websocket] Skipped plugin codesigning"
 fi
