@@ -26,7 +26,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <QtWidgets/QInputDialog>
 #include <QtWidgets/QMessageBox>
 
-#define SECTION_NAME "WebsocketAPI"
+#define SECTION_NAME "WebsocketAPICompat"
 #define PARAM_ENABLE "ServerEnabled"
 #define PARAM_PORT "ServerPort"
 #define PARAM_LOCKTOIPV4 "LockToIPv4"
@@ -47,7 +47,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 Config::Config() :
 	ServerEnabled(true),
-	ServerPort(4444),
+	ServerPort(4440),
 	LockToIPv4(false),
 	DebugEnabled(false),
 	AlertsEnabled(true),
@@ -274,9 +274,9 @@ void Config::OnFrontendEvent(enum obs_frontend_event event, void* param)
 
 	if (event == OBS_FRONTEND_EVENT_PROFILE_CHANGED) {
 		obs_frontend_push_ui_translation(obs_module_get_string);
-		QString startMessage = QObject::tr("OBSWebsocket.ProfileChanged.Started");
-		QString stopMessage = QObject::tr("OBSWebsocket.ProfileChanged.Stopped");
-		QString restartMessage = QObject::tr("OBSWebsocket.ProfileChanged.Restarted");
+		QString startMessage = QObject::tr("OBSWebsocketCompat.ProfileChanged.Started");
+		QString stopMessage = QObject::tr("OBSWebsocketCompat.ProfileChanged.Stopped");
+		QString restartMessage = QObject::tr("OBSWebsocketCompat.ProfileChanged.Restarted");
 		obs_frontend_pop_ui_translation();
 
 		bool previousEnabled = config->ServerEnabled;
@@ -332,9 +332,9 @@ void Config::FirstRunPasswordSetup()
 	}
 
 	obs_frontend_push_ui_translation(obs_module_get_string);
-	QString dialogTitle = QObject::tr("OBSWebsocket.InitialPasswordSetup.Title");
-	QString dialogText = QObject::tr("OBSWebsocket.InitialPasswordSetup.Text");
-	QString dismissedText = QObject::tr("OBSWebsocket.InitialPasswordSetup.DismissedText");
+	QString dialogTitle = QObject::tr("OBSWebsocketCompat.InitialPasswordSetup.Title");
+	QString dialogText = QObject::tr("OBSWebsocketCompat.InitialPasswordSetup.Text");
+	QString dismissedText = QObject::tr("OBSWebsocketCompat.InitialPasswordSetup.DismissedText");
 	obs_frontend_pop_ui_translation();
 
 	auto mainWindow = reinterpret_cast<QMainWindow*>(

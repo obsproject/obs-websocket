@@ -69,7 +69,7 @@ bool obs_module_load(void) {
 	obs_frontend_pop_ui_translation();
 
 	const char* menuActionText =
-		obs_module_text("OBSWebsocket.Settings.DialogTitle");
+		obs_module_text("OBSWebsocketCompat.Settings.DialogTitle");
 	QAction* menuAction =
 		(QAction*)obs_frontend_add_tools_menu_qaction(menuActionText);
 	QObject::connect(menuAction, &QAction::triggered, [] {

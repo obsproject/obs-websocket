@@ -17,7 +17,7 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>OBSWebsocket.Settings.DialogTitle</string>
+   <string>OBSWebsocketCompat.Settings.DialogTitle</string>
   </property>
   <property name="sizeGripEnabled">
    <bool>false</bool>
@@ -31,14 +31,14 @@
      <item row="3" column="1">
       <widget class="QCheckBox" name="authRequired">
        <property name="text">
-        <string>OBSWebsocket.Settings.AuthRequired</string>
+        <string>OBSWebsocketCompat.Settings.AuthRequired</string>
        </property>
       </widget>
      </item>
      <item row="4" column="0">
       <widget class="QLabel" name="lbl_password">
        <property name="text">
-        <string>OBSWebsocket.Settings.Password</string>
+        <string>OBSWebsocketCompat.Settings.Password</string>
        </property>
       </widget>
      </item>
@@ -52,7 +52,7 @@
      <item row="1" column="1">
       <widget class="QCheckBox" name="serverEnabled">
        <property name="text">
-        <string>OBSWebsocket.Settings.ServerEnable</string>
+        <string>OBSWebsocketCompat.Settings.ServerEnable</string>
        </property>
        <property name="checked">
         <bool>true</bool>
@@ -62,7 +62,7 @@
      <item row="2" column="0">
       <widget class="QLabel" name="lbl_serverPort">
        <property name="text">
-        <string>OBSWebsocket.Settings.ServerPort</string>
+        <string>OBSWebsocketCompat.Settings.ServerPort</string>
        </property>
       </widget>
      </item>
@@ -82,7 +82,7 @@
      <item row="6" column="1">
       <widget class="QCheckBox" name="alertsEnabled">
        <property name="text">
-        <string>OBSWebsocket.Settings.AlertsEnable</string>
+        <string>OBSWebsocketCompat.Settings.AlertsEnable</string>
        </property>
        <property name="checked">
         <bool>true</bool>
@@ -92,7 +92,7 @@
      <item row="7" column="1">
       <widget class="QCheckBox" name="debugEnabled">
        <property name="text">
-        <string>OBSWebsocket.Settings.DebugEnable</string>
+        <string>OBSWebsocketCompat.Settings.DebugEnable</string>
        </property>
        <property name="checked">
         <bool>false</bool>
@@ -102,7 +102,7 @@
      <item row="5" column="1">
       <widget class="QCheckBox" name="lockToIPv4">
        <property name="text">
-        <string>OBSWebsocket.Settings.LockToIPv4</string>
+        <string>OBSWebsocketCompat.Settings.LockToIPv4</string>
        </property>
       </widget>
      </item>

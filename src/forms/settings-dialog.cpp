@@ -81,10 +81,10 @@ void SettingsDialog::AuthCheckboxChanged() {
 	}
 	else {
 		obs_frontend_push_ui_translation(obs_module_get_string);
-		QString authDisabledWarning = QObject::tr("OBSWebsocket.Settings.AuthDisabledWarning");
+		QString authDisabledWarning = QObject::tr("OBSWebsocketCompat.Settings.AuthDisabledWarning");
 		obs_frontend_pop_ui_translation();
 
-		QMessageBox::StandardButton response = QMessageBox::question(this, "obs-websocket", authDisabledWarning);
+		QMessageBox::StandardButton response = QMessageBox::question(this, "obs-websocket 4.9.1-compat", authDisabledWarning);
 		if (response == QMessageBox::Yes) {
 			ui->password->setEnabled(false);
 		} else {
