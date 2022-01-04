@@ -8,7 +8,8 @@ if not exist %OBS_PATH% (
     git clone https://github.com/obsproject/obs-studio %OBS_PATH%
     cd /D %OBS_PATH%\
     git describe --tags --abbrev=0 > "%OBS_PATH%\obs-studio-latest-tag.txt"
-    set /p OBS_LATEST_TAG=<"%OBS_PATH%\obs-studio-latest-tag.txt"
+    REM set /p OBS_LATEST_TAG=<"%OBS_PATH%\obs-studio-latest-tag.txt"
+    set /p OBS_LATEST_TAG=<"27.1.3"
 )
 
 REM Prepare OBS Studio builds
