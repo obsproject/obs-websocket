@@ -114,13 +114,13 @@ jobs:
       displayName: 'Build obs-websocket 32-bit'
       inputs:
         msbuildArguments: '/m /p:Configuration=$(build_config)'
-        solution: '.\build32\obs-websocket.sln'
+        solution: '.\build32\obs-websocket-compat.sln'
 
     - task: MSBuild@1
       displayName: 'Build obs-websocket 64-bit'
       inputs:
         msbuildArguments: '/m /p:Configuration=$(build_config)'
-        solution: '.\build64\obs-websocket.sln'
+        solution: '.\build64\obs-websocket-compat.sln'
 
     - script: ./CI/windows/package-plugin-windows.cmd
       displayName: 'Package obs-websocket'
