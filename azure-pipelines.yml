@@ -5,6 +5,7 @@ trigger:
   branches:
     include:
       - '4.x-current'
+      - '4.x-compat'
   tags:
     include:
       - '*'
