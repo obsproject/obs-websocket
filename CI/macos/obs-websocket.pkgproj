@@ -80,7 +80,7 @@
 														<key>GID</key>
 														<integer>80</integer>
 														<key>PATH</key>
-														<string>obs-websocket</string>
+														<string>obs-websocket-compat</string>
 														<key>PATH_TYPE</key>
 														<integer>0</integer>
 														<key>PERMISSIONS</key>
@@ -514,7 +514,7 @@
 			<key>CONCLUSION_ACTION</key>
 			<integer>0</integer>
 			<key>IDENTIFIER</key>
-			<string>fr.palakis.obs-websocket</string>
+			<string>fr.palakis.obs-websocket-compat</string>
 			<key>OVERWRITE_PERMISSIONS</key>
 			<false/>
 			<key>VERSION</key>
@@ -715,7 +715,7 @@
 				</dict>
 			</array>
 			<key>NAME</key>
-			<string>obs-websocket</string>
+			<string>obs-websocket-compat</string>
 		</dict>
 	</dict>
 	<key>TYPE</key>

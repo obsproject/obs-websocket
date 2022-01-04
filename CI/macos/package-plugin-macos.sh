@@ -44,7 +44,7 @@ echo "[obs-websocket] Actual package build"
 packagesbuild ./CI/macos/obs-websocket.pkgproj
 
 echo "[obs-websocket] Renaming obs-websocket.pkg to $FILENAME"
-mv ./release/obs-websocket.pkg ./release/$FILENAME_UNSIGNED
+mv ./release/obs-websocket-compat.pkg ./release/$FILENAME_UNSIGNED
 
 if [[ "$RELEASE_MODE" == "True" ]]; then
 	echo "[obs-websocket] Signing installer: $FILENAME"
