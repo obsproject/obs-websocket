@@ -53,6 +53,7 @@ bool obs_module_load(void) {
 	blog(LOG_INFO, "you can haz websockets (version %s)", OBS_WEBSOCKET_VERSION);
 	blog(LOG_INFO, "qt version (compile-time): %s ; qt version (run-time): %s",
 		QT_VERSION_STR, qVersion());
+	blog(LOG_INFO, "[obs_module_load] Linked ASIO Version: %d", ASIO_VERSION);
 
 	// Core setup
 	_config = ConfigPtr(new Config());
