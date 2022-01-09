@@ -3194,7 +3194,7 @@ Sets the volume setting of an input.
 | ---- | :---: | ----------- | :----------------: | ----------------- |
 | inputName | String | Name of the input to set the volume of | None | N/A |
 | ?inputVolumeMul | Number | Volume setting in mul | >= 0, <= 20 | `inputVolumeDb` should be specified |
-| ?inputVolumeDb | Number | Volume setting in dB | >= -100, <= -26 | `inputVolumeMul` should be specified |
+| ?inputVolumeDb | Number | Volume setting in dB | >= -100, <= 26 | `inputVolumeMul` should be specified |
 
 ---
 

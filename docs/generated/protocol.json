@@ -1902,7 +1902,7 @@
           "valueName": "inputVolumeDb",
           "valueType": "Number",
           "valueDescription": "Volume setting in dB",
-          "valueRestrictions": ">= -100, <= -26",
+          "valueRestrictions": ">= -100, <= 26",
           "valueOptional": true,
           "valueOptionalBehavior": "`inputVolumeMul` should be specified"
         }
