@@ -495,7 +495,7 @@ RequestResult RequestHandler::GetInputVolume(const Request& request)
  *
  * @requestField inputName       | String | Name of the input to set the volume of
  * @requestField ?inputVolumeMul | Number | Volume setting in mul | >= 0, <= 20     | `inputVolumeDb` should be specified
- * @requestField ?inputVolumeDb  | Number | Volume setting in dB  | >= -100, <= -26 | `inputVolumeMul` should be specified
+ * @requestField ?inputVolumeDb  | Number | Volume setting in dB  | >= -100, <= 26 | `inputVolumeMul` should be specified
  *
  * @requestType SetInputVolume
  * @complexity 3
