@@ -135,9 +135,12 @@ void EventHandler::ConnectSourceSignals(obs_source_t *source) // Applies to inpu
 	signal_handler_connect(sh, "mute", HandleInputMuteStateChanged, this);
 	signal_handler_connect(sh, "volume", HandleInputVolumeChanged, this);
 	signal_handler_connect(sh, "audio_balance", HandleInputAudioBalanceChanged, this);
-	signal_handler_connect(sh, "audio_sync", HandleInputAudioSyncOffsetChanged, this);
-	signal_handler_connect(sh, "audio_mixers", HandleInputAudioTracksChanged, this);
-	signal_handler_connect(sh, "audio_monitoring", HandleInputAudioMonitorTypeChanged, this);
+    signal_handler_connect(sh, "audio_sync", HandleInputAudioSyncOffsetChanged, this);
+    signal_handler_connect(sh, "audio_mixers", HandleInputAudioTracksChanged, this);
+    signal_handler_connect(sh, "audio_monitoring", HandleInputAudioMonitorTypeChanged, this);
+    signal_handler_connect(sh, "filter_add", HandleSourceFilterAdded, this);
+    signal_handler_connect(sh, "filter_remove", HandleSourceFilterRemoved, this);
+    signal_handler_connect(sh, "reorder_filters", HandleSourceFilterListReindexed, this);
 
 	if (sourceType == OBS_SOURCE_TYPE_INPUT) {
 		signal_handler_connect(sh, "media_started", HandleMediaInputPlaybackStarted, this);
@@ -188,6 +191,9 @@ void EventHandler::DisconnectSourceSignals(obs_source_t *source)
 	signal_handler_disconnect(sh, "media_stopped", SourceMediaStopMultiHandler, this);
 	signal_handler_disconnect(sh, "media_next", SourceMediaNextMultiHandler, this);
 	signal_handler_disconnect(sh, "media_previous", SourceMediaPreviousMultiHandler, this);
+    signal_handler_disconnect(sh, "filter_add", HandleSourceFilterAdded, this);
+    signal_handler_disconnect(sh, "filter_remove", HandleSourceFilterRemoved, this);
+    signal_handler_disconnect(sh, "reorder_filters", HandleSourceFilterListReindexed, this);
 
 	// Scenes
 	signal_handler_disconnect(sh, "item_add", HandleSceneItemCreated, this);
@@ -197,6 +203,30 @@ void EventHandler::DisconnectSourceSignals(obs_source_t *source)
 	signal_handler_disconnect(sh, "item_locked", HandleSceneItemLockStateChanged, this);
 	signal_handler_disconnect(sh, "item_select", HandleSceneItemSelected, this);
 	signal_handler_disconnect(sh, "item_transform", HandleSceneItemTransformChanged, this);
+}
+
+void EventHandler::ConnectFilterSignals(obs_source_t *filter)
+{
+    if (!filter || obs_source_removed(filter))
+        return;
+
+    DisconnectFilterSignals(filter);
+
+    signal_handler_t* sh = obs_source_get_signal_handler(filter);
+
+    signal_handler_connect(sh, "enable", HandleSourceFilterEnableStateChanged, this);
+    signal_handler_connect(sh, "rename", HandleFilterNameChanged, this);
+}
+
+void EventHandler::DisconnectFilterSignals(obs_source_t *filter)
+{
+    if (!filter)
+        return;
+
+    signal_handler_t* sh = obs_source_get_signal_handler(filter);
+
+    signal_handler_disconnect(sh, "enable", HandleSourceFilterEnableStateChanged, this);
+    signal_handler_disconnect(sh, "rename", HandleFilterNameChanged, this);
 }
 
 void EventHandler::OnFrontendEvent(enum obs_frontend_event event, void *private_data)
@@ -214,6 +244,12 @@ void EventHandler::OnFrontendEvent(enum obs_frontend_event event, void *private_
 			obs_enum_sources([](void* param, obs_source_t* source) {
 				auto eventHandler = static_cast<EventHandler*>(param);
 				eventHandler->ConnectSourceSignals(source);
+
+                obs_source_enum_filters(source, [](obs_source_t *source, obs_source_t *filter, void *param){
+                    auto eventHandler = static_cast<EventHandler*>(param);
+                    eventHandler->ConnectFilterSignals(filter);
+                }, eventHandler);
+
 				return true;
 			}, private_data);
 
@@ -221,6 +257,12 @@ void EventHandler::OnFrontendEvent(enum obs_frontend_event event, void *private_
 			obs_enum_scenes([](void* param, obs_source_t* source) {
 				auto eventHandler = static_cast<EventHandler*>(param);
 				eventHandler->ConnectSourceSignals(source);
+
+                obs_source_enum_filters(source, [](obs_source_t *source, obs_source_t *filter, void *param){
+                    auto eventHandler = static_cast<EventHandler*>(param);
+                    eventHandler->ConnectFilterSignals(filter);
+                }, eventHandler);
+
 				return true;
 			}, private_data);
 
@@ -465,8 +507,9 @@ void EventHandler::SourceRenamedMultiHandler(void *param, calldata_t *data)
 		case OBS_SOURCE_TYPE_INPUT:
 			eventHandler->HandleInputNameChanged(source, oldSourceName, sourceName);
 			break;
-		case OBS_SOURCE_TYPE_FILTER:
-			break;
+//	    Never gets called
+//		case OBS_SOURCE_TYPE_FILTER:
+//		    break;
 		case OBS_SOURCE_TYPE_TRANSITION:
 			break;
 		case OBS_SOURCE_TYPE_SCENE:
