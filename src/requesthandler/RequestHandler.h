@@ -130,6 +130,13 @@ class RequestHandler {
 
 		// Filters
 		RequestResult GetSourceFilter(const Request&);
+        RequestResult GetSourceFilterList(const Request&);
+        RequestResult CreateSourceFilter(const Request&);
+        RequestResult RemoveSourceFilter(const Request&);
+        RequestResult GetSourceFilterDefaultSettings(const Request&);
+        RequestResult SetSourceFilterIndex(const Request&);
+        RequestResult SetSourceFilterSettings(const Request&);
+        RequestResult SetSourceFilterEnabled(const Request&);
 
 		// Scene Items
 		RequestResult GetSceneItemList(const Request&);
