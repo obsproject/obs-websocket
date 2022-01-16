@@ -181,6 +181,7 @@ const std::unordered_map<std::string, RequestMethodHandler> RequestHandler::_han
 	{"OpenInputPropertiesDialog", &RequestHandler::OpenInputPropertiesDialog},
 	{"OpenInputFiltersDialog", &RequestHandler::OpenInputFiltersDialog},
 	{"OpenInputInteractDialog", &RequestHandler::OpenInputInteractDialog},
+	{"GetMonitorList", &RequestHandler::GetMonitorList},
 };
 
 RequestHandler::RequestHandler(SessionPtr session) :

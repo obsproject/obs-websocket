@@ -17,6 +17,11 @@ You should have received a copy of the GNU General Public License along
 with this program. If not, see <https://www.gnu.org/licenses/>
 */
 
+#include <QGuiApplication>
+#include <QScreen>
+#include <QRect>
+#include <sstream>
+
 #include "RequestHandler.h"
 
 /**
@@ -147,4 +152,40 @@ RequestResult RequestHandler::OpenInputInteractDialog(const Request& request)
 	obs_frontend_open_source_interaction(input);
 
 	return RequestResult::Success();
+}
+
+/**
+ * Gets a list of connected monitors and information about them.
+ *
+ * @responseField monitors | Array<Object> | a list of detected monitors with some information
+ *
+ * @requestType GetMonitorList
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @category ui
+ * @api requests
+ */
+RequestResult RequestHandler::GetMonitorList(const Request&)
+{
+	json responseData;
+	std::vector<json> monitorsData;
+	QList<QScreen *> screensList = QGuiApplication::screens();
+	for (int screenIndex = 0; screenIndex < screensList.size(); screenIndex++)
+	{
+		json screenData;
+		QScreen const* screen = screensList[screenIndex];
+		std::stringstream nameAndIndex;
+		nameAndIndex << screen->name().toStdString();
+		nameAndIndex << '(' << screenIndex << ')';
+		screenData["monitorName"] = nameAndIndex.str();
+		const QRect screenGeometry = screen->geometry();
+		screenData["monitorWidth"] = screenGeometry.width();
+		screenData["monitorHeight"] = screenGeometry.height();
+		screenData["monitorPositionX"] = screenGeometry.x();
+		screenData["monitorPositionY"] = screenGeometry.y();
+		monitorsData.push_back(screenData);
+	}
+	responseData["monitors"] = monitorsData;
+	return RequestResult::Success(responseData);
 }
