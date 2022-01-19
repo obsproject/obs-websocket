@@ -2124,6 +2124,11 @@ Studio mode has been enabled or disabled.
   - [SetSceneItemIndex](#setsceneitemindex)
   - [GetSceneItemBlendMode](#getsceneitemblendmode)
   - [SetSceneItemBlendMode](#setsceneitemblendmode)
+- [Outputs](#outputs-1)
+  - [GetVirtualCamStatus](#getvirtualcamstatus)
+  - [ToggleVirtualCam](#togglevirtualcam)
+  - [StartVirtualCam](#startvirtualcam)
+  - [StopVirtualCam](#stopvirtualcam)
 - [Stream](#stream)
   - [GetStreamStatus](#getstreamstatus)
   - [ToggleStream](#togglestream)
@@ -3979,6 +3984,61 @@ Scenes and Groups
 | sceneName | String | Name of the scene the item is in | None | N/A |
 | sceneItemId | Number | Numeric ID of the scene item | >= 0 | N/A |
 | sceneItemBlendMode | String | New blend mode | None | N/A |
+
+
+## Outputs
+
+### GetVirtualCamStatus
+
+Gets the status of the virtualcam output.
+
+- Complexity Rating: `1/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| outputActive | Boolean | Whether the output is active |
+
+---
+
+### ToggleVirtualCam
+
+Toggles the state of the virtualcam output.
+
+- Complexity Rating: `1/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| outputActive | Boolean | Whether the output is active |
+
+---
+
+### StartVirtualCam
+
+Starts the virtualcam output.
+
+- Complexity Rating: `1/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### StopVirtualCam
+
+Stops the virtualcam output.
+
+- Complexity Rating: `1/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
 
 
 ## Stream

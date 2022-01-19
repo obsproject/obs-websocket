@@ -2308,6 +2308,62 @@
       "responseFields": []
     },
     {
+      "description": "Gets the status of the virtualcam output.",
+      "requestType": "GetVirtualCamStatus",
+      "complexity": 1,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "outputs",
+      "requestFields": [],
+      "responseFields": [
+        {
+          "valueName": "outputActive",
+          "valueType": "Boolean",
+          "valueDescription": "Whether the output is active"
+        }
+      ]
+    },
+    {
+      "description": "Toggles the state of the virtualcam output.",
+      "requestType": "ToggleVirtualCam",
+      "complexity": 1,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "outputs",
+      "requestFields": [],
+      "responseFields": [
+        {
+          "valueName": "outputActive",
+          "valueType": "Boolean",
+          "valueDescription": "Whether the output is active"
+        }
+      ]
+    },
+    {
+      "description": "Starts the virtualcam output.",
+      "requestType": "StartVirtualCam",
+      "complexity": 1,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "outputs",
+      "requestFields": [],
+      "responseFields": []
+    },
+    {
+      "description": "Stops the virtualcam output.",
+      "requestType": "StopVirtualCam",
+      "complexity": 1,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "outputs",
+      "requestFields": [],
+      "responseFields": []
+    },
+    {
       "description": "Gets the status of the record output.",
       "requestType": "GetRecordStatus",
       "complexity": 2,
