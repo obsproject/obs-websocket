@@ -144,6 +144,12 @@ class RequestHandler {
 		RequestResult GetSceneItemBlendMode(const Request&);
 		RequestResult SetSceneItemBlendMode(const Request&);
 
+		// Outputs
+		RequestResult GetVirtualCamStatus(const Request&);
+		RequestResult ToggleVirtualCam(const Request&);
+		RequestResult StartVirtualCam(const Request&);
+		RequestResult StopVirtualCam(const Request&);
+
 		// Stream
 		RequestResult GetStreamStatus(const Request&);
 		RequestResult ToggleStream(const Request&);

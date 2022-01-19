@@ -114,6 +114,7 @@ set(obs-websocket_SOURCES
 	src/requesthandler/RequestHandler_Transitions.cpp
 	src/requesthandler/RequestHandler_Filters.cpp
 	src/requesthandler/RequestHandler_SceneItems.cpp
+	src/requesthandler/RequestHandler_Outputs.cpp
 	src/requesthandler/RequestHandler_Stream.cpp
 	src/requesthandler/RequestHandler_Record.cpp
 	src/requesthandler/RequestHandler_MediaInputs.cpp

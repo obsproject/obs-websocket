@@ -126,6 +126,12 @@ const std::unordered_map<std::string, RequestMethodHandler> RequestHandler::_han
 	{"GetSceneItemBlendMode", &RequestHandler::GetSceneItemBlendMode},
 	{"SetSceneItemBlendMode", &RequestHandler::SetSceneItemBlendMode},
 
+	// Outputs
+	{"GetVirtualCamStatus", &RequestHandler::GetVirtualCamStatus},
+	{"ToggleVirtualCam", &RequestHandler::ToggleVirtualCam},
+	{"StartVirtualCam", &RequestHandler::StartVirtualCam},
+	{"StopVirtualCam", &RequestHandler::StopVirtualCam},
+
 	// Stream
 	{"GetStreamStatus", &RequestHandler::GetStreamStatus},
 	{"ToggleStream", &RequestHandler::ToggleStream},
