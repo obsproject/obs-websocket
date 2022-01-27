@@ -28,6 +28,12 @@ static bool VirtualCamAvailable()
 	return obs_data_get_bool(privateData, "vcamEnabled");
 }
 
+static bool ReplayBufferAvailable()
+{
+	OBSOutputAutoRelease output = obs_frontend_get_replay_buffer_output();
+	return output != nullptr;
+}
+
 /**
  * Gets the status of the virtualcam output.
  *
@@ -123,4 +129,149 @@ RequestResult RequestHandler::StopVirtualCam(const Request&)
 	obs_frontend_stop_virtualcam();
 
 	return RequestResult::Success();
+}
+
+/**
+ * Gets the status of the replay buffer output.
+ *
+ * @responseField outputActive | Boolean | Whether the output is active
+ *
+ * @requestType GetReplayBufferStatus
+ * @complexity 1
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @category outputs
+ * @api requests
+ */
+RequestResult RequestHandler::GetReplayBufferStatus(const Request&)
+{
+	if (!ReplayBufferAvailable())
+		return RequestResult::Error(RequestStatus::InvalidResourceState, "Replay buffer is not available.");
+
+	json responseData;
+	responseData["outputActive"] = obs_frontend_replay_buffer_active();
+	return RequestResult::Success(responseData);
+}
+
+/**
+ * Toggles the state of the replay buffer output.
+ *
+ * @responseField outputActive | Boolean | Whether the output is active
+ *
+ * @requestType ToggleReplayBuffer
+ * @complexity 1
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @category outputs
+ * @api requests
+ */
+RequestResult RequestHandler::ToggleReplayBuffer(const Request&)
+{
+	if (!ReplayBufferAvailable())
+		return RequestResult::Error(RequestStatus::InvalidResourceState, "Replay buffer is not available.");
+
+	bool outputActive = obs_frontend_replay_buffer_active();
+
+	if (outputActive)
+		obs_frontend_replay_buffer_stop();
+	else
+		obs_frontend_replay_buffer_start();
+
+	json responseData;
+	responseData["outputActive"] = !outputActive;
+	return RequestResult::Success(responseData);
+}
+
+/**
+ * Starts the replay buffer output.
+ *
+ * @requestType StartReplayBuffer
+ * @complexity 1
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api requests
+ * @category outputs
+ */
+RequestResult RequestHandler::StartReplayBuffer(const Request&)
+{
+	if (!ReplayBufferAvailable())
+		return RequestResult::Error(RequestStatus::InvalidResourceState, "Replay buffer is not available.");
+
+	if (obs_frontend_replay_buffer_active())
+		return RequestResult::Error(RequestStatus::OutputRunning);
+
+	obs_frontend_replay_buffer_start();
+
+	return RequestResult::Success();
+}
+
+/**
+ * Stops the replay buffer output.
+ *
+ * @requestType StopReplayBuffer
+ * @complexity 1
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api requests
+ * @category outputs
+ */
+RequestResult RequestHandler::StopReplayBuffer(const Request&)
+{
+	if (!ReplayBufferAvailable())
+		return RequestResult::Error(RequestStatus::InvalidResourceState, "Replay buffer is not available.");
+
+	if (!obs_frontend_replay_buffer_active())
+		return RequestResult::Error(RequestStatus::OutputNotRunning);
+
+	obs_frontend_replay_buffer_stop();
+
+	return RequestResult::Success();
+}
+
+/**
+ * Saves the contents of the replay buffer output.
+ *
+ * @requestType SaveReplayBuffer
+ * @complexity 1
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api requests
+ * @category outputs
+ */
+RequestResult RequestHandler::SaveReplayBuffer(const Request&)
+{
+	if (!ReplayBufferAvailable())
+		return RequestResult::Error(RequestStatus::InvalidResourceState, "Replay buffer is not available.");
+
+	if (!obs_frontend_replay_buffer_active())
+		return RequestResult::Error(RequestStatus::OutputNotRunning);
+
+	obs_frontend_replay_buffer_save();
+
+	return RequestResult::Success();
+}
+
+/**
+ * Gets the filename of the last replay buffer save file.
+ *
+ * @responseField savedReplayPath | String | File path
+ *
+ * @requestType GetLastReplayBufferReplay
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api requests
+ * @category outputs
+ */
+RequestResult RequestHandler::GetLastReplayBufferReplay(const Request&)
+{
+	if (!ReplayBufferAvailable())
+		return RequestResult::Error(RequestStatus::InvalidResourceState, "Replay buffer is not available.");
+
+	if (!obs_frontend_replay_buffer_active())
+		return RequestResult::Error(RequestStatus::OutputNotRunning);
+
+	json responseData;
+	responseData["savedReplayPath"] = Utils::Obs::StringHelper::GetLastReplayBufferFilePath();
+	return RequestResult::Success(responseData);
 }

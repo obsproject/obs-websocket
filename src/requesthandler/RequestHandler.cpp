@@ -131,6 +131,12 @@ const std::unordered_map<std::string, RequestMethodHandler> RequestHandler::_han
 	{"ToggleVirtualCam", &RequestHandler::ToggleVirtualCam},
 	{"StartVirtualCam", &RequestHandler::StartVirtualCam},
 	{"StopVirtualCam", &RequestHandler::StopVirtualCam},
+	{"GetReplayBufferStatus", &RequestHandler::GetReplayBufferStatus},
+	{"ToggleReplayBuffer", &RequestHandler::ToggleReplayBuffer},
+	{"StartReplayBuffer", &RequestHandler::StartReplayBuffer},
+	{"StopReplayBuffer", &RequestHandler::StopReplayBuffer},
+	{"SaveReplayBuffer", &RequestHandler::SaveReplayBuffer},
+	{"GetLastReplayBufferReplay", &RequestHandler::GetLastReplayBufferReplay},
 
 	// Stream
 	{"GetStreamStatus", &RequestHandler::GetStreamStatus},

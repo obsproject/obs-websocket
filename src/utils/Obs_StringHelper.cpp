@@ -120,12 +120,19 @@ std::string Utils::Obs::StringHelper::GetMediaInputState(obs_source_t *input)
 std::string Utils::Obs::StringHelper::GetLastReplayBufferFilePath()
 {
 	OBSOutputAutoRelease output = obs_frontend_get_replay_buffer_output();
+	if (!output)
+		return "";
+
 	calldata_t cd = {0};
 	proc_handler_t *ph = obs_output_get_proc_handler(output);
 	proc_handler_call(ph, "get_last_replay", &cd);
-	auto ret = calldata_string(&cd, "path");
+	const char *savedReplayPath = calldata_string(&cd, "path");
 	calldata_free(&cd);
-	return ret;
+
+	if (!savedReplayPath)
+		return "";
+
+	return savedReplayPath;
 }
 
 std::string Utils::Obs::StringHelper::GetSceneItemBoundsType(enum obs_bounds_type type)

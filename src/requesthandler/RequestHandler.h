@@ -149,6 +149,12 @@ class RequestHandler {
 		RequestResult ToggleVirtualCam(const Request&);
 		RequestResult StartVirtualCam(const Request&);
 		RequestResult StopVirtualCam(const Request&);
+		RequestResult GetReplayBufferStatus(const Request&);
+		RequestResult ToggleReplayBuffer(const Request&);
+		RequestResult StartReplayBuffer(const Request&);
+		RequestResult StopReplayBuffer(const Request&);
+		RequestResult SaveReplayBuffer(const Request&);
+		RequestResult GetLastReplayBufferReplay(const Request&);
 
 		// Stream
 		RequestResult GetStreamStatus(const Request&);
