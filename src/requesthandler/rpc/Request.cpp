@@ -264,18 +264,14 @@ obs_scene_t *Request::ValidateScene2(const std::string &keyName, RequestStatus::
 			comment = "The specified source is not a scene. (Is group)";
 			return nullptr;
 		}
-		OBSScene ret = obs_group_from_source(sceneSource);
-		obs_scene_addref(ret);
-		return ret;
+		return obs_scene_get_ref(obs_group_from_source(sceneSource));
 	} else {
 		if (filter == OBS_WEBSOCKET_SCENE_FILTER_GROUP_ONLY) {
 			statusCode = RequestStatus::InvalidResourceType;
 			comment = "The specified source is not a group. (Is scene)";
 			return nullptr;
 		}
-		OBSScene ret = obs_scene_from_source(sceneSource);
-		obs_scene_addref(ret);
-		return ret;
+		return obs_scene_get_ref(obs_scene_from_source(sceneSource));
 	}
 }
 

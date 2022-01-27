@@ -232,8 +232,9 @@ RequestResult RequestHandler::DuplicateSceneItem(const Request& request)
 		if (!destinationScene)
 			return RequestResult::Error(statusCode, comment);
 	} else {
-		destinationScene = obs_sceneitem_get_scene(sceneItem);
-		obs_scene_addref(destinationScene);
+		destinationScene = obs_scene_get_ref(obs_sceneitem_get_scene(sceneItem));
+		if (!destinationScene)
+			return RequestResult::Error(RequestStatus::RequestProcessingFailed, "Internal error: Failed to get ref for scene of scene item.");
 	}
 
 	if (obs_sceneitem_is_group(sceneItem) && obs_sceneitem_get_scene(sceneItem) == destinationScene) {
