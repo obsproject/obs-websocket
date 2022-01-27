@@ -2364,6 +2364,90 @@
       "responseFields": []
     },
     {
+      "description": "Gets the status of the replay buffer output.",
+      "requestType": "GetReplayBufferStatus",
+      "complexity": 1,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "outputs",
+      "requestFields": [],
+      "responseFields": [
+        {
+          "valueName": "outputActive",
+          "valueType": "Boolean",
+          "valueDescription": "Whether the output is active"
+        }
+      ]
+    },
+    {
+      "description": "Toggles the state of the replay buffer output.",
+      "requestType": "ToggleReplayBuffer",
+      "complexity": 1,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "outputs",
+      "requestFields": [],
+      "responseFields": [
+        {
+          "valueName": "outputActive",
+          "valueType": "Boolean",
+          "valueDescription": "Whether the output is active"
+        }
+      ]
+    },
+    {
+      "description": "Starts the replay buffer output.",
+      "requestType": "StartReplayBuffer",
+      "complexity": 1,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "outputs",
+      "requestFields": [],
+      "responseFields": []
+    },
+    {
+      "description": "Stops the replay buffer output.",
+      "requestType": "StopReplayBuffer",
+      "complexity": 1,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "outputs",
+      "requestFields": [],
+      "responseFields": []
+    },
+    {
+      "description": "Saves the contents of the replay buffer output.",
+      "requestType": "SaveReplayBuffer",
+      "complexity": 1,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "outputs",
+      "requestFields": [],
+      "responseFields": []
+    },
+    {
+      "description": "Gets the filename of the last replay buffer save file.",
+      "requestType": "GetLastReplayBufferReplay",
+      "complexity": 2,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "outputs",
+      "requestFields": [],
+      "responseFields": [
+        {
+          "valueName": "savedReplayPath",
+          "valueType": "String",
+          "valueDescription": "File path"
+        }
+      ]
+    },
+    {
       "description": "Gets the status of the record output.",
       "requestType": "GetRecordStatus",
       "complexity": 2,

@@ -2129,6 +2129,12 @@ Studio mode has been enabled or disabled.
   - [ToggleVirtualCam](#togglevirtualcam)
   - [StartVirtualCam](#startvirtualcam)
   - [StopVirtualCam](#stopvirtualcam)
+  - [GetReplayBufferStatus](#getreplaybufferstatus)
+  - [ToggleReplayBuffer](#togglereplaybuffer)
+  - [StartReplayBuffer](#startreplaybuffer)
+  - [StopReplayBuffer](#stopreplaybuffer)
+  - [SaveReplayBuffer](#savereplaybuffer)
+  - [GetLastReplayBufferReplay](#getlastreplaybufferreplay)
 - [Stream](#stream)
   - [GetStreamStatus](#getstreamstatus)
   - [ToggleStream](#togglestream)
@@ -4039,6 +4045,87 @@ Stops the virtualcam output.
 - Complexity Rating: `1/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
+
+---
+
+### GetReplayBufferStatus
+
+Gets the status of the replay buffer output.
+
+- Complexity Rating: `1/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| outputActive | Boolean | Whether the output is active |
+
+---
+
+### ToggleReplayBuffer
+
+Toggles the state of the replay buffer output.
+
+- Complexity Rating: `1/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| outputActive | Boolean | Whether the output is active |
+
+---
+
+### StartReplayBuffer
+
+Starts the replay buffer output.
+
+- Complexity Rating: `1/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### StopReplayBuffer
+
+Stops the replay buffer output.
+
+- Complexity Rating: `1/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### SaveReplayBuffer
+
+Saves the contents of the replay buffer output.
+
+- Complexity Rating: `1/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### GetLastReplayBufferReplay
+
+Gets the filename of the last replay buffer save file.
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| savedReplayPath | String | File path |
 
 
 ## Stream
