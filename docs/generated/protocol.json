@@ -4490,6 +4490,28 @@
       ]
     },
     {
+      "description": "A scene item has been selected in the Ui.",
+      "eventType": "SceneItemSelected",
+      "eventSubscription": "SceneItems",
+      "complexity": 2,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "scene items",
+      "dataFields": [
+        {
+          "valueName": "sceneName",
+          "valueType": "String",
+          "valueDescription": "Name of the scene the item is in"
+        },
+        {
+          "valueName": "sceneItemId",
+          "valueType": "Number",
+          "valueDescription": "Numeric ID of the scene item"
+        }
+      ]
+    },
+    {
       "description": "The transform/crop of a scene item has changed.",
       "eventType": "SceneItemTransformChanged",
       "eventSubscription": "SceneItemTransformChanged",

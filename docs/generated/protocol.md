@@ -1274,6 +1274,7 @@ Subscription value to receive the `SceneItemTransformChanged` high-volume event.
   - [SceneItemListReindexed](#sceneitemlistreindexed)
   - [SceneItemEnableStateChanged](#sceneitemenablestatechanged)
   - [SceneItemLockStateChanged](#sceneitemlockstatechanged)
+  - [SceneItemSelected](#sceneitemselected)
   - [SceneItemTransformChanged](#sceneitemtransformchanged)
 - [Outputs](#outputs)
   - [StreamStateChanged](#streamstatechanged)
@@ -1854,6 +1855,24 @@ A scene item's lock state has changed.
 | sceneName | String | Name of the scene the item is in |
 | sceneItemId | Number | Numeric ID of the scene item |
 | sceneItemEnabled | Boolean | Whether the scene item is locked |
+
+---
+
+### SceneItemSelected
+
+A scene item has been selected in the Ui.
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Data Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| sceneName | String | Name of the scene the item is in |
+| sceneItemId | Number | Numeric ID of the scene item |
 
 ---
 
