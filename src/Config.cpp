@@ -47,7 +47,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 Config::Config() :
 	ServerEnabled(true),
-	ServerPort(4440),
+	ServerPort(4444),
 	LockToIPv4(false),
 	DebugEnabled(false),
 	AlertsEnabled(true),
