@@ -41,7 +41,7 @@ Config::Config() :
 	PasswordOverridden(false),
 	FirstLoad(true),
 	ServerEnabled(true),
-	ServerPort(4444),
+	ServerPort(4455),
 	DebugEnabled(false),
 	AlertsEnabled(false),
 	AuthRequired(true),
