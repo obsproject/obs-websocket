@@ -26,7 +26,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <QtWidgets/QInputDialog>
 #include <QtWidgets/QMessageBox>
 
-#define SECTION_NAME "WebsocketAPICompat"
+#define SECTION_NAME "WebsocketAPI"
 #define PARAM_ENABLE "ServerEnabled"
 #define PARAM_PORT "ServerPort"
 #define PARAM_LOCKTOIPV4 "LockToIPv4"
