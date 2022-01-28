@@ -157,6 +157,7 @@ void EventHandler::ConnectSourceSignals(obs_source_t *source) // Applies to inpu
 		signal_handler_connect(sh, "reorder", HandleSceneItemListReindexed, this);
 		signal_handler_connect(sh, "item_visible", HandleSceneItemEnableStateChanged, this);
 		signal_handler_connect(sh, "item_locked", HandleSceneItemLockStateChanged, this);
+		signal_handler_connect(sh, "item_select", HandleSceneItemSelected, this);
 		signal_handler_connect(sh, "item_transform", HandleSceneItemTransformChanged, this);
 	}
 }
@@ -194,6 +195,7 @@ void EventHandler::DisconnectSourceSignals(obs_source_t *source)
 	signal_handler_disconnect(sh, "reorder", HandleSceneItemListReindexed, this);
 	signal_handler_disconnect(sh, "item_visible", HandleSceneItemEnableStateChanged, this);
 	signal_handler_disconnect(sh, "item_locked", HandleSceneItemLockStateChanged, this);
+	signal_handler_disconnect(sh, "item_select", HandleSceneItemSelected, this);
 	signal_handler_disconnect(sh, "item_transform", HandleSceneItemTransformChanged, this);
 }
 

@@ -125,6 +125,7 @@ class EventHandler
 		static void HandleSceneItemListReindexed(void *param, calldata_t *data); // Direct callback
 		static void HandleSceneItemEnableStateChanged(void *param, calldata_t *data); // Direct callback
 		static void HandleSceneItemLockStateChanged(void *param, calldata_t *data); // Direct callback
+		static void HandleSceneItemSelected(void *param, calldata_t *data); // Direct callback
 		static void HandleSceneItemTransformChanged(void *param, calldata_t *data); // Direct callback
 
 		// Media Inputs

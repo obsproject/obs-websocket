@@ -192,6 +192,38 @@ void EventHandler::HandleSceneItemLockStateChanged(void *param, calldata_t *data
 }
 
 /**
+ * A scene item has been selected in the Ui.
+ *
+ * @dataField sceneName        | String  | Name of the scene the item is in
+ * @dataField sceneItemId      | Number  | Numeric ID of the scene item
+ *
+ * @eventType SceneItemSelected
+ * @eventSubscription SceneItems
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api events
+ * @category scene items
+ */
+void EventHandler::HandleSceneItemSelected(void *param, calldata_t *data)
+{
+	auto eventHandler = static_cast<EventHandler*>(param);
+
+	obs_scene_t *scene = GetCalldataPointer<obs_scene_t>(data, "scene");
+	if (!scene)
+		return;
+
+	obs_sceneitem_t *sceneItem = GetCalldataPointer<obs_sceneitem_t>(data, "item");
+	if (!sceneItem)
+		return;
+
+	json eventData;
+	eventData["sceneName"] = obs_source_get_name(obs_scene_get_source(scene));
+	eventData["sceneItemId"] = obs_sceneitem_get_id(sceneItem);
+	eventHandler->BroadcastEvent(EventSubscription::SceneItems, "SceneItemSelected", eventData);
+}
+
+/**
  * The transform/crop of a scene item has changed.
  *
  * @dataField sceneName          | String | The name of the scene the item is in
