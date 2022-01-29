@@ -112,6 +112,10 @@ class EventHandler
 		static void HandleInputAudioTracksChanged(void *param, calldata_t *data); // Direct callback
 		static void HandleInputAudioMonitorTypeChanged(void *param, calldata_t *data); // Direct callback
 
+		// Transitions
+		void HandleCurrentSceneTransitionChanged();
+		void HandleCurrentSceneTransitionDurationChanged();
+
 		// Outputs
 		void HandleStreamStateChanged(ObsOutputState state);
 		void HandleRecordStateChanged(ObsOutputState state);

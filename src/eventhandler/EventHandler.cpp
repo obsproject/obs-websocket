@@ -300,10 +300,12 @@ void EventHandler::OnFrontendEvent(enum obs_frontend_event event, void *private_
 
 		// Transitions
 		case OBS_FRONTEND_EVENT_TRANSITION_CHANGED:
+			eventHandler->HandleCurrentSceneTransitionChanged();
 			break;
 		case OBS_FRONTEND_EVENT_TRANSITION_LIST_CHANGED:
 			break;
 		case OBS_FRONTEND_EVENT_TRANSITION_DURATION_CHANGED:
+			eventHandler->HandleCurrentSceneTransitionDurationChanged();
 			break;
 
 		// Outputs
