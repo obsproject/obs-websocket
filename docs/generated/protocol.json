@@ -4656,6 +4656,40 @@
       ]
     },
     {
+      "description": "The current scene transition has changed.",
+      "eventType": "CurrentSceneTransitionChanged",
+      "eventSubscription": "Transitions",
+      "complexity": 3,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "transitions",
+      "dataFields": [
+        {
+          "valueName": "transitionName",
+          "valueType": "String",
+          "valueDescription": "Name of the new transition"
+        }
+      ]
+    },
+    {
+      "description": "The current scene transition duration has changed.",
+      "eventType": "CurrentSceneTransitionDurationChanged",
+      "eventSubscription": "Transitions",
+      "complexity": 2,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "transitions",
+      "dataFields": [
+        {
+          "valueName": "transitionDuration",
+          "valueType": "Number",
+          "valueDescription": "Transition duration in milliseconds"
+        }
+      ]
+    },
+    {
       "description": "Studio mode has been enabled or disabled.",
       "eventType": "StudioModeStateChanged",
       "eventSubscription": "Ui",

@@ -1268,6 +1268,9 @@ Subscription value to receive the `SceneItemTransformChanged` high-volume event.
   - [InputAudioTracksChanged](#inputaudiotrackschanged)
   - [InputAudioMonitorTypeChanged](#inputaudiomonitortypechanged)
   - [InputVolumeMeters](#inputvolumemeters)
+- [Transitions](#transitions)
+  - [CurrentSceneTransitionChanged](#currentscenetransitionchanged)
+  - [CurrentSceneTransitionDurationChanged](#currentscenetransitiondurationchanged)
 - [Scene Items](#scene-items)
   - [SceneItemCreated](#sceneitemcreated)
   - [SceneItemRemoved](#sceneitemremoved)
@@ -1759,6 +1762,39 @@ A high-volume event providing volume levels of all active inputs every 50 millis
 | Name | Type  | Description |
 | ---- | :---: | ----------- |
 | inputs | Array&lt;Object&gt; | Array of active inputs with their associated volume levels |
+## Transitions
+
+### CurrentSceneTransitionChanged
+
+The current scene transition has changed.
+
+- Complexity Rating: `3/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Data Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| transitionName | String | Name of the new transition |
+
+---
+
+### CurrentSceneTransitionDurationChanged
+
+The current scene transition duration has changed.
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Data Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| transitionDuration | Number | Transition duration in milliseconds |
 ## Scene Items
 
 ### SceneItemCreated
@@ -2116,7 +2152,7 @@ Studio mode has been enabled or disabled.
   - [SetInputAudioTracks](#setinputaudiotracks)
   - [GetInputPropertiesListPropertyItems](#getinputpropertieslistpropertyitems)
   - [PressInputPropertiesButton](#pressinputpropertiesbutton)
-- [Transitions](#transitions)
+- [Transitions](#transitions-1)
   - [GetTransitionKindList](#gettransitionkindlist)
   - [GetSceneTransitionList](#getscenetransitionlist)
   - [GetCurrentSceneTransition](#getcurrentscenetransition)
