@@ -376,6 +376,7 @@ jobs:
         with:
           p12-file-base64: ${{ secrets.MACOS_INSTALLER_CERT }}
           p12-password: ${{ secrets.MACOS_INSTALLER_CERT_PASSWORD }}
+          create-keychain: false
       - name: 'Get OBS Studio Git Info'
         shell: bash
         working-directory: ${{ github.workspace }}/obs-studio
