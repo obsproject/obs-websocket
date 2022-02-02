@@ -233,7 +233,7 @@ void WebSocketServer::ProcessMessage(SessionPtr session, WebSocketServer::Proces
 					return;
 				}
 
-				uint8_t requestedExecutionType = payloadData["executionType"];
+				int8_t requestedExecutionType = payloadData["executionType"];
 				if (!RequestBatchExecutionType::IsValid(requestedExecutionType) || requestedExecutionType == RequestBatchExecutionType::None) {
 					ret.closeCode = WebSocketCloseCode::InvalidDataFieldValue;
 					ret.closeReason = "Your `executionType` has an invalid value.";
