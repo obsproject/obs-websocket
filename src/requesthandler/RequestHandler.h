@@ -161,6 +161,7 @@ class RequestHandler {
 		RequestResult ToggleStream(const Request&);
 		RequestResult StartStream(const Request&);
 		RequestResult StopStream(const Request&);
+		RequestResult SendStreamCaption(const Request&);
 
 		// Record
 		RequestResult GetRecordStatus(const Request&);

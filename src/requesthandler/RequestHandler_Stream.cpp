@@ -122,3 +122,35 @@ RequestResult RequestHandler::StopStream(const Request&)
 
 	return RequestResult::Success();
 }
+
+/**
+ * Sends CEA-608 caption text over the stream output.
+ *
+ * @requestField captionText | String | Caption text
+ *
+ * @requestType SendStreamCaption
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @category stream
+ * @api requests
+ */
+RequestResult RequestHandler::SendStreamCaption(const Request& request)
+{
+	RequestStatus::RequestStatus statusCode;
+	std::string comment;
+	if (!request.ValidateString("captionText", statusCode, comment, true))
+		return RequestResult::Error(statusCode, comment);
+
+	if (!obs_frontend_streaming_active())
+		return RequestResult::Error(RequestStatus::OutputNotRunning);
+
+	std::string captionText = request.RequestData["captionText"];
+
+	OBSOutputAutoRelease output = obs_frontend_get_streaming_output();
+
+	// 0.0 means no delay until the next caption can be sent
+	obs_output_output_caption_text2(output, captionText.c_str(), 0.0);
+
+	return RequestResult::Success();
+}
