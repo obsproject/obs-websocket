@@ -408,6 +408,8 @@ RequestResult RequestHandler::SetProfileParameter(const Request& request)
 		return RequestResult::Error(RequestStatus::InvalidRequestFieldType, "The field `parameterValue` must be a string.");
 	}
 
+	config_save(profile);
+
 	return RequestResult::Success();
 }
 
