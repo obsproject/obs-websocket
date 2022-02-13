@@ -1890,7 +1890,7 @@ A scene item's lock state has changed.
 | ---- | :---: | ----------- |
 | sceneName | String | Name of the scene the item is in |
 | sceneItemId | Number | Numeric ID of the scene item |
-| sceneItemEnabled | Boolean | Whether the scene item is locked |
+| sceneItemLocked | Boolean | Whether the scene item is locked |
 
 ---
 

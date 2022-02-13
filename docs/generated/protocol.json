@@ -4483,7 +4483,7 @@
           "valueDescription": "Numeric ID of the scene item"
         },
         {
-          "valueName": "sceneItemEnabled",
+          "valueName": "sceneItemLocked",
           "valueType": "Boolean",
           "valueDescription": "Whether the scene item is locked"
         }
