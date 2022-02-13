@@ -2195,6 +2195,7 @@ Studio mode has been enabled or disabled.
   - [ToggleStream](#togglestream)
   - [StartStream](#startstream)
   - [StopStream](#stopstream)
+  - [SendStreamCaption](#sendstreamcaption)
 - [Record](#record)
   - [GetRecordStatus](#getrecordstatus)
   - [ToggleRecord](#togglerecord)
@@ -4242,6 +4243,23 @@ Stops the stream output.
 - Complexity Rating: `1/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
+
+---
+
+### SendStreamCaption
+
+Sends CEA-608 caption text over the stream output.
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| captionText | String | Caption text | None | N/A |
 
 
 ## Record

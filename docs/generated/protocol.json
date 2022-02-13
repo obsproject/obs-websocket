@@ -3543,6 +3543,26 @@
       "responseFields": []
     },
     {
+      "description": "Sends CEA-608 caption text over the stream output.",
+      "requestType": "SendStreamCaption",
+      "complexity": 2,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "stream",
+      "requestFields": [
+        {
+          "valueName": "captionText",
+          "valueType": "String",
+          "valueDescription": "Caption text",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        }
+      ],
+      "responseFields": []
+    },
+    {
       "description": "Gets an array of all available transition kinds.\n\nSimilar to `GetInputKindList`",
       "requestType": "GetTransitionKindList",
       "complexity": 2,
