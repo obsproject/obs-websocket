@@ -371,12 +371,15 @@ jobs:
         with:
           p12-file-base64: ${{ secrets.MACOS_SIGNING_CERT }}
           p12-password: ${{ secrets.MACOS_SIGNING_CERT_PASSWORD }}
+          create-keychain: true
+          keychain-password: ${{ secrets.MACOS_TEMP_CI_KEYCHAIN_PASSWORD }}
       - name: 'Install Prerequisite: Installer Signing Certificate'
         uses: apple-actions/import-codesign-certs@v1
         with:
           p12-file-base64: ${{ secrets.MACOS_INSTALLER_CERT }}
           p12-password: ${{ secrets.MACOS_INSTALLER_CERT_PASSWORD }}
           create-keychain: false
+          keychain-password: ${{ secrets.MACOS_TEMP_CI_KEYCHAIN_PASSWORD }}
       - name: 'Get OBS Studio Git Info'
         shell: bash
         working-directory: ${{ github.workspace }}/obs-studio
