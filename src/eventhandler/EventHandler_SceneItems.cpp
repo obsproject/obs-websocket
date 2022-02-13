@@ -158,9 +158,9 @@ void EventHandler::HandleSceneItemEnableStateChanged(void *param, calldata_t *da
 /**
  * A scene item's lock state has changed.
  *
- * @dataField sceneName        | String  | Name of the scene the item is in
- * @dataField sceneItemId      | Number  | Numeric ID of the scene item
- * @dataField sceneItemEnabled | Boolean | Whether the scene item is locked
+ * @dataField sceneName       | String  | Name of the scene the item is in
+ * @dataField sceneItemId     | Number  | Numeric ID of the scene item
+ * @dataField sceneItemLocked | Boolean | Whether the scene item is locked
  *
  * @eventType SceneItemLockStateChanged
  * @eventSubscription SceneItems
