@@ -69,6 +69,8 @@ const std::unordered_map<std::string, RequestMethodHandler> RequestHandler::_han
 	{"CreateScene", &RequestHandler::CreateScene},
 	{"RemoveScene", &RequestHandler::RemoveScene},
 	{"SetSceneName", &RequestHandler::SetSceneName},
+	{"GetSceneSceneTransitionOverride", &RequestHandler::GetSceneSceneTransitionOverride},
+	{"SetSceneSceneTransitionOverride", &RequestHandler::SetSceneSceneTransitionOverride},
 
 	// Inputs
 	{"GetInputList", &RequestHandler::GetInputList},

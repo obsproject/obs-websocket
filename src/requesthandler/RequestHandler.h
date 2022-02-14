@@ -87,6 +87,8 @@ class RequestHandler {
 		RequestResult CreateScene(const Request&);
 		RequestResult RemoveScene(const Request&);
 		RequestResult SetSceneName(const Request&);
+		RequestResult GetSceneSceneTransitionOverride(const Request&);
+		RequestResult SetSceneSceneTransitionOverride(const Request&);
 
 		// Inputs
 		RequestResult GetInputList(const Request&);

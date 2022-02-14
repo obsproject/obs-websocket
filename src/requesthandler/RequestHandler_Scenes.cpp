@@ -273,3 +273,105 @@ RequestResult RequestHandler::SetSceneName(const Request& request)
 
 	return RequestResult::Success();
 }
+
+/**
+ * Gets the scene transition overridden for a scene.
+ *
+ * @requestField sceneName | String | Name of the scene
+ *
+ * @responseField transitionName     | String | Name of the overridden scene transition, else `null`
+ * @responseField transitionDuration | Number | Duration of the overridden scene transition, else `null`
+ *
+ * @requestType GetSceneSceneTransitionOverride
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api requests
+ * @category scenes
+ */
+RequestResult RequestHandler::GetSceneSceneTransitionOverride(const Request& request)
+{
+	RequestStatus::RequestStatus statusCode;
+	std::string comment;
+	OBSSourceAutoRelease scene = request.ValidateScene("sceneName", statusCode, comment);
+	if (!scene)
+		return RequestResult::Error(statusCode, comment);
+
+	OBSDataAutoRelease privateSettings = obs_source_get_private_settings(scene);
+
+	json responseData;
+	const char *transitionName = obs_data_get_string(privateSettings, "transition");
+	if (transitionName && strlen(transitionName))
+		responseData["transitionName"] = transitionName;
+	else
+		responseData["transitionName"] = nullptr;
+
+	if (obs_data_has_user_value(privateSettings, "transition_duration"))
+		responseData["transitionDuration"] = obs_data_get_int(privateSettings, "transition_duration");
+	else
+		responseData["transitionDuration"] = nullptr;
+
+	return RequestResult::Success(responseData);
+}
+
+/**
+ * Gets the scene transition overridden for a scene.
+ *
+ * @requestField sceneName           | String | Name of the scene
+ * @requestField ?transitionName     | String | Name of the scene transition to use as override. Specify `null` to remove | Unchanged
+ * @requestField ?transitionDuration | Number | Duration to use for any overridden transition. Specify `null` to remove | >= 50, <= 20000 | Unchanged
+ *
+ * @requestType SetSceneSceneTransitionOverride
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api requests
+ * @category scenes
+ */
+RequestResult RequestHandler::SetSceneSceneTransitionOverride(const Request& request)
+{
+	RequestStatus::RequestStatus statusCode;
+	std::string comment;
+	OBSSourceAutoRelease scene = request.ValidateScene("sceneName", statusCode, comment);
+	if (!scene)
+		return RequestResult::Error(statusCode, comment);
+
+	OBSDataAutoRelease privateSettings = obs_source_get_private_settings(scene);
+
+	bool hasName = request.RequestData.contains("transitionName");
+	if (hasName && !request.RequestData["transitionName"].is_null()) {
+		if (!request.ValidateOptionalString("transitionName", statusCode, comment))
+			return RequestResult::Error(statusCode, comment);
+		OBSSourceAutoRelease transition = Utils::Obs::SearchHelper::GetSceneTransitionByName(request.RequestData["transitionName"]);
+		if (!transition)
+			return RequestResult::Error(RequestStatus::ResourceNotFound, "No scene transition was found by that name.");
+	}
+
+	bool hasDuration = request.RequestData.contains("transitionDuration");
+	if (hasDuration && !request.RequestData["transitionDuration"].is_null()) {
+		if (!request.ValidateOptionalNumber("transitionDuration", statusCode, comment, 50, 20000))
+			return RequestResult::Error(statusCode, comment);
+	}
+
+	if (!hasName && !hasDuration)
+		return RequestResult::Error(RequestStatus::MissingRequestField, "Your request data must include either `transitionName` or `transitionDuration`.");
+
+	if (hasName) {
+		if (request.RequestData["transitionName"].is_null()) {
+			obs_data_erase(privateSettings, "transition");
+		} else {
+			std::string transitionName = request.RequestData["transitionName"];
+			obs_data_set_string(privateSettings, "transition", transitionName.c_str());
+		}
+	}
+
+	if (hasDuration) {
+		if (request.RequestData["transitionDuration"].is_null()) {
+			obs_data_erase(privateSettings, "transition_duration");
+		} else {
+			obs_data_set_int(privateSettings, "transition_duration", request.RequestData["transitionDuration"]);
+		}
+	}
+
+	return RequestResult::Success();
+}
