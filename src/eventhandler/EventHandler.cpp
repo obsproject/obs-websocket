@@ -215,7 +215,7 @@ void EventHandler::ConnectFilterSignals(obs_source_t *filter)
     signal_handler_t* sh = obs_source_get_signal_handler(filter);
 
     signal_handler_connect(sh, "enable", HandleSourceFilterEnableStateChanged, this);
-    signal_handler_connect(sh, "rename", HandleFilterNameChanged, this);
+    signal_handler_connect(sh, "rename", HandleSourceFilterNameChanged, this);
 }
 
 void EventHandler::DisconnectFilterSignals(obs_source_t *filter)
@@ -226,7 +226,7 @@ void EventHandler::DisconnectFilterSignals(obs_source_t *filter)
     signal_handler_t* sh = obs_source_get_signal_handler(filter);
 
     signal_handler_disconnect(sh, "enable", HandleSourceFilterEnableStateChanged, this);
-    signal_handler_disconnect(sh, "rename", HandleFilterNameChanged, this);
+    signal_handler_disconnect(sh, "rename", HandleSourceFilterNameChanged, this);
 }
 
 void EventHandler::OnFrontendEvent(enum obs_frontend_event event, void *private_data)

@@ -19,7 +19,6 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include "EventHandler.h"
 
-// TODO: This should probably be in FilterCreated, but how to implement that is currently unknown
 /**
  * A filter has been added to a source.
  *
@@ -162,13 +161,13 @@ void EventHandler::HandleSourceFilterEnableStateChanged(void *param, calldata_t 
 }
 
 /**
- * The name of a filter has changed.
+ * The name of a source filter has changed.
  *
  * @dataField sourceName    | String | The source the filter is on
  * @dataField oldFilterName | String | Old name of the filter
  * @dataField filterName    | String | New name of the filter
  *
- * @eventType FilterNameChanged
+ * @eventType SourceFilterNameChanged
  * @eventSubscription Filters
  * @complexity 2
  * @rpcVersion -1
@@ -176,7 +175,7 @@ void EventHandler::HandleSourceFilterEnableStateChanged(void *param, calldata_t 
  * @api events
  * @category filters
  */
-void EventHandler::HandleFilterNameChanged(void *param, calldata_t *data)
+void EventHandler::HandleSourceFilterNameChanged(void *param, calldata_t *data)
 {
     auto eventHandler = static_cast<EventHandler*>(param);
 
@@ -188,5 +187,5 @@ void EventHandler::HandleFilterNameChanged(void *param, calldata_t *data)
     eventData["sourceName"] = obs_source_get_name(obs_filter_get_parent(filter));
     eventData["oldFilterName"] = calldata_string(data, "prev_name");
     eventData["filterName"] = calldata_string(data, "new_name");
-    eventHandler->BroadcastEvent(EventSubscription::Filters, "FilterNameChanged", eventData);
+    eventHandler->BroadcastEvent(EventSubscription::Filters, "SourceFilterNameChanged", eventData);
 }
