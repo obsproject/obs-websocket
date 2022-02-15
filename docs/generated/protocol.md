@@ -2127,6 +2127,8 @@ Studio mode has been enabled or disabled.
   - [CreateScene](#createscene)
   - [RemoveScene](#removescene)
   - [SetSceneName](#setscenename)
+  - [GetSceneSceneTransitionOverride](#getscenescenetransitionoverride)
+  - [SetSceneSceneTransitionOverride](#setscenescenetransitionoverride)
 - [Inputs](#inputs-1)
   - [GetInputList](#getinputlist)
   - [GetInputKindList](#getinputkindlist)
@@ -2159,7 +2161,9 @@ Studio mode has been enabled or disabled.
   - [SetCurrentSceneTransition](#setcurrentscenetransition)
   - [SetCurrentSceneTransitionDuration](#setcurrentscenetransitionduration)
   - [SetCurrentSceneTransitionSettings](#setcurrentscenetransitionsettings)
+  - [GetCurrentSceneTransitionCursor](#getcurrentscenetransitioncursor)
   - [TriggerStudioModeTransition](#triggerstudiomodetransition)
+  - [SetTBarPosition](#settbarposition)
 - [Filters](#filters)
   - [GetSourceFilter](#getsourcefilter)
 - [Scene Items](#scene-items-1)
@@ -2204,7 +2208,6 @@ Studio mode has been enabled or disabled.
   - [ToggleRecordPause](#togglerecordpause)
   - [PauseRecord](#pauserecord)
   - [ResumeRecord](#resumerecord)
-  - [GetRecordDirectory](#getrecorddirectory)
 - [Media Inputs](#media-inputs-1)
   - [GetMediaInputStatus](#getmediainputstatus)
   - [SetMediaInputCursor](#setmediainputcursor)
@@ -2947,6 +2950,50 @@ Sets the name of a scene (rename).
 | sceneName | String | Name of the scene to be renamed | None | N/A |
 | newSceneName | String | New name for the scene | None | N/A |
 
+---
+
+### GetSceneSceneTransitionOverride
+
+Gets the scene transition overridden for a scene.
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| sceneName | String | Name of the scene | None | N/A |
+
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| transitionName | String | Name of the overridden scene transition, else `null` |
+| transitionDuration | Number | Duration of the overridden scene transition, else `null` |
+
+---
+
+### SetSceneSceneTransitionOverride
+
+Gets the scene transition overridden for a scene.
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| sceneName | String | Name of the scene | None | N/A |
+| ?transitionName | String | Name of the scene transition to use as override. Specify `null` to remove | None | Unchanged |
+| ?transitionDuration | Number | Duration to use for any overridden transition. Specify `null` to remove | >= 50, <= 20000 | Unchanged |
+
 
 ## Inputs
 
@@ -3602,6 +3649,25 @@ Sets the settings of the current scene transition.
 
 ---
 
+### GetCurrentSceneTransitionCursor
+
+Gets the cursor position of the current scene transition.
+
+Note: `transitionCursor` will return 1.0 when the transition is inactive.
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| transitionCursor | Number | Cursor position, between 0.0 and 1.0 |
+
+---
+
 ### TriggerStudioModeTransition
 
 Triggers the current scene transition. Same functionality as the `Transition` button in studio mode.
@@ -3609,6 +3675,26 @@ Triggers the current scene transition. Same functionality as the `Transition` bu
 - Complexity Rating: `1/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
+
+---
+
+### SetTBarPosition
+
+Sets the position of the TBar.
+
+**Very important note**: This will be deprecated and replaced in a future version of obs-websocket.
+
+- Complexity Rating: `3/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| position | Number | New position | >= 0.0, <= 1.0 | N/A |
+| ?release | Boolean | Whether to release the TBar. Only set `false` if you know that you will be sending another position update | None | `true` |
 
 
 ## Filters
@@ -4342,23 +4428,6 @@ Resumes the record output.
 - Complexity Rating: `1/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
-
----
-
-### GetRecordDirectory
-
-Gets the current directory that the record output is set to.
-
-- Complexity Rating: `1/5`
-- Latest Supported RPC Version: `1`
-- Added in v5.0.0
-
-
-**Response Fields:**
-
-| Name | Type  | Description |
-| ---- | :---: | ----------- |
-| recordDirectory | String | Output directory |
 
 
 ## Media Inputs

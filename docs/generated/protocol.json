@@ -1130,6 +1130,23 @@
       "responseFields": []
     },
     {
+      "description": "Gets the current directory that the record output is set to.",
+      "requestType": "GetRecordDirectory",
+      "complexity": 1,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "rconfig",
+      "requestFields": [],
+      "responseFields": [
+        {
+          "valueName": "recordDirectory",
+          "valueType": "String",
+          "valueDescription": "Output directory"
+        }
+      ]
+    },
+    {
       "description": "Gets the info for a specific source filter.",
       "requestType": "GetSourceFilter",
       "complexity": 2,
@@ -2551,23 +2568,6 @@
       "responseFields": []
     },
     {
-      "description": "Gets the current directory that the record output is set to.",
-      "requestType": "GetRecordDirectory",
-      "complexity": 1,
-      "rpcVersion": "1",
-      "deprecated": false,
-      "initialVersion": "5.0.0",
-      "category": "record",
-      "requestFields": [],
-      "responseFields": [
-        {
-          "valueName": "recordDirectory",
-          "valueType": "String",
-          "valueDescription": "Output directory"
-        }
-      ]
-    },
-    {
       "description": "Gets a list of all scene items in a scene.\n\nScenes only",
       "requestType": "GetSceneItemList",
       "complexity": 3,
@@ -3302,6 +3302,73 @@
       "responseFields": []
     },
     {
+      "description": "Gets the scene transition overridden for a scene.",
+      "requestType": "GetSceneSceneTransitionOverride",
+      "complexity": 2,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "scenes",
+      "requestFields": [
+        {
+          "valueName": "sceneName",
+          "valueType": "String",
+          "valueDescription": "Name of the scene",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        }
+      ],
+      "responseFields": [
+        {
+          "valueName": "transitionName",
+          "valueType": "String",
+          "valueDescription": "Name of the overridden scene transition, else `null`"
+        },
+        {
+          "valueName": "transitionDuration",
+          "valueType": "Number",
+          "valueDescription": "Duration of the overridden scene transition, else `null`"
+        }
+      ]
+    },
+    {
+      "description": "Gets the scene transition overridden for a scene.",
+      "requestType": "SetSceneSceneTransitionOverride",
+      "complexity": 2,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "scenes",
+      "requestFields": [
+        {
+          "valueName": "sceneName",
+          "valueType": "String",
+          "valueDescription": "Name of the scene",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        },
+        {
+          "valueName": "transitionName",
+          "valueType": "String",
+          "valueDescription": "Name of the scene transition to use as override. Specify `null` to remove",
+          "valueRestrictions": null,
+          "valueOptional": true,
+          "valueOptionalBehavior": "Unchanged"
+        },
+        {
+          "valueName": "transitionDuration",
+          "valueType": "Number",
+          "valueDescription": "Duration to use for any overridden transition. Specify `null` to remove",
+          "valueRestrictions": ">= 50, <= 20000",
+          "valueOptional": true,
+          "valueOptionalBehavior": "Unchanged"
+        }
+      ],
+      "responseFields": []
+    },
+    {
       "description": "Gets the active and show state of a source.\n\n**Compatible with inputs and scenes.**",
       "requestType": "GetSourceActive",
       "complexity": 2,
@@ -3717,6 +3784,23 @@
       "responseFields": []
     },
     {
+      "description": "Gets the cursor position of the current scene transition.\n\nNote: `transitionCursor` will return 1.0 when the transition is inactive.",
+      "requestType": "GetCurrentSceneTransitionCursor",
+      "complexity": 2,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "transitions",
+      "requestFields": [],
+      "responseFields": [
+        {
+          "valueName": "transitionCursor",
+          "valueType": "Number",
+          "valueDescription": "Cursor position, between 0.0 and 1.0"
+        }
+      ]
+    },
+    {
       "description": "Triggers the current scene transition. Same functionality as the `Transition` button in studio mode.",
       "requestType": "TriggerStudioModeTransition",
       "complexity": 1,
@@ -3725,6 +3809,34 @@
       "initialVersion": "5.0.0",
       "category": "transitions",
       "requestFields": [],
+      "responseFields": []
+    },
+    {
+      "description": "Sets the position of the TBar.\n\n**Very important note**: This will be deprecated and replaced in a future version of obs-websocket.",
+      "requestType": "SetTBarPosition",
+      "complexity": 3,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "transitions",
+      "requestFields": [
+        {
+          "valueName": "position",
+          "valueType": "Number",
+          "valueDescription": "New position",
+          "valueRestrictions": ">= 0.0, <= 1.0",
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        },
+        {
+          "valueName": "release",
+          "valueType": "Boolean",
+          "valueDescription": "Whether to release the TBar. Only set `false` if you know that you will be sending another position update",
+          "valueRestrictions": null,
+          "valueOptional": true,
+          "valueOptionalBehavior": "`true`"
+        }
+      ],
       "responseFields": []
     },
     {
