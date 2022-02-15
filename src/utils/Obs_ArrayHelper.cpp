@@ -277,6 +277,18 @@ std::vector<json> Utils::Obs::ArrayHelper::GetSceneTransitionList()
 	return ret;
 }
 
+std::vector<std::string> Utils::Obs::ArrayHelper::GetFilterKindList()
+{
+    std::vector<std::string> ret;
+
+    size_t idx = 0;
+    const char *kind;
+    while(obs_enum_filter_types(idx++, &kind))
+        ret.push_back(kind);
+
+    return ret;
+}
+
 struct EnumSourceFilterInfo {
     size_t index;
     std::vector<json> filters;
@@ -303,16 +315,4 @@ std::vector<json> Utils::Obs::ArrayHelper::GetSourceFilterList(obs_source_t *sou
     obs_source_enum_filters(source, filterEnumProc, &filterInfo);
 
     return filterInfo.filters;
-}
-
-std::vector<std::string> Utils::Obs::ArrayHelper::GetFilterKindList()
-{
-    std::vector<std::string> ret;
-
-    size_t idx = 0;
-    const char *kind;
-    while(obs_enum_filter_types(idx++, &kind))
-        ret.push_back(kind);
-
-    return ret;
 }

@@ -507,9 +507,6 @@ void EventHandler::SourceRenamedMultiHandler(void *param, calldata_t *data)
 		case OBS_SOURCE_TYPE_INPUT:
 			eventHandler->HandleInputNameChanged(source, oldSourceName, sourceName);
 			break;
-//	    Never gets called
-//		case OBS_SOURCE_TYPE_FILTER:
-//		    break;
 		case OBS_SOURCE_TYPE_TRANSITION:
 			break;
 		case OBS_SOURCE_TYPE_SCENE:
