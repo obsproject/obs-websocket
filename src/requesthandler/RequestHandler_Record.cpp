@@ -182,23 +182,3 @@ RequestResult RequestHandler::ResumeRecord(const Request&)
 
 	return RequestResult::Success();
 }
-
-/**
- * Gets the current directory that the record output is set to.
- *
- * @responseField recordDirectory | String | Output directory
- *
- * @requestType GetRecordDirectory
- * @complexity 1
- * @rpcVersion -1
- * @initialVersion 5.0.0
- * @api requests
- * @category record
- */
-RequestResult RequestHandler::GetRecordDirectory(const Request&)
-{
-	json responseData;
-	responseData["recordDirectory"] = Utils::Obs::StringHelper::GetCurrentRecordOutputPath();
-
-	return RequestResult::Success(responseData);
-}

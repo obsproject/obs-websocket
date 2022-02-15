@@ -69,6 +69,7 @@ class RequestHandler {
 		RequestResult SetVideoSettings(const Request&);
 		RequestResult GetStreamServiceSettings(const Request&);
 		RequestResult SetStreamServiceSettings(const Request&);
+		RequestResult GetRecordDirectory(const Request&);
 
 		// Sources
 		RequestResult GetSourceActive(const Request&);
@@ -175,7 +176,6 @@ class RequestHandler {
 		RequestResult ToggleRecordPause(const Request&);
 		RequestResult PauseRecord(const Request&);
 		RequestResult ResumeRecord(const Request&);
-		RequestResult GetRecordDirectory(const Request&);
 
 		// Media Inputs
 		RequestResult GetMediaInputStatus(const Request&);

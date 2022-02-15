@@ -51,6 +51,7 @@ const std::unordered_map<std::string, RequestMethodHandler> RequestHandler::_han
 	{"SetVideoSettings", &RequestHandler::SetVideoSettings},
 	{"GetStreamServiceSettings", &RequestHandler::GetStreamServiceSettings},
 	{"SetStreamServiceSettings", &RequestHandler::SetStreamServiceSettings},
+	{"GetRecordDirectory", &RequestHandler::GetRecordDirectory},
 
 	// Sources
 	{"GetSourceActive", &RequestHandler::GetSourceActive},
@@ -157,7 +158,6 @@ const std::unordered_map<std::string, RequestMethodHandler> RequestHandler::_han
 	{"ToggleRecordPause", &RequestHandler::ToggleRecordPause},
 	{"PauseRecord", &RequestHandler::PauseRecord},
 	{"ResumeRecord", &RequestHandler::ResumeRecord},
-	{"GetRecordDirectory", &RequestHandler::GetRecordDirectory},
 
 	// Media Inputs
 	{"GetMediaInputStatus", &RequestHandler::GetMediaInputStatus},
