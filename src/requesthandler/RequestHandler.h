@@ -123,7 +123,9 @@ class RequestHandler {
 		RequestResult SetCurrentSceneTransition(const Request&);
 		RequestResult SetCurrentSceneTransitionDuration(const Request&);
 		RequestResult SetCurrentSceneTransitionSettings(const Request&);
+		RequestResult GetCurrentSceneTransitionCursor(const Request&);
 		RequestResult TriggerStudioModeTransition(const Request&);
+		RequestResult SetTBarPosition(const Request&);
 
 		// Filters
 		RequestResult GetSourceFilter(const Request&);

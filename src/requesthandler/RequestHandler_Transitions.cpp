@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License along
 with this program. If not, see <https://www.gnu.org/licenses/>
 */
 
+#include <math.h>
+
 #include "RequestHandler.h"
 
 /**
@@ -227,6 +229,32 @@ RequestResult RequestHandler::SetCurrentSceneTransitionSettings(const Request& r
 }
 
 /**
+ * Gets the cursor position of the current scene transition.
+ *
+ * Note: `transitionCursor` will return 1.0 when the transition is inactive.
+ *
+ * @responseField transitionCursor | Number | Cursor position, between 0.0 and 1.0
+ *
+ * @requestType GetCurrentSceneTransitionCursor
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api requests
+ * @category transitions
+ */
+RequestResult RequestHandler::GetCurrentSceneTransitionCursor(const Request&)
+{
+	OBSSourceAutoRelease transition = obs_frontend_get_current_transition();
+	if (!transition)
+		return RequestResult::Error(RequestStatus::InvalidResourceState, "OBS does not currently have a scene transition set."); // This should not happen!
+
+	json responseData;
+	responseData["transitionCursor"] = obs_transition_get_time(transition);
+
+	return RequestResult::Success(responseData);
+}
+
+/**
  * Triggers the current scene transition. Same functionality as the `Transition` button in studio mode.
  *
  * @requestType TriggerStudioModeTransition
@@ -244,6 +272,51 @@ RequestResult RequestHandler::TriggerStudioModeTransition(const Request&)
 	OBSSourceAutoRelease previewScene = obs_frontend_get_current_preview_scene();
 
 	obs_frontend_set_current_scene(previewScene);
+
+	return RequestResult::Success();
+}
+
+/**
+ * Sets the position of the TBar.
+ *
+ * **Very important note**: This will be deprecated and replaced in a future version of obs-websocket.
+ *
+ * @requestField position | Number  | New position | >= 0.0, <= 1.0
+ * @requestField ?release | Boolean | Whether to release the TBar. Only set `false` if you know that you will be sending another position update | `true`
+ *
+ * @requestType SetTBarPosition
+ * @complexity 3
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api requests
+ * @category transitions
+ */
+RequestResult RequestHandler::SetTBarPosition(const Request& request)
+{
+	if (!obs_frontend_preview_program_mode_active())
+		return RequestResult::Error(RequestStatus::StudioModeNotActive);
+
+	RequestStatus::RequestStatus statusCode;
+	std::string comment;
+	if (!request.ValidateNumber("position", statusCode, comment, 0.0, 1.0))
+		return RequestResult::Error(statusCode, comment);
+
+	bool release = true;
+	if (request.Contains("release")) {
+		if (!request.ValidateOptionalBoolean("release", statusCode, comment))
+			return RequestResult::Error(statusCode, comment);
+	}
+
+	OBSSourceAutoRelease transition = obs_frontend_get_current_transition();
+	if (!transition)
+		return RequestResult::Error(RequestStatus::InvalidResourceState, "OBS does not currently have a scene transition set."); // This should not happen!
+
+	float position = request.RequestData["position"];
+
+	obs_frontend_set_tbar_position((int)round(position * 1024.0));
+
+	if (release)
+		obs_frontend_release_tbar();
 
 	return RequestResult::Success();
 }

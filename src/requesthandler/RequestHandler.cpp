@@ -105,7 +105,9 @@ const std::unordered_map<std::string, RequestMethodHandler> RequestHandler::_han
 	{"SetCurrentSceneTransition", &RequestHandler::SetCurrentSceneTransition},
 	{"SetCurrentSceneTransitionDuration", &RequestHandler::SetCurrentSceneTransitionDuration},
 	{"SetCurrentSceneTransitionSettings", &RequestHandler::SetCurrentSceneTransitionSettings},
+	{"GetCurrentSceneTransitionCursor", &RequestHandler::GetCurrentSceneTransitionCursor},
 	{"TriggerStudioModeTransition", &RequestHandler::TriggerStudioModeTransition},
+	{"SetTBarPosition", &RequestHandler::SetTBarPosition},
 
 	// Filters
 	{"GetSourceFilter", &RequestHandler::GetSourceFilter},
