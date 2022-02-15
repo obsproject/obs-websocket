@@ -142,7 +142,7 @@ class EventHandler
 
 		// Filters
         static void HandleSourceFilterNameChanged(void *param, calldata_t *data); // Direct callback
-        static void HandleSourceFilterAdded(void *param, calldata_t *data); // Direct callback
+        static void HandleSourceFilterCreated(void *param, calldata_t *data); // Direct callback
         static void HandleSourceFilterRemoved(void *param, calldata_t *data); // Direct callback
         static void HandleSourceFilterListReindexed(void *param, calldata_t *data); // Direct callback
         static void HandleSourceFilterEnableStateChanged(void *param, calldata_t *data); // Direct callback

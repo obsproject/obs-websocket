@@ -29,7 +29,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
  * @dataField filterSettings        | Object | The settings configured to the filter when it was created
  * @dataField defaultFilterSettings | Object | The default settings for the filter
  *
- * @eventType SourceFilterAdded
+ * @eventType SourceFilterCreated
  * @eventSubscription Filters
  * @complexity 2
  * @rpcVersion -1
@@ -37,7 +37,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
  * @api events
  * @category filters
  */
-void EventHandler::HandleSourceFilterAdded(void *param, calldata_t *data)
+void EventHandler::HandleSourceFilterCreated(void *param, calldata_t *data)
 {
     auto eventHandler = static_cast<EventHandler*>(param);
 
@@ -60,7 +60,7 @@ void EventHandler::HandleSourceFilterAdded(void *param, calldata_t *data)
     eventData["filterIndex"] = Utils::Obs::NumberHelper::GetSourceFilterIndex(source, filter);
     eventData["filterSettings"] = Utils::Json::ObsDataToJson(filterSettings);
     eventData["defaultFilterSettings"] = Utils::Json::ObsDataToJson(defaultFilterSettings, true);
-    eventHandler->BroadcastEvent(EventSubscription::Filters, "SourceFilterAdded", eventData);
+    eventHandler->BroadcastEvent(EventSubscription::Filters, "SourceFilterCreated", eventData);
 }
 
 /**

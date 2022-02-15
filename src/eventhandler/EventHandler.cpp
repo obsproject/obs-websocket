@@ -138,7 +138,7 @@ void EventHandler::ConnectSourceSignals(obs_source_t *source) // Applies to inpu
     signal_handler_connect(sh, "audio_sync", HandleInputAudioSyncOffsetChanged, this);
     signal_handler_connect(sh, "audio_mixers", HandleInputAudioTracksChanged, this);
     signal_handler_connect(sh, "audio_monitoring", HandleInputAudioMonitorTypeChanged, this);
-    signal_handler_connect(sh, "filter_add", HandleSourceFilterAdded, this);
+    signal_handler_connect(sh, "filter_add", HandleSourceFilterCreated, this);
     signal_handler_connect(sh, "filter_remove", HandleSourceFilterRemoved, this);
     signal_handler_connect(sh, "reorder_filters", HandleSourceFilterListReindexed, this);
 
@@ -191,7 +191,7 @@ void EventHandler::DisconnectSourceSignals(obs_source_t *source)
 	signal_handler_disconnect(sh, "media_stopped", SourceMediaStopMultiHandler, this);
 	signal_handler_disconnect(sh, "media_next", SourceMediaNextMultiHandler, this);
 	signal_handler_disconnect(sh, "media_previous", SourceMediaPreviousMultiHandler, this);
-    signal_handler_disconnect(sh, "filter_add", HandleSourceFilterAdded, this);
+    signal_handler_disconnect(sh, "filter_add", HandleSourceFilterCreated, this);
     signal_handler_disconnect(sh, "filter_remove", HandleSourceFilterRemoved, this);
     signal_handler_disconnect(sh, "reorder_filters", HandleSourceFilterListReindexed, this);
 
