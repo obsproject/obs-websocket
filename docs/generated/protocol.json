@@ -406,6 +406,14 @@
           "enumValue": 606
         },
         {
+          "description": "The specified filter (obs_source_t-OBS_SOURCE_TYPE_FILTER) had the wrong kind.",
+          "enumIdentifier": "InvalidFilterKind",
+          "rpcVersion": "1",
+          "deprecated": false,
+          "initialVersion": "5.0.0",
+          "enumValue": 607
+        },
+        {
           "description": "Creating the resource failed.",
           "enumIdentifier": "ResourceCreationFailed",
           "rpcVersion": "1",
@@ -1147,6 +1155,130 @@
       ]
     },
     {
+      "description": "Gets an array of all of a source's filters.",
+      "requestType": "GetSourceFilterList",
+      "complexity": 2,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "filters",
+      "requestFields": [
+        {
+          "valueName": "sourceName",
+          "valueType": "String",
+          "valueDescription": "Name of the source",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        }
+      ],
+      "responseFields": [
+        {
+          "valueName": "filters",
+          "valueType": "Array<Object>",
+          "valueDescription": "Array of filters"
+        }
+      ]
+    },
+    {
+      "description": "Creates a new filter, adding it to the specified source.",
+      "requestType": "CreateSourceFilter",
+      "complexity": 3,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "filters",
+      "requestFields": [
+        {
+          "valueName": "sourceName",
+          "valueType": "String",
+          "valueDescription": "Name of the source to add the filter to",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        },
+        {
+          "valueName": "filterName",
+          "valueType": "String",
+          "valueDescription": "Name of the new filter to be created",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        },
+        {
+          "valueName": "filterKind",
+          "valueType": "String",
+          "valueDescription": "The kind of filter to be created",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        },
+        {
+          "valueName": "filterSettings",
+          "valueType": "Object",
+          "valueDescription": "Settings object to initialize the filter with",
+          "valueRestrictions": null,
+          "valueOptional": true,
+          "valueOptionalBehavior": "Default settings used"
+        }
+      ],
+      "responseFields": []
+    },
+    {
+      "description": "Removes a filter from a source.",
+      "requestType": "RemoveSourceFilter",
+      "complexity": 2,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "filters",
+      "requestFields": [
+        {
+          "valueName": "sourceName",
+          "valueType": "String",
+          "valueDescription": "Name of the source the filter is on",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        },
+        {
+          "valueName": "filterName",
+          "valueType": "String",
+          "valueDescription": "Name of the filter to remove",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        }
+      ],
+      "responseFields": []
+    },
+    {
+      "description": "Gets the default settings for a filter kind.",
+      "requestType": "GetSourceFilterDefaultSettings",
+      "complexity": 3,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "filters",
+      "requestFields": [
+        {
+          "valueName": "filterKind",
+          "valueType": "String",
+          "valueDescription": "Filter kind to get the default settings for",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        }
+      ],
+      "responseFields": [
+        {
+          "valueName": "defaultFilterSettings",
+          "valueType": "Object",
+          "valueDescription": "Object of default settings for the filter kind"
+        }
+      ]
+    },
+    {
       "description": "Gets the info for a specific source filter.",
       "requestType": "GetSourceFilter",
       "complexity": 2,
@@ -1194,6 +1326,86 @@
           "valueDescription": "Settings object associated with the filter"
         }
       ]
+    },
+    {
+      "description": "Sets the index position of a filter on a source.",
+      "requestType": "SetSourceFilterIndex",
+      "complexity": 3,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "filters",
+      "requestFields": [
+        {
+          "valueName": "sourceName",
+          "valueType": "String",
+          "valueDescription": "Name of the source the filter is on",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        },
+        {
+          "valueName": "filterName",
+          "valueType": "String",
+          "valueDescription": "Name of the filter",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        },
+        {
+          "valueName": "filterIndex",
+          "valueType": "Number",
+          "valueDescription": "New index position of the filter",
+          "valueRestrictions": ">= 0",
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        }
+      ],
+      "responseFields": []
+    },
+    {
+      "description": "Sets the settings of a source filter.",
+      "requestType": "SetSourceFilterSettings",
+      "complexity": 3,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "filters",
+      "requestFields": [
+        {
+          "valueName": "sourceName",
+          "valueType": "String",
+          "valueDescription": "Name of the source the filter is on",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        },
+        {
+          "valueName": "filterName",
+          "valueType": "String",
+          "valueDescription": "Name of the filter to set the settings of",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        },
+        {
+          "valueName": "filterSettings",
+          "valueType": "Object",
+          "valueDescription": "Object of settings to apply",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        },
+        {
+          "valueName": "overlay",
+          "valueType": "Boolean",
+          "valueDescription": "True == apply the settings on top of existing ones, False == reset the input to its defaults, then apply settings.",
+          "valueRestrictions": null,
+          "valueOptional": true,
+          "valueOptionalBehavior": "true"
+        }
+      ],
+      "responseFields": []
     },
     {
       "description": "Gets data about the current plugin and RPC version.",
@@ -4037,6 +4249,146 @@
           "valueName": "profiles",
           "valueType": "Array<String>",
           "valueDescription": "Updated list of profiles"
+        }
+      ]
+    },
+    {
+      "description": "A filter has been added to a source.",
+      "eventType": "SourceFilterCreated",
+      "eventSubscription": "Filters",
+      "complexity": 2,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "filters",
+      "dataFields": [
+        {
+          "valueName": "sourceName",
+          "valueType": "String",
+          "valueDescription": "Name of the source the filter was added to"
+        },
+        {
+          "valueName": "filterName",
+          "valueType": "String",
+          "valueDescription": "Name of the filter"
+        },
+        {
+          "valueName": "filterKind",
+          "valueType": "String",
+          "valueDescription": "The kind of the filter"
+        },
+        {
+          "valueName": "filterIndex",
+          "valueType": "Number",
+          "valueDescription": "Index position of the filter"
+        },
+        {
+          "valueName": "filterSettings",
+          "valueType": "Object",
+          "valueDescription": "The settings configured to the filter when it was created"
+        },
+        {
+          "valueName": "defaultFilterSettings",
+          "valueType": "Object",
+          "valueDescription": "The default settings for the filter"
+        }
+      ]
+    },
+    {
+      "description": "A filter has been removed from a source.",
+      "eventType": "SourceFilterRemoved",
+      "eventSubscription": "Filters",
+      "complexity": 2,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "filters",
+      "dataFields": [
+        {
+          "valueName": "sourceName",
+          "valueType": "String",
+          "valueDescription": "Name of the source the filter was on"
+        },
+        {
+          "valueName": "filterName",
+          "valueType": "String",
+          "valueDescription": "Name of the filter"
+        }
+      ]
+    },
+    {
+      "description": "A source's filter list has been reindexed.",
+      "eventType": "SourceFilterListReindexed",
+      "eventSubscription": "Filters",
+      "complexity": 3,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "filters",
+      "dataFields": [
+        {
+          "valueName": "sourceName",
+          "valueType": "String",
+          "valueDescription": "Name of the source"
+        },
+        {
+          "valueName": "filters",
+          "valueType": "Array<Object>",
+          "valueDescription": "Array of filter objects"
+        }
+      ]
+    },
+    {
+      "description": "A source filter's enable state has changed.",
+      "eventType": "SourceFilterEnableStateChanged",
+      "eventSubscription": "Filters",
+      "complexity": 3,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "filters",
+      "dataFields": [
+        {
+          "valueName": "sourceName",
+          "valueType": "String",
+          "valueDescription": "Name of the source the filter is on"
+        },
+        {
+          "valueName": "filterName",
+          "valueType": "String",
+          "valueDescription": "Name of the filter"
+        },
+        {
+          "valueName": "filterEnabled",
+          "valueType": "Boolean",
+          "valueDescription": "Whether the filter is enabled"
+        }
+      ]
+    },
+    {
+      "description": "The name of a source filter has changed.",
+      "eventType": "SourceFilterNameChanged",
+      "eventSubscription": "Filters",
+      "complexity": 2,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "filters",
+      "dataFields": [
+        {
+          "valueName": "sourceName",
+          "valueType": "String",
+          "valueDescription": "The source the filter is on"
+        },
+        {
+          "valueName": "oldFilterName",
+          "valueType": "String",
+          "valueDescription": "Old name of the filter"
+        },
+        {
+          "valueName": "filterName",
+          "valueType": "String",
+          "valueDescription": "New name of the filter"
         }
       ]
     },

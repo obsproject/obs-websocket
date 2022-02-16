@@ -443,6 +443,7 @@ These are enumeration declarations, which are referenced throughout obs-websocke
   - [RequestStatus::InvalidResourceState](#requeststatusinvalidresourcestate)
   - [RequestStatus::InvalidInputKind](#requeststatusinvalidinputkind)
   - [RequestStatus::ResourceNotConfigurable](#requeststatusresourcenotconfigurable)
+  - [RequestStatus::InvalidFilterKind](#requeststatusinvalidfilterkind)
   - [RequestStatus::ResourceCreationFailed](#requeststatusresourcecreationfailed)
   - [RequestStatus::ResourceActionFailed](#requeststatusresourceactionfailed)
   - [RequestStatus::RequestProcessingFailed](#requeststatusrequestprocessingfailed)
@@ -1025,6 +1026,16 @@ This is particularly relevant to transitions, where they do not always have chan
 
 ---
 
+### RequestStatus::InvalidFilterKind
+
+The specified filter (obs_source_t-OBS_SOURCE_TYPE_FILTER) had the wrong kind.
+
+- Identifier Value: `607`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
 ### RequestStatus::ResourceCreationFailed
 
 Creating the resource failed.
@@ -1271,6 +1282,12 @@ Subscription value to receive the `SceneItemTransformChanged` high-volume event.
 - [Transitions](#transitions)
   - [CurrentSceneTransitionChanged](#currentscenetransitionchanged)
   - [CurrentSceneTransitionDurationChanged](#currentscenetransitiondurationchanged)
+- [Filters](#filters)
+  - [SourceFilterCreated](#sourcefiltercreated)
+  - [SourceFilterRemoved](#sourcefilterremoved)
+  - [SourceFilterListReindexed](#sourcefilterlistreindexed)
+  - [SourceFilterEnableStateChanged](#sourcefilterenablestatechanged)
+  - [SourceFilterNameChanged](#sourcefilternamechanged)
 - [Scene Items](#scene-items)
   - [SceneItemCreated](#sceneitemcreated)
   - [SceneItemRemoved](#sceneitemremoved)
@@ -1795,6 +1812,101 @@ The current scene transition duration has changed.
 | Name | Type  | Description |
 | ---- | :---: | ----------- |
 | transitionDuration | Number | Transition duration in milliseconds |
+## Filters
+
+### SourceFilterCreated
+
+A filter has been added to a source.
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Data Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| sourceName | String | Name of the source the filter was added to |
+| filterName | String | Name of the filter |
+| filterKind | String | The kind of the filter |
+| filterIndex | Number | Index position of the filter |
+| filterSettings | Object | The settings configured to the filter when it was created |
+| defaultFilterSettings | Object | The default settings for the filter |
+
+---
+
+### SourceFilterRemoved
+
+A filter has been removed from a source.
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Data Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| sourceName | String | Name of the source the filter was on |
+| filterName | String | Name of the filter |
+
+---
+
+### SourceFilterListReindexed
+
+A source's filter list has been reindexed.
+
+- Complexity Rating: `3/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Data Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| sourceName | String | Name of the source |
+| filters | Array&lt;Object&gt; | Array of filter objects |
+
+---
+
+### SourceFilterEnableStateChanged
+
+A source filter's enable state has changed.
+
+- Complexity Rating: `3/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Data Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| sourceName | String | Name of the source the filter is on |
+| filterName | String | Name of the filter |
+| filterEnabled | Boolean | Whether the filter is enabled |
+
+---
+
+### SourceFilterNameChanged
+
+The name of a source filter has changed.
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Data Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| sourceName | String | The source the filter is on |
+| oldFilterName | String | Old name of the filter |
+| filterName | String | New name of the filter |
 ## Scene Items
 
 ### SceneItemCreated
@@ -2164,8 +2276,14 @@ Studio mode has been enabled or disabled.
   - [GetCurrentSceneTransitionCursor](#getcurrentscenetransitioncursor)
   - [TriggerStudioModeTransition](#triggerstudiomodetransition)
   - [SetTBarPosition](#settbarposition)
-- [Filters](#filters)
+- [Filters](#filters-1)
+  - [GetSourceFilterList](#getsourcefilterlist)
+  - [CreateSourceFilter](#createsourcefilter)
+  - [RemoveSourceFilter](#removesourcefilter)
+  - [GetSourceFilterDefaultSettings](#getsourcefilterdefaultsettings)
   - [GetSourceFilter](#getsourcefilter)
+  - [SetSourceFilterIndex](#setsourcefilterindex)
+  - [SetSourceFilterSettings](#setsourcefiltersettings)
 - [Scene Items](#scene-items-1)
   - [GetSceneItemList](#getsceneitemlist)
   - [GetGroupItemList](#getgroupitemlist)
@@ -3699,6 +3817,92 @@ Sets the position of the TBar.
 
 ## Filters
 
+### GetSourceFilterList
+
+Gets an array of all of a source's filters.
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| sourceName | String | Name of the source | None | N/A |
+
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| filters | Array&lt;Object&gt; | Array of filters |
+
+---
+
+### CreateSourceFilter
+
+Creates a new filter, adding it to the specified source.
+
+- Complexity Rating: `3/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| sourceName | String | Name of the source to add the filter to | None | N/A |
+| filterName | String | Name of the new filter to be created | None | N/A |
+| filterKind | String | The kind of filter to be created | None | N/A |
+| ?filterSettings | Object | Settings object to initialize the filter with | None | Default settings used |
+
+---
+
+### RemoveSourceFilter
+
+Removes a filter from a source.
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| sourceName | String | Name of the source the filter is on | None | N/A |
+| filterName | String | Name of the filter to remove | None | N/A |
+
+---
+
+### GetSourceFilterDefaultSettings
+
+Gets the default settings for a filter kind.
+
+- Complexity Rating: `3/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| filterKind | String | Filter kind to get the default settings for | None | N/A |
+
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| defaultFilterSettings | Object | Object of default settings for the filter kind |
+
+---
+
 ### GetSourceFilter
 
 Gets the info for a specific source filter.
@@ -3724,6 +3928,45 @@ Gets the info for a specific source filter.
 | filterIndex | Number | Index of the filter in the list, beginning at 0 |
 | filterKind | String | The kind of filter |
 | filterSettings | Object | Settings object associated with the filter |
+
+---
+
+### SetSourceFilterIndex
+
+Sets the index position of a filter on a source.
+
+- Complexity Rating: `3/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| sourceName | String | Name of the source the filter is on | None | N/A |
+| filterName | String | Name of the filter | None | N/A |
+| filterIndex | Number | New index position of the filter | >= 0 | N/A |
+
+---
+
+### SetSourceFilterSettings
+
+Sets the settings of a source filter.
+
+- Complexity Rating: `3/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| sourceName | String | Name of the source the filter is on | None | N/A |
+| filterName | String | Name of the filter to set the settings of | None | N/A |
+| filterSettings | Object | Object of settings to apply | None | N/A |
+| ?overlay | Boolean | True == apply the settings on top of existing ones, False == reset the input to its defaults, then apply settings. | None | true |
 
 
 ## Scene Items
