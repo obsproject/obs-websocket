@@ -241,30 +241,38 @@ void EventHandler::OnFrontendEvent(enum obs_frontend_event event, void *private_
 
 			// In the case that plugins become hotloadable, this will have to go back into `EventHandler::EventHandler()`
 			// Enumerate inputs and connect each one
-			obs_enum_sources([](void* param, obs_source_t* source) {
-				auto eventHandler = static_cast<EventHandler*>(param);
-				eventHandler->ConnectSourceSignals(source);
+			{
+				auto enumInputs = [](void *param, obs_source_t *source) {
+					auto eventHandler = static_cast<EventHandler*>(param);
+					eventHandler->ConnectSourceSignals(source);
 
-                obs_source_enum_filters(source, [](obs_source_t *source, obs_source_t *filter, void *param){
-                    auto eventHandler = static_cast<EventHandler*>(param);
-                    eventHandler->ConnectFilterSignals(filter);
-                }, eventHandler);
+					auto enumFilters = [](obs_source_t *, obs_source_t *filter, void *param){
+						auto eventHandler = static_cast<EventHandler*>(param);
+						eventHandler->ConnectFilterSignals(filter);
+					};
+					obs_source_enum_filters(source, enumFilters, param);
 
-				return true;
-			}, private_data);
+					return true;
+				};
+				obs_enum_sources(enumInputs, private_data);
+			}
 
 			// Enumerate scenes and connect each one
-			obs_enum_scenes([](void* param, obs_source_t* source) {
-				auto eventHandler = static_cast<EventHandler*>(param);
-				eventHandler->ConnectSourceSignals(source);
+			{
+				auto enumScenes = [](void *param, obs_source_t *source) {
+					auto eventHandler = static_cast<EventHandler*>(param);
+					eventHandler->ConnectSourceSignals(source);
 
-                obs_source_enum_filters(source, [](obs_source_t *source, obs_source_t *filter, void *param){
-                    auto eventHandler = static_cast<EventHandler*>(param);
-                    eventHandler->ConnectFilterSignals(filter);
-                }, eventHandler);
+					auto enumFilters = [](obs_source_t *, obs_source_t *filter, void *param){
+						auto eventHandler = static_cast<EventHandler*>(param);
+						eventHandler->ConnectFilterSignals(filter);
+					};
+					obs_source_enum_filters(source, enumFilters, param);
 
-				return true;
-			}, private_data);
+					return true;
+				};
+				obs_enum_scenes(enumScenes, private_data);
+			}
 
 			blog_debug("[EventHandler::OnFrontendEvent] Finished.");
 
@@ -286,18 +294,38 @@ void EventHandler::OnFrontendEvent(enum obs_frontend_event event, void *private_
 
 			// In the case that plugins become hotloadable, this will have to go back into `EventHandler::~EventHandler()`
 			// Enumerate inputs and disconnect each one
-			obs_enum_sources([](void* param, obs_source_t* source) {
-				auto eventHandler = static_cast<EventHandler*>(param);
-				eventHandler->DisconnectSourceSignals(source);
-				return true;
-			}, private_data);
+			{
+				auto enumInputs = [](void *param, obs_source_t *source) {
+					auto eventHandler = static_cast<EventHandler*>(param);
+					eventHandler->DisconnectSourceSignals(source);
+
+					auto enumFilters = [](obs_source_t *, obs_source_t *filter, void *param){
+						auto eventHandler = static_cast<EventHandler*>(param);
+						eventHandler->ConnectFilterSignals(filter);
+					};
+					obs_source_enum_filters(source, enumFilters, param);
+
+					return true;
+				};
+				obs_enum_sources(enumInputs, private_data);
+			}
 
 			// Enumerate scenes and disconnect each one
-			obs_enum_scenes([](void* param, obs_source_t* source) {
-				auto eventHandler = static_cast<EventHandler*>(param);
-				eventHandler->DisconnectSourceSignals(source);
-				return true;
-			}, private_data);
+			{
+				auto enumScenes = [](void *param, obs_source_t *source) {
+					auto eventHandler = static_cast<EventHandler*>(param);
+					eventHandler->DisconnectSourceSignals(source);
+
+					auto enumFilters = [](obs_source_t *, obs_source_t *filter, void *param){
+						auto eventHandler = static_cast<EventHandler*>(param);
+						eventHandler->ConnectFilterSignals(filter);
+					};
+					obs_source_enum_filters(source, enumFilters, param);
+
+					return true;
+				};
+				obs_enum_scenes(enumScenes, private_data);
+			}
 
 			blog_debug("[EventHandler::OnFrontendEvent] Finished.");
 

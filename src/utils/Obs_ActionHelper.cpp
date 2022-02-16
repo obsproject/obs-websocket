@@ -103,7 +103,7 @@ obs_source_t *Utils::Obs::ActionHelper::CreateSourceFilter(obs_source_t *source,
     return filter;
 }
 
-void Utils::Obs::ActionHelper::SetSourceFilterIndex(obs_source_t *source, obs_source_t *filter, int index)
+void Utils::Obs::ActionHelper::SetSourceFilterIndex(obs_source_t *source, obs_source_t *filter, size_t index)
 {
     size_t currentIndex = Utils::Obs::NumberHelper::GetSourceFilterIndex(source, filter);
     obs_order_movement direction = index > currentIndex ? OBS_ORDER_MOVE_DOWN : OBS_ORDER_MOVE_UP;

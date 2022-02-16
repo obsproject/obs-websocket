@@ -211,8 +211,8 @@ namespace Utils {
 		namespace ActionHelper {
 			obs_sceneitem_t *CreateSceneItem(obs_source_t *source, obs_scene_t *scene, bool sceneItemEnabled = true, obs_transform_info *sceneItemTransform = nullptr, obs_sceneitem_crop *sceneItemCrop = nullptr); // Increments ref. Use OBSSceneItemAutoRelease
 			obs_sceneitem_t *CreateInput(std::string inputName, std::string inputKind, obs_data_t *inputSettings, obs_scene_t *scene, bool sceneItemEnabled = true); // Increments ref. Use OBSSceneItemAutoRelease
-            obs_source_t * CreateSourceFilter(obs_source_t *source, std::string filterName, std::string filterKind, obs_data_t *filterSettings, int filterIndex);
-            void SetSourceFilterIndex(obs_source_t *source, obs_source_t *filter, int index);
+            obs_source_t *CreateSourceFilter(obs_source_t *source, std::string filterName, std::string filterKind, obs_data_t *filterSettings, int filterIndex);
+            void SetSourceFilterIndex(obs_source_t *source, obs_source_t *filter, size_t index);
 		}
 	}
 }

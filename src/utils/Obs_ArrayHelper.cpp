@@ -289,30 +289,25 @@ std::vector<std::string> Utils::Obs::ArrayHelper::GetFilterKindList()
     return ret;
 }
 
-struct EnumSourceFilterInfo {
-    size_t index;
-    std::vector<json> filters;
-};
-
 std::vector<json> Utils::Obs::ArrayHelper::GetSourceFilterList(obs_source_t *source)
 {
-    EnumSourceFilterInfo filterInfo;
+    std::vector<json> filters;
 
-    auto filterEnumProc = [](obs_source_t *source, obs_source_t *filter, void *param) {
-        auto filterInfo = reinterpret_cast<EnumSourceFilterInfo*>(param);
+    auto enumFilters = [](obs_source_t *, obs_source_t *filter, void *param) {
+        auto filters = reinterpret_cast<std::vector<json>*>(param);
 
         json filterJson;
         filterJson["filterEnabled"] = obs_source_enabled(filter);
-        filterJson["filterIndex"] = filterInfo->index++;
+        filterJson["filterIndex"] = filters->size();
         filterJson["filterKind"] = obs_source_get_id(filter);
         filterJson["filterName"] = obs_source_get_name(filter);
 
         OBSDataAutoRelease filterSettings = obs_source_get_settings(filter);
         filterJson["filterSettings"] = Utils::Json::ObsDataToJson(filterSettings);
 
-        filterInfo->filters.push_back(filterJson);
+        filters->push_back(filterJson);
     };
-    obs_source_enum_filters(source, filterEnumProc, &filterInfo);
+    obs_source_enum_filters(source, enumFilters, &filters);
 
-    return filterInfo.filters;
+    return filters;
 }
