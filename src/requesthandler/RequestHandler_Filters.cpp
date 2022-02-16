@@ -145,6 +145,9 @@ RequestResult RequestHandler::GetSourceFilterDefaultSettings(const Request& requ
         return RequestResult::Error(statusCode, comment);
 
     std::string filterKind = request.RequestData["filterKind"];
+    auto kinds = Utils::Obs::ArrayHelper::GetFilterKindList();
+    if (std::find(kinds.begin(), kinds.end(), filterKind) == kinds.end())
+        return RequestResult::Error(RequestStatus::InvalidFilterKind);
 
     OBSDataAutoRelease defaultSettings = obs_get_source_defaults(filterKind.c_str());
     if (!defaultSettings)
