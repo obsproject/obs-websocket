@@ -367,6 +367,7 @@ jobs:
           path: ${{ github.workspace }}/obs-studio
           submodules: 'recursive'
       - name: 'Install Prerequisite: Binary Signing Certificate'
+        if: github.event_name != 'pull_request'
         uses: apple-actions/import-codesign-certs@v1
         with:
           p12-file-base64: ${{ secrets.MACOS_SIGNING_CERT }}
@@ -374,6 +375,7 @@ jobs:
           create-keychain: true
           keychain-password: ${{ secrets.MACOS_TEMP_CI_KEYCHAIN_PASSWORD }}
       - name: 'Install Prerequisite: Installer Signing Certificate'
+        if: github.event_name != 'pull_request'
         uses: apple-actions/import-codesign-certs@v1
         with:
           p12-file-base64: ${{ secrets.MACOS_INSTALLER_CERT }}
@@ -492,6 +494,7 @@ jobs:
                   @executable_path/../Frameworks/QtSvg.framework/Versions/5/QtSvg \
               ./obs-websocket.so
       - name: 'Sign plugin binary'
+        if: github.event_name != 'pull_request'
         shell: bash
         working-directory: ${{ github.workspace }}/obs-websocket/build
         run: |
