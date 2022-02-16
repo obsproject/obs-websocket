@@ -2278,9 +2278,10 @@ Studio mode has been enabled or disabled.
   - [SetTBarPosition](#settbarposition)
 - [Filters](#filters-1)
   - [GetSourceFilterList](#getsourcefilterlist)
+  - [GetSourceFilterDefaultSettings](#getsourcefilterdefaultsettings)
   - [CreateSourceFilter](#createsourcefilter)
   - [RemoveSourceFilter](#removesourcefilter)
-  - [GetSourceFilterDefaultSettings](#getsourcefilterdefaultsettings)
+  - [SetSourceFilterName](#setsourcefiltername)
   - [GetSourceFilter](#getsourcefilter)
   - [SetSourceFilterIndex](#setsourcefilterindex)
   - [SetSourceFilterSettings](#setsourcefiltersettings)
@@ -3841,6 +3842,30 @@ Gets an array of all of a source's filters.
 
 ---
 
+### GetSourceFilterDefaultSettings
+
+Gets the default settings for a filter kind.
+
+- Complexity Rating: `3/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| filterKind | String | Filter kind to get the default settings for | None | N/A |
+
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| defaultFilterSettings | Object | Object of default settings for the filter kind |
+
+---
+
 ### CreateSourceFilter
 
 Creates a new filter, adding it to the specified source.
@@ -3879,11 +3904,11 @@ Removes a filter from a source.
 
 ---
 
-### GetSourceFilterDefaultSettings
+### SetSourceFilterName
 
-Gets the default settings for a filter kind.
+Sets the name of a source filter (rename).
 
-- Complexity Rating: `3/5`
+- Complexity Rating: `2/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
@@ -3892,14 +3917,9 @@ Gets the default settings for a filter kind.
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
-| filterKind | String | Filter kind to get the default settings for | None | N/A |
-
-
-**Response Fields:**
-
-| Name | Type  | Description |
-| ---- | :---: | ----------- |
-| defaultFilterSettings | Object | Object of default settings for the filter kind |
+| sourceName | String | Name of the source the filter is on | None | N/A |
+| filterName | String | Current name of the filter | None | N/A |
+| newFilterName | String | New name for the filter | None | N/A |
 
 ---
 

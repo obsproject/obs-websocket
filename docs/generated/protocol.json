@@ -1181,6 +1181,32 @@
       ]
     },
     {
+      "description": "Gets the default settings for a filter kind.",
+      "requestType": "GetSourceFilterDefaultSettings",
+      "complexity": 3,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "filters",
+      "requestFields": [
+        {
+          "valueName": "filterKind",
+          "valueType": "String",
+          "valueDescription": "Filter kind to get the default settings for",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        }
+      ],
+      "responseFields": [
+        {
+          "valueName": "defaultFilterSettings",
+          "valueType": "Object",
+          "valueDescription": "Object of default settings for the filter kind"
+        }
+      ]
+    },
+    {
       "description": "Creates a new filter, adding it to the specified source.",
       "requestType": "CreateSourceFilter",
       "complexity": 3,
@@ -1253,30 +1279,40 @@
       "responseFields": []
     },
     {
-      "description": "Gets the default settings for a filter kind.",
-      "requestType": "GetSourceFilterDefaultSettings",
-      "complexity": 3,
+      "description": "Sets the name of a source filter (rename).",
+      "requestType": "SetSourceFilterName",
+      "complexity": 2,
       "rpcVersion": "1",
       "deprecated": false,
       "initialVersion": "5.0.0",
       "category": "filters",
       "requestFields": [
         {
-          "valueName": "filterKind",
+          "valueName": "sourceName",
           "valueType": "String",
-          "valueDescription": "Filter kind to get the default settings for",
+          "valueDescription": "Name of the source the filter is on",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        },
+        {
+          "valueName": "filterName",
+          "valueType": "String",
+          "valueDescription": "Current name of the filter",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        },
+        {
+          "valueName": "newFilterName",
+          "valueType": "String",
+          "valueDescription": "New name for the filter",
           "valueRestrictions": null,
           "valueOptional": false,
           "valueOptionalBehavior": null
         }
       ],
-      "responseFields": [
-        {
-          "valueName": "defaultFilterSettings",
-          "valueType": "Object",
-          "valueDescription": "Object of default settings for the filter kind"
-        }
-      ]
+      "responseFields": []
     },
     {
       "description": "Gets the info for a specific source filter.",
