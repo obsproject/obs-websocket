@@ -97,7 +97,7 @@ obs_source_t *Utils::Obs::ActionHelper::CreateSourceFilter(obs_source_t *source,
 
     obs_source_filter_add(source, filter);
 
-    if(filterIndex != -1)
+    if (filterIndex != -1)
         SetSourceFilterIndex(source, filter, filterIndex);
 
     return filter;
@@ -111,8 +111,9 @@ void Utils::Obs::ActionHelper::SetSourceFilterIndex(obs_source_t *source, obs_so
     while(currentIndex != index) {
         obs_source_filter_set_order(source, filter, direction);
 
-        if(direction == OBS_ORDER_MOVE_DOWN)
+        if (direction == OBS_ORDER_MOVE_DOWN)
             currentIndex++;
-        else currentIndex--;
+        else
+			currentIndex--;
     }
 }

@@ -20,43 +20,6 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include "RequestHandler.h"
 
 /**
- * Gets the info for a specific source filter.
- *
- * @requestField sourceName | String | Name of the source
- * @requestField filterName | String | Name of the filter
- *
- * @responseField filterEnabled  | Boolean | Whether the filter is enabled
- * @responseField filterIndex    | Number  | Index of the filter in the list, beginning at 0
- * @responseField filterKind     | String  | The kind of filter
- * @responseField filterSettings | Object  | Settings object associated with the filter
- *
- * @requestType GetSourceFilter
- * @complexity 2
- * @rpcVersion -1
- * @initialVersion 5.0.0
- * @api requests
- * @category filters
- */
-RequestResult RequestHandler::GetSourceFilter(const Request& request)
-{
-	RequestStatus::RequestStatus statusCode;
-	std::string comment;
-	FilterPair pair = request.ValidateFilter("sourceName", "filterName", statusCode, comment);
-	if (!pair.filter)
-		return RequestResult::Error(statusCode, comment);
-
-	json responseData;
-	responseData["filterEnabled"] = obs_source_enabled(pair.filter);
-	responseData["filterIndex"] = Utils::Obs::NumberHelper::GetSourceFilterIndex(pair.source, pair.filter); // Todo: Use `GetSourceFilterlist` to select this filter maybe
-	responseData["filterKind"] = obs_source_get_id(pair.filter);
-
-	OBSDataAutoRelease filterSettings = obs_source_get_settings(pair.filter);
-	responseData["filterSettings"] = Utils::Json::ObsDataToJson(filterSettings);
-
-	return RequestResult::Success(responseData);
-}
-
-/**
  * Gets an array of all of a source's filters.
  *
  * @requestField sourceName | String | Name of the source
@@ -200,6 +163,43 @@ RequestResult RequestHandler::GetSourceFilterDefaultSettings(const Request& requ
     json responseData;
     responseData["defaultFilterSettings"] = Utils::Json::ObsDataToJson(defaultSettings, true);
     return RequestResult::Success(responseData);
+}
+
+/**
+ * Gets the info for a specific source filter.
+ *
+ * @requestField sourceName | String | Name of the source
+ * @requestField filterName | String | Name of the filter
+ *
+ * @responseField filterEnabled  | Boolean | Whether the filter is enabled
+ * @responseField filterIndex    | Number  | Index of the filter in the list, beginning at 0
+ * @responseField filterKind     | String  | The kind of filter
+ * @responseField filterSettings | Object  | Settings object associated with the filter
+ *
+ * @requestType GetSourceFilter
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api requests
+ * @category filters
+ */
+RequestResult RequestHandler::GetSourceFilter(const Request& request)
+{
+	RequestStatus::RequestStatus statusCode;
+	std::string comment;
+	FilterPair pair = request.ValidateFilter("sourceName", "filterName", statusCode, comment);
+	if (!pair.filter)
+		return RequestResult::Error(statusCode, comment);
+
+	json responseData;
+	responseData["filterEnabled"] = obs_source_enabled(pair.filter);
+	responseData["filterIndex"] = Utils::Obs::NumberHelper::GetSourceFilterIndex(pair.source, pair.filter); // Todo: Use `GetSourceFilterlist` to select this filter maybe
+	responseData["filterKind"] = obs_source_get_id(pair.filter);
+
+	OBSDataAutoRelease filterSettings = obs_source_get_settings(pair.filter);
+	responseData["filterSettings"] = Utils::Json::ObsDataToJson(filterSettings);
+
+	return RequestResult::Success(responseData);
 }
 
 /**

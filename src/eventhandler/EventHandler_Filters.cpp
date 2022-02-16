@@ -67,7 +67,7 @@ void EventHandler::HandleSourceFilterCreated(void *param, calldata_t *data)
  * A filter has been removed from a source.
  *
  * @dataField sourceName | String | Name of the source the filter was on
- * @dataField sourceName | String | Name of the filter
+ * @dataField filterName | String | Name of the filter
  *
  * @eventType SourceFilterRemoved
  * @eventSubscription Filters
