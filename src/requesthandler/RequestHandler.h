@@ -133,6 +133,7 @@ class RequestHandler {
 		RequestResult GetSourceFilterDefaultSettings(const Request&);
 		RequestResult CreateSourceFilter(const Request&);
 		RequestResult RemoveSourceFilter(const Request&);
+		RequestResult SetSourceFilterName(const Request&);
 		RequestResult GetSourceFilter(const Request&);
 		RequestResult SetSourceFilterIndex(const Request&);
 		RequestResult SetSourceFilterSettings(const Request&);

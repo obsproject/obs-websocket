@@ -85,10 +85,10 @@ RequestResult RequestHandler::GetSourceFilterDefaultSettings(const Request& requ
 /**
  * Creates a new filter, adding it to the specified source.
  *
- * @requestField sourceName         | String | Name of the source to add the filter to
- * @requestField filterName         | String | Name of the new filter to be created
- * @requestField filterKind         | String | The kind of filter to be created
- * @requestField ?filterSettings    | Object | Settings object to initialize the filter with | Default settings used
+ * @requestField sourceName      | String | Name of the source to add the filter to
+ * @requestField filterName      | String | Name of the new filter to be created
+ * @requestField filterKind      | String | The kind of filter to be created
+ * @requestField ?filterSettings | Object | Settings object to initialize the filter with | Default settings used
  *
  * @requestType CreateSourceFilter
  * @complexity 3
@@ -159,6 +159,39 @@ RequestResult RequestHandler::RemoveSourceFilter(const Request& request)
 }
 
 /**
+ * Sets the name of a source filter (rename).
+ *
+ * @requestField sourceName    | String | Name of the source the filter is on
+ * @requestField filterName    | String | Current name of the filter
+ * @requestField newFilterName | String | New name for the filter
+ *
+ * @requestType SetSourceFilterName
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api requests
+ * @category filters
+ */
+RequestResult RequestHandler::SetSourceFilterName(const Request& request)
+{
+	RequestStatus::RequestStatus statusCode;
+	std::string comment;
+	FilterPair pair = request.ValidateFilter("sourceName", "filterName", statusCode, comment);
+	if (!pair.filter || !request.ValidateString("newFilterName", statusCode, comment))
+		return RequestResult::Error(statusCode, comment);
+
+	std::string newFilterName = request.RequestData["newFilterName"];
+
+	OBSSourceAutoRelease existingFilter = obs_source_get_filter_by_name(pair.source, newFilterName.c_str());
+	if (existingFilter)
+		return RequestResult::Error(RequestStatus::ResourceAlreadyExists, "A filter already exists by that new name.");
+
+	obs_source_set_name(pair.filter, newFilterName.c_str());
+
+	return RequestResult::Success();
+}
+
+/**
  * Gets the info for a specific source filter.
  *
  * @requestField sourceName | String | Name of the source
@@ -198,8 +231,8 @@ RequestResult RequestHandler::GetSourceFilter(const Request& request)
 /**
  * Sets the index position of a filter on a source.
  *
- * @requestField sourceName      | String | Name of the source the filter is on
- * @requestField filterName      | String | Name of the filter
+ * @requestField sourceName  | String | Name of the source the filter is on
+ * @requestField filterName  | String | Name of the filter
  * @requestField filterIndex | Number | New index position of the filter | >= 0
  *
  * @requestType SetSourceFilterIndex
@@ -274,9 +307,9 @@ RequestResult RequestHandler::SetSourceFilterSettings(const Request& request)
 /**
  * Sets the enable state of a source filter.
  *
- * @requestField sourceName     | String  | Name of the source the filter is on
- * @requestField filterName     | Number  | Name of the filter
- * @requestField filterEnabled  | Boolean | New enable state of the filter
+ * @requestField sourceName    | String  | Name of the source the filter is on
+ * @requestField filterName    | Number  | Name of the filter
+ * @requestField filterEnabled | Boolean | New enable state of the filter
  *
  * @requestType SetSourceFilterEnabled
  * @complexity 3
