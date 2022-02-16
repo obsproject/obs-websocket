@@ -58,6 +58,9 @@ class EventHandler
 		void ConnectSourceSignals(obs_source_t *source);
 		void DisconnectSourceSignals(obs_source_t *source);
 
+		void ConnectFilterSignals(obs_source_t *filter);
+		void DisconnectFilterSignals(obs_source_t *filter);
+
 		void BroadcastEvent(uint64_t requiredIntent, std::string eventType, json eventData = nullptr, uint8_t rpcVersion = 0);
 
 		// Signal handler: frontend
@@ -136,4 +139,11 @@ class EventHandler
 		static void HandleMediaInputPlaybackStarted(void *param, calldata_t *data); // Direct callback
 		static void HandleMediaInputPlaybackEnded(void *param, calldata_t *data); // Direct callback
 		void HandleMediaInputActionTriggered(obs_source_t *source, ObsMediaInputAction action);
+
+		// Filters
+        static void HandleSourceFilterNameChanged(void *param, calldata_t *data); // Direct callback
+        static void HandleSourceFilterCreated(void *param, calldata_t *data); // Direct callback
+        static void HandleSourceFilterRemoved(void *param, calldata_t *data); // Direct callback
+        static void HandleSourceFilterListReindexed(void *param, calldata_t *data); // Direct callback
+        static void HandleSourceFilterEnableStateChanged(void *param, calldata_t *data); // Direct callback
 };

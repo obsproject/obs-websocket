@@ -269,6 +269,9 @@ RequestResult RequestHandler::GetInputDefaultSettings(const Request& request)
 		return RequestResult::Error(statusCode, comment);
 
 	std::string inputKind = request.RequestData["inputKind"];
+	auto kinds = Utils::Obs::ArrayHelper::GetInputKindList();
+	if (std::find(kinds.begin(), kinds.end(), inputKind) == kinds.end())
+		return RequestResult::Error(RequestStatus::InvalidInputKind);
 
 	OBSDataAutoRelease defaultSettings = obs_get_source_defaults(inputKind.c_str());
 	if (!defaultSettings)

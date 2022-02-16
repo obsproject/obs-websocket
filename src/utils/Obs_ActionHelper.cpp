@@ -87,3 +87,30 @@ obs_sceneitem_t *Utils::Obs::ActionHelper::CreateInput(std::string inputName, st
 
 	return ret;
 }
+
+obs_source_t *Utils::Obs::ActionHelper::CreateSourceFilter(obs_source_t *source, std::string filterName, std::string filterKind, obs_data_t *filterSettings)
+{
+    obs_source_t *filter = obs_source_create_private(filterKind.c_str(), filterName.c_str(), filterSettings);
+
+    if (!filter)
+        return nullptr;
+
+    obs_source_filter_add(source, filter);
+
+    return filter;
+}
+
+void Utils::Obs::ActionHelper::SetSourceFilterIndex(obs_source_t *source, obs_source_t *filter, size_t index)
+{
+    size_t currentIndex = Utils::Obs::NumberHelper::GetSourceFilterIndex(source, filter);
+    obs_order_movement direction = index > currentIndex ? OBS_ORDER_MOVE_DOWN : OBS_ORDER_MOVE_UP;
+
+    while(currentIndex != index) {
+        obs_source_filter_set_order(source, filter, direction);
+
+        if (direction == OBS_ORDER_MOVE_DOWN)
+            currentIndex++;
+        else
+			currentIndex--;
+    }
+}
