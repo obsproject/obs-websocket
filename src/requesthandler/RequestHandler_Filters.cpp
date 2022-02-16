@@ -48,6 +48,41 @@ RequestResult RequestHandler::GetSourceFilterList(const Request& request)
 }
 
 /**
+ * Gets the default settings for a filter kind.
+ *
+ * @requestField filterKind | String | Filter kind to get the default settings for
+ *
+ * @responseField defaultFilterSettings | Object | Object of default settings for the filter kind
+ *
+ * @requestType GetSourceFilterDefaultSettings
+ * @complexity 3
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api requests
+ * @category filters
+ */
+RequestResult RequestHandler::GetSourceFilterDefaultSettings(const Request& request)
+{
+    RequestStatus::RequestStatus statusCode;
+    std::string comment;
+    if (!request.ValidateString("filterKind", statusCode, comment))
+        return RequestResult::Error(statusCode, comment);
+
+    std::string filterKind = request.RequestData["filterKind"];
+    auto kinds = Utils::Obs::ArrayHelper::GetFilterKindList();
+    if (std::find(kinds.begin(), kinds.end(), filterKind) == kinds.end())
+        return RequestResult::Error(RequestStatus::InvalidFilterKind);
+
+    OBSDataAutoRelease defaultSettings = obs_get_source_defaults(filterKind.c_str());
+    if (!defaultSettings)
+        return RequestResult::Error(RequestStatus::InvalidFilterKind);
+
+    json responseData;
+    responseData["defaultFilterSettings"] = Utils::Json::ObsDataToJson(defaultSettings, true);
+    return RequestResult::Success(responseData);
+}
+
+/**
  * Creates a new filter, adding it to the specified source.
  *
  * @requestField sourceName         | String | Name of the source to add the filter to
@@ -121,41 +156,6 @@ RequestResult RequestHandler::RemoveSourceFilter(const Request& request)
     obs_source_filter_remove(pair.source, pair.filter);
 
     return RequestResult::Success();
-}
-
-/**
- * Gets the default settings for a filter kind.
- *
- * @requestField filterKind | String | Filter kind to get the default settings for
- *
- * @responseField defaultFilterSettings | Object | Object of default settings for the filter kind
- *
- * @requestType GetSourceFilterDefaultSettings
- * @complexity 3
- * @rpcVersion -1
- * @initialVersion 5.0.0
- * @api requests
- * @category filters
- */
-RequestResult RequestHandler::GetSourceFilterDefaultSettings(const Request& request)
-{
-    RequestStatus::RequestStatus statusCode;
-    std::string comment;
-    if (!request.ValidateString("filterKind", statusCode, comment))
-        return RequestResult::Error(statusCode, comment);
-
-    std::string filterKind = request.RequestData["filterKind"];
-    auto kinds = Utils::Obs::ArrayHelper::GetFilterKindList();
-    if (std::find(kinds.begin(), kinds.end(), filterKind) == kinds.end())
-        return RequestResult::Error(RequestStatus::InvalidFilterKind);
-
-    OBSDataAutoRelease defaultSettings = obs_get_source_defaults(filterKind.c_str());
-    if (!defaultSettings)
-        return RequestResult::Error(RequestStatus::InvalidFilterKind);
-
-    json responseData;
-    responseData["defaultFilterSettings"] = Utils::Json::ObsDataToJson(defaultSettings, true);
-    return RequestResult::Success(responseData);
 }
 
 /**
