@@ -90,7 +90,7 @@ obs_sceneitem_t *Utils::Obs::ActionHelper::CreateInput(std::string inputName, st
 
 obs_source_t *Utils::Obs::ActionHelper::CreateSourceFilter(obs_source_t *source, std::string filterName, std::string filterKind, obs_data_t *filterSettings, int filterIndex)
 {
-    OBSSourceAutoRelease filter = obs_source_create_private(filterKind.c_str(), filterName.c_str(), filterSettings);
+    obs_source_t *filter = obs_source_create_private(filterKind.c_str(), filterName.c_str(), filterSettings);
 
     if (!filter)
         return nullptr;
