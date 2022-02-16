@@ -18,7 +18,7 @@ on:
 jobs:
   windows:
     name: 'Windows 32/64-bit'
-    runs-on: [windows-latest]
+    runs-on: [windows-2019]
     if: contains(github.event.head_commit.message, '[skip ci]') != true
     env:
       QT_CACHE_VERSION: '2' # Change whenever updating OBS dependencies URL, in order to force a cache reset
