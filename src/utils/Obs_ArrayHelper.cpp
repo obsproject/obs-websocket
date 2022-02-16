@@ -279,35 +279,35 @@ std::vector<json> Utils::Obs::ArrayHelper::GetSceneTransitionList()
 
 std::vector<std::string> Utils::Obs::ArrayHelper::GetFilterKindList()
 {
-    std::vector<std::string> ret;
+	std::vector<std::string> ret;
 
-    size_t idx = 0;
-    const char *kind;
-    while(obs_enum_filter_types(idx++, &kind))
-        ret.push_back(kind);
+	size_t idx = 0;
+	const char *kind;
+	while(obs_enum_filter_types(idx++, &kind))
+		ret.push_back(kind);
 
-    return ret;
+	return ret;
 }
 
 std::vector<json> Utils::Obs::ArrayHelper::GetSourceFilterList(obs_source_t *source)
 {
-    std::vector<json> filters;
+	std::vector<json> filters;
 
-    auto enumFilters = [](obs_source_t *, obs_source_t *filter, void *param) {
-        auto filters = reinterpret_cast<std::vector<json>*>(param);
+	auto enumFilters = [](obs_source_t *, obs_source_t *filter, void *param) {
+		auto filters = reinterpret_cast<std::vector<json>*>(param);
 
-        json filterJson;
-        filterJson["filterEnabled"] = obs_source_enabled(filter);
-        filterJson["filterIndex"] = filters->size();
-        filterJson["filterKind"] = obs_source_get_id(filter);
-        filterJson["filterName"] = obs_source_get_name(filter);
+		json filterJson;
+		filterJson["filterEnabled"] = obs_source_enabled(filter);
+		filterJson["filterIndex"] = filters->size();
+		filterJson["filterKind"] = obs_source_get_id(filter);
+		filterJson["filterName"] = obs_source_get_name(filter);
 
-        OBSDataAutoRelease filterSettings = obs_source_get_settings(filter);
-        filterJson["filterSettings"] = Utils::Json::ObsDataToJson(filterSettings);
+		OBSDataAutoRelease filterSettings = obs_source_get_settings(filter);
+		filterJson["filterSettings"] = Utils::Json::ObsDataToJson(filterSettings);
 
-        filters->push_back(filterJson);
-    };
-    obs_source_enum_filters(source, enumFilters, &filters);
+		filters->push_back(filterJson);
+	};
+	obs_source_enum_filters(source, enumFilters, &filters);
 
-    return filters;
+	return filters;
 }

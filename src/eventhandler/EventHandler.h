@@ -141,9 +141,9 @@ class EventHandler
 		void HandleMediaInputActionTriggered(obs_source_t *source, ObsMediaInputAction action);
 
 		// Filters
-        static void HandleSourceFilterNameChanged(void *param, calldata_t *data); // Direct callback
-        static void HandleSourceFilterCreated(void *param, calldata_t *data); // Direct callback
-        static void HandleSourceFilterRemoved(void *param, calldata_t *data); // Direct callback
-        static void HandleSourceFilterListReindexed(void *param, calldata_t *data); // Direct callback
-        static void HandleSourceFilterEnableStateChanged(void *param, calldata_t *data); // Direct callback
+		static void HandleSourceFilterNameChanged(void *param, calldata_t *data); // Direct callback
+		static void HandleSourceFilterCreated(void *param, calldata_t *data); // Direct callback
+		static void HandleSourceFilterRemoved(void *param, calldata_t *data); // Direct callback
+		static void HandleSourceFilterListReindexed(void *param, calldata_t *data); // Direct callback
+		static void HandleSourceFilterEnableStateChanged(void *param, calldata_t *data); // Direct callback
 };

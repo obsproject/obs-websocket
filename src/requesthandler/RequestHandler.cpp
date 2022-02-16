@@ -111,14 +111,14 @@ const std::unordered_map<std::string, RequestMethodHandler> RequestHandler::_han
 	{"SetTBarPosition", &RequestHandler::SetTBarPosition},
 
 	// Filters
-    {"GetSourceFilterList", &RequestHandler::GetSourceFilterList},
+	{"GetSourceFilterList", &RequestHandler::GetSourceFilterList},
 	{"GetSourceFilterDefaultSettings", &RequestHandler::GetSourceFilterDefaultSettings},
-    {"CreateSourceFilter", &RequestHandler::CreateSourceFilter},
-    {"RemoveSourceFilter", &RequestHandler::RemoveSourceFilter},
+	{"CreateSourceFilter", &RequestHandler::CreateSourceFilter},
+	{"RemoveSourceFilter", &RequestHandler::RemoveSourceFilter},
 	{"GetSourceFilter", &RequestHandler::GetSourceFilter},
-    {"SetSourceFilterIndex", &RequestHandler::SetSourceFilterIndex},
-    {"SetSourceFilterSettings", &RequestHandler::SetSourceFilterSettings},
-    {"SetSourceFilterEnabled", &RequestHandler::SetSourceFilterEnabled},
+	{"SetSourceFilterIndex", &RequestHandler::SetSourceFilterIndex},
+	{"SetSourceFilterSettings", &RequestHandler::SetSourceFilterSettings},
+	{"SetSourceFilterEnabled", &RequestHandler::SetSourceFilterEnabled},
 
 	// Scene Items
 	{"GetSceneItemList", &RequestHandler::GetSceneItemList},
