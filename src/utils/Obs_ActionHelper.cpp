@@ -88,7 +88,7 @@ obs_sceneitem_t *Utils::Obs::ActionHelper::CreateInput(std::string inputName, st
 	return ret;
 }
 
-obs_source_t *Utils::Obs::ActionHelper::CreateSourceFilter(obs_source_t *source, std::string filterName, std::string filterKind, obs_data_t *filterSettings, int filterIndex)
+obs_source_t *Utils::Obs::ActionHelper::CreateSourceFilter(obs_source_t *source, std::string filterName, std::string filterKind, obs_data_t *filterSettings)
 {
     obs_source_t *filter = obs_source_create_private(filterKind.c_str(), filterName.c_str(), filterSettings);
 
@@ -96,9 +96,6 @@ obs_source_t *Utils::Obs::ActionHelper::CreateSourceFilter(obs_source_t *source,
         return nullptr;
 
     obs_source_filter_add(source, filter);
-
-    if (filterIndex != -1)
-        SetSourceFilterIndex(source, filter, filterIndex);
 
     return filter;
 }

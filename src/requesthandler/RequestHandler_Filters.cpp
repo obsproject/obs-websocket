@@ -54,7 +54,6 @@ RequestResult RequestHandler::GetSourceFilterList(const Request& request)
  * @requestField filterName         | String | Name of the new filter to be created
  * @requestField filterKind         | String | The kind of filter to be created
  * @requestField ?filterSettings    | Object | Settings object to initialize the filter with                            | Default settings used
- * @requestField ?filterIndex       | Number | The index of the created filter among the rest of the source's filters   | -1 (Last)
  *
  * @requestType CreateSourceFilter
  * @complexity 3
@@ -90,16 +89,7 @@ RequestResult RequestHandler::CreateSourceFilter(const Request& request)
         filterSettings = Utils::Json::JsonToObsData(request.RequestData["filterSettings"]);
     }
 
-    // TODO: Evaulate whether -1 should be used to specify end. Should probably be size_t but that doesn't support negatives.
-    int filterIndex = -1;
-    if(request.Contains("filterIndex")) {
-        if (!request.ValidateOptionalNumber("filterIndex", statusCode, comment, 0, 8192))
-            return RequestResult::Error(statusCode, comment);
-
-        filterIndex = request.RequestData["filterIndex"];
-    }
-
-    OBSSourceAutoRelease filter = Utils::Obs::ActionHelper::CreateSourceFilter(source, filterName, filterKind, filterSettings, filterIndex);
+    OBSSourceAutoRelease filter = Utils::Obs::ActionHelper::CreateSourceFilter(source, filterName, filterKind, filterSettings);
 
     if(!filter)
         return RequestResult::Error(RequestStatus::ResourceCreationFailed, "Creation of the filter failed.");
