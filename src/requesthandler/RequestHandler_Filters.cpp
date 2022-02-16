@@ -73,7 +73,7 @@ RequestResult RequestHandler::CreateSourceFilter(const Request& request)
         return RequestResult::Error(statusCode, comment);
 
     std::string filterName = request.RequestData["filterName"];
-    OBSSourceAutoRelease existingFilter = obs_get_source_by_name(filterName.c_str());
+    OBSSourceAutoRelease existingFilter = obs_source_get_filter_by_name(source, filterName.c_str());
     if (existingFilter)
         return RequestResult::Error(RequestStatus::ResourceAlreadyExists, "A filter already exists by that name.");
 
