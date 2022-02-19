@@ -19,7 +19,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #pragma once
 
-#include <map>
+#include <unordered_map>
 #include <obs.hpp>
 #include <obs-frontend-api.h>
 
@@ -51,8 +51,6 @@ class RequestHandler {
 		RequestResult GetHotkeyList(const Request&);
 		RequestResult TriggerHotkeyByName(const Request&);
 		RequestResult TriggerHotkeyByKeySequence(const Request&);
-		RequestResult GetStudioModeEnabled(const Request&);
-		RequestResult SetStudioModeEnabled(const Request&);
 		RequestResult Sleep(const Request&);
 
 		// Config
@@ -71,14 +69,18 @@ class RequestHandler {
 		RequestResult SetVideoSettings(const Request&);
 		RequestResult GetStreamServiceSettings(const Request&);
 		RequestResult SetStreamServiceSettings(const Request&);
+		RequestResult GetRecordDirectory(const Request&);
 
 		// Sources
 		RequestResult GetSourceActive(const Request&);
 		RequestResult GetSourceScreenshot(const Request&);
 		RequestResult SaveSourceScreenshot(const Request&);
+		RequestResult GetSourcePrivateSettings(const Request&);
+		RequestResult SetSourcePrivateSettings(const Request&);
 
 		// Scenes
 		RequestResult GetSceneList(const Request&);
+		RequestResult GetGroupList(const Request&);
 		RequestResult GetCurrentProgramScene(const Request&);
 		RequestResult SetCurrentProgramScene(const Request&);
 		RequestResult GetCurrentPreviewScene(const Request&);
@@ -86,10 +88,13 @@ class RequestHandler {
 		RequestResult CreateScene(const Request&);
 		RequestResult RemoveScene(const Request&);
 		RequestResult SetSceneName(const Request&);
+		RequestResult GetSceneSceneTransitionOverride(const Request&);
+		RequestResult SetSceneSceneTransitionOverride(const Request&);
 
 		// Inputs
 		RequestResult GetInputList(const Request&);
 		RequestResult GetInputKindList(const Request&);
+		RequestResult GetSpecialInputs(const Request&);
 		RequestResult CreateInput(const Request&);
 		RequestResult RemoveInput(const Request&);
 		RequestResult SetInputName(const Request&);
@@ -101,12 +106,38 @@ class RequestHandler {
 		RequestResult ToggleInputMute(const Request&);
 		RequestResult GetInputVolume(const Request&);
 		RequestResult SetInputVolume(const Request&);
+		RequestResult GetInputAudioBalance(const Request&);
+		RequestResult SetInputAudioBalance(const Request&);
 		RequestResult GetInputAudioSyncOffset(const Request&);
 		RequestResult SetInputAudioSyncOffset(const Request&);
 		RequestResult GetInputAudioMonitorType(const Request&);
 		RequestResult SetInputAudioMonitorType(const Request&);
+		RequestResult GetInputAudioTracks(const Request&);
+		RequestResult SetInputAudioTracks(const Request&);
 		RequestResult GetInputPropertiesListPropertyItems(const Request&);
 		RequestResult PressInputPropertiesButton(const Request&);
+
+		// Transitions
+		RequestResult GetTransitionKindList(const Request&);
+		RequestResult GetSceneTransitionList(const Request&);
+		RequestResult GetCurrentSceneTransition(const Request&);
+		RequestResult SetCurrentSceneTransition(const Request&);
+		RequestResult SetCurrentSceneTransitionDuration(const Request&);
+		RequestResult SetCurrentSceneTransitionSettings(const Request&);
+		RequestResult GetCurrentSceneTransitionCursor(const Request&);
+		RequestResult TriggerStudioModeTransition(const Request&);
+		RequestResult SetTBarPosition(const Request&);
+
+		// Filters
+		RequestResult GetSourceFilterList(const Request&);
+		RequestResult GetSourceFilterDefaultSettings(const Request&);
+		RequestResult CreateSourceFilter(const Request&);
+		RequestResult RemoveSourceFilter(const Request&);
+		RequestResult SetSourceFilterName(const Request&);
+		RequestResult GetSourceFilter(const Request&);
+		RequestResult SetSourceFilterIndex(const Request&);
+		RequestResult SetSourceFilterSettings(const Request&);
+		RequestResult SetSourceFilterEnabled(const Request&);
 
 		// Scene Items
 		RequestResult GetSceneItemList(const Request&);
@@ -123,12 +154,27 @@ class RequestHandler {
 		RequestResult SetSceneItemLocked(const Request&);
 		RequestResult GetSceneItemIndex(const Request&);
 		RequestResult SetSceneItemIndex(const Request&);
+		RequestResult GetSceneItemBlendMode(const Request&);
+		RequestResult SetSceneItemBlendMode(const Request&);
+
+		// Outputs
+		RequestResult GetVirtualCamStatus(const Request&);
+		RequestResult ToggleVirtualCam(const Request&);
+		RequestResult StartVirtualCam(const Request&);
+		RequestResult StopVirtualCam(const Request&);
+		RequestResult GetReplayBufferStatus(const Request&);
+		RequestResult ToggleReplayBuffer(const Request&);
+		RequestResult StartReplayBuffer(const Request&);
+		RequestResult StopReplayBuffer(const Request&);
+		RequestResult SaveReplayBuffer(const Request&);
+		RequestResult GetLastReplayBufferReplay(const Request&);
 
 		// Stream
 		RequestResult GetStreamStatus(const Request&);
 		RequestResult ToggleStream(const Request&);
 		RequestResult StartStream(const Request&);
 		RequestResult StopStream(const Request&);
+		RequestResult SendStreamCaption(const Request&);
 
 		// Record
 		RequestResult GetRecordStatus(const Request&);
@@ -138,7 +184,6 @@ class RequestHandler {
 		RequestResult ToggleRecordPause(const Request&);
 		RequestResult PauseRecord(const Request&);
 		RequestResult ResumeRecord(const Request&);
-		RequestResult GetRecordDirectory(const Request&);
 
 		// Media Inputs
 		RequestResult GetMediaInputStatus(const Request&);
@@ -146,6 +191,13 @@ class RequestHandler {
 		RequestResult OffsetMediaInputCursor(const Request&);
 		RequestResult TriggerMediaInputAction(const Request&);
 
+		// Ui
+		RequestResult GetStudioModeEnabled(const Request&);
+		RequestResult SetStudioModeEnabled(const Request&);
+		RequestResult OpenInputPropertiesDialog(const Request&);
+		RequestResult OpenInputFiltersDialog(const Request&);
+		RequestResult OpenInputInteractDialog(const Request&);
+
 		SessionPtr _session;
-		static const std::map<std::string, RequestMethodHandler> _handlerMap;
+		static const std::unordered_map<std::string, RequestMethodHandler> _handlerMap;
 };

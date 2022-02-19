@@ -47,7 +47,7 @@ RequestResult RequestHandler::GetInputList(const Request& request)
 	}
 
 	json responseData;
-	responseData["inputs"] = Utils::Obs::ListHelper::GetInputList(inputKind);
+	responseData["inputs"] = Utils::Obs::ArrayHelper::GetInputList(inputKind);
 	return RequestResult::Success(responseData);
 }
 
@@ -79,7 +79,44 @@ RequestResult RequestHandler::GetInputKindList(const Request& request)
 	}
 
 	json responseData;
-	responseData["inputKinds"] = Utils::Obs::ListHelper::GetInputKindList(unversioned);
+	responseData["inputKinds"] = Utils::Obs::ArrayHelper::GetInputKindList(unversioned);
+	return RequestResult::Success(responseData);
+}
+
+/**
+ * Gets the names of all special inputs.
+ *
+ * @responseField desktop1 | String | Name of the Desktop Audio input
+ * @responseField desktop2 | String | Name of the Desktop Audio 2 input
+ * @responseField mic1     | String | Name of the Mic/Auxiliary Audio input
+ * @responseField mic2     | String | Name of the Mic/Auxiliary Audio 2 input
+ * @responseField mic3     | String | Name of the Mic/Auxiliary Audio 3 input
+ * @responseField mic4     | String | Name of the Mic/Auxiliary Audio 4 input
+ *
+ * @requestType GetSpecialInputs
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api requests
+ * @category inputs
+ */
+RequestResult RequestHandler::GetSpecialInputs(const Request&)
+{
+	json responseData;
+
+	std::vector<std::string> channels = {"desktop1", "desktop2", "mic1", "mic2", "mic3", "mic4"};
+
+	size_t channelId = 1;
+	for (auto &channel : channels) {
+		OBSSourceAutoRelease input = obs_get_output_source(channelId);
+		if (!input)
+			responseData[channel] = nullptr;
+		else
+			responseData[channel] = obs_source_get_name(input);
+
+		channelId++;
+	}
+
 	return RequestResult::Success(responseData);
 }
 
@@ -115,7 +152,7 @@ RequestResult RequestHandler::CreateInput(const Request& request)
 		return RequestResult::Error(RequestStatus::ResourceAlreadyExists, "A source already exists by that input name.");
 
 	std::string inputKind = request.RequestData["inputKind"];
-	auto kinds = Utils::Obs::ListHelper::GetInputKindList();
+	auto kinds = Utils::Obs::ArrayHelper::GetInputKindList();
 	if (std::find(kinds.begin(), kinds.end(), inputKind) == kinds.end())
 		return RequestResult::Error(RequestStatus::InvalidInputKind, "Your specified input kind is not supported by OBS. Check that your specified kind is properly versioned and that any necessary plugins are loaded.");
 
@@ -232,6 +269,9 @@ RequestResult RequestHandler::GetInputDefaultSettings(const Request& request)
 		return RequestResult::Error(statusCode, comment);
 
 	std::string inputKind = request.RequestData["inputKind"];
+	auto kinds = Utils::Obs::ArrayHelper::GetInputKindList();
+	if (std::find(kinds.begin(), kinds.end(), inputKind) == kinds.end())
+		return RequestResult::Error(RequestStatus::InvalidInputKind);
 
 	OBSDataAutoRelease defaultSettings = obs_get_source_defaults(inputKind.c_str());
 	if (!defaultSettings)
@@ -278,8 +318,9 @@ RequestResult RequestHandler::GetInputSettings(const Request& request)
 /**
  * Sets the settings of an input.
  *
- * @requestField inputName     | String | Name of the input to set the settings of
- * @requestField inputSettings | Object | Object of settings to apply
+ * @requestField inputName     | String  | Name of the input to set the settings of
+ * @requestField inputSettings | Object  | Object of settings to apply
+ * @requestField ?overlay      | Boolean | True == apply the settings on top of existing ones, False == reset the input to its defaults, then apply settings. | true
  *
  * @requestType SetInputSettings
  * @complexity 3
@@ -345,6 +386,9 @@ RequestResult RequestHandler::GetInputMute(const Request& request)
 	if (!input)
 		return RequestResult::Error(statusCode, comment);
 
+	if (!(obs_source_get_output_flags(input) & OBS_SOURCE_AUDIO))
+		return RequestResult::Error(RequestStatus::InvalidResourceState, "The specified input does not support audio.");
+
 	json responseData;
 	responseData["inputMuted"] = obs_source_muted(input);
 	return RequestResult::Success(responseData);
@@ -370,6 +414,9 @@ RequestResult RequestHandler::SetInputMute(const Request& request)
 	OBSSourceAutoRelease input = request.ValidateInput("inputName", statusCode, comment);
 	if (!(input && request.ValidateBoolean("inputMuted", statusCode, comment)))
 		return RequestResult::Error(statusCode, comment);
+
+	if (!(obs_source_get_output_flags(input) & OBS_SOURCE_AUDIO))
+		return RequestResult::Error(RequestStatus::InvalidResourceState, "The specified input does not support audio.");
 
 	obs_source_set_muted(input, request.RequestData["inputMuted"]);
 
@@ -397,6 +444,9 @@ RequestResult RequestHandler::ToggleInputMute(const Request& request)
 	OBSSourceAutoRelease input = request.ValidateInput("inputName", statusCode, comment);
 	if (!input)
 		return RequestResult::Error(statusCode, comment);
+
+	if (!(obs_source_get_output_flags(input) & OBS_SOURCE_AUDIO))
+		return RequestResult::Error(RequestStatus::InvalidResourceState, "The specified input does not support audio.");
 
 	bool inputMuted = !obs_source_muted(input);
 	obs_source_set_muted(input, inputMuted);
@@ -429,6 +479,9 @@ RequestResult RequestHandler::GetInputVolume(const Request& request)
 	if (!input)
 		return RequestResult::Error(statusCode, comment);
 
+	if (!(obs_source_get_output_flags(input) & OBS_SOURCE_AUDIO))
+		return RequestResult::Error(RequestStatus::InvalidResourceState, "The specified input does not support audio.");
+
 	float inputVolumeMul = obs_source_get_volume(input);
 	float inputVolumeDb = obs_mul_to_db(inputVolumeMul);
 	if (inputVolumeDb == -INFINITY)
@@ -445,7 +498,7 @@ RequestResult RequestHandler::GetInputVolume(const Request& request)
  *
  * @requestField inputName       | String | Name of the input to set the volume of
  * @requestField ?inputVolumeMul | Number | Volume setting in mul | >= 0, <= 20     | `inputVolumeDb` should be specified
- * @requestField ?inputVolumeDb  | Number | Volume setting in dB  | >= -100, <= -26 | `inputVolumeMul` should be specified
+ * @requestField ?inputVolumeDb  | Number | Volume setting in dB  | >= -100, <= 26 | `inputVolumeMul` should be specified
  *
  * @requestType SetInputVolume
  * @complexity 3
@@ -461,6 +514,9 @@ RequestResult RequestHandler::SetInputVolume(const Request& request)
 	OBSSourceAutoRelease input = request.ValidateInput("inputName", statusCode, comment);
 	if (!input)
 		return RequestResult::Error(statusCode, comment);
+
+	if (!(obs_source_get_output_flags(input) & OBS_SOURCE_AUDIO))
+		return RequestResult::Error(RequestStatus::InvalidResourceState, "The specified input does not support audio.");
 
 	bool hasMul = request.Contains("inputVolumeMul");
 	if (hasMul && !request.ValidateOptionalNumber("inputVolumeMul", statusCode, comment, 0, 20))
@@ -483,6 +539,67 @@ RequestResult RequestHandler::SetInputVolume(const Request& request)
 		inputVolumeMul = obs_db_to_mul(request.RequestData["inputVolumeDb"]);
 
 	obs_source_set_volume(input, inputVolumeMul);
+
+	return RequestResult::Success();
+}
+
+/**
+ * Gets the audio balance of an input.
+ *
+ * @requestField inputName | String | Name of the input to get the audio balance of
+ *
+ * @responseField inputAudioBalance | Number | Audio balance value from 0.0-1.0
+ *
+ * @requestType GetInputAudioBalance
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api requests
+ * @category inputs
+ */
+RequestResult RequestHandler::GetInputAudioBalance(const Request& request)
+{
+	RequestStatus::RequestStatus statusCode;
+	std::string comment;
+	OBSSourceAutoRelease input = request.ValidateInput("inputName", statusCode, comment);
+	if (!input)
+		return RequestResult::Error(statusCode, comment);
+
+	if (!(obs_source_get_output_flags(input) & OBS_SOURCE_AUDIO))
+		return RequestResult::Error(RequestStatus::InvalidResourceState, "The specified input does not support audio.");
+
+	json responseData;
+	responseData["inputAudioBalance"] = obs_source_get_balance_value(input);
+
+	return RequestResult::Success(responseData);
+}
+
+/**
+ * Sets the audio balance of an input.
+ *
+ * @requestField inputName         | String | Name of the input to set the audio balance of
+ * @requestField inputAudioBalance | Number | New audio balance value | >= 0.0, <= 1.0
+ *
+ * @requestType SetInputAudioBalance
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api requests
+ * @category inputs
+ */
+RequestResult RequestHandler::SetInputAudioBalance(const Request& request)
+{
+	RequestStatus::RequestStatus statusCode;
+	std::string comment;
+	OBSSourceAutoRelease input = request.ValidateInput("inputName", statusCode, comment);
+	if (!(input && request.ValidateNumber("inputAudioBalance", statusCode, comment, 0.0, 1.0)))
+		return RequestResult::Error(statusCode, comment);
+
+	if (!(obs_source_get_output_flags(input) & OBS_SOURCE_AUDIO))
+		return RequestResult::Error(RequestStatus::InvalidResourceState, "The specified input does not support audio.");
+
+	float inputAudioBalance = request.RequestData["inputAudioBalance"];
+	obs_source_set_balance_value(input, inputAudioBalance);
 
 	return RequestResult::Success();
 }
@@ -511,6 +628,9 @@ RequestResult RequestHandler::GetInputAudioSyncOffset(const Request& request)
 	if (!input)
 		return RequestResult::Error(statusCode, comment);
 
+	if (!(obs_source_get_output_flags(input) & OBS_SOURCE_AUDIO))
+		return RequestResult::Error(RequestStatus::InvalidResourceState, "The specified input does not support audio.");
+
 	json responseData;
 	//									   Offset is stored in nanoseconds in OBS.
 	responseData["inputAudioSyncOffset"] = obs_source_get_sync_offset(input) / 1000000;
@@ -538,6 +658,9 @@ RequestResult RequestHandler::SetInputAudioSyncOffset(const Request& request)
 	OBSSourceAutoRelease input = request.ValidateInput("inputName", statusCode, comment);
 	if (!(input && request.ValidateNumber("inputAudioSyncOffset", statusCode, comment, -950, 20000)))
 		return RequestResult::Error(statusCode, comment);
+
+	if (!(obs_source_get_output_flags(input) & OBS_SOURCE_AUDIO))
+		return RequestResult::Error(RequestStatus::InvalidResourceState, "The specified input does not support audio.");
 
 	int64_t syncOffset = request.RequestData["inputAudioSyncOffset"];
 	obs_source_set_sync_offset(input, syncOffset * 1000000);
@@ -573,6 +696,9 @@ RequestResult RequestHandler::GetInputAudioMonitorType(const Request& request)
 	if (!input)
 		return RequestResult::Error(statusCode, comment);
 
+	if (!(obs_source_get_output_flags(input) & OBS_SOURCE_AUDIO))
+		return RequestResult::Error(RequestStatus::InvalidResourceState, "The specified input does not support audio.");
+
 	json responseData;
 	responseData["monitorType"] = Utils::Obs::StringHelper::GetInputMonitorType(input);
 
@@ -600,6 +726,12 @@ RequestResult RequestHandler::SetInputAudioMonitorType(const Request& request)
 	if (!(input && request.ValidateString("monitorType", statusCode, comment)))
 		return RequestResult::Error(statusCode, comment);
 
+	if (!(obs_source_get_output_flags(input) & OBS_SOURCE_AUDIO))
+		return RequestResult::Error(RequestStatus::InvalidResourceState, "The specified input does not support audio.");
+
+	if (!obs_audio_monitoring_available())
+		return RequestResult::Error(RequestStatus::InvalidResourceState, "Audio monitoring is not available on this platform.");
+
 	enum obs_monitoring_type monitorType;
 	std::string monitorTypeString = request.RequestData["monitorType"];
 	if (monitorTypeString == "OBS_MONITORING_TYPE_NONE")
@@ -616,30 +748,93 @@ RequestResult RequestHandler::SetInputAudioMonitorType(const Request& request)
 	return RequestResult::Success();
 }
 
-std::vector<json> GetListPropertyItems(obs_property_t *property)
+/**
+ * Gets the enable state of all audio tracks of an input.
+ *
+ * @requestField inputName | String | Name of the input
+ *
+ * @responseField inputAudioTracks | Object | Object of audio tracks and associated enable states
+ *
+ * @requestType GetInputAudioTracks
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api requests
+ * @category inputs
+ */
+RequestResult RequestHandler::GetInputAudioTracks(const Request& request)
 {
-	std::vector<json> ret;
+	RequestStatus::RequestStatus statusCode;
+	std::string comment;
+	OBSSourceAutoRelease input = request.ValidateInput("inputName", statusCode, comment);
+	if (!input)
+		return RequestResult::Error(statusCode, comment);
 
-	enum obs_combo_format itemFormat = obs_property_list_format(property);
-	size_t itemCount = obs_property_list_item_count(property);
+	if (!(obs_source_get_output_flags(input) & OBS_SOURCE_AUDIO))
+		return RequestResult::Error(RequestStatus::InvalidResourceState, "The specified input does not support audio.");
 
-	for (size_t i = 0; i < itemCount; i++) {
-		json itemData;
-		itemData["itemName"] = obs_property_list_item_name(property, i);
-		itemData["itemEnabled"] = !obs_property_list_item_disabled(property, i);
-		if (itemFormat == OBS_COMBO_FORMAT_INT) {
-			itemData["itemValue"] = obs_property_list_item_int(property, i);
-		} else if (itemFormat == OBS_COMBO_FORMAT_FLOAT) {
-			itemData["itemValue"] = obs_property_list_item_float(property, i);
-		} else if (itemFormat == OBS_COMBO_FORMAT_STRING) {
-			itemData["itemValue"] = obs_property_list_item_string(property, i);
-		} else {
-			itemData["itemValue"] = nullptr;
-		}
-		ret.push_back(itemData);
+	long long tracks = obs_source_get_audio_mixers(input);
+
+	json inputAudioTracks;
+	for (long long i = 0; i < MAX_AUDIO_MIXES; i++) {
+		inputAudioTracks[std::to_string(i + 1)] = (bool)((tracks >> i) & 1);
 	}
 
-	return ret;
+	json responseData;
+	responseData["inputAudioTracks"] = inputAudioTracks;
+
+	return RequestResult::Success(responseData);
+}
+
+/**
+ * Sets the enable state of audio tracks of an input.
+ *
+ * @requestField inputName        | String | Name of the input
+ * @requestField inputAudioTracks | Object | Track settings to apply
+ *
+ * @requestType SetInputAudioTracks
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api requests
+ * @category inputs
+ */
+RequestResult RequestHandler::SetInputAudioTracks(const Request& request)
+{
+	RequestStatus::RequestStatus statusCode;
+	std::string comment;
+	OBSSourceAutoRelease input = request.ValidateInput("inputName", statusCode, comment);
+	if (!input || !request.ValidateObject("inputAudioTracks", statusCode, comment))
+		return RequestResult::Error(statusCode, comment);
+
+	if (!(obs_source_get_output_flags(input) & OBS_SOURCE_AUDIO))
+		return RequestResult::Error(RequestStatus::InvalidResourceState, "The specified input does not support audio.");
+
+	json inputAudioTracks = request.RequestData["inputAudioTracks"];
+
+	long long mixers = obs_source_get_audio_mixers(input);
+
+	for (long long i = 0; i < MAX_AUDIO_MIXES; i++) {
+		std::string track = std::to_string(i + 1);
+
+		if (!Utils::Json::Contains(inputAudioTracks, track))
+			continue;
+
+		if (!inputAudioTracks[track].is_boolean())
+			return RequestResult::Error(RequestStatus::InvalidRequestFieldType, "The value of one of your tracks is not a boolean.");
+
+		bool enabled = inputAudioTracks[track];
+
+		if (enabled)
+			mixers |= (1 << i);
+		else
+			mixers &= ~(1 << i);
+	}
+
+	// Decided that checking if tracks have actually changed is unnecessary
+	obs_source_set_audio_mixers(input, mixers);
+
+	return RequestResult::Success();
 }
 
 /**
@@ -677,7 +872,7 @@ RequestResult RequestHandler::GetInputPropertiesListPropertyItems(const Request&
 		return RequestResult::Error(RequestStatus::InvalidResourceType, "The property found is not a list.");
 
 	json responseData;
-	responseData["propertyItems"] = GetListPropertyItems(property);
+	responseData["propertyItems"] = Utils::Obs::ArrayHelper::GetListPropertyItems(property);
 
 	return RequestResult::Success(responseData);
 }

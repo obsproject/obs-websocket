@@ -19,9 +19,25 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include "RequestHandler.h"
 
+/**
+ * Gets the status of the record output.
+ *
+ * @responseField outputActive        | Boolean | Whether the output is active
+ * @responseField ouputPaused         | Boolean | Whether the output is paused
+ * @responseField outputTimecode      | String  | Current formatted timecode string for the output
+ * @responseField outputDuration      | Number  | Current duration in milliseconds for the output
+ * @responseField outputBytes         | Number  | Number of bytes sent by the output
+ *
+ * @requestType GetRecordStatus
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api requests
+ * @category record
+ */
 RequestResult RequestHandler::GetRecordStatus(const Request&)
 {
-	OBSOutputAutoRelease recordOutput = obs_frontend_get_streaming_output();
+	OBSOutputAutoRelease recordOutput = obs_frontend_get_recording_output();
 
 	uint64_t outputDuration = Utils::Obs::NumberHelper::GetOutputDuration(recordOutput);
 
@@ -35,6 +51,16 @@ RequestResult RequestHandler::GetRecordStatus(const Request&)
 	return RequestResult::Success(responseData);
 }
 
+/**
+ * Toggles the status of the record output.
+ *
+ * @requestType ToggleRecord
+ * @complexity 1
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api requests
+ * @category record
+ */
 RequestResult RequestHandler::ToggleRecord(const Request&)
 {
 	json responseData;
@@ -49,6 +75,16 @@ RequestResult RequestHandler::ToggleRecord(const Request&)
 	return RequestResult::Success(responseData);
 }
 
+/**
+ * Starts the record output.
+ *
+ * @requestType StartRecord
+ * @complexity 1
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api requests
+ * @category record
+ */
 RequestResult RequestHandler::StartRecord(const Request&)
 {
 	if (obs_frontend_recording_active())
@@ -60,6 +96,16 @@ RequestResult RequestHandler::StartRecord(const Request&)
 	return RequestResult::Success();
 }
 
+/**
+ * Stops the record output.
+ *
+ * @requestType StopRecord
+ * @complexity 1
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api requests
+ * @category record
+ */
 RequestResult RequestHandler::StopRecord(const Request&)
 {
 	if (!obs_frontend_recording_active())
@@ -71,6 +117,16 @@ RequestResult RequestHandler::StopRecord(const Request&)
 	return RequestResult::Success();
 }
 
+/**
+ * Toggles pause on the record output.
+ *
+ * @requestType ToggleRecordPause
+ * @complexity 1
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api requests
+ * @category record
+ */
 RequestResult RequestHandler::ToggleRecordPause(const Request&)
 {
 	json responseData;
@@ -85,6 +141,16 @@ RequestResult RequestHandler::ToggleRecordPause(const Request&)
 	return RequestResult::Success(responseData);
 }
 
+/**
+ * Pauses the record output.
+ *
+ * @requestType PauseRecord
+ * @complexity 1
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api requests
+ * @category record
+ */
 RequestResult RequestHandler::PauseRecord(const Request&)
 {
 	if (obs_frontend_recording_paused())
@@ -96,6 +162,16 @@ RequestResult RequestHandler::PauseRecord(const Request&)
 	return RequestResult::Success();
 }
 
+/**
+ * Resumes the record output.
+ *
+ * @requestType ResumeRecord
+ * @complexity 1
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api requests
+ * @category record
+ */
 RequestResult RequestHandler::ResumeRecord(const Request&)
 {
 	if (!obs_frontend_recording_paused())
@@ -105,12 +181,4 @@ RequestResult RequestHandler::ResumeRecord(const Request&)
 	obs_frontend_recording_pause(false);
 
 	return RequestResult::Success();
-}
-
-RequestResult RequestHandler::GetRecordDirectory(const Request&)
-{
-	json responseData;
-	responseData["recordDirectory"] = Utils::Obs::StringHelper::GetCurrentRecordOutputPath();
-
-	return RequestResult::Success(responseData);
 }

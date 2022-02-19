@@ -103,6 +103,7 @@ set(obs-websocket_SOURCES
 	src/eventhandler/EventHandler_Outputs.cpp
 	src/eventhandler/EventHandler_SceneItems.cpp
 	src/eventhandler/EventHandler_MediaInputs.cpp
+	src/eventhandler/EventHandler_Ui.cpp
 	src/requesthandler/RequestHandler.cpp
 	src/requesthandler/RequestBatchHandler.cpp
 	src/requesthandler/RequestHandler_General.cpp
@@ -110,10 +111,14 @@ set(obs-websocket_SOURCES
 	src/requesthandler/RequestHandler_Sources.cpp
 	src/requesthandler/RequestHandler_Scenes.cpp
 	src/requesthandler/RequestHandler_Inputs.cpp
+	src/requesthandler/RequestHandler_Transitions.cpp
+	src/requesthandler/RequestHandler_Filters.cpp
 	src/requesthandler/RequestHandler_SceneItems.cpp
+	src/requesthandler/RequestHandler_Outputs.cpp
 	src/requesthandler/RequestHandler_Stream.cpp
 	src/requesthandler/RequestHandler_Record.cpp
 	src/requesthandler/RequestHandler_MediaInputs.cpp
+	src/requesthandler/RequestHandler_Ui.cpp
 	src/requesthandler/rpc/Request.cpp
 	src/requesthandler/rpc/RequestBatchRequest.cpp
 	src/requesthandler/rpc/RequestResult.cpp
@@ -123,7 +128,14 @@ set(obs-websocket_SOURCES
 	src/utils/Crypto.cpp
 	src/utils/Json.cpp
 	src/utils/Obs.cpp
-	src/utils/ObsVolumeMeter.cpp
+	src/utils/Obs_StringHelper.cpp
+	src/utils/Obs_EnumHelper.cpp
+	src/utils/Obs_NumberHelper.cpp
+	src/utils/Obs_ArrayHelper.cpp
+	src/utils/Obs_ObjectHelper.cpp
+	src/utils/Obs_SearchHelper.cpp
+	src/utils/Obs_ActionHelper.cpp
+	src/utils/Obs_VolumeMeter.cpp
 	src/utils/Platform.cpp
 	src/utils/Compat.cpp
 	deps/qr/cpp/QrCode.cpp)
@@ -150,8 +162,8 @@ set(obs-websocket_HEADERS
 	src/utils/Crypto.h
 	src/utils/Json.h
 	src/utils/Obs.h
-	src/utils/ObsVolumeMeter.h
-	src/utils/ObsVolumeMeter_Helpers.h
+	src/utils/Obs_VolumeMeter.h
+	src/utils/Obs_VolumeMeter_Helpers.h
 	src/utils/Platform.h
 	src/utils/Compat.h
 	src/utils/Utils.h

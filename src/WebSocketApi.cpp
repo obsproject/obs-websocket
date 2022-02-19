@@ -16,8 +16,7 @@ WebSocketApi::Vendor *get_vendor(calldata_t *cd)
 	return static_cast<WebSocketApi::Vendor*>(voidVendor);
 }
 
-WebSocketApi::WebSocketApi(EventCallback cb) :
-	_eventCallback(cb)
+WebSocketApi::WebSocketApi()
 {
 	blog_debug("[WebSocketApi::WebSocketApi] Setting up...");
 
@@ -48,6 +47,11 @@ WebSocketApi::~WebSocketApi()
 	}
 
 	blog_debug("[WebSocketApi::~WebSocketApi] Finished.");
+}
+
+void WebSocketApi::SetEventCallback(EventCallback cb)
+{
+	_eventCallback = cb;
 }
 
 enum WebSocketApi::RequestReturnCode WebSocketApi::PerformVendorRequest(std::string vendorName, std::string requestType, obs_data_t *requestData, obs_data_t *responseData)
@@ -195,6 +199,9 @@ void WebSocketApi::vendor_event_emit_cb(void *priv_data, calldata_t *cd)
 	}
 
 	auto eventData = static_cast<obs_data_t*>(voidEventData);
+
+	if (!c->_eventCallback)
+		RETURN_FAILURE();
 
 	c->_eventCallback(v->_name, eventType, eventData);
 

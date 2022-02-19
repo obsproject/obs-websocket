@@ -8,7 +8,7 @@
 
 WebSocket API for OBS Studio.
 
-[![CI Multiplatform Build](https://github.com/obsproject/obs-websocket/actions/workflows/main.yml/badge.svg?branch=master)](https://github.com/obs-websocket/obs-websocket/actions/workflows/main.yml)
+[![CI Multiplatform Build](https://github.com/obsproject/obs-websocket/actions/workflows/main.yml/badge.svg?branch=master)](https://github.com/obsproject/obs-websocket/actions/workflows/main.yml)
 [![Discord](https://img.shields.io/discord/715691013825364120.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/WBaSQ3A)
 [![Financial Contributors on Open Collective](https://opencollective.com/obs-websocket-dev/all/badge.svg?label=financial+contributors)](https://opencollective.com/obs-websocket-dev)
 
@@ -30,7 +30,7 @@ It is **highly recommended** to protect obs-websocket with a password against un
 
 ### Client software
 
-- (No known clients supporting 5.0.0 at the moment. Send a message in Discord if you have one!)
+- (No known clients supporting 5.0.0 at the moment. Ping us in the Discord if you have one!)
 
 ### Client libraries (for developers)
 
@@ -39,10 +39,10 @@ Here's a list of available language APIs for obs-websocket:
 - Python 3.7+ (Asyncio): [simpleobsws](https://github.com/IRLToolkit/simpleobsws/tree/master) by IRLToolkit
 - Rust: [obws](https://github.com/dnaka91/obws/tree/v5-api) by dnaka91
 
-The server is a typical Websockets server running by default on port 4444 (the port number can be changed in the Settings dialog under `Tools`).
+The 5.x server is a typical WebSocket server running by default on port 4455 (the port number can be changed in the Settings dialog under `Tools`).
 The protocol we use is documented in [PROTOCOL.md](docs/generated/protocol.md).
 
-We'd like to know what you're building with or for obs-websocket. If you do something in this fashion, feel free to drop a message in `#project-showoff` in the [discord server!](https://discord.gg/WBaSQ3A)
+We'd like to know what you're building with obs-websocket! If you do something in this fashion, feel free to drop a message in `#project-showoff` in the [discord server!](https://discord.gg/WBaSQ3A)
 
 ## Contributors
 

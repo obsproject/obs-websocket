@@ -34,23 +34,3 @@ void EventHandler::HandleExitStarted()
 {
 	BroadcastEvent(EventSubscription::General, "ExitStarted");
 }
-
-/**
- * Studio mode has been enabled or disabled.
- *
- * @dataField studioModeEnabled | Boolean | True == Enabled, False == Disabled
- *
- * @eventType StudioModeStateChanged
- * @eventSubscription General
- * @complexity 1
- * @rpcVersion -1
- * @initialVersion 5.0.0
- * @category general
- * @api events
- */
-void EventHandler::HandleStudioModeStateChanged(bool enabled)
-{
-	json eventData;
-	eventData["studioModeEnabled"] = enabled;
-	BroadcastEvent(EventSubscription::General, "StudioModeStateChanged", eventData);
-}

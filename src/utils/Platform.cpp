@@ -111,9 +111,9 @@ void Utils::Platform::SendTrayNotification(QSystemTrayIcon::MessageIcon icon, QS
 
 	obs_queue_task(OBS_TASK_UI, [](void* param) {
 		void *systemTrayPtr = obs_frontend_get_system_tray();
-		auto systemTray = reinterpret_cast<QSystemTrayIcon*>(systemTrayPtr);
+		auto systemTray = static_cast<QSystemTrayIcon*>(systemTrayPtr);
 
-		auto notification = reinterpret_cast<SystemTrayNotification*>(param);
+		auto notification = static_cast<SystemTrayNotification*>(param);
 		systemTray->showMessage(notification->title, notification->body, notification->icon);
 		delete notification;
 	}, (void*)notification, false);

@@ -22,6 +22,6 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include "Crypto.h"
 #include "Json.h"
 #include "Obs.h"
-#include "ObsVolumeMeter.h"
+#include "Obs_VolumeMeter.h"
 #include "Platform.h"
 #include "Compat.h"

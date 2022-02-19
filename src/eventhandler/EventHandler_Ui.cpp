@@ -19,3 +19,22 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include "EventHandler.h"
 
+/**
+ * Studio mode has been enabled or disabled.
+ *
+ * @dataField studioModeEnabled | Boolean | True == Enabled, False == Disabled
+ *
+ * @eventType StudioModeStateChanged
+ * @eventSubscription Ui
+ * @complexity 1
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @category ui
+ * @api events
+ */
+void EventHandler::HandleStudioModeStateChanged(bool enabled)
+{
+	json eventData;
+	eventData["studioModeEnabled"] = enabled;
+	BroadcastEvent(EventSubscription::Ui, "StudioModeStateChanged", eventData);
+}

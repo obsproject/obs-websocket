@@ -332,6 +332,30 @@ namespace RequestStatus {
 		* @api enums
 		*/
 		InvalidInputKind = 605,
+		/**
+		* The resource does not support being configured.
+		*
+		* This is particularly relevant to transitions, where they do not always have changeable settings.
+		*
+		* @enumIdentifier ResourceNotConfigurable
+		* @enumValue 606
+		* @enumType RequestStatus
+		* @rpcVersion -1
+		* @initialVersion 5.0.0
+		* @api enums
+		*/
+		ResourceNotConfigurable = 606,
+		/**
+		* The specified filter (obs_source_t-OBS_SOURCE_TYPE_FILTER) had the wrong kind.
+		*
+		* @enumIdentifier InvalidFilterKind
+		* @enumValue 607
+		* @enumType RequestStatus
+		* @rpcVersion -1
+		* @initialVersion 5.0.0
+		* @api enums
+		*/
+		InvalidFilterKind = 607,
 
 		/**
 		* Creating the resource failed.

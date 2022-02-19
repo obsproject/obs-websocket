@@ -21,7 +21,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include "Platform.h"
 #include "../plugin-macros.generated.h"
 
-bool Utils::Json::JsonArrayIsValidObsArray(json j)
+bool Utils::Json::JsonArrayIsValidObsArray(const json &j)
 {
 	for (auto it : j) {
 		if (!it.is_object())
@@ -191,7 +191,7 @@ bool Utils::Json::GetJsonFileContent(std::string fileName, json &content)
 	return true;
 }
 
-bool Utils::Json::SetJsonFileContent(std::string fileName, json content, bool createNew)
+bool Utils::Json::SetJsonFileContent(std::string fileName, const json &content, bool createNew)
 {
 	std::string textContent = content.dump(2);
 	return Utils::Platform::SetTextFileContent(fileName, textContent, createNew);

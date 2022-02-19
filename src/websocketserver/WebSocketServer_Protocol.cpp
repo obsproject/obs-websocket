@@ -233,7 +233,7 @@ void WebSocketServer::ProcessMessage(SessionPtr session, WebSocketServer::Proces
 					return;
 				}
 
-				uint8_t requestedExecutionType = payloadData["executionType"];
+				int8_t requestedExecutionType = payloadData["executionType"];
 				if (!RequestBatchExecutionType::IsValid(requestedExecutionType) || requestedExecutionType == RequestBatchExecutionType::None) {
 					ret.closeCode = WebSocketCloseCode::InvalidDataFieldValue;
 					ret.closeReason = "Your `executionType` has an invalid value.";
@@ -296,7 +296,7 @@ void WebSocketServer::ProcessMessage(SessionPtr session, WebSocketServer::Proces
 			} return;
 		default:
 			ret.closeCode = WebSocketCloseCode::UnknownOpCode;
-			ret.closeReason = std::string("Unknown OpCode: %s") + std::to_string(opCode);
+			ret.closeReason = std::string("Unknown OpCode: ") + std::to_string(opCode);
 			return;
 	}
 }

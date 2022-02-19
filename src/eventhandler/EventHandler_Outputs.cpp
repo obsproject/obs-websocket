@@ -19,21 +19,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include "EventHandler.h"
 
-#define CASE(x) case x: return #x;
-
-std::string GetOutputStateString(ObsOutputState state) {
-	switch (state) {
-		default:
-		CASE(OBS_WEBSOCKET_OUTPUT_STARTING)
-		CASE(OBS_WEBSOCKET_OUTPUT_STARTED)
-		CASE(OBS_WEBSOCKET_OUTPUT_STOPPING)
-		CASE(OBS_WEBSOCKET_OUTPUT_STOPPED)
-		CASE(OBS_WEBSOCKET_OUTPUT_PAUSED)
-		CASE(OBS_WEBSOCKET_OUTPUT_RESUMED)
-	}
-}
-
-bool GetOutputStateActive(ObsOutputState state) {
+static bool GetOutputStateActive(ObsOutputState state) {
 	switch(state) {
 		case OBS_WEBSOCKET_OUTPUT_STARTED:
 		case OBS_WEBSOCKET_OUTPUT_RESUMED:
@@ -48,38 +34,107 @@ bool GetOutputStateActive(ObsOutputState state) {
 	}
 }
 
+/**
+ * The state of the stream output has changed.
+ *
+ * @dataField outputActive | Boolean | Whether the output is active
+ * @dataField outputState  | String  | The specific state of the output
+ *
+ * @eventType StreamStateChanged
+ * @eventSubscription Outputs
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api events
+ * @category outputs
+ */
 void EventHandler::HandleStreamStateChanged(ObsOutputState state)
 {
 	json eventData;
 	eventData["outputActive"] = GetOutputStateActive(state);
-	eventData["outputState"] = GetOutputStateString(state);
+	eventData["outputState"] = Utils::Obs::StringHelper::GetOutputState(state);
 	BroadcastEvent(EventSubscription::Outputs, "StreamStateChanged", eventData);
 }
 
+/**
+ * The state of the record output has changed.
+ *
+ * @dataField outputActive | Boolean | Whether the output is active
+ * @dataField outputState  | String  | The specific state of the output
+ *
+ * @eventType RecordStateChanged
+ * @eventSubscription Outputs
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api events
+ * @category outputs
+ */
 void EventHandler::HandleRecordStateChanged(ObsOutputState state)
 {
 	json eventData;
 	eventData["outputActive"] = GetOutputStateActive(state);
-	eventData["outputState"] = GetOutputStateString(state);
+	eventData["outputState"] = Utils::Obs::StringHelper::GetOutputState(state);
 	BroadcastEvent(EventSubscription::Outputs, "RecordStateChanged", eventData);
 }
 
+/**
+ * The state of the replay buffer output has changed.
+ *
+ * @dataField outputActive | Boolean | Whether the output is active
+ * @dataField outputState  | String  | The specific state of the output
+ *
+ * @eventType ReplayBufferStateChanged
+ * @eventSubscription Outputs
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api events
+ * @category outputs
+ */
 void EventHandler::HandleReplayBufferStateChanged(ObsOutputState state)
 {
 	json eventData;
 	eventData["outputActive"] = GetOutputStateActive(state);
-	eventData["outputState"] = GetOutputStateString(state);
+	eventData["outputState"] = Utils::Obs::StringHelper::GetOutputState(state);
 	BroadcastEvent(EventSubscription::Outputs, "ReplayBufferStateChanged", eventData);
 }
 
+/**
+ * The state of the virtualcam output has changed.
+ *
+ * @dataField outputActive | Boolean | Whether the output is active
+ * @dataField outputState  | String  | The specific state of the output
+ *
+ * @eventType VirtualcamStateChanged
+ * @eventSubscription Outputs
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api events
+ * @category outputs
+ */
 void EventHandler::HandleVirtualcamStateChanged(ObsOutputState state)
 {
 	json eventData;
 	eventData["outputActive"] = GetOutputStateActive(state);
-	eventData["outputState"] = GetOutputStateString(state);
+	eventData["outputState"] = Utils::Obs::StringHelper::GetOutputState(state);
 	BroadcastEvent(EventSubscription::Outputs, "VirtualcamStateChanged", eventData);
 }
 
+/**
+ * The replay buffer has been saved.
+ *
+ * @dataField savedReplayPath | String | Path of the saved replay file
+ *
+ * @eventType ReplayBufferSaved
+ * @eventSubscription Outputs
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api events
+ * @category outputs
+ */
 void EventHandler::HandleReplayBufferSaved()
 {
 	json eventData;
