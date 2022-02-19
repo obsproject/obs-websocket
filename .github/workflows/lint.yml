@@ -1,4 +1,4 @@
-name: Code Quality Linting
+name: Code Quality
 
 on:
   push:
