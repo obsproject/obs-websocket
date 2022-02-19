@@ -1,0 +1,132 @@
+name: "Report a Bug/Crash/Freeze"
+title: "Replace Me Or Have Your Report Closed"
+description: "Encountered a problem, a bug or a crash?"
+labels: ["type:bug", "status:help-wanted"]
+body:
+- type: dropdown
+  attributes:
+    label: "Operating System"
+    description: "What Operating System do you use for OBS Studio and StreamFX? Select 'Other' if your Operating System is not listed"
+    options:
+      - "Windows 10 1903 and higher"
+      - "MacOS 10.15 and higher"
+      - "Linux (like Debian/Ubuntu)"
+      - "Linux (like Arch Linux)"
+      - "Linux (like FreeBSD)"
+      - "(Other)"
+  validations:
+    required: true
+- type: dropdown
+  attributes:
+    label: "OBS Studio Version?"
+    description: "Which OBS Studio version are you using to run StreamFX? Versions include all patches (the third element in 'A.B.C'), and release candidates for that version. Select 'Other' if you are using a custom build."
+    options:
+      - "27.1"
+      - "27.0"
+      - "26.1"
+      - "26.0"
+      - "25.0"
+      - "(Other)"
+  validations:
+    required: true
+- type: dropdown
+  attributes:
+    label: "StreamFX Version"
+    description: "On which StreamFX version did you first encounter this issue?"
+    options:
+      - "0.11.0c1"
+      - "0.11.0b3"
+      - "0.11.0b2"
+      - "0.11.0b1"
+      - "0.11.0a8"
+      - "0.11.0a7"
+      - "0.11.0a6"
+      - "0.11.0a5"
+      - "0.11.0a4"
+      - "0.11.0a3"
+      - "0.11.0a2"
+      - "0.11.0a1"
+      - "0.10.1"
+      - "0.10.0"
+      - "0.10.0b3"
+      - "0.10.0b2"
+      - "0.10.0b1"
+      - "0.10.0a2"
+      - "0.10.0a1"
+      - "0.10.0a0"
+      - "0.9.3"
+      - "0.9.2"
+      - "0.9.1"
+      - "0.9.0"
+      - "0.9.0a3"
+      - "0.9.0a2"
+      - "0.9.0a1"
+      - "0.8.3"
+      - "0.8.2"
+      - "0.8.1"
+      - "0.8.0"
+      - "0.8.0b3"
+      - "0.8.0b2"
+      - "0.8.0b2hf2"
+      - "0.8.0b2hf1"
+      - "0.8.0b1"
+      - "0.8.0a4"
+      - "0.8.0a3"
+      - "0.8.0a2"
+      - "0.8.0a1"
+      - "0.7.2"
+      - "0.7.1"
+      - "0.7.0"
+      - "0.6.3"
+      - "0.6.2"
+      - "0.6.1"
+      - "0.6.0"
+      - "0.5.2"
+      - "0.5.1"
+      - "0.5.0"
+      - "0.5.0preview3"
+      - "0.5.0preview2"
+      - "0.5.0preview1"
+      - "0.4.3"
+      - "0.4.3preview1"
+      - "0.4.2"
+      - "0.4.1"
+      - "0.4.0"
+      - "0.3.0"
+      - "0.2.0"
+      - "0.1.1"
+      - "0.1.0"
+  validations:
+    required: true
+- type: input
+  attributes:
+    label: "OBS Studio Log"
+    description: "Upload a normal log file that showcases the issue happening. If you encountered a crash, also fill out the next field."
+  validations:
+    required: true
+- type: textarea
+  attributes:
+    label: "OBS Studio Crash Log"
+    description: "If OBS Studio crashed (not froze) paste the crash log here, or upload it somewhere and paste the link here."
+- type: textarea
+  attributes:
+    label: "Current Behavior"
+    description: "What actually happened when you used StreamFX?"
+  validations:
+    required: true
+- type: textarea
+  attributes:
+    label: "Expected Behavior"
+    description: "What did you expect to happen when using StreamFX?"
+  validations:
+    required: true
+- type: textarea
+  attributes:
+    label: "Steps to Reproduce the Bug"
+    description: "What steps are required to consistently reproduce the bug/crash/freeze?"
+  validations:
+    required: true
+- type: textarea
+  attributes:
+    label: "Any additional Information we need to know?"
+    description: "If you answered '(Other)' to any system relevant information, explain what you mean by that here."

@@ -1,12 +1,18 @@
-[submodule "deps/websocketpp"]
-	path = deps/websocketpp
-	url = https://github.com/zaphoyd/websocketpp.git
-[submodule "deps/asio"]
-	path = deps/asio
-	url = https://github.com/chriskohlhoff/asio.git
-[submodule "deps/json"]
-	path = deps/json
-	url = https://github.com/nlohmann/json.git
-[submodule "deps/qr"]
-	path = deps/qr
-	url = https://github.com/nayuki/QR-Code-generator.git
+[submodule "plugins/win-dshow/libdshowcapture"]
+	path = plugins/win-dshow/libdshowcapture
+	url = https://github.com/obsproject/libdshowcapture.git
+[submodule "plugins/mac-syphon/syphon-framework"]
+	path = plugins/mac-syphon/syphon-framework
+	url = https://github.com/palana/Syphon-Framework.git
+[submodule "plugins/enc-amf"]
+	path = plugins/enc-amf
+	url = https://github.com/obsproject/obs-amd-encoder.git
+[submodule "plugins/obs-browser"]
+	path = plugins/obs-browser
+	url = https://github.com/obsproject/obs-browser.git
+[submodule "plugins/obs-vst"]
+	path = plugins/obs-vst
+	url = https://github.com/obsproject/obs-vst.git
+[submodule "plugins/obs-outputs/ftl-sdk"]
+	path = plugins/obs-outputs/ftl-sdk
+	url = https://github.com/Mixer/ftl-sdk.git

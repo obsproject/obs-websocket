@@ -1,0 +1,42 @@
+name: Authors
+on: workflow_dispatch
+
+jobs:
+  update-authors:
+    runs-on: ubuntu-20.04
+    name: "Update Authors"
+    steps:
+    - name: "Checkout"
+      uses: actions/checkout@v2
+    - name: "Configure"
+      shell: bash
+      run: |
+        git config --global user.name 'GitHub Actions'
+        git config --global user.email 'xaymar@users.noreply.github.com'
+        git config pull.ff only
+        git config pull.rebase true
+    - name: "Remotes"
+      shell: bash
+      run: |
+        git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+        git fetch --all
+    - name: "Dependencies"
+      shell: bash
+      run: |
+        sudo apt-get -qq update
+        sudo apt-get install nodejs npm
+    - name: "Generate Authors file"
+      shell: bash
+      env:
+        CROWDIN_PROJECTID: "343435"
+        CROWDIN_TOKEN: ${{ secrets.AUTH_TOKEN_CROWDIN }}
+        GITHUB_TOKEN: ${{ secrets.AUTH_TOKEN_GITHUB }}
+      run: |
+        git checkout -b authors
+        pushd ./tools > /dev/null
+        npm install
+        node ./generate-contributors.js "${{ github.workspace }}/AUTHORS.md" "${{ github.workspace }}/data/thanks.json"
+        popd > /dev/null
+        git add .
+        git commit -a -m "project: Update Contributors and Supporters"
+        git push -f --set-upstream origin authors

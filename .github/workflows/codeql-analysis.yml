@@ -1,0 +1,125 @@
+# For most projects, this workflow file will not need changing; you simply need
+# to commit it to your repository.
+#
+# You may wish to alter this file to override the set of languages analyzed,
+# or to provide custom queries or build logic.
+#
+# ******** NOTE ********
+# We have attempted to detect the languages in your repository. Please check
+# the `language` matrix defined below to confirm you have the correct set of
+# supported CodeQL languages.
+#
+name: "CodeQL"
+
+on:
+  push:
+    branches:
+      - '*'
+      - '!i18n_master'
+      - '!l10n_master'
+  pull_request:
+    # The branches below must be a subset of the branches above
+    branches: [ master ]
+  schedule:
+    - cron: '37 20 * * 4'
+
+env:
+  OBS_VERSION: "27.0.0-ci"
+
+jobs:
+  analyze:
+    name: Analyze
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [ 'cpp' ]
+        # CodeQL supports [ 'cpp', 'csharp', 'go', 'java', 'javascript', 'python' ]
+        # Learn more:
+        # https://docs.github.com/en/free-pro-team@latest/github/finding-security-vulnerabilities-and-errors-in-your-code/configuring-code-scanning#changing-the-languages-that-are-analyzed
+
+    steps:
+    - name: "Clone"
+      uses: actions/checkout@v2
+      with:
+        submodules: recursive
+        fetch-depth: 0
+
+    # Initializes the CodeQL tools for scanning.
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v1
+      with:
+        languages: ${{ matrix.language }}
+        # If you wish to specify custom queries, you can do so here or in a config file.
+        # By default, queries listed here will override any specified in a config file.
+        # Prefix the list here with "+" to use these queries and those in the config file.
+        # queries: ./path/to/local/query, your-org/your-repo/queries@main
+
+    # Autobuild attempts to build any compiled languages  (C/C++, C#, or Java).
+    # If this step fails, then you should remove it and run the build manually (see below)
+    #- name: Autobuild
+    #  uses: github/codeql-action/autobuild@v1
+
+    # ℹ️ Command-line programs to run using the OS shell.
+    # 📚 https://git.io/JvXDl
+
+    # ✏️ If the Autobuild fails above, remove it and uncomment the following three lines
+    #    and modify them (or add more) to build your code if your project
+    #    uses a compiled language
+
+    #- run: |
+    #   make bootstrap
+    #   make release
+
+    - name: "Prerequisites: Apt-Get"
+      shell: bash
+      run: |
+        sudo apt-get -qq update
+        sudo apt-get purge libjpeg9-dev:amd64 libjpeg8-dev:amd64 libjpeg-turbo8-dev:amd64
+        sudo apt-get install \
+          build-essential \
+          checkinstall \
+          pkg-config \
+          cmake \
+          ninja-build \
+          git \
+          gcc-9 g++9 \
+          qt5-default libqwt-qt5-dev libqt5svg5-dev \
+          libavcodec-dev libavdevice-dev libavfilter-dev libavformat-dev libavutil-dev libswresample-dev libswscale-dev \
+          libcurl4-openssl-dev
+        sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 800 --slave /usr/bin/g++ g++ /usr/bin/g++-9
+
+    - name: "libobs: Cache"
+      uses: actions/cache@v2
+      with:
+        path: |
+          build/temp/libobs-download
+          build/temp/libobs-build
+          build/temp/libobs-src
+        key: libobs-codeql-${{ env.OBS_VERSION }}-${{ env.DOWNLOAD_OBS_HASH }}-${{ secrets.CACHE_VERSION }}
+
+    - name: "StreamFX: Configure"
+      shell: bash
+      run: |
+        cmake -H. -B"build/temp" \
+          -DCMAKE_VERBOSE_MAKEFILE=ON \
+          -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+          -DCMAKE_INSTALL_PREFIX="build/distrib" \
+          -DENABLE_FILTER_NVIDIA_FACE_TRACKING=FALSE \
+          -DPACKAGE_NAME="streamfx-${{ matrix.id }}" \
+          -DPACKAGE_PREFIX="build/package" \
+          -DDOWNLOAD_OBS_URL="https://github.com/Xaymar/obs-studio/releases/download/${{ env.OBS_VERSION }}/obs-studio-x64-0.0.0.0-ubuntu-x86-64.7z" \
+          -DDOWNLOAD_OBS_HASH="SHA256=0AF6C7262C37D80C24CB18523A851FD765C04E766D8EB0F4AC0F6E75D13A035F"
+
+    - name: "StreamFX: Build"
+      shell: bash
+      run: |
+        cmake --build "build/temp" --config RelWithDebInfo --target install
+
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v1

@@ -1,0 +1,57 @@
+name: Validation
+
+on:
+  pull_request:
+    branches:
+      - '*'
+  push:
+    tags:
+      - '*'
+
+jobs:
+  clang-format:
+    name: "clang-format"
+    runs-on: ubuntu-20.04
+    env:
+      CC: clang
+      CXX: clang++
+      CMAKE_GENERATOR: "Ninja"
+    steps:
+    - name: "Clone Repository"
+      uses: actions/checkout@v1
+    - name: "Submodules & Packages"
+      shell: bash
+      run: |
+        git submodule update --init --recursive
+        sudo apt-get -qq update
+        sudo apt-get purge libjpeg9-dev:amd64 libjpeg8-dev:amd64 libjpeg-turbo8-dev:amd64
+        sudo apt-get install \
+          build-essential \
+          cmake \
+          ninja-build \
+          git \
+          qt5-default libqwt-qt5-dev libqt5svg5-dev \
+          libavcodec-dev libavdevice-dev libavfilter-dev libavformat-dev libavutil-dev libswresample-dev libswscale-dev \
+          libcurl4-openssl-dev \
+          checkinstall pkg-config
+        sudo bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)"
+    - name: "Cache: Prerequisites"
+      uses: actions/cache@v2
+      with:
+        path: |
+          build/temp/libobs-download/libobs-download-prefix/src/libobs.7z
+        key: ubuntu-20.04
+    - name: "Configure & Format Project"
+      shell: bash
+      run: |
+        cmake -H. -B"build/temp" \
+          -DCMAKE_INSTALL_PREFIX="build/distrib" \
+          -DCMAKE_PACKAGE_NAME="streamfx-${{ matrix.id }}" -DCMAKE_PACKAGE_PREFIX="build/package" \
+          -DENABLE_CLANG=TRUE -DENABLE_FILTER_NVIDIA_FACE_TRACKING=FALSE
+        cmake --build "build/temp" --config RelWithDebInfo --target StreamFX_CLANG-FORMAT
+    - name: "Validate Formatting"
+      shell: bash
+      run: |
+        git --no-pager diff --patch --minimal HEAD --
+        git update-index --refresh
+        git diff-index --quiet HEAD --
