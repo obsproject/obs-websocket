@@ -1282,12 +1282,15 @@ Subscription value to receive the `SceneItemTransformChanged` high-volume event.
 - [Transitions](#transitions)
   - [CurrentSceneTransitionChanged](#currentscenetransitionchanged)
   - [CurrentSceneTransitionDurationChanged](#currentscenetransitiondurationchanged)
+  - [SceneTransitionStarted](#scenetransitionstarted)
+  - [SceneTransitionEnded](#scenetransitionended)
+  - [SceneTransitionVideoEnded](#scenetransitionvideoended)
 - [Filters](#filters)
+  - [SourceFilterListReindexed](#sourcefilterlistreindexed)
   - [SourceFilterCreated](#sourcefiltercreated)
   - [SourceFilterRemoved](#sourcefilterremoved)
-  - [SourceFilterListReindexed](#sourcefilterlistreindexed)
-  - [SourceFilterEnableStateChanged](#sourcefilterenablestatechanged)
   - [SourceFilterNameChanged](#sourcefilternamechanged)
+  - [SourceFilterEnableStateChanged](#sourcefilterenablestatechanged)
 - [Scene Items](#scene-items)
   - [SceneItemCreated](#sceneitemcreated)
   - [SceneItemRemoved](#sceneitemremoved)
@@ -1785,7 +1788,7 @@ A high-volume event providing volume levels of all active inputs every 50 millis
 
 The current scene transition has changed.
 
-- Complexity Rating: `3/5`
+- Complexity Rating: `2/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
@@ -1812,7 +1815,83 @@ The current scene transition duration has changed.
 | Name | Type  | Description |
 | ---- | :---: | ----------- |
 | transitionDuration | Number | Transition duration in milliseconds |
+
+---
+
+### SceneTransitionStarted
+
+A scene transition has started.
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Data Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| transitionName | String | Scene transition name |
+
+---
+
+### SceneTransitionEnded
+
+A scene transition has completed fully.
+
+Note: Does not appear to trigger when the transition is interrupted by the user.
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Data Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| transitionName | String | Scene transition name |
+
+---
+
+### SceneTransitionVideoEnded
+
+A scene transition's video has completed fully.
+
+Useful for stinger transitions to tell when the video *actually* ends.
+`SceneTransitionEnded` only signifies the cut point, not the completion of transition playback.
+
+Note: Appears to be called by every transition, regardless of relevance.
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Data Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| transitionName | String | Scene transition name |
 ## Filters
+
+### SourceFilterListReindexed
+
+A source's filter list has been reindexed.
+
+- Complexity Rating: `3/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Data Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| sourceName | String | Name of the source |
+| filters | Array&lt;Object&gt; | Array of filter objects |
+
+---
 
 ### SourceFilterCreated
 
@@ -1854,11 +1933,11 @@ A filter has been removed from a source.
 
 ---
 
-### SourceFilterListReindexed
+### SourceFilterNameChanged
 
-A source's filter list has been reindexed.
+The name of a source filter has changed.
 
-- Complexity Rating: `3/5`
+- Complexity Rating: `2/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
@@ -1867,8 +1946,9 @@ A source's filter list has been reindexed.
 
 | Name | Type  | Description |
 | ---- | :---: | ----------- |
-| sourceName | String | Name of the source |
-| filters | Array&lt;Object&gt; | Array of filter objects |
+| sourceName | String | The source the filter is on |
+| oldFilterName | String | Old name of the filter |
+| filterName | String | New name of the filter |
 
 ---
 
@@ -1888,25 +1968,6 @@ A source filter's enable state has changed.
 | sourceName | String | Name of the source the filter is on |
 | filterName | String | Name of the filter |
 | filterEnabled | Boolean | Whether the filter is enabled |
-
----
-
-### SourceFilterNameChanged
-
-The name of a source filter has changed.
-
-- Complexity Rating: `2/5`
-- Latest Supported RPC Version: `1`
-- Added in v5.0.0
-
-
-**Data Fields:**
-
-| Name | Type  | Description |
-| ---- | :---: | ----------- |
-| sourceName | String | The source the filter is on |
-| oldFilterName | String | Old name of the filter |
-| filterName | String | New name of the filter |
 ## Scene Items
 
 ### SceneItemCreated

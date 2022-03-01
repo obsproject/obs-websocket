@@ -4289,6 +4289,28 @@
       ]
     },
     {
+      "description": "A source's filter list has been reindexed.",
+      "eventType": "SourceFilterListReindexed",
+      "eventSubscription": "Filters",
+      "complexity": 3,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "filters",
+      "dataFields": [
+        {
+          "valueName": "sourceName",
+          "valueType": "String",
+          "valueDescription": "Name of the source"
+        },
+        {
+          "valueName": "filters",
+          "valueType": "Array<Object>",
+          "valueDescription": "Array of filter objects"
+        }
+      ]
+    },
+    {
       "description": "A filter has been added to a source.",
       "eventType": "SourceFilterCreated",
       "eventSubscription": "Filters",
@@ -4353,10 +4375,10 @@
       ]
     },
     {
-      "description": "A source's filter list has been reindexed.",
-      "eventType": "SourceFilterListReindexed",
+      "description": "The name of a source filter has changed.",
+      "eventType": "SourceFilterNameChanged",
       "eventSubscription": "Filters",
-      "complexity": 3,
+      "complexity": 2,
       "rpcVersion": "1",
       "deprecated": false,
       "initialVersion": "5.0.0",
@@ -4365,12 +4387,17 @@
         {
           "valueName": "sourceName",
           "valueType": "String",
-          "valueDescription": "Name of the source"
+          "valueDescription": "The source the filter is on"
         },
         {
-          "valueName": "filters",
-          "valueType": "Array<Object>",
-          "valueDescription": "Array of filter objects"
+          "valueName": "oldFilterName",
+          "valueType": "String",
+          "valueDescription": "Old name of the filter"
+        },
+        {
+          "valueName": "filterName",
+          "valueType": "String",
+          "valueDescription": "New name of the filter"
         }
       ]
     },
@@ -4398,33 +4425,6 @@
           "valueName": "filterEnabled",
           "valueType": "Boolean",
           "valueDescription": "Whether the filter is enabled"
-        }
-      ]
-    },
-    {
-      "description": "The name of a source filter has changed.",
-      "eventType": "SourceFilterNameChanged",
-      "eventSubscription": "Filters",
-      "complexity": 2,
-      "rpcVersion": "1",
-      "deprecated": false,
-      "initialVersion": "5.0.0",
-      "category": "filters",
-      "dataFields": [
-        {
-          "valueName": "sourceName",
-          "valueType": "String",
-          "valueDescription": "The source the filter is on"
-        },
-        {
-          "valueName": "oldFilterName",
-          "valueType": "String",
-          "valueDescription": "Old name of the filter"
-        },
-        {
-          "valueName": "filterName",
-          "valueType": "String",
-          "valueDescription": "New name of the filter"
         }
       ]
     },
@@ -5179,7 +5179,7 @@
       "description": "The current scene transition has changed.",
       "eventType": "CurrentSceneTransitionChanged",
       "eventSubscription": "Transitions",
-      "complexity": 3,
+      "complexity": 2,
       "rpcVersion": "1",
       "deprecated": false,
       "initialVersion": "5.0.0",
@@ -5206,6 +5206,57 @@
           "valueName": "transitionDuration",
           "valueType": "Number",
           "valueDescription": "Transition duration in milliseconds"
+        }
+      ]
+    },
+    {
+      "description": "A scene transition has started.",
+      "eventType": "SceneTransitionStarted",
+      "eventSubscription": "Transitions",
+      "complexity": 2,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "transitions",
+      "dataFields": [
+        {
+          "valueName": "transitionName",
+          "valueType": "String",
+          "valueDescription": "Scene transition name"
+        }
+      ]
+    },
+    {
+      "description": "A scene transition has completed fully.\n\nNote: Does not appear to trigger when the transition is interrupted by the user.",
+      "eventType": "SceneTransitionEnded",
+      "eventSubscription": "Transitions",
+      "complexity": 2,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "transitions",
+      "dataFields": [
+        {
+          "valueName": "transitionName",
+          "valueType": "String",
+          "valueDescription": "Scene transition name"
+        }
+      ]
+    },
+    {
+      "description": "A scene transition's video has completed fully.\n\nUseful for stinger transitions to tell when the video *actually* ends.\n`SceneTransitionEnded` only signifies the cut point, not the completion of transition playback.\n\nNote: Appears to be called by every transition, regardless of relevance.",
+      "eventType": "SceneTransitionVideoEnded",
+      "eventSubscription": "Transitions",
+      "complexity": 2,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "transitions",
+      "dataFields": [
+        {
+          "valueName": "transitionName",
+          "valueType": "String",
+          "valueDescription": "Scene transition name"
         }
       ]
     },
