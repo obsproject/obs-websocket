@@ -176,6 +176,7 @@ void EventHandler::ConnectSourceSignals(obs_source_t *source) // Applies to inpu
 	// Transitions
 	if (sourceType == OBS_SOURCE_TYPE_TRANSITION) {
 		signal_handler_connect(sh, "transition_start", HandleSceneTransitionStarted, this);
+		signal_handler_connect(sh, "transition_stop", HandleSceneTransitionEnded, this);
 	}
 
 	// Filters
@@ -243,6 +244,7 @@ void EventHandler::DisconnectSourceSignals(obs_source_t *source)
 	// Transitions
 	if (sourceType == OBS_SOURCE_TYPE_TRANSITION) {
 		signal_handler_disconnect(sh, "transition_start", HandleSceneTransitionStarted, this);
+		signal_handler_disconnect(sh, "transition_stop", HandleSceneTransitionEnded, this);
 	}
 
 	// Filters

@@ -86,3 +86,31 @@ void EventHandler::HandleSceneTransitionStarted(void *param, calldata_t *data)
 	eventData["transitionName"] = obs_source_get_name(source);
 	eventHandler->BroadcastEvent(EventSubscription::Transitions, "SceneTransitionStarted", eventData);
 }
+
+/**
+ * A scene transition has completed fully.
+ *
+ * Note: Does not appear to trigger when the transition is interrupted by the user.
+ *
+ * @dataField transitionName | String | Scene transition name
+ *
+ * @eventType SceneTransitionEnded
+ * @eventSubscription Transitions
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api events
+ * @category transitions
+ */
+void EventHandler::HandleSceneTransitionEnded(void *param, calldata_t *data)
+{
+	auto eventHandler = static_cast<EventHandler*>(param);
+
+	obs_source_t *source = GetCalldataPointer<obs_source_t>(data, "source");
+	if (!source)
+		return;
+
+	json eventData;
+	eventData["transitionName"] = obs_source_get_name(source);
+	eventHandler->BroadcastEvent(EventSubscription::Transitions, "SceneTransitionEnded", eventData);
+}
