@@ -88,6 +88,7 @@ std::vector<json> Utils::Obs::ArrayHelper::GetSceneList()
 	obs_frontend_get_scenes(&sceneList);
 
 	std::vector<json> ret;
+	ret.reserve(sceneList.sources.num);
 	for (size_t i = 0; i < sceneList.sources.num; i++) {
 		obs_source_t *scene = sceneList.sources.array[i];
 
@@ -225,6 +226,8 @@ std::vector<json> Utils::Obs::ArrayHelper::GetListPropertyItems(obs_property_t *
 	enum obs_combo_format itemFormat = obs_property_list_format(property);
 	size_t itemCount = obs_property_list_item_count(property);
 
+	ret.reserve(itemCount);
+
 	for (size_t i = 0; i < itemCount; i++) {
 		json itemData;
 		itemData["itemName"] = obs_property_list_item_name(property, i);
@@ -262,6 +265,7 @@ std::vector<json> Utils::Obs::ArrayHelper::GetSceneTransitionList()
 	obs_frontend_get_transitions(&transitionList);
 
 	std::vector<json> ret;
+	ret.reserve(transitionList.sources.num);
 	for (size_t i = 0; i < transitionList.sources.num; i++) {
 		obs_source_t *transition = transitionList.sources.array[i];
 		json transitionJson;
