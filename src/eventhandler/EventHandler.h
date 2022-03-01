@@ -117,6 +117,7 @@ class EventHandler
 		void HandleCurrentSceneTransitionDurationChanged();
 		static void HandleSceneTransitionStarted(void *param, calldata_t *data); // Direct callback
 		static void HandleSceneTransitionEnded(void *param, calldata_t *data); // Direct callback
+		static void HandleSceneTransitionVideoEnded(void *param, calldata_t *data); // Direct callback
 
 		// Filters
 		static void FilterAddMultiHandler(void *param, calldata_t *data); // Direct callback
