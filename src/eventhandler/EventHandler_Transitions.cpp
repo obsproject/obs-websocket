@@ -26,7 +26,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
  *
  * @eventType CurrentSceneTransitionChanged
  * @eventSubscription Transitions
- * @complexity 3
+ * @complexity 2
  * @rpcVersion -1
  * @initialVersion 5.0.0
  * @api events
@@ -59,4 +59,30 @@ void EventHandler::HandleCurrentSceneTransitionDurationChanged()
 	json eventData;
 	eventData["transitionDuration"] = obs_frontend_get_transition_duration();
 	BroadcastEvent(EventSubscription::Transitions, "CurrentSceneTransitionDurationChanged", eventData);
+}
+
+/**
+ * A scene transition has started.
+ *
+ * @dataField transitionName | String | Scene transition name
+ *
+ * @eventType SceneTransitionStarted
+ * @eventSubscription Transitions
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api events
+ * @category transitions
+ */
+void EventHandler::HandleSceneTransitionStarted(void *param, calldata_t *data)
+{
+	auto eventHandler = static_cast<EventHandler*>(param);
+
+	obs_source_t *source = GetCalldataPointer<obs_source_t>(data, "source");
+	if (!source)
+		return;
+
+	json eventData;
+	eventData["transitionName"] = obs_source_get_name(source);
+	eventHandler->BroadcastEvent(EventSubscription::Transitions, "SceneTransitionStarted", eventData);
 }
