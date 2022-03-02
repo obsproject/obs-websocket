@@ -42,7 +42,7 @@ if [ "${HAS_PACKAGES}" = "" ]; then
 	echo "[obs-websocket] Installing Packaging app (might require password due to 'sudo').."
 	curl -L -O http://s.sudre.free.fr/Software/files/Packages.dmg
 	sudo hdiutil attach ./Packages.dmg
-	sudo installer -pkg /Volumes/Packages\ 1.2.9/Install\ Packages.pkg -target /
+	sudo installer -pkg /Volumes/Packages\ 1.2.10/Install\ Packages.pkg -target /
 fi
 
 # OBS Deps
