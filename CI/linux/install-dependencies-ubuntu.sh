@@ -15,7 +15,7 @@ sudo apt-get install -y \
 	obs-studio \
 	qtbase5-dev
 
-wget https://launchpad.net/~gol-d-ace/+archive/ubuntu/obs-studio/+build/22244346/+files/obs-studio_27.1.3-0obsproject1~bionic_amd64.deb
+wget https://launchpad.net/~gol-d-ace/+archive/ubuntu/obs-studio/+build/22244364/+files/obs-studio_27.1.3-0obsproject1~focal_amd64.deb
 sudo dpkg -i ./*.deb
 
 echo "[obs-websocket] Installed OBS Version: $(obs --version)"
