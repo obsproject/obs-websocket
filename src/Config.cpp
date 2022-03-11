@@ -28,6 +28,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #define PARAM_FIRSTLOAD "FirstLoad"
 #define PARAM_ENABLED "ServerEnabled"
 #define PARAM_PORT "ServerPort"
+#define PARAM_LOCKTOIPV4 "LockToIPv4"
 #define PARAM_ALERTS "AlertsEnabled"
 #define PARAM_AUTHREQUIRED "AuthRequired"
 #define PARAM_PASSWORD "ServerPassword"
@@ -42,6 +43,7 @@ Config::Config() :
 	FirstLoad(true),
 	ServerEnabled(true),
 	ServerPort(4455),
+	LockToIPv4(true),
 	DebugEnabled(false),
 	AlertsEnabled(false),
 	AuthRequired(true),
@@ -62,6 +64,7 @@ void Config::Load()
 	ServerEnabled = config_get_bool(obsConfig, CONFIG_SECTION_NAME, PARAM_ENABLED);
 	AlertsEnabled = config_get_bool(obsConfig, CONFIG_SECTION_NAME, PARAM_ALERTS);
 	ServerPort = config_get_uint(obsConfig, CONFIG_SECTION_NAME, PARAM_PORT);
+	LockToIPv4 = config_get_bool(obsConfig, CONFIG_SECTION_NAME, PARAM_LOCKTOIPV4);
 	AuthRequired = config_get_bool(obsConfig, CONFIG_SECTION_NAME, PARAM_AUTHREQUIRED);
 	ServerPassword = config_get_string(obsConfig, CONFIG_SECTION_NAME, PARAM_PASSWORD);
 
@@ -120,6 +123,7 @@ void Config::Save()
 
 	config_set_bool(obsConfig, CONFIG_SECTION_NAME, PARAM_FIRSTLOAD, FirstLoad);
 	config_set_bool(obsConfig, CONFIG_SECTION_NAME, PARAM_ENABLED, ServerEnabled);
+	config_set_bool(obsConfig, CONFIG_SECTION_NAME, PARAM_LOCKTOIPV4, LockToIPv4);
 	if (!PortOverridden) {
 		config_set_uint(obsConfig, CONFIG_SECTION_NAME, PARAM_PORT, ServerPort);
 	}
@@ -143,6 +147,7 @@ void Config::SetDefaultsToGlobalStore()
 	config_set_default_bool(obsConfig, CONFIG_SECTION_NAME, PARAM_FIRSTLOAD, FirstLoad);
 	config_set_default_bool(obsConfig, CONFIG_SECTION_NAME, PARAM_ENABLED, ServerEnabled);
 	config_set_default_uint(obsConfig, CONFIG_SECTION_NAME, PARAM_PORT, ServerPort);
+	config_set_default_bool(obsConfig, CONFIG_SECTION_NAME, PARAM_LOCKTOIPV4, LockToIPv4);
 	config_set_default_bool(obsConfig, CONFIG_SECTION_NAME, PARAM_ALERTS, AlertsEnabled);
 	config_set_default_bool(obsConfig, CONFIG_SECTION_NAME, PARAM_AUTHREQUIRED, AuthRequired);
 	config_set_default_string(obsConfig, CONFIG_SECTION_NAME, PARAM_PASSWORD, QT_TO_UTF8(ServerPassword));

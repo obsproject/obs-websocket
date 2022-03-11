@@ -156,20 +156,27 @@
        </widget>
       </item>
       <item row="1" column="1">
+       <widget class="QCheckBox" name="lockToIPv4CheckBox">
+        <property name="text">
+         <string>OBSWebSocket.Settings.LockToIPv4</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
        <widget class="QCheckBox" name="enableAuthenticationCheckBox">
         <property name="text">
          <string>OBSWebSocket.Settings.AuthRequired</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="0">
+      <item row="3" column="0">
        <widget class="QLabel" name="serverPasswordLabel">
         <property name="text">
          <string>OBSWebSocket.Settings.Password</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="1">
+      <item row="3" column="1">
        <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
          <widget class="QLineEdit" name="serverPasswordLineEdit">
@@ -187,7 +194,7 @@
         </item>
        </layout>
       </item>
-      <item row="3" column="0">
+      <item row="4" column="0">
        <spacer name="horizontalSpacer_2">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
@@ -203,7 +210,7 @@
         </property>
        </spacer>
       </item>
-      <item row="3" column="1">
+      <item row="4" column="1">
        <widget class="QPushButton" name="showConnectInfoButton">
         <property name="text">
          <string>OBSWebSocket.Settings.ShowConnectInfo</string>

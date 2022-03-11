@@ -86,6 +86,7 @@ void SettingsDialog::showEvent(QShowEvent *)
 	ui->enableWebSocketServerCheckBox->setChecked(conf->ServerEnabled);
 	ui->enableSystemTrayAlertsCheckBox->setChecked(conf->AlertsEnabled);
 	ui->enableDebugLoggingCheckBox->setChecked(conf->DebugEnabled);
+	ui->lockToIPv4CheckBox->setChecked(conf->LockToIPv4);
 	ui->enableAuthenticationCheckBox->setChecked(conf->AuthRequired);
 	ui->serverPasswordLineEdit->setText(conf->ServerPassword);
 	ui->serverPasswordLineEdit->setEnabled(conf->AuthRequired);
@@ -173,7 +174,8 @@ void SettingsDialog::SaveFormData()
 
 	bool needsRestart = (conf->ServerEnabled != ui->enableWebSocketServerCheckBox->isChecked()) ||
 						(ui->enableAuthenticationCheckBox->isChecked() && conf->ServerPassword != ui->serverPasswordLineEdit->text()) ||
-						(conf->ServerPort != ui->serverPortSpinBox->value());
+						(conf->ServerPort != ui->serverPortSpinBox->value()) ||
+						(conf->LockToIPv4 != ui->lockToIPv4CheckBox->isChecked());
 
 	conf->ServerEnabled = ui->enableWebSocketServerCheckBox->isChecked();
 	conf->AlertsEnabled = ui->enableSystemTrayAlertsCheckBox->isChecked();
@@ -181,6 +183,7 @@ void SettingsDialog::SaveFormData()
 	conf->AuthRequired = ui->enableAuthenticationCheckBox->isChecked();
 	conf->ServerPassword = ui->serverPasswordLineEdit->text();
 	conf->ServerPort = ui->serverPortSpinBox->value();
+	conf->LockToIPv4 = ui->lockToIPv4CheckBox->isChecked();
 
 	conf->Save();
 

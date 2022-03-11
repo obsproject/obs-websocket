@@ -38,6 +38,7 @@ struct Config {
 	std::atomic<bool> FirstLoad;
 	std::atomic<bool> ServerEnabled;
 	std::atomic<uint16_t> ServerPort;
+	std::atomic<bool> LockToIPv4;
 	std::atomic<bool> DebugEnabled;
 	std::atomic<bool> AlertsEnabled;
 	std::atomic<bool> AuthRequired;

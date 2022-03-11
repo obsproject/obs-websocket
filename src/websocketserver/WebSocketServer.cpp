@@ -129,7 +129,15 @@ void WebSocketServer::Start()
 	_server.reset();
 
 	websocketpp::lib::error_code errorCode;
-	_server.listen(websocketpp::lib::asio::ip::tcp::v4(), conf->ServerPort, errorCode);
+
+	if (conf->LockToIPv4)
+	{
+		blog(LOG_INFO, "[WebSocketServer::Start] Locked to IPv4 bindings");
+		_server.listen(websocketpp::lib::asio::ip::tcp::v4(), conf->ServerPort, errorCode);
+	} else {
+		blog(LOG_INFO, "[WebSocketServer::Start] Not locked to IPv4 bindings");
+		_server.listen(conf->ServerPort, errorCode);
+	}
 
 	if (errorCode) {
 		std::string errorCodeMessage = errorCode.message();
