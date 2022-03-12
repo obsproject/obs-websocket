@@ -33,6 +33,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #define PARAM_PASSWORD "ServerPassword"
 
 #define CMDLINE_WEBSOCKET_PORT "websocket_port"
+#define CMDLINE_WEBSOCKET_IPV4_ONLY "websocket_ipv4_only"
 #define CMDLINE_WEBSOCKET_PASSWORD "websocket_password"
 #define CMDLINE_WEBSOCKET_DEBUG "websocket_debug"
 
@@ -42,6 +43,7 @@ Config::Config() :
 	FirstLoad(true),
 	ServerEnabled(true),
 	ServerPort(4455),
+	Ipv4Only(false),
 	DebugEnabled(false),
 	AlertsEnabled(false),
 	AuthRequired(true),
@@ -91,6 +93,12 @@ void Config::Load()
 		} else {
 			blog(LOG_WARNING, "[Config::Load] Not overriding WebSocket port since integer conversion failed.");
 		}
+	}
+
+	// Process `--websocket_ipv4_only` override
+	if (Utils::Platform::GetCommandLineFlagSet(CMDLINE_WEBSOCKET_IPV4_ONLY)) {
+		blog(LOG_INFO, "[Config::Load] --websocket_ipv4_only passed. Binding only to IPv4 interfaces.");
+		Ipv4Only = true;
 	}
 
 	// Process `--websocket_password` override
