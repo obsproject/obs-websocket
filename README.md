@@ -35,6 +35,7 @@ Here's a list of available language APIs for obs-websocket:
 - Python 3.7+ (Asyncio): [simpleobsws](https://github.com/IRLToolkit/simpleobsws/tree/master) by IRLToolkit
 - Rust: [obws](https://github.com/dnaka91/obws/tree/v5-api) by dnaka91
 - Godot 3.4.x: [obs-websocket-gd](https://github.com/you-win/obs-websocket-gd) by you-win
+- Javascript (Node and web): [obs-websocket-js](https://github.com/obs-websocket-community-projects/obs-websocket-js) by OBS Websocket Community
 
 The 5.x server is a typical WebSocket server running by default on port 4455 (the port number can be changed in the Settings dialog under `Tools`).
 The protocol we use is documented in [PROTOCOL.md](docs/generated/protocol.md).
