@@ -198,6 +198,10 @@ class RequestHandler {
 		RequestResult OpenInputFiltersDialog(const Request&);
 		RequestResult OpenInputInteractDialog(const Request&);
 
+		// Projectors
+		RequestResult OpenProjector(const Request&);
+		RequestResult OpenSourceProjector(const Request&);
+
 		SessionPtr _session;
 		static const std::unordered_map<std::string, RequestMethodHandler> _handlerMap;
 };
