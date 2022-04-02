@@ -354,3 +354,21 @@ obs_sceneitem_t *Request::ValidateSceneItem(const std::string &sceneKeyName, con
 	obs_sceneitem_addref(sceneItem);
 	return sceneItem;
 }
+
+obs_output_t *Request::ValidateOutput(const std::string &keyName, RequestStatus::RequestStatus &statusCode,
+				      std::string &comment) const
+{
+	if (!ValidateString(keyName, statusCode, comment))
+		return nullptr;
+
+	std::string outputName = RequestData[keyName];
+
+	obs_output_t *ret = obs_get_output_by_name(outputName.c_str());
+	if (!ret) {
+		statusCode = RequestStatus::ResourceNotFound;
+		comment = std::string("No output was found with the name `") + outputName + "`.";
+		return nullptr;
+	}
+
+	return ret;
+}
