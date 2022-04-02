@@ -327,3 +327,35 @@ std::vector<json> Utils::Obs::ArrayHelper::GetSourceFilterList(obs_source_t *sou
 
 	return filters;
 }
+
+std::vector<json> Utils::Obs::ArrayHelper::GetOutputList()
+{
+	std::vector<json> outputs;
+
+	auto cb = [](void *param, obs_output_t *output) {
+		auto outputs = reinterpret_cast<std::vector<json> *>(param);
+
+		auto rawFlags = obs_output_get_flags(output);
+		json flags;
+		flags["OBS_OUTPUT_AUDIO"] = !!(rawFlags & OBS_OUTPUT_AUDIO);
+		flags["OBS_OUTPUT_VIDEO"] = !!(rawFlags & OBS_OUTPUT_VIDEO);
+		flags["OBS_OUTPUT_ENCODED"] = !!(rawFlags & OBS_OUTPUT_ENCODED);
+		flags["OBS_OUTPUT_MULTI_TRACK"] = !!(rawFlags & OBS_OUTPUT_MULTI_TRACK);
+		flags["OBS_OUTPUT_SERVICE"] = !!(rawFlags & OBS_OUTPUT_SERVICE);
+
+		json outputJson;
+		outputJson["outputName"] = obs_output_get_name(output);
+		outputJson["outputKind"] = obs_output_get_id(output);
+		outputJson["outputWidth"] = obs_output_get_width(output);
+		outputJson["outputHeight"] = obs_output_get_height(output);
+		outputJson["outputActive"] = obs_output_active(output);
+		outputJson["outputFlags"] = flags;
+
+		outputs->push_back(outputJson);
+		return true;
+	};
+
+	obs_enum_outputs(cb, &outputs);
+
+	return outputs;
+}

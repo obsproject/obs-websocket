@@ -77,6 +77,8 @@ struct Request {
 	obs_sceneitem_t *ValidateSceneItem(const std::string &sceneKeyName, const std::string &sceneItemIdKeyName,
 					   RequestStatus::RequestStatus &statusCode, std::string &comment,
 					   const ObsWebSocketSceneFilter filter = OBS_WEBSOCKET_SCENE_FILTER_SCENE_ONLY) const;
+	obs_output_t *ValidateOutput(const std::string &keyName, RequestStatus::RequestStatus &statusCode,
+				     std::string &comment) const;
 
 	std::string RequestType;
 	bool HasRequestData;

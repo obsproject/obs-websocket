@@ -232,7 +232,8 @@ RequestResult RequestHandler::OpenVideoMixProjector(const Request &request)
 	else if (videoMixType == "OBS_WEBSOCKET_VIDEO_MIX_TYPE_MULTIVIEW")
 		projectorType = "Multiview";
 	else
-		return RequestResult::Error(RequestStatus::InvalidRequestField, "The field `videoMixType` has an invalid enum value.");
+		return RequestResult::Error(RequestStatus::InvalidRequestField,
+					    "The field `videoMixType` has an invalid enum value.");
 
 	int monitorIndex = -1;
 	if (request.Contains("monitorIndex")) {
@@ -246,7 +247,8 @@ RequestResult RequestHandler::OpenVideoMixProjector(const Request &request)
 		if (!request.ValidateOptionalString("projectorGeometry", statusCode, comment))
 			return RequestResult::Error(statusCode, comment);
 		if (monitorIndex != -1)
-			return RequestResult::Error(RequestStatus::TooManyRequestFields, "`monitorIndex` and `projectorGeometry` are mutually exclusive.");
+			return RequestResult::Error(RequestStatus::TooManyRequestFields,
+						    "`monitorIndex` and `projectorGeometry` are mutually exclusive.");
 		projectorGeometry = request.RequestData["projectorGeometry"];
 	}
 
@@ -291,7 +293,8 @@ RequestResult RequestHandler::OpenSourceProjector(const Request &request)
 		if (!request.ValidateOptionalString("projectorGeometry", statusCode, comment))
 			return RequestResult::Error(statusCode, comment);
 		if (monitorIndex != -1)
-			return RequestResult::Error(RequestStatus::TooManyRequestFields, "`monitorIndex` and `projectorGeometry` are mutually exclusive.");
+			return RequestResult::Error(RequestStatus::TooManyRequestFields,
+						    "`monitorIndex` and `projectorGeometry` are mutually exclusive.");
 		projectorGeometry = request.RequestData["projectorGeometry"];
 	}
 
