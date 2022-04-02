@@ -151,6 +151,13 @@ const std::unordered_map<std::string, RequestMethodHandler> RequestHandler::_han
 	{"StopReplayBuffer", &RequestHandler::StopReplayBuffer},
 	{"SaveReplayBuffer", &RequestHandler::SaveReplayBuffer},
 	{"GetLastReplayBufferReplay", &RequestHandler::GetLastReplayBufferReplay},
+	{"GetOutputList", &RequestHandler::GetOutputList},
+	{"GetOutputStatus", &RequestHandler::GetOutputStatus},
+	{"ToggleOutput", &RequestHandler::ToggleOutput},
+	{"StartOutput", &RequestHandler::StartOutput},
+	{"StopOutput", &RequestHandler::StopOutput},
+	{"GetOutputSettings", &RequestHandler::GetOutputSettings},
+	{"SetOutputSettings", &RequestHandler::SetOutputSettings},
 
 	// Stream
 	{"GetStreamStatus", &RequestHandler::GetStreamStatus},

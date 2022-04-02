@@ -170,6 +170,13 @@ private:
 	RequestResult StopReplayBuffer(const Request &);
 	RequestResult SaveReplayBuffer(const Request &);
 	RequestResult GetLastReplayBufferReplay(const Request &);
+	RequestResult GetOutputList(const Request &);
+	RequestResult GetOutputStatus(const Request &);
+	RequestResult ToggleOutput(const Request &);
+	RequestResult StartOutput(const Request &);
+	RequestResult StopOutput(const Request &);
+	RequestResult GetOutputSettings(const Request &);
+	RequestResult SetOutputSettings(const Request &);
 
 	// Stream
 	RequestResult GetStreamStatus(const Request &);

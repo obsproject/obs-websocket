@@ -26,6 +26,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
  * @responseField outputReconnecting  | Boolean | Whether the output is currently reconnecting
  * @responseField outputTimecode      | String  | Current formatted timecode string for the output
  * @responseField outputDuration      | Number  | Current duration in milliseconds for the output
+ * @responseField outputCongestion    | Number  | Congestion of the output
  * @responseField outputBytes         | Number  | Number of bytes sent by the output
  * @responseField outputSkippedFrames | Number  | Number of frames skipped by the output's process
  * @responseField outputTotalFrames   | Number  | Total number of frames delivered by the output's process
@@ -48,6 +49,7 @@ RequestResult RequestHandler::GetStreamStatus(const Request &)
 	responseData["outputReconnecting"] = obs_output_reconnecting(streamOutput);
 	responseData["outputTimecode"] = Utils::Obs::StringHelper::DurationToTimecode(outputDuration);
 	responseData["outputDuration"] = outputDuration;
+	responseData["outputCongestion"] = obs_output_get_congestion(streamOutput);
 	responseData["outputBytes"] = (uint64_t)obs_output_get_total_bytes(streamOutput);
 	responseData["outputSkippedFrames"] = obs_output_get_frames_dropped(streamOutput);
 	responseData["outputTotalFrames"] = obs_output_get_total_frames(streamOutput);

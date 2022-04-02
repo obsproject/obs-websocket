@@ -205,6 +205,7 @@ namespace Utils {
 			std::vector<json> GetSceneTransitionList();
 			std::vector<json> GetSourceFilterList(obs_source_t *source);
 			std::vector<std::string> GetFilterKindList();
+			std::vector<json> GetOutputList();
 		}
 
 		namespace ObjectHelper {
