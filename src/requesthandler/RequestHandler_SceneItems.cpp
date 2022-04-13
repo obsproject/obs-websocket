@@ -718,3 +718,39 @@ RequestResult RequestHandler::SetSceneItemBlendMode(const Request& request)
 
 	return RequestResult::Success();
 }
+
+// Intentionally undocumented
+RequestResult RequestHandler::GetSceneItemPrivateSettings(const Request& request)
+{
+	RequestStatus::RequestStatus statusCode;
+	std::string comment;
+	OBSSceneItemAutoRelease sceneItem = request.ValidateSceneItem("sceneName", "sceneItemId", statusCode, comment, OBS_WEBSOCKET_SCENE_FILTER_SCENE_OR_GROUP);
+	if (!sceneItem)
+		return RequestResult::Error(statusCode, comment);
+
+	OBSDataAutoRelease privateSettings = obs_sceneitem_get_private_settings(sceneItem);
+
+	json responseData;
+	responseData["sceneItemSettings"] = Utils::Json::ObsDataToJson(privateSettings);
+
+	return RequestResult::Success(responseData);
+}
+
+// Intentionally undocumented
+RequestResult RequestHandler::SetSceneItemPrivateSettings(const Request& request)
+{
+	RequestStatus::RequestStatus statusCode;
+	std::string comment;
+	OBSSceneItemAutoRelease sceneItem = request.ValidateSceneItem("sceneName", "sceneItemId", statusCode, comment, OBS_WEBSOCKET_SCENE_FILTER_SCENE_OR_GROUP);
+	if (!sceneItem || !request.ValidateObject("sceneItemSettings", statusCode, comment))
+		return RequestResult::Error(statusCode, comment);
+
+	OBSDataAutoRelease privateSettings = obs_sceneitem_get_private_settings(sceneItem);
+
+	OBSDataAutoRelease newSettings = Utils::Json::JsonToObsData(request.RequestData["sceneItemSettings"]);
+
+	// Always overlays to prevent destroying internal source unintentionally
+	obs_data_apply(privateSettings, newSettings);
+
+	return RequestResult::Success();
+}
