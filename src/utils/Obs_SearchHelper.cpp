@@ -54,15 +54,42 @@ obs_source_t *Utils::Obs::SearchHelper::GetSceneTransitionByName(std::string nam
 	return ret;
 }
 
+struct SceneItemSearchData {
+	std::string name;
+	int offset;
+	obs_sceneitem_t *ret = nullptr;
+};
+
 // Increments item ref. Use OBSSceneItemAutoRelease
-obs_sceneitem_t *Utils::Obs::SearchHelper::GetSceneItemByName(obs_scene_t *scene, std::string name)
+obs_sceneitem_t *Utils::Obs::SearchHelper::GetSceneItemByName(obs_scene_t *scene, std::string name, int offset)
 {
 	if (name.empty())
 		return nullptr;
 
-	// Finds first matching scene item in scene, search starts at index 0
-	OBSSceneItem ret = obs_scene_find_source(scene, name.c_str());
-	obs_sceneitem_addref(ret);
+	SceneItemSearchData enumData;
+	enumData.name = name;
+	enumData.offset = offset;
 
-	return ret;
+	obs_scene_enum_items(scene, [](obs_scene_t*, obs_sceneitem_t* sceneItem, void* param) {
+		auto enumData = static_cast<SceneItemSearchData*>(param);
+
+		OBSSource itemSource = obs_sceneitem_get_source(sceneItem);
+		std::string sourceName = obs_source_get_name(itemSource);
+		if (sourceName == enumData->name) {
+			if (enumData->offset > 0) {
+				enumData->offset--;
+			} else {
+				if (enumData->ret) // Release existing selection in the case of last match selection
+					obs_sceneitem_release(enumData->ret);
+				obs_sceneitem_addref(sceneItem);
+				enumData->ret = sceneItem;
+				if (enumData->offset == 0) // Only break if in normal selection mode (not offset == -1)
+					return false;
+			}
+		}
+
+		return true;
+	}, &enumData);
+
+	return enumData.ret;
 }

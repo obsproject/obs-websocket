@@ -86,8 +86,9 @@ RequestResult RequestHandler::GetGroupSceneItemList(const Request& request)
  *
  * Scenes and Groups
  *
- * @requestField sceneName  | String | Name of the scene or group to search in
- * @requestField sourceName | String | Name of the source to find
+ * @requestField sceneName     | String | Name of the scene or group to search in
+ * @requestField sourceName    | String | Name of the source to find
+ * @requestField ?searchOffset | Number | Number of matches to skip during search. >= 0 means first forward. -1 means last (top) item | >= -1 | 0
  *
  * @responseField sceneItemId | Number | Numeric ID of the scene item
  *
@@ -108,9 +109,16 @@ RequestResult RequestHandler::GetSceneItemId(const Request& request)
 
 	std::string sourceName = request.RequestData["sourceName"];
 
-	OBSSceneItemAutoRelease item = Utils::Obs::SearchHelper::GetSceneItemByName(scene, sourceName);
+	int offset = 0;
+	if (request.Contains("searchOffset")) {
+		if (!request.ValidateOptionalNumber("searchOffset", statusCode, comment, -1))
+			return RequestResult::Error(statusCode, comment);
+		offset = request.RequestData["searchOffset"];
+	}
+
+	OBSSceneItemAutoRelease item = Utils::Obs::SearchHelper::GetSceneItemByName(scene, sourceName, offset);
 	if (!item)
-		return RequestResult::Error(RequestStatus::ResourceNotFound, "No scene items were found in the specified scene by that name.");
+		return RequestResult::Error(RequestStatus::ResourceNotFound, "No scene items were found in the specified scene by that name or offset.");
 
 	json responseData;
 	responseData["sceneItemId"] = obs_sceneitem_get_id(item);
