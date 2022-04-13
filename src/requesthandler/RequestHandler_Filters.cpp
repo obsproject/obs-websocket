@@ -308,7 +308,7 @@ RequestResult RequestHandler::SetSourceFilterSettings(const Request& request)
  * Sets the enable state of a source filter.
  *
  * @requestField sourceName    | String  | Name of the source the filter is on
- * @requestField filterName    | Number  | Name of the filter
+ * @requestField filterName    | String  | Name of the filter
  * @requestField filterEnabled | Boolean | New enable state of the filter
  *
  * @requestType SetSourceFilterEnabled
