@@ -1444,6 +1444,42 @@
       "responseFields": []
     },
     {
+      "description": "Sets the enable state of a source filter.",
+      "requestType": "SetSourceFilterEnabled",
+      "complexity": 3,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "filters",
+      "requestFields": [
+        {
+          "valueName": "sourceName",
+          "valueType": "String",
+          "valueDescription": "Name of the source the filter is on",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        },
+        {
+          "valueName": "filterName",
+          "valueType": "String",
+          "valueDescription": "Name of the filter",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        },
+        {
+          "valueName": "filterEnabled",
+          "valueType": "Boolean",
+          "valueDescription": "New enable state of the filter",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        }
+      ],
+      "responseFields": []
+    },
+    {
       "description": "Gets data about the current plugin and RPC version.",
       "requestType": "GetVersion",
       "complexity": 1,
@@ -2891,6 +2927,14 @@
           "valueRestrictions": null,
           "valueOptional": false,
           "valueOptionalBehavior": null
+        },
+        {
+          "valueName": "searchOffset",
+          "valueType": "Number",
+          "valueDescription": "Number of matches to skip during search. >= 0 means first forward. -1 means last (top) item",
+          "valueRestrictions": ">= -1",
+          "valueOptional": true,
+          "valueOptionalBehavior": "0"
         }
       ],
       "responseFields": [

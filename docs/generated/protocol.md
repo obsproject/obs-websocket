@@ -2346,6 +2346,7 @@ Studio mode has been enabled or disabled.
   - [GetSourceFilter](#getsourcefilter)
   - [SetSourceFilterIndex](#setsourcefilterindex)
   - [SetSourceFilterSettings](#setsourcefiltersettings)
+  - [SetSourceFilterEnabled](#setsourcefilterenabled)
 - [Scene Items](#scene-items-1)
   - [GetSceneItemList](#getsceneitemlist)
   - [GetGroupItemList](#getgroupitemlist)
@@ -4049,6 +4050,25 @@ Sets the settings of a source filter.
 | filterSettings | Object | Object of settings to apply | None | N/A |
 | ?overlay | Boolean | True == apply the settings on top of existing ones, False == reset the input to its defaults, then apply settings. | None | true |
 
+---
+
+### SetSourceFilterEnabled
+
+Sets the enable state of a source filter.
+
+- Complexity Rating: `3/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| sourceName | String | Name of the source the filter is on | None | N/A |
+| filterName | String | Name of the filter | None | N/A |
+| filterEnabled | Boolean | New enable state of the filter | None | N/A |
+
 
 ## Scene Items
 
@@ -4123,6 +4143,7 @@ Scenes and Groups
 | ---- | :---: | ----------- | :----------------: | ----------------- |
 | sceneName | String | Name of the scene or group to search in | None | N/A |
 | sourceName | String | Name of the source to find | None | N/A |
+| ?searchOffset | Number | Number of matches to skip during search. >= 0 means first forward. -1 means last (top) item | >= -1 | 0 |
 
 
 **Response Fields:**
