@@ -511,7 +511,8 @@ void EventHandler::SourceCreatedMultiHandler(void *param, calldata_t *data)
 	}
 }
 
-// Only called for destruction of a public source
+// Only called for destruction of a public sourcs
+// Used as a fallback if an input/scene is not explicitly removed
 void EventHandler::SourceDestroyedMultiHandler(void *param, calldata_t *data)
 {
 	auto eventHandler = static_cast<EventHandler*>(param);
@@ -530,16 +531,22 @@ void EventHandler::SourceDestroyedMultiHandler(void *param, calldata_t *data)
 
 	switch (obs_source_get_type(source)) {
 		case OBS_SOURCE_TYPE_INPUT:
-			// We have to call `InputRemoved` with source_destroy because source_removed is not called when an input's last scene item is removed
-			eventHandler->HandleInputRemoved(source);
+			// Only emit removed if the input has not already been removed. This is the case when removing the last scene item of an input.
+			if (!obs_source_removed(source))
+				eventHandler->HandleInputRemoved(source);
 			break;
 		case OBS_SOURCE_TYPE_SCENE:
+			// Only emit removed if the scene has not already been removed.
+			if (!obs_source_removed(source))
+				eventHandler->HandleSceneRemoved(source);
 			break;
 		default:
 			break;
 	}
 }
 
+// We prefer remove signals over destroy signals because they are more time-accurate.
+// For example, if an input is "removed" but there is a dangling ref, you still want to know that it shouldn't exist, but it's not guaranteed to be destroyed.
 void EventHandler::SourceRemovedMultiHandler(void *param, calldata_t *data)
 {
 	auto eventHandler = static_cast<EventHandler*>(param);
@@ -553,9 +560,9 @@ void EventHandler::SourceRemovedMultiHandler(void *param, calldata_t *data)
 
 	switch (obs_source_get_type(source)) {
 		case OBS_SOURCE_TYPE_INPUT:
+			eventHandler->HandleInputRemoved(source);
 			break;
 		case OBS_SOURCE_TYPE_SCENE:
-			// Scenes emit the `removed` signal when they are removed from OBS, as expected
 			eventHandler->HandleSceneRemoved(source);
 			break;
 		default:
