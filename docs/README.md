@@ -1,6 +1,6 @@
 # obs-websocket documentation
 
-This is the documentation for obs-websocket. Run build_docs.sh to auto generate the latest docs from the `src` directory. There are 3 components to the docs generation:
+This is the documentation for obs-websocket. Run `build_docs.sh` to auto generate the latest docs from the `src` directory. There are 3 components to the docs generation:
 - `comments/comments.js`: Generates the `work/comments.json` file from the code comments in the src directory.
 - `docs/process_comments.py`: Processes `work/comments.json` to create `generated/protocol.json`, which is a machine-readable documentation format that can be used to create obs-websocket client libraries.
 - `docs/generate_md.py`: Processes `generated/protocol.json` to create `generated/protocol.md`, which is the actual human-readable documentation.

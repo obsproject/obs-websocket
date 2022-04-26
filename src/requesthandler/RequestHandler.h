@@ -199,6 +199,7 @@ class RequestHandler {
 		RequestResult OpenInputPropertiesDialog(const Request&);
 		RequestResult OpenInputFiltersDialog(const Request&);
 		RequestResult OpenInputInteractDialog(const Request&);
+		RequestResult GetMonitorList(const Request&);
 
 		SessionPtr _session;
 		static const std::unordered_map<std::string, RequestMethodHandler> _handlerMap;
