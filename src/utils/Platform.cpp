@@ -76,6 +76,21 @@ std::string Utils::Platform::GetLocalAddress()
 	return preferredAddresses[0].first.toStdString();
 }
 
+std::string Utils::Platform::GetLoopbackAddress(bool allowIpv6)
+{
+	std::vector<QString> validAddresses;
+	for (auto address : QNetworkInterface::allAddresses()) {
+		if (address == QHostAddress::LocalHost)
+			return address.toString().toStdString();
+		else if (address == QHostAddress::LocalHostIPv6 && allowIpv6)
+			return address.toString().toStdString();
+		else if (address.isLoopback())
+			return address.toString().toStdString();
+	}
+
+	return "";
+}
+
 QString Utils::Platform::GetCommandLineArgument(QString arg)
 {
 	QCommandLineParser parser;

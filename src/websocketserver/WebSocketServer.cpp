@@ -129,17 +129,25 @@ void WebSocketServer::Start()
 	_server.reset();
 
 	websocketpp::lib::error_code errorCode;
-	if (conf->Ipv4Only) {
-		blog(LOG_INFO, "[WebSocketServer::Start] Locked to IPv4 bindings");
+	if (conf->BindLoopback) {
+		std::string addr = Utils::Platform::GetLoopbackAddress(!conf->Ipv4Only);
+		if (addr.empty()) {
+			blog(LOG_ERROR, "[WebSocketServer::Start] Failed to find loopback interface. Server not started.");
+			return;
+		}
+		_server.listen(addr, std::to_string(conf->ServerPort), errorCode);
+		blog(LOG_INFO, "[WebSocketServer::Start] Locked to loopback interface.");
+	} else if (conf->Ipv4Only) {
 		_server.listen(websocketpp::lib::asio::ip::tcp::v4(), conf->ServerPort, errorCode);
+		blog(LOG_INFO, "[WebSocketServer::Start] Locked to IPv4 bindings.");
 	} else {
-		blog(LOG_INFO, "[WebSocketServer::Start] Not locked to IPv4 bindings");
 		_server.listen(conf->ServerPort, errorCode);
+		blog(LOG_INFO, "[WebSocketServer::Start] Not locked to IPv4 bindings.");
 	}
 
 	if (errorCode) {
 		std::string errorCodeMessage = errorCode.message();
-		blog(LOG_INFO, "[WebSocketServer::Start] Listen failed: %s", errorCodeMessage.c_str());
+		blog(LOG_ERROR, "[WebSocketServer::Start] Listen failed: %s", errorCodeMessage.c_str());
 		return;
 	}
 
