@@ -54,7 +54,10 @@ std::string Utils::Platform::GetLocalAddress()
 	for (auto address : validAddresses) {
 		// Attribute a priority (0 is best) to the address to choose the best picks
 		if (address.startsWith("192.168.1.") || address.startsWith("192.168.0.")) { // Prefer common consumer router network prefixes
-			preferredAddresses.push_back(std::make_pair(address, 0));
+			if (address.startsWith("192.168.56."))
+				preferredAddresses.push_back(std::make_pair(address, 255)); // Ignore virtualbox default
+			else
+				preferredAddresses.push_back(std::make_pair(address, 0));
 		} else if (address.startsWith("172.16.")) { // Slightly less common consumer router network prefixes
 			preferredAddresses.push_back(std::make_pair(address, 1));
 		} else if (address.startsWith("10.")) { // Even less common consumer router network prefixes
