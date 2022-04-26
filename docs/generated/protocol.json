@@ -4237,6 +4237,23 @@
         }
       ],
       "responseFields": []
+    },
+    {
+      "description": "Gets a list of connected monitors and information about them.",
+      "requestType": "GetMonitorList",
+      "complexity": 2,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "ui",
+      "requestFields": [],
+      "responseFields": [
+        {
+          "valueName": "monitors",
+          "valueType": "Array<Object>",
+          "valueDescription": "a list of detected monitors with some information"
+        }
+      ]
     }
   ],
   "events": [

@@ -2400,6 +2400,7 @@ Studio mode has been enabled or disabled.
   - [OpenInputPropertiesDialog](#openinputpropertiesdialog)
   - [OpenInputFiltersDialog](#openinputfiltersdialog)
   - [OpenInputInteractDialog](#openinputinteractdialog)
+  - [GetMonitorList](#getmonitorlist)
 
 
 
@@ -4956,5 +4957,22 @@ Opens the interact dialog of an input.
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
 | inputName | String | Name of the input to open the dialog of | None | N/A |
+
+---
+
+### GetMonitorList
+
+Gets a list of connected monitors and information about them.
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| monitors | Array&lt;Object&gt; | a list of detected monitors with some information |
 
 
