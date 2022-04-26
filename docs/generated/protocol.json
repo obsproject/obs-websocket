@@ -1513,6 +1513,16 @@
           "valueName": "supportedImageFormats",
           "valueType": "Array<String>",
           "valueDescription": "Image formats available in `GetSourceScreenshot` and `SaveSourceScreenshot` requests."
+        },
+        {
+          "valueName": "platform",
+          "valueType": "String",
+          "valueDescription": "Name of the platform. Usually `windows`, `macos`, or `ubuntu` (linux flavor). Not guaranteed to be any of those"
+        },
+        {
+          "valueName": "platformDescription",
+          "valueType": "String",
+          "valueDescription": "Description of the platform, like `Windows 10 (10.0)`"
         }
       ]
     },
