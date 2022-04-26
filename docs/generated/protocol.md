@@ -1,30 +1,33 @@
 <!-- This file was automatically generated. Do not edit directly! -->
-
-# Main Table of Contents
-- [obs-websocket 5.0.0 Protocol](#obs-websocket-500-protocol)
-  - [Connecting to obs-websocket](#connecting-to-obs-websocket)
-    - [Connection steps](#connection-steps)
-    - [Creating an authentication string](#creating-an-authentication-string)
-  - [Base message types](#message-types)
-    - [OpCode 0 Hello](#hello-opcode-0)
-    - [OpCode 1 Identify](#identify-opcode-1)
-    - [OpCode 2 Identified](#identified-opcode-2)
-    - [OpCode 3 Reidentify](#reidentify-opcode-3)
-    - [OpCode 5 Event](#event-opcode-5)
-    - [OpCode 6 Request](#request-opcode-6)
-    - [OpCode 7 RequestResponse](#requestresponse-opcode-7)
-    - [OpCode 8 RequestBatch](#requestbatch-opcode-8)
-    - [OpCode 9 RequestBatchResponse](#requestbatchresponse-opcode-9)
-- [Enums](#enums)
-- [Events](#events)
-- [Requests](#requests)
+<!-- markdownlint-disable no-bare-urls -->
 
 # obs-websocket 5.0.0 Protocol
 
+## Main Table of Contents
+
+- [General Intro](#general-intro)
+  - [Design Goals](#design-goals)
+- [Connecting to obs-websocket](#connecting-to-obs-websocket)
+  - [Connection steps](#connection-steps)
+    - [Connection Notes](#connection-notes)
+  - [Creating an authentication string](#creating-an-authentication-string)
+- [Message Types (OpCodes)](#message-types-opcodes)
+  - [Hello (OpCode 0)](#hello-opcode-0)
+  - [Identify (OpCode 1)](#identify-opcode-1)
+  - [Identified (OpCode 2)](#identified-opcode-2)
+  - [Reidentify (OpCode 3)](#reidentify-opcode-3)
+  - [Event (OpCode 5)](#event-opcode-5)
+  - [Request (OpCode 6)](#request-opcode-6)
+  - [RequestResponse (OpCode 7)](#requestresponse-opcode-7)
+  - [RequestBatch (OpCode 8)](#requestbatch-opcode-8)
+  - [RequestBatchResponse (OpCode 9)](#requestbatchresponse-opcode-9)
+
 ## General Intro
+
 obs-websocket provides a feature-rich RPC communication protocol, giving access to much of OBS's feature set. This document contains everything you should know in order to make a connection and use obs-websocket's functionality to the fullest.
 
 ### Design Goals
+
 - Abstraction of identification, events, requests, and batch requests into dedicated message types
 - Conformity of request naming using similar terms like `Get`, `Set`, `Get[x]List`, `Start[x]`, `Toggle[x]`
 - Conformity of OBS data field names like `sourceName`, `sourceKind`, `sourceType`, `sceneName`, `sceneItemName`
@@ -33,13 +36,14 @@ obs-websocket provides a feature-rich RPC communication protocol, giving access 
 - PubSub system - Allow clients to specify which events they do or don't want to receive from OBS
 - RPC versioning - Client and server negotiate the latest version of the obs-websocket protocol to communicate with.
 
-
 ## Connecting to obs-websocket
+
 Here's info on how to connect to obs-websocket
 
 ---
 
 ### Connection steps
+
 These steps should be followed precisely. Failure to connect to the server as instructed will likely result in your client being treated in an undefined way.
 
 - Initial HTTP request made to the obs-websocket server.
@@ -66,6 +70,7 @@ These steps should be followed precisely. Failure to connect to the server as in
 - At any time after a client has been identified, it may send an [OpCode 3 `Reidentify`](#reidentify-opcode-3) message to update certain allowed session parameters. The server will respond in the same way it does during initial identification.
 
 #### Connection Notes
+
 - If a binary frame is received when using the `obswebsocket.json` (default) subprotocol, or a text frame is received while using the `obswebsocket.msgpack` subprotocol, the connection is closed with `WebSocketCloseCode::MessageDecodeError`.
 - The obs-websocket server listens for any messages containing a `request-type` field in the first level JSON from unidentified clients. If a message matches, the connection is closed with `WebSocketCloseCode::UnsupportedRpcVersion` and a warning is logged.
 - If a message with a `messageType` is not recognized to the obs-websocket server, the connection is closed with `WebSocketCloseCode::UnknownOpCode`.
@@ -74,11 +79,13 @@ These steps should be followed precisely. Failure to connect to the server as in
 ---
 
 ### Creating an authentication string
+
 obs-websocket uses SHA256 to transmit authentication credentials. The server starts by sending an object in the `authentication` field of its `Hello` message data. The client processes the authentication challenge and responds via the `authentication` string in the `Identify` message data.
 
 For this guide, we'll be using `supersecretpassword` as the password.
 
 The `authentication` object in `Hello` looks like this (example):
+
 ```json
 {
     "challenge": "+IxH4CnCiqpX1rM9scsNynZzbOe4KhDeYcTNS3PDaeY=",
@@ -87,6 +94,7 @@ The `authentication` object in `Hello` looks like this (example):
 ```
 
 To generate the authentication string, follow these steps:
+
 - Concatenate the websocket password with the `salt` provided by the server (`password + salt`)
 - Generate an SHA256 binary hash of the result and base64 encode it, known as a base64 secret.
 - Concatenate the base64 secret with the `challenge` sent by the server (`base64_secret + challenge`)
@@ -94,39 +102,45 @@ To generate the authentication string, follow these steps:
 
 For real-world examples of the `authentication` string creation, refer to the obs-websocket client libraries listed on the [README](README.md).
 
-
 ## Message Types (OpCodes)
-The following message types are the low-level message types which may be sent to and from obs-websocket. 
+
+The following message types are the low-level message types which may be sent to and from obs-websocket.
 
 Messages sent from the obs-websocket server or client may contain these first-level fields, known as the base object:
-```
+
+```txt
 {
   "op": number,
   "d": object
 }
 ```
+
 - `op` is a `WebSocketOpCode` OpCode.
 - `d` is an object of the data fields associated with the operation.
 
 ---
 
 ### Hello (OpCode 0)
+
 - Sent from: obs-websocket
 - Sent to: Freshly connected websocket client
 - Description: First message sent from the server immediately on client connection. Contains authentication information if auth is required. Also contains RPC version for version negotiation.
 
 **Data Keys:**
-```
+
+```txt
 {
   "obsWebSocketVersion": string,
   "rpcVersion": number,
   "authentication": object(optional)
 }
 ```
+
 - `rpcVersion` is a version number which gets incremented on each **breaking change** to the obs-websocket protocol. Its usage in this context is to provide the current rpc version that the server would like to use.
 
 **Example Messages:**
 Authentication is required
+
 ```json
 {
   "op": 0,
@@ -142,6 +156,7 @@ Authentication is required
 ```
 
 Authentication is not required
+
 ```json
 {
   "op": 0,
@@ -155,22 +170,26 @@ Authentication is not required
 ---
 
 ### Identify (OpCode 1)
+
 - Sent from: Freshly connected websocket client
 - Sent to: obs-websocket
 - Description: Response to `Hello` message, should contain authentication string if authentication is required, along with PubSub subscriptions and other session parameters.
 
 **Data Keys:**
-```
+
+```txt
 {
   "rpcVersion": number,
   "authentication": string(optional),
   "eventSubscriptions": number(optional) = (EventSubscription::All)
 }
 ```
+
 - `rpcVersion` is the version number that the client would like the obs-websocket server to use.
 - `eventSubscriptions` is a bitmask of `EventSubscriptions` items to subscribe to events and event categories at will. By default, all event categories are subscribed, except for events marked as high volume. High volume events must be explicitly subscribed to.
 
 **Example Message:**
+
 ```json
 {
   "op": 1,
@@ -185,19 +204,23 @@ Authentication is not required
 ---
 
 ### Identified (OpCode 2)
+
 - Sent from: obs-websocket
 - Sent to: Freshly identified client
 - Description: The identify request was received and validated, and the connection is now ready for normal operation.
 
 **Data Keys:**
-```
+
+```txt
 {
   "negotiatedRpcVersion": number
 }
 ```
+
 - If rpc version negotiation succeeds, the server determines the RPC version to be used and gives it to the client as `negotiatedRpcVersion`
 
 **Example Message:**
+
 ```json
 {
   "op": 2,
@@ -210,36 +233,43 @@ Authentication is not required
 ---
 
 ### Reidentify (OpCode 3)
+
 - Sent from: Identified client
 - Sent to: obs-websocket
 - Description: Sent at any time after initial identification to update the provided session parameters.
 
 **Data Keys:**
-```
+
+```txt
 {
   "eventSubscriptions": number(optional) = (EventSubscription::All)
 }
 ```
+
 - Only the listed parameters may be changed after initial identification. To change a parameter not listed, you must reconnect to the obs-websocket server.
 
 ---
 
 ### Event (OpCode 5)
+
 - Sent from: obs-websocket
 - Sent to: All subscribed and identified clients
 - Description: An event coming from OBS has occured. Eg scene switched, source muted.
 
 **Data Keys:**
-```
+
+```txt
 {
   "eventType": string,
   "eventIntent": number,
   "eventData": object(optional)
 }
 ```
+
 - `eventIntent` is the original intent required to be subscribed to in order to receive the event.
 
 **Example Message:**
+
 ```json
 {
   "op": 5,
@@ -256,21 +286,24 @@ Authentication is not required
 ---
 
 ### Request (OpCode 6)
+
 - Sent from: Identified client
 - Sent to: obs-websocket
 - Description: Client is making a request to obs-websocket. Eg get current scene, create source.
 
 **Data Keys:**
-```
+
+```txt
 {
   "requestType": string,
   "requestId": string,
   "requestData": object(optional),
-  
+
 }
 ```
 
 **Example Message:**
+
 ```json
 {
   "op": 6,
@@ -287,12 +320,14 @@ Authentication is not required
 ---
 
 ### RequestResponse (OpCode 7)
+
 - Sent from: obs-websocket
 - Sent to: Identified client which made the request
 - Description: obs-websocket is responding to a request coming from a client.
 
 **Data Keys:**
-```
+
+```txt
 {
   "requestType": string,
   "requestId": string,
@@ -300,22 +335,26 @@ Authentication is not required
   "responseData": object(optional)
 }
 ```
+
 - The `requestType` and `requestId` are simply mirrors of what was sent by the client.
 
 `requestStatus` object:
-```
+
+```txt
 {
   "result": bool,
   "code": number,
   "comment": string(optional)
 }
 ```
+
 - `result` is `true` if the request resulted in `RequestStatus::Success`. False if otherwise.
 - `code` is a `RequestStatus` code.
 - `comment` may be provided by the server on errors to offer further details on why a request failed.
 
 **Example Messages:**
 Successful Response
+
 ```json
 {
   "op": 7,
@@ -331,6 +370,7 @@ Successful Response
 ```
 
 Failure Response
+
 ```json
 {
   "op": 7,
@@ -349,12 +389,14 @@ Failure Response
 ---
 
 ### RequestBatch (OpCode 8)
+
 - Sent from: Identified client
 - Sent to: obs-websocket
 - Description: Client is making a batch of requests for obs-websocket. Requests are processed serially (in order) by the server.
 
 **Data Keys:**
-```
+
+```txt
 {
   "requestId": string,
   "haltOnFailure": bool(optional) = false,
@@ -362,29 +404,33 @@ Failure Response
   "requests": array<object>
 }
 ```
+
 - When `haltOnFailure` is `true`, the processing of requests will be halted on first failure. Returns only the processed requests in [`RequestBatchResponse`](#requestbatchresponse-opcode-9).
 - Requests in the `requests` array follow the same structure as the `Request` payload data format, however `requestId` is an optional field.
 
 ---
 
 ### RequestBatchResponse (OpCode 9)
+
 - Sent from: obs-websocket
 - Sent to: Identified client which made the request
 - Description: obs-websocket is responding to a request batch coming from the client.
 
 **Data Keys:**
-```
+
+```txt
 {
   "requestId": string,
   "results": array<object>
 }
 ```
 
-
 # Enums
+
 These are enumeration declarations, which are referenced throughout obs-websocket's protocol.
 
-### Enumerations Table of Contents
+## Enumerations Table of Contents
+
 - [WebSocketOpCode](#websocketopcode)
   - [WebSocketOpCode::Hello](#websocketopcodehello)
   - [WebSocketOpCode::Identify](#websocketopcodeidentify)
@@ -466,7 +512,6 @@ These are enumeration declarations, which are referenced throughout obs-websocke
   - [EventSubscription::InputActiveStateChanged](#eventsubscriptioninputactivestatechanged)
   - [EventSubscription::InputShowStateChanged](#eventsubscriptioninputshowstatechanged)
   - [EventSubscription::SceneItemTransformChanged](#eventsubscriptionsceneitemtransformchanged)
-
 
 ## WebSocketOpCode
 
@@ -557,6 +602,7 @@ The message sent by obs-websocket in response to a particular batch of requests 
 - Identifier Value: `9`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
+
 ## WebSocketCloseCode
 
 ### WebSocketCloseCode::DontClose
@@ -690,6 +736,7 @@ A requested feature is not supported due to hardware/software limitations.
 - Identifier Value: `4012`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
+
 ## RequestBatchExecutionType
 
 ### RequestBatchExecutionType::None
@@ -736,6 +783,7 @@ active processing, like `GetSourceScreenshot`.
 - Identifier Value: `2`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
+
 ## RequestStatus
 
 ### RequestStatus::Unknown
@@ -1075,6 +1123,7 @@ The combination of request fields cannot be used to perform an action.
 - Identifier Value: `703`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
+
 ## EventSubscription
 
 ### EventSubscription::None
@@ -1245,28 +1294,28 @@ Subscription value to receive the `SceneItemTransformChanged` high-volume event.
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 # Events
 
-### Events Table of Contents
-- [General](#general)
+## Events Table of Contents
+
+- [General Events](#general-events)
   - [ExitStarted](#exitstarted)
   - [VendorEvent](#vendorevent)
-- [Config](#config)
+- [Config Events](#config-events)
   - [CurrentSceneCollectionChanging](#currentscenecollectionchanging)
   - [CurrentSceneCollectionChanged](#currentscenecollectionchanged)
   - [SceneCollectionListChanged](#scenecollectionlistchanged)
   - [CurrentProfileChanging](#currentprofilechanging)
   - [CurrentProfileChanged](#currentprofilechanged)
   - [ProfileListChanged](#profilelistchanged)
-- [Scenes](#scenes)
+- [Scenes Events](#scenes-events)
   - [SceneCreated](#scenecreated)
   - [SceneRemoved](#sceneremoved)
   - [SceneNameChanged](#scenenamechanged)
   - [CurrentProgramSceneChanged](#currentprogramscenechanged)
   - [CurrentPreviewSceneChanged](#currentpreviewscenechanged)
   - [SceneListChanged](#scenelistchanged)
-- [Inputs](#inputs)
+- [Inputs Events](#inputs-events)
   - [InputCreated](#inputcreated)
   - [InputRemoved](#inputremoved)
   - [InputNameChanged](#inputnamechanged)
@@ -1279,19 +1328,19 @@ Subscription value to receive the `SceneItemTransformChanged` high-volume event.
   - [InputAudioTracksChanged](#inputaudiotrackschanged)
   - [InputAudioMonitorTypeChanged](#inputaudiomonitortypechanged)
   - [InputVolumeMeters](#inputvolumemeters)
-- [Transitions](#transitions)
+- [Transitions Events](#transitions-events)
   - [CurrentSceneTransitionChanged](#currentscenetransitionchanged)
   - [CurrentSceneTransitionDurationChanged](#currentscenetransitiondurationchanged)
   - [SceneTransitionStarted](#scenetransitionstarted)
   - [SceneTransitionEnded](#scenetransitionended)
   - [SceneTransitionVideoEnded](#scenetransitionvideoended)
-- [Filters](#filters)
+- [Filters Events](#filters-events)
   - [SourceFilterListReindexed](#sourcefilterlistreindexed)
   - [SourceFilterCreated](#sourcefiltercreated)
   - [SourceFilterRemoved](#sourcefilterremoved)
   - [SourceFilterNameChanged](#sourcefilternamechanged)
   - [SourceFilterEnableStateChanged](#sourcefilterenablestatechanged)
-- [Scene Items](#scene-items)
+- [Scene Items Events](#scene-items-events)
   - [SceneItemCreated](#sceneitemcreated)
   - [SceneItemRemoved](#sceneitemremoved)
   - [SceneItemListReindexed](#sceneitemlistreindexed)
@@ -1299,21 +1348,20 @@ Subscription value to receive the `SceneItemTransformChanged` high-volume event.
   - [SceneItemLockStateChanged](#sceneitemlockstatechanged)
   - [SceneItemSelected](#sceneitemselected)
   - [SceneItemTransformChanged](#sceneitemtransformchanged)
-- [Outputs](#outputs)
+- [Outputs Events](#outputs-events)
   - [StreamStateChanged](#streamstatechanged)
   - [RecordStateChanged](#recordstatechanged)
   - [ReplayBufferStateChanged](#replaybufferstatechanged)
   - [VirtualcamStateChanged](#virtualcamstatechanged)
   - [ReplayBufferSaved](#replaybuffersaved)
-- [Media Inputs](#media-inputs)
+- [Media Inputs Events](#media-inputs-events)
   - [MediaInputPlaybackStarted](#mediainputplaybackstarted)
   - [MediaInputPlaybackEnded](#mediainputplaybackended)
   - [MediaInputActionTriggered](#mediainputactiontriggered)
-- [Ui](#ui)
+- [Ui Events](#ui-events)
   - [StudioModeStateChanged](#studiomodestatechanged)
 
-
-## General
+## General Events
 
 ### ExitStarted
 
@@ -1336,7 +1384,6 @@ If a plugin or script implements vendor requests or events, documentation is exp
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Data Fields:**
 
 | Name | Type  | Description |
@@ -1344,7 +1391,8 @@ If a plugin or script implements vendor requests or events, documentation is exp
 | vendorName | String | Name of the vendor emitting the event |
 | eventType | String | Vendor-provided event typedef |
 | eventData | Object | Vendor-provided event data. {} if event does not provide any data |
-## Config
+
+## Config Events
 
 ### CurrentSceneCollectionChanging
 
@@ -1356,7 +1404,6 @@ scene collection change is considered undefined behavior and can cause crashes!
 - Complexity Rating: `1/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
-
 
 **Data Fields:**
 
@@ -1376,7 +1423,6 @@ Note: If polling has been paused during `CurrentSceneCollectionChanging`, this i
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Data Fields:**
 
 | Name | Type  | Description |
@@ -1392,7 +1438,6 @@ The scene collection list has changed.
 - Complexity Rating: `1/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
-
 
 **Data Fields:**
 
@@ -1410,7 +1455,6 @@ The current profile has begun changing.
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Data Fields:**
 
 | Name | Type  | Description |
@@ -1426,7 +1470,6 @@ The current profile has changed.
 - Complexity Rating: `1/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
-
 
 **Data Fields:**
 
@@ -1444,13 +1487,13 @@ The profile list has changed.
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Data Fields:**
 
 | Name | Type  | Description |
 | ---- | :---: | ----------- |
 | profiles | Array&lt;String&gt; | Updated list of profiles |
-## Scenes
+
+## Scenes Events
 
 ### SceneCreated
 
@@ -1459,7 +1502,6 @@ A new scene has been created.
 - Complexity Rating: `2/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
-
 
 **Data Fields:**
 
@@ -1478,7 +1520,6 @@ A scene has been removed.
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Data Fields:**
 
 | Name | Type  | Description |
@@ -1495,7 +1536,6 @@ The name of a scene has changed.
 - Complexity Rating: `2/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
-
 
 **Data Fields:**
 
@@ -1514,7 +1554,6 @@ The current program scene has changed.
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Data Fields:**
 
 | Name | Type  | Description |
@@ -1530,7 +1569,6 @@ The current preview scene has changed.
 - Complexity Rating: `1/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
-
 
 **Data Fields:**
 
@@ -1550,13 +1588,13 @@ TODO: Make OBS fire this event when scenes are reordered.
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Data Fields:**
 
 | Name | Type  | Description |
 | ---- | :---: | ----------- |
 | scenes | Array&lt;Object&gt; | Updated array of scenes |
-## Inputs
+
+## Inputs Events
 
 ### InputCreated
 
@@ -1565,7 +1603,6 @@ An input has been created.
 - Complexity Rating: `2/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
-
 
 **Data Fields:**
 
@@ -1587,7 +1624,6 @@ An input has been removed.
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Data Fields:**
 
 | Name | Type  | Description |
@@ -1603,7 +1639,6 @@ The name of an input has changed.
 - Complexity Rating: `2/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
-
 
 **Data Fields:**
 
@@ -1624,7 +1659,6 @@ When an input is active, it means it's being shown by the program feed.
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Data Fields:**
 
 | Name | Type  | Description |
@@ -1644,7 +1678,6 @@ When an input is showing, it means it's being shown by the preview or a dialog.
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Data Fields:**
 
 | Name | Type  | Description |
@@ -1662,7 +1695,6 @@ An input's mute state has changed.
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Data Fields:**
 
 | Name | Type  | Description |
@@ -1679,7 +1711,6 @@ An input's volume level has changed.
 - Complexity Rating: `3/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
-
 
 **Data Fields:**
 
@@ -1699,7 +1730,6 @@ The audio balance value of an input has changed.
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Data Fields:**
 
 | Name | Type  | Description |
@@ -1716,7 +1746,6 @@ The sync offset of an input has changed.
 - Complexity Rating: `3/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
-
 
 **Data Fields:**
 
@@ -1735,7 +1764,6 @@ The audio tracks of an input have changed.
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Data Fields:**
 
 | Name | Type  | Description |
@@ -1750,6 +1778,7 @@ The audio tracks of an input have changed.
 The monitor type of an input has changed.
 
 Available types are:
+
 - `OBS_MONITORING_TYPE_NONE`
 - `OBS_MONITORING_TYPE_MONITOR_ONLY`
 - `OBS_MONITORING_TYPE_MONITOR_AND_OUTPUT`
@@ -1757,7 +1786,6 @@ Available types are:
 - Complexity Rating: `2/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
-
 
 **Data Fields:**
 
@@ -1776,13 +1804,13 @@ A high-volume event providing volume levels of all active inputs every 50 millis
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Data Fields:**
 
 | Name | Type  | Description |
 | ---- | :---: | ----------- |
 | inputs | Array&lt;Object&gt; | Array of active inputs with their associated volume levels |
-## Transitions
+
+## Transitions Events
 
 ### CurrentSceneTransitionChanged
 
@@ -1791,7 +1819,6 @@ The current scene transition has changed.
 - Complexity Rating: `2/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
-
 
 **Data Fields:**
 
@@ -1809,7 +1836,6 @@ The current scene transition duration has changed.
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Data Fields:**
 
 | Name | Type  | Description |
@@ -1825,7 +1851,6 @@ A scene transition has started.
 - Complexity Rating: `2/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
-
 
 **Data Fields:**
 
@@ -1844,7 +1869,6 @@ Note: Does not appear to trigger when the transition is interrupted by the user.
 - Complexity Rating: `2/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
-
 
 **Data Fields:**
 
@@ -1867,13 +1891,13 @@ Note: Appears to be called by every transition, regardless of relevance.
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Data Fields:**
 
 | Name | Type  | Description |
 | ---- | :---: | ----------- |
 | transitionName | String | Scene transition name |
-## Filters
+
+## Filters Events
 
 ### SourceFilterListReindexed
 
@@ -1882,7 +1906,6 @@ A source's filter list has been reindexed.
 - Complexity Rating: `3/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
-
 
 **Data Fields:**
 
@@ -1900,7 +1923,6 @@ A filter has been added to a source.
 - Complexity Rating: `2/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
-
 
 **Data Fields:**
 
@@ -1923,7 +1945,6 @@ A filter has been removed from a source.
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Data Fields:**
 
 | Name | Type  | Description |
@@ -1940,7 +1961,6 @@ The name of a source filter has changed.
 - Complexity Rating: `2/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
-
 
 **Data Fields:**
 
@@ -1960,7 +1980,6 @@ A source filter's enable state has changed.
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Data Fields:**
 
 | Name | Type  | Description |
@@ -1968,7 +1987,8 @@ A source filter's enable state has changed.
 | sourceName | String | Name of the source the filter is on |
 | filterName | String | Name of the filter |
 | filterEnabled | Boolean | Whether the filter is enabled |
-## Scene Items
+
+## Scene Items Events
 
 ### SceneItemCreated
 
@@ -1977,7 +1997,6 @@ A scene item has been created.
 - Complexity Rating: `3/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
-
 
 **Data Fields:**
 
@@ -2000,7 +2019,6 @@ This event is not emitted when the scene the item is in is removed.
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Data Fields:**
 
 | Name | Type  | Description |
@@ -2019,7 +2037,6 @@ A scene's item list has been reindexed.
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Data Fields:**
 
 | Name | Type  | Description |
@@ -2036,7 +2053,6 @@ A scene item's enable state has changed.
 - Complexity Rating: `3/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
-
 
 **Data Fields:**
 
@@ -2056,7 +2072,6 @@ A scene item's lock state has changed.
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Data Fields:**
 
 | Name | Type  | Description |
@@ -2075,7 +2090,6 @@ A scene item has been selected in the Ui.
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Data Fields:**
 
 | Name | Type  | Description |
@@ -2093,7 +2107,6 @@ The transform/crop of a scene item has changed.
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Data Fields:**
 
 | Name | Type  | Description |
@@ -2101,7 +2114,8 @@ The transform/crop of a scene item has changed.
 | sceneName | String | The name of the scene the item is in |
 | sceneItemId | Number | Numeric ID of the scene item |
 | sceneItemTransform | Object | New transform/crop info of the scene item |
-## Outputs
+
+## Outputs Events
 
 ### StreamStateChanged
 
@@ -2110,7 +2124,6 @@ The state of the stream output has changed.
 - Complexity Rating: `2/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
-
 
 **Data Fields:**
 
@@ -2129,7 +2142,6 @@ The state of the record output has changed.
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Data Fields:**
 
 | Name | Type  | Description |
@@ -2146,7 +2158,6 @@ The state of the replay buffer output has changed.
 - Complexity Rating: `2/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
-
 
 **Data Fields:**
 
@@ -2165,7 +2176,6 @@ The state of the virtualcam output has changed.
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Data Fields:**
 
 | Name | Type  | Description |
@@ -2183,13 +2193,13 @@ The replay buffer has been saved.
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Data Fields:**
 
 | Name | Type  | Description |
 | ---- | :---: | ----------- |
 | savedReplayPath | String | Path of the saved replay file |
-## Media Inputs
+
+## Media Inputs Events
 
 ### MediaInputPlaybackStarted
 
@@ -2198,7 +2208,6 @@ A media input has started playing.
 - Complexity Rating: `2/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
-
 
 **Data Fields:**
 
@@ -2216,7 +2225,6 @@ A media input has finished playing.
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Data Fields:**
 
 | Name | Type  | Description |
@@ -2233,14 +2241,14 @@ An action has been performed on an input.
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Data Fields:**
 
 | Name | Type  | Description |
 | ---- | :---: | ----------- |
 | inputName | String | Name of the input |
 | mediaAction | String | Action performed on the input. See `ObsMediaInputAction` enum |
-## Ui
+
+## Ui Events
 
 ### StudioModeStateChanged
 
@@ -2250,18 +2258,17 @@ Studio mode has been enabled or disabled.
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Data Fields:**
 
 | Name | Type  | Description |
 | ---- | :---: | ----------- |
 | studioModeEnabled | Boolean | True == Enabled, False == Disabled |
 
-
 # Requests
 
-### Requests Table of Contents
-- [General](#general-1)
+## Requests Table of Contents
+
+- [General Requests](#general-1-requests)
   - [GetVersion](#getversion)
   - [GetStats](#getstats)
   - [BroadcastCustomEvent](#broadcastcustomevent)
@@ -2270,7 +2277,7 @@ Studio mode has been enabled or disabled.
   - [TriggerHotkeyByName](#triggerhotkeybyname)
   - [TriggerHotkeyByKeySequence](#triggerhotkeybykeysequence)
   - [Sleep](#sleep)
-- [Config](#config-1)
+- [Config Requests](#config-1-requests)
   - [GetPersistentData](#getpersistentdata)
   - [SetPersistentData](#setpersistentdata)
   - [GetSceneCollectionList](#getscenecollectionlist)
@@ -2286,11 +2293,11 @@ Studio mode has been enabled or disabled.
   - [SetVideoSettings](#setvideosettings)
   - [GetStreamServiceSettings](#getstreamservicesettings)
   - [SetStreamServiceSettings](#setstreamservicesettings)
-- [Sources](#sources)
+- [Sources Requests](#sources-requests)
   - [GetSourceActive](#getsourceactive)
   - [GetSourceScreenshot](#getsourcescreenshot)
   - [SaveSourceScreenshot](#savesourcescreenshot)
-- [Scenes](#scenes-1)
+- [Scenes Requests](#scenes-1-requests)
   - [GetSceneList](#getscenelist)
   - [GetGroupList](#getgrouplist)
   - [GetCurrentProgramScene](#getcurrentprogramscene)
@@ -2302,7 +2309,7 @@ Studio mode has been enabled or disabled.
   - [SetSceneName](#setscenename)
   - [GetSceneSceneTransitionOverride](#getscenescenetransitionoverride)
   - [SetSceneSceneTransitionOverride](#setscenescenetransitionoverride)
-- [Inputs](#inputs-1)
+- [Inputs Requests](#inputs-1-requests)
   - [GetInputList](#getinputlist)
   - [GetInputKindList](#getinputkindlist)
   - [GetSpecialInputs](#getspecialinputs)
@@ -2327,7 +2334,7 @@ Studio mode has been enabled or disabled.
   - [SetInputAudioTracks](#setinputaudiotracks)
   - [GetInputPropertiesListPropertyItems](#getinputpropertieslistpropertyitems)
   - [PressInputPropertiesButton](#pressinputpropertiesbutton)
-- [Transitions](#transitions-1)
+- [Transitions Requests](#transitions-1-requests)
   - [GetTransitionKindList](#gettransitionkindlist)
   - [GetSceneTransitionList](#getscenetransitionlist)
   - [GetCurrentSceneTransition](#getcurrentscenetransition)
@@ -2337,7 +2344,7 @@ Studio mode has been enabled or disabled.
   - [GetCurrentSceneTransitionCursor](#getcurrentscenetransitioncursor)
   - [TriggerStudioModeTransition](#triggerstudiomodetransition)
   - [SetTBarPosition](#settbarposition)
-- [Filters](#filters-1)
+- [Filters Requests](#filters-1-requests)
   - [GetSourceFilterList](#getsourcefilterlist)
   - [GetSourceFilterDefaultSettings](#getsourcefilterdefaultsettings)
   - [CreateSourceFilter](#createsourcefilter)
@@ -2347,7 +2354,7 @@ Studio mode has been enabled or disabled.
   - [SetSourceFilterIndex](#setsourcefilterindex)
   - [SetSourceFilterSettings](#setsourcefiltersettings)
   - [SetSourceFilterEnabled](#setsourcefilterenabled)
-- [Scene Items](#scene-items-1)
+- [Scene Items Requests](#scene-items-1-requests)
   - [GetSceneItemList](#getsceneitemlist)
   - [GetGroupItemList](#getgroupitemlist)
   - [GetSceneItemId](#getsceneitemid)
@@ -2364,7 +2371,7 @@ Studio mode has been enabled or disabled.
   - [SetSceneItemIndex](#setsceneitemindex)
   - [GetSceneItemBlendMode](#getsceneitemblendmode)
   - [SetSceneItemBlendMode](#setsceneitemblendmode)
-- [Outputs](#outputs-1)
+- [Outputs Requests](#outputs-1-requests)
   - [GetVirtualCamStatus](#getvirtualcamstatus)
   - [ToggleVirtualCam](#togglevirtualcam)
   - [StartVirtualCam](#startvirtualcam)
@@ -2375,13 +2382,13 @@ Studio mode has been enabled or disabled.
   - [StopReplayBuffer](#stopreplaybuffer)
   - [SaveReplayBuffer](#savereplaybuffer)
   - [GetLastReplayBufferReplay](#getlastreplaybufferreplay)
-- [Stream](#stream)
+- [Stream Requests](#stream-requests)
   - [GetStreamStatus](#getstreamstatus)
   - [ToggleStream](#togglestream)
   - [StartStream](#startstream)
   - [StopStream](#stopstream)
   - [SendStreamCaption](#sendstreamcaption)
-- [Record](#record)
+- [Record Requests](#record-requests)
   - [GetRecordStatus](#getrecordstatus)
   - [ToggleRecord](#togglerecord)
   - [StartRecord](#startrecord)
@@ -2389,12 +2396,12 @@ Studio mode has been enabled or disabled.
   - [ToggleRecordPause](#togglerecordpause)
   - [PauseRecord](#pauserecord)
   - [ResumeRecord](#resumerecord)
-- [Media Inputs](#media-inputs-1)
+- [Media Inputs Requests](#media-inputs-1-requests)
   - [GetMediaInputStatus](#getmediainputstatus)
   - [SetMediaInputCursor](#setmediainputcursor)
   - [OffsetMediaInputCursor](#offsetmediainputcursor)
   - [TriggerMediaInputAction](#triggermediainputaction)
-- [Ui](#ui-1)
+- [Ui Requests](#ui-1-requests)
   - [GetStudioModeEnabled](#getstudiomodeenabled)
   - [SetStudioModeEnabled](#setstudiomodeenabled)
   - [OpenInputPropertiesDialog](#openinputpropertiesdialog)
@@ -2402,10 +2409,7 @@ Studio mode has been enabled or disabled.
   - [OpenInputInteractDialog](#openinputinteractdialog)
   - [GetMonitorList](#getmonitorlist)
 
-
-
-
-## General
+## General Requests
 
 ### GetVersion
 
@@ -2414,7 +2418,6 @@ Gets data about the current plugin and RPC version.
 - Complexity Rating: `1/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
-
 
 **Response Fields:**
 
@@ -2437,7 +2440,6 @@ Gets statistics about OBS, obs-websocket, and the current session.
 - Complexity Rating: `2/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
-
 
 **Response Fields:**
 
@@ -2465,7 +2467,6 @@ Broadcasts a `CustomEvent` to all WebSocket clients. Receivers are clients which
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Request Fields:**
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
@@ -2485,7 +2486,6 @@ If a plugin or script implements vendor requests or events, documentation is exp
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Request Fields:**
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
@@ -2493,7 +2493,6 @@ If a plugin or script implements vendor requests or events, documentation is exp
 | vendorName | String | Name of the vendor to use | None | N/A |
 | requestType | String | The request type to call | None | N/A |
 | ?requestData | Object | Object containing appropriate request data | None | {} |
-
 
 **Response Fields:**
 
@@ -2511,7 +2510,6 @@ Gets an array of all hotkey names in OBS
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Response Fields:**
 
 | Name | Type  | Description |
@@ -2528,7 +2526,6 @@ Triggers a hotkey using its name. See `GetHotkeyList`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Request Fields:**
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
@@ -2544,7 +2541,6 @@ Triggers a hotkey using a sequence of keys.
 - Complexity Rating: `4/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
-
 
 **Request Fields:**
 
@@ -2567,7 +2563,6 @@ Sleeps for a time duration or number of frames. Only available in request batche
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Request Fields:**
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
@@ -2575,8 +2570,7 @@ Sleeps for a time duration or number of frames. Only available in request batche
 | sleepMillis | Number | Number of milliseconds to sleep for (if `SERIAL_REALTIME` mode) | >= 0, <= 50000 | N/A |
 | sleepFrames | Number | Number of frames to sleep for (if `SERIAL_FRAME` mode) | >= 0, <= 10000 | N/A |
 
-
-## Config
+## Config Requests
 
 ### GetPersistentData
 
@@ -2586,14 +2580,12 @@ Gets the value of a "slot" from the selected persistent data realm.
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Request Fields:**
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
 | realm | String | The data realm to select. `OBS_WEBSOCKET_DATA_REALM_GLOBAL` or `OBS_WEBSOCKET_DATA_REALM_PROFILE` | None | N/A |
 | slotName | String | The name of the slot to retrieve data from | None | N/A |
-
 
 **Response Fields:**
 
@@ -2610,7 +2602,6 @@ Sets the value of a "slot" from the selected persistent data realm.
 - Complexity Rating: `2/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
-
 
 **Request Fields:**
 
@@ -2629,7 +2620,6 @@ Gets an array of all scene collections
 - Complexity Rating: `1/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
-
 
 **Response Fields:**
 
@@ -2650,7 +2640,6 @@ Note: This will block until the collection has finished changing.
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Request Fields:**
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
@@ -2669,7 +2658,6 @@ Note: This will block until the collection has finished changing.
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Request Fields:**
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
@@ -2685,7 +2673,6 @@ Gets an array of all profiles
 - Complexity Rating: `1/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
-
 
 **Response Fields:**
 
@@ -2704,7 +2691,6 @@ Switches to a profile.
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Request Fields:**
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
@@ -2720,7 +2706,6 @@ Creates a new profile, switching to it in the process
 - Complexity Rating: `1/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
-
 
 **Request Fields:**
 
@@ -2738,7 +2723,6 @@ Removes a profile. If the current profile is chosen, it will change to a differe
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Request Fields:**
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
@@ -2755,14 +2739,12 @@ Gets a parameter from the current profile's configuration.
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Request Fields:**
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
 | parameterCategory | String | Category of the parameter to get | None | N/A |
 | parameterName | String | Name of the parameter to get | None | N/A |
-
 
 **Response Fields:**
 
@@ -2780,7 +2762,6 @@ Sets the value of a parameter in the current profile's configuration.
 - Complexity Rating: `4/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
-
 
 **Request Fields:**
 
@@ -2801,7 +2782,6 @@ Note: To get the true FPS value, divide the FPS numerator by the FPS denominator
 - Complexity Rating: `2/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
-
 
 **Response Fields:**
 
@@ -2826,7 +2806,6 @@ Note: Fields must be specified in pairs. For example, you cannot set only `baseW
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Request Fields:**
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
@@ -2848,7 +2827,6 @@ Gets the current stream service settings (stream destination).
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Response Fields:**
 
 | Name | Type  | Description |
@@ -2868,7 +2846,6 @@ Note: Simple RTMP settings can be set with type `rtmp_custom` and the settings f
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Request Fields:**
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
@@ -2876,8 +2853,7 @@ Note: Simple RTMP settings can be set with type `rtmp_custom` and the settings f
 | streamServiceType | String | Type of stream service to apply. Example: `rtmp_common` or `rtmp_custom` | None | N/A |
 | streamServiceSettings | Object | Settings to apply to the service | None | N/A |
 
-
-## Sources
+## Sources Requests
 
 ### GetSourceActive
 
@@ -2889,13 +2865,11 @@ Gets the active and show state of a source.
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Request Fields:**
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
 | sourceName | String | Name of the source to get the active state of | None | N/A |
-
 
 **Response Fields:**
 
@@ -2919,7 +2893,6 @@ If `imageWidth` and `imageHeight` are not specified, the compressed image will u
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Request Fields:**
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
@@ -2929,7 +2902,6 @@ If `imageWidth` and `imageHeight` are not specified, the compressed image will u
 | ?imageWidth | Number | Width to scale the screenshot to | >= 8, <= 4096 | Source value is used |
 | ?imageHeight | Number | Height to scale the screenshot to | >= 8, <= 4096 | Source value is used |
 | ?imageCompressionQuality | Number | Compression quality to use. 0 for high compression, 100 for uncompressed. -1 to use "default" (whatever that means, idk) | >= -1, <= 100 | -1 |
-
 
 **Response Fields:**
 
@@ -2952,7 +2924,6 @@ If `imageWidth` and `imageHeight` are not specified, the compressed image will u
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Request Fields:**
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
@@ -2964,15 +2935,13 @@ If `imageWidth` and `imageHeight` are not specified, the compressed image will u
 | ?imageHeight | Number | Height to scale the screenshot to | >= 8, <= 4096 | Source value is used |
 | ?imageCompressionQuality | Number | Compression quality to use. 0 for high compression, 100 for uncompressed. -1 to use "default" (whatever that means, idk) | >= -1, <= 100 | -1 |
 
-
 **Response Fields:**
 
 | Name | Type  | Description |
 | ---- | :---: | ----------- |
 | imageData | String | Base64-encoded screenshot |
 
-
-## Scenes
+## Scenes Requests
 
 ### GetSceneList
 
@@ -2981,7 +2950,6 @@ Gets an array of all scenes in OBS.
 - Complexity Rating: `2/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
-
 
 **Response Fields:**
 
@@ -3003,7 +2971,6 @@ Groups in OBS are actually scenes, but renamed and modified. In obs-websocket, w
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Response Fields:**
 
 | Name | Type  | Description |
@@ -3020,7 +2987,6 @@ Gets the current program scene.
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Response Fields:**
 
 | Name | Type  | Description |
@@ -3036,7 +3002,6 @@ Sets the current program scene.
 - Complexity Rating: `1/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
-
 
 **Request Fields:**
 
@@ -3056,7 +3021,6 @@ Only available when studio mode is enabled.
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Response Fields:**
 
 | Name | Type  | Description |
@@ -3075,7 +3039,6 @@ Only available when studio mode is enabled.
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Request Fields:**
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
@@ -3091,7 +3054,6 @@ Creates a new scene in OBS.
 - Complexity Rating: `2/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
-
 
 **Request Fields:**
 
@@ -3109,7 +3071,6 @@ Removes a scene from OBS.
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Request Fields:**
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
@@ -3125,7 +3086,6 @@ Sets the name of a scene (rename).
 - Complexity Rating: `2/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
-
 
 **Request Fields:**
 
@@ -3144,13 +3104,11 @@ Gets the scene transition overridden for a scene.
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Request Fields:**
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
 | sceneName | String | Name of the scene | None | N/A |
-
 
 **Response Fields:**
 
@@ -3169,7 +3127,6 @@ Gets the scene transition overridden for a scene.
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Request Fields:**
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
@@ -3178,8 +3135,7 @@ Gets the scene transition overridden for a scene.
 | ?transitionName | String | Name of the scene transition to use as override. Specify `null` to remove | None | Unchanged |
 | ?transitionDuration | Number | Duration to use for any overridden transition. Specify `null` to remove | >= 50, <= 20000 | Unchanged |
 
-
-## Inputs
+## Inputs Requests
 
 ### GetInputList
 
@@ -3189,13 +3145,11 @@ Gets an array of all inputs in OBS.
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Request Fields:**
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
 | ?inputKind | String | Restrict the array to only inputs of the specified kind | None | All kinds included |
-
 
 **Response Fields:**
 
@@ -3213,13 +3167,11 @@ Gets an array of all available input kinds in OBS.
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Request Fields:**
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
 | ?unversioned | Boolean | True == Return all kinds as unversioned, False == Return with version suffixes (if available) | None | false |
-
 
 **Response Fields:**
 
@@ -3236,7 +3188,6 @@ Gets the names of all special inputs.
 - Complexity Rating: `2/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
-
 
 **Response Fields:**
 
@@ -3259,7 +3210,6 @@ Creates a new input, adding it as a scene item to the specified scene.
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Request Fields:**
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
@@ -3269,7 +3219,6 @@ Creates a new input, adding it as a scene item to the specified scene.
 | inputKind | String | The kind of input to be created | None | N/A |
 | ?inputSettings | Object | Settings object to initialize the input with | None | Default settings used |
 | ?sceneItemEnabled | Boolean | Whether to set the created scene item to enabled or disabled | None | True |
-
 
 **Response Fields:**
 
@@ -3289,7 +3238,6 @@ Note: Will immediately remove all associated scene items.
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Request Fields:**
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
@@ -3305,7 +3253,6 @@ Sets the name of an input (rename).
 - Complexity Rating: `2/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
-
 
 **Request Fields:**
 
@@ -3324,13 +3271,11 @@ Gets the default settings for an input kind.
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Request Fields:**
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
 | inputKind | String | Input kind to get the default settings for | None | N/A |
-
 
 **Response Fields:**
 
@@ -3350,13 +3295,11 @@ Note: Does not include defaults. To create the entire settings object, overlay `
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Request Fields:**
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
 | inputName | String | Name of the input to get the settings of | None | N/A |
-
 
 **Response Fields:**
 
@@ -3374,7 +3317,6 @@ Sets the settings of an input.
 - Complexity Rating: `3/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
-
 
 **Request Fields:**
 
@@ -3394,13 +3336,11 @@ Gets the audio mute state of an input.
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Request Fields:**
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
 | inputName | String | Name of input to get the mute state of | None | N/A |
-
 
 **Response Fields:**
 
@@ -3417,7 +3357,6 @@ Sets the audio mute state of an input.
 - Complexity Rating: `2/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
-
 
 **Request Fields:**
 
@@ -3436,13 +3375,11 @@ Toggles the audio mute state of an input.
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Request Fields:**
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
 | inputName | String | Name of the input to toggle the mute state of | None | N/A |
-
 
 **Response Fields:**
 
@@ -3460,13 +3397,11 @@ Gets the current volume setting of an input.
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Request Fields:**
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
 | inputName | String | Name of the input to get the volume of | None | N/A |
-
 
 **Response Fields:**
 
@@ -3484,7 +3419,6 @@ Sets the volume setting of an input.
 - Complexity Rating: `3/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
-
 
 **Request Fields:**
 
@@ -3504,13 +3438,11 @@ Gets the audio balance of an input.
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Request Fields:**
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
 | inputName | String | Name of the input to get the audio balance of | None | N/A |
-
 
 **Response Fields:**
 
@@ -3527,7 +3459,6 @@ Sets the audio balance of an input.
 - Complexity Rating: `2/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
-
 
 **Request Fields:**
 
@@ -3548,13 +3479,11 @@ Note: The audio sync offset can be negative too!
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Request Fields:**
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
 | inputName | String | Name of the input to get the audio sync offset of | None | N/A |
-
 
 **Response Fields:**
 
@@ -3572,7 +3501,6 @@ Sets the audio sync offset of an input.
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Request Fields:**
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
@@ -3587,6 +3515,7 @@ Sets the audio sync offset of an input.
 Gets the audio monitor type of an input.
 
 The available audio monitor types are:
+
 - `OBS_MONITORING_TYPE_NONE`
 - `OBS_MONITORING_TYPE_MONITOR_ONLY`
 - `OBS_MONITORING_TYPE_MONITOR_AND_OUTPUT`
@@ -3595,13 +3524,11 @@ The available audio monitor types are:
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Request Fields:**
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
 | inputName | String | Name of the input to get the audio monitor type of | None | N/A |
-
 
 **Response Fields:**
 
@@ -3618,7 +3545,6 @@ Sets the audio monitor type of an input.
 - Complexity Rating: `2/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
-
 
 **Request Fields:**
 
@@ -3637,13 +3563,11 @@ Gets the enable state of all audio tracks of an input.
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Request Fields:**
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
 | inputName | String | Name of the input | None | N/A |
-
 
 **Response Fields:**
 
@@ -3660,7 +3584,6 @@ Sets the enable state of audio tracks of an input.
 - Complexity Rating: `2/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
-
 
 **Request Fields:**
 
@@ -3681,14 +3604,12 @@ Note: Use this in cases where an input provides a dynamic, selectable list of it
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Request Fields:**
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
 | inputName | String | Name of the input | None | N/A |
 | propertyName | String | Name of the list property to get the items of | None | N/A |
-
 
 **Response Fields:**
 
@@ -3708,7 +3629,6 @@ Note: Use this in cases where there is a button in the properties of an input th
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Request Fields:**
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
@@ -3716,8 +3636,7 @@ Note: Use this in cases where there is a button in the properties of an input th
 | inputName | String | Name of the input | None | N/A |
 | propertyName | String | Name of the button property to press | None | N/A |
 
-
-## Transitions
+## Transitions Requests
 
 ### GetTransitionKindList
 
@@ -3728,7 +3647,6 @@ Similar to `GetInputKindList`
 - Complexity Rating: `2/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
-
 
 **Response Fields:**
 
@@ -3745,7 +3663,6 @@ Gets an array of all scene transitions in OBS.
 - Complexity Rating: `3/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
-
 
 **Response Fields:**
 
@@ -3764,7 +3681,6 @@ Gets information about the current scene transition.
 - Complexity Rating: `2/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
-
 
 **Response Fields:**
 
@@ -3789,7 +3705,6 @@ Small note: While the namespace of scene transitions is generally unique, that u
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Request Fields:**
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
@@ -3806,7 +3721,6 @@ Sets the duration of the current scene transition, if it is not fixed.
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Request Fields:**
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
@@ -3822,7 +3736,6 @@ Sets the settings of the current scene transition.
 - Complexity Rating: `3/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
-
 
 **Request Fields:**
 
@@ -3842,7 +3755,6 @@ Note: `transitionCursor` will return 1.0 when the transition is inactive.
 - Complexity Rating: `2/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
-
 
 **Response Fields:**
 
@@ -3872,7 +3784,6 @@ Sets the position of the TBar.
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Request Fields:**
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
@@ -3880,8 +3791,7 @@ Sets the position of the TBar.
 | position | Number | New position | >= 0.0, <= 1.0 | N/A |
 | ?release | Boolean | Whether to release the TBar. Only set `false` if you know that you will be sending another position update | None | `true` |
 
-
-## Filters
+## Filters Requests
 
 ### GetSourceFilterList
 
@@ -3891,13 +3801,11 @@ Gets an array of all of a source's filters.
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Request Fields:**
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
 | sourceName | String | Name of the source | None | N/A |
-
 
 **Response Fields:**
 
@@ -3915,13 +3823,11 @@ Gets the default settings for a filter kind.
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Request Fields:**
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
 | filterKind | String | Filter kind to get the default settings for | None | N/A |
-
 
 **Response Fields:**
 
@@ -3938,7 +3844,6 @@ Creates a new filter, adding it to the specified source.
 - Complexity Rating: `3/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
-
 
 **Request Fields:**
 
@@ -3959,7 +3864,6 @@ Removes a filter from a source.
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Request Fields:**
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
@@ -3976,7 +3880,6 @@ Sets the name of a source filter (rename).
 - Complexity Rating: `2/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
-
 
 **Request Fields:**
 
@@ -3996,14 +3899,12 @@ Gets the info for a specific source filter.
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Request Fields:**
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
 | sourceName | String | Name of the source | None | N/A |
 | filterName | String | Name of the filter | None | N/A |
-
 
 **Response Fields:**
 
@@ -4024,7 +3925,6 @@ Sets the index position of a filter on a source.
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Request Fields:**
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
@@ -4042,7 +3942,6 @@ Sets the settings of a source filter.
 - Complexity Rating: `3/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
-
 
 **Request Fields:**
 
@@ -4063,7 +3962,6 @@ Sets the enable state of a source filter.
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Request Fields:**
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
@@ -4072,8 +3970,7 @@ Sets the enable state of a source filter.
 | filterName | String | Name of the filter | None | N/A |
 | filterEnabled | Boolean | New enable state of the filter | None | N/A |
 
-
-## Scene Items
+## Scene Items Requests
 
 ### GetSceneItemList
 
@@ -4085,13 +3982,11 @@ Scenes only
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Request Fields:**
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
 | sceneName | String | Name of the scene to get the items of | None | N/A |
-
 
 **Response Fields:**
 
@@ -4113,13 +4008,11 @@ Groups only
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Request Fields:**
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
 | sceneName | String | Name of the group to get the items of | None | N/A |
-
 
 **Response Fields:**
 
@@ -4139,7 +4032,6 @@ Scenes and Groups
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Request Fields:**
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
@@ -4147,7 +4039,6 @@ Scenes and Groups
 | sceneName | String | Name of the scene or group to search in | None | N/A |
 | sourceName | String | Name of the source to find | None | N/A |
 | ?searchOffset | Number | Number of matches to skip during search. >= 0 means first forward. -1 means last (top) item | >= -1 | 0 |
-
 
 **Response Fields:**
 
@@ -4167,7 +4058,6 @@ Scenes only
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Request Fields:**
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
@@ -4175,7 +4065,6 @@ Scenes only
 | sceneName | String | Name of the scene to create the new item in | None | N/A |
 | sourceName | String | Name of the source to add to the scene | None | N/A |
 | ?sceneItemEnabled | Boolean | Enable state to apply to the scene item on creation | None | True |
-
 
 **Response Fields:**
 
@@ -4194,7 +4083,6 @@ Scenes only
 - Complexity Rating: `3/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
-
 
 **Request Fields:**
 
@@ -4215,7 +4103,6 @@ Scenes only
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Request Fields:**
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
@@ -4223,7 +4110,6 @@ Scenes only
 | sceneName | String | Name of the scene the item is in | None | N/A |
 | sceneItemId | Number | Numeric ID of the scene item | >= 0 | N/A |
 | ?destinationSceneName | String | Name of the scene to create the duplicated item in | None | `sceneName` is assumed |
-
 
 **Response Fields:**
 
@@ -4243,14 +4129,12 @@ Scenes and Groups
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Request Fields:**
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
 | sceneName | String | Name of the scene the item is in | None | N/A |
 | sceneItemId | Number | Numeric ID of the scene item | >= 0 | N/A |
-
 
 **Response Fields:**
 
@@ -4267,7 +4151,6 @@ Sets the transform and crop info of a scene item.
 - Complexity Rating: `3/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
-
 
 **Request Fields:**
 
@@ -4289,14 +4172,12 @@ Scenes and Groups
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Request Fields:**
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
 | sceneName | String | Name of the scene the item is in | None | N/A |
 | sceneItemId | Number | Numeric ID of the scene item | >= 0 | N/A |
-
 
 **Response Fields:**
 
@@ -4315,7 +4196,6 @@ Scenes and Groups
 - Complexity Rating: `3/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
-
 
 **Request Fields:**
 
@@ -4337,14 +4217,12 @@ Scenes and Groups
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Request Fields:**
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
 | sceneName | String | Name of the scene the item is in | None | N/A |
 | sceneItemId | Number | Numeric ID of the scene item | >= 0 | N/A |
-
 
 **Response Fields:**
 
@@ -4363,7 +4241,6 @@ Scenes and Group
 - Complexity Rating: `3/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
-
 
 **Request Fields:**
 
@@ -4387,14 +4264,12 @@ Scenes and Groups
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Request Fields:**
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
 | sceneName | String | Name of the scene the item is in | None | N/A |
 | sceneItemId | Number | Numeric ID of the scene item | >= 0 | N/A |
-
 
 **Response Fields:**
 
@@ -4413,7 +4288,6 @@ Scenes and Groups
 - Complexity Rating: `3/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
-
 
 **Request Fields:**
 
@@ -4445,14 +4319,12 @@ Scenes and Groups
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Request Fields:**
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
 | sceneName | String | Name of the scene the item is in | None | N/A |
 | sceneItemId | Number | Numeric ID of the scene item | >= 0 | N/A |
-
 
 **Response Fields:**
 
@@ -4472,7 +4344,6 @@ Scenes and Groups
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Request Fields:**
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
@@ -4481,8 +4352,7 @@ Scenes and Groups
 | sceneItemId | Number | Numeric ID of the scene item | >= 0 | N/A |
 | sceneItemBlendMode | String | New blend mode | None | N/A |
 
-
-## Outputs
+## Outputs Requests
 
 ### GetVirtualCamStatus
 
@@ -4491,7 +4361,6 @@ Gets the status of the virtualcam output.
 - Complexity Rating: `1/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
-
 
 **Response Fields:**
 
@@ -4508,7 +4377,6 @@ Toggles the state of the virtualcam output.
 - Complexity Rating: `1/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
-
 
 **Response Fields:**
 
@@ -4546,7 +4414,6 @@ Gets the status of the replay buffer output.
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Response Fields:**
 
 | Name | Type  | Description |
@@ -4562,7 +4429,6 @@ Toggles the state of the replay buffer output.
 - Complexity Rating: `1/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
-
 
 **Response Fields:**
 
@@ -4610,15 +4476,13 @@ Gets the filename of the last replay buffer save file.
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Response Fields:**
 
 | Name | Type  | Description |
 | ---- | :---: | ----------- |
 | savedReplayPath | String | File path |
 
-
-## Stream
+## Stream Requests
 
 ### GetStreamStatus
 
@@ -4627,7 +4491,6 @@ Gets the status of the stream output.
 - Complexity Rating: `2/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
-
 
 **Response Fields:**
 
@@ -4650,7 +4513,6 @@ Toggles the status of the stream output.
 - Complexity Rating: `1/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
-
 
 **Response Fields:**
 
@@ -4688,15 +4550,13 @@ Sends CEA-608 caption text over the stream output.
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Request Fields:**
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
 | captionText | String | Caption text | None | N/A |
 
-
-## Record
+## Record Requests
 
 ### GetRecordStatus
 
@@ -4705,7 +4565,6 @@ Gets the status of the record output.
 - Complexity Rating: `2/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
-
 
 **Response Fields:**
 
@@ -4777,14 +4636,14 @@ Resumes the record output.
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
-## Media Inputs
+## Media Inputs Requests
 
 ### GetMediaInputStatus
 
 Gets the status of a media input.
 
 Media States:
+
 - `OBS_MEDIA_STATE_NONE`
 - `OBS_MEDIA_STATE_PLAYING`
 - `OBS_MEDIA_STATE_OPENING`
@@ -4798,13 +4657,11 @@ Media States:
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Request Fields:**
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
 | inputName | String | Name of the media input | None | N/A |
-
 
 **Response Fields:**
 
@@ -4826,7 +4683,6 @@ This request does not perform bounds checking of the cursor position.
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Request Fields:**
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
@@ -4846,7 +4702,6 @@ This request does not perform bounds checking of the cursor position.
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Request Fields:**
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
@@ -4864,7 +4719,6 @@ Triggers an action on a media input.
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Request Fields:**
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
@@ -4872,8 +4726,7 @@ Triggers an action on a media input.
 | inputName | String | Name of the media input | None | N/A |
 | mediaAction | String | Identifier of the `ObsMediaInputAction` enum | None | N/A |
 
-
-## Ui
+## Ui Requests
 
 ### GetStudioModeEnabled
 
@@ -4882,7 +4735,6 @@ Gets whether studio is enabled.
 - Complexity Rating: `1/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
-
 
 **Response Fields:**
 
@@ -4900,7 +4752,6 @@ Enables or disables studio mode
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Request Fields:**
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
@@ -4916,7 +4767,6 @@ Opens the properties dialog of an input.
 - Complexity Rating: `1/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
-
 
 **Request Fields:**
 
@@ -4934,7 +4784,6 @@ Opens the filters dialog of an input.
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Request Fields:**
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
@@ -4950,7 +4799,6 @@ Opens the interact dialog of an input.
 - Complexity Rating: `1/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
-
 
 **Request Fields:**
 
@@ -4968,11 +4816,8 @@ Gets a list of connected monitors and information about them.
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
-
 **Response Fields:**
 
 | Name | Type  | Description |
 | ---- | :---: | ----------- |
 | monitors | Array&lt;Object&gt; | a list of detected monitors with some information |
-
-

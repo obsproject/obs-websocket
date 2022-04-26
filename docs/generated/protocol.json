@@ -2329,7 +2329,7 @@
       "responseFields": []
     },
     {
-      "description": "Gets the audio monitor type of an input.\n\nThe available audio monitor types are:\n- `OBS_MONITORING_TYPE_NONE`\n- `OBS_MONITORING_TYPE_MONITOR_ONLY`\n- `OBS_MONITORING_TYPE_MONITOR_AND_OUTPUT`",
+      "description": "Gets the audio monitor type of an input.\n\nThe available audio monitor types are:\n\n- `OBS_MONITORING_TYPE_NONE`\n- `OBS_MONITORING_TYPE_MONITOR_ONLY`\n- `OBS_MONITORING_TYPE_MONITOR_AND_OUTPUT`",
       "requestType": "GetInputAudioMonitorType",
       "complexity": 2,
       "rpcVersion": "1",
@@ -2499,7 +2499,7 @@
       "responseFields": []
     },
     {
-      "description": "Gets the status of a media input.\n\nMedia States:\n- `OBS_MEDIA_STATE_NONE`\n- `OBS_MEDIA_STATE_PLAYING`\n- `OBS_MEDIA_STATE_OPENING`\n- `OBS_MEDIA_STATE_BUFFERING`\n- `OBS_MEDIA_STATE_PAUSED`\n- `OBS_MEDIA_STATE_STOPPED`\n- `OBS_MEDIA_STATE_ENDED`\n- `OBS_MEDIA_STATE_ERROR`",
+      "description": "Gets the status of a media input.\n\nMedia States:\n\n- `OBS_MEDIA_STATE_NONE`\n- `OBS_MEDIA_STATE_PLAYING`\n- `OBS_MEDIA_STATE_OPENING`\n- `OBS_MEDIA_STATE_BUFFERING`\n- `OBS_MEDIA_STATE_PAUSED`\n- `OBS_MEDIA_STATE_STOPPED`\n- `OBS_MEDIA_STATE_ENDED`\n- `OBS_MEDIA_STATE_ERROR`",
       "requestType": "GetMediaInputStatus",
       "complexity": 2,
       "rpcVersion": "1",
@@ -4746,7 +4746,7 @@
       ]
     },
     {
-      "description": "The monitor type of an input has changed.\n\nAvailable types are:\n- `OBS_MONITORING_TYPE_NONE`\n- `OBS_MONITORING_TYPE_MONITOR_ONLY`\n- `OBS_MONITORING_TYPE_MONITOR_AND_OUTPUT`",
+      "description": "The monitor type of an input has changed.\n\nAvailable types are:\n\n- `OBS_MONITORING_TYPE_NONE`\n- `OBS_MONITORING_TYPE_MONITOR_ONLY`\n- `OBS_MONITORING_TYPE_MONITOR_AND_OUTPUT`",
       "eventType": "InputAudioMonitorTypeChanged",
       "eventSubscription": "Inputs",
       "complexity": 2,
