@@ -19,25 +19,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include "EventHandler.h"
 
-/**
- * A filter has been added to a source.
- *
- * @dataField sourceName            | String | Name of the source the filter was added to
- * @dataField filterName            | String | Name of the filter
- * @dataField filterKind            | String | The kind of the filter
- * @dataField filterIndex           | Number | Index position of the filter
- * @dataField filterSettings        | Object | The settings configured to the filter when it was created
- * @dataField defaultFilterSettings | Object | The default settings for the filter
- *
- * @eventType SourceFilterCreated
- * @eventSubscription Filters
- * @complexity 2
- * @rpcVersion -1
- * @initialVersion 5.0.0
- * @api events
- * @category filters
- */
-void EventHandler::HandleSourceFilterCreated(void *param, calldata_t *data)
+void EventHandler::FilterAddMultiHandler(void *param, calldata_t *data)
 {
 	auto eventHandler = static_cast<EventHandler*>(param);
 
@@ -47,37 +29,12 @@ void EventHandler::HandleSourceFilterCreated(void *param, calldata_t *data)
 	if (!(source && filter))
 		return;
 
-	eventHandler->ConnectFilterSignals(filter);
+	eventHandler->ConnectSourceSignals(filter);
 
-	std::string filterKind = obs_source_get_id(filter);
-	OBSDataAutoRelease filterSettings = obs_source_get_settings(filter);
-	OBSDataAutoRelease defaultFilterSettings = obs_get_source_defaults(filterKind.c_str());
-
-	json eventData;
-	eventData["sourceName"] = obs_source_get_name(source);
-	eventData["filterName"] = obs_source_get_name(filter);
-	eventData["filterKind"] = filterKind;
-	eventData["filterIndex"] = Utils::Obs::NumberHelper::GetSourceFilterIndex(source, filter);
-	eventData["filterSettings"] = Utils::Json::ObsDataToJson(filterSettings);
-	eventData["defaultFilterSettings"] = Utils::Json::ObsDataToJson(defaultFilterSettings, true);
-	eventHandler->BroadcastEvent(EventSubscription::Filters, "SourceFilterCreated", eventData);
+	eventHandler->HandleSourceFilterCreated(source, filter);
 }
 
-/**
- * A filter has been removed from a source.
- *
- * @dataField sourceName | String | Name of the source the filter was on
- * @dataField filterName | String | Name of the filter
- *
- * @eventType SourceFilterRemoved
- * @eventSubscription Filters
- * @complexity 2
- * @rpcVersion -1
- * @initialVersion 5.0.0
- * @api events
- * @category filters
- */
-void EventHandler::HandleSourceFilterRemoved(void *param, calldata_t *data)
+void EventHandler::FilterRemoveMultiHandler(void *param, calldata_t *data)
 {
 	auto eventHandler = static_cast<EventHandler*>(param);
 
@@ -87,12 +44,9 @@ void EventHandler::HandleSourceFilterRemoved(void *param, calldata_t *data)
 	if (!(source && filter))
 		return;
 
-	eventHandler->DisconnectFilterSignals(filter);
+	eventHandler->DisconnectSourceSignals(filter);
 
-	json eventData;
-	eventData["sourceName"] = obs_source_get_name(source);
-	eventData["filterName"] = obs_source_get_name(filter);
-	eventHandler->BroadcastEvent(EventSubscription::Filters, "SourceFilterRemoved", eventData);
+	eventHandler->HandleSourceFilterRemoved(source, filter);
 }
 
 /**
@@ -121,6 +75,92 @@ void EventHandler::HandleSourceFilterListReindexed(void *param, calldata_t *data
 	eventData["sourceName"] = obs_source_get_name(source);
 	eventData["filters"] = Utils::Obs::ArrayHelper::GetSourceFilterList(source);
 	eventHandler->BroadcastEvent(EventSubscription::Filters, "SourceFilterListReindexed", eventData);
+}
+
+/**
+ * A filter has been added to a source.
+ *
+ * @dataField sourceName            | String | Name of the source the filter was added to
+ * @dataField filterName            | String | Name of the filter
+ * @dataField filterKind            | String | The kind of the filter
+ * @dataField filterIndex           | Number | Index position of the filter
+ * @dataField filterSettings        | Object | The settings configured to the filter when it was created
+ * @dataField defaultFilterSettings | Object | The default settings for the filter
+ *
+ * @eventType SourceFilterCreated
+ * @eventSubscription Filters
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api events
+ * @category filters
+ */
+void EventHandler::HandleSourceFilterCreated(obs_source_t *source, obs_source_t *filter)
+{
+	std::string filterKind = obs_source_get_id(filter);
+	OBSDataAutoRelease filterSettings = obs_source_get_settings(filter);
+	OBSDataAutoRelease defaultFilterSettings = obs_get_source_defaults(filterKind.c_str());
+
+	json eventData;
+	eventData["sourceName"] = obs_source_get_name(source);
+	eventData["filterName"] = obs_source_get_name(filter);
+	eventData["filterKind"] = filterKind;
+	eventData["filterIndex"] = Utils::Obs::NumberHelper::GetSourceFilterIndex(source, filter);
+	eventData["filterSettings"] = Utils::Json::ObsDataToJson(filterSettings);
+	eventData["defaultFilterSettings"] = Utils::Json::ObsDataToJson(defaultFilterSettings, true);
+	BroadcastEvent(EventSubscription::Filters, "SourceFilterCreated", eventData);
+}
+
+/**
+ * A filter has been removed from a source.
+ *
+ * @dataField sourceName | String | Name of the source the filter was on
+ * @dataField filterName | String | Name of the filter
+ *
+ * @eventType SourceFilterRemoved
+ * @eventSubscription Filters
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api events
+ * @category filters
+ */
+void EventHandler::HandleSourceFilterRemoved(obs_source_t *source, obs_source_t *filter)
+{
+	json eventData;
+	eventData["sourceName"] = obs_source_get_name(source);
+	eventData["filterName"] = obs_source_get_name(filter);
+	BroadcastEvent(EventSubscription::Filters, "SourceFilterRemoved", eventData);
+}
+
+/**
+ * The name of a source filter has changed.
+ *
+ * @dataField sourceName    | String | The source the filter is on
+ * @dataField oldFilterName | String | Old name of the filter
+ * @dataField filterName    | String | New name of the filter
+ *
+ * @eventType SourceFilterNameChanged
+ * @eventSubscription Filters
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @api events
+ * @category filters
+ */
+void EventHandler::HandleSourceFilterNameChanged(void *param, calldata_t *data)
+{
+	auto eventHandler = static_cast<EventHandler*>(param);
+
+	obs_source_t *filter = GetCalldataPointer<obs_source_t>(data, "source");
+	if (!filter)
+		return;
+
+	json eventData;
+	eventData["sourceName"] = obs_source_get_name(obs_filter_get_parent(filter));
+	eventData["oldFilterName"] = calldata_string(data, "prev_name");
+	eventData["filterName"] = calldata_string(data, "new_name");
+	eventHandler->BroadcastEvent(EventSubscription::Filters, "SourceFilterNameChanged", eventData);
 }
 
 /**
@@ -158,34 +198,4 @@ void EventHandler::HandleSourceFilterEnableStateChanged(void *param, calldata_t 
 	eventData["filterName"] = obs_source_get_name(filter);
 	eventData["filterEnabled"] = filterEnabled;
 	eventHandler->BroadcastEvent(EventSubscription::Filters, "SourceFilterEnableStateChanged", eventData);
-}
-
-/**
- * The name of a source filter has changed.
- *
- * @dataField sourceName    | String | The source the filter is on
- * @dataField oldFilterName | String | Old name of the filter
- * @dataField filterName    | String | New name of the filter
- *
- * @eventType SourceFilterNameChanged
- * @eventSubscription Filters
- * @complexity 2
- * @rpcVersion -1
- * @initialVersion 5.0.0
- * @api events
- * @category filters
- */
-void EventHandler::HandleSourceFilterNameChanged(void *param, calldata_t *data)
-{
-	auto eventHandler = static_cast<EventHandler*>(param);
-
-	obs_source_t *filter = GetCalldataPointer<obs_source_t>(data, "source");
-	if (!filter)
-		return;
-
-	json eventData;
-	eventData["sourceName"] = obs_source_get_name(obs_filter_get_parent(filter));
-	eventData["oldFilterName"] = calldata_string(data, "prev_name");
-	eventData["filterName"] = calldata_string(data, "new_name");
-	eventHandler->BroadcastEvent(EventSubscription::Filters, "SourceFilterNameChanged", eventData);
 }

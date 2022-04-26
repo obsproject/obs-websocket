@@ -156,6 +156,8 @@ class RequestHandler {
 		RequestResult SetSceneItemIndex(const Request&);
 		RequestResult GetSceneItemBlendMode(const Request&);
 		RequestResult SetSceneItemBlendMode(const Request&);
+		RequestResult GetSceneItemPrivateSettings(const Request&);
+		RequestResult SetSceneItemPrivateSettings(const Request&);
 
 		// Outputs
 		RequestResult GetVirtualCamStatus(const Request&);
@@ -197,6 +199,7 @@ class RequestHandler {
 		RequestResult OpenInputPropertiesDialog(const Request&);
 		RequestResult OpenInputFiltersDialog(const Request&);
 		RequestResult OpenInputInteractDialog(const Request&);
+		RequestResult GetMonitorList(const Request&);
 
 		SessionPtr _session;
 		static const std::unordered_map<std::string, RequestMethodHandler> _handlerMap;

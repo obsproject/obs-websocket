@@ -18,6 +18,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 */
 
 #include <QImageWriter>
+#include <QSysInfo>
 
 #include "RequestHandler.h"
 #include "../websocketserver/WebSocketServer.h"
@@ -34,6 +35,8 @@ with this program. If not, see <https://www.gnu.org/licenses/>
  * @responseField rpcVersion            | Number        | Current latest obs-websocket RPC version
  * @responseField availableRequests     | Array<String> | Array of available RPC requests for the currently negotiated RPC version
  * @responseField supportedImageFormats | Array<String> | Image formats available in `GetSourceScreenshot` and `SaveSourceScreenshot` requests.
+ * @responseField platform              | String        | Name of the platform. Usually `windows`, `macos`, or `ubuntu` (linux flavor). Not guaranteed to be any of those
+ * @responseField platformDescription   | String        | Description of the platform, like `Windows 10 (10.0)`
  *
  * @requestType GetVersion
  * @complexity 1
@@ -56,6 +59,9 @@ RequestResult RequestHandler::GetVersion(const Request&)
 		supportedImageFormats.push_back(format.toStdString());
 	}
 	responseData["supportedImageFormats"] = supportedImageFormats;
+
+	responseData["platform"] = QSysInfo::productType().toStdString();
+	responseData["platformDescription"] = QSysInfo::prettyProductName().toStdString();
 
 	return RequestResult::Success(responseData);
 }

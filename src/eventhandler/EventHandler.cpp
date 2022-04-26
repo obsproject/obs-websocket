@@ -115,6 +115,7 @@ void EventHandler::BroadcastEvent(uint64_t requiredIntent, std::string eventType
 	_broadcastCallback(requiredIntent, eventType, eventData, rpcVersion);
 }
 
+// Connect source signals for Inputs, Scenes, and Transitions. Filters are automatically connected.
 void EventHandler::ConnectSourceSignals(obs_source_t *source) // Applies to inputs and scenes
 {
 	if (!source || obs_source_removed(source))
@@ -128,21 +129,17 @@ void EventHandler::ConnectSourceSignals(obs_source_t *source) // Applies to inpu
 	obs_source_type sourceType = obs_source_get_type(source);
 
 	// Inputs
-	signal_handler_connect(sh, "activate", HandleInputActiveStateChanged, this);
-	signal_handler_connect(sh, "deactivate", HandleInputActiveStateChanged, this);
-	signal_handler_connect(sh, "show", HandleInputShowStateChanged, this);
-	signal_handler_connect(sh, "hide", HandleInputShowStateChanged, this);
-	signal_handler_connect(sh, "mute", HandleInputMuteStateChanged, this);
-	signal_handler_connect(sh, "volume", HandleInputVolumeChanged, this);
-	signal_handler_connect(sh, "audio_balance", HandleInputAudioBalanceChanged, this);
-	signal_handler_connect(sh, "audio_sync", HandleInputAudioSyncOffsetChanged, this);
-	signal_handler_connect(sh, "audio_mixers", HandleInputAudioTracksChanged, this);
-	signal_handler_connect(sh, "audio_monitoring", HandleInputAudioMonitorTypeChanged, this);
-	signal_handler_connect(sh, "filter_add", HandleSourceFilterCreated, this);
-	signal_handler_connect(sh, "filter_remove", HandleSourceFilterRemoved, this);
-	signal_handler_connect(sh, "reorder_filters", HandleSourceFilterListReindexed, this);
-
 	if (sourceType == OBS_SOURCE_TYPE_INPUT) {
+		signal_handler_connect(sh, "activate", HandleInputActiveStateChanged, this);
+		signal_handler_connect(sh, "deactivate", HandleInputActiveStateChanged, this);
+		signal_handler_connect(sh, "show", HandleInputShowStateChanged, this);
+		signal_handler_connect(sh, "hide", HandleInputShowStateChanged, this);
+		signal_handler_connect(sh, "mute", HandleInputMuteStateChanged, this);
+		signal_handler_connect(sh, "volume", HandleInputVolumeChanged, this);
+		signal_handler_connect(sh, "audio_balance", HandleInputAudioBalanceChanged, this);
+		signal_handler_connect(sh, "audio_sync", HandleInputAudioSyncOffsetChanged, this);
+		signal_handler_connect(sh, "audio_mixers", HandleInputAudioTracksChanged, this);
+		signal_handler_connect(sh, "audio_monitoring", HandleInputAudioMonitorTypeChanged, this);
 		signal_handler_connect(sh, "media_started", HandleMediaInputPlaybackStarted, this);
 		signal_handler_connect(sh, "media_ended", HandleMediaInputPlaybackEnded, this);
 		signal_handler_connect(sh, "media_pause", SourceMediaPauseMultiHandler, this);
@@ -163,8 +160,34 @@ void EventHandler::ConnectSourceSignals(obs_source_t *source) // Applies to inpu
 		signal_handler_connect(sh, "item_select", HandleSceneItemSelected, this);
 		signal_handler_connect(sh, "item_transform", HandleSceneItemTransformChanged, this);
 	}
+
+	// Scenes and Inputs
+	if (sourceType == OBS_SOURCE_TYPE_INPUT || sourceType == OBS_SOURCE_TYPE_SCENE) {
+		signal_handler_connect(sh, "reorder_filters", HandleSourceFilterListReindexed, this);
+		signal_handler_connect(sh, "filter_add", FilterAddMultiHandler, this);
+		signal_handler_connect(sh, "filter_remove", FilterRemoveMultiHandler, this);
+		auto enumFilters = [](obs_source_t *, obs_source_t *filter, void *param){
+			auto eventHandler = static_cast<EventHandler*>(param);
+			eventHandler->ConnectSourceSignals(filter);
+		};
+		obs_source_enum_filters(source, enumFilters, this);
+	}
+
+	// Transitions
+	if (sourceType == OBS_SOURCE_TYPE_TRANSITION) {
+		signal_handler_connect(sh, "transition_start", HandleSceneTransitionStarted, this);
+		signal_handler_connect(sh, "transition_stop", HandleSceneTransitionEnded, this);
+		signal_handler_connect(sh, "transition_video_stop", HandleSceneTransitionVideoEnded, this);
+	}
+
+	// Filters
+	if (sourceType == OBS_SOURCE_TYPE_FILTER) {
+		signal_handler_connect(sh, "enable", HandleSourceFilterEnableStateChanged, this);
+		signal_handler_connect(sh, "rename", HandleSourceFilterNameChanged, this);
+	}
 }
 
+// Disconnect source signals for Inputs, Scenes, and Transitions. Filters are automatically disconnected.
 void EventHandler::DisconnectSourceSignals(obs_source_t *source)
 {
 	if (!source)
@@ -172,70 +195,79 @@ void EventHandler::DisconnectSourceSignals(obs_source_t *source)
 
 	signal_handler_t* sh = obs_source_get_signal_handler(source);
 
+	obs_source_type sourceType = obs_source_get_type(source);
+
 	// Inputs
-	signal_handler_disconnect(sh, "activate", HandleInputActiveStateChanged, this);
-	signal_handler_disconnect(sh, "deactivate", HandleInputActiveStateChanged, this);
-	signal_handler_disconnect(sh, "show", HandleInputShowStateChanged, this);
-	signal_handler_disconnect(sh, "hide", HandleInputShowStateChanged, this);
-	signal_handler_disconnect(sh, "mute", HandleInputMuteStateChanged, this);
-	signal_handler_disconnect(sh, "volume", HandleInputVolumeChanged, this);
-	signal_handler_disconnect(sh, "audio_balance", HandleInputAudioBalanceChanged, this);
-	signal_handler_disconnect(sh, "audio_sync", HandleInputAudioSyncOffsetChanged, this);
-	signal_handler_disconnect(sh, "audio_mixers", HandleInputAudioTracksChanged, this);
-	signal_handler_disconnect(sh, "audio_monitoring", HandleInputAudioMonitorTypeChanged, this);
-	signal_handler_disconnect(sh, "media_started", HandleMediaInputPlaybackStarted, this);
-	signal_handler_disconnect(sh, "media_ended", HandleMediaInputPlaybackEnded, this);
-	signal_handler_disconnect(sh, "media_pause", SourceMediaPauseMultiHandler, this);
-	signal_handler_disconnect(sh, "media_play", SourceMediaPlayMultiHandler, this);
-	signal_handler_disconnect(sh, "media_restart", SourceMediaRestartMultiHandler, this);
-	signal_handler_disconnect(sh, "media_stopped", SourceMediaStopMultiHandler, this);
-	signal_handler_disconnect(sh, "media_next", SourceMediaNextMultiHandler, this);
-	signal_handler_disconnect(sh, "media_previous", SourceMediaPreviousMultiHandler, this);
-	signal_handler_disconnect(sh, "filter_add", HandleSourceFilterCreated, this);
-	signal_handler_disconnect(sh, "filter_remove", HandleSourceFilterRemoved, this);
-	signal_handler_disconnect(sh, "reorder_filters", HandleSourceFilterListReindexed, this);
+	if (sourceType == OBS_SOURCE_TYPE_INPUT) {
+		signal_handler_disconnect(sh, "activate", HandleInputActiveStateChanged, this);
+		signal_handler_disconnect(sh, "deactivate", HandleInputActiveStateChanged, this);
+		signal_handler_disconnect(sh, "show", HandleInputShowStateChanged, this);
+		signal_handler_disconnect(sh, "hide", HandleInputShowStateChanged, this);
+		signal_handler_disconnect(sh, "mute", HandleInputMuteStateChanged, this);
+		signal_handler_disconnect(sh, "volume", HandleInputVolumeChanged, this);
+		signal_handler_disconnect(sh, "audio_balance", HandleInputAudioBalanceChanged, this);
+		signal_handler_disconnect(sh, "audio_sync", HandleInputAudioSyncOffsetChanged, this);
+		signal_handler_disconnect(sh, "audio_mixers", HandleInputAudioTracksChanged, this);
+		signal_handler_disconnect(sh, "audio_monitoring", HandleInputAudioMonitorTypeChanged, this);
+		signal_handler_disconnect(sh, "media_started", HandleMediaInputPlaybackStarted, this);
+		signal_handler_disconnect(sh, "media_ended", HandleMediaInputPlaybackEnded, this);
+		signal_handler_disconnect(sh, "media_pause", SourceMediaPauseMultiHandler, this);
+		signal_handler_disconnect(sh, "media_play", SourceMediaPlayMultiHandler, this);
+		signal_handler_disconnect(sh, "media_restart", SourceMediaRestartMultiHandler, this);
+		signal_handler_disconnect(sh, "media_stopped", SourceMediaStopMultiHandler, this);
+		signal_handler_disconnect(sh, "media_next", SourceMediaNextMultiHandler, this);
+		signal_handler_disconnect(sh, "media_previous", SourceMediaPreviousMultiHandler, this);
+	}
 
 	// Scenes
-	signal_handler_disconnect(sh, "item_add", HandleSceneItemCreated, this);
-	signal_handler_disconnect(sh, "item_remove", HandleSceneItemRemoved, this);
-	signal_handler_disconnect(sh, "reorder", HandleSceneItemListReindexed, this);
-	signal_handler_disconnect(sh, "item_visible", HandleSceneItemEnableStateChanged, this);
-	signal_handler_disconnect(sh, "item_locked", HandleSceneItemLockStateChanged, this);
-	signal_handler_disconnect(sh, "item_select", HandleSceneItemSelected, this);
-	signal_handler_disconnect(sh, "item_transform", HandleSceneItemTransformChanged, this);
-}
+	if (sourceType == OBS_SOURCE_TYPE_SCENE) {
+		signal_handler_disconnect(sh, "item_add", HandleSceneItemCreated, this);
+		signal_handler_disconnect(sh, "item_remove", HandleSceneItemRemoved, this);
+		signal_handler_disconnect(sh, "reorder", HandleSceneItemListReindexed, this);
+		signal_handler_disconnect(sh, "item_visible", HandleSceneItemEnableStateChanged, this);
+		signal_handler_disconnect(sh, "item_locked", HandleSceneItemLockStateChanged, this);
+		signal_handler_disconnect(sh, "item_select", HandleSceneItemSelected, this);
+		signal_handler_disconnect(sh, "item_transform", HandleSceneItemTransformChanged, this);
+	}
 
-void EventHandler::ConnectFilterSignals(obs_source_t *filter)
-{
-	if (!filter || obs_source_removed(filter))
-		return;
+	// Inputs and Scenes
+	if (sourceType == OBS_SOURCE_TYPE_INPUT || sourceType == OBS_SOURCE_TYPE_SCENE) {
+		signal_handler_disconnect(sh, "reorder_filters", HandleSourceFilterListReindexed, this);
+		signal_handler_disconnect(sh, "filter_add", FilterAddMultiHandler, this);
+		signal_handler_disconnect(sh, "filter_remove", FilterRemoveMultiHandler, this);
+		auto enumFilters = [](obs_source_t *, obs_source_t *filter, void *param){
+			auto eventHandler = static_cast<EventHandler*>(param);
+			eventHandler->DisconnectSourceSignals(filter);
+		};
+		obs_source_enum_filters(source, enumFilters, this);
+	}
 
-	DisconnectFilterSignals(filter);
+	// Transitions
+	if (sourceType == OBS_SOURCE_TYPE_TRANSITION) {
+		signal_handler_disconnect(sh, "transition_start", HandleSceneTransitionStarted, this);
+		signal_handler_disconnect(sh, "transition_stop", HandleSceneTransitionEnded, this);
+		signal_handler_disconnect(sh, "transition_video_stop", HandleSceneTransitionVideoEnded, this);
+	}
 
-	signal_handler_t* sh = obs_source_get_signal_handler(filter);
-
-	signal_handler_connect(sh, "enable", HandleSourceFilterEnableStateChanged, this);
-	signal_handler_connect(sh, "rename", HandleSourceFilterNameChanged, this);
-}
-
-void EventHandler::DisconnectFilterSignals(obs_source_t *filter)
-{
-	if (!filter)
-		return;
-
-	signal_handler_t* sh = obs_source_get_signal_handler(filter);
-
-	signal_handler_disconnect(sh, "enable", HandleSourceFilterEnableStateChanged, this);
-	signal_handler_disconnect(sh, "rename", HandleSourceFilterNameChanged, this);
+	// Filters
+	if (sourceType == OBS_SOURCE_TYPE_FILTER) {
+		signal_handler_disconnect(sh, "enable", HandleSourceFilterEnableStateChanged, this);
+		signal_handler_disconnect(sh, "rename", HandleSourceFilterNameChanged, this);
+	}
 }
 
 void EventHandler::OnFrontendEvent(enum obs_frontend_event event, void *private_data)
 {
 	auto eventHandler = static_cast<EventHandler*>(private_data);
 
-	if (!eventHandler->_obsLoaded.load()) {
-		if (event == OBS_FRONTEND_EVENT_FINISHED_LOADING) {
+	if (!eventHandler->_obsLoaded.load() && event != OBS_FRONTEND_EVENT_FINISHED_LOADING)
+		return;
+
+	switch (event) {
+		// General
+		case OBS_FRONTEND_EVENT_FINISHED_LOADING:
 			blog_debug("[EventHandler::OnFrontendEvent] OBS has finished loading. Connecting final handlers and enabling events...");
+
 			// Connect source signals and enable events only after OBS has fully loaded (to reduce extra logging).
 			eventHandler->_obsLoaded.store(true);
 
@@ -245,13 +277,6 @@ void EventHandler::OnFrontendEvent(enum obs_frontend_event event, void *private_
 				auto enumInputs = [](void *param, obs_source_t *source) {
 					auto eventHandler = static_cast<EventHandler*>(param);
 					eventHandler->ConnectSourceSignals(source);
-
-					auto enumFilters = [](obs_source_t *, obs_source_t *filter, void *param){
-						auto eventHandler = static_cast<EventHandler*>(param);
-						eventHandler->ConnectFilterSignals(filter);
-					};
-					obs_source_enum_filters(source, enumFilters, param);
-
 					return true;
 				};
 				obs_enum_sources(enumInputs, private_data);
@@ -262,29 +287,28 @@ void EventHandler::OnFrontendEvent(enum obs_frontend_event event, void *private_
 				auto enumScenes = [](void *param, obs_source_t *source) {
 					auto eventHandler = static_cast<EventHandler*>(param);
 					eventHandler->ConnectSourceSignals(source);
-
-					auto enumFilters = [](obs_source_t *, obs_source_t *filter, void *param){
-						auto eventHandler = static_cast<EventHandler*>(param);
-						eventHandler->ConnectFilterSignals(filter);
-					};
-					obs_source_enum_filters(source, enumFilters, param);
-
 					return true;
 				};
 				obs_enum_scenes(enumScenes, private_data);
+			}
+
+			// Enumerate all scene transitions and connect each one
+			{
+				obs_frontend_source_list transitions = {};
+				obs_frontend_get_transitions(&transitions);
+				for (size_t i = 0; i < transitions.sources.num; i++) {
+					obs_source_t* transition = transitions.sources.array[i];
+					eventHandler->ConnectSourceSignals(transition);
+				}
+				obs_frontend_source_list_free(&transitions);
 			}
 
 			blog_debug("[EventHandler::OnFrontendEvent] Finished.");
 
 			if (eventHandler->_obsLoadedCallback)
 				eventHandler->_obsLoadedCallback();
-		} else {
-			return;
-		}
-	}
 
-	switch (event) {
-		// General
+			break;
 		case OBS_FRONTEND_EVENT_EXIT:
 			eventHandler->HandleExitStarted();
 
@@ -298,13 +322,6 @@ void EventHandler::OnFrontendEvent(enum obs_frontend_event event, void *private_
 				auto enumInputs = [](void *param, obs_source_t *source) {
 					auto eventHandler = static_cast<EventHandler*>(param);
 					eventHandler->DisconnectSourceSignals(source);
-
-					auto enumFilters = [](obs_source_t *, obs_source_t *filter, void *param){
-						auto eventHandler = static_cast<EventHandler*>(param);
-						eventHandler->ConnectFilterSignals(filter);
-					};
-					obs_source_enum_filters(source, enumFilters, param);
-
 					return true;
 				};
 				obs_enum_sources(enumInputs, private_data);
@@ -315,16 +332,20 @@ void EventHandler::OnFrontendEvent(enum obs_frontend_event event, void *private_
 				auto enumScenes = [](void *param, obs_source_t *source) {
 					auto eventHandler = static_cast<EventHandler*>(param);
 					eventHandler->DisconnectSourceSignals(source);
-
-					auto enumFilters = [](obs_source_t *, obs_source_t *filter, void *param){
-						auto eventHandler = static_cast<EventHandler*>(param);
-						eventHandler->ConnectFilterSignals(filter);
-					};
-					obs_source_enum_filters(source, enumFilters, param);
-
 					return true;
 				};
 				obs_enum_scenes(enumScenes, private_data);
+			}
+
+			// Enumerate all scene transitions and disconnect each one
+			{
+				obs_frontend_source_list transitions = {};
+				obs_frontend_get_transitions(&transitions);
+				for (size_t i = 0; i < transitions.sources.num; i++) {
+					obs_source_t* transition = transitions.sources.array[i];
+					eventHandler->DisconnectSourceSignals(transition);
+				}
+				obs_frontend_source_list_free(&transitions);
 			}
 
 			blog_debug("[EventHandler::OnFrontendEvent] Finished.");
@@ -339,9 +360,27 @@ void EventHandler::OnFrontendEvent(enum obs_frontend_event event, void *private_
 
 		// Config
 		case OBS_FRONTEND_EVENT_SCENE_COLLECTION_CHANGING:
+			{
+				obs_frontend_source_list transitions = {};
+				obs_frontend_get_transitions(&transitions);
+				for (size_t i = 0; i < transitions.sources.num; i++) {
+					obs_source_t* transition = transitions.sources.array[i];
+					eventHandler->DisconnectSourceSignals(transition);
+				}
+				obs_frontend_source_list_free(&transitions);
+			}
 			eventHandler->HandleCurrentSceneCollectionChanging();
 			break;
 		case OBS_FRONTEND_EVENT_SCENE_COLLECTION_CHANGED:
+			{
+				obs_frontend_source_list transitions = {};
+				obs_frontend_get_transitions(&transitions);
+				for (size_t i = 0; i < transitions.sources.num; i++) {
+					obs_source_t* transition = transitions.sources.array[i];
+					eventHandler->ConnectSourceSignals(transition);
+				}
+				obs_frontend_source_list_free(&transitions);
+			}
 			eventHandler->HandleCurrentSceneCollectionChanged();
 			break;
 		case OBS_FRONTEND_EVENT_SCENE_COLLECTION_LIST_CHANGED:
@@ -373,6 +412,15 @@ void EventHandler::OnFrontendEvent(enum obs_frontend_event event, void *private_
 			eventHandler->HandleCurrentSceneTransitionChanged();
 			break;
 		case OBS_FRONTEND_EVENT_TRANSITION_LIST_CHANGED:
+			{
+				obs_frontend_source_list transitions = {};
+				obs_frontend_get_transitions(&transitions);
+				for (size_t i = 0; i < transitions.sources.num; i++) {
+					obs_source_t* transition = transitions.sources.array[i];
+					eventHandler->ConnectSourceSignals(transition);
+				}
+				obs_frontend_source_list_free(&transitions);
+			}
 			break;
 		case OBS_FRONTEND_EVENT_TRANSITION_DURATION_CHANGED:
 			eventHandler->HandleCurrentSceneTransitionDurationChanged();
@@ -463,7 +511,8 @@ void EventHandler::SourceCreatedMultiHandler(void *param, calldata_t *data)
 	}
 }
 
-// Only called for destruction of a public source
+// Only called for destruction of a public sourcs
+// Used as a fallback if an input/scene is not explicitly removed
 void EventHandler::SourceDestroyedMultiHandler(void *param, calldata_t *data)
 {
 	auto eventHandler = static_cast<EventHandler*>(param);
@@ -482,16 +531,22 @@ void EventHandler::SourceDestroyedMultiHandler(void *param, calldata_t *data)
 
 	switch (obs_source_get_type(source)) {
 		case OBS_SOURCE_TYPE_INPUT:
-			// We have to call `InputRemoved` with source_destroy because source_removed is not called when an input's last scene item is removed
-			eventHandler->HandleInputRemoved(source);
+			// Only emit removed if the input has not already been removed. This is the case when removing the last scene item of an input.
+			if (!obs_source_removed(source))
+				eventHandler->HandleInputRemoved(source);
 			break;
 		case OBS_SOURCE_TYPE_SCENE:
+			// Only emit removed if the scene has not already been removed.
+			if (!obs_source_removed(source))
+				eventHandler->HandleSceneRemoved(source);
 			break;
 		default:
 			break;
 	}
 }
 
+// We prefer remove signals over destroy signals because they are more time-accurate.
+// For example, if an input is "removed" but there is a dangling ref, you still want to know that it shouldn't exist, but it's not guaranteed to be destroyed.
 void EventHandler::SourceRemovedMultiHandler(void *param, calldata_t *data)
 {
 	auto eventHandler = static_cast<EventHandler*>(param);
@@ -505,9 +560,9 @@ void EventHandler::SourceRemovedMultiHandler(void *param, calldata_t *data)
 
 	switch (obs_source_get_type(source)) {
 		case OBS_SOURCE_TYPE_INPUT:
+			eventHandler->HandleInputRemoved(source);
 			break;
 		case OBS_SOURCE_TYPE_SCENE:
-			// Scenes emit the `removed` signal when they are removed from OBS, as expected
 			eventHandler->HandleSceneRemoved(source);
 			break;
 		default:

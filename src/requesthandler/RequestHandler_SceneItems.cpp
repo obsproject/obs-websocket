@@ -86,8 +86,9 @@ RequestResult RequestHandler::GetGroupSceneItemList(const Request& request)
  *
  * Scenes and Groups
  *
- * @requestField sceneName  | String | Name of the scene or group to search in
- * @requestField sourceName | String | Name of the source to find
+ * @requestField sceneName     | String | Name of the scene or group to search in
+ * @requestField sourceName    | String | Name of the source to find
+ * @requestField ?searchOffset | Number | Number of matches to skip during search. >= 0 means first forward. -1 means last (top) item | >= -1 | 0
  *
  * @responseField sceneItemId | Number | Numeric ID of the scene item
  *
@@ -108,9 +109,16 @@ RequestResult RequestHandler::GetSceneItemId(const Request& request)
 
 	std::string sourceName = request.RequestData["sourceName"];
 
-	OBSSceneItemAutoRelease item = Utils::Obs::SearchHelper::GetSceneItemByName(scene, sourceName);
+	int offset = 0;
+	if (request.Contains("searchOffset")) {
+		if (!request.ValidateOptionalNumber("searchOffset", statusCode, comment, -1))
+			return RequestResult::Error(statusCode, comment);
+		offset = request.RequestData["searchOffset"];
+	}
+
+	OBSSceneItemAutoRelease item = Utils::Obs::SearchHelper::GetSceneItemByName(scene, sourceName, offset);
 	if (!item)
-		return RequestResult::Error(RequestStatus::ResourceNotFound, "No scene items were found in the specified scene by that name.");
+		return RequestResult::Error(RequestStatus::ResourceNotFound, "No scene items were found in the specified scene by that name or offset.");
 
 	json responseData;
 	responseData["sceneItemId"] = obs_sceneitem_get_id(item);
@@ -707,6 +715,42 @@ RequestResult RequestHandler::SetSceneItemBlendMode(const Request& request)
 		return RequestResult::Error(RequestStatus::InvalidRequestField, "The field sceneItemBlendMode has an invalid value.");
 
 	obs_sceneitem_set_blending_mode(sceneItem, blendMode);
+
+	return RequestResult::Success();
+}
+
+// Intentionally undocumented
+RequestResult RequestHandler::GetSceneItemPrivateSettings(const Request& request)
+{
+	RequestStatus::RequestStatus statusCode;
+	std::string comment;
+	OBSSceneItemAutoRelease sceneItem = request.ValidateSceneItem("sceneName", "sceneItemId", statusCode, comment, OBS_WEBSOCKET_SCENE_FILTER_SCENE_OR_GROUP);
+	if (!sceneItem)
+		return RequestResult::Error(statusCode, comment);
+
+	OBSDataAutoRelease privateSettings = obs_sceneitem_get_private_settings(sceneItem);
+
+	json responseData;
+	responseData["sceneItemSettings"] = Utils::Json::ObsDataToJson(privateSettings);
+
+	return RequestResult::Success(responseData);
+}
+
+// Intentionally undocumented
+RequestResult RequestHandler::SetSceneItemPrivateSettings(const Request& request)
+{
+	RequestStatus::RequestStatus statusCode;
+	std::string comment;
+	OBSSceneItemAutoRelease sceneItem = request.ValidateSceneItem("sceneName", "sceneItemId", statusCode, comment, OBS_WEBSOCKET_SCENE_FILTER_SCENE_OR_GROUP);
+	if (!sceneItem || !request.ValidateObject("sceneItemSettings", statusCode, comment))
+		return RequestResult::Error(statusCode, comment);
+
+	OBSDataAutoRelease privateSettings = obs_sceneitem_get_private_settings(sceneItem);
+
+	OBSDataAutoRelease newSettings = Utils::Json::JsonToObsData(request.RequestData["sceneItemSettings"]);
+
+	// Always overlays to prevent destroying internal source unintentionally
+	obs_data_apply(privateSettings, newSettings);
 
 	return RequestResult::Success();
 }

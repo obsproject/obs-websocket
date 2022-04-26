@@ -58,9 +58,6 @@ class EventHandler
 		void ConnectSourceSignals(obs_source_t *source);
 		void DisconnectSourceSignals(obs_source_t *source);
 
-		void ConnectFilterSignals(obs_source_t *filter);
-		void DisconnectFilterSignals(obs_source_t *filter);
-
 		void BroadcastEvent(uint64_t requiredIntent, std::string eventType, json eventData = nullptr, uint8_t rpcVersion = 0);
 
 		// Signal handler: frontend
@@ -118,6 +115,18 @@ class EventHandler
 		// Transitions
 		void HandleCurrentSceneTransitionChanged();
 		void HandleCurrentSceneTransitionDurationChanged();
+		static void HandleSceneTransitionStarted(void *param, calldata_t *data); // Direct callback
+		static void HandleSceneTransitionEnded(void *param, calldata_t *data); // Direct callback
+		static void HandleSceneTransitionVideoEnded(void *param, calldata_t *data); // Direct callback
+
+		// Filters
+		static void FilterAddMultiHandler(void *param, calldata_t *data); // Direct callback
+		static void FilterRemoveMultiHandler(void *param, calldata_t *data); // Direct callback
+		static void HandleSourceFilterListReindexed(void *param, calldata_t *data); // Direct callback
+		void HandleSourceFilterCreated(obs_source_t *source, obs_source_t *filter);
+		void HandleSourceFilterRemoved(obs_source_t *source, obs_source_t *filter);
+		static void HandleSourceFilterNameChanged(void *param, calldata_t *data); // Direct callback
+		static void HandleSourceFilterEnableStateChanged(void *param, calldata_t *data); // Direct callback
 
 		// Outputs
 		void HandleStreamStateChanged(ObsOutputState state);
@@ -139,11 +148,4 @@ class EventHandler
 		static void HandleMediaInputPlaybackStarted(void *param, calldata_t *data); // Direct callback
 		static void HandleMediaInputPlaybackEnded(void *param, calldata_t *data); // Direct callback
 		void HandleMediaInputActionTriggered(obs_source_t *source, ObsMediaInputAction action);
-
-		// Filters
-		static void HandleSourceFilterNameChanged(void *param, calldata_t *data); // Direct callback
-		static void HandleSourceFilterCreated(void *param, calldata_t *data); // Direct callback
-		static void HandleSourceFilterRemoved(void *param, calldata_t *data); // Direct callback
-		static void HandleSourceFilterListReindexed(void *param, calldata_t *data); // Direct callback
-		static void HandleSourceFilterEnableStateChanged(void *param, calldata_t *data); // Direct callback
 };

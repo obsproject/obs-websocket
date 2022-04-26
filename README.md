@@ -20,7 +20,7 @@ Binaries for Windows, MacOS, and Linux are available in the [Releases](https://g
 
 It is **highly recommended** to protect obs-websocket with a password against unauthorized control. To do this, open the "Websocket server settings" dialog under OBS' "Tools" menu. In the settings dialogs, you can enable or disable authentication and set a password for it.
 
-(Psst. You can use `--websocket_port`(value), `--websocket_password`(value), and `--websocket_debug`(flag) on the command line to override the configured values.)
+(Psst. You can use `--websocket_port`(value), `--websocket_password`(value), `--websocket_debug`(flag) and `--websocket_ipv4_only`(flag) on the command line to override the configured values.)
 
 ### Possible use cases
 
@@ -38,6 +38,8 @@ Here's a list of available language APIs for obs-websocket:
 
 - Python 3.7+ (Asyncio): [simpleobsws](https://github.com/IRLToolkit/simpleobsws/tree/master) by IRLToolkit
 - Rust: [obws](https://github.com/dnaka91/obws/tree/v5-api) by dnaka91
+- Godot 3.4.x: [obs-websocket-gd](https://github.com/you-win/obs-websocket-gd) by you-win
+- Javascript (Node and web): [obs-websocket-js](https://github.com/obs-websocket-community-projects/obs-websocket-js) by OBS Websocket Community
 
 The 5.x server is a typical WebSocket server running by default on port 4455 (the port number can be changed in the Settings dialog under `Tools`).
 The protocol we use is documented in [PROTOCOL.md](docs/generated/protocol.md).
