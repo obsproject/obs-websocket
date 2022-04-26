@@ -52,7 +52,9 @@ SettingsDialog::SettingsDialog(QWidget* parent) :
 	setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 
 	// Set the appropriate tooltip icon for the theme
-	ui->enableDebugLoggingToolTipLabel->setText(GetToolTipIconHtml());
+	QString toolTipHtml = GetToolTipIconHtml();
+	ui->enableDebugLoggingToolTipLabel->setText(toolTipHtml);
+	ui->allowExternalToolTipLabel->setText(toolTipHtml);
 
 	connect(sessionTableTimer, &QTimer::timeout,
 		this, &SettingsDialog::FillSessionTable);
@@ -83,18 +85,8 @@ void SettingsDialog::showEvent(QShowEvent *)
 		return;
 	}
 
-	ui->enableWebSocketServerCheckBox->setChecked(conf->ServerEnabled);
-	ui->enableSystemTrayAlertsCheckBox->setChecked(conf->AlertsEnabled);
-	ui->enableDebugLoggingCheckBox->setChecked(conf->DebugEnabled);
-	ui->enableAuthenticationCheckBox->setChecked(conf->AuthRequired);
-	ui->serverPasswordLineEdit->setText(conf->ServerPassword);
-	ui->serverPasswordLineEdit->setEnabled(conf->AuthRequired);
-	ui->generatePasswordButton->setEnabled(conf->AuthRequired);
-	ui->serverPortSpinBox->setValue(conf->ServerPort);
-
-	if (conf->PortOverridden) {
+	if (conf->PortOverridden)
 		ui->serverPortSpinBox->setEnabled(false);
-	}
 
 	if (conf->PasswordOverridden) {
 		ui->enableAuthenticationCheckBox->setEnabled(false);
@@ -104,7 +96,7 @@ void SettingsDialog::showEvent(QShowEvent *)
 
 	passwordManuallyEdited = false;
 
-	FillSessionTable();
+	RefreshData();
 
 	sessionTableTimer->start(1000);
 }
@@ -123,6 +115,31 @@ void SettingsDialog::ToggleShowHide()
 		setVisible(true);
 	else
 		setVisible(false);
+}
+
+void SettingsDialog::RefreshData()
+{
+	auto conf = GetConfig();
+	if (!conf) {
+		blog(LOG_ERROR, "[SettingsDialog::RefreshData] Unable to retreive config!");
+		return;
+	}
+
+	ui->enableWebSocketServerCheckBox->setChecked(conf->ServerEnabled);
+	ui->enableSystemTrayAlertsCheckBox->setChecked(conf->AlertsEnabled);
+	ui->enableDebugLoggingCheckBox->setChecked(conf->DebugEnabled);
+	ui->serverPortSpinBox->setValue(conf->ServerPort);
+	ui->allowExternalCheckBox->setChecked(!conf->BindLoopback);
+	ui->enableAuthenticationCheckBox->setChecked(conf->AuthRequired);
+	ui->serverPasswordLineEdit->setText(conf->ServerPassword);
+
+	ui->showConnectInfoButton->setEnabled(!conf->BindLoopback);
+	ui->serverPasswordLineEdit->setEnabled(conf->AuthRequired);
+	ui->generatePasswordButton->setEnabled(conf->AuthRequired);
+
+	ui->showConnectInfoButton->setToolTip(ui->allowExternalCheckBox->isChecked() ? "" : obs_module_text("OBSWebSocket.Settings.ShowConnectInfoHoverText"));
+
+	FillSessionTable();
 }
 
 void SettingsDialog::DialogButtonClicked(QAbstractButton *button)
@@ -173,17 +190,20 @@ void SettingsDialog::SaveFormData()
 
 	bool needsRestart = (conf->ServerEnabled != ui->enableWebSocketServerCheckBox->isChecked()) ||
 						(ui->enableAuthenticationCheckBox->isChecked() && conf->ServerPassword != ui->serverPasswordLineEdit->text()) ||
+						(conf->BindLoopback == ui->allowExternalCheckBox->isChecked()) ||
 						(conf->ServerPort != ui->serverPortSpinBox->value());
 
 	conf->ServerEnabled = ui->enableWebSocketServerCheckBox->isChecked();
 	conf->AlertsEnabled = ui->enableSystemTrayAlertsCheckBox->isChecked();
 	conf->DebugEnabled = ui->enableDebugLoggingCheckBox->isChecked();
+	conf->ServerPort = ui->serverPortSpinBox->value();
+	conf->BindLoopback = !ui->allowExternalCheckBox->isChecked();
 	conf->AuthRequired = ui->enableAuthenticationCheckBox->isChecked();
 	conf->ServerPassword = ui->serverPasswordLineEdit->text();
-	conf->ServerPort = ui->serverPortSpinBox->value();
 
 	conf->Save();
 
+	RefreshData();
 	connectInfo->RefreshData();
 
 	if (needsRestart) {

@@ -142,7 +142,7 @@ void WebSocketServer::Start()
 		blog(LOG_INFO, "[WebSocketServer::Start] Locked to IPv4 bindings.");
 	} else {
 		_server.listen(conf->ServerPort, errorCode);
-		blog(LOG_INFO, "[WebSocketServer::Start] Not locked to IPv4 bindings.");
+		blog(LOG_INFO, "[WebSocketServer::Start] Bound to all interfaces.");
 	}
 
 	if (errorCode) {

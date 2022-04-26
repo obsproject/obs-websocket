@@ -37,6 +37,7 @@ public:
 	void showEvent(QShowEvent *event);
 	void hideEvent(QHideEvent *event);
 	void ToggleShowHide();
+	void RefreshData();
 
 private Q_SLOTS:
 	void DialogButtonClicked(QAbstractButton *button);
