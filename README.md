@@ -18,7 +18,7 @@ Binaries for Windows, MacOS, and Linux are available in the [Releases](https://g
 
 It is **highly recommended** to protect obs-websocket with a password against unauthorized control. To do this, open the "Websocket server settings" dialog under OBS' "Tools" menu. In the settings dialogs, you can enable or disable authentication and set a password for it.
 
-(Psst. You can use `--websocket_port`(value), `--websocket_password`(value), and `--websocket_debug`(flag) on the command line to override the configured values.)
+(Psst. You can use `--websocket_port`(value), `--websocket_password`(value), `--websocket_debug`(flag) and `--websocket_ipv4_only`(flag) on the command line to override the configured values.)
 
 ### Possible use cases
 
