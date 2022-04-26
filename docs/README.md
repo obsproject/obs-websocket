@@ -1,11 +1,13 @@
 # obs-websocket documentation
 
 This is the documentation for obs-websocket. Run `build_docs.sh` to auto generate the latest docs from the `src` directory. There are 3 components to the docs generation:
+
 - `comments/comments.js`: Generates the `work/comments.json` file from the code comments in the src directory.
 - `docs/process_comments.py`: Processes `work/comments.json` to create `generated/protocol.json`, which is a machine-readable documentation format that can be used to create obs-websocket client libraries.
 - `docs/generate_md.py`: Processes `generated/protocol.json` to create `generated/protocol.md`, which is the actual human-readable documentation.
 
 Some notes about documenting:
+
 - The `complexity` comment line is a suggestion to the user about how much knowledge about OBS's inner workings is required to safely use the associated feature. `1` for easy, `5` for megadeath-expert.
 - The `rpcVersion` comment line is used to specify the latest available version that the feature is available in. If a feature is deprecated, then the placeholder value of `-1` should be replaced with the last RPC version that the feature will be available in. Manually specifying an RPC version automatically adds the `Deprecated` line to the entry in `generated/protocol.md`.
 - The description can be multiple lines, but must be contained above the first documentation property (the lines starting with `@`).
@@ -13,13 +15,15 @@ Some notes about documenting:
   - `Array` types follow this format: `Array<subtype>`, for example `Array<String>` to specify an array of strings.
 
 Formatting notes:
+
 - Fields should have their columns aligned. So in a request, the columns of all `@requestField`s should be aligned.
 - We suggest looking at how other enums/events/requests have been documented before documenting one of your own, to get a general feel of how things have been formatted.
 
 ## Creating enum documentation
 
 Enums follow this code comment format:
-```
+
+```js
 /**
 * [description]
 *
@@ -33,7 +37,8 @@ Enums follow this code comment format:
 ```
 
 Example code comment:
-```
+
+```js
 /**
 * The initial message sent by obs-websocket to newly connected clients.
 *
@@ -45,12 +50,14 @@ Example code comment:
 * @api enums
 */
 ```
+
 - This is the documentation for the `WebSocketOpCode::Hello` enum identifier.
 
 ## Creating event documentation
 
 Events follow this code comment format:
-```
+
+```js
 /**
  * [description]
  *
@@ -68,7 +75,8 @@ Events follow this code comment format:
 ```
 
 Example code comment:
-```
+
+```js
 /**
  * Studio mode has been enabled or disabled.
  *
@@ -87,7 +95,8 @@ Example code comment:
 ## Creating request documentation
 
 Requests follow this code comment format:
-```
+
+```js
 /**
  * [description]
  *
@@ -105,10 +114,12 @@ Requests follow this code comment format:
  * @api requests
  */
 ```
+
 - The optional flag is a `?` that prefixes the field name, telling the docs processor that the field is optionally specified.
 
 Example code comment:
-```
+
+```js
 /**
  * Gets the value of a "slot" from the selected persistent data realm.
  *

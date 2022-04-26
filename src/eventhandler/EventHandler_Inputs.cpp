@@ -344,6 +344,7 @@ void EventHandler::HandleInputAudioTracksChanged(void *param, calldata_t *data)
  * The monitor type of an input has changed.
  *
  * Available types are:
+ *
  * - `OBS_MONITORING_TYPE_NONE`
  * - `OBS_MONITORING_TYPE_MONITOR_ONLY`
  * - `OBS_MONITORING_TYPE_MONITOR_AND_OUTPUT`

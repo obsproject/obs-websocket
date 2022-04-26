@@ -29,6 +29,7 @@ bool IsMediaTimeValid(obs_source_t *input)
  * Gets the status of a media input.
  *
  * Media States:
+ *
  * - `OBS_MEDIA_STATE_NONE`
  * - `OBS_MEDIA_STATE_PLAYING`
  * - `OBS_MEDIA_STATE_OPENING`
