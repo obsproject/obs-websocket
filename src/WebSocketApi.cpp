@@ -1,5 +1,7 @@
 #include "WebSocketApi.h"
+#include "requesthandler/RequestHandler.h"
 #include "obs-websocket.h"
+#include "utils/Json.h"
 
 #define RETURN_STATUS(status) { calldata_set_bool(cd, "success", status); return; }
 #define RETURN_SUCCESS() RETURN_STATUS(true);
@@ -22,6 +24,8 @@ WebSocketApi::WebSocketApi()
 
 	_procHandler = proc_handler_create();
 
+	proc_handler_add(_procHandler, "bool get_api_version(out int version)", &get_api_version, nullptr);
+	proc_handler_add(_procHandler, "bool call_request(in string request_type, in string request_data, out ptr response)", &call_request, nullptr);
 	proc_handler_add(_procHandler, "bool vendor_register(in string name, out ptr vendor)", &vendor_register_cb, this);
 	proc_handler_add(_procHandler, "bool vendor_request_register(in ptr vendor, in string type, in ptr callback)", &vendor_request_register_cb, this);
 	proc_handler_add(_procHandler, "bool vendor_request_unregister(in ptr vendor, in string type)", &vendor_request_unregister_cb, this);
@@ -84,6 +88,48 @@ void WebSocketApi::get_ph_cb(void *priv_data, calldata_t *cd)
 	auto c = static_cast<WebSocketApi*>(priv_data);
 
 	calldata_set_ptr(cd, "ph", (void*)c->_procHandler);
+
+	RETURN_SUCCESS();
+}
+
+void WebSocketApi::get_api_version(void *, calldata_t *cd)
+{
+	calldata_set_int(cd, "version", OBS_WEBSOCKET_API_VERSION);
+
+	RETURN_SUCCESS();
+}
+
+void WebSocketApi::call_request(void *, calldata_t *cd)
+{
+	const char *request_type = calldata_string(cd, "request_type");
+	const char *request_data = calldata_string(cd, "request_data");
+
+	if (!request_type)
+		RETURN_FAILURE();
+
+	auto response = static_cast<obs_websocket_request_response*>(bzalloc(sizeof(struct obs_websocket_request_response)));
+	if (!response)
+		RETURN_FAILURE();
+
+	json requestData;
+	if (request_data)
+		requestData = json::parse(request_data);
+
+	RequestHandler requestHandler;
+	Request request(request_type, requestData);
+	RequestResult requestResult = requestHandler.ProcessRequest(request);
+
+	response->status_code = (uint)requestResult.StatusCode;
+	if (!requestResult.Comment.empty())
+		response->comment = bstrdup(requestResult.Comment.c_str());
+	if (requestResult.ResponseData.is_object()) {
+		std::string responseData = requestResult.ResponseData.dump();
+		response->response_data = bstrdup(responseData.c_str());
+	}
+
+	calldata_set_ptr(cd, "response", response);
+
+	blog_debug("[WebSocketApi::call_request] Request %s called, response status code is %u", request_type, response->status_code);
 
 	RETURN_SUCCESS();
 }

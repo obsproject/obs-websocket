@@ -33,6 +33,8 @@ class WebSocketApi {
 		enum RequestReturnCode PerformVendorRequest(std::string vendorName, std::string requestName, obs_data_t *requestData, obs_data_t *responseData);
 
 		static void get_ph_cb(void *priv_data, calldata_t *cd);
+		static void get_api_version(void *, calldata_t *cd);
+		static void call_request(void *, calldata_t *cd);
 		static void vendor_register_cb(void *priv_data, calldata_t *cd);
 		static void vendor_request_register_cb(void *priv_data, calldata_t *cd);
 		static void vendor_request_unregister_cb(void *priv_data, calldata_t *cd);
