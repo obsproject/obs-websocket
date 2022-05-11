@@ -92,8 +92,13 @@ RequestResult RequestHandler::GetStats(const Request&)
 {
 	json responseData = Utils::Obs::ObjectHelper::GetStats();
 
-	responseData["webSocketSessionIncomingMessages"] = _session->IncomingMessages();
-	responseData["webSocketSessionOutgoingMessages"] = _session->OutgoingMessages();
+	if (_session) {
+		responseData["webSocketSessionIncomingMessages"] = _session->IncomingMessages();
+		responseData["webSocketSessionOutgoingMessages"] = _session->OutgoingMessages();
+	} else {
+		responseData["webSocketSessionIncomingMessages"] = nullptr;
+		responseData["webSocketSessionOutgoingMessages"] = nullptr;
+	}
 
 	return RequestResult::Success(responseData);
 }

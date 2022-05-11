@@ -37,7 +37,7 @@ typedef RequestResult(RequestHandler::*RequestMethodHandler)(const Request&);
 
 class RequestHandler {
 	public:
-		RequestHandler(SessionPtr session);
+		RequestHandler(SessionPtr session = nullptr);
 
 		RequestResult ProcessRequest(const Request& request);
 		std::vector<std::string> GetRequestList();
