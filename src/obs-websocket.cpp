@@ -190,12 +190,25 @@ void obs_module_post_load()
 {
 	blog(LOG_INFO, "[obs_module_post_load] Post load started.");
 
+	// Test plugin API version fetch
+	uint apiVersion = obs_websocket_get_api_version();
+	blog(LOG_INFO, "[obs_module_post_load] obs-websocket plugin API version: %u", apiVersion);
+
+	// Test calling obs-websocket requests
+	struct obs_websocket_request_response *response = obs_websocket_call_request("GetVersion");
+	if (response) {
+		blog(LOG_INFO, "[obs_module_post_load] Called GetVersion. Status Code: %u | Comment: %s | Response Data: %s", response->status_code, response->comment, response->response_data);
+		obs_websocket_request_response_free(response);
+	}
+
+	// Test vendor creation
 	auto vendor = obs_websocket_register_vendor("obs-websocket-test");
 	if (!vendor) {
 		blog(LOG_WARNING, "[obs_module_post_load] Failed to create vendor!");
 		return;
 	}
 
+	// Test vendor request registration
 	if (!obs_websocket_vendor_register_request(vendor, "TestRequest", test_vendor_request_cb, vendor)) {
 		blog(LOG_WARNING, "[obs_module_post_load] Failed to register vendor request!");
 		return;
