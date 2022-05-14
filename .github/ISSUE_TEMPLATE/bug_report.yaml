@@ -27,10 +27,11 @@ body:
     - macOS 10.15
     - macOS 10.14
     - macOS 10.13
+    - Ubuntu 22.04 LTS
     - Ubuntu 21.04
     - Ubuntu 20.10
-    - Ubuntu 20.04
-    - Ubuntu 18.04
+    - Ubuntu 20.04 LTS
+    - Ubuntu 18.04 LTS
     - Other
   validations:
     required: true
@@ -48,6 +49,11 @@ body:
     label: OBS Studio Version
     description: What version of OBS Studio are you using?
     options:
+    - 27.2.4
+    - 27.2.3
+    - 27.2.2
+    - 27.2.1
+    - 27.2.0
     - 27.1.3
     - 27.1.1
     - 27.1.0
