@@ -32,7 +32,7 @@ typedef void* obs_websocket_vendor;
 typedef void (*obs_websocket_request_callback_function)(obs_data_t*, obs_data_t*, void*);
 
 struct obs_websocket_request_response {
-	uint status_code;
+	unsigned int status_code;
 	char *comment;
 	char *response_data; // JSON string, because obs_data_t* only supports array<object>, so conversions would break API.
 };
@@ -86,7 +86,7 @@ static inline bool obs_websocket_vendor_run_simple_proc(obs_websocket_vendor ven
 /* ==================== GENERAL API FUNCTIONS ==================== */
 
 // Gets the API version built with the obs-websocket plugin
-static inline uint obs_websocket_get_api_version(void)
+static inline unsigned int obs_websocket_get_api_version(void)
 {
 	if (!obs_websocket_ensure_ph())
 		return 0;
@@ -96,7 +96,7 @@ static inline uint obs_websocket_get_api_version(void)
 	if (!proc_handler_call(_ph, "get_api_version", &cd))
 		return 1; // API v1 does not include get_api_version
 
-	uint ret = calldata_int(&cd, "version");
+	unsigned int ret = calldata_int(&cd, "version");
 
 	calldata_free(&cd);
 
