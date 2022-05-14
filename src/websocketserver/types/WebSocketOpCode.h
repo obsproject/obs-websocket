@@ -20,8 +20,8 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #pragma once
 
 namespace WebSocketOpCode {
-	enum WebSocketOpCode: uint8_t {
-		/**
+enum WebSocketOpCode : uint8_t {
+	/**
 		* The initial message sent by obs-websocket to newly connected clients.
 		*
 		* @enumIdentifier Hello
@@ -31,8 +31,8 @@ namespace WebSocketOpCode {
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		Hello = 0,
-		/**
+	Hello = 0,
+	/**
 		* The message sent by a newly connected client to obs-websocket in response to a `Hello`.
 		*
 		* @enumIdentifier Identify
@@ -42,8 +42,8 @@ namespace WebSocketOpCode {
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		Identify = 1,
-		/**
+	Identify = 1,
+	/**
 		* The response sent by obs-websocket to a client after it has successfully identified with obs-websocket.
 		*
 		* @enumIdentifier Identified
@@ -53,8 +53,8 @@ namespace WebSocketOpCode {
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		Identified = 2,
-		/**
+	Identified = 2,
+	/**
 		* The message sent by an already-identified client to update identification parameters.
 		*
 		* @enumIdentifier Reidentify
@@ -64,8 +64,8 @@ namespace WebSocketOpCode {
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		Reidentify = 3,
-		/**
+	Reidentify = 3,
+	/**
 		* The message sent by obs-websocket containing an event payload.
 		*
 		* @enumIdentifier Event
@@ -75,8 +75,8 @@ namespace WebSocketOpCode {
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		Event = 5,
-		/**
+	Event = 5,
+	/**
 		* The message sent by a client to obs-websocket to perform a request.
 		*
 		* @enumIdentifier Request
@@ -86,8 +86,8 @@ namespace WebSocketOpCode {
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		Request = 6,
-		/**
+	Request = 6,
+	/**
 		* The message sent by obs-websocket in response to a particular request from a client.
 		*
 		* @enumIdentifier RequestResponse
@@ -97,8 +97,8 @@ namespace WebSocketOpCode {
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		RequestResponse = 7,
-		/**
+	RequestResponse = 7,
+	/**
 		* The message sent by a client to obs-websocket to perform a batch of requests.
 		*
 		* @enumIdentifier RequestBatch
@@ -108,8 +108,8 @@ namespace WebSocketOpCode {
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		RequestBatch = 8,
-		/**
+	RequestBatch = 8,
+	/**
 		* The message sent by obs-websocket in response to a particular batch of requests from a client.
 		*
 		* @enumIdentifier RequestBatchResponse
@@ -119,11 +119,11 @@ namespace WebSocketOpCode {
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		RequestBatchResponse = 9,
-	};
+	RequestBatchResponse = 9,
+};
 
-	inline bool IsValid(uint8_t opCode)
-	{
-		return opCode >= Hello && opCode <= RequestBatchResponse;
-	}
+inline bool IsValid(uint8_t opCode)
+{
+	return opCode >= Hello && opCode <= RequestBatchResponse;
+}
 }

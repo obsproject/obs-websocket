@@ -19,18 +19,19 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include "EventHandler.h"
 
-static bool GetOutputStateActive(ObsOutputState state) {
-	switch(state) {
-		case OBS_WEBSOCKET_OUTPUT_STARTED:
-		case OBS_WEBSOCKET_OUTPUT_RESUMED:
-			return true;
-		case OBS_WEBSOCKET_OUTPUT_STARTING:
-		case OBS_WEBSOCKET_OUTPUT_STOPPING:
-		case OBS_WEBSOCKET_OUTPUT_STOPPED:
-		case OBS_WEBSOCKET_OUTPUT_PAUSED:
-			return false;
-		default:
-			return false;
+static bool GetOutputStateActive(ObsOutputState state)
+{
+	switch (state) {
+	case OBS_WEBSOCKET_OUTPUT_STARTED:
+	case OBS_WEBSOCKET_OUTPUT_RESUMED:
+		return true;
+	case OBS_WEBSOCKET_OUTPUT_STARTING:
+	case OBS_WEBSOCKET_OUTPUT_STOPPING:
+	case OBS_WEBSOCKET_OUTPUT_STOPPED:
+	case OBS_WEBSOCKET_OUTPUT_PAUSED:
+		return false;
+	default:
+		return false;
 	}
 }
 
@@ -52,8 +53,10 @@ void EventHandler::HandleStreamStateChanged(ObsOutputState state)
 {
 	json eventData;
 	eventData["outputActive"] = GetOutputStateActive(state);
-	eventData["outputState"] = Utils::Obs::StringHelper::GetOutputState(state);
-	BroadcastEvent(EventSubscription::Outputs, "StreamStateChanged", eventData);
+	eventData["outputState"] =
+		Utils::Obs::StringHelper::GetOutputState(state);
+	BroadcastEvent(EventSubscription::Outputs, "StreamStateChanged",
+		       eventData);
 }
 
 /**
@@ -74,8 +77,10 @@ void EventHandler::HandleRecordStateChanged(ObsOutputState state)
 {
 	json eventData;
 	eventData["outputActive"] = GetOutputStateActive(state);
-	eventData["outputState"] = Utils::Obs::StringHelper::GetOutputState(state);
-	BroadcastEvent(EventSubscription::Outputs, "RecordStateChanged", eventData);
+	eventData["outputState"] =
+		Utils::Obs::StringHelper::GetOutputState(state);
+	BroadcastEvent(EventSubscription::Outputs, "RecordStateChanged",
+		       eventData);
 }
 
 /**
@@ -96,8 +101,10 @@ void EventHandler::HandleReplayBufferStateChanged(ObsOutputState state)
 {
 	json eventData;
 	eventData["outputActive"] = GetOutputStateActive(state);
-	eventData["outputState"] = Utils::Obs::StringHelper::GetOutputState(state);
-	BroadcastEvent(EventSubscription::Outputs, "ReplayBufferStateChanged", eventData);
+	eventData["outputState"] =
+		Utils::Obs::StringHelper::GetOutputState(state);
+	BroadcastEvent(EventSubscription::Outputs, "ReplayBufferStateChanged",
+		       eventData);
 }
 
 /**
@@ -118,8 +125,10 @@ void EventHandler::HandleVirtualcamStateChanged(ObsOutputState state)
 {
 	json eventData;
 	eventData["outputActive"] = GetOutputStateActive(state);
-	eventData["outputState"] = Utils::Obs::StringHelper::GetOutputState(state);
-	BroadcastEvent(EventSubscription::Outputs, "VirtualcamStateChanged", eventData);
+	eventData["outputState"] =
+		Utils::Obs::StringHelper::GetOutputState(state);
+	BroadcastEvent(EventSubscription::Outputs, "VirtualcamStateChanged",
+		       eventData);
 }
 
 /**
@@ -138,6 +147,8 @@ void EventHandler::HandleVirtualcamStateChanged(ObsOutputState state)
 void EventHandler::HandleReplayBufferSaved()
 {
 	json eventData;
-	eventData["savedReplayPath"] = Utils::Obs::StringHelper::GetLastReplayBufferFilePath();
-	BroadcastEvent(EventSubscription::Outputs, "ReplayBufferSaved", eventData);
+	eventData["savedReplayPath"] =
+		Utils::Obs::StringHelper::GetLastReplayBufferFilePath();
+	BroadcastEvent(EventSubscription::Outputs, "ReplayBufferSaved",
+		       eventData);
 }

@@ -36,5 +36,6 @@ void EventHandler::HandleStudioModeStateChanged(bool enabled)
 {
 	json eventData;
 	eventData["studioModeEnabled"] = enabled;
-	BroadcastEvent(EventSubscription::Ui, "StudioModeStateChanged", eventData);
+	BroadcastEvent(EventSubscription::Ui, "StudioModeStateChanged",
+		       eventData);
 }

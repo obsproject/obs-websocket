@@ -20,8 +20,8 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #pragma once
 
 namespace RequestStatus {
-	enum RequestStatus {
-		/**
+enum RequestStatus {
+	/**
 		* Unknown status, should never be used.
 		*
 		* @enumIdentifier Unknown
@@ -31,9 +31,9 @@ namespace RequestStatus {
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		Unknown = 0,
+	Unknown = 0,
 
-		/**
+	/**
 		* For internal use to signify a successful field check.
 		*
 		* @enumIdentifier NoError
@@ -43,9 +43,9 @@ namespace RequestStatus {
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		NoError = 10,
+	NoError = 10,
 
-		/**
+	/**
 		* The request has succeeded.
 		*
 		* @enumIdentifier Success
@@ -55,9 +55,9 @@ namespace RequestStatus {
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		Success = 100,
+	Success = 100,
 
-		/**
+	/**
 		* The `requestType` field is missing from the request data.
 		*
 		* @enumIdentifier MissingRequestType
@@ -67,8 +67,8 @@ namespace RequestStatus {
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		MissingRequestType = 203,
-		/**
+	MissingRequestType = 203,
+	/**
 		* The request type is invalid or does not exist.
 		*
 		* @enumIdentifier UnknownRequestType
@@ -78,8 +78,8 @@ namespace RequestStatus {
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		UnknownRequestType = 204,
-		/**
+	UnknownRequestType = 204,
+	/**
 		* Generic error code.
 		*
 		* Note: A comment is required to be provided by obs-websocket.
@@ -91,8 +91,8 @@ namespace RequestStatus {
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		GenericError = 205,
-		/**
+	GenericError = 205,
+	/**
 		* The request batch execution type is not supported.
 		*
 		* @enumIdentifier UnsupportedRequestBatchExecutionType
@@ -102,9 +102,9 @@ namespace RequestStatus {
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		UnsupportedRequestBatchExecutionType = 206,
+	UnsupportedRequestBatchExecutionType = 206,
 
-		/**
+	/**
 		* A required request field is missing.
 		*
 		* @enumIdentifier MissingRequestField
@@ -114,8 +114,8 @@ namespace RequestStatus {
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		MissingRequestField = 300,
-		/**
+	MissingRequestField = 300,
+	/**
 		* The request does not have a valid requestData object.
 		*
 		* @enumIdentifier MissingRequestData
@@ -125,9 +125,9 @@ namespace RequestStatus {
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		MissingRequestData = 301,
+	MissingRequestData = 301,
 
-		/**
+	/**
 		* Generic invalid request field message.
 		*
 		* Note: A comment is required to be provided by obs-websocket.
@@ -139,8 +139,8 @@ namespace RequestStatus {
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		InvalidRequestField = 400,
-		/**
+	InvalidRequestField = 400,
+	/**
 		* A request field has the wrong data type.
 		*
 		* @enumIdentifier InvalidRequestFieldType
@@ -150,8 +150,8 @@ namespace RequestStatus {
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		InvalidRequestFieldType = 401,
-		/**
+	InvalidRequestFieldType = 401,
+	/**
 		* A request field (number) is outside of the allowed range.
 		*
 		* @enumIdentifier RequestFieldOutOfRange
@@ -161,8 +161,8 @@ namespace RequestStatus {
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		RequestFieldOutOfRange = 402,
-		/**
+	RequestFieldOutOfRange = 402,
+	/**
 		* A request field (string or array) is empty and cannot be.
 		*
 		* @enumIdentifier RequestFieldEmpty
@@ -172,8 +172,8 @@ namespace RequestStatus {
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		RequestFieldEmpty = 403,
-		/**
+	RequestFieldEmpty = 403,
+	/**
 		* There are too many request fields (eg. a request takes two optionals, where only one is allowed at a time).
 		*
 		* @enumIdentifier TooManyRequestFields
@@ -183,9 +183,9 @@ namespace RequestStatus {
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		TooManyRequestFields = 404,
+	TooManyRequestFields = 404,
 
-		/**
+	/**
 		* An output is running and cannot be in order to perform the request.
 		*
 		* @enumIdentifier OutputRunning
@@ -195,8 +195,8 @@ namespace RequestStatus {
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		OutputRunning = 500,
-		/**
+	OutputRunning = 500,
+	/**
 		* An output is not running and should be.
 		*
 		* @enumIdentifier OutputNotRunning
@@ -206,8 +206,8 @@ namespace RequestStatus {
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		OutputNotRunning = 501,
-		/**
+	OutputNotRunning = 501,
+	/**
 		* An output is paused and should not be.
 		*
 		* @enumIdentifier OutputPaused
@@ -217,8 +217,8 @@ namespace RequestStatus {
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		OutputPaused = 502,
-		/**
+	OutputPaused = 502,
+	/**
 		* An output is not paused and should be.
 		*
 		* @enumIdentifier OutputNotPaused
@@ -228,8 +228,8 @@ namespace RequestStatus {
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		OutputNotPaused = 503,
-		/**
+	OutputNotPaused = 503,
+	/**
 		* An output is disabled and should not be.
 		*
 		* @enumIdentifier OutputDisabled
@@ -239,8 +239,8 @@ namespace RequestStatus {
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		OutputDisabled = 504,
-		/**
+	OutputDisabled = 504,
+	/**
 		* Studio mode is active and cannot be.
 		*
 		* @enumIdentifier StudioModeActive
@@ -250,8 +250,8 @@ namespace RequestStatus {
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		StudioModeActive = 505,
-		/**
+	StudioModeActive = 505,
+	/**
 		* Studio mode is not active and should be.
 		*
 		* @enumIdentifier StudioModeNotActive
@@ -261,10 +261,9 @@ namespace RequestStatus {
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		StudioModeNotActive = 506,
-		
+	StudioModeNotActive = 506,
 
-		/**
+	/**
 		* The resource was not found.
 		*
 		* Note: Resources are any kind of object in obs-websocket, like inputs, profiles, outputs, etc.
@@ -276,8 +275,8 @@ namespace RequestStatus {
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		ResourceNotFound = 600,
-		/**
+	ResourceNotFound = 600,
+	/**
 		* The resource already exists.
 		*
 		* @enumIdentifier ResourceAlreadyExists
@@ -287,8 +286,8 @@ namespace RequestStatus {
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		ResourceAlreadyExists = 601,
-		/**
+	ResourceAlreadyExists = 601,
+	/**
 		* The type of resource found is invalid.
 		*
 		* @enumIdentifier InvalidResourceType
@@ -298,8 +297,8 @@ namespace RequestStatus {
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		InvalidResourceType = 602,
-		/**
+	InvalidResourceType = 602,
+	/**
 		* There are not enough instances of the resource in order to perform the request.
 		*
 		* @enumIdentifier NotEnoughResources
@@ -309,8 +308,8 @@ namespace RequestStatus {
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		NotEnoughResources = 603,
-		/**
+	NotEnoughResources = 603,
+	/**
 		* The state of the resource is invalid. For example, if the resource is blocked from being accessed.
 		*
 		* @enumIdentifier InvalidResourceState
@@ -320,8 +319,8 @@ namespace RequestStatus {
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		InvalidResourceState = 604,
-		/**
+	InvalidResourceState = 604,
+	/**
 		* The specified input (obs_source_t-OBS_SOURCE_TYPE_INPUT) had the wrong kind.
 		*
 		* @enumIdentifier InvalidInputKind
@@ -331,8 +330,8 @@ namespace RequestStatus {
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		InvalidInputKind = 605,
-		/**
+	InvalidInputKind = 605,
+	/**
 		* The resource does not support being configured.
 		*
 		* This is particularly relevant to transitions, where they do not always have changeable settings.
@@ -344,8 +343,8 @@ namespace RequestStatus {
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		ResourceNotConfigurable = 606,
-		/**
+	ResourceNotConfigurable = 606,
+	/**
 		* The specified filter (obs_source_t-OBS_SOURCE_TYPE_FILTER) had the wrong kind.
 		*
 		* @enumIdentifier InvalidFilterKind
@@ -355,9 +354,9 @@ namespace RequestStatus {
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		InvalidFilterKind = 607,
+	InvalidFilterKind = 607,
 
-		/**
+	/**
 		* Creating the resource failed.
 		*
 		* @enumIdentifier ResourceCreationFailed
@@ -367,8 +366,8 @@ namespace RequestStatus {
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		ResourceCreationFailed = 700,
-		/**
+	ResourceCreationFailed = 700,
+	/**
 		* Performing an action on the resource failed.
 		*
 		* @enumIdentifier ResourceActionFailed
@@ -378,8 +377,8 @@ namespace RequestStatus {
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		ResourceActionFailed = 701,
-		/**
+	ResourceActionFailed = 701,
+	/**
 		* Processing the request failed unexpectedly.
 		*
 		* Note: A comment is required to be provided by obs-websocket.
@@ -391,8 +390,8 @@ namespace RequestStatus {
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		RequestProcessingFailed = 702,
-		/**
+	RequestProcessingFailed = 702,
+	/**
 		* The combination of request fields cannot be used to perform an action.
 		*
 		* @enumIdentifier CannotAct
@@ -402,6 +401,6 @@ namespace RequestStatus {
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		CannotAct = 703,
-	};
+	CannotAct = 703,
+};
 }

@@ -24,8 +24,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include "../utils/Compat.h"
 #include "../obs-websocket.h"
 
-struct SerialFrameBatch
-{
+struct SerialFrameBatch {
 	RequestHandler &requestHandler;
 	std::queue<RequestBatchRequest> requests;
 	std::vector<RequestResult> results;
@@ -37,43 +36,51 @@ struct SerialFrameBatch
 	std::mutex conditionMutex;
 	std::condition_variable condition;
 
-	SerialFrameBatch(RequestHandler &requestHandler, json &variables, bool haltOnFailure) :
-		requestHandler(requestHandler),
-		variables(variables),
-		haltOnFailure(haltOnFailure),
-		frameCount(0),
-		sleepUntilFrame(0)
-	{}
+	SerialFrameBatch(RequestHandler &requestHandler, json &variables,
+			 bool haltOnFailure)
+		: requestHandler(requestHandler),
+		  variables(variables),
+		  haltOnFailure(haltOnFailure),
+		  frameCount(0),
+		  sleepUntilFrame(0)
+	{
+	}
 };
 
-struct ParallelBatchResults
-{
+struct ParallelBatchResults {
 	RequestHandler &requestHandler;
 	std::vector<RequestResult> results;
 
 	std::mutex conditionMutex;
 	std::condition_variable condition;
 
-	ParallelBatchResults(RequestHandler &requestHandler) :
-		requestHandler(requestHandler)
-	{}
+	ParallelBatchResults(RequestHandler &requestHandler)
+		: requestHandler(requestHandler)
+	{
+	}
 };
 
 // `{"inputName": "inputNameVariable"}` is essentially `inputName = inputNameVariable`
-static void PreProcessVariables(const json &variables, RequestBatchRequest &request)
+static void PreProcessVariables(const json &variables,
+				RequestBatchRequest &request)
 {
-	if (variables.empty() || !request.InputVariables.is_object() || request.InputVariables.empty() || !request.RequestData.is_object())
+	if (variables.empty() || !request.InputVariables.is_object() ||
+	    request.InputVariables.empty() || !request.RequestData.is_object())
 		return;
 
-	for (auto& [key, value] : request.InputVariables.items()) {
+	for (auto &[key, value] : request.InputVariables.items()) {
 		if (!value.is_string()) {
-			blog_debug("[WebSocketServer::ProcessRequestBatch] Value of field `%s` in `inputVariables `is not a string. Skipping!", key.c_str());
+			blog_debug(
+				"[WebSocketServer::ProcessRequestBatch] Value of field `%s` in `inputVariables `is not a string. Skipping!",
+				key.c_str());
 			continue;
 		}
 
 		std::string valueString = value;
 		if (!variables.contains(valueString)) {
-			blog_debug("[WebSocketServer::ProcessRequestBatch] `inputVariables` requested variable `%s`, but it does not exist. Skipping!", valueString.c_str());
+			blog_debug(
+				"[WebSocketServer::ProcessRequestBatch] `inputVariables` requested variable `%s`, but it does not exist. Skipping!",
+				valueString.c_str());
 			continue;
 		}
 
@@ -84,20 +91,28 @@ static void PreProcessVariables(const json &variables, RequestBatchRequest &requ
 }
 
 // `{"sceneItemIdVariable": "sceneItemId"}` is essentially `sceneItemIdVariable = sceneItemId`
-static void PostProcessVariables(json &variables, const RequestBatchRequest &request, const RequestResult &requestResult)
+static void PostProcessVariables(json &variables,
+				 const RequestBatchRequest &request,
+				 const RequestResult &requestResult)
 {
-	if (!request.OutputVariables.is_object() || request.OutputVariables.empty() || requestResult.ResponseData.empty())
+	if (!request.OutputVariables.is_object() ||
+	    request.OutputVariables.empty() ||
+	    requestResult.ResponseData.empty())
 		return;
 
-	for (auto& [key, value] : request.OutputVariables.items()) {
+	for (auto &[key, value] : request.OutputVariables.items()) {
 		if (!value.is_string()) {
-			blog_debug("[WebSocketServer::ProcessRequestBatch] Value of field `%s` in `outputVariables` is not a string. Skipping!", key.c_str());
+			blog_debug(
+				"[WebSocketServer::ProcessRequestBatch] Value of field `%s` in `outputVariables` is not a string. Skipping!",
+				key.c_str());
 			continue;
 		}
 
 		std::string valueString = value;
 		if (!requestResult.ResponseData.contains(valueString)) {
-			blog_debug("[WebSocketServer::ProcessRequestBatch] `outputVariables` requested responseData field `%s`, but it does not exist. Skipping!", valueString.c_str());
+			blog_debug(
+				"[WebSocketServer::ProcessRequestBatch] `outputVariables` requested responseData field `%s`, but it does not exist. Skipping!",
+				valueString.c_str());
 			continue;
 		}
 
@@ -109,13 +124,14 @@ static void ObsTickCallback(void *param, float)
 {
 	ScopeProfiler prof{"obs_websocket_request_batch_frame_tick"};
 
-	auto serialFrameBatch = static_cast<SerialFrameBatch*>(param);
+	auto serialFrameBatch = static_cast<SerialFrameBatch *>(param);
 
 	// Increment frame count
 	serialFrameBatch->frameCount++;
 
 	if (serialFrameBatch->sleepUntilFrame) {
-		if (serialFrameBatch->frameCount < serialFrameBatch->sleepUntilFrame)
+		if (serialFrameBatch->frameCount <
+		    serialFrameBatch->sleepUntilFrame)
 			// Do not process any requests if in "sleep mode"
 			return;
 		else
@@ -126,27 +142,35 @@ static void ObsTickCallback(void *param, float)
 	// Begin recursing any unprocessed requests
 	while (!serialFrameBatch->requests.empty()) {
 		// Fetch first in queue
-		RequestBatchRequest request = serialFrameBatch->requests.front();
+		RequestBatchRequest request =
+			serialFrameBatch->requests.front();
 		// Pre-process batch variables
 		PreProcessVariables(serialFrameBatch->variables, request);
 		// Process request and get result
-		RequestResult requestResult = serialFrameBatch->requestHandler.ProcessRequest(request);
+		RequestResult requestResult =
+			serialFrameBatch->requestHandler.ProcessRequest(
+				request);
 		// Post-process batch variables
-		PostProcessVariables(serialFrameBatch->variables, request, requestResult);
+		PostProcessVariables(serialFrameBatch->variables, request,
+				     requestResult);
 		// Add to results vector
 		serialFrameBatch->results.push_back(requestResult);
 		// Remove from front of queue
 		serialFrameBatch->requests.pop();
 
 		// If haltOnFailure and the request failed, clear the queue to make the batch return early.
-		if (serialFrameBatch->haltOnFailure && requestResult.StatusCode != RequestStatus::Success) {
-			serialFrameBatch->requests = std::queue<RequestBatchRequest>();
+		if (serialFrameBatch->haltOnFailure &&
+		    requestResult.StatusCode != RequestStatus::Success) {
+			serialFrameBatch->requests =
+				std::queue<RequestBatchRequest>();
 			break;
 		}
 
 		// If the processed request tells us to sleep, do so accordingly
 		if (requestResult.SleepFrames) {
-			serialFrameBatch->sleepUntilFrame = serialFrameBatch->frameCount + requestResult.SleepFrames;
+			serialFrameBatch->sleepUntilFrame =
+				serialFrameBatch->frameCount +
+				requestResult.SleepFrames;
 			break;
 		}
 	}
@@ -156,7 +180,11 @@ static void ObsTickCallback(void *param, float)
 		serialFrameBatch->condition.notify_one();
 }
 
-std::vector<RequestResult> RequestBatchHandler::ProcessRequestBatch(QThreadPool &threadPool, SessionPtr session, RequestBatchExecutionType::RequestBatchExecutionType executionType, std::vector<RequestBatchRequest> &requests, json &variables, bool haltOnFailure)
+std::vector<RequestResult> RequestBatchHandler::ProcessRequestBatch(
+	QThreadPool &threadPool, SessionPtr session,
+	RequestBatchExecutionType::RequestBatchExecutionType executionType,
+	std::vector<RequestBatchRequest> &requests, json &variables,
+	bool haltOnFailure)
 {
 	RequestHandler requestHandler(session);
 	if (executionType == RequestBatchExecutionType::SerialRealtime) {
@@ -166,19 +194,22 @@ std::vector<RequestResult> RequestBatchHandler::ProcessRequestBatch(QThreadPool 
 		for (auto &request : requests) {
 			PreProcessVariables(variables, request);
 
-			RequestResult requestResult = requestHandler.ProcessRequest(request);
+			RequestResult requestResult =
+				requestHandler.ProcessRequest(request);
 
 			PostProcessVariables(variables, request, requestResult);
 
 			ret.push_back(requestResult);
 
-			if (haltOnFailure && requestResult.StatusCode != RequestStatus::Success)
+			if (haltOnFailure &&
+			    requestResult.StatusCode != RequestStatus::Success)
 				break;
 		}
 
 		return ret;
 	} else if (executionType == RequestBatchExecutionType::SerialFrame) {
-		SerialFrameBatch serialFrameBatch(requestHandler, variables, haltOnFailure);
+		SerialFrameBatch serialFrameBatch(requestHandler, variables,
+						  haltOnFailure);
 
 		// Create Request objects in the worker thread (avoid unnecessary processing in graphics thread)
 		for (auto &request : requests)
@@ -188,8 +219,11 @@ std::vector<RequestResult> RequestBatchHandler::ProcessRequestBatch(QThreadPool 
 		obs_add_tick_callback(ObsTickCallback, &serialFrameBatch);
 
 		// Wait until the graphics thread processes the last request in the queue
-		std::unique_lock<std::mutex> lock(serialFrameBatch.conditionMutex);
-		serialFrameBatch.condition.wait(lock, [&serialFrameBatch]{return serialFrameBatch.requests.empty();});
+		std::unique_lock<std::mutex> lock(
+			serialFrameBatch.conditionMutex);
+		serialFrameBatch.condition.wait(lock, [&serialFrameBatch] {
+			return serialFrameBatch.requests.empty();
+		});
 
 		// Remove the created callback entry since we don't need it anymore
 		obs_remove_tick_callback(ObsTickCallback, &serialFrameBatch);
@@ -199,23 +233,33 @@ std::vector<RequestResult> RequestBatchHandler::ProcessRequestBatch(QThreadPool 
 		ParallelBatchResults parallelResults(requestHandler);
 
 		// Acquire the lock early to prevent the batch from finishing before we're ready
-		std::unique_lock<std::mutex> lock(parallelResults.conditionMutex);
+		std::unique_lock<std::mutex> lock(
+			parallelResults.conditionMutex);
 
 		// Submit each request as a task to the thread pool to be processed ASAP
 		for (auto &request : requests) {
-			threadPool.start(Utils::Compat::CreateFunctionRunnable([&parallelResults, &request]() {
-				RequestResult requestResult = parallelResults.requestHandler.ProcessRequest(request);
+			threadPool.start(Utils::Compat::CreateFunctionRunnable(
+				[&parallelResults, &request]() {
+					RequestResult requestResult =
+						parallelResults.requestHandler
+							.ProcessRequest(
+								request);
 
-				std::unique_lock<std::mutex> lock(parallelResults.conditionMutex);
-				parallelResults.results.push_back(requestResult);
-				lock.unlock();
-				parallelResults.condition.notify_one();
-			}));
+					std::unique_lock<std::mutex> lock(
+						parallelResults.conditionMutex);
+					parallelResults.results.push_back(
+						requestResult);
+					lock.unlock();
+					parallelResults.condition.notify_one();
+				}));
 		}
 
 		// Wait for the last request to finish processing
 		size_t requestCount = requests.size();
-		parallelResults.condition.wait(lock, [&parallelResults, requestCount]{return parallelResults.results.size() == requestCount;});
+		parallelResults.condition.wait(lock, [&parallelResults,
+						      requestCount] {
+			return parallelResults.results.size() == requestCount;
+		});
 
 		return parallelResults.results;
 	}

@@ -20,16 +20,16 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include "WebSocketSession.h"
 #include "../../eventhandler/types/EventSubscription.h"
 
-WebSocketSession::WebSocketSession() :
-	_remoteAddress(""),
-	_connectedAt(0),
-	_incomingMessages(0),
-	_outgoingMessages(0),
-	_encoding(0),
-	_challenge(""),
-	_rpcVersion(OBS_WEBSOCKET_RPC_VERSION),
-	_isIdentified(false),
-	_eventSubscriptions(EventSubscription::All)
+WebSocketSession::WebSocketSession()
+	: _remoteAddress(""),
+	  _connectedAt(0),
+	  _incomingMessages(0),
+	  _outgoingMessages(0),
+	  _encoding(0),
+	  _challenge(""),
+	  _rpcVersion(OBS_WEBSOCKET_RPC_VERSION),
+	  _isIdentified(false),
+	  _eventSubscriptions(EventSubscription::All)
 {
 }
 

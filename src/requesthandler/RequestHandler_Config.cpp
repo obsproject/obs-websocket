@@ -37,27 +37,34 @@ with this program. If not, see <https://www.gnu.org/licenses/>
  * @category config
  * @api requests
  */
-RequestResult RequestHandler::GetPersistentData(const Request& request)
+RequestResult RequestHandler::GetPersistentData(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	if (!(request.ValidateString("realm", statusCode, comment) && request.ValidateString("slotName", statusCode, comment)))
+	if (!(request.ValidateString("realm", statusCode, comment) &&
+	      request.ValidateString("slotName", statusCode, comment)))
 		return RequestResult::Error(statusCode, comment);
 
 	std::string realm = request.RequestData["realm"];
 	std::string slotName = request.RequestData["slotName"];
 
-	std::string persistentDataPath = Utils::Obs::StringHelper::GetCurrentProfilePath();
+	std::string persistentDataPath =
+		Utils::Obs::StringHelper::GetCurrentProfilePath();
 	if (realm == "OBS_WEBSOCKET_DATA_REALM_GLOBAL")
-		persistentDataPath += "/../../../obsWebSocketPersistentData.json";
+		persistentDataPath +=
+			"/../../../obsWebSocketPersistentData.json";
 	else if (realm == "OBS_WEBSOCKET_DATA_REALM_PROFILE")
 		persistentDataPath += "/obsWebSocketPersistentData.json";
 	else
-		return RequestResult::Error(RequestStatus::ResourceNotFound, "You have specified an invalid persistent data realm.");
+		return RequestResult::Error(
+			RequestStatus::ResourceNotFound,
+			"You have specified an invalid persistent data realm.");
 
 	json responseData;
 	json persistentData;
-	if (Utils::Json::GetJsonFileContent(persistentDataPath, persistentData) && persistentData.contains(slotName))
+	if (Utils::Json::GetJsonFileContent(persistentDataPath,
+					    persistentData) &&
+	    persistentData.contains(slotName))
 		responseData["slotValue"] = persistentData[slotName];
 	else
 		responseData["slotValue"] = nullptr;
@@ -79,30 +86,39 @@ RequestResult RequestHandler::GetPersistentData(const Request& request)
  * @category config
  * @api requests
  */
-RequestResult RequestHandler::SetPersistentData(const Request& request)
+RequestResult RequestHandler::SetPersistentData(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	if (!(request.ValidateString("realm", statusCode, comment) && request.ValidateString("slotName", statusCode, comment) && request.ValidateBasic("slotValue", statusCode, comment)))
+	if (!(request.ValidateString("realm", statusCode, comment) &&
+	      request.ValidateString("slotName", statusCode, comment) &&
+	      request.ValidateBasic("slotValue", statusCode, comment)))
 		return RequestResult::Error(statusCode, comment);
 
 	std::string realm = request.RequestData["realm"];
 	std::string slotName = request.RequestData["slotName"];
 	json slotValue = request.RequestData["slotValue"];
 
-	std::string persistentDataPath = Utils::Obs::StringHelper::GetCurrentProfilePath();
+	std::string persistentDataPath =
+		Utils::Obs::StringHelper::GetCurrentProfilePath();
 	if (realm == "OBS_WEBSOCKET_DATA_REALM_GLOBAL")
-		persistentDataPath += "/../../../obsWebSocketPersistentData.json";
+		persistentDataPath +=
+			"/../../../obsWebSocketPersistentData.json";
 	else if (realm == "OBS_WEBSOCKET_DATA_REALM_PROFILE")
 		persistentDataPath += "/obsWebSocketPersistentData.json";
 	else
-		return RequestResult::Error(RequestStatus::ResourceNotFound, "You have specified an invalid persistent data realm.");
+		return RequestResult::Error(
+			RequestStatus::ResourceNotFound,
+			"You have specified an invalid persistent data realm.");
 
 	json persistentData = json::object();
 	Utils::Json::GetJsonFileContent(persistentDataPath, persistentData);
 	persistentData[slotName] = slotValue;
-	if (!Utils::Json::SetJsonFileContent(persistentDataPath, persistentData))
-		return RequestResult::Error(RequestStatus::RequestProcessingFailed, "Unable to write persistent data. No permissions?");
+	if (!Utils::Json::SetJsonFileContent(persistentDataPath,
+					     persistentData))
+		return RequestResult::Error(
+			RequestStatus::RequestProcessingFailed,
+			"Unable to write persistent data. No permissions?");
 
 	return RequestResult::Success();
 }
@@ -120,11 +136,13 @@ RequestResult RequestHandler::SetPersistentData(const Request& request)
  * @category config
  * @api requests
  */
-RequestResult RequestHandler::GetSceneCollectionList(const Request&)
+RequestResult RequestHandler::GetSceneCollectionList(const Request &)
 {
 	json responseData;
-	responseData["currentSceneCollectionName"] = Utils::Obs::StringHelper::GetCurrentSceneCollection();
-	responseData["sceneCollections"] = Utils::Obs::ArrayHelper::GetSceneCollectionList();
+	responseData["currentSceneCollectionName"] =
+		Utils::Obs::StringHelper::GetCurrentSceneCollection();
+	responseData["sceneCollections"] =
+		Utils::Obs::ArrayHelper::GetSceneCollectionList();
 	return RequestResult::Success(responseData);
 }
 
@@ -142,25 +160,33 @@ RequestResult RequestHandler::GetSceneCollectionList(const Request&)
  * @category config
  * @api requests
  */
-RequestResult RequestHandler::SetCurrentSceneCollection(const Request& request)
+RequestResult RequestHandler::SetCurrentSceneCollection(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
 	if (!request.ValidateString("sceneCollectionName", statusCode, comment))
 		return RequestResult::Error(statusCode, comment);
 
-	std::string sceneCollectionName = request.RequestData["sceneCollectionName"];
+	std::string sceneCollectionName =
+		request.RequestData["sceneCollectionName"];
 
-	auto sceneCollections = Utils::Obs::ArrayHelper::GetSceneCollectionList();
-	if (std::find(sceneCollections.begin(), sceneCollections.end(), sceneCollectionName) == sceneCollections.end())
+	auto sceneCollections =
+		Utils::Obs::ArrayHelper::GetSceneCollectionList();
+	if (std::find(sceneCollections.begin(), sceneCollections.end(),
+		      sceneCollectionName) == sceneCollections.end())
 		return RequestResult::Error(RequestStatus::ResourceNotFound);
 
-	std::string currentSceneCollectionName = Utils::Obs::StringHelper::GetCurrentSceneCollection();
+	std::string currentSceneCollectionName =
+		Utils::Obs::StringHelper::GetCurrentSceneCollection();
 	// Avoid queueing tasks if nothing will change
 	if (currentSceneCollectionName != sceneCollectionName) {
-		obs_queue_task(OBS_TASK_UI, [](void* param) {
-			obs_frontend_set_current_scene_collection(static_cast<const char*>(param));
-		}, (void*)sceneCollectionName.c_str(), true);
+		obs_queue_task(
+			OBS_TASK_UI,
+			[](void *param) {
+				obs_frontend_set_current_scene_collection(
+					static_cast<const char *>(param));
+			},
+			(void *)sceneCollectionName.c_str(), true);
 	}
 
 	return RequestResult::Success();
@@ -180,24 +206,34 @@ RequestResult RequestHandler::SetCurrentSceneCollection(const Request& request)
  * @category config
  * @api requests
  */
-RequestResult RequestHandler::CreateSceneCollection(const Request& request)
+RequestResult RequestHandler::CreateSceneCollection(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
 	if (!request.ValidateString("sceneCollectionName", statusCode, comment))
 		return RequestResult::Error(statusCode, comment);
 
-	std::string sceneCollectionName = request.RequestData["sceneCollectionName"];
+	std::string sceneCollectionName =
+		request.RequestData["sceneCollectionName"];
 
-	auto sceneCollections = Utils::Obs::ArrayHelper::GetSceneCollectionList();
-	if (std::find(sceneCollections.begin(), sceneCollections.end(), sceneCollectionName) != sceneCollections.end())
-		return RequestResult::Error(RequestStatus::ResourceAlreadyExists);
+	auto sceneCollections =
+		Utils::Obs::ArrayHelper::GetSceneCollectionList();
+	if (std::find(sceneCollections.begin(), sceneCollections.end(),
+		      sceneCollectionName) != sceneCollections.end())
+		return RequestResult::Error(
+			RequestStatus::ResourceAlreadyExists);
 
-	QMainWindow* mainWindow = static_cast<QMainWindow*>(obs_frontend_get_main_window());
+	QMainWindow *mainWindow =
+		static_cast<QMainWindow *>(obs_frontend_get_main_window());
 	bool success = false;
-	QMetaObject::invokeMethod(mainWindow, "AddSceneCollection", Qt::BlockingQueuedConnection, Q_RETURN_ARG(bool, success), Q_ARG(bool, true), Q_ARG(QString, QString::fromStdString(sceneCollectionName)));
+	QMetaObject::invokeMethod(
+		mainWindow, "AddSceneCollection", Qt::BlockingQueuedConnection,
+		Q_RETURN_ARG(bool, success), Q_ARG(bool, true),
+		Q_ARG(QString, QString::fromStdString(sceneCollectionName)));
 	if (!success)
-		return RequestResult::Error(RequestStatus::ResourceCreationFailed, "Failed to create the scene collection.");
+		return RequestResult::Error(
+			RequestStatus::ResourceCreationFailed,
+			"Failed to create the scene collection.");
 
 	return RequestResult::Success();
 }
@@ -215,10 +251,11 @@ RequestResult RequestHandler::CreateSceneCollection(const Request& request)
  * @category config
  * @api requests
  */
-RequestResult RequestHandler::GetProfileList(const Request&)
+RequestResult RequestHandler::GetProfileList(const Request &)
 {
 	json responseData;
-	responseData["currentProfileName"] = Utils::Obs::StringHelper::GetCurrentProfile();
+	responseData["currentProfileName"] =
+		Utils::Obs::StringHelper::GetCurrentProfile();
 	responseData["profiles"] = Utils::Obs::ArrayHelper::GetProfileList();
 	return RequestResult::Success(responseData);
 }
@@ -235,7 +272,7 @@ RequestResult RequestHandler::GetProfileList(const Request&)
  * @category config
  * @api requests
  */
-RequestResult RequestHandler::SetCurrentProfile(const Request& request)
+RequestResult RequestHandler::SetCurrentProfile(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
@@ -245,15 +282,21 @@ RequestResult RequestHandler::SetCurrentProfile(const Request& request)
 	std::string profileName = request.RequestData["profileName"];
 
 	auto profiles = Utils::Obs::ArrayHelper::GetProfileList();
-	if (std::find(profiles.begin(), profiles.end(), profileName) == profiles.end())
+	if (std::find(profiles.begin(), profiles.end(), profileName) ==
+	    profiles.end())
 		return RequestResult::Error(RequestStatus::ResourceNotFound);
 
-	std::string currentProfileName = Utils::Obs::StringHelper::GetCurrentProfile();
+	std::string currentProfileName =
+		Utils::Obs::StringHelper::GetCurrentProfile();
 	// Avoid queueing tasks if nothing will change
 	if (currentProfileName != profileName) {
-		obs_queue_task(OBS_TASK_UI, [](void* param) {
-			obs_frontend_set_current_profile(static_cast<const char*>(param));
-		}, (void*)profileName.c_str(), true);
+		obs_queue_task(
+			OBS_TASK_UI,
+			[](void *param) {
+				obs_frontend_set_current_profile(
+					static_cast<const char *>(param));
+			},
+			(void *)profileName.c_str(), true);
 	}
 
 	return RequestResult::Success();
@@ -271,7 +314,7 @@ RequestResult RequestHandler::SetCurrentProfile(const Request& request)
  * @category config
  * @api requests
  */
-RequestResult RequestHandler::CreateProfile(const Request& request)
+RequestResult RequestHandler::CreateProfile(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
@@ -281,11 +324,16 @@ RequestResult RequestHandler::CreateProfile(const Request& request)
 	std::string profileName = request.RequestData["profileName"];
 
 	auto profiles = Utils::Obs::ArrayHelper::GetProfileList();
-	if (std::find(profiles.begin(), profiles.end(), profileName) != profiles.end())
-		return RequestResult::Error(RequestStatus::ResourceAlreadyExists);
+	if (std::find(profiles.begin(), profiles.end(), profileName) !=
+	    profiles.end())
+		return RequestResult::Error(
+			RequestStatus::ResourceAlreadyExists);
 
-	QMainWindow* mainWindow = static_cast<QMainWindow*>(obs_frontend_get_main_window());
-	QMetaObject::invokeMethod(mainWindow, "NewProfile", Qt::BlockingQueuedConnection, Q_ARG(QString, QString::fromStdString(profileName)));
+	QMainWindow *mainWindow =
+		static_cast<QMainWindow *>(obs_frontend_get_main_window());
+	QMetaObject::invokeMethod(
+		mainWindow, "NewProfile", Qt::BlockingQueuedConnection,
+		Q_ARG(QString, QString::fromStdString(profileName)));
 
 	return RequestResult::Success();
 }
@@ -302,7 +350,7 @@ RequestResult RequestHandler::CreateProfile(const Request& request)
  * @category config
  * @api requests
  */
-RequestResult RequestHandler::RemoveProfile(const Request& request)
+RequestResult RequestHandler::RemoveProfile(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
@@ -312,14 +360,18 @@ RequestResult RequestHandler::RemoveProfile(const Request& request)
 	std::string profileName = request.RequestData["profileName"];
 
 	auto profiles = Utils::Obs::ArrayHelper::GetProfileList();
-	if (std::find(profiles.begin(), profiles.end(), profileName) == profiles.end())
+	if (std::find(profiles.begin(), profiles.end(), profileName) ==
+	    profiles.end())
 		return RequestResult::Error(RequestStatus::ResourceNotFound);
 
 	if (profiles.size() < 2)
 		return RequestResult::Error(RequestStatus::NotEnoughResources);
 
-	QMainWindow* mainWindow = static_cast<QMainWindow*>(obs_frontend_get_main_window());
-	QMetaObject::invokeMethod(mainWindow, "DeleteProfile", Qt::BlockingQueuedConnection, Q_ARG(QString, QString::fromStdString(profileName)));
+	QMainWindow *mainWindow =
+		static_cast<QMainWindow *>(obs_frontend_get_main_window());
+	QMetaObject::invokeMethod(
+		mainWindow, "DeleteProfile", Qt::BlockingQueuedConnection,
+		Q_ARG(QString, QString::fromStdString(profileName)));
 
 	return RequestResult::Success();
 }
@@ -340,27 +392,40 @@ RequestResult RequestHandler::RemoveProfile(const Request& request)
  * @category config
  * @api requests
  */
-RequestResult RequestHandler::GetProfileParameter(const Request& request)
+RequestResult RequestHandler::GetProfileParameter(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	if (!(request.ValidateString("parameterCategory", statusCode, comment) && request.ValidateString("parameterName", statusCode, comment)))
+	if (!(request.ValidateString("parameterCategory", statusCode,
+				     comment) &&
+	      request.ValidateString("parameterName", statusCode, comment)))
 		return RequestResult::Error(statusCode, comment);
 
-	std::string parameterCategory = request.RequestData["parameterCategory"];
+	std::string parameterCategory =
+		request.RequestData["parameterCategory"];
 	std::string parameterName = request.RequestData["parameterName"];
 
-	config_t* profile = obs_frontend_get_profile_config();
+	config_t *profile = obs_frontend_get_profile_config();
 
 	if (!profile)
-		blog(LOG_ERROR, "[RequestHandler::GetProfileParameter] Profile is invalid.");
+		blog(LOG_ERROR,
+		     "[RequestHandler::GetProfileParameter] Profile is invalid.");
 
 	json responseData;
-	if (config_has_default_value(profile, parameterCategory.c_str(), parameterName.c_str())) {
-		responseData["parameterValue"] = config_get_string(profile, parameterCategory.c_str(), parameterName.c_str());
-		responseData["defaultParameterValue"] = config_get_default_string(profile, parameterCategory.c_str(), parameterName.c_str());
-	} else if (config_has_user_value(profile, parameterCategory.c_str(), parameterName.c_str())) {
-		responseData["parameterValue"] = config_get_string(profile, parameterCategory.c_str(), parameterName.c_str());
+	if (config_has_default_value(profile, parameterCategory.c_str(),
+				     parameterName.c_str())) {
+		responseData["parameterValue"] =
+			config_get_string(profile, parameterCategory.c_str(),
+					  parameterName.c_str());
+		responseData["defaultParameterValue"] =
+			config_get_default_string(profile,
+						  parameterCategory.c_str(),
+						  parameterName.c_str());
+	} else if (config_has_user_value(profile, parameterCategory.c_str(),
+					 parameterName.c_str())) {
+		responseData["parameterValue"] =
+			config_get_string(profile, parameterCategory.c_str(),
+					  parameterName.c_str());
 		responseData["defaultParameterValue"] = nullptr;
 	} else {
 		responseData["parameterValue"] = nullptr;
@@ -384,28 +449,39 @@ RequestResult RequestHandler::GetProfileParameter(const Request& request)
  * @category config
  * @api requests
  */
-RequestResult RequestHandler::SetProfileParameter(const Request& request)
+RequestResult RequestHandler::SetProfileParameter(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	if (!(request.ValidateString("parameterCategory", statusCode, comment) &&
-	request.ValidateString("parameterName", statusCode, comment)))
+	if (!(request.ValidateString("parameterCategory", statusCode,
+				     comment) &&
+	      request.ValidateString("parameterName", statusCode, comment)))
 		return RequestResult::Error(statusCode, comment);
 
-	std::string parameterCategory = request.RequestData["parameterCategory"];
+	std::string parameterCategory =
+		request.RequestData["parameterCategory"];
 	std::string parameterName = request.RequestData["parameterName"];
 
-	config_t* profile = obs_frontend_get_profile_config();
+	config_t *profile = obs_frontend_get_profile_config();
 
 	// Using check helpers here would just make the logic more complicated
-	if (!request.RequestData.contains("parameterValue") || request.RequestData["parameterValue"].is_null()) {
-		if (!config_remove_value(profile, parameterCategory.c_str(), parameterName.c_str()))
-			return RequestResult::Error(RequestStatus::ResourceNotFound, "There are no existing instances of that profile parameter.");
+	if (!request.RequestData.contains("parameterValue") ||
+	    request.RequestData["parameterValue"].is_null()) {
+		if (!config_remove_value(profile, parameterCategory.c_str(),
+					 parameterName.c_str()))
+			return RequestResult::Error(
+				RequestStatus::ResourceNotFound,
+				"There are no existing instances of that profile parameter.");
 	} else if (request.RequestData["parameterValue"].is_string()) {
-		std::string parameterValue = request.RequestData["parameterValue"];
-		config_set_string(profile, parameterCategory.c_str(), parameterName.c_str(), parameterValue.c_str());
+		std::string parameterValue =
+			request.RequestData["parameterValue"];
+		config_set_string(profile, parameterCategory.c_str(),
+				  parameterName.c_str(),
+				  parameterValue.c_str());
 	} else {
-		return RequestResult::Error(RequestStatus::InvalidRequestFieldType, "The field `parameterValue` must be a string.");
+		return RequestResult::Error(
+			RequestStatus::InvalidRequestFieldType,
+			"The field `parameterValue` must be a string.");
 	}
 
 	config_save(profile);
@@ -432,11 +508,13 @@ RequestResult RequestHandler::SetProfileParameter(const Request& request)
  * @category config
  * @api requests
  */
-RequestResult RequestHandler::GetVideoSettings(const Request&)
+RequestResult RequestHandler::GetVideoSettings(const Request &)
 {
 	struct obs_video_info ovi;
 	if (!obs_get_video_info(&ovi))
-		return RequestResult::Error(RequestStatus::RequestProcessingFailed, "Unable to get internal OBS video info.");
+		return RequestResult::Error(
+			RequestStatus::RequestProcessingFailed,
+			"Unable to get internal OBS video info.");
 
 	json responseData;
 	responseData["fpsNumerator"] = ovi.fps_num;
@@ -468,41 +546,63 @@ RequestResult RequestHandler::GetVideoSettings(const Request&)
  * @category config
  * @api requests
  */
-RequestResult RequestHandler::SetVideoSettings(const Request& request)
+RequestResult RequestHandler::SetVideoSettings(const Request &request)
 {
 	if (obs_video_active())
-		return RequestResult::Error(RequestStatus::OutputRunning, "Video settings cannot be changed while an output is active.");
+		return RequestResult::Error(
+			RequestStatus::OutputRunning,
+			"Video settings cannot be changed while an output is active.");
 
 	RequestStatus::RequestStatus statusCode = RequestStatus::NoError;
 	std::string comment;
-	bool changeFps = (request.Contains("fpsNumerator") && request.Contains("fpsDenominator"));
-	if (changeFps && !(request.ValidateOptionalNumber("fpsNumerator", statusCode, comment, 1) && request.ValidateOptionalNumber("fpsDenominator", statusCode, comment, 1)))
+	bool changeFps = (request.Contains("fpsNumerator") &&
+			  request.Contains("fpsDenominator"));
+	if (changeFps && !(request.ValidateOptionalNumber(
+				   "fpsNumerator", statusCode, comment, 1) &&
+			   request.ValidateOptionalNumber(
+				   "fpsDenominator", statusCode, comment, 1)))
 		return RequestResult::Error(statusCode, comment);
 
-	bool changeBaseRes = (request.Contains("baseWidth") && request.Contains("baseHeight"));
-	if (changeBaseRes && !(request.ValidateOptionalNumber("baseWidth", statusCode, comment, 8, 4096) && request.ValidateOptionalNumber("baseHeight", statusCode, comment, 8, 4096)))
+	bool changeBaseRes = (request.Contains("baseWidth") &&
+			      request.Contains("baseHeight"));
+	if (changeBaseRes &&
+	    !(request.ValidateOptionalNumber("baseWidth", statusCode, comment,
+					     8, 4096) &&
+	      request.ValidateOptionalNumber("baseHeight", statusCode, comment,
+					     8, 4096)))
 		return RequestResult::Error(statusCode, comment);
 
-	bool changeOutputRes = (request.Contains("outputWidth") && request.Contains("outputHeight"));
-	if (changeOutputRes && !(request.ValidateOptionalNumber("outputWidth", statusCode, comment, 8, 4096) && request.ValidateOptionalNumber("outputHeight", statusCode, comment, 8, 4096)))
+	bool changeOutputRes = (request.Contains("outputWidth") &&
+				request.Contains("outputHeight"));
+	if (changeOutputRes &&
+	    !(request.ValidateOptionalNumber("outputWidth", statusCode, comment,
+					     8, 4096) &&
+	      request.ValidateOptionalNumber("outputHeight", statusCode,
+					     comment, 8, 4096)))
 		return RequestResult::Error(statusCode, comment);
 
 	config_t *config = obs_frontend_get_profile_config();
 
 	if (changeFps) {
 		config_set_uint(config, "Video", "FPSType", 2);
-		config_set_uint(config, "Video", "FPSNum", request.RequestData["fpsNumerator"]);
-		config_set_uint(config, "Video", "FPSDen", request.RequestData["fpsDenominator"]);
+		config_set_uint(config, "Video", "FPSNum",
+				request.RequestData["fpsNumerator"]);
+		config_set_uint(config, "Video", "FPSDen",
+				request.RequestData["fpsDenominator"]);
 	}
 
 	if (changeBaseRes) {
-		config_set_uint(config, "Video", "BaseCX", request.RequestData["baseWidth"]);
-		config_set_uint(config, "Video", "BaseCY", request.RequestData["baseHeight"]);
+		config_set_uint(config, "Video", "BaseCX",
+				request.RequestData["baseWidth"]);
+		config_set_uint(config, "Video", "BaseCY",
+				request.RequestData["baseHeight"]);
 	}
 
 	if (changeOutputRes) {
-		config_set_uint(config, "Video", "OutputCX", request.RequestData["outputWidth"]);
-		config_set_uint(config, "Video", "OutputCY", request.RequestData["outputHeight"]);
+		config_set_uint(config, "Video", "OutputCX",
+				request.RequestData["outputWidth"]);
+		config_set_uint(config, "Video", "OutputCY",
+				request.RequestData["outputHeight"]);
 	}
 
 	if (changeFps || changeBaseRes || changeOutputRes) {
@@ -511,7 +611,9 @@ RequestResult RequestHandler::SetVideoSettings(const Request& request)
 		return RequestResult::Success();
 	}
 
-	return RequestResult::Error(RequestStatus::MissingRequestField, "You must specify at least one video-changing pair.");
+	return RequestResult::Error(
+		RequestStatus::MissingRequestField,
+		"You must specify at least one video-changing pair.");
 }
 
 /**
@@ -527,14 +629,15 @@ RequestResult RequestHandler::SetVideoSettings(const Request& request)
  * @category config
  * @api requests
  */
-RequestResult RequestHandler::GetStreamServiceSettings(const Request&)
+RequestResult RequestHandler::GetStreamServiceSettings(const Request &)
 {
 	json responseData;
 
 	OBSService service = obs_frontend_get_streaming_service();
 	responseData["streamServiceType"] = obs_service_get_type(service);
 	OBSDataAutoRelease serviceSettings = obs_service_get_settings(service);
-	responseData["streamServiceSettings"] = Utils::Json::ObsDataToJson(serviceSettings, true);
+	responseData["streamServiceSettings"] =
+		Utils::Json::ObsDataToJson(serviceSettings, true);
 
 	return RequestResult::Success(responseData);
 }
@@ -554,38 +657,56 @@ RequestResult RequestHandler::GetStreamServiceSettings(const Request&)
  * @category config
  * @api requests
  */
-RequestResult RequestHandler::SetStreamServiceSettings(const Request& request)
+RequestResult RequestHandler::SetStreamServiceSettings(const Request &request)
 {
 	if (obs_frontend_streaming_active())
-		return RequestResult::Error(RequestStatus::OutputRunning, "You cannot change stream service settings while streaming.");
+		return RequestResult::Error(
+			RequestStatus::OutputRunning,
+			"You cannot change stream service settings while streaming.");
 
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	if (!(request.ValidateString("streamServiceType", statusCode, comment) && request.ValidateObject("streamServiceSettings", statusCode, comment)))
+	if (!(request.ValidateString("streamServiceType", statusCode,
+				     comment) &&
+	      request.ValidateObject("streamServiceSettings", statusCode,
+				     comment)))
 		return RequestResult::Error(statusCode, comment);
 
 	OBSService currentStreamService = obs_frontend_get_streaming_service();
 
-	std::string streamServiceType = obs_service_get_type(currentStreamService);
-	std::string requestedStreamServiceType = request.RequestData["streamServiceType"];
-	OBSDataAutoRelease requestedStreamServiceSettings = Utils::Json::JsonToObsData(request.RequestData["streamServiceSettings"]);
+	std::string streamServiceType =
+		obs_service_get_type(currentStreamService);
+	std::string requestedStreamServiceType =
+		request.RequestData["streamServiceType"];
+	OBSDataAutoRelease requestedStreamServiceSettings =
+		Utils::Json::JsonToObsData(
+			request.RequestData["streamServiceSettings"]);
 
 	// Don't create a new service if the current service is the same type.
 	if (streamServiceType == requestedStreamServiceType) {
-		OBSDataAutoRelease currentStreamServiceSettings = obs_service_get_settings(currentStreamService);
+		OBSDataAutoRelease currentStreamServiceSettings =
+			obs_service_get_settings(currentStreamService);
 
 		// TODO: Add `overlay` field
 		OBSDataAutoRelease newStreamServiceSettings = obs_data_create();
-		obs_data_apply(newStreamServiceSettings, currentStreamServiceSettings);
-		obs_data_apply(newStreamServiceSettings, requestedStreamServiceSettings);
+		obs_data_apply(newStreamServiceSettings,
+			       currentStreamServiceSettings);
+		obs_data_apply(newStreamServiceSettings,
+			       requestedStreamServiceSettings);
 
-		obs_service_update(currentStreamService, newStreamServiceSettings);
+		obs_service_update(currentStreamService,
+				   newStreamServiceSettings);
 	} else {
 		// TODO: This leaks memory. I have no idea why.
-		OBSService newStreamService = obs_service_create(requestedStreamServiceType.c_str(), "obs_websocket_custom_service", requestedStreamServiceSettings, nullptr);
+		OBSService newStreamService = obs_service_create(
+			requestedStreamServiceType.c_str(),
+			"obs_websocket_custom_service",
+			requestedStreamServiceSettings, nullptr);
 		// TODO: Check service type here, instead of relying on service creation to fail.
 		if (!newStreamService)
-			return RequestResult::Error(RequestStatus::ResourceCreationFailed, "Failed to create the stream service with the requested streamServiceType. It may be an invalid type.");
+			return RequestResult::Error(
+				RequestStatus::ResourceCreationFailed,
+				"Failed to create the stream service with the requested streamServiceType. It may be an invalid type.");
 
 		obs_frontend_set_streaming_service(newStreamService);
 	}
@@ -607,10 +728,11 @@ RequestResult RequestHandler::SetStreamServiceSettings(const Request& request)
  * @api requests
  * @category rconfig
  */
-RequestResult RequestHandler::GetRecordDirectory(const Request&)
+RequestResult RequestHandler::GetRecordDirectory(const Request &)
 {
 	json responseData;
-	responseData["recordDirectory"] = Utils::Obs::StringHelper::GetCurrentRecordOutputPath();
+	responseData["recordDirectory"] =
+		Utils::Obs::StringHelper::GetCurrentRecordOutputPath();
 
 	return RequestResult::Success(responseData);
 }

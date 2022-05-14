@@ -35,7 +35,8 @@ obs_hotkey_t *Utils::Obs::SearchHelper::GetHotkeyByName(std::string name)
 }
 
 // Increments source ref. Use OBSSourceAutoRelease
-obs_source_t *Utils::Obs::SearchHelper::GetSceneTransitionByName(std::string name)
+obs_source_t *
+Utils::Obs::SearchHelper::GetSceneTransitionByName(std::string name)
 {
 	obs_frontend_source_list transitionList = {};
 	obs_frontend_get_transitions(&transitionList);
@@ -61,7 +62,9 @@ struct SceneItemSearchData {
 };
 
 // Increments item ref. Use OBSSceneItemAutoRelease
-obs_sceneitem_t *Utils::Obs::SearchHelper::GetSceneItemByName(obs_scene_t *scene, std::string name, int offset)
+obs_sceneitem_t *
+Utils::Obs::SearchHelper::GetSceneItemByName(obs_scene_t *scene,
+					     std::string name, int offset)
 {
 	if (name.empty())
 		return nullptr;
@@ -70,26 +73,34 @@ obs_sceneitem_t *Utils::Obs::SearchHelper::GetSceneItemByName(obs_scene_t *scene
 	enumData.name = name;
 	enumData.offset = offset;
 
-	obs_scene_enum_items(scene, [](obs_scene_t*, obs_sceneitem_t* sceneItem, void* param) {
-		auto enumData = static_cast<SceneItemSearchData*>(param);
+	obs_scene_enum_items(
+		scene,
+		[](obs_scene_t *, obs_sceneitem_t *sceneItem, void *param) {
+			auto enumData =
+				static_cast<SceneItemSearchData *>(param);
 
-		OBSSource itemSource = obs_sceneitem_get_source(sceneItem);
-		std::string sourceName = obs_source_get_name(itemSource);
-		if (sourceName == enumData->name) {
-			if (enumData->offset > 0) {
-				enumData->offset--;
-			} else {
-				if (enumData->ret) // Release existing selection in the case of last match selection
-					obs_sceneitem_release(enumData->ret);
-				obs_sceneitem_addref(sceneItem);
-				enumData->ret = sceneItem;
-				if (enumData->offset == 0) // Only break if in normal selection mode (not offset == -1)
-					return false;
+			OBSSource itemSource =
+				obs_sceneitem_get_source(sceneItem);
+			std::string sourceName =
+				obs_source_get_name(itemSource);
+			if (sourceName == enumData->name) {
+				if (enumData->offset > 0) {
+					enumData->offset--;
+				} else {
+					if (enumData->ret) // Release existing selection in the case of last match selection
+						obs_sceneitem_release(
+							enumData->ret);
+					obs_sceneitem_addref(sceneItem);
+					enumData->ret = sceneItem;
+					if (enumData->offset ==
+					    0) // Only break if in normal selection mode (not offset == -1)
+						return false;
+				}
 			}
-		}
 
-		return true;
-	}, &enumData);
+			return true;
+		},
+		&enumData);
 
 	return enumData.ret;
 }

@@ -40,14 +40,17 @@ void EventHandler::HandleInputCreated(obs_source_t *source)
 {
 	std::string inputKind = obs_source_get_id(source);
 	OBSDataAutoRelease inputSettings = obs_source_get_settings(source);
-	OBSDataAutoRelease defaultInputSettings = obs_get_source_defaults(inputKind.c_str());
+	OBSDataAutoRelease defaultInputSettings =
+		obs_get_source_defaults(inputKind.c_str());
 
 	json eventData;
 	eventData["inputName"] = obs_source_get_name(source);
 	eventData["inputKind"] = inputKind;
-	eventData["unversionedInputKind"] = obs_source_get_unversioned_id(source);
+	eventData["unversionedInputKind"] =
+		obs_source_get_unversioned_id(source);
 	eventData["inputSettings"] = Utils::Json::ObsDataToJson(inputSettings);
-	eventData["defaultInputSettings"] = Utils::Json::ObsDataToJson(defaultInputSettings, true);
+	eventData["defaultInputSettings"] =
+		Utils::Json::ObsDataToJson(defaultInputSettings, true);
 	BroadcastEvent(EventSubscription::Inputs, "InputCreated", eventData);
 }
 
@@ -85,12 +88,15 @@ void EventHandler::HandleInputRemoved(obs_source_t *source)
  * @api events
  * @category inputs
  */
-void EventHandler::HandleInputNameChanged(obs_source_t *, std::string oldInputName, std::string inputName)
+void EventHandler::HandleInputNameChanged(obs_source_t *,
+					  std::string oldInputName,
+					  std::string inputName)
 {
 	json eventData;
 	eventData["oldInputName"] = oldInputName;
 	eventData["inputName"] = inputName;
-	BroadcastEvent(EventSubscription::Inputs, "InputNameChanged", eventData);
+	BroadcastEvent(EventSubscription::Inputs, "InputNameChanged",
+		       eventData);
 }
 
 /**
@@ -111,7 +117,7 @@ void EventHandler::HandleInputNameChanged(obs_source_t *, std::string oldInputNa
  */
 void EventHandler::HandleInputActiveStateChanged(void *param, calldata_t *data)
 {
-	auto eventHandler = static_cast<EventHandler*>(param);
+	auto eventHandler = static_cast<EventHandler *>(param);
 
 	if (!eventHandler->_inputActiveStateChangedRef.load())
 		return;
@@ -126,7 +132,8 @@ void EventHandler::HandleInputActiveStateChanged(void *param, calldata_t *data)
 	json eventData;
 	eventData["inputName"] = obs_source_get_name(source);
 	eventData["videoActive"] = obs_source_active(source);
-	eventHandler->BroadcastEvent(EventSubscription::InputActiveStateChanged, "InputActiveStateChanged", eventData);
+	eventHandler->BroadcastEvent(EventSubscription::InputActiveStateChanged,
+				     "InputActiveStateChanged", eventData);
 }
 
 /**
@@ -147,7 +154,7 @@ void EventHandler::HandleInputActiveStateChanged(void *param, calldata_t *data)
  */
 void EventHandler::HandleInputShowStateChanged(void *param, calldata_t *data)
 {
-	auto eventHandler = static_cast<EventHandler*>(param);
+	auto eventHandler = static_cast<EventHandler *>(param);
 
 	if (!eventHandler->_inputShowStateChangedRef.load())
 		return;
@@ -162,7 +169,8 @@ void EventHandler::HandleInputShowStateChanged(void *param, calldata_t *data)
 	json eventData;
 	eventData["inputName"] = obs_source_get_name(source);
 	eventData["videoShowing"] = obs_source_showing(source);
-	eventHandler->BroadcastEvent(EventSubscription::InputShowStateChanged, "InputShowStateChanged", eventData);
+	eventHandler->BroadcastEvent(EventSubscription::InputShowStateChanged,
+				     "InputShowStateChanged", eventData);
 }
 
 /**
@@ -181,7 +189,7 @@ void EventHandler::HandleInputShowStateChanged(void *param, calldata_t *data)
  */
 void EventHandler::HandleInputMuteStateChanged(void *param, calldata_t *data)
 {
-	auto eventHandler = static_cast<EventHandler*>(param);
+	auto eventHandler = static_cast<EventHandler *>(param);
 
 	obs_source_t *source = GetCalldataPointer<obs_source_t>(data, "source");
 	if (!source)
@@ -193,7 +201,8 @@ void EventHandler::HandleInputMuteStateChanged(void *param, calldata_t *data)
 	json eventData;
 	eventData["inputName"] = obs_source_get_name(source);
 	eventData["inputMuted"] = obs_source_muted(source);
-	eventHandler->BroadcastEvent(EventSubscription::Inputs, "InputMuteStateChanged", eventData);
+	eventHandler->BroadcastEvent(EventSubscription::Inputs,
+				     "InputMuteStateChanged", eventData);
 }
 
 /**
@@ -213,7 +222,7 @@ void EventHandler::HandleInputMuteStateChanged(void *param, calldata_t *data)
  */
 void EventHandler::HandleInputVolumeChanged(void *param, calldata_t *data)
 {
-	auto eventHandler = static_cast<EventHandler*>(param);
+	auto eventHandler = static_cast<EventHandler *>(param);
 
 	obs_source_t *source = GetCalldataPointer<obs_source_t>(data, "source");
 	if (!source)
@@ -233,7 +242,8 @@ void EventHandler::HandleInputVolumeChanged(void *param, calldata_t *data)
 	eventData["inputName"] = obs_source_get_name(source);
 	eventData["inputVolumeMul"] = inputVolumeMul;
 	eventData["inputVolumeDb"] = inputVolumeDb;
-	eventHandler->BroadcastEvent(EventSubscription::Inputs, "InputVolumeChanged", eventData);
+	eventHandler->BroadcastEvent(EventSubscription::Inputs,
+				     "InputVolumeChanged", eventData);
 }
 
 /**
@@ -252,7 +262,7 @@ void EventHandler::HandleInputVolumeChanged(void *param, calldata_t *data)
  */
 void EventHandler::HandleInputAudioBalanceChanged(void *param, calldata_t *data)
 {
-	auto eventHandler = static_cast<EventHandler*>(param);
+	auto eventHandler = static_cast<EventHandler *>(param);
 
 	obs_source_t *source = GetCalldataPointer<obs_source_t>(data, "source");
 	if (!source)
@@ -266,7 +276,8 @@ void EventHandler::HandleInputAudioBalanceChanged(void *param, calldata_t *data)
 	json eventData;
 	eventData["inputName"] = obs_source_get_name(source);
 	eventData["inputAudioBalance"] = inputAudioBalance;
-	eventHandler->BroadcastEvent(EventSubscription::Inputs, "InputAudioBalanceChanged", eventData);
+	eventHandler->BroadcastEvent(EventSubscription::Inputs,
+				     "InputAudioBalanceChanged", eventData);
 }
 
 /**
@@ -283,9 +294,10 @@ void EventHandler::HandleInputAudioBalanceChanged(void *param, calldata_t *data)
  * @api events
  * @category inputs
  */
-void EventHandler::HandleInputAudioSyncOffsetChanged(void *param, calldata_t *data)
+void EventHandler::HandleInputAudioSyncOffsetChanged(void *param,
+						     calldata_t *data)
 {
-	auto eventHandler = static_cast<EventHandler*>(param);
+	auto eventHandler = static_cast<EventHandler *>(param);
 
 	obs_source_t *source = GetCalldataPointer<obs_source_t>(data, "source");
 	if (!source)
@@ -299,7 +311,8 @@ void EventHandler::HandleInputAudioSyncOffsetChanged(void *param, calldata_t *da
 	json eventData;
 	eventData["inputName"] = obs_source_get_name(source);
 	eventData["inputAudioSyncOffset"] = inputAudioSyncOffset / 1000000;
-	eventHandler->BroadcastEvent(EventSubscription::Inputs, "InputAudioSyncOffsetChanged", eventData);
+	eventHandler->BroadcastEvent(EventSubscription::Inputs,
+				     "InputAudioSyncOffsetChanged", eventData);
 }
 
 /**
@@ -318,7 +331,7 @@ void EventHandler::HandleInputAudioSyncOffsetChanged(void *param, calldata_t *da
  */
 void EventHandler::HandleInputAudioTracksChanged(void *param, calldata_t *data)
 {
-	auto eventHandler = static_cast<EventHandler*>(param);
+	auto eventHandler = static_cast<EventHandler *>(param);
 
 	obs_source_t *source = GetCalldataPointer<obs_source_t>(data, "source");
 	if (!source)
@@ -331,13 +344,15 @@ void EventHandler::HandleInputAudioTracksChanged(void *param, calldata_t *data)
 
 	json inputAudioTracks;
 	for (long long i = 0; i < MAX_AUDIO_MIXES; i++) {
-		inputAudioTracks[std::to_string(i + 1)] = (bool)((tracks >> i) & 1);
+		inputAudioTracks[std::to_string(i + 1)] =
+			(bool)((tracks >> i) & 1);
 	}
 
 	json eventData;
 	eventData["inputName"] = obs_source_get_name(source);
 	eventData["inputAudioTracks"] = inputAudioTracks;
-	eventHandler->BroadcastEvent(EventSubscription::Inputs, "InputAudioTracksChanged", eventData);
+	eventHandler->BroadcastEvent(EventSubscription::Inputs,
+				     "InputAudioTracksChanged", eventData);
 }
 
 /**
@@ -360,9 +375,10 @@ void EventHandler::HandleInputAudioTracksChanged(void *param, calldata_t *data)
  * @api events
  * @category inputs
  */
-void EventHandler::HandleInputAudioMonitorTypeChanged(void *param, calldata_t *data)
+void EventHandler::HandleInputAudioMonitorTypeChanged(void *param,
+						      calldata_t *data)
 {
-	auto eventHandler = static_cast<EventHandler*>(param);
+	auto eventHandler = static_cast<EventHandler *>(param);
 
 	obs_source_t *source = GetCalldataPointer<obs_source_t>(data, "source");
 	if (!source)
@@ -371,14 +387,17 @@ void EventHandler::HandleInputAudioMonitorTypeChanged(void *param, calldata_t *d
 	if (obs_source_get_type(source) != OBS_SOURCE_TYPE_INPUT)
 		return;
 
-	enum obs_monitoring_type monitorType = (obs_monitoring_type)calldata_int(data, "type");
+	enum obs_monitoring_type monitorType =
+		(obs_monitoring_type)calldata_int(data, "type");
 
-	std::string monitorTypeString = Utils::Obs::StringHelper::GetInputMonitorType(monitorType);
+	std::string monitorTypeString =
+		Utils::Obs::StringHelper::GetInputMonitorType(monitorType);
 
 	json eventData;
 	eventData["inputName"] = obs_source_get_name(source);
 	eventData["monitorType"] = monitorTypeString;
-	eventHandler->BroadcastEvent(EventSubscription::Inputs, "InputAudioMonitorTypeChanged", eventData);
+	eventHandler->BroadcastEvent(EventSubscription::Inputs,
+				     "InputAudioMonitorTypeChanged", eventData);
 }
 
 /**
@@ -398,5 +417,6 @@ void EventHandler::HandleInputVolumeMeters(std::vector<json> inputs)
 {
 	json eventData;
 	eventData["inputs"] = inputs;
-	BroadcastEvent(EventSubscription::InputVolumeMeters, "InputVolumeMeters", eventData);
+	BroadcastEvent(EventSubscription::InputVolumeMeters,
+		       "InputVolumeMeters", eventData);
 }

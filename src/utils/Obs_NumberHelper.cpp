@@ -28,7 +28,7 @@ uint64_t Utils::Obs::NumberHelper::GetOutputDuration(obs_output_t *output)
 	if (!output || !obs_output_active(output))
 		return 0;
 
-	video_t* video = obs_output_video(output);
+	video_t *video = obs_output_video(output);
 	uint64_t frameTimeNs = video_output_get_frame_time(video);
 	int totalFrames = obs_output_get_total_frames(output);
 
@@ -39,7 +39,7 @@ size_t Utils::Obs::NumberHelper::GetSceneCount()
 {
 	size_t ret;
 	auto sceneEnumProc = [](void *param, obs_source_t *scene) {
-		auto ret = static_cast<size_t*>(param);
+		auto ret = static_cast<size_t *>(param);
 
 		if (obs_source_is_group(scene))
 			return true;
@@ -53,7 +53,8 @@ size_t Utils::Obs::NumberHelper::GetSceneCount()
 	return ret;
 }
 
-size_t Utils::Obs::NumberHelper::GetSourceFilterIndex(obs_source_t *source, obs_source_t *filter)
+size_t Utils::Obs::NumberHelper::GetSourceFilterIndex(obs_source_t *source,
+						      obs_source_t *filter)
 {
 	struct FilterSearch {
 		obs_source_t *filter;
@@ -61,8 +62,9 @@ size_t Utils::Obs::NumberHelper::GetSourceFilterIndex(obs_source_t *source, obs_
 		size_t index;
 	};
 
-	auto search = [](obs_source_t *, obs_source_t *filter, void *priv_data) {
-		auto filterSearch = static_cast<FilterSearch*>(priv_data);
+	auto search = [](obs_source_t *, obs_source_t *filter,
+			 void *priv_data) {
+		auto filterSearch = static_cast<FilterSearch *>(priv_data);
 
 		if (filter == filterSearch->filter)
 			filterSearch->found = true;

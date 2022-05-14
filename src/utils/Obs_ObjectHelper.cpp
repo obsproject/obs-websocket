@@ -27,15 +27,20 @@ json Utils::Obs::ObjectHelper::GetStats()
 {
 	json ret;
 
-	std::string outputPath = Utils::Obs::StringHelper::GetCurrentRecordOutputPath();
+	std::string outputPath =
+		Utils::Obs::StringHelper::GetCurrentRecordOutputPath();
 
-	video_t* video = obs_get_video();
+	video_t *video = obs_get_video();
 
 	ret["cpuUsage"] = os_cpu_usage_info_query(GetCpuUsageInfo());
-	ret["memoryUsage"] = (double)os_get_proc_resident_size() / (1024.0 * 1024.0);
-	ret["availableDiskSpace"] = (double)os_get_free_disk_space(outputPath.c_str()) / (1024.0 * 1024.0);
+	ret["memoryUsage"] =
+		(double)os_get_proc_resident_size() / (1024.0 * 1024.0);
+	ret["availableDiskSpace"] =
+		(double)os_get_free_disk_space(outputPath.c_str()) /
+		(1024.0 * 1024.0);
 	ret["activeFps"] = obs_get_active_fps();
-	ret["averageFrameRenderTime"] = (double)obs_get_average_frame_time_ns() / 1000000.0;
+	ret["averageFrameRenderTime"] =
+		(double)obs_get_average_frame_time_ns() / 1000000.0;
 	ret["renderSkippedFrames"] = obs_get_lagged_frames();
 	ret["renderTotalFrames"] = obs_get_total_frames();
 	ret["outputSkippedFrames"] = video_output_get_skipped_frames(video);
@@ -73,7 +78,8 @@ json Utils::Obs::ObjectHelper::GetSceneItemTransform(obs_sceneitem_t *item)
 
 	ret["alignment"] = osi.alignment;
 
-	ret["boundsType"] = StringHelper::GetSceneItemBoundsType(osi.bounds_type);
+	ret["boundsType"] =
+		StringHelper::GetSceneItemBoundsType(osi.bounds_type);
 	ret["boundsAlignment"] = osi.bounds_alignment;
 	ret["boundsWidth"] = osi.bounds.x;
 	ret["boundsHeight"] = osi.bounds.y;

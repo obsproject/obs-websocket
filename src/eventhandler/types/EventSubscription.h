@@ -20,8 +20,8 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #pragma once
 
 namespace EventSubscription {
-	enum EventSubscription {
-		/**
+enum EventSubscription {
+	/**
 		* Subcription value used to disable all events.
 		*
 		* @enumIdentifier None
@@ -31,8 +31,8 @@ namespace EventSubscription {
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		None = 0,
-		/**
+	None = 0,
+	/**
 		* Subscription value to receive events in the `General` category.
 		*
 		* @enumIdentifier General
@@ -42,8 +42,8 @@ namespace EventSubscription {
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		General = (1 << 0),
-		/**
+	General = (1 << 0),
+	/**
 		* Subscription value to receive events in the `Config` category.
 		*
 		* @enumIdentifier Config
@@ -53,8 +53,8 @@ namespace EventSubscription {
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		Config = (1 << 1),
-		/**
+	Config = (1 << 1),
+	/**
 		* Subscription value to receive events in the `Scenes` category.
 		*
 		* @enumIdentifier Scenes
@@ -64,8 +64,8 @@ namespace EventSubscription {
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		Scenes = (1 << 2),
-		/**
+	Scenes = (1 << 2),
+	/**
 		* Subscription value to receive events in the `Inputs` category.
 		*
 		* @enumIdentifier Inputs
@@ -75,8 +75,8 @@ namespace EventSubscription {
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		Inputs = (1 << 3),
-		/**
+	Inputs = (1 << 3),
+	/**
 		* Subscription value to receive events in the `Transitions` category.
 		*
 		* @enumIdentifier Transitions
@@ -86,8 +86,8 @@ namespace EventSubscription {
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		Transitions = (1 << 4),
-		/**
+	Transitions = (1 << 4),
+	/**
 		* Subscription value to receive events in the `Filters` category.
 		*
 		* @enumIdentifier Filters
@@ -97,8 +97,8 @@ namespace EventSubscription {
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		Filters = (1 << 5),
-		/**
+	Filters = (1 << 5),
+	/**
 		* Subscription value to receive events in the `Outputs` category.
 		*
 		* @enumIdentifier Outputs
@@ -108,8 +108,8 @@ namespace EventSubscription {
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		Outputs = (1 << 6),
-		/**
+	Outputs = (1 << 6),
+	/**
 		* Subscription value to receive events in the `SceneItems` category.
 		*
 		* @enumIdentifier SceneItems
@@ -119,8 +119,8 @@ namespace EventSubscription {
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		SceneItems = (1 << 7),
-		/**
+	SceneItems = (1 << 7),
+	/**
 		* Subscription value to receive events in the `MediaInputs` category.
 		*
 		* @enumIdentifier MediaInputs
@@ -130,8 +130,8 @@ namespace EventSubscription {
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		MediaInputs = (1 << 8),
-		/**
+	MediaInputs = (1 << 8),
+	/**
 		* Subscription value to receive the `VendorEvent` event.
 		*
 		* @enumIdentifier Vendors
@@ -141,8 +141,8 @@ namespace EventSubscription {
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		Vendors = (1 << 9),
-		/**
+	Vendors = (1 << 9),
+	/**
 		* Subscription value to receive events in the `Ui` category.
 		*
 		* @enumIdentifier Ui
@@ -152,8 +152,8 @@ namespace EventSubscription {
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		Ui = (1 << 10),
-		/**
+	Ui = (1 << 10),
+	/**
 		* Helper to receive all non-high-volume events.
 		*
 		* @enumIdentifier All
@@ -163,8 +163,9 @@ namespace EventSubscription {
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		All = (General | Config | Scenes | Inputs | Transitions | Filters | Outputs | SceneItems | MediaInputs | Ui | Vendors),
-		/**
+	All = (General | Config | Scenes | Inputs | Transitions | Filters |
+	       Outputs | SceneItems | MediaInputs | Ui | Vendors),
+	/**
 		* Subscription value to receive the `InputVolumeMeters` high-volume event.
 		*
 		* @enumIdentifier InputVolumeMeters
@@ -174,8 +175,8 @@ namespace EventSubscription {
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		InputVolumeMeters = (1 << 16),
-		/**
+	InputVolumeMeters = (1 << 16),
+	/**
 		* Subscription value to receive the `InputActiveStateChanged` high-volume event.
 		*
 		* @enumIdentifier InputActiveStateChanged
@@ -185,8 +186,8 @@ namespace EventSubscription {
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		InputActiveStateChanged = (1 << 17),
-		/**
+	InputActiveStateChanged = (1 << 17),
+	/**
 		* Subscription value to receive the `InputShowStateChanged` high-volume event.
 		*
 		* @enumIdentifier InputShowStateChanged
@@ -196,8 +197,8 @@ namespace EventSubscription {
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		InputShowStateChanged = (1 << 18),
-		/**
+	InputShowStateChanged = (1 << 18),
+	/**
 		* Subscription value to receive the `SceneItemTransformChanged` high-volume event.
 		*
 		* @enumIdentifier SceneItemTransformChanged
@@ -207,6 +208,6 @@ namespace EventSubscription {
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		SceneItemTransformChanged = (1 << 19),
-	};
+	SceneItemTransformChanged = (1 << 19),
+};
 }

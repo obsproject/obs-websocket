@@ -24,7 +24,8 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include "Crypto.h"
 #include "../plugin-macros.generated.h"
 
-static const char allowedChars[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+static const char allowedChars[] =
+	"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 static const int allowedCharsCount = static_cast<int>(sizeof(allowedChars) - 1);
 
 std::string Utils::Crypto::GenerateSalt()
@@ -42,10 +43,12 @@ std::string Utils::Crypto::GenerateSalt()
 	return randomChars.toBase64().toStdString();
 }
 
-std::string Utils::Crypto::GenerateSecret(std::string password, std::string salt)
+std::string Utils::Crypto::GenerateSecret(std::string password,
+					  std::string salt)
 {
 	// Create challenge hash
-	auto challengeHash = QCryptographicHash(QCryptographicHash::Algorithm::Sha256);
+	auto challengeHash =
+		QCryptographicHash(QCryptographicHash::Algorithm::Sha256);
 	// Add password bytes to hash
 	challengeHash.addData(QByteArray::fromStdString(password));
 	// Add salt bytes to hash
@@ -55,7 +58,9 @@ std::string Utils::Crypto::GenerateSecret(std::string password, std::string salt
 	return challengeHash.result().toBase64().toStdString();
 }
 
-bool Utils::Crypto::CheckAuthenticationString(std::string secret, std::string challenge, std::string authenticationString)
+bool Utils::Crypto::CheckAuthenticationString(std::string secret,
+					      std::string challenge,
+					      std::string authenticationString)
 {
 	// Concatenate auth secret with the challenge sent to the user
 	QString secretAndChallenge = "";
@@ -63,13 +68,13 @@ bool Utils::Crypto::CheckAuthenticationString(std::string secret, std::string ch
 	secretAndChallenge += QString::fromStdString(challenge);
 
 	// Generate a SHA256 hash of secretAndChallenge
-	auto hash = QCryptographicHash::hash(
-		secretAndChallenge.toUtf8(),
-		QCryptographicHash::Algorithm::Sha256
-	);
+	auto hash =
+		QCryptographicHash::hash(secretAndChallenge.toUtf8(),
+					 QCryptographicHash::Algorithm::Sha256);
 
 	// Encode the SHA256 hash to Base64
-	std::string expectedAuthenticationString = hash.toBase64().toStdString();
+	std::string expectedAuthenticationString =
+		hash.toBase64().toStdString();
 
 	return (authenticationString == expectedAuthenticationString);
 }

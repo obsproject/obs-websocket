@@ -19,11 +19,14 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include "EventHandler.h"
 
-#define CASE(x) case x: return #x;
+#define CASE(x) \
+	case x: \
+		return #x;
 
-std::string GetMediaInputActionString(ObsMediaInputAction action) {
+std::string GetMediaInputActionString(ObsMediaInputAction action)
+{
 	switch (action) {
-		default:
+	default:
 		CASE(OBS_WEBSOCKET_MEDIA_INPUT_ACTION_PAUSE)
 		CASE(OBS_WEBSOCKET_MEDIA_INPUT_ACTION_PLAY)
 		CASE(OBS_WEBSOCKET_MEDIA_INPUT_ACTION_RESTART)
@@ -35,7 +38,7 @@ std::string GetMediaInputActionString(ObsMediaInputAction action) {
 
 void EventHandler::SourceMediaPauseMultiHandler(void *param, calldata_t *data)
 {
-	auto eventHandler = static_cast<EventHandler*>(param);
+	auto eventHandler = static_cast<EventHandler *>(param);
 
 	obs_source_t *source = GetCalldataPointer<obs_source_t>(data, "source");
 	if (!source)
@@ -44,12 +47,13 @@ void EventHandler::SourceMediaPauseMultiHandler(void *param, calldata_t *data)
 	if (obs_source_get_type(source) != OBS_SOURCE_TYPE_INPUT)
 		return;
 
-	eventHandler->HandleMediaInputActionTriggered(source, OBS_WEBSOCKET_MEDIA_INPUT_ACTION_PAUSE);
+	eventHandler->HandleMediaInputActionTriggered(
+		source, OBS_WEBSOCKET_MEDIA_INPUT_ACTION_PAUSE);
 }
 
 void EventHandler::SourceMediaPlayMultiHandler(void *param, calldata_t *data)
 {
-	auto eventHandler = static_cast<EventHandler*>(param);
+	auto eventHandler = static_cast<EventHandler *>(param);
 
 	obs_source_t *source = GetCalldataPointer<obs_source_t>(data, "source");
 	if (!source)
@@ -58,12 +62,13 @@ void EventHandler::SourceMediaPlayMultiHandler(void *param, calldata_t *data)
 	if (obs_source_get_type(source) != OBS_SOURCE_TYPE_INPUT)
 		return;
 
-	eventHandler->HandleMediaInputActionTriggered(source, OBS_WEBSOCKET_MEDIA_INPUT_ACTION_PLAY);
+	eventHandler->HandleMediaInputActionTriggered(
+		source, OBS_WEBSOCKET_MEDIA_INPUT_ACTION_PLAY);
 }
 
 void EventHandler::SourceMediaRestartMultiHandler(void *param, calldata_t *data)
 {
-	auto eventHandler = static_cast<EventHandler*>(param);
+	auto eventHandler = static_cast<EventHandler *>(param);
 
 	obs_source_t *source = GetCalldataPointer<obs_source_t>(data, "source");
 	if (!source)
@@ -72,12 +77,13 @@ void EventHandler::SourceMediaRestartMultiHandler(void *param, calldata_t *data)
 	if (obs_source_get_type(source) != OBS_SOURCE_TYPE_INPUT)
 		return;
 
-	eventHandler->HandleMediaInputActionTriggered(source, OBS_WEBSOCKET_MEDIA_INPUT_ACTION_RESTART);
+	eventHandler->HandleMediaInputActionTriggered(
+		source, OBS_WEBSOCKET_MEDIA_INPUT_ACTION_RESTART);
 }
 
 void EventHandler::SourceMediaStopMultiHandler(void *param, calldata_t *data)
 {
-	auto eventHandler = static_cast<EventHandler*>(param);
+	auto eventHandler = static_cast<EventHandler *>(param);
 
 	obs_source_t *source = GetCalldataPointer<obs_source_t>(data, "source");
 	if (!source)
@@ -86,12 +92,13 @@ void EventHandler::SourceMediaStopMultiHandler(void *param, calldata_t *data)
 	if (obs_source_get_type(source) != OBS_SOURCE_TYPE_INPUT)
 		return;
 
-	eventHandler->HandleMediaInputActionTriggered(source, OBS_WEBSOCKET_MEDIA_INPUT_ACTION_STOP);
+	eventHandler->HandleMediaInputActionTriggered(
+		source, OBS_WEBSOCKET_MEDIA_INPUT_ACTION_STOP);
 }
 
 void EventHandler::SourceMediaNextMultiHandler(void *param, calldata_t *data)
 {
-	auto eventHandler = static_cast<EventHandler*>(param);
+	auto eventHandler = static_cast<EventHandler *>(param);
 
 	obs_source_t *source = GetCalldataPointer<obs_source_t>(data, "source");
 	if (!source)
@@ -100,12 +107,14 @@ void EventHandler::SourceMediaNextMultiHandler(void *param, calldata_t *data)
 	if (obs_source_get_type(source) != OBS_SOURCE_TYPE_INPUT)
 		return;
 
-	eventHandler->HandleMediaInputActionTriggered(source, OBS_WEBSOCKET_MEDIA_INPUT_ACTION_NEXT);
+	eventHandler->HandleMediaInputActionTriggered(
+		source, OBS_WEBSOCKET_MEDIA_INPUT_ACTION_NEXT);
 }
 
-void EventHandler::SourceMediaPreviousMultiHandler(void *param, calldata_t *data)
+void EventHandler::SourceMediaPreviousMultiHandler(void *param,
+						   calldata_t *data)
 {
-	auto eventHandler = static_cast<EventHandler*>(param);
+	auto eventHandler = static_cast<EventHandler *>(param);
 
 	obs_source_t *source = GetCalldataPointer<obs_source_t>(data, "source");
 	if (!source)
@@ -114,7 +123,8 @@ void EventHandler::SourceMediaPreviousMultiHandler(void *param, calldata_t *data
 	if (obs_source_get_type(source) != OBS_SOURCE_TYPE_INPUT)
 		return;
 
-	eventHandler->HandleMediaInputActionTriggered(source, OBS_WEBSOCKET_MEDIA_INPUT_ACTION_PREVIOUS);
+	eventHandler->HandleMediaInputActionTriggered(
+		source, OBS_WEBSOCKET_MEDIA_INPUT_ACTION_PREVIOUS);
 }
 
 /**
@@ -130,9 +140,10 @@ void EventHandler::SourceMediaPreviousMultiHandler(void *param, calldata_t *data
  * @api events
  * @category media inputs
  */
-void EventHandler::HandleMediaInputPlaybackStarted(void *param, calldata_t *data)
+void EventHandler::HandleMediaInputPlaybackStarted(void *param,
+						   calldata_t *data)
 {
-	auto eventHandler = static_cast<EventHandler*>(param);
+	auto eventHandler = static_cast<EventHandler *>(param);
 
 	obs_source_t *source = GetCalldataPointer<obs_source_t>(data, "source");
 	if (!source)
@@ -143,7 +154,8 @@ void EventHandler::HandleMediaInputPlaybackStarted(void *param, calldata_t *data
 
 	json eventData;
 	eventData["inputName"] = obs_source_get_name(source);
-	eventHandler->BroadcastEvent(EventSubscription::MediaInputs, "MediaInputPlaybackStarted", eventData);
+	eventHandler->BroadcastEvent(EventSubscription::MediaInputs,
+				     "MediaInputPlaybackStarted", eventData);
 }
 
 /**
@@ -161,7 +173,7 @@ void EventHandler::HandleMediaInputPlaybackStarted(void *param, calldata_t *data
  */
 void EventHandler::HandleMediaInputPlaybackEnded(void *param, calldata_t *data)
 {
-	auto eventHandler = static_cast<EventHandler*>(param);
+	auto eventHandler = static_cast<EventHandler *>(param);
 
 	obs_source_t *source = GetCalldataPointer<obs_source_t>(data, "source");
 	if (!source)
@@ -172,7 +184,8 @@ void EventHandler::HandleMediaInputPlaybackEnded(void *param, calldata_t *data)
 
 	json eventData;
 	eventData["inputName"] = obs_source_get_name(source);
-	eventHandler->BroadcastEvent(EventSubscription::MediaInputs, "MediaInputPlaybackEnded", eventData);
+	eventHandler->BroadcastEvent(EventSubscription::MediaInputs,
+				     "MediaInputPlaybackEnded", eventData);
 }
 
 /**
@@ -189,10 +202,12 @@ void EventHandler::HandleMediaInputPlaybackEnded(void *param, calldata_t *data)
  * @api events
  * @category media inputs
  */
-void EventHandler::HandleMediaInputActionTriggered(obs_source_t *source, ObsMediaInputAction action)
+void EventHandler::HandleMediaInputActionTriggered(obs_source_t *source,
+						   ObsMediaInputAction action)
 {
 	json eventData;
 	eventData["inputName"] = obs_source_get_name(source);
 	eventData["mediaAction"] = GetMediaInputActionString(action);
-	BroadcastEvent(EventSubscription::MediaInputs, "MediaInputActionTriggered", eventData);
+	BroadcastEvent(EventSubscription::MediaInputs,
+		       "MediaInputActionTriggered", eventData);
 }

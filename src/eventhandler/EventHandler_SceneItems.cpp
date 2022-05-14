@@ -37,22 +37,27 @@ with this program. If not, see <https://www.gnu.org/licenses/>
  */
 void EventHandler::HandleSceneItemCreated(void *param, calldata_t *data)
 {
-	auto eventHandler = static_cast<EventHandler*>(param);
+	auto eventHandler = static_cast<EventHandler *>(param);
 
 	obs_scene_t *scene = GetCalldataPointer<obs_scene_t>(data, "scene");
 	if (!scene)
 		return;
 
-	obs_sceneitem_t *sceneItem = GetCalldataPointer<obs_sceneitem_t>(data, "item");
+	obs_sceneitem_t *sceneItem =
+		GetCalldataPointer<obs_sceneitem_t>(data, "item");
 	if (!sceneItem)
 		return;
 
 	json eventData;
-	eventData["sceneName"] = obs_source_get_name(obs_scene_get_source(scene));
-	eventData["sourceName"] = obs_source_get_name(obs_sceneitem_get_source(sceneItem));
+	eventData["sceneName"] =
+		obs_source_get_name(obs_scene_get_source(scene));
+	eventData["sourceName"] =
+		obs_source_get_name(obs_sceneitem_get_source(sceneItem));
 	eventData["sceneItemId"] = obs_sceneitem_get_id(sceneItem);
-	eventData["sceneItemIndex"] = obs_sceneitem_get_order_position(sceneItem);
-	eventHandler->BroadcastEvent(EventSubscription::SceneItems, "SceneItemCreated", eventData);
+	eventData["sceneItemIndex"] =
+		obs_sceneitem_get_order_position(sceneItem);
+	eventHandler->BroadcastEvent(EventSubscription::SceneItems,
+				     "SceneItemCreated", eventData);
 }
 
 /**
@@ -74,21 +79,25 @@ void EventHandler::HandleSceneItemCreated(void *param, calldata_t *data)
  */
 void EventHandler::HandleSceneItemRemoved(void *param, calldata_t *data)
 {
-	auto eventHandler = static_cast<EventHandler*>(param);
+	auto eventHandler = static_cast<EventHandler *>(param);
 
 	obs_scene_t *scene = GetCalldataPointer<obs_scene_t>(data, "scene");
 	if (!scene)
 		return;
 
-	obs_sceneitem_t *sceneItem = GetCalldataPointer<obs_sceneitem_t>(data, "item");
+	obs_sceneitem_t *sceneItem =
+		GetCalldataPointer<obs_sceneitem_t>(data, "item");
 	if (!sceneItem)
 		return;
 
 	json eventData;
-	eventData["sceneName"] = obs_source_get_name(obs_scene_get_source(scene));
-	eventData["sourceName"] = obs_source_get_name(obs_sceneitem_get_source(sceneItem));
+	eventData["sceneName"] =
+		obs_source_get_name(obs_scene_get_source(scene));
+	eventData["sourceName"] =
+		obs_source_get_name(obs_sceneitem_get_source(sceneItem));
 	eventData["sceneItemId"] = obs_sceneitem_get_id(sceneItem);
-	eventHandler->BroadcastEvent(EventSubscription::SceneItems, "SceneItemRemoved", eventData);
+	eventHandler->BroadcastEvent(EventSubscription::SceneItems,
+				     "SceneItemRemoved", eventData);
 }
 
 /**
@@ -107,16 +116,19 @@ void EventHandler::HandleSceneItemRemoved(void *param, calldata_t *data)
  */
 void EventHandler::HandleSceneItemListReindexed(void *param, calldata_t *data)
 {
-	auto eventHandler = static_cast<EventHandler*>(param);
+	auto eventHandler = static_cast<EventHandler *>(param);
 
 	obs_scene_t *scene = GetCalldataPointer<obs_scene_t>(data, "scene");
 	if (!scene)
 		return;
 
 	json eventData;
-	eventData["sceneName"] = obs_source_get_name(obs_scene_get_source(scene));
-	eventData["sceneItems"] = Utils::Obs::ArrayHelper::GetSceneItemList(scene, true);
-	eventHandler->BroadcastEvent(EventSubscription::SceneItems, "SceneItemListReindexed", eventData);
+	eventData["sceneName"] =
+		obs_source_get_name(obs_scene_get_source(scene));
+	eventData["sceneItems"] =
+		Utils::Obs::ArrayHelper::GetSceneItemList(scene, true);
+	eventHandler->BroadcastEvent(EventSubscription::SceneItems,
+				     "SceneItemListReindexed", eventData);
 }
 
 /**
@@ -134,25 +146,29 @@ void EventHandler::HandleSceneItemListReindexed(void *param, calldata_t *data)
  * @api events
  * @category scene items
  */
-void EventHandler::HandleSceneItemEnableStateChanged(void *param, calldata_t *data)
+void EventHandler::HandleSceneItemEnableStateChanged(void *param,
+						     calldata_t *data)
 {
-	auto eventHandler = static_cast<EventHandler*>(param);
+	auto eventHandler = static_cast<EventHandler *>(param);
 
 	obs_scene_t *scene = GetCalldataPointer<obs_scene_t>(data, "scene");
 	if (!scene)
 		return;
 
-	obs_sceneitem_t *sceneItem = GetCalldataPointer<obs_sceneitem_t>(data, "item");
+	obs_sceneitem_t *sceneItem =
+		GetCalldataPointer<obs_sceneitem_t>(data, "item");
 	if (!sceneItem)
 		return;
 
 	bool sceneItemEnabled = calldata_bool(data, "visible");
 
 	json eventData;
-	eventData["sceneName"] = obs_source_get_name(obs_scene_get_source(scene));
+	eventData["sceneName"] =
+		obs_source_get_name(obs_scene_get_source(scene));
 	eventData["sceneItemId"] = obs_sceneitem_get_id(sceneItem);
 	eventData["sceneItemEnabled"] = sceneItemEnabled;
-	eventHandler->BroadcastEvent(EventSubscription::SceneItems, "SceneItemEnableStateChanged", eventData);
+	eventHandler->BroadcastEvent(EventSubscription::SceneItems,
+				     "SceneItemEnableStateChanged", eventData);
 }
 
 /**
@@ -170,25 +186,29 @@ void EventHandler::HandleSceneItemEnableStateChanged(void *param, calldata_t *da
  * @api events
  * @category scene items
  */
-void EventHandler::HandleSceneItemLockStateChanged(void *param, calldata_t *data)
+void EventHandler::HandleSceneItemLockStateChanged(void *param,
+						   calldata_t *data)
 {
-	auto eventHandler = static_cast<EventHandler*>(param);
+	auto eventHandler = static_cast<EventHandler *>(param);
 
 	obs_scene_t *scene = GetCalldataPointer<obs_scene_t>(data, "scene");
 	if (!scene)
 		return;
 
-	obs_sceneitem_t *sceneItem = GetCalldataPointer<obs_sceneitem_t>(data, "item");
+	obs_sceneitem_t *sceneItem =
+		GetCalldataPointer<obs_sceneitem_t>(data, "item");
 	if (!sceneItem)
 		return;
 
 	bool sceneItemLocked = calldata_bool(data, "locked");
 
 	json eventData;
-	eventData["sceneName"] = obs_source_get_name(obs_scene_get_source(scene));
+	eventData["sceneName"] =
+		obs_source_get_name(obs_scene_get_source(scene));
 	eventData["sceneItemId"] = obs_sceneitem_get_id(sceneItem);
 	eventData["sceneItemLocked"] = sceneItemLocked;
-	eventHandler->BroadcastEvent(EventSubscription::SceneItems, "SceneItemLockStateChanged", eventData);
+	eventHandler->BroadcastEvent(EventSubscription::SceneItems,
+				     "SceneItemLockStateChanged", eventData);
 }
 
 /**
@@ -207,20 +227,23 @@ void EventHandler::HandleSceneItemLockStateChanged(void *param, calldata_t *data
  */
 void EventHandler::HandleSceneItemSelected(void *param, calldata_t *data)
 {
-	auto eventHandler = static_cast<EventHandler*>(param);
+	auto eventHandler = static_cast<EventHandler *>(param);
 
 	obs_scene_t *scene = GetCalldataPointer<obs_scene_t>(data, "scene");
 	if (!scene)
 		return;
 
-	obs_sceneitem_t *sceneItem = GetCalldataPointer<obs_sceneitem_t>(data, "item");
+	obs_sceneitem_t *sceneItem =
+		GetCalldataPointer<obs_sceneitem_t>(data, "item");
 	if (!sceneItem)
 		return;
 
 	json eventData;
-	eventData["sceneName"] = obs_source_get_name(obs_scene_get_source(scene));
+	eventData["sceneName"] =
+		obs_source_get_name(obs_scene_get_source(scene));
 	eventData["sceneItemId"] = obs_sceneitem_get_id(sceneItem);
-	eventHandler->BroadcastEvent(EventSubscription::SceneItems, "SceneItemSelected", eventData);
+	eventHandler->BroadcastEvent(EventSubscription::SceneItems,
+				     "SceneItemSelected", eventData);
 }
 
 /**
@@ -238,9 +261,10 @@ void EventHandler::HandleSceneItemSelected(void *param, calldata_t *data)
  * @api events
  * @category scene items
  */
-void EventHandler::HandleSceneItemTransformChanged(void *param, calldata_t *data)
+void EventHandler::HandleSceneItemTransformChanged(void *param,
+						   calldata_t *data)
 {
-	auto eventHandler = static_cast<EventHandler*>(param);
+	auto eventHandler = static_cast<EventHandler *>(param);
 
 	if (!eventHandler->_sceneItemTransformChangedRef.load())
 		return;
@@ -249,13 +273,18 @@ void EventHandler::HandleSceneItemTransformChanged(void *param, calldata_t *data
 	if (!scene)
 		return;
 
-	obs_sceneitem_t *sceneItem = GetCalldataPointer<obs_sceneitem_t>(data, "item");
+	obs_sceneitem_t *sceneItem =
+		GetCalldataPointer<obs_sceneitem_t>(data, "item");
 	if (!sceneItem)
 		return;
 
 	json eventData;
-	eventData["sceneName"] = obs_source_get_name(obs_scene_get_source(scene));
+	eventData["sceneName"] =
+		obs_source_get_name(obs_scene_get_source(scene));
 	eventData["sceneItemId"] = obs_sceneitem_get_id(sceneItem);
-	eventData["sceneItemTransform"] = Utils::Obs::ObjectHelper::GetSceneItemTransform(sceneItem);
-	eventHandler->BroadcastEvent(EventSubscription::SceneItemTransformChanged, "SceneItemTransformChanged", eventData);
+	eventData["sceneItemTransform"] =
+		Utils::Obs::ObjectHelper::GetSceneItemTransform(sceneItem);
+	eventHandler->BroadcastEvent(
+		EventSubscription::SceneItemTransformChanged,
+		"SceneItemTransformChanged", eventData);
 }

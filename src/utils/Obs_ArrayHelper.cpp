@@ -29,7 +29,7 @@ static std::vector<std::string> ConvertStringArray(char **array)
 		return ret;
 
 	size_t index = 0;
-	char* value = nullptr;
+	char *value = nullptr;
 	do {
 		value = array[index];
 		if (value)
@@ -42,7 +42,7 @@ static std::vector<std::string> ConvertStringArray(char **array)
 
 std::vector<std::string> Utils::Obs::ArrayHelper::GetSceneCollectionList()
 {
-	char** sceneCollections = obs_frontend_get_scene_collections();
+	char **sceneCollections = obs_frontend_get_scene_collections();
 	auto ret = ConvertStringArray(sceneCollections);
 	bfree(sceneCollections);
 	return ret;
@@ -50,7 +50,7 @@ std::vector<std::string> Utils::Obs::ArrayHelper::GetSceneCollectionList()
 
 std::vector<std::string> Utils::Obs::ArrayHelper::GetProfileList()
 {
-	char** profiles = obs_frontend_get_profiles();
+	char **profiles = obs_frontend_get_profiles();
 	auto ret = ConvertStringArray(profiles);
 	bfree(profiles);
 	return ret;
@@ -60,13 +60,16 @@ std::vector<obs_hotkey_t *> Utils::Obs::ArrayHelper::GetHotkeyList()
 {
 	std::vector<obs_hotkey_t *> ret;
 
-	obs_enum_hotkeys([](void* data, obs_hotkey_id, obs_hotkey_t* hotkey) {
-		auto ret = static_cast<std::vector<obs_hotkey_t *> *>(data);
+	obs_enum_hotkeys(
+		[](void *data, obs_hotkey_id, obs_hotkey_t *hotkey) {
+			auto ret = static_cast<std::vector<obs_hotkey_t *> *>(
+				data);
 
-		ret->push_back(hotkey);
+			ret->push_back(hotkey);
 
-		return true;
-	}, &ret);
+			return true;
+		},
+		&ret);
 
 	return ret;
 }
@@ -112,7 +115,7 @@ std::vector<std::string> Utils::Obs::ArrayHelper::GetGroupList()
 	std::vector<std::string> ret;
 
 	auto cb = [](void *priv_data, obs_source_t *scene) {
-		auto ret = static_cast<std::vector<std::string>*>(priv_data);
+		auto ret = static_cast<std::vector<std::string> *>(priv_data);
 
 		if (!obs_source_is_group(scene))
 			return true;
@@ -127,36 +130,48 @@ std::vector<std::string> Utils::Obs::ArrayHelper::GetGroupList()
 	return ret;
 }
 
-std::vector<json> Utils::Obs::ArrayHelper::GetSceneItemList(obs_scene_t *scene, bool basic)
+std::vector<json> Utils::Obs::ArrayHelper::GetSceneItemList(obs_scene_t *scene,
+							    bool basic)
 {
 	std::pair<std::vector<json>, bool> enumData;
 	enumData.second = basic;
 
-	obs_scene_enum_items(scene, [](obs_scene_t*, obs_sceneitem_t* sceneItem, void* param) {
-		auto enumData = static_cast<std::pair<std::vector<json>, bool>*>(param);
+	obs_scene_enum_items(
+		scene,
+		[](obs_scene_t *, obs_sceneitem_t *sceneItem, void *param) {
+			auto enumData = static_cast<
+				std::pair<std::vector<json>, bool> *>(param);
 
-		json item;
-		item["sceneItemId"] = obs_sceneitem_get_id(sceneItem);
-		// Should be slightly faster than calling obs_sceneitem_get_order_position()
-		item["sceneItemIndex"] = enumData->first.size();
-		if (!enumData->second) {
-			OBSSource itemSource = obs_sceneitem_get_source(sceneItem);
-			item["sourceName"] = obs_source_get_name(itemSource);
-			item["sourceType"] = StringHelper::GetSourceType(itemSource);
-			if (obs_source_get_type(itemSource) == OBS_SOURCE_TYPE_INPUT)
-				item["inputKind"] = obs_source_get_id(itemSource);
-			else
-				item["inputKind"] = nullptr;
-			if (obs_source_get_type(itemSource) == OBS_SOURCE_TYPE_SCENE)
-				item["isGroup"] = obs_source_is_group(itemSource);
-			else
-				item["isGroup"] = nullptr;
-		}
+			json item;
+			item["sceneItemId"] = obs_sceneitem_get_id(sceneItem);
+			// Should be slightly faster than calling obs_sceneitem_get_order_position()
+			item["sceneItemIndex"] = enumData->first.size();
+			if (!enumData->second) {
+				OBSSource itemSource =
+					obs_sceneitem_get_source(sceneItem);
+				item["sourceName"] =
+					obs_source_get_name(itemSource);
+				item["sourceType"] =
+					StringHelper::GetSourceType(itemSource);
+				if (obs_source_get_type(itemSource) ==
+				    OBS_SOURCE_TYPE_INPUT)
+					item["inputKind"] =
+						obs_source_get_id(itemSource);
+				else
+					item["inputKind"] = nullptr;
+				if (obs_source_get_type(itemSource) ==
+				    OBS_SOURCE_TYPE_SCENE)
+					item["isGroup"] =
+						obs_source_is_group(itemSource);
+				else
+					item["isGroup"] = nullptr;
+			}
 
-		enumData->first.push_back(item);
+			enumData->first.push_back(item);
 
-		return true;
-	}, &enumData);
+			return true;
+		},
+		&enumData);
 
 	return enumData.first;
 }
@@ -176,17 +191,19 @@ std::vector<json> Utils::Obs::ArrayHelper::GetInputList(std::string inputKind)
 		if (obs_source_get_type(input) != OBS_SOURCE_TYPE_INPUT)
 			return true;
 
-		auto inputInfo = static_cast<EnumInputInfo*>(param);
+		auto inputInfo = static_cast<EnumInputInfo *>(param);
 
 		std::string inputKind = obs_source_get_id(input);
 
-		if (!inputInfo->inputKind.empty() && inputInfo->inputKind != inputKind)
+		if (!inputInfo->inputKind.empty() &&
+		    inputInfo->inputKind != inputKind)
 			return true;
 
 		json inputJson;
 		inputJson["inputName"] = obs_source_get_name(input);
 		inputJson["inputKind"] = inputKind;
-		inputJson["unversionedInputKind"] = obs_source_get_unversioned_id(input);
+		inputJson["unversionedInputKind"] =
+			obs_source_get_unversioned_id(input);
 
 		inputInfo->inputs.push_back(inputJson);
 		return true;
@@ -197,7 +214,9 @@ std::vector<json> Utils::Obs::ArrayHelper::GetInputList(std::string inputKind)
 	return inputInfo.inputs;
 }
 
-std::vector<std::string> Utils::Obs::ArrayHelper::GetInputKindList(bool unversioned, bool includeDisabled)
+std::vector<std::string>
+Utils::Obs::ArrayHelper::GetInputKindList(bool unversioned,
+					  bool includeDisabled)
 {
 	std::vector<std::string> ret;
 
@@ -219,7 +238,8 @@ std::vector<std::string> Utils::Obs::ArrayHelper::GetInputKindList(bool unversio
 	return ret;
 }
 
-std::vector<json> Utils::Obs::ArrayHelper::GetListPropertyItems(obs_property_t *property)
+std::vector<json>
+Utils::Obs::ArrayHelper::GetListPropertyItems(obs_property_t *property)
 {
 	std::vector<json> ret;
 
@@ -231,13 +251,17 @@ std::vector<json> Utils::Obs::ArrayHelper::GetListPropertyItems(obs_property_t *
 	for (size_t i = 0; i < itemCount; i++) {
 		json itemData;
 		itemData["itemName"] = obs_property_list_item_name(property, i);
-		itemData["itemEnabled"] = !obs_property_list_item_disabled(property, i);
+		itemData["itemEnabled"] =
+			!obs_property_list_item_disabled(property, i);
 		if (itemFormat == OBS_COMBO_FORMAT_INT) {
-			itemData["itemValue"] = obs_property_list_item_int(property, i);
+			itemData["itemValue"] =
+				obs_property_list_item_int(property, i);
 		} else if (itemFormat == OBS_COMBO_FORMAT_FLOAT) {
-			itemData["itemValue"] = obs_property_list_item_float(property, i);
+			itemData["itemValue"] =
+				obs_property_list_item_float(property, i);
 		} else if (itemFormat == OBS_COMBO_FORMAT_STRING) {
-			itemData["itemValue"] = obs_property_list_item_string(property, i);
+			itemData["itemValue"] =
+				obs_property_list_item_string(property, i);
 		} else {
 			itemData["itemValue"] = nullptr;
 		}
@@ -269,10 +293,14 @@ std::vector<json> Utils::Obs::ArrayHelper::GetSceneTransitionList()
 	for (size_t i = 0; i < transitionList.sources.num; i++) {
 		obs_source_t *transition = transitionList.sources.array[i];
 		json transitionJson;
-		transitionJson["transitionName"] = obs_source_get_name(transition);
-		transitionJson["transitionKind"] = obs_source_get_id(transition);
-		transitionJson["transitionFixed"] = obs_transition_fixed(transition);
-		transitionJson["transitionConfigurable"] = obs_source_configurable(transition);
+		transitionJson["transitionName"] =
+			obs_source_get_name(transition);
+		transitionJson["transitionKind"] =
+			obs_source_get_id(transition);
+		transitionJson["transitionFixed"] =
+			obs_transition_fixed(transition);
+		transitionJson["transitionConfigurable"] =
+			obs_source_configurable(transition);
 		ret.push_back(transitionJson);
 	}
 
@@ -287,18 +315,20 @@ std::vector<std::string> Utils::Obs::ArrayHelper::GetFilterKindList()
 
 	size_t idx = 0;
 	const char *kind;
-	while(obs_enum_filter_types(idx++, &kind))
+	while (obs_enum_filter_types(idx++, &kind))
 		ret.push_back(kind);
 
 	return ret;
 }
 
-std::vector<json> Utils::Obs::ArrayHelper::GetSourceFilterList(obs_source_t *source)
+std::vector<json>
+Utils::Obs::ArrayHelper::GetSourceFilterList(obs_source_t *source)
 {
 	std::vector<json> filters;
 
-	auto enumFilters = [](obs_source_t *, obs_source_t *filter, void *param) {
-		auto filters = reinterpret_cast<std::vector<json>*>(param);
+	auto enumFilters = [](obs_source_t *, obs_source_t *filter,
+			      void *param) {
+		auto filters = reinterpret_cast<std::vector<json> *>(param);
 
 		json filterJson;
 		filterJson["filterEnabled"] = obs_source_enabled(filter);
@@ -306,8 +336,10 @@ std::vector<json> Utils::Obs::ArrayHelper::GetSourceFilterList(obs_source_t *sou
 		filterJson["filterKind"] = obs_source_get_id(filter);
 		filterJson["filterName"] = obs_source_get_name(filter);
 
-		OBSDataAutoRelease filterSettings = obs_source_get_settings(filter);
-		filterJson["filterSettings"] = Utils::Json::ObsDataToJson(filterSettings);
+		OBSDataAutoRelease filterSettings =
+			obs_source_get_settings(filter);
+		filterJson["filterSettings"] =
+			Utils::Json::ObsDataToJson(filterSettings);
 
 		filters->push_back(filterJson);
 	};

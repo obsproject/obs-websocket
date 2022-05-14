@@ -23,8 +23,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include "RequestHandler.h"
 
-const std::unordered_map<std::string, RequestMethodHandler> RequestHandler::_handlerMap
-{
+const std::unordered_map<std::string, RequestMethodHandler> RequestHandler::_handlerMap{
 	// General
 	{"GetVersion", &RequestHandler::GetVersion},
 	{"GetStats", &RequestHandler::GetStats},
@@ -32,14 +31,16 @@ const std::unordered_map<std::string, RequestMethodHandler> RequestHandler::_han
 	{"CallVendorRequest", &RequestHandler::CallVendorRequest},
 	{"GetHotkeyList", &RequestHandler::GetHotkeyList},
 	{"TriggerHotkeyByName", &RequestHandler::TriggerHotkeyByName},
-	{"TriggerHotkeyByKeySequence", &RequestHandler::TriggerHotkeyByKeySequence},
+	{"TriggerHotkeyByKeySequence",
+	 &RequestHandler::TriggerHotkeyByKeySequence},
 	{"Sleep", &RequestHandler::Sleep},
 
 	// Config
 	{"GetPersistentData", &RequestHandler::GetPersistentData},
 	{"SetPersistentData", &RequestHandler::SetPersistentData},
 	{"GetSceneCollectionList", &RequestHandler::GetSceneCollectionList},
-	{"SetCurrentSceneCollection", &RequestHandler::SetCurrentSceneCollection},
+	{"SetCurrentSceneCollection",
+	 &RequestHandler::SetCurrentSceneCollection},
 	{"CreateSceneCollection", &RequestHandler::CreateSceneCollection},
 	{"GetProfileList", &RequestHandler::GetProfileList},
 	{"SetCurrentProfile", &RequestHandler::SetCurrentProfile},
@@ -70,8 +71,10 @@ const std::unordered_map<std::string, RequestMethodHandler> RequestHandler::_han
 	{"CreateScene", &RequestHandler::CreateScene},
 	{"RemoveScene", &RequestHandler::RemoveScene},
 	{"SetSceneName", &RequestHandler::SetSceneName},
-	{"GetSceneSceneTransitionOverride", &RequestHandler::GetSceneSceneTransitionOverride},
-	{"SetSceneSceneTransitionOverride", &RequestHandler::SetSceneSceneTransitionOverride},
+	{"GetSceneSceneTransitionOverride",
+	 &RequestHandler::GetSceneSceneTransitionOverride},
+	{"SetSceneSceneTransitionOverride",
+	 &RequestHandler::SetSceneSceneTransitionOverride},
 
 	// Inputs
 	{"GetInputList", &RequestHandler::GetInputList},
@@ -96,23 +99,32 @@ const std::unordered_map<std::string, RequestMethodHandler> RequestHandler::_han
 	{"SetInputAudioMonitorType", &RequestHandler::SetInputAudioMonitorType},
 	{"GetInputAudioTracks", &RequestHandler::GetInputAudioTracks},
 	{"SetInputAudioTracks", &RequestHandler::SetInputAudioTracks},
-	{"GetInputPropertiesListPropertyItems", &RequestHandler::GetInputPropertiesListPropertyItems},
-	{"PressInputPropertiesButton", &RequestHandler::PressInputPropertiesButton},
+	{"GetInputPropertiesListPropertyItems",
+	 &RequestHandler::GetInputPropertiesListPropertyItems},
+	{"PressInputPropertiesButton",
+	 &RequestHandler::PressInputPropertiesButton},
 
 	// Transitions
 	{"GetTransitionKindList", &RequestHandler::GetTransitionKindList},
 	{"GetSceneTransitionList", &RequestHandler::GetSceneTransitionList},
-	{"GetCurrentSceneTransition", &RequestHandler::GetCurrentSceneTransition},
-	{"SetCurrentSceneTransition", &RequestHandler::SetCurrentSceneTransition},
-	{"SetCurrentSceneTransitionDuration", &RequestHandler::SetCurrentSceneTransitionDuration},
-	{"SetCurrentSceneTransitionSettings", &RequestHandler::SetCurrentSceneTransitionSettings},
-	{"GetCurrentSceneTransitionCursor", &RequestHandler::GetCurrentSceneTransitionCursor},
-	{"TriggerStudioModeTransition", &RequestHandler::TriggerStudioModeTransition},
+	{"GetCurrentSceneTransition",
+	 &RequestHandler::GetCurrentSceneTransition},
+	{"SetCurrentSceneTransition",
+	 &RequestHandler::SetCurrentSceneTransition},
+	{"SetCurrentSceneTransitionDuration",
+	 &RequestHandler::SetCurrentSceneTransitionDuration},
+	{"SetCurrentSceneTransitionSettings",
+	 &RequestHandler::SetCurrentSceneTransitionSettings},
+	{"GetCurrentSceneTransitionCursor",
+	 &RequestHandler::GetCurrentSceneTransitionCursor},
+	{"TriggerStudioModeTransition",
+	 &RequestHandler::TriggerStudioModeTransition},
 	{"SetTBarPosition", &RequestHandler::SetTBarPosition},
 
 	// Filters
 	{"GetSourceFilterList", &RequestHandler::GetSourceFilterList},
-	{"GetSourceFilterDefaultSettings", &RequestHandler::GetSourceFilterDefaultSettings},
+	{"GetSourceFilterDefaultSettings",
+	 &RequestHandler::GetSourceFilterDefaultSettings},
 	{"CreateSourceFilter", &RequestHandler::CreateSourceFilter},
 	{"RemoveSourceFilter", &RequestHandler::RemoveSourceFilter},
 	{"SetSourceFilterName", &RequestHandler::SetSourceFilterName},
@@ -138,8 +150,10 @@ const std::unordered_map<std::string, RequestMethodHandler> RequestHandler::_han
 	{"SetSceneItemIndex", &RequestHandler::SetSceneItemIndex},
 	{"GetSceneItemBlendMode", &RequestHandler::GetSceneItemBlendMode},
 	{"SetSceneItemBlendMode", &RequestHandler::SetSceneItemBlendMode},
-	{"GetSceneItemPrivateSettings", &RequestHandler::GetSceneItemPrivateSettings},
-	{"SetSceneItemPrivateSettings", &RequestHandler::SetSceneItemPrivateSettings},
+	{"GetSceneItemPrivateSettings",
+	 &RequestHandler::GetSceneItemPrivateSettings},
+	{"SetSceneItemPrivateSettings",
+	 &RequestHandler::SetSceneItemPrivateSettings},
 
 	// Outputs
 	{"GetVirtualCamStatus", &RequestHandler::GetVirtualCamStatus},
@@ -151,7 +165,8 @@ const std::unordered_map<std::string, RequestMethodHandler> RequestHandler::_han
 	{"StartReplayBuffer", &RequestHandler::StartReplayBuffer},
 	{"StopReplayBuffer", &RequestHandler::StopReplayBuffer},
 	{"SaveReplayBuffer", &RequestHandler::SaveReplayBuffer},
-	{"GetLastReplayBufferReplay", &RequestHandler::GetLastReplayBufferReplay},
+	{"GetLastReplayBufferReplay",
+	 &RequestHandler::GetLastReplayBufferReplay},
 
 	// Stream
 	{"GetStreamStatus", &RequestHandler::GetStreamStatus},
@@ -178,34 +193,37 @@ const std::unordered_map<std::string, RequestMethodHandler> RequestHandler::_han
 	// Ui
 	{"GetStudioModeEnabled", &RequestHandler::GetStudioModeEnabled},
 	{"SetStudioModeEnabled", &RequestHandler::SetStudioModeEnabled},
-	{"OpenInputPropertiesDialog", &RequestHandler::OpenInputPropertiesDialog},
+	{"OpenInputPropertiesDialog",
+	 &RequestHandler::OpenInputPropertiesDialog},
 	{"OpenInputFiltersDialog", &RequestHandler::OpenInputFiltersDialog},
 	{"OpenInputInteractDialog", &RequestHandler::OpenInputInteractDialog},
 	{"GetMonitorList", &RequestHandler::GetMonitorList},
 };
 
-RequestHandler::RequestHandler(SessionPtr session) :
-	_session(session)
-{
-}
+RequestHandler::RequestHandler(SessionPtr session) : _session(session) {}
 
-RequestResult RequestHandler::ProcessRequest(const Request& request)
+RequestResult RequestHandler::ProcessRequest(const Request &request)
 {
 #ifdef PLUGIN_TESTS
 	ScopeProfiler prof{"obs_websocket_request_processing"};
 #endif
 
 	if (!request.RequestData.is_object() && !request.RequestData.is_null())
-		return RequestResult::Error(RequestStatus::InvalidRequestFieldType, "Your request data is not an object.");
+		return RequestResult::Error(
+			RequestStatus::InvalidRequestFieldType,
+			"Your request data is not an object.");
 
 	if (request.RequestType.empty())
-		return RequestResult::Error(RequestStatus::MissingRequestType, "Your request is missing a `requestType`");
+		return RequestResult::Error(
+			RequestStatus::MissingRequestType,
+			"Your request is missing a `requestType`");
 
 	RequestMethodHandler handler;
 	try {
 		handler = _handlerMap.at(request.RequestType);
-	} catch (const std::out_of_range& oor) {
-		return RequestResult::Error(RequestStatus::UnknownRequestType, "Your request type is not valid.");
+	} catch (const std::out_of_range &oor) {
+		return RequestResult::Error(RequestStatus::UnknownRequestType,
+					    "Your request type is not valid.");
 	}
 
 	return std::bind(handler, this, std::placeholders::_1)(request);
@@ -214,7 +232,7 @@ RequestResult RequestHandler::ProcessRequest(const Request& request)
 std::vector<std::string> RequestHandler::GetRequestList()
 {
 	std::vector<std::string> ret;
-	for (auto const& [key, val] : _handlerMap) {
+	for (auto const &[key, val] : _handlerMap) {
 		ret.push_back(key);
 	}
 

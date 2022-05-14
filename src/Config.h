@@ -30,7 +30,7 @@ struct Config {
 	void Load();
 	void Save();
 	void SetDefaultsToGlobalStore();
-	config_t* GetConfigStore();
+	config_t *GetConfigStore();
 
 	std::atomic<bool> PortOverridden;
 	std::atomic<bool> PasswordOverridden;

@@ -33,16 +33,18 @@ with this program. If not, see <https://www.gnu.org/licenses/>
  * @api requests
  * @category filters
  */
-RequestResult RequestHandler::GetSourceFilterList(const Request& request)
+RequestResult RequestHandler::GetSourceFilterList(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease source = request.ValidateSource("sourceName", statusCode, comment);
-	if(!source)
+	OBSSourceAutoRelease source =
+		request.ValidateSource("sourceName", statusCode, comment);
+	if (!source)
 		return RequestResult::Error(statusCode, comment);
 
 	json responseData;
-	responseData["filters"] = Utils::Obs::ArrayHelper::GetSourceFilterList(source);
+	responseData["filters"] =
+		Utils::Obs::ArrayHelper::GetSourceFilterList(source);
 
 	return RequestResult::Success(responseData);
 }
@@ -61,7 +63,8 @@ RequestResult RequestHandler::GetSourceFilterList(const Request& request)
  * @api requests
  * @category filters
  */
-RequestResult RequestHandler::GetSourceFilterDefaultSettings(const Request& request)
+RequestResult
+RequestHandler::GetSourceFilterDefaultSettings(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
@@ -73,12 +76,14 @@ RequestResult RequestHandler::GetSourceFilterDefaultSettings(const Request& requ
 	if (std::find(kinds.begin(), kinds.end(), filterKind) == kinds.end())
 		return RequestResult::Error(RequestStatus::InvalidFilterKind);
 
-	OBSDataAutoRelease defaultSettings = obs_get_source_defaults(filterKind.c_str());
+	OBSDataAutoRelease defaultSettings =
+		obs_get_source_defaults(filterKind.c_str());
 	if (!defaultSettings)
 		return RequestResult::Error(RequestStatus::InvalidFilterKind);
 
 	json responseData;
-	responseData["defaultFilterSettings"] = Utils::Json::ObsDataToJson(defaultSettings, true);
+	responseData["defaultFilterSettings"] =
+		Utils::Json::ObsDataToJson(defaultSettings, true);
 	return RequestResult::Success(responseData);
 }
 
@@ -97,37 +102,51 @@ RequestResult RequestHandler::GetSourceFilterDefaultSettings(const Request& requ
  * @api requests
  * @category filters
  */
-RequestResult RequestHandler::CreateSourceFilter(const Request& request)
+RequestResult RequestHandler::CreateSourceFilter(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
 
-	OBSSourceAutoRelease source = request.ValidateSource("sourceName", statusCode, comment);
-	if (!(source && request.ValidateString("filterName", statusCode, comment) && request.ValidateString("filterKind", statusCode, comment)))
+	OBSSourceAutoRelease source =
+		request.ValidateSource("sourceName", statusCode, comment);
+	if (!(source &&
+	      request.ValidateString("filterName", statusCode, comment) &&
+	      request.ValidateString("filterKind", statusCode, comment)))
 		return RequestResult::Error(statusCode, comment);
 
 	std::string filterName = request.RequestData["filterName"];
-	OBSSourceAutoRelease existingFilter = obs_source_get_filter_by_name(source, filterName.c_str());
+	OBSSourceAutoRelease existingFilter =
+		obs_source_get_filter_by_name(source, filterName.c_str());
 	if (existingFilter)
-		return RequestResult::Error(RequestStatus::ResourceAlreadyExists, "A filter already exists by that name.");
+		return RequestResult::Error(
+			RequestStatus::ResourceAlreadyExists,
+			"A filter already exists by that name.");
 
 	std::string filterKind = request.RequestData["filterKind"];
 	auto kinds = Utils::Obs::ArrayHelper::GetFilterKindList();
 	if (std::find(kinds.begin(), kinds.end(), filterKind) == kinds.end())
-		return RequestResult::Error(RequestStatus::InvalidFilterKind, "Your specified filter kind is not supported by OBS. Check that any necessary plugins are loaded.");
+		return RequestResult::Error(
+			RequestStatus::InvalidFilterKind,
+			"Your specified filter kind is not supported by OBS. Check that any necessary plugins are loaded.");
 
 	OBSDataAutoRelease filterSettings = nullptr;
 	if (request.Contains("filterSettings")) {
-		if (!request.ValidateOptionalObject("filterSettings", statusCode, comment, true))
+		if (!request.ValidateOptionalObject("filterSettings",
+						    statusCode, comment, true))
 			return RequestResult::Error(statusCode, comment);
 
-		filterSettings = Utils::Json::JsonToObsData(request.RequestData["filterSettings"]);
+		filterSettings = Utils::Json::JsonToObsData(
+			request.RequestData["filterSettings"]);
 	}
 
-	OBSSourceAutoRelease filter = Utils::Obs::ActionHelper::CreateSourceFilter(source, filterName, filterKind, filterSettings);
+	OBSSourceAutoRelease filter =
+		Utils::Obs::ActionHelper::CreateSourceFilter(
+			source, filterName, filterKind, filterSettings);
 
-	if(!filter)
-		return RequestResult::Error(RequestStatus::ResourceCreationFailed, "Creation of the filter failed.");
+	if (!filter)
+		return RequestResult::Error(
+			RequestStatus::ResourceCreationFailed,
+			"Creation of the filter failed.");
 
 	return RequestResult::Success();
 }
@@ -145,11 +164,12 @@ RequestResult RequestHandler::CreateSourceFilter(const Request& request)
  * @api requests
  * @category filters
  */
-RequestResult RequestHandler::RemoveSourceFilter(const Request& request)
+RequestResult RequestHandler::RemoveSourceFilter(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	FilterPair pair = request.ValidateFilter("sourceName", "filterName", statusCode, comment);
+	FilterPair pair = request.ValidateFilter("sourceName", "filterName",
+						 statusCode, comment);
 	if (!pair.filter)
 		return RequestResult::Error(statusCode, comment);
 
@@ -172,19 +192,24 @@ RequestResult RequestHandler::RemoveSourceFilter(const Request& request)
  * @api requests
  * @category filters
  */
-RequestResult RequestHandler::SetSourceFilterName(const Request& request)
+RequestResult RequestHandler::SetSourceFilterName(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	FilterPair pair = request.ValidateFilter("sourceName", "filterName", statusCode, comment);
-	if (!pair.filter || !request.ValidateString("newFilterName", statusCode, comment))
+	FilterPair pair = request.ValidateFilter("sourceName", "filterName",
+						 statusCode, comment);
+	if (!pair.filter ||
+	    !request.ValidateString("newFilterName", statusCode, comment))
 		return RequestResult::Error(statusCode, comment);
 
 	std::string newFilterName = request.RequestData["newFilterName"];
 
-	OBSSourceAutoRelease existingFilter = obs_source_get_filter_by_name(pair.source, newFilterName.c_str());
+	OBSSourceAutoRelease existingFilter = obs_source_get_filter_by_name(
+		pair.source, newFilterName.c_str());
 	if (existingFilter)
-		return RequestResult::Error(RequestStatus::ResourceAlreadyExists, "A filter already exists by that new name.");
+		return RequestResult::Error(
+			RequestStatus::ResourceAlreadyExists,
+			"A filter already exists by that new name.");
 
 	obs_source_set_name(pair.filter, newFilterName.c_str());
 
@@ -209,21 +234,27 @@ RequestResult RequestHandler::SetSourceFilterName(const Request& request)
  * @api requests
  * @category filters
  */
-RequestResult RequestHandler::GetSourceFilter(const Request& request)
+RequestResult RequestHandler::GetSourceFilter(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	FilterPair pair = request.ValidateFilter("sourceName", "filterName", statusCode, comment);
+	FilterPair pair = request.ValidateFilter("sourceName", "filterName",
+						 statusCode, comment);
 	if (!pair.filter)
 		return RequestResult::Error(statusCode, comment);
 
 	json responseData;
 	responseData["filterEnabled"] = obs_source_enabled(pair.filter);
-	responseData["filterIndex"] = Utils::Obs::NumberHelper::GetSourceFilterIndex(pair.source, pair.filter); // Todo: Use `GetSourceFilterlist` to select this filter maybe
+	responseData["filterIndex"] =
+		Utils::Obs::NumberHelper::GetSourceFilterIndex(
+			pair.source,
+			pair.filter); // Todo: Use `GetSourceFilterlist` to select this filter maybe
 	responseData["filterKind"] = obs_source_get_id(pair.filter);
 
-	OBSDataAutoRelease filterSettings = obs_source_get_settings(pair.filter);
-	responseData["filterSettings"] = Utils::Json::ObsDataToJson(filterSettings);
+	OBSDataAutoRelease filterSettings =
+		obs_source_get_settings(pair.filter);
+	responseData["filterSettings"] =
+		Utils::Json::ObsDataToJson(filterSettings);
 
 	return RequestResult::Success(responseData);
 }
@@ -242,17 +273,20 @@ RequestResult RequestHandler::GetSourceFilter(const Request& request)
  * @api requests
  * @category filters
  */
-RequestResult RequestHandler::SetSourceFilterIndex(const Request& request)
+RequestResult RequestHandler::SetSourceFilterIndex(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	FilterPair pair = request.ValidateFilter("sourceName", "filterName", statusCode, comment);
-	if (!(pair.filter && request.ValidateNumber("filterIndex", statusCode, comment, 0, 8192)))
+	FilterPair pair = request.ValidateFilter("sourceName", "filterName",
+						 statusCode, comment);
+	if (!(pair.filter && request.ValidateNumber("filterIndex", statusCode,
+						    comment, 0, 8192)))
 		return RequestResult::Error(statusCode, comment);
 
 	int filterIndex = request.RequestData["filterIndex"];
 
-	Utils::Obs::ActionHelper::SetSourceFilterIndex(pair.source, pair.filter, filterIndex);
+	Utils::Obs::ActionHelper::SetSourceFilterIndex(pair.source, pair.filter,
+						       filterIndex);
 
 	return RequestResult::Success();
 }
@@ -272,27 +306,33 @@ RequestResult RequestHandler::SetSourceFilterIndex(const Request& request)
  * @api requests
  * @category filters
  */
-RequestResult RequestHandler::SetSourceFilterSettings(const Request& request)
+RequestResult RequestHandler::SetSourceFilterSettings(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	FilterPair pair = request.ValidateFilter("sourceName", "filterName", statusCode, comment);
-	if (!(pair.filter && request.ValidateObject("filterSettings", statusCode, comment, true)))
+	FilterPair pair = request.ValidateFilter("sourceName", "filterName",
+						 statusCode, comment);
+	if (!(pair.filter && request.ValidateObject("filterSettings",
+						    statusCode, comment, true)))
 		return RequestResult::Error(statusCode, comment);
 
 	// Almost identical to SetInputSettings
 
 	bool overlay = true;
 	if (request.Contains("overlay")) {
-		if (!request.ValidateOptionalBoolean("overlay", statusCode, comment))
+		if (!request.ValidateOptionalBoolean("overlay", statusCode,
+						     comment))
 			return RequestResult::Error(statusCode, comment);
 
 		overlay = request.RequestData["overlay"];
 	}
 
-	OBSDataAutoRelease newSettings = Utils::Json::JsonToObsData(request.RequestData["filterSettings"]);
+	OBSDataAutoRelease newSettings = Utils::Json::JsonToObsData(
+		request.RequestData["filterSettings"]);
 	if (!newSettings)
-		return RequestResult::Error(RequestStatus::RequestProcessingFailed, "An internal data conversion operation failed. Please report this!");
+		return RequestResult::Error(
+			RequestStatus::RequestProcessingFailed,
+			"An internal data conversion operation failed. Please report this!");
 
 	if (overlay)
 		obs_source_update(pair.filter, newSettings);
@@ -318,12 +358,14 @@ RequestResult RequestHandler::SetSourceFilterSettings(const Request& request)
  * @api requests
  * @category filters
  */
-RequestResult RequestHandler::SetSourceFilterEnabled(const Request& request)
+RequestResult RequestHandler::SetSourceFilterEnabled(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	FilterPair pair = request.ValidateFilter("sourceName", "filterName", statusCode, comment);
-	if (!(pair.filter && request.ValidateBoolean("filterEnabled", statusCode, comment)))
+	FilterPair pair = request.ValidateFilter("sourceName", "filterName",
+						 statusCode, comment);
+	if (!(pair.filter &&
+	      request.ValidateBoolean("filterEnabled", statusCode, comment)))
 		return RequestResult::Error(statusCode, comment);
 
 	bool filterEnabled = request.RequestData["filterEnabled"];
