@@ -5,7 +5,7 @@ on:
     paths-ignore:
       - 'docs/generated/**'
     branches:
-      - master
+      - release/5.0.0
 
 jobs:
   docs-build:

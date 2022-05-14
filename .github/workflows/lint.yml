@@ -3,10 +3,10 @@ name: Code Quality
 on:
   push:
     branches:
-      - master
+      - release/5.0.0
   pull_request:
     branches:
-      - master
+      - release/5.0.0
 
 jobs:
   markdown:
