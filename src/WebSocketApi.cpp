@@ -119,7 +119,7 @@ void WebSocketApi::call_request(void *, calldata_t *cd)
 	Request request(request_type, requestData);
 	RequestResult requestResult = requestHandler.ProcessRequest(request);
 
-	response->status_code = (uint)requestResult.StatusCode;
+	response->status_code = (unsigned int)requestResult.StatusCode;
 	if (!requestResult.Comment.empty())
 		response->comment = bstrdup(requestResult.Comment.c_str());
 	if (requestResult.ResponseData.is_object()) {
