@@ -13,11 +13,13 @@ WebSocket API for OBS Studio.
 
 ## Downloads
 
-Binaries for Windows, MacOS, and Linux are available in the [Releases](https://github.com/obsproject/obs-websocket/releases) section.
+obs-websocket is now included by default with OBS Studio 28.0.0 and above. As such, **there should be no need to download obs-websocket if you have OBS Studio > 28.0.0.**
+
+Binaries **for OBS Studio < 28.0.0** on Windows, MacOS, and Linux are available in the [Releases](https://github.com/obsproject/obs-websocket/releases) section.
 
 ## Using obs-websocket
 
-It is **highly recommended** to protect obs-websocket with a password against unauthorized control. To do this, open the "Websocket server settings" dialog under OBS' "Tools" menu. In the settings dialogs, you can enable or disable authentication and set a password for it.
+It is **highly recommended** to keep obs-websocket protected with a password against unauthorized control. obs-websocket generates a password for you automatically when you load it for the first time. To change this, open the "obs-websocket Settings" dialog under OBS' "Tools" menu. In the settings dialog, you can enable or disable authentication and set a password for it.
 
 (Psst. You can use `--websocket_port`(value), `--websocket_password`(value), `--websocket_debug`(flag) and `--websocket_ipv4_only`(flag) on the command line to override the configured values.)
 
