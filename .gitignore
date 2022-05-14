@@ -1,14 +1,14 @@
 *~
 .DS_Store
+.idea
+.vscode
+**.generated.h
 /build/
 /build32/
 /build64/
 /release/
 /package/
 /installer/Output/
-.idea
-.vscode
 /docs/node_modules/
-/src/plugin-macros.generated.h
 /installer/installer-windows.generated.iss
 /cmake-build-debug/

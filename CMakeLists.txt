@@ -34,8 +34,8 @@ add_definitions(-DASIO_STANDALONE)
 
 # Configure files
 configure_file(
-	src/plugin-macros.h.in
-	../src/plugin-macros.generated.h
+	${CMAKE_CURRENT_SOURCE_DIR}/src/plugin-macros.h.in
+	${CMAKE_CURRENT_SOURCE_DIR}/src/plugin-macros.generated.h
 )
 
 
