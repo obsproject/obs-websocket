@@ -29,6 +29,6 @@ Tested OS(s):
 <!--- If you're unsure about any of these, don't hesitate to ask. We're here to help! -->
 -  [ ] I have read the [Contributing Guidelines](https://github.com/obsproject/obs-websocket/wiki/Contributing-Guidelines).
 -  [ ] All commit messages are properly formatted and commits squashed where appropriate.
--  [ ] My code is not on the `master` branch.
+-  [ ] My code is not on `master` or a `release/*` branch.
 -  [ ] The code has been tested.
 -  [ ] I have included updates to all appropriate documentation.

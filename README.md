@@ -8,7 +8,6 @@
 
 WebSocket API for OBS Studio.
 
-[![CI Multiplatform Build](https://github.com/obsproject/obs-websocket/actions/workflows/main.yml/badge.svg?branch=master)](https://github.com/obsproject/obs-websocket/actions/workflows/main.yml)
 [![Discord](https://img.shields.io/discord/715691013825364120.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/WBaSQ3A)
 [![Financial Contributors on Open Collective](https://opencollective.com/obs-websocket-dev/all/badge.svg?label=financial+contributors)](https://opencollective.com/obs-websocket-dev)
 
