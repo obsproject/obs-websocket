@@ -157,14 +157,14 @@ namespace EventSubscription {
 		* Helper to receive all non-high-volume events.
 		*
 		* @enumIdentifier All
-		* @enumValue (General | Config | Scenes | Inputs | Transitions | Filters | Outputs | SceneItems | MediaInputs | Vendors)
+		* @enumValue (General | Config | Scenes | Inputs | Transitions | Filters | Outputs | SceneItems | MediaInputs | Vendors | Ui)
 		* @enumType EventSubscription
 		* @rpcVersion -1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-		All = (General | Config | Scenes | Inputs | Transitions | Filters | Outputs | SceneItems | MediaInputs | Ui |
-		       Vendors),
+		All = (General | Config | Scenes | Inputs | Transitions | Filters | Outputs | SceneItems | MediaInputs | Vendors | Ui),
+
 		/**
 		* Subscription value to receive the `InputVolumeMeters` high-volume event.
 		*
