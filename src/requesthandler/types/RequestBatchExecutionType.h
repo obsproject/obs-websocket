@@ -22,8 +22,8 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <stdint.h>
 
 namespace RequestBatchExecutionType {
-enum RequestBatchExecutionType : int8_t {
-	/**
+	enum RequestBatchExecutionType : int8_t {
+		/**
 		* Not a request batch.
 		*
 		* @enumIdentifier None
@@ -33,8 +33,8 @@ enum RequestBatchExecutionType : int8_t {
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-	None = -1,
-	/**
+		None = -1,
+		/**
 		* A request batch which processes all requests serially, as fast as possible.
 		*
 		* Note: To introduce artificial delay, use the `Sleep` request and the `sleepMillis` request field.
@@ -46,8 +46,8 @@ enum RequestBatchExecutionType : int8_t {
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-	SerialRealtime = 0,
-	/**
+		SerialRealtime = 0,
+		/**
 		* A request batch type which processes all requests serially, in sync with the graphics thread. Designed to
 		* provide high accuracy for animations.
 		*
@@ -60,8 +60,8 @@ enum RequestBatchExecutionType : int8_t {
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-	SerialFrame = 1,
-	/**
+		SerialFrame = 1,
+		/**
 		* A request batch type which processes all requests using all available threads in the thread pool.
 		*
 		* Note: This is mainly experimental, and only really shows its colors during requests which require lots of
@@ -74,11 +74,8 @@ enum RequestBatchExecutionType : int8_t {
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-	Parallel = 2,
-};
+		Parallel = 2,
+	};
 
-inline bool IsValid(int8_t executionType)
-{
-	return executionType >= None && executionType <= Parallel;
-}
+	inline bool IsValid(int8_t executionType) { return executionType >= None && executionType <= Parallel; }
 }

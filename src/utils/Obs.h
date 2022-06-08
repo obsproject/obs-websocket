@@ -172,61 +172,64 @@ NLOHMANN_JSON_SERIALIZE_ENUM(ObsMediaInputAction,
 			     })
 
 namespace Utils {
-namespace Obs {
-namespace StringHelper {
-std::string GetObsVersion();
-std::string GetCurrentSceneCollection();
-std::string GetCurrentProfile();
-std::string GetCurrentProfilePath();
-std::string GetCurrentRecordOutputPath();
-std::string GetLastReplayBufferFilePath();
-std::string DurationToTimecode(uint64_t);
-}
+	namespace Obs {
+		namespace StringHelper {
+			std::string GetObsVersion();
+			std::string GetCurrentSceneCollection();
+			std::string GetCurrentProfile();
+			std::string GetCurrentProfilePath();
+			std::string GetCurrentRecordOutputPath();
+			std::string GetLastReplayBufferFilePath();
+			std::string DurationToTimecode(uint64_t);
+		}
 
-namespace NumberHelper {
-uint64_t GetOutputDuration(obs_output_t *output);
-size_t GetSceneCount();
-size_t GetSourceFilterIndex(obs_source_t *source, obs_source_t *filter);
-}
+		namespace NumberHelper {
+			uint64_t GetOutputDuration(obs_output_t *output);
+			size_t GetSceneCount();
+			size_t GetSourceFilterIndex(obs_source_t *source, obs_source_t *filter);
+		}
 
-namespace ArrayHelper {
-std::vector<std::string> GetSceneCollectionList();
-std::vector<std::string> GetProfileList();
-std::vector<obs_hotkey_t *> GetHotkeyList();
-std::vector<std::string> GetHotkeyNameList();
-std::vector<json> GetSceneList();
-std::vector<std::string> GetGroupList();
-std::vector<json> GetSceneItemList(obs_scene_t *scene, bool basic = false);
-std::vector<json> GetInputList(std::string inputKind = "");
-std::vector<std::string> GetInputKindList(bool unversioned = false, bool includeDisabled = false);
-std::vector<json> GetListPropertyItems(obs_property_t *property);
-std::vector<std::string> GetTransitionKindList();
-std::vector<json> GetSceneTransitionList();
-std::vector<json> GetSourceFilterList(obs_source_t *source);
-std::vector<std::string> GetFilterKindList();
-}
+		namespace ArrayHelper {
+			std::vector<std::string> GetSceneCollectionList();
+			std::vector<std::string> GetProfileList();
+			std::vector<obs_hotkey_t *> GetHotkeyList();
+			std::vector<std::string> GetHotkeyNameList();
+			std::vector<json> GetSceneList();
+			std::vector<std::string> GetGroupList();
+			std::vector<json> GetSceneItemList(obs_scene_t *scene, bool basic = false);
+			std::vector<json> GetInputList(std::string inputKind = "");
+			std::vector<std::string> GetInputKindList(bool unversioned = false, bool includeDisabled = false);
+			std::vector<json> GetListPropertyItems(obs_property_t *property);
+			std::vector<std::string> GetTransitionKindList();
+			std::vector<json> GetSceneTransitionList();
+			std::vector<json> GetSourceFilterList(obs_source_t *source);
+			std::vector<std::string> GetFilterKindList();
+		}
 
-namespace ObjectHelper {
-json GetStats();
-json GetSceneItemTransform(obs_sceneitem_t *item);
-}
+		namespace ObjectHelper {
+			json GetStats();
+			json GetSceneItemTransform(obs_sceneitem_t *item);
+		}
 
-namespace SearchHelper {
-obs_hotkey_t *GetHotkeyByName(std::string name);
-obs_source_t *GetSceneTransitionByName(std::string name); // Increments source ref. Use OBSSourceAutoRelease
-obs_sceneitem_t *GetSceneItemByName(obs_scene_t *scene, std::string name,
-				    int offset = 0); // Increments ref. Use OBSSceneItemAutoRelease
-}
+		namespace SearchHelper {
+			obs_hotkey_t *GetHotkeyByName(std::string name);
+			obs_source_t *GetSceneTransitionByName(std::string name); // Increments source ref. Use OBSSourceAutoRelease
+			obs_sceneitem_t *GetSceneItemByName(obs_scene_t *scene, std::string name,
+							    int offset = 0); // Increments ref. Use OBSSceneItemAutoRelease
+		}
 
-namespace ActionHelper {
-obs_sceneitem_t *CreateSceneItem(obs_source_t *source, obs_scene_t *scene, bool sceneItemEnabled = true,
-				 obs_transform_info *sceneItemTransform = nullptr,
-				 obs_sceneitem_crop *sceneItemCrop = nullptr); // Increments ref. Use OBSSceneItemAutoRelease
-obs_sceneitem_t *CreateInput(std::string inputName, std::string inputKind, obs_data_t *inputSettings, obs_scene_t *scene,
-			     bool sceneItemEnabled = true); // Increments ref. Use OBSSceneItemAutoRelease
-obs_source_t *CreateSourceFilter(obs_source_t *source, std::string filterName, std::string filterKind,
-				 obs_data_t *filterSettings); // Increments source ref. Use OBSSourceAutoRelease
-void SetSourceFilterIndex(obs_source_t *source, obs_source_t *filter, size_t index);
-}
-}
+		namespace ActionHelper {
+			obs_sceneitem_t *
+			CreateSceneItem(obs_source_t *source, obs_scene_t *scene, bool sceneItemEnabled = true,
+					obs_transform_info *sceneItemTransform = nullptr,
+					obs_sceneitem_crop *sceneItemCrop = nullptr); // Increments ref. Use OBSSceneItemAutoRelease
+			obs_sceneitem_t *CreateInput(std::string inputName, std::string inputKind, obs_data_t *inputSettings,
+						     obs_scene_t *scene,
+						     bool sceneItemEnabled = true); // Increments ref. Use OBSSceneItemAutoRelease
+			obs_source_t *
+			CreateSourceFilter(obs_source_t *source, std::string filterName, std::string filterKind,
+					   obs_data_t *filterSettings); // Increments source ref. Use OBSSourceAutoRelease
+			void SetSourceFilterIndex(obs_source_t *source, obs_source_t *filter, size_t index);
+		}
+	}
 }

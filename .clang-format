@@ -64,7 +64,7 @@ IndentWidth: 8
 IndentWrappedFunctionNames: false
 KeepEmptyLinesAtTheStartOfBlocks: true
 MaxEmptyLinesToKeep: 1
-NamespaceIndentation: None
+NamespaceIndentation: All
 #ObjCBinPackProtocolList: Auto  # requires clang-format 7
 ObjCBlockIndentWidth: 8
 ObjCSpaceAfterProperty: true

@@ -71,15 +71,12 @@ NLOHMANN_JSON_SERIALIZE_ENUM(obs_blending_type, {
 						})
 
 namespace Utils {
-namespace Json {
-bool JsonArrayIsValidObsArray(const json &j);
-obs_data_t *JsonToObsData(json j);
-json ObsDataToJson(obs_data_t *d, bool includeDefault = false);
-bool GetJsonFileContent(std::string fileName, json &content);
-bool SetJsonFileContent(std::string fileName, const json &content, bool createNew = true);
-static inline bool Contains(const json &j, std::string key)
-{
-	return j.contains(key) && !j[key].is_null();
-}
-}
+	namespace Json {
+		bool JsonArrayIsValidObsArray(const json &j);
+		obs_data_t *JsonToObsData(json j);
+		json ObsDataToJson(obs_data_t *d, bool includeDefault = false);
+		bool GetJsonFileContent(std::string fileName, json &content);
+		bool SetJsonFileContent(std::string fileName, const json &content, bool createNew = true);
+		static inline bool Contains(const json &j, std::string key) { return j.contains(key) && !j[key].is_null(); }
+	}
 }

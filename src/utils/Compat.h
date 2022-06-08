@@ -23,16 +23,16 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <QRunnable>
 
 namespace Utils {
-namespace Compat {
-// Reimplement QRunnable for std::function. Retrocompatability for Qt < 5.15
-class StdFunctionRunnable : public QRunnable {
-	std::function<void()> cb;
+	namespace Compat {
+		// Reimplement QRunnable for std::function. Retrocompatability for Qt < 5.15
+		class StdFunctionRunnable : public QRunnable {
+			std::function<void()> cb;
 
-public:
-	StdFunctionRunnable(std::function<void()> func);
-	void run() override;
-};
+		public:
+			StdFunctionRunnable(std::function<void()> func);
+			void run() override;
+		};
 
-QRunnable *CreateFunctionRunnable(std::function<void()> func);
-}
+		QRunnable *CreateFunctionRunnable(std::function<void()> func);
+	}
 }

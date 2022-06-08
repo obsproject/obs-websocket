@@ -20,8 +20,8 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #pragma once
 
 namespace WebSocketCloseCode {
-enum WebSocketCloseCode {
-	/**
+	enum WebSocketCloseCode {
+		/**
 		* For internal use only to tell the request handler not to perform any close action.
 		*
 		* @enumIdentifier DontClose
@@ -31,8 +31,8 @@ enum WebSocketCloseCode {
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-	DontClose = 0,
-	/**
+		DontClose = 0,
+		/**
 		* Unknown reason, should never be used.
 		*
 		* @enumIdentifier UnknownReason
@@ -42,8 +42,8 @@ enum WebSocketCloseCode {
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-	UnknownReason = 4000,
-	/**
+		UnknownReason = 4000,
+		/**
 		* The server was unable to decode the incoming websocket message.
 		*
 		* @enumIdentifier MessageDecodeError
@@ -53,8 +53,8 @@ enum WebSocketCloseCode {
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-	MessageDecodeError = 4002,
-	/**
+		MessageDecodeError = 4002,
+		/**
 		* A data field is required but missing from the payload.
 		*
 		* @enumIdentifier MissingDataField
@@ -64,8 +64,8 @@ enum WebSocketCloseCode {
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-	MissingDataField = 4003,
-	/**
+		MissingDataField = 4003,
+		/**
 		* A data field's value type is invalid.
 		*
 		* @enumIdentifier InvalidDataFieldType
@@ -75,8 +75,8 @@ enum WebSocketCloseCode {
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-	InvalidDataFieldType = 4004,
-	/**
+		InvalidDataFieldType = 4004,
+		/**
 		* A data field's value is invalid.
 		*
 		* @enumIdentifier InvalidDataFieldValue
@@ -86,8 +86,8 @@ enum WebSocketCloseCode {
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-	InvalidDataFieldValue = 4005,
-	/**
+		InvalidDataFieldValue = 4005,
+		/**
 		* The specified `op` was invalid or missing.
 		*
 		* @enumIdentifier UnknownOpCode
@@ -97,8 +97,8 @@ enum WebSocketCloseCode {
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-	UnknownOpCode = 4006,
-	/**
+		UnknownOpCode = 4006,
+		/**
 		* The client sent a websocket message without first sending `Identify` message.
 		*
 		* @enumIdentifier NotIdentified
@@ -108,8 +108,8 @@ enum WebSocketCloseCode {
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-	NotIdentified = 4007,
-	/**
+		NotIdentified = 4007,
+		/**
 		* The client sent an `Identify` message while already identified.
 		*
 		* Note: Once a client has identified, only `Reidentify` may be used to change session parameters.
@@ -121,8 +121,8 @@ enum WebSocketCloseCode {
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-	AlreadyIdentified = 4008,
-	/**
+		AlreadyIdentified = 4008,
+		/**
 		* The authentication attempt (via `Identify`) failed.
 		*
 		* @enumIdentifier AuthenticationFailed
@@ -132,8 +132,8 @@ enum WebSocketCloseCode {
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-	AuthenticationFailed = 4009,
-	/**
+		AuthenticationFailed = 4009,
+		/**
 		* The server detected the usage of an old version of the obs-websocket RPC protocol.
 		*
 		* @enumIdentifier UnsupportedRpcVersion
@@ -143,8 +143,8 @@ enum WebSocketCloseCode {
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-	UnsupportedRpcVersion = 4010,
-	/**
+		UnsupportedRpcVersion = 4010,
+		/**
 		* The websocket session has been invalidated by the obs-websocket server.
 		*
 		* Note: This is the code used by the `Kick` button in the UI Session List. If you receive this code, you must not automatically reconnect.
@@ -156,8 +156,8 @@ enum WebSocketCloseCode {
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-	SessionInvalidated = 4011,
-	/**
+		SessionInvalidated = 4011,
+		/**
 		* A requested feature is not supported due to hardware/software limitations.
 		*
 		* @enumIdentifier UnsupportedFeature
@@ -167,6 +167,6 @@ enum WebSocketCloseCode {
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-	UnsupportedFeature = 4012,
-};
+		UnsupportedFeature = 4012,
+	};
 }
