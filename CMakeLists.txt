@@ -108,7 +108,6 @@ target_sources(
 		src/utils/Json.h
 		src/utils/Obs.cpp
 		src/utils/Obs_StringHelper.cpp
-		src/utils/Obs_EnumHelper.cpp
 		src/utils/Obs_NumberHelper.cpp
 		src/utils/Obs_ArrayHelper.cpp
 		src/utils/Obs_ObjectHelper.cpp

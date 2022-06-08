@@ -706,7 +706,7 @@ RequestResult RequestHandler::GetInputAudioMonitorType(const Request &request)
 		return RequestResult::Error(RequestStatus::InvalidResourceState, "The specified input does not support audio.");
 
 	json responseData;
-	responseData["monitorType"] = Utils::Obs::StringHelper::GetInputMonitorType(input);
+	responseData["monitorType"] = obs_source_get_monitoring_type(input);
 
 	return RequestResult::Success(responseData);
 }

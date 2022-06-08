@@ -61,7 +61,8 @@ RequestResult RequestHandler::GetMediaInputStatus(const Request &request)
 		return RequestResult::Error(statusCode, comment);
 
 	json responseData;
-	responseData["mediaState"] = Utils::Obs::StringHelper::GetMediaInputState(input);
+	responseData["mediaState"] = obs_source_media_get_state(input);
+	;
 
 	if (IsMediaTimeValid(input)) {
 		responseData["mediaDuration"] = obs_source_media_get_duration(input);
@@ -168,8 +169,7 @@ RequestResult RequestHandler::TriggerMediaInputAction(const Request &request)
 	if (!(input && request.ValidateString("mediaAction", statusCode, comment)))
 		return RequestResult::Error(statusCode, comment);
 
-	std::string mediaActionString = request.RequestData["mediaAction"];
-	auto mediaAction = Utils::Obs::EnumHelper::GetMediaInputAction(mediaActionString);
+	enum ObsMediaInputAction mediaAction = request.RequestData["mediaAction"];
 
 	switch (mediaAction) {
 	default:

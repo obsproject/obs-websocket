@@ -72,53 +72,6 @@ std::string Utils::Obs::StringHelper::GetCurrentRecordOutputPath()
 	return ret;
 }
 
-std::string Utils::Obs::StringHelper::GetSourceType(obs_source_t *source)
-{
-	obs_source_type sourceType = obs_source_get_type(source);
-
-	switch (sourceType) {
-	default:
-		CASE(OBS_SOURCE_TYPE_INPUT)
-		CASE(OBS_SOURCE_TYPE_FILTER)
-		CASE(OBS_SOURCE_TYPE_TRANSITION)
-		CASE(OBS_SOURCE_TYPE_SCENE)
-	}
-}
-
-std::string Utils::Obs::StringHelper::GetInputMonitorType(enum obs_monitoring_type monitorType)
-{
-	switch (monitorType) {
-	default:
-		CASE(OBS_MONITORING_TYPE_NONE)
-		CASE(OBS_MONITORING_TYPE_MONITOR_ONLY)
-		CASE(OBS_MONITORING_TYPE_MONITOR_AND_OUTPUT)
-	}
-}
-
-std::string Utils::Obs::StringHelper::GetInputMonitorType(obs_source_t *input)
-{
-	obs_monitoring_type monitorType = obs_source_get_monitoring_type(input);
-
-	return GetInputMonitorType(monitorType);
-}
-
-std::string Utils::Obs::StringHelper::GetMediaInputState(obs_source_t *input)
-{
-	obs_media_state mediaState = obs_source_media_get_state(input);
-
-	switch (mediaState) {
-	default:
-		CASE(OBS_MEDIA_STATE_NONE)
-		CASE(OBS_MEDIA_STATE_PLAYING)
-		CASE(OBS_MEDIA_STATE_OPENING)
-		CASE(OBS_MEDIA_STATE_BUFFERING)
-		CASE(OBS_MEDIA_STATE_PAUSED)
-		CASE(OBS_MEDIA_STATE_STOPPED)
-		CASE(OBS_MEDIA_STATE_ENDED)
-		CASE(OBS_MEDIA_STATE_ERROR)
-	}
-}
-
 std::string Utils::Obs::StringHelper::GetLastReplayBufferFilePath()
 {
 	OBSOutputAutoRelease output = obs_frontend_get_replay_buffer_output();
@@ -137,34 +90,6 @@ std::string Utils::Obs::StringHelper::GetLastReplayBufferFilePath()
 	return savedReplayPath;
 }
 
-std::string Utils::Obs::StringHelper::GetSceneItemBoundsType(enum obs_bounds_type type)
-{
-	switch (type) {
-	default:
-		CASE(OBS_BOUNDS_NONE)
-		CASE(OBS_BOUNDS_STRETCH)
-		CASE(OBS_BOUNDS_SCALE_INNER)
-		CASE(OBS_BOUNDS_SCALE_OUTER)
-		CASE(OBS_BOUNDS_SCALE_TO_WIDTH)
-		CASE(OBS_BOUNDS_SCALE_TO_HEIGHT)
-		CASE(OBS_BOUNDS_MAX_ONLY)
-	}
-}
-
-std::string Utils::Obs::StringHelper::GetSceneItemBlendMode(enum obs_blending_type mode)
-{
-	switch (mode) {
-	default:
-		CASE(OBS_BLEND_NORMAL)
-		CASE(OBS_BLEND_ADDITIVE)
-		CASE(OBS_BLEND_SUBTRACT)
-		CASE(OBS_BLEND_SCREEN)
-		CASE(OBS_BLEND_MULTIPLY)
-		CASE(OBS_BLEND_LIGHTEN)
-		CASE(OBS_BLEND_DARKEN)
-	}
-}
-
 std::string Utils::Obs::StringHelper::DurationToTimecode(uint64_t ms)
 {
 	uint64_t secs = ms / 1000ULL;
@@ -178,18 +103,4 @@ std::string Utils::Obs::StringHelper::DurationToTimecode(uint64_t ms)
 	QString formatted =
 		QString::asprintf("%02" PRIu64 ":%02" PRIu64 ":%02" PRIu64 ".%03" PRIu64, hoursPart, minutesPart, secsPart, msPart);
 	return formatted.toStdString();
-}
-
-std::string Utils::Obs::StringHelper::GetOutputState(ObsOutputState state)
-{
-	switch (state) {
-	default:
-		CASE(OBS_WEBSOCKET_OUTPUT_UNKNOWN)
-		CASE(OBS_WEBSOCKET_OUTPUT_STARTING)
-		CASE(OBS_WEBSOCKET_OUTPUT_STARTED)
-		CASE(OBS_WEBSOCKET_OUTPUT_STOPPING)
-		CASE(OBS_WEBSOCKET_OUTPUT_STOPPED)
-		CASE(OBS_WEBSOCKET_OUTPUT_PAUSED)
-		CASE(OBS_WEBSOCKET_OUTPUT_RESUMED)
-	}
 }

@@ -73,7 +73,7 @@ json Utils::Obs::ObjectHelper::GetSceneItemTransform(obs_sceneitem_t *item)
 
 	ret["alignment"] = osi.alignment;
 
-	ret["boundsType"] = StringHelper::GetSceneItemBoundsType(osi.bounds_type);
+	ret["boundsType"] = osi.bounds_type;
 	ret["boundsAlignment"] = osi.bounds_alignment;
 	ret["boundsWidth"] = osi.bounds.x;
 	ret["boundsHeight"] = osi.bounds.y;

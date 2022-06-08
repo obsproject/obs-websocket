@@ -396,9 +396,8 @@ RequestResult RequestHandler::SetSceneItemTransform(const Request &request)
 	if (r.Contains("boundsType")) {
 		if (!r.ValidateOptionalString("boundsType", statusCode, comment))
 			return RequestResult::Error(statusCode, comment);
-		std::string boundsTypeString = r.RequestData["boundsType"];
-		enum obs_bounds_type boundsType = Utils::Obs::EnumHelper::GetSceneItemBoundsType(boundsTypeString);
-		if (boundsType == OBS_BOUNDS_NONE && boundsTypeString != "OBS_BOUNDS_NONE")
+		enum obs_bounds_type boundsType = r.RequestData["boundsType"];
+		if (boundsType == OBS_BOUNDS_NONE && r.RequestData["boundsType"] != "OBS_BOUNDS_NONE")
 			return RequestResult::Error(RequestStatus::InvalidRequestField,
 						    "The field boundsType has an invalid value.");
 		sceneItemTransform.bounds_type = boundsType;
@@ -695,7 +694,7 @@ RequestResult RequestHandler::GetSceneItemBlendMode(const Request &request)
 	auto blendMode = obs_sceneitem_get_blending_mode(sceneItem);
 
 	json responseData;
-	responseData["sceneItemBlendMode"] = Utils::Obs::StringHelper::GetSceneItemBlendMode(blendMode);
+	responseData["sceneItemBlendMode"] = blendMode;
 
 	return RequestResult::Success(responseData);
 }
@@ -725,10 +724,8 @@ RequestResult RequestHandler::SetSceneItemBlendMode(const Request &request)
 	if (!(sceneItem && request.ValidateString("sceneItemBlendMode", statusCode, comment)))
 		return RequestResult::Error(statusCode, comment);
 
-	std::string blendModeString = request.RequestData["sceneItemBlendMode"];
-
-	auto blendMode = Utils::Obs::EnumHelper::GetSceneItemBlendMode(blendModeString);
-	if (blendMode == OBS_BLEND_NORMAL && blendModeString != "OBS_BLEND_NORMAL")
+	enum obs_blending_type blendMode = request.RequestData["sceneItemBlendMode"];
+	if (blendMode == OBS_BLEND_NORMAL && request.RequestData["sceneItemBlendMode"] != "OBS_BLEND_NORMAL")
 		return RequestResult::Error(RequestStatus::InvalidRequestField,
 					    "The field sceneItemBlendMode has an invalid value.");
 
