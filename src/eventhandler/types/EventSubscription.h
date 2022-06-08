@@ -163,8 +163,7 @@ enum EventSubscription {
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
-	All = (General | Config | Scenes | Inputs | Transitions | Filters |
-	       Outputs | SceneItems | MediaInputs | Ui | Vendors),
+	All = (General | Config | Scenes | Inputs | Transitions | Filters | Outputs | SceneItems | MediaInputs | Ui | Vendors),
 	/**
 		* Subscription value to receive the `InputVolumeMeters` high-volume event.
 		*

@@ -36,12 +36,9 @@ Utils::Obs::VolumeMeter::Meter::Meter(obs_source_t *input)
 	signal_handler_t *sh = obs_source_get_signal_handler(input);
 	signal_handler_connect(sh, "volume", Meter::InputVolumeCallback, this);
 
-	obs_source_add_audio_capture_callback(
-		input, Meter::InputAudioCaptureCallback, this);
+	obs_source_add_audio_capture_callback(input, Meter::InputAudioCaptureCallback, this);
 
-	blog_debug(
-		"[Utils::Obs::VolumeMeter::Meter::Meter] Meter created for input: %s",
-		obs_source_get_name(input));
+	blog_debug("[Utils::Obs::VolumeMeter::Meter::Meter] Meter created for input: %s", obs_source_get_name(input));
 }
 
 Utils::Obs::VolumeMeter::Meter::~Meter()
@@ -54,15 +51,11 @@ Utils::Obs::VolumeMeter::Meter::~Meter()
 	}
 
 	signal_handler_t *sh = obs_source_get_signal_handler(input);
-	signal_handler_disconnect(sh, "volume", Meter::InputVolumeCallback,
-				  this);
+	signal_handler_disconnect(sh, "volume", Meter::InputVolumeCallback, this);
 
-	obs_source_remove_audio_capture_callback(
-		input, Meter::InputAudioCaptureCallback, this);
+	obs_source_remove_audio_capture_callback(input, Meter::InputAudioCaptureCallback, this);
 
-	blog_debug(
-		"[Utils::Obs::VolumeMeter::Meter::~Meter] Meter destroyed for input: %s",
-		obs_source_get_name(input));
+	blog_debug("[Utils::Obs::VolumeMeter::Meter::~Meter] Meter destroyed for input: %s", obs_source_get_name(input));
 }
 
 bool Utils::Obs::VolumeMeter::Meter::InputValid()
@@ -86,8 +79,7 @@ json Utils::Obs::VolumeMeter::Meter::GetMeterData()
 
 	std::unique_lock<std::mutex> l(_mutex);
 
-	if (_lastUpdate != 0 &&
-	    (os_gettime_ns() - _lastUpdate) * 0.000000001 > 0.3)
+	if (_lastUpdate != 0 && (os_gettime_ns() - _lastUpdate) * 0.000000001 > 0.3)
 		ResetAudioLevels();
 
 	for (int channel = 0; channel < _channels; channel++) {
@@ -110,16 +102,14 @@ json Utils::Obs::VolumeMeter::Meter::GetMeterData()
 void Utils::Obs::VolumeMeter::Meter::ResetAudioLevels()
 {
 	_lastUpdate = 0;
-	for (int channelNumber = 0; channelNumber < MAX_AUDIO_CHANNELS;
-	     channelNumber++) {
+	for (int channelNumber = 0; channelNumber < MAX_AUDIO_CHANNELS; channelNumber++) {
 		_magnitude[channelNumber] = 0;
 		_peak[channelNumber] = 0;
 	}
 }
 
 // MUST HOLD LOCK
-void Utils::Obs::VolumeMeter::Meter::ProcessAudioChannels(
-	const struct audio_data *data)
+void Utils::Obs::VolumeMeter::Meter::ProcessAudioChannels(const struct audio_data *data)
 {
 	int channels = 0;
 	for (int i = 0; i < MAX_AV_PLANES; i++) {
@@ -151,19 +141,16 @@ void Utils::Obs::VolumeMeter::Meter::ProcessPeak(const struct audio_data *data)
 			continue;
 		}
 
-		__m128 previousSamples =
-			_mm_loadu_ps(_previousSamples[channelNumber]);
+		__m128 previousSamples = _mm_loadu_ps(_previousSamples[channelNumber]);
 
 		float peak;
 		switch (PeakMeterType) {
 		default:
 		case SAMPLE_PEAK_METER:
-			peak = GetSamplePeak(previousSamples, samples,
-					     sampleCount);
+			peak = GetSamplePeak(previousSamples, samples, sampleCount);
 			break;
 		case TRUE_PEAK_METER:
-			peak = GetTruePeak(previousSamples, samples,
-					   sampleCount);
+			peak = GetTruePeak(previousSamples, samples, sampleCount);
 			break;
 		}
 
@@ -171,44 +158,28 @@ void Utils::Obs::VolumeMeter::Meter::ProcessPeak(const struct audio_data *data)
 		case 0:
 			break;
 		case 1:
-			_previousSamples[channelNumber][0] =
-				_previousSamples[channelNumber][1];
-			_previousSamples[channelNumber][1] =
-				_previousSamples[channelNumber][2];
-			_previousSamples[channelNumber][2] =
-				_previousSamples[channelNumber][3];
-			_previousSamples[channelNumber][3] =
-				samples[sampleCount - 1];
+			_previousSamples[channelNumber][0] = _previousSamples[channelNumber][1];
+			_previousSamples[channelNumber][1] = _previousSamples[channelNumber][2];
+			_previousSamples[channelNumber][2] = _previousSamples[channelNumber][3];
+			_previousSamples[channelNumber][3] = samples[sampleCount - 1];
 			break;
 		case 2:
-			_previousSamples[channelNumber][0] =
-				_previousSamples[channelNumber][2];
-			_previousSamples[channelNumber][1] =
-				_previousSamples[channelNumber][3];
-			_previousSamples[channelNumber][2] =
-				samples[sampleCount - 2];
-			_previousSamples[channelNumber][3] =
-				samples[sampleCount - 1];
+			_previousSamples[channelNumber][0] = _previousSamples[channelNumber][2];
+			_previousSamples[channelNumber][1] = _previousSamples[channelNumber][3];
+			_previousSamples[channelNumber][2] = samples[sampleCount - 2];
+			_previousSamples[channelNumber][3] = samples[sampleCount - 1];
 			break;
 		case 3:
-			_previousSamples[channelNumber][0] =
-				_previousSamples[channelNumber][3];
-			_previousSamples[channelNumber][1] =
-				samples[sampleCount - 3];
-			_previousSamples[channelNumber][2] =
-				samples[sampleCount - 2];
-			_previousSamples[channelNumber][3] =
-				samples[sampleCount - 1];
+			_previousSamples[channelNumber][0] = _previousSamples[channelNumber][3];
+			_previousSamples[channelNumber][1] = samples[sampleCount - 3];
+			_previousSamples[channelNumber][2] = samples[sampleCount - 2];
+			_previousSamples[channelNumber][3] = samples[sampleCount - 1];
 			break;
 		default:
-			_previousSamples[channelNumber][0] =
-				samples[sampleCount - 4];
-			_previousSamples[channelNumber][1] =
-				samples[sampleCount - 3];
-			_previousSamples[channelNumber][2] =
-				samples[sampleCount - 2];
-			_previousSamples[channelNumber][3] =
-				samples[sampleCount - 1];
+			_previousSamples[channelNumber][0] = samples[sampleCount - 4];
+			_previousSamples[channelNumber][1] = samples[sampleCount - 3];
+			_previousSamples[channelNumber][2] = samples[sampleCount - 2];
+			_previousSamples[channelNumber][3] = samples[sampleCount - 1];
 		}
 
 		_peak[channelNumber] = peak;
@@ -221,8 +192,7 @@ void Utils::Obs::VolumeMeter::Meter::ProcessPeak(const struct audio_data *data)
 }
 
 // MUST HOLD LOCK
-void Utils::Obs::VolumeMeter::Meter::ProcessMagnitude(
-	const struct audio_data *data)
+void Utils::Obs::VolumeMeter::Meter::ProcessMagnitude(const struct audio_data *data)
 {
 	size_t sampleCount = data->frames;
 
@@ -244,9 +214,8 @@ void Utils::Obs::VolumeMeter::Meter::ProcessMagnitude(
 	}
 }
 
-void Utils::Obs::VolumeMeter::Meter::InputAudioCaptureCallback(
-	void *priv_data, obs_source_t *, const struct audio_data *data,
-	bool muted)
+void Utils::Obs::VolumeMeter::Meter::InputAudioCaptureCallback(void *priv_data, obs_source_t *, const struct audio_data *data,
+							       bool muted)
 {
 	auto c = static_cast<Meter *>(priv_data);
 
@@ -260,16 +229,14 @@ void Utils::Obs::VolumeMeter::Meter::InputAudioCaptureCallback(
 	c->_lastUpdate = os_gettime_ns();
 }
 
-void Utils::Obs::VolumeMeter::Meter::InputVolumeCallback(void *priv_data,
-							 calldata_t *cd)
+void Utils::Obs::VolumeMeter::Meter::InputVolumeCallback(void *priv_data, calldata_t *cd)
 {
 	auto c = static_cast<Meter *>(priv_data);
 
 	c->_volume = (float)calldata_float(cd, "volume");
 }
 
-Utils::Obs::VolumeMeter::Handler::Handler(UpdateCallback cb,
-					  uint64_t updatePeriod)
+Utils::Obs::VolumeMeter::Handler::Handler(UpdateCallback cb, uint64_t updatePeriod)
 	: _updateCallback(cb), _updatePeriod(updatePeriod), _running(false)
 {
 	signal_handler_t *sh = obs_get_signal_handler();
@@ -292,16 +259,13 @@ Utils::Obs::VolumeMeter::Handler::Handler(UpdateCallback cb,
 	};
 	obs_enum_sources(enumProc, this);
 
-	signal_handler_connect(sh, "source_activate",
-			       Handler::InputActivateCallback, this);
-	signal_handler_connect(sh, "source_deactivate",
-			       Handler::InputDeactivateCallback, this);
+	signal_handler_connect(sh, "source_activate", Handler::InputActivateCallback, this);
+	signal_handler_connect(sh, "source_deactivate", Handler::InputDeactivateCallback, this);
 
 	_running = true;
 	_updateThread = std::thread(&Handler::UpdateThread, this);
 
-	blog_debug(
-		"[Utils::Obs::VolumeMeter::Handler::Handler] Handler created.");
+	blog_debug("[Utils::Obs::VolumeMeter::Handler::Handler] Handler created.");
 }
 
 Utils::Obs::VolumeMeter::Handler::~Handler()
@@ -310,10 +274,8 @@ Utils::Obs::VolumeMeter::Handler::~Handler()
 	if (!sh)
 		return;
 
-	signal_handler_disconnect(sh, "source_activate",
-				  Handler::InputActivateCallback, this);
-	signal_handler_disconnect(sh, "source_deactivate",
-				  Handler::InputDeactivateCallback, this);
+	signal_handler_disconnect(sh, "source_activate", Handler::InputActivateCallback, this);
+	signal_handler_disconnect(sh, "source_deactivate", Handler::InputDeactivateCallback, this);
 
 	if (_running) {
 		_running = false;
@@ -323,20 +285,16 @@ Utils::Obs::VolumeMeter::Handler::~Handler()
 	if (_updateThread.joinable())
 		_updateThread.join();
 
-	blog_debug(
-		"[Utils::Obs::VolumeMeter::Handler::~Handler] Handler destroyed.");
+	blog_debug("[Utils::Obs::VolumeMeter::Handler::~Handler] Handler destroyed.");
 }
 
 void Utils::Obs::VolumeMeter::Handler::UpdateThread()
 {
-	blog_debug(
-		"[Utils::Obs::VolumeMeter::Handler::UpdateThread] Thread started.");
+	blog_debug("[Utils::Obs::VolumeMeter::Handler::UpdateThread] Thread started.");
 	while (_running) {
 		{
 			std::unique_lock<std::mutex> l(_mutex);
-			if (_cond.wait_for(
-				    l, std::chrono::milliseconds(_updatePeriod),
-				    [this] { return !_running; }))
+			if (_cond.wait_for(l, std::chrono::milliseconds(_updatePeriod), [this] { return !_running; }))
 				break;
 		}
 
@@ -351,12 +309,10 @@ void Utils::Obs::VolumeMeter::Handler::UpdateThread()
 		if (_updateCallback)
 			_updateCallback(inputs);
 	}
-	blog_debug(
-		"[Utils::Obs::VolumeMeter::Handler::UpdateThread] Thread stopped.");
+	blog_debug("[Utils::Obs::VolumeMeter::Handler::UpdateThread] Thread stopped.");
 }
 
-void Utils::Obs::VolumeMeter::Handler::InputActivateCallback(void *priv_data,
-							     calldata_t *cd)
+void Utils::Obs::VolumeMeter::Handler::InputActivateCallback(void *priv_data, calldata_t *cd)
 {
 	auto c = static_cast<Handler *>(priv_data);
 
@@ -375,8 +331,7 @@ void Utils::Obs::VolumeMeter::Handler::InputActivateCallback(void *priv_data,
 	c->_meters.emplace_back(std::move(new Meter(input)));
 }
 
-void Utils::Obs::VolumeMeter::Handler::InputDeactivateCallback(void *priv_data,
-							       calldata_t *cd)
+void Utils::Obs::VolumeMeter::Handler::InputDeactivateCallback(void *priv_data, calldata_t *cd)
 {
 	auto c = static_cast<Handler *>(priv_data);
 
@@ -391,8 +346,7 @@ void Utils::Obs::VolumeMeter::Handler::InputDeactivateCallback(void *priv_data,
 	std::unique_lock<std::mutex> l(c->_meterMutex);
 	std::vector<MeterPtr>::iterator iter;
 	for (iter = c->_meters.begin(); iter != c->_meters.end();) {
-		if (obs_weak_source_references_source(
-			    iter->get()->GetWeakInput(), input))
+		if (obs_weak_source_references_source(iter->get()->GetWeakInput(), input))
 			iter = c->_meters.erase(iter);
 		else
 			++iter;

@@ -39,8 +39,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 RequestResult RequestHandler::GetStudioModeEnabled(const Request &)
 {
 	json responseData;
-	responseData["studioModeEnabled"] =
-		obs_frontend_preview_program_mode_active();
+	responseData["studioModeEnabled"] = obs_frontend_preview_program_mode_active();
 	return RequestResult::Success(responseData);
 }
 
@@ -64,18 +63,15 @@ RequestResult RequestHandler::SetStudioModeEnabled(const Request &request)
 		return RequestResult::Error(statusCode, comment);
 
 	// Avoid queueing tasks if nothing will change
-	if (obs_frontend_preview_program_mode_active() !=
-	    request.RequestData["studioModeEnabled"]) {
+	if (obs_frontend_preview_program_mode_active() != request.RequestData["studioModeEnabled"]) {
 		// (Bad) Create a boolean then pass it as a reference to the task. Requires `wait` in obs_queue_task() to be true, else undefined behavior
-		bool studioModeEnabled =
-			request.RequestData["studioModeEnabled"];
+		bool studioModeEnabled = request.RequestData["studioModeEnabled"];
 		// Queue the task inside of the UI thread to prevent race conditions
 		obs_queue_task(
 			OBS_TASK_UI,
 			[](void *param) {
 				auto studioModeEnabled = (bool *)param;
-				obs_frontend_set_preview_program_mode(
-					*studioModeEnabled);
+				obs_frontend_set_preview_program_mode(*studioModeEnabled);
 			},
 			&studioModeEnabled, true);
 	}
@@ -99,8 +95,7 @@ RequestResult RequestHandler::OpenInputPropertiesDialog(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease input =
-		request.ValidateInput("inputName", statusCode, comment);
+	OBSSourceAutoRelease input = request.ValidateInput("inputName", statusCode, comment);
 	if (!input)
 		return RequestResult::Error(statusCode, comment);
 
@@ -125,8 +120,7 @@ RequestResult RequestHandler::OpenInputFiltersDialog(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease input =
-		request.ValidateInput("inputName", statusCode, comment);
+	OBSSourceAutoRelease input = request.ValidateInput("inputName", statusCode, comment);
 	if (!input)
 		return RequestResult::Error(statusCode, comment);
 
@@ -151,15 +145,13 @@ RequestResult RequestHandler::OpenInputInteractDialog(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease input =
-		request.ValidateInput("inputName", statusCode, comment);
+	OBSSourceAutoRelease input = request.ValidateInput("inputName", statusCode, comment);
 	if (!input)
 		return RequestResult::Error(statusCode, comment);
 
 	if (!(obs_source_get_output_flags(input) & OBS_SOURCE_INTERACTION))
-		return RequestResult::Error(
-			RequestStatus::InvalidResourceState,
-			"The specified input does not support interaction.");
+		return RequestResult::Error(RequestStatus::InvalidResourceState,
+					    "The specified input does not support interaction.");
 
 	obs_frontend_open_source_interaction(input);
 
@@ -183,8 +175,7 @@ RequestResult RequestHandler::GetMonitorList(const Request &)
 	json responseData;
 	std::vector<json> monitorsData;
 	QList<QScreen *> screensList = QGuiApplication::screens();
-	for (int screenIndex = 0; screenIndex < screensList.size();
-	     screenIndex++) {
+	for (int screenIndex = 0; screenIndex < screensList.size(); screenIndex++) {
 		json screenData;
 		QScreen const *screen = screensList[screenIndex];
 		std::stringstream nameAndIndex;

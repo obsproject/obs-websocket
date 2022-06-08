@@ -40,16 +40,14 @@ RequestResult RequestHandler::GetInputList(const Request &request)
 	if (request.Contains("inputKind")) {
 		RequestStatus::RequestStatus statusCode;
 		std::string comment;
-		if (!request.ValidateOptionalString("inputKind", statusCode,
-						    comment))
+		if (!request.ValidateOptionalString("inputKind", statusCode, comment))
 			return RequestResult::Error(statusCode, comment);
 
 		inputKind = request.RequestData["inputKind"];
 	}
 
 	json responseData;
-	responseData["inputs"] =
-		Utils::Obs::ArrayHelper::GetInputList(inputKind);
+	responseData["inputs"] = Utils::Obs::ArrayHelper::GetInputList(inputKind);
 	return RequestResult::Success(responseData);
 }
 
@@ -74,16 +72,14 @@ RequestResult RequestHandler::GetInputKindList(const Request &request)
 	if (request.Contains("unversioned")) {
 		RequestStatus::RequestStatus statusCode;
 		std::string comment;
-		if (!request.ValidateOptionalBoolean("unversioned", statusCode,
-						     comment))
+		if (!request.ValidateOptionalBoolean("unversioned", statusCode, comment))
 			return RequestResult::Error(statusCode, comment);
 
 		unversioned = request.RequestData["unversioned"];
 	}
 
 	json responseData;
-	responseData["inputKinds"] =
-		Utils::Obs::ArrayHelper::GetInputKindList(unversioned);
+	responseData["inputKinds"] = Utils::Obs::ArrayHelper::GetInputKindList(unversioned);
 	return RequestResult::Success(responseData);
 }
 
@@ -108,8 +104,7 @@ RequestResult RequestHandler::GetSpecialInputs(const Request &)
 {
 	json responseData;
 
-	std::vector<std::string> channels = {"desktop1", "desktop2", "mic1",
-					     "mic2",     "mic3",     "mic4"};
+	std::vector<std::string> channels = {"desktop1", "desktop2", "mic1", "mic2", "mic3", "mic4"};
 
 	size_t channelId = 1;
 	for (auto &channel : channels) {
@@ -147,20 +142,15 @@ RequestResult RequestHandler::CreateInput(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease sceneSource =
-		request.ValidateScene("sceneName", statusCode, comment);
-	if (!(sceneSource &&
-	      request.ValidateString("inputName", statusCode, comment) &&
+	OBSSourceAutoRelease sceneSource = request.ValidateScene("sceneName", statusCode, comment);
+	if (!(sceneSource && request.ValidateString("inputName", statusCode, comment) &&
 	      request.ValidateString("inputKind", statusCode, comment)))
 		return RequestResult::Error(statusCode, comment);
 
 	std::string inputName = request.RequestData["inputName"];
-	OBSSourceAutoRelease existingInput =
-		obs_get_source_by_name(inputName.c_str());
+	OBSSourceAutoRelease existingInput = obs_get_source_by_name(inputName.c_str());
 	if (existingInput)
-		return RequestResult::Error(
-			RequestStatus::ResourceAlreadyExists,
-			"A source already exists by that input name.");
+		return RequestResult::Error(RequestStatus::ResourceAlreadyExists, "A source already exists by that input name.");
 
 	std::string inputKind = request.RequestData["inputKind"];
 	auto kinds = Utils::Obs::ArrayHelper::GetInputKindList();
@@ -171,20 +161,17 @@ RequestResult RequestHandler::CreateInput(const Request &request)
 
 	OBSDataAutoRelease inputSettings = nullptr;
 	if (request.Contains("inputSettings")) {
-		if (!request.ValidateOptionalObject("inputSettings", statusCode,
-						    comment, true))
+		if (!request.ValidateOptionalObject("inputSettings", statusCode, comment, true))
 			return RequestResult::Error(statusCode, comment);
 
-		inputSettings = Utils::Json::JsonToObsData(
-			request.RequestData["inputSettings"]);
+		inputSettings = Utils::Json::JsonToObsData(request.RequestData["inputSettings"]);
 	}
 
 	OBSScene scene = obs_scene_from_source(sceneSource);
 
 	bool sceneItemEnabled = true;
 	if (request.Contains("sceneItemEnabled")) {
-		if (!request.ValidateOptionalBoolean("sceneItemEnabled",
-						     statusCode, comment))
+		if (!request.ValidateOptionalBoolean("sceneItemEnabled", statusCode, comment))
 			return RequestResult::Error(statusCode, comment);
 
 		sceneItemEnabled = request.RequestData["sceneItemEnabled"];
@@ -192,14 +179,10 @@ RequestResult RequestHandler::CreateInput(const Request &request)
 
 	// Create the input and add it as a scene item to the destination scene
 	OBSSceneItemAutoRelease sceneItem =
-		Utils::Obs::ActionHelper::CreateInput(inputName, inputKind,
-						      inputSettings, scene,
-						      sceneItemEnabled);
+		Utils::Obs::ActionHelper::CreateInput(inputName, inputKind, inputSettings, scene, sceneItemEnabled);
 
 	if (!sceneItem)
-		return RequestResult::Error(
-			RequestStatus::ResourceCreationFailed,
-			"Creation of the input or scene item failed.");
+		return RequestResult::Error(RequestStatus::ResourceCreationFailed, "Creation of the input or scene item failed.");
 
 	json responseData;
 	responseData["sceneItemId"] = obs_sceneitem_get_id(sceneItem);
@@ -224,8 +207,7 @@ RequestResult RequestHandler::RemoveInput(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease input =
-		request.ValidateInput("inputName", statusCode, comment);
+	OBSSourceAutoRelease input = request.ValidateInput("inputName", statusCode, comment);
 	if (!input)
 		return RequestResult::Error(statusCode, comment);
 
@@ -254,20 +236,16 @@ RequestResult RequestHandler::SetInputName(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease input =
-		request.ValidateInput("inputName", statusCode, comment);
-	if (!(input &&
-	      request.ValidateString("newInputName", statusCode, comment)))
+	OBSSourceAutoRelease input = request.ValidateInput("inputName", statusCode, comment);
+	if (!(input && request.ValidateString("newInputName", statusCode, comment)))
 		return RequestResult::Error(statusCode, comment);
 
 	std::string newInputName = request.RequestData["newInputName"];
 
-	OBSSourceAutoRelease existingSource =
-		obs_get_source_by_name(newInputName.c_str());
+	OBSSourceAutoRelease existingSource = obs_get_source_by_name(newInputName.c_str());
 	if (existingSource)
-		return RequestResult::Error(
-			RequestStatus::ResourceAlreadyExists,
-			"A source already exists by that new input name.");
+		return RequestResult::Error(RequestStatus::ResourceAlreadyExists,
+					    "A source already exists by that new input name.");
 
 	obs_source_set_name(input, newInputName.c_str());
 
@@ -300,14 +278,12 @@ RequestResult RequestHandler::GetInputDefaultSettings(const Request &request)
 	if (std::find(kinds.begin(), kinds.end(), inputKind) == kinds.end())
 		return RequestResult::Error(RequestStatus::InvalidInputKind);
 
-	OBSDataAutoRelease defaultSettings =
-		obs_get_source_defaults(inputKind.c_str());
+	OBSDataAutoRelease defaultSettings = obs_get_source_defaults(inputKind.c_str());
 	if (!defaultSettings)
 		return RequestResult::Error(RequestStatus::InvalidInputKind);
 
 	json responseData;
-	responseData["defaultInputSettings"] =
-		Utils::Json::ObsDataToJson(defaultSettings, true);
+	responseData["defaultInputSettings"] = Utils::Json::ObsDataToJson(defaultSettings, true);
 	return RequestResult::Success(responseData);
 }
 
@@ -332,16 +308,14 @@ RequestResult RequestHandler::GetInputSettings(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease input =
-		request.ValidateInput("inputName", statusCode, comment);
+	OBSSourceAutoRelease input = request.ValidateInput("inputName", statusCode, comment);
 	if (!input)
 		return RequestResult::Error(statusCode, comment);
 
 	OBSDataAutoRelease inputSettings = obs_source_get_settings(input);
 
 	json responseData;
-	responseData["inputSettings"] =
-		Utils::Json::ObsDataToJson(inputSettings);
+	responseData["inputSettings"] = Utils::Json::ObsDataToJson(inputSettings);
 	responseData["inputKind"] = obs_source_get_id(input);
 	return RequestResult::Success(responseData);
 }
@@ -364,29 +338,24 @@ RequestResult RequestHandler::SetInputSettings(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease input =
-		request.ValidateInput("inputName", statusCode, comment);
-	if (!(input && request.ValidateObject("inputSettings", statusCode,
-					      comment, true)))
+	OBSSourceAutoRelease input = request.ValidateInput("inputName", statusCode, comment);
+	if (!(input && request.ValidateObject("inputSettings", statusCode, comment, true)))
 		return RequestResult::Error(statusCode, comment);
 
 	bool overlay = true;
 	if (request.Contains("overlay")) {
-		if (!request.ValidateOptionalBoolean("overlay", statusCode,
-						     comment))
+		if (!request.ValidateOptionalBoolean("overlay", statusCode, comment))
 			return RequestResult::Error(statusCode, comment);
 
 		overlay = request.RequestData["overlay"];
 	}
 
 	// Get the new settings and convert it to obs_data_t*
-	OBSDataAutoRelease newSettings = Utils::Json::JsonToObsData(
-		request.RequestData["inputSettings"]);
+	OBSDataAutoRelease newSettings = Utils::Json::JsonToObsData(request.RequestData["inputSettings"]);
 	if (!newSettings)
 		// This should never happen
-		return RequestResult::Error(
-			RequestStatus::RequestProcessingFailed,
-			"An internal data conversion operation failed. Please report this!");
+		return RequestResult::Error(RequestStatus::RequestProcessingFailed,
+					    "An internal data conversion operation failed. Please report this!");
 
 	if (overlay)
 		// Applies the new settings on top of the existing user settings
@@ -419,15 +388,12 @@ RequestResult RequestHandler::GetInputMute(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease input =
-		request.ValidateInput("inputName", statusCode, comment);
+	OBSSourceAutoRelease input = request.ValidateInput("inputName", statusCode, comment);
 	if (!input)
 		return RequestResult::Error(statusCode, comment);
 
 	if (!(obs_source_get_output_flags(input) & OBS_SOURCE_AUDIO))
-		return RequestResult::Error(
-			RequestStatus::InvalidResourceState,
-			"The specified input does not support audio.");
+		return RequestResult::Error(RequestStatus::InvalidResourceState, "The specified input does not support audio.");
 
 	json responseData;
 	responseData["inputMuted"] = obs_source_muted(input);
@@ -451,16 +417,12 @@ RequestResult RequestHandler::SetInputMute(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease input =
-		request.ValidateInput("inputName", statusCode, comment);
-	if (!(input &&
-	      request.ValidateBoolean("inputMuted", statusCode, comment)))
+	OBSSourceAutoRelease input = request.ValidateInput("inputName", statusCode, comment);
+	if (!(input && request.ValidateBoolean("inputMuted", statusCode, comment)))
 		return RequestResult::Error(statusCode, comment);
 
 	if (!(obs_source_get_output_flags(input) & OBS_SOURCE_AUDIO))
-		return RequestResult::Error(
-			RequestStatus::InvalidResourceState,
-			"The specified input does not support audio.");
+		return RequestResult::Error(RequestStatus::InvalidResourceState, "The specified input does not support audio.");
 
 	obs_source_set_muted(input, request.RequestData["inputMuted"]);
 
@@ -485,15 +447,12 @@ RequestResult RequestHandler::ToggleInputMute(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease input =
-		request.ValidateInput("inputName", statusCode, comment);
+	OBSSourceAutoRelease input = request.ValidateInput("inputName", statusCode, comment);
 	if (!input)
 		return RequestResult::Error(statusCode, comment);
 
 	if (!(obs_source_get_output_flags(input) & OBS_SOURCE_AUDIO))
-		return RequestResult::Error(
-			RequestStatus::InvalidResourceState,
-			"The specified input does not support audio.");
+		return RequestResult::Error(RequestStatus::InvalidResourceState, "The specified input does not support audio.");
 
 	bool inputMuted = !obs_source_muted(input);
 	obs_source_set_muted(input, inputMuted);
@@ -522,15 +481,12 @@ RequestResult RequestHandler::GetInputVolume(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease input =
-		request.ValidateInput("inputName", statusCode, comment);
+	OBSSourceAutoRelease input = request.ValidateInput("inputName", statusCode, comment);
 	if (!input)
 		return RequestResult::Error(statusCode, comment);
 
 	if (!(obs_source_get_output_flags(input) & OBS_SOURCE_AUDIO))
-		return RequestResult::Error(
-			RequestStatus::InvalidResourceState,
-			"The specified input does not support audio.");
+		return RequestResult::Error(RequestStatus::InvalidResourceState, "The specified input does not support audio.");
 
 	float inputVolumeMul = obs_source_get_volume(input);
 	float inputVolumeDb = obs_mul_to_db(inputVolumeMul);
@@ -561,42 +517,32 @@ RequestResult RequestHandler::SetInputVolume(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease input =
-		request.ValidateInput("inputName", statusCode, comment);
+	OBSSourceAutoRelease input = request.ValidateInput("inputName", statusCode, comment);
 	if (!input)
 		return RequestResult::Error(statusCode, comment);
 
 	if (!(obs_source_get_output_flags(input) & OBS_SOURCE_AUDIO))
-		return RequestResult::Error(
-			RequestStatus::InvalidResourceState,
-			"The specified input does not support audio.");
+		return RequestResult::Error(RequestStatus::InvalidResourceState, "The specified input does not support audio.");
 
 	bool hasMul = request.Contains("inputVolumeMul");
-	if (hasMul && !request.ValidateOptionalNumber(
-			      "inputVolumeMul", statusCode, comment, 0, 20))
+	if (hasMul && !request.ValidateOptionalNumber("inputVolumeMul", statusCode, comment, 0, 20))
 		return RequestResult::Error(statusCode, comment);
 
 	bool hasDb = request.Contains("inputVolumeDb");
-	if (hasDb && !request.ValidateOptionalNumber(
-			     "inputVolumeDb", statusCode, comment, -100, 26))
+	if (hasDb && !request.ValidateOptionalNumber("inputVolumeDb", statusCode, comment, -100, 26))
 		return RequestResult::Error(statusCode, comment);
 
 	if (hasMul && hasDb)
-		return RequestResult::Error(
-			RequestStatus::TooManyRequestFields,
-			"You may only specify one volume field.");
+		return RequestResult::Error(RequestStatus::TooManyRequestFields, "You may only specify one volume field.");
 
 	if (!hasMul && !hasDb)
-		return RequestResult::Error(
-			RequestStatus::MissingRequestField,
-			"You must specify one volume field.");
+		return RequestResult::Error(RequestStatus::MissingRequestField, "You must specify one volume field.");
 
 	float inputVolumeMul;
 	if (hasMul)
 		inputVolumeMul = request.RequestData["inputVolumeMul"];
 	else
-		inputVolumeMul =
-			obs_db_to_mul(request.RequestData["inputVolumeDb"]);
+		inputVolumeMul = obs_db_to_mul(request.RequestData["inputVolumeDb"]);
 
 	obs_source_set_volume(input, inputVolumeMul);
 
@@ -621,15 +567,12 @@ RequestResult RequestHandler::GetInputAudioBalance(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease input =
-		request.ValidateInput("inputName", statusCode, comment);
+	OBSSourceAutoRelease input = request.ValidateInput("inputName", statusCode, comment);
 	if (!input)
 		return RequestResult::Error(statusCode, comment);
 
 	if (!(obs_source_get_output_flags(input) & OBS_SOURCE_AUDIO))
-		return RequestResult::Error(
-			RequestStatus::InvalidResourceState,
-			"The specified input does not support audio.");
+		return RequestResult::Error(RequestStatus::InvalidResourceState, "The specified input does not support audio.");
 
 	json responseData;
 	responseData["inputAudioBalance"] = obs_source_get_balance_value(input);
@@ -654,16 +597,12 @@ RequestResult RequestHandler::SetInputAudioBalance(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease input =
-		request.ValidateInput("inputName", statusCode, comment);
-	if (!(input && request.ValidateNumber("inputAudioBalance", statusCode,
-					      comment, 0.0, 1.0)))
+	OBSSourceAutoRelease input = request.ValidateInput("inputName", statusCode, comment);
+	if (!(input && request.ValidateNumber("inputAudioBalance", statusCode, comment, 0.0, 1.0)))
 		return RequestResult::Error(statusCode, comment);
 
 	if (!(obs_source_get_output_flags(input) & OBS_SOURCE_AUDIO))
-		return RequestResult::Error(
-			RequestStatus::InvalidResourceState,
-			"The specified input does not support audio.");
+		return RequestResult::Error(RequestStatus::InvalidResourceState, "The specified input does not support audio.");
 
 	float inputAudioBalance = request.RequestData["inputAudioBalance"];
 	obs_source_set_balance_value(input, inputAudioBalance);
@@ -691,20 +630,16 @@ RequestResult RequestHandler::GetInputAudioSyncOffset(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease input =
-		request.ValidateInput("inputName", statusCode, comment);
+	OBSSourceAutoRelease input = request.ValidateInput("inputName", statusCode, comment);
 	if (!input)
 		return RequestResult::Error(statusCode, comment);
 
 	if (!(obs_source_get_output_flags(input) & OBS_SOURCE_AUDIO))
-		return RequestResult::Error(
-			RequestStatus::InvalidResourceState,
-			"The specified input does not support audio.");
+		return RequestResult::Error(RequestStatus::InvalidResourceState, "The specified input does not support audio.");
 
 	json responseData;
 	//									   Offset is stored in nanoseconds in OBS.
-	responseData["inputAudioSyncOffset"] =
-		obs_source_get_sync_offset(input) / 1000000;
+	responseData["inputAudioSyncOffset"] = obs_source_get_sync_offset(input) / 1000000;
 
 	return RequestResult::Success(responseData);
 }
@@ -726,17 +661,12 @@ RequestResult RequestHandler::SetInputAudioSyncOffset(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease input =
-		request.ValidateInput("inputName", statusCode, comment);
-	if (!(input &&
-	      request.ValidateNumber("inputAudioSyncOffset", statusCode,
-				     comment, -950, 20000)))
+	OBSSourceAutoRelease input = request.ValidateInput("inputName", statusCode, comment);
+	if (!(input && request.ValidateNumber("inputAudioSyncOffset", statusCode, comment, -950, 20000)))
 		return RequestResult::Error(statusCode, comment);
 
 	if (!(obs_source_get_output_flags(input) & OBS_SOURCE_AUDIO))
-		return RequestResult::Error(
-			RequestStatus::InvalidResourceState,
-			"The specified input does not support audio.");
+		return RequestResult::Error(RequestStatus::InvalidResourceState, "The specified input does not support audio.");
 
 	int64_t syncOffset = request.RequestData["inputAudioSyncOffset"];
 	obs_source_set_sync_offset(input, syncOffset * 1000000);
@@ -768,19 +698,15 @@ RequestResult RequestHandler::GetInputAudioMonitorType(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease input =
-		request.ValidateInput("inputName", statusCode, comment);
+	OBSSourceAutoRelease input = request.ValidateInput("inputName", statusCode, comment);
 	if (!input)
 		return RequestResult::Error(statusCode, comment);
 
 	if (!(obs_source_get_output_flags(input) & OBS_SOURCE_AUDIO))
-		return RequestResult::Error(
-			RequestStatus::InvalidResourceState,
-			"The specified input does not support audio.");
+		return RequestResult::Error(RequestStatus::InvalidResourceState, "The specified input does not support audio.");
 
 	json responseData;
-	responseData["monitorType"] =
-		Utils::Obs::StringHelper::GetInputMonitorType(input);
+	responseData["monitorType"] = Utils::Obs::StringHelper::GetInputMonitorType(input);
 
 	return RequestResult::Success(responseData);
 }
@@ -802,21 +728,16 @@ RequestResult RequestHandler::SetInputAudioMonitorType(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease input =
-		request.ValidateInput("inputName", statusCode, comment);
-	if (!(input &&
-	      request.ValidateString("monitorType", statusCode, comment)))
+	OBSSourceAutoRelease input = request.ValidateInput("inputName", statusCode, comment);
+	if (!(input && request.ValidateString("monitorType", statusCode, comment)))
 		return RequestResult::Error(statusCode, comment);
 
 	if (!(obs_source_get_output_flags(input) & OBS_SOURCE_AUDIO))
-		return RequestResult::Error(
-			RequestStatus::InvalidResourceState,
-			"The specified input does not support audio.");
+		return RequestResult::Error(RequestStatus::InvalidResourceState, "The specified input does not support audio.");
 
 	if (!obs_audio_monitoring_available())
-		return RequestResult::Error(
-			RequestStatus::InvalidResourceState,
-			"Audio monitoring is not available on this platform.");
+		return RequestResult::Error(RequestStatus::InvalidResourceState,
+					    "Audio monitoring is not available on this platform.");
 
 	enum obs_monitoring_type monitorType;
 	std::string monitorTypeString = request.RequestData["monitorType"];
@@ -827,10 +748,8 @@ RequestResult RequestHandler::SetInputAudioMonitorType(const Request &request)
 	else if (monitorTypeString == "OBS_MONITORING_TYPE_MONITOR_AND_OUTPUT")
 		monitorType = OBS_MONITORING_TYPE_MONITOR_AND_OUTPUT;
 	else
-		return RequestResult::Error(
-			RequestStatus::InvalidRequestField,
-			std::string("Unknown monitor type: ") +
-				monitorTypeString);
+		return RequestResult::Error(RequestStatus::InvalidRequestField,
+					    std::string("Unknown monitor type: ") + monitorTypeString);
 
 	obs_source_set_monitoring_type(input, monitorType);
 
@@ -855,22 +774,18 @@ RequestResult RequestHandler::GetInputAudioTracks(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease input =
-		request.ValidateInput("inputName", statusCode, comment);
+	OBSSourceAutoRelease input = request.ValidateInput("inputName", statusCode, comment);
 	if (!input)
 		return RequestResult::Error(statusCode, comment);
 
 	if (!(obs_source_get_output_flags(input) & OBS_SOURCE_AUDIO))
-		return RequestResult::Error(
-			RequestStatus::InvalidResourceState,
-			"The specified input does not support audio.");
+		return RequestResult::Error(RequestStatus::InvalidResourceState, "The specified input does not support audio.");
 
 	long long tracks = obs_source_get_audio_mixers(input);
 
 	json inputAudioTracks;
 	for (long long i = 0; i < MAX_AUDIO_MIXES; i++) {
-		inputAudioTracks[std::to_string(i + 1)] =
-			(bool)((tracks >> i) & 1);
+		inputAudioTracks[std::to_string(i + 1)] = (bool)((tracks >> i) & 1);
 	}
 
 	json responseData;
@@ -896,16 +811,12 @@ RequestResult RequestHandler::SetInputAudioTracks(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease input =
-		request.ValidateInput("inputName", statusCode, comment);
-	if (!input ||
-	    !request.ValidateObject("inputAudioTracks", statusCode, comment))
+	OBSSourceAutoRelease input = request.ValidateInput("inputName", statusCode, comment);
+	if (!input || !request.ValidateObject("inputAudioTracks", statusCode, comment))
 		return RequestResult::Error(statusCode, comment);
 
 	if (!(obs_source_get_output_flags(input) & OBS_SOURCE_AUDIO))
-		return RequestResult::Error(
-			RequestStatus::InvalidResourceState,
-			"The specified input does not support audio.");
+		return RequestResult::Error(RequestStatus::InvalidResourceState, "The specified input does not support audio.");
 
 	json inputAudioTracks = request.RequestData["inputAudioTracks"];
 
@@ -918,9 +829,8 @@ RequestResult RequestHandler::SetInputAudioTracks(const Request &request)
 			continue;
 
 		if (!inputAudioTracks[track].is_boolean())
-			return RequestResult::Error(
-				RequestStatus::InvalidRequestFieldType,
-				"The value of one of your tracks is not a boolean.");
+			return RequestResult::Error(RequestStatus::InvalidRequestFieldType,
+						    "The value of one of your tracks is not a boolean.");
 
 		bool enabled = inputAudioTracks[track];
 
@@ -953,34 +863,25 @@ RequestResult RequestHandler::SetInputAudioTracks(const Request &request)
  * @api requests
  * @category inputs
  */
-RequestResult
-RequestHandler::GetInputPropertiesListPropertyItems(const Request &request)
+RequestResult RequestHandler::GetInputPropertiesListPropertyItems(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease input =
-		request.ValidateInput("inputName", statusCode, comment);
-	if (!(input &&
-	      request.ValidateString("propertyName", statusCode, comment)))
+	OBSSourceAutoRelease input = request.ValidateInput("inputName", statusCode, comment);
+	if (!(input && request.ValidateString("propertyName", statusCode, comment)))
 		return RequestResult::Error(statusCode, comment);
 
 	std::string propertyName = request.RequestData["propertyName"];
 
 	OBSPropertiesAutoDestroy inputProperties = obs_source_properties(input);
-	obs_property_t *property =
-		obs_properties_get(inputProperties, propertyName.c_str());
+	obs_property_t *property = obs_properties_get(inputProperties, propertyName.c_str());
 	if (!property)
-		return RequestResult::Error(
-			RequestStatus::ResourceNotFound,
-			"Unable to find a property by that name.");
+		return RequestResult::Error(RequestStatus::ResourceNotFound, "Unable to find a property by that name.");
 	if (obs_property_get_type(property) != OBS_PROPERTY_LIST)
-		return RequestResult::Error(
-			RequestStatus::InvalidResourceType,
-			"The property found is not a list.");
+		return RequestResult::Error(RequestStatus::InvalidResourceType, "The property found is not a list.");
 
 	json responseData;
-	responseData["propertyItems"] =
-		Utils::Obs::ArrayHelper::GetListPropertyItems(property);
+	responseData["propertyItems"] = Utils::Obs::ArrayHelper::GetListPropertyItems(property);
 
 	return RequestResult::Success(responseData);
 }
@@ -1004,29 +905,20 @@ RequestResult RequestHandler::PressInputPropertiesButton(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease input =
-		request.ValidateInput("inputName", statusCode, comment);
-	if (!(input &&
-	      request.ValidateString("propertyName", statusCode, comment)))
+	OBSSourceAutoRelease input = request.ValidateInput("inputName", statusCode, comment);
+	if (!(input && request.ValidateString("propertyName", statusCode, comment)))
 		return RequestResult::Error(statusCode, comment);
 
 	std::string propertyName = request.RequestData["propertyName"];
 
 	OBSPropertiesAutoDestroy inputProperties = obs_source_properties(input);
-	obs_property_t *property =
-		obs_properties_get(inputProperties, propertyName.c_str());
+	obs_property_t *property = obs_properties_get(inputProperties, propertyName.c_str());
 	if (!property)
-		return RequestResult::Error(
-			RequestStatus::ResourceNotFound,
-			"Unable to find a property by that name.");
+		return RequestResult::Error(RequestStatus::ResourceNotFound, "Unable to find a property by that name.");
 	if (obs_property_get_type(property) != OBS_PROPERTY_BUTTON)
-		return RequestResult::Error(
-			RequestStatus::InvalidResourceType,
-			"The property found is not a button.");
+		return RequestResult::Error(RequestStatus::InvalidResourceType, "The property found is not a button.");
 	if (!obs_property_enabled(property))
-		return RequestResult::Error(
-			RequestStatus::InvalidResourceState,
-			"The property item found is not enabled.");
+		return RequestResult::Error(RequestStatus::InvalidResourceState, "The property item found is not enabled.");
 
 	obs_property_button_clicked(property, input);
 

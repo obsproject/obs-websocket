@@ -202,6 +202,5 @@ private:
 	RequestResult GetMonitorList(const Request &);
 
 	SessionPtr _session;
-	static const std::unordered_map<std::string, RequestMethodHandler>
-		_handlerMap;
+	static const std::unordered_map<std::string, RequestMethodHandler> _handlerMap;
 };

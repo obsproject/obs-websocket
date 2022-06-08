@@ -53,8 +53,7 @@ size_t Utils::Obs::NumberHelper::GetSceneCount()
 	return ret;
 }
 
-size_t Utils::Obs::NumberHelper::GetSourceFilterIndex(obs_source_t *source,
-						      obs_source_t *filter)
+size_t Utils::Obs::NumberHelper::GetSourceFilterIndex(obs_source_t *source, obs_source_t *filter)
 {
 	struct FilterSearch {
 		obs_source_t *filter;
@@ -62,8 +61,7 @@ size_t Utils::Obs::NumberHelper::GetSourceFilterIndex(obs_source_t *source,
 		size_t index;
 	};
 
-	auto search = [](obs_source_t *, obs_source_t *filter,
-			 void *priv_data) {
+	auto search = [](obs_source_t *, obs_source_t *filter, void *priv_data) {
 		auto filterSearch = static_cast<FilterSearch *>(priv_data);
 
 		if (filter == filterSearch->filter)

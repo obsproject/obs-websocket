@@ -28,17 +28,13 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include "../Config.h"
 #include "../utils/Platform.h"
 
-ConnectInfo::ConnectInfo(QWidget *parent)
-	: QDialog(parent, Qt::Dialog), ui(new Ui::ConnectInfo)
+ConnectInfo::ConnectInfo(QWidget *parent) : QDialog(parent, Qt::Dialog), ui(new Ui::ConnectInfo)
 {
 	ui->setupUi(this);
 
-	connect(ui->copyServerIpButton, &QPushButton::clicked, this,
-		&ConnectInfo::CopyServerIpButtonClicked);
-	connect(ui->copyServerPortButton, &QPushButton::clicked, this,
-		&ConnectInfo::CopyServerPortButtonClicked);
-	connect(ui->copyServerPasswordButton, &QPushButton::clicked, this,
-		&ConnectInfo::CopyServerPasswordButtonClicked);
+	connect(ui->copyServerIpButton, &QPushButton::clicked, this, &ConnectInfo::CopyServerIpButtonClicked);
+	connect(ui->copyServerPortButton, &QPushButton::clicked, this, &ConnectInfo::CopyServerPortButtonClicked);
+	connect(ui->copyServerPasswordButton, &QPushButton::clicked, this, &ConnectInfo::CopyServerPasswordButtonClicked);
 }
 
 ConnectInfo::~ConnectInfo()
@@ -55,13 +51,11 @@ void ConnectInfo::RefreshData()
 {
 	auto conf = GetConfig();
 	if (!conf) {
-		blog(LOG_ERROR,
-		     "[ConnectInfo::showEvent] Unable to retreive config!");
+		blog(LOG_ERROR, "[ConnectInfo::showEvent] Unable to retreive config!");
 		return;
 	}
 
-	QString serverIp =
-		QString::fromStdString(Utils::Platform::GetLocalAddress());
+	QString serverIp = QString::fromStdString(Utils::Platform::GetLocalAddress());
 	ui->serverIpLineEdit->setText(serverIp);
 
 	QString serverPort = QString::number(conf->ServerPort);
@@ -73,20 +67,15 @@ void ConnectInfo::RefreshData()
 		serverPassword = QUrl::toPercentEncoding(conf->ServerPassword);
 	} else {
 		ui->copyServerPasswordButton->setEnabled(false);
-		serverPassword = obs_module_text(
-			"OBSWebSocket.ConnectInfo.ServerPasswordPlaceholderText");
+		serverPassword = obs_module_text("OBSWebSocket.ConnectInfo.ServerPasswordPlaceholderText");
 	}
 	ui->serverPasswordLineEdit->setText(serverPassword);
 
 	QString connectString;
 	if (conf->AuthRequired)
-		connectString = QString("obsws://%1:%2/%3")
-					.arg(serverIp)
-					.arg(serverPort)
-					.arg(serverPassword);
+		connectString = QString("obsws://%1:%2/%3").arg(serverIp).arg(serverPort).arg(serverPassword);
 	else
-		connectString =
-			QString("obsws://%1:%2").arg(serverIp).arg(serverPort);
+		connectString = QString("obsws://%1:%2").arg(serverIp).arg(serverPort);
 	DrawQr(connectString);
 }
 
@@ -120,8 +109,7 @@ void ConnectInfo::DrawQr(QString qrText)
 	map.fill(Qt::white);
 	QPainter painter(&map);
 
-	qrcodegen::QrCode qr = qrcodegen::QrCode::encodeText(
-		QT_TO_UTF8(qrText), qrcodegen::QrCode::Ecc::MEDIUM);
+	qrcodegen::QrCode qr = qrcodegen::QrCode::encodeText(QT_TO_UTF8(qrText), qrcodegen::QrCode::Ecc::MEDIUM);
 	const int s = qr.getSize() > 0 ? qr.getSize() : 1;
 	const double w = map.width();
 	const double h = map.height();

@@ -42,27 +42,17 @@ WebSocketServer::WebSocketServer() : QObject(nullptr), _sessions()
 #endif
 
 	_server.set_validate_handler(
-		websocketpp::lib::bind(&WebSocketServer::onValidate, this,
-				       websocketpp::lib::placeholders::_1));
-	_server.set_open_handler(
-		websocketpp::lib::bind(&WebSocketServer::onOpen, this,
-				       websocketpp::lib::placeholders::_1));
-	_server.set_close_handler(
-		websocketpp::lib::bind(&WebSocketServer::onClose, this,
-				       websocketpp::lib::placeholders::_1));
-	_server.set_message_handler(
-		websocketpp::lib::bind(&WebSocketServer::onMessage, this,
-				       websocketpp::lib::placeholders::_1,
-				       websocketpp::lib::placeholders::_2));
+		websocketpp::lib::bind(&WebSocketServer::onValidate, this, websocketpp::lib::placeholders::_1));
+	_server.set_open_handler(websocketpp::lib::bind(&WebSocketServer::onOpen, this, websocketpp::lib::placeholders::_1));
+	_server.set_close_handler(websocketpp::lib::bind(&WebSocketServer::onClose, this, websocketpp::lib::placeholders::_1));
+	_server.set_message_handler(websocketpp::lib::bind(&WebSocketServer::onMessage, this, websocketpp::lib::placeholders::_1,
+							   websocketpp::lib::placeholders::_2));
 
 	auto eventHandler = GetEventHandler();
-	eventHandler->SetBroadcastCallback(
-		std::bind(&WebSocketServer::BroadcastEvent, this,
-			  std::placeholders::_1, std::placeholders::_2,
-			  std::placeholders::_3, std::placeholders::_4));
+	eventHandler->SetBroadcastCallback(std::bind(&WebSocketServer::BroadcastEvent, this, std::placeholders::_1,
+						     std::placeholders::_2, std::placeholders::_3, std::placeholders::_4));
 
-	eventHandler->SetObsLoadedCallback(
-		std::bind(&WebSocketServer::onObsLoaded, this));
+	eventHandler->SetObsLoadedCallback(std::bind(&WebSocketServer::onObsLoaded, this));
 }
 
 WebSocketServer::~WebSocketServer()
@@ -77,16 +67,11 @@ void WebSocketServer::ServerRunner()
 	try {
 		_server.run();
 	} catch (websocketpp::exception const &e) {
-		blog(LOG_ERROR,
-		     "[WebSocketServer::ServerRunner] websocketpp instance returned an error: %s",
-		     e.what());
+		blog(LOG_ERROR, "[WebSocketServer::ServerRunner] websocketpp instance returned an error: %s", e.what());
 	} catch (const std::exception &e) {
-		blog(LOG_ERROR,
-		     "[WebSocketServer::ServerRunner] websocketpp instance returned an error: %s",
-		     e.what());
+		blog(LOG_ERROR, "[WebSocketServer::ServerRunner] websocketpp instance returned an error: %s", e.what());
 	} catch (...) {
-		blog(LOG_ERROR,
-		     "[WebSocketServer::ServerRunner] websocketpp instance returned an error");
+		blog(LOG_ERROR, "[WebSocketServer::ServerRunner] websocketpp instance returned an error");
 	}
 	blog(LOG_INFO, "[WebSocketServer::ServerRunner] IO thread exited.");
 }
@@ -94,70 +79,53 @@ void WebSocketServer::ServerRunner()
 void WebSocketServer::Start()
 {
 	if (_server.is_listening()) {
-		blog(LOG_WARNING,
-		     "[WebSocketServer::Start] Call to Start() but the server is already listening.");
+		blog(LOG_WARNING, "[WebSocketServer::Start] Call to Start() but the server is already listening.");
 		return;
 	}
 
 	auto conf = GetConfig();
 	if (!conf) {
-		blog(LOG_ERROR,
-		     "[WebSocketServer::Start] Unable to retreive config!");
+		blog(LOG_ERROR, "[WebSocketServer::Start] Unable to retreive config!");
 		return;
 	}
 
 	_authenticationSalt = Utils::Crypto::GenerateSalt();
-	_authenticationSecret = Utils::Crypto::GenerateSecret(
-		conf->ServerPassword.toStdString(), _authenticationSalt);
+	_authenticationSecret = Utils::Crypto::GenerateSecret(conf->ServerPassword.toStdString(), _authenticationSalt);
 
 	// Set log levels if debug is enabled
 	if (IsDebugEnabled()) {
 		_server.get_alog().set_channels(websocketpp::log::alevel::all);
-		_server.get_alog().clear_channels(
-			websocketpp::log::alevel::frame_header |
-			websocketpp::log::alevel::frame_payload |
-			websocketpp::log::alevel::control);
+		_server.get_alog().clear_channels(websocketpp::log::alevel::frame_header | websocketpp::log::alevel::frame_payload |
+						  websocketpp::log::alevel::control);
 		_server.get_elog().set_channels(websocketpp::log::elevel::all);
-		_server.get_alog().clear_channels(
-			websocketpp::log::elevel::devel |
-			websocketpp::log::elevel::library);
+		_server.get_alog().clear_channels(websocketpp::log::elevel::devel | websocketpp::log::elevel::library);
 	} else {
-		_server.get_alog().clear_channels(
-			websocketpp::log::alevel::all);
-		_server.get_elog().clear_channels(
-			websocketpp::log::elevel::all);
+		_server.get_alog().clear_channels(websocketpp::log::alevel::all);
+		_server.get_elog().clear_channels(websocketpp::log::elevel::all);
 	}
 
 	_server.reset();
 
 	websocketpp::lib::error_code errorCode;
 	if (conf->BindLoopback) {
-		std::string addr =
-			Utils::Platform::GetLoopbackAddress(!conf->Ipv4Only);
+		std::string addr = Utils::Platform::GetLoopbackAddress(!conf->Ipv4Only);
 		if (addr.empty()) {
-			blog(LOG_ERROR,
-			     "[WebSocketServer::Start] Failed to find loopback interface. Server not started.");
+			blog(LOG_ERROR, "[WebSocketServer::Start] Failed to find loopback interface. Server not started.");
 			return;
 		}
-		_server.listen(addr, std::to_string(conf->ServerPort),
-			       errorCode);
-		blog(LOG_INFO,
-		     "[WebSocketServer::Start] Locked to loopback interface.");
+		_server.listen(addr, std::to_string(conf->ServerPort), errorCode);
+		blog(LOG_INFO, "[WebSocketServer::Start] Locked to loopback interface.");
 	} else if (conf->Ipv4Only) {
-		_server.listen(websocketpp::lib::asio::ip::tcp::v4(),
-			       conf->ServerPort, errorCode);
-		blog(LOG_INFO,
-		     "[WebSocketServer::Start] Locked to IPv4 bindings.");
+		_server.listen(websocketpp::lib::asio::ip::tcp::v4(), conf->ServerPort, errorCode);
+		blog(LOG_INFO, "[WebSocketServer::Start] Locked to IPv4 bindings.");
 	} else {
 		_server.listen(conf->ServerPort, errorCode);
-		blog(LOG_INFO,
-		     "[WebSocketServer::Start] Bound to all interfaces.");
+		blog(LOG_INFO, "[WebSocketServer::Start] Bound to all interfaces.");
 	}
 
 	if (errorCode) {
 		std::string errorCodeMessage = errorCode.message();
-		blog(LOG_ERROR, "[WebSocketServer::Start] Listen failed: %s",
-		     errorCodeMessage.c_str());
+		blog(LOG_ERROR, "[WebSocketServer::Start] Listen failed: %s", errorCodeMessage.c_str());
 		return;
 	}
 
@@ -165,17 +133,14 @@ void WebSocketServer::Start()
 
 	_serverThread = std::thread(&WebSocketServer::ServerRunner, this);
 
-	blog(LOG_INFO,
-	     "[WebSocketServer::Start] Server started successfully on port %d. Possible connect address: %s",
-	     conf->ServerPort.load(),
-	     Utils::Platform::GetLocalAddress().c_str());
+	blog(LOG_INFO, "[WebSocketServer::Start] Server started successfully on port %d. Possible connect address: %s",
+	     conf->ServerPort.load(), Utils::Platform::GetLocalAddress().c_str());
 }
 
 void WebSocketServer::Stop()
 {
 	if (!_server.is_listening()) {
-		blog(LOG_WARNING,
-		     "[WebSocketServer::Stop] Call to Stop() but the server is not listening.");
+		blog(LOG_WARNING, "[WebSocketServer::Stop] Call to Stop() but the server is not listening.");
 		return;
 	}
 
@@ -186,16 +151,13 @@ void WebSocketServer::Stop()
 		websocketpp::lib::error_code errorCode;
 		_server.pause_reading(hdl, errorCode);
 		if (errorCode) {
-			blog(LOG_INFO, "[WebSocketServer::Stop] Error: %s",
-			     errorCode.message().c_str());
+			blog(LOG_INFO, "[WebSocketServer::Stop] Error: %s", errorCode.message().c_str());
 			continue;
 		}
 
-		_server.close(hdl, websocketpp::close::status::going_away,
-			      "Server stopping.", errorCode);
+		_server.close(hdl, websocketpp::close::status::going_away, "Server stopping.", errorCode);
 		if (errorCode) {
-			blog(LOG_INFO, "[WebSocketServer::Stop] Error: %s",
-			     errorCode.message().c_str());
+			blog(LOG_INFO, "[WebSocketServer::Stop] Error: %s", errorCode.message().c_str());
 			continue;
 		}
 	}
@@ -215,28 +177,23 @@ void WebSocketServer::Stop()
 
 void WebSocketServer::InvalidateSession(websocketpp::connection_hdl hdl)
 {
-	blog(LOG_INFO,
-	     "[WebSocketServer::InvalidateSession] Invalidating a session.");
+	blog(LOG_INFO, "[WebSocketServer::InvalidateSession] Invalidating a session.");
 
 	websocketpp::lib::error_code errorCode;
 	_server.pause_reading(hdl, errorCode);
 	if (errorCode) {
-		blog(LOG_INFO, "[WebSocketServer::InvalidateSession] Error: %s",
-		     errorCode.message().c_str());
+		blog(LOG_INFO, "[WebSocketServer::InvalidateSession] Error: %s", errorCode.message().c_str());
 		return;
 	}
 
-	_server.close(hdl, WebSocketCloseCode::SessionInvalidated,
-		      "Your session has been invalidated.", errorCode);
+	_server.close(hdl, WebSocketCloseCode::SessionInvalidated, "Your session has been invalidated.", errorCode);
 	if (errorCode) {
-		blog(LOG_INFO, "[WebSocketServer::InvalidateSession] Error: %s",
-		     errorCode.message().c_str());
+		blog(LOG_INFO, "[WebSocketServer::InvalidateSession] Error: %s", errorCode.message().c_str());
 		return;
 	}
 }
 
-std::vector<WebSocketServer::WebSocketSessionState>
-WebSocketServer::GetWebSocketSessions()
+std::vector<WebSocketServer::WebSocketSessionState> WebSocketServer::GetWebSocketSessions()
 {
 	std::vector<WebSocketServer::WebSocketSessionState> webSocketSessions;
 
@@ -248,9 +205,8 @@ WebSocketServer::GetWebSocketSessions()
 		std::string remoteAddress = session->RemoteAddress();
 		bool isIdentified = session->IsIdentified();
 
-		webSocketSessions.emplace_back(WebSocketSessionState{
-			hdl, remoteAddress, connectedAt, incomingMessages,
-			outgoingMessages, isIdentified});
+		webSocketSessions.emplace_back(
+			WebSocketSessionState{hdl, remoteAddress, connectedAt, incomingMessages, outgoingMessages, isIdentified});
 	}
 	lock.unlock();
 
@@ -261,14 +217,12 @@ void WebSocketServer::onObsLoaded()
 {
 	auto conf = GetConfig();
 	if (!conf) {
-		blog(LOG_ERROR,
-		     "[WebSocketServer::onObsLoaded] Unable to retreive config!");
+		blog(LOG_ERROR, "[WebSocketServer::onObsLoaded] Unable to retreive config!");
 		return;
 	}
 
 	if (conf->ServerEnabled) {
-		blog(LOG_INFO,
-		     "[WebSocketServer::onObsLoaded] WebSocket server is enabled, starting...");
+		blog(LOG_INFO, "[WebSocketServer::onObsLoaded] WebSocket server is enabled, starting...");
 		Start();
 	}
 }
@@ -277,11 +231,9 @@ bool WebSocketServer::onValidate(websocketpp::connection_hdl hdl)
 {
 	auto conn = _server.get_con_from_hdl(hdl);
 
-	std::vector<std::string> requestedSubprotocols =
-		conn->get_requested_subprotocols();
+	std::vector<std::string> requestedSubprotocols = conn->get_requested_subprotocols();
 	for (auto subprotocol : requestedSubprotocols) {
-		if (subprotocol == "obswebsocket.json" ||
-		    subprotocol == "obswebsocket.msgpack") {
+		if (subprotocol == "obswebsocket.json" || subprotocol == "obswebsocket.msgpack") {
 			conn->select_subprotocol(subprotocol);
 			break;
 		}
@@ -296,15 +248,13 @@ void WebSocketServer::onOpen(websocketpp::connection_hdl hdl)
 
 	auto conf = GetConfig();
 	if (!conf) {
-		blog(LOG_ERROR,
-		     "[WebSocketServer::onOpen] Unable to retreive config!");
+		blog(LOG_ERROR, "[WebSocketServer::onOpen] Unable to retreive config!");
 		return;
 	}
 
 	// Build new session
 	std::unique_lock<std::mutex> lock(_sessionMutex);
-	SessionPtr session = _sessions[hdl] =
-		std::make_shared<WebSocketSession>();
+	SessionPtr session = _sessions[hdl] = std::make_shared<WebSocketSession>();
 	std::unique_lock<std::mutex> sessionLock(session->OperationMutex);
 	lock.unlock();
 
@@ -329,10 +279,8 @@ void WebSocketServer::onOpen(websocketpp::connection_hdl hdl)
 		std::string sessionChallenge = Utils::Crypto::GenerateSalt();
 		session->SetChallenge(sessionChallenge);
 		helloMessageData["authentication"] = json::object();
-		helloMessageData["authentication"]["challenge"] =
-			sessionChallenge;
-		helloMessageData["authentication"]["salt"] =
-			_authenticationSalt;
+		helloMessageData["authentication"]["challenge"] = sessionChallenge;
+		helloMessageData["authentication"]["salt"] = _authenticationSalt;
 	}
 	json helloMessage;
 	helloMessage["op"] = 0;
@@ -352,27 +300,20 @@ void WebSocketServer::onOpen(websocketpp::connection_hdl hdl)
 	emit ClientConnected(state);
 
 	// Log connection
-	blog(LOG_INFO,
-	     "[WebSocketServer::onOpen] New WebSocket client has connected from %s",
-	     session->RemoteAddress().c_str());
+	blog(LOG_INFO, "[WebSocketServer::onOpen] New WebSocket client has connected from %s", session->RemoteAddress().c_str());
 
-	blog_debug(
-		"[WebSocketServer::onOpen] Sending Op 0 (Hello) message:\n%s",
-		helloMessage.dump(2).c_str());
+	blog_debug("[WebSocketServer::onOpen] Sending Op 0 (Hello) message:\n%s", helloMessage.dump(2).c_str());
 
 	// Send object to client
 	websocketpp::lib::error_code errorCode;
 	auto sessionEncoding = session->Encoding();
 	if (sessionEncoding == WebSocketEncoding::Json) {
 		std::string helloMessageJson = helloMessage.dump();
-		_server.send(hdl, helloMessageJson,
-			     websocketpp::frame::opcode::text, errorCode);
+		_server.send(hdl, helloMessageJson, websocketpp::frame::opcode::text, errorCode);
 	} else if (sessionEncoding == WebSocketEncoding::MsgPack) {
 		auto msgPackData = json::to_msgpack(helloMessage);
-		std::string messageMsgPack(msgPackData.begin(),
-					   msgPackData.end());
-		_server.send(hdl, messageMsgPack,
-			     websocketpp::frame::opcode::binary, errorCode);
+		std::string messageMsgPack(msgPackData.begin(), msgPackData.end());
+		_server.send(hdl, messageMsgPack, websocketpp::frame::opcode::binary, errorCode);
 	}
 	session->IncrementOutgoingMessages();
 }
@@ -411,37 +352,26 @@ void WebSocketServer::onClose(websocketpp::connection_hdl hdl)
 	emit ClientDisconnected(state, conn->get_local_close_code());
 
 	// Log disconnection
-	blog(LOG_INFO,
-	     "[WebSocketServer::onClose] WebSocket client %s has disconnected",
-	     remoteAddress.c_str());
+	blog(LOG_INFO, "[WebSocketServer::onClose] WebSocket client %s has disconnected", remoteAddress.c_str());
 
 	// Get config for tray notification
 	auto conf = GetConfig();
 	if (!conf) {
-		blog(LOG_ERROR,
-		     "[WebSocketServer::onClose] Unable to retreive config!");
+		blog(LOG_ERROR, "[WebSocketServer::onClose] Unable to retreive config!");
 		return;
 	}
 
 	// If previously identified, not going away, and notifications enabled, send a tray notification
-	if (isIdentified &&
-	    (conn->get_local_close_code() !=
-	     websocketpp::close::status::going_away) &&
-	    conf->AlertsEnabled) {
-		QString title = obs_module_text(
-			"OBSWebSocket.TrayNotification.Disconnected.Title");
-		QString body =
-			QString(obs_module_text(
-					"OBSWebSocket.TrayNotification.Disconnected.Body"))
-				.arg(QString::fromStdString(remoteAddress));
-		Utils::Platform::SendTrayNotification(
-			QSystemTrayIcon::Information, title, body);
+	if (isIdentified && (conn->get_local_close_code() != websocketpp::close::status::going_away) && conf->AlertsEnabled) {
+		QString title = obs_module_text("OBSWebSocket.TrayNotification.Disconnected.Title");
+		QString body = QString(obs_module_text("OBSWebSocket.TrayNotification.Disconnected.Body"))
+				       .arg(QString::fromStdString(remoteAddress));
+		Utils::Platform::SendTrayNotification(QSystemTrayIcon::Information, title, body);
 	}
 }
 
-void WebSocketServer::onMessage(
-	websocketpp::connection_hdl hdl,
-	websocketpp::server<websocketpp::config::asio>::message_ptr message)
+void WebSocketServer::onMessage(websocketpp::connection_hdl hdl,
+				websocketpp::server<websocketpp::config::asio>::message_ptr message)
 {
 	auto opCode = message->get_opcode();
 	std::string payload = message->get_payload();
@@ -464,52 +394,37 @@ void WebSocketServer::onMessage(
 		uint8_t sessionEncoding = session->Encoding();
 		if (sessionEncoding == WebSocketEncoding::Json) {
 			if (opCode != websocketpp::frame::opcode::text) {
-				_server.close(
-					hdl,
-					WebSocketCloseCode::MessageDecodeError,
-					"Your session encoding is set to Json, but a binary message was received.",
-					errorCode);
+				_server.close(hdl, WebSocketCloseCode::MessageDecodeError,
+					      "Your session encoding is set to Json, but a binary message was received.",
+					      errorCode);
 				return;
 			}
 
 			try {
 				incomingMessage = json::parse(payload);
 			} catch (json::parse_error &e) {
-				_server.close(
-					hdl,
-					WebSocketCloseCode::MessageDecodeError,
-					std::string("Unable to decode Json: ") +
-						e.what(),
-					errorCode);
+				_server.close(hdl, WebSocketCloseCode::MessageDecodeError,
+					      std::string("Unable to decode Json: ") + e.what(), errorCode);
 				return;
 			}
 		} else if (sessionEncoding == WebSocketEncoding::MsgPack) {
 			if (opCode != websocketpp::frame::opcode::binary) {
-				_server.close(
-					hdl,
-					WebSocketCloseCode::MessageDecodeError,
-					"Your session encoding is set to MsgPack, but a text message was received.",
-					errorCode);
+				_server.close(hdl, WebSocketCloseCode::MessageDecodeError,
+					      "Your session encoding is set to MsgPack, but a text message was received.",
+					      errorCode);
 				return;
 			}
 
 			try {
 				incomingMessage = json::from_msgpack(payload);
 			} catch (json::parse_error &e) {
-				_server.close(
-					hdl,
-					WebSocketCloseCode::MessageDecodeError,
-					std::string(
-						"Unable to decode MsgPack: ") +
-						e.what(),
-					errorCode);
+				_server.close(hdl, WebSocketCloseCode::MessageDecodeError,
+					      std::string("Unable to decode MsgPack: ") + e.what(), errorCode);
 				return;
 			}
 		}
 
-		blog_debug(
-			"[WebSocketServer::onMessage] Incoming message (decoded):\n%s",
-			incomingMessage.dump(2).c_str());
+		blog_debug("[WebSocketServer::onMessage] Incoming message (decoded):\n%s", incomingMessage.dump(2).c_str());
 
 		ProcessResult ret;
 
@@ -521,13 +436,10 @@ void WebSocketServer::onMessage(
 		}
 
 		// Disconnect client if 4.x protocol is detected
-		if (!session->IsIdentified() &&
-		    incomingMessage.contains("request-type")) {
-			blog(LOG_WARNING,
-			     "[WebSocketServer::onMessage] Client %s appears to be running a pre-5.0.0 protocol.",
+		if (!session->IsIdentified() && incomingMessage.contains("request-type")) {
+			blog(LOG_WARNING, "[WebSocketServer::onMessage] Client %s appears to be running a pre-5.0.0 protocol.",
 			     session->RemoteAddress().c_str());
-			ret.closeCode =
-				WebSocketCloseCode::UnsupportedRpcVersion;
+			ret.closeCode = WebSocketCloseCode::UnsupportedRpcVersion;
 			ret.closeReason =
 				"You appear to be attempting to connect with the pre-5.0.0 plugin protocol. Check to make sure your client is updated.";
 			goto skipProcessing;
@@ -540,43 +452,31 @@ void WebSocketServer::onMessage(
 			goto skipProcessing;
 		}
 
-		ProcessMessage(session, ret, incomingMessage["op"],
-			       incomingMessage["d"]);
+		ProcessMessage(session, ret, incomingMessage["op"], incomingMessage["d"]);
 
 	skipProcessing:
 		if (ret.closeCode != WebSocketCloseCode::DontClose) {
 			websocketpp::lib::error_code errorCode;
-			_server.close(hdl, ret.closeCode, ret.closeReason,
-				      errorCode);
+			_server.close(hdl, ret.closeCode, ret.closeReason, errorCode);
 			return;
 		}
 
 		if (!ret.result.is_null()) {
 			websocketpp::lib::error_code errorCode;
 			if (sessionEncoding == WebSocketEncoding::Json) {
-				std::string helloMessageJson =
-					ret.result.dump();
-				_server.send(hdl, helloMessageJson,
-					     websocketpp::frame::opcode::text,
-					     errorCode);
-			} else if (sessionEncoding ==
-				   WebSocketEncoding::MsgPack) {
+				std::string helloMessageJson = ret.result.dump();
+				_server.send(hdl, helloMessageJson, websocketpp::frame::opcode::text, errorCode);
+			} else if (sessionEncoding == WebSocketEncoding::MsgPack) {
 				auto msgPackData = json::to_msgpack(ret.result);
-				std::string messageMsgPack(msgPackData.begin(),
-							   msgPackData.end());
-				_server.send(hdl, messageMsgPack,
-					     websocketpp::frame::opcode::binary,
-					     errorCode);
+				std::string messageMsgPack(msgPackData.begin(), msgPackData.end());
+				_server.send(hdl, messageMsgPack, websocketpp::frame::opcode::binary, errorCode);
 			}
 			session->IncrementOutgoingMessages();
 
-			blog_debug(
-				"[WebSocketServer::onMessage] Outgoing message:\n%s",
-				ret.result.dump(2).c_str());
+			blog_debug("[WebSocketServer::onMessage] Outgoing message:\n%s", ret.result.dump(2).c_str());
 
 			if (errorCode)
-				blog(LOG_WARNING,
-				     "[WebSocketServer::onMessage] Sending message to client failed: %s",
+				blog(LOG_WARNING, "[WebSocketServer::onMessage] Sending message to client failed: %s",
 				     errorCode.message().c_str());
 		}
 	}));

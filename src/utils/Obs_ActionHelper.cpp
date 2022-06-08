@@ -33,8 +33,7 @@ void CreateSceneItemHelper(void *_data, obs_scene_t *scene)
 	data->sceneItem = obs_scene_add(scene, data->source);
 
 	if (data->sceneItemTransform)
-		obs_sceneitem_set_info(data->sceneItem,
-				       data->sceneItemTransform);
+		obs_sceneitem_set_info(data->sceneItem, data->sceneItemTransform);
 
 	if (data->sceneItemCrop)
 		obs_sceneitem_set_crop(data->sceneItem, data->sceneItemCrop);
@@ -42,10 +41,9 @@ void CreateSceneItemHelper(void *_data, obs_scene_t *scene)
 	obs_sceneitem_set_visible(data->sceneItem, data->sceneItemEnabled);
 }
 
-obs_sceneitem_t *Utils::Obs::ActionHelper::CreateSceneItem(
-	obs_source_t *source, obs_scene_t *scene, bool sceneItemEnabled,
-	obs_transform_info *sceneItemTransform,
-	obs_sceneitem_crop *sceneItemCrop)
+obs_sceneitem_t *Utils::Obs::ActionHelper::CreateSceneItem(obs_source_t *source, obs_scene_t *scene, bool sceneItemEnabled,
+							   obs_transform_info *sceneItemTransform,
+							   obs_sceneitem_crop *sceneItemCrop)
 {
 	// Sanity check for valid scene
 	if (!(source && scene))
@@ -68,13 +66,11 @@ obs_sceneitem_t *Utils::Obs::ActionHelper::CreateSceneItem(
 	return data.sceneItem;
 }
 
-obs_sceneitem_t *Utils::Obs::ActionHelper::CreateInput(
-	std::string inputName, std::string inputKind, obs_data_t *inputSettings,
-	obs_scene_t *scene, bool sceneItemEnabled)
+obs_sceneitem_t *Utils::Obs::ActionHelper::CreateInput(std::string inputName, std::string inputKind, obs_data_t *inputSettings,
+						       obs_scene_t *scene, bool sceneItemEnabled)
 {
 	// Create the input
-	OBSSourceAutoRelease input = obs_source_create(
-		inputKind.c_str(), inputName.c_str(), inputSettings, nullptr);
+	OBSSourceAutoRelease input = obs_source_create(inputKind.c_str(), inputName.c_str(), inputSettings, nullptr);
 
 	// Check that everything was created properly
 	if (!input)
@@ -83,8 +79,7 @@ obs_sceneitem_t *Utils::Obs::ActionHelper::CreateInput(
 	// Apparently not all default input properties actually get applied on creation (smh)
 	uint32_t flags = obs_source_get_output_flags(input);
 	if ((flags & OBS_SOURCE_MONITOR_BY_DEFAULT) != 0)
-		obs_source_set_monitoring_type(
-			input, OBS_MONITORING_TYPE_MONITOR_ONLY);
+		obs_source_set_monitoring_type(input, OBS_MONITORING_TYPE_MONITOR_ONLY);
 
 	// Create a scene item for the input
 	obs_sceneitem_t *ret = CreateSceneItem(input, scene, sceneItemEnabled);
@@ -96,12 +91,10 @@ obs_sceneitem_t *Utils::Obs::ActionHelper::CreateInput(
 	return ret;
 }
 
-obs_source_t *Utils::Obs::ActionHelper::CreateSourceFilter(
-	obs_source_t *source, std::string filterName, std::string filterKind,
-	obs_data_t *filterSettings)
+obs_source_t *Utils::Obs::ActionHelper::CreateSourceFilter(obs_source_t *source, std::string filterName, std::string filterKind,
+							   obs_data_t *filterSettings)
 {
-	obs_source_t *filter = obs_source_create_private(
-		filterKind.c_str(), filterName.c_str(), filterSettings);
+	obs_source_t *filter = obs_source_create_private(filterKind.c_str(), filterName.c_str(), filterSettings);
 
 	if (!filter)
 		return nullptr;
@@ -111,14 +104,10 @@ obs_source_t *Utils::Obs::ActionHelper::CreateSourceFilter(
 	return filter;
 }
 
-void Utils::Obs::ActionHelper::SetSourceFilterIndex(obs_source_t *source,
-						    obs_source_t *filter,
-						    size_t index)
+void Utils::Obs::ActionHelper::SetSourceFilterIndex(obs_source_t *source, obs_source_t *filter, size_t index)
 {
-	size_t currentIndex =
-		Utils::Obs::NumberHelper::GetSourceFilterIndex(source, filter);
-	obs_order_movement direction =
-		index > currentIndex ? OBS_ORDER_MOVE_DOWN : OBS_ORDER_MOVE_UP;
+	size_t currentIndex = Utils::Obs::NumberHelper::GetSourceFilterIndex(source, filter);
+	obs_order_movement direction = index > currentIndex ? OBS_ORDER_MOVE_DOWN : OBS_ORDER_MOVE_UP;
 
 	while (currentIndex != index) {
 		obs_source_filter_set_order(source, filter, direction);

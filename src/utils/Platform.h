@@ -29,10 +29,8 @@ std::string GetLocalAddress();
 std::string GetLoopbackAddress(bool allowIpv6 = true);
 QString GetCommandLineArgument(QString arg);
 bool GetCommandLineFlagSet(QString arg);
-void SendTrayNotification(QSystemTrayIcon::MessageIcon icon, QString title,
-			  QString body);
+void SendTrayNotification(QSystemTrayIcon::MessageIcon icon, QString title, QString body);
 bool GetTextFileContent(std::string fileName, std::string &content);
-bool SetTextFileContent(std::string filePath, std::string content,
-			bool createNew = true);
+bool SetTextFileContent(std::string filePath, std::string content, bool createNew = true);
 }
 }

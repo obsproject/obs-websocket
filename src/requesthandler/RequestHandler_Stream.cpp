@@ -41,22 +41,16 @@ RequestResult RequestHandler::GetStreamStatus(const Request &)
 {
 	OBSOutputAutoRelease streamOutput = obs_frontend_get_streaming_output();
 
-	uint64_t outputDuration =
-		Utils::Obs::NumberHelper::GetOutputDuration(streamOutput);
+	uint64_t outputDuration = Utils::Obs::NumberHelper::GetOutputDuration(streamOutput);
 
 	json responseData;
 	responseData["outputActive"] = obs_output_active(streamOutput);
-	responseData["outputReconnecting"] =
-		obs_output_reconnecting(streamOutput);
-	responseData["outputTimecode"] =
-		Utils::Obs::StringHelper::DurationToTimecode(outputDuration);
+	responseData["outputReconnecting"] = obs_output_reconnecting(streamOutput);
+	responseData["outputTimecode"] = Utils::Obs::StringHelper::DurationToTimecode(outputDuration);
 	responseData["outputDuration"] = outputDuration;
-	responseData["outputBytes"] =
-		(uint64_t)obs_output_get_total_bytes(streamOutput);
-	responseData["outputSkippedFrames"] =
-		obs_output_get_frames_dropped(streamOutput);
-	responseData["outputTotalFrames"] =
-		obs_output_get_total_frames(streamOutput);
+	responseData["outputBytes"] = (uint64_t)obs_output_get_total_bytes(streamOutput);
+	responseData["outputSkippedFrames"] = obs_output_get_frames_dropped(streamOutput);
+	responseData["outputTotalFrames"] = obs_output_get_total_frames(streamOutput);
 
 	return RequestResult::Success(responseData);
 }

@@ -15,8 +15,7 @@ WebSocketApi::Vendor *get_vendor(calldata_t *cd)
 {
 	void *voidVendor;
 	if (!calldata_get_ptr(cd, "vendor", &voidVendor)) {
-		blog(LOG_WARNING,
-		     "[WebSocketApi: get_vendor] Failed due to missing `vendor` pointer.");
+		blog(LOG_WARNING, "[WebSocketApi: get_vendor] Failed due to missing `vendor` pointer.");
 		return nullptr;
 	}
 
@@ -29,33 +28,21 @@ WebSocketApi::WebSocketApi()
 
 	_procHandler = proc_handler_create();
 
-	proc_handler_add(_procHandler, "bool get_api_version(out int version)",
-			 &get_api_version, nullptr);
-	proc_handler_add(
-		_procHandler,
-		"bool call_request(in string request_type, in string request_data, out ptr response)",
-		&call_request, nullptr);
-	proc_handler_add(_procHandler,
-			 "bool vendor_register(in string name, out ptr vendor)",
-			 &vendor_register_cb, this);
-	proc_handler_add(
-		_procHandler,
-		"bool vendor_request_register(in ptr vendor, in string type, in ptr callback)",
-		&vendor_request_register_cb, this);
-	proc_handler_add(
-		_procHandler,
-		"bool vendor_request_unregister(in ptr vendor, in string type)",
-		&vendor_request_unregister_cb, this);
-	proc_handler_add(
-		_procHandler,
-		"bool vendor_event_emit(in ptr vendor, in string type, in ptr data)",
-		&vendor_event_emit_cb, this);
+	proc_handler_add(_procHandler, "bool get_api_version(out int version)", &get_api_version, nullptr);
+	proc_handler_add(_procHandler, "bool call_request(in string request_type, in string request_data, out ptr response)",
+			 &call_request, nullptr);
+	proc_handler_add(_procHandler, "bool vendor_register(in string name, out ptr vendor)", &vendor_register_cb, this);
+	proc_handler_add(_procHandler, "bool vendor_request_register(in ptr vendor, in string type, in ptr callback)",
+			 &vendor_request_register_cb, this);
+	proc_handler_add(_procHandler, "bool vendor_request_unregister(in ptr vendor, in string type)",
+			 &vendor_request_unregister_cb, this);
+	proc_handler_add(_procHandler, "bool vendor_event_emit(in ptr vendor, in string type, in ptr data)", &vendor_event_emit_cb,
+			 this);
 
 	proc_handler_t *ph = obs_get_proc_handler();
 	assert(ph != NULL);
 
-	proc_handler_add(ph, "bool obs_websocket_api_get_ph(out ptr ph)",
-			 &get_ph_cb, this);
+	proc_handler_add(ph, "bool obs_websocket_api_get_ph(out ptr ph)", &get_ph_cb, this);
 
 	blog_debug("[WebSocketApi::WebSocketApi] Finished.");
 }
@@ -67,8 +54,7 @@ WebSocketApi::~WebSocketApi()
 	proc_handler_destroy(_procHandler);
 
 	for (auto vendor : _vendors) {
-		blog_debug("[WebSocketApi::~WebSocketApi] Deleting vendor: %s",
-			   vendor.first.c_str());
+		blog_debug("[WebSocketApi::~WebSocketApi] Deleting vendor: %s", vendor.first.c_str());
 		delete vendor.second;
 	}
 
@@ -80,9 +66,8 @@ void WebSocketApi::SetEventCallback(EventCallback cb)
 	_eventCallback = cb;
 }
 
-enum WebSocketApi::RequestReturnCode WebSocketApi::PerformVendorRequest(
-	std::string vendorName, std::string requestType,
-	obs_data_t *requestData, obs_data_t *responseData)
+enum WebSocketApi::RequestReturnCode WebSocketApi::PerformVendorRequest(std::string vendorName, std::string requestType,
+									obs_data_t *requestData, obs_data_t *responseData)
 {
 	std::shared_lock l(_mutex);
 
@@ -131,8 +116,7 @@ void WebSocketApi::call_request(void *, calldata_t *cd)
 	if (!request_type)
 		RETURN_FAILURE();
 
-	auto response = static_cast<obs_websocket_request_response *>(
-		bzalloc(sizeof(struct obs_websocket_request_response)));
+	auto response = static_cast<obs_websocket_request_response *>(bzalloc(sizeof(struct obs_websocket_request_response)));
 	if (!response)
 		RETURN_FAILURE();
 
@@ -154,9 +138,8 @@ void WebSocketApi::call_request(void *, calldata_t *cd)
 
 	calldata_set_ptr(cd, "response", response);
 
-	blog_debug(
-		"[WebSocketApi::call_request] Request %s called, response status code is %u",
-		request_type, response->status_code);
+	blog_debug("[WebSocketApi::call_request] Request %s called, response status code is %u", request_type,
+		   response->status_code);
 
 	RETURN_SUCCESS();
 }
@@ -166,10 +149,8 @@ void WebSocketApi::vendor_register_cb(void *priv_data, calldata_t *cd)
 	auto c = static_cast<WebSocketApi *>(priv_data);
 
 	const char *vendorName;
-	if (!calldata_get_string(cd, "name", &vendorName) ||
-	    strlen(vendorName) == 0) {
-		blog(LOG_WARNING,
-		     "[WebSocketApi::vendor_register_cb] Failed due to missing `name` string.");
+	if (!calldata_get_string(cd, "name", &vendorName) || strlen(vendorName) == 0) {
+		blog(LOG_WARNING, "[WebSocketApi::vendor_register_cb] Failed due to missing `name` string.");
 		RETURN_FAILURE();
 	}
 
@@ -177,8 +158,7 @@ void WebSocketApi::vendor_register_cb(void *priv_data, calldata_t *cd)
 	std::unique_lock l(c->_mutex);
 
 	if (c->_vendors.count(vendorName)) {
-		blog(LOG_WARNING,
-		     "[WebSocketApi::vendor_register_cb] Failed because `%s` is already a registered vendor.",
+		blog(LOG_WARNING, "[WebSocketApi::vendor_register_cb] Failed because `%s` is already a registered vendor.",
 		     vendorName);
 		RETURN_FAILURE();
 	}
@@ -188,9 +168,7 @@ void WebSocketApi::vendor_register_cb(void *priv_data, calldata_t *cd)
 
 	c->_vendors[vendorName] = v;
 
-	blog_debug(
-		"[WebSocketApi::vendor_register_cb] [vendorName: %s] Registered new vendor.",
-		v->_name.c_str());
+	blog_debug("[WebSocketApi::vendor_register_cb] [vendorName: %s] Registered new vendor.", v->_name.c_str());
 
 	calldata_set_ptr(cd, "vendor", static_cast<void *>(v));
 
@@ -204,8 +182,7 @@ void WebSocketApi::vendor_request_register_cb(void *, calldata_t *cd)
 		RETURN_FAILURE();
 
 	const char *requestType;
-	if (!calldata_get_string(cd, "type", &requestType) ||
-	    strlen(requestType) == 0) {
+	if (!calldata_get_string(cd, "type", &requestType) || strlen(requestType) == 0) {
 		blog(LOG_WARNING,
 		     "[WebSocketApi::vendor_request_register_cb] [vendorName: %s] Failed due to missing or empty `type` string.",
 		     v->_name.c_str());
@@ -233,9 +210,8 @@ void WebSocketApi::vendor_request_register_cb(void *, calldata_t *cd)
 
 	v->_requests[requestType] = *cb;
 
-	blog_debug(
-		"[WebSocketApi::vendor_request_register_cb] [vendorName: %s] Registered new vendor request: %s",
-		v->_name.c_str(), requestType);
+	blog_debug("[WebSocketApi::vendor_request_register_cb] [vendorName: %s] Registered new vendor request: %s",
+		   v->_name.c_str(), requestType);
 
 	RETURN_SUCCESS();
 }
@@ -247,8 +223,7 @@ void WebSocketApi::vendor_request_unregister_cb(void *, calldata_t *cd)
 		RETURN_FAILURE();
 
 	const char *requestType;
-	if (!calldata_get_string(cd, "type", &requestType) ||
-	    strlen(requestType) == 0) {
+	if (!calldata_get_string(cd, "type", &requestType) || strlen(requestType) == 0) {
 		blog(LOG_WARNING,
 		     "[WebSocketApi::vendor_request_unregister_cb] [vendorName: %s] Failed due to missing `type` string.",
 		     v->_name.c_str());
@@ -266,9 +241,8 @@ void WebSocketApi::vendor_request_unregister_cb(void *, calldata_t *cd)
 
 	v->_requests.erase(requestType);
 
-	blog_debug(
-		"[WebSocketApi::vendor_request_unregister_cb] [vendorName: %s] Unregistered vendor request: %s",
-		v->_name.c_str(), requestType);
+	blog_debug("[WebSocketApi::vendor_request_unregister_cb] [vendorName: %s] Unregistered vendor request: %s",
+		   v->_name.c_str(), requestType);
 
 	RETURN_SUCCESS();
 }
@@ -282,18 +256,15 @@ void WebSocketApi::vendor_event_emit_cb(void *priv_data, calldata_t *cd)
 		RETURN_FAILURE();
 
 	const char *eventType;
-	if (!calldata_get_string(cd, "type", &eventType) ||
-	    strlen(eventType) == 0) {
-		blog(LOG_WARNING,
-		     "[WebSocketApi::vendor_event_emit_cb] [vendorName: %s] Failed due to missing `type` string.",
+	if (!calldata_get_string(cd, "type", &eventType) || strlen(eventType) == 0) {
+		blog(LOG_WARNING, "[WebSocketApi::vendor_event_emit_cb] [vendorName: %s] Failed due to missing `type` string.",
 		     v->_name.c_str());
 		RETURN_FAILURE();
 	}
 
 	void *voidEventData;
 	if (!calldata_get_ptr(cd, "data", &voidEventData)) {
-		blog(LOG_WARNING,
-		     "[WebSocketApi::vendor_event_emit_cb] [vendorName: %s] Failed due to missing `data` pointer.",
+		blog(LOG_WARNING, "[WebSocketApi::vendor_event_emit_cb] [vendorName: %s] Failed due to missing `data` pointer.",
 		     v->_name.c_str());
 		RETURN_FAILURE();
 	}

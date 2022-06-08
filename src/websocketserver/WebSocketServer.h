@@ -55,9 +55,7 @@ public:
 	void Start();
 	void Stop();
 	void InvalidateSession(websocketpp::connection_hdl hdl);
-	void BroadcastEvent(uint64_t requiredIntent,
-			    const std::string &eventType,
-			    const json &eventData = nullptr,
+	void BroadcastEvent(uint64_t requiredIntent, const std::string &eventType, const json &eventData = nullptr,
 			    uint8_t rpcVersion = 0);
 
 	bool IsListening() { return _server.is_listening(); }
@@ -68,13 +66,11 @@ public:
 
 signals:
 	void ClientConnected(WebSocketSessionState state);
-	void ClientDisconnected(WebSocketSessionState state,
-				uint16_t closeCode);
+	void ClientDisconnected(WebSocketSessionState state, uint16_t closeCode);
 
 private:
 	struct ProcessResult {
-		WebSocketCloseCode::WebSocketCloseCode closeCode =
-			WebSocketCloseCode::DontClose;
+		WebSocketCloseCode::WebSocketCloseCode closeCode = WebSocketCloseCode::DontClose;
 		std::string closeReason;
 		json result;
 	};
@@ -85,17 +81,10 @@ private:
 	bool onValidate(websocketpp::connection_hdl hdl);
 	void onOpen(websocketpp::connection_hdl hdl);
 	void onClose(websocketpp::connection_hdl hdl);
-	void
-	onMessage(websocketpp::connection_hdl hdl,
-		  websocketpp::server<websocketpp::config::asio>::message_ptr
-			  message);
+	void onMessage(websocketpp::connection_hdl hdl, websocketpp::server<websocketpp::config::asio>::message_ptr message);
 
-	static void SetSessionParameters(SessionPtr session,
-					 WebSocketServer::ProcessResult &ret,
-					 const json &payloadData);
-	void ProcessMessage(SessionPtr session, ProcessResult &ret,
-			    WebSocketOpCode::WebSocketOpCode opCode,
-			    json &payloadData);
+	static void SetSessionParameters(SessionPtr session, WebSocketServer::ProcessResult &ret, const json &payloadData);
+	void ProcessMessage(SessionPtr session, ProcessResult &ret, WebSocketOpCode::WebSocketOpCode opCode, json &payloadData);
 
 	QThreadPool _threadPool;
 
@@ -106,7 +95,5 @@ private:
 	std::string _authenticationSalt;
 
 	std::mutex _sessionMutex;
-	std::map<websocketpp::connection_hdl, SessionPtr,
-		 std::owner_less<websocketpp::connection_hdl>>
-		_sessions;
+	std::map<websocketpp::connection_hdl, SessionPtr, std::owner_less<websocketpp::connection_hdl>> _sessions;
 };

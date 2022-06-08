@@ -23,8 +23,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 	if (str == #x)      \
 		return x;
 
-enum obs_bounds_type
-Utils::Obs::EnumHelper::GetSceneItemBoundsType(std::string boundsType)
+enum obs_bounds_type Utils::Obs::EnumHelper::GetSceneItemBoundsType(std::string boundsType)
 {
 	RET_COMPARE(boundsType, OBS_BOUNDS_NONE)
 	RET_COMPARE(boundsType, OBS_BOUNDS_STRETCH)
@@ -37,8 +36,7 @@ Utils::Obs::EnumHelper::GetSceneItemBoundsType(std::string boundsType)
 	return OBS_BOUNDS_NONE;
 }
 
-enum ObsMediaInputAction
-Utils::Obs::EnumHelper::GetMediaInputAction(std::string mediaAction)
+enum ObsMediaInputAction Utils::Obs::EnumHelper::GetMediaInputAction(std::string mediaAction)
 {
 	RET_COMPARE(mediaAction, OBS_WEBSOCKET_MEDIA_INPUT_ACTION_PLAY)
 	RET_COMPARE(mediaAction, OBS_WEBSOCKET_MEDIA_INPUT_ACTION_PAUSE)
@@ -50,8 +48,7 @@ Utils::Obs::EnumHelper::GetMediaInputAction(std::string mediaAction)
 	return OBS_WEBSOCKET_MEDIA_INPUT_ACTION_NONE;
 }
 
-enum obs_blending_type
-Utils::Obs::EnumHelper::GetSceneItemBlendMode(std::string mode)
+enum obs_blending_type Utils::Obs::EnumHelper::GetSceneItemBlendMode(std::string mode)
 {
 	RET_COMPARE(mode, OBS_BLEND_NORMAL)
 	RET_COMPARE(mode, OBS_BLEND_ADDITIVE)

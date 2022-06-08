@@ -49,8 +49,7 @@ static bool ReplayBufferAvailable()
 RequestResult RequestHandler::GetVirtualCamStatus(const Request &)
 {
 	if (!VirtualCamAvailable())
-		return RequestResult::Error(RequestStatus::InvalidResourceState,
-					    "VirtualCam is not available.");
+		return RequestResult::Error(RequestStatus::InvalidResourceState, "VirtualCam is not available.");
 
 	json responseData;
 	responseData["outputActive"] = obs_frontend_virtualcam_active();
@@ -72,8 +71,7 @@ RequestResult RequestHandler::GetVirtualCamStatus(const Request &)
 RequestResult RequestHandler::ToggleVirtualCam(const Request &)
 {
 	if (!VirtualCamAvailable())
-		return RequestResult::Error(RequestStatus::InvalidResourceState,
-					    "VirtualCam is not available.");
+		return RequestResult::Error(RequestStatus::InvalidResourceState, "VirtualCam is not available.");
 
 	bool outputActive = obs_frontend_virtualcam_active();
 
@@ -100,8 +98,7 @@ RequestResult RequestHandler::ToggleVirtualCam(const Request &)
 RequestResult RequestHandler::StartVirtualCam(const Request &)
 {
 	if (!VirtualCamAvailable())
-		return RequestResult::Error(RequestStatus::InvalidResourceState,
-					    "VirtualCam is not available.");
+		return RequestResult::Error(RequestStatus::InvalidResourceState, "VirtualCam is not available.");
 
 	if (obs_frontend_virtualcam_active())
 		return RequestResult::Error(RequestStatus::OutputRunning);
@@ -124,8 +121,7 @@ RequestResult RequestHandler::StartVirtualCam(const Request &)
 RequestResult RequestHandler::StopVirtualCam(const Request &)
 {
 	if (!VirtualCamAvailable())
-		return RequestResult::Error(RequestStatus::InvalidResourceState,
-					    "VirtualCam is not available.");
+		return RequestResult::Error(RequestStatus::InvalidResourceState, "VirtualCam is not available.");
 
 	if (!obs_frontend_virtualcam_active())
 		return RequestResult::Error(RequestStatus::OutputNotRunning);
@@ -150,8 +146,7 @@ RequestResult RequestHandler::StopVirtualCam(const Request &)
 RequestResult RequestHandler::GetReplayBufferStatus(const Request &)
 {
 	if (!ReplayBufferAvailable())
-		return RequestResult::Error(RequestStatus::InvalidResourceState,
-					    "Replay buffer is not available.");
+		return RequestResult::Error(RequestStatus::InvalidResourceState, "Replay buffer is not available.");
 
 	json responseData;
 	responseData["outputActive"] = obs_frontend_replay_buffer_active();
@@ -173,8 +168,7 @@ RequestResult RequestHandler::GetReplayBufferStatus(const Request &)
 RequestResult RequestHandler::ToggleReplayBuffer(const Request &)
 {
 	if (!ReplayBufferAvailable())
-		return RequestResult::Error(RequestStatus::InvalidResourceState,
-					    "Replay buffer is not available.");
+		return RequestResult::Error(RequestStatus::InvalidResourceState, "Replay buffer is not available.");
 
 	bool outputActive = obs_frontend_replay_buffer_active();
 
@@ -201,8 +195,7 @@ RequestResult RequestHandler::ToggleReplayBuffer(const Request &)
 RequestResult RequestHandler::StartReplayBuffer(const Request &)
 {
 	if (!ReplayBufferAvailable())
-		return RequestResult::Error(RequestStatus::InvalidResourceState,
-					    "Replay buffer is not available.");
+		return RequestResult::Error(RequestStatus::InvalidResourceState, "Replay buffer is not available.");
 
 	if (obs_frontend_replay_buffer_active())
 		return RequestResult::Error(RequestStatus::OutputRunning);
@@ -225,8 +218,7 @@ RequestResult RequestHandler::StartReplayBuffer(const Request &)
 RequestResult RequestHandler::StopReplayBuffer(const Request &)
 {
 	if (!ReplayBufferAvailable())
-		return RequestResult::Error(RequestStatus::InvalidResourceState,
-					    "Replay buffer is not available.");
+		return RequestResult::Error(RequestStatus::InvalidResourceState, "Replay buffer is not available.");
 
 	if (!obs_frontend_replay_buffer_active())
 		return RequestResult::Error(RequestStatus::OutputNotRunning);
@@ -249,8 +241,7 @@ RequestResult RequestHandler::StopReplayBuffer(const Request &)
 RequestResult RequestHandler::SaveReplayBuffer(const Request &)
 {
 	if (!ReplayBufferAvailable())
-		return RequestResult::Error(RequestStatus::InvalidResourceState,
-					    "Replay buffer is not available.");
+		return RequestResult::Error(RequestStatus::InvalidResourceState, "Replay buffer is not available.");
 
 	if (!obs_frontend_replay_buffer_active())
 		return RequestResult::Error(RequestStatus::OutputNotRunning);
@@ -275,14 +266,12 @@ RequestResult RequestHandler::SaveReplayBuffer(const Request &)
 RequestResult RequestHandler::GetLastReplayBufferReplay(const Request &)
 {
 	if (!ReplayBufferAvailable())
-		return RequestResult::Error(RequestStatus::InvalidResourceState,
-					    "Replay buffer is not available.");
+		return RequestResult::Error(RequestStatus::InvalidResourceState, "Replay buffer is not available.");
 
 	if (!obs_frontend_replay_buffer_active())
 		return RequestResult::Error(RequestStatus::OutputNotRunning);
 
 	json responseData;
-	responseData["savedReplayPath"] =
-		Utils::Obs::StringHelper::GetLastReplayBufferFilePath();
+	responseData["savedReplayPath"] = Utils::Obs::StringHelper::GetLastReplayBufferFilePath();
 	return RequestResult::Success(responseData);
 }

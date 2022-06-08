@@ -85,8 +85,7 @@ std::string Utils::Obs::StringHelper::GetSourceType(obs_source_t *source)
 	}
 }
 
-std::string Utils::Obs::StringHelper::GetInputMonitorType(
-	enum obs_monitoring_type monitorType)
+std::string Utils::Obs::StringHelper::GetInputMonitorType(enum obs_monitoring_type monitorType)
 {
 	switch (monitorType) {
 	default:
@@ -138,8 +137,7 @@ std::string Utils::Obs::StringHelper::GetLastReplayBufferFilePath()
 	return savedReplayPath;
 }
 
-std::string
-Utils::Obs::StringHelper::GetSceneItemBoundsType(enum obs_bounds_type type)
+std::string Utils::Obs::StringHelper::GetSceneItemBoundsType(enum obs_bounds_type type)
 {
 	switch (type) {
 	default:
@@ -153,8 +151,7 @@ Utils::Obs::StringHelper::GetSceneItemBoundsType(enum obs_bounds_type type)
 	}
 }
 
-std::string
-Utils::Obs::StringHelper::GetSceneItemBlendMode(enum obs_blending_type mode)
+std::string Utils::Obs::StringHelper::GetSceneItemBlendMode(enum obs_blending_type mode)
 {
 	switch (mode) {
 	default:
@@ -178,10 +175,8 @@ std::string Utils::Obs::StringHelper::DurationToTimecode(uint64_t ms)
 	uint64_t secsPart = secs % 60ULL;
 	uint64_t msPart = ms % 1000ULL;
 
-	QString formatted = QString::asprintf("%02" PRIu64 ":%02" PRIu64
-					      ":%02" PRIu64 ".%03" PRIu64,
-					      hoursPart, minutesPart, secsPart,
-					      msPart);
+	QString formatted =
+		QString::asprintf("%02" PRIu64 ":%02" PRIu64 ":%02" PRIu64 ".%03" PRIu64, hoursPart, minutesPart, secsPart, msPart);
 	return formatted.toStdString();
 }
 

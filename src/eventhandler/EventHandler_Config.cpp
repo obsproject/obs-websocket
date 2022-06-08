@@ -38,10 +38,8 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 void EventHandler::HandleCurrentSceneCollectionChanging()
 {
 	json eventData;
-	eventData["sceneCollectionName"] =
-		Utils::Obs::StringHelper::GetCurrentSceneCollection();
-	BroadcastEvent(EventSubscription::Config,
-		       "CurrentSceneCollectionChanging", eventData);
+	eventData["sceneCollectionName"] = Utils::Obs::StringHelper::GetCurrentSceneCollection();
+	BroadcastEvent(EventSubscription::Config, "CurrentSceneCollectionChanging", eventData);
 }
 
 /**
@@ -62,10 +60,8 @@ void EventHandler::HandleCurrentSceneCollectionChanging()
 void EventHandler::HandleCurrentSceneCollectionChanged()
 {
 	json eventData;
-	eventData["sceneCollectionName"] =
-		Utils::Obs::StringHelper::GetCurrentSceneCollection();
-	BroadcastEvent(EventSubscription::Config,
-		       "CurrentSceneCollectionChanged", eventData);
+	eventData["sceneCollectionName"] = Utils::Obs::StringHelper::GetCurrentSceneCollection();
+	BroadcastEvent(EventSubscription::Config, "CurrentSceneCollectionChanged", eventData);
 }
 
 /**
@@ -84,10 +80,8 @@ void EventHandler::HandleCurrentSceneCollectionChanged()
 void EventHandler::HandleSceneCollectionListChanged()
 {
 	json eventData;
-	eventData["sceneCollections"] =
-		Utils::Obs::ArrayHelper::GetSceneCollectionList();
-	BroadcastEvent(EventSubscription::Config, "SceneCollectionListChanged",
-		       eventData);
+	eventData["sceneCollections"] = Utils::Obs::ArrayHelper::GetSceneCollectionList();
+	BroadcastEvent(EventSubscription::Config, "SceneCollectionListChanged", eventData);
 }
 
 /**
@@ -106,10 +100,8 @@ void EventHandler::HandleSceneCollectionListChanged()
 void EventHandler::HandleCurrentProfileChanging()
 {
 	json eventData;
-	eventData["profileName"] =
-		Utils::Obs::StringHelper::GetCurrentProfile();
-	BroadcastEvent(EventSubscription::Config, "CurrentProfileChanging",
-		       eventData);
+	eventData["profileName"] = Utils::Obs::StringHelper::GetCurrentProfile();
+	BroadcastEvent(EventSubscription::Config, "CurrentProfileChanging", eventData);
 }
 
 /**
@@ -128,10 +120,8 @@ void EventHandler::HandleCurrentProfileChanging()
 void EventHandler::HandleCurrentProfileChanged()
 {
 	json eventData;
-	eventData["profileName"] =
-		Utils::Obs::StringHelper::GetCurrentProfile();
-	BroadcastEvent(EventSubscription::Config, "CurrentProfileChanged",
-		       eventData);
+	eventData["profileName"] = Utils::Obs::StringHelper::GetCurrentProfile();
+	BroadcastEvent(EventSubscription::Config, "CurrentProfileChanged", eventData);
 }
 
 /**
@@ -151,6 +141,5 @@ void EventHandler::HandleProfileListChanged()
 {
 	json eventData;
 	eventData["profiles"] = Utils::Obs::ArrayHelper::GetProfileList();
-	BroadcastEvent(EventSubscription::Config, "ProfileListChanged",
-		       eventData);
+	BroadcastEvent(EventSubscription::Config, "ProfileListChanged", eventData);
 }

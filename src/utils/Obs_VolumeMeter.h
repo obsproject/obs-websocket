@@ -65,10 +65,7 @@ private:
 	void ProcessPeak(const struct audio_data *data);
 	void ProcessMagnitude(const struct audio_data *data);
 
-	static void InputAudioCaptureCallback(void *priv_data,
-					      obs_source_t *source,
-					      const struct audio_data *data,
-					      bool muted);
+	static void InputAudioCaptureCallback(void *priv_data, obs_source_t *source, const struct audio_data *data, bool muted);
 	static void InputVolumeCallback(void *priv_data, calldata_t *cd);
 };
 

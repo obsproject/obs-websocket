@@ -62,20 +62,13 @@ void Config::Load()
 		return;
 	}
 
-	FirstLoad = config_get_bool(obsConfig, CONFIG_SECTION_NAME,
-				    PARAM_FIRSTLOAD);
-	ServerEnabled =
-		config_get_bool(obsConfig, CONFIG_SECTION_NAME, PARAM_ENABLED);
-	AlertsEnabled =
-		config_get_bool(obsConfig, CONFIG_SECTION_NAME, PARAM_ALERTS);
-	ServerPort =
-		config_get_uint(obsConfig, CONFIG_SECTION_NAME, PARAM_PORT);
-	BindLoopback = config_get_bool(obsConfig, CONFIG_SECTION_NAME,
-				       PARAM_BINDLOOPBACK);
-	AuthRequired = config_get_bool(obsConfig, CONFIG_SECTION_NAME,
-				       PARAM_AUTHREQUIRED);
-	ServerPassword = config_get_string(obsConfig, CONFIG_SECTION_NAME,
-					   PARAM_PASSWORD);
+	FirstLoad = config_get_bool(obsConfig, CONFIG_SECTION_NAME, PARAM_FIRSTLOAD);
+	ServerEnabled = config_get_bool(obsConfig, CONFIG_SECTION_NAME, PARAM_ENABLED);
+	AlertsEnabled = config_get_bool(obsConfig, CONFIG_SECTION_NAME, PARAM_ALERTS);
+	ServerPort = config_get_uint(obsConfig, CONFIG_SECTION_NAME, PARAM_PORT);
+	BindLoopback = config_get_bool(obsConfig, CONFIG_SECTION_NAME, PARAM_BINDLOOPBACK);
+	AuthRequired = config_get_bool(obsConfig, CONFIG_SECTION_NAME, PARAM_AUTHREQUIRED);
+	ServerPassword = config_get_string(obsConfig, CONFIG_SECTION_NAME, PARAM_PASSWORD);
 
 	// Set server password and save it to the config before processing overrides,
 	// so that there is always a true configured password regardless of if
@@ -83,49 +76,38 @@ void Config::Load()
 	if (FirstLoad) {
 		FirstLoad = false;
 		if (ServerPassword.isEmpty()) {
-			blog(LOG_INFO,
-			     "[Config::Load] (FirstLoad) Generating new server password.");
-			ServerPassword = QString::fromStdString(
-				Utils::Crypto::GeneratePassword());
+			blog(LOG_INFO, "[Config::Load] (FirstLoad) Generating new server password.");
+			ServerPassword = QString::fromStdString(Utils::Crypto::GeneratePassword());
 		} else {
-			blog(LOG_INFO,
-			     "[Config::Load] (FirstLoad) Not generating new password since one is already configured.");
+			blog(LOG_INFO, "[Config::Load] (FirstLoad) Not generating new password since one is already configured.");
 		}
 		Save();
 	}
 
 	// Process `--websocket_port` override
-	QString portArgument =
-		Utils::Platform::GetCommandLineArgument(CMDLINE_WEBSOCKET_PORT);
+	QString portArgument = Utils::Platform::GetCommandLineArgument(CMDLINE_WEBSOCKET_PORT);
 	if (portArgument != "") {
 		bool ok;
 		uint16_t serverPort = portArgument.toUShort(&ok);
 		if (ok) {
-			blog(LOG_INFO,
-			     "[Config::Load] --websocket_port passed. Overriding WebSocket port with: %d",
-			     serverPort);
+			blog(LOG_INFO, "[Config::Load] --websocket_port passed. Overriding WebSocket port with: %d", serverPort);
 			PortOverridden = true;
 			ServerPort = serverPort;
 		} else {
-			blog(LOG_WARNING,
-			     "[Config::Load] Not overriding WebSocket port since integer conversion failed.");
+			blog(LOG_WARNING, "[Config::Load] Not overriding WebSocket port since integer conversion failed.");
 		}
 	}
 
 	// Process `--websocket_ipv4_only` override
-	if (Utils::Platform::GetCommandLineFlagSet(
-		    CMDLINE_WEBSOCKET_IPV4_ONLY)) {
-		blog(LOG_INFO,
-		     "[Config::Load] --websocket_ipv4_only passed. Binding only to IPv4 interfaces.");
+	if (Utils::Platform::GetCommandLineFlagSet(CMDLINE_WEBSOCKET_IPV4_ONLY)) {
+		blog(LOG_INFO, "[Config::Load] --websocket_ipv4_only passed. Binding only to IPv4 interfaces.");
 		Ipv4Only = true;
 	}
 
 	// Process `--websocket_password` override
-	QString passwordArgument = Utils::Platform::GetCommandLineArgument(
-		CMDLINE_WEBSOCKET_PASSWORD);
+	QString passwordArgument = Utils::Platform::GetCommandLineArgument(CMDLINE_WEBSOCKET_PASSWORD);
 	if (passwordArgument != "") {
-		blog(LOG_INFO,
-		     "[Config::Load] --websocket_password passed. Overriding WebSocket password.");
+		blog(LOG_INFO, "[Config::Load] --websocket_password passed. Overriding WebSocket password.");
 		PasswordOverridden = true;
 		AuthRequired = true;
 		ServerPassword = passwordArgument;
@@ -134,8 +116,7 @@ void Config::Load()
 	// Process `--websocket_debug` override
 	if (Utils::Platform::GetCommandLineFlagSet(CMDLINE_WEBSOCKET_DEBUG)) {
 		// Debug does not persist on reload, so we let people override it with a flag.
-		blog(LOG_INFO,
-		     "[Config::Load] --websocket_debug passed. Enabling debug logging.");
+		blog(LOG_INFO, "[Config::Load] --websocket_debug passed. Enabling debug logging.");
 		DebugEnabled = true;
 	}
 }
@@ -148,23 +129,16 @@ void Config::Save()
 		return;
 	}
 
-	config_set_bool(obsConfig, CONFIG_SECTION_NAME, PARAM_FIRSTLOAD,
-			FirstLoad);
-	config_set_bool(obsConfig, CONFIG_SECTION_NAME, PARAM_ENABLED,
-			ServerEnabled);
+	config_set_bool(obsConfig, CONFIG_SECTION_NAME, PARAM_FIRSTLOAD, FirstLoad);
+	config_set_bool(obsConfig, CONFIG_SECTION_NAME, PARAM_ENABLED, ServerEnabled);
 	if (!PortOverridden) {
-		config_set_uint(obsConfig, CONFIG_SECTION_NAME, PARAM_PORT,
-				ServerPort);
+		config_set_uint(obsConfig, CONFIG_SECTION_NAME, PARAM_PORT, ServerPort);
 	}
-	config_set_bool(obsConfig, CONFIG_SECTION_NAME, PARAM_BINDLOOPBACK,
-			BindLoopback);
-	config_set_bool(obsConfig, CONFIG_SECTION_NAME, PARAM_ALERTS,
-			AlertsEnabled);
+	config_set_bool(obsConfig, CONFIG_SECTION_NAME, PARAM_BINDLOOPBACK, BindLoopback);
+	config_set_bool(obsConfig, CONFIG_SECTION_NAME, PARAM_ALERTS, AlertsEnabled);
 	if (!PasswordOverridden) {
-		config_set_bool(obsConfig, CONFIG_SECTION_NAME,
-				PARAM_AUTHREQUIRED, AuthRequired);
-		config_set_string(obsConfig, CONFIG_SECTION_NAME,
-				  PARAM_PASSWORD, QT_TO_UTF8(ServerPassword));
+		config_set_bool(obsConfig, CONFIG_SECTION_NAME, PARAM_AUTHREQUIRED, AuthRequired);
+		config_set_string(obsConfig, CONFIG_SECTION_NAME, PARAM_PASSWORD, QT_TO_UTF8(ServerPassword));
 	}
 
 	config_save(obsConfig);
@@ -174,25 +148,17 @@ void Config::SetDefaultsToGlobalStore()
 {
 	config_t *obsConfig = GetConfigStore();
 	if (!obsConfig) {
-		blog(LOG_ERROR,
-		     "[Config::SetDefaultsToGlobalStore] Unable to fetch OBS config!");
+		blog(LOG_ERROR, "[Config::SetDefaultsToGlobalStore] Unable to fetch OBS config!");
 		return;
 	}
 
-	config_set_default_bool(obsConfig, CONFIG_SECTION_NAME, PARAM_FIRSTLOAD,
-				FirstLoad);
-	config_set_default_bool(obsConfig, CONFIG_SECTION_NAME, PARAM_ENABLED,
-				ServerEnabled);
-	config_set_default_uint(obsConfig, CONFIG_SECTION_NAME, PARAM_PORT,
-				ServerPort);
-	config_set_default_bool(obsConfig, CONFIG_SECTION_NAME,
-				PARAM_BINDLOOPBACK, BindLoopback);
-	config_set_default_bool(obsConfig, CONFIG_SECTION_NAME, PARAM_ALERTS,
-				AlertsEnabled);
-	config_set_default_bool(obsConfig, CONFIG_SECTION_NAME,
-				PARAM_AUTHREQUIRED, AuthRequired);
-	config_set_default_string(obsConfig, CONFIG_SECTION_NAME,
-				  PARAM_PASSWORD, QT_TO_UTF8(ServerPassword));
+	config_set_default_bool(obsConfig, CONFIG_SECTION_NAME, PARAM_FIRSTLOAD, FirstLoad);
+	config_set_default_bool(obsConfig, CONFIG_SECTION_NAME, PARAM_ENABLED, ServerEnabled);
+	config_set_default_uint(obsConfig, CONFIG_SECTION_NAME, PARAM_PORT, ServerPort);
+	config_set_default_bool(obsConfig, CONFIG_SECTION_NAME, PARAM_BINDLOOPBACK, BindLoopback);
+	config_set_default_bool(obsConfig, CONFIG_SECTION_NAME, PARAM_ALERTS, AlertsEnabled);
+	config_set_default_bool(obsConfig, CONFIG_SECTION_NAME, PARAM_AUTHREQUIRED, AuthRequired);
+	config_set_default_string(obsConfig, CONFIG_SECTION_NAME, PARAM_PASSWORD, QT_TO_UTF8(ServerPassword));
 }
 
 config_t *Config::GetConfigStore()

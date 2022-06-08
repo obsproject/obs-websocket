@@ -32,10 +32,8 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 QString GetToolTipIconHtml()
 {
 	bool lightTheme = QApplication::palette().text().color().redF() < 0.5;
-	QString iconFile = lightTheme ? ":toolTip/images/help.svg"
-				      : ":toolTip/images/help_light.svg";
-	QString iconTemplate =
-		"<html> <img src='%1' style=' vertical-align: bottom; ' /></html>";
+	QString iconFile = lightTheme ? ":toolTip/images/help.svg" : ":toolTip/images/help_light.svg";
+	QString iconTemplate = "<html> <img src='%1' style=' vertical-align: bottom; ' /></html>";
 	return iconTemplate.arg(iconFile);
 }
 
@@ -47,8 +45,7 @@ SettingsDialog::SettingsDialog(QWidget *parent)
 	  passwordManuallyEdited(false)
 {
 	ui->setupUi(this);
-	ui->websocketSessionTable->horizontalHeader()->resizeSection(
-		3, 100); // Resize Session Table column widths
+	ui->websocketSessionTable->horizontalHeader()->resizeSection(3, 100); // Resize Session Table column widths
 	ui->websocketSessionTable->horizontalHeader()->resizeSection(4, 100);
 
 	// Remove the ? button on dialogs on Windows
@@ -59,18 +56,13 @@ SettingsDialog::SettingsDialog(QWidget *parent)
 	ui->enableDebugLoggingToolTipLabel->setText(toolTipHtml);
 	ui->allowExternalToolTipLabel->setText(toolTipHtml);
 
-	connect(sessionTableTimer, &QTimer::timeout, this,
-		&SettingsDialog::FillSessionTable);
-	connect(ui->buttonBox, &QDialogButtonBox::clicked, this,
-		&SettingsDialog::DialogButtonClicked);
-	connect(ui->enableAuthenticationCheckBox, &QCheckBox::stateChanged,
-		this, &SettingsDialog::EnableAuthenticationCheckBoxChanged);
-	connect(ui->generatePasswordButton, &QPushButton::clicked, this,
-		&SettingsDialog::GeneratePasswordButtonClicked);
-	connect(ui->showConnectInfoButton, &QPushButton::clicked, this,
-		&SettingsDialog::ShowConnectInfoButtonClicked);
-	connect(ui->serverPasswordLineEdit, &QLineEdit::textEdited, this,
-		&SettingsDialog::PasswordEdited);
+	connect(sessionTableTimer, &QTimer::timeout, this, &SettingsDialog::FillSessionTable);
+	connect(ui->buttonBox, &QDialogButtonBox::clicked, this, &SettingsDialog::DialogButtonClicked);
+	connect(ui->enableAuthenticationCheckBox, &QCheckBox::stateChanged, this,
+		&SettingsDialog::EnableAuthenticationCheckBoxChanged);
+	connect(ui->generatePasswordButton, &QPushButton::clicked, this, &SettingsDialog::GeneratePasswordButtonClicked);
+	connect(ui->showConnectInfoButton, &QPushButton::clicked, this, &SettingsDialog::ShowConnectInfoButtonClicked);
+	connect(ui->serverPasswordLineEdit, &QLineEdit::textEdited, this, &SettingsDialog::PasswordEdited);
 }
 
 SettingsDialog::~SettingsDialog()
@@ -84,8 +76,7 @@ void SettingsDialog::showEvent(QShowEvent *)
 {
 	auto conf = GetConfig();
 	if (!conf) {
-		blog(LOG_ERROR,
-		     "[SettingsDialog::showEvent] Unable to retreive config!");
+		blog(LOG_ERROR, "[SettingsDialog::showEvent] Unable to retreive config!");
 		return;
 	}
 
@@ -125,8 +116,7 @@ void SettingsDialog::RefreshData()
 {
 	auto conf = GetConfig();
 	if (!conf) {
-		blog(LOG_ERROR,
-		     "[SettingsDialog::RefreshData] Unable to retreive config!");
+		blog(LOG_ERROR, "[SettingsDialog::RefreshData] Unable to retreive config!");
 		return;
 	}
 
@@ -143,10 +133,7 @@ void SettingsDialog::RefreshData()
 	ui->generatePasswordButton->setEnabled(conf->AuthRequired);
 
 	ui->showConnectInfoButton->setToolTip(
-		ui->allowExternalCheckBox->isChecked()
-			? ""
-			: obs_module_text(
-				  "OBSWebSocket.Settings.ShowConnectInfoHoverText"));
+		ui->allowExternalCheckBox->isChecked() ? "" : obs_module_text("OBSWebSocket.Settings.ShowConnectInfoHoverText"));
 
 	FillSessionTable();
 }
@@ -164,32 +151,25 @@ void SettingsDialog::SaveFormData()
 {
 	auto conf = GetConfig();
 	if (!conf) {
-		blog(LOG_ERROR,
-		     "[SettingsDialog::SaveFormData] Unable to retreive config!");
+		blog(LOG_ERROR, "[SettingsDialog::SaveFormData] Unable to retreive config!");
 		return;
 	}
 
 	if (ui->serverPasswordLineEdit->text().length() < 6) {
 		QMessageBox msgBox;
-		msgBox.setWindowTitle(obs_module_text(
-			"OBSWebSocket.Settings.Save.PasswordInvalidErrorTitle"));
-		msgBox.setText(obs_module_text(
-			"OBSWebSocket.Settings.Save.PasswordInvalidErrorMessage"));
+		msgBox.setWindowTitle(obs_module_text("OBSWebSocket.Settings.Save.PasswordInvalidErrorTitle"));
+		msgBox.setText(obs_module_text("OBSWebSocket.Settings.Save.PasswordInvalidErrorMessage"));
 		msgBox.setStandardButtons(QMessageBox::Ok);
 		msgBox.exec();
 		return;
 	}
 
 	// Show a confirmation box to the user if they attempt to provide their own password
-	if (passwordManuallyEdited &&
-	    (conf->ServerPassword != ui->serverPasswordLineEdit->text())) {
+	if (passwordManuallyEdited && (conf->ServerPassword != ui->serverPasswordLineEdit->text())) {
 		QMessageBox msgBox;
-		msgBox.setWindowTitle(obs_module_text(
-			"OBSWebSocket.Settings.Save.UserPasswordWarningTitle"));
-		msgBox.setText(obs_module_text(
-			"OBSWebSocket.Settings.Save.UserPasswordWarningMessage"));
-		msgBox.setInformativeText(obs_module_text(
-			"OBSWebSocket.Settings.Save.UserPasswordWarningInfoText"));
+		msgBox.setWindowTitle(obs_module_text("OBSWebSocket.Settings.Save.UserPasswordWarningTitle"));
+		msgBox.setText(obs_module_text("OBSWebSocket.Settings.Save.UserPasswordWarningMessage"));
+		msgBox.setInformativeText(obs_module_text("OBSWebSocket.Settings.Save.UserPasswordWarningInfoText"));
 		msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
 		msgBox.setDefaultButton(QMessageBox::No);
 		int ret = msgBox.exec();
@@ -199,19 +179,15 @@ void SettingsDialog::SaveFormData()
 			break;
 		case QMessageBox::No:
 		default:
-			ui->serverPasswordLineEdit->setText(
-				conf->ServerPassword);
+			ui->serverPasswordLineEdit->setText(conf->ServerPassword);
 			return;
 		}
 	}
 
 	bool needsRestart =
-		(conf->ServerEnabled !=
-		 ui->enableWebSocketServerCheckBox->isChecked()) ||
-		(ui->enableAuthenticationCheckBox->isChecked() &&
-		 conf->ServerPassword != ui->serverPasswordLineEdit->text()) ||
-		(conf->BindLoopback ==
-		 ui->allowExternalCheckBox->isChecked()) ||
+		(conf->ServerEnabled != ui->enableWebSocketServerCheckBox->isChecked()) ||
+		(ui->enableAuthenticationCheckBox->isChecked() && conf->ServerPassword != ui->serverPasswordLineEdit->text()) ||
+		(conf->BindLoopback == ui->allowExternalCheckBox->isChecked()) ||
 		(conf->ServerPort != ui->serverPortSpinBox->value());
 
 	conf->ServerEnabled = ui->enableWebSocketServerCheckBox->isChecked();
@@ -228,8 +204,7 @@ void SettingsDialog::SaveFormData()
 	connectInfo->RefreshData();
 
 	if (needsRestart) {
-		blog(LOG_INFO,
-		     "[SettingsDialog::SaveFormData] A setting was changed which requires a server restart.");
+		blog(LOG_INFO, "[SettingsDialog::SaveFormData] A setting was changed which requires a server restart.");
 		auto server = GetWebSocketServer();
 		server->Stop();
 		if (conf->ServerEnabled) {
@@ -242,8 +217,7 @@ void SettingsDialog::FillSessionTable()
 {
 	auto webSocketServer = GetWebSocketServer();
 	if (!webSocketServer) {
-		blog(LOG_ERROR,
-		     "[SettingsDialog::FillSessionTable] Unable to fetch websocket server instance!");
+		blog(LOG_ERROR, "[SettingsDialog::FillSessionTable] Unable to fetch websocket server instance!");
 		return;
 	}
 
@@ -257,26 +231,20 @@ void SettingsDialog::FillSessionTable()
 	QPixmap crossIconPixmap = crossIcon.pixmap(QSize(25, 25));
 
 	// Todo: Make a util for translations so that we don't need to import a bunch of obs libraries in order to use them.
-	QString kickButtonText =
-		obs_module_text("OBSWebSocket.SessionTable.KickButtonText");
+	QString kickButtonText = obs_module_text("OBSWebSocket.SessionTable.KickButtonText");
 
 	ui->websocketSessionTable->setRowCount(rowCount);
 	size_t i = 0;
 	for (auto session : webSocketSessions) {
-		QTableWidgetItem *addressItem = new QTableWidgetItem(
-			QString::fromStdString(session.remoteAddress));
+		QTableWidgetItem *addressItem = new QTableWidgetItem(QString::fromStdString(session.remoteAddress));
 		ui->websocketSessionTable->setItem(i, 0, addressItem);
 
-		uint64_t sessionDuration = QDateTime::currentSecsSinceEpoch() -
-					   session.connectedAt;
-		QTableWidgetItem *durationItem = new QTableWidgetItem(
-			QTime(0, 0, sessionDuration).toString("hh:mm:ss"));
+		uint64_t sessionDuration = QDateTime::currentSecsSinceEpoch() - session.connectedAt;
+		QTableWidgetItem *durationItem = new QTableWidgetItem(QTime(0, 0, sessionDuration).toString("hh:mm:ss"));
 		ui->websocketSessionTable->setItem(i, 1, durationItem);
 
-		QTableWidgetItem *statsItem = new QTableWidgetItem(
-			QString("%1/%2")
-				.arg(session.incomingMessages)
-				.arg(session.outgoingMessages));
+		QTableWidgetItem *statsItem =
+			new QTableWidgetItem(QString("%1/%2").arg(session.incomingMessages).arg(session.outgoingMessages));
 		ui->websocketSessionTable->setItem(i, 2, statsItem);
 
 		QLabel *identifiedLabel = new QLabel();
@@ -288,20 +256,15 @@ void SettingsDialog::FillSessionTable()
 		}
 		ui->websocketSessionTable->setCellWidget(i, 3, identifiedLabel);
 
-		QPushButton *invalidateButton =
-			new QPushButton(kickButtonText, this);
+		QPushButton *invalidateButton = new QPushButton(kickButtonText, this);
 		QWidget *invalidateButtonWidget = new QWidget();
-		QHBoxLayout *invalidateButtonLayout =
-			new QHBoxLayout(invalidateButtonWidget);
+		QHBoxLayout *invalidateButtonLayout = new QHBoxLayout(invalidateButtonWidget);
 		invalidateButtonLayout->addWidget(invalidateButton);
 		invalidateButtonLayout->setAlignment(Qt::AlignCenter);
 		invalidateButtonLayout->setContentsMargins(0, 0, 0, 0);
 		invalidateButtonWidget->setLayout(invalidateButtonLayout);
-		ui->websocketSessionTable->setCellWidget(
-			i, 4, invalidateButtonWidget);
-		connect(invalidateButton, &QPushButton::clicked, [=]() {
-			webSocketServer->InvalidateSession(session.hdl);
-		});
+		ui->websocketSessionTable->setCellWidget(i, 4, invalidateButtonWidget);
+		connect(invalidateButton, &QPushButton::clicked, [=]() { webSocketServer->InvalidateSession(session.hdl); });
 
 		i++;
 	}
@@ -320,8 +283,7 @@ void SettingsDialog::EnableAuthenticationCheckBoxChanged()
 
 void SettingsDialog::GeneratePasswordButtonClicked()
 {
-	QString newPassword =
-		QString::fromStdString(Utils::Crypto::GeneratePassword());
+	QString newPassword = QString::fromStdString(Utils::Crypto::GeneratePassword());
 	ui->serverPasswordLineEdit->setText(newPassword);
 	ui->serverPasswordLineEdit->selectAll();
 	passwordManuallyEdited = false;
@@ -331,12 +293,9 @@ void SettingsDialog::ShowConnectInfoButtonClicked()
 {
 	if (obs_video_active()) {
 		QMessageBox msgBox;
-		msgBox.setWindowTitle(obs_module_text(
-			"OBSWebSocket.Settings.ShowConnectInfoWarningTitle"));
-		msgBox.setText(obs_module_text(
-			"OBSWebSocket.Settings.ShowConnectInfoWarningMessage"));
-		msgBox.setInformativeText(obs_module_text(
-			"OBSWebSocket.Settings.ShowConnectInfoWarningInfoText"));
+		msgBox.setWindowTitle(obs_module_text("OBSWebSocket.Settings.ShowConnectInfoWarningTitle"));
+		msgBox.setText(obs_module_text("OBSWebSocket.Settings.ShowConnectInfoWarningMessage"));
+		msgBox.setInformativeText(obs_module_text("OBSWebSocket.Settings.ShowConnectInfoWarningInfoText"));
 		msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
 		msgBox.setDefaultButton(QMessageBox::No);
 		int ret = msgBox.exec();

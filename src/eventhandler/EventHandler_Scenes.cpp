@@ -77,15 +77,12 @@ void EventHandler::HandleSceneRemoved(obs_source_t *source)
  * @api events
  * @category scenes
  */
-void EventHandler::HandleSceneNameChanged(obs_source_t *,
-					  std::string oldSceneName,
-					  std::string sceneName)
+void EventHandler::HandleSceneNameChanged(obs_source_t *, std::string oldSceneName, std::string sceneName)
 {
 	json eventData;
 	eventData["oldSceneName"] = oldSceneName;
 	eventData["sceneName"] = sceneName;
-	BroadcastEvent(EventSubscription::Scenes, "SceneNameChanged",
-		       eventData);
+	BroadcastEvent(EventSubscription::Scenes, "SceneNameChanged", eventData);
 }
 
 /**
@@ -107,8 +104,7 @@ void EventHandler::HandleCurrentProgramSceneChanged()
 
 	json eventData;
 	eventData["sceneName"] = obs_source_get_name(currentScene);
-	BroadcastEvent(EventSubscription::Scenes, "CurrentProgramSceneChanged",
-		       eventData);
+	BroadcastEvent(EventSubscription::Scenes, "CurrentProgramSceneChanged", eventData);
 }
 
 /**
@@ -126,8 +122,7 @@ void EventHandler::HandleCurrentProgramSceneChanged()
  */
 void EventHandler::HandleCurrentPreviewSceneChanged()
 {
-	OBSSourceAutoRelease currentPreviewScene =
-		obs_frontend_get_current_preview_scene();
+	OBSSourceAutoRelease currentPreviewScene = obs_frontend_get_current_preview_scene();
 
 	// This event may be called when OBS is not in studio mode, however retreiving the source while not in studio mode will return null.
 	if (!currentPreviewScene)
@@ -135,8 +130,7 @@ void EventHandler::HandleCurrentPreviewSceneChanged()
 
 	json eventData;
 	eventData["sceneName"] = obs_source_get_name(currentPreviewScene);
-	BroadcastEvent(EventSubscription::Scenes, "CurrentPreviewSceneChanged",
-		       eventData);
+	BroadcastEvent(EventSubscription::Scenes, "CurrentPreviewSceneChanged", eventData);
 }
 
 /**
@@ -158,6 +152,5 @@ void EventHandler::HandleSceneListChanged()
 {
 	json eventData;
 	eventData["scenes"] = Utils::Obs::ArrayHelper::GetSceneList();
-	BroadcastEvent(EventSubscription::Scenes, "SceneListChanged",
-		       eventData);
+	BroadcastEvent(EventSubscription::Scenes, "SceneListChanged", eventData);
 }
