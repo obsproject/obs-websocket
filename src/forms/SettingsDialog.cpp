@@ -52,9 +52,7 @@ SettingsDialog::SettingsDialog(QWidget *parent)
 	setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 
 	// Set the appropriate tooltip icon for the theme
-	QString toolTipHtml = GetToolTipIconHtml();
-	ui->enableDebugLoggingToolTipLabel->setText(toolTipHtml);
-	ui->allowExternalToolTipLabel->setText(toolTipHtml);
+	ui->enableDebugLoggingToolTipLabel->setText(GetToolTipIconHtml());
 
 	connect(sessionTableTimer, &QTimer::timeout, this, &SettingsDialog::FillSessionTable);
 	connect(ui->buttonBox, &QDialogButtonBox::clicked, this, &SettingsDialog::DialogButtonClicked);
@@ -124,16 +122,11 @@ void SettingsDialog::RefreshData()
 	ui->enableSystemTrayAlertsCheckBox->setChecked(conf->AlertsEnabled);
 	ui->enableDebugLoggingCheckBox->setChecked(conf->DebugEnabled);
 	ui->serverPortSpinBox->setValue(conf->ServerPort);
-	ui->allowExternalCheckBox->setChecked(!conf->BindLoopback);
 	ui->enableAuthenticationCheckBox->setChecked(conf->AuthRequired);
 	ui->serverPasswordLineEdit->setText(conf->ServerPassword);
 
-	ui->showConnectInfoButton->setEnabled(!conf->BindLoopback);
 	ui->serverPasswordLineEdit->setEnabled(conf->AuthRequired);
 	ui->generatePasswordButton->setEnabled(conf->AuthRequired);
-
-	ui->showConnectInfoButton->setToolTip(
-		ui->allowExternalCheckBox->isChecked() ? "" : obs_module_text("OBSWebSocket.Settings.ShowConnectInfoHoverText"));
 
 	FillSessionTable();
 }
@@ -184,17 +177,14 @@ void SettingsDialog::SaveFormData()
 		}
 	}
 
-	bool needsRestart =
-		(conf->ServerEnabled != ui->enableWebSocketServerCheckBox->isChecked()) ||
-		(ui->enableAuthenticationCheckBox->isChecked() && conf->ServerPassword != ui->serverPasswordLineEdit->text()) ||
-		(conf->BindLoopback == ui->allowExternalCheckBox->isChecked()) ||
-		(conf->ServerPort != ui->serverPortSpinBox->value());
+	bool needsRestart = (conf->ServerEnabled != ui->enableWebSocketServerCheckBox->isChecked()) ||
+						(conf->ServerPort != ui->serverPortSpinBox->value()) ||
+						(ui->enableAuthenticationCheckBox->isChecked() && conf->ServerPassword != ui->serverPasswordLineEdit->text());
 
 	conf->ServerEnabled = ui->enableWebSocketServerCheckBox->isChecked();
 	conf->AlertsEnabled = ui->enableSystemTrayAlertsCheckBox->isChecked();
 	conf->DebugEnabled = ui->enableDebugLoggingCheckBox->isChecked();
 	conf->ServerPort = ui->serverPortSpinBox->value();
-	conf->BindLoopback = !ui->allowExternalCheckBox->isChecked();
 	conf->AuthRequired = ui->enableAuthenticationCheckBox->isChecked();
 	conf->ServerPassword = ui->serverPasswordLineEdit->text();
 
