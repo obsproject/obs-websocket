@@ -70,8 +70,7 @@ obs_sceneitem_t *Utils::Obs::SearchHelper::GetSceneItemByName(obs_scene_t *scene
 	enumData.name = name;
 	enumData.offset = offset;
 
-	obs_scene_enum_items(
-		scene,
+	auto cb =
 		[](obs_scene_t *, obs_sceneitem_t *sceneItem, void *param) {
 			auto enumData = static_cast<SceneItemSearchData *>(param);
 
@@ -91,8 +90,9 @@ obs_sceneitem_t *Utils::Obs::SearchHelper::GetSceneItemByName(obs_scene_t *scene
 			}
 
 			return true;
-		},
-		&enumData);
+		};
+
+	obs_scene_enum_items(scene, cb, &enumData);
 
 	return enumData.ret;
 }

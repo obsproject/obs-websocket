@@ -60,15 +60,16 @@ std::vector<obs_hotkey_t *> Utils::Obs::ArrayHelper::GetHotkeyList()
 {
 	std::vector<obs_hotkey_t *> ret;
 
-	obs_enum_hotkeys(
+	auto cb =
 		[](void *data, obs_hotkey_id, obs_hotkey_t *hotkey) {
 			auto ret = static_cast<std::vector<obs_hotkey_t *> *>(data);
 
 			ret->push_back(hotkey);
 
 			return true;
-		},
-		&ret);
+		};
+
+	obs_enum_hotkeys(cb, &ret);
 
 	return ret;
 }
@@ -134,16 +135,21 @@ std::vector<json> Utils::Obs::ArrayHelper::GetSceneItemList(obs_scene_t *scene, 
 	std::pair<std::vector<json>, bool> enumData;
 	enumData.second = basic;
 
-	obs_scene_enum_items(
-		scene,
+	auto cb =
 		[](obs_scene_t *, obs_sceneitem_t *sceneItem, void *param) {
 			auto enumData = static_cast<std::pair<std::vector<json>, bool> *>(param);
 
+			// TODO: Make ObjectHelper util for scene items
+
 			json item;
 			item["sceneItemId"] = obs_sceneitem_get_id(sceneItem);
-			// Should be slightly faster than calling obs_sceneitem_get_order_position()
-			item["sceneItemIndex"] = enumData->first.size();
+			item["sceneItemIndex"] =
+				enumData->first.size(); // Should be slightly faster than calling obs_sceneitem_get_order_position()
 			if (!enumData->second) {
+				item["sceneItemEnabled"] = obs_sceneitem_visible(sceneItem);
+				item["sceneItemLocked"] = obs_sceneitem_locked(sceneItem);
+				item["sceneItemTransform"] = ObjectHelper::GetSceneItemTransform(sceneItem);
+				item["sceneItemBlendMode"] = obs_sceneitem_get_blending_mode(sceneItem);
 				OBSSource itemSource = obs_sceneitem_get_source(sceneItem);
 				item["sourceName"] = obs_source_get_name(itemSource);
 				item["sourceType"] = obs_source_get_type(itemSource);
@@ -160,8 +166,9 @@ std::vector<json> Utils::Obs::ArrayHelper::GetSceneItemList(obs_scene_t *scene, 
 			enumData->first.push_back(item);
 
 			return true;
-		},
-		&enumData);
+		};
+
+	obs_scene_enum_items(scene, cb, &enumData);
 
 	return enumData.first;
 }
@@ -176,7 +183,7 @@ std::vector<json> Utils::Obs::ArrayHelper::GetInputList(std::string inputKind)
 	EnumInputInfo inputInfo;
 	inputInfo.inputKind = inputKind;
 
-	auto inputEnumProc = [](void *param, obs_source_t *input) {
+	auto cb = [](void *param, obs_source_t *input) {
 		// Sanity check in case the API changes
 		if (obs_source_get_type(input) != OBS_SOURCE_TYPE_INPUT)
 			return true;
@@ -196,8 +203,9 @@ std::vector<json> Utils::Obs::ArrayHelper::GetInputList(std::string inputKind)
 		inputInfo->inputs.push_back(inputJson);
 		return true;
 	};
+
 	// Actually enumerates only public inputs, despite the name
-	obs_enum_sources(inputEnumProc, &inputInfo);
+	obs_enum_sources(cb, &inputInfo);
 
 	return inputInfo.inputs;
 }
@@ -302,7 +310,7 @@ std::vector<json> Utils::Obs::ArrayHelper::GetSourceFilterList(obs_source_t *sou
 {
 	std::vector<json> filters;
 
-	auto enumFilters = [](obs_source_t *, obs_source_t *filter, void *param) {
+	auto cb = [](obs_source_t *, obs_source_t *filter, void *param) {
 		auto filters = reinterpret_cast<std::vector<json> *>(param);
 
 		json filterJson;
@@ -316,7 +324,8 @@ std::vector<json> Utils::Obs::ArrayHelper::GetSourceFilterList(obs_source_t *sou
 
 		filters->push_back(filterJson);
 	};
-	obs_source_enum_filters(source, enumFilters, &filters);
+
+	obs_source_enum_filters(source, cb, &filters);
 
 	return filters;
 }
