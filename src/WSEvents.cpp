@@ -610,8 +610,10 @@ void WSEvents::OnTransitionListChange() {
  */
 void WSEvents::OnProfileChange() {
 	OBSDataAutoRelease fields = obs_data_create();
-	obs_data_set_string(fields, "profile", obs_frontend_get_current_profile());
+	char *profile = obs_frontend_get_current_profile();
+	obs_data_set_string(fields, "profile", profile);
 	broadcastUpdate("ProfileChanged", fields);
+	bfree(profile);
 }
 
 /**
