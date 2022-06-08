@@ -105,7 +105,7 @@
           "rpcVersion": "1",
           "deprecated": false,
           "initialVersion": "5.0.0",
-          "enumValue": "(General | Config | Scenes | Inputs | Transitions | Filters | Outputs | SceneItems | MediaInputs | Vendors)"
+          "enumValue": "(General | Config | Scenes | Inputs | Transitions | Filters | Outputs | SceneItems | MediaInputs | Vendors | Ui)"
         },
         {
           "description": "Subscription value to receive the `InputVolumeMeters` high-volume event.",

@@ -1250,7 +1250,7 @@ Subscription value to receive events in the `Ui` category.
 
 Helper to receive all non-high-volume events.
 
-- Identifier Value: `(General | Config | Scenes | Inputs | Transitions | Filters | Outputs | SceneItems | MediaInputs | Vendors)`
+- Identifier Value: `(General | Config | Scenes | Inputs | Transitions | Filters | Outputs | SceneItems | MediaInputs | Vendors | Ui)`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
