@@ -26,7 +26,6 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 namespace Utils {
 namespace Platform {
 std::string GetLocalAddress();
-std::string GetLoopbackAddress(bool allowIpv6 = true);
 QString GetCommandLineArgument(QString arg);
 bool GetCommandLineFlagSet(QString arg);
 void SendTrayNotification(QSystemTrayIcon::MessageIcon icon, QString title, QString body);

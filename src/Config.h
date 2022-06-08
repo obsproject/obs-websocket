@@ -38,7 +38,6 @@ struct Config {
 	std::atomic<bool> FirstLoad;
 	std::atomic<bool> ServerEnabled;
 	std::atomic<uint16_t> ServerPort;
-	std::atomic<bool> BindLoopback;
 	std::atomic<bool> Ipv4Only;
 	std::atomic<bool> DebugEnabled;
 	std::atomic<bool> AlertsEnabled;
