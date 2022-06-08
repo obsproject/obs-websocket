@@ -129,6 +129,7 @@ void WebSocketServer::ProcessMessage(SessionPtr session, WebSocketServer::Proces
 		if (!payloadData["rpcVersion"].is_number_unsigned()) {
 			ret.closeCode = WebSocketCloseCode::InvalidDataFieldType;
 			ret.closeReason = "Your `rpcVersion` is not an unsigned number.";
+			return;
 		}
 
 		uint8_t requestedRpcVersion = payloadData["rpcVersion"];
@@ -191,13 +192,28 @@ void WebSocketServer::ProcessMessage(SessionPtr session, WebSocketServer::Proces
 			return;
 		}
 
+		if (!payloadData.contains("requestType")) {
+			ret.closeCode = WebSocketCloseCode::MissingDataField;
+			ret.closeReason = "Your payload's data is missing an `requestType`.";
+			return;
+		}
+
+		if (!payloadData["requestType"].is_string()) {
+			ret.closeCode = WebSocketCloseCode::InvalidDataFieldType;
+			ret.closeReason = "Your `requestType` is not a string.";
+			return;
+		}
+
 		RequestHandler requestHandler(session);
-		Request request(payloadData["requestType"], payloadData["requestData"]);
+
+		std::string requestType = payloadData["requestType"];
+		json requestData = payloadData["requestData"];
+		Request request(requestType, requestData);
 
 		RequestResult requestResult = requestHandler.ProcessRequest(request);
 
 		json resultPayloadData;
-		resultPayloadData["requestType"] = payloadData["requestType"];
+		resultPayloadData["requestType"] = requestType;
 		resultPayloadData["requestId"] = payloadData["requestId"];
 		resultPayloadData["requestStatus"] = {{"result", requestResult.StatusCode == RequestStatus::Success},
 						      {"code", requestResult.StatusCode}};
@@ -214,18 +230,6 @@ void WebSocketServer::ProcessMessage(SessionPtr session, WebSocketServer::Proces
 		if (!payloadData.contains("requestId")) {
 			ret.closeCode = WebSocketCloseCode::MissingDataField;
 			ret.closeReason = "Your payload data is missing a `requestId`.";
-			return;
-		}
-
-		if (!payloadData.contains("requests")) {
-			ret.closeCode = WebSocketCloseCode::MissingDataField;
-			ret.closeReason = "Your payload data is missing a `requests`.";
-			return;
-		}
-
-		if (!payloadData["requests"].is_array()) {
-			ret.closeCode = WebSocketCloseCode::InvalidDataFieldType;
-			ret.closeReason = "Your `requests` is not an array.";
 			return;
 		}
 
@@ -281,12 +285,30 @@ void WebSocketServer::ProcessMessage(SessionPtr session, WebSocketServer::Proces
 			haltOnFailure = payloadData["haltOnFailure"];
 		}
 
+		if (!payloadData.contains("requests")) {
+			ret.closeCode = WebSocketCloseCode::MissingDataField;
+			ret.closeReason = "Your payload data is missing a `requests`.";
+			return;
+		}
+
+		if (!payloadData["requests"].is_array()) {
+			ret.closeCode = WebSocketCloseCode::InvalidDataFieldType;
+			ret.closeReason = "Your `requests` is not an array.";
+			return;
+		}
+
 		std::vector<json> requests = payloadData["requests"];
 
 		std::vector<RequestBatchRequest> requestsVector;
-		for (auto &requestJson : requests)
-			requestsVector.emplace_back(requestJson["requestType"], requestJson["requestData"], executionType,
-						    requestJson["inputVariables"], requestJson["outputVariables"]);
+		for (auto &requestJson : requests) {
+			if (!requestJson["requestType"].is_string())
+				requestJson["requestType"] = ""; // Workaround for what would otherwise be extensive additional logic for a rare edge case
+			std::string requestType = requestJson["requestType"];
+			json requestData = requestJson["requestData"];
+			json inputVariables = requestJson["inputVariables"];
+			json outputVariables = requestJson["outputVariables"];
+			requestsVector.emplace_back(requestType, requestData, executionType, inputVariables, outputVariables);
+		}
 
 		auto resultsVector = RequestBatchHandler::ProcessRequestBatch(_threadPool, session, executionType, requestsVector,
 									      payloadData["variables"], haltOnFailure);

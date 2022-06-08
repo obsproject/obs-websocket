@@ -195,7 +195,7 @@ RequestResult RequestHandler::ProcessRequest(const Request &request)
 		return RequestResult::Error(RequestStatus::InvalidRequestFieldType, "Your request data is not an object.");
 
 	if (request.RequestType.empty())
-		return RequestResult::Error(RequestStatus::MissingRequestType, "Your request is missing a `requestType`");
+		return RequestResult::Error(RequestStatus::MissingRequestType, "Your request's `requestType` may not be empty.");
 
 	RequestMethodHandler handler;
 	try {
