@@ -54,8 +54,8 @@ json Utils::Obs::ObjectHelper::GetSceneItemTransform(obs_sceneitem_t *item)
 	obs_sceneitem_get_crop(item, &crop);
 
 	OBSSource source = obs_sceneitem_get_source(item);
-	float sourceWidth = float(obs_source_get_width(source));
-	float sourceHeight = float(obs_source_get_height(source));
+	float sourceWidth = (float)obs_source_get_width(source);
+	float sourceHeight = (float)obs_source_get_height(source);
 
 	ret["sourceWidth"] = sourceWidth;
 	ret["sourceHeight"] = sourceHeight;
@@ -78,10 +78,10 @@ json Utils::Obs::ObjectHelper::GetSceneItemTransform(obs_sceneitem_t *item)
 	ret["boundsWidth"] = osi.bounds.x;
 	ret["boundsHeight"] = osi.bounds.y;
 
-	ret["cropLeft"] = int(crop.left);
-	ret["cropRight"] = int(crop.right);
-	ret["cropTop"] = int(crop.top);
-	ret["cropBottom"] = int(crop.bottom);
+	ret["cropLeft"] = (int)crop.left;
+	ret["cropRight"] = (int)crop.right;
+	ret["cropTop"] = (int)crop.top;
+	ret["cropBottom"] = (int)crop.bottom;
 
 	return ret;
 }
