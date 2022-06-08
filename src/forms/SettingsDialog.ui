@@ -155,21 +155,21 @@
         </property>
        </widget>
       </item>
-      <item row="3" column="1">
+      <item row="1" column="1">
        <widget class="QCheckBox" name="enableAuthenticationCheckBox">
         <property name="text">
          <string>OBSWebSocket.Settings.AuthRequired</string>
         </property>
        </widget>
       </item>
-      <item row="4" column="0">
+      <item row="2" column="0">
        <widget class="QLabel" name="serverPasswordLabel">
         <property name="text">
          <string>OBSWebSocket.Settings.Password</string>
         </property>
        </widget>
       </item>
-      <item row="4" column="1">
+      <item row="2" column="1">
        <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
          <widget class="QLineEdit" name="serverPasswordLineEdit">
@@ -187,7 +187,7 @@
         </item>
        </layout>
       </item>
-      <item row="5" column="0">
+      <item row="3" column="0">
        <spacer name="horizontalSpacer_2">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
@@ -203,46 +203,12 @@
         </property>
        </spacer>
       </item>
-      <item row="5" column="1">
+      <item row="3" column="1">
        <widget class="QPushButton" name="showConnectInfoButton">
         <property name="text">
          <string>OBSWebSocket.Settings.ShowConnectInfo</string>
         </property>
        </widget>
-      </item>
-      <item row="1" column="1">
-       <layout class="QHBoxLayout" name="horizontalLayout_3">
-        <item>
-         <widget class="QCheckBox" name="allowExternalCheckBox">
-          <property name="text">
-           <string>OBSWebSocket.Settings.AllowExternal</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="allowExternalToolTipLabel">
-          <property name="toolTip">
-           <string>OBSWebSocket.Settings.AllowExternalHoverText</string>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <spacer name="horizontalSpacer_4">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-       </layout>
       </item>
      </layout>
     </widget>
