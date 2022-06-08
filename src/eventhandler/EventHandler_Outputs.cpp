@@ -53,7 +53,7 @@ void EventHandler::HandleStreamStateChanged(ObsOutputState state)
 {
 	json eventData;
 	eventData["outputActive"] = GetOutputStateActive(state);
-	eventData["outputState"] = Utils::Obs::StringHelper::GetOutputState(state);
+	eventData["outputState"] = state;
 	BroadcastEvent(EventSubscription::Outputs, "StreamStateChanged", eventData);
 }
 
@@ -75,7 +75,7 @@ void EventHandler::HandleRecordStateChanged(ObsOutputState state)
 {
 	json eventData;
 	eventData["outputActive"] = GetOutputStateActive(state);
-	eventData["outputState"] = Utils::Obs::StringHelper::GetOutputState(state);
+	eventData["outputState"] = state;
 	BroadcastEvent(EventSubscription::Outputs, "RecordStateChanged", eventData);
 }
 
@@ -97,7 +97,7 @@ void EventHandler::HandleReplayBufferStateChanged(ObsOutputState state)
 {
 	json eventData;
 	eventData["outputActive"] = GetOutputStateActive(state);
-	eventData["outputState"] = Utils::Obs::StringHelper::GetOutputState(state);
+	eventData["outputState"] = state;
 	BroadcastEvent(EventSubscription::Outputs, "ReplayBufferStateChanged", eventData);
 }
 
@@ -119,7 +119,7 @@ void EventHandler::HandleVirtualcamStateChanged(ObsOutputState state)
 {
 	json eventData;
 	eventData["outputActive"] = GetOutputStateActive(state);
-	eventData["outputState"] = Utils::Obs::StringHelper::GetOutputState(state);
+	eventData["outputState"] = state;
 	BroadcastEvent(EventSubscription::Outputs, "VirtualcamStateChanged", eventData);
 }
 

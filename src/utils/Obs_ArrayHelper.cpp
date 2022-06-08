@@ -146,7 +146,7 @@ std::vector<json> Utils::Obs::ArrayHelper::GetSceneItemList(obs_scene_t *scene, 
 			if (!enumData->second) {
 				OBSSource itemSource = obs_sceneitem_get_source(sceneItem);
 				item["sourceName"] = obs_source_get_name(itemSource);
-				item["sourceType"] = StringHelper::GetSourceType(itemSource);
+				item["sourceType"] = obs_source_get_type(itemSource);
 				if (obs_source_get_type(itemSource) == OBS_SOURCE_TYPE_INPUT)
 					item["inputKind"] = obs_source_get_id(itemSource);
 				else

@@ -85,7 +85,7 @@ configure_file(
 )
 
 
-# Inlude sources
+# Include sources
 set(obs-websocket_SOURCES
 	src/obs-websocket.cpp
 	src/Config.cpp
@@ -129,7 +129,6 @@ set(obs-websocket_SOURCES
 	src/utils/Json.cpp
 	src/utils/Obs.cpp
 	src/utils/Obs_StringHelper.cpp
-	src/utils/Obs_EnumHelper.cpp
 	src/utils/Obs_NumberHelper.cpp
 	src/utils/Obs_ArrayHelper.cpp
 	src/utils/Obs_ObjectHelper.cpp

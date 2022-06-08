@@ -373,11 +373,9 @@ void EventHandler::HandleInputAudioMonitorTypeChanged(void *param, calldata_t *d
 
 	enum obs_monitoring_type monitorType = (obs_monitoring_type)calldata_int(data, "type");
 
-	std::string monitorTypeString = Utils::Obs::StringHelper::GetInputMonitorType(monitorType);
-
 	json eventData;
 	eventData["inputName"] = obs_source_get_name(source);
-	eventData["monitorType"] = monitorTypeString;
+	eventData["monitorType"] = monitorType;
 	eventHandler->BroadcastEvent(EventSubscription::Inputs, "InputAudioMonitorTypeChanged", eventData);
 }
 

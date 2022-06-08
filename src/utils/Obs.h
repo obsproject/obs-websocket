@@ -77,6 +77,16 @@ enum ObsOutputState {
 	OBS_WEBSOCKET_OUTPUT_RESUMED,
 };
 
+NLOHMANN_JSON_SERIALIZE_ENUM(ObsOutputState, {
+						     {OBS_WEBSOCKET_OUTPUT_UNKNOWN, "OBS_WEBSOCKET_OUTPUT_UNKNOWN"},
+						     {OBS_WEBSOCKET_OUTPUT_STARTING, "OBS_WEBSOCKET_OUTPUT_STARTING"},
+						     {OBS_WEBSOCKET_OUTPUT_STARTED, "OBS_WEBSOCKET_OUTPUT_STARTED"},
+						     {OBS_WEBSOCKET_OUTPUT_STOPPING, "OBS_WEBSOCKET_OUTPUT_STOPPING"},
+						     {OBS_WEBSOCKET_OUTPUT_STOPPED, "OBS_WEBSOCKET_OUTPUT_STOPPED"},
+						     {OBS_WEBSOCKET_OUTPUT_PAUSED, "OBS_WEBSOCKET_OUTPUT_PAUSED"},
+						     {OBS_WEBSOCKET_OUTPUT_RESUMED, "OBS_WEBSOCKET_OUTPUT_RESUMED"},
+					     })
+
 enum ObsMediaInputAction {
 	/**
 	* No action.
@@ -150,6 +160,17 @@ enum ObsMediaInputAction {
 	OBS_WEBSOCKET_MEDIA_INPUT_ACTION_PREVIOUS,
 };
 
+NLOHMANN_JSON_SERIALIZE_ENUM(ObsMediaInputAction,
+			     {
+				     {OBS_WEBSOCKET_MEDIA_INPUT_ACTION_NONE, "OBS_WEBSOCKET_MEDIA_INPUT_ACTION_NONE"},
+				     {OBS_WEBSOCKET_MEDIA_INPUT_ACTION_PLAY, "OBS_WEBSOCKET_MEDIA_INPUT_ACTION_PLAY"},
+				     {OBS_WEBSOCKET_MEDIA_INPUT_ACTION_PAUSE, "OBS_WEBSOCKET_MEDIA_INPUT_ACTION_PAUSE"},
+				     {OBS_WEBSOCKET_MEDIA_INPUT_ACTION_STOP, "OBS_WEBSOCKET_MEDIA_INPUT_ACTION_STOP"},
+				     {OBS_WEBSOCKET_MEDIA_INPUT_ACTION_RESTART, "OBS_WEBSOCKET_MEDIA_INPUT_ACTION_RESTART"},
+				     {OBS_WEBSOCKET_MEDIA_INPUT_ACTION_NEXT, "OBS_WEBSOCKET_MEDIA_INPUT_ACTION_NEXT"},
+				     {OBS_WEBSOCKET_MEDIA_INPUT_ACTION_PREVIOUS, "OBS_WEBSOCKET_MEDIA_INPUT_ACTION_PREVIOUS"},
+			     })
+
 namespace Utils {
 	namespace Obs {
 		namespace StringHelper {
@@ -158,21 +179,8 @@ namespace Utils {
 			std::string GetCurrentProfile();
 			std::string GetCurrentProfilePath();
 			std::string GetCurrentRecordOutputPath();
-			std::string GetSourceType(obs_source_t *source);
-			std::string GetInputMonitorType(enum obs_monitoring_type monitorType);
-			std::string GetInputMonitorType(obs_source_t *input);
-			std::string GetMediaInputState(obs_source_t *input);
 			std::string GetLastReplayBufferFilePath();
-			std::string GetSceneItemBoundsType(enum obs_bounds_type type);
-			std::string GetSceneItemBlendMode(enum obs_blending_type mode);
 			std::string DurationToTimecode(uint64_t);
-			std::string GetOutputState(ObsOutputState state);
-		}
-
-		namespace EnumHelper {
-			enum obs_bounds_type GetSceneItemBoundsType(std::string boundsType);
-			enum ObsMediaInputAction GetMediaInputAction(std::string mediaAction);
-			enum obs_blending_type GetSceneItemBlendMode(std::string mode);
 		}
 
 		namespace NumberHelper {
