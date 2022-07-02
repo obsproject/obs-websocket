@@ -2769,6 +2769,198 @@
       ]
     },
     {
+      "description": "Gets the list of available outputs.",
+      "requestType": "GetOutputList",
+      "complexity": 4,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "outputs",
+      "requestFields": [],
+      "responseFields": []
+    },
+    {
+      "description": "Gets the status of an output.",
+      "requestType": "GetOutputStatus",
+      "complexity": 4,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "outputs",
+      "requestFields": [
+        {
+          "valueName": "outputName",
+          "valueType": "String",
+          "valueDescription": "Output name",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        }
+      ],
+      "responseFields": [
+        {
+          "valueName": "outputActive",
+          "valueType": "Boolean",
+          "valueDescription": "Whether the output is active"
+        },
+        {
+          "valueName": "outputReconnecting",
+          "valueType": "Boolean",
+          "valueDescription": "Whether the output is reconnecting"
+        },
+        {
+          "valueName": "outputTimecode",
+          "valueType": "String",
+          "valueDescription": "Current formatted timecode string for the output"
+        },
+        {
+          "valueName": "outputDuration",
+          "valueType": "Number",
+          "valueDescription": "Current duration in milliseconds for the output"
+        },
+        {
+          "valueName": "outputCongestion",
+          "valueType": "Number",
+          "valueDescription": "Congestion of the output"
+        },
+        {
+          "valueName": "outputBytes",
+          "valueType": "Number",
+          "valueDescription": "Number of bytes sent by the output"
+        },
+        {
+          "valueName": "outputSkippedFrames",
+          "valueType": "Number",
+          "valueDescription": "Number of frames skipped by the output's process"
+        },
+        {
+          "valueName": "outputTotalFrames",
+          "valueType": "Number",
+          "valueDescription": "Total number of frames delivered by the output's process"
+        }
+      ]
+    },
+    {
+      "description": "Toggles the status of an output.",
+      "requestType": "ToggleOutput",
+      "complexity": 4,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "outputs",
+      "requestFields": [
+        {
+          "valueName": "outputName",
+          "valueType": "String",
+          "valueDescription": "Output name",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        }
+      ],
+      "responseFields": [
+        {
+          "valueName": "outputActive",
+          "valueType": "Boolean",
+          "valueDescription": "Whether the output is active"
+        }
+      ]
+    },
+    {
+      "description": "Starts an output.",
+      "requestType": "StartOutput",
+      "complexity": 4,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "outputs",
+      "requestFields": [
+        {
+          "valueName": "outputName",
+          "valueType": "String",
+          "valueDescription": "Output name",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        }
+      ],
+      "responseFields": []
+    },
+    {
+      "description": "Stops an output.",
+      "requestType": "StopOutput",
+      "complexity": 4,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "outputs",
+      "requestFields": [
+        {
+          "valueName": "outputName",
+          "valueType": "String",
+          "valueDescription": "Output name",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        }
+      ],
+      "responseFields": []
+    },
+    {
+      "description": "Gets the settings of an output.",
+      "requestType": "GetOutputSettings",
+      "complexity": 4,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "outputs",
+      "requestFields": [
+        {
+          "valueName": "outputName",
+          "valueType": "String",
+          "valueDescription": "Output name",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        }
+      ],
+      "responseFields": [
+        {
+          "valueName": "outputSettings",
+          "valueType": "Object",
+          "valueDescription": "Output settings"
+        }
+      ]
+    },
+    {
+      "description": "Sets the settings of an output.",
+      "requestType": "SetOutputSettings",
+      "complexity": 4,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "outputs",
+      "requestFields": [
+        {
+          "valueName": "outputName",
+          "valueType": "String",
+          "valueDescription": "Output name",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        },
+        {
+          "valueName": "outputSettings",
+          "valueType": "Object",
+          "valueDescription": "Output settings",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        }
+      ],
+      "responseFields": []
+    },
+    {
       "description": "Gets the status of the record output.",
       "requestType": "GetRecordStatus",
       "complexity": 2,
@@ -3870,6 +4062,11 @@
           "valueName": "outputDuration",
           "valueType": "Number",
           "valueDescription": "Current duration in milliseconds for the output"
+        },
+        {
+          "valueName": "outputCongestion",
+          "valueType": "Number",
+          "valueDescription": "Congestion of the output"
         },
         {
           "valueName": "outputBytes",

@@ -2383,6 +2383,13 @@ Studio mode has been enabled or disabled.
   - [StopReplayBuffer](#stopreplaybuffer)
   - [SaveReplayBuffer](#savereplaybuffer)
   - [GetLastReplayBufferReplay](#getlastreplaybufferreplay)
+  - [GetOutputList](#getoutputlist)
+  - [GetOutputStatus](#getoutputstatus)
+  - [ToggleOutput](#toggleoutput)
+  - [StartOutput](#startoutput)
+  - [StopOutput](#stopoutput)
+  - [GetOutputSettings](#getoutputsettings)
+  - [SetOutputSettings](#setoutputsettings)
 - [Stream Requests](#stream-requests)
   - [GetStreamStatus](#getstreamstatus)
   - [ToggleStream](#togglestream)
@@ -4487,6 +4494,138 @@ Gets the filename of the last replay buffer save file.
 | ---- | :---: | ----------- |
 | savedReplayPath | String | File path |
 
+---
+
+### GetOutputList
+
+Gets the list of available outputs.
+
+- Complexity Rating: `4/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+---
+
+### GetOutputStatus
+
+Gets the status of an output.
+
+- Complexity Rating: `4/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| outputName | String | Output name | None | N/A |
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| outputActive | Boolean | Whether the output is active |
+| outputReconnecting | Boolean | Whether the output is reconnecting |
+| outputTimecode | String | Current formatted timecode string for the output |
+| outputDuration | Number | Current duration in milliseconds for the output |
+| outputCongestion | Number | Congestion of the output |
+| outputBytes | Number | Number of bytes sent by the output |
+| outputSkippedFrames | Number | Number of frames skipped by the output's process |
+| outputTotalFrames | Number | Total number of frames delivered by the output's process |
+
+---
+
+### ToggleOutput
+
+Toggles the status of an output.
+
+- Complexity Rating: `4/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| outputName | String | Output name | None | N/A |
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| outputActive | Boolean | Whether the output is active |
+
+---
+
+### StartOutput
+
+Starts an output.
+
+- Complexity Rating: `4/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| outputName | String | Output name | None | N/A |
+
+---
+
+### StopOutput
+
+Stops an output.
+
+- Complexity Rating: `4/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| outputName | String | Output name | None | N/A |
+
+---
+
+### GetOutputSettings
+
+Gets the settings of an output.
+
+- Complexity Rating: `4/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| outputName | String | Output name | None | N/A |
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| outputSettings | Object | Output settings |
+
+---
+
+### SetOutputSettings
+
+Sets the settings of an output.
+
+- Complexity Rating: `4/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| outputName | String | Output name | None | N/A |
+| outputSettings | Object | Output settings | None | N/A |
+
 ## Stream Requests
 
 ### GetStreamStatus
@@ -4505,6 +4644,7 @@ Gets the status of the stream output.
 | outputReconnecting | Boolean | Whether the output is currently reconnecting |
 | outputTimecode | String | Current formatted timecode string for the output |
 | outputDuration | Number | Current duration in milliseconds for the output |
+| outputCongestion | Number | Congestion of the output |
 | outputBytes | Number | Number of bytes sent by the output |
 | outputSkippedFrames | Number | Number of frames skipped by the output's process |
 | outputTotalFrames | Number | Total number of frames delivered by the output's process |
