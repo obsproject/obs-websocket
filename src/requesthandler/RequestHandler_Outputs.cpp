@@ -272,6 +272,6 @@ RequestResult RequestHandler::GetLastReplayBufferReplay(const Request &)
 		return RequestResult::Error(RequestStatus::OutputNotRunning);
 
 	json responseData;
-	responseData["savedReplayPath"] = Utils::Obs::StringHelper::GetLastReplayBufferFilePath();
+	responseData["savedReplayPath"] = Utils::Obs::StringHelper::GetLastReplayBufferFileName();
 	return RequestResult::Success(responseData);
 }
