@@ -177,9 +177,10 @@ void SettingsDialog::SaveFormData()
 		}
 	}
 
-	bool needsRestart = (conf->ServerEnabled != ui->enableWebSocketServerCheckBox->isChecked()) ||
-						(conf->ServerPort != ui->serverPortSpinBox->value()) ||
-						(ui->enableAuthenticationCheckBox->isChecked() && conf->ServerPassword != ui->serverPasswordLineEdit->text());
+	bool needsRestart =
+		(conf->ServerEnabled != ui->enableWebSocketServerCheckBox->isChecked()) ||
+		(conf->ServerPort != ui->serverPortSpinBox->value()) ||
+		(ui->enableAuthenticationCheckBox->isChecked() && conf->ServerPassword != ui->serverPasswordLineEdit->text());
 
 	conf->ServerEnabled = ui->enableWebSocketServerCheckBox->isChecked();
 	conf->AlertsEnabled = ui->enableSystemTrayAlertsCheckBox->isChecked();

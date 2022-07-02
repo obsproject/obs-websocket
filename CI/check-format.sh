@@ -44,7 +44,7 @@ fi
 find . -type d \( \
     -path ./\*build\* -o \
     -path ./deps/websocketpp -o \
-    -path ./deps/json -o \
+    -path ./deps/asio -o \
     -path ./deps/json \
 \) -prune -false -type f -o \
     -name '*.h' -or \
