@@ -140,6 +140,8 @@ RequestResult RequestHandler::BroadcastCustomEvent(const Request &request)
  * @requestField requestType  | String | The request type to call
  * @requestField ?requestData | Object | Object containing appropriate request data | {}
  *
+ * @responseField vendorName   | String | Echoed of `vendorName`
+ * @responseField requestType  | String | Echoed of `requestType`
  * @responseField responseData | Object | Object containing appropriate response data. {} if request does not provide any response data
  *
  * @requestType CallVendorRequest
@@ -187,6 +189,8 @@ RequestResult RequestHandler::CallVendorRequest(const Request &request)
 	}
 
 	json responseData;
+	responseData["vendorName"] = vendorName;
+	responseData["requestType"] = requestType;
 	responseData["responseData"] = Utils::Json::ObsDataToJson(obsResponseData);
 
 	return RequestResult::Success(responseData);
