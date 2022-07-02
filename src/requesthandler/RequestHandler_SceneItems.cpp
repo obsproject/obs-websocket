@@ -370,7 +370,7 @@ RequestResult RequestHandler::SetSceneItemTransform(const Request &request)
 		float finalWidth = scaleX * sourceWidth;
 		if (!(finalWidth > -90001.0 && finalWidth < 90001.0))
 			return RequestResult::Error(RequestStatus::RequestFieldOutOfRange,
-						    "The field scaleX is too small or large for the current source resolution.");
+						    "The field `scaleX` is too small or large for the current source resolution.");
 		sceneItemTransform.scale.x = scaleX;
 		transformChanged = true;
 	}
@@ -381,7 +381,7 @@ RequestResult RequestHandler::SetSceneItemTransform(const Request &request)
 		float finalHeight = scaleY * sourceHeight;
 		if (!(finalHeight > -90001.0 && finalHeight < 90001.0))
 			return RequestResult::Error(RequestStatus::RequestFieldOutOfRange,
-						    "The field scaleY is too small or large for the current source resolution.");
+						    "The field `scaleY` is too small or large for the current source resolution.");
 		sceneItemTransform.scale.y = scaleY;
 		transformChanged = true;
 	}
@@ -399,7 +399,7 @@ RequestResult RequestHandler::SetSceneItemTransform(const Request &request)
 		enum obs_bounds_type boundsType = r.RequestData["boundsType"];
 		if (boundsType == OBS_BOUNDS_NONE && r.RequestData["boundsType"] != "OBS_BOUNDS_NONE")
 			return RequestResult::Error(RequestStatus::InvalidRequestField,
-						    "The field boundsType has an invalid value.");
+						    "The field `boundsType` has an invalid value.");
 		sceneItemTransform.bounds_type = boundsType;
 		transformChanged = true;
 	}

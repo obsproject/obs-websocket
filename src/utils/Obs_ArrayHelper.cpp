@@ -60,14 +60,13 @@ std::vector<obs_hotkey_t *> Utils::Obs::ArrayHelper::GetHotkeyList()
 {
 	std::vector<obs_hotkey_t *> ret;
 
-	auto cb =
-		[](void *data, obs_hotkey_id, obs_hotkey_t *hotkey) {
-			auto ret = static_cast<std::vector<obs_hotkey_t *> *>(data);
+	auto cb = [](void *data, obs_hotkey_id, obs_hotkey_t *hotkey) {
+		auto ret = static_cast<std::vector<obs_hotkey_t *> *>(data);
 
-			ret->push_back(hotkey);
+		ret->push_back(hotkey);
 
-			return true;
-		};
+		return true;
+	};
 
 	obs_enum_hotkeys(cb, &ret);
 
@@ -135,38 +134,37 @@ std::vector<json> Utils::Obs::ArrayHelper::GetSceneItemList(obs_scene_t *scene, 
 	std::pair<std::vector<json>, bool> enumData;
 	enumData.second = basic;
 
-	auto cb =
-		[](obs_scene_t *, obs_sceneitem_t *sceneItem, void *param) {
-			auto enumData = static_cast<std::pair<std::vector<json>, bool> *>(param);
+	auto cb = [](obs_scene_t *, obs_sceneitem_t *sceneItem, void *param) {
+		auto enumData = static_cast<std::pair<std::vector<json>, bool> *>(param);
 
-			// TODO: Make ObjectHelper util for scene items
+		// TODO: Make ObjectHelper util for scene items
 
-			json item;
-			item["sceneItemId"] = obs_sceneitem_get_id(sceneItem);
-			item["sceneItemIndex"] =
-				enumData->first.size(); // Should be slightly faster than calling obs_sceneitem_get_order_position()
-			if (!enumData->second) {
-				item["sceneItemEnabled"] = obs_sceneitem_visible(sceneItem);
-				item["sceneItemLocked"] = obs_sceneitem_locked(sceneItem);
-				item["sceneItemTransform"] = ObjectHelper::GetSceneItemTransform(sceneItem);
-				item["sceneItemBlendMode"] = obs_sceneitem_get_blending_mode(sceneItem);
-				OBSSource itemSource = obs_sceneitem_get_source(sceneItem);
-				item["sourceName"] = obs_source_get_name(itemSource);
-				item["sourceType"] = obs_source_get_type(itemSource);
-				if (obs_source_get_type(itemSource) == OBS_SOURCE_TYPE_INPUT)
-					item["inputKind"] = obs_source_get_id(itemSource);
-				else
-					item["inputKind"] = nullptr;
-				if (obs_source_get_type(itemSource) == OBS_SOURCE_TYPE_SCENE)
-					item["isGroup"] = obs_source_is_group(itemSource);
-				else
-					item["isGroup"] = nullptr;
-			}
+		json item;
+		item["sceneItemId"] = obs_sceneitem_get_id(sceneItem);
+		item["sceneItemIndex"] =
+			enumData->first.size(); // Should be slightly faster than calling obs_sceneitem_get_order_position()
+		if (!enumData->second) {
+			item["sceneItemEnabled"] = obs_sceneitem_visible(sceneItem);
+			item["sceneItemLocked"] = obs_sceneitem_locked(sceneItem);
+			item["sceneItemTransform"] = ObjectHelper::GetSceneItemTransform(sceneItem);
+			item["sceneItemBlendMode"] = obs_sceneitem_get_blending_mode(sceneItem);
+			OBSSource itemSource = obs_sceneitem_get_source(sceneItem);
+			item["sourceName"] = obs_source_get_name(itemSource);
+			item["sourceType"] = obs_source_get_type(itemSource);
+			if (obs_source_get_type(itemSource) == OBS_SOURCE_TYPE_INPUT)
+				item["inputKind"] = obs_source_get_id(itemSource);
+			else
+				item["inputKind"] = nullptr;
+			if (obs_source_get_type(itemSource) == OBS_SOURCE_TYPE_SCENE)
+				item["isGroup"] = obs_source_is_group(itemSource);
+			else
+				item["isGroup"] = nullptr;
+		}
 
-			enumData->first.push_back(item);
+		enumData->first.push_back(item);
 
-			return true;
-		};
+		return true;
+	};
 
 	obs_scene_enum_items(scene, cb, &enumData);
 
