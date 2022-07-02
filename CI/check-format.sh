@@ -45,7 +45,8 @@ find . -type d \( \
     -path ./\*build\* -o \
     -path ./deps/websocketpp -o \
     -path ./deps/asio -o \
-    -path ./deps/json \
+    -path ./deps/json -o \
+    -path ./deps/qr \
 \) -prune -false -type f -o \
     -name '*.h' -or \
     -name '*.hpp' -or \
