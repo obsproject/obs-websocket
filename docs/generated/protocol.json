@@ -2826,7 +2826,13 @@
       "initialVersion": "5.0.0",
       "category": "record",
       "requestFields": [],
-      "responseFields": []
+      "responseFields": [
+        {
+          "valueName": "outputPath",
+          "valueType": "String",
+          "valueDescription": "File name for the saved recording"
+        }
+      ]
     },
     {
       "description": "Toggles pause on the record output.",
@@ -4881,6 +4887,11 @@
           "valueName": "outputState",
           "valueType": "String",
           "valueDescription": "The specific state of the output"
+        },
+        {
+          "valueName": "outputPath",
+          "valueType": "String",
+          "valueDescription": "File name for the saved recording, if record stopped. `null` otherwise"
         }
       ]
     },

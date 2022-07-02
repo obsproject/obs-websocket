@@ -2148,6 +2148,7 @@ The state of the record output has changed.
 | ---- | :---: | ----------- |
 | outputActive | Boolean | Whether the output is active |
 | outputState | String | The specific state of the output |
+| outputPath | String | File name for the saved recording, if record stopped. `null` otherwise |
 
 ---
 
@@ -4605,6 +4606,12 @@ Stops the record output.
 - Complexity Rating: `1/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| outputPath | String | File name for the saved recording |
 
 ---
 
