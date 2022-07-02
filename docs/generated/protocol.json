@@ -4272,7 +4272,7 @@
       ]
     },
     {
-      "description": "Opens a projector for a specific output video mix.\n\nMix types:\n- `OBS_WEBSOCKET_VIDEO_MIX_TYPE_PREVIEW`\n- `OBS_WEBSOCKET_VIDEO_MIX_TYPE_PROGRAM`\n- `OBS_WEBSOCKET_VIDEO_MIX_TYPE_MULTIVIEW`\n\nNote: This request serves to provide feature parity with 4.x. It is very likely to be changed/deprecated in a future release.",
+      "description": "Opens a projector for a specific output video mix.\n\nMix types:\n\n- `OBS_WEBSOCKET_VIDEO_MIX_TYPE_PREVIEW`\n- `OBS_WEBSOCKET_VIDEO_MIX_TYPE_PROGRAM`\n- `OBS_WEBSOCKET_VIDEO_MIX_TYPE_MULTIVIEW`\n\nNote: This request serves to provide feature parity with 4.x. It is very likely to be changed/deprecated in a future release.",
       "requestType": "OpenVideoMixProjector",
       "complexity": 3,
       "rpcVersion": "1",

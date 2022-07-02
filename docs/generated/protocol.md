@@ -4840,6 +4840,7 @@ Gets a list of connected monitors and information about them.
 Opens a projector for a specific output video mix.
 
 Mix types:
+
 - `OBS_WEBSOCKET_VIDEO_MIX_TYPE_PREVIEW`
 - `OBS_WEBSOCKET_VIDEO_MIX_TYPE_PROGRAM`
 - `OBS_WEBSOCKET_VIDEO_MIX_TYPE_MULTIVIEW`
