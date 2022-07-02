@@ -2409,6 +2409,8 @@ Studio mode has been enabled or disabled.
   - [OpenInputFiltersDialog](#openinputfiltersdialog)
   - [OpenInputInteractDialog](#openinputinteractdialog)
   - [GetMonitorList](#getmonitorlist)
+  - [OpenVideoMixProjector](#openvideomixprojector)
+  - [OpenSourceProjector](#opensourceprojector)
 
 ## General Requests
 
@@ -4830,3 +4832,48 @@ Gets a list of connected monitors and information about them.
 | Name | Type  | Description |
 | ---- | :---: | ----------- |
 | monitors | Array&lt;Object&gt; | a list of detected monitors with some information |
+
+---
+
+### OpenVideoMixProjector
+
+Opens a projector for a specific output video mix.
+
+Mix types:
+- `OBS_WEBSOCKET_VIDEO_MIX_TYPE_PREVIEW`
+- `OBS_WEBSOCKET_VIDEO_MIX_TYPE_PROGRAM`
+- `OBS_WEBSOCKET_VIDEO_MIX_TYPE_MULTIVIEW`
+
+Note: This request serves to provide feature parity with 4.x. It is very likely to be changed/deprecated in a future release.
+
+- Complexity Rating: `3/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| videoMixType | String | Type of mix to open | None | N/A |
+| ?monitorIndex | Number | Monitor index, use `GetMonitorList` to obtain index | None | -1: Opens projector in windowed mode |
+| ?projectorGeometry | String | Size/Position data for a windowed projector, in Qt Base64 encoded format. Mutually exclusive with `monitorIndex` | None | N/A |
+
+---
+
+### OpenSourceProjector
+
+Opens a projector for a source.
+
+Note: This request serves to provide feature parity with 4.x. It is very likely to be changed/deprecated in a future release.
+
+- Complexity Rating: `3/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| sourceName | String | Name of the source to open a projector for | None | N/A |
+| ?monitorIndex | Number | Monitor index, use `GetMonitorList` to obtain index | None | -1: Opens projector in windowed mode |
+| ?projectorGeometry | String | Size/Position data for a windowed projector, in Qt Base64 encoded format. Mutually exclusive with `monitorIndex` | None | N/A |
