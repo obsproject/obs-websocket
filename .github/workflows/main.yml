@@ -334,9 +334,9 @@ jobs:
           cd ./build
           sudo checkinstall -y --type=debian --fstrans=no -nodoc \
               --backup=no --deldoc=yes --install=no --pkgname=obs-websocket --pkgversion="$CHECKINSTALL_VERSION" \
-              --pkglicense="GPLv2.0" --maintainer="${{ github.event.pusher.email }}" --pkggroup="video" \
+              --pkglicense="GPLv2.0" --maintainer="tt2468@irltoolkit.com" --pkggroup="video" \
               --pkgsource="${{ github.event.repository.html_url }}" \
-              --requires="obs-studio,libqt5network5,libqt5concurrent5,qt5-image-formats-plugins" \
+              --requires="obs-studio,libqt5network5,qt5-image-formats-plugins" \
               --pakdir="../package"
           sudo chmod ao+r ../package/*
           sudo mv ../package/* ../package/${{ env.LINUX_FILENAME }}
