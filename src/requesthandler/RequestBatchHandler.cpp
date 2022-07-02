@@ -24,8 +24,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include "../utils/Compat.h"
 #include "../obs-websocket.h"
 
-struct SerialFrameBatch
-{
+struct SerialFrameBatch {
 	RequestHandler &requestHandler;
 	std::queue<RequestBatchRequest> requests;
 	std::vector<RequestResult> results;
@@ -37,43 +36,46 @@ struct SerialFrameBatch
 	std::mutex conditionMutex;
 	std::condition_variable condition;
 
-	SerialFrameBatch(RequestHandler &requestHandler, json &variables, bool haltOnFailure) :
-		requestHandler(requestHandler),
-		variables(variables),
-		haltOnFailure(haltOnFailure),
-		frameCount(0),
-		sleepUntilFrame(0)
-	{}
+	SerialFrameBatch(RequestHandler &requestHandler, json &variables, bool haltOnFailure)
+		: requestHandler(requestHandler),
+		  variables(variables),
+		  haltOnFailure(haltOnFailure),
+		  frameCount(0),
+		  sleepUntilFrame(0)
+	{
+	}
 };
 
-struct ParallelBatchResults
-{
+struct ParallelBatchResults {
 	RequestHandler &requestHandler;
 	std::vector<RequestResult> results;
 
 	std::mutex conditionMutex;
 	std::condition_variable condition;
 
-	ParallelBatchResults(RequestHandler &requestHandler) :
-		requestHandler(requestHandler)
-	{}
+	ParallelBatchResults(RequestHandler &requestHandler) : requestHandler(requestHandler) {}
 };
 
 // `{"inputName": "inputNameVariable"}` is essentially `inputName = inputNameVariable`
 static void PreProcessVariables(const json &variables, RequestBatchRequest &request)
 {
-	if (variables.empty() || !request.InputVariables.is_object() || request.InputVariables.empty() || !request.RequestData.is_object())
+	if (variables.empty() || !request.InputVariables.is_object() || request.InputVariables.empty() ||
+	    !request.RequestData.is_object())
 		return;
 
-	for (auto& [key, value] : request.InputVariables.items()) {
+	for (auto &[key, value] : request.InputVariables.items()) {
 		if (!value.is_string()) {
-			blog_debug("[WebSocketServer::ProcessRequestBatch] Value of field `%s` in `inputVariables `is not a string. Skipping!", key.c_str());
+			blog_debug(
+				"[WebSocketServer::ProcessRequestBatch] Value of field `%s` in `inputVariables `is not a string. Skipping!",
+				key.c_str());
 			continue;
 		}
 
 		std::string valueString = value;
 		if (!variables.contains(valueString)) {
-			blog_debug("[WebSocketServer::ProcessRequestBatch] `inputVariables` requested variable `%s`, but it does not exist. Skipping!", valueString.c_str());
+			blog_debug(
+				"[WebSocketServer::ProcessRequestBatch] `inputVariables` requested variable `%s`, but it does not exist. Skipping!",
+				valueString.c_str());
 			continue;
 		}
 
@@ -89,15 +91,19 @@ static void PostProcessVariables(json &variables, const RequestBatchRequest &req
 	if (!request.OutputVariables.is_object() || request.OutputVariables.empty() || requestResult.ResponseData.empty())
 		return;
 
-	for (auto& [key, value] : request.OutputVariables.items()) {
+	for (auto &[key, value] : request.OutputVariables.items()) {
 		if (!value.is_string()) {
-			blog_debug("[WebSocketServer::ProcessRequestBatch] Value of field `%s` in `outputVariables` is not a string. Skipping!", key.c_str());
+			blog_debug(
+				"[WebSocketServer::ProcessRequestBatch] Value of field `%s` in `outputVariables` is not a string. Skipping!",
+				key.c_str());
 			continue;
 		}
 
 		std::string valueString = value;
 		if (!requestResult.ResponseData.contains(valueString)) {
-			blog_debug("[WebSocketServer::ProcessRequestBatch] `outputVariables` requested responseData field `%s`, but it does not exist. Skipping!", valueString.c_str());
+			blog_debug(
+				"[WebSocketServer::ProcessRequestBatch] `outputVariables` requested responseData field `%s`, but it does not exist. Skipping!",
+				valueString.c_str());
 			continue;
 		}
 
@@ -109,7 +115,7 @@ static void ObsTickCallback(void *param, float)
 {
 	ScopeProfiler prof{"obs_websocket_request_batch_frame_tick"};
 
-	auto serialFrameBatch = static_cast<SerialFrameBatch*>(param);
+	auto serialFrameBatch = static_cast<SerialFrameBatch *>(param);
 
 	// Increment frame count
 	serialFrameBatch->frameCount++;
@@ -156,7 +162,10 @@ static void ObsTickCallback(void *param, float)
 		serialFrameBatch->condition.notify_one();
 }
 
-std::vector<RequestResult> RequestBatchHandler::ProcessRequestBatch(QThreadPool &threadPool, SessionPtr session, RequestBatchExecutionType::RequestBatchExecutionType executionType, std::vector<RequestBatchRequest> &requests, json &variables, bool haltOnFailure)
+std::vector<RequestResult>
+RequestBatchHandler::ProcessRequestBatch(QThreadPool &threadPool, SessionPtr session,
+					 RequestBatchExecutionType::RequestBatchExecutionType executionType,
+					 std::vector<RequestBatchRequest> &requests, json &variables, bool haltOnFailure)
 {
 	RequestHandler requestHandler(session);
 	if (executionType == RequestBatchExecutionType::SerialRealtime) {
@@ -189,7 +198,7 @@ std::vector<RequestResult> RequestBatchHandler::ProcessRequestBatch(QThreadPool 
 
 		// Wait until the graphics thread processes the last request in the queue
 		std::unique_lock<std::mutex> lock(serialFrameBatch.conditionMutex);
-		serialFrameBatch.condition.wait(lock, [&serialFrameBatch]{return serialFrameBatch.requests.empty();});
+		serialFrameBatch.condition.wait(lock, [&serialFrameBatch] { return serialFrameBatch.requests.empty(); });
 
 		// Remove the created callback entry since we don't need it anymore
 		obs_remove_tick_callback(ObsTickCallback, &serialFrameBatch);
@@ -215,7 +224,9 @@ std::vector<RequestResult> RequestBatchHandler::ProcessRequestBatch(QThreadPool 
 
 		// Wait for the last request to finish processing
 		size_t requestCount = requests.size();
-		parallelResults.condition.wait(lock, [&parallelResults, requestCount]{return parallelResults.results.size() == requestCount;});
+		parallelResults.condition.wait(lock, [&parallelResults, requestCount] {
+			return parallelResults.results.size() == requestCount;
+		});
 
 		return parallelResults.results;
 	}

@@ -29,11 +29,12 @@ json GetDefaultJsonObject(const json &requestData)
 		return requestData;
 }
 
-Request::Request(const std::string &requestType, const json &requestData, const RequestBatchExecutionType::RequestBatchExecutionType executionType) :
-	RequestType(requestType),
-	HasRequestData(requestData.is_object()),
-	RequestData(GetDefaultJsonObject(requestData)),
-	ExecutionType(executionType)
+Request::Request(const std::string &requestType, const json &requestData,
+		 const RequestBatchExecutionType::RequestBatchExecutionType executionType)
+	: RequestType(requestType),
+	  HasRequestData(requestData.is_object()),
+	  RequestData(GetDefaultJsonObject(requestData)),
+	  ExecutionType(executionType)
 {
 }
 
@@ -59,7 +60,8 @@ bool Request::ValidateBasic(const std::string &keyName, RequestStatus::RequestSt
 	return true;
 }
 
-bool Request::ValidateOptionalNumber(const std::string &keyName, RequestStatus::RequestStatus &statusCode, std::string &comment, const double minValue, const double maxValue) const
+bool Request::ValidateOptionalNumber(const std::string &keyName, RequestStatus::RequestStatus &statusCode, std::string &comment,
+				     const double minValue, const double maxValue) const
 {
 	if (!RequestData[keyName].is_number()) {
 		statusCode = RequestStatus::InvalidRequestFieldType;
@@ -70,19 +72,22 @@ bool Request::ValidateOptionalNumber(const std::string &keyName, RequestStatus::
 	double value = RequestData[keyName];
 	if (value < minValue) {
 		statusCode = RequestStatus::RequestFieldOutOfRange;
-		comment = std::string("The field value of `") + keyName + "` is below the minimum of `" + std::to_string(minValue) + "`";
+		comment = std::string("The field value of `") + keyName + "` is below the minimum of `" + std::to_string(minValue) +
+			  "`";
 		return false;
 	}
 	if (value > maxValue) {
 		statusCode = RequestStatus::RequestFieldOutOfRange;
-		comment = std::string("The field value of `") + keyName + "` is above the maximum of `" + std::to_string(maxValue) + "`";
+		comment = std::string("The field value of `") + keyName + "` is above the maximum of `" + std::to_string(maxValue) +
+			  "`";
 		return false;
 	}
 
 	return true;
 }
 
-bool Request::ValidateNumber(const std::string &keyName, RequestStatus::RequestStatus &statusCode, std::string &comment, const double minValue, const double maxValue) const
+bool Request::ValidateNumber(const std::string &keyName, RequestStatus::RequestStatus &statusCode, std::string &comment,
+			     const double minValue, const double maxValue) const
 {
 	if (!ValidateBasic(keyName, statusCode, comment))
 		return false;
@@ -93,7 +98,8 @@ bool Request::ValidateNumber(const std::string &keyName, RequestStatus::RequestS
 	return true;
 }
 
-bool Request::ValidateOptionalString(const std::string &keyName, RequestStatus::RequestStatus &statusCode, std::string &comment, const bool allowEmpty) const
+bool Request::ValidateOptionalString(const std::string &keyName, RequestStatus::RequestStatus &statusCode, std::string &comment,
+				     const bool allowEmpty) const
 {
 	if (!RequestData[keyName].is_string()) {
 		statusCode = RequestStatus::InvalidRequestFieldType;
@@ -110,7 +116,8 @@ bool Request::ValidateOptionalString(const std::string &keyName, RequestStatus::
 	return true;
 }
 
-bool Request::ValidateString(const std::string &keyName, RequestStatus::RequestStatus &statusCode, std::string &comment, const bool allowEmpty) const
+bool Request::ValidateString(const std::string &keyName, RequestStatus::RequestStatus &statusCode, std::string &comment,
+			     const bool allowEmpty) const
 {
 	if (!ValidateBasic(keyName, statusCode, comment))
 		return false;
@@ -121,7 +128,8 @@ bool Request::ValidateString(const std::string &keyName, RequestStatus::RequestS
 	return true;
 }
 
-bool Request::ValidateOptionalBoolean(const std::string &keyName, RequestStatus::RequestStatus &statusCode, std::string &comment) const
+bool Request::ValidateOptionalBoolean(const std::string &keyName, RequestStatus::RequestStatus &statusCode,
+				      std::string &comment) const
 {
 	if (!RequestData[keyName].is_boolean()) {
 		statusCode = RequestStatus::InvalidRequestFieldType;
@@ -143,7 +151,8 @@ bool Request::ValidateBoolean(const std::string &keyName, RequestStatus::Request
 	return true;
 }
 
-bool Request::ValidateOptionalObject(const std::string &keyName, RequestStatus::RequestStatus &statusCode, std::string &comment, const bool allowEmpty) const
+bool Request::ValidateOptionalObject(const std::string &keyName, RequestStatus::RequestStatus &statusCode, std::string &comment,
+				     const bool allowEmpty) const
 {
 	if (!RequestData[keyName].is_object()) {
 		statusCode = RequestStatus::InvalidRequestFieldType;
@@ -160,7 +169,8 @@ bool Request::ValidateOptionalObject(const std::string &keyName, RequestStatus::
 	return true;
 }
 
-bool Request::ValidateObject(const std::string &keyName, RequestStatus::RequestStatus &statusCode, std::string &comment, const bool allowEmpty) const
+bool Request::ValidateObject(const std::string &keyName, RequestStatus::RequestStatus &statusCode, std::string &comment,
+			     const bool allowEmpty) const
 {
 	if (!ValidateBasic(keyName, statusCode, comment))
 		return false;
@@ -171,7 +181,8 @@ bool Request::ValidateObject(const std::string &keyName, RequestStatus::RequestS
 	return true;
 }
 
-bool Request::ValidateOptionalArray(const std::string &keyName, RequestStatus::RequestStatus &statusCode, std::string &comment, const bool allowEmpty) const
+bool Request::ValidateOptionalArray(const std::string &keyName, RequestStatus::RequestStatus &statusCode, std::string &comment,
+				    const bool allowEmpty) const
 {
 	if (!RequestData[keyName].is_array()) {
 		statusCode = RequestStatus::InvalidRequestFieldType;
@@ -188,7 +199,8 @@ bool Request::ValidateOptionalArray(const std::string &keyName, RequestStatus::R
 	return true;
 }
 
-bool Request::ValidateArray(const std::string &keyName, RequestStatus::RequestStatus &statusCode, std::string &comment, const bool allowEmpty) const
+bool Request::ValidateArray(const std::string &keyName, RequestStatus::RequestStatus &statusCode, std::string &comment,
+			    const bool allowEmpty) const
 {
 	if (!ValidateBasic(keyName, statusCode, comment))
 		return false;
@@ -199,7 +211,8 @@ bool Request::ValidateArray(const std::string &keyName, RequestStatus::RequestSt
 	return true;
 }
 
-obs_source_t *Request::ValidateSource(const std::string &keyName, RequestStatus::RequestStatus &statusCode, std::string &comment) const
+obs_source_t *Request::ValidateSource(const std::string &keyName, RequestStatus::RequestStatus &statusCode,
+				      std::string &comment) const
 {
 	if (!ValidateString(keyName, statusCode, comment))
 		return nullptr;
@@ -216,7 +229,8 @@ obs_source_t *Request::ValidateSource(const std::string &keyName, RequestStatus:
 	return ret;
 }
 
-obs_source_t *Request::ValidateScene(const std::string &keyName, RequestStatus::RequestStatus &statusCode, std::string &comment, const ObsWebSocketSceneFilter filter) const
+obs_source_t *Request::ValidateScene(const std::string &keyName, RequestStatus::RequestStatus &statusCode, std::string &comment,
+				     const ObsWebSocketSceneFilter filter) const
 {
 	obs_source_t *ret = ValidateSource(keyName, statusCode, comment);
 	if (!ret)
@@ -245,7 +259,8 @@ obs_source_t *Request::ValidateScene(const std::string &keyName, RequestStatus::
 	return ret;
 }
 
-obs_scene_t *Request::ValidateScene2(const std::string &keyName, RequestStatus::RequestStatus &statusCode, std::string &comment, const ObsWebSocketSceneFilter filter) const
+obs_scene_t *Request::ValidateScene2(const std::string &keyName, RequestStatus::RequestStatus &statusCode, std::string &comment,
+				     const ObsWebSocketSceneFilter filter) const
 {
 	OBSSourceAutoRelease sceneSource = ValidateSource(keyName, statusCode, comment);
 	if (!sceneSource)
@@ -275,7 +290,8 @@ obs_scene_t *Request::ValidateScene2(const std::string &keyName, RequestStatus::
 	}
 }
 
-obs_source_t *Request::ValidateInput(const std::string &keyName, RequestStatus::RequestStatus &statusCode, std::string &comment) const
+obs_source_t *Request::ValidateInput(const std::string &keyName, RequestStatus::RequestStatus &statusCode,
+				     std::string &comment) const
 {
 	obs_source_t *ret = ValidateSource(keyName, statusCode, comment);
 	if (!ret)
@@ -291,7 +307,8 @@ obs_source_t *Request::ValidateInput(const std::string &keyName, RequestStatus::
 	return ret;
 }
 
-FilterPair Request::ValidateFilter(const std::string &sourceKeyName, const std::string &filterKeyName, RequestStatus::RequestStatus &statusCode, std::string &comment) const
+FilterPair Request::ValidateFilter(const std::string &sourceKeyName, const std::string &filterKeyName,
+				   RequestStatus::RequestStatus &statusCode, std::string &comment) const
 {
 	obs_source_t *source = ValidateSource(sourceKeyName, statusCode, comment);
 	if (!source)
@@ -305,14 +322,17 @@ FilterPair Request::ValidateFilter(const std::string &sourceKeyName, const std::
 	obs_source_t *filter = obs_source_get_filter_by_name(source, filterName.c_str());
 	if (!filter) {
 		statusCode = RequestStatus::ResourceNotFound;
-		comment = std::string("No filter was found in the source `") + RequestData[sourceKeyName].get<std::string>() + "` with the name `" + filterName + "`.";
+		comment = std::string("No filter was found in the source `") + RequestData[sourceKeyName].get<std::string>() +
+			  "` with the name `" + filterName + "`.";
 		return FilterPair{source, nullptr};
 	}
 
 	return FilterPair{source, filter};
 }
 
-obs_sceneitem_t *Request::ValidateSceneItem(const std::string &sceneKeyName, const std::string &sceneItemIdKeyName, RequestStatus::RequestStatus &statusCode, std::string &comment, const ObsWebSocketSceneFilter filter) const
+obs_sceneitem_t *Request::ValidateSceneItem(const std::string &sceneKeyName, const std::string &sceneItemIdKeyName,
+					    RequestStatus::RequestStatus &statusCode, std::string &comment,
+					    const ObsWebSocketSceneFilter filter) const
 {
 	OBSSceneAutoRelease scene = ValidateScene2(sceneKeyName, statusCode, comment, filter);
 	if (!scene)
@@ -326,7 +346,8 @@ obs_sceneitem_t *Request::ValidateSceneItem(const std::string &sceneKeyName, con
 	OBSSceneItem sceneItem = obs_scene_find_sceneitem_by_id(scene, sceneItemId);
 	if (!sceneItem) {
 		statusCode = RequestStatus::ResourceNotFound;
-		comment = std::string("No scene items were found in scene `") + RequestData[sceneKeyName].get<std::string>() + "` with the ID `" + std::to_string(sceneItemId) + "`.";
+		comment = std::string("No scene items were found in scene `") + RequestData[sceneKeyName].get<std::string>() +
+			  "` with the ID `" + std::to_string(sceneItemId) + "`.";
 		return nullptr;
 	}
 

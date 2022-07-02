@@ -46,7 +46,7 @@ static bool ReplayBufferAvailable()
  * @category outputs
  * @api requests
  */
-RequestResult RequestHandler::GetVirtualCamStatus(const Request&)
+RequestResult RequestHandler::GetVirtualCamStatus(const Request &)
 {
 	if (!VirtualCamAvailable())
 		return RequestResult::Error(RequestStatus::InvalidResourceState, "VirtualCam is not available.");
@@ -68,7 +68,7 @@ RequestResult RequestHandler::GetVirtualCamStatus(const Request&)
  * @category outputs
  * @api requests
  */
-RequestResult RequestHandler::ToggleVirtualCam(const Request&)
+RequestResult RequestHandler::ToggleVirtualCam(const Request &)
 {
 	if (!VirtualCamAvailable())
 		return RequestResult::Error(RequestStatus::InvalidResourceState, "VirtualCam is not available.");
@@ -95,7 +95,7 @@ RequestResult RequestHandler::ToggleVirtualCam(const Request&)
  * @api requests
  * @category outputs
  */
-RequestResult RequestHandler::StartVirtualCam(const Request&)
+RequestResult RequestHandler::StartVirtualCam(const Request &)
 {
 	if (!VirtualCamAvailable())
 		return RequestResult::Error(RequestStatus::InvalidResourceState, "VirtualCam is not available.");
@@ -118,7 +118,7 @@ RequestResult RequestHandler::StartVirtualCam(const Request&)
  * @api requests
  * @category outputs
  */
-RequestResult RequestHandler::StopVirtualCam(const Request&)
+RequestResult RequestHandler::StopVirtualCam(const Request &)
 {
 	if (!VirtualCamAvailable())
 		return RequestResult::Error(RequestStatus::InvalidResourceState, "VirtualCam is not available.");
@@ -143,7 +143,7 @@ RequestResult RequestHandler::StopVirtualCam(const Request&)
  * @category outputs
  * @api requests
  */
-RequestResult RequestHandler::GetReplayBufferStatus(const Request&)
+RequestResult RequestHandler::GetReplayBufferStatus(const Request &)
 {
 	if (!ReplayBufferAvailable())
 		return RequestResult::Error(RequestStatus::InvalidResourceState, "Replay buffer is not available.");
@@ -165,7 +165,7 @@ RequestResult RequestHandler::GetReplayBufferStatus(const Request&)
  * @category outputs
  * @api requests
  */
-RequestResult RequestHandler::ToggleReplayBuffer(const Request&)
+RequestResult RequestHandler::ToggleReplayBuffer(const Request &)
 {
 	if (!ReplayBufferAvailable())
 		return RequestResult::Error(RequestStatus::InvalidResourceState, "Replay buffer is not available.");
@@ -192,7 +192,7 @@ RequestResult RequestHandler::ToggleReplayBuffer(const Request&)
  * @api requests
  * @category outputs
  */
-RequestResult RequestHandler::StartReplayBuffer(const Request&)
+RequestResult RequestHandler::StartReplayBuffer(const Request &)
 {
 	if (!ReplayBufferAvailable())
 		return RequestResult::Error(RequestStatus::InvalidResourceState, "Replay buffer is not available.");
@@ -215,7 +215,7 @@ RequestResult RequestHandler::StartReplayBuffer(const Request&)
  * @api requests
  * @category outputs
  */
-RequestResult RequestHandler::StopReplayBuffer(const Request&)
+RequestResult RequestHandler::StopReplayBuffer(const Request &)
 {
 	if (!ReplayBufferAvailable())
 		return RequestResult::Error(RequestStatus::InvalidResourceState, "Replay buffer is not available.");
@@ -238,7 +238,7 @@ RequestResult RequestHandler::StopReplayBuffer(const Request&)
  * @api requests
  * @category outputs
  */
-RequestResult RequestHandler::SaveReplayBuffer(const Request&)
+RequestResult RequestHandler::SaveReplayBuffer(const Request &)
 {
 	if (!ReplayBufferAvailable())
 		return RequestResult::Error(RequestStatus::InvalidResourceState, "Replay buffer is not available.");
@@ -263,7 +263,7 @@ RequestResult RequestHandler::SaveReplayBuffer(const Request&)
  * @api requests
  * @category outputs
  */
-RequestResult RequestHandler::GetLastReplayBufferReplay(const Request&)
+RequestResult RequestHandler::GetLastReplayBufferReplay(const Request &)
 {
 	if (!ReplayBufferAvailable())
 		return RequestResult::Error(RequestStatus::InvalidResourceState, "Replay buffer is not available.");

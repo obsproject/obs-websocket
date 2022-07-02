@@ -111,7 +111,7 @@ void EventHandler::HandleInputNameChanged(obs_source_t *, std::string oldInputNa
  */
 void EventHandler::HandleInputActiveStateChanged(void *param, calldata_t *data)
 {
-	auto eventHandler = static_cast<EventHandler*>(param);
+	auto eventHandler = static_cast<EventHandler *>(param);
 
 	if (!eventHandler->_inputActiveStateChangedRef.load())
 		return;
@@ -147,7 +147,7 @@ void EventHandler::HandleInputActiveStateChanged(void *param, calldata_t *data)
  */
 void EventHandler::HandleInputShowStateChanged(void *param, calldata_t *data)
 {
-	auto eventHandler = static_cast<EventHandler*>(param);
+	auto eventHandler = static_cast<EventHandler *>(param);
 
 	if (!eventHandler->_inputShowStateChangedRef.load())
 		return;
@@ -181,7 +181,7 @@ void EventHandler::HandleInputShowStateChanged(void *param, calldata_t *data)
  */
 void EventHandler::HandleInputMuteStateChanged(void *param, calldata_t *data)
 {
-	auto eventHandler = static_cast<EventHandler*>(param);
+	auto eventHandler = static_cast<EventHandler *>(param);
 
 	obs_source_t *source = GetCalldataPointer<obs_source_t>(data, "source");
 	if (!source)
@@ -213,7 +213,7 @@ void EventHandler::HandleInputMuteStateChanged(void *param, calldata_t *data)
  */
 void EventHandler::HandleInputVolumeChanged(void *param, calldata_t *data)
 {
-	auto eventHandler = static_cast<EventHandler*>(param);
+	auto eventHandler = static_cast<EventHandler *>(param);
 
 	obs_source_t *source = GetCalldataPointer<obs_source_t>(data, "source");
 	if (!source)
@@ -252,7 +252,7 @@ void EventHandler::HandleInputVolumeChanged(void *param, calldata_t *data)
  */
 void EventHandler::HandleInputAudioBalanceChanged(void *param, calldata_t *data)
 {
-	auto eventHandler = static_cast<EventHandler*>(param);
+	auto eventHandler = static_cast<EventHandler *>(param);
 
 	obs_source_t *source = GetCalldataPointer<obs_source_t>(data, "source");
 	if (!source)
@@ -285,7 +285,7 @@ void EventHandler::HandleInputAudioBalanceChanged(void *param, calldata_t *data)
  */
 void EventHandler::HandleInputAudioSyncOffsetChanged(void *param, calldata_t *data)
 {
-	auto eventHandler = static_cast<EventHandler*>(param);
+	auto eventHandler = static_cast<EventHandler *>(param);
 
 	obs_source_t *source = GetCalldataPointer<obs_source_t>(data, "source");
 	if (!source)
@@ -318,7 +318,7 @@ void EventHandler::HandleInputAudioSyncOffsetChanged(void *param, calldata_t *da
  */
 void EventHandler::HandleInputAudioTracksChanged(void *param, calldata_t *data)
 {
-	auto eventHandler = static_cast<EventHandler*>(param);
+	auto eventHandler = static_cast<EventHandler *>(param);
 
 	obs_source_t *source = GetCalldataPointer<obs_source_t>(data, "source");
 	if (!source)
@@ -362,7 +362,7 @@ void EventHandler::HandleInputAudioTracksChanged(void *param, calldata_t *data)
  */
 void EventHandler::HandleInputAudioMonitorTypeChanged(void *param, calldata_t *data)
 {
-	auto eventHandler = static_cast<EventHandler*>(param);
+	auto eventHandler = static_cast<EventHandler *>(param);
 
 	obs_source_t *source = GetCalldataPointer<obs_source_t>(data, "source");
 	if (!source)

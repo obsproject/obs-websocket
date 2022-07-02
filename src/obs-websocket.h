@@ -38,7 +38,7 @@ typedef std::shared_ptr<WebSocketApi> WebSocketApiPtr;
 class WebSocketServer;
 typedef std::shared_ptr<WebSocketServer> WebSocketServerPtr;
 
-os_cpu_usage_info_t* GetCpuUsageInfo();
+os_cpu_usage_info_t *GetCpuUsageInfo();
 
 ConfigPtr GetConfig();
 

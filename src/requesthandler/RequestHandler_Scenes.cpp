@@ -33,7 +33,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
  * @api requests
  * @category scenes
  */
-RequestResult RequestHandler::GetSceneList(const Request&)
+RequestResult RequestHandler::GetSceneList(const Request &)
 {
 	json responseData;
 
@@ -68,7 +68,7 @@ RequestResult RequestHandler::GetSceneList(const Request&)
  * @api requests
  * @category scenes
  */
-RequestResult RequestHandler::GetGroupList(const Request&)
+RequestResult RequestHandler::GetGroupList(const Request &)
 {
 	json responseData;
 
@@ -89,7 +89,7 @@ RequestResult RequestHandler::GetGroupList(const Request&)
  * @api requests
  * @category scenes
  */
-RequestResult RequestHandler::GetCurrentProgramScene(const Request&)
+RequestResult RequestHandler::GetCurrentProgramScene(const Request &)
 {
 	json responseData;
 	OBSSourceAutoRelease currentProgramScene = obs_frontend_get_current_scene();
@@ -110,7 +110,7 @@ RequestResult RequestHandler::GetCurrentProgramScene(const Request&)
  * @api requests
  * @category scenes
  */
-RequestResult RequestHandler::SetCurrentProgramScene(const Request& request)
+RequestResult RequestHandler::SetCurrentProgramScene(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
@@ -137,7 +137,7 @@ RequestResult RequestHandler::SetCurrentProgramScene(const Request& request)
  * @api requests
  * @category scenes
  */
-RequestResult RequestHandler::GetCurrentPreviewScene(const Request&)
+RequestResult RequestHandler::GetCurrentPreviewScene(const Request &)
 {
 	if (!obs_frontend_preview_program_mode_active())
 		return RequestResult::Error(RequestStatus::StudioModeNotActive);
@@ -164,7 +164,7 @@ RequestResult RequestHandler::GetCurrentPreviewScene(const Request&)
  * @api requests
  * @category scenes
  */
-RequestResult RequestHandler::SetCurrentPreviewScene(const Request& request)
+RequestResult RequestHandler::SetCurrentPreviewScene(const Request &request)
 {
 	if (!obs_frontend_preview_program_mode_active())
 		return RequestResult::Error(RequestStatus::StudioModeNotActive);
@@ -192,7 +192,7 @@ RequestResult RequestHandler::SetCurrentPreviewScene(const Request& request)
  * @api requests
  * @category scenes
  */
-RequestResult RequestHandler::CreateScene(const Request& request)
+RequestResult RequestHandler::CreateScene(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
@@ -226,7 +226,7 @@ RequestResult RequestHandler::CreateScene(const Request& request)
  * @api requests
  * @category scenes
  */
-RequestResult RequestHandler::RemoveScene(const Request& request)
+RequestResult RequestHandler::RemoveScene(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
@@ -235,7 +235,8 @@ RequestResult RequestHandler::RemoveScene(const Request& request)
 		return RequestResult::Error(statusCode, comment);
 
 	if (Utils::Obs::NumberHelper::GetSceneCount() < 2)
-		return RequestResult::Error(RequestStatus::NotEnoughResources, "You cannot remove the last scene in the collection.");
+		return RequestResult::Error(RequestStatus::NotEnoughResources,
+					    "You cannot remove the last scene in the collection.");
 
 	obs_source_remove(scene);
 
@@ -255,7 +256,7 @@ RequestResult RequestHandler::RemoveScene(const Request& request)
  * @api requests
  * @category scenes
  */
-RequestResult RequestHandler::SetSceneName(const Request& request)
+RequestResult RequestHandler::SetSceneName(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
@@ -267,7 +268,8 @@ RequestResult RequestHandler::SetSceneName(const Request& request)
 
 	OBSSourceAutoRelease existingSource = obs_get_source_by_name(newSceneName.c_str());
 	if (existingSource)
-		return RequestResult::Error(RequestStatus::ResourceAlreadyExists, "A source already exists by that new scene name.");
+		return RequestResult::Error(RequestStatus::ResourceAlreadyExists,
+					    "A source already exists by that new scene name.");
 
 	obs_source_set_name(scene, newSceneName.c_str());
 
@@ -289,7 +291,7 @@ RequestResult RequestHandler::SetSceneName(const Request& request)
  * @api requests
  * @category scenes
  */
-RequestResult RequestHandler::GetSceneSceneTransitionOverride(const Request& request)
+RequestResult RequestHandler::GetSceneSceneTransitionOverride(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
@@ -328,7 +330,7 @@ RequestResult RequestHandler::GetSceneSceneTransitionOverride(const Request& req
  * @api requests
  * @category scenes
  */
-RequestResult RequestHandler::SetSceneSceneTransitionOverride(const Request& request)
+RequestResult RequestHandler::SetSceneSceneTransitionOverride(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
@@ -342,7 +344,8 @@ RequestResult RequestHandler::SetSceneSceneTransitionOverride(const Request& req
 	if (hasName && !request.RequestData["transitionName"].is_null()) {
 		if (!request.ValidateOptionalString("transitionName", statusCode, comment))
 			return RequestResult::Error(statusCode, comment);
-		OBSSourceAutoRelease transition = Utils::Obs::SearchHelper::GetSceneTransitionByName(request.RequestData["transitionName"]);
+		OBSSourceAutoRelease transition =
+			Utils::Obs::SearchHelper::GetSceneTransitionByName(request.RequestData["transitionName"]);
 		if (!transition)
 			return RequestResult::Error(RequestStatus::ResourceNotFound, "No scene transition was found by that name.");
 	}
@@ -354,7 +357,8 @@ RequestResult RequestHandler::SetSceneSceneTransitionOverride(const Request& req
 	}
 
 	if (!hasName && !hasDuration)
-		return RequestResult::Error(RequestStatus::MissingRequestField, "Your request data must include either `transitionName` or `transitionDuration`.");
+		return RequestResult::Error(RequestStatus::MissingRequestField,
+					    "Your request data must include either `transitionName` or `transitionDuration`.");
 
 	if (hasName) {
 		if (request.RequestData["transitionName"].is_null()) {

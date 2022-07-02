@@ -19,7 +19,9 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include "Obs.h"
 #include "../plugin-macros.generated.h"
 
-#define RET_COMPARE(str, x) if (str == #x) return x;
+#define RET_COMPARE(str, x) \
+	if (str == #x)      \
+		return x;
 
 enum obs_bounds_type Utils::Obs::EnumHelper::GetSceneItemBoundsType(std::string boundsType)
 {

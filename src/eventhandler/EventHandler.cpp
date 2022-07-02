@@ -19,18 +19,18 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include "EventHandler.h"
 
-EventHandler::EventHandler() :
-	_obsLoaded(false),
-	_inputVolumeMetersRef(0),
-	_inputActiveStateChangedRef(0),
-	_inputShowStateChangedRef(0),
-	_sceneItemTransformChangedRef(0)
+EventHandler::EventHandler()
+	: _obsLoaded(false),
+	  _inputVolumeMetersRef(0),
+	  _inputActiveStateChangedRef(0),
+	  _inputShowStateChangedRef(0),
+	  _sceneItemTransformChangedRef(0)
 {
 	blog_debug("[EventHandler::EventHandler] Setting up...");
 
 	obs_frontend_add_event_callback(OnFrontendEvent, this);
 
-	signal_handler_t* coreSignalHandler = obs_get_signal_handler();
+	signal_handler_t *coreSignalHandler = obs_get_signal_handler();
 	if (coreSignalHandler) {
 		signal_handler_connect(coreSignalHandler, "source_create", SourceCreatedMultiHandler, this);
 		signal_handler_connect(coreSignalHandler, "source_destroy", SourceDestroyedMultiHandler, this);
@@ -49,7 +49,7 @@ EventHandler::~EventHandler()
 
 	obs_frontend_remove_event_callback(OnFrontendEvent, this);
 
-	signal_handler_t* coreSignalHandler = obs_get_signal_handler();
+	signal_handler_t *coreSignalHandler = obs_get_signal_handler();
 	if (coreSignalHandler) {
 		signal_handler_disconnect(coreSignalHandler, "source_create", SourceCreatedMultiHandler, this);
 		signal_handler_disconnect(coreSignalHandler, "source_destroy", SourceDestroyedMultiHandler, this);
@@ -80,7 +80,8 @@ void EventHandler::ProcessSubscription(uint64_t eventSubscriptions)
 			if (_inputVolumeMetersHandler)
 				blog(LOG_WARNING, "[EventHandler::ProcessSubscription] Input volume meter handler already exists!");
 			else
-				_inputVolumeMetersHandler = std::make_unique<Utils::Obs::VolumeMeter::Handler>(std::bind(&EventHandler::HandleInputVolumeMeters, this, std::placeholders::_1));
+				_inputVolumeMetersHandler = std::make_unique<Utils::Obs::VolumeMeter::Handler>(
+					std::bind(&EventHandler::HandleInputVolumeMeters, this, std::placeholders::_1));
 		}
 	}
 	if ((eventSubscriptions & EventSubscription::InputActiveStateChanged) != 0)
@@ -124,7 +125,7 @@ void EventHandler::ConnectSourceSignals(obs_source_t *source) // Applies to inpu
 	// Disconnect all existing signals from the source to prevent multiple connections
 	DisconnectSourceSignals(source);
 
-	signal_handler_t* sh = obs_source_get_signal_handler(source);
+	signal_handler_t *sh = obs_source_get_signal_handler(source);
 
 	obs_source_type sourceType = obs_source_get_type(source);
 
@@ -166,8 +167,8 @@ void EventHandler::ConnectSourceSignals(obs_source_t *source) // Applies to inpu
 		signal_handler_connect(sh, "reorder_filters", HandleSourceFilterListReindexed, this);
 		signal_handler_connect(sh, "filter_add", FilterAddMultiHandler, this);
 		signal_handler_connect(sh, "filter_remove", FilterRemoveMultiHandler, this);
-		auto enumFilters = [](obs_source_t *, obs_source_t *filter, void *param){
-			auto eventHandler = static_cast<EventHandler*>(param);
+		auto enumFilters = [](obs_source_t *, obs_source_t *filter, void *param) {
+			auto eventHandler = static_cast<EventHandler *>(param);
 			eventHandler->ConnectSourceSignals(filter);
 		};
 		obs_source_enum_filters(source, enumFilters, this);
@@ -193,7 +194,7 @@ void EventHandler::DisconnectSourceSignals(obs_source_t *source)
 	if (!source)
 		return;
 
-	signal_handler_t* sh = obs_source_get_signal_handler(source);
+	signal_handler_t *sh = obs_source_get_signal_handler(source);
 
 	obs_source_type sourceType = obs_source_get_type(source);
 
@@ -235,8 +236,8 @@ void EventHandler::DisconnectSourceSignals(obs_source_t *source)
 		signal_handler_disconnect(sh, "reorder_filters", HandleSourceFilterListReindexed, this);
 		signal_handler_disconnect(sh, "filter_add", FilterAddMultiHandler, this);
 		signal_handler_disconnect(sh, "filter_remove", FilterRemoveMultiHandler, this);
-		auto enumFilters = [](obs_source_t *, obs_source_t *filter, void *param){
-			auto eventHandler = static_cast<EventHandler*>(param);
+		auto enumFilters = [](obs_source_t *, obs_source_t *filter, void *param) {
+			auto eventHandler = static_cast<EventHandler *>(param);
 			eventHandler->DisconnectSourceSignals(filter);
 		};
 		obs_source_enum_filters(source, enumFilters, this);
@@ -258,236 +259,233 @@ void EventHandler::DisconnectSourceSignals(obs_source_t *source)
 
 void EventHandler::OnFrontendEvent(enum obs_frontend_event event, void *private_data)
 {
-	auto eventHandler = static_cast<EventHandler*>(private_data);
+	auto eventHandler = static_cast<EventHandler *>(private_data);
 
 	if (!eventHandler->_obsLoaded.load() && event != OBS_FRONTEND_EVENT_FINISHED_LOADING)
 		return;
 
 	switch (event) {
-		// General
-		case OBS_FRONTEND_EVENT_FINISHED_LOADING:
-			blog_debug("[EventHandler::OnFrontendEvent] OBS has finished loading. Connecting final handlers and enabling events...");
+	// General
+	case OBS_FRONTEND_EVENT_FINISHED_LOADING:
+		blog_debug(
+			"[EventHandler::OnFrontendEvent] OBS has finished loading. Connecting final handlers and enabling events...");
 
-			// Connect source signals and enable events only after OBS has fully loaded (to reduce extra logging).
-			eventHandler->_obsLoaded.store(true);
+		// Connect source signals and enable events only after OBS has fully loaded (to reduce extra logging).
+		eventHandler->_obsLoaded.store(true);
 
-			// In the case that plugins become hotloadable, this will have to go back into `EventHandler::EventHandler()`
-			// Enumerate inputs and connect each one
-			{
-				auto enumInputs = [](void *param, obs_source_t *source) {
-					auto eventHandler = static_cast<EventHandler*>(param);
-					eventHandler->ConnectSourceSignals(source);
-					return true;
-				};
-				obs_enum_sources(enumInputs, private_data);
+		// In the case that plugins become hotloadable, this will have to go back into `EventHandler::EventHandler()`
+		// Enumerate inputs and connect each one
+		{
+			auto enumInputs = [](void *param, obs_source_t *source) {
+				auto eventHandler = static_cast<EventHandler *>(param);
+				eventHandler->ConnectSourceSignals(source);
+				return true;
+			};
+			obs_enum_sources(enumInputs, private_data);
+		}
+
+		// Enumerate scenes and connect each one
+		{
+			auto enumScenes = [](void *param, obs_source_t *source) {
+				auto eventHandler = static_cast<EventHandler *>(param);
+				eventHandler->ConnectSourceSignals(source);
+				return true;
+			};
+			obs_enum_scenes(enumScenes, private_data);
+		}
+
+		// Enumerate all scene transitions and connect each one
+		{
+			obs_frontend_source_list transitions = {};
+			obs_frontend_get_transitions(&transitions);
+			for (size_t i = 0; i < transitions.sources.num; i++) {
+				obs_source_t *transition = transitions.sources.array[i];
+				eventHandler->ConnectSourceSignals(transition);
 			}
+			obs_frontend_source_list_free(&transitions);
+		}
 
-			// Enumerate scenes and connect each one
-			{
-				auto enumScenes = [](void *param, obs_source_t *source) {
-					auto eventHandler = static_cast<EventHandler*>(param);
-					eventHandler->ConnectSourceSignals(source);
-					return true;
-				};
-				obs_enum_scenes(enumScenes, private_data);
+		blog_debug("[EventHandler::OnFrontendEvent] Finished.");
+
+		if (eventHandler->_obsLoadedCallback)
+			eventHandler->_obsLoadedCallback();
+
+		break;
+	case OBS_FRONTEND_EVENT_EXIT:
+		eventHandler->HandleExitStarted();
+
+		blog_debug("[EventHandler::OnFrontendEvent] OBS is unloading. Disabling events...");
+		// Disconnect source signals and disable events when OBS starts unloading (to reduce extra logging).
+		eventHandler->_obsLoaded.store(false);
+
+		// In the case that plugins become hotloadable, this will have to go back into `EventHandler::~EventHandler()`
+		// Enumerate inputs and disconnect each one
+		{
+			auto enumInputs = [](void *param, obs_source_t *source) {
+				auto eventHandler = static_cast<EventHandler *>(param);
+				eventHandler->DisconnectSourceSignals(source);
+				return true;
+			};
+			obs_enum_sources(enumInputs, private_data);
+		}
+
+		// Enumerate scenes and disconnect each one
+		{
+			auto enumScenes = [](void *param, obs_source_t *source) {
+				auto eventHandler = static_cast<EventHandler *>(param);
+				eventHandler->DisconnectSourceSignals(source);
+				return true;
+			};
+			obs_enum_scenes(enumScenes, private_data);
+		}
+
+		// Enumerate all scene transitions and disconnect each one
+		{
+			obs_frontend_source_list transitions = {};
+			obs_frontend_get_transitions(&transitions);
+			for (size_t i = 0; i < transitions.sources.num; i++) {
+				obs_source_t *transition = transitions.sources.array[i];
+				eventHandler->DisconnectSourceSignals(transition);
 			}
+			obs_frontend_source_list_free(&transitions);
+		}
 
-			// Enumerate all scene transitions and connect each one
-			{
-				obs_frontend_source_list transitions = {};
-				obs_frontend_get_transitions(&transitions);
-				for (size_t i = 0; i < transitions.sources.num; i++) {
-					obs_source_t* transition = transitions.sources.array[i];
-					eventHandler->ConnectSourceSignals(transition);
-				}
-				obs_frontend_source_list_free(&transitions);
-			}
+		blog_debug("[EventHandler::OnFrontendEvent] Finished.");
 
-			blog_debug("[EventHandler::OnFrontendEvent] Finished.");
+		break;
+	case OBS_FRONTEND_EVENT_STUDIO_MODE_ENABLED:
+		eventHandler->HandleStudioModeStateChanged(true);
+		break;
+	case OBS_FRONTEND_EVENT_STUDIO_MODE_DISABLED:
+		eventHandler->HandleStudioModeStateChanged(false);
+		break;
 
-			if (eventHandler->_obsLoadedCallback)
-				eventHandler->_obsLoadedCallback();
+	// Config
+	case OBS_FRONTEND_EVENT_SCENE_COLLECTION_CHANGING: {
+		obs_frontend_source_list transitions = {};
+		obs_frontend_get_transitions(&transitions);
+		for (size_t i = 0; i < transitions.sources.num; i++) {
+			obs_source_t *transition = transitions.sources.array[i];
+			eventHandler->DisconnectSourceSignals(transition);
+		}
+		obs_frontend_source_list_free(&transitions);
+	}
+		eventHandler->HandleCurrentSceneCollectionChanging();
+		break;
+	case OBS_FRONTEND_EVENT_SCENE_COLLECTION_CHANGED: {
+		obs_frontend_source_list transitions = {};
+		obs_frontend_get_transitions(&transitions);
+		for (size_t i = 0; i < transitions.sources.num; i++) {
+			obs_source_t *transition = transitions.sources.array[i];
+			eventHandler->ConnectSourceSignals(transition);
+		}
+		obs_frontend_source_list_free(&transitions);
+	}
+		eventHandler->HandleCurrentSceneCollectionChanged();
+		break;
+	case OBS_FRONTEND_EVENT_SCENE_COLLECTION_LIST_CHANGED:
+		eventHandler->HandleSceneCollectionListChanged();
+		break;
+	case OBS_FRONTEND_EVENT_PROFILE_CHANGING:
+		eventHandler->HandleCurrentProfileChanging();
+		break;
+	case OBS_FRONTEND_EVENT_PROFILE_CHANGED:
+		eventHandler->HandleCurrentProfileChanged();
+		break;
+	case OBS_FRONTEND_EVENT_PROFILE_LIST_CHANGED:
+		eventHandler->HandleProfileListChanged();
+		break;
 
-			break;
-		case OBS_FRONTEND_EVENT_EXIT:
-			eventHandler->HandleExitStarted();
+	// Scenes
+	case OBS_FRONTEND_EVENT_SCENE_CHANGED:
+		eventHandler->HandleCurrentProgramSceneChanged();
+		break;
+	case OBS_FRONTEND_EVENT_PREVIEW_SCENE_CHANGED:
+		eventHandler->HandleCurrentPreviewSceneChanged();
+		break;
+	case OBS_FRONTEND_EVENT_SCENE_LIST_CHANGED:
+		eventHandler->HandleSceneListChanged();
+		break;
 
-			blog_debug("[EventHandler::OnFrontendEvent] OBS is unloading. Disabling events...");
-			// Disconnect source signals and disable events when OBS starts unloading (to reduce extra logging).
-			eventHandler->_obsLoaded.store(false);
+	// Transitions
+	case OBS_FRONTEND_EVENT_TRANSITION_CHANGED:
+		eventHandler->HandleCurrentSceneTransitionChanged();
+		break;
+	case OBS_FRONTEND_EVENT_TRANSITION_LIST_CHANGED: {
+		obs_frontend_source_list transitions = {};
+		obs_frontend_get_transitions(&transitions);
+		for (size_t i = 0; i < transitions.sources.num; i++) {
+			obs_source_t *transition = transitions.sources.array[i];
+			eventHandler->ConnectSourceSignals(transition);
+		}
+		obs_frontend_source_list_free(&transitions);
+	} break;
+	case OBS_FRONTEND_EVENT_TRANSITION_DURATION_CHANGED:
+		eventHandler->HandleCurrentSceneTransitionDurationChanged();
+		break;
 
-			// In the case that plugins become hotloadable, this will have to go back into `EventHandler::~EventHandler()`
-			// Enumerate inputs and disconnect each one
-			{
-				auto enumInputs = [](void *param, obs_source_t *source) {
-					auto eventHandler = static_cast<EventHandler*>(param);
-					eventHandler->DisconnectSourceSignals(source);
-					return true;
-				};
-				obs_enum_sources(enumInputs, private_data);
-			}
+	// Outputs
+	case OBS_FRONTEND_EVENT_STREAMING_STARTING:
+		eventHandler->HandleStreamStateChanged(OBS_WEBSOCKET_OUTPUT_STARTING);
+		break;
+	case OBS_FRONTEND_EVENT_STREAMING_STARTED:
+		eventHandler->HandleStreamStateChanged(OBS_WEBSOCKET_OUTPUT_STARTED);
+		break;
+	case OBS_FRONTEND_EVENT_STREAMING_STOPPING:
+		eventHandler->HandleStreamStateChanged(OBS_WEBSOCKET_OUTPUT_STOPPING);
+		break;
+	case OBS_FRONTEND_EVENT_STREAMING_STOPPED:
+		eventHandler->HandleStreamStateChanged(OBS_WEBSOCKET_OUTPUT_STOPPED);
+		break;
+	case OBS_FRONTEND_EVENT_RECORDING_STARTING:
+		eventHandler->HandleRecordStateChanged(OBS_WEBSOCKET_OUTPUT_STARTING);
+		break;
+	case OBS_FRONTEND_EVENT_RECORDING_STARTED:
+		eventHandler->HandleRecordStateChanged(OBS_WEBSOCKET_OUTPUT_STARTED);
+		break;
+	case OBS_FRONTEND_EVENT_RECORDING_STOPPING:
+		eventHandler->HandleRecordStateChanged(OBS_WEBSOCKET_OUTPUT_STOPPING);
+		break;
+	case OBS_FRONTEND_EVENT_RECORDING_STOPPED:
+		eventHandler->HandleRecordStateChanged(OBS_WEBSOCKET_OUTPUT_STOPPED);
+		break;
+	case OBS_FRONTEND_EVENT_RECORDING_PAUSED:
+		eventHandler->HandleRecordStateChanged(OBS_WEBSOCKET_OUTPUT_PAUSED);
+		break;
+	case OBS_FRONTEND_EVENT_RECORDING_UNPAUSED:
+		eventHandler->HandleRecordStateChanged(OBS_WEBSOCKET_OUTPUT_RESUMED);
+		break;
+	case OBS_FRONTEND_EVENT_REPLAY_BUFFER_STARTING:
+		eventHandler->HandleReplayBufferStateChanged(OBS_WEBSOCKET_OUTPUT_STARTING);
+		break;
+	case OBS_FRONTEND_EVENT_REPLAY_BUFFER_STARTED:
+		eventHandler->HandleReplayBufferStateChanged(OBS_WEBSOCKET_OUTPUT_STARTED);
+		break;
+	case OBS_FRONTEND_EVENT_REPLAY_BUFFER_STOPPING:
+		eventHandler->HandleReplayBufferStateChanged(OBS_WEBSOCKET_OUTPUT_STOPPING);
+		break;
+	case OBS_FRONTEND_EVENT_REPLAY_BUFFER_STOPPED:
+		eventHandler->HandleReplayBufferStateChanged(OBS_WEBSOCKET_OUTPUT_STOPPED);
+		break;
+	case OBS_FRONTEND_EVENT_VIRTUALCAM_STARTED:
+		eventHandler->HandleVirtualcamStateChanged(OBS_WEBSOCKET_OUTPUT_STARTED);
+		break;
+	case OBS_FRONTEND_EVENT_VIRTUALCAM_STOPPED:
+		eventHandler->HandleVirtualcamStateChanged(OBS_WEBSOCKET_OUTPUT_STOPPED);
+		break;
+	case OBS_FRONTEND_EVENT_REPLAY_BUFFER_SAVED:
+		eventHandler->HandleReplayBufferSaved();
+		break;
 
-			// Enumerate scenes and disconnect each one
-			{
-				auto enumScenes = [](void *param, obs_source_t *source) {
-					auto eventHandler = static_cast<EventHandler*>(param);
-					eventHandler->DisconnectSourceSignals(source);
-					return true;
-				};
-				obs_enum_scenes(enumScenes, private_data);
-			}
-
-			// Enumerate all scene transitions and disconnect each one
-			{
-				obs_frontend_source_list transitions = {};
-				obs_frontend_get_transitions(&transitions);
-				for (size_t i = 0; i < transitions.sources.num; i++) {
-					obs_source_t* transition = transitions.sources.array[i];
-					eventHandler->DisconnectSourceSignals(transition);
-				}
-				obs_frontend_source_list_free(&transitions);
-			}
-
-			blog_debug("[EventHandler::OnFrontendEvent] Finished.");
-
-			break;
-		case OBS_FRONTEND_EVENT_STUDIO_MODE_ENABLED:
-			eventHandler->HandleStudioModeStateChanged(true);
-			break;
-		case OBS_FRONTEND_EVENT_STUDIO_MODE_DISABLED:
-			eventHandler->HandleStudioModeStateChanged(false);
-			break;
-
-		// Config
-		case OBS_FRONTEND_EVENT_SCENE_COLLECTION_CHANGING:
-			{
-				obs_frontend_source_list transitions = {};
-				obs_frontend_get_transitions(&transitions);
-				for (size_t i = 0; i < transitions.sources.num; i++) {
-					obs_source_t* transition = transitions.sources.array[i];
-					eventHandler->DisconnectSourceSignals(transition);
-				}
-				obs_frontend_source_list_free(&transitions);
-			}
-			eventHandler->HandleCurrentSceneCollectionChanging();
-			break;
-		case OBS_FRONTEND_EVENT_SCENE_COLLECTION_CHANGED:
-			{
-				obs_frontend_source_list transitions = {};
-				obs_frontend_get_transitions(&transitions);
-				for (size_t i = 0; i < transitions.sources.num; i++) {
-					obs_source_t* transition = transitions.sources.array[i];
-					eventHandler->ConnectSourceSignals(transition);
-				}
-				obs_frontend_source_list_free(&transitions);
-			}
-			eventHandler->HandleCurrentSceneCollectionChanged();
-			break;
-		case OBS_FRONTEND_EVENT_SCENE_COLLECTION_LIST_CHANGED:
-			eventHandler->HandleSceneCollectionListChanged();
-			break;
-		case OBS_FRONTEND_EVENT_PROFILE_CHANGING:
-			eventHandler->HandleCurrentProfileChanging();
-			break;
-		case OBS_FRONTEND_EVENT_PROFILE_CHANGED:
-			eventHandler->HandleCurrentProfileChanged();
-			break;
-		case OBS_FRONTEND_EVENT_PROFILE_LIST_CHANGED:
-			eventHandler->HandleProfileListChanged();
-			break;
-
-		// Scenes
-		case OBS_FRONTEND_EVENT_SCENE_CHANGED:
-			eventHandler->HandleCurrentProgramSceneChanged();
-			break;
-		case OBS_FRONTEND_EVENT_PREVIEW_SCENE_CHANGED:
-			eventHandler->HandleCurrentPreviewSceneChanged();
-			break;
-		case OBS_FRONTEND_EVENT_SCENE_LIST_CHANGED:
-			eventHandler->HandleSceneListChanged();
-			break;
-
-		// Transitions
-		case OBS_FRONTEND_EVENT_TRANSITION_CHANGED:
-			eventHandler->HandleCurrentSceneTransitionChanged();
-			break;
-		case OBS_FRONTEND_EVENT_TRANSITION_LIST_CHANGED:
-			{
-				obs_frontend_source_list transitions = {};
-				obs_frontend_get_transitions(&transitions);
-				for (size_t i = 0; i < transitions.sources.num; i++) {
-					obs_source_t* transition = transitions.sources.array[i];
-					eventHandler->ConnectSourceSignals(transition);
-				}
-				obs_frontend_source_list_free(&transitions);
-			}
-			break;
-		case OBS_FRONTEND_EVENT_TRANSITION_DURATION_CHANGED:
-			eventHandler->HandleCurrentSceneTransitionDurationChanged();
-			break;
-
-		// Outputs
-		case OBS_FRONTEND_EVENT_STREAMING_STARTING:
-			eventHandler->HandleStreamStateChanged(OBS_WEBSOCKET_OUTPUT_STARTING);
-			break;
-		case OBS_FRONTEND_EVENT_STREAMING_STARTED:
-			eventHandler->HandleStreamStateChanged(OBS_WEBSOCKET_OUTPUT_STARTED);
-			break;
-		case OBS_FRONTEND_EVENT_STREAMING_STOPPING:
-			eventHandler->HandleStreamStateChanged(OBS_WEBSOCKET_OUTPUT_STOPPING);
-			break;
-		case OBS_FRONTEND_EVENT_STREAMING_STOPPED:
-			eventHandler->HandleStreamStateChanged(OBS_WEBSOCKET_OUTPUT_STOPPED);
-			break;
-		case OBS_FRONTEND_EVENT_RECORDING_STARTING:
-			eventHandler->HandleRecordStateChanged(OBS_WEBSOCKET_OUTPUT_STARTING);
-			break;
-		case OBS_FRONTEND_EVENT_RECORDING_STARTED:
-			eventHandler->HandleRecordStateChanged(OBS_WEBSOCKET_OUTPUT_STARTED);
-			break;
-		case OBS_FRONTEND_EVENT_RECORDING_STOPPING:
-			eventHandler->HandleRecordStateChanged(OBS_WEBSOCKET_OUTPUT_STOPPING);
-			break;
-		case OBS_FRONTEND_EVENT_RECORDING_STOPPED:
-			eventHandler->HandleRecordStateChanged(OBS_WEBSOCKET_OUTPUT_STOPPED);
-			break;
-		case OBS_FRONTEND_EVENT_RECORDING_PAUSED:
-			eventHandler->HandleRecordStateChanged(OBS_WEBSOCKET_OUTPUT_PAUSED);
-			break;
-		case OBS_FRONTEND_EVENT_RECORDING_UNPAUSED:
-			eventHandler->HandleRecordStateChanged(OBS_WEBSOCKET_OUTPUT_RESUMED);
-			break;
-		case OBS_FRONTEND_EVENT_REPLAY_BUFFER_STARTING:
-			eventHandler->HandleReplayBufferStateChanged(OBS_WEBSOCKET_OUTPUT_STARTING);
-			break;
-		case OBS_FRONTEND_EVENT_REPLAY_BUFFER_STARTED:
-			eventHandler->HandleReplayBufferStateChanged(OBS_WEBSOCKET_OUTPUT_STARTED);
-			break;
-		case OBS_FRONTEND_EVENT_REPLAY_BUFFER_STOPPING:
-			eventHandler->HandleReplayBufferStateChanged(OBS_WEBSOCKET_OUTPUT_STOPPING);
-			break;
-		case OBS_FRONTEND_EVENT_REPLAY_BUFFER_STOPPED:
-			eventHandler->HandleReplayBufferStateChanged(OBS_WEBSOCKET_OUTPUT_STOPPED);
-			break;
-		case OBS_FRONTEND_EVENT_VIRTUALCAM_STARTED:
-			eventHandler->HandleVirtualcamStateChanged(OBS_WEBSOCKET_OUTPUT_STARTED);
-			break;
-		case OBS_FRONTEND_EVENT_VIRTUALCAM_STOPPED:
-			eventHandler->HandleVirtualcamStateChanged(OBS_WEBSOCKET_OUTPUT_STOPPED);
-			break;
-		case OBS_FRONTEND_EVENT_REPLAY_BUFFER_SAVED:
-			eventHandler->HandleReplayBufferSaved();
-			break;
-
-		default:
-			break;
+	default:
+		break;
 	}
 }
 
 // Only called for creation of a public source
 void EventHandler::SourceCreatedMultiHandler(void *param, calldata_t *data)
 {
-	auto eventHandler = static_cast<EventHandler*>(param);
+	auto eventHandler = static_cast<EventHandler *>(param);
 
 	// Don't react to signals until OBS has finished loading
 	if (!eventHandler->_obsLoaded.load())
@@ -500,14 +498,14 @@ void EventHandler::SourceCreatedMultiHandler(void *param, calldata_t *data)
 	eventHandler->ConnectSourceSignals(source);
 
 	switch (obs_source_get_type(source)) {
-		case OBS_SOURCE_TYPE_INPUT:
-			eventHandler->HandleInputCreated(source);
-			break;
-		case OBS_SOURCE_TYPE_SCENE:
-			eventHandler->HandleSceneCreated(source);
-			break;
-		default:
-			break;
+	case OBS_SOURCE_TYPE_INPUT:
+		eventHandler->HandleInputCreated(source);
+		break;
+	case OBS_SOURCE_TYPE_SCENE:
+		eventHandler->HandleSceneCreated(source);
+		break;
+	default:
+		break;
 	}
 }
 
@@ -515,7 +513,7 @@ void EventHandler::SourceCreatedMultiHandler(void *param, calldata_t *data)
 // Used as a fallback if an input/scene is not explicitly removed
 void EventHandler::SourceDestroyedMultiHandler(void *param, calldata_t *data)
 {
-	auto eventHandler = static_cast<EventHandler*>(param);
+	auto eventHandler = static_cast<EventHandler *>(param);
 
 	// We can't use any smart types here because releasing the source will cause infinite recursion
 	obs_source_t *source = GetCalldataPointer<obs_source_t>(data, "source");
@@ -530,18 +528,18 @@ void EventHandler::SourceDestroyedMultiHandler(void *param, calldata_t *data)
 		return;
 
 	switch (obs_source_get_type(source)) {
-		case OBS_SOURCE_TYPE_INPUT:
-			// Only emit removed if the input has not already been removed. This is the case when removing the last scene item of an input.
-			if (!obs_source_removed(source))
-				eventHandler->HandleInputRemoved(source);
-			break;
-		case OBS_SOURCE_TYPE_SCENE:
-			// Only emit removed if the scene has not already been removed.
-			if (!obs_source_removed(source))
-				eventHandler->HandleSceneRemoved(source);
-			break;
-		default:
-			break;
+	case OBS_SOURCE_TYPE_INPUT:
+		// Only emit removed if the input has not already been removed. This is the case when removing the last scene item of an input.
+		if (!obs_source_removed(source))
+			eventHandler->HandleInputRemoved(source);
+		break;
+	case OBS_SOURCE_TYPE_SCENE:
+		// Only emit removed if the scene has not already been removed.
+		if (!obs_source_removed(source))
+			eventHandler->HandleSceneRemoved(source);
+		break;
+	default:
+		break;
 	}
 }
 
@@ -549,7 +547,7 @@ void EventHandler::SourceDestroyedMultiHandler(void *param, calldata_t *data)
 // For example, if an input is "removed" but there is a dangling ref, you still want to know that it shouldn't exist, but it's not guaranteed to be destroyed.
 void EventHandler::SourceRemovedMultiHandler(void *param, calldata_t *data)
 {
-	auto eventHandler = static_cast<EventHandler*>(param);
+	auto eventHandler = static_cast<EventHandler *>(param);
 
 	if (!eventHandler->_obsLoaded.load())
 		return;
@@ -559,20 +557,20 @@ void EventHandler::SourceRemovedMultiHandler(void *param, calldata_t *data)
 		return;
 
 	switch (obs_source_get_type(source)) {
-		case OBS_SOURCE_TYPE_INPUT:
-			eventHandler->HandleInputRemoved(source);
-			break;
-		case OBS_SOURCE_TYPE_SCENE:
-			eventHandler->HandleSceneRemoved(source);
-			break;
-		default:
-			break;
+	case OBS_SOURCE_TYPE_INPUT:
+		eventHandler->HandleInputRemoved(source);
+		break;
+	case OBS_SOURCE_TYPE_SCENE:
+		eventHandler->HandleSceneRemoved(source);
+		break;
+	default:
+		break;
 	}
 }
 
 void EventHandler::SourceRenamedMultiHandler(void *param, calldata_t *data)
 {
-	auto eventHandler = static_cast<EventHandler*>(param);
+	auto eventHandler = static_cast<EventHandler *>(param);
 
 	if (!eventHandler->_obsLoaded.load())
 		return;
@@ -587,15 +585,15 @@ void EventHandler::SourceRenamedMultiHandler(void *param, calldata_t *data)
 		return;
 
 	switch (obs_source_get_type(source)) {
-		case OBS_SOURCE_TYPE_INPUT:
-			eventHandler->HandleInputNameChanged(source, oldSourceName, sourceName);
-			break;
-		case OBS_SOURCE_TYPE_TRANSITION:
-			break;
-		case OBS_SOURCE_TYPE_SCENE:
-			eventHandler->HandleSceneNameChanged(source, oldSourceName, sourceName);
-			break;
-		default:
-			break;
+	case OBS_SOURCE_TYPE_INPUT:
+		eventHandler->HandleInputNameChanged(source, oldSourceName, sourceName);
+		break;
+	case OBS_SOURCE_TYPE_TRANSITION:
+		break;
+	case OBS_SOURCE_TYPE_SCENE:
+		eventHandler->HandleSceneNameChanged(source, oldSourceName, sourceName);
+		break;
+	default:
+		break;
 	}
 }

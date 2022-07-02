@@ -19,11 +19,14 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include "EventHandler.h"
 
-#define CASE(x) case x: return #x;
+#define CASE(x) \
+	case x: \
+		return #x;
 
-std::string GetMediaInputActionString(ObsMediaInputAction action) {
+std::string GetMediaInputActionString(ObsMediaInputAction action)
+{
 	switch (action) {
-		default:
+	default:
 		CASE(OBS_WEBSOCKET_MEDIA_INPUT_ACTION_PAUSE)
 		CASE(OBS_WEBSOCKET_MEDIA_INPUT_ACTION_PLAY)
 		CASE(OBS_WEBSOCKET_MEDIA_INPUT_ACTION_RESTART)
@@ -35,7 +38,7 @@ std::string GetMediaInputActionString(ObsMediaInputAction action) {
 
 void EventHandler::SourceMediaPauseMultiHandler(void *param, calldata_t *data)
 {
-	auto eventHandler = static_cast<EventHandler*>(param);
+	auto eventHandler = static_cast<EventHandler *>(param);
 
 	obs_source_t *source = GetCalldataPointer<obs_source_t>(data, "source");
 	if (!source)
@@ -49,7 +52,7 @@ void EventHandler::SourceMediaPauseMultiHandler(void *param, calldata_t *data)
 
 void EventHandler::SourceMediaPlayMultiHandler(void *param, calldata_t *data)
 {
-	auto eventHandler = static_cast<EventHandler*>(param);
+	auto eventHandler = static_cast<EventHandler *>(param);
 
 	obs_source_t *source = GetCalldataPointer<obs_source_t>(data, "source");
 	if (!source)
@@ -63,7 +66,7 @@ void EventHandler::SourceMediaPlayMultiHandler(void *param, calldata_t *data)
 
 void EventHandler::SourceMediaRestartMultiHandler(void *param, calldata_t *data)
 {
-	auto eventHandler = static_cast<EventHandler*>(param);
+	auto eventHandler = static_cast<EventHandler *>(param);
 
 	obs_source_t *source = GetCalldataPointer<obs_source_t>(data, "source");
 	if (!source)
@@ -77,7 +80,7 @@ void EventHandler::SourceMediaRestartMultiHandler(void *param, calldata_t *data)
 
 void EventHandler::SourceMediaStopMultiHandler(void *param, calldata_t *data)
 {
-	auto eventHandler = static_cast<EventHandler*>(param);
+	auto eventHandler = static_cast<EventHandler *>(param);
 
 	obs_source_t *source = GetCalldataPointer<obs_source_t>(data, "source");
 	if (!source)
@@ -91,7 +94,7 @@ void EventHandler::SourceMediaStopMultiHandler(void *param, calldata_t *data)
 
 void EventHandler::SourceMediaNextMultiHandler(void *param, calldata_t *data)
 {
-	auto eventHandler = static_cast<EventHandler*>(param);
+	auto eventHandler = static_cast<EventHandler *>(param);
 
 	obs_source_t *source = GetCalldataPointer<obs_source_t>(data, "source");
 	if (!source)
@@ -105,7 +108,7 @@ void EventHandler::SourceMediaNextMultiHandler(void *param, calldata_t *data)
 
 void EventHandler::SourceMediaPreviousMultiHandler(void *param, calldata_t *data)
 {
-	auto eventHandler = static_cast<EventHandler*>(param);
+	auto eventHandler = static_cast<EventHandler *>(param);
 
 	obs_source_t *source = GetCalldataPointer<obs_source_t>(data, "source");
 	if (!source)
@@ -132,7 +135,7 @@ void EventHandler::SourceMediaPreviousMultiHandler(void *param, calldata_t *data
  */
 void EventHandler::HandleMediaInputPlaybackStarted(void *param, calldata_t *data)
 {
-	auto eventHandler = static_cast<EventHandler*>(param);
+	auto eventHandler = static_cast<EventHandler *>(param);
 
 	obs_source_t *source = GetCalldataPointer<obs_source_t>(data, "source");
 	if (!source)
@@ -161,7 +164,7 @@ void EventHandler::HandleMediaInputPlaybackStarted(void *param, calldata_t *data
  */
 void EventHandler::HandleMediaInputPlaybackEnded(void *param, calldata_t *data)
 {
-	auto eventHandler = static_cast<EventHandler*>(param);
+	auto eventHandler = static_cast<EventHandler *>(param);
 
 	obs_source_t *source = GetCalldataPointer<obs_source_t>(data, "source");
 	if (!source)

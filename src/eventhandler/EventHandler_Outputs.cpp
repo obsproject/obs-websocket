@@ -19,18 +19,19 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include "EventHandler.h"
 
-static bool GetOutputStateActive(ObsOutputState state) {
-	switch(state) {
-		case OBS_WEBSOCKET_OUTPUT_STARTED:
-		case OBS_WEBSOCKET_OUTPUT_RESUMED:
-			return true;
-		case OBS_WEBSOCKET_OUTPUT_STARTING:
-		case OBS_WEBSOCKET_OUTPUT_STOPPING:
-		case OBS_WEBSOCKET_OUTPUT_STOPPED:
-		case OBS_WEBSOCKET_OUTPUT_PAUSED:
-			return false;
-		default:
-			return false;
+static bool GetOutputStateActive(ObsOutputState state)
+{
+	switch (state) {
+	case OBS_WEBSOCKET_OUTPUT_STARTED:
+	case OBS_WEBSOCKET_OUTPUT_RESUMED:
+		return true;
+	case OBS_WEBSOCKET_OUTPUT_STARTING:
+	case OBS_WEBSOCKET_OUTPUT_STOPPING:
+	case OBS_WEBSOCKET_OUTPUT_STOPPED:
+	case OBS_WEBSOCKET_OUTPUT_PAUSED:
+		return false;
+	default:
+		return false;
 	}
 }
 

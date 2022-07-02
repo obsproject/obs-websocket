@@ -22,7 +22,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <stdint.h>
 
 namespace RequestBatchExecutionType {
-	enum RequestBatchExecutionType: int8_t {
+	enum RequestBatchExecutionType : int8_t {
 		/**
 		* Not a request batch.
 		*
@@ -77,8 +77,5 @@ namespace RequestBatchExecutionType {
 		Parallel = 2,
 	};
 
-	inline bool IsValid(int8_t executionType)
-	{
-		return executionType >= None && executionType <= Parallel;
-	}
+	inline bool IsValid(int8_t executionType) { return executionType >= None && executionType <= Parallel; }
 }

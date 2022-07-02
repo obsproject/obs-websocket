@@ -23,7 +23,9 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include "Obs.h"
 #include "../plugin-macros.generated.h"
 
-#define CASE(x) case x: return #x;
+#define CASE(x) \
+	case x: \
+		return #x;
 
 std::string Utils::Obs::StringHelper::GetObsVersion()
 {
@@ -75,7 +77,7 @@ std::string Utils::Obs::StringHelper::GetSourceType(obs_source_t *source)
 	obs_source_type sourceType = obs_source_get_type(source);
 
 	switch (sourceType) {
-		default:
+	default:
 		CASE(OBS_SOURCE_TYPE_INPUT)
 		CASE(OBS_SOURCE_TYPE_FILTER)
 		CASE(OBS_SOURCE_TYPE_TRANSITION)
@@ -86,7 +88,7 @@ std::string Utils::Obs::StringHelper::GetSourceType(obs_source_t *source)
 std::string Utils::Obs::StringHelper::GetInputMonitorType(enum obs_monitoring_type monitorType)
 {
 	switch (monitorType) {
-		default:
+	default:
 		CASE(OBS_MONITORING_TYPE_NONE)
 		CASE(OBS_MONITORING_TYPE_MONITOR_ONLY)
 		CASE(OBS_MONITORING_TYPE_MONITOR_AND_OUTPUT)
@@ -105,7 +107,7 @@ std::string Utils::Obs::StringHelper::GetMediaInputState(obs_source_t *input)
 	obs_media_state mediaState = obs_source_media_get_state(input);
 
 	switch (mediaState) {
-		default:
+	default:
 		CASE(OBS_MEDIA_STATE_NONE)
 		CASE(OBS_MEDIA_STATE_PLAYING)
 		CASE(OBS_MEDIA_STATE_OPENING)
@@ -138,7 +140,7 @@ std::string Utils::Obs::StringHelper::GetLastReplayBufferFilePath()
 std::string Utils::Obs::StringHelper::GetSceneItemBoundsType(enum obs_bounds_type type)
 {
 	switch (type) {
-		default:
+	default:
 		CASE(OBS_BOUNDS_NONE)
 		CASE(OBS_BOUNDS_STRETCH)
 		CASE(OBS_BOUNDS_SCALE_INNER)
@@ -152,7 +154,7 @@ std::string Utils::Obs::StringHelper::GetSceneItemBoundsType(enum obs_bounds_typ
 std::string Utils::Obs::StringHelper::GetSceneItemBlendMode(enum obs_blending_type mode)
 {
 	switch (mode) {
-		default:
+	default:
 		CASE(OBS_BLEND_NORMAL)
 		CASE(OBS_BLEND_ADDITIVE)
 		CASE(OBS_BLEND_SUBTRACT)
@@ -173,14 +175,15 @@ std::string Utils::Obs::StringHelper::DurationToTimecode(uint64_t ms)
 	uint64_t secsPart = secs % 60ULL;
 	uint64_t msPart = ms % 1000ULL;
 
-	QString formatted = QString::asprintf("%02" PRIu64 ":%02" PRIu64 ":%02" PRIu64 ".%03" PRIu64, hoursPart, minutesPart, secsPart, msPart);
+	QString formatted =
+		QString::asprintf("%02" PRIu64 ":%02" PRIu64 ":%02" PRIu64 ".%03" PRIu64, hoursPart, minutesPart, secsPart, msPart);
 	return formatted.toStdString();
 }
 
 std::string Utils::Obs::StringHelper::GetOutputState(ObsOutputState state)
 {
 	switch (state) {
-		default:
+	default:
 		CASE(OBS_WEBSOCKET_OUTPUT_UNKNOWN)
 		CASE(OBS_WEBSOCKET_OUTPUT_STARTING)
 		CASE(OBS_WEBSOCKET_OUTPUT_STARTED)

@@ -29,123 +29,121 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include "../utils/Obs_VolumeMeter.h"
 #include "../plugin-macros.generated.h"
 
-class EventHandler
-{
-	public:
-		EventHandler();
-		~EventHandler();
+class EventHandler {
+public:
+	EventHandler();
+	~EventHandler();
 
-		typedef std::function<void(uint64_t, std::string, json, uint8_t)> BroadcastCallback;
-		void SetBroadcastCallback(BroadcastCallback cb);
-		typedef std::function<void()> ObsLoadedCallback;
-		void SetObsLoadedCallback(ObsLoadedCallback cb);
+	typedef std::function<void(uint64_t, std::string, json, uint8_t)> BroadcastCallback;
+	void SetBroadcastCallback(BroadcastCallback cb);
+	typedef std::function<void()> ObsLoadedCallback;
+	void SetObsLoadedCallback(ObsLoadedCallback cb);
 
-		void ProcessSubscription(uint64_t eventSubscriptions);
-		void ProcessUnsubscription(uint64_t eventSubscriptions);
+	void ProcessSubscription(uint64_t eventSubscriptions);
+	void ProcessUnsubscription(uint64_t eventSubscriptions);
 
-	private:
-		BroadcastCallback _broadcastCallback;
-		ObsLoadedCallback _obsLoadedCallback;
+private:
+	BroadcastCallback _broadcastCallback;
+	ObsLoadedCallback _obsLoadedCallback;
 
-		std::atomic<bool> _obsLoaded;
+	std::atomic<bool> _obsLoaded;
 
-		std::unique_ptr<Utils::Obs::VolumeMeter::Handler> _inputVolumeMetersHandler;
-		std::atomic<uint64_t> _inputVolumeMetersRef;
-		std::atomic<uint64_t> _inputActiveStateChangedRef;
-		std::atomic<uint64_t> _inputShowStateChangedRef;
-		std::atomic<uint64_t> _sceneItemTransformChangedRef;
+	std::unique_ptr<Utils::Obs::VolumeMeter::Handler> _inputVolumeMetersHandler;
+	std::atomic<uint64_t> _inputVolumeMetersRef;
+	std::atomic<uint64_t> _inputActiveStateChangedRef;
+	std::atomic<uint64_t> _inputShowStateChangedRef;
+	std::atomic<uint64_t> _sceneItemTransformChangedRef;
 
-		void ConnectSourceSignals(obs_source_t *source);
-		void DisconnectSourceSignals(obs_source_t *source);
+	void ConnectSourceSignals(obs_source_t *source);
+	void DisconnectSourceSignals(obs_source_t *source);
 
-		void BroadcastEvent(uint64_t requiredIntent, std::string eventType, json eventData = nullptr, uint8_t rpcVersion = 0);
+	void BroadcastEvent(uint64_t requiredIntent, std::string eventType, json eventData = nullptr, uint8_t rpcVersion = 0);
 
-		// Signal handler: frontend
-		static void OnFrontendEvent(enum obs_frontend_event event, void *private_data);
+	// Signal handler: frontend
+	static void OnFrontendEvent(enum obs_frontend_event event, void *private_data);
 
-		// Signal handler: libobs
-		static void SourceCreatedMultiHandler(void *param, calldata_t *data);
-		static void SourceDestroyedMultiHandler(void *param, calldata_t *data);
-		static void SourceRemovedMultiHandler(void *param, calldata_t *data);
+	// Signal handler: libobs
+	static void SourceCreatedMultiHandler(void *param, calldata_t *data);
+	static void SourceDestroyedMultiHandler(void *param, calldata_t *data);
+	static void SourceRemovedMultiHandler(void *param, calldata_t *data);
 
-		// Signal handler: source
-		static void SourceRenamedMultiHandler(void *param, calldata_t *data);
-		static void SourceMediaPauseMultiHandler(void *param, calldata_t *data);
-		static void SourceMediaPlayMultiHandler(void *param, calldata_t *data);
-		static void SourceMediaRestartMultiHandler(void *param, calldata_t *data);
-		static void SourceMediaStopMultiHandler(void *param, calldata_t *data);
-		static void SourceMediaNextMultiHandler(void *param, calldata_t *data);
-		static void SourceMediaPreviousMultiHandler(void *param, calldata_t *data);
+	// Signal handler: source
+	static void SourceRenamedMultiHandler(void *param, calldata_t *data);
+	static void SourceMediaPauseMultiHandler(void *param, calldata_t *data);
+	static void SourceMediaPlayMultiHandler(void *param, calldata_t *data);
+	static void SourceMediaRestartMultiHandler(void *param, calldata_t *data);
+	static void SourceMediaStopMultiHandler(void *param, calldata_t *data);
+	static void SourceMediaNextMultiHandler(void *param, calldata_t *data);
+	static void SourceMediaPreviousMultiHandler(void *param, calldata_t *data);
 
+	// General
+	void HandleExitStarted();
+	void HandleStudioModeStateChanged(bool enabled);
 
-		// General
-		void HandleExitStarted();
-		void HandleStudioModeStateChanged(bool enabled);
+	// Config
+	void HandleCurrentSceneCollectionChanging();
+	void HandleCurrentSceneCollectionChanged();
+	void HandleSceneCollectionListChanged();
+	void HandleCurrentProfileChanging();
+	void HandleCurrentProfileChanged();
+	void HandleProfileListChanged();
 
-		// Config
-		void HandleCurrentSceneCollectionChanging();
-		void HandleCurrentSceneCollectionChanged();
-		void HandleSceneCollectionListChanged();
-		void HandleCurrentProfileChanging();
-		void HandleCurrentProfileChanged();
-		void HandleProfileListChanged();
+	// Scenes
+	void HandleSceneCreated(obs_source_t *source);
+	void HandleSceneRemoved(obs_source_t *source);
+	void HandleSceneNameChanged(obs_source_t *source, std::string oldSceneName, std::string sceneName);
+	void HandleCurrentProgramSceneChanged();
+	void HandleCurrentPreviewSceneChanged();
+	void HandleSceneListChanged();
 
-		// Scenes
-		void HandleSceneCreated(obs_source_t *source);
-		void HandleSceneRemoved(obs_source_t *source);
-		void HandleSceneNameChanged(obs_source_t *source, std::string oldSceneName, std::string sceneName);
-		void HandleCurrentProgramSceneChanged();
-		void HandleCurrentPreviewSceneChanged();
-		void HandleSceneListChanged();
+	// Inputs
+	void HandleInputCreated(obs_source_t *source);
+	void HandleInputRemoved(obs_source_t *source);
+	void HandleInputNameChanged(obs_source_t *source, std::string oldInputName, std::string inputName);
+	void HandleInputVolumeMeters(std::vector<json> inputs);                        // AudioMeter::Handler callback
+	static void HandleInputActiveStateChanged(void *param, calldata_t *data);      // Direct callback
+	static void HandleInputShowStateChanged(void *param, calldata_t *data);        // Direct callback
+	static void HandleInputMuteStateChanged(void *param, calldata_t *data);        // Direct callback
+	static void HandleInputVolumeChanged(void *param, calldata_t *data);           // Direct callback
+	static void HandleInputAudioBalanceChanged(void *param, calldata_t *data);     // Direct callback
+	static void HandleInputAudioSyncOffsetChanged(void *param, calldata_t *data);  // Direct callback
+	static void HandleInputAudioTracksChanged(void *param, calldata_t *data);      // Direct callback
+	static void HandleInputAudioMonitorTypeChanged(void *param, calldata_t *data); // Direct callback
 
-		// Inputs
-		void HandleInputCreated(obs_source_t *source);
-		void HandleInputRemoved(obs_source_t *source);
-		void HandleInputNameChanged(obs_source_t *source, std::string oldInputName, std::string inputName);
-		void HandleInputVolumeMeters(std::vector<json> inputs); // AudioMeter::Handler callback
-		static void HandleInputActiveStateChanged(void *param, calldata_t *data); // Direct callback
-		static void HandleInputShowStateChanged(void *param, calldata_t *data); // Direct callback
-		static void HandleInputMuteStateChanged(void *param, calldata_t *data); // Direct callback
-		static void HandleInputVolumeChanged(void *param, calldata_t *data); // Direct callback
-		static void HandleInputAudioBalanceChanged(void *param, calldata_t *data); // Direct callback
-		static void HandleInputAudioSyncOffsetChanged(void *param, calldata_t *data); // Direct callback
-		static void HandleInputAudioTracksChanged(void *param, calldata_t *data); // Direct callback
-		static void HandleInputAudioMonitorTypeChanged(void *param, calldata_t *data); // Direct callback
+	// Transitions
+	void HandleCurrentSceneTransitionChanged();
+	void HandleCurrentSceneTransitionDurationChanged();
+	static void HandleSceneTransitionStarted(void *param, calldata_t *data);    // Direct callback
+	static void HandleSceneTransitionEnded(void *param, calldata_t *data);      // Direct callback
+	static void HandleSceneTransitionVideoEnded(void *param, calldata_t *data); // Direct callback
 
-		// Transitions
-		void HandleCurrentSceneTransitionChanged();
-		void HandleCurrentSceneTransitionDurationChanged();
-		static void HandleSceneTransitionStarted(void *param, calldata_t *data); // Direct callback
-		static void HandleSceneTransitionEnded(void *param, calldata_t *data); // Direct callback
-		static void HandleSceneTransitionVideoEnded(void *param, calldata_t *data); // Direct callback
+	// Filters
+	static void FilterAddMultiHandler(void *param, calldata_t *data);           // Direct callback
+	static void FilterRemoveMultiHandler(void *param, calldata_t *data);        // Direct callback
+	static void HandleSourceFilterListReindexed(void *param, calldata_t *data); // Direct callback
+	void HandleSourceFilterCreated(obs_source_t *source, obs_source_t *filter);
+	void HandleSourceFilterRemoved(obs_source_t *source, obs_source_t *filter);
+	static void HandleSourceFilterNameChanged(void *param, calldata_t *data);        // Direct callback
+	static void HandleSourceFilterEnableStateChanged(void *param, calldata_t *data); // Direct callback
 
-		// Filters
-		static void FilterAddMultiHandler(void *param, calldata_t *data); // Direct callback
-		static void FilterRemoveMultiHandler(void *param, calldata_t *data); // Direct callback
-		static void HandleSourceFilterListReindexed(void *param, calldata_t *data); // Direct callback
-		void HandleSourceFilterCreated(obs_source_t *source, obs_source_t *filter);
-		void HandleSourceFilterRemoved(obs_source_t *source, obs_source_t *filter);
-		static void HandleSourceFilterNameChanged(void *param, calldata_t *data); // Direct callback
-		static void HandleSourceFilterEnableStateChanged(void *param, calldata_t *data); // Direct callback
+	// Outputs
+	void HandleStreamStateChanged(ObsOutputState state);
+	void HandleRecordStateChanged(ObsOutputState state);
+	void HandleReplayBufferStateChanged(ObsOutputState state);
+	void HandleVirtualcamStateChanged(ObsOutputState state);
+	void HandleReplayBufferSaved();
 
-		// Outputs
-		void HandleStreamStateChanged(ObsOutputState state);
-		void HandleRecordStateChanged(ObsOutputState state);
-		void HandleReplayBufferStateChanged(ObsOutputState state);
-		void HandleVirtualcamStateChanged(ObsOutputState state);
-		void HandleReplayBufferSaved();
+	// Scene Items
+	static void HandleSceneItemCreated(void *param, calldata_t *data);            // Direct callback
+	static void HandleSceneItemRemoved(void *param, calldata_t *data);            // Direct callback
+	static void HandleSceneItemListReindexed(void *param, calldata_t *data);      // Direct callback
+	static void HandleSceneItemEnableStateChanged(void *param, calldata_t *data); // Direct callback
+	static void HandleSceneItemLockStateChanged(void *param, calldata_t *data);   // Direct callback
+	static void HandleSceneItemSelected(void *param, calldata_t *data);           // Direct callback
+	static void HandleSceneItemTransformChanged(void *param, calldata_t *data);   // Direct callback
 
-		// Scene Items
-		static void HandleSceneItemCreated(void *param, calldata_t *data); // Direct callback
-		static void HandleSceneItemRemoved(void *param, calldata_t *data); // Direct callback
-		static void HandleSceneItemListReindexed(void *param, calldata_t *data); // Direct callback
-		static void HandleSceneItemEnableStateChanged(void *param, calldata_t *data); // Direct callback
-		static void HandleSceneItemLockStateChanged(void *param, calldata_t *data); // Direct callback
-		static void HandleSceneItemSelected(void *param, calldata_t *data); // Direct callback
-		static void HandleSceneItemTransformChanged(void *param, calldata_t *data); // Direct callback
-
-		// Media Inputs
-		static void HandleMediaInputPlaybackStarted(void *param, calldata_t *data); // Direct callback
-		static void HandleMediaInputPlaybackEnded(void *param, calldata_t *data); // Direct callback
-		void HandleMediaInputActionTriggered(obs_source_t *source, ObsMediaInputAction action);
+	// Media Inputs
+	static void HandleMediaInputPlaybackStarted(void *param, calldata_t *data); // Direct callback
+	static void HandleMediaInputPlaybackEnded(void *param, calldata_t *data);   // Direct callback
+	void HandleMediaInputActionTriggered(obs_source_t *source, ObsMediaInputAction action);
 };

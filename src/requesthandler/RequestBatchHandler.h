@@ -24,5 +24,8 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include "rpc/RequestBatchRequest.h"
 
 namespace RequestBatchHandler {
-	std::vector<RequestResult> ProcessRequestBatch(QThreadPool &threadPool, SessionPtr session, RequestBatchExecutionType::RequestBatchExecutionType executionType, std::vector<RequestBatchRequest> &requests, json &variables, bool haltOnFailure);
+	std::vector<RequestResult> ProcessRequestBatch(QThreadPool &threadPool, SessionPtr session,
+						       RequestBatchExecutionType::RequestBatchExecutionType executionType,
+						       std::vector<RequestBatchRequest> &requests, json &variables,
+						       bool haltOnFailure);
 }

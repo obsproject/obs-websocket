@@ -45,7 +45,7 @@ void obs_data_set_json_array(obs_data_t *d, const char *key, json j)
 {
 	obs_data_array_t *array = obs_data_array_create();
 
-	for (auto& [key, value] : j.items()) {
+	for (auto &[key, value] : j.items()) {
 		if (!value.is_object())
 			continue;
 
@@ -61,7 +61,7 @@ void obs_data_set_json_array(obs_data_t *d, const char *key, json j)
 
 void obs_data_set_json_object_item(obs_data_t *d, json j)
 {
-	for (auto& [key, value] : j.items()) {
+	for (auto &[key, value] : j.items()) {
 		if (value.is_object()) {
 			obs_data_set_json_object(d, key.c_str(), value);
 		} else if (value.is_array()) {
@@ -153,23 +153,22 @@ json Utils::Json::ObsDataToJson(obs_data_t *d, bool includeDefault)
 			continue;
 
 		switch (type) {
-			case OBS_DATA_STRING:
-				set_json_string(&j, name, item);
-				break;
-			case OBS_DATA_NUMBER:
-				set_json_number(&j, name, item);
-				break;
-			case OBS_DATA_BOOLEAN:
-				set_json_bool(&j, name, item);
-				break;
-			case OBS_DATA_OBJECT:
-				set_json_object(&j, name, item, includeDefault);
-				break;
-			case OBS_DATA_ARRAY:
-				set_json_array(&j, name, item, includeDefault);
-				break;
-			default:
-				;
+		case OBS_DATA_STRING:
+			set_json_string(&j, name, item);
+			break;
+		case OBS_DATA_NUMBER:
+			set_json_number(&j, name, item);
+			break;
+		case OBS_DATA_BOOLEAN:
+			set_json_bool(&j, name, item);
+			break;
+		case OBS_DATA_OBJECT:
+			set_json_object(&j, name, item, includeDefault);
+			break;
+		case OBS_DATA_ARRAY:
+			set_json_array(&j, name, item, includeDefault);
+			break;
+		default:;
 		}
 	}
 
@@ -184,8 +183,8 @@ bool Utils::Json::GetJsonFileContent(std::string fileName, json &content)
 
 	try {
 		content = json::parse(textContent);
-	} catch (json::parse_error& e) {
-		blog(LOG_WARNING, "Failed to decode content of JSON file `%s`. Error: %s", fileName.c_str(), e.what()); 
+	} catch (json::parse_error &e) {
+		blog(LOG_WARNING, "Failed to decode content of JSON file `%s`. Error: %s", fileName.c_str(), e.what());
 		return false;
 	}
 	return true;

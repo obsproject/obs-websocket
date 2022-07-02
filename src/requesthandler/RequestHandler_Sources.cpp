@@ -56,14 +56,14 @@ QImage TakeSourceScreenshot(obs_source_t *source, bool &success, uint32_t reques
 	ret.fill(0);
 
 	// Video image buffer
-	uint8_t* videoData = nullptr;
+	uint8_t *videoData = nullptr;
 	uint32_t videoLinesize = 0;
 
 	// Enter graphics context
 	obs_enter_graphics();
 
-	gs_texrender_t* texRender = gs_texrender_create(GS_RGBA, GS_ZS_NONE);
-	gs_stagesurf_t* stageSurface = gs_stagesurface_create(imgWidth, imgHeight, GS_RGBA);
+	gs_texrender_t *texRender = gs_texrender_create(GS_RGBA, GS_ZS_NONE);
+	gs_stagesurf_t *stageSurface = gs_stagesurface_create(imgWidth, imgHeight, GS_RGBA);
 
 	success = false;
 	gs_texrender_reset(texRender);
@@ -88,7 +88,7 @@ QImage TakeSourceScreenshot(obs_source_t *source, bool &success, uint32_t reques
 		if (gs_stagesurface_map(stageSurface, &videoData, &videoLinesize)) {
 			int lineSize = ret.bytesPerLine();
 			for (uint y = 0; y < imgHeight; y++) {
-			 	memcpy(ret.scanLine(y), videoData + (y * videoLinesize), lineSize);
+				memcpy(ret.scanLine(y), videoData + (y * videoLinesize), lineSize);
 			}
 			gs_stagesurface_unmap(stageSurface);
 			success = true;
@@ -126,7 +126,7 @@ bool IsImageFormatValid(std::string format)
  * @api requests
  * @category sources
  */
-RequestResult RequestHandler::GetSourceActive(const Request& request)
+RequestResult RequestHandler::GetSourceActive(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
@@ -166,7 +166,7 @@ RequestResult RequestHandler::GetSourceActive(const Request& request)
  * @api requests
  * @category sources
  */
-RequestResult RequestHandler::GetSourceScreenshot(const Request& request)
+RequestResult RequestHandler::GetSourceScreenshot(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
@@ -180,7 +180,8 @@ RequestResult RequestHandler::GetSourceScreenshot(const Request& request)
 	std::string imageFormat = request.RequestData["imageFormat"];
 
 	if (!IsImageFormatValid(imageFormat))
-		return RequestResult::Error(RequestStatus::InvalidRequestField, "Your specified image format is invalid or not supported by this system.");
+		return RequestResult::Error(RequestStatus::InvalidRequestField,
+					    "Your specified image format is invalid or not supported by this system.");
 
 	uint32_t requestedWidth{0};
 	uint32_t requestedHeight{0};
@@ -253,12 +254,13 @@ RequestResult RequestHandler::GetSourceScreenshot(const Request& request)
  * @api requests
  * @category sources
  */
-RequestResult RequestHandler::SaveSourceScreenshot(const Request& request)
+RequestResult RequestHandler::SaveSourceScreenshot(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
 	OBSSourceAutoRelease source = request.ValidateSource("sourceName", statusCode, comment);
-	if (!(source && request.ValidateString("imageFormat", statusCode, comment) && request.ValidateString("imageFilePath", statusCode, comment)))
+	if (!(source && request.ValidateString("imageFormat", statusCode, comment) &&
+	      request.ValidateString("imageFilePath", statusCode, comment)))
 		return RequestResult::Error(statusCode, comment);
 
 	if (obs_source_get_type(source) != OBS_SOURCE_TYPE_INPUT && obs_source_get_type(source) != OBS_SOURCE_TYPE_SCENE)
@@ -268,7 +270,8 @@ RequestResult RequestHandler::SaveSourceScreenshot(const Request& request)
 	std::string imageFilePath = request.RequestData["imageFilePath"];
 
 	if (!IsImageFormatValid(imageFormat))
-		return RequestResult::Error(RequestStatus::InvalidRequestField, "Your specified image format is invalid or not supported by this system.");
+		return RequestResult::Error(RequestStatus::InvalidRequestField,
+					    "Your specified image format is invalid or not supported by this system.");
 
 	QFileInfo filePathInfo(QString::fromStdString(imageFilePath));
 	if (!filePathInfo.absoluteDir().exists())
@@ -314,7 +317,7 @@ RequestResult RequestHandler::SaveSourceScreenshot(const Request& request)
 }
 
 // Intentionally undocumented
-RequestResult RequestHandler::GetSourcePrivateSettings(const Request& request)
+RequestResult RequestHandler::GetSourcePrivateSettings(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
@@ -331,7 +334,7 @@ RequestResult RequestHandler::GetSourcePrivateSettings(const Request& request)
 }
 
 // Intentionally undocumented
-RequestResult RequestHandler::SetSourcePrivateSettings(const Request& request)
+RequestResult RequestHandler::SetSourcePrivateSettings(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;

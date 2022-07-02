@@ -21,7 +21,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 void EventHandler::FilterAddMultiHandler(void *param, calldata_t *data)
 {
-	auto eventHandler = static_cast<EventHandler*>(param);
+	auto eventHandler = static_cast<EventHandler *>(param);
 
 	obs_source_t *source = GetCalldataPointer<obs_source_t>(data, "source");
 	obs_source_t *filter = GetCalldataPointer<obs_source_t>(data, "filter");
@@ -36,7 +36,7 @@ void EventHandler::FilterAddMultiHandler(void *param, calldata_t *data)
 
 void EventHandler::FilterRemoveMultiHandler(void *param, calldata_t *data)
 {
-	auto eventHandler = static_cast<EventHandler*>(param);
+	auto eventHandler = static_cast<EventHandler *>(param);
 
 	obs_source_t *source = GetCalldataPointer<obs_source_t>(data, "source");
 	obs_source_t *filter = GetCalldataPointer<obs_source_t>(data, "filter");
@@ -65,7 +65,7 @@ void EventHandler::FilterRemoveMultiHandler(void *param, calldata_t *data)
  */
 void EventHandler::HandleSourceFilterListReindexed(void *param, calldata_t *data)
 {
-	auto eventHandler = static_cast<EventHandler*>(param);
+	auto eventHandler = static_cast<EventHandler *>(param);
 
 	obs_source_t *source = GetCalldataPointer<obs_source_t>(data, "source");
 	if (!source)
@@ -150,7 +150,7 @@ void EventHandler::HandleSourceFilterRemoved(obs_source_t *source, obs_source_t 
  */
 void EventHandler::HandleSourceFilterNameChanged(void *param, calldata_t *data)
 {
-	auto eventHandler = static_cast<EventHandler*>(param);
+	auto eventHandler = static_cast<EventHandler *>(param);
 
 	obs_source_t *filter = GetCalldataPointer<obs_source_t>(data, "source");
 	if (!filter)
@@ -180,7 +180,7 @@ void EventHandler::HandleSourceFilterNameChanged(void *param, calldata_t *data)
  */
 void EventHandler::HandleSourceFilterEnableStateChanged(void *param, calldata_t *data)
 {
-	auto eventHandler = static_cast<EventHandler*>(param);
+	auto eventHandler = static_cast<EventHandler *>(param);
 
 	obs_source_t *filter = GetCalldataPointer<obs_source_t>(data, "source");
 	if (!filter)

@@ -262,7 +262,6 @@ namespace RequestStatus {
 		* @api enums
 		*/
 		StudioModeNotActive = 506,
-		
 
 		/**
 		* The resource was not found.

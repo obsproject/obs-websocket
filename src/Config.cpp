@@ -38,25 +38,25 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #define CMDLINE_WEBSOCKET_PASSWORD "websocket_password"
 #define CMDLINE_WEBSOCKET_DEBUG "websocket_debug"
 
-Config::Config() :
-	PortOverridden(false),
-	PasswordOverridden(false),
-	FirstLoad(true),
-	ServerEnabled(true),
-	ServerPort(4455),
-	BindLoopback(true),
-	Ipv4Only(false),
-	DebugEnabled(false),
-	AlertsEnabled(false),
-	AuthRequired(true),
-	ServerPassword("")
+Config::Config()
+	: PortOverridden(false),
+	  PasswordOverridden(false),
+	  FirstLoad(true),
+	  ServerEnabled(true),
+	  ServerPort(4455),
+	  BindLoopback(true),
+	  Ipv4Only(false),
+	  DebugEnabled(false),
+	  AlertsEnabled(false),
+	  AuthRequired(true),
+	  ServerPassword("")
 {
 	SetDefaultsToGlobalStore();
 }
 
 void Config::Load()
 {
-	config_t* obsConfig = GetConfigStore();
+	config_t *obsConfig = GetConfigStore();
 	if (!obsConfig) {
 		blog(LOG_ERROR, "[Config::Load] Unable to fetch OBS config!");
 		return;
@@ -123,7 +123,7 @@ void Config::Load()
 
 void Config::Save()
 {
-	config_t* obsConfig = GetConfigStore();
+	config_t *obsConfig = GetConfigStore();
 	if (!obsConfig) {
 		blog(LOG_ERROR, "[Config::Save] Unable to fetch OBS config!");
 		return;
@@ -146,7 +146,7 @@ void Config::Save()
 
 void Config::SetDefaultsToGlobalStore()
 {
-	config_t* obsConfig = GetConfigStore();
+	config_t *obsConfig = GetConfigStore();
 	if (!obsConfig) {
 		blog(LOG_ERROR, "[Config::SetDefaultsToGlobalStore] Unable to fetch OBS config!");
 		return;
@@ -161,7 +161,7 @@ void Config::SetDefaultsToGlobalStore()
 	config_set_default_string(obsConfig, CONFIG_SECTION_NAME, PARAM_PASSWORD, QT_TO_UTF8(ServerPassword));
 }
 
-config_t* Config::GetConfigStore()
+config_t *Config::GetConfigStore()
 {
 	return obs_frontend_get_global_config();
 }

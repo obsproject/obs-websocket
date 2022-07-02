@@ -33,12 +33,12 @@ with this program. If not, see <https://www.gnu.org/licenses/>
  * @api requests
  * @category filters
  */
-RequestResult RequestHandler::GetSourceFilterList(const Request& request)
+RequestResult RequestHandler::GetSourceFilterList(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
 	OBSSourceAutoRelease source = request.ValidateSource("sourceName", statusCode, comment);
-	if(!source)
+	if (!source)
 		return RequestResult::Error(statusCode, comment);
 
 	json responseData;
@@ -61,7 +61,7 @@ RequestResult RequestHandler::GetSourceFilterList(const Request& request)
  * @api requests
  * @category filters
  */
-RequestResult RequestHandler::GetSourceFilterDefaultSettings(const Request& request)
+RequestResult RequestHandler::GetSourceFilterDefaultSettings(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
@@ -97,13 +97,14 @@ RequestResult RequestHandler::GetSourceFilterDefaultSettings(const Request& requ
  * @api requests
  * @category filters
  */
-RequestResult RequestHandler::CreateSourceFilter(const Request& request)
+RequestResult RequestHandler::CreateSourceFilter(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
 
 	OBSSourceAutoRelease source = request.ValidateSource("sourceName", statusCode, comment);
-	if (!(source && request.ValidateString("filterName", statusCode, comment) && request.ValidateString("filterKind", statusCode, comment)))
+	if (!(source && request.ValidateString("filterName", statusCode, comment) &&
+	      request.ValidateString("filterKind", statusCode, comment)))
 		return RequestResult::Error(statusCode, comment);
 
 	std::string filterName = request.RequestData["filterName"];
@@ -114,7 +115,9 @@ RequestResult RequestHandler::CreateSourceFilter(const Request& request)
 	std::string filterKind = request.RequestData["filterKind"];
 	auto kinds = Utils::Obs::ArrayHelper::GetFilterKindList();
 	if (std::find(kinds.begin(), kinds.end(), filterKind) == kinds.end())
-		return RequestResult::Error(RequestStatus::InvalidFilterKind, "Your specified filter kind is not supported by OBS. Check that any necessary plugins are loaded.");
+		return RequestResult::Error(
+			RequestStatus::InvalidFilterKind,
+			"Your specified filter kind is not supported by OBS. Check that any necessary plugins are loaded.");
 
 	OBSDataAutoRelease filterSettings = nullptr;
 	if (request.Contains("filterSettings")) {
@@ -126,7 +129,7 @@ RequestResult RequestHandler::CreateSourceFilter(const Request& request)
 
 	OBSSourceAutoRelease filter = Utils::Obs::ActionHelper::CreateSourceFilter(source, filterName, filterKind, filterSettings);
 
-	if(!filter)
+	if (!filter)
 		return RequestResult::Error(RequestStatus::ResourceCreationFailed, "Creation of the filter failed.");
 
 	return RequestResult::Success();
@@ -145,7 +148,7 @@ RequestResult RequestHandler::CreateSourceFilter(const Request& request)
  * @api requests
  * @category filters
  */
-RequestResult RequestHandler::RemoveSourceFilter(const Request& request)
+RequestResult RequestHandler::RemoveSourceFilter(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
@@ -172,7 +175,7 @@ RequestResult RequestHandler::RemoveSourceFilter(const Request& request)
  * @api requests
  * @category filters
  */
-RequestResult RequestHandler::SetSourceFilterName(const Request& request)
+RequestResult RequestHandler::SetSourceFilterName(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
@@ -209,7 +212,7 @@ RequestResult RequestHandler::SetSourceFilterName(const Request& request)
  * @api requests
  * @category filters
  */
-RequestResult RequestHandler::GetSourceFilter(const Request& request)
+RequestResult RequestHandler::GetSourceFilter(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
@@ -219,7 +222,8 @@ RequestResult RequestHandler::GetSourceFilter(const Request& request)
 
 	json responseData;
 	responseData["filterEnabled"] = obs_source_enabled(pair.filter);
-	responseData["filterIndex"] = Utils::Obs::NumberHelper::GetSourceFilterIndex(pair.source, pair.filter); // Todo: Use `GetSourceFilterlist` to select this filter maybe
+	responseData["filterIndex"] = Utils::Obs::NumberHelper::GetSourceFilterIndex(
+		pair.source, pair.filter); // Todo: Use `GetSourceFilterlist` to select this filter maybe
 	responseData["filterKind"] = obs_source_get_id(pair.filter);
 
 	OBSDataAutoRelease filterSettings = obs_source_get_settings(pair.filter);
@@ -242,7 +246,7 @@ RequestResult RequestHandler::GetSourceFilter(const Request& request)
  * @api requests
  * @category filters
  */
-RequestResult RequestHandler::SetSourceFilterIndex(const Request& request)
+RequestResult RequestHandler::SetSourceFilterIndex(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
@@ -272,7 +276,7 @@ RequestResult RequestHandler::SetSourceFilterIndex(const Request& request)
  * @api requests
  * @category filters
  */
-RequestResult RequestHandler::SetSourceFilterSettings(const Request& request)
+RequestResult RequestHandler::SetSourceFilterSettings(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
@@ -292,7 +296,8 @@ RequestResult RequestHandler::SetSourceFilterSettings(const Request& request)
 
 	OBSDataAutoRelease newSettings = Utils::Json::JsonToObsData(request.RequestData["filterSettings"]);
 	if (!newSettings)
-		return RequestResult::Error(RequestStatus::RequestProcessingFailed, "An internal data conversion operation failed. Please report this!");
+		return RequestResult::Error(RequestStatus::RequestProcessingFailed,
+					    "An internal data conversion operation failed. Please report this!");
 
 	if (overlay)
 		obs_source_update(pair.filter, newSettings);
@@ -318,7 +323,7 @@ RequestResult RequestHandler::SetSourceFilterSettings(const Request& request)
  * @api requests
  * @category filters
  */
-RequestResult RequestHandler::SetSourceFilterEnabled(const Request& request)
+RequestResult RequestHandler::SetSourceFilterEnabled(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;

@@ -52,7 +52,7 @@ bool IsMediaTimeValid(obs_source_t *input)
  * @api requests
  * @category media inputs
  */
-RequestResult RequestHandler::GetMediaInputStatus(const Request& request)
+RequestResult RequestHandler::GetMediaInputStatus(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
@@ -89,7 +89,7 @@ RequestResult RequestHandler::GetMediaInputStatus(const Request& request)
  * @api requests
  * @category media inputs
  */
-RequestResult RequestHandler::SetMediaInputCursor(const Request& request)
+RequestResult RequestHandler::SetMediaInputCursor(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
@@ -98,7 +98,8 @@ RequestResult RequestHandler::SetMediaInputCursor(const Request& request)
 		return RequestResult::Error(statusCode, comment);
 
 	if (!IsMediaTimeValid(input))
-		return RequestResult::Error(RequestStatus::InvalidResourceState, "The media input must be playing or paused in order to set the cursor position.");
+		return RequestResult::Error(RequestStatus::InvalidResourceState,
+					    "The media input must be playing or paused in order to set the cursor position.");
 
 	int64_t mediaCursor = request.RequestData["mediaCursor"];
 
@@ -123,7 +124,7 @@ RequestResult RequestHandler::SetMediaInputCursor(const Request& request)
  * @api requests
  * @category media inputs
  */
-RequestResult RequestHandler::OffsetMediaInputCursor(const Request& request)
+RequestResult RequestHandler::OffsetMediaInputCursor(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
@@ -132,7 +133,8 @@ RequestResult RequestHandler::OffsetMediaInputCursor(const Request& request)
 		return RequestResult::Error(statusCode, comment);
 
 	if (!IsMediaTimeValid(input))
-		return RequestResult::Error(RequestStatus::InvalidResourceState, "The media input must be playing or paused in order to set the cursor position.");
+		return RequestResult::Error(RequestStatus::InvalidResourceState,
+					    "The media input must be playing or paused in order to set the cursor position.");
 
 	int64_t mediaCursorOffset = request.RequestData["mediaCursorOffset"];
 	int64_t mediaCursor = obs_source_media_get_time(input) + mediaCursorOffset;
@@ -158,7 +160,7 @@ RequestResult RequestHandler::OffsetMediaInputCursor(const Request& request)
  * @api requests
  * @category media inputs
  */
-RequestResult RequestHandler::TriggerMediaInputAction(const Request& request)
+RequestResult RequestHandler::TriggerMediaInputAction(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
@@ -170,29 +172,30 @@ RequestResult RequestHandler::TriggerMediaInputAction(const Request& request)
 	auto mediaAction = Utils::Obs::EnumHelper::GetMediaInputAction(mediaActionString);
 
 	switch (mediaAction) {
-		default:
-		case OBS_WEBSOCKET_MEDIA_INPUT_ACTION_NONE:
-			return RequestResult::Error(RequestStatus::InvalidRequestField, "You have specified an invalid media input action.");
-		case OBS_WEBSOCKET_MEDIA_INPUT_ACTION_PLAY:
-			// Shoutout to whoever implemented this API call like this
-			obs_source_media_play_pause(input, false);
-			break;
-		case OBS_WEBSOCKET_MEDIA_INPUT_ACTION_PAUSE:
-			obs_source_media_play_pause(input, true);
-			break;
-		case OBS_WEBSOCKET_MEDIA_INPUT_ACTION_STOP:
-			obs_source_media_stop(input);
-			break;
-		case OBS_WEBSOCKET_MEDIA_INPUT_ACTION_RESTART:
-			// I'm only implementing this because I'm nice. I think its a really dumb action.
-			obs_source_media_restart(input);
-			break;
-		case OBS_WEBSOCKET_MEDIA_INPUT_ACTION_NEXT:
-			obs_source_media_next(input);
-			break;
-		case OBS_WEBSOCKET_MEDIA_INPUT_ACTION_PREVIOUS:
-			obs_source_media_previous(input);
-			break;
+	default:
+	case OBS_WEBSOCKET_MEDIA_INPUT_ACTION_NONE:
+		return RequestResult::Error(RequestStatus::InvalidRequestField,
+					    "You have specified an invalid media input action.");
+	case OBS_WEBSOCKET_MEDIA_INPUT_ACTION_PLAY:
+		// Shoutout to whoever implemented this API call like this
+		obs_source_media_play_pause(input, false);
+		break;
+	case OBS_WEBSOCKET_MEDIA_INPUT_ACTION_PAUSE:
+		obs_source_media_play_pause(input, true);
+		break;
+	case OBS_WEBSOCKET_MEDIA_INPUT_ACTION_STOP:
+		obs_source_media_stop(input);
+		break;
+	case OBS_WEBSOCKET_MEDIA_INPUT_ACTION_RESTART:
+		// I'm only implementing this because I'm nice. I think its a really dumb action.
+		obs_source_media_restart(input);
+		break;
+	case OBS_WEBSOCKET_MEDIA_INPUT_ACTION_NEXT:
+		obs_source_media_next(input);
+		break;
+	case OBS_WEBSOCKET_MEDIA_INPUT_ACTION_PREVIOUS:
+		obs_source_media_previous(input);
+		break;
 	}
 
 	return RequestResult::Success();

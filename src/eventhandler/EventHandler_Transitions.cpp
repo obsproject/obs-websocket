@@ -76,7 +76,7 @@ void EventHandler::HandleCurrentSceneTransitionDurationChanged()
  */
 void EventHandler::HandleSceneTransitionStarted(void *param, calldata_t *data)
 {
-	auto eventHandler = static_cast<EventHandler*>(param);
+	auto eventHandler = static_cast<EventHandler *>(param);
 
 	obs_source_t *source = GetCalldataPointer<obs_source_t>(data, "source");
 	if (!source)
@@ -104,7 +104,7 @@ void EventHandler::HandleSceneTransitionStarted(void *param, calldata_t *data)
  */
 void EventHandler::HandleSceneTransitionEnded(void *param, calldata_t *data)
 {
-	auto eventHandler = static_cast<EventHandler*>(param);
+	auto eventHandler = static_cast<EventHandler *>(param);
 
 	obs_source_t *source = GetCalldataPointer<obs_source_t>(data, "source");
 	if (!source)
@@ -135,7 +135,7 @@ void EventHandler::HandleSceneTransitionEnded(void *param, calldata_t *data)
  */
 void EventHandler::HandleSceneTransitionVideoEnded(void *param, calldata_t *data)
 {
-	auto eventHandler = static_cast<EventHandler*>(param);
+	auto eventHandler = static_cast<EventHandler *>(param);
 
 	obs_source_t *source = GetCalldataPointer<obs_source_t>(data, "source");
 	if (!source)

@@ -63,10 +63,7 @@ bool Utils::Crypto::CheckAuthenticationString(std::string secret, std::string ch
 	secretAndChallenge += QString::fromStdString(challenge);
 
 	// Generate a SHA256 hash of secretAndChallenge
-	auto hash = QCryptographicHash::hash(
-		secretAndChallenge.toUtf8(),
-		QCryptographicHash::Algorithm::Sha256
-	);
+	auto hash = QCryptographicHash::hash(secretAndChallenge.toUtf8(), QCryptographicHash::Algorithm::Sha256);
 
 	// Encode the SHA256 hash to Base64
 	std::string expectedAuthenticationString = hash.toBase64().toStdString();

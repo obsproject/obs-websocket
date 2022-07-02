@@ -28,8 +28,8 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 extern "C" {
 #endif
 
-typedef void* obs_websocket_vendor;
-typedef void (*obs_websocket_request_callback_function)(obs_data_t*, obs_data_t*, void*);
+typedef void *obs_websocket_vendor;
+typedef void (*obs_websocket_request_callback_function)(obs_data_t *, obs_data_t *, void *);
 
 struct obs_websocket_request_response {
 	unsigned int status_code;
@@ -56,7 +56,7 @@ static inline proc_handler_t *obs_websocket_get_ph(void)
 	calldata_t cd = {0};
 	if (!proc_handler_call(global_ph, "obs_websocket_api_get_ph", &cd))
 		blog(LOG_DEBUG, "Unable to fetch obs-websocket proc handler object. obs-websocket not installed?");
-	proc_handler_t *ret = (proc_handler_t*)calldata_ptr(&cd, "ph");
+	proc_handler_t *ret = (proc_handler_t *)calldata_ptr(&cd, "ph");
 	calldata_free(&cd);
 
 	return ret;
@@ -120,7 +120,7 @@ static inline obs_websocket_request_response *obs_websocket_call_request(const c
 
 	proc_handler_call(_ph, "call_request", &cd);
 
-	auto ret = (struct obs_websocket_request_response*)calldata_ptr(&cd, "response");
+	auto ret = (struct obs_websocket_request_response *)calldata_ptr(&cd, "response");
 
 	calldata_free(&cd);
 
@@ -161,7 +161,8 @@ static inline obs_websocket_vendor obs_websocket_register_vendor(const char *ven
 }
 
 // Registers a new request for a vendor
-static inline bool obs_websocket_vendor_register_request(obs_websocket_vendor vendor, const char *request_type, obs_websocket_request_callback_function request_callback, void* priv_data)
+static inline bool obs_websocket_vendor_register_request(obs_websocket_vendor vendor, const char *request_type,
+							 obs_websocket_request_callback_function request_callback, void *priv_data)
 {
 	calldata_t cd = {0};
 
@@ -198,7 +199,7 @@ static inline bool obs_websocket_vendor_emit_event(obs_websocket_vendor vendor, 
 	calldata_t cd = {0};
 
 	calldata_set_string(&cd, "type", event_name);
-	calldata_set_ptr(&cd, "data", (void*)event_data);
+	calldata_set_ptr(&cd, "data", (void *)event_data);
 
 	bool success = obs_websocket_vendor_run_simple_proc(vendor, "vendor_event_emit", &cd);
 	calldata_free(&cd);

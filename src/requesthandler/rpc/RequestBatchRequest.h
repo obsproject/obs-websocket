@@ -21,7 +21,9 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include "Request.h"
 
 struct RequestBatchRequest : Request {
-	RequestBatchRequest(const std::string &requestType, const json &requestData, RequestBatchExecutionType::RequestBatchExecutionType executionType, const json &inputVariables = nullptr, const json &outputVariables = nullptr);
+	RequestBatchRequest(const std::string &requestType, const json &requestData,
+			    RequestBatchExecutionType::RequestBatchExecutionType executionType,
+			    const json &inputVariables = nullptr, const json &outputVariables = nullptr);
 
 	json InputVariables;
 	json OutputVariables;

@@ -33,7 +33,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
  * @api requests
  * @category inputs
  */
-RequestResult RequestHandler::GetInputList(const Request& request)
+RequestResult RequestHandler::GetInputList(const Request &request)
 {
 	std::string inputKind;
 
@@ -65,7 +65,7 @@ RequestResult RequestHandler::GetInputList(const Request& request)
  * @api requests
  * @category inputs
  */
-RequestResult RequestHandler::GetInputKindList(const Request& request)
+RequestResult RequestHandler::GetInputKindList(const Request &request)
 {
 	bool unversioned = false;
 
@@ -100,7 +100,7 @@ RequestResult RequestHandler::GetInputKindList(const Request& request)
  * @api requests
  * @category inputs
  */
-RequestResult RequestHandler::GetSpecialInputs(const Request&)
+RequestResult RequestHandler::GetSpecialInputs(const Request &)
 {
 	json responseData;
 
@@ -138,12 +138,13 @@ RequestResult RequestHandler::GetSpecialInputs(const Request&)
  * @api requests
  * @category inputs
  */
-RequestResult RequestHandler::CreateInput(const Request& request)
+RequestResult RequestHandler::CreateInput(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
 	OBSSourceAutoRelease sceneSource = request.ValidateScene("sceneName", statusCode, comment);
-	if (!(sceneSource && request.ValidateString("inputName", statusCode, comment) && request.ValidateString("inputKind", statusCode, comment)))
+	if (!(sceneSource && request.ValidateString("inputName", statusCode, comment) &&
+	      request.ValidateString("inputKind", statusCode, comment)))
 		return RequestResult::Error(statusCode, comment);
 
 	std::string inputName = request.RequestData["inputName"];
@@ -154,7 +155,9 @@ RequestResult RequestHandler::CreateInput(const Request& request)
 	std::string inputKind = request.RequestData["inputKind"];
 	auto kinds = Utils::Obs::ArrayHelper::GetInputKindList();
 	if (std::find(kinds.begin(), kinds.end(), inputKind) == kinds.end())
-		return RequestResult::Error(RequestStatus::InvalidInputKind, "Your specified input kind is not supported by OBS. Check that your specified kind is properly versioned and that any necessary plugins are loaded.");
+		return RequestResult::Error(
+			RequestStatus::InvalidInputKind,
+			"Your specified input kind is not supported by OBS. Check that your specified kind is properly versioned and that any necessary plugins are loaded.");
 
 	OBSDataAutoRelease inputSettings = nullptr;
 	if (request.Contains("inputSettings")) {
@@ -175,7 +178,8 @@ RequestResult RequestHandler::CreateInput(const Request& request)
 	}
 
 	// Create the input and add it as a scene item to the destination scene
-	OBSSceneItemAutoRelease sceneItem = Utils::Obs::ActionHelper::CreateInput(inputName, inputKind, inputSettings, scene, sceneItemEnabled);
+	OBSSceneItemAutoRelease sceneItem =
+		Utils::Obs::ActionHelper::CreateInput(inputName, inputKind, inputSettings, scene, sceneItemEnabled);
 
 	if (!sceneItem)
 		return RequestResult::Error(RequestStatus::ResourceCreationFailed, "Creation of the input or scene item failed.");
@@ -199,7 +203,7 @@ RequestResult RequestHandler::CreateInput(const Request& request)
  * @api requests
  * @category inputs
  */
-RequestResult RequestHandler::RemoveInput(const Request& request)
+RequestResult RequestHandler::RemoveInput(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
@@ -228,7 +232,7 @@ RequestResult RequestHandler::RemoveInput(const Request& request)
  * @api requests
  * @category inputs
  */
-RequestResult RequestHandler::SetInputName(const Request& request)
+RequestResult RequestHandler::SetInputName(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
@@ -240,7 +244,8 @@ RequestResult RequestHandler::SetInputName(const Request& request)
 
 	OBSSourceAutoRelease existingSource = obs_get_source_by_name(newInputName.c_str());
 	if (existingSource)
-		return RequestResult::Error(RequestStatus::ResourceAlreadyExists, "A source already exists by that new input name.");
+		return RequestResult::Error(RequestStatus::ResourceAlreadyExists,
+					    "A source already exists by that new input name.");
 
 	obs_source_set_name(input, newInputName.c_str());
 
@@ -261,7 +266,7 @@ RequestResult RequestHandler::SetInputName(const Request& request)
  * @api requests
  * @category inputs
  */
-RequestResult RequestHandler::GetInputDefaultSettings(const Request& request)
+RequestResult RequestHandler::GetInputDefaultSettings(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
@@ -299,7 +304,7 @@ RequestResult RequestHandler::GetInputDefaultSettings(const Request& request)
  * @api requests
  * @category inputs
  */
-RequestResult RequestHandler::GetInputSettings(const Request& request)
+RequestResult RequestHandler::GetInputSettings(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
@@ -329,7 +334,7 @@ RequestResult RequestHandler::GetInputSettings(const Request& request)
  * @api requests
  * @category inputs
  */
-RequestResult RequestHandler::SetInputSettings(const Request& request)
+RequestResult RequestHandler::SetInputSettings(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
@@ -349,7 +354,8 @@ RequestResult RequestHandler::SetInputSettings(const Request& request)
 	OBSDataAutoRelease newSettings = Utils::Json::JsonToObsData(request.RequestData["inputSettings"]);
 	if (!newSettings)
 		// This should never happen
-		return RequestResult::Error(RequestStatus::RequestProcessingFailed, "An internal data conversion operation failed. Please report this!");
+		return RequestResult::Error(RequestStatus::RequestProcessingFailed,
+					    "An internal data conversion operation failed. Please report this!");
 
 	if (overlay)
 		// Applies the new settings on top of the existing user settings
@@ -378,7 +384,7 @@ RequestResult RequestHandler::SetInputSettings(const Request& request)
  * @api requests
  * @category inputs
  */
-RequestResult RequestHandler::GetInputMute(const Request& request)
+RequestResult RequestHandler::GetInputMute(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
@@ -407,7 +413,7 @@ RequestResult RequestHandler::GetInputMute(const Request& request)
  * @api requests
  * @category inputs
  */
-RequestResult RequestHandler::SetInputMute(const Request& request)
+RequestResult RequestHandler::SetInputMute(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
@@ -437,7 +443,7 @@ RequestResult RequestHandler::SetInputMute(const Request& request)
  * @api requests
  * @category inputs
  */
-RequestResult RequestHandler::ToggleInputMute(const Request& request)
+RequestResult RequestHandler::ToggleInputMute(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
@@ -471,7 +477,7 @@ RequestResult RequestHandler::ToggleInputMute(const Request& request)
  * @api requests
  * @category inputs
  */
-RequestResult RequestHandler::GetInputVolume(const Request& request)
+RequestResult RequestHandler::GetInputVolume(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
@@ -507,7 +513,7 @@ RequestResult RequestHandler::GetInputVolume(const Request& request)
  * @api requests
  * @category inputs
  */
-RequestResult RequestHandler::SetInputVolume(const Request& request)
+RequestResult RequestHandler::SetInputVolume(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
@@ -557,7 +563,7 @@ RequestResult RequestHandler::SetInputVolume(const Request& request)
  * @api requests
  * @category inputs
  */
-RequestResult RequestHandler::GetInputAudioBalance(const Request& request)
+RequestResult RequestHandler::GetInputAudioBalance(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
@@ -587,7 +593,7 @@ RequestResult RequestHandler::GetInputAudioBalance(const Request& request)
  * @api requests
  * @category inputs
  */
-RequestResult RequestHandler::SetInputAudioBalance(const Request& request)
+RequestResult RequestHandler::SetInputAudioBalance(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
@@ -620,7 +626,7 @@ RequestResult RequestHandler::SetInputAudioBalance(const Request& request)
  * @api requests
  * @category inputs
  */
-RequestResult RequestHandler::GetInputAudioSyncOffset(const Request& request)
+RequestResult RequestHandler::GetInputAudioSyncOffset(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
@@ -651,7 +657,7 @@ RequestResult RequestHandler::GetInputAudioSyncOffset(const Request& request)
  * @api requests
  * @category inputs
  */
-RequestResult RequestHandler::SetInputAudioSyncOffset(const Request& request)
+RequestResult RequestHandler::SetInputAudioSyncOffset(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
@@ -688,7 +694,7 @@ RequestResult RequestHandler::SetInputAudioSyncOffset(const Request& request)
  * @api requests
  * @category inputs
  */
-RequestResult RequestHandler::GetInputAudioMonitorType(const Request& request)
+RequestResult RequestHandler::GetInputAudioMonitorType(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
@@ -718,7 +724,7 @@ RequestResult RequestHandler::GetInputAudioMonitorType(const Request& request)
  * @api requests
  * @category inputs
  */
-RequestResult RequestHandler::SetInputAudioMonitorType(const Request& request)
+RequestResult RequestHandler::SetInputAudioMonitorType(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
@@ -730,7 +736,8 @@ RequestResult RequestHandler::SetInputAudioMonitorType(const Request& request)
 		return RequestResult::Error(RequestStatus::InvalidResourceState, "The specified input does not support audio.");
 
 	if (!obs_audio_monitoring_available())
-		return RequestResult::Error(RequestStatus::InvalidResourceState, "Audio monitoring is not available on this platform.");
+		return RequestResult::Error(RequestStatus::InvalidResourceState,
+					    "Audio monitoring is not available on this platform.");
 
 	enum obs_monitoring_type monitorType;
 	std::string monitorTypeString = request.RequestData["monitorType"];
@@ -741,7 +748,8 @@ RequestResult RequestHandler::SetInputAudioMonitorType(const Request& request)
 	else if (monitorTypeString == "OBS_MONITORING_TYPE_MONITOR_AND_OUTPUT")
 		monitorType = OBS_MONITORING_TYPE_MONITOR_AND_OUTPUT;
 	else
-		return RequestResult::Error(RequestStatus::InvalidRequestField, std::string("Unknown monitor type: ") + monitorTypeString);
+		return RequestResult::Error(RequestStatus::InvalidRequestField,
+					    std::string("Unknown monitor type: ") + monitorTypeString);
 
 	obs_source_set_monitoring_type(input, monitorType);
 
@@ -762,7 +770,7 @@ RequestResult RequestHandler::SetInputAudioMonitorType(const Request& request)
  * @api requests
  * @category inputs
  */
-RequestResult RequestHandler::GetInputAudioTracks(const Request& request)
+RequestResult RequestHandler::GetInputAudioTracks(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
@@ -799,7 +807,7 @@ RequestResult RequestHandler::GetInputAudioTracks(const Request& request)
  * @api requests
  * @category inputs
  */
-RequestResult RequestHandler::SetInputAudioTracks(const Request& request)
+RequestResult RequestHandler::SetInputAudioTracks(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
@@ -821,7 +829,8 @@ RequestResult RequestHandler::SetInputAudioTracks(const Request& request)
 			continue;
 
 		if (!inputAudioTracks[track].is_boolean())
-			return RequestResult::Error(RequestStatus::InvalidRequestFieldType, "The value of one of your tracks is not a boolean.");
+			return RequestResult::Error(RequestStatus::InvalidRequestFieldType,
+						    "The value of one of your tracks is not a boolean.");
 
 		bool enabled = inputAudioTracks[track];
 
@@ -854,7 +863,7 @@ RequestResult RequestHandler::SetInputAudioTracks(const Request& request)
  * @api requests
  * @category inputs
  */
-RequestResult RequestHandler::GetInputPropertiesListPropertyItems(const Request& request)
+RequestResult RequestHandler::GetInputPropertiesListPropertyItems(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
@@ -892,7 +901,7 @@ RequestResult RequestHandler::GetInputPropertiesListPropertyItems(const Request&
  * @api requests
  * @category inputs
  */
-RequestResult RequestHandler::PressInputPropertiesButton(const Request& request)
+RequestResult RequestHandler::PressInputPropertiesButton(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;

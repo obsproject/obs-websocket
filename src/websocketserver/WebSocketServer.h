@@ -34,73 +34,66 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include "../requesthandler/rpc/Request.h"
 #include "../plugin-macros.generated.h"
 
-class WebSocketServer : QObject
-{
+class WebSocketServer : QObject {
 	Q_OBJECT
 
-	public:
-		enum WebSocketEncoding {
-			Json,
-			MsgPack
-		};
+public:
+	enum WebSocketEncoding { Json, MsgPack };
 
-		struct WebSocketSessionState {
-			websocketpp::connection_hdl hdl;
-			std::string remoteAddress;
-			uint64_t connectedAt;
-			uint64_t incomingMessages;
-			uint64_t outgoingMessages;
-			bool isIdentified;
-		};
+	struct WebSocketSessionState {
+		websocketpp::connection_hdl hdl;
+		std::string remoteAddress;
+		uint64_t connectedAt;
+		uint64_t incomingMessages;
+		uint64_t outgoingMessages;
+		bool isIdentified;
+	};
 
-		WebSocketServer();
-		~WebSocketServer();
+	WebSocketServer();
+	~WebSocketServer();
 
-		void Start();
-		void Stop();
-		void InvalidateSession(websocketpp::connection_hdl hdl);
-		void BroadcastEvent(uint64_t requiredIntent, const std::string &eventType, const json &eventData = nullptr, uint8_t rpcVersion = 0);
+	void Start();
+	void Stop();
+	void InvalidateSession(websocketpp::connection_hdl hdl);
+	void BroadcastEvent(uint64_t requiredIntent, const std::string &eventType, const json &eventData = nullptr,
+			    uint8_t rpcVersion = 0);
 
-		bool IsListening() {
-			return _server.is_listening();
-		}
+	bool IsListening() { return _server.is_listening(); }
 
-		std::vector<WebSocketSessionState> GetWebSocketSessions();
+	std::vector<WebSocketSessionState> GetWebSocketSessions();
 
-		QThreadPool *GetThreadPool() {
-			return &_threadPool;
-		}
+	QThreadPool *GetThreadPool() { return &_threadPool; }
 
-	signals:
-		void ClientConnected(WebSocketSessionState state);
-		void ClientDisconnected(WebSocketSessionState state, uint16_t closeCode);
+signals:
+	void ClientConnected(WebSocketSessionState state);
+	void ClientDisconnected(WebSocketSessionState state, uint16_t closeCode);
 
-	private:
-		struct ProcessResult {
-			WebSocketCloseCode::WebSocketCloseCode closeCode = WebSocketCloseCode::DontClose;
-			std::string closeReason;
-			json result;
-		};
+private:
+	struct ProcessResult {
+		WebSocketCloseCode::WebSocketCloseCode closeCode = WebSocketCloseCode::DontClose;
+		std::string closeReason;
+		json result;
+	};
 
-		void ServerRunner();
+	void ServerRunner();
 
-		void onObsLoaded();
-		bool onValidate(websocketpp::connection_hdl hdl);
-		void onOpen(websocketpp::connection_hdl hdl);
-		void onClose(websocketpp::connection_hdl hdl);
-		void onMessage(websocketpp::connection_hdl hdl, websocketpp::server<websocketpp::config::asio>::message_ptr message);
+	void onObsLoaded();
+	bool onValidate(websocketpp::connection_hdl hdl);
+	void onOpen(websocketpp::connection_hdl hdl);
+	void onClose(websocketpp::connection_hdl hdl);
+	void onMessage(websocketpp::connection_hdl hdl, websocketpp::server<websocketpp::config::asio>::message_ptr message);
 
-		static void SetSessionParameters(SessionPtr session, WebSocketServer::ProcessResult &ret, const json &payloadData);
-		void ProcessMessage(SessionPtr session, ProcessResult &ret, WebSocketOpCode::WebSocketOpCode opCode, json &payloadData);
+	static void SetSessionParameters(SessionPtr session, WebSocketServer::ProcessResult &ret, const json &payloadData);
+	void ProcessMessage(SessionPtr session, ProcessResult &ret, WebSocketOpCode::WebSocketOpCode opCode, json &payloadData);
 
-		QThreadPool _threadPool;
+	QThreadPool _threadPool;
 
-		std::thread _serverThread;
-		websocketpp::server<websocketpp::config::asio> _server;
+	std::thread _serverThread;
+	websocketpp::server<websocketpp::config::asio> _server;
 
-		std::string _authenticationSecret;
-		std::string _authenticationSalt;
+	std::string _authenticationSecret;
+	std::string _authenticationSalt;
 
-		std::mutex _sessionMutex;
-		std::map<websocketpp::connection_hdl, SessionPtr, std::owner_less<websocketpp::connection_hdl>> _sessions;
+	std::mutex _sessionMutex;
+	std::map<websocketpp::connection_hdl, SessionPtr, std::owner_less<websocketpp::connection_hdl>> _sessions;
 };

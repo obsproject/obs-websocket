@@ -29,7 +29,7 @@ json Utils::Obs::ObjectHelper::GetStats()
 
 	std::string outputPath = Utils::Obs::StringHelper::GetCurrentRecordOutputPath();
 
-	video_t* video = obs_get_video();
+	video_t *video = obs_get_video();
 
 	ret["cpuUsage"] = os_cpu_usage_info_query(GetCpuUsageInfo());
 	ret["memoryUsage"] = (double)os_get_proc_resident_size() / (1024.0 * 1024.0);

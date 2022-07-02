@@ -22,9 +22,9 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include "../types/RequestStatus.h"
 #include "../../utils/Json.h"
 
-struct RequestResult
-{
-	RequestResult(RequestStatus::RequestStatus statusCode = RequestStatus::Success, json responseData = nullptr, std::string comment = "");
+struct RequestResult {
+	RequestResult(RequestStatus::RequestStatus statusCode = RequestStatus::Success, json responseData = nullptr,
+		      std::string comment = "");
 	static RequestResult Success(json responseData = nullptr);
 	static RequestResult Error(RequestStatus::RequestStatus statusCode, std::string comment = "");
 	RequestStatus::RequestStatus StatusCode;

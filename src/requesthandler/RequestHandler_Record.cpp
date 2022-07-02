@@ -35,7 +35,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
  * @api requests
  * @category record
  */
-RequestResult RequestHandler::GetRecordStatus(const Request&)
+RequestResult RequestHandler::GetRecordStatus(const Request &)
 {
 	OBSOutputAutoRelease recordOutput = obs_frontend_get_recording_output();
 
@@ -61,7 +61,7 @@ RequestResult RequestHandler::GetRecordStatus(const Request&)
  * @api requests
  * @category record
  */
-RequestResult RequestHandler::ToggleRecord(const Request&)
+RequestResult RequestHandler::ToggleRecord(const Request &)
 {
 	json responseData;
 	if (obs_frontend_recording_active()) {
@@ -85,7 +85,7 @@ RequestResult RequestHandler::ToggleRecord(const Request&)
  * @api requests
  * @category record
  */
-RequestResult RequestHandler::StartRecord(const Request&)
+RequestResult RequestHandler::StartRecord(const Request &)
 {
 	if (obs_frontend_recording_active())
 		return RequestResult::Error(RequestStatus::OutputRunning);
@@ -106,7 +106,7 @@ RequestResult RequestHandler::StartRecord(const Request&)
  * @api requests
  * @category record
  */
-RequestResult RequestHandler::StopRecord(const Request&)
+RequestResult RequestHandler::StopRecord(const Request &)
 {
 	if (!obs_frontend_recording_active())
 		return RequestResult::Error(RequestStatus::OutputNotRunning);
@@ -127,7 +127,7 @@ RequestResult RequestHandler::StopRecord(const Request&)
  * @api requests
  * @category record
  */
-RequestResult RequestHandler::ToggleRecordPause(const Request&)
+RequestResult RequestHandler::ToggleRecordPause(const Request &)
 {
 	json responseData;
 	if (obs_frontend_recording_paused()) {
@@ -151,7 +151,7 @@ RequestResult RequestHandler::ToggleRecordPause(const Request&)
  * @api requests
  * @category record
  */
-RequestResult RequestHandler::PauseRecord(const Request&)
+RequestResult RequestHandler::PauseRecord(const Request &)
 {
 	if (obs_frontend_recording_paused())
 		return RequestResult::Error(RequestStatus::OutputPaused);
@@ -172,7 +172,7 @@ RequestResult RequestHandler::PauseRecord(const Request&)
  * @api requests
  * @category record
  */
-RequestResult RequestHandler::ResumeRecord(const Request&)
+RequestResult RequestHandler::ResumeRecord(const Request &)
 {
 	if (!obs_frontend_recording_paused())
 		return RequestResult::Error(RequestStatus::OutputNotPaused);

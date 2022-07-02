@@ -35,7 +35,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
  * @api requests
  * @category transitions
  */
-RequestResult RequestHandler::GetTransitionKindList(const Request&)
+RequestResult RequestHandler::GetTransitionKindList(const Request &)
 {
 	json responseData;
 	responseData["transitionKinds"] = Utils::Obs::ArrayHelper::GetTransitionKindList();
@@ -56,7 +56,7 @@ RequestResult RequestHandler::GetTransitionKindList(const Request&)
  * @api requests
  * @category transitions
  */
-RequestResult RequestHandler::GetSceneTransitionList(const Request&)
+RequestResult RequestHandler::GetSceneTransitionList(const Request &)
 {
 	json responseData;
 
@@ -91,11 +91,12 @@ RequestResult RequestHandler::GetSceneTransitionList(const Request&)
  * @api requests
  * @category transitions
  */
-RequestResult RequestHandler::GetCurrentSceneTransition(const Request&)
+RequestResult RequestHandler::GetCurrentSceneTransition(const Request &)
 {
 	OBSSourceAutoRelease transition = obs_frontend_get_current_transition();
 	if (!transition)
-		return RequestResult::Error(RequestStatus::InvalidResourceState, "OBS does not currently have a scene transition set."); // This should not happen!
+		return RequestResult::Error(RequestStatus::InvalidResourceState,
+					    "OBS does not currently have a scene transition set."); // This should not happen!
 
 	json responseData;
 	responseData["transitionName"] = obs_source_get_name(transition);
@@ -135,7 +136,7 @@ RequestResult RequestHandler::GetCurrentSceneTransition(const Request&)
  * @api requests
  * @category transitions
  */
-RequestResult RequestHandler::SetCurrentSceneTransition(const Request& request)
+RequestResult RequestHandler::SetCurrentSceneTransition(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
@@ -165,7 +166,7 @@ RequestResult RequestHandler::SetCurrentSceneTransition(const Request& request)
  * @api requests
  * @category transitions
  */
-RequestResult RequestHandler::SetCurrentSceneTransitionDuration(const Request& request)
+RequestResult RequestHandler::SetCurrentSceneTransitionDuration(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
@@ -192,7 +193,7 @@ RequestResult RequestHandler::SetCurrentSceneTransitionDuration(const Request& r
  * @api requests
  * @category transitions
  */
-RequestResult RequestHandler::SetCurrentSceneTransitionSettings(const Request& request)
+RequestResult RequestHandler::SetCurrentSceneTransitionSettings(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
@@ -201,10 +202,12 @@ RequestResult RequestHandler::SetCurrentSceneTransitionSettings(const Request& r
 
 	OBSSourceAutoRelease transition = obs_frontend_get_current_transition();
 	if (!transition)
-		return RequestResult::Error(RequestStatus::InvalidResourceState, "OBS does not currently have a scene transition set."); // This should not happen!
+		return RequestResult::Error(RequestStatus::InvalidResourceState,
+					    "OBS does not currently have a scene transition set."); // This should not happen!
 
 	if (!obs_source_configurable(transition))
-		return RequestResult::Error(RequestStatus::ResourceNotConfigurable, "The current transition does not support custom settings.");
+		return RequestResult::Error(RequestStatus::ResourceNotConfigurable,
+					    "The current transition does not support custom settings.");
 
 	bool overlay = true;
 	if (request.Contains("overlay")) {
@@ -216,7 +219,8 @@ RequestResult RequestHandler::SetCurrentSceneTransitionSettings(const Request& r
 
 	OBSDataAutoRelease newSettings = Utils::Json::JsonToObsData(request.RequestData["transitionSettings"]);
 	if (!newSettings)
-		return RequestResult::Error(RequestStatus::RequestProcessingFailed, "An internal data conversion operation failed. Please report this!");
+		return RequestResult::Error(RequestStatus::RequestProcessingFailed,
+					    "An internal data conversion operation failed. Please report this!");
 
 	if (overlay)
 		obs_source_update(transition, newSettings);
@@ -242,11 +246,12 @@ RequestResult RequestHandler::SetCurrentSceneTransitionSettings(const Request& r
  * @api requests
  * @category transitions
  */
-RequestResult RequestHandler::GetCurrentSceneTransitionCursor(const Request&)
+RequestResult RequestHandler::GetCurrentSceneTransitionCursor(const Request &)
 {
 	OBSSourceAutoRelease transition = obs_frontend_get_current_transition();
 	if (!transition)
-		return RequestResult::Error(RequestStatus::InvalidResourceState, "OBS does not currently have a scene transition set."); // This should not happen!
+		return RequestResult::Error(RequestStatus::InvalidResourceState,
+					    "OBS does not currently have a scene transition set."); // This should not happen!
 
 	json responseData;
 	responseData["transitionCursor"] = obs_transition_get_time(transition);
@@ -264,7 +269,7 @@ RequestResult RequestHandler::GetCurrentSceneTransitionCursor(const Request&)
  * @api requests
  * @category transitions
  */
-RequestResult RequestHandler::TriggerStudioModeTransition(const Request&)
+RequestResult RequestHandler::TriggerStudioModeTransition(const Request &)
 {
 	if (!obs_frontend_preview_program_mode_active())
 		return RequestResult::Error(RequestStatus::StudioModeNotActive);
@@ -291,7 +296,7 @@ RequestResult RequestHandler::TriggerStudioModeTransition(const Request&)
  * @api requests
  * @category transitions
  */
-RequestResult RequestHandler::SetTBarPosition(const Request& request)
+RequestResult RequestHandler::SetTBarPosition(const Request &request)
 {
 	if (!obs_frontend_preview_program_mode_active())
 		return RequestResult::Error(RequestStatus::StudioModeNotActive);
@@ -309,7 +314,8 @@ RequestResult RequestHandler::SetTBarPosition(const Request& request)
 
 	OBSSourceAutoRelease transition = obs_frontend_get_current_transition();
 	if (!transition)
-		return RequestResult::Error(RequestStatus::InvalidResourceState, "OBS does not currently have a scene transition set."); // This should not happen!
+		return RequestResult::Error(RequestStatus::InvalidResourceState,
+					    "OBS does not currently have a scene transition set."); // This should not happen!
 
 	float position = request.RequestData["position"];
 

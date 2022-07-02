@@ -30,8 +30,8 @@ obs_websocket_vendor vendor;
 
 bool obs_module_load(void)
 {
-    blog(LOG_INFO, "Example obs-websocket-api plugin loaded!");
-    return true;
+	blog(LOG_INFO, "Example obs-websocket-api plugin loaded!");
+	return true;
 }
 
 void example_request_cb(obs_data_t *request_data, obs_data_t *response_data, void *priv_data);
@@ -60,7 +60,8 @@ void obs_module_post_load(void)
 		blog(LOG_ERROR, "Failed to call GetVersion due to obs-websocket not being installed.");
 		return;
 	}
-	blog(LOG_INFO, "[obs_module_post_load] Called GetVersion. Status Code: %u | Comment: %s | Response Data: %s", response->status_code, response->comment, response->response_data);
+	blog(LOG_INFO, "[obs_module_post_load] Called GetVersion. Status Code: %u | Comment: %s | Response Data: %s",
+	     response->status_code, response->comment, response->response_data);
 	obs_websocket_request_response_free(response);
 }
 

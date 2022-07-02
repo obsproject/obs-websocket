@@ -26,7 +26,6 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include "../WebSocketApi.h"
 #include "../obs-websocket.h"
 
-
 /**
  * Gets data about the current plugin and RPC version.
  *
@@ -45,7 +44,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
  * @category general
  * @api requests
  */
-RequestResult RequestHandler::GetVersion(const Request&)
+RequestResult RequestHandler::GetVersion(const Request &)
 {
 	json responseData;
 	responseData["obsVersion"] = Utils::Obs::StringHelper::GetObsVersion();
@@ -55,7 +54,7 @@ RequestResult RequestHandler::GetVersion(const Request&)
 
 	QList<QByteArray> imageWriterFormats = QImageWriter::supportedImageFormats();
 	std::vector<std::string> supportedImageFormats;
-	for (const QByteArray& format : imageWriterFormats) {
+	for (const QByteArray &format : imageWriterFormats) {
 		supportedImageFormats.push_back(format.toStdString());
 	}
 	responseData["supportedImageFormats"] = supportedImageFormats;
@@ -88,7 +87,7 @@ RequestResult RequestHandler::GetVersion(const Request&)
  * @category general
  * @api requests
  */
-RequestResult RequestHandler::GetStats(const Request&)
+RequestResult RequestHandler::GetStats(const Request &)
 {
 	json responseData = Utils::Obs::ObjectHelper::GetStats();
 
@@ -115,7 +114,7 @@ RequestResult RequestHandler::GetStats(const Request&)
  * @category general
  * @api requests
  */
-RequestResult RequestHandler::BroadcastCustomEvent(const Request& request)
+RequestResult RequestHandler::BroadcastCustomEvent(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
@@ -150,11 +149,12 @@ RequestResult RequestHandler::BroadcastCustomEvent(const Request& request)
  * @category general
  * @api requests
  */
-RequestResult RequestHandler::CallVendorRequest(const Request& request)
+RequestResult RequestHandler::CallVendorRequest(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	if (!request.ValidateString("vendorName", statusCode, comment) || !request.ValidateString("requestType", statusCode, comment))
+	if (!request.ValidateString("vendorName", statusCode, comment) ||
+	    !request.ValidateString("requestType", statusCode, comment))
 		return RequestResult::Error(statusCode, comment);
 
 	std::string vendorName = request.RequestData["vendorName"];
@@ -172,17 +172,18 @@ RequestResult RequestHandler::CallVendorRequest(const Request& request)
 
 	auto webSocketApi = GetWebSocketApi();
 	if (!webSocketApi)
-		return RequestResult::Error(RequestStatus::RequestProcessingFailed, "Unable to call request due to internal error.");
+		return RequestResult::Error(RequestStatus::RequestProcessingFailed,
+					    "Unable to call request due to internal error.");
 
 	auto ret = webSocketApi->PerformVendorRequest(vendorName, requestType, requestData, obsResponseData);
 	switch (ret) {
-		default:
-		case WebSocketApi::RequestReturnCode::Normal:
-			break;
-		case WebSocketApi::RequestReturnCode::NoVendor:
-			return RequestResult::Error(RequestStatus::ResourceNotFound, "No vendor was found by that name.");
-		case WebSocketApi::RequestReturnCode::NoVendorRequest:
-			return RequestResult::Error(RequestStatus::ResourceNotFound, "No request was found by that name.");
+	default:
+	case WebSocketApi::RequestReturnCode::Normal:
+		break;
+	case WebSocketApi::RequestReturnCode::NoVendor:
+		return RequestResult::Error(RequestStatus::ResourceNotFound, "No vendor was found by that name.");
+	case WebSocketApi::RequestReturnCode::NoVendorRequest:
+		return RequestResult::Error(RequestStatus::ResourceNotFound, "No request was found by that name.");
 	}
 
 	json responseData;
@@ -203,7 +204,7 @@ RequestResult RequestHandler::CallVendorRequest(const Request& request)
  * @category general
  * @api requests
  */
-RequestResult RequestHandler::GetHotkeyList(const Request&)
+RequestResult RequestHandler::GetHotkeyList(const Request &)
 {
 	json responseData;
 	responseData["hotkeys"] = Utils::Obs::ArrayHelper::GetHotkeyNameList();
@@ -222,7 +223,7 @@ RequestResult RequestHandler::GetHotkeyList(const Request&)
  * @category general
  * @api requests
  */
-RequestResult RequestHandler::TriggerHotkeyByName(const Request& request)
+RequestResult RequestHandler::TriggerHotkeyByName(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
@@ -255,7 +256,7 @@ RequestResult RequestHandler::TriggerHotkeyByName(const Request& request)
  * @category general
  * @api requests
  */
-RequestResult RequestHandler::TriggerHotkeyByKeySequence(const Request& request)
+RequestResult RequestHandler::TriggerHotkeyByKeySequence(const Request &request)
 {
 	obs_key_combination_t combo = {0};
 
@@ -277,19 +278,23 @@ RequestResult RequestHandler::TriggerHotkeyByKeySequence(const Request& request)
 
 		const json keyModifiersJson = request.RequestData["keyModifiers"];
 		uint32_t keyModifiers = 0;
-		if (keyModifiersJson.contains("shift") && keyModifiersJson["shift"].is_boolean() && keyModifiersJson["shift"].get<bool>())
+		if (keyModifiersJson.contains("shift") && keyModifiersJson["shift"].is_boolean() &&
+		    keyModifiersJson["shift"].get<bool>())
 			keyModifiers |= INTERACT_SHIFT_KEY;
-		if (keyModifiersJson.contains("control") && keyModifiersJson["control"].is_boolean() && keyModifiersJson["control"].get<bool>())
+		if (keyModifiersJson.contains("control") && keyModifiersJson["control"].is_boolean() &&
+		    keyModifiersJson["control"].get<bool>())
 			keyModifiers |= INTERACT_CONTROL_KEY;
 		if (keyModifiersJson.contains("alt") && keyModifiersJson["alt"].is_boolean() && keyModifiersJson["alt"].get<bool>())
 			keyModifiers |= INTERACT_ALT_KEY;
-		if (keyModifiersJson.contains("command") && keyModifiersJson["command"].is_boolean() && keyModifiersJson["command"].get<bool>())
+		if (keyModifiersJson.contains("command") && keyModifiersJson["command"].is_boolean() &&
+		    keyModifiersJson["command"].get<bool>())
 			keyModifiers |= INTERACT_COMMAND_KEY;
 		combo.modifiers = keyModifiers;
 	}
 
 	if (!combo.modifiers && (combo.key == OBS_KEY_NONE || combo.key >= OBS_KEY_LAST_VALUE))
-		return RequestResult::Error(RequestStatus::CannotAct, "Your provided request fields cannot be used to trigger a hotkey.");
+		return RequestResult::Error(RequestStatus::CannotAct,
+					    "Your provided request fields cannot be used to trigger a hotkey.");
 
 	// Apparently things break when you don't start by setting the combo to false
 	obs_hotkey_inject_event(combo, false);
@@ -312,7 +317,7 @@ RequestResult RequestHandler::TriggerHotkeyByKeySequence(const Request& request)
  * @category general
  * @api requests
  */
-RequestResult RequestHandler::Sleep(const Request& request)
+RequestResult RequestHandler::Sleep(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;

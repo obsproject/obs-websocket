@@ -22,12 +22,11 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 // It should probably be imported as a libobs util someday though.
 
-#define SHIFT_RIGHT_2PS(msb, lsb)                                          \
-	{                                                                  \
-		__m128 tmp =                                               \
-			_mm_shuffle_ps(lsb, msb, _MM_SHUFFLE(0, 0, 3, 3)); \
-		lsb = _mm_shuffle_ps(lsb, tmp, _MM_SHUFFLE(2, 1, 2, 1));   \
-		msb = _mm_shuffle_ps(msb, msb, _MM_SHUFFLE(3, 3, 2, 1));   \
+#define SHIFT_RIGHT_2PS(msb, lsb)                                               \
+	{                                                                       \
+		__m128 tmp = _mm_shuffle_ps(lsb, msb, _MM_SHUFFLE(0, 0, 3, 3)); \
+		lsb = _mm_shuffle_ps(lsb, tmp, _MM_SHUFFLE(2, 1, 2, 1));        \
+		msb = _mm_shuffle_ps(msb, msb, _MM_SHUFFLE(3, 3, 2, 1));        \
 	}
 
 #define abs_ps(v) _mm_andnot_ps(_mm_set1_ps(-0.f), v)

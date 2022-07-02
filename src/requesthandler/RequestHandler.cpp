@@ -23,8 +23,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include "RequestHandler.h"
 
-const std::unordered_map<std::string, RequestMethodHandler> RequestHandler::_handlerMap
-{
+const std::unordered_map<std::string, RequestMethodHandler> RequestHandler::_handlerMap{
 	// General
 	{"GetVersion", &RequestHandler::GetVersion},
 	{"GetStats", &RequestHandler::GetStats},
@@ -184,12 +183,9 @@ const std::unordered_map<std::string, RequestMethodHandler> RequestHandler::_han
 	{"GetMonitorList", &RequestHandler::GetMonitorList},
 };
 
-RequestHandler::RequestHandler(SessionPtr session) :
-	_session(session)
-{
-}
+RequestHandler::RequestHandler(SessionPtr session) : _session(session) {}
 
-RequestResult RequestHandler::ProcessRequest(const Request& request)
+RequestResult RequestHandler::ProcessRequest(const Request &request)
 {
 #ifdef PLUGIN_TESTS
 	ScopeProfiler prof{"obs_websocket_request_processing"};
@@ -204,7 +200,7 @@ RequestResult RequestHandler::ProcessRequest(const Request& request)
 	RequestMethodHandler handler;
 	try {
 		handler = _handlerMap.at(request.RequestType);
-	} catch (const std::out_of_range& oor) {
+	} catch (const std::out_of_range &oor) {
 		return RequestResult::Error(RequestStatus::UnknownRequestType, "Your request type is not valid.");
 	}
 
@@ -214,7 +210,7 @@ RequestResult RequestHandler::ProcessRequest(const Request& request)
 std::vector<std::string> RequestHandler::GetRequestList()
 {
 	std::vector<std::string> ret;
-	for (auto const& [key, val] : _handlerMap) {
+	for (auto const &[key, val] : _handlerMap) {
 		ret.push_back(key);
 	}
 

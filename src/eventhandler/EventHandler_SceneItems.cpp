@@ -37,7 +37,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
  */
 void EventHandler::HandleSceneItemCreated(void *param, calldata_t *data)
 {
-	auto eventHandler = static_cast<EventHandler*>(param);
+	auto eventHandler = static_cast<EventHandler *>(param);
 
 	obs_scene_t *scene = GetCalldataPointer<obs_scene_t>(data, "scene");
 	if (!scene)
@@ -74,7 +74,7 @@ void EventHandler::HandleSceneItemCreated(void *param, calldata_t *data)
  */
 void EventHandler::HandleSceneItemRemoved(void *param, calldata_t *data)
 {
-	auto eventHandler = static_cast<EventHandler*>(param);
+	auto eventHandler = static_cast<EventHandler *>(param);
 
 	obs_scene_t *scene = GetCalldataPointer<obs_scene_t>(data, "scene");
 	if (!scene)
@@ -107,7 +107,7 @@ void EventHandler::HandleSceneItemRemoved(void *param, calldata_t *data)
  */
 void EventHandler::HandleSceneItemListReindexed(void *param, calldata_t *data)
 {
-	auto eventHandler = static_cast<EventHandler*>(param);
+	auto eventHandler = static_cast<EventHandler *>(param);
 
 	obs_scene_t *scene = GetCalldataPointer<obs_scene_t>(data, "scene");
 	if (!scene)
@@ -136,7 +136,7 @@ void EventHandler::HandleSceneItemListReindexed(void *param, calldata_t *data)
  */
 void EventHandler::HandleSceneItemEnableStateChanged(void *param, calldata_t *data)
 {
-	auto eventHandler = static_cast<EventHandler*>(param);
+	auto eventHandler = static_cast<EventHandler *>(param);
 
 	obs_scene_t *scene = GetCalldataPointer<obs_scene_t>(data, "scene");
 	if (!scene)
@@ -172,7 +172,7 @@ void EventHandler::HandleSceneItemEnableStateChanged(void *param, calldata_t *da
  */
 void EventHandler::HandleSceneItemLockStateChanged(void *param, calldata_t *data)
 {
-	auto eventHandler = static_cast<EventHandler*>(param);
+	auto eventHandler = static_cast<EventHandler *>(param);
 
 	obs_scene_t *scene = GetCalldataPointer<obs_scene_t>(data, "scene");
 	if (!scene)
@@ -207,7 +207,7 @@ void EventHandler::HandleSceneItemLockStateChanged(void *param, calldata_t *data
  */
 void EventHandler::HandleSceneItemSelected(void *param, calldata_t *data)
 {
-	auto eventHandler = static_cast<EventHandler*>(param);
+	auto eventHandler = static_cast<EventHandler *>(param);
 
 	obs_scene_t *scene = GetCalldataPointer<obs_scene_t>(data, "scene");
 	if (!scene)
@@ -240,7 +240,7 @@ void EventHandler::HandleSceneItemSelected(void *param, calldata_t *data)
  */
 void EventHandler::HandleSceneItemTransformChanged(void *param, calldata_t *data)
 {
-	auto eventHandler = static_cast<EventHandler*>(param);
+	auto eventHandler = static_cast<EventHandler *>(param);
 
 	if (!eventHandler->_sceneItemTransformChangedRef.load())
 		return;

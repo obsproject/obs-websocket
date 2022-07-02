@@ -20,7 +20,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #pragma once
 
 namespace WebSocketOpCode {
-	enum WebSocketOpCode: uint8_t {
+	enum WebSocketOpCode : uint8_t {
 		/**
 		* The initial message sent by obs-websocket to newly connected clients.
 		*
@@ -122,8 +122,5 @@ namespace WebSocketOpCode {
 		RequestBatchResponse = 9,
 	};
 
-	inline bool IsValid(uint8_t opCode)
-	{
-		return opCode >= Hello && opCode <= RequestBatchResponse;
-	}
+	inline bool IsValid(uint8_t opCode) { return opCode >= Hello && opCode <= RequestBatchResponse; }
 }
