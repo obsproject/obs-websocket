@@ -179,7 +179,8 @@ namespace Utils {
 			std::string GetCurrentProfile();
 			std::string GetCurrentProfilePath();
 			std::string GetCurrentRecordOutputPath();
-			std::string GetLastReplayBufferFilePath();
+			std::string GetLastRecordFileName();
+			std::string GetLastReplayBufferFileName();
 			std::string DurationToTimecode(uint64_t);
 		}
 

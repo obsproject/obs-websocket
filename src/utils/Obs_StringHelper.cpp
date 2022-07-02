@@ -72,7 +72,27 @@ std::string Utils::Obs::StringHelper::GetCurrentRecordOutputPath()
 	return ret;
 }
 
-std::string Utils::Obs::StringHelper::GetLastReplayBufferFilePath()
+std::string Utils::Obs::StringHelper::GetLastRecordFileName()
+{
+	OBSOutputAutoRelease output = obs_frontend_get_recording_output();
+	if (!output)
+		return "";
+
+	OBSDataAutoRelease outputSettings = obs_output_get_settings(output);
+
+	obs_data_item_t *item = obs_data_item_byname(outputSettings, "url");
+	if (!item) {
+		item = obs_data_item_byname(outputSettings, "path");
+		if (!item)
+			return "";
+	}
+
+	std::string ret = obs_data_item_get_string(item);
+	obs_data_item_release(&item);
+	return ret;
+}
+
+std::string Utils::Obs::StringHelper::GetLastReplayBufferFileName()
 {
 	OBSOutputAutoRelease output = obs_frontend_get_replay_buffer_output();
 	if (!output)

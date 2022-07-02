@@ -99,6 +99,8 @@ RequestResult RequestHandler::StartRecord(const Request &)
 /**
  * Stops the record output.
  *
+ * @responseField outputPath | String | File name for the saved recording
+ *
  * @requestType StopRecord
  * @complexity 1
  * @rpcVersion -1
@@ -114,7 +116,10 @@ RequestResult RequestHandler::StopRecord(const Request &)
 	// TODO: Call signal directly to perform blocking wait
 	obs_frontend_recording_stop();
 
-	return RequestResult::Success();
+	json responseData;
+	responseData["outputPath"] = Utils::Obs::StringHelper::GetLastRecordFileName();
+
+	return RequestResult::Success(responseData);
 }
 
 /**
