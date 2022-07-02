@@ -344,7 +344,8 @@ void WebSocketServer::onClose(websocketpp::connection_hdl hdl)
 	emit ClientDisconnected(state, conn->get_local_close_code());
 
 	// Log disconnection
-	blog(LOG_INFO, "[WebSocketServer::onClose] WebSocket client %s has disconnected", remoteAddress.c_str());
+	blog(LOG_INFO, "[WebSocketServer::onClose] WebSocket client `%s` has disconnected with code `%d` and reason: %s",
+	     remoteAddress.c_str(), conn->get_local_close_code(), conn->get_local_close_reason().c_str());
 
 	// Get config for tray notification
 	auto conf = GetConfig();
