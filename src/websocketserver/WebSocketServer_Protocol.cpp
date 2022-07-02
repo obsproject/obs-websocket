@@ -302,7 +302,8 @@ void WebSocketServer::ProcessMessage(SessionPtr session, WebSocketServer::Proces
 		std::vector<RequestBatchRequest> requestsVector;
 		for (auto &requestJson : requests) {
 			if (!requestJson["requestType"].is_string())
-				requestJson["requestType"] = ""; // Workaround for what would otherwise be extensive additional logic for a rare edge case
+				requestJson["requestType"] =
+					""; // Workaround for what would otherwise be extensive additional logic for a rare edge case
 			std::string requestType = requestJson["requestType"];
 			json requestData = requestJson["requestData"];
 			json inputVariables = requestJson["inputVariables"];

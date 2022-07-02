@@ -182,6 +182,7 @@ RequestResult RequestHandler::GetMonitorList(const Request &)
 		nameAndIndex << screen->name().toStdString();
 		nameAndIndex << '(' << screenIndex << ')';
 		screenData["monitorName"] = nameAndIndex.str();
+		screenData["monitorIndex"] = screenIndex;
 		const QRect screenGeometry = screen->geometry();
 		screenData["monitorWidth"] = screenGeometry.width();
 		screenData["monitorHeight"] = screenGeometry.height();
@@ -191,4 +192,112 @@ RequestResult RequestHandler::GetMonitorList(const Request &)
 	}
 	responseData["monitors"] = monitorsData;
 	return RequestResult::Success(responseData);
+}
+
+/**
+ * Opens a projector for a specific output video mix.
+ *
+ * Mix types:
+ * - `OBS_WEBSOCKET_VIDEO_MIX_TYPE_PREVIEW`
+ * - `OBS_WEBSOCKET_VIDEO_MIX_TYPE_PROGRAM`
+ * - `OBS_WEBSOCKET_VIDEO_MIX_TYPE_MULTIVIEW`
+ *
+ * Note: This request serves to provide feature parity with 4.x. It is very likely to be changed/deprecated in a future release.
+ *
+ * @requestField videoMixType            | String | Type of mix to open
+ * @requestField ?monitorIndex      | Number | Monitor index, use `GetMonitorList` to obtain index | None | -1: Opens projector in windowed mode
+ * @requestField ?projectorGeometry | String | Size/Position data for a windowed projector, in Qt Base64 encoded format. Mutually exclusive with `monitorIndex` | N/A
+ *
+ * @requestType OpenVideoMixProjector
+ * @complexity 3
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @category ui
+ * @api requests
+ */
+RequestResult RequestHandler::OpenVideoMixProjector(const Request &request)
+{
+	RequestStatus::RequestStatus statusCode;
+	std::string comment;
+	if (!request.ValidateString("mixType", statusCode, comment))
+		return RequestResult::Error(statusCode, comment);
+
+	std::string videoMixType = request.RequestData["videoMixType"];
+	const char *projectorType;
+	if (videoMixType == "OBS_WEBSOCKET_VIDEO_MIX_TYPE_PREVIEW")
+		projectorType = "Preview";
+	else if (videoMixType == "OBS_WEBSOCKET_VIDEO_MIX_TYPE_PROGRAM")
+		projectorType = "Program";
+	else if (videoMixType == "OBS_WEBSOCKET_VIDEO_MIX_TYPE_MULTIVIEW")
+		projectorType = "Multiview";
+	else
+		return RequestResult::Error(RequestStatus::InvalidRequestField,
+					    "The field `videoMixType` has an invalid enum value.");
+
+	int monitorIndex = -1;
+	if (request.Contains("monitorIndex")) {
+		if (!request.ValidateOptionalNumber("monitorIndex", statusCode, comment, -1, 9))
+			return RequestResult::Error(statusCode, comment);
+		monitorIndex = request.RequestData["monitorIndex"];
+	}
+
+	std::string projectorGeometry;
+	if (request.Contains("projectorGeometry")) {
+		if (!request.ValidateOptionalString("projectorGeometry", statusCode, comment))
+			return RequestResult::Error(statusCode, comment);
+		if (monitorIndex != -1)
+			return RequestResult::Error(RequestStatus::TooManyRequestFields,
+						    "`monitorIndex` and `projectorGeometry` are mutually exclusive.");
+		projectorGeometry = request.RequestData["projectorGeometry"];
+	}
+
+	obs_frontend_open_projector(projectorType, monitorIndex, projectorGeometry.c_str(), nullptr);
+
+	return RequestResult::Success();
+}
+
+/**
+ * Opens a projector for a source.
+ *
+ * Note: This request serves to provide feature parity with 4.x. It is very likely to be changed/deprecated in a future release.
+ *
+ * @requestField sourceName         | String | Name of the source to open a projector for
+ * @requestField ?monitorIndex      | Number | Monitor index, use `GetMonitorList` to obtain index | None | -1: Opens projector in windowed mode
+ * @requestField ?projectorGeometry | String | Size/Position data for a windowed projector, in Qt Base64 encoded format. Mutually exclusive with `monitorIndex` | N/A
+ *
+ * @requestType OpenSourceProjector
+ * @complexity 3
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @category ui
+ * @api requests
+ */
+RequestResult RequestHandler::OpenSourceProjector(const Request &request)
+{
+	RequestStatus::RequestStatus statusCode;
+	std::string comment;
+	OBSSourceAutoRelease source = request.ValidateSource("sourceName", statusCode, comment);
+	if (!source)
+		return RequestResult::Error(statusCode, comment);
+
+	int monitorIndex = -1;
+	if (request.Contains("monitorIndex")) {
+		if (!request.ValidateOptionalNumber("monitorIndex", statusCode, comment, -1, 9))
+			return RequestResult::Error(statusCode, comment);
+		monitorIndex = request.RequestData["monitorIndex"];
+	}
+
+	std::string projectorGeometry;
+	if (request.Contains("projectorGeometry")) {
+		if (!request.ValidateOptionalString("projectorGeometry", statusCode, comment))
+			return RequestResult::Error(statusCode, comment);
+		if (monitorIndex != -1)
+			return RequestResult::Error(RequestStatus::TooManyRequestFields,
+						    "`monitorIndex` and `projectorGeometry` are mutually exclusive.");
+		projectorGeometry = request.RequestData["projectorGeometry"];
+	}
+
+	obs_frontend_open_projector("Source", monitorIndex, projectorGeometry.c_str(), obs_source_get_name(source));
+
+	return RequestResult::Success();
 }
