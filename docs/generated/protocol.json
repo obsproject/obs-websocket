@@ -1649,6 +1649,16 @@
       ],
       "responseFields": [
         {
+          "valueName": "vendorName",
+          "valueType": "String",
+          "valueDescription": "Echoed of `vendorName`"
+        },
+        {
+          "valueName": "requestType",
+          "valueType": "String",
+          "valueDescription": "Echoed of `requestType`"
+        },
+        {
           "valueName": "responseData",
           "valueType": "Object",
           "valueDescription": "Object containing appropriate response data. {} if request does not provide any response data"

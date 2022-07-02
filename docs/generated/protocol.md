@@ -2499,6 +2499,8 @@ If a plugin or script implements vendor requests or events, documentation is exp
 
 | Name | Type  | Description |
 | ---- | :---: | ----------- |
+| vendorName | String | Echoed of `vendorName` |
+| requestType | String | Echoed of `requestType` |
 | responseData | Object | Object containing appropriate response data. {} if request does not provide any response data |
 
 ---
