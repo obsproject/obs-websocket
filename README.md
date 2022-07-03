@@ -32,6 +32,7 @@ It is **highly recommended** to keep obs-websocket protected with a password aga
 ### Client software
 
 - [Touch Portal](https://www.touch-portal.com/)
+- [Twitchat](https://twitchat.fr/)
 
 ### Client libraries (for developers)
 
