@@ -31,7 +31,7 @@ It is **highly recommended** to keep obs-websocket protected with a password aga
 
 ### Client software
 
-- (No known clients supporting 5.0.0 at the moment. Ping us in the Discord if you have one!)
+- [Touch Portal](https://www.touch-portal.com/)
 
 ### Client libraries (for developers)
 
