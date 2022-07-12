@@ -2357,7 +2357,7 @@ Studio mode has been enabled or disabled.
   - [SetSourceFilterEnabled](#setsourcefilterenabled)
 - [Scene Items Requests](#scene-items-1-requests)
   - [GetSceneItemList](#getsceneitemlist)
-  - [GetGroupItemList](#getgroupitemlist)
+  - [GetGroupSceneItemList](#getgroupsceneitemlist)
   - [GetSceneItemId](#getsceneitemid)
   - [CreateSceneItem](#createsceneitem)
   - [RemoveSceneItem](#removesceneitem)
@@ -4008,7 +4008,7 @@ Scenes only
 
 ---
 
-### GetGroupItemList
+### GetGroupSceneItemList
 
 Basically GetSceneItemList, but for groups.
 

@@ -3097,7 +3097,7 @@
     },
     {
       "description": "Basically GetSceneItemList, but for groups.\n\nUsing groups at all in OBS is discouraged, as they are very broken under the hood.\n\nGroups only",
-      "requestType": "GetGroupItemList",
+      "requestType": "GetGroupSceneItemList",
       "complexity": 3,
       "rpcVersion": "1",
       "deprecated": false,
