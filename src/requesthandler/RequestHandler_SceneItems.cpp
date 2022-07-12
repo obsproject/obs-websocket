@@ -60,7 +60,7 @@ RequestResult RequestHandler::GetSceneItemList(const Request &request)
  *
  * @responseField sceneItems | Array<Object> | Array of scene items in the group
  *
- * @requestType GetGroupItemList
+ * @requestType GetGroupSceneItemList
  * @complexity 3
  * @rpcVersion -1
  * @initialVersion 5.0.0
