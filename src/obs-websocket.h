@@ -26,7 +26,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include "utils/Obs.h"
 #include "plugin-macros.generated.h"
 
-class Config;
+struct Config;
 typedef std::shared_ptr<Config> ConfigPtr;
 
 class EventHandler;
