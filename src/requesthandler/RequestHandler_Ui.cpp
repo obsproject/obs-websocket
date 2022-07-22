@@ -228,7 +228,7 @@ RequestResult RequestHandler::OpenVideoMixProjector(const Request &request)
 	if (videoMixType == "OBS_WEBSOCKET_VIDEO_MIX_TYPE_PREVIEW")
 		projectorType = "Preview";
 	else if (videoMixType == "OBS_WEBSOCKET_VIDEO_MIX_TYPE_PROGRAM")
-		projectorType = "Program";
+		projectorType = "StudioProgram";
 	else if (videoMixType == "OBS_WEBSOCKET_VIDEO_MIX_TYPE_MULTIVIEW")
 		projectorType = "Multiview";
 	else
