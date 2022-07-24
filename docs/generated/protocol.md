@@ -195,7 +195,7 @@ Authentication is not required
   "op": 1,
   "d": {
     "rpcVersion": 1,
-    "authentication": "Dj6cLS+jrNA0HpCArRg0Z/Fc+YHdt2FQfAvgD1mip6Y=",
+    "authentication": "1Ct943GAT+6YQUUX47Ia/ncufilbe6+oD6lY+5kaCu4=",
     "eventSubscriptions": 33
   }
 }
