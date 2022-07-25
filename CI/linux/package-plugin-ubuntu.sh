@@ -14,7 +14,7 @@ cd ./build
 
 PAGER="cat" sudo checkinstall -y --type=debian --fstrans=no --nodoc \
 	--backup=no --deldoc=yes --install=no \
-	--pkgname=obs-websocket --pkgversion="$PKG_VERSION" \
+	--pkgname=obs-websocket-compat --pkgversion="$PKG_VERSION" \
 	--pkglicense="GPLv2.0" --maintainer="stephane.lepin@gmail.com" \
 	--pkggroup="video" \
 	--pkgsource="https://github.com/Palakis/obs-websocket" \
