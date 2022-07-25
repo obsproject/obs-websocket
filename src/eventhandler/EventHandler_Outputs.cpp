@@ -77,7 +77,7 @@ void EventHandler::HandleRecordStateChanged(ObsOutputState state)
 	json eventData;
 	eventData["outputActive"] = GetOutputStateActive(state);
 	eventData["outputState"] = state;
-	if (state == OBS_WEBSOCKET_OUTPUT_STOPPED) {
+	if (state == OBS_WEBSOCKET_OUTPUT_STOPPED || state == OBS_WEBSOCKET_OUTPUT_STARTED) {
 		eventData["outputPath"] = Utils::Obs::StringHelper::GetLastRecordFileName();
 	} else {
 		eventData["outputPath"] = nullptr;
