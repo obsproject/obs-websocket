@@ -759,7 +759,7 @@ RequestResult RequestHandler::SetSceneItemPrivateSettings(const Request &request
 	std::string comment;
 	OBSSceneItemAutoRelease sceneItem = request.ValidateSceneItem("sceneName", "sceneItemId", statusCode, comment,
 								      OBS_WEBSOCKET_SCENE_FILTER_SCENE_OR_GROUP);
-	if (!sceneItem || !request.ValidateObject("sceneItemSettings", statusCode, comment))
+	if (!sceneItem || !request.ValidateObject("sceneItemSettings", statusCode, comment, true))
 		return RequestResult::Error(statusCode, comment);
 
 	OBSDataAutoRelease privateSettings = obs_sceneitem_get_private_settings(sceneItem);
