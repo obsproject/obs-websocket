@@ -1,4 +1,4 @@
-project(obs-websocket VERSION 5.0.0)
+project(obs-websocket VERSION 5.0.1)
 set(OBS_WEBSOCKET_RPC_VERSION 1)
 
 if(NOT ENABLE_UI)
