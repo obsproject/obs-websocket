@@ -41,7 +41,7 @@ Config::Config()
 	: PortOverridden(false),
 	  PasswordOverridden(false),
 	  FirstLoad(true),
-	  ServerEnabled(true),
+	  ServerEnabled(false),
 	  ServerPort(4455),
 	  Ipv4Only(false),
 	  DebugEnabled(false),
