@@ -445,6 +445,12 @@ void WebSocketServer::onMessage(websocketpp::connection_hdl hdl,
 			goto skipProcessing;
 		}
 
+		if (!incomingMessage["op"].is_number()) {
+			ret.closeCode = WebSocketCloseCode::UnknownOpCode;
+			ret.closeReason = "Your `op` is not a number.";
+			goto skipProcessing;
+		}
+
 		ProcessMessage(session, ret, incomingMessage["op"], incomingMessage["d"]);
 
 	skipProcessing:
