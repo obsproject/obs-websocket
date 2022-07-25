@@ -306,7 +306,7 @@ Authentication is not required
 {
   "op": 6,
   "d": {
-    "requestType": "SetCurrentScene",
+    "requestType": "SetCurrentProgramScene",
     "requestId": "f819dcf0-89cc-11eb-8f0e-382c4ac93b9c",
     "requestData": {
       "sceneName": "Scene 12"
@@ -357,7 +357,7 @@ Successful Response
 {
   "op": 7,
   "d": {
-    "requestType": "SetCurrentScene",
+    "requestType": "SetCurrentProgramScene",
     "requestId": "f819dcf0-89cc-11eb-8f0e-382c4ac93b9c",
     "requestStatus": {
       "result": true,
@@ -373,7 +373,7 @@ Failure Response
 {
   "op": 7,
   "d": {
-    "requestType": "SetCurrentScene",
+    "requestType": "SetCurrentProgramScene",
     "requestId": "f819dcf0-89cc-11eb-8f0e-382c4ac93b9c",
     "requestStatus": {
       "result": false,
