@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.16...3.20)
 
 # Version variables
-project(obs-websocket VERSION 5.0.0)
+project(obs-websocket VERSION 5.0.1)
 set(OBS_WEBSOCKET_RPC_VERSION 1)
 
 
