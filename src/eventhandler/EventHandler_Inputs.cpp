@@ -225,7 +225,7 @@ void EventHandler::HandleInputVolumeChanged(void *param, calldata_t *data)
 	// Volume must be grabbed from the calldata. Running obs_source_get_volume() will return the previous value.
 	double inputVolumeMul = calldata_float(data, "volume");
 
-	double inputVolumeDb = obs_mul_to_db(inputVolumeMul);
+	double inputVolumeDb = obs_mul_to_db((float)inputVolumeMul);
 	if (inputVolumeDb == -INFINITY)
 		inputVolumeDb = -100;
 

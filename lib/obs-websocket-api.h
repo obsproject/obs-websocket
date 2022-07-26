@@ -96,7 +96,7 @@ static inline unsigned int obs_websocket_get_api_version(void)
 	if (!proc_handler_call(_ph, "get_api_version", &cd))
 		return 1; // API v1 does not include get_api_version
 
-	unsigned int ret = calldata_int(&cd, "version");
+	unsigned int ret = (unsigned int)calldata_int(&cd, "version");
 
 	calldata_free(&cd);
 

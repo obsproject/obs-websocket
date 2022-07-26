@@ -820,9 +820,9 @@ RequestResult RequestHandler::SetInputAudioTracks(const Request &request)
 
 	json inputAudioTracks = request.RequestData["inputAudioTracks"];
 
-	long long mixers = obs_source_get_audio_mixers(input);
+	uint32_t mixers = obs_source_get_audio_mixers(input);
 
-	for (long long i = 0; i < MAX_AUDIO_MIXES; i++) {
+	for (uint32_t i = 0; i < MAX_AUDIO_MIXES; i++) {
 		std::string track = std::to_string(i + 1);
 
 		if (!Utils::Json::Contains(inputAudioTracks, track))
