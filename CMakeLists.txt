@@ -16,8 +16,106 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTORCC ON) # For resources.qrc
 
-# Find Qt5
-find_package(Qt5 REQUIRED COMPONENTS Core Widgets Svg Network)
+# Find Qt
+if (NOT COMMAND find_qt)
+  if(NOT QT_VERSION)
+    set(QT_VERSION
+        AUTO
+        CACHE STRING "obs-websocket Qt version [AUTO, 5, 6]" FORCE)
+    set_property(CACHE QT_VERSION PROPERTY STRINGS AUTO 5 6)
+  endif()
+  
+  macro(find_qt)
+    set(multiValueArgs COMPONENTS COMPONENTS_WIN COMPONENTS_MAC COMPONENTS_LINUX)
+    cmake_parse_arguments(FIND_QT "" "${oneValueArgs}" "${multiValueArgs}"
+                          ${ARGN})
+    set(QT_NO_CREATE_VERSIONLESS_TARGETS ON)
+    find_package(
+      Qt5
+      COMPONENTS Core
+      QUIET)
+    find_package(
+      Qt6
+      COMPONENTS Core
+      QUIET)
+  
+    if(NOT _QT_VERSION AND QT_VERSION STREQUAL AUTO)
+      if(TARGET Qt5::Core)
+        set(_QT_VERSION
+            5
+            CACHE INTERNAL "")
+      elseif(TARGET Qt6::Core)
+        set(_QT_VERSION
+            6
+            CACHE INTERNAL "")
+      endif()
+    elseif(NOT _QT_VERSION)
+      if(TARGET Qt${QT_VERSION}::Core)
+        set(_QT_VERSION
+            ${QT_VERSION}
+            CACHE INTERNAL "")
+      else()
+        if(QT_VERSION EQUAL 6)
+          set(FALLBACK_QT_VERSION 5)
+        else()
+          set(FALLBACK_QT_VERSION 6)
+        endif()
+        message(
+          WARNING
+            "Qt${QT_VERSION} was not found, falling back to Qt${FALLBACK_QT_VERSION}"
+        )
+  
+        if(TARGET Qt${FALLBACK_QT_VERSION}::Core)
+          set(_QT_VERSION
+              ${FALLBACK_QT_VERSION}
+              CACHE INTERNAL "")
+        endif()
+      endif()
+    endif()
+  
+    set(QT_NO_CREATE_VERSIONLESS_TARGETS OFF)
+  
+    if(NOT _QT_VERSION)
+      message(FATAL_ERROR "Neither Qt5 or Qt6 were found")
+    endif()
+  
+    if(OS_WINDOWS)
+      find_package(
+        Qt${_QT_VERSION}
+        COMPONENTS ${FIND_QT_COMPONENTS} ${FIND_QT_COMPONENTS_WIN}
+        REQUIRED)
+    elseif(OS_MACOS)
+      find_package(
+        Qt${_QT_VERSION}
+        COMPONENTS ${FIND_QT_COMPONENTS} ${FIND_QT_COMPONENTS_MAC}
+        REQUIRED)
+    else()
+      find_package(
+        Qt${_QT_VERSION}
+        COMPONENTS ${FIND_QT_COMPONENTS} ${FIND_QT_COMPONENTS_LINUX}
+        REQUIRED)
+    endif()
+  
+    list(APPEND FIND_QT_COMPONENTS "Core")
+  
+    if("Gui" IN_LIST FIND_QT_COMPONENTS_LINUX)
+      list(APPEND FIND_QT_COMPONENTS_LINUX "GuiPrivate")
+    endif()
+  
+    foreach(_COMPONENT IN LISTS FIND_QT_COMPONENTS FIND_QT_COMPONENTS_WIN
+                                FIND_QT_COMPONENTS_MAC FIND_QT_COMPONENTS_LINUX)
+      if(NOT TARGET Qt::${_COMPONENT} AND TARGET Qt${_QT_VERSION}::${_COMPONENT})
+  
+        add_library(Qt::${_COMPONENT} INTERFACE IMPORTED)
+        set_target_properties(
+          Qt::${_COMPONENT} PROPERTIES INTERFACE_LINK_LIBRARIES
+                                       "Qt${_QT_VERSION}::${_COMPONENT}")
+      endif()
+    endforeach()
+  endmacro()
+endif()
+
+find_qt(COMPONENTS Core Widgets Svg Network)
 
 # Find nlohmann
 set(JSON_BuildTests
@@ -127,10 +225,10 @@ target_link_libraries(
   obs-websocket
   PRIVATE OBS::libobs
           OBS::frontend-api
-          Qt5::Core
-          Qt5::Widgets
-          Qt5::Svg
-          Qt5::Network
+          Qt::Core
+          Qt::Widgets
+          Qt::Svg
+          Qt::Network
           nlohmann_json::nlohmann_json)
 
 target_compile_features(obs-websocket PRIVATE cxx_std_17)
