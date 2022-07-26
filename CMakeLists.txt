@@ -144,6 +144,7 @@ endif()
 # Random other things
 if(WIN32)
   add_definitions(-D_WEBSOCKETPP_CPP11_STL_)
+  target_compile_options(obs-websocket PRIVATE /wd4267)
 
   # Set the correct Windows preprocessor var for asio 
   macro(get_WIN32_WINNT version)
@@ -161,7 +162,10 @@ if(WIN32)
 elseif(UNIX AND NOT APPLE)
   target_compile_options(
     obs-websocket PRIVATE -Wall -Wextra -Wno-missing-field-initializers
-                          -Wno-variadic-macros)
+                          -Wno-variadic-macros -Wno-error=format-overflow)
+elseif(APPLE)
+  target_compile_options(
+    obs-websocket PRIVATE -Wno-error=null-pointer-subtraction -Wno-error=deprecated-declarations)
 endif()
 
 # Final CMake helpers
