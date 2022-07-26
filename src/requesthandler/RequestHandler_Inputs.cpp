@@ -106,7 +106,7 @@ RequestResult RequestHandler::GetSpecialInputs(const Request &)
 
 	std::vector<std::string> channels = {"desktop1", "desktop2", "mic1", "mic2", "mic3", "mic4"};
 
-	size_t channelId = 1;
+	uint32_t channelId = 1;
 	for (auto &channel : channels) {
 		OBSSourceAutoRelease input = obs_get_output_source(channelId);
 		if (!input)
