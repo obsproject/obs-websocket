@@ -210,6 +210,7 @@ RequestResult RequestHandler::ProcessRequest(const Request &request)
 	try {
 		handler = _handlerMap.at(request.RequestType);
 	} catch (const std::out_of_range &oor) {
+		UNUSED_PARAMETER(oor);
 		return RequestResult::Error(RequestStatus::UnknownRequestType, "Your request type is not valid.");
 	}
 

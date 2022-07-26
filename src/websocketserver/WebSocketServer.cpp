@@ -373,6 +373,7 @@ void WebSocketServer::onMessage(websocketpp::connection_hdl hdl,
 		try {
 			session = _sessions.at(hdl);
 		} catch (const std::out_of_range &oor) {
+			UNUSED_PARAMETER(oor);
 			return;
 		}
 		lock.unlock();
