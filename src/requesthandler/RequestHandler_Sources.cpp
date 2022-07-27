@@ -339,7 +339,7 @@ RequestResult RequestHandler::SetSourcePrivateSettings(const Request &request)
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
 	OBSSourceAutoRelease source = request.ValidateSource("sourceName", statusCode, comment);
-	if (!source || !request.ValidateObject("sourceSettings", statusCode, comment))
+	if (!source || !request.ValidateObject("sourceSettings", statusCode, comment, true))
 		return RequestResult::Error(statusCode, comment);
 
 	OBSDataAutoRelease privateSettings = obs_source_get_private_settings(source);

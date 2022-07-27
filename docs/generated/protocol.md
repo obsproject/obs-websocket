@@ -1,7 +1,7 @@
 <!-- This file was automatically generated. Do not edit directly! -->
 <!-- markdownlint-disable no-bare-urls -->
 
-# obs-websocket 5.0.0 Protocol
+# obs-websocket 5.0.1 Protocol
 
 ## Main Table of Contents
 
@@ -145,7 +145,7 @@ Authentication is required
 {
   "op": 0,
   "d": {
-    "obsWebSocketVersion": "5.0.0",
+    "obsWebSocketVersion": "5.0.1",
     "rpcVersion": 1,
     "authentication": {
       "challenge": "+IxH4CnCiqpX1rM9scsNynZzbOe4KhDeYcTNS3PDaeY=",
@@ -161,7 +161,7 @@ Authentication is not required
 {
   "op": 0,
   "d": {
-    "obsWebSocketVersion": "5.0.0",
+    "obsWebSocketVersion": "5.0.1",
     "rpcVersion": 1
   }
 }
@@ -308,7 +308,7 @@ Authentication is not required
 {
   "op": 6,
   "d": {
-    "requestType": "SetCurrentScene",
+    "requestType": "SetCurrentProgramScene",
     "requestId": "f819dcf0-89cc-11eb-8f0e-382c4ac93b9c",
     "requestData": {
       "sceneName": "Scene 12"
@@ -359,7 +359,7 @@ Successful Response
 {
   "op": 7,
   "d": {
-    "requestType": "SetCurrentScene",
+    "requestType": "SetCurrentProgramScene",
     "requestId": "f819dcf0-89cc-11eb-8f0e-382c4ac93b9c",
     "requestStatus": {
       "result": true,
@@ -375,7 +375,7 @@ Failure Response
 {
   "op": 7,
   "d": {
-    "requestType": "SetCurrentScene",
+    "requestType": "SetCurrentProgramScene",
     "requestId": "f819dcf0-89cc-11eb-8f0e-382c4ac93b9c",
     "requestStatus": {
       "result": false,
