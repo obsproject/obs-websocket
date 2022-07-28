@@ -17,16 +17,17 @@ set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTORCC ON) # For resources.qrc
 
 # Find Qt
-if (NOT COMMAND find_qt)
+if(NOT COMMAND find_qt)
   if(NOT QT_VERSION)
     set(QT_VERSION
         AUTO
         CACHE STRING "obs-websocket Qt version [AUTO, 5, 6]" FORCE)
     set_property(CACHE QT_VERSION PROPERTY STRINGS AUTO 5 6)
   endif()
-  
+
   macro(find_qt)
-    set(multiValueArgs COMPONENTS COMPONENTS_WIN COMPONENTS_MAC COMPONENTS_LINUX)
+    set(multiValueArgs COMPONENTS COMPONENTS_WIN COMPONENTS_MAC
+                       COMPONENTS_LINUX)
     cmake_parse_arguments(FIND_QT "" "${oneValueArgs}" "${multiValueArgs}"
                           ${ARGN})
     set(QT_NO_CREATE_VERSIONLESS_TARGETS ON)
@@ -38,7 +39,7 @@ if (NOT COMMAND find_qt)
       Qt6
       COMPONENTS Core
       QUIET)
-  
+
     if(NOT _QT_VERSION AND QT_VERSION STREQUAL AUTO)
       if(TARGET Qt5::Core)
         set(_QT_VERSION
@@ -64,7 +65,7 @@ if (NOT COMMAND find_qt)
           WARNING
             "Qt${QT_VERSION} was not found, falling back to Qt${FALLBACK_QT_VERSION}"
         )
-  
+
         if(TARGET Qt${FALLBACK_QT_VERSION}::Core)
           set(_QT_VERSION
               ${FALLBACK_QT_VERSION}
@@ -72,13 +73,13 @@ if (NOT COMMAND find_qt)
         endif()
       endif()
     endif()
-  
+
     set(QT_NO_CREATE_VERSIONLESS_TARGETS OFF)
-  
+
     if(NOT _QT_VERSION)
       message(FATAL_ERROR "Neither Qt5 or Qt6 were found")
     endif()
-  
+
     if(OS_WINDOWS)
       find_package(
         Qt${_QT_VERSION}
@@ -95,17 +96,18 @@ if (NOT COMMAND find_qt)
         COMPONENTS ${FIND_QT_COMPONENTS} ${FIND_QT_COMPONENTS_LINUX}
         REQUIRED)
     endif()
-  
+
     list(APPEND FIND_QT_COMPONENTS "Core")
-  
+
     if("Gui" IN_LIST FIND_QT_COMPONENTS_LINUX)
       list(APPEND FIND_QT_COMPONENTS_LINUX "GuiPrivate")
     endif()
-  
+
     foreach(_COMPONENT IN LISTS FIND_QT_COMPONENTS FIND_QT_COMPONENTS_WIN
                                 FIND_QT_COMPONENTS_MAC FIND_QT_COMPONENTS_LINUX)
-      if(NOT TARGET Qt::${_COMPONENT} AND TARGET Qt${_QT_VERSION}::${_COMPONENT})
-  
+      if(NOT TARGET Qt::${_COMPONENT} AND TARGET
+                                          Qt${_QT_VERSION}::${_COMPONENT})
+
         add_library(Qt::${_COMPONENT} INTERFACE IMPORTED)
         set_target_properties(
           Qt::${_COMPONENT} PROPERTIES INTERFACE_LINK_LIBRARIES
@@ -244,9 +246,9 @@ if(WIN32)
   add_definitions(-D_WEBSOCKETPP_CPP11_STL_)
   target_compile_options(obs-websocket PRIVATE /wd4267)
 
-  # Set the correct Windows preprocessor var for asio 
+  # Set the correct Windows preprocessor var for asio
   macro(get_WIN32_WINNT version)
-    if (WIN32 AND CMAKE_SYSTEM_VERSION)
+    if(WIN32 AND CMAKE_SYSTEM_VERSION)
       set(ver ${CMAKE_SYSTEM_VERSION})
       string(REPLACE "." "" ver ${ver})
       string(REGEX REPLACE "([0-9])" "0\\1" ver ${ver})
@@ -255,7 +257,7 @@ if(WIN32)
     endif()
   endmacro()
 
-  get_WIN32_WINNT(ver)
+  get_win32_winnt(ver)
   add_definitions(-D_WIN32_WINNT=${ver})
 elseif(UNIX AND NOT APPLE)
   target_compile_options(
@@ -263,7 +265,8 @@ elseif(UNIX AND NOT APPLE)
                           -Wno-variadic-macros -Wno-error=format-overflow)
 elseif(APPLE)
   target_compile_options(
-    obs-websocket PRIVATE -Wno-error=null-pointer-subtraction -Wno-error=deprecated-declarations)
+    obs-websocket PRIVATE -Wno-error=null-pointer-subtraction
+                          -Wno-error=deprecated-declarations)
 endif()
 
 # Final CMake helpers
