@@ -245,20 +245,6 @@ endif()
 if(WIN32)
   add_definitions(-D_WEBSOCKETPP_CPP11_STL_)
   target_compile_options(obs-websocket PRIVATE /wd4267)
-
-  # Set the correct Windows preprocessor var for asio
-  macro(get_WIN32_WINNT version)
-    if(WIN32 AND CMAKE_SYSTEM_VERSION)
-      set(ver ${CMAKE_SYSTEM_VERSION})
-      string(REPLACE "." "" ver ${ver})
-      string(REGEX REPLACE "([0-9])" "0\\1" ver ${ver})
-
-      set(${version} "0x${ver}")
-    endif()
-  endmacro()
-
-  get_win32_winnt(ver)
-  add_definitions(-D_WIN32_WINNT=${ver})
 elseif(UNIX AND NOT APPLE)
   target_compile_options(
     obs-websocket PRIVATE -Wall -Wextra -Wno-missing-field-initializers
