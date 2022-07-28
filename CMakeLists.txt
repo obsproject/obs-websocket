@@ -244,7 +244,7 @@ endif()
 # Random other things
 if(WIN32)
   add_definitions(-D_WEBSOCKETPP_CPP11_STL_)
-  target_compile_options(obs-websocket PRIVATE /wd4267)
+  target_compile_options(obs-websocket PRIVATE /wd4267 /wd4996)
 elseif(UNIX AND NOT APPLE)
   target_compile_options(
     obs-websocket PRIVATE -Wall -Wextra -Wno-missing-field-initializers
