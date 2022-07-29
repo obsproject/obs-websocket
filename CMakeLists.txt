@@ -6,6 +6,15 @@ if(NOT ENABLE_UI)
   return()
 endif()
 
+# Submodule deps check
+if(NOT
+   (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/deps/json/CMakeLists.txt
+    AND EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/deps/websocketpp/CMakeLists.txt
+    AND EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/deps/qr/cpp/QrCode.hpp
+    AND EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/deps/asio/asio/include/asio.hpp))
+  obs_status(FATAL_ERROR "obs-websocket submodule deps not available.")
+endif()
+
 # Plugin tests flag
 option(PLUGIN_TESTS "Enable plugin runtime tests" OFF)
 
