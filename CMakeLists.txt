@@ -1,7 +1,9 @@
 project(obs-websocket VERSION 5.0.1)
 set(OBS_WEBSOCKET_RPC_VERSION 1)
 
-if(NOT ENABLE_UI)
+option(ENABLE_WEBSOCKET "Enable building OBS with websocket plugin" ON)
+
+if(NOT ENABLE_WEBSOCKET OR NOT ENABLE_UI)
   message(STATUS "OBS:  DISABLED   obs-websocket")
   return()
 endif()
