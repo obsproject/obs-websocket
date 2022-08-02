@@ -24,7 +24,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #define blog_debug(msg, ...) if (IsDebugEnabled()) blog(LOG_INFO, "[debug] " msg, ##__VA_ARGS__)
 
-#define OBS_WEBSOCKET_VERSION "@OBS_WEBSOCKET_VERSION@"
+#define OBS_WEBSOCKET_VERSION "@obs-websocket_VERSION@"
 
 #define OBS_WEBSOCKET_RPC_VERSION @OBS_WEBSOCKET_RPC_VERSION@
 
