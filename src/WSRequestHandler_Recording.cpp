@@ -6,15 +6,6 @@
 #include "Utils.h"
 #include "WSEvents.h"
 
-RpcResponse ifCanPause(const RpcRequest& request, std::function<RpcResponse()> callback)
-{
-	if (!obs_frontend_recording_active()) {
-		return request.failed("recording is not active");
-	}
-
-	return callback();
-}
-
  /**
  * Get current recording status.
  *
@@ -103,14 +94,14 @@ RpcResponse WSRequestHandler::StartRecording(const RpcRequest& request) {
 * @since 4.7.0
 */
 RpcResponse WSRequestHandler::PauseRecording(const RpcRequest& request) {
-	return ifCanPause(request, [request]() {
-		if (obs_frontend_recording_paused()) {
-			return request.failed("recording already paused");
-		}
+	if (!obs_frontend_recording_active())
+		return request.failed("recording is not active");
 
-		obs_frontend_recording_pause(true);
-		return request.success();
-	});
+	if (obs_frontend_recording_paused())
+		return request.failed("recording already paused");
+
+	obs_frontend_recording_pause(true);
+	return request.success();
 }
 
 /**
@@ -123,14 +114,14 @@ RpcResponse WSRequestHandler::PauseRecording(const RpcRequest& request) {
 * @since 4.7.0
 */
 RpcResponse WSRequestHandler::ResumeRecording(const RpcRequest& request) {
-	return ifCanPause(request, [request]() {
-		if (!obs_frontend_recording_paused()) {
-			return request.failed("recording is not paused");
-		}
+	if (!obs_frontend_recording_active())
+		return request.failed("recording is not active");
 
-		obs_frontend_recording_pause(false);
-		return request.success();
-	});
+	if (!obs_frontend_recording_paused())
+		return request.failed("recording is not paused");
+
+	obs_frontend_recording_pause(false);
+	return request.success();
 }
 
 /**
