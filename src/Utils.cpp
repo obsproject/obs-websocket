@@ -378,8 +378,7 @@ obs_source_t* Utils::GetTransitionFromName(QString searchName) {
 		QString transitionName = obs_source_get_name(transition);
 
 		if (transitionName == searchName) {
-			foundTransition = transition;
-			obs_source_addref(foundTransition);
+			foundTransition = obs_source_get_ref(transition);
 			break;
 		}
 	}
