@@ -626,7 +626,7 @@ RequestResult RequestHandler::SetStreamServiceSettings(const Request &request)
  * @rpcVersion -1
  * @initialVersion 5.0.0
  * @api requests
- * @category rconfig
+ * @category config
  */
 RequestResult RequestHandler::GetRecordDirectory(const Request &)
 {
