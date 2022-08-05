@@ -15,7 +15,7 @@ on:
       - 4.x-compat-new-cmake
 
 env:
-  PLUGIN_NAME: 'obs-plugintemplate'
+  PLUGIN_NAME: 'obs-websocket-compat'
 
 jobs:
   clang_check:
