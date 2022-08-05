@@ -20,6 +20,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include <QObject>
 #include <QCryptographicHash>
+#include <QRandomGenerator>
 #include <QTime>
 #include <QSystemTrayIcon>
 #include <QMainWindow>
@@ -56,8 +57,6 @@ Config::Config() :
 	Salt(""),
 	SettingsLoaded(false)
 {
-	qsrand(QTime::currentTime().msec());
-
 	SetDefaults();
 	SessionChallenge = GenerateSalt();
 
@@ -202,36 +201,30 @@ void Config::MigrateFromGlobalSettings()
 
 QString Config::GenerateSalt()
 {
+	// Get OS seeded random number generator
+	QRandomGenerator *rng = QRandomGenerator::global();
+
 	// Generate 32 random chars
 	const size_t randomCount = 32;
 	QByteArray randomChars;
-	for (size_t i = 0; i < randomCount; i++) {
-		randomChars.append((char)qrand());
-	}
+	for (size_t i = 0; i < randomCount; i++)
+		randomChars.append((char)rng->bounded(255));
 
 	// Convert the 32 random chars to a base64 string
-	QString salt = randomChars.toBase64();
-
-	return salt;
+	return randomChars.toBase64();
 }
 
 QString Config::GenerateSecret(QString password, QString salt)
 {
-	// Concatenate the password and the salt
-	QString passAndSalt = "";
-	passAndSalt += password;
-	passAndSalt += salt;
+	// Create challenge hash
+	auto challengeHash = QCryptographicHash(QCryptographicHash::Algorithm::Sha256);
+	// Add password bytes to hash
+	challengeHash.addData(password.toUtf8());
+	// Add salt bytes to hash
+	challengeHash.addData(salt.toUtf8());
 
-	// Generate a SHA256 hash of the password and salt
-	auto challengeHash = QCryptographicHash::hash(
-		passAndSalt.toUtf8(),
-		QCryptographicHash::Algorithm::Sha256
-	);
-
-	// Encode SHA256 hash to Base64
-	QString challenge = challengeHash.toBase64();
-
-	return challenge;
+	// Generate SHA256 hash then encode to Base64
+	return challengeHash.result().toBase64();
 }
 
 void Config::SetPassword(QString password)
