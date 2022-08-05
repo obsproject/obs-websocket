@@ -5,14 +5,14 @@ on:
     paths-ignore:
       - '**.md'
     branches:
-      - master
+      - 4.x-compat-new-cmake
     tags:
       - '*'
   pull_request:
     paths-ignore:
       - '**.md'
     branches:
-      - master
+      - 4.x-compat-new-cmake
 
 env:
   PLUGIN_NAME: 'obs-plugintemplate'
