@@ -1,7 +1,7 @@
 #include "WSRequestHandler.h"
 
-#include <QtCore/QByteArray>
-#include <QtGui/QImageWriter>
+#include <QByteArray>
+#include <QImageWriter>
 
 #include "obs-websocket.h"
 #include "Config.h"

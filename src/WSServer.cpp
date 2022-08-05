@@ -19,11 +19,13 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <chrono>
 #include <thread>
 
-#include <QtCore/QThread>
-#include <QtCore/QByteArray>
-#include <QtWidgets/QMainWindow>
-#include <QtWidgets/QMessageBox>
+#include <QThread>
+#include <QByteArray>
+#include <QMainWindow>
+#include <QMessageBox>
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
 #include <QtConcurrent/QtConcurrent>
+#endif
 #include <obs-frontend-api.h>
 #include <util/platform.h>
 
@@ -222,7 +224,11 @@ void WSServer::onMessage(connection_hdl hdl, server::message_ptr message)
 		return;
 	}
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
 	QtConcurrent::run(&_threadPool, [=]() {
+#else
+	_threadPool::run([=]() {
+#endif
 		std::string payload = message->get_payload();
 
 		QMutexLocker locker(&_clMutex);

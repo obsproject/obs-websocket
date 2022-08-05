@@ -20,12 +20,12 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include <stdio.h>
 
-#include <QtCore/QString>
-#include <QtWidgets/QSpinBox>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QLayout>
-#include <QtWidgets/QListWidget>
-#include <QtWidgets/QSystemTrayIcon>
+#include <QString>
+#include <QSpinBox>
+#include <QPushButton>
+#include <QLayout>
+#include <QListWidget>
+#include <QSystemTrayIcon>
 
 #include <obs.hpp>
 #include <obs-module.h>

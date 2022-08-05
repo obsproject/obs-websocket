@@ -17,9 +17,9 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 */
 
 #include <inttypes.h>
-#include <QtWidgets/QMainWindow>
-#include <QtCore/QDir>
-#include <QtCore/QUrl>
+#include <QMainWindow>
+#include <QDir>
+#include <QUrl>
 
 #include <obs-frontend-api.h>
 #include <obs.hpp>

@@ -20,7 +20,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include <obs-frontend-api.h>
 #include <obs-module.h>
-#include <QtWidgets/QMessageBox>
+#include <QMessageBox>
 
 #include "../obs-websocket.h"
 #include "../Config.h"

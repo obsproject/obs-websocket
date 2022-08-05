@@ -20,11 +20,11 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include <map>
 #include <set>
-#include <QtCore/QObject>
-#include <QtCore/QMutex>
-#include <QtCore/QSharedPointer>
-#include <QtCore/QVariantHash>
-#include <QtCore/QThreadPool>
+#include <QObject>
+#include <QMutex>
+#include <QSharedPointer>
+#include <QVariantHash>
+#include <QThreadPool>
 
 #include <asio.hpp>
 #include <websocketpp/config/asio_no_tls.hpp>

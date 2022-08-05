@@ -18,13 +18,13 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include <obs-frontend-api.h>
 
-#include <QtCore/QObject>
-#include <QtCore/QCryptographicHash>
-#include <QtCore/QTime>
-#include <QtWidgets/QSystemTrayIcon>
-#include <QtWidgets/QMainWindow>
-#include <QtWidgets/QInputDialog>
-#include <QtWidgets/QMessageBox>
+#include <QObject>
+#include <QCryptographicHash>
+#include <QTime>
+#include <QSystemTrayIcon>
+#include <QMainWindow>
+#include <QInputDialog>
+#include <QMessageBox>
 
 #define SECTION_NAME "WebsocketAPI"
 #define PARAM_ENABLE "ServerEnabled"

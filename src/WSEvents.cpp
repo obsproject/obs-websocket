@@ -21,7 +21,7 @@
 #include <util/platform.h>
 #include <media-io/video-io.h>
 
-#include <QtWidgets/QPushButton>
+#include <QPushButton>
 
 #include "WSEvents.h"
 

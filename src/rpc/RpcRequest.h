@@ -19,7 +19,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #pragma once
 
 #include <obs-data.h>
-#include <QtCore/QString>
+#include <QString>
 #include "../obs-websocket.h"
 
 // forward declarations

@@ -1,8 +1,8 @@
-#include <QtCore/QString>
-#include <QtCore/QBuffer>
-#include <QtCore/QFileInfo>
-#include <QtGui/QImage>
-#include <QtGui/QImageWriter>
+#include <QString>
+#include <QBuffer>
+#include <QFileInfo>
+#include <QImage>
+#include <QImageWriter>
 
 #include "Utils.h"
 

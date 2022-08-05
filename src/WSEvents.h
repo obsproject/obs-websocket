@@ -23,9 +23,9 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <obs-frontend-api.h>
 #include <util/platform.h>
 
-#include <QtWidgets/QListWidgetItem>
-#include <QtCore/QSharedPointer>
-#include <QtCore/QTimer>
+#include <QListWidgetItem>
+#include <QSharedPointer>
+#include <QTimer>
 
 #include "WSServer.h"
 

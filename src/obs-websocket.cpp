@@ -20,9 +20,9 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <obs-frontend-api.h>
 #include <obs-data.h>
 
-#include <QtCore/QTimer>
-#include <QtWidgets/QAction>
-#include <QtWidgets/QMainWindow>
+#include <QTimer>
+#include <QAction>
+#include <QMainWindow>
 
 #include "obs-websocket.h"
 #include "WSServer.h"
