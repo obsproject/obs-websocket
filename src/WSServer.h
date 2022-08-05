@@ -21,7 +21,11 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <map>
 #include <set>
 #include <QObject>
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
 #include <QMutex>
+#else
+#include <QRecursiveMutex>
+#endif
 #include <QSharedPointer>
 #include <QVariantHash>
 #include <QThreadPool>
@@ -70,6 +74,11 @@ private:
 	bool _lockToIPv4;
 	std::set<connection_hdl, std::owner_less<connection_hdl>> _connections;
 	std::map<connection_hdl, ConnectionProperties, std::owner_less<connection_hdl>> _connectionProperties;
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
 	QMutex _clMutex;
+#else
+	QRecursiveMutex _clMutex;
+#endif
+
 	QThreadPool _threadPool;
 };
