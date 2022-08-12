@@ -43,6 +43,7 @@ fi
 
 find . -type d \( \
     -path ./\*build -o \
+	-path ./release -o \
     -path ./cmake -o \
     -path ./deps \
 \) -prune -false -type f -o \

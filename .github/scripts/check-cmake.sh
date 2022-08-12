@@ -37,6 +37,7 @@ fi
 
 find . -type d \( \
     -path ./\*build -o \
+	-path ./release -o \
     -path ./deps \
 \) -prune -false -type f -o \
     -name 'CMakeLists.txt' -or \
