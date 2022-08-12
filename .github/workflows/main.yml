@@ -89,7 +89,7 @@ jobs:
 
           print '::group::Set up code signing'
           if [[ '${{ secrets.MACOS_SIGNING_APPLICATION_IDENTITY }}' != '' && \
-                '${{ secrets.MACOS_SIGNING_INSTALLER_IDENTITY }}' != '' && \
+                '${{ secrets.MACOS_INSTALLER_IDENTITY }}' != '' && \
                 '${{ secrets.MACOS_SIGNING_CERT }}' != '' ]] {
             print '::set-output name=haveCodesignIdent::true'
           } else {
@@ -138,7 +138,7 @@ jobs:
         if: ${{ github.event_name != 'pull_request' && steps.setup.outputs.haveCodesignIdent == 'true' }}
         run: |
           print "CODESIGN_IDENT=${{ secrets.MACOS_SIGNING_APPLICATION_IDENTITY }}" >> $GITHUB_ENV
-          print "CODESIGN_IDENT_INSTALLER=${{ secrets.MACOS_SIGNING_INSTALLER_IDENTITY }}" >> $GITHUB_ENV
+          print "CODESIGN_IDENT_INSTALLER=${{ secrets.MACOS_INSTALLER_IDENTITY }}" >> $GITHUB_ENV
 
       - name: Build Plugin
         uses: ./plugin/.github/actions/build-plugin
