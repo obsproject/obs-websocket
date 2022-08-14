@@ -155,15 +155,18 @@ endif()
 # Random other things
 if(WIN32)
   add_definitions(-D_WEBSOCKETPP_CPP11_STL_)
+endif()
+
+if(MSVC)
   target_compile_options(obs-websocket PRIVATE /wd4267 /wd4996)
-elseif(UNIX AND NOT APPLE)
+else()
   target_compile_options(
-    obs-websocket PRIVATE -Wall -Wextra -Wno-missing-field-initializers
-                          -Wno-variadic-macros -Wno-error=format-overflow)
-elseif(APPLE)
-  target_compile_options(
-    obs-websocket PRIVATE -Wno-error=null-pointer-subtraction
-                          -Wno-error=deprecated-declarations)
+    obs-websocket
+    PRIVATE
+      -Wall
+      "$<$<COMPILE_LANG_AND_ID:CXX,GNU>:-Wno-error=format-overflow>"
+      "$<$<COMPILE_LANG_AND_ID:CXX,AppleClang,Clang>:-Wno-error=null-pointer-subtraction;-Wno-error=deprecated-declarations>"
+  )
 endif()
 
 # Final CMake helpers
