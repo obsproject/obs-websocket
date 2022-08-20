@@ -4,7 +4,7 @@
             "version": "28.0.0-beta2",
             "repository": "https://github.com/obsproject/obs-studio.git",
             "branch": "master",
-            "hash": "120d9ce6907f8159930b6df452afc3ca1606b51e"
+            "hash": "6c2860a4ecd69f95f6573b8917d77bbcea203669"
         },
         "prebuilt": {
             "version": "2022-08-02",
