@@ -1144,7 +1144,7 @@
       "rpcVersion": "1",
       "deprecated": false,
       "initialVersion": "5.0.0",
-      "category": "rconfig",
+      "category": "config",
       "requestFields": [],
       "responseFields": [
         {

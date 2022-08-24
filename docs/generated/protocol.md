@@ -2294,6 +2294,7 @@ Studio mode has been enabled or disabled.
   - [SetVideoSettings](#setvideosettings)
   - [GetStreamServiceSettings](#getstreamservicesettings)
   - [SetStreamServiceSettings](#setstreamservicesettings)
+  - [GetRecordDirectory](#getrecorddirectory)
 - [Sources Requests](#sources-requests)
   - [GetSourceActive](#getsourceactive)
   - [GetSourceScreenshot](#getsourcescreenshot)
@@ -2864,6 +2865,22 @@ Note: Simple RTMP settings can be set with type `rtmp_custom` and the settings f
 | ---- | :---: | ----------- | :----------------: | ----------------- |
 | streamServiceType | String | Type of stream service to apply. Example: `rtmp_common` or `rtmp_custom` | None | N/A |
 | streamServiceSettings | Object | Settings to apply to the service | None | N/A |
+
+---
+
+### GetRecordDirectory
+
+Gets the current directory that the record output is set to.
+
+- Complexity Rating: `1/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| recordDirectory | String | Output directory |
 
 ## Sources Requests
 
