@@ -174,8 +174,15 @@ Usage: %B${functrace[1]%:*}%b <option> [<options>]
       read_codesign_installer
       read_codesign_pass
 
+      submit_out=$(mktemp)
       xcrun notarytool submit "${project_root}/release/${output_name}" \
-        --keychain-profile "OBS-Codesign-Password" --wait
+        --keychain-profile "OBS-Codesign-Password" --wait | tee $submit_out
+      id=$(awk '$1=="id:"{id=$2} END{print id}' $submit_out)
+      if ! grep -q 'status: Accepted' $submit_out; then
+        xcrun notarytool log "$id" --keychain-profile "OBS-Codesign-Password" notarize.json
+        cat notarize.json
+        return 2
+      fi
       xcrun stapler staple "${project_root}/release/${output_name}"
     }
     popd
