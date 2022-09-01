@@ -33,6 +33,8 @@ runs:
       env:
         CODESIGN_IDENT: ${{ inputs.codesignIdent }}
       run: |
+        echo "CODESIGN_IDENT=$(echo $CODESIGN_IDENT)" >> $GITHUB_ENV
+
         build_args=(
           -c ${{ inputs.config }}
           -t macos-${{ inputs.target }}
