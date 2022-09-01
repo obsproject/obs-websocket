@@ -34,6 +34,7 @@ It is **highly recommended** to keep obs-websocket protected with a password aga
 - [Touch Portal](https://www.touch-portal.com/)
 - [Twitchat](https://twitchat.fr/)
 - [OBS-web](https://github.com/Niek/obs-web) - hosted client at [obs-web.niek.tv/](http://obs-web.niek.tv/)
+- [Streamer.bot](https://streamer.bot/)
 
 ### Client libraries (for developers)
 
