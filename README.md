@@ -35,6 +35,7 @@ It is **highly recommended** to keep obs-websocket protected with a password aga
 - [Twitchat](https://twitchat.fr/)
 - [OBS-web](https://github.com/Niek/obs-web) - hosted client at [obs-web.niek.tv/](http://obs-web.niek.tv/)
 - [Streamer.bot](https://streamer.bot/)
+- [Deckboard](https://deckboard.app/)
 
 ### Client libraries (for developers)
 
