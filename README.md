@@ -39,6 +39,7 @@ It is **highly recommended** to keep obs-websocket protected with a password aga
 - [OBS Blade](https://github.com/Kounex/obs_blade)
 - [Aitum](https://aitum.tv/)
 - [Kruiz Control](https://github.com/Kruiser8/Kruiz-Control)
+- [Bitfocus Companion Module](https://bitfocus.io/companion/)
 
 ### Client libraries (for developers)
 
