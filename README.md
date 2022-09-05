@@ -38,12 +38,14 @@ It is **highly recommended** to keep obs-websocket protected with a password aga
 - [Deckboard](https://deckboard.app/)
 - [OBS Blade](https://github.com/Kounex/obs_blade)
 - [Aitum](https://aitum.tv/)
+- [Kruiz Control](https://github.com/Kruiser8/Kruiz-Control)
 
 ### Client libraries (for developers)
 
 Here's a list of available language APIs for obs-websocket:
 
 - Python 3.7+ (Asyncio): [simpleobsws](https://github.com/IRLToolkit/simpleobsws/tree/master) by IRLToolkit
+- Python 3.10+ (Non-Asyncio): [obsws-python](https://pypi.org/project/obsws-python) by aatikturk
 - Rust: [obws](https://github.com/dnaka91/obws) by dnaka91
 - Godot 3.4.x: [obs-websocket-gd](https://github.com/you-win/obs-websocket-gd) by you-win
 - Javascript (Node and web): [obs-websocket-js](https://github.com/obs-websocket-community-projects/obs-websocket-js) by OBS Websocket Community
