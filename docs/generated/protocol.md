@@ -3652,6 +3652,10 @@ Note: Use this in cases where an input provides a dynamic, selectable list of it
 
 Presses a button in the properties of an input.
 
+Some known `propertyName` values are:
+
+- `refreshnocache` - Browser source reload button
+
 Note: Use this in cases where there is a button in the properties of an input that cannot be accessed in any other way. For example, browser sources, where there is a refresh button.
 
 - Complexity Rating: `4/5`
