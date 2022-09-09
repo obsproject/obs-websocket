@@ -4525,6 +4525,12 @@ Gets the list of available outputs.
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| outputs | Array&lt;Object&gt; | Array of outputs |
+
 ---
 
 ### GetOutputStatus
@@ -4751,6 +4757,12 @@ Toggles the status of the record output.
 - Complexity Rating: `1/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| outputActive | Boolean | Whether the output is active |
 
 ---
 
