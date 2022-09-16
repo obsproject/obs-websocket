@@ -19,6 +19,9 @@
   - [RequestResponse (OpCode 7)](#requestresponse-opcode-7)
   - [RequestBatch (OpCode 8)](#requestbatch-opcode-8)
   - [RequestBatchResponse (OpCode 9)](#requestbatchresponse-opcode-9)
+- [Enumerations](#enums)
+- [Events](#events)
+- [Requests](#requests)
 
 ## General Intro
 
