@@ -3096,7 +3096,7 @@
       ]
     },
     {
-      "description": "Basically GetSceneItemList, but for groups.\n\nUsing groups at all in OBS is discouraged, as they are very broken under the hood.\n\nGroups only",
+      "description": "Basically GetSceneItemList, but for groups.\n\nUsing groups at all in OBS is discouraged, as they are very broken under the hood. Please use nested scenes instead.\n\nGroups only",
       "requestType": "GetGroupSceneItemList",
       "complexity": 3,
       "rpcVersion": "1",
