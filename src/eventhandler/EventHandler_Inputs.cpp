@@ -200,7 +200,7 @@ void EventHandler::HandleInputMuteStateChanged(void *param, calldata_t *data)
  * An input's volume level has changed.
  *
  * @dataField inputName      | String | Name of the input
- * @dataField inputVolumeMul | Number | New volume level in multimap
+ * @dataField inputVolumeMul | Number | New volume level multiplier
  * @dataField inputVolumeDb  | Number | New volume level in dB
  *
  * @eventType InputVolumeChanged
