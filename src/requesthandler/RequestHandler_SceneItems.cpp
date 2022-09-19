@@ -52,7 +52,7 @@ RequestResult RequestHandler::GetSceneItemList(const Request &request)
 /**
  * Basically GetSceneItemList, but for groups.
  *
- * Using groups at all in OBS is discouraged, as they are very broken under the hood.
+ * Using groups at all in OBS is discouraged, as they are very broken under the hood. Please use nested scenes instead.
  *
  * Groups only
  *
