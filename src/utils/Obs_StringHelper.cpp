@@ -101,13 +101,14 @@ std::string Utils::Obs::StringHelper::GetLastReplayBufferFileName()
 	calldata_t cd = {0};
 	proc_handler_t *ph = obs_output_get_proc_handler(output);
 	proc_handler_call(ph, "get_last_replay", &cd);
-	const char *savedReplayPath = calldata_string(&cd, "path");
+	const char *pathBuffer = calldata_string(&cd, "path");
+
+	std::string ret;
+	if (pathBuffer)
+		ret = pathBuffer;
+
 	calldata_free(&cd);
-
-	if (!savedReplayPath)
-		return "";
-
-	return savedReplayPath;
+	return ret;
 }
 
 std::string Utils::Obs::StringHelper::DurationToTimecode(uint64_t ms)
