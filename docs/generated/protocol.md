@@ -1304,6 +1304,7 @@ Subscription value to receive the `SceneItemTransformChanged` high-volume event.
 - [General Events](#general-events)
   - [ExitStarted](#exitstarted)
   - [VendorEvent](#vendorevent)
+  - [CustomEvent](#customevent)
 - [Config Events](#config-events)
   - [CurrentSceneCollectionChanging](#currentscenecollectionchanging)
   - [CurrentSceneCollectionChanged](#currentscenecollectionchanged)
@@ -1394,6 +1395,22 @@ If a plugin or script implements vendor requests or events, documentation is exp
 | vendorName | String | Name of the vendor emitting the event |
 | eventType | String | Vendor-provided event typedef |
 | eventData | Object | Vendor-provided event data. {} if event does not provide any data |
+
+---
+
+### CustomEvent
+
+Custom event emitted by `BroadcastCustomEvent`.
+
+- Complexity Rating: `1/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+**Data Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| eventData | Object | Custom event data |
 
 ## Config Events
 
