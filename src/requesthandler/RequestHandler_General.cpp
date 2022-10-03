@@ -103,6 +103,20 @@ RequestResult RequestHandler::GetStats(const Request &)
 }
 
 /**
+ * Custom event emitted by `BroadcastCustomEvent`.
+ * 
+ * @dataField eventData | Object | Custom event data
+ *
+ * @eventType CustomEvent
+ * @eventSubscription General
+ * @complexity 1
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
+ * @category general
+ * @api events
+ */
+
+/**
  * Broadcasts a `CustomEvent` to all WebSocket clients. Receivers are clients which are identified and subscribed.
  *
  * @requestField eventData | Object | Data payload to emit to all receivers

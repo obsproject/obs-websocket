@@ -5670,6 +5670,23 @@
           "valueDescription": "Vendor-provided event data. {} if event does not provide any data"
         }
       ]
+    },
+    {
+      "description": "Custom event emitted by `BroadcastCustomEvent`.",
+      "eventType": "CustomEvent",
+      "eventSubscription": "General",
+      "complexity": 1,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.0.0",
+      "category": "general",
+      "dataFields": [
+        {
+          "valueName": "eventData",
+          "valueType": "Object",
+          "valueDescription": "Custom event data"
+        }
+      ]
     }
   ]
 }
