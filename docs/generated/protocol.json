@@ -2976,7 +2976,7 @@
           "valueDescription": "Whether the output is active"
         },
         {
-          "valueName": "ouputPaused",
+          "valueName": "outputPaused",
           "valueType": "Boolean",
           "valueDescription": "Whether the output is paused"
         },

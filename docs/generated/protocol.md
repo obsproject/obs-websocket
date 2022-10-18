@@ -4740,7 +4740,7 @@ Gets the status of the record output.
 | Name | Type  | Description |
 | ---- | :---: | ----------- |
 | outputActive | Boolean | Whether the output is active |
-| ouputPaused | Boolean | Whether the output is paused |
+| outputPaused | Boolean | Whether the output is paused |
 | outputTimecode | String | Current formatted timecode string for the output |
 | outputDuration | Number | Current duration in milliseconds for the output |
 | outputBytes | Number | Number of bytes sent by the output |
