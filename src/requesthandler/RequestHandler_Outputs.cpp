@@ -278,6 +278,8 @@ RequestResult RequestHandler::GetLastReplayBufferReplay(const Request &)
 
 /**
  * Gets the list of available outputs.
+ * 
+ * @responseField outputs | Array<Object> | Array of outputs
  *
  * @requestType GetOutputList
  * @complexity 4
