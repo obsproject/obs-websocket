@@ -1776,16 +1776,16 @@
           "valueType": "Number",
           "valueDescription": "Number of milliseconds to sleep for (if `SERIAL_REALTIME` mode)",
           "valueRestrictions": ">= 0, <= 50000",
-          "valueOptional": false,
-          "valueOptionalBehavior": null
+          "valueOptional": true,
+          "valueOptionalBehavior": "Unknown"
         },
         {
           "valueName": "sleepFrames",
           "valueType": "Number",
           "valueDescription": "Number of frames to sleep for (if `SERIAL_FRAME` mode)",
           "valueRestrictions": ">= 0, <= 10000",
-          "valueOptional": false,
-          "valueOptionalBehavior": null
+          "valueOptional": true,
+          "valueOptionalBehavior": "Unknown"
         }
       ],
       "responseFields": []
@@ -2777,7 +2777,13 @@
       "initialVersion": "5.0.0",
       "category": "outputs",
       "requestFields": [],
-      "responseFields": []
+      "responseFields": [
+        {
+          "valueName": "outputs",
+          "valueType": "Array<Object>",
+          "valueDescription": "Array of outputs"
+        }
+      ]
     },
     {
       "description": "Gets the status of an output.",

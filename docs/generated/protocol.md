@@ -2583,8 +2583,8 @@ Sleeps for a time duration or number of frames. Only available in request batche
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
-| sleepMillis | Number | Number of milliseconds to sleep for (if `SERIAL_REALTIME` mode) | >= 0, <= 50000 | N/A |
-| sleepFrames | Number | Number of frames to sleep for (if `SERIAL_FRAME` mode) | >= 0, <= 10000 | N/A |
+| ?sleepMillis | Number | Number of milliseconds to sleep for (if `SERIAL_REALTIME` mode) | >= 0, <= 50000 | Unknown |
+| ?sleepFrames | Number | Number of frames to sleep for (if `SERIAL_FRAME` mode) | >= 0, <= 10000 | Unknown |
 
 ## Config Requests
 
@@ -4527,6 +4527,12 @@ Gets the list of available outputs.
 - Complexity Rating: `4/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| outputs | Array&lt;Object&gt; | Array of outputs |
 
 ---
 
