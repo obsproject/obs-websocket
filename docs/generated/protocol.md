@@ -4724,6 +4724,7 @@ Sends CEA-608 caption text over the stream output.
 - Complexity Rating: `2/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
+- Returns a `501` error code if stream is not active.
 
 **Request Fields:**
 
