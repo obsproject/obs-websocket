@@ -1737,7 +1737,7 @@ An input's volume level has changed.
 | Name | Type  | Description |
 | ---- | :---: | ----------- |
 | inputName | String | Name of the input |
-| inputVolumeMul | Number | New volume level in multimap |
+| inputVolumeMul | Number | New volume level multiplier |
 | inputVolumeDb | Number | New volume level in dB |
 
 ---

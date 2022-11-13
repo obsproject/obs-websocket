@@ -4961,7 +4961,7 @@
         {
           "valueName": "inputVolumeMul",
           "valueType": "Number",
-          "valueDescription": "New volume level in multimap"
+          "valueDescription": "New volume level multiplier"
         },
         {
           "valueName": "inputVolumeDb",
