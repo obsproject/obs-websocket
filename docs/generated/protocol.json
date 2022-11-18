@@ -448,6 +448,83 @@
       ]
     },
     {
+      "enumType": "ObsOutputState",
+      "enumIdentifiers": [
+        {
+          "description": "Unknown state.",
+          "enumIdentifier": "OBS_WEBSOCKET_OUTPUT_UNKNOWN",
+          "rpcVersion": 1,
+          "deprecated": true,
+          "initialVersion": "5.0.0",
+          "enumValue": "OBS_WEBSOCKET_OUTPUT_UNKNOWN"
+        },
+        {
+          "description": "The output is starting.",
+          "enumIdentifier": "OBS_WEBSOCKET_OUTPUT_STARTING",
+          "rpcVersion": 1,
+          "deprecated": true,
+          "initialVersion": "5.0.0",
+          "enumValue": "OBS_WEBSOCKET_OUTPUT_STARTING"
+        },
+        {
+          "description": "The input has started.",
+          "enumIdentifier": "OBS_WEBSOCKET_OUTPUT_STARTED",
+          "rpcVersion": 1,
+          "deprecated": true,
+          "initialVersion": "5.0.0",
+          "enumValue": "OBS_WEBSOCKET_OUTPUT_STARTED"
+        },
+        {
+          "description": "The output is stopping.",
+          "enumIdentifier": "OBS_WEBSOCKET_OUTPUT_STOPPING",
+          "rpcVersion": 1,
+          "deprecated": true,
+          "initialVersion": "5.0.0",
+          "enumValue": "OBS_WEBSOCKET_OUTPUT_STOPPING"
+        },
+        {
+          "description": "The output has stopped.",
+          "enumIdentifier": "OBS_WEBSOCKET_OUTPUT_STOPPED",
+          "rpcVersion": 1,
+          "deprecated": true,
+          "initialVersion": "5.0.0",
+          "enumValue": "OBS_WEBSOCKET_OUTPUT_STOPPED"
+        },
+        {
+          "description": "The output has disconnected and is reconnecting.",
+          "enumIdentifier": "OBS_WEBSOCKET_OUTPUT_RECONNECTING",
+          "rpcVersion": 1,
+          "deprecated": true,
+          "initialVersion": "5.0.0",
+          "enumValue": "OBS_WEBSOCKET_OUTPUT_RECONNECTING"
+        },
+        {
+          "description": "The output has reconnected successfully.",
+          "enumIdentifier": "OBS_WEBSOCKET_OUTPUT_RECONNECTED",
+          "rpcVersion": 1,
+          "deprecated": true,
+          "initialVersion": "5.1.0",
+          "enumValue": "OBS_WEBSOCKET_OUTPUT_RECONNECTED"
+        },
+        {
+          "description": "The output is now paused.",
+          "enumIdentifier": "OBS_WEBSOCKET_OUTPUT_PAUSED",
+          "rpcVersion": 1,
+          "deprecated": true,
+          "initialVersion": "5.1.0",
+          "enumValue": "OBS_WEBSOCKET_OUTPUT_PAUSED"
+        },
+        {
+          "description": "The output has been resumed (unpaused).",
+          "enumIdentifier": "OBS_WEBSOCKET_OUTPUT_RESUMED",
+          "rpcVersion": 1,
+          "deprecated": true,
+          "initialVersion": "5.0.0",
+          "enumValue": "OBS_WEBSOCKET_OUTPUT_RESUMED"
+        }
+      ]
+    },
+    {
       "enumType": "ObsMediaInputAction",
       "enumIdentifiers": [
         {

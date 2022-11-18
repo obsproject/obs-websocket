@@ -515,6 +515,24 @@ These are enumeration declarations, which are referenced throughout obs-websocke
   - [EventSubscription::InputActiveStateChanged](#eventsubscriptioninputactivestatechanged)
   - [EventSubscription::InputShowStateChanged](#eventsubscriptioninputshowstatechanged)
   - [EventSubscription::SceneItemTransformChanged](#eventsubscriptionsceneitemtransformchanged)
+- [ObsMediaInputAction](#obsmediainputaction)
+  - [ObsMediaInputAction::OBS_WEBSOCKET_MEDIA_INPUT_ACTION_NONE](#obsmediainputactionobs_websocket_media_input_action_none)
+  - [ObsMediaInputAction::OBS_WEBSOCKET_MEDIA_INPUT_ACTION_PLAY](#obsmediainputactionobs_websocket_media_input_action_play)
+  - [ObsMediaInputAction::OBS_WEBSOCKET_MEDIA_INPUT_ACTION_PAUSE](#obsmediainputactionobs_websocket_media_input_action_pause)
+  - [ObsMediaInputAction::OBS_WEBSOCKET_MEDIA_INPUT_ACTION_STOP](#obsmediainputactionobs_websocket_media_input_action_stop)
+  - [ObsMediaInputAction::OBS_WEBSOCKET_MEDIA_INPUT_ACTION_RESTART](#obsmediainputactionobs_websocket_media_input_action_restart)
+  - [ObsMediaInputAction::OBS_WEBSOCKET_MEDIA_INPUT_ACTION_NEXT](#obsmediainputactionobs_websocket_media_input_action_next)
+  - [ObsMediaInputAction::OBS_WEBSOCKET_MEDIA_INPUT_ACTION_PREVIOUS](#obsmediainputactionobs_websocket_media_input_action_previous)
+- [ObsOutputState](#obsoutputstate)
+  - [ObsOutputState::OBS_WEBSOCKET_OUTPUT_UNKNOWN](#obsoutputstateobs_websocket_output_unknown)
+  - [ObsOutputState::OBS_WEBSOCKET_OUTPUT_STARTING](#obsoutputstateobs_websocket_output_starting)
+  - [ObsOutputState::OBS_WEBSOCKET_OUTPUT_STARTED](#obsoutputstateobs_websocket_output_started)
+  - [ObsOutputState::OBS_WEBSOCKET_OUTPUT_STOPPING](#obsoutputstateobs_websocket_output_stopping)
+  - [ObsOutputState::OBS_WEBSOCKET_OUTPUT_STOPPED](#obsoutputstateobs_websocket_output_stopped)
+  - [ObsOutputState::OBS_WEBSOCKET_OUTPUT_RECONNECTING](#obsoutputstateobs_websocket_output_reconnecting)
+  - [ObsOutputState::OBS_WEBSOCKET_OUTPUT_RECONNECTED](#obsoutputstateobs_websocket_output_reconnected)
+  - [ObsOutputState::OBS_WEBSOCKET_OUTPUT_PAUSED](#obsoutputstateobs_websocket_output_paused)
+  - [ObsOutputState::OBS_WEBSOCKET_OUTPUT_RESUMED](#obsoutputstateobs_websocket_output_resumed)
 
 ## WebSocketOpCode
 
@@ -1295,6 +1313,182 @@ Subscription value to receive the `SceneItemTransformChanged` high-volume event.
 
 - Identifier Value: `(1 << 19)`
 - Latest Supported RPC Version: `1`
+- Added in v5.0.0
+
+## ObsMediaInputAction
+
+### ObsMediaInputAction::OBS_WEBSOCKET_MEDIA_INPUT_ACTION_NONE
+
+No action.
+
+- Identifier Value: `OBS_WEBSOCKET_MEDIA_INPUT_ACTION_NONE`
+- Latest Supported RPC Version: `1`
+- **⚠️ Deprecated. ⚠️**
+- Added in v5.0.0
+
+---
+
+### ObsMediaInputAction::OBS_WEBSOCKET_MEDIA_INPUT_ACTION_PLAY
+
+Play the media input.
+
+- Identifier Value: `OBS_WEBSOCKET_MEDIA_INPUT_ACTION_PLAY`
+- Latest Supported RPC Version: `1`
+- **⚠️ Deprecated. ⚠️**
+- Added in v5.0.0
+
+---
+
+### ObsMediaInputAction::OBS_WEBSOCKET_MEDIA_INPUT_ACTION_PAUSE
+
+Pause the media input.
+
+- Identifier Value: `OBS_WEBSOCKET_MEDIA_INPUT_ACTION_PAUSE`
+- Latest Supported RPC Version: `1`
+- **⚠️ Deprecated. ⚠️**
+- Added in v5.0.0
+
+---
+
+### ObsMediaInputAction::OBS_WEBSOCKET_MEDIA_INPUT_ACTION_STOP
+
+Stop the media input.
+
+- Identifier Value: `OBS_WEBSOCKET_MEDIA_INPUT_ACTION_STOP`
+- Latest Supported RPC Version: `1`
+- **⚠️ Deprecated. ⚠️**
+- Added in v5.0.0
+
+---
+
+### ObsMediaInputAction::OBS_WEBSOCKET_MEDIA_INPUT_ACTION_RESTART
+
+Restart the media input.
+
+- Identifier Value: `OBS_WEBSOCKET_MEDIA_INPUT_ACTION_RESTART`
+- Latest Supported RPC Version: `1`
+- **⚠️ Deprecated. ⚠️**
+- Added in v5.0.0
+
+---
+
+### ObsMediaInputAction::OBS_WEBSOCKET_MEDIA_INPUT_ACTION_NEXT
+
+Go to the next playlist item.
+
+- Identifier Value: `OBS_WEBSOCKET_MEDIA_INPUT_ACTION_NEXT`
+- Latest Supported RPC Version: `1`
+- **⚠️ Deprecated. ⚠️**
+- Added in v5.0.0
+
+---
+
+### ObsMediaInputAction::OBS_WEBSOCKET_MEDIA_INPUT_ACTION_PREVIOUS
+
+Go to the previous playlist item.
+
+- Identifier Value: `OBS_WEBSOCKET_MEDIA_INPUT_ACTION_PREVIOUS`
+- Latest Supported RPC Version: `1`
+- **⚠️ Deprecated. ⚠️**
+- Added in v5.0.0
+
+## ObsOutputState
+
+### ObsOutputState::OBS_WEBSOCKET_OUTPUT_UNKNOWN
+
+Unknown state.
+
+- Identifier Value: `OBS_WEBSOCKET_OUTPUT_UNKNOWN`
+- Latest Supported RPC Version: `1`
+- **⚠️ Deprecated. ⚠️**
+- Added in v5.0.0
+
+---
+
+### ObsOutputState::OBS_WEBSOCKET_OUTPUT_STARTING
+
+The output is starting.
+
+- Identifier Value: `OBS_WEBSOCKET_OUTPUT_STARTING`
+- Latest Supported RPC Version: `1`
+- **⚠️ Deprecated. ⚠️**
+- Added in v5.0.0
+
+---
+
+### ObsOutputState::OBS_WEBSOCKET_OUTPUT_STARTED
+
+The input has started.
+
+- Identifier Value: `OBS_WEBSOCKET_OUTPUT_STARTED`
+- Latest Supported RPC Version: `1`
+- **⚠️ Deprecated. ⚠️**
+- Added in v5.0.0
+
+---
+
+### ObsOutputState::OBS_WEBSOCKET_OUTPUT_STOPPING
+
+The output is stopping.
+
+- Identifier Value: `OBS_WEBSOCKET_OUTPUT_STOPPING`
+- Latest Supported RPC Version: `1`
+- **⚠️ Deprecated. ⚠️**
+- Added in v5.0.0
+
+---
+
+### ObsOutputState::OBS_WEBSOCKET_OUTPUT_STOPPED
+
+The output has stopped.
+
+- Identifier Value: `OBS_WEBSOCKET_OUTPUT_STOPPED`
+- Latest Supported RPC Version: `1`
+- **⚠️ Deprecated. ⚠️**
+- Added in v5.0.0
+
+---
+
+### ObsOutputState::OBS_WEBSOCKET_OUTPUT_RECONNECTING
+
+The output has disconnected and is reconnecting.
+
+- Identifier Value: `OBS_WEBSOCKET_OUTPUT_RECONNECTING`
+- Latest Supported RPC Version: `1`
+- **⚠️ Deprecated. ⚠️**
+- Added in v5.0.0
+
+---
+
+### ObsOutputState::OBS_WEBSOCKET_OUTPUT_RECONNECTED
+
+The output has reconnected successfully.
+
+- Identifier Value: `OBS_WEBSOCKET_OUTPUT_RECONNECTED`
+- Latest Supported RPC Version: `1`
+- **⚠️ Deprecated. ⚠️**
+- Added in v5.1.0
+
+---
+
+### ObsOutputState::OBS_WEBSOCKET_OUTPUT_PAUSED
+
+The output is now paused.
+
+- Identifier Value: `OBS_WEBSOCKET_OUTPUT_PAUSED`
+- Latest Supported RPC Version: `1`
+- **⚠️ Deprecated. ⚠️**
+- Added in v5.1.0
+
+---
+
+### ObsOutputState::OBS_WEBSOCKET_OUTPUT_RESUMED
+
+The output has been resumed (unpaused).
+
+- Identifier Value: `OBS_WEBSOCKET_OUTPUT_RESUMED`
+- Latest Supported RPC Version: `1`
+- **⚠️ Deprecated. ⚠️**
 - Added in v5.0.0
 
 # Events
