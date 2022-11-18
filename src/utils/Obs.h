@@ -133,7 +133,7 @@ enum ObsOutputState {
 	* @enumIdentifier OBS_WEBSOCKET_OUTPUT_RECONNECTED
 	* @enumType ObsOutputState
 	* @rpcVersion 1
-	* @initialVersion 5.2.0
+	* @initialVersion 5.1.0
 	* @api enums
 	*/
 	OBS_WEBSOCKET_OUTPUT_RECONNECTED,
@@ -143,7 +143,7 @@ enum ObsOutputState {
 	* @enumIdentifier OBS_WEBSOCKET_OUTPUT_PAUSED
 	* @enumType ObsOutputState
 	* @rpcVersion 1
-	* @initialVersion 5.2.0
+	* @initialVersion 5.1.0
 	* @api enums
 	*/
 	OBS_WEBSOCKET_OUTPUT_PAUSED,
