@@ -78,6 +78,10 @@ private:
 	static void SourceMediaNextMultiHandler(void *param, calldata_t *data);
 	static void SourceMediaPreviousMultiHandler(void *param, calldata_t *data);
 
+	// Signal handler: output
+	static void StreamOutputReconnectHandler(void *param, calldata_t *data);
+	static void StreamOutputReconnectSuccessHandler(void *param, calldata_t *data);
+
 	// General
 	void HandleExitStarted();
 

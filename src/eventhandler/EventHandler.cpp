@@ -340,12 +340,31 @@ void EventHandler::OnFrontendEvent(enum obs_frontend_event event, void *private_
 	// Outputs
 	case OBS_FRONTEND_EVENT_STREAMING_STARTING:
 		eventHandler->HandleStreamStateChanged(OBS_WEBSOCKET_OUTPUT_STARTING);
+		{
+			// Connect signals for stream output reconnects (hacky)
+			OBSOutputAutoRelease streamOutput = obs_frontend_get_streaming_output();
+			if (streamOutput) {
+				signal_handler_t *sh = obs_output_get_signal_handler(streamOutput);
+				signal_handler_connect(sh, "reconnect", StreamOutputReconnectHandler, private_data);
+				signal_handler_connect(sh, "reconnect_success", StreamOutputReconnectSuccessHandler, private_data);
+			}
+		}
 		break;
 	case OBS_FRONTEND_EVENT_STREAMING_STARTED:
 		eventHandler->HandleStreamStateChanged(OBS_WEBSOCKET_OUTPUT_STARTED);
 		break;
 	case OBS_FRONTEND_EVENT_STREAMING_STOPPING:
 		eventHandler->HandleStreamStateChanged(OBS_WEBSOCKET_OUTPUT_STOPPING);
+		{
+			// Disconnect signals for stream output reconnects
+			OBSOutputAutoRelease streamOutput = obs_frontend_get_streaming_output();
+			if (streamOutput) {
+				signal_handler_t *sh = obs_output_get_signal_handler(streamOutput);
+				signal_handler_disconnect(sh, "reconnect", StreamOutputReconnectHandler, private_data);
+				signal_handler_disconnect(sh, "reconnect_success", StreamOutputReconnectSuccessHandler,
+							  private_data);
+			}
+		}
 		break;
 	case OBS_FRONTEND_EVENT_STREAMING_STOPPED:
 		eventHandler->HandleStreamStateChanged(OBS_WEBSOCKET_OUTPUT_STOPPED);
@@ -610,4 +629,18 @@ void EventHandler::SourceRenamedMultiHandler(void *param, calldata_t *data)
 	default:
 		break;
 	}
+}
+
+void EventHandler::StreamOutputReconnectHandler(void *param, calldata_t *)
+{
+	auto eventHandler = static_cast<EventHandler *>(param);
+
+	eventHandler->HandleStreamStateChanged(OBS_WEBSOCKET_OUTPUT_RECONNECTING);
+}
+
+void EventHandler::StreamOutputReconnectSuccessHandler(void *param, calldata_t *)
+{
+	auto eventHandler = static_cast<EventHandler *>(param);
+
+	eventHandler->HandleStreamStateChanged(OBS_WEBSOCKET_OUTPUT_RECONNECTED);
 }
