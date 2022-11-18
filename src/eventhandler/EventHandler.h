@@ -61,6 +61,8 @@ private:
 
 	// Signal handler: frontend
 	static void OnFrontendEvent(enum obs_frontend_event event, void *private_data);
+	void FrontendFinishedLoadingMultiHandler();
+	void FrontendExitMultiHandler();
 
 	// Signal handler: libobs
 	static void SourceCreatedMultiHandler(void *param, calldata_t *data);
