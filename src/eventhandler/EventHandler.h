@@ -78,7 +78,6 @@ private:
 
 	// General
 	void HandleExitStarted();
-	void HandleStudioModeStateChanged(bool enabled);
 
 	// Config
 	void HandleCurrentSceneCollectionChanging();
@@ -170,4 +169,8 @@ private:
 	static void HandleMediaInputPlaybackEnded(void *param,
 						  calldata_t *data); // Direct callback
 	void HandleMediaInputActionTriggered(obs_source_t *source, ObsMediaInputAction action);
+
+	// Ui
+	void HandleStudioModeStateChanged(bool enabled);
+	void HandleScreenshotSaved();
 };

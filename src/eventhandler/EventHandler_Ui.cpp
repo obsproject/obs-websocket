@@ -38,3 +38,27 @@ void EventHandler::HandleStudioModeStateChanged(bool enabled)
 	eventData["studioModeEnabled"] = enabled;
 	BroadcastEvent(EventSubscription::Ui, "StudioModeStateChanged", eventData);
 }
+
+/**
+ * A screenshot has been saved.
+ *
+ * Note: Triggered for the screenshot feature available in `Settings -> Hotkeys -> Screenshot Output` ONLY.
+ * Applications using `Get/SaveSourceScreenshot` should implement a `CustomEvent` if this kind of inter-client
+ * communication is desired.
+ *
+ * @dataField savedScreenshotPath | String | Path of the saved image file
+ *
+ * @eventType ScreenshotSaved
+ * @eventSubscription Ui
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.1.0
+ * @api events
+ * @category ui
+ */
+void EventHandler::HandleScreenshotSaved()
+{
+	json eventData;
+	eventData["savedScreenshotPath"] = Utils::Obs::StringHelper::GetLastScreenshotFileName();
+	BroadcastEvent(EventSubscription::Ui, "ScreenshotSaved", eventData);
+}

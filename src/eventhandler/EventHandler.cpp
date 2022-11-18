@@ -353,12 +353,6 @@ void EventHandler::OnFrontendEvent(enum obs_frontend_event event, void *private_
 		blog_debug("[EventHandler::OnFrontendEvent] Finished.");
 
 		break;
-	case OBS_FRONTEND_EVENT_STUDIO_MODE_ENABLED:
-		eventHandler->HandleStudioModeStateChanged(true);
-		break;
-	case OBS_FRONTEND_EVENT_STUDIO_MODE_DISABLED:
-		eventHandler->HandleStudioModeStateChanged(false);
-		break;
 
 	// Config
 	case OBS_FRONTEND_EVENT_SCENE_COLLECTION_CHANGING: {
@@ -475,6 +469,17 @@ void EventHandler::OnFrontendEvent(enum obs_frontend_event event, void *private_
 		break;
 	case OBS_FRONTEND_EVENT_REPLAY_BUFFER_SAVED:
 		eventHandler->HandleReplayBufferSaved();
+		break;
+
+	// Ui
+	case OBS_FRONTEND_EVENT_STUDIO_MODE_ENABLED:
+		eventHandler->HandleStudioModeStateChanged(true);
+		break;
+	case OBS_FRONTEND_EVENT_STUDIO_MODE_DISABLED:
+		eventHandler->HandleStudioModeStateChanged(false);
+		break;
+	case OBS_FRONTEND_EVENT_SCREENSHOT_TAKEN:
+		eventHandler->HandleScreenshotSaved();
 		break;
 
 	default:
