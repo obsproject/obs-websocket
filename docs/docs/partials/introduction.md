@@ -1,5 +1,5 @@
 
-# obs-websocket 5.0.1 Protocol
+# obs-websocket 5.1.0 Protocol
 
 ## Main Table of Contents
 
@@ -146,7 +146,7 @@ Authentication is required
 {
   "op": 0,
   "d": {
-    "obsWebSocketVersion": "5.0.1",
+    "obsWebSocketVersion": "5.1.0",
     "rpcVersion": 1,
     "authentication": {
       "challenge": "+IxH4CnCiqpX1rM9scsNynZzbOe4KhDeYcTNS3PDaeY=",
@@ -162,7 +162,7 @@ Authentication is not required
 {
   "op": 0,
   "d": {
-    "obsWebSocketVersion": "5.0.1",
+    "obsWebSocketVersion": "5.1.0",
     "rpcVersion": 1
   }
 }
