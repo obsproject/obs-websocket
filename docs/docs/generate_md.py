@@ -10,7 +10,8 @@ enumTypeOrder = [
     'RequestBatchExecutionType',
     'RequestStatus',
     'EventSubscription',
-    'ObsMediaInputAction'
+    'ObsMediaInputAction',
+    'ObsOutputState'
 ]
 
 categoryOrder = [
