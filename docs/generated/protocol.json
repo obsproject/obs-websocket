@@ -5645,6 +5645,23 @@
       ]
     },
     {
+      "description": "A screenshot has been saved.\n\nNote: Triggered for the screenshot feature available in `Settings -> Hotkeys -> Screenshot Output` ONLY.\nApplications using `Get/SaveSourceScreenshot` should implement a `CustomEvent` if this kind of inter-client\ncommunication is desired.",
+      "eventType": "ScreenshotSaved",
+      "eventSubscription": "Ui",
+      "complexity": 2,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.1.0",
+      "category": "ui",
+      "dataFields": [
+        {
+          "valueName": "savedScreenshotPath",
+          "valueType": "String",
+          "valueDescription": "Path of the saved image file"
+        }
+      ]
+    },
+    {
       "description": "An event has been emitted from a vendor.\n\nA vendor is a unique name registered by a third-party plugin or script, which allows for custom requests and events to be added to obs-websocket.\nIf a plugin or script implements vendor requests or events, documentation is expected to be provided with them.",
       "eventType": "VendorEvent",
       "eventSubscription": "Vendors",

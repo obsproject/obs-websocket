@@ -1364,6 +1364,7 @@ Subscription value to receive the `SceneItemTransformChanged` high-volume event.
   - [MediaInputActionTriggered](#mediainputactiontriggered)
 - [Ui Events](#ui-events)
   - [StudioModeStateChanged](#studiomodestatechanged)
+  - [ScreenshotSaved](#screenshotsaved)
 
 ## General Events
 
@@ -2284,6 +2285,26 @@ Studio mode has been enabled or disabled.
 | Name | Type  | Description |
 | ---- | :---: | ----------- |
 | studioModeEnabled | Boolean | True == Enabled, False == Disabled |
+
+---
+
+### ScreenshotSaved
+
+A screenshot has been saved.
+
+Note: Triggered for the screenshot feature available in `Settings -> Hotkeys -> Screenshot Output` ONLY.
+Applications using `Get/SaveSourceScreenshot` should implement a `CustomEvent` if this kind of inter-client
+communication is desired.
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.1.0
+
+**Data Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| savedScreenshotPath | String | Path of the saved image file |
 
 # Requests
 
