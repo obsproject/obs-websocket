@@ -111,6 +111,14 @@ std::string Utils::Obs::StringHelper::GetLastReplayBufferFileName()
 	return ret;
 }
 
+std::string Utils::Obs::StringHelper::GetLastScreenshotFileName()
+{
+	char *screenshotPath = obs_frontend_get_last_screenshot();
+	std::string ret = screenshotPath;
+	bfree(screenshotPath);
+	return ret;
+}
+
 std::string Utils::Obs::StringHelper::DurationToTimecode(uint64_t ms)
 {
 	uint64_t secs = ms / 1000ULL;

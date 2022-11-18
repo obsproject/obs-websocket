@@ -181,6 +181,7 @@ namespace Utils {
 			std::string GetCurrentRecordOutputPath();
 			std::string GetLastRecordFileName();
 			std::string GetLastReplayBufferFileName();
+			std::string GetLastScreenshotFileName();
 			std::string DurationToTimecode(uint64_t);
 		}
 
