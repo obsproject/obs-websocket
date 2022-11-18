@@ -94,20 +94,9 @@ std::string Utils::Obs::StringHelper::GetLastRecordFileName()
 
 std::string Utils::Obs::StringHelper::GetLastReplayBufferFileName()
 {
-	OBSOutputAutoRelease output = obs_frontend_get_replay_buffer_output();
-	if (!output)
-		return "";
-
-	calldata_t cd = {0};
-	proc_handler_t *ph = obs_output_get_proc_handler(output);
-	proc_handler_call(ph, "get_last_replay", &cd);
-	const char *pathBuffer = calldata_string(&cd, "path");
-
-	std::string ret;
-	if (pathBuffer)
-		ret = pathBuffer;
-
-	calldata_free(&cd);
+	char *replayBufferPath = obs_frontend_get_last_replay();
+	std::string ret = replayBufferPath;
+	bfree(replayBufferPath);
 	return ret;
 }
 
