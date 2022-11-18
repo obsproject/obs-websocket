@@ -105,7 +105,7 @@ void ConnectInfo::SetClipboardText(QString text)
 
 void ConnectInfo::DrawQr(QString qrText)
 {
-	QPixmap map(230, 230);
+	QPixmap map(236, 236);
 	map.fill(Qt::white);
 	QPainter painter(&map);
 

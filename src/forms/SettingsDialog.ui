@@ -80,7 +80,7 @@
       <item row="3" column="1">
        <layout class="QHBoxLayout" name="horizontalLayout_2">
         <property name="spacing">
-         <number>0</number>
+         <number>2</number>
         </property>
         <item>
          <widget class="QCheckBox" name="enableDebugLoggingCheckBox">
@@ -96,6 +96,12 @@
          <widget class="QLabel" name="enableDebugLoggingToolTipLabel">
           <property name="toolTip">
            <string>OBSWebSocket.Settings.DebugEnableHoverText</string>
+          </property>
+          <property name="scaledContents">
+           <bool>true</bool>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
           </property>
          </widget>
         </item>
