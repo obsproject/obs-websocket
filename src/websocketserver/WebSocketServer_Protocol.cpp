@@ -104,6 +104,11 @@ void WebSocketServer::ProcessMessage(SessionPtr session, WebSocketServer::Proces
 					"Your payload's data is missing an `authentication` string, however authentication is required.";
 				return;
 			}
+			if (!payloadData["authentication"].is_string()) {
+				ret.closeCode = WebSocketCloseCode::AuthenticationFailed;
+				ret.closeReason = "Your `authentication` field is not a string.";
+				return;
+			}
 			if (!Utils::Crypto::CheckAuthenticationString(session->Secret(), session->Challenge(),
 								      payloadData["authentication"])) {
 				auto conf = GetConfig();
