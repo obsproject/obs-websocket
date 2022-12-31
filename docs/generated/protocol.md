@@ -63,7 +63,7 @@ These steps should be followed precisely. Failure to connect to the server as in
 
 - The server receives and processes the `Identify` sent by the client.
   - If authentication is required and the `Identify` message data does not contain an `authentication` string, or the string is not correct, the connection is closed with `WebSocketCloseCode::AuthenticationFailed`
-  - If the client has requested an `rpcVersion` which the server cannot use, the connection is closed with `WebSocketCloseCode::UnsupportedRpcVersion`. This system allows both the server and client to have seamless backwards compatability.
+  - If the client has requested an `rpcVersion` which the server cannot use, the connection is closed with `WebSocketCloseCode::UnsupportedRpcVersion`. This system allows both the server and client to have seamless backwards compatibility.
   - If any other parameters are malformed (invalid type, etc), the connection is closed with an appropriate close code.
 
 - Once identification is processed on the server, the server responds to the client with an [OpCode 2 `Identified`](#identified-opcode-2).
