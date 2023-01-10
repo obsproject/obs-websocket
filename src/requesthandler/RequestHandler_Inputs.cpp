@@ -24,7 +24,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
  *
  * @requestField ?inputKind | String | Restrict the array to only inputs of the specified kind | All kinds included
  *
- * @responseField inputs | Array<Object> | Array of inputs
+ * @responseField inputs | Array<Input> | Array of inputs
  *
  * @requestType GetInputList
  * @complexity 2
@@ -854,7 +854,7 @@ RequestResult RequestHandler::SetInputAudioTracks(const Request &request)
  * @requestField inputName    | String | Name of the input
  * @requestField propertyName | String | Name of the list property to get the items of
  *
- * @responseField propertyItems | Array<Object> | Array of items in the list property
+ * @responseField propertyItems | Array<ListPropertyItem> | Array of items in the list property
  *
  * @requestType GetInputPropertiesListPropertyItems
  * @complexity 4

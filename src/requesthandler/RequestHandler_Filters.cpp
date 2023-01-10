@@ -24,7 +24,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
  *
  * @requestField sourceName | String | Name of the source
  *
- * @responseField filters | Array<Object> | Array of filters
+ * @responseField filters | Array<Filter> | Array of filters
  *
  * @requestType GetSourceFilterList
  * @complexity 2

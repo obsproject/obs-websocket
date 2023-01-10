@@ -95,7 +95,7 @@ void EventHandler::HandleSceneItemRemoved(void *param, calldata_t *data)
  * A scene's item list has been reindexed.
  *
  * @dataField sceneName  | String        | Name of the scene
- * @dataField sceneItems | Array<Object> | Array of scene item objects
+ * @dataField sceneItems | Array<SceneItem> | Array of scene item objects
  *
  * @eventType SceneItemListReindexed
  * @eventSubscription SceneItems
@@ -228,7 +228,7 @@ void EventHandler::HandleSceneItemSelected(void *param, calldata_t *data)
  *
  * @dataField sceneName          | String | The name of the scene the item is in
  * @dataField sceneItemId        | Number | Numeric ID of the scene item
- * @dataField sceneItemTransform | Object | New transform/crop info of the scene item
+ * @dataField sceneItemTransform | Partial<SceneItemTransform> | New transform/crop info of the scene item
  *
  * @eventType SceneItemTransformChanged
  * @eventSubscription SceneItemTransformChanged

@@ -26,7 +26,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
  *
  * @requestField sceneName | String | Name of the scene to get the items of
  *
- * @responseField sceneItems | Array<Object> | Array of scene items in the scene
+ * @responseField sceneItems | Array<SceneItem> | Array of scene items in the scene
  *
  * @requestType GetSceneItemList
  * @complexity 3
@@ -58,7 +58,7 @@ RequestResult RequestHandler::GetSceneItemList(const Request &request)
  *
  * @requestField sceneName | String | Name of the group to get the items of
  *
- * @responseField sceneItems | Array<Object> | Array of scene items in the group
+ * @responseField sceneItems | Array<SceneItem> | Array of scene items in the group
  *
  * @requestType GetGroupSceneItemList
  * @complexity 3
@@ -282,7 +282,7 @@ RequestResult RequestHandler::DuplicateSceneItem(const Request &request)
  * @requestField sceneName   | String | Name of the scene the item is in
  * @requestField sceneItemId | Number | Numeric ID of the scene item | >= 0
  *
- * @responseField sceneItemTransform | Object | Object containing scene item transform info
+ * @responseField sceneItemTransform | SceneItemTransform | Object containing scene item transform info
  *
  * @requestType GetSceneItemTransform
  * @complexity 3
@@ -311,7 +311,7 @@ RequestResult RequestHandler::GetSceneItemTransform(const Request &request)
  *
  * @requestField sceneName          | String | Name of the scene the item is in
  * @requestField sceneItemId        | Number | Numeric ID of the scene item | >= 0
- * @requestField sceneItemTransform | Object | Object containing scene item transform info to update
+ * @requestField sceneItemTransform | Partial<SceneItemTransform> | Object containing scene item transform info to update
  *
  * @requestType SetSceneItemTransform
  * @complexity 3

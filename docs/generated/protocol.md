@@ -1491,6 +1491,152 @@ The output has been resumed (unpaused).
 - **⚠️ Deprecated. ⚠️**
 - Added in v5.0.0
 
+# Typedefs
+
+These are object type definitions, which are referenced throughout obs-websocket's protocol.
+
+## Typedefs Table of Contents
+
+- [Filter](#filter)
+- [MeterData](#meterdata)
+- [SceneItemTransform](#sceneitemtransform)
+- [SceneItem](#sceneitem)
+- [Scene](#scene)
+- [Input](#input)
+- [Output](#output)
+- [ListPropertyItem](#listpropertyitem)
+- [Transition](#transition)
+- [Monitor](#monitor)
+
+## Filter
+
+**Properties:**
+
+| Name | Type  |
+| ---- | :---: |
+| filterEnabled | Boolean |
+| filterIndex | Number |
+| filterKind | String |
+| filterName | String |
+| filterSettings | Object |
+
+## MeterData
+
+**Properties:**
+
+| Name | Type  |
+| ---- | :---: |
+| inputName | String |
+| inputLevelsMul | Array&lt;Array&lt;Number&gt;&gt; |
+
+## SceneItemTransform
+
+**Properties:**
+
+| Name | Type  |
+| ---- | :---: |
+| sourceWidth | Number |
+| sourceHeight | Number |
+| positionX | Number |
+| positionY | Number |
+| rotation | Number |
+| scaleX | Number |
+| scaleY | Number |
+| width | Number |
+| height | Number |
+| alignment | Number |
+| boundsType | Number |
+| boundsAlignment | Number |
+| boundsWith | Number |
+| boundsHeight | Number |
+| cropLeft | Number |
+| cropRight | Number |
+| cropTop | Number |
+| cropBottom | Number |
+
+## SceneItem
+
+**Properties:**
+
+| Name | Type  |
+| ---- | :---: |
+| sceneItemId | Number |
+| sceneItemIndex | Number |
+| sceneItemEnabled | Boolean |
+| sceneItemLocked | Boolean |
+| sceneItemTransform | SceneItemTransform |
+| sceneItemBlendMode | Number |
+| sourceName | String |
+| sourceType | Number |
+| inputKind | String|undefined |
+| isGroup | Boolean|undefined |
+
+## Scene
+
+**Properties:**
+
+| Name | Type  |
+| ---- | :---: |
+| sceneName | String |
+| sceneIndex | Number |
+
+## Input
+
+**Properties:**
+
+| Name | Type  |
+| ---- | :---: |
+| inputName | String |
+| inputKind | String |
+| unversionedInputKind | String |
+
+## Output
+
+**Properties:**
+
+| Name | Type  |
+| ---- | :---: |
+| outputName | String |
+| outputKind | String |
+| outputWidth | Number |
+| outputHeight | Number |
+| outputActive | Boolean |
+| outputFlags | Number |
+
+## ListPropertyItem
+
+**Properties:**
+
+| Name | Type  |
+| ---- | :---: |
+| itemName | String |
+| itemEnabled | Boolean |
+| itemValue | Number|String|undefined |
+
+## Transition
+
+**Properties:**
+
+| Name | Type  |
+| ---- | :---: |
+| transitionName | String |
+| transitionKind | String |
+| transitionFixed | Boolean |
+| transitionConfigurable | Boolean |
+
+## Monitor
+
+**Properties:**
+
+| Name | Type  |
+| ---- | :---: |
+| monitorName | String |
+| monitorIndex | Number |
+| monitorWidth | Number |
+| monitorHeight | Number |
+| monitorPositionX | Number |
+| monitorPositionY | Number |
+
 # Events
 
 ## Events Table of Contents
@@ -1807,7 +1953,7 @@ TODO: Make OBS fire this event when scenes are reordered.
 
 | Name | Type  | Description |
 | ---- | :---: | ----------- |
-| scenes | Array&lt;Object&gt; | Updated array of scenes |
+| scenes | Array&lt;Scene&gt; | Updated array of scenes |
 
 ## Inputs Events
 
@@ -2023,7 +2169,7 @@ A high-volume event providing volume levels of all active inputs every 50 millis
 
 | Name | Type  | Description |
 | ---- | :---: | ----------- |
-| inputs | Array&lt;Object&gt; | Array of active inputs with their associated volume levels |
+| inputs | Array&lt;MeterData&gt; | Array of active inputs with their associated volume levels |
 
 ## Transitions Events
 
@@ -2127,7 +2273,7 @@ A source's filter list has been reindexed.
 | Name | Type  | Description |
 | ---- | :---: | ----------- |
 | sourceName | String | Name of the source |
-| filters | Array&lt;Object&gt; | Array of filter objects |
+| filters | Array&lt;Filter&gt; | Array of filter objects |
 
 ---
 
@@ -2257,7 +2403,7 @@ A scene's item list has been reindexed.
 | Name | Type  | Description |
 | ---- | :---: | ----------- |
 | sceneName | String | Name of the scene |
-| sceneItems | Array&lt;Object&gt; | Array of scene item objects |
+| sceneItems | Array&lt;SceneItem&gt; | Array of scene item objects |
 
 ---
 
@@ -2328,7 +2474,7 @@ The transform/crop of a scene item has changed.
 | ---- | :---: | ----------- |
 | sceneName | String | The name of the scene the item is in |
 | sceneItemId | Number | Numeric ID of the scene item |
-| sceneItemTransform | Object | New transform/crop info of the scene item |
+| sceneItemTransform | Partial&lt;SceneItemTransform&gt; | New transform/crop info of the scene item |
 
 ## Outputs Events
 
@@ -3221,7 +3367,7 @@ Gets an array of all scenes in OBS.
 | ---- | :---: | ----------- |
 | currentProgramSceneName | String | Current program scene |
 | currentPreviewSceneName | String | Current preview scene. `null` if not in studio mode |
-| scenes | Array&lt;Object&gt; | Array of scenes |
+| scenes | Array&lt;Scene&gt; | Array of scenes |
 
 ---
 
@@ -3419,7 +3565,7 @@ Gets an array of all inputs in OBS.
 
 | Name | Type  | Description |
 | ---- | :---: | ----------- |
-| inputs | Array&lt;Object&gt; | Array of inputs |
+| inputs | Array&lt;Input&gt; | Array of inputs |
 
 ---
 
@@ -3879,7 +4025,7 @@ Note: Use this in cases where an input provides a dynamic, selectable list of it
 
 | Name | Type  | Description |
 | ---- | :---: | ----------- |
-| propertyItems | Array&lt;Object&gt; | Array of items in the list property |
+| propertyItems | Array&lt;ListPropertyItem&gt; | Array of items in the list property |
 
 ---
 
@@ -3938,7 +4084,7 @@ Gets an array of all scene transitions in OBS.
 | ---- | :---: | ----------- |
 | currentSceneTransitionName | String | Name of the current scene transition. Can be null |
 | currentSceneTransitionKind | String | Kind of the current scene transition. Can be null |
-| transitions | Array&lt;Object&gt; | Array of transitions |
+| transitions | Array&lt;Transition&gt; | Array of transitions |
 
 ---
 
@@ -4079,7 +4225,7 @@ Gets an array of all of a source's filters.
 
 | Name | Type  | Description |
 | ---- | :---: | ----------- |
-| filters | Array&lt;Object&gt; | Array of filters |
+| filters | Array&lt;Filter&gt; | Array of filters |
 
 ---
 
@@ -4260,7 +4406,7 @@ Scenes only
 
 | Name | Type  | Description |
 | ---- | :---: | ----------- |
-| sceneItems | Array&lt;Object&gt; | Array of scene items in the scene |
+| sceneItems | Array&lt;SceneItem&gt; | Array of scene items in the scene |
 
 ---
 
@@ -4286,7 +4432,7 @@ Groups only
 
 | Name | Type  | Description |
 | ---- | :---: | ----------- |
-| sceneItems | Array&lt;Object&gt; | Array of scene items in the group |
+| sceneItems | Array&lt;SceneItem&gt; | Array of scene items in the group |
 
 ---
 
@@ -4408,7 +4554,7 @@ Scenes and Groups
 
 | Name | Type  | Description |
 | ---- | :---: | ----------- |
-| sceneItemTransform | Object | Object containing scene item transform info |
+| sceneItemTransform | SceneItemTransform | Object containing scene item transform info |
 
 ---
 
@@ -4426,7 +4572,7 @@ Sets the transform and crop info of a scene item.
 | ---- | :---: | ----------- | :----------------: | ----------------- |
 | sceneName | String | Name of the scene the item is in | None | N/A |
 | sceneItemId | Number | Numeric ID of the scene item | >= 0 | N/A |
-| sceneItemTransform | Object | Object containing scene item transform info to update | None | N/A |
+| sceneItemTransform | Partial&lt;SceneItemTransform&gt; | Object containing scene item transform info to update | None | N/A |
 
 ---
 
@@ -4764,7 +4910,7 @@ Gets the list of available outputs.
 
 | Name | Type  | Description |
 | ---- | :---: | ----------- |
-| outputs | Array&lt;Object&gt; | Array of outputs |
+| outputs | Array&lt;Output&gt; | Array of outputs |
 
 ---
 
@@ -5233,7 +5379,7 @@ Gets a list of connected monitors and information about them.
 
 | Name | Type  | Description |
 | ---- | :---: | ----------- |
-| monitors | Array&lt;Object&gt; | a list of detected monitors with some information |
+| monitors | Array&lt;Monitor&gt; | a list of detected monitors with some information |
 
 ---
 

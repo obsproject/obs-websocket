@@ -19,6 +19,115 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #pragma once
 
+/**
+ * @typedef Filter
+ * @property {Boolean} filterEnabled
+ * @property {Number} filterIndex
+ * @property {String} filterKind
+ * @property {String} filterName
+ * @property {Object} filterSettings
+ * @api typedefs
+ */
+
+/**
+ * @typedef MeterData
+ * @property {String} inputName
+ * @property {Array<Array<Number>>} inputLevelsMul
+ * @api typedefs
+ */
+
+/**
+ * @typedef SceneItemTransform
+ * @property {Number} sourceWidth
+ * @property {Number} sourceHeight
+ * @property {Number} positionX
+ * @property {Number} positionY
+ * @property {Number} rotation
+ * @property {Number} scaleX
+ * @property {Number} scaleY
+ * @property {Number} width
+ * @property {Number} height
+ * @property {Number} alignment
+ * @property {Number} boundsType
+ * @property {Number} boundsAlignment
+ * @property {Number} boundsWith
+ * @property {Number} boundsHeight
+ * @property {Number} cropLeft
+ * @property {Number} cropRight
+ * @property {Number} cropTop
+ * @property {Number} cropBottom
+ * @api typedefs
+ */
+
+/**
+ * @typedef SceneItem
+ * @property {Number} sceneItemId
+ * @property {Number} sceneItemIndex
+ * @property {Boolean} sceneItemEnabled
+ * @property {Boolean} sceneItemLocked
+ * @property {SceneItemTransform} sceneItemTransform
+ * @property {Number} sceneItemBlendMode
+ * @property {String} sourceName
+ * @property {Number} sourceType
+ * @property {String|undefined} inputKind
+ * @property {Boolean|undefined} isGroup
+ * @api typedefs
+ */
+
+/**
+ * @typedef Scene
+ * @property {String} sceneName
+ * @property {Number} sceneIndex
+ * @api typedefs
+ */
+
+/**
+ * @typedef Input
+ * @property {String} inputName
+ * @property {String} inputKind
+ * @property {String} unversionedInputKind
+ * @api typedefs
+ */
+
+/**
+ * @typedef Output
+ * @property {String} outputName
+ * @property {String} outputKind
+ * @property {Number} outputWidth
+ * @property {Number} outputHeight
+ * @property {Boolean} outputActive
+ * @property {Number} outputFlags
+ * @api typedefs
+ */
+
+/**
+ * @typedef ListPropertyItem
+ * @property {String} itemName
+ * @property {Boolean} itemEnabled
+ * @property {Number|String|undefined} itemValue
+ * @api typedefs
+ */
+
+/**
+ * @typedef Transition
+ * @property {String} transitionName
+ * @property {String} transitionKind
+ * @property {Boolean} transitionFixed
+ * @property {Boolean} transitionConfigurable
+ * @api typedefs
+ */
+
+/**
+ * @typedef Monitor
+ * @property {String} monitorName
+ * @property {Number} monitorIndex
+ * @property {Number} monitorWidth
+ * @property {Number} monitorHeight
+ * @property {Number} monitorPositionX
+ * @property {Number} monitorPositionY
+ * @api typedefs
+ */
+
 #include <memory>
 #include <obs.hpp>
 #include <util/platform.h>

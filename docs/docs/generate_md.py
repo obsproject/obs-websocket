@@ -52,6 +52,13 @@ dataFieldHeader = """
 | ---- | :---: | ----------- |
 """
 
+propertyHeader = """
+**Properties:**
+
+| Name | Type  |
+| ---- | :---: |
+"""
+
 fragments = []
 
 # Utils
@@ -131,6 +138,24 @@ def get_enums(enums):
                 ret += '\n---\n\n'
             else:
                 ret += '\n'
+    return ret
+
+def get_typedefs_toc(typedefs):
+    ret = ''
+    for typedef in typedefs:
+        nameFragment = get_fragment(typedef['name'], False)
+        ret += '- [{}](#{})\n'.format(typedef['name'], nameFragment)
+    return ret
+
+def get_typedefs(typedefs):
+    ret = ''
+    for typedef in typedefs:
+        ret += '## {}\n'.format(typedef['name'])
+        ret += propertyHeader
+        for property in typedef['properties']:
+            propertyType = property['propertyType'].replace('<', "&lt;").replace('>', "&gt;")
+            ret += '| {} | {} |\n'.format(property['propertyName'], propertyType)
+        ret +='\n'
     return ret
 
 def get_requests_toc(requests):
@@ -286,6 +311,14 @@ output += '\n'
 output += get_enums(protocol['enums'])
 logging.info('Inserted enums section.')
 
+# Generate typedefs MD
+output += read_file('partials/typedefsHeader.md')
+output += '\n'
+output += get_typedefs_toc(protocol['typedefs'])
+output += '\n'
+output += get_typedefs(protocol['typedefs'])
+logging.info('Inserted typedefs section.')
+
 # Generate events MD
 output += read_file('partials/eventsHeader.md')
 output += '\n'
@@ -306,7 +339,7 @@ if output.endswith('\n\n'):
     output = output[:-1]
 
 # Write new protocol MD
-with open('../generated/protocol.md', 'w') as f:
+with open('../generated/protocol.md', 'w', 1024, 'utf-8') as f:
     f.write(output)
 
 logging.info('Finished generating protocol.md.')

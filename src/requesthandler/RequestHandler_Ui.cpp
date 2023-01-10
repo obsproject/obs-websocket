@@ -161,7 +161,7 @@ RequestResult RequestHandler::OpenInputInteractDialog(const Request &request)
 /**
  * Gets a list of connected monitors and information about them.
  *
- * @responseField monitors | Array<Object> | a list of detected monitors with some information
+ * @responseField monitors | Array<Monitor> | a list of detected monitors with some information
  *
  * @requestType GetMonitorList
  * @complexity 2

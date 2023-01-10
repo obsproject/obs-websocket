@@ -53,7 +53,7 @@ void EventHandler::FilterRemoveMultiHandler(void *param, calldata_t *data)
  * A source's filter list has been reindexed.
  *
  * @dataField sourceName | String        | Name of the source
- * @dataField filters    | Array<Object> | Array of filter objects
+ * @dataField filters    | Array<Filter> | Array of filter objects
  *
  * @eventType SourceFilterListReindexed
  * @eventSubscription Filters
