@@ -1,12 +1,3 @@
-[submodule "deps/websocketpp"]
-	path = deps/websocketpp
-	url = https://github.com/zaphoyd/websocketpp.git
-[submodule "deps/asio"]
-	path = deps/asio
-	url = https://github.com/chriskohlhoff/asio.git
-[submodule "deps/json"]
-	path = deps/json
-	url = https://github.com/nlohmann/json.git
 [submodule "deps/qr"]
 	path = deps/qr
 	url = https://github.com/nayuki/QR-Code-generator.git
