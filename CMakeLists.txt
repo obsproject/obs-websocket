@@ -9,11 +9,7 @@ if(NOT ENABLE_WEBSOCKET OR NOT ENABLE_UI)
 endif()
 
 # Submodule deps check
-if(NOT
-   (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/deps/json/CMakeLists.txt
-    AND EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/deps/websocketpp/CMakeLists.txt
-    AND EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/deps/qr/cpp/QrCode.hpp
-    AND EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/deps/asio/asio/include/asio.hpp))
+if(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/deps/qr/cpp/QrCode.hpp)
   obs_status(FATAL_ERROR "obs-websocket submodule deps not available.")
 endif()
 
@@ -23,11 +19,14 @@ option(PLUGIN_TESTS "Enable plugin runtime tests" OFF)
 # Find Qt
 find_qt(COMPONENTS Core Widgets Svg Network)
 
-# Find nlohmann
-set(JSON_BuildTests
-    OFF
-    CACHE INTERNAL "")
-add_subdirectory(deps/json)
+# Find nlohmann JSON
+find_package(nlohmann_json 3 REQUIRED)
+
+# Find WebSocket++
+find_package(Websocketpp 0.8 REQUIRED)
+
+# Find Asio
+find_package(Asio 1.12.1 REQUIRED)
 
 # Tell websocketpp not to use system boost
 add_definitions(-DASIO_STANDALONE)
@@ -128,9 +127,6 @@ target_sources(
           deps/qr/cpp/QrCode.cpp
           deps/qr/cpp/QrCode.hpp)
 
-target_include_directories(obs-websocket PRIVATE "deps/asio/asio/include"
-                                                 "deps/websocketpp")
-
 target_link_libraries(
   obs-websocket
   PRIVATE OBS::libobs
@@ -139,7 +135,9 @@ target_link_libraries(
           Qt::Widgets
           Qt::Svg
           Qt::Network
-          nlohmann_json::nlohmann_json)
+          nlohmann_json::nlohmann_json
+          Websocketpp::Websocketpp
+          Asio::Asio)
 
 target_compile_features(obs-websocket PRIVATE cxx_std_17)
 
