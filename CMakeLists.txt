@@ -20,13 +20,6 @@ endif()
 # Plugin tests flag
 option(PLUGIN_TESTS "Enable plugin runtime tests" OFF)
 
-# Qt build stuff
-set(CMAKE_PREFIX_PATH "${QTDIR}")
-set(CMAKE_INCLUDE_CURRENT_DIR ON)
-set(CMAKE_AUTOMOC ON)
-set(CMAKE_AUTOUIC ON)
-set(CMAKE_AUTORCC ON) # For resources.qrc
-
 # Find Qt
 find_qt(COMPONENTS Core Widgets Svg Network)
 
@@ -46,6 +39,12 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/src/plugin-macros.h.in
 # Setup target
 add_library(obs-websocket MODULE)
 add_library(OBS::websocket ALIAS obs-websocket)
+
+set_target_properties(
+  obs-websocket
+  PROPERTIES AUTOMOC ON
+             AUTOUIC ON
+             AUTORCC ON)
 
 target_sources(
   obs-websocket
@@ -129,10 +128,8 @@ target_sources(
           deps/qr/cpp/QrCode.cpp
           deps/qr/cpp/QrCode.hpp)
 
-target_include_directories(
-  obs-websocket
-  PRIVATE ${Qt5Core_INCLUDES} ${Qt5Widgets_INCLUDES} ${Qt5Svg_INCLUDES}
-          ${Qt5Network_INCLUDES} "deps/asio/asio/include" "deps/websocketpp")
+target_include_directories(obs-websocket PRIVATE "deps/asio/asio/include"
+                                                 "deps/websocketpp")
 
 target_link_libraries(
   obs-websocket
