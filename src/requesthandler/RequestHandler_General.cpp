@@ -178,7 +178,7 @@ RequestResult RequestHandler::CallVendorRequest(const Request &request)
 
 	OBSDataAutoRelease requestData = obs_data_create();
 	if (request.Contains("requestData")) {
-		if (!request.ValidateOptionalObject("requestData", statusCode, comment))
+		if (!request.ValidateOptionalObject("requestData", statusCode, comment, true))
 			return RequestResult::Error(statusCode, comment);
 
 		requestData = Utils::Json::JsonToObsData(request.RequestData["requestData"]);
