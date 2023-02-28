@@ -772,294 +772,6 @@
       ]
     }
   ],
-  "typedefs": [
-    {
-      "name": "Filter",
-      "properties": [
-        {
-          "propertyType": "Boolean",
-          "propertyName": "filterEnabled"
-        },
-        {
-          "propertyType": "Number",
-          "propertyName": "filterIndex"
-        },
-        {
-          "propertyType": "String",
-          "propertyName": "filterKind"
-        },
-        {
-          "propertyType": "String",
-          "propertyName": "filterName"
-        },
-        {
-          "propertyType": "Object",
-          "propertyName": "filterSettings"
-        }
-      ]
-    },
-    {
-      "name": "MeterData",
-      "properties": [
-        {
-          "propertyType": "String",
-          "propertyName": "inputName"
-        },
-        {
-          "propertyType": "Array<Array<Number>>",
-          "propertyName": "inputLevelsMul"
-        }
-      ]
-    },
-    {
-      "name": "SceneItemTransform",
-      "properties": [
-        {
-          "propertyType": "Number",
-          "propertyName": "sourceWidth"
-        },
-        {
-          "propertyType": "Number",
-          "propertyName": "sourceHeight"
-        },
-        {
-          "propertyType": "Number",
-          "propertyName": "positionX"
-        },
-        {
-          "propertyType": "Number",
-          "propertyName": "positionY"
-        },
-        {
-          "propertyType": "Number",
-          "propertyName": "rotation"
-        },
-        {
-          "propertyType": "Number",
-          "propertyName": "scaleX"
-        },
-        {
-          "propertyType": "Number",
-          "propertyName": "scaleY"
-        },
-        {
-          "propertyType": "Number",
-          "propertyName": "width"
-        },
-        {
-          "propertyType": "Number",
-          "propertyName": "height"
-        },
-        {
-          "propertyType": "Number",
-          "propertyName": "alignment"
-        },
-        {
-          "propertyType": "Number",
-          "propertyName": "boundsType"
-        },
-        {
-          "propertyType": "Number",
-          "propertyName": "boundsAlignment"
-        },
-        {
-          "propertyType": "Number",
-          "propertyName": "boundsWith"
-        },
-        {
-          "propertyType": "Number",
-          "propertyName": "boundsHeight"
-        },
-        {
-          "propertyType": "Number",
-          "propertyName": "cropLeft"
-        },
-        {
-          "propertyType": "Number",
-          "propertyName": "cropRight"
-        },
-        {
-          "propertyType": "Number",
-          "propertyName": "cropTop"
-        },
-        {
-          "propertyType": "Number",
-          "propertyName": "cropBottom"
-        }
-      ]
-    },
-    {
-      "name": "SceneItem",
-      "properties": [
-        {
-          "propertyType": "Number",
-          "propertyName": "sceneItemId"
-        },
-        {
-          "propertyType": "Number",
-          "propertyName": "sceneItemIndex"
-        },
-        {
-          "propertyType": "Boolean",
-          "propertyName": "sceneItemEnabled"
-        },
-        {
-          "propertyType": "Boolean",
-          "propertyName": "sceneItemLocked"
-        },
-        {
-          "propertyType": "SceneItemTransform",
-          "propertyName": "sceneItemTransform"
-        },
-        {
-          "propertyType": "Number",
-          "propertyName": "sceneItemBlendMode"
-        },
-        {
-          "propertyType": "String",
-          "propertyName": "sourceName"
-        },
-        {
-          "propertyType": "Number",
-          "propertyName": "sourceType"
-        },
-        {
-          "propertyType": "String|undefined",
-          "propertyName": "inputKind"
-        },
-        {
-          "propertyType": "Boolean|undefined",
-          "propertyName": "isGroup"
-        }
-      ]
-    },
-    {
-      "name": "Scene",
-      "properties": [
-        {
-          "propertyType": "String",
-          "propertyName": "sceneName"
-        },
-        {
-          "propertyType": "Number",
-          "propertyName": "sceneIndex"
-        }
-      ]
-    },
-    {
-      "name": "Input",
-      "properties": [
-        {
-          "propertyType": "String",
-          "propertyName": "inputName"
-        },
-        {
-          "propertyType": "String",
-          "propertyName": "inputKind"
-        },
-        {
-          "propertyType": "String",
-          "propertyName": "unversionedInputKind"
-        }
-      ]
-    },
-    {
-      "name": "Output",
-      "properties": [
-        {
-          "propertyType": "String",
-          "propertyName": "outputName"
-        },
-        {
-          "propertyType": "String",
-          "propertyName": "outputKind"
-        },
-        {
-          "propertyType": "Number",
-          "propertyName": "outputWidth"
-        },
-        {
-          "propertyType": "Number",
-          "propertyName": "outputHeight"
-        },
-        {
-          "propertyType": "Boolean",
-          "propertyName": "outputActive"
-        },
-        {
-          "propertyType": "Number",
-          "propertyName": "outputFlags"
-        }
-      ]
-    },
-    {
-      "name": "ListPropertyItem",
-      "properties": [
-        {
-          "propertyType": "String",
-          "propertyName": "itemName"
-        },
-        {
-          "propertyType": "Boolean",
-          "propertyName": "itemEnabled"
-        },
-        {
-          "propertyType": "Number|String|undefined",
-          "propertyName": "itemValue"
-        }
-      ]
-    },
-    {
-      "name": "Transition",
-      "properties": [
-        {
-          "propertyType": "String",
-          "propertyName": "transitionName"
-        },
-        {
-          "propertyType": "String",
-          "propertyName": "transitionKind"
-        },
-        {
-          "propertyType": "Boolean",
-          "propertyName": "transitionFixed"
-        },
-        {
-          "propertyType": "Boolean",
-          "propertyName": "transitionConfigurable"
-        }
-      ]
-    },
-    {
-      "name": "Monitor",
-      "properties": [
-        {
-          "propertyType": "String",
-          "propertyName": "monitorName"
-        },
-        {
-          "propertyType": "Number",
-          "propertyName": "monitorIndex"
-        },
-        {
-          "propertyType": "Number",
-          "propertyName": "monitorWidth"
-        },
-        {
-          "propertyType": "Number",
-          "propertyName": "monitorHeight"
-        },
-        {
-          "propertyType": "Number",
-          "propertyName": "monitorPositionX"
-        },
-        {
-          "propertyType": "Number",
-          "propertyName": "monitorPositionY"
-        }
-      ]
-    }
-  ],
   "requests": [
     {
       "description": "Gets the value of a \"slot\" from the selected persistent data realm.",
@@ -1540,7 +1252,7 @@
       "responseFields": [
         {
           "valueName": "filters",
-          "valueType": "Array<Filter>",
+          "valueType": "Array<Object>",
           "valueDescription": "Array of filters"
         }
       ]
@@ -2176,7 +1888,7 @@
       "responseFields": [
         {
           "valueName": "inputs",
-          "valueType": "Array<Input>",
+          "valueType": "Array<Object>",
           "valueDescription": "Array of inputs"
         }
       ]
@@ -2840,7 +2552,7 @@
       "responseFields": [
         {
           "valueName": "propertyItems",
-          "valueType": "Array<ListPropertyItem>",
+          "valueType": "Array<Object>",
           "valueDescription": "Array of items in the list property"
         }
       ]
@@ -3145,7 +2857,7 @@
       "responseFields": [
         {
           "valueName": "outputs",
-          "valueType": "Array<Output>",
+          "valueType": "Array<Object>",
           "valueDescription": "Array of outputs"
         }
       ]
@@ -3461,7 +3173,7 @@
       "responseFields": [
         {
           "valueName": "sceneItems",
-          "valueType": "Array<SceneItem>",
+          "valueType": "Array<Object>",
           "valueDescription": "Array of scene items in the scene"
         }
       ]
@@ -3487,7 +3199,7 @@
       "responseFields": [
         {
           "valueName": "sceneItems",
-          "valueType": "Array<SceneItem>",
+          "valueType": "Array<Object>",
           "valueDescription": "Array of scene items in the group"
         }
       ]
@@ -3675,7 +3387,7 @@
       "responseFields": [
         {
           "valueName": "sceneItemTransform",
-          "valueType": "SceneItemTransform",
+          "valueType": "Object",
           "valueDescription": "Object containing scene item transform info"
         }
       ]
@@ -3707,7 +3419,7 @@
         },
         {
           "valueName": "sceneItemTransform",
-          "valueType": "Partial<SceneItemTransform>",
+          "valueType": "Object",
           "valueDescription": "Object containing scene item transform info to update",
           "valueRestrictions": null,
           "valueOptional": false,
@@ -4018,7 +3730,7 @@
         },
         {
           "valueName": "scenes",
-          "valueType": "Array<Scene>",
+          "valueType": "Array<Object>",
           "valueDescription": "Array of scenes"
         }
       ]
@@ -4554,7 +4266,7 @@
         },
         {
           "valueName": "transitions",
-          "valueType": "Array<Transition>",
+          "valueType": "Array<Object>",
           "valueDescription": "Array of transitions"
         }
       ]
@@ -4834,7 +4546,7 @@
       "responseFields": [
         {
           "valueName": "monitors",
-          "valueType": "Array<Monitor>",
+          "valueType": "Array<Object>",
           "valueDescription": "a list of detected monitors with some information"
         }
       ]
@@ -5032,7 +4744,7 @@
         },
         {
           "valueName": "filters",
-          "valueType": "Array<Filter>",
+          "valueType": "Array<Object>",
           "valueDescription": "Array of filter objects"
         }
       ]
@@ -5435,7 +5147,7 @@
       "dataFields": [
         {
           "valueName": "inputs",
-          "valueType": "Array<MeterData>",
+          "valueType": "Array<Object>",
           "valueDescription": "Array of active inputs with their associated volume levels"
         }
       ]
@@ -5682,7 +5394,7 @@
         },
         {
           "valueName": "sceneItems",
-          "valueType": "Array<SceneItem>",
+          "valueType": "Array<Object>",
           "valueDescription": "Array of scene item objects"
         }
       ]
@@ -5785,7 +5497,7 @@
         },
         {
           "valueName": "sceneItemTransform",
-          "valueType": "Partial<SceneItemTransform>",
+          "valueType": "Object",
           "valueDescription": "New transform/crop info of the scene item"
         }
       ]
@@ -5902,7 +5614,7 @@
       "dataFields": [
         {
           "valueName": "scenes",
-          "valueType": "Array<Scene>",
+          "valueType": "Array<Object>",
           "valueDescription": "Updated array of scenes"
         }
       ]
