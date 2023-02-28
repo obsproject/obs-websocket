@@ -228,7 +228,7 @@ void EventHandler::HandleSceneItemSelected(void *param, calldata_t *data)
  *
  * @dataField sceneName          | String | The name of the scene the item is in
  * @dataField sceneItemId        | Number | Numeric ID of the scene item
- * @dataField sceneItemTransform | Partial<SceneItemTransform> | New transform/crop info of the scene item
+ * @dataField sceneItemTransform | SceneItemTransform | New transform/crop info of the scene item
  *
  * @eventType SceneItemTransformChanged
  * @eventSubscription SceneItemTransformChanged
