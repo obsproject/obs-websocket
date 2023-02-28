@@ -20,6 +20,22 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include "RequestHandler.h"
 
 /**
+ * @typedef Input
+ * @property {String} inputName
+ * @property {String} inputKind
+ * @property {String} unversionedInputKind
+ * @api typedefs
+ */
+
+/**
+ * @typedef ListPropertyItem
+ * @property {String} itemName
+ * @property {Boolean} itemEnabled
+ * @property {Number|String|undefined} itemValue
+ * @api typedefs
+ */
+
+/**
  * Gets an array of all inputs in OBS.
  *
  * @requestField ?inputKind | String | Restrict the array to only inputs of the specified kind | All kinds included

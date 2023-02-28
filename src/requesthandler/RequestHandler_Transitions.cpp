@@ -22,6 +22,15 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include "RequestHandler.h"
 
 /**
+ * @typedef Transition
+ * @property {String} transitionName
+ * @property {String} transitionKind
+ * @property {Boolean} transitionFixed
+ * @property {Boolean} transitionConfigurable
+ * @api typedefs
+ */
+
+/**
  * Gets an array of all available transition kinds.
  *
  * Similar to `GetInputKindList`

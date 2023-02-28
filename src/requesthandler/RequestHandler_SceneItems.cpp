@@ -20,6 +20,44 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include "RequestHandler.h"
 
 /**
+ * @typedef SceneItemTransform
+ * @property {Number} sourceWidth
+ * @property {Number} sourceHeight
+ * @property {Number} positionX
+ * @property {Number} positionY
+ * @property {Number} rotation
+ * @property {Number} scaleX
+ * @property {Number} scaleY
+ * @property {Number} width
+ * @property {Number} height
+ * @property {Number} alignment
+ * @property {Number} boundsType
+ * @property {Number} boundsAlignment
+ * @property {Number} boundsWith
+ * @property {Number} boundsHeight
+ * @property {Number} cropLeft
+ * @property {Number} cropRight
+ * @property {Number} cropTop
+ * @property {Number} cropBottom
+ * @api typedefs
+ */
+
+/**
+ * @typedef SceneItem
+ * @property {Number} sceneItemId
+ * @property {Number} sceneItemIndex
+ * @property {Boolean} sceneItemEnabled
+ * @property {Boolean} sceneItemLocked
+ * @property {SceneItemTransform} sceneItemTransform
+ * @property {Number} sceneItemBlendMode
+ * @property {String} sourceName
+ * @property {Number} sourceType
+ * @property {String|undefined} inputKind
+ * @property {Boolean|undefined} isGroup
+ * @api typedefs
+ */
+
+/**
  * Gets a list of all scene items in a scene.
  *
  * Scenes only

@@ -19,6 +19,17 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include "RequestHandler.h"
 
+/**
+ * @typedef Output
+ * @property {String} outputName
+ * @property {String} outputKind
+ * @property {Number} outputWidth
+ * @property {Number} outputHeight
+ * @property {Boolean} outputActive
+ * @property {Number} outputFlags
+ * @api typedefs
+ */
+
 static bool VirtualCamAvailable()
 {
 	OBSDataAutoRelease privateData = obs_get_private_data();
