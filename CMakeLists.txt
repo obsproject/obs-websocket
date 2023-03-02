@@ -44,6 +44,10 @@ set_target_properties(
   PROPERTIES AUTOMOC ON
              AUTOUIC ON
              AUTORCC ON)
+set_property(
+    TARGET obs-websocket
+    APPEND
+    PROPERTY AUTORCC_OPTIONS --format-version 1)
 
 target_sources(
   obs-websocket
