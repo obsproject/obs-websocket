@@ -198,10 +198,7 @@ RequestResult RequestHandler::CreateSceneCollection(const Request &request)
 	if (std::find(sceneCollections.begin(), sceneCollections.end(), sceneCollectionName) != sceneCollections.end())
 		return RequestResult::Error(RequestStatus::ResourceAlreadyExists);
 
-	QMainWindow *mainWindow = static_cast<QMainWindow *>(obs_frontend_get_main_window());
-	bool success = false;
-	QMetaObject::invokeMethod(mainWindow, "AddSceneCollection", Qt::BlockingQueuedConnection, Q_RETURN_ARG(bool, success),
-				  Q_ARG(bool, true), Q_ARG(QString, QString::fromStdString(sceneCollectionName)));
+	bool success = obs_frontend_add_scene_collection(sceneCollectionName.c_str());
 	if (!success)
 		return RequestResult::Error(RequestStatus::ResourceCreationFailed, "Failed to create the scene collection.");
 
