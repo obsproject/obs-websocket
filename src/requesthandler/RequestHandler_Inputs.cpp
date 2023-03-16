@@ -149,7 +149,7 @@ RequestResult RequestHandler::CreateInput(const Request &request)
 
 	std::string inputName = request.RequestData["inputName"];
 	OBSSourceAutoRelease existingInput = obs_get_source_by_name(inputName.c_str());
-	if (existingInput)
+	if (existingInput && !obs_source_removed(existingInput))
 		return RequestResult::Error(RequestStatus::ResourceAlreadyExists, "A source already exists by that input name.");
 
 	std::string inputKind = request.RequestData["inputKind"];

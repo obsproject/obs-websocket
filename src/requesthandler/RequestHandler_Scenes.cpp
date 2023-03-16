@@ -202,7 +202,7 @@ RequestResult RequestHandler::CreateScene(const Request &request)
 	std::string sceneName = request.RequestData["sceneName"];
 
 	OBSSourceAutoRelease scene = obs_get_source_by_name(sceneName.c_str());
-	if (scene)
+	if (scene && !obs_source_removed(scene))
 		return RequestResult::Error(RequestStatus::ResourceAlreadyExists, "A source already exists by that scene name.");
 
 	obs_scene_t *createdScene = obs_scene_create(sceneName.c_str());
