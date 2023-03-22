@@ -564,7 +564,7 @@ RequestResult RequestHandler::GetStreamServiceSettings(const Request &)
  *
  * @requestType SetStreamServiceSettings
  * @complexity 4
- * @rpcVersion -1
+ * @rpcVersion 1
  * @initialVersion 5.0.0
  * @category config
  * @api requests
@@ -607,11 +607,13 @@ RequestResult RequestHandler::SetStreamServiceSettings(const Request &request)
 			return RequestResult::Error(
 				RequestStatus::ResourceCreationFailed,
 				"Failed to create the stream service with the requested streamServiceType. It may be an invalid type.");
-
+		PRAGMA_WARN_PUSH
+		PRAGMA_WARN_DEPRECATION
 		obs_frontend_set_streaming_service(newStreamService);
 	}
 
 	obs_frontend_save_streaming_service();
+	PRAGMA_WARN_POP
 
 	return RequestResult::Success();
 }
