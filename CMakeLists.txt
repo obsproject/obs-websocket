@@ -44,10 +44,11 @@ set_target_properties(
   PROPERTIES AUTOMOC ON
              AUTOUIC ON
              AUTORCC ON)
-set_property(
-    TARGET obs-websocket
-    APPEND
-    PROPERTY AUTORCC_OPTIONS --format-version 1)
+
+if(_QT_VERSION EQUAL 6 AND OS_WINDOWS)
+  set_target_properties(obs-websocket PROPERTIES AUTORCC_OPTIONS
+                                                 "--format-version;1")
+endif()
 
 target_sources(
   obs-websocket
