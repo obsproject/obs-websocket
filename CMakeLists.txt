@@ -145,8 +145,6 @@ target_compile_options(
     $<$<COMPILE_LANG_AND_ID:CXX,AppleClang,Clang>:-Wno-error=null-pointer-subtraction;-Wno-error=deprecated-declarations;-Wno-error=implicit-int-conversion;-Wno-error=shorten-64-to-32>
 )
 
-target_include_directories(obs-websocket PRIVATE deps/asio/asio/include deps/websocketpp)
-
 target_link_libraries(
   obs-websocket
   PRIVATE OBS::libobs
