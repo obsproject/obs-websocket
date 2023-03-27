@@ -32,8 +32,7 @@ find_package(Asio 1.12.1 REQUIRED)
 add_definitions(-DASIO_STANDALONE)
 
 # Configure files
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/src/plugin-macros.h.in
-               ${CMAKE_CURRENT_SOURCE_DIR}/src/plugin-macros.generated.h)
+configure_file(src/plugin-macros.h.in plugin-macros.generated.h)
 
 # Setup target
 add_library(obs-websocket MODULE)
@@ -48,6 +47,8 @@ set_target_properties(
 if(_QT_VERSION EQUAL 6 AND OS_WINDOWS)
   set_target_properties(obs-websocket PROPERTIES AUTORCC_OPTIONS "--format-version;1")
 endif()
+
+target_include_directories(obs-websocket PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 
 target_sources(
   obs-websocket

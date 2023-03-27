@@ -127,8 +127,8 @@ target_sources(
 
 target_sources(obs-websocket PRIVATE deps/qr/cpp/QrCode.cpp deps/qr/cpp/QrCode.hpp)
 
-configure_file(src/plugin-macros.h.in src/plugin-macros.generated.h)
-target_sources(obs-websocket PRIVATE src/plugin-macros.generated.h)
+configure_file(src/plugin-macros.h.in plugin-macros.generated.h)
+target_sources(obs-websocket PRIVATE plugin-macros.generated.h)
 
 target_compile_definitions(
   obs-websocket PRIVATE ASIO_STANDALONE $<$<BOOL:PLUGIN_TESTS>:PLUGIN_TESTS>

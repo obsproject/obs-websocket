@@ -23,7 +23,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <QTimer>
 
 #include "ConnectInfo.h"
-#include "../plugin-macros.generated.h"
+#include "plugin-macros.generated.h"
 
 #include "ui_SettingsDialog.h"
 

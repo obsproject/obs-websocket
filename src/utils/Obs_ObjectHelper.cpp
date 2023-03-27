@@ -21,7 +21,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include "Obs.h"
 #include "../obs-websocket.h"
-#include "../plugin-macros.generated.h"
+#include "plugin-macros.generated.h"
 
 json Utils::Obs::ObjectHelper::GetStats()
 {

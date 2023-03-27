@@ -18,4 +18,4 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 */
 
 #include "Obs.h"
-#include "../plugin-macros.generated.h"
+#include "plugin-macros.generated.h"

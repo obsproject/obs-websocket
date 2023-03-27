@@ -24,7 +24,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <atomic>
 #include <memory>
 
-#include "../../plugin-macros.generated.h"
+#include "plugin-macros.generated.h"
 
 class WebSocketSession;
 typedef std::shared_ptr<WebSocketSession> SessionPtr;

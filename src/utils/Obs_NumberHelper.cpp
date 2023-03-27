@@ -21,7 +21,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <util/util_uint64.h>
 
 #include "Obs.h"
-#include "../plugin-macros.generated.h"
+#include "plugin-macros.generated.h"
 
 uint64_t Utils::Obs::NumberHelper::GetOutputDuration(obs_output_t *output)
 {
