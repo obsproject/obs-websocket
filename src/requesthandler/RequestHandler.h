@@ -30,7 +30,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include "../websocketserver/rpc/WebSocketSession.h"
 #include "../obs-websocket.h"
 #include "../utils/Obs.h"
-#include "../plugin-macros.generated.h"
+#include "plugin-macros.generated.h"
 
 class RequestHandler;
 typedef RequestResult (RequestHandler::*RequestMethodHandler)(const Request &);

@@ -21,7 +21,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include <QtWidgets/QDialog>
 
-#include "../plugin-macros.generated.h"
+#include "plugin-macros.generated.h"
 
 #include "ui_ConnectInfo.h"
 

@@ -32,7 +32,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include "types/WebSocketOpCode.h"
 #include "../utils/Json.h"
 #include "../requesthandler/rpc/Request.h"
-#include "../plugin-macros.generated.h"
+#include "plugin-macros.generated.h"
 
 class WebSocketServer : QObject {
 	Q_OBJECT

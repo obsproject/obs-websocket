@@ -20,7 +20,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <algorithm>
 
 #include "Obs.h"
-#include "../plugin-macros.generated.h"
+#include "plugin-macros.generated.h"
 
 static std::vector<std::string> ConvertStringArray(char **array)
 {
