@@ -142,7 +142,7 @@ target_compile_options(
     $<$<PLATFORM_ID:Darwin,Linux,FreeBSD>:-Wall>
     $<$<COMPILE_LANG_AND_ID:CXX,GNU,AppleClang,Clang>:-Wno-error=float-conversion;-Wno-error=shadow>
     $<$<COMPILE_LANG_AND_ID:CXX,GNU>:-Wno-error=format-overflow;-Wno-error=int-conversion;-Wno-error=comment>
-    $<$<COMPILE_LANG_AND_ID:CXX,AppleClang,Clang>:-Wno-error=null-pointer-subtraction;-Wno-error=deprecated-declarations;-Wno-error=implicit-int-conversion;-Wno-error=shorten-64-to-32>
+    $<$<COMPILE_LANG_AND_ID:CXX,AppleClang,Clang>:-Wno-error=null-pointer-subtraction;-Wno-error=deprecated-declarations;-Wno-error=implicit-int-conversion;-Wno-error=shorten-64-to-32;-Wno-comma;-Wno-quoted-include-in-framework-header>
 )
 
 target_link_libraries(
