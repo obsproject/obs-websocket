@@ -1,3 +1,0 @@
-[submodule "deps/qr"]
-	path = deps/qr
-	url = https://github.com/nayuki/QR-Code-generator.git

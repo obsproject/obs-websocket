@@ -8,11 +8,6 @@ if(NOT ENABLE_WEBSOCKET OR NOT ENABLE_UI)
   return()
 endif()
 
-# Submodule deps check
-if(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/deps/qr/cpp/QrCode.hpp)
-  obs_status(FATAL_ERROR "obs-websocket submodule deps not available.")
-endif()
-
 # Plugin tests flag
 option(PLUGIN_TESTS "Enable plugin runtime tests" OFF)
 
@@ -21,6 +16,9 @@ find_qt(COMPONENTS Core Widgets Svg Network)
 
 # Find nlohmann JSON
 find_package(nlohmann_json 3 REQUIRED)
+
+# Find qrcodegencpp
+find_package(Libqrcodegencpp REQUIRED)
 
 # Find WebSocket++
 find_package(Websocketpp 0.8 REQUIRED)
@@ -127,9 +125,7 @@ target_sources(
           src/utils/Platform.h
           src/utils/Compat.cpp
           src/utils/Compat.h
-          src/utils/Utils.h
-          deps/qr/cpp/QrCode.cpp
-          deps/qr/cpp/QrCode.hpp)
+          src/utils/Utils.h)
 
 target_link_libraries(
   obs-websocket
@@ -141,7 +137,8 @@ target_link_libraries(
           Qt::Network
           nlohmann_json::nlohmann_json
           Websocketpp::Websocketpp
-          Asio::Asio)
+          Asio::Asio
+          Libqrcodegencpp::Libqrcodegencpp)
 
 target_compile_features(obs-websocket PRIVATE cxx_std_17)
 
