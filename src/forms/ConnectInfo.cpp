@@ -21,9 +21,9 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <QPainter>
 #include <QUrl>
 #include <obs-module.h>
+#include <qrcodegen.hpp>
 
 #include "ConnectInfo.h"
-#include "../../deps/qr/cpp/QrCode.hpp"
 #include "../obs-websocket.h"
 #include "../Config.h"
 #include "../utils/Platform.h"
