@@ -19,7 +19,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include "Json.h"
 #include "Platform.h"
-#include "../plugin-macros.generated.h"
+#include "plugin-macros.generated.h"
 
 bool Utils::Json::JsonArrayIsValidObsArray(const json &j)
 {

@@ -22,7 +22,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <QRandomGenerator>
 
 #include "Crypto.h"
-#include "../plugin-macros.generated.h"
+#include "plugin-macros.generated.h"
 
 static const char allowedChars[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 static const int allowedCharsCount = static_cast<int>(sizeof(allowedChars) - 1);

@@ -31,7 +31,7 @@ It is **highly recommended** to keep obs-websocket protected with a password aga
 
 ### Client software
 
-- [Macro Deck](https://www.macrodeck.org/)
+- [Macro Deck](https://macrodeck.org/)
 - [Touch Portal](https://www.touch-portal.com/)
 - [Twitchat](https://twitchat.fr/)
 - [OBS-web](https://github.com/Niek/obs-web) - hosted client at [obs-web.niek.tv/](http://obs-web.niek.tv/)
