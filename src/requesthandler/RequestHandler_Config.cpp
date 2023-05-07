@@ -599,9 +599,9 @@ RequestResult RequestHandler::SetStreamServiceSettings(const Request &request)
 
 		obs_service_update(currentStreamService, newStreamServiceSettings);
 	} else {
-		// TODO: This leaks memory. I have no idea why.
-		OBSService newStreamService = obs_service_create(requestedStreamServiceType.c_str(), "obs_websocket_custom_service",
-								 requestedStreamServiceSettings, nullptr);
+		OBSServiceAutoRelease newStreamService = obs_service_create(requestedStreamServiceType.c_str(),
+									    "obs_websocket_custom_service",
+									    requestedStreamServiceSettings, nullptr);
 		// TODO: Check service type here, instead of relying on service creation to fail.
 		if (!newStreamService)
 			return RequestResult::Error(
