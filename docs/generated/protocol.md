@@ -471,6 +471,7 @@ These are enumeration declarations, which are referenced throughout obs-websocke
   - [RequestStatus::UnknownRequestType](#requeststatusunknownrequesttype)
   - [RequestStatus::GenericError](#requeststatusgenericerror)
   - [RequestStatus::UnsupportedRequestBatchExecutionType](#requeststatusunsupportedrequestbatchexecutiontype)
+  - [RequestStatus::NotReady](#requeststatusnotready)
   - [RequestStatus::MissingRequestField](#requeststatusmissingrequestfield)
   - [RequestStatus::MissingRequestData](#requeststatusmissingrequestdata)
   - [RequestStatus::InvalidRequestField](#requeststatusinvalidrequestfield)
@@ -876,6 +877,18 @@ The request batch execution type is not supported.
 - Identifier Value: `206`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
+
+---
+
+### RequestStatus::NotReady
+
+The server is not ready to handle the request.
+
+Note: This usually occurs during OBS scene collection change or exit. Requests may be tried again after a delay if this code is given.
+
+- Identifier Value: `207`
+- Latest Supported RPC Version: `1`
+- Added in v5.3.0
 
 ---
 
