@@ -20,11 +20,6 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include "EventHandler.h"
 
 EventHandler::EventHandler()
-	: _obsLoaded(false),
-	  _inputVolumeMetersRef(0),
-	  _inputActiveStateChangedRef(0),
-	  _inputShowStateChangedRef(0),
-	  _sceneItemTransformChangedRef(0)
 {
 	blog_debug("[EventHandler::EventHandler] Setting up...");
 
@@ -67,9 +62,9 @@ void EventHandler::SetBroadcastCallback(EventHandler::BroadcastCallback cb)
 	_broadcastCallback = cb;
 }
 
-void EventHandler::SetObsLoadedCallback(EventHandler::ObsLoadedCallback cb)
+void EventHandler::SetObsReadyCallback(EventHandler::ObsReadyCallback cb)
 {
-	_obsLoadedCallback = cb;
+	_obsReadyCallback = cb;
 }
 
 // Function to increment refcounts for high volume event subscriptions
@@ -261,9 +256,6 @@ void EventHandler::OnFrontendEvent(enum obs_frontend_event event, void *private_
 {
 	auto eventHandler = static_cast<EventHandler *>(private_data);
 
-	if (!eventHandler->_obsLoaded.load() && event != OBS_FRONTEND_EVENT_FINISHED_LOADING)
-		return;
-
 	switch (event) {
 	// General
 	case OBS_FRONTEND_EVENT_FINISHED_LOADING:
@@ -283,7 +275,11 @@ void EventHandler::OnFrontendEvent(enum obs_frontend_event event, void *private_
 		}
 		obs_frontend_source_list_free(&transitions);
 	}
+		// Before ready update to allow event to broadcast
 		eventHandler->HandleCurrentSceneCollectionChanging();
+		eventHandler->_obsReady = false;
+		if (eventHandler->_obsReadyCallback)
+			eventHandler->_obsReadyCallback(false);
 		break;
 	case OBS_FRONTEND_EVENT_SCENE_COLLECTION_CHANGED: {
 		obs_frontend_source_list transitions = {};
@@ -294,6 +290,9 @@ void EventHandler::OnFrontendEvent(enum obs_frontend_event event, void *private_
 		}
 		obs_frontend_source_list_free(&transitions);
 	}
+		eventHandler->_obsReady = true;
+		if (eventHandler->_obsReadyCallback)
+			eventHandler->_obsReadyCallback(true);
 		eventHandler->HandleCurrentSceneCollectionChanged();
 		break;
 	case OBS_FRONTEND_EVENT_SCENE_COLLECTION_LIST_CHANGED:
@@ -430,30 +429,6 @@ void EventHandler::FrontendFinishedLoadingMultiHandler()
 	blog_debug(
 		"[EventHandler::FrontendFinishedLoadingMultiHandler] OBS has finished loading. Connecting final handlers and enabling events...");
 
-	// Connect source signals and enable events only after OBS has fully loaded (to reduce extra logging).
-	_obsLoaded.store(true);
-
-	// In the case that plugins become hotloadable, this will have to go back into `EventHandler::EventHandler()`
-	// Enumerate inputs and connect each one
-	{
-		auto enumInputs = [](void *param, obs_source_t *source) {
-			auto eventHandler = static_cast<EventHandler *>(param);
-			eventHandler->ConnectSourceSignals(source);
-			return true;
-		};
-		obs_enum_sources(enumInputs, this);
-	}
-
-	// Enumerate scenes and connect each one
-	{
-		auto enumScenes = [](void *param, obs_source_t *source) {
-			auto eventHandler = static_cast<EventHandler *>(param);
-			eventHandler->ConnectSourceSignals(source);
-			return true;
-		};
-		obs_enum_scenes(enumScenes, this);
-	}
-
 	// Enumerate all scene transitions and connect each one
 	{
 		obs_frontend_source_list transitions = {};
@@ -465,41 +440,23 @@ void EventHandler::FrontendFinishedLoadingMultiHandler()
 		obs_frontend_source_list_free(&transitions);
 	}
 
-	blog_debug("[EventHandler::FrontendFinishedLoadingMultiHandler] Finished.");
+	_obsReady = true;
+	if (_obsReadyCallback)
+		_obsReadyCallback(true);
 
-	if (_obsLoadedCallback)
-		_obsLoadedCallback();
+	blog_debug("[EventHandler::FrontendFinishedLoadingMultiHandler] Finished.");
 }
 
 void EventHandler::FrontendExitMultiHandler()
 {
-	HandleExitStarted();
-
 	blog_debug("[EventHandler::FrontendExitMultiHandler] OBS is unloading. Disabling events...");
 
+	HandleExitStarted();
+
 	// Disconnect source signals and disable events when OBS starts unloading (to reduce extra logging).
-	_obsLoaded.store(false);
-
-	// In the case that plugins become hotloadable, this will have to go back into `EventHandler::~EventHandler()`
-	// Enumerate inputs and disconnect each one
-	{
-		auto enumInputs = [](void *param, obs_source_t *source) {
-			auto eventHandler = static_cast<EventHandler *>(param);
-			eventHandler->DisconnectSourceSignals(source);
-			return true;
-		};
-		obs_enum_sources(enumInputs, this);
-	}
-
-	// Enumerate scenes and disconnect each one
-	{
-		auto enumScenes = [](void *param, obs_source_t *source) {
-			auto eventHandler = static_cast<EventHandler *>(param);
-			eventHandler->DisconnectSourceSignals(source);
-			return true;
-		};
-		obs_enum_scenes(enumScenes, this);
-	}
+	_obsReady = false;
+	if (_obsReadyCallback)
+		_obsReadyCallback(false);
 
 	// Enumerate all scene transitions and disconnect each one
 	{
@@ -519,10 +476,6 @@ void EventHandler::FrontendExitMultiHandler()
 void EventHandler::SourceCreatedMultiHandler(void *param, calldata_t *data)
 {
 	auto eventHandler = static_cast<EventHandler *>(param);
-
-	// Don't react to signals until OBS has finished loading
-	if (!eventHandler->_obsLoaded.load())
-		return;
 
 	obs_source_t *source = GetCalldataPointer<obs_source_t>(data, "source");
 	if (!source)
@@ -556,10 +509,6 @@ void EventHandler::SourceDestroyedMultiHandler(void *param, calldata_t *data)
 	// Disconnect all signals from the source
 	eventHandler->DisconnectSourceSignals(source);
 
-	// Don't react to signals if OBS is unloading
-	if (!eventHandler->_obsLoaded.load())
-		return;
-
 	switch (obs_source_get_type(source)) {
 	case OBS_SOURCE_TYPE_INPUT:
 		// Only emit removed if the input has not already been removed. This is the case when removing the last scene item of an input.
@@ -582,9 +531,6 @@ void EventHandler::SourceRemovedMultiHandler(void *param, calldata_t *data)
 {
 	auto eventHandler = static_cast<EventHandler *>(param);
 
-	if (!eventHandler->_obsLoaded.load())
-		return;
-
 	obs_source_t *source = GetCalldataPointer<obs_source_t>(data, "source");
 	if (!source)
 		return;
@@ -604,9 +550,6 @@ void EventHandler::SourceRemovedMultiHandler(void *param, calldata_t *data)
 void EventHandler::SourceRenamedMultiHandler(void *param, calldata_t *data)
 {
 	auto eventHandler = static_cast<EventHandler *>(param);
-
-	if (!eventHandler->_obsLoaded.load())
-		return;
 
 	obs_source_t *source = GetCalldataPointer<obs_source_t>(data, "source");
 	if (!source)

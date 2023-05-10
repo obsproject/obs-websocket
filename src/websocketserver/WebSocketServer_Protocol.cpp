@@ -209,13 +209,17 @@ void WebSocketServer::ProcessMessage(SessionPtr session, WebSocketServer::Proces
 			return;
 		}
 
-		RequestHandler requestHandler(session);
-
 		std::string requestType = payloadData["requestType"];
-		json requestData = payloadData["requestData"];
-		Request request(requestType, requestData);
+		RequestResult requestResult;
+		if (_obsReady) {
+			json requestData = payloadData["requestData"];
+			Request request(requestType, requestData);
 
-		RequestResult requestResult = requestHandler.ProcessRequest(request);
+			RequestHandler requestHandler(session);
+			requestResult = requestHandler.ProcessRequest(request);
+		} else {
+			requestResult = RequestResult::Error(RequestStatus::NotReady, "OBS is not ready to perform the request.");
+		}
 
 		json resultPayloadData;
 		resultPayloadData["requestType"] = requestType;
@@ -303,21 +307,33 @@ void WebSocketServer::ProcessMessage(SessionPtr session, WebSocketServer::Proces
 		}
 
 		std::vector<json> requests = payloadData["requests"];
+		std::vector<RequestResult> resultsVector;
+		if (_obsReady) {
+			std::vector<RequestBatchRequest> requestsVector;
+			for (auto &requestJson : requests) {
+				if (!requestJson["requestType"].is_string())
+					requestJson["requestType"] =
+						""; // Workaround for what would otherwise be extensive additional logic for a rare edge case
+				std::string requestType = requestJson["requestType"];
+				json requestData = requestJson["requestData"];
+				json inputVariables = requestJson["inputVariables"];
+				json outputVariables = requestJson["outputVariables"];
+				requestsVector.emplace_back(requestType, requestData, executionType, inputVariables,
+							    outputVariables);
+			}
 
-		std::vector<RequestBatchRequest> requestsVector;
-		for (auto &requestJson : requests) {
-			if (!requestJson["requestType"].is_string())
-				requestJson["requestType"] =
-					""; // Workaround for what would otherwise be extensive additional logic for a rare edge case
-			std::string requestType = requestJson["requestType"];
-			json requestData = requestJson["requestData"];
-			json inputVariables = requestJson["inputVariables"];
-			json outputVariables = requestJson["outputVariables"];
-			requestsVector.emplace_back(requestType, requestData, executionType, inputVariables, outputVariables);
+			resultsVector = RequestBatchHandler::ProcessRequestBatch(
+				_threadPool, session, executionType, requestsVector, payloadData["variables"], haltOnFailure);
+		} else {
+			// I lowkey hate this, but whatever
+			if (haltOnFailure) {
+				resultsVector.emplace_back(RequestStatus::NotReady, "OBS is not ready to perform the request.");
+			} else {
+				for (size_t i = 0; i < requests.size(); i++)
+					resultsVector.emplace_back(RequestStatus::NotReady,
+								   "OBS is not ready to perform the request.");
+			}
 		}
-
-		auto resultsVector = RequestBatchHandler::ProcessRequestBatch(_threadPool, session, executionType, requestsVector,
-									      payloadData["variables"], haltOnFailure);
 
 		size_t i = 0;
 		std::vector<json> results;
@@ -342,7 +358,7 @@ void WebSocketServer::ProcessMessage(SessionPtr session, WebSocketServer::Proces
 void WebSocketServer::BroadcastEvent(uint64_t requiredIntent, const std::string &eventType, const json &eventData,
 				     uint8_t rpcVersion)
 {
-	if (!_server.is_listening())
+	if (!_server.is_listening() || !_obsReady)
 		return;
 
 	_threadPool.start(Utils::Compat::CreateFunctionRunnable([=]() {

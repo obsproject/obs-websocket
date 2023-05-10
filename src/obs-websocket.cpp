@@ -89,7 +89,24 @@ bool obs_module_load(void)
 	return true;
 }
 
-void obs_module_unload()
+#ifdef PLUGIN_TESTS
+void test_register_vendor();
+#endif
+
+void obs_module_post_load(void)
+{
+#ifdef PLUGIN_TESTS
+	test_register_vendor();
+#endif
+
+	// Server will accept clients, but requests and events will not be served until FINISHED_LOADING occurs
+	if (_config->ServerEnabled) {
+		blog(LOG_INFO, "[obs_module_post_load] WebSocket server is enabled, starting...");
+		_webSocketServer->Start();
+	}
+}
+
+void obs_module_unload(void)
 {
 	blog(LOG_INFO, "[obs_module_unload] Shutting down...");
 
@@ -193,18 +210,18 @@ static void test_vendor_request_cb(obs_data_t *requestData, obs_data_t *response
 	obs_websocket_vendor_emit_event(priv_data, "TestEvent", requestData);
 }
 
-void obs_module_post_load()
+void test_register_vendor()
 {
-	blog(LOG_INFO, "[obs_module_post_load] Post load started.");
+	blog(LOG_INFO, "[test_register_vendor] Registering test vendor...");
 
 	// Test plugin API version fetch
 	uint apiVersion = obs_websocket_get_api_version();
-	blog(LOG_INFO, "[obs_module_post_load] obs-websocket plugin API version: %u", apiVersion);
+	blog(LOG_INFO, "[test_register_vendor] obs-websocket plugin API version: %u", apiVersion);
 
 	// Test calling obs-websocket requests
 	struct obs_websocket_request_response *response = obs_websocket_call_request("GetVersion");
 	if (response) {
-		blog(LOG_INFO, "[obs_module_post_load] Called GetVersion. Status Code: %u | Comment: %s | Response Data: %s",
+		blog(LOG_INFO, "[test_register_vendor] Called GetVersion. Status Code: %u | Comment: %s | Response Data: %s",
 		     response->status_code, response->comment, response->response_data);
 		obs_websocket_request_response_free(response);
 	}
@@ -212,17 +229,17 @@ void obs_module_post_load()
 	// Test vendor creation
 	auto vendor = obs_websocket_register_vendor("obs-websocket-test");
 	if (!vendor) {
-		blog(LOG_WARNING, "[obs_module_post_load] Failed to create vendor!");
+		blog(LOG_WARNING, "[test_register_vendor] Failed to create vendor!");
 		return;
 	}
 
 	// Test vendor request registration
 	if (!obs_websocket_vendor_register_request(vendor, "TestRequest", test_vendor_request_cb, vendor)) {
-		blog(LOG_WARNING, "[obs_module_post_load] Failed to register vendor request!");
+		blog(LOG_WARNING, "[test_register_vendor] Failed to register vendor request!");
 		return;
 	}
 
-	blog(LOG_INFO, "[obs_module_post_load] Post load completed.");
+	blog(LOG_INFO, "[test_register_vendor] Post load completed.");
 }
 
 #endif

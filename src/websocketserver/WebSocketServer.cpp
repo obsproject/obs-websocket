@@ -31,7 +31,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include "../utils/Platform.h"
 #include "../utils/Compat.h"
 
-WebSocketServer::WebSocketServer() : QObject(nullptr), _sessions()
+WebSocketServer::WebSocketServer() : QObject(nullptr)
 {
 	_server.get_alog().clear_channels(websocketpp::log::alevel::all);
 	_server.get_elog().clear_channels(websocketpp::log::elevel::all);
@@ -52,7 +52,7 @@ WebSocketServer::WebSocketServer() : QObject(nullptr), _sessions()
 	eventHandler->SetBroadcastCallback(std::bind(&WebSocketServer::BroadcastEvent, this, std::placeholders::_1,
 						     std::placeholders::_2, std::placeholders::_3, std::placeholders::_4));
 
-	eventHandler->SetObsLoadedCallback(std::bind(&WebSocketServer::onObsLoaded, this));
+	eventHandler->SetObsReadyCallback(std::bind(&WebSocketServer::onObsReady, this, std::placeholders::_1));
 }
 
 WebSocketServer::~WebSocketServer()
@@ -205,18 +205,9 @@ std::vector<WebSocketServer::WebSocketSessionState> WebSocketServer::GetWebSocke
 	return webSocketSessions;
 }
 
-void WebSocketServer::onObsLoaded()
+void WebSocketServer::onObsReady(bool ready)
 {
-	auto conf = GetConfig();
-	if (!conf) {
-		blog(LOG_ERROR, "[WebSocketServer::onObsLoaded] Unable to retreive config!");
-		return;
-	}
-
-	if (conf->ServerEnabled) {
-		blog(LOG_INFO, "[WebSocketServer::onObsLoaded] WebSocket server is enabled, starting...");
-		Start();
-	}
+	_obsReady = ready;
 }
 
 bool WebSocketServer::onValidate(websocketpp::connection_hdl hdl)

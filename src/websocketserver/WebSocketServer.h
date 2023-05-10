@@ -77,7 +77,7 @@ private:
 
 	void ServerRunner();
 
-	void onObsLoaded();
+	void onObsReady(bool loaded);
 	bool onValidate(websocketpp::connection_hdl hdl);
 	void onOpen(websocketpp::connection_hdl hdl);
 	void onClose(websocketpp::connection_hdl hdl);
@@ -96,4 +96,6 @@ private:
 
 	std::mutex _sessionMutex;
 	std::map<websocketpp::connection_hdl, SessionPtr, std::owner_less<websocketpp::connection_hdl>> _sessions;
+
+	std::atomic<bool> _obsReady = false;
 };

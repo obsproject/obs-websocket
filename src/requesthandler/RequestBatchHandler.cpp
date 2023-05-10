@@ -31,17 +31,13 @@ struct SerialFrameBatch {
 	json &variables;
 	bool haltOnFailure;
 
-	size_t frameCount;
-	size_t sleepUntilFrame;
+	size_t frameCount = 0;
+	size_t sleepUntilFrame = 0;
 	std::mutex conditionMutex;
 	std::condition_variable condition;
 
 	SerialFrameBatch(RequestHandler &requestHandler, json &variables, bool haltOnFailure)
-		: requestHandler(requestHandler),
-		  variables(variables),
-		  haltOnFailure(haltOnFailure),
-		  frameCount(0),
-		  sleepUntilFrame(0)
+		: requestHandler(requestHandler), variables(variables), haltOnFailure(haltOnFailure)
 	{
 	}
 };

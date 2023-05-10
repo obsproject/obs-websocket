@@ -34,25 +34,26 @@ public:
 	EventHandler();
 	~EventHandler();
 
-	typedef std::function<void(uint64_t, std::string, json, uint8_t)> BroadcastCallback;
+	typedef std::function<void(uint64_t, std::string, json, uint8_t)>
+		BroadcastCallback; // uint64_t requiredIntent, std::string eventType, json eventData, uint8_t rpcVersion
 	void SetBroadcastCallback(BroadcastCallback cb);
-	typedef std::function<void()> ObsLoadedCallback;
-	void SetObsLoadedCallback(ObsLoadedCallback cb);
+	typedef std::function<void(bool)> ObsReadyCallback; // bool ready
+	void SetObsReadyCallback(ObsReadyCallback cb);
 
 	void ProcessSubscription(uint64_t eventSubscriptions);
 	void ProcessUnsubscription(uint64_t eventSubscriptions);
 
 private:
 	BroadcastCallback _broadcastCallback;
-	ObsLoadedCallback _obsLoadedCallback;
+	ObsReadyCallback _obsReadyCallback;
 
-	std::atomic<bool> _obsLoaded;
+	std::atomic<bool> _obsReady = false;
 
 	std::unique_ptr<Utils::Obs::VolumeMeter::Handler> _inputVolumeMetersHandler;
-	std::atomic<uint64_t> _inputVolumeMetersRef;
-	std::atomic<uint64_t> _inputActiveStateChangedRef;
-	std::atomic<uint64_t> _inputShowStateChangedRef;
-	std::atomic<uint64_t> _sceneItemTransformChangedRef;
+	std::atomic<uint64_t> _inputVolumeMetersRef = 0;
+	std::atomic<uint64_t> _inputActiveStateChangedRef = 0;
+	std::atomic<uint64_t> _inputShowStateChangedRef = 0;
+	std::atomic<uint64_t> _sceneItemTransformChangedRef = 0;
 
 	void ConnectSourceSignals(obs_source_t *source);
 	void DisconnectSourceSignals(obs_source_t *source);
