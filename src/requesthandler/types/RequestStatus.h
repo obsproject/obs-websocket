@@ -103,6 +103,19 @@ namespace RequestStatus {
 		* @api enums
 		*/
 		UnsupportedRequestBatchExecutionType = 206,
+		/**
+		* The server is not ready to handle the request.
+		*
+		* Note: This usually occurs during OBS scene collection change or exit. Requests may be tried again after a delay if this code is given.
+		*
+		* @enumIdentifier NotReady
+		* @enumValue 207
+		* @enumType RequestStatus
+		* @rpcVersion -1
+		* @initialVersion 5.3.0
+		* @api enums
+		*/
+		NotReady = 207,
 
 		/**
 		* A required request field is missing.
