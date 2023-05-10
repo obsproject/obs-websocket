@@ -269,7 +269,7 @@ void EventHandler::OnFrontendEvent(enum obs_frontend_event event, void *private_
 	case OBS_FRONTEND_EVENT_FINISHED_LOADING:
 		eventHandler->FrontendFinishedLoadingMultiHandler();
 		break;
-	case OBS_FRONTEND_EVENT_EXIT:
+	case OBS_FRONTEND_EVENT_SCRIPTING_SHUTDOWN:
 		eventHandler->FrontendExitMultiHandler();
 		break;
 
