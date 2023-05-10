@@ -238,6 +238,14 @@
           "enumValue": 206
         },
         {
+          "description": "The server is not ready to handle the request.\n\nNote: This usually occurs during OBS scene collection change or exit. Requests may be tried again after a delay if this code is given.",
+          "enumIdentifier": "NotReady",
+          "rpcVersion": "1",
+          "deprecated": false,
+          "initialVersion": "5.3.0",
+          "enumValue": 207
+        },
+        {
           "description": "A required request field is missing.",
           "enumIdentifier": "MissingRequestField",
           "rpcVersion": "1",
