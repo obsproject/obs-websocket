@@ -182,6 +182,7 @@ const std::unordered_map<std::string, RequestMethodHandler> RequestHandler::_han
 	{"TriggerMediaInputAction", &RequestHandler::TriggerMediaInputAction},
 
 	// Ui
+	{"CloseMainWindow", &RequestHandler::CloseMainWindow},
 	{"GetStudioModeEnabled", &RequestHandler::GetStudioModeEnabled},
 	{"SetStudioModeEnabled", &RequestHandler::SetStudioModeEnabled},
 	{"OpenInputPropertiesDialog", &RequestHandler::OpenInputPropertiesDialog},
