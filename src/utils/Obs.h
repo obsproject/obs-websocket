@@ -72,7 +72,7 @@ enum ObsOutputState {
 	*
 	* @enumIdentifier OBS_WEBSOCKET_OUTPUT_UNKNOWN
 	* @enumType ObsOutputState
-	* @rpcVersion 1
+	* @rpcVersion -1
 	* @initialVersion 5.0.0
 	* @api enums
 	*/
@@ -82,7 +82,7 @@ enum ObsOutputState {
 	*
 	* @enumIdentifier OBS_WEBSOCKET_OUTPUT_STARTING
 	* @enumType ObsOutputState
-	* @rpcVersion 1
+	* @rpcVersion -1
 	* @initialVersion 5.0.0
 	* @api enums
 	*/
@@ -92,7 +92,7 @@ enum ObsOutputState {
 	*
 	* @enumIdentifier OBS_WEBSOCKET_OUTPUT_STARTED
 	* @enumType ObsOutputState
-	* @rpcVersion 1
+	* @rpcVersion -1
 	* @initialVersion 5.0.0
 	* @api enums
 	*/
@@ -102,7 +102,7 @@ enum ObsOutputState {
 	*
 	* @enumIdentifier OBS_WEBSOCKET_OUTPUT_STOPPING
 	* @enumType ObsOutputState
-	* @rpcVersion 1
+	* @rpcVersion -1
 	* @initialVersion 5.0.0
 	* @api enums
 	*/
@@ -112,7 +112,7 @@ enum ObsOutputState {
 	*
 	* @enumIdentifier OBS_WEBSOCKET_OUTPUT_STOPPED
 	* @enumType ObsOutputState
-	* @rpcVersion 1
+	* @rpcVersion -1
 	* @initialVersion 5.0.0
 	* @api enums
 	*/
@@ -122,7 +122,7 @@ enum ObsOutputState {
 	*
 	* @enumIdentifier OBS_WEBSOCKET_OUTPUT_RECONNECTING
 	* @enumType ObsOutputState
-	* @rpcVersion 1
+	* @rpcVersion -1
 	* @initialVersion 5.0.0
 	* @api enums
 	*/
@@ -132,7 +132,7 @@ enum ObsOutputState {
 	*
 	* @enumIdentifier OBS_WEBSOCKET_OUTPUT_RECONNECTED
 	* @enumType ObsOutputState
-	* @rpcVersion 1
+	* @rpcVersion -1
 	* @initialVersion 5.1.0
 	* @api enums
 	*/
@@ -142,7 +142,7 @@ enum ObsOutputState {
 	*
 	* @enumIdentifier OBS_WEBSOCKET_OUTPUT_PAUSED
 	* @enumType ObsOutputState
-	* @rpcVersion 1
+	* @rpcVersion -1
 	* @initialVersion 5.1.0
 	* @api enums
 	*/
@@ -152,7 +152,7 @@ enum ObsOutputState {
 	*
 	* @enumIdentifier OBS_WEBSOCKET_OUTPUT_RESUMED
 	* @enumType ObsOutputState
-	* @rpcVersion 1
+	* @rpcVersion -1
 	* @initialVersion 5.0.0
 	* @api enums
 	*/
@@ -176,7 +176,7 @@ enum ObsMediaInputAction {
 	*
 	* @enumIdentifier OBS_WEBSOCKET_MEDIA_INPUT_ACTION_NONE
 	* @enumType ObsMediaInputAction
-	* @rpcVersion 1
+	* @rpcVersion -1
 	* @initialVersion 5.0.0
 	* @api enums
 	*/
@@ -186,7 +186,7 @@ enum ObsMediaInputAction {
 	*
 	* @enumIdentifier OBS_WEBSOCKET_MEDIA_INPUT_ACTION_PLAY
 	* @enumType ObsMediaInputAction
-	* @rpcVersion 1
+	* @rpcVersion -1
 	* @initialVersion 5.0.0
 	* @api enums
 	*/
@@ -196,7 +196,7 @@ enum ObsMediaInputAction {
 	*
 	* @enumIdentifier OBS_WEBSOCKET_MEDIA_INPUT_ACTION_PAUSE
 	* @enumType ObsMediaInputAction
-	* @rpcVersion 1
+	* @rpcVersion -1
 	* @initialVersion 5.0.0
 	* @api enums
 	*/
@@ -206,7 +206,7 @@ enum ObsMediaInputAction {
 	*
 	* @enumIdentifier OBS_WEBSOCKET_MEDIA_INPUT_ACTION_STOP
 	* @enumType ObsMediaInputAction
-	* @rpcVersion 1
+	* @rpcVersion -1
 	* @initialVersion 5.0.0
 	* @api enums
 	*/
@@ -216,7 +216,7 @@ enum ObsMediaInputAction {
 	*
 	* @enumIdentifier OBS_WEBSOCKET_MEDIA_INPUT_ACTION_RESTART
 	* @enumType ObsMediaInputAction
-	* @rpcVersion 1
+	* @rpcVersion -1
 	* @initialVersion 5.0.0
 	* @api enums
 	*/
@@ -226,7 +226,7 @@ enum ObsMediaInputAction {
 	*
 	* @enumIdentifier OBS_WEBSOCKET_MEDIA_INPUT_ACTION_NEXT
 	* @enumType ObsMediaInputAction
-	* @rpcVersion 1
+	* @rpcVersion -1
 	* @initialVersion 5.0.0
 	* @api enums
 	*/
@@ -236,7 +236,7 @@ enum ObsMediaInputAction {
 	*
 	* @enumIdentifier OBS_WEBSOCKET_MEDIA_INPUT_ACTION_PREVIOUS
 	* @enumType ObsMediaInputAction
-	* @rpcVersion 1
+	* @rpcVersion -1
 	* @initialVersion 5.0.0
 	* @api enums
 	*/
