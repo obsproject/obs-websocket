@@ -82,7 +82,7 @@ void WebSocketServer::ProcessMessage(SessionPtr session, WebSocketServer::Proces
 	}
 
 	// Only `Identify` is allowed when not identified
-	if (!session->IsIdentified() && opCode != 1) {
+	if (!session->IsIdentified() && opCode != WebSocketOpCode::Identify) {
 		ret.closeCode = WebSocketCloseCode::NotIdentified;
 		ret.closeReason = "You attempted to send a non-Identify message while not identified.";
 		return;
@@ -146,9 +146,8 @@ void WebSocketServer::ProcessMessage(SessionPtr session, WebSocketServer::Proces
 		session->SetRpcVersion(requestedRpcVersion);
 
 		SetSessionParameters(session, ret, payloadData);
-		if (ret.closeCode != WebSocketCloseCode::DontClose) {
+		if (ret.closeCode != WebSocketCloseCode::DontClose)
 			return;
-		}
 
 		// Increment refs for event subscriptions
 		auto eventHandler = GetEventHandler();
@@ -178,9 +177,8 @@ void WebSocketServer::ProcessMessage(SessionPtr session, WebSocketServer::Proces
 		eventHandler->ProcessUnsubscription(session->EventSubscriptions());
 
 		SetSessionParameters(session, ret, payloadData);
-		if (ret.closeCode != WebSocketCloseCode::DontClose) {
+		if (ret.closeCode != WebSocketCloseCode::DontClose)
 			return;
-		}
 
 		// Increment refs for new subscriptions
 		eventHandler->ProcessSubscription(session->EventSubscriptions());
@@ -377,19 +375,16 @@ void WebSocketServer::BroadcastEvent(uint64_t requiredIntent, const std::string 
 		// Recurse connected sessions and send the event to suitable sessions.
 		std::unique_lock<std::mutex> lock(_sessionMutex);
 		for (auto &it : _sessions) {
-			if (!it.second->IsIdentified()) {
+			if (!it.second->IsIdentified())
 				continue;
-			}
-			if (rpcVersion && it.second->RpcVersion() != rpcVersion) {
+			if (rpcVersion && it.second->RpcVersion() != rpcVersion)
 				continue;
-			}
 			if ((it.second->EventSubscriptions() & requiredIntent) != 0) {
 				websocketpp::lib::error_code errorCode;
 				switch (it.second->Encoding()) {
 				case WebSocketEncoding::Json:
-					if (messageJson.empty()) {
+					if (messageJson.empty())
 						messageJson = eventMessage.dump();
-					}
 					_server.send((websocketpp::connection_hdl)it.first, messageJson,
 						     websocketpp::frame::opcode::text, errorCode);
 					it.second->IncrementOutgoingMessages();

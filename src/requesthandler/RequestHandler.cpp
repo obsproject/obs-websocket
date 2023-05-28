@@ -220,9 +220,8 @@ RequestResult RequestHandler::ProcessRequest(const Request &request)
 std::vector<std::string> RequestHandler::GetRequestList()
 {
 	std::vector<std::string> ret;
-	for (auto const &[key, val] : _handlerMap) {
+	for (auto const &[key, val] : _handlerMap)
 		ret.push_back(key);
-	}
 
 	return ret;
 }

@@ -158,9 +158,8 @@ void WebSocketServer::Stop()
 	_threadPool.waitForDone();
 
 	// This can delay the thread that it is running on. Bad but kinda required.
-	while (_sessions.size() > 0) {
+	while (_sessions.size() > 0)
 		std::this_thread::sleep_for(std::chrono::milliseconds(10));
-	}
 
 	_serverThread.join();
 
@@ -257,7 +256,7 @@ void WebSocketServer::onOpen(websocketpp::connection_hdl hdl)
 	json helloMessageData;
 	helloMessageData["obsWebSocketVersion"] = OBS_WEBSOCKET_VERSION;
 	helloMessageData["rpcVersion"] = OBS_WEBSOCKET_RPC_VERSION;
-	if (conf->AuthRequired) {
+	if (session->AuthenticationRequired()) {
 		session->SetSecret(_authenticationSecret);
 		std::string sessionChallenge = Utils::Crypto::GenerateSalt();
 		session->SetChallenge(sessionChallenge);
