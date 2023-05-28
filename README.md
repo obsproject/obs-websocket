@@ -13,7 +13,7 @@ WebSocket API for OBS Studio.
 
 ## Downloads
 
-obs-websocket is now included by default with OBS Studio 28.0.0 and above. As such, **there should be no need to download obs-websocket if you have OBS Studio > 28.0.0.**
+**obs-websocket is now included by default with OBS Studio 28.0.0 and above. As such, there should be no need to download obs-websocket if you have OBS Studio > 28.0.0.**
 
 Binaries **for OBS Studio < 28.0.0** on Windows, MacOS, and Linux are available in the [Releases](https://github.com/obsproject/obs-websocket/releases) section.
 
@@ -65,12 +65,11 @@ We'd like to know what you're building with obs-websocket! If you do something i
 
 ### Code Contributors
 
-This project exists thanks to [all the people](graphs/contributors) who contribute. [Contribute](wiki/Contributing-Guidelines).
-<a href="https://github.com/obsproject/obs-websocket/graphs/contributors"><img src="https://opencollective.com/obs-websocket-dev/contributors.svg?width=890&button=false" /></a>
+This project exists thanks to [all the people](https://github.com/obsproject/obs-websocket/graphs/contributors) who contribute. [Contribute Code](https://github.com/obsproject/obs-websocket/wiki/Contributing-Guidelines).
 
 ### Financial Contributors
 
-Become a financial contributor and help us sustain our community. [Contribute](https://opencollective.com/obs-websocket-dev/contribute)
+Become a financial contributor and help us sustain our community. [Contribute Financially](https://opencollective.com/obs-websocket-dev/contribute)
 
 #### Individuals
 
