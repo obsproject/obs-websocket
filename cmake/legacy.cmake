@@ -67,7 +67,6 @@ target_sources(
           src/websocketserver/WebSocketServer.cpp
           src/websocketserver/WebSocketServer_Protocol.cpp
           src/websocketserver/WebSocketServer.h
-          src/websocketserver/rpc/WebSocketSession.cpp
           src/websocketserver/rpc/WebSocketSession.h
           src/websocketserver/types/WebSocketCloseCode.h
           src/websocketserver/types/WebSocketOpCode.h
