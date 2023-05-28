@@ -38,16 +38,6 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #define CMDLINE_WEBSOCKET_DEBUG "websocket_debug"
 
 Config::Config()
-	: PortOverridden(false),
-	  PasswordOverridden(false),
-	  FirstLoad(true),
-	  ServerEnabled(false),
-	  ServerPort(4455),
-	  Ipv4Only(false),
-	  DebugEnabled(false),
-	  AlertsEnabled(false),
-	  AuthRequired(true),
-	  ServerPassword("")
 {
 	SetDefaultsToGlobalStore();
 }

@@ -30,17 +30,17 @@ struct Config {
 	void Load();
 	void Save();
 	void SetDefaultsToGlobalStore();
-	config_t *GetConfigStore();
+	static config_t *GetConfigStore();
 
-	std::atomic<bool> PortOverridden;
-	std::atomic<bool> PasswordOverridden;
+	std::atomic<bool> PortOverridden = false;
+	std::atomic<bool> PasswordOverridden = false;
 
-	std::atomic<bool> FirstLoad;
-	std::atomic<bool> ServerEnabled;
-	std::atomic<uint16_t> ServerPort;
-	std::atomic<bool> Ipv4Only;
-	std::atomic<bool> DebugEnabled;
-	std::atomic<bool> AlertsEnabled;
-	std::atomic<bool> AuthRequired;
+	std::atomic<bool> FirstLoad = true;
+	std::atomic<bool> ServerEnabled = false;
+	std::atomic<uint16_t> ServerPort = 4455;
+	std::atomic<bool> Ipv4Only = false;
+	std::atomic<bool> DebugEnabled = false;
+	std::atomic<bool> AlertsEnabled = false;
+	std::atomic<bool> AuthRequired = true;
 	QString ServerPassword;
 };
