@@ -113,6 +113,10 @@ void WebSocketServer::Start()
 	} else {
 		blog(LOG_INFO, "[WebSocketServer::Start] Not locked to IPv4 bindings");
 		_server.listen(conf->ServerPort, errorCode);
+		if (errorCode && errorCode == websocketpp::lib::asio::error::address_family_not_supported) {
+			blog(LOG_INFO, "[WebSocketServer::Start] IPv6 address family not supported, binding only to IPv4");
+			_server.listen(websocketpp::lib::asio::ip::tcp::v4(), conf->ServerPort, errorCode);
+		}
 	}
 
 	if (errorCode) {
