@@ -51,6 +51,7 @@ const std::unordered_map<std::string, RequestMethodHandler> RequestHandler::_han
 	{"GetStreamServiceSettings", &RequestHandler::GetStreamServiceSettings},
 	{"SetStreamServiceSettings", &RequestHandler::SetStreamServiceSettings},
 	{"GetRecordDirectory", &RequestHandler::GetRecordDirectory},
+	{"SetRecordDirectory", &RequestHandler::SetRecordDirectory},
 
 	// Sources
 	{"GetSourceActive", &RequestHandler::GetSourceActive},

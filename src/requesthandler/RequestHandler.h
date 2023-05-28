@@ -70,6 +70,7 @@ private:
 	RequestResult GetStreamServiceSettings(const Request &);
 	RequestResult SetStreamServiceSettings(const Request &);
 	RequestResult GetRecordDirectory(const Request &);
+	RequestResult SetRecordDirectory(const Request &);
 
 	// Sources
 	RequestResult GetSourceActive(const Request &);

@@ -622,7 +622,7 @@ RequestResult RequestHandler::SetStreamServiceSettings(const Request &request)
  * @responseField recordDirectory | String | Output directory
  *
  * @requestType GetRecordDirectory
- * @complexity 1
+ * @complexity 2
  * @rpcVersion -1
  * @initialVersion 5.0.0
  * @api requests
@@ -634,4 +634,36 @@ RequestResult RequestHandler::GetRecordDirectory(const Request &)
 	responseData["recordDirectory"] = Utils::Obs::StringHelper::GetCurrentRecordOutputPath();
 
 	return RequestResult::Success(responseData);
+}
+
+/**
+ * Sets the current directory that the record output writes files to.
+ *
+ * @requestField recordDirectory | String | Output directory
+ *
+ * @requestType SetRecordDirectory
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.3.0
+ * @api requests
+ * @category config
+ */
+RequestResult RequestHandler::SetRecordDirectory(const Request &request)
+{
+	if (obs_frontend_recording_active())
+		return RequestResult::Error(RequestStatus::OutputRunning);
+
+	RequestStatus::RequestStatus statusCode;
+	std::string comment;
+	if (!request.ValidateString("recordDirectory", statusCode, comment))
+		return RequestResult::Error(statusCode, comment);
+
+	std::string recordDirectory = request.RequestData["recordDirectory"];
+
+	config_t *config = obs_frontend_get_profile_config();
+	config_set_string(config, "AdvOut", "RecFilePath", recordDirectory.c_str());
+	config_set_string(config, "SimpleOutput", "FilePath", recordDirectory.c_str());
+	config_save(config);
+
+	return RequestResult::Success();
 }
