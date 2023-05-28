@@ -2543,6 +2543,7 @@ communication is desired.
   - [GetStreamServiceSettings](#getstreamservicesettings)
   - [SetStreamServiceSettings](#setstreamservicesettings)
   - [GetRecordDirectory](#getrecorddirectory)
+  - [SetRecordDirectory](#setrecorddirectory)
 - [Sources Requests](#sources-requests)
   - [GetSourceActive](#getsourceactive)
   - [GetSourceScreenshot](#getsourcescreenshot)
@@ -3120,7 +3121,7 @@ Note: Simple RTMP settings can be set with type `rtmp_custom` and the settings f
 
 Gets the current directory that the record output is set to.
 
-- Complexity Rating: `1/5`
+- Complexity Rating: `2/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
@@ -3129,6 +3130,22 @@ Gets the current directory that the record output is set to.
 | Name | Type  | Description |
 | ---- | :---: | ----------- |
 | recordDirectory | String | Output directory |
+
+---
+
+### SetRecordDirectory
+
+Sets the current directory that the record output writes files to.
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.3.0
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| recordDirectory | String | Output directory | None | N/A |
 
 ## Sources Requests
 

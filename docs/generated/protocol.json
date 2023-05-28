@@ -1225,7 +1225,7 @@
     {
       "description": "Gets the current directory that the record output is set to.",
       "requestType": "GetRecordDirectory",
-      "complexity": 1,
+      "complexity": 2,
       "rpcVersion": "1",
       "deprecated": false,
       "initialVersion": "5.0.0",
@@ -1238,6 +1238,26 @@
           "valueDescription": "Output directory"
         }
       ]
+    },
+    {
+      "description": "Sets the current directory that the record output writes files to.",
+      "requestType": "SetRecordDirectory",
+      "complexity": 2,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.3.0",
+      "category": "config",
+      "requestFields": [
+        {
+          "valueName": "recordDirectory",
+          "valueType": "String",
+          "valueDescription": "Output directory",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        }
+      ],
+      "responseFields": []
     },
     {
       "description": "Gets an array of all of a source's filters.",
