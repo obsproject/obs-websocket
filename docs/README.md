@@ -1,6 +1,6 @@
 # obs-websocket documentation
 
-## If you're looking for the documentation page, it's [here](docs/generated/protocol.md)
+## If you're looking for the documentation page, it's [here](generated/protocol.md)
 
 This is the documentation for obs-websocket. Run `build_docs.sh` to auto generate the latest docs from the `src` directory. There are 3 components to the docs generation:
 
