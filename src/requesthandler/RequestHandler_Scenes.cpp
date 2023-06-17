@@ -317,7 +317,7 @@ RequestResult RequestHandler::GetSceneSceneTransitionOverride(const Request &req
 }
 
 /**
- * Gets the scene transition overridden for a scene.
+ * Sets the scene transition overridden for a scene.
  *
  * @requestField sceneName           | String | Name of the scene
  * @requestField ?transitionName     | String | Name of the scene transition to use as override. Specify `null` to remove | Unchanged
