@@ -159,6 +159,7 @@ const std::unordered_map<std::string, RequestMethodHandler> RequestHandler::_han
 	{"StopOutput", &RequestHandler::StopOutput},
 	{"GetOutputSettings", &RequestHandler::GetOutputSettings},
 	{"SetOutputSettings", &RequestHandler::SetOutputSettings},
+	{"SaveOutputScreenshot", &RequestHandler::SaveOutputScreenshot},
 
 	// Stream
 	{"GetStreamStatus", &RequestHandler::GetStreamStatus},
