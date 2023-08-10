@@ -3954,7 +3954,7 @@
       ]
     },
     {
-      "description": "Gets the scene transition overridden for a scene.",
+      "description": "Sets the scene transition overridden for a scene.",
       "requestType": "SetSceneSceneTransitionOverride",
       "complexity": 2,
       "rpcVersion": "1",

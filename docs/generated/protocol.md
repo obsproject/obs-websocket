@@ -3415,7 +3415,7 @@ Gets the scene transition overridden for a scene.
 
 ### SetSceneSceneTransitionOverride
 
-Gets the scene transition overridden for a scene.
+Sets the scene transition overridden for a scene.
 
 - Complexity Rating: `2/5`
 - Latest Supported RPC Version: `1`
