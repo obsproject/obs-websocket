@@ -125,8 +125,7 @@ void obs_module_unload(void)
 	// Destroy the event handler
 	_eventHandler.reset();
 
-	// Save and destroy the config manager
-	_config->Save();
+	// Destroy the config manager
 	_config.reset();
 
 	// Destroy the cpu stats
