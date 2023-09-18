@@ -168,4 +168,6 @@ if(OS_WINDOWS)
     TARGET obs-websocket
     APPEND
     PROPERTY AUTORCC_OPTIONS --format-version 1)
+
+  target_link_options(obs-websocket PRIVATE /IGNORE:4099)
 endif()

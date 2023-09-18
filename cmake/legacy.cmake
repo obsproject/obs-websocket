@@ -155,6 +155,7 @@ endif()
 
 if(MSVC)
   target_compile_options(obs-websocket PRIVATE /wd4267 /wd4996)
+  target_link_options(obs-websocket PRIVATE "LINKER:/IGNORE:4099")
 else()
   target_compile_options(
     obs-websocket
