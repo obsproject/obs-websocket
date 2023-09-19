@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.16...3.25)
 
 legacy_check()
 
-set(obs-websocket_VERSION 5.3.0)
+set(obs-websocket_VERSION 5.3.1)
 set(OBS_WEBSOCKET_RPC_VERSION 1)
 
 option(ENABLE_WEBSOCKET "Enable building OBS with websocket plugin" ON)
