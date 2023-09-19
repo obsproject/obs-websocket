@@ -18,7 +18,9 @@ find_qt(COMPONENTS Core Widgets Svg Network)
 find_package(nlohmann_json 3 REQUIRED)
 
 # Find qrcodegencpp
-find_package(Libqrcodegencpp REQUIRED)
+set(CMAKE_FIND_PACKAGE_PREFER_CONFIG ON)
+find_package(qrcodegencpp REQUIRED)
+set(CMAKE_FIND_PACKAGE_PREFER_CONFIG OFF)
 
 # Find WebSocket++
 find_package(Websocketpp 0.8 REQUIRED)
@@ -138,7 +140,7 @@ target_link_libraries(
           nlohmann_json::nlohmann_json
           Websocketpp::Websocketpp
           Asio::Asio
-          Libqrcodegencpp::Libqrcodegencpp)
+          qrcodegencpp::qrcodegencpp)
 
 target_compile_features(obs-websocket PRIVATE cxx_std_17)
 
