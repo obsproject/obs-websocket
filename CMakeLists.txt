@@ -128,7 +128,7 @@ configure_file(src/plugin-macros.h.in plugin-macros.generated.h)
 target_sources(obs-websocket PRIVATE plugin-macros.generated.h)
 
 target_compile_definitions(
-  obs-websocket PRIVATE ASIO_STANDALONE $<$<BOOL:PLUGIN_TESTS>:PLUGIN_TESTS>
+  obs-websocket PRIVATE ASIO_STANDALONE $<$<BOOL:${PLUGIN_TESTS}>:PLUGIN_TESTS>
                         $<$<PLATFORM_ID:Windows>:_WEBSOCKETPP_CPP11_STL_> $<$<PLATFORM_ID:Windows>:_WIN32_WINNT=0x0603>)
 
 target_compile_options(
