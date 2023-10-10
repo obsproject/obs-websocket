@@ -12,7 +12,7 @@ if(NOT ENABLE_WEBSOCKET)
 endif()
 
 # Find Qt
-find_qt(COMPONENTS Core Widgets Svg Network)
+find_package(Qt6 REQUIRED Core Widgets Svg Network)
 
 # Find nlohmann JSON
 find_package(nlohmann_json 3 REQUIRED)
@@ -31,51 +31,53 @@ find_package(Asio 1.12.1 REQUIRED)
 add_library(obs-websocket MODULE)
 add_library(OBS::websocket ALIAS obs-websocket)
 
-target_sources(obs-websocket PRIVATE)
-
 target_sources(
   obs-websocket
-  PRIVATE src/obs-websocket.cpp
-          src/obs-websocket.h
+  PRIVATE # cmake-format: sortable
+          lib/obs-websocket-api.h
           src/Config.cpp
           src/Config.h
-          lib/obs-websocket-api.h
           src/forms/ConnectInfo.cpp
           src/forms/ConnectInfo.h
           src/forms/resources.qrc
           src/forms/SettingsDialog.cpp
           src/forms/SettingsDialog.h
+          src/obs-websocket.cpp
+          src/obs-websocket.h
           src/WebSocketApi.cpp
           src/WebSocketApi.h)
 
 target_sources(
   obs-websocket
-  PRIVATE src/websocketserver/WebSocketServer.cpp
-          src/websocketserver/WebSocketServer_Protocol.cpp
-          src/websocketserver/WebSocketServer.h
+  PRIVATE # cmake-format: sortable
           src/websocketserver/rpc/WebSocketSession.h
           src/websocketserver/types/WebSocketCloseCode.h
-          src/websocketserver/types/WebSocketOpCode.h)
+          src/websocketserver/types/WebSocketOpCode.h
+          src/websocketserver/WebSocketServer.cpp
+          src/websocketserver/WebSocketServer.h
+          src/websocketserver/WebSocketServer_Protocol.cpp)
 
 target_sources(
   obs-websocket
-  PRIVATE src/eventhandler/EventHandler.cpp
+  PRIVATE # cmake-format: sortable
+          src/eventhandler/EventHandler.cpp
           src/eventhandler/EventHandler.h
           src/eventhandler/EventHandler_Config.cpp
-          src/eventhandler/EventHandler_General.cpp
           src/eventhandler/EventHandler_Filters.cpp
+          src/eventhandler/EventHandler_General.cpp
           src/eventhandler/EventHandler_Inputs.cpp
           src/eventhandler/EventHandler_MediaInputs.cpp
           src/eventhandler/EventHandler_Outputs.cpp
-          src/eventhandler/EventHandler_Scenes.cpp
           src/eventhandler/EventHandler_SceneItems.cpp
+          src/eventhandler/EventHandler_Scenes.cpp
           src/eventhandler/EventHandler_Transitions.cpp
           src/eventhandler/EventHandler_Ui.cpp
           src/eventhandler/types/EventSubscription.h)
 
 target_sources(
   obs-websocket
-  PRIVATE src/requesthandler/RequestBatchHandler.cpp
+  PRIVATE # cmake-format: sortable
+          src/requesthandler/RequestBatchHandler.cpp
           src/requesthandler/RequestBatchHandler.h
           src/requesthandler/RequestHandler.cpp
           src/requesthandler/RequestHandler.h
@@ -85,10 +87,10 @@ target_sources(
           src/requesthandler/RequestHandler_Inputs.cpp
           src/requesthandler/RequestHandler_MediaInputs.cpp
           src/requesthandler/RequestHandler_Outputs.cpp
-          src/requesthandler/RequestHandler_Sources.cpp
           src/requesthandler/RequestHandler_Record.cpp
-          src/requesthandler/RequestHandler_Scenes.cpp
           src/requesthandler/RequestHandler_SceneItems.cpp
+          src/requesthandler/RequestHandler_Scenes.cpp
+          src/requesthandler/RequestHandler_Sources.cpp
           src/requesthandler/RequestHandler_Stream.cpp
           src/requesthandler/RequestHandler_Transitions.cpp
           src/requesthandler/RequestHandler_Ui.cpp
@@ -98,12 +100,13 @@ target_sources(
           src/requesthandler/rpc/RequestBatchRequest.h
           src/requesthandler/rpc/RequestResult.cpp
           src/requesthandler/rpc/RequestResult.h
-          src/requesthandler/types/RequestStatus.h
-          src/requesthandler/types/RequestBatchExecutionType.h)
+          src/requesthandler/types/RequestBatchExecutionType.h
+          src/requesthandler/types/RequestStatus.h)
 
 target_sources(
   obs-websocket
-  PRIVATE src/utils/Compat.cpp
+  PRIVATE # cmake-format: sortable
+          src/utils/Compat.cpp
           src/utils/Compat.h
           src/utils/Crypto.cpp
           src/utils/Crypto.h
@@ -115,8 +118,8 @@ target_sources(
           src/utils/Obs_ArrayHelper.cpp
           src/utils/Obs_NumberHelper.cpp
           src/utils/Obs_ObjectHelper.cpp
-          src/utils/Obs_StringHelper.cpp
           src/utils/Obs_SearchHelper.cpp
+          src/utils/Obs_StringHelper.cpp
           src/utils/Obs_VolumeMeter.cpp
           src/utils/Obs_VolumeMeter.h
           src/utils/Obs_VolumeMeter_Helpers.h
@@ -133,14 +136,19 @@ target_compile_definitions(
 
 target_compile_options(
   obs-websocket
-  PRIVATE
-    $<$<PLATFORM_ID:Windows>:/wd4267>
-    $<$<PLATFORM_ID:Windows>:/wd4996>
-    $<$<PLATFORM_ID:Darwin,Linux,FreeBSD>:-Wall>
-    $<$<COMPILE_LANG_AND_ID:CXX,GNU,AppleClang,Clang>:-Wno-error=float-conversion;-Wno-error=shadow>
-    $<$<COMPILE_LANG_AND_ID:CXX,GNU>:-Wno-error=format-overflow;-Wno-error=int-conversion;-Wno-error=comment>
-    $<$<COMPILE_LANG_AND_ID:CXX,AppleClang,Clang>:-Wno-error=null-pointer-subtraction;-Wno-error=deprecated-declarations;-Wno-error=implicit-int-conversion;-Wno-error=shorten-64-to-32;-Wno-comma;-Wno-quoted-include-in-framework-header>
-)
+  PRIVATE $<$<PLATFORM_ID:Windows>:/wd4267>
+          $<$<COMPILE_LANG_AND_ID:CXX,GNU,AppleClang,Clang>:-Wall>
+          $<$<COMPILE_LANG_AND_ID:CXX,GNU,AppleClang,Clang>:-Wno-error=float-conversion>
+          $<$<COMPILE_LANG_AND_ID:CXX,GNU,AppleClang,Clang>:-Wno-error=shadow>
+          $<$<COMPILE_LANG_AND_ID:CXX,GNU>:-Wno-error=format-overflow>
+          $<$<COMPILE_LANG_AND_ID:CXX,GNU>:-Wno-error=int-conversion>
+          $<$<COMPILE_LANG_AND_ID:CXX,GNU>:-Wno-error=comment>
+          $<$<COMPILE_LANG_AND_ID:CXX,AppleClang,Clang>:-Wno-error=null-pointer-subtraction>
+          $<$<COMPILE_LANG_AND_ID:CXX,AppleClang,Clang>:-Wno-error=deprecated-declarations>
+          $<$<COMPILE_LANG_AND_ID:CXX,AppleClang,Clang>:-Wno-error=implicit-int-conversion>
+          $<$<COMPILE_LANG_AND_ID:CXX,AppleClang,Clang>:-Wno-error=shorten-64-to-32>
+          $<$<COMPILE_LANG_AND_ID:CXX,AppleClang,Clang>:-Wno-comma>
+          $<$<COMPILE_LANG_AND_ID:CXX,AppleClang,Clang>:-Wno-quoted-include-in-framework-header>)
 
 target_link_libraries(
   obs-websocket
@@ -155,6 +163,8 @@ target_link_libraries(
           Asio::Asio
           qrcodegencpp::qrcodegencpp)
 
+target_link_options(obs-websocket PRIVATE $<$<PLATFORM_ID:Windows>:/IGNORE:4099>)
+
 set_target_properties_obs(
   obs-websocket
   PROPERTIES FOLDER plugins
@@ -168,6 +178,4 @@ if(OS_WINDOWS)
     TARGET obs-websocket
     APPEND
     PROPERTY AUTORCC_OPTIONS --format-version 1)
-
-  target_link_options(obs-websocket PRIVATE /IGNORE:4099)
 endif()
