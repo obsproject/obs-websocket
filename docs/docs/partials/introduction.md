@@ -1,5 +1,5 @@
 
-# obs-websocket 5.1.0 Protocol
+# obs-websocket 5.x.x Protocol
 
 ## Main Table of Contents
 
