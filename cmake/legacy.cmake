@@ -1,4 +1,4 @@
-project(obs-websocket VERSION 5.3.2)
+project(obs-websocket VERSION 5.3.3)
 set(OBS_WEBSOCKET_RPC_VERSION 1)
 
 option(ENABLE_WEBSOCKET "Enable building OBS with websocket plugin" ON)
