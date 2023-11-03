@@ -230,8 +230,8 @@ void SettingsDialog::FillSessionTable()
 		QTableWidgetItem *addressItem = new QTableWidgetItem(QString::fromStdString(session.remoteAddress));
 		ui->websocketSessionTable->setItem(i, 0, addressItem);
 
-		uint64_t sessionDuration = QDateTime::currentSecsSinceEpoch() - session.connectedAt;
-		QTableWidgetItem *durationItem = new QTableWidgetItem(QTime(0, 0, sessionDuration).toString("hh:mm:ss"));
+		uint64_t sessionDuration = QDateTime::currentSecsSinceEpoch().addSecs(-session.connectedAt);
+		QTableWidgetItem *durationItem = new QTableWidgetItem(QTime((int) sessionDuration / 86400, (int) sessionDuration / 360, sessionDuration % 60, 0).toString("hh:mm:ss"));
 		ui->websocketSessionTable->setItem(i, 1, durationItem);
 
 		QTableWidgetItem *statsItem =
