@@ -49,14 +49,21 @@ WebSocketServer::WebSocketServer() : QObject(nullptr)
 							   websocketpp::lib::placeholders::_2));
 
 	auto eventHandler = GetEventHandler();
-	eventHandler->SetBroadcastCallback(std::bind(&WebSocketServer::BroadcastEvent, this, std::placeholders::_1,
-						     std::placeholders::_2, std::placeholders::_3, std::placeholders::_4));
-
-	eventHandler->SetObsReadyCallback(std::bind(&WebSocketServer::onObsReady, this, std::placeholders::_1));
+	if (eventHandler) {
+		eventHandler->SetBroadcastCallback(std::bind(&WebSocketServer::BroadcastEvent, this, std::placeholders::_1,
+							     std::placeholders::_2, std::placeholders::_3, std::placeholders::_4));
+		eventHandler->SetObsReadyCallback(std::bind(&WebSocketServer::onObsReady, this, std::placeholders::_1));
+	}
 }
 
 WebSocketServer::~WebSocketServer()
 {
+	auto eventHandler = GetEventHandler();
+	if (eventHandler) {
+		eventHandler->SetObsReadyCallback(nullptr);
+		eventHandler->SetBroadcastCallback(nullptr);
+	}
+
 	if (_server.is_listening())
 		Stop();
 }
