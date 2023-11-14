@@ -54,6 +54,20 @@ EventHandler::~EventHandler()
 		blog(LOG_ERROR, "[EventHandler::~EventHandler] Unable to get libobs signal handler!");
 	}
 
+	// Revoke callbacks of all inputs and scenes, in case some still have our callbacks attached
+	auto enumInputs = [](void *param, obs_source_t *source) {
+		auto eventHandler = static_cast<EventHandler *>(param);
+		eventHandler->DisconnectSourceSignals(source);
+		return true;
+	};
+	obs_enum_sources(enumInputs, this);
+	auto enumScenes = [](void *param, obs_source_t *source) {
+		auto eventHandler = static_cast<EventHandler *>(param);
+		eventHandler->DisconnectSourceSignals(source);
+		return true;
+	};
+	obs_enum_scenes(enumScenes, this);
+
 	blog_debug("[EventHandler::~EventHandler] Finished.");
 }
 
