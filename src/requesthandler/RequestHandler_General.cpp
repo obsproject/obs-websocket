@@ -233,6 +233,7 @@ RequestResult RequestHandler::GetHotkeyList(const Request &)
  * Triggers a hotkey using its name. See `GetHotkeyList`
  *
  * @requestField hotkeyName | String | Name of the hotkey to trigger
+ * @requestField ?contextName | String | Name of context of the hotkey to trigger
  *
  * @requestType TriggerHotkeyByName
  * @complexity 3
@@ -248,7 +249,15 @@ RequestResult RequestHandler::TriggerHotkeyByName(const Request &request)
 	if (!request.ValidateString("hotkeyName", statusCode, comment))
 		return RequestResult::Error(statusCode, comment);
 
-	obs_hotkey_t *hotkey = Utils::Obs::SearchHelper::GetHotkeyByName(request.RequestData["hotkeyName"]);
+	std::string contextName;
+	if (request.Contains("contextName")) {
+		if (!request.ValidateOptionalString("contextName", statusCode, comment))
+			return RequestResult::Error(statusCode, comment);
+
+		contextName = request.RequestData["contextName"];
+	}
+
+	obs_hotkey_t *hotkey = Utils::Obs::SearchHelper::GetHotkeyByName(request.RequestData["hotkeyName"], contextName);
 	if (!hotkey)
 		return RequestResult::Error(RequestStatus::ResourceNotFound, "No hotkeys were found by that name.");
 
