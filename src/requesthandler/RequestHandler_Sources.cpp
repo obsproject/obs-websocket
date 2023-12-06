@@ -352,10 +352,8 @@ RequestResult RequestHandler::GetSourceDeinterlaceMode(const Request &request)
 	if (obs_source_get_type(source) != OBS_SOURCE_TYPE_INPUT)
 		return RequestResult::Error(RequestStatus::InvalidResourceType, "The specified source is not an input or a scene.");
 
-	OBSDataAutoRelease deinterlaceMode = obs_source_get_deinterlace_mode(source);
-
 	json responseData;
-	responseData["sourceDeinterlaceMode"] = Utils::Json::ObsDataToJson(deinterlaceMode);
+	responseData["sourceDeinterlaceMode"] = obs_source_get_deinterlace_mode(source);
 
 	return RequestResult::Success(responseData);
 }
@@ -379,7 +377,8 @@ RequestResult RequestHandler::SetSourceDeinterlaceMode(const Request &request)
 		return RequestResult::Error(statusCode, comment);
 
 	enum obs_deinterlace_mode deinterlaceMode = request.RequestData["sourceDeinterlaceMode"];
-	if (deinterlaceMode == OBS_DEINTERLACE_MODE_DISABLE && request.RequestData["sourceDeinterlaceMode"] != "OBS_DEINTERLACE_MODE_DISABLE")
+	if (deinterlaceMode == OBS_DEINTERLACE_MODE_DISABLE &&
+	    request.RequestData["sourceDeinterlaceMode"] != "OBS_DEINTERLACE_MODE_DISABLE")
 		return RequestResult::Error(RequestStatus::InvalidRequestField,
 					    "The field sourceDeinterlaceMode has an invalid value.");
 
@@ -387,7 +386,6 @@ RequestResult RequestHandler::SetSourceDeinterlaceMode(const Request &request)
 
 	return RequestResult::Success();
 }
-
 
 // Intentionally undocumented
 RequestResult RequestHandler::GetSourcePrivateSettings(const Request &request)
