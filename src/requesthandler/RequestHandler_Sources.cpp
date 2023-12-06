@@ -373,7 +373,7 @@ RequestResult RequestHandler::SetSourceDeinterlaceMode(const Request &request)
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
 	OBSSourceAutoRelease source = request.ValidateSource("sourceName", statusCode, comment);
-	if (!source || !request.ValidateObject("sourceDeinterlaceMode", statusCode, comment, true))
+	if (!source || !request.ValidateNumber("sourceDeinterlaceMode", statusCode, comment, true))
 		return RequestResult::Error(statusCode, comment);
 
 	enum obs_deinterlace_mode deinterlaceMode = request.RequestData["sourceDeinterlaceMode"];
