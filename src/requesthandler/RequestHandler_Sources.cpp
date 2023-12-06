@@ -335,7 +335,7 @@ RequestResult RequestHandler::SaveSourceScreenshot(const Request &request)
  *
  * @requestField sourceName   			| String | Name of the source
  *
- * @responseField sourceDeinterlaceMode | String | Current deinterlace mode
+ * @responseField sourceDeinterlaceMode | Number | Current deinterlace mode
  *
  * @requestType GetSourceDeinterlaceMode
  * @api requests
@@ -362,7 +362,7 @@ RequestResult RequestHandler::GetSourceDeinterlaceMode(const Request &request)
  * Sets the deinterlace mode of a source.
  *
  * @requestField sourceName          	| String | Name of the source
- * @requestField sourceDeinterlaceMode 	| String | New deinterlace mode
+ * @requestField sourceDeinterlaceMode 	| Number | New deinterlace mode
  *
  * @requestType SetSourceDeinterlaceMode
  * @api requests
@@ -383,6 +383,70 @@ RequestResult RequestHandler::SetSourceDeinterlaceMode(const Request &request)
 					    "The field sourceDeinterlaceMode has an invalid value.");
 
 	obs_source_set_deinterlace_mode(source, deinterlaceMode);
+
+	return RequestResult::Success();
+}
+
+/**
+ * Gets the deinterlace mode of a source.
+ *
+ * Deinterlace modes:
+ *
+ * - `OBS_DEINTERLACE_FIELD_ORDER_TOP`
+ * - `OBS_DEINTERLACE_FIELD_ORDER_BOTTOM`
+ *
+ * **Compatible with inputs.**
+ *
+ * @requestField sourceName   			| String | Name of the source
+ *
+ * @responseField sourceDeinterlaceFieldOrder | Number | Current deinterlace field order
+ *
+ * @requestType GetDeinterlaceFieldOrder
+ * @api requests
+ * @category sources
+ */
+RequestResult RequestHandler::GetDeinterlaceFieldOrder(const Request &request)
+{
+	RequestStatus::RequestStatus statusCode;
+	std::string comment;
+	OBSSourceAutoRelease source = request.ValidateSource("sourceName", statusCode, comment);
+	if (!source)
+		return RequestResult::Error(statusCode, comment);
+
+	if (obs_source_get_type(source) != OBS_SOURCE_TYPE_INPUT)
+		return RequestResult::Error(RequestStatus::InvalidResourceType, "The specified source is not an input or a scene.");
+
+	json responseData;
+	responseData["sourceDeinterlaceFieldOrder"] = obs_source_get_deinterlace_field_order(source);
+
+	return RequestResult::Success(responseData);
+}
+
+/**
+ * Sets the deinterlace mode of a source.
+ *
+ * @requestField sourceName          			| String | Name of the source
+ * @requestField sourceDeinterlaceFieldOrder 	| Number | New deinterlace field order
+ *
+ * @requestType SetDeinterlaceFieldOrder
+ * @api requests
+ * @category sources
+ */
+RequestResult RequestHandler::SetDeinterlaceFieldOrder(const Request &request)
+{
+	RequestStatus::RequestStatus statusCode;
+	std::string comment;
+	OBSSourceAutoRelease source = request.ValidateSource("sourceName", statusCode, comment);
+	if (!source || !request.ValidateNumber("sourceDeinterlaceFieldOrder", statusCode, comment, true))
+		return RequestResult::Error(statusCode, comment);
+
+	enum obs_deinterlace_field_order deinterlaceFieldOrder = request.RequestData["sourceDeinterlaceFieldOrder"];
+	if (deinterlaceFieldOrder == OBS_DEINTERLACE_FIELD_ORDER_TOP &&
+	    request.RequestData["sourceDeinterlaceFieldOrder"] != "OBS_DEINTERLACE_FIELD_ORDER_TOP")
+		return RequestResult::Error(RequestStatus::InvalidRequestField,
+					    "The field sourceDeinterlaceFieldOrder has an invalid value.");
+
+	obs_source_set_deinterlace_field_order(source, deinterlaceFieldOrder);
 
 	return RequestResult::Success();
 }

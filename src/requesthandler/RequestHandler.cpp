@@ -59,6 +59,8 @@ const std::unordered_map<std::string, RequestMethodHandler> RequestHandler::_han
 	{"SaveSourceScreenshot", &RequestHandler::SaveSourceScreenshot},
 	{"GetSourceDeinterlaceMode", &RequestHandler::GetSourceDeinterlaceMode},
 	{"SetSourceDeinterlaceMode", &RequestHandler::SetSourceDeinterlaceMode},
+	{"GetSourceDeinterlaceFieldOrder", &RequestHandler::GetSourceDeinterlaceFieldOrder},
+	{"SetSourceDeinterlaceFieldOrder", &RequestHandler::SetSourceDeinterlaceFieldOrder},
 	{"GetSourcePrivateSettings", &RequestHandler::GetSourcePrivateSettings},
 	{"SetSourcePrivateSettings", &RequestHandler::SetSourcePrivateSettings},
 

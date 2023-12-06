@@ -78,6 +78,8 @@ private:
 	RequestResult SaveSourceScreenshot(const Request &);
 	RequestResult GetSourceDeinterlaceMode(const Request &);
 	RequestResult SetSourceDeinterlaceMode(const Request &);
+	RequestResult GetSourceDeinterlaceFieldOrder(const Request &);
+	RequestResult SetSourceDeinterlaceFieldOrder(const Request &);
 	RequestResult GetSourcePrivateSettings(const Request &);
 	RequestResult SetSourcePrivateSettings(const Request &);
 
