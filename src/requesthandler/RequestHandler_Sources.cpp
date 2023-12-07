@@ -401,11 +401,11 @@ RequestResult RequestHandler::SetSourceDeinterlaceMode(const Request &request)
  *
  * @responseField sourceDeinterlaceFieldOrder | Number | Current deinterlace field order
  *
- * @requestType GetDeinterlaceFieldOrder
+ * @requestType GetSourceDeinterlaceFieldOrder
  * @api requests
  * @category sources
  */
-RequestResult RequestHandler::GetDeinterlaceFieldOrder(const Request &request)
+RequestResult RequestHandler::GetSourceDeinterlaceFieldOrder(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
@@ -428,11 +428,11 @@ RequestResult RequestHandler::GetDeinterlaceFieldOrder(const Request &request)
  * @requestField sourceName          			| String | Name of the source
  * @requestField sourceDeinterlaceFieldOrder 	| Number | New deinterlace field order
  *
- * @requestType SetDeinterlaceFieldOrder
+ * @requestType SetSourceDeinterlaceFieldOrder
  * @api requests
  * @category sources
  */
-RequestResult RequestHandler::SetDeinterlaceFieldOrder(const Request &request)
+RequestResult RequestHandler::SetSourceDeinterlaceFieldOrder(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
