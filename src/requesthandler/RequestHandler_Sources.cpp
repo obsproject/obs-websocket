@@ -350,10 +350,12 @@ RequestResult RequestHandler::GetSourceDeinterlaceMode(const Request &request)
 		return RequestResult::Error(statusCode, comment);
 
 	if (obs_source_get_type(source) != OBS_SOURCE_TYPE_INPUT)
-		return RequestResult::Error(RequestStatus::InvalidResourceType, "The specified source is not an input or a scene.");
+		return RequestResult::Error(RequestStatus::InvalidResourceType, "The specified source is not an input.");
+
+	auto deinterlaceMode = obs_source_get_deinterlace_mode(source);
 
 	json responseData;
-	responseData["sourceDeinterlaceMode"] = obs_source_get_deinterlace_mode(source);
+	responseData["sourceDeinterlaceMode"] = deinterlaceMode;
 
 	return RequestResult::Success(responseData);
 }
@@ -376,29 +378,11 @@ RequestResult RequestHandler::SetSourceDeinterlaceMode(const Request &request)
 	if (!source || !request.ValidateString("sourceDeinterlaceMode", statusCode, comment))
 		return RequestResult::Error(statusCode, comment);
 
-	enum obs_deinterlace_mode deinterlaceMode;
-	std::string deinterlaceModeString = request.RequestData["sourceDeinterlaceMode"];
-	if (deinterlaceModeString == "OBS_DEINTERLACE_MODE_DISABLE")
-		deinterlaceMode = OBS_DEINTERLACE_MODE_DISABLE;
-	else if (deinterlaceModeString == "OBS_DEINTERLACE_MODE_DISCARD")
-		deinterlaceMode = OBS_DEINTERLACE_MODE_DISCARD;
-	else if (deinterlaceModeString == "OBS_DEINTERLACE_MODE_RETRO")
-		deinterlaceMode = OBS_DEINTERLACE_MODE_RETRO;
-	else if (deinterlaceModeString == "OBS_DEINTERLACE_MODE_BLEND")
-		deinterlaceMode = OBS_DEINTERLACE_MODE_BLEND;
-	else if (deinterlaceModeString == "OBS_DEINTERLACE_MODE_BLEND_2X")
-		deinterlaceMode = OBS_DEINTERLACE_MODE_BLEND_2X;
-	else if (deinterlaceModeString == "OBS_DEINTERLACE_MODE_LINEAR")
-		deinterlaceMode = OBS_DEINTERLACE_MODE_LINEAR;
-	else if (deinterlaceModeString == "OBS_DEINTERLACE_MODE_LINEAR_2X")
-		deinterlaceMode = OBS_DEINTERLACE_MODE_LINEAR_2X;
-	else if (deinterlaceModeString == "OBS_DEINTERLACE_MODE_YADIF")
-		deinterlaceMode = OBS_DEINTERLACE_MODE_YADIF;
-	else if (deinterlaceModeString == "OBS_DEINTERLACE_MODE_YADIF_2X")
-		deinterlaceMode = OBS_DEINTERLACE_MODE_YADIF_2X;
-	else
+	enum obs_deinterlace_mode deinterlaceMode = request.RequestData["sourceDeinterlaceMode"];
+	if (deinterlaceMode == OBS_DEINTERLACE_MODE_DISABLE &&
+	    request.RequestData["sourceDeinterlaceMode"] != "OBS_DEINTERLACE_MODE_DISABLE")
 		return RequestResult::Error(RequestStatus::InvalidRequestField,
-					    std::string("Unknown deinterlace mode: ") + deinterlaceModeString);
+					    "The field sourceDeinterlaceMode has an invalid value.");
 
 	obs_source_set_deinterlace_mode(source, deinterlaceMode);
 
@@ -432,10 +416,12 @@ RequestResult RequestHandler::GetSourceDeinterlaceFieldOrder(const Request &requ
 		return RequestResult::Error(statusCode, comment);
 
 	if (obs_source_get_type(source) != OBS_SOURCE_TYPE_INPUT)
-		return RequestResult::Error(RequestStatus::InvalidResourceType, "The specified source is not an input or a scene.");
+		return RequestResult::Error(RequestStatus::InvalidResourceType, "The specified source is not an input.");
+
+	auto deinterlaceFieldOrder = obs_source_get_deinterlace_field_order(source);
 
 	json responseData;
-	responseData["sourceDeinterlaceFieldOrder"] = obs_source_get_deinterlace_field_order(source);
+	responseData["sourceDeinterlaceFieldOrder"] = deinterlaceFieldOrder;
 
 	return RequestResult::Success(responseData);
 }
@@ -458,15 +444,11 @@ RequestResult RequestHandler::SetSourceDeinterlaceFieldOrder(const Request &requ
 	if (!source || !request.ValidateString("sourceDeinterlaceFieldOrder", statusCode, comment))
 		return RequestResult::Error(statusCode, comment);
 
-	enum obs_deinterlace_field_order deinterlaceFieldOrder;
-	std::string deinterlaceFieldOrderString = request.RequestData["sourceDeinterlaceFieldOrder"];
-	if (deinterlaceFieldOrderString == "OBS_DEINTERLACE_FIELD_ORDER_TOP")
-		deinterlaceFieldOrder = OBS_DEINTERLACE_FIELD_ORDER_TOP;
-	else if (deinterlaceFieldOrderString == "OBS_DEINTERLACE_FIELD_ORDER_BOTTOM")
-		deinterlaceFieldOrder = OBS_DEINTERLACE_FIELD_ORDER_BOTTOM;
-	else
+	enum obs_deinterlace_field_order deinterlaceFieldOrder = request.RequestData["sourceDeinterlaceFieldOrder"];
+	if (deinterlaceFieldOrder == OBS_DEINTERLACE_FIELD_ORDER_TOP &&
+	    request.RequestData["sourceDeinterlaceFieldOrder"] != "OBS_DEINTERLACE_FIELD_ORDER_TOP")
 		return RequestResult::Error(RequestStatus::InvalidRequestField,
-					    std::string("Unknown deinterlace field order: ") + deinterlaceFieldOrderString);
+					    "The field sourceDeinterlaceFieldOrder has an invalid value.");
 
 	obs_source_set_deinterlace_field_order(source, deinterlaceFieldOrder);
 
