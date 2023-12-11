@@ -353,9 +353,41 @@ RequestResult RequestHandler::GetSourceDeinterlaceMode(const Request &request)
 		return RequestResult::Error(RequestStatus::InvalidResourceType, "The specified source is not an input.");
 
 	auto deinterlaceMode = obs_source_get_deinterlace_mode(source);
+	std::string deinterlaceModeString;
+
+	switch (deinterlaceMode) {
+	default:
+	case OBS_DEINTERLACE_MODE_DISABLE:
+		deinterlaceModeString = "OBS_DEINTERLACE_MODE_DISABLE";
+		break;
+	case OBS_DEINTERLACE_MODE_DISCARD:
+		deinterlaceModeString = "OBS_DEINTERLACE_MODE_DISCARD";
+		break;
+	case OBS_DEINTERLACE_MODE_RETRO:
+		deinterlaceModeString = "OBS_DEINTERLACE_MODE_RETRO";
+		break;
+	case OBS_DEINTERLACE_MODE_BLEND:
+		deinterlaceModeString = "OBS_DEINTERLACE_MODE_BLEND";
+		break;
+	case OBS_DEINTERLACE_MODE_BLEND_2X:
+		deinterlaceModeString = "OBS_DEINTERLACE_MODE_BLEND_2X";
+		break;
+	case OBS_DEINTERLACE_MODE_LINEAR:
+		deinterlaceModeString = "OBS_DEINTERLACE_MODE_LINEAR";
+		break;
+	case OBS_DEINTERLACE_MODE_LINEAR_2X:
+		deinterlaceModeString = "OBS_DEINTERLACE_MODE_LINEAR_2X";
+		break;
+	case OBS_DEINTERLACE_MODE_YADIF:
+		deinterlaceModeString = "OBS_DEINTERLACE_MODE_YADIF";
+		break;
+	case OBS_DEINTERLACE_MODE_YADIF_2X:
+		deinterlaceModeString = "OBS_DEINTERLACE_MODE_YADIF_2X";
+		break;
+	}
 
 	json responseData;
-	responseData["sourceDeinterlaceMode"] = deinterlaceMode;
+	responseData["sourceDeinterlaceMode"] = deinterlaceModeString;
 
 	return RequestResult::Success(responseData);
 }
@@ -419,9 +451,20 @@ RequestResult RequestHandler::GetSourceDeinterlaceFieldOrder(const Request &requ
 		return RequestResult::Error(RequestStatus::InvalidResourceType, "The specified source is not an input.");
 
 	auto deinterlaceFieldOrder = obs_source_get_deinterlace_field_order(source);
+	std::string deinterlaceFieldOrderString;
+
+	switch (deinterlaceFieldOrder) {
+	default:
+	case OBS_DEINTERLACE_FIELD_ORDER_TOP:
+		deinterlaceFieldOrderString = "OBS_DEINTERLACE_FIELD_ORDER_TOP";
+		break;
+	case OBS_DEINTERLACE_FIELD_ORDER_BOTTOM:
+		deinterlaceFieldOrderString = "OBS_DEINTERLACE_FIELD_ORDER_BOTTOM";
+		break;
+	}
 
 	json responseData;
-	responseData["sourceDeinterlaceFieldOrder"] = deinterlaceFieldOrder;
+	responseData["sourceDeinterlaceFieldOrder"] = deinterlaceFieldOrderString;
 
 	return RequestResult::Success(responseData);
 }
