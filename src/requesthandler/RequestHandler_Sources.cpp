@@ -413,35 +413,25 @@ RequestResult RequestHandler::SetSourceDeinterlaceMode(const Request &request)
 	enum obs_deinterlace_mode deinterlaceMode;
 	std::string deinterlaceModeString = request.RequestData["sourceDeinterlaceMode"];
 
-	switch (deinterlaceModeString) {
-	case "OBS_DEINTERLACE_MODE_DISABLE":
+	if (deinterlaceModeString == "OBS_DEINTERLACE_MODE_DISABLE") {
 		deinterlaceMode = OBS_DEINTERLACE_MODE_DISABLE;
-		break;
-	case "OBS_DEINTERLACE_MODE_DISCARD":
+	} else if (deinterlaceModeString == "OBS_DEINTERLACE_MODE_DISCARD") {
 		deinterlaceMode = OBS_DEINTERLACE_MODE_DISCARD;
-		break;
-	case "OBS_DEINTERLACE_MODE_RETRO":
+	} else if (deinterlaceModeString == "OBS_DEINTERLACE_MODE_RETRO") {
 		deinterlaceMode = OBS_DEINTERLACE_MODE_RETRO;
-		break;
-	case "OBS_DEINTERLACE_MODE_BLEND":
+	} else if (deinterlaceModeString == "OBS_DEINTERLACE_MODE_BLEND") {
 		deinterlaceMode = OBS_DEINTERLACE_MODE_BLEND;
-		break;
-	case "OBS_DEINTERLACE_MODE_BLEND_2X":
+	} else if (deinterlaceModeString == "OBS_DEINTERLACE_MODE_BLEND_2X") {
 		deinterlaceMode = OBS_DEINTERLACE_MODE_BLEND_2X;
-		break;
-	case "OBS_DEINTERLACE_MODE_LINEAR":
+	} else if (deinterlaceModeString == "OBS_DEINTERLACE_MODE_LINEAR") {
 		deinterlaceMode = OBS_DEINTERLACE_MODE_LINEAR;
-		break;
-	case "OBS_DEINTERLACE_MODE_LINEAR_2X":
+	} else if (deinterlaceModeString == "OBS_DEINTERLACE_MODE_LINEAR_2X") {
 		deinterlaceMode = OBS_DEINTERLACE_MODE_LINEAR_2X;
-		break;
-	case "OBS_DEINTERLACE_MODE_YADIF":
+	} else if (deinterlaceModeString == "OBS_DEINTERLACE_MODE_YADIF") {
 		deinterlaceMode = OBS_DEINTERLACE_MODE_YADIF;
-		break;
-	case "OBS_DEINTERLACE_MODE_YADIF_2X":
+	} else if (deinterlaceModeString == "OBS_DEINTERLACE_MODE_YADIF_2X") {
 		deinterlaceMode = OBS_DEINTERLACE_MODE_YADIF_2X;
-		break;
-	default:
+	} else {
 		return RequestResult::Error(RequestStatus::InvalidRequestField,
 					    std::string("Invalid sourceDeinterlaceMode: ") + deinterlaceModeString);
 	}
@@ -520,14 +510,11 @@ RequestResult RequestHandler::SetSourceDeinterlaceFieldOrder(const Request &requ
 	enum obs_deinterlace_field_order deinterlaceFieldOrder;
 	std::string deinterlaceFieldOrderString = request.RequestData["sourceDeinterlaceFieldOrder"];
 
-	switch (deinterlaceFieldOrderString) {
-	case "OBS_DEINTERLACE_FIELD_ORDER_TOP":
+	if (deinterlaceFieldOrderString == "OBS_DEINTERLACE_FIELD_ORDER_TOP") {
 		deinterlaceFieldOrder = OBS_DEINTERLACE_FIELD_ORDER_TOP;
-		break;
-	case "OBS_DEINTERLACE_FIELD_ORDER_BOTTOM":
+	} else if (deinterlaceFieldOrderString == "OBS_DEINTERLACE_FIELD_ORDER_BOTTOM") {
 		deinterlaceFieldOrder = OBS_DEINTERLACE_FIELD_ORDER_BOTTOM;
-		break;
-	default:
+	} else {
 		return RequestResult::Error(RequestStatus::InvalidRequestField,
 					    std::string("Invalid sourceDeinterlaceFieldOrder: ") + deinterlaceFieldOrderString);
 	}
