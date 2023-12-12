@@ -408,10 +408,47 @@ RequestResult RequestHandler::SetSourceDeinterlaceMode(const Request &request)
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
 	OBSSourceAutoRelease source = request.ValidateSource("sourceName", statusCode, comment);
-	if (!source || !request.ValidateNumber("sourceDeinterlaceMode", statusCode, comment, 0))
+	// if (!source || !request.ValidateNumber("sourceDeinterlaceMode", statusCode, comment, 0))
+	// 	return RequestResult::Error(statusCode, comment);
+	if (!source || !request.ValidateString("sourceDeinterlaceMode", statusCode, comment))
 		return RequestResult::Error(statusCode, comment);
 
-	enum obs_deinterlace_mode deinterlaceMode = request.RequestData["sourceDeinterlaceMode"];
+	enum obs_deinterlace_mode deinterlaceMode;
+	std::string sourceDeinterlaceModeString = request.RequestData["sourceDeinterlaceMode"];
+
+	if (sourceDeinterlaceModeString == "OBS_DEINTERLACE_MODE_DISABLE") {
+		deinterlaceMode = OBS_DEINTERLACE_MODE_DISABLE;
+		break;
+	} else if (sourceDeinterlaceModeString == "OBS_DEINTERLACE_MODE_DISCARD") {
+		deinterlaceMode = OBS_DEINTERLACE_MODE_DISCARD;
+		break;
+	} else if (sourceDeinterlaceModeString == "OBS_DEINTERLACE_MODE_RETRO") {
+		deinterlaceMode = OBS_DEINTERLACE_MODE_RETRO;
+		break;
+	} else if (sourceDeinterlaceModeString == "OBS_DEINTERLACE_MODE_BLEND") {
+		deinterlaceMode = OBS_DEINTERLACE_MODE_BLEND;
+		break;
+	} else if (sourceDeinterlaceModeString == "OBS_DEINTERLACE_MODE_BLEND_2X") {
+		deinterlaceMode = OBS_DEINTERLACE_MODE_BLEND_2X;
+		break;
+	} else if (sourceDeinterlaceModeString == "OBS_DEINTERLACE_MODE_LINEAR") {
+		deinterlaceMode = OBS_DEINTERLACE_MODE_LINEAR;
+		break;
+	} else if (sourceDeinterlaceModeString == "OBS_DEINTERLACE_MODE_LINEAR_2X") {
+		deinterlaceMode = OBS_DEINTERLACE_MODE_LINEAR_2X;
+		break;
+	} else if (sourceDeinterlaceModeString == "OBS_DEINTERLACE_MODE_YADIF") {
+		deinterlaceMode = OBS_DEINTERLACE_MODE_YADIF;
+		break;
+	} else if (sourceDeinterlaceModeString == "OBS_DEINTERLACE_MODE_YADIF_2X") {
+		deinterlaceMode = OBS_DEINTERLACE_MODE_YADIF_2X;
+		break;
+	} else {
+		return RequestResult::Error(RequestStatus::InvalidRequestField,
+					    "Your specified deinterlace mode is invalid or not supported by this system.");
+	}
+
+	// enum obs_deinterlace_mode deinterlaceMode = request.RequestData["sourceDeinterlaceMode"];
 
 	obs_source_set_deinterlace_mode(source, deinterlaceMode);
 
@@ -482,10 +519,27 @@ RequestResult RequestHandler::SetSourceDeinterlaceFieldOrder(const Request &requ
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
 	OBSSourceAutoRelease source = request.ValidateSource("sourceName", statusCode, comment);
-	if (!source || !request.ValidateNumber("sourceDeinterlaceFieldOrder", statusCode, comment, 0))
+	// if (!source || !request.ValidateNumber("sourceDeinterlaceFieldOrder", statusCode, comment, 0))
+	// 	return RequestResult::Error(statusCode, comment);
+
+	if (!source || !request.ValidateString("sourceDeinterlaceFieldOrder", statusCode, comment))
 		return RequestResult::Error(statusCode, comment);
 
-	enum obs_deinterlace_field_order deinterlaceFieldOrder = request.RequestData["sourceDeinterlaceFieldOrder"];
+	enum obs_deinterlace_field_order deinterlaceFieldOrder;
+	std::string sourceDeinterlaceFieldOrderString = request.RequestData["sourceDeinterlaceFieldOrder"];
+
+	if (sourceDeinterlaceFieldOrderString == "OBS_DEINTERLACE_FIELD_ORDER_TOP") {
+		deinterlaceFieldOrder = OBS_DEINTERLACE_FIELD_ORDER_TOP;
+		break;
+	} else if (sourceDeinterlaceFieldOrderString == "OBS_DEINTERLACE_FIELD_ORDER_BOTTOM") {
+		deinterlaceFieldOrder = OBS_DEINTERLACE_FIELD_ORDER_BOTTOM;
+		break;
+	} else {
+		return RequestResult::Error(RequestStatus::InvalidRequestField,
+					    "Your specified deinterlace field order is invalid or not supported by this system.");
+	}
+
+	// enum obs_deinterlace_field_order deinterlaceFieldOrder = request.RequestData["sourceDeinterlaceFieldOrder"];
 
 	obs_source_set_deinterlace_field_order(source, deinterlaceFieldOrder);
 
