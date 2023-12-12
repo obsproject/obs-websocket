@@ -418,31 +418,22 @@ RequestResult RequestHandler::SetSourceDeinterlaceMode(const Request &request)
 
 	if (sourceDeinterlaceModeString == "OBS_DEINTERLACE_MODE_DISABLE") {
 		deinterlaceMode = OBS_DEINTERLACE_MODE_DISABLE;
-		break;
 	} else if (sourceDeinterlaceModeString == "OBS_DEINTERLACE_MODE_DISCARD") {
 		deinterlaceMode = OBS_DEINTERLACE_MODE_DISCARD;
-		break;
 	} else if (sourceDeinterlaceModeString == "OBS_DEINTERLACE_MODE_RETRO") {
 		deinterlaceMode = OBS_DEINTERLACE_MODE_RETRO;
-		break;
 	} else if (sourceDeinterlaceModeString == "OBS_DEINTERLACE_MODE_BLEND") {
 		deinterlaceMode = OBS_DEINTERLACE_MODE_BLEND;
-		break;
 	} else if (sourceDeinterlaceModeString == "OBS_DEINTERLACE_MODE_BLEND_2X") {
 		deinterlaceMode = OBS_DEINTERLACE_MODE_BLEND_2X;
-		break;
 	} else if (sourceDeinterlaceModeString == "OBS_DEINTERLACE_MODE_LINEAR") {
 		deinterlaceMode = OBS_DEINTERLACE_MODE_LINEAR;
-		break;
 	} else if (sourceDeinterlaceModeString == "OBS_DEINTERLACE_MODE_LINEAR_2X") {
 		deinterlaceMode = OBS_DEINTERLACE_MODE_LINEAR_2X;
-		break;
 	} else if (sourceDeinterlaceModeString == "OBS_DEINTERLACE_MODE_YADIF") {
 		deinterlaceMode = OBS_DEINTERLACE_MODE_YADIF;
-		break;
 	} else if (sourceDeinterlaceModeString == "OBS_DEINTERLACE_MODE_YADIF_2X") {
 		deinterlaceMode = OBS_DEINTERLACE_MODE_YADIF_2X;
-		break;
 	} else {
 		return RequestResult::Error(RequestStatus::InvalidRequestField,
 					    "Your specified deinterlace mode is invalid or not supported by this system.");
@@ -530,10 +521,8 @@ RequestResult RequestHandler::SetSourceDeinterlaceFieldOrder(const Request &requ
 
 	if (sourceDeinterlaceFieldOrderString == "OBS_DEINTERLACE_FIELD_ORDER_TOP") {
 		deinterlaceFieldOrder = OBS_DEINTERLACE_FIELD_ORDER_TOP;
-		break;
 	} else if (sourceDeinterlaceFieldOrderString == "OBS_DEINTERLACE_FIELD_ORDER_BOTTOM") {
 		deinterlaceFieldOrder = OBS_DEINTERLACE_FIELD_ORDER_BOTTOM;
-		break;
 	} else {
 		return RequestResult::Error(RequestStatus::InvalidRequestField,
 					    "Your specified deinterlace field order is invalid or not supported by this system.");
