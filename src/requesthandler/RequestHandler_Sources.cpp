@@ -357,6 +357,39 @@ RequestResult RequestHandler::GetSourceDeinterlaceMode(const Request &request)
 	json responseData;
 	responseData["sourceDeinterlaceMode"] = deinterlaceMode;
 
+	switch (deinterlaceMode) {
+	case OBS_DEINTERLACE_MODE_DISABLE:
+		responseData["sourceDeinterlaceModeString"] = "OBS_DEINTERLACE_MODE_DISABLE";
+		break;
+	case OBS_DEINTERLACE_MODE_DISCARD:
+		responseData["sourceDeinterlaceModeString"] = "OBS_DEINTERLACE_MODE_DISCARD";
+		break;
+	case OBS_DEINTERLACE_MODE_RETRO:
+		responseData["sourceDeinterlaceModeString"] = "OBS_DEINTERLACE_MODE_RETRO";
+		break;
+	case OBS_DEINTERLACE_MODE_BLEND:
+		responseData["sourceDeinterlaceModeString"] = "OBS_DEINTERLACE_MODE_BLEND";
+		break;
+	case OBS_DEINTERLACE_MODE_BLEND_2X:
+		responseData["sourceDeinterlaceModeString"] = "OBS_DEINTERLACE_MODE_BLEND_2X";
+		break;
+	case OBS_DEINTERLACE_MODE_LINEAR:
+		responseData["sourceDeinterlaceModeString"] = "OBS_DEINTERLACE_MODE_LINEAR";
+		break;
+	case OBS_DEINTERLACE_MODE_LINEAR_2X:
+		responseData["sourceDeinterlaceModeString"] = "OBS_DEINTERLACE_MODE_LINEAR_2X";
+		break;
+	case OBS_DEINTERLACE_MODE_YADIF:
+		responseData["sourceDeinterlaceModeString"] = "OBS_DEINTERLACE_MODE_YADIF";
+		break;
+	case OBS_DEINTERLACE_MODE_YADIF_2X:
+		responseData["sourceDeinterlaceModeString"] = "OBS_DEINTERLACE_MODE_YADIF_2X";
+		break;
+	default:
+		responseData["sourceDeinterlaceModeString"] = "unknown";
+		break;
+	}
+
 	return RequestResult::Success(responseData);
 }
 
@@ -418,6 +451,18 @@ RequestResult RequestHandler::GetSourceDeinterlaceFieldOrder(const Request &requ
 
 	json responseData;
 	responseData["sourceDeinterlaceFieldOrder"] = deinterlaceFieldOrder;
+
+	switch (deinterlaceFieldOrder) {
+	case OBS_DEINTERLACE_FIELD_ORDER_TOP:
+		responseData["sourceDeinterlaceFieldOrderString"] = "OBS_DEINTERLACE_FIELD_ORDER_TOP";
+		break;
+	case OBS_DEINTERLACE_FIELD_ORDER_BOTTOM:
+		responseData["sourceDeinterlaceFieldOrderString"] = "OBS_DEINTERLACE_FIELD_ORDER_BOTTOM";
+		break;
+	default:
+		responseData["sourceDeinterlaceFieldOrderString"] = "unknown";
+		break;
+	}
 
 	return RequestResult::Success(responseData);
 }
