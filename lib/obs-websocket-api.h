@@ -44,7 +44,7 @@ struct obs_websocket_request_callback {
 	void *priv_data;
 };
 
-inline proc_handler_t *_ph;
+static proc_handler_t *_ph;
 
 /* ==================== INTERNAL API FUNCTIONS ==================== */
 
@@ -53,7 +53,7 @@ static inline proc_handler_t *obs_websocket_get_ph(void)
 	proc_handler_t *global_ph = obs_get_proc_handler();
 	assert(global_ph != NULL);
 
-	calldata_t cd = {0};
+	calldata_t cd = {0, 0, 0, 0};
 	if (!proc_handler_call(global_ph, "obs_websocket_api_get_ph", &cd))
 		blog(LOG_DEBUG, "Unable to fetch obs-websocket proc handler object. obs-websocket not installed?");
 	proc_handler_t *ret = (proc_handler_t *)calldata_ptr(&cd, "ph");
@@ -91,7 +91,7 @@ static inline unsigned int obs_websocket_get_api_version(void)
 	if (!obs_websocket_ensure_ph())
 		return 0;
 
-	calldata_t cd = {0};
+	calldata_t cd = {0, 0, 0, 0};
 
 	if (!proc_handler_call(_ph, "get_api_version", &cd))
 		return 1; // API v1 does not include get_api_version
@@ -104,7 +104,11 @@ static inline unsigned int obs_websocket_get_api_version(void)
 }
 
 // Calls an obs-websocket request. Free response with `obs_websocket_request_response_free()`
-static inline obs_websocket_request_response *obs_websocket_call_request(const char *request_type, obs_data_t *request_data = NULL)
+static inline struct obs_websocket_request_response *obs_websocket_call_request(const char *request_type, obs_data_t *request_data
+#ifdef __cplusplus
+													  = NULL
+#endif
+)
 {
 	if (!obs_websocket_ensure_ph())
 		return NULL;
@@ -113,14 +117,14 @@ static inline obs_websocket_request_response *obs_websocket_call_request(const c
 	if (request_data)
 		request_data_string = obs_data_get_json(request_data);
 
-	calldata_t cd = {0};
+	calldata_t cd = {0, 0, 0, 0};
 
 	calldata_set_string(&cd, "request_type", request_type);
 	calldata_set_string(&cd, "request_data", request_data_string);
 
 	proc_handler_call(_ph, "call_request", &cd);
 
-	auto ret = (struct obs_websocket_request_response *)calldata_ptr(&cd, "response");
+	struct obs_websocket_request_response *ret = (struct obs_websocket_request_response *)calldata_ptr(&cd, "response");
 
 	calldata_free(&cd);
 
@@ -149,7 +153,7 @@ static inline obs_websocket_vendor obs_websocket_register_vendor(const char *ven
 	if (!obs_websocket_ensure_ph())
 		return NULL;
 
-	calldata_t cd = {0};
+	calldata_t cd = {0, 0, 0, 0};
 
 	calldata_set_string(&cd, "name", vendor_name);
 
@@ -164,11 +168,9 @@ static inline obs_websocket_vendor obs_websocket_register_vendor(const char *ven
 static inline bool obs_websocket_vendor_register_request(obs_websocket_vendor vendor, const char *request_type,
 							 obs_websocket_request_callback_function request_callback, void *priv_data)
 {
-	calldata_t cd = {0};
+	calldata_t cd = {0, 0, 0, 0};
 
-	struct obs_websocket_request_callback cb = {};
-	cb.callback = request_callback;
-	cb.priv_data = priv_data;
+	struct obs_websocket_request_callback cb = {request_callback, priv_data};
 
 	calldata_set_string(&cd, "type", request_type);
 	calldata_set_ptr(&cd, "callback", &cb);
@@ -182,7 +184,7 @@ static inline bool obs_websocket_vendor_register_request(obs_websocket_vendor ve
 // Unregisters an existing vendor request
 static inline bool obs_websocket_vendor_unregister_request(obs_websocket_vendor vendor, const char *request_type)
 {
-	calldata_t cd = {0};
+	calldata_t cd = {0, 0, 0, 0};
 
 	calldata_set_string(&cd, "type", request_type);
 
@@ -196,7 +198,7 @@ static inline bool obs_websocket_vendor_unregister_request(obs_websocket_vendor 
 // Emits an event under the vendor's name
 static inline bool obs_websocket_vendor_emit_event(obs_websocket_vendor vendor, const char *event_name, obs_data_t *event_data)
 {
-	calldata_t cd = {0};
+	calldata_t cd = {0, 0, 0, 0};
 
 	calldata_set_string(&cd, "type", event_name);
 	calldata_set_ptr(&cd, "data", (void *)event_data);
