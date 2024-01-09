@@ -1803,6 +1803,14 @@
           "valueRestrictions": null,
           "valueOptional": false,
           "valueOptionalBehavior": null
+        },
+        {
+          "valueName": "contextName",
+          "valueType": "String",
+          "valueDescription": "Name of context of the hotkey to trigger",
+          "valueRestrictions": null,
+          "valueOptional": true,
+          "valueOptionalBehavior": "Unknown"
         }
       ],
       "responseFields": []

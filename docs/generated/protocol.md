@@ -2793,6 +2793,7 @@ Triggers a hotkey using its name. See `GetHotkeyList`
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
 | hotkeyName | String | Name of the hotkey to trigger | None | N/A |
+| ?contextName | String | Name of context of the hotkey to trigger | None | Unknown |
 
 ---
 
