@@ -3,6 +3,7 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s [process_comments.py
 import os
 import sys
 import json
+import re
 
 # The comments parser will return a string type instead of an array if there is only one field
 def field_to_array(field):
@@ -75,6 +76,18 @@ def get_response_fields(fields):
         ret.append(field_out)
     return ret
 
+# Convert all typedef property fields from raw to final
+def get_property_fields(fields):
+    fields = field_to_array(fields)
+    ret = []
+    for field in fields:
+        m = re.search('{(.+)} (.+)', field)
+        field_out = {}
+        field_out['propertyType'] = m.group(1)
+        field_out['propertyName'] = m.group(2)
+        ret.append(field_out)
+    return ret
+
 #######################################################################################################################
 
 # Read versions json
@@ -90,6 +103,7 @@ with open('../work/comments.json', 'r') as f:
     comments_raw = json.load(f)
 
 # Prepare output variables
+typedefs = []
 enums = []
 requests = []
 events = []
@@ -194,6 +208,26 @@ for comment in comments_raw:
         logging.info('Processed event: {}'.format(eve['eventType']))
 
         events.append(eve)
+    elif api == 'typedefs':
+        if not validate_fields(comment, ['typedef', 'property']):
+            logging.warning('Failed to process typedef comment due to missing field(s):\n{}'.format(comment))
+            continue
+
+        typ = {}
+        typ['name'] = field_to_string(comment['typedef'])
+
+        try:
+            if 'property' in comment:
+                typ['properties'] = get_property_fields(comment['property'])
+            else:
+                typ['properties'] = []
+        except:
+            logging.exception('Failed to process typedef `{}` property fields due to error:\n'.format(typ['name']))
+            continue
+
+        logging.info('Processed typedef: {}'.format(typ['name']))
+
+        typedefs.append(typ)
     else:
         logging.warning('Comment with unknown api: {}'.format(api))
 
@@ -202,7 +236,7 @@ for enumType in enums_raw.keys():
     enum = enums_raw[enumType]
     enums.append({'enumType': enumType, 'enumIdentifiers': enum['enumIdentifiers']})
 
-finalObject = {'enums': enums, 'requests': requests, 'events': events}
+finalObject = {'enums': enums, 'typedefs': typedefs, 'requests': requests, 'events': events}
 
 with open('../generated/protocol.json', 'w') as f:
     json.dump(finalObject, f, indent=2)

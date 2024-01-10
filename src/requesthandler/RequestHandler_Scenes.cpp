@@ -20,11 +20,18 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include "RequestHandler.h"
 
 /**
+ * @typedef Scene
+ * @property {String} sceneName
+ * @property {Number} sceneIndex
+ * @api typedefs
+ */
+
+/**
  * Gets an array of all scenes in OBS.
  *
  * @responseField currentProgramSceneName | String        | Current program scene
  * @responseField currentPreviewSceneName | String        | Current preview scene. `null` if not in studio mode
- * @responseField scenes                  | Array<Object> | Array of scenes
+ * @responseField scenes                  | Array<Scene> | Array of scenes
  *
  * @requestType GetSceneList
  * @complexity 2

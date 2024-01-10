@@ -138,7 +138,7 @@ void EventHandler::HandleCurrentPreviewSceneChanged()
  *
  * TODO: Make OBS fire this event when scenes are reordered.
  *
- * @dataField scenes | Array<Object> | Updated array of scenes
+ * @dataField scenes | Array<Scene> | Updated array of scenes
  *
  * @eventType SceneListChanged
  * @eventSubscription Scenes

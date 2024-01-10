@@ -20,11 +20,21 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include "RequestHandler.h"
 
 /**
+ * @typedef Filter
+ * @property {Boolean} filterEnabled
+ * @property {Number} filterIndex
+ * @property {String} filterKind
+ * @property {String} filterName
+ * @property {Object} filterSettings
+ * @api typedefs
+ */
+
+/**
  * Gets an array of all of a source's filters.
  *
  * @requestField sourceName | String | Name of the source
  *
- * @responseField filters | Array<Object> | Array of filters
+ * @responseField filters | Array<Filter> | Array of filters
  *
  * @requestType GetSourceFilterList
  * @complexity 2

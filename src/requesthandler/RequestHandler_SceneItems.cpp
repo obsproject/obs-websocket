@@ -20,13 +20,51 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include "RequestHandler.h"
 
 /**
+ * @typedef SceneItemTransform
+ * @property {Number} sourceWidth
+ * @property {Number} sourceHeight
+ * @property {Number} positionX
+ * @property {Number} positionY
+ * @property {Number} rotation
+ * @property {Number} scaleX
+ * @property {Number} scaleY
+ * @property {Number} width
+ * @property {Number} height
+ * @property {Number} alignment
+ * @property {Number} boundsType
+ * @property {Number} boundsAlignment
+ * @property {Number} boundsWith
+ * @property {Number} boundsHeight
+ * @property {Number} cropLeft
+ * @property {Number} cropRight
+ * @property {Number} cropTop
+ * @property {Number} cropBottom
+ * @api typedefs
+ */
+
+/**
+ * @typedef SceneItem
+ * @property {Number} sceneItemId
+ * @property {Number} sceneItemIndex
+ * @property {Boolean} sceneItemEnabled
+ * @property {Boolean} sceneItemLocked
+ * @property {SceneItemTransform} sceneItemTransform
+ * @property {Number} sceneItemBlendMode
+ * @property {String} sourceName
+ * @property {Number} sourceType
+ * @property {String|undefined} inputKind
+ * @property {Boolean|undefined} isGroup
+ * @api typedefs
+ */
+
+/**
  * Gets a list of all scene items in a scene.
  *
  * Scenes only
  *
  * @requestField sceneName | String | Name of the scene to get the items of
  *
- * @responseField sceneItems | Array<Object> | Array of scene items in the scene
+ * @responseField sceneItems | Array<SceneItem> | Array of scene items in the scene
  *
  * @requestType GetSceneItemList
  * @complexity 3
@@ -58,7 +96,7 @@ RequestResult RequestHandler::GetSceneItemList(const Request &request)
  *
  * @requestField sceneName | String | Name of the group to get the items of
  *
- * @responseField sceneItems | Array<Object> | Array of scene items in the group
+ * @responseField sceneItems | Array<SceneItem> | Array of scene items in the group
  *
  * @requestType GetGroupSceneItemList
  * @complexity 3
@@ -282,7 +320,7 @@ RequestResult RequestHandler::DuplicateSceneItem(const Request &request)
  * @requestField sceneName   | String | Name of the scene the item is in
  * @requestField sceneItemId | Number | Numeric ID of the scene item | >= 0
  *
- * @responseField sceneItemTransform | Object | Object containing scene item transform info
+ * @responseField sceneItemTransform | SceneItemTransform | Object containing scene item transform info
  *
  * @requestType GetSceneItemTransform
  * @complexity 3
@@ -311,7 +349,7 @@ RequestResult RequestHandler::GetSceneItemTransform(const Request &request)
  *
  * @requestField sceneName          | String | Name of the scene the item is in
  * @requestField sceneItemId        | Number | Numeric ID of the scene item | >= 0
- * @requestField sceneItemTransform | Object | Object containing scene item transform info to update
+ * @requestField sceneItemTransform | Partial<SceneItemTransform> | Object containing scene item transform info to update
  *
  * @requestType SetSceneItemTransform
  * @complexity 3
