@@ -3,6 +3,21 @@ set(OBS_WEBSOCKET_RPC_VERSION 1)
 
 option(ENABLE_WEBSOCKET "Enable building OBS with websocket plugin" ON)
 
+add_library(obs-websocket-api INTERFACE)
+add_library(OBS::websocket-api ALIAS obs-websocket-api)
+
+target_sources(obs-websocket-api INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/lib/obs-websocket-api.h>
+                                           $<INSTALL_INTERFACE:${OBS_INCLUDE_DESTINATION}/obs-websocket-api.h>)
+
+target_link_libraries(obs-websocket-api INTERFACE OBS::libobs)
+
+target_include_directories(obs-websocket-api INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/lib>
+                                                       $<INSTALL_INTERFACE:${OBS_INCLUDE_DESTINATION}>)
+
+set_target_properties(obs-websocket-api PROPERTIES PUBLIC_HEADER lib/obs-websocket-api.h)
+
+export_target(obs-websocket-api)
+
 if(NOT ENABLE_WEBSOCKET OR NOT ENABLE_UI)
   message(STATUS "OBS:  DISABLED   obs-websocket")
   return()
@@ -56,7 +71,6 @@ target_sources(
           src/obs-websocket.h
           src/Config.cpp
           src/Config.h
-          lib/obs-websocket-api.h
           src/forms/SettingsDialog.cpp
           src/forms/SettingsDialog.h
           src/forms/ConnectInfo.cpp
@@ -133,6 +147,7 @@ target_link_libraries(
   obs-websocket
   PRIVATE OBS::libobs
           OBS::frontend-api
+          OBS::websocket-api
           Qt::Core
           Qt::Widgets
           Qt::Svg
