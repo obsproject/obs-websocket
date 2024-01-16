@@ -5024,6 +5024,12 @@ Toggles the status of the record output.
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| outputActive | Boolean | The new active state of the output |
+
 ---
 
 ### StartRecord

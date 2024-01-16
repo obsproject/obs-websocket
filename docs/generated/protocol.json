@@ -3125,7 +3125,13 @@
       "initialVersion": "5.0.0",
       "category": "record",
       "requestFields": [],
-      "responseFields": []
+      "responseFields": [
+        {
+          "valueName": "outputActive",
+          "valueType": "Boolean",
+          "valueDescription": "The new active state of the output"
+        }
+      ]
     },
     {
       "description": "Starts the record output.",
