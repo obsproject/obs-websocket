@@ -69,9 +69,10 @@ private:
 	static void SourceCreatedMultiHandler(void *param, calldata_t *data);
 	static void SourceDestroyedMultiHandler(void *param, calldata_t *data);
 	static void SourceRemovedMultiHandler(void *param, calldata_t *data);
-
-	// Signal handler: source
 	static void SourceRenamedMultiHandler(void *param, calldata_t *data);
+	static void SourceUpdatedMultiHandler(void *param, calldata_t *data);
+
+	// Signal handler: media sources
 	static void SourceMediaPauseMultiHandler(void *param, calldata_t *data);
 	static void SourceMediaPlayMultiHandler(void *param, calldata_t *data);
 	static void SourceMediaRestartMultiHandler(void *param, calldata_t *data);
@@ -106,7 +107,7 @@ private:
 	void HandleInputCreated(obs_source_t *source);
 	void HandleInputRemoved(obs_source_t *source);
 	void HandleInputNameChanged(obs_source_t *source, std::string oldInputName, std::string inputName);
-	void HandleInputVolumeMeters(std::vector<json> inputs); // AudioMeter::Handler callback
+	void HandleInputSettingsChanged(obs_source_t *source);
 	static void HandleInputActiveStateChanged(void *param,
 						  calldata_t *data); // Direct callback
 	static void HandleInputShowStateChanged(void *param,
@@ -123,6 +124,7 @@ private:
 						  calldata_t *data); // Direct callback
 	static void HandleInputAudioMonitorTypeChanged(void *param,
 						       calldata_t *data); // Direct callback
+	void HandleInputVolumeMeters(std::vector<json> inputs); // AudioMeter::Handler callback
 
 	// Transitions
 	void HandleCurrentSceneTransitionChanged();

@@ -94,6 +94,32 @@ void EventHandler::HandleInputNameChanged(obs_source_t *, std::string oldInputNa
 }
 
 /**
+ * An input's settings have changed (been updated).
+ *
+ * Note: On some inputs, changing values in the properties dialog will cause an immediate update. Pressing the "Cancel" button will revert the settings, resulting in another event being fired.
+ *
+ * @dataField inputName     | String | Name of the input
+ * @dataField inputSettings | Object | New settings object of the input
+ *
+ * @eventType InputSettingsChanged
+ * @eventSubscription Inputs
+ * @complexity 3
+ * @rpcVersion -1
+ * @initialVersion 5.4.0
+ * @api events
+ * @category inputs
+ */
+void EventHandler::HandleInputSettingsChanged(obs_source_t *source)
+{
+	OBSDataAutoRelease inputSettings = obs_source_get_settings(source);
+
+	json eventData;
+	eventData["inputName"] = obs_source_get_name(source);
+	eventData["inputSettings"] = Utils::Json::ObsDataToJson(inputSettings);
+	BroadcastEvent(EventSubscription::Inputs, "InputSettingsChanged", eventData);
+}
+
+/**
  * An input's active state has changed.
  *
  * When an input is active, it means it's being shown by the program feed.
