@@ -1530,6 +1530,7 @@ The output has been resumed (unpaused).
   - [InputCreated](#inputcreated)
   - [InputRemoved](#inputremoved)
   - [InputNameChanged](#inputnamechanged)
+  - [InputSettingsChanged](#inputsettingschanged)
   - [InputActiveStateChanged](#inputactivestatechanged)
   - [InputShowStateChanged](#inputshowstatechanged)
   - [InputMuteStateChanged](#inputmutestatechanged)
@@ -1874,6 +1875,25 @@ The name of an input has changed.
 | ---- | :---: | ----------- |
 | oldInputName | String | Old name of the input |
 | inputName | String | New name of the input |
+
+---
+
+### InputSettingsChanged
+
+An input's settings have changed (been updated).
+
+Note: On some inputs, changing values in the properties dialog will cause an immediate update. Pressing the "Cancel" button will revert the settings, resulting in another event being fired.
+
+- Complexity Rating: `3/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.4.0
+
+**Data Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| inputName | String | Name of the input |
+| inputSettings | Object | New settings object of the input |
 
 ---
 

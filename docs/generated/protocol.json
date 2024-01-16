@@ -5014,6 +5014,28 @@
       ]
     },
     {
+      "description": "An input's settings have changed (been updated).\n\nNote: On some inputs, changing values in the properties dialog will cause an immediate update. Pressing the \"Cancel\" button will revert the settings, resulting in another event being fired.",
+      "eventType": "InputSettingsChanged",
+      "eventSubscription": "Inputs",
+      "complexity": 3,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.4.0",
+      "category": "inputs",
+      "dataFields": [
+        {
+          "valueName": "inputName",
+          "valueType": "String",
+          "valueDescription": "Name of the input"
+        },
+        {
+          "valueName": "inputSettings",
+          "valueType": "Object",
+          "valueDescription": "New settings object of the input"
+        }
+      ]
+    },
+    {
       "description": "An input's active state has changed.\n\nWhen an input is active, it means it's being shown by the program feed.",
       "eventType": "InputActiveStateChanged",
       "eventSubscription": "InputActiveStateChanged",
