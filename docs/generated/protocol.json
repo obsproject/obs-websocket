@@ -4167,13 +4167,7 @@
           "valueOptionalBehavior": "-1"
         }
       ],
-      "responseFields": [
-        {
-          "valueName": "imageData",
-          "valueType": "String",
-          "valueDescription": "Base64-encoded screenshot"
-        }
-      ]
+      "responseFields": []
     },
     {
       "description": "Gets the status of the stream output.",

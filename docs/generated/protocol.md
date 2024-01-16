@@ -3251,12 +3251,6 @@ If `imageWidth` and `imageHeight` are not specified, the compressed image will u
 | ?imageHeight | Number | Height to scale the screenshot to | >= 8, <= 4096 | Source value is used |
 | ?imageCompressionQuality | Number | Compression quality to use. 0 for high compression, 100 for uncompressed. -1 to use "default" (whatever that means, idk) | >= -1, <= 100 | -1 |
 
-**Response Fields:**
-
-| Name | Type  | Description |
-| ---- | :---: | ----------- |
-| imageData | String | Base64-encoded screenshot |
-
 ## Scenes Requests
 
 ### GetSceneList
