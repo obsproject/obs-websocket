@@ -1260,6 +1260,23 @@
       "responseFields": []
     },
     {
+      "description": "Gets an array of all available source filter kinds.\n\nSimilar to `GetInputKindList`",
+      "requestType": "GetSourceFilterKindList",
+      "complexity": 2,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.4.0",
+      "category": "filters",
+      "requestFields": [],
+      "responseFields": [
+        {
+          "valueName": "sourceFilterKinds",
+          "valueType": "Array<String>",
+          "valueDescription": "Array of source filter kinds"
+        }
+      ]
+    },
+    {
       "description": "Gets an array of all of a source's filters.",
       "requestType": "GetSourceFilterList",
       "complexity": 2,

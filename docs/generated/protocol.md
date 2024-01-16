@@ -2596,6 +2596,7 @@ communication is desired.
   - [TriggerStudioModeTransition](#triggerstudiomodetransition)
   - [SetTBarPosition](#settbarposition)
 - [Filters Requests](#filters-1-requests)
+  - [GetSourceFilterKindList](#getsourcefilterkindlist)
   - [GetSourceFilterList](#getsourcefilterlist)
   - [GetSourceFilterDefaultSettings](#getsourcefilterdefaultsettings)
   - [CreateSourceFilter](#createsourcefilter)
@@ -4091,6 +4092,24 @@ Sets the position of the TBar.
 | ?release | Boolean | Whether to release the TBar. Only set `false` if you know that you will be sending another position update | None | `true` |
 
 ## Filters Requests
+
+### GetSourceFilterKindList
+
+Gets an array of all available source filter kinds.
+
+Similar to `GetInputKindList`
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.4.0
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| sourceFilterKinds | Array&lt;String&gt; | Array of source filter kinds |
+
+---
 
 ### GetSourceFilterList
 
