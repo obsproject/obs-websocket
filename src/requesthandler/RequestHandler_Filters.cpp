@@ -20,6 +20,27 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include "RequestHandler.h"
 
 /**
+ * Gets an array of all available source filter kinds.
+ *
+ * Similar to `GetInputKindList`
+ *
+ * @responseField sourceFilterKinds | Array<String> | Array of source filter kinds
+ *
+ * @requestType GetSourceFilterKindList
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.4.0
+ * @api requests
+ * @category filters
+ */
+RequestResult RequestHandler::GetSourceFilterKindList(const Request &)
+{
+	json responseData;
+	responseData["sourceFilterKinds"] = Utils::Obs::ArrayHelper::GetFilterKindList();
+	return RequestResult::Success(responseData);
+}
+
+/**
  * Gets an array of all of a source's filters.
  *
  * @requestField sourceName | String | Name of the source

@@ -130,6 +130,7 @@ private:
 	RequestResult SetTBarPosition(const Request &);
 
 	// Filters
+	RequestResult GetSourceFilterKindList(const Request &);
 	RequestResult GetSourceFilterList(const Request &);
 	RequestResult GetSourceFilterDefaultSettings(const Request &);
 	RequestResult CreateSourceFilter(const Request &);

@@ -111,6 +111,7 @@ const std::unordered_map<std::string, RequestMethodHandler> RequestHandler::_han
 	{"SetTBarPosition", &RequestHandler::SetTBarPosition},
 
 	// Filters
+	{"GetSourceFilterKindList", &RequestHandler::GetSourceFilterKindList},
 	{"GetSourceFilterList", &RequestHandler::GetSourceFilterList},
 	{"GetSourceFilterDefaultSettings", &RequestHandler::GetSourceFilterDefaultSettings},
 	{"CreateSourceFilter", &RequestHandler::CreateSourceFilter},
