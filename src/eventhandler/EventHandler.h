@@ -147,6 +147,7 @@ private:
 	void HandleSourceFilterRemoved(obs_source_t *source, obs_source_t *filter);
 	static void HandleSourceFilterNameChanged(void *param,
 						  calldata_t *data);                     // Direct callback
+	void HandleSourceFilterSettingsChanged(obs_source_t *source);
 	static void HandleSourceFilterEnableStateChanged(void *param, calldata_t *data); // Direct callback
 
 	// Outputs

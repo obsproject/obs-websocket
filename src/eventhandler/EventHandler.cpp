@@ -602,6 +602,9 @@ void EventHandler::SourceUpdatedMultiHandler(void *param, calldata_t *data)
 	case OBS_SOURCE_TYPE_INPUT:
 		eventHandler->HandleInputSettingsChanged(source);
 		break;
+	case OBS_SOURCE_TYPE_FILTER:
+		eventHandler->HandleSourceFilterSettingsChanged(source);
+		break;
 	default:
 		break;
 	}
