@@ -4894,6 +4894,33 @@
       ]
     },
     {
+      "description": "An source filter's settings have changed (been updated).",
+      "eventType": "SourceFilterSettingsChanged",
+      "eventSubscription": "Filters",
+      "complexity": 3,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.4.0",
+      "category": "filters",
+      "dataFields": [
+        {
+          "valueName": "sourceName",
+          "valueType": "String",
+          "valueDescription": "Name of the source the filter is on"
+        },
+        {
+          "valueName": "filterName",
+          "valueType": "String",
+          "valueDescription": "Name of the filter"
+        },
+        {
+          "valueName": "filterSettings",
+          "valueType": "Object",
+          "valueDescription": "New settings object of the filter"
+        }
+      ]
+    },
+    {
       "description": "A source filter's enable state has changed.",
       "eventType": "SourceFilterEnableStateChanged",
       "eventSubscription": "Filters",

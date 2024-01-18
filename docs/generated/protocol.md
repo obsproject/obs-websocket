@@ -1551,6 +1551,7 @@ The output has been resumed (unpaused).
   - [SourceFilterCreated](#sourcefiltercreated)
   - [SourceFilterRemoved](#sourcefilterremoved)
   - [SourceFilterNameChanged](#sourcefilternamechanged)
+  - [SourceFilterSettingsChanged](#sourcefiltersettingschanged)
   - [SourceFilterEnableStateChanged](#sourcefilterenablestatechanged)
 - [Scene Items Events](#scene-items-events)
   - [SceneItemCreated](#sceneitemcreated)
@@ -2217,6 +2218,24 @@ The name of a source filter has changed.
 | sourceName | String | The source the filter is on |
 | oldFilterName | String | Old name of the filter |
 | filterName | String | New name of the filter |
+
+---
+
+### SourceFilterSettingsChanged
+
+An source filter's settings have changed (been updated).
+
+- Complexity Rating: `3/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.4.0
+
+**Data Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| sourceName | String | Name of the source the filter is on |
+| filterName | String | Name of the filter |
+| filterSettings | Object | New settings object of the filter |
 
 ---
 
