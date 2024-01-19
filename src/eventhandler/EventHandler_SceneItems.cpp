@@ -23,7 +23,9 @@ with this program. If not, see <https://www.gnu.org/licenses/>
  * A scene item has been created.
  *
  * @dataField sceneName      | String | Name of the scene the item was added to
+ * @dataField sceneUuid      | String | UUID of the scene the item was added to
  * @dataField sourceName     | String | Name of the underlying source (input/scene)
+ * @dataField sourceUuid     | String | UUID of the underlying source (input/scene)
  * @dataField sceneItemId    | Number | Numeric ID of the scene item
  * @dataField sceneItemIndex | Number | Index position of the item
  *
@@ -49,7 +51,9 @@ void EventHandler::HandleSceneItemCreated(void *param, calldata_t *data)
 
 	json eventData;
 	eventData["sceneName"] = obs_source_get_name(obs_scene_get_source(scene));
+	eventData["sceneUuid"] = obs_source_get_uuid(obs_scene_get_source(scene));
 	eventData["sourceName"] = obs_source_get_name(obs_sceneitem_get_source(sceneItem));
+	eventData["sourceUuid"] = obs_source_get_uuid(obs_sceneitem_get_source(sceneItem));
 	eventData["sceneItemId"] = obs_sceneitem_get_id(sceneItem);
 	eventData["sceneItemIndex"] = obs_sceneitem_get_order_position(sceneItem);
 	eventHandler->BroadcastEvent(EventSubscription::SceneItems, "SceneItemCreated", eventData);
@@ -61,7 +65,9 @@ void EventHandler::HandleSceneItemCreated(void *param, calldata_t *data)
  * This event is not emitted when the scene the item is in is removed.
  *
  * @dataField sceneName   | String | Name of the scene the item was removed from
+ * @dataField sceneUuid   | String | UUID of the scene the item was removed from
  * @dataField sourceName  | String | Name of the underlying source (input/scene)
+ * @dataField sourceUuid  | String | UUID of the underlying source (input/scene)
  * @dataField sceneItemId | Number | Numeric ID of the scene item
  *
  * @eventType SceneItemRemoved
@@ -86,7 +92,9 @@ void EventHandler::HandleSceneItemRemoved(void *param, calldata_t *data)
 
 	json eventData;
 	eventData["sceneName"] = obs_source_get_name(obs_scene_get_source(scene));
+	eventData["sceneUuid"] = obs_source_get_uuid(obs_scene_get_source(scene));
 	eventData["sourceName"] = obs_source_get_name(obs_sceneitem_get_source(sceneItem));
+	eventData["sourceUuid"] = obs_source_get_uuid(obs_sceneitem_get_source(sceneItem));
 	eventData["sceneItemId"] = obs_sceneitem_get_id(sceneItem);
 	eventHandler->BroadcastEvent(EventSubscription::SceneItems, "SceneItemRemoved", eventData);
 }
@@ -95,6 +103,7 @@ void EventHandler::HandleSceneItemRemoved(void *param, calldata_t *data)
  * A scene's item list has been reindexed.
  *
  * @dataField sceneName  | String        | Name of the scene
+ * @dataField sceneUuid  | String        | UUID of the scene
  * @dataField sceneItems | Array<Object> | Array of scene item objects
  *
  * @eventType SceneItemListReindexed
@@ -115,6 +124,7 @@ void EventHandler::HandleSceneItemListReindexed(void *param, calldata_t *data)
 
 	json eventData;
 	eventData["sceneName"] = obs_source_get_name(obs_scene_get_source(scene));
+	eventData["sceneUuid"] = obs_source_get_uuid(obs_scene_get_source(scene));
 	eventData["sceneItems"] = Utils::Obs::ArrayHelper::GetSceneItemList(scene, true);
 	eventHandler->BroadcastEvent(EventSubscription::SceneItems, "SceneItemListReindexed", eventData);
 }
@@ -123,6 +133,7 @@ void EventHandler::HandleSceneItemListReindexed(void *param, calldata_t *data)
  * A scene item's enable state has changed.
  *
  * @dataField sceneName        | String  | Name of the scene the item is in
+ * @dataField sceneUuid        | String  | UUID of the scene the item is in
  * @dataField sceneItemId      | Number  | Numeric ID of the scene item
  * @dataField sceneItemEnabled | Boolean | Whether the scene item is enabled (visible)
  *
@@ -150,6 +161,7 @@ void EventHandler::HandleSceneItemEnableStateChanged(void *param, calldata_t *da
 
 	json eventData;
 	eventData["sceneName"] = obs_source_get_name(obs_scene_get_source(scene));
+	eventData["sceneUuid"] = obs_source_get_uuid(obs_scene_get_source(scene));
 	eventData["sceneItemId"] = obs_sceneitem_get_id(sceneItem);
 	eventData["sceneItemEnabled"] = sceneItemEnabled;
 	eventHandler->BroadcastEvent(EventSubscription::SceneItems, "SceneItemEnableStateChanged", eventData);
@@ -159,6 +171,7 @@ void EventHandler::HandleSceneItemEnableStateChanged(void *param, calldata_t *da
  * A scene item's lock state has changed.
  *
  * @dataField sceneName       | String  | Name of the scene the item is in
+ * @dataField sceneUuid       | String  | UUID of the scene the item is in
  * @dataField sceneItemId     | Number  | Numeric ID of the scene item
  * @dataField sceneItemLocked | Boolean | Whether the scene item is locked
  *
@@ -186,6 +199,7 @@ void EventHandler::HandleSceneItemLockStateChanged(void *param, calldata_t *data
 
 	json eventData;
 	eventData["sceneName"] = obs_source_get_name(obs_scene_get_source(scene));
+	eventData["sceneUuid"] = obs_source_get_uuid(obs_scene_get_source(scene));
 	eventData["sceneItemId"] = obs_sceneitem_get_id(sceneItem);
 	eventData["sceneItemLocked"] = sceneItemLocked;
 	eventHandler->BroadcastEvent(EventSubscription::SceneItems, "SceneItemLockStateChanged", eventData);
@@ -195,6 +209,7 @@ void EventHandler::HandleSceneItemLockStateChanged(void *param, calldata_t *data
  * A scene item has been selected in the Ui.
  *
  * @dataField sceneName        | String  | Name of the scene the item is in
+ * @dataField sceneUuid        | String  | UUID of the scene the item is in
  * @dataField sceneItemId      | Number  | Numeric ID of the scene item
  *
  * @eventType SceneItemSelected
@@ -219,6 +234,7 @@ void EventHandler::HandleSceneItemSelected(void *param, calldata_t *data)
 
 	json eventData;
 	eventData["sceneName"] = obs_source_get_name(obs_scene_get_source(scene));
+	eventData["sceneUuid"] = obs_source_get_uuid(obs_scene_get_source(scene));
 	eventData["sceneItemId"] = obs_sceneitem_get_id(sceneItem);
 	eventHandler->BroadcastEvent(EventSubscription::SceneItems, "SceneItemSelected", eventData);
 }
@@ -227,6 +243,7 @@ void EventHandler::HandleSceneItemSelected(void *param, calldata_t *data)
  * The transform/crop of a scene item has changed.
  *
  * @dataField sceneName          | String | The name of the scene the item is in
+ * @dataField sceneUuid          | String | The UUID of the scene the item is in
  * @dataField sceneItemId        | Number | Numeric ID of the scene item
  * @dataField sceneItemTransform | Object | New transform/crop info of the scene item
  *
@@ -255,6 +272,7 @@ void EventHandler::HandleSceneItemTransformChanged(void *param, calldata_t *data
 
 	json eventData;
 	eventData["sceneName"] = obs_source_get_name(obs_scene_get_source(scene));
+	eventData["sceneUuid"] = obs_source_get_uuid(obs_scene_get_source(scene));
 	eventData["sceneItemId"] = obs_sceneitem_get_id(sceneItem);
 	eventData["sceneItemTransform"] = Utils::Obs::ObjectHelper::GetSceneItemTransform(sceneItem);
 	eventHandler->BroadcastEvent(EventSubscription::SceneItemTransformChanged, "SceneItemTransformChanged", eventData);
