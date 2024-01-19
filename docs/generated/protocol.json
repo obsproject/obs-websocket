@@ -3306,6 +3306,40 @@
       ]
     },
     {
+      "description": "Gets the source name of a scene item.",
+      "requestType": "GetSceneItemSourceName",
+      "complexity": 3,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.4.0",
+      "category": "scene items",
+      "requestFields": [
+        {
+          "valueName": "sceneName",
+          "valueType": "String",
+          "valueDescription": "Name of the scene the item is in",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        },
+        {
+          "valueName": "sceneItemId",
+          "valueType": "Number",
+          "valueDescription": "Numeric ID of the scene item",
+          "valueRestrictions": ">= 0",
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        }
+      ],
+      "responseFields": [
+        {
+          "valueName": "sourceName",
+          "valueType": "String",
+          "valueDescription": "Name of the source associated with the scene item"
+        }
+      ]
+    },
+    {
       "description": "Creates a new scene item using a source.\n\nScenes only",
       "requestType": "CreateSceneItem",
       "complexity": 3,

@@ -2649,6 +2649,7 @@ communication is desired.
   - [GetSceneItemList](#getsceneitemlist)
   - [GetGroupSceneItemList](#getgroupsceneitemlist)
   - [GetSceneItemId](#getsceneitemid)
+  - [GetSceneItemSourceName](#getsceneitemsourcename)
   - [CreateSceneItem](#createsceneitem)
   - [RemoveSceneItem](#removesceneitem)
   - [DuplicateSceneItem](#duplicatesceneitem)
@@ -4396,6 +4397,29 @@ Scenes and Groups
 | Name | Type  | Description |
 | ---- | :---: | ----------- |
 | sceneItemId | Number | Numeric ID of the scene item |
+
+---
+
+### GetSceneItemSourceName
+
+Gets the source name of a scene item.
+
+- Complexity Rating: `3/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.4.0
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| sceneName | String | Name of the scene the item is in | None | N/A |
+| sceneItemId | Number | Numeric ID of the scene item | >= 0 | N/A |
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| sourceName | String | Name of the source associated with the scene item |
 
 ---
 
