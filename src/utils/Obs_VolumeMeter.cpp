@@ -93,6 +93,7 @@ json Utils::Obs::VolumeMeter::Meter::GetMeterData()
 	l.unlock();
 
 	ret["inputName"] = obs_source_get_name(input);
+	ret["inputUuid"] = obs_source_get_uuid(input);
 	ret["inputLevelsMul"] = levels;
 
 	return ret;
