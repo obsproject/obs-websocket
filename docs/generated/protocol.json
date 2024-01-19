@@ -1788,9 +1788,9 @@
       ]
     },
     {
-      "description": "Gets an array of all hotkey names in OBS",
+      "description": "Gets an array of all hotkey names in OBS.\n\nNote: Hotkey functionality in obs-websocket comes as-is, and we do not guarantee support if things are broken. In 9/10 usages of hotkey requests, there exists a better, more reliable method via other requests.",
       "requestType": "GetHotkeyList",
-      "complexity": 3,
+      "complexity": 4,
       "rpcVersion": "1",
       "deprecated": false,
       "initialVersion": "5.0.0",
@@ -1805,9 +1805,9 @@
       ]
     },
     {
-      "description": "Triggers a hotkey using its name. See `GetHotkeyList`",
+      "description": "Triggers a hotkey using its name. See `GetHotkeyList`.\n\nNote: Hotkey functionality in obs-websocket comes as-is, and we do not guarantee support if things are broken. In 9/10 usages of hotkey requests, there exists a better, more reliable method via other requests.",
       "requestType": "TriggerHotkeyByName",
-      "complexity": 3,
+      "complexity": 4,
       "rpcVersion": "1",
       "deprecated": false,
       "initialVersion": "5.0.0",
@@ -1833,7 +1833,7 @@
       "responseFields": []
     },
     {
-      "description": "Triggers a hotkey using a sequence of keys.",
+      "description": "Triggers a hotkey using a sequence of keys.\n\nNote: Hotkey functionality in obs-websocket comes as-is, and we do not guarantee support if things are broken. In 9/10 usages of hotkey requests, there exists a better, more reliable method via other requests.",
       "requestType": "TriggerHotkeyByKeySequence",
       "complexity": 4,
       "rpcVersion": "1",

@@ -2807,9 +2807,11 @@ If a plugin or script implements vendor requests or events, documentation is exp
 
 ### GetHotkeyList
 
-Gets an array of all hotkey names in OBS
+Gets an array of all hotkey names in OBS.
 
-- Complexity Rating: `3/5`
+Note: Hotkey functionality in obs-websocket comes as-is, and we do not guarantee support if things are broken. In 9/10 usages of hotkey requests, there exists a better, more reliable method via other requests.
+
+- Complexity Rating: `4/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
@@ -2823,9 +2825,11 @@ Gets an array of all hotkey names in OBS
 
 ### TriggerHotkeyByName
 
-Triggers a hotkey using its name. See `GetHotkeyList`
+Triggers a hotkey using its name. See `GetHotkeyList`.
 
-- Complexity Rating: `3/5`
+Note: Hotkey functionality in obs-websocket comes as-is, and we do not guarantee support if things are broken. In 9/10 usages of hotkey requests, there exists a better, more reliable method via other requests.
+
+- Complexity Rating: `4/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
 
@@ -2841,6 +2845,8 @@ Triggers a hotkey using its name. See `GetHotkeyList`
 ### TriggerHotkeyByKeySequence
 
 Triggers a hotkey using a sequence of keys.
+
+Note: Hotkey functionality in obs-websocket comes as-is, and we do not guarantee support if things are broken. In 9/10 usages of hotkey requests, there exists a better, more reliable method via other requests.
 
 - Complexity Rating: `4/5`
 - Latest Supported RPC Version: `1`
