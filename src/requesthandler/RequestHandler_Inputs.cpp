@@ -123,12 +123,14 @@ RequestResult RequestHandler::GetSpecialInputs(const Request &)
 /**
  * Creates a new input, adding it as a scene item to the specified scene.
  *
- * @requestField sceneName         | String | Name of the scene to add the input to as a scene item
+ * @requestField ?sceneName        | String | Name of the scene to add the input to as a scene item
+ * @requestField ?sceneUuid        | String | UUID of the scene to add the input to as a scene item
  * @requestField inputName         | String | Name of the new input to created
  * @requestField inputKind         | String | The kind of input to be created
  * @requestField ?inputSettings    | Object | Settings object to initialize the input with                  | Default settings used
  * @requestField ?sceneItemEnabled | Boolean | Whether to set the created scene item to enabled or disabled | True
  *
+ * @responseField inputUuid   | String | UUID of the newly created input
  * @responseField sceneItemId | Number | ID of the newly created scene item
  *
  * @requestType CreateInput
@@ -142,7 +144,7 @@ RequestResult RequestHandler::CreateInput(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease sceneSource = request.ValidateScene("sceneName", statusCode, comment);
+	OBSSourceAutoRelease sceneSource = request.ValidateScene(statusCode, comment);
 	if (!(sceneSource && request.ValidateString("inputName", statusCode, comment) &&
 	      request.ValidateString("inputKind", statusCode, comment)))
 		return RequestResult::Error(statusCode, comment);
@@ -185,6 +187,7 @@ RequestResult RequestHandler::CreateInput(const Request &request)
 		return RequestResult::Error(RequestStatus::ResourceCreationFailed, "Creation of the input or scene item failed.");
 
 	json responseData;
+	responseData["inputUuid"] = obs_source_get_uuid(obs_sceneitem_get_source(sceneItem));
 	responseData["sceneItemId"] = obs_sceneitem_get_id(sceneItem);
 	return RequestResult::Success(responseData);
 }
@@ -194,7 +197,8 @@ RequestResult RequestHandler::CreateInput(const Request &request)
  *
  * Note: Will immediately remove all associated scene items.
  *
- * @requestField inputName | String | Name of the input to remove
+ * @requestField ?inputName | String | Name of the input to remove
+ * @requestField ?inputUuid | String | UUID of the input to remove
  *
  * @requestType RemoveInput
  * @complexity 2
@@ -207,7 +211,7 @@ RequestResult RequestHandler::RemoveInput(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease input = request.ValidateInput("inputName", statusCode, comment);
+	OBSSourceAutoRelease input = request.ValidateInput(statusCode, comment);
 	if (!input)
 		return RequestResult::Error(statusCode, comment);
 
@@ -222,7 +226,8 @@ RequestResult RequestHandler::RemoveInput(const Request &request)
 /**
  * Sets the name of an input (rename).
  *
- * @requestField inputName    | String | Current input name
+ * @requestField ?inputName   | String | Current input name
+ * @requestField ?inputUuid   | String | Current input UUID
  * @requestField newInputName | String | New name for the input
  *
  * @requestType SetInputName
@@ -236,7 +241,7 @@ RequestResult RequestHandler::SetInputName(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease input = request.ValidateInput("inputName", statusCode, comment);
+	OBSSourceAutoRelease input = request.ValidateInput(statusCode, comment);
 	if (!(input && request.ValidateString("newInputName", statusCode, comment)))
 		return RequestResult::Error(statusCode, comment);
 
@@ -292,7 +297,8 @@ RequestResult RequestHandler::GetInputDefaultSettings(const Request &request)
  *
  * Note: Does not include defaults. To create the entire settings object, overlay `inputSettings` over the `defaultInputSettings` provided by `GetInputDefaultSettings`.
  *
- * @requestField inputName | String | Name of the input to get the settings of
+ * @requestField ?inputName | String | Name of the input to get the settings of
+ * @requestField ?inputUuid | String | UUID of the input to get the settings of
  *
  * @responseField inputSettings | Object | Object of settings for the input
  * @responseField inputKind     | String | The kind of the input
@@ -308,7 +314,7 @@ RequestResult RequestHandler::GetInputSettings(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease input = request.ValidateInput("inputName", statusCode, comment);
+	OBSSourceAutoRelease input = request.ValidateInput(statusCode, comment);
 	if (!input)
 		return RequestResult::Error(statusCode, comment);
 
@@ -323,7 +329,8 @@ RequestResult RequestHandler::GetInputSettings(const Request &request)
 /**
  * Sets the settings of an input.
  *
- * @requestField inputName     | String  | Name of the input to set the settings of
+ * @requestField ?inputName    | String  | Name of the input to set the settings of
+ * @requestField ?inputUuid    | String  | UUID of the input to set the settings of
  * @requestField inputSettings | Object  | Object of settings to apply
  * @requestField ?overlay      | Boolean | True == apply the settings on top of existing ones, False == reset the input to its defaults, then apply settings. | true
  *
@@ -338,7 +345,7 @@ RequestResult RequestHandler::SetInputSettings(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease input = request.ValidateInput("inputName", statusCode, comment);
+	OBSSourceAutoRelease input = request.ValidateInput(statusCode, comment);
 	if (!(input && request.ValidateObject("inputSettings", statusCode, comment, true)))
 		return RequestResult::Error(statusCode, comment);
 
@@ -373,7 +380,8 @@ RequestResult RequestHandler::SetInputSettings(const Request &request)
 /**
  * Gets the audio mute state of an input.
  *
- * @requestField inputName | String | Name of input to get the mute state of
+ * @requestField ?inputName | String | Name of input to get the mute state of
+ * @requestField ?inputUuid | String | UUID of input to get the mute state of
  *
  * @responseField inputMuted | Boolean | Whether the input is muted
  *
@@ -388,7 +396,7 @@ RequestResult RequestHandler::GetInputMute(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease input = request.ValidateInput("inputName", statusCode, comment);
+	OBSSourceAutoRelease input = request.ValidateInput(statusCode, comment);
 	if (!input)
 		return RequestResult::Error(statusCode, comment);
 
@@ -403,7 +411,8 @@ RequestResult RequestHandler::GetInputMute(const Request &request)
 /**
  * Sets the audio mute state of an input.
  *
- * @requestField inputName | String | Name of the input to set the mute state of
+ * @requestField ?inputName | String  | Name of the input to set the mute state of
+ * @requestField ?inputUuid | String  | UUID of the input to set the mute state of
  * @requestField inputMuted | Boolean | Whether to mute the input or not
  *
  * @requestType SetInputMute
@@ -417,7 +426,7 @@ RequestResult RequestHandler::SetInputMute(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease input = request.ValidateInput("inputName", statusCode, comment);
+	OBSSourceAutoRelease input = request.ValidateInput(statusCode, comment);
 	if (!(input && request.ValidateBoolean("inputMuted", statusCode, comment)))
 		return RequestResult::Error(statusCode, comment);
 
@@ -432,7 +441,8 @@ RequestResult RequestHandler::SetInputMute(const Request &request)
 /**
  * Toggles the audio mute state of an input.
  *
- * @requestField inputName | String | Name of the input to toggle the mute state of
+ * @requestField ?inputName | String | Name of the input to toggle the mute state of
+ * @requestField ?inputUuid | String | UUID of the input to toggle the mute state of
  *
  * @responseField inputMuted | Boolean | Whether the input has been muted or unmuted
  *
@@ -447,7 +457,7 @@ RequestResult RequestHandler::ToggleInputMute(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease input = request.ValidateInput("inputName", statusCode, comment);
+	OBSSourceAutoRelease input = request.ValidateInput(statusCode, comment);
 	if (!input)
 		return RequestResult::Error(statusCode, comment);
 
@@ -465,7 +475,8 @@ RequestResult RequestHandler::ToggleInputMute(const Request &request)
 /**
  * Gets the current volume setting of an input.
  *
- * @requestField inputName | String | Name of the input to get the volume of
+ * @requestField ?inputName | String | Name of the input to get the volume of
+ * @requestField ?inputUuid | String | UUID of the input to get the volume of
  *
  * @responseField inputVolumeMul | Number | Volume setting in mul
  * @responseField inputVolumeDb  | Number | Volume setting in dB
@@ -481,7 +492,7 @@ RequestResult RequestHandler::GetInputVolume(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease input = request.ValidateInput("inputName", statusCode, comment);
+	OBSSourceAutoRelease input = request.ValidateInput(statusCode, comment);
 	if (!input)
 		return RequestResult::Error(statusCode, comment);
 
@@ -502,7 +513,8 @@ RequestResult RequestHandler::GetInputVolume(const Request &request)
 /**
  * Sets the volume setting of an input.
  *
- * @requestField inputName       | String | Name of the input to set the volume of
+ * @requestField ?inputName      | String | Name of the input to set the volume of
+ * @requestField ?inputUuid      | String | UUID of the input to set the volume of
  * @requestField ?inputVolumeMul | Number | Volume setting in mul | >= 0, <= 20     | `inputVolumeDb` should be specified
  * @requestField ?inputVolumeDb  | Number | Volume setting in dB  | >= -100, <= 26 | `inputVolumeMul` should be specified
  *
@@ -517,7 +529,7 @@ RequestResult RequestHandler::SetInputVolume(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease input = request.ValidateInput("inputName", statusCode, comment);
+	OBSSourceAutoRelease input = request.ValidateInput(statusCode, comment);
 	if (!input)
 		return RequestResult::Error(statusCode, comment);
 
@@ -552,7 +564,8 @@ RequestResult RequestHandler::SetInputVolume(const Request &request)
 /**
  * Gets the audio balance of an input.
  *
- * @requestField inputName | String | Name of the input to get the audio balance of
+ * @requestField ?inputName | String | Name of the input to get the audio balance of
+ * @requestField ?inputUuid | String | UUID of the input to get the audio balance of
  *
  * @responseField inputAudioBalance | Number | Audio balance value from 0.0-1.0
  *
@@ -567,7 +580,7 @@ RequestResult RequestHandler::GetInputAudioBalance(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease input = request.ValidateInput("inputName", statusCode, comment);
+	OBSSourceAutoRelease input = request.ValidateInput(statusCode, comment);
 	if (!input)
 		return RequestResult::Error(statusCode, comment);
 
@@ -583,7 +596,8 @@ RequestResult RequestHandler::GetInputAudioBalance(const Request &request)
 /**
  * Sets the audio balance of an input.
  *
- * @requestField inputName         | String | Name of the input to set the audio balance of
+ * @requestField ?inputName        | String | Name of the input to set the audio balance of
+ * @requestField ?inputUuid        | String | UUID of the input to set the audio balance of
  * @requestField inputAudioBalance | Number | New audio balance value | >= 0.0, <= 1.0
  *
  * @requestType SetInputAudioBalance
@@ -597,7 +611,7 @@ RequestResult RequestHandler::SetInputAudioBalance(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease input = request.ValidateInput("inputName", statusCode, comment);
+	OBSSourceAutoRelease input = request.ValidateInput(statusCode, comment);
 	if (!(input && request.ValidateNumber("inputAudioBalance", statusCode, comment, 0.0, 1.0)))
 		return RequestResult::Error(statusCode, comment);
 
@@ -615,7 +629,8 @@ RequestResult RequestHandler::SetInputAudioBalance(const Request &request)
  *
  * Note: The audio sync offset can be negative too!
  *
- * @requestField inputName | String | Name of the input to get the audio sync offset of
+ * @requestField ?inputName | String | Name of the input to get the audio sync offset of
+ * @requestField ?inputUuid | String | UUID of the input to get the audio sync offset of
  *
  * @responseField inputAudioSyncOffset | Number | Audio sync offset in milliseconds
  *
@@ -630,7 +645,7 @@ RequestResult RequestHandler::GetInputAudioSyncOffset(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease input = request.ValidateInput("inputName", statusCode, comment);
+	OBSSourceAutoRelease input = request.ValidateInput(statusCode, comment);
 	if (!input)
 		return RequestResult::Error(statusCode, comment);
 
@@ -647,7 +662,8 @@ RequestResult RequestHandler::GetInputAudioSyncOffset(const Request &request)
 /**
  * Sets the audio sync offset of an input.
  *
- * @requestField inputName            | String | Name of the input to set the audio sync offset of
+ * @requestField ?inputName           | String | Name of the input to set the audio sync offset of
+ * @requestField ?inputUuid           | String | UUID of the input to set the audio sync offset of
  * @requestField inputAudioSyncOffset | Number | New audio sync offset in milliseconds | >= -950, <= 20000
  *
  * @requestType SetInputAudioSyncOffset
@@ -661,7 +677,7 @@ RequestResult RequestHandler::SetInputAudioSyncOffset(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease input = request.ValidateInput("inputName", statusCode, comment);
+	OBSSourceAutoRelease input = request.ValidateInput(statusCode, comment);
 	if (!(input && request.ValidateNumber("inputAudioSyncOffset", statusCode, comment, -950, 20000)))
 		return RequestResult::Error(statusCode, comment);
 
@@ -683,7 +699,8 @@ RequestResult RequestHandler::SetInputAudioSyncOffset(const Request &request)
  * - `OBS_MONITORING_TYPE_MONITOR_ONLY`
  * - `OBS_MONITORING_TYPE_MONITOR_AND_OUTPUT`
  *
- * @requestField inputName | String | Name of the input to get the audio monitor type of
+ * @requestField ?inputName | String | Name of the input to get the audio monitor type of
+ * @requestField ?inputUuid | String | UUID of the input to get the audio monitor type of
  *
  * @responseField monitorType | String | Audio monitor type
  *
@@ -698,7 +715,7 @@ RequestResult RequestHandler::GetInputAudioMonitorType(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease input = request.ValidateInput("inputName", statusCode, comment);
+	OBSSourceAutoRelease input = request.ValidateInput(statusCode, comment);
 	if (!input)
 		return RequestResult::Error(statusCode, comment);
 
@@ -714,7 +731,8 @@ RequestResult RequestHandler::GetInputAudioMonitorType(const Request &request)
 /**
  * Sets the audio monitor type of an input.
  *
- * @requestField inputName   | String | Name of the input to set the audio monitor type of
+ * @requestField ?inputName  | String | Name of the input to set the audio monitor type of
+ * @requestField ?inputUuid  | String | UUID of the input to set the audio monitor type of
  * @requestField monitorType | String | Audio monitor type
  *
  * @requestType SetInputAudioMonitorType
@@ -728,7 +746,7 @@ RequestResult RequestHandler::SetInputAudioMonitorType(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease input = request.ValidateInput("inputName", statusCode, comment);
+	OBSSourceAutoRelease input = request.ValidateInput(statusCode, comment);
 	if (!(input && request.ValidateString("monitorType", statusCode, comment)))
 		return RequestResult::Error(statusCode, comment);
 
@@ -759,7 +777,8 @@ RequestResult RequestHandler::SetInputAudioMonitorType(const Request &request)
 /**
  * Gets the enable state of all audio tracks of an input.
  *
- * @requestField inputName | String | Name of the input
+ * @requestField ?inputName | String | Name of the input
+ * @requestField ?inputUuid | String | UUID of the input
  *
  * @responseField inputAudioTracks | Object | Object of audio tracks and associated enable states
  *
@@ -774,7 +793,7 @@ RequestResult RequestHandler::GetInputAudioTracks(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease input = request.ValidateInput("inputName", statusCode, comment);
+	OBSSourceAutoRelease input = request.ValidateInput(statusCode, comment);
 	if (!input)
 		return RequestResult::Error(statusCode, comment);
 
@@ -797,7 +816,8 @@ RequestResult RequestHandler::GetInputAudioTracks(const Request &request)
 /**
  * Sets the enable state of audio tracks of an input.
  *
- * @requestField inputName        | String | Name of the input
+ * @requestField ?inputName       | String | Name of the input
+ * @requestField ?inputUuid       | String | UUID of the input
  * @requestField inputAudioTracks | Object | Track settings to apply
  *
  * @requestType SetInputAudioTracks
@@ -811,7 +831,7 @@ RequestResult RequestHandler::SetInputAudioTracks(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease input = request.ValidateInput("inputName", statusCode, comment);
+	OBSSourceAutoRelease input = request.ValidateInput(statusCode, comment);
 	if (!input || !request.ValidateObject("inputAudioTracks", statusCode, comment))
 		return RequestResult::Error(statusCode, comment);
 
@@ -851,7 +871,8 @@ RequestResult RequestHandler::SetInputAudioTracks(const Request &request)
  *
  * Note: Use this in cases where an input provides a dynamic, selectable list of items. For example, display capture, where it provides a list of available displays.
  *
- * @requestField inputName    | String | Name of the input
+ * @requestField ?inputName   | String | Name of the input
+ * @requestField ?inputUuid   | String | UUID of the input
  * @requestField propertyName | String | Name of the list property to get the items of
  *
  * @responseField propertyItems | Array<Object> | Array of items in the list property
@@ -867,7 +888,7 @@ RequestResult RequestHandler::GetInputPropertiesListPropertyItems(const Request 
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease input = request.ValidateInput("inputName", statusCode, comment);
+	OBSSourceAutoRelease input = request.ValidateInput(statusCode, comment);
 	if (!(input && request.ValidateString("propertyName", statusCode, comment)))
 		return RequestResult::Error(statusCode, comment);
 
@@ -895,7 +916,8 @@ RequestResult RequestHandler::GetInputPropertiesListPropertyItems(const Request 
  *
  * Note: Use this in cases where there is a button in the properties of an input that cannot be accessed in any other way. For example, browser sources, where there is a refresh button.
  *
- * @requestField inputName    | String | Name of the input
+ * @requestField ?inputName   | String | Name of the input
+ * @requestField ?inputUuid   | String | UUID of the input
  * @requestField propertyName | String | Name of the button property to press
  *
  * @requestType PressInputPropertiesButton
@@ -909,7 +931,7 @@ RequestResult RequestHandler::PressInputPropertiesButton(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease input = request.ValidateInput("inputName", statusCode, comment);
+	OBSSourceAutoRelease input = request.ValidateInput(statusCode, comment);
 	if (!(input && request.ValidateString("propertyName", statusCode, comment)))
 		return RequestResult::Error(statusCode, comment);
 

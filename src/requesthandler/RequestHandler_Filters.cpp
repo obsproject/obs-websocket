@@ -43,7 +43,8 @@ RequestResult RequestHandler::GetSourceFilterKindList(const Request &)
 /**
  * Gets an array of all of a source's filters.
  *
- * @requestField sourceName | String | Name of the source
+ * @requestField ?sourceName | String | Name of the source
+ * @requestField ?sourceUuid | String | UUID of the source
  *
  * @responseField filters | Array<Object> | Array of filters
  *
@@ -58,7 +59,7 @@ RequestResult RequestHandler::GetSourceFilterList(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease source = request.ValidateSource("sourceName", statusCode, comment);
+	OBSSourceAutoRelease source = request.ValidateSource("sourceName", "sourceUuid", statusCode, comment);
 	if (!source)
 		return RequestResult::Error(statusCode, comment);
 
@@ -106,7 +107,8 @@ RequestResult RequestHandler::GetSourceFilterDefaultSettings(const Request &requ
 /**
  * Creates a new filter, adding it to the specified source.
  *
- * @requestField sourceName      | String | Name of the source to add the filter to
+ * @requestField ?sourceName     | String | Name of the source to add the filter to
+ * @requestField ?sourceUuid     | String | UUID of the source to add the filter to
  * @requestField filterName      | String | Name of the new filter to be created
  * @requestField filterKind      | String | The kind of filter to be created
  * @requestField ?filterSettings | Object | Settings object to initialize the filter with | Default settings used
@@ -123,7 +125,7 @@ RequestResult RequestHandler::CreateSourceFilter(const Request &request)
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
 
-	OBSSourceAutoRelease source = request.ValidateSource("sourceName", statusCode, comment);
+	OBSSourceAutoRelease source = request.ValidateSource("sourceName", "sourceUuid", statusCode, comment);
 	if (!(source && request.ValidateString("filterName", statusCode, comment) &&
 	      request.ValidateString("filterKind", statusCode, comment)))
 		return RequestResult::Error(statusCode, comment);
@@ -159,8 +161,9 @@ RequestResult RequestHandler::CreateSourceFilter(const Request &request)
 /**
  * Removes a filter from a source.
  *
- * @requestField sourceName | String | Name of the source the filter is on
- * @requestField filterName | String | Name of the filter to remove
+ * @requestField ?sourceName | String | Name of the source the filter is on
+ * @requestField ?sourceUuid | String | UUID of the source the filter is on
+ * @requestField filterName  | String | Name of the filter to remove
  *
  * @requestType RemoveSourceFilter
  * @complexity 2
@@ -173,7 +176,7 @@ RequestResult RequestHandler::RemoveSourceFilter(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	FilterPair pair = request.ValidateFilter("sourceName", "filterName", statusCode, comment);
+	FilterPair pair = request.ValidateFilter(statusCode, comment);
 	if (!pair.filter)
 		return RequestResult::Error(statusCode, comment);
 
@@ -185,7 +188,8 @@ RequestResult RequestHandler::RemoveSourceFilter(const Request &request)
 /**
  * Sets the name of a source filter (rename).
  *
- * @requestField sourceName    | String | Name of the source the filter is on
+ * @requestField ?sourceName   | String | Name of the source the filter is on
+ * @requestField ?sourceUuid   | String | UUID of the source the filter is on
  * @requestField filterName    | String | Current name of the filter
  * @requestField newFilterName | String | New name for the filter
  *
@@ -200,7 +204,7 @@ RequestResult RequestHandler::SetSourceFilterName(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	FilterPair pair = request.ValidateFilter("sourceName", "filterName", statusCode, comment);
+	FilterPair pair = request.ValidateFilter(statusCode, comment);
 	if (!pair.filter || !request.ValidateString("newFilterName", statusCode, comment))
 		return RequestResult::Error(statusCode, comment);
 
@@ -218,8 +222,9 @@ RequestResult RequestHandler::SetSourceFilterName(const Request &request)
 /**
  * Gets the info for a specific source filter.
  *
- * @requestField sourceName | String | Name of the source
- * @requestField filterName | String | Name of the filter
+ * @requestField ?sourceName | String | Name of the source
+ * @requestField ?sourceUuid | String | UUID of the source
+ * @requestField filterName  | String | Name of the filter
  *
  * @responseField filterEnabled  | Boolean | Whether the filter is enabled
  * @responseField filterIndex    | Number  | Index of the filter in the list, beginning at 0
@@ -237,7 +242,7 @@ RequestResult RequestHandler::GetSourceFilter(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	FilterPair pair = request.ValidateFilter("sourceName", "filterName", statusCode, comment);
+	FilterPair pair = request.ValidateFilter(statusCode, comment);
 	if (!pair.filter)
 		return RequestResult::Error(statusCode, comment);
 
@@ -257,7 +262,8 @@ RequestResult RequestHandler::GetSourceFilter(const Request &request)
 /**
  * Sets the index position of a filter on a source.
  *
- * @requestField sourceName  | String | Name of the source the filter is on
+ * @requestField ?sourceName | String | Name of the source the filter is on
+ * @requestField ?sourceUuid | String | UUID of the source the filter is on
  * @requestField filterName  | String | Name of the filter
  * @requestField filterIndex | Number | New index position of the filter | >= 0
  *
@@ -272,7 +278,7 @@ RequestResult RequestHandler::SetSourceFilterIndex(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	FilterPair pair = request.ValidateFilter("sourceName", "filterName", statusCode, comment);
+	FilterPair pair = request.ValidateFilter(statusCode, comment);
 	if (!(pair.filter && request.ValidateNumber("filterIndex", statusCode, comment, 0, 8192)))
 		return RequestResult::Error(statusCode, comment);
 
@@ -286,7 +292,8 @@ RequestResult RequestHandler::SetSourceFilterIndex(const Request &request)
 /**
  * Sets the settings of a source filter.
  *
- * @requestField sourceName     | String  | Name of the source the filter is on
+ * @requestField ?sourceName    | String  | Name of the source the filter is on
+ * @requestField ?sourceUuid    | String  | UUID of the source the filter is on
  * @requestField filterName     | String  | Name of the filter to set the settings of
  * @requestField filterSettings | Object  | Object of settings to apply
  * @requestField ?overlay       | Boolean | True == apply the settings on top of existing ones, False == reset the input to its defaults, then apply settings. | true
@@ -302,7 +309,7 @@ RequestResult RequestHandler::SetSourceFilterSettings(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	FilterPair pair = request.ValidateFilter("sourceName", "filterName", statusCode, comment);
+	FilterPair pair = request.ValidateFilter(statusCode, comment);
 	if (!(pair.filter && request.ValidateObject("filterSettings", statusCode, comment, true)))
 		return RequestResult::Error(statusCode, comment);
 
@@ -334,7 +341,8 @@ RequestResult RequestHandler::SetSourceFilterSettings(const Request &request)
 /**
  * Sets the enable state of a source filter.
  *
- * @requestField sourceName    | String  | Name of the source the filter is on
+ * @requestField ?sourceName   | String  | Name of the source the filter is on
+ * @requestField ?sourceUuid   | String  | UUID of the source the filter is on
  * @requestField filterName    | String  | Name of the filter
  * @requestField filterEnabled | Boolean | New enable state of the filter
  *
@@ -349,7 +357,7 @@ RequestResult RequestHandler::SetSourceFilterEnabled(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	FilterPair pair = request.ValidateFilter("sourceName", "filterName", statusCode, comment);
+	FilterPair pair = request.ValidateFilter(statusCode, comment);
 	if (!(pair.filter && request.ValidateBoolean("filterEnabled", statusCode, comment)))
 		return RequestResult::Error(statusCode, comment);
 
