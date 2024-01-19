@@ -3591,8 +3591,8 @@
       ]
     },
     {
-      "description": "Gets the source name of a scene item.",
-      "requestType": "GetSceneItemSourceName",
+      "description": "Gets the source associated with a scene item.",
+      "requestType": "GetSceneItemSource",
       "complexity": 3,
       "rpcVersion": "1",
       "deprecated": false,

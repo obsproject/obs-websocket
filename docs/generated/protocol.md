@@ -2682,7 +2682,7 @@ communication is desired.
   - [GetSceneItemList](#getsceneitemlist)
   - [GetGroupSceneItemList](#getgroupsceneitemlist)
   - [GetSceneItemId](#getsceneitemid)
-  - [GetSceneItemSourceName](#getsceneitemsourcename)
+  - [GetSceneItemSource](#getsceneitemsource)
   - [CreateSceneItem](#createsceneitem)
   - [RemoveSceneItem](#removesceneitem)
   - [DuplicateSceneItem](#duplicatesceneitem)
@@ -4502,9 +4502,9 @@ Scenes and Groups
 
 ---
 
-### GetSceneItemSourceName
+### GetSceneItemSource
 
-Gets the source name of a scene item.
+Gets the source associated with a scene item.
 
 - Complexity Rating: `3/5`
 - Latest Supported RPC Version: `1`
