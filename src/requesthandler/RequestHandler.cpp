@@ -126,6 +126,7 @@ const std::unordered_map<std::string, RequestMethodHandler> RequestHandler::_han
 	{"GetSceneItemList", &RequestHandler::GetSceneItemList},
 	{"GetGroupSceneItemList", &RequestHandler::GetGroupSceneItemList},
 	{"GetSceneItemId", &RequestHandler::GetSceneItemId},
+	{"GetSceneItemSourceName", &RequestHandler::GetSceneItemSourceName},
 	{"CreateSceneItem", &RequestHandler::CreateSceneItem},
 	{"RemoveSceneItem", &RequestHandler::RemoveSceneItem},
 	{"DuplicateSceneItem", &RequestHandler::DuplicateSceneItem},

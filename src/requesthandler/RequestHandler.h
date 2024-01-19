@@ -145,6 +145,7 @@ private:
 	RequestResult GetSceneItemList(const Request &);
 	RequestResult GetGroupSceneItemList(const Request &);
 	RequestResult GetSceneItemId(const Request &);
+	RequestResult GetSceneItemSourceName(const Request &);
 	RequestResult CreateSceneItem(const Request &);
 	RequestResult RemoveSceneItem(const Request &);
 	RequestResult DuplicateSceneItem(const Request &);

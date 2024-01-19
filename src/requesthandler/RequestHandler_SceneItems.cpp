@@ -129,6 +129,37 @@ RequestResult RequestHandler::GetSceneItemId(const Request &request)
 }
 
 /**
+ * Gets the source name of a scene item.
+ *
+ * @requestField sceneName   | String | Name of the scene the item is in
+ * @requestField sceneItemId | Number | Numeric ID of the scene item | >= 0
+ *
+ * @responseField sourceName | String | Name of the source associated with the scene item
+ *
+ * @requestType GetSceneItemSourceName
+ * @complexity 3
+ * @rpcVersion -1
+ * @initialVersion 5.4.0
+ * @api requests
+ * @category scene items
+ */
+RequestResult RequestHandler::GetSceneItemSourceName(const Request &request)
+{
+	RequestStatus::RequestStatus statusCode;
+	std::string comment;
+	OBSSceneItemAutoRelease sceneItem = request.ValidateSceneItem("sceneName", "sceneItemId", statusCode, comment);
+	if (!sceneItem)
+		return RequestResult::Error(statusCode, comment);
+
+	OBSSource source = obs_sceneitem_get_source(sceneItem);
+
+	json responseData;
+	responseData["sourceName"] = obs_source_get_name(source);
+
+	return RequestResult::Success(responseData);
+}
+
+/**
  * Creates a new scene item using a source.
  *
  * Scenes only
