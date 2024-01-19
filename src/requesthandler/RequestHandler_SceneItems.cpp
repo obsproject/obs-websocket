@@ -132,7 +132,7 @@ RequestResult RequestHandler::GetSceneItemId(const Request &request)
 }
 
 /**
- * Gets the source name of a scene item.
+ * Gets the source associated with a scene item.
  *
  * @requestField ?sceneName  | String | Name of the scene the item is in
  * @requestField ?sceneUuid  | String | UUID of the scene the item is in
@@ -141,14 +141,14 @@ RequestResult RequestHandler::GetSceneItemId(const Request &request)
  * @responseField sourceName | String | Name of the source associated with the scene item
  * @responseField sourceUuid | String | UUID of the source associated with the scene item
  *
- * @requestType GetSceneItemSourceName
+ * @requestType GetSceneItemSource
  * @complexity 3
  * @rpcVersion -1
  * @initialVersion 5.4.0
  * @api requests
  * @category scene items
  */
-RequestResult RequestHandler::GetSceneItemSourceName(const Request &request) // TODO: Rename to `GetSceneItemSource`
+RequestResult RequestHandler::GetSceneItemSource(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
