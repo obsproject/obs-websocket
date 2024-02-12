@@ -198,10 +198,7 @@ RequestResult RequestHandler::CreateSceneCollection(const Request &request)
 	if (std::find(sceneCollections.begin(), sceneCollections.end(), sceneCollectionName) != sceneCollections.end())
 		return RequestResult::Error(RequestStatus::ResourceAlreadyExists);
 
-	QMainWindow *mainWindow = static_cast<QMainWindow *>(obs_frontend_get_main_window());
-	bool success = false;
-	QMetaObject::invokeMethod(mainWindow, "AddSceneCollection", Qt::BlockingQueuedConnection, Q_RETURN_ARG(bool, success),
-				  Q_ARG(bool, true), Q_ARG(QString, QString::fromStdString(sceneCollectionName)));
+	bool success = obs_frontend_add_scene_collection(sceneCollectionName.c_str());
 	if (!success)
 		return RequestResult::Error(RequestStatus::ResourceCreationFailed, "Failed to create the scene collection.");
 
@@ -599,9 +596,9 @@ RequestResult RequestHandler::SetStreamServiceSettings(const Request &request)
 
 		obs_service_update(currentStreamService, newStreamServiceSettings);
 	} else {
-		// TODO: This leaks memory. I have no idea why.
-		OBSService newStreamService = obs_service_create(requestedStreamServiceType.c_str(), "obs_websocket_custom_service",
-								 requestedStreamServiceSettings, nullptr);
+		OBSServiceAutoRelease newStreamService = obs_service_create(requestedStreamServiceType.c_str(),
+									    "obs_websocket_custom_service",
+									    requestedStreamServiceSettings, nullptr);
 		// TODO: Check service type here, instead of relying on service creation to fail.
 		if (!newStreamService)
 			return RequestResult::Error(

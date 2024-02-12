@@ -31,6 +31,7 @@ EventHandler::EventHandler()
 		signal_handler_connect(coreSignalHandler, "source_destroy", SourceDestroyedMultiHandler, this);
 		signal_handler_connect(coreSignalHandler, "source_remove", SourceRemovedMultiHandler, this);
 		signal_handler_connect(coreSignalHandler, "source_rename", SourceRenamedMultiHandler, this);
+		signal_handler_connect(coreSignalHandler, "source_update", SourceUpdatedMultiHandler, this);
 	} else {
 		blog(LOG_ERROR, "[EventHandler::EventHandler] Unable to get libobs signal handler!");
 	}
@@ -50,6 +51,7 @@ EventHandler::~EventHandler()
 		signal_handler_disconnect(coreSignalHandler, "source_destroy", SourceDestroyedMultiHandler, this);
 		signal_handler_disconnect(coreSignalHandler, "source_remove", SourceRemovedMultiHandler, this);
 		signal_handler_disconnect(coreSignalHandler, "source_rename", SourceRenamedMultiHandler, this);
+		signal_handler_disconnect(coreSignalHandler, "source_update", SourceUpdatedMultiHandler, this);
 	} else {
 		blog(LOG_ERROR, "[EventHandler::~EventHandler] Unable to get libobs signal handler!");
 	}
@@ -582,6 +584,26 @@ void EventHandler::SourceRenamedMultiHandler(void *param, calldata_t *data)
 		break;
 	case OBS_SOURCE_TYPE_SCENE:
 		eventHandler->HandleSceneNameChanged(source, oldSourceName, sourceName);
+		break;
+	default:
+		break;
+	}
+}
+
+void EventHandler::SourceUpdatedMultiHandler(void *param, calldata_t *data)
+{
+	auto eventHandler = static_cast<EventHandler *>(param);
+
+	obs_source_t *source = GetCalldataPointer<obs_source_t>(data, "source");
+	if (!source)
+		return;
+
+	switch (obs_source_get_type(source)) {
+	case OBS_SOURCE_TYPE_INPUT:
+		eventHandler->HandleInputSettingsChanged(source);
+		break;
+	case OBS_SOURCE_TYPE_FILTER:
+		eventHandler->HandleSourceFilterSettingsChanged(source);
 		break;
 	default:
 		break;

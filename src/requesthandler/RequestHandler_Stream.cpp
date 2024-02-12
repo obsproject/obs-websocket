@@ -44,12 +44,16 @@ RequestResult RequestHandler::GetStreamStatus(const Request &)
 
 	uint64_t outputDuration = Utils::Obs::NumberHelper::GetOutputDuration(streamOutput);
 
+	float outputCongestion = obs_output_get_congestion(streamOutput);
+	if (std::isnan(outputCongestion)) // libobs does not handle NaN, so we're handling it here
+		outputCongestion = 0.0f;
+
 	json responseData;
 	responseData["outputActive"] = obs_output_active(streamOutput);
 	responseData["outputReconnecting"] = obs_output_reconnecting(streamOutput);
 	responseData["outputTimecode"] = Utils::Obs::StringHelper::DurationToTimecode(outputDuration);
 	responseData["outputDuration"] = outputDuration;
-	responseData["outputCongestion"] = obs_output_get_congestion(streamOutput);
+	responseData["outputCongestion"] = outputCongestion;
 	responseData["outputBytes"] = (uint64_t)obs_output_get_total_bytes(streamOutput);
 	responseData["outputSkippedFrames"] = obs_output_get_frames_dropped(streamOutput);
 	responseData["outputTotalFrames"] = obs_output_get_total_frames(streamOutput);

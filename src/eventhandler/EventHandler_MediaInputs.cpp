@@ -124,6 +124,7 @@ void EventHandler::SourceMediaPreviousMultiHandler(void *param, calldata_t *data
  * A media input has started playing.
  *
  * @dataField inputName | String | Name of the input
+ * @dataField inputUuid | String | UUID of the input
  *
  * @eventType MediaInputPlaybackStarted
  * @eventSubscription MediaInputs
@@ -146,6 +147,7 @@ void EventHandler::HandleMediaInputPlaybackStarted(void *param, calldata_t *data
 
 	json eventData;
 	eventData["inputName"] = obs_source_get_name(source);
+	eventData["inputUuid"] = obs_source_get_uuid(source);
 	eventHandler->BroadcastEvent(EventSubscription::MediaInputs, "MediaInputPlaybackStarted", eventData);
 }
 
@@ -153,6 +155,7 @@ void EventHandler::HandleMediaInputPlaybackStarted(void *param, calldata_t *data
  * A media input has finished playing.
  *
  * @dataField inputName | String | Name of the input
+ * @dataField inputUuid | String | UUID of the input
  *
  * @eventType MediaInputPlaybackEnded
  * @eventSubscription MediaInputs
@@ -175,6 +178,7 @@ void EventHandler::HandleMediaInputPlaybackEnded(void *param, calldata_t *data)
 
 	json eventData;
 	eventData["inputName"] = obs_source_get_name(source);
+	eventData["inputUuid"] = obs_source_get_uuid(source);
 	eventHandler->BroadcastEvent(EventSubscription::MediaInputs, "MediaInputPlaybackEnded", eventData);
 }
 
@@ -182,6 +186,7 @@ void EventHandler::HandleMediaInputPlaybackEnded(void *param, calldata_t *data)
  * An action has been performed on an input.
  *
  * @dataField inputName   | String | Name of the input
+ * @dataField inputUuid   | String | UUID of the input
  * @dataField mediaAction | String | Action performed on the input. See `ObsMediaInputAction` enum
  *
  * @eventType MediaInputActionTriggered
@@ -196,6 +201,7 @@ void EventHandler::HandleMediaInputActionTriggered(obs_source_t *source, ObsMedi
 {
 	json eventData;
 	eventData["inputName"] = obs_source_get_name(source);
+	eventData["inputUuid"] = obs_source_get_uuid(source);
 	eventData["mediaAction"] = GetMediaInputActionString(action);
 	BroadcastEvent(EventSubscription::MediaInputs, "MediaInputActionTriggered", eventData);
 }

@@ -23,6 +23,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
  * An input has been created.
  *
  * @dataField inputName            | String | Name of the input
+ * @dataField inputUuid            | String | UUID of the input
  * @dataField inputKind            | String | The kind of the input
  * @dataField unversionedInputKind | String | The unversioned kind of input (aka no `_v2` stuff)
  * @dataField inputSettings        | Object | The settings configured to the input when it was created
@@ -44,6 +45,7 @@ void EventHandler::HandleInputCreated(obs_source_t *source)
 
 	json eventData;
 	eventData["inputName"] = obs_source_get_name(source);
+	eventData["inputUuid"] = obs_source_get_uuid(source);
 	eventData["inputKind"] = inputKind;
 	eventData["unversionedInputKind"] = obs_source_get_unversioned_id(source);
 	eventData["inputSettings"] = Utils::Json::ObsDataToJson(inputSettings);
@@ -55,6 +57,7 @@ void EventHandler::HandleInputCreated(obs_source_t *source)
  * An input has been removed.
  *
  * @dataField inputName | String | Name of the input
+ * @dataField inputUuid | String | UUID of the input
  *
  * @eventType InputRemoved
  * @eventSubscription Inputs
@@ -68,12 +71,14 @@ void EventHandler::HandleInputRemoved(obs_source_t *source)
 {
 	json eventData;
 	eventData["inputName"] = obs_source_get_name(source);
+	eventData["inputUuid"] = obs_source_get_uuid(source);
 	BroadcastEvent(EventSubscription::Inputs, "InputRemoved", eventData);
 }
 
 /**
  * The name of an input has changed.
  *
+ * @dataField inputUuid    | String | UUID of the input
  * @dataField oldInputName | String | Old name of the input
  * @dataField inputName    | String | New name of the input
  *
@@ -85,12 +90,41 @@ void EventHandler::HandleInputRemoved(obs_source_t *source)
  * @api events
  * @category inputs
  */
-void EventHandler::HandleInputNameChanged(obs_source_t *, std::string oldInputName, std::string inputName)
+void EventHandler::HandleInputNameChanged(obs_source_t *source, std::string oldInputName, std::string inputName)
 {
 	json eventData;
+	eventData["inputUuid"] = obs_source_get_uuid(source);
 	eventData["oldInputName"] = oldInputName;
 	eventData["inputName"] = inputName;
 	BroadcastEvent(EventSubscription::Inputs, "InputNameChanged", eventData);
+}
+
+/**
+ * An input's settings have changed (been updated).
+ *
+ * Note: On some inputs, changing values in the properties dialog will cause an immediate update. Pressing the "Cancel" button will revert the settings, resulting in another event being fired.
+ *
+ * @dataField inputName     | String | Name of the input
+ * @dataField inputUuid     | String | UUID of the input
+ * @dataField inputSettings | Object | New settings object of the input
+ *
+ * @eventType InputSettingsChanged
+ * @eventSubscription Inputs
+ * @complexity 3
+ * @rpcVersion -1
+ * @initialVersion 5.4.0
+ * @api events
+ * @category inputs
+ */
+void EventHandler::HandleInputSettingsChanged(obs_source_t *source)
+{
+	OBSDataAutoRelease inputSettings = obs_source_get_settings(source);
+
+	json eventData;
+	eventData["inputName"] = obs_source_get_name(source);
+	eventData["inputUuid"] = obs_source_get_uuid(source);
+	eventData["inputSettings"] = Utils::Json::ObsDataToJson(inputSettings);
+	BroadcastEvent(EventSubscription::Inputs, "InputSettingsChanged", eventData);
 }
 
 /**
@@ -99,6 +133,7 @@ void EventHandler::HandleInputNameChanged(obs_source_t *, std::string oldInputNa
  * When an input is active, it means it's being shown by the program feed.
  *
  * @dataField inputName   | String  | Name of the input
+ * @dataField inputUuid   | String  | UUID of the input
  * @dataField videoActive | Boolean | Whether the input is active
  *
  * @eventType InputActiveStateChanged
@@ -125,6 +160,7 @@ void EventHandler::HandleInputActiveStateChanged(void *param, calldata_t *data)
 
 	json eventData;
 	eventData["inputName"] = obs_source_get_name(source);
+	eventData["inputUuid"] = obs_source_get_uuid(source);
 	eventData["videoActive"] = obs_source_active(source);
 	eventHandler->BroadcastEvent(EventSubscription::InputActiveStateChanged, "InputActiveStateChanged", eventData);
 }
@@ -135,6 +171,7 @@ void EventHandler::HandleInputActiveStateChanged(void *param, calldata_t *data)
  * When an input is showing, it means it's being shown by the preview or a dialog.
  *
  * @dataField inputName    | String  | Name of the input
+ * @dataField inputUuid    | String  | UUID of the input
  * @dataField videoShowing | Boolean | Whether the input is showing
  *
  * @eventType InputShowStateChanged
@@ -161,6 +198,7 @@ void EventHandler::HandleInputShowStateChanged(void *param, calldata_t *data)
 
 	json eventData;
 	eventData["inputName"] = obs_source_get_name(source);
+	eventData["inputUuid"] = obs_source_get_uuid(source);
 	eventData["videoShowing"] = obs_source_showing(source);
 	eventHandler->BroadcastEvent(EventSubscription::InputShowStateChanged, "InputShowStateChanged", eventData);
 }
@@ -169,6 +207,7 @@ void EventHandler::HandleInputShowStateChanged(void *param, calldata_t *data)
  * An input's mute state has changed.
  *
  * @dataField inputName  | String  | Name of the input
+ * @dataField inputUuid  | String  | UUID of the input
  * @dataField inputMuted | Boolean | Whether the input is muted
  *
  * @eventType InputMuteStateChanged
@@ -192,6 +231,7 @@ void EventHandler::HandleInputMuteStateChanged(void *param, calldata_t *data)
 
 	json eventData;
 	eventData["inputName"] = obs_source_get_name(source);
+	eventData["inputUuid"] = obs_source_get_uuid(source);
 	eventData["inputMuted"] = obs_source_muted(source);
 	eventHandler->BroadcastEvent(EventSubscription::Inputs, "InputMuteStateChanged", eventData);
 }
@@ -200,6 +240,7 @@ void EventHandler::HandleInputMuteStateChanged(void *param, calldata_t *data)
  * An input's volume level has changed.
  *
  * @dataField inputName      | String | Name of the input
+ * @dataField inputUuid      | String | UUID of the input
  * @dataField inputVolumeMul | Number | New volume level multiplier
  * @dataField inputVolumeDb  | Number | New volume level in dB
  *
@@ -231,6 +272,7 @@ void EventHandler::HandleInputVolumeChanged(void *param, calldata_t *data)
 
 	json eventData;
 	eventData["inputName"] = obs_source_get_name(source);
+	eventData["inputUuid"] = obs_source_get_uuid(source);
 	eventData["inputVolumeMul"] = inputVolumeMul;
 	eventData["inputVolumeDb"] = inputVolumeDb;
 	eventHandler->BroadcastEvent(EventSubscription::Inputs, "InputVolumeChanged", eventData);
@@ -239,7 +281,8 @@ void EventHandler::HandleInputVolumeChanged(void *param, calldata_t *data)
 /**
  * The audio balance value of an input has changed.
  *
- * @dataField inputName         | String | Name of the affected input
+ * @dataField inputName         | String | Name of the input
+ * @dataField inputUuid         | String | UUID of the input
  * @dataField inputAudioBalance | Number | New audio balance value of the input
  *
  * @eventType InputAudioBalanceChanged
@@ -265,6 +308,7 @@ void EventHandler::HandleInputAudioBalanceChanged(void *param, calldata_t *data)
 
 	json eventData;
 	eventData["inputName"] = obs_source_get_name(source);
+	eventData["inputUuid"] = obs_source_get_uuid(source);
 	eventData["inputAudioBalance"] = inputAudioBalance;
 	eventHandler->BroadcastEvent(EventSubscription::Inputs, "InputAudioBalanceChanged", eventData);
 }
@@ -273,6 +317,7 @@ void EventHandler::HandleInputAudioBalanceChanged(void *param, calldata_t *data)
  * The sync offset of an input has changed.
  *
  * @dataField inputName            | String | Name of the input
+ * @dataField inputUuid            | String | UUID of the input
  * @dataField inputAudioSyncOffset | Number | New sync offset in milliseconds
  *
  * @eventType InputAudioSyncOffsetChanged
@@ -298,6 +343,7 @@ void EventHandler::HandleInputAudioSyncOffsetChanged(void *param, calldata_t *da
 
 	json eventData;
 	eventData["inputName"] = obs_source_get_name(source);
+	eventData["inputUuid"] = obs_source_get_uuid(source);
 	eventData["inputAudioSyncOffset"] = inputAudioSyncOffset / 1000000;
 	eventHandler->BroadcastEvent(EventSubscription::Inputs, "InputAudioSyncOffsetChanged", eventData);
 }
@@ -306,6 +352,7 @@ void EventHandler::HandleInputAudioSyncOffsetChanged(void *param, calldata_t *da
  * The audio tracks of an input have changed.
  *
  * @dataField inputName        | String | Name of the input
+ * @dataField inputUuid        | String | UUID of the input
  * @dataField inputAudioTracks | Object | Object of audio tracks along with their associated enable states
  *
  * @eventType InputAudioTracksChanged
@@ -336,6 +383,7 @@ void EventHandler::HandleInputAudioTracksChanged(void *param, calldata_t *data)
 
 	json eventData;
 	eventData["inputName"] = obs_source_get_name(source);
+	eventData["inputUuid"] = obs_source_get_uuid(source);
 	eventData["inputAudioTracks"] = inputAudioTracks;
 	eventHandler->BroadcastEvent(EventSubscription::Inputs, "InputAudioTracksChanged", eventData);
 }
@@ -350,6 +398,7 @@ void EventHandler::HandleInputAudioTracksChanged(void *param, calldata_t *data)
  * - `OBS_MONITORING_TYPE_MONITOR_AND_OUTPUT`
  *
  * @dataField inputName   | String | Name of the input
+ * @dataField inputUuid   | String | UUID of the input
  * @dataField monitorType | String | New monitor type of the input
  *
  * @eventType InputAudioMonitorTypeChanged
@@ -375,6 +424,7 @@ void EventHandler::HandleInputAudioMonitorTypeChanged(void *param, calldata_t *d
 
 	json eventData;
 	eventData["inputName"] = obs_source_get_name(source);
+	eventData["inputUuid"] = obs_source_get_uuid(source);
 	eventData["monitorType"] = monitorType;
 	eventHandler->BroadcastEvent(EventSubscription::Inputs, "InputAudioMonitorTypeChanged", eventData);
 }

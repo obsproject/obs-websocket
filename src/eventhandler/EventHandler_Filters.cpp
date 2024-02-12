@@ -164,6 +164,32 @@ void EventHandler::HandleSourceFilterNameChanged(void *param, calldata_t *data)
 }
 
 /**
+ * An source filter's settings have changed (been updated).
+ *
+ * @dataField sourceName     | String | Name of the source the filter is on
+ * @dataField filterName     | String | Name of the filter
+ * @dataField filterSettings | Object | New settings object of the filter
+ *
+ * @eventType SourceFilterSettingsChanged
+ * @eventSubscription Filters
+ * @complexity 3
+ * @rpcVersion -1
+ * @initialVersion 5.4.0
+ * @api events
+ * @category filters
+ */
+void EventHandler::HandleSourceFilterSettingsChanged(obs_source_t *source)
+{
+	OBSDataAutoRelease filterSettings = obs_source_get_settings(source);
+
+	json eventData;
+	eventData["sourceName"] = obs_source_get_name(obs_filter_get_parent(source));
+	eventData["filterName"] = obs_source_get_name(source);
+	eventData["filterSettings"] = Utils::Json::ObsDataToJson(filterSettings);
+	BroadcastEvent(EventSubscription::Filters, "SourceFilterSettingsChanged", eventData);
+}
+
+/**
  * A source filter's enable state has changed.
  *
  * @dataField sourceName    | String  | Name of the source the filter is on

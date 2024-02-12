@@ -211,12 +211,14 @@ RequestResult RequestHandler::CallVendorRequest(const Request &request)
 }
 
 /**
- * Gets an array of all hotkey names in OBS
+ * Gets an array of all hotkey names in OBS.
+ *
+ * Note: Hotkey functionality in obs-websocket comes as-is, and we do not guarantee support if things are broken. In 9/10 usages of hotkey requests, there exists a better, more reliable method via other requests.
  *
  * @responseField hotkeys | Array<String> | Array of hotkey names
  *
  * @requestType GetHotkeyList
- * @complexity 3
+ * @complexity 4
  * @rpcVersion -1
  * @initialVersion 5.0.0
  * @category general
@@ -230,12 +232,15 @@ RequestResult RequestHandler::GetHotkeyList(const Request &)
 }
 
 /**
- * Triggers a hotkey using its name. See `GetHotkeyList`
+ * Triggers a hotkey using its name. See `GetHotkeyList`.
+ *
+ * Note: Hotkey functionality in obs-websocket comes as-is, and we do not guarantee support if things are broken. In 9/10 usages of hotkey requests, there exists a better, more reliable method via other requests.
  *
  * @requestField hotkeyName | String | Name of the hotkey to trigger
+ * @requestField ?contextName | String | Name of context of the hotkey to trigger
  *
  * @requestType TriggerHotkeyByName
- * @complexity 3
+ * @complexity 4
  * @rpcVersion -1
  * @initialVersion 5.0.0
  * @category general
@@ -248,7 +253,15 @@ RequestResult RequestHandler::TriggerHotkeyByName(const Request &request)
 	if (!request.ValidateString("hotkeyName", statusCode, comment))
 		return RequestResult::Error(statusCode, comment);
 
-	obs_hotkey_t *hotkey = Utils::Obs::SearchHelper::GetHotkeyByName(request.RequestData["hotkeyName"]);
+	std::string contextName;
+	if (request.Contains("contextName")) {
+		if (!request.ValidateOptionalString("contextName", statusCode, comment))
+			return RequestResult::Error(statusCode, comment);
+
+		contextName = request.RequestData["contextName"];
+	}
+
+	obs_hotkey_t *hotkey = Utils::Obs::SearchHelper::GetHotkeyByName(request.RequestData["hotkeyName"], contextName);
 	if (!hotkey)
 		return RequestResult::Error(RequestStatus::ResourceNotFound, "No hotkeys were found by that name.");
 
@@ -259,6 +272,8 @@ RequestResult RequestHandler::TriggerHotkeyByName(const Request &request)
 
 /**
  * Triggers a hotkey using a sequence of keys.
+ *
+ * Note: Hotkey functionality in obs-websocket comes as-is, and we do not guarantee support if things are broken. In 9/10 usages of hotkey requests, there exists a better, more reliable method via other requests.
  *
  * @requestField ?keyId                | String  | The OBS key ID to use. See https://github.com/obsproject/obs-studio/blob/master/libobs/obs-hotkeys.h | Not pressed
  * @requestField ?keyModifiers         | Object  | Object containing key modifiers to apply                                                             | Ignored

@@ -39,7 +39,8 @@ bool IsMediaTimeValid(obs_source_t *input)
  * - `OBS_MEDIA_STATE_ENDED`
  * - `OBS_MEDIA_STATE_ERROR`
  *
- * @requestField inputName | String | Name of the media input
+ * @requestField ?inputName | String | Name of the media input
+ * @requestField ?inputUuid | String | UUID of the media input
  *
  * @responseField mediaState    | String | State of the media input
  * @responseField mediaDuration | Number | Total duration of the playing media in milliseconds. `null` if not playing
@@ -56,7 +57,7 @@ RequestResult RequestHandler::GetMediaInputStatus(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease input = request.ValidateInput("inputName", statusCode, comment);
+	OBSSourceAutoRelease input = request.ValidateInput(statusCode, comment);
 	if (!input)
 		return RequestResult::Error(statusCode, comment);
 
@@ -80,7 +81,8 @@ RequestResult RequestHandler::GetMediaInputStatus(const Request &request)
  *
  * This request does not perform bounds checking of the cursor position.
  *
- * @requestField inputName   | String | Name of the media input
+ * @requestField ?inputName  | String | Name of the media input
+ * @requestField ?inputUuid  | String | UUID of the media input
  * @requestField mediaCursor | Number | New cursor position to set | >= 0
  *
  * @requestType SetMediaInputCursor
@@ -94,7 +96,7 @@ RequestResult RequestHandler::SetMediaInputCursor(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease input = request.ValidateInput("inputName", statusCode, comment);
+	OBSSourceAutoRelease input = request.ValidateInput(statusCode, comment);
 	if (!(input && request.ValidateNumber("mediaCursor", statusCode, comment, 0)))
 		return RequestResult::Error(statusCode, comment);
 
@@ -115,7 +117,8 @@ RequestResult RequestHandler::SetMediaInputCursor(const Request &request)
  *
  * This request does not perform bounds checking of the cursor position.
  *
- * @requestField inputName         | String | Name of the media input
+ * @requestField ?inputName        | String | Name of the media input
+ * @requestField ?inputUuid        | String | UUID of the media input
  * @requestField mediaCursorOffset | Number | Value to offset the current cursor position by | None
  *
  * @requestType OffsetMediaInputCursor
@@ -129,7 +132,7 @@ RequestResult RequestHandler::OffsetMediaInputCursor(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease input = request.ValidateInput("inputName", statusCode, comment);
+	OBSSourceAutoRelease input = request.ValidateInput(statusCode, comment);
 	if (!(input && request.ValidateNumber("mediaCursorOffset", statusCode, comment)))
 		return RequestResult::Error(statusCode, comment);
 
@@ -151,7 +154,8 @@ RequestResult RequestHandler::OffsetMediaInputCursor(const Request &request)
 /**
  * Triggers an action on a media input.
  *
- * @requestField inputName   | String | Name of the media input
+ * @requestField ?inputName  | String | Name of the media input
+ * @requestField ?inputUuid  | String | UUID of the media input
  * @requestField mediaAction | String | Identifier of the `ObsMediaInputAction` enum
  *
  * @requestType TriggerMediaInputAction
@@ -165,7 +169,7 @@ RequestResult RequestHandler::TriggerMediaInputAction(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease input = request.ValidateInput("inputName", statusCode, comment);
+	OBSSourceAutoRelease input = request.ValidateInput(statusCode, comment);
 	if (!(input && request.ValidateString("mediaAction", statusCode, comment)))
 		return RequestResult::Error(statusCode, comment);
 

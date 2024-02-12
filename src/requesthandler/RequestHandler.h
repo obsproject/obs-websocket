@@ -134,6 +134,7 @@ private:
 	RequestResult SetTBarPosition(const Request &);
 
 	// Filters
+	RequestResult GetSourceFilterKindList(const Request &);
 	RequestResult GetSourceFilterList(const Request &);
 	RequestResult GetSourceFilterDefaultSettings(const Request &);
 	RequestResult CreateSourceFilter(const Request &);
@@ -148,6 +149,7 @@ private:
 	RequestResult GetSceneItemList(const Request &);
 	RequestResult GetGroupSceneItemList(const Request &);
 	RequestResult GetSceneItemId(const Request &);
+	RequestResult GetSceneItemSource(const Request &);
 	RequestResult CreateSceneItem(const Request &);
 	RequestResult RemoveSceneItem(const Request &);
 	RequestResult DuplicateSceneItem(const Request &);

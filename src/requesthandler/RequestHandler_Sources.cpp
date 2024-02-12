@@ -114,7 +114,8 @@ bool IsImageFormatValid(std::string format)
  *
  * **Compatible with inputs and scenes.**
  *
- * @requestField sourceName | String | Name of the source to get the active state of
+ * @requestField ?sourceName | String | Name of the source to get the active state of
+ * @requestField ?sourceUuid | String | UUID of the source to get the active state of
  *
  * @responseField videoActive  | Boolean | Whether the source is showing in Program
  * @responseField videoShowing | Boolean | Whether the source is showing in the UI (Preview, Projector, Properties)
@@ -130,7 +131,7 @@ RequestResult RequestHandler::GetSourceActive(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease source = request.ValidateSource("sourceName", statusCode, comment);
+	OBSSourceAutoRelease source = request.ValidateSource("sourceName", "sourceUuid", statusCode, comment);
 	if (!source)
 		return RequestResult::Error(statusCode, comment);
 
@@ -151,7 +152,8 @@ RequestResult RequestHandler::GetSourceActive(const Request &request)
  *
  * **Compatible with inputs and scenes.**
  *
- * @requestField sourceName               | String | Name of the source to take a screenshot of
+ * @requestField ?sourceName              | String | Name of the source to take a screenshot of
+ * @requestField ?sourceUuid              | String | UUID of the source to take a screenshot of
  * @requestField imageFormat              | String | Image compression format to use. Use `GetVersion` to get compatible image formats
  * @requestField ?imageWidth              | Number | Width to scale the screenshot to                                                                                         | >= 8, <= 4096 | Source value is used
  * @requestField ?imageHeight             | Number | Height to scale the screenshot to                                                                                        | >= 8, <= 4096 | Source value is used
@@ -170,7 +172,7 @@ RequestResult RequestHandler::GetSourceScreenshot(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease source = request.ValidateSource("sourceName", statusCode, comment);
+	OBSSourceAutoRelease source = request.ValidateSource("sourceName", "sourceUuid", statusCode, comment);
 	if (!(source && request.ValidateString("imageFormat", statusCode, comment)))
 		return RequestResult::Error(statusCode, comment);
 
@@ -238,14 +240,13 @@ RequestResult RequestHandler::GetSourceScreenshot(const Request &request)
  *
  * **Compatible with inputs and scenes.**
  *
- * @requestField sourceName               | String | Name of the source to take a screenshot of
+ * @requestField ?sourceName              | String | Name of the source to take a screenshot of
+ * @requestField ?sourceUuid              | String | UUID of the source to take a screenshot of
  * @requestField imageFormat              | String | Image compression format to use. Use `GetVersion` to get compatible image formats
  * @requestField imageFilePath            | String | Path to save the screenshot file to. Eg. `C:\Users\user\Desktop\screenshot.png`
  * @requestField ?imageWidth              | Number | Width to scale the screenshot to                                                                                         | >= 8, <= 4096 | Source value is used
  * @requestField ?imageHeight             | Number | Height to scale the screenshot to                                                                                        | >= 8, <= 4096 | Source value is used
  * @requestField ?imageCompressionQuality | Number | Compression quality to use. 0 for high compression, 100 for uncompressed. -1 to use "default" (whatever that means, idk) | >= -1, <= 100 | -1
- *
- * @responseField imageData | String | Base64-encoded screenshot
  *
  * @requestType SaveSourceScreenshot
  * @complexity 3
@@ -258,7 +259,7 @@ RequestResult RequestHandler::SaveSourceScreenshot(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease source = request.ValidateSource("sourceName", statusCode, comment);
+	OBSSourceAutoRelease source = request.ValidateSource("sourceName", "sourceUuid", statusCode, comment);
 	if (!(source && request.ValidateString("imageFormat", statusCode, comment) &&
 	      request.ValidateString("imageFilePath", statusCode, comment)))
 		return RequestResult::Error(statusCode, comment);
@@ -526,7 +527,7 @@ RequestResult RequestHandler::GetSourcePrivateSettings(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease source = request.ValidateSource("sourceName", statusCode, comment);
+	OBSSourceAutoRelease source = request.ValidateSource("sourceName", "sourceUuid", statusCode, comment);
 	if (!source)
 		return RequestResult::Error(statusCode, comment);
 
@@ -543,7 +544,7 @@ RequestResult RequestHandler::SetSourcePrivateSettings(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease source = request.ValidateSource("sourceName", statusCode, comment);
+	OBSSourceAutoRelease source = request.ValidateSource("sourceName", "sourceUuid", statusCode, comment);
 	if (!source || !request.ValidateObject("sourceSettings", statusCode, comment, true))
 		return RequestResult::Error(statusCode, comment);
 

@@ -24,7 +24,8 @@ with this program. If not, see <https://www.gnu.org/licenses/>
  *
  * Scenes only
  *
- * @requestField sceneName | String | Name of the scene to get the items of
+ * @requestField ?sceneName | String | Name of the scene to get the items of
+ * @requestField ?sceneUuid | String | UUID of the scene to get the items of
  *
  * @responseField sceneItems | Array<Object> | Array of scene items in the scene
  *
@@ -39,7 +40,7 @@ RequestResult RequestHandler::GetSceneItemList(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease scene = request.ValidateScene("sceneName", statusCode, comment);
+	OBSSourceAutoRelease scene = request.ValidateScene(statusCode, comment);
 	if (!scene)
 		return RequestResult::Error(statusCode, comment);
 
@@ -56,7 +57,8 @@ RequestResult RequestHandler::GetSceneItemList(const Request &request)
  *
  * Groups only
  *
- * @requestField sceneName | String | Name of the group to get the items of
+ * @requestField ?sceneName | String | Name of the group to get the items of
+ * @requestField ?sceneUuid | String | UUID of the group to get the items of
  *
  * @responseField sceneItems | Array<Object> | Array of scene items in the group
  *
@@ -71,7 +73,7 @@ RequestResult RequestHandler::GetGroupSceneItemList(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease scene = request.ValidateScene("sceneName", statusCode, comment, OBS_WEBSOCKET_SCENE_FILTER_GROUP_ONLY);
+	OBSSourceAutoRelease scene = request.ValidateScene(statusCode, comment, OBS_WEBSOCKET_SCENE_FILTER_GROUP_ONLY);
 	if (!scene)
 		return RequestResult::Error(statusCode, comment);
 
@@ -86,7 +88,8 @@ RequestResult RequestHandler::GetGroupSceneItemList(const Request &request)
  *
  * Scenes and Groups
  *
- * @requestField sceneName     | String | Name of the scene or group to search in
+ * @requestField ?sceneName    | String | Name of the scene or group to search in
+ * @requestField ?sceneUuid    | String | UUID of the scene or group to search in
  * @requestField sourceName    | String | Name of the source to find
  * @requestField ?searchOffset | Number | Number of matches to skip during search. >= 0 means first forward. -1 means last (top) item | >= -1 | 0
  *
@@ -104,8 +107,8 @@ RequestResult RequestHandler::GetSceneItemId(const Request &request)
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
 	OBSSceneAutoRelease scene =
-		request.ValidateScene2("sceneName", statusCode, comment, OBS_WEBSOCKET_SCENE_FILTER_SCENE_OR_GROUP);
-	if (!(scene && request.ValidateString("sourceName", statusCode, comment)))
+		request.ValidateScene2(statusCode, comment, OBS_WEBSOCKET_SCENE_FILTER_SCENE_OR_GROUP);
+	if (!(scene && request.ValidateString("sourceName", statusCode, comment))) // TODO: Source UUID support
 		return RequestResult::Error(statusCode, comment);
 
 	std::string sourceName = request.RequestData["sourceName"];
@@ -129,12 +132,48 @@ RequestResult RequestHandler::GetSceneItemId(const Request &request)
 }
 
 /**
+ * Gets the source associated with a scene item.
+ *
+ * @requestField ?sceneName  | String | Name of the scene the item is in
+ * @requestField ?sceneUuid  | String | UUID of the scene the item is in
+ * @requestField sceneItemId | Number | Numeric ID of the scene item | >= 0
+ *
+ * @responseField sourceName | String | Name of the source associated with the scene item
+ * @responseField sourceUuid | String | UUID of the source associated with the scene item
+ *
+ * @requestType GetSceneItemSource
+ * @complexity 3
+ * @rpcVersion -1
+ * @initialVersion 5.4.0
+ * @api requests
+ * @category scene items
+ */
+RequestResult RequestHandler::GetSceneItemSource(const Request &request)
+{
+	RequestStatus::RequestStatus statusCode;
+	std::string comment;
+	OBSSceneItemAutoRelease sceneItem = request.ValidateSceneItem(statusCode, comment);
+	if (!sceneItem)
+		return RequestResult::Error(statusCode, comment);
+
+	OBSSource source = obs_sceneitem_get_source(sceneItem);
+
+	json responseData;
+	responseData["sourceName"] = obs_source_get_name(source);
+	responseData["sourceUuid"] = obs_source_get_uuid(source);
+
+	return RequestResult::Success(responseData);
+}
+
+/**
  * Creates a new scene item using a source.
  *
  * Scenes only
  *
- * @requestField sceneName         | String  | Name of the scene to create the new item in
- * @requestField sourceName        | String  | Name of the source to add to the scene
+ * @requestField ?sceneName        | String  | Name of the scene to create the new item in
+ * @requestField ?sceneUuid        | String  | UUID of the scene to create the new item in
+ * @requestField ?sourceName       | String  | Name of the source to add to the scene
+ * @requestField ?sourceUuid       | String  | UUID of the source to add to the scene
  * @requestField ?sceneItemEnabled | Boolean | Enable state to apply to the scene item on creation | True
  *
  * @responseField sceneItemId | Number | Numeric ID of the scene item
@@ -150,17 +189,17 @@ RequestResult RequestHandler::CreateSceneItem(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease sceneSource = request.ValidateScene("sceneName", statusCode, comment);
+	OBSSourceAutoRelease sceneSource = request.ValidateScene(statusCode, comment);
 	if (!sceneSource)
 		return RequestResult::Error(statusCode, comment);
 
 	OBSScene scene = obs_scene_from_source(sceneSource);
 
-	OBSSourceAutoRelease source = request.ValidateSource("sourceName", statusCode, comment);
+	OBSSourceAutoRelease source = request.ValidateSource("sourceName", "sourceUuid", statusCode, comment);
 	if (!source)
 		return RequestResult::Error(statusCode, comment);
 
-	if (request.RequestData["sceneName"] == request.RequestData["sourceName"])
+	if (sceneSource == source)
 		return RequestResult::Error(RequestStatus::CannotAct, "You cannot create scene item of a scene within itself.");
 
 	bool sceneItemEnabled = true;
@@ -185,7 +224,8 @@ RequestResult RequestHandler::CreateSceneItem(const Request &request)
  *
  * Scenes only
  *
- * @requestField sceneName   | String | Name of the scene the item is in
+ * @requestField ?sceneName  | String | Name of the scene the item is in
+ * @requestField ?sceneUuid  | String | UUID of the scene the item is in
  * @requestField sceneItemId | Number | Numeric ID of the scene item | >= 0
  *
  * @requestType RemoveSceneItem
@@ -199,7 +239,7 @@ RequestResult RequestHandler::RemoveSceneItem(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSceneItemAutoRelease sceneItem = request.ValidateSceneItem("sceneName", "sceneItemId", statusCode, comment);
+	OBSSceneItemAutoRelease sceneItem = request.ValidateSceneItem(statusCode, comment);
 	if (!sceneItem)
 		return RequestResult::Error(statusCode, comment);
 
@@ -214,9 +254,11 @@ RequestResult RequestHandler::RemoveSceneItem(const Request &request)
  *
  * Scenes only
  *
- * @requestField sceneName             | String | Name of the scene the item is in
+ * @requestField ?sceneName            | String | Name of the scene the item is in
+ * @requestField ?sceneUuid            | String | UUID of the scene the item is in
  * @requestField sceneItemId           | Number | Numeric ID of the scene item | >= 0
- * @requestField ?destinationSceneName | String | Name of the scene to create the duplicated item in | `sceneName` is assumed
+ * @requestField ?destinationSceneName | String | Name of the scene to create the duplicated item in | From scene is assumed
+ * @requestField ?destinationSceneUuid | String | UUID of the scene to create the duplicated item in | From scene is assumed
  *
  * @responseField sceneItemId | Number | Numeric ID of the duplicated scene item
  *
@@ -231,16 +273,24 @@ RequestResult RequestHandler::DuplicateSceneItem(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSceneItemAutoRelease sceneItem = request.ValidateSceneItem("sceneName", "sceneItemId", statusCode, comment);
+	OBSSceneItemAutoRelease sceneItem = request.ValidateSceneItem(statusCode, comment);
 	if (!sceneItem)
 		return RequestResult::Error(statusCode, comment);
 
 	// Get destination scene
 	obs_scene_t *destinationScene;
 	if (request.Contains("destinationSceneName")) {
-		destinationScene = request.ValidateScene2("destinationSceneName", statusCode, comment);
-		if (!destinationScene)
+		OBSSourceAutoRelease destinationSceneSource = request.ValidateSource("destinationSceneName", "destinationSceneUuid", statusCode, comment);
+		if (!destinationSceneSource)
 			return RequestResult::Error(statusCode, comment);
+
+		// Reimplementation of ValidateScene2
+		if (obs_source_get_type(destinationSceneSource) != OBS_SOURCE_TYPE_SCENE)
+			return RequestResult::Error(RequestStatus::InvalidResourceType, "The specified source is not a scene.");
+		if (obs_source_is_group(destinationSceneSource))
+			return RequestResult::Error(RequestStatus::InvalidResourceType, "The specified source is not a scene. (Is group)");
+
+		destinationScene = obs_scene_get_ref(obs_scene_from_source(destinationSceneSource));
 	} else {
 		destinationScene = obs_scene_get_ref(obs_sceneitem_get_scene(sceneItem));
 		if (!destinationScene)
@@ -279,7 +329,8 @@ RequestResult RequestHandler::DuplicateSceneItem(const Request &request)
  *
  * Scenes and Groups
  *
- * @requestField sceneName   | String | Name of the scene the item is in
+ * @requestField ?sceneName  | String | Name of the scene the item is in
+ * @requestField ?sceneUuid  | String | UUID of the scene the item is in
  * @requestField sceneItemId | Number | Numeric ID of the scene item | >= 0
  *
  * @responseField sceneItemTransform | Object | Object containing scene item transform info
@@ -295,8 +346,7 @@ RequestResult RequestHandler::GetSceneItemTransform(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSceneItemAutoRelease sceneItem = request.ValidateSceneItem("sceneName", "sceneItemId", statusCode, comment,
-								      OBS_WEBSOCKET_SCENE_FILTER_SCENE_OR_GROUP);
+	OBSSceneItemAutoRelease sceneItem = request.ValidateSceneItem(statusCode, comment, OBS_WEBSOCKET_SCENE_FILTER_SCENE_OR_GROUP);
 	if (!sceneItem)
 		return RequestResult::Error(statusCode, comment);
 
@@ -309,7 +359,8 @@ RequestResult RequestHandler::GetSceneItemTransform(const Request &request)
 /**
  * Sets the transform and crop info of a scene item.
  *
- * @requestField sceneName          | String | Name of the scene the item is in
+ * @requestField ?sceneName         | String | Name of the scene the item is in
+ * @requestField ?sceneUuid         | String | UUID of the scene the item is in
  * @requestField sceneItemId        | Number | Numeric ID of the scene item | >= 0
  * @requestField sceneItemTransform | Object | Object containing scene item transform info to update
  *
@@ -324,8 +375,7 @@ RequestResult RequestHandler::SetSceneItemTransform(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSceneItemAutoRelease sceneItem = request.ValidateSceneItem("sceneName", "sceneItemId", statusCode, comment,
-								      OBS_WEBSOCKET_SCENE_FILTER_SCENE_OR_GROUP);
+	OBSSceneItemAutoRelease sceneItem = request.ValidateSceneItem(statusCode, comment, OBS_WEBSOCKET_SCENE_FILTER_SCENE_OR_GROUP);
 	if (!(sceneItem && request.ValidateObject("sceneItemTransform", statusCode, comment)))
 		return RequestResult::Error(statusCode, comment);
 
@@ -466,7 +516,8 @@ RequestResult RequestHandler::SetSceneItemTransform(const Request &request)
  *
  * Scenes and Groups
  *
- * @requestField sceneName   | String | Name of the scene the item is in
+ * @requestField ?sceneName  | String | Name of the scene the item is in
+ * @requestField ?sceneUuid  | String | UUID of the scene the item is in
  * @requestField sceneItemId | Number | Numeric ID of the scene item | >= 0
  *
  * @responseField sceneItemEnabled | Boolean | Whether the scene item is enabled. `true` for enabled, `false` for disabled
@@ -482,8 +533,7 @@ RequestResult RequestHandler::GetSceneItemEnabled(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSceneItemAutoRelease sceneItem = request.ValidateSceneItem("sceneName", "sceneItemId", statusCode, comment,
-								      OBS_WEBSOCKET_SCENE_FILTER_SCENE_OR_GROUP);
+	OBSSceneItemAutoRelease sceneItem = request.ValidateSceneItem(statusCode, comment, OBS_WEBSOCKET_SCENE_FILTER_SCENE_OR_GROUP);
 	if (!sceneItem)
 		return RequestResult::Error(statusCode, comment);
 
@@ -498,7 +548,8 @@ RequestResult RequestHandler::GetSceneItemEnabled(const Request &request)
  *
  * Scenes and Groups
  *
- * @requestField sceneName        | String  | Name of the scene the item is in
+ * @requestField ?sceneName       | String  | Name of the scene the item is in
+ * @requestField ?sceneUuid       | String  | UUID of the scene the item is in
  * @requestField sceneItemId      | Number  | Numeric ID of the scene item | >= 0
  * @requestField sceneItemEnabled | Boolean | New enable state of the scene item
  *
@@ -513,8 +564,7 @@ RequestResult RequestHandler::SetSceneItemEnabled(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSceneItemAutoRelease sceneItem = request.ValidateSceneItem("sceneName", "sceneItemId", statusCode, comment,
-								      OBS_WEBSOCKET_SCENE_FILTER_SCENE_OR_GROUP);
+	OBSSceneItemAutoRelease sceneItem = request.ValidateSceneItem(statusCode, comment, OBS_WEBSOCKET_SCENE_FILTER_SCENE_OR_GROUP);
 	if (!(sceneItem && request.ValidateBoolean("sceneItemEnabled", statusCode, comment)))
 		return RequestResult::Error(statusCode, comment);
 
@@ -530,7 +580,8 @@ RequestResult RequestHandler::SetSceneItemEnabled(const Request &request)
  *
  * Scenes and Groups
  *
- * @requestField sceneName   | String | Name of the scene the item is in
+ * @requestField ?sceneName  | String | Name of the scene the item is in
+ * @requestField ?sceneUuid  | String | UUID of the scene the item is in
  * @requestField sceneItemId | Number | Numeric ID of the scene item | >= 0
  *
  * @responseField sceneItemLocked | Boolean | Whether the scene item is locked. `true` for locked, `false` for unlocked
@@ -546,8 +597,7 @@ RequestResult RequestHandler::GetSceneItemLocked(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSceneItemAutoRelease sceneItem = request.ValidateSceneItem("sceneName", "sceneItemId", statusCode, comment,
-								      OBS_WEBSOCKET_SCENE_FILTER_SCENE_OR_GROUP);
+	OBSSceneItemAutoRelease sceneItem = request.ValidateSceneItem(statusCode, comment, OBS_WEBSOCKET_SCENE_FILTER_SCENE_OR_GROUP);
 	if (!sceneItem)
 		return RequestResult::Error(statusCode, comment);
 
@@ -562,8 +612,9 @@ RequestResult RequestHandler::GetSceneItemLocked(const Request &request)
  *
  * Scenes and Group
  *
- * @requestField sceneName       | String | Name of the scene the item is in
- * @requestField sceneItemId     | Number | Numeric ID of the scene item | >= 0
+ * @requestField ?sceneName      | String  | Name of the scene the item is in
+ * @requestField ?sceneUuid      | String  | UUID of the scene the item is in
+ * @requestField sceneItemId     | Number  | Numeric ID of the scene item | >= 0
  * @requestField sceneItemLocked | Boolean | New lock state of the scene item
  *
  * @requestType SetSceneItemLocked
@@ -577,8 +628,7 @@ RequestResult RequestHandler::SetSceneItemLocked(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSceneItemAutoRelease sceneItem = request.ValidateSceneItem("sceneName", "sceneItemId", statusCode, comment,
-								      OBS_WEBSOCKET_SCENE_FILTER_SCENE_OR_GROUP);
+	OBSSceneItemAutoRelease sceneItem = request.ValidateSceneItem(statusCode, comment, OBS_WEBSOCKET_SCENE_FILTER_SCENE_OR_GROUP);
 	if (!(sceneItem && request.ValidateBoolean("sceneItemLocked", statusCode, comment)))
 		return RequestResult::Error(statusCode, comment);
 
@@ -596,7 +646,8 @@ RequestResult RequestHandler::SetSceneItemLocked(const Request &request)
  *
  * Scenes and Groups
  *
- * @requestField sceneName   | String | Name of the scene the item is in
+ * @requestField ?sceneName  | String | Name of the scene the item is in
+ * @requestField ?sceneUuid  | String | UUID of the scene the item is in
  * @requestField sceneItemId | Number | Numeric ID of the scene item | >= 0
  *
  * @responseField sceneItemIndex | Number | Index position of the scene item
@@ -612,8 +663,7 @@ RequestResult RequestHandler::GetSceneItemIndex(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSceneItemAutoRelease sceneItem = request.ValidateSceneItem("sceneName", "sceneItemId", statusCode, comment,
-								      OBS_WEBSOCKET_SCENE_FILTER_SCENE_OR_GROUP);
+	OBSSceneItemAutoRelease sceneItem = request.ValidateSceneItem(statusCode, comment, OBS_WEBSOCKET_SCENE_FILTER_SCENE_OR_GROUP);
 	if (!sceneItem)
 		return RequestResult::Error(statusCode, comment);
 
@@ -628,7 +678,8 @@ RequestResult RequestHandler::GetSceneItemIndex(const Request &request)
  *
  * Scenes and Groups
  *
- * @requestField sceneName      | String | Name of the scene the item is in
+ * @requestField ?sceneName     | String | Name of the scene the item is in
+ * @requestField ?sceneUuid     | String | UUID of the scene the item is in
  * @requestField sceneItemId    | Number | Numeric ID of the scene item         | >= 0
  * @requestField sceneItemIndex | Number | New index position of the scene item | >= 0
  *
@@ -643,8 +694,7 @@ RequestResult RequestHandler::SetSceneItemIndex(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSceneItemAutoRelease sceneItem = request.ValidateSceneItem("sceneName", "sceneItemId", statusCode, comment,
-								      OBS_WEBSOCKET_SCENE_FILTER_SCENE_OR_GROUP);
+	OBSSceneItemAutoRelease sceneItem = request.ValidateSceneItem(statusCode, comment, OBS_WEBSOCKET_SCENE_FILTER_SCENE_OR_GROUP);
 	if (!(sceneItem && request.ValidateNumber("sceneItemIndex", statusCode, comment, 0, 8192)))
 		return RequestResult::Error(statusCode, comment);
 
@@ -670,7 +720,8 @@ RequestResult RequestHandler::SetSceneItemIndex(const Request &request)
  *
  * Scenes and Groups
  *
- * @requestField sceneName   | String | Name of the scene the item is in
+ * @requestField ?sceneName  | String | Name of the scene the item is in
+ * @requestField ?sceneUuid  | String | UUID of the scene the item is in
  * @requestField sceneItemId | Number | Numeric ID of the scene item | >= 0
  *
  * @responseField sceneItemBlendMode | String | Current blend mode
@@ -686,8 +737,7 @@ RequestResult RequestHandler::GetSceneItemBlendMode(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSceneItemAutoRelease sceneItem = request.ValidateSceneItem("sceneName", "sceneItemId", statusCode, comment,
-								      OBS_WEBSOCKET_SCENE_FILTER_SCENE_OR_GROUP);
+	OBSSceneItemAutoRelease sceneItem = request.ValidateSceneItem(statusCode, comment, OBS_WEBSOCKET_SCENE_FILTER_SCENE_OR_GROUP);
 	if (!sceneItem)
 		return RequestResult::Error(statusCode, comment);
 
@@ -704,7 +754,8 @@ RequestResult RequestHandler::GetSceneItemBlendMode(const Request &request)
  *
  * Scenes and Groups
  *
- * @requestField sceneName          | String | Name of the scene the item is in
+ * @requestField ?sceneName         | String | Name of the scene the item is in
+ * @requestField ?sceneUuid         | String | UUID of the scene the item is in
  * @requestField sceneItemId        | Number | Numeric ID of the scene item | >= 0
  * @requestField sceneItemBlendMode | String | New blend mode
  *
@@ -719,8 +770,7 @@ RequestResult RequestHandler::SetSceneItemBlendMode(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSceneItemAutoRelease sceneItem = request.ValidateSceneItem("sceneName", "sceneItemId", statusCode, comment,
-								      OBS_WEBSOCKET_SCENE_FILTER_SCENE_OR_GROUP);
+	OBSSceneItemAutoRelease sceneItem = request.ValidateSceneItem(statusCode, comment, OBS_WEBSOCKET_SCENE_FILTER_SCENE_OR_GROUP);
 	if (!(sceneItem && request.ValidateString("sceneItemBlendMode", statusCode, comment)))
 		return RequestResult::Error(statusCode, comment);
 
@@ -739,8 +789,7 @@ RequestResult RequestHandler::GetSceneItemPrivateSettings(const Request &request
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSceneItemAutoRelease sceneItem = request.ValidateSceneItem("sceneName", "sceneItemId", statusCode, comment,
-								      OBS_WEBSOCKET_SCENE_FILTER_SCENE_OR_GROUP);
+	OBSSceneItemAutoRelease sceneItem = request.ValidateSceneItem(statusCode, comment, OBS_WEBSOCKET_SCENE_FILTER_SCENE_OR_GROUP);
 	if (!sceneItem)
 		return RequestResult::Error(statusCode, comment);
 
@@ -757,8 +806,7 @@ RequestResult RequestHandler::SetSceneItemPrivateSettings(const Request &request
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSceneItemAutoRelease sceneItem = request.ValidateSceneItem("sceneName", "sceneItemId", statusCode, comment,
-								      OBS_WEBSOCKET_SCENE_FILTER_SCENE_OR_GROUP);
+	OBSSceneItemAutoRelease sceneItem = request.ValidateSceneItem(statusCode, comment, OBS_WEBSOCKET_SCENE_FILTER_SCENE_OR_GROUP);
 	if (!sceneItem || !request.ValidateObject("sceneItemSettings", statusCode, comment, true))
 		return RequestResult::Error(statusCode, comment);
 
