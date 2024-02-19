@@ -50,7 +50,7 @@ json Utils::Obs::ObjectHelper::GetSceneItemTransform(obs_sceneitem_t *item)
 
 	obs_transform_info osi;
 	obs_sceneitem_crop crop;
-	obs_sceneitem_get_info(item, &osi);
+	obs_sceneitem_get_info2(item, &osi);
 	obs_sceneitem_get_crop(item, &crop);
 
 	OBSSource source = obs_sceneitem_get_source(item);
