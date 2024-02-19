@@ -308,7 +308,7 @@ RequestResult RequestHandler::DuplicateSceneItem(const Request &request)
 	bool sceneItemEnabled = obs_sceneitem_visible(sceneItem);
 	obs_transform_info sceneItemTransform;
 	obs_sceneitem_crop sceneItemCrop;
-	obs_sceneitem_get_info(sceneItem, &sceneItemTransform);
+	obs_sceneitem_get_info2(sceneItem, &sceneItemTransform);
 	obs_sceneitem_get_crop(sceneItem, &sceneItemCrop);
 
 	// Create the new item
@@ -386,7 +386,7 @@ RequestResult RequestHandler::SetSceneItemTransform(const Request &request)
 	bool cropChanged = false;
 	obs_transform_info sceneItemTransform;
 	obs_sceneitem_crop sceneItemCrop;
-	obs_sceneitem_get_info(sceneItem, &sceneItemTransform);
+	obs_sceneitem_get_info2(sceneItem, &sceneItemTransform);
 	obs_sceneitem_get_crop(sceneItem, &sceneItemCrop);
 
 	OBSSource source = obs_sceneitem_get_source(sceneItem);
@@ -503,7 +503,7 @@ RequestResult RequestHandler::SetSceneItemTransform(const Request &request)
 		return RequestResult::Error(RequestStatus::CannotAct, "You have not provided any valid transform changes.");
 
 	if (transformChanged)
-		obs_sceneitem_set_info(sceneItem, &sceneItemTransform);
+		obs_sceneitem_set_info2(sceneItem, &sceneItemTransform);
 
 	if (cropChanged)
 		obs_sceneitem_set_crop(sceneItem, &sceneItemCrop);
