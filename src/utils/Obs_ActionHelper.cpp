@@ -33,7 +33,7 @@ static void CreateSceneItemHelper(void *_data, obs_scene_t *scene)
 	data->sceneItem = obs_scene_add(scene, data->source);
 
 	if (data->sceneItemTransform)
-		obs_sceneitem_set_info(data->sceneItem, data->sceneItemTransform);
+		obs_sceneitem_set_info2(data->sceneItem, data->sceneItemTransform);
 
 	if (data->sceneItemCrop)
 		obs_sceneitem_set_crop(data->sceneItem, data->sceneItemCrop);
