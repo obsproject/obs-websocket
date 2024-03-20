@@ -5,6 +5,8 @@ legacy_check()
 set(obs-websocket_VERSION 5.4.2)
 set(OBS_WEBSOCKET_RPC_VERSION 1)
 
+include(cmake/obs-websocket-api.cmake)
+
 option(ENABLE_WEBSOCKET "Enable building OBS with websocket plugin" ON)
 if(NOT ENABLE_WEBSOCKET)
   target_disable(obs-websocket)
@@ -34,7 +36,6 @@ add_library(OBS::websocket ALIAS obs-websocket)
 target_sources(
   obs-websocket
   PRIVATE # cmake-format: sortable
-          lib/obs-websocket-api.h
           src/Config.cpp
           src/Config.h
           src/forms/ConnectInfo.cpp
@@ -154,6 +155,7 @@ target_link_libraries(
   obs-websocket
   PRIVATE OBS::libobs
           OBS::frontend-api
+          OBS::websocket-api
           Qt::Core
           Qt::Widgets
           Qt::Svg
