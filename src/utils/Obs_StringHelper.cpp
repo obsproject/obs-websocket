@@ -20,6 +20,8 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <inttypes.h>
 #include <QString>
 
+#include <util/util.hpp>
+
 #include "Obs.h"
 #include "plugin-macros.generated.h"
 
@@ -42,33 +44,29 @@ std::string Utils::Obs::StringHelper::GetObsVersion()
 
 std::string Utils::Obs::StringHelper::GetCurrentSceneCollection()
 {
-	char *sceneCollectionName = obs_frontend_get_current_scene_collection();
-	std::string ret = sceneCollectionName;
-	bfree(sceneCollectionName);
+	BPtr<char> sceneCollectionName = obs_frontend_get_current_scene_collection();
+	std::string ret = sceneCollectionName.Get();
 	return ret;
 }
 
 std::string Utils::Obs::StringHelper::GetCurrentProfile()
 {
-	char *profileName = obs_frontend_get_current_profile();
-	std::string ret = profileName;
-	bfree(profileName);
+	BPtr<char> profileName = obs_frontend_get_current_profile();
+	std::string ret = profileName.Get();
 	return ret;
 }
 
 std::string Utils::Obs::StringHelper::GetCurrentProfilePath()
 {
-	char *profilePath = obs_frontend_get_current_profile_path();
-	std::string ret = profilePath;
-	bfree(profilePath);
+	BPtr<char> profilePath = obs_frontend_get_current_profile_path();
+	std::string ret = profilePath.Get();
 	return ret;
 }
 
 std::string Utils::Obs::StringHelper::GetCurrentRecordOutputPath()
 {
-	char *recordOutputPath = obs_frontend_get_current_record_output_path();
-	std::string ret = recordOutputPath;
-	bfree(recordOutputPath);
+	BPtr<char> recordOutputPath = obs_frontend_get_current_record_output_path();
+	std::string ret = recordOutputPath.Get();
 	return ret;
 }
 
@@ -94,17 +92,15 @@ std::string Utils::Obs::StringHelper::GetLastRecordFileName()
 
 std::string Utils::Obs::StringHelper::GetLastReplayBufferFileName()
 {
-	char *replayBufferPath = obs_frontend_get_last_replay();
-	std::string ret = replayBufferPath;
-	bfree(replayBufferPath);
+	BPtr<char> replayBufferPath = obs_frontend_get_last_replay();
+	std::string ret = replayBufferPath.Get();
 	return ret;
 }
 
 std::string Utils::Obs::StringHelper::GetLastScreenshotFileName()
 {
-	char *screenshotPath = obs_frontend_get_last_screenshot();
-	std::string ret = screenshotPath;
-	bfree(screenshotPath);
+	BPtr<char> screenshotPath = obs_frontend_get_last_screenshot();
+	std::string ret = screenshotPath.Get();
 	return ret;
 }
 

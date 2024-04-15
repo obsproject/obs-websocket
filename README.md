@@ -41,6 +41,8 @@ It is **highly recommended** to keep obs-websocket protected with a password aga
 - [Aitum](https://aitum.tv/)
 - [Kruiz Control](https://github.com/Kruiser8/Kruiz-Control)
 - [Bitfocus Companion Module](https://bitfocus.io/companion/)
+- [MacroGraph](https://github.com/Brendonovich/macrograph) - hosted client [here](https://macrograph.brendonovich.dev/)
+- [MATRIC](https://matricapp.com/)
 
 ### Client libraries (for developers)
 
@@ -49,7 +51,7 @@ Here's a list of available language APIs for obs-websocket:
 - Python 3.7+ (Asyncio): [simpleobsws](https://github.com/IRLToolkit/simpleobsws/tree/master) by IRLToolkit
 - Python 3.10+ (Non-Asyncio): [obsws-python](https://pypi.org/project/obsws-python) by aatikturk and onyx-and-iris
 - Rust: [obws](https://github.com/dnaka91/obws) by dnaka91
-- Godot 3.4.x: [obs-websocket-gd](https://github.com/you-win/obs-websocket-gd) by you-win
+- Godot 4.0.x: [obs-websocket-gd](https://github.com/you-win/obs-websocket-gd) by you-win
 - Javascript (Node and web): [obs-websocket-js](https://github.com/obs-websocket-community-projects/obs-websocket-js) by OBS Websocket Community
   - C (uses obs-websocket-js): [v8-libwebsocket-obs-websocket](https://github.com/dgatwood/v8-libwebsocket-obs-websocket)
 - Go: [goobs](https://github.com/andreykaipov/goobs) by andreykaipov

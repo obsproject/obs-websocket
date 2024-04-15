@@ -54,6 +54,8 @@ RequestResult RequestHandler::GetRecordStatus(const Request &)
 /**
  * Toggles the status of the record output.
  *
+ * @responseField outputActive | Boolean | The new active state of the output
+ *
  * @requestType ToggleRecord
  * @complexity 1
  * @rpcVersion -1

@@ -24,8 +24,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <mutex>
 #include <shared_mutex>
 #include <obs.h>
-
-#include "../lib/obs-websocket-api.h"
+#include <obs-websocket-api.h>
 
 class WebSocketApi {
 public:

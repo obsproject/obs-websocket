@@ -46,6 +46,7 @@ RequestResult RequestHandler::GetTransitionKindList(const Request &)
  * Gets an array of all scene transitions in OBS.
  *
  * @responseField currentSceneTransitionName | String         | Name of the current scene transition. Can be null
+ * @responseField currentSceneTransitionUuid | String         | UUID of the current scene transition. Can be null
  * @responseField currentSceneTransitionKind | String         | Kind of the current scene transition. Can be null
  * @responseField transitions                | Array<Object> | Array of transitions
  *
@@ -63,9 +64,11 @@ RequestResult RequestHandler::GetSceneTransitionList(const Request &)
 	OBSSourceAutoRelease transition = obs_frontend_get_current_transition();
 	if (transition) {
 		responseData["currentSceneTransitionName"] = obs_source_get_name(transition);
+		responseData["currentSceneTransitionUuid"] = obs_source_get_uuid(transition);
 		responseData["currentSceneTransitionKind"] = obs_source_get_id(transition);
 	} else {
 		responseData["currentSceneTransitionName"] = nullptr;
+		responseData["currentSceneTransitionUuid"] = nullptr;
 		responseData["currentSceneTransitionKind"] = nullptr;
 	}
 
@@ -78,6 +81,7 @@ RequestResult RequestHandler::GetSceneTransitionList(const Request &)
  * Gets information about the current scene transition.
  *
  * @responseField transitionName         | String  | Name of the transition
+ * @responseField transitionUuid         | String  | UUID of the transition
  * @responseField transitionKind         | String  | Kind of the transition
  * @responseField transitionFixed        | Boolean | Whether the transition uses a fixed (unconfigurable) duration
  * @responseField transitionDuration     | Number  | Configured transition duration in milliseconds. `null` if transition is fixed
@@ -100,6 +104,7 @@ RequestResult RequestHandler::GetCurrentSceneTransition(const Request &)
 
 	json responseData;
 	responseData["transitionName"] = obs_source_get_name(transition);
+	responseData["transitionUuid"] = obs_source_get_uuid(transition);
 	responseData["transitionKind"] = obs_source_get_id(transition);
 
 	if (obs_transition_fixed(transition)) {

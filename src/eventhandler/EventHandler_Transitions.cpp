@@ -23,6 +23,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
  * The current scene transition has changed.
  *
  * @dataField transitionName | String | Name of the new transition
+ * @dataField transitionUuid | String | UUID of the new transition
  *
  * @eventType CurrentSceneTransitionChanged
  * @eventSubscription Transitions
@@ -38,6 +39,7 @@ void EventHandler::HandleCurrentSceneTransitionChanged()
 
 	json eventData;
 	eventData["transitionName"] = obs_source_get_name(transition);
+	eventData["transitionUuid"] = obs_source_get_uuid(transition);
 	BroadcastEvent(EventSubscription::Transitions, "CurrentSceneTransitionChanged", eventData);
 }
 
@@ -65,6 +67,7 @@ void EventHandler::HandleCurrentSceneTransitionDurationChanged()
  * A scene transition has started.
  *
  * @dataField transitionName | String | Scene transition name
+ * @dataField transitionUuid | String | Scene transition UUID
  *
  * @eventType SceneTransitionStarted
  * @eventSubscription Transitions
@@ -84,6 +87,7 @@ void EventHandler::HandleSceneTransitionStarted(void *param, calldata_t *data)
 
 	json eventData;
 	eventData["transitionName"] = obs_source_get_name(source);
+	eventData["transitionUuid"] = obs_source_get_uuid(source);
 	eventHandler->BroadcastEvent(EventSubscription::Transitions, "SceneTransitionStarted", eventData);
 }
 
@@ -93,6 +97,7 @@ void EventHandler::HandleSceneTransitionStarted(void *param, calldata_t *data)
  * Note: Does not appear to trigger when the transition is interrupted by the user.
  *
  * @dataField transitionName | String | Scene transition name
+ * @dataField transitionUuid | String | Scene transition UUID
  *
  * @eventType SceneTransitionEnded
  * @eventSubscription Transitions
@@ -112,6 +117,7 @@ void EventHandler::HandleSceneTransitionEnded(void *param, calldata_t *data)
 
 	json eventData;
 	eventData["transitionName"] = obs_source_get_name(source);
+	eventData["transitionUuid"] = obs_source_get_uuid(source);
 	eventHandler->BroadcastEvent(EventSubscription::Transitions, "SceneTransitionEnded", eventData);
 }
 
@@ -124,6 +130,7 @@ void EventHandler::HandleSceneTransitionEnded(void *param, calldata_t *data)
  * Note: Appears to be called by every transition, regardless of relevance.
  *
  * @dataField transitionName | String | Scene transition name
+ * @dataField transitionUuid | String | Scene transition UUID
  *
  * @eventType SceneTransitionVideoEnded
  * @eventSubscription Transitions
@@ -143,5 +150,6 @@ void EventHandler::HandleSceneTransitionVideoEnded(void *param, calldata_t *data
 
 	json eventData;
 	eventData["transitionName"] = obs_source_get_name(source);
+	eventData["transitionUuid"] = obs_source_get_uuid(source);
 	eventHandler->BroadcastEvent(EventSubscription::Transitions, "SceneTransitionVideoEnded", eventData);
 }

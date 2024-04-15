@@ -82,7 +82,8 @@ RequestResult RequestHandler::SetStudioModeEnabled(const Request &request)
 /**
  * Opens the properties dialog of an input.
  *
- * @requestField inputName | String | Name of the input to open the dialog of
+ * @requestField ?inputName | String | Name of the input to open the dialog of
+ * @requestField ?inputUuid | String | UUID of the input to open the dialog of
  *
  * @requestType OpenInputPropertiesDialog
  * @complexity 1
@@ -95,7 +96,7 @@ RequestResult RequestHandler::OpenInputPropertiesDialog(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease input = request.ValidateInput("inputName", statusCode, comment);
+	OBSSourceAutoRelease input = request.ValidateInput(statusCode, comment);
 	if (!input)
 		return RequestResult::Error(statusCode, comment);
 
@@ -107,7 +108,8 @@ RequestResult RequestHandler::OpenInputPropertiesDialog(const Request &request)
 /**
  * Opens the filters dialog of an input.
  *
- * @requestField inputName | String | Name of the input to open the dialog of
+ * @requestField ?inputName | String | Name of the input to open the dialog of
+ * @requestField ?inputUuid | String | UUID of the input to open the dialog of
  *
  * @requestType OpenInputFiltersDialog
  * @complexity 1
@@ -120,7 +122,7 @@ RequestResult RequestHandler::OpenInputFiltersDialog(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease input = request.ValidateInput("inputName", statusCode, comment);
+	OBSSourceAutoRelease input = request.ValidateInput(statusCode, comment);
 	if (!input)
 		return RequestResult::Error(statusCode, comment);
 
@@ -132,7 +134,8 @@ RequestResult RequestHandler::OpenInputFiltersDialog(const Request &request)
 /**
  * Opens the interact dialog of an input.
  *
- * @requestField inputName | String | Name of the input to open the dialog of
+ * @requestField ?inputName | String | Name of the input to open the dialog of
+ * @requestField ?inputUuid | String | UUID of the input to open the dialog of
  *
  * @requestType OpenInputInteractDialog
  * @complexity 1
@@ -145,7 +148,7 @@ RequestResult RequestHandler::OpenInputInteractDialog(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease input = request.ValidateInput("inputName", statusCode, comment);
+	OBSSourceAutoRelease input = request.ValidateInput(statusCode, comment);
 	if (!input)
 		return RequestResult::Error(statusCode, comment);
 
@@ -262,7 +265,8 @@ RequestResult RequestHandler::OpenVideoMixProjector(const Request &request)
  *
  * Note: This request serves to provide feature parity with 4.x. It is very likely to be changed/deprecated in a future release.
  *
- * @requestField sourceName         | String | Name of the source to open a projector for
+ * @requestField ?sourceName        | String | Name of the source to open a projector for
+ * @requestField ?sourceUuid        | String | UUID of the source to open a projector for
  * @requestField ?monitorIndex      | Number | Monitor index, use `GetMonitorList` to obtain index | None | -1: Opens projector in windowed mode
  * @requestField ?projectorGeometry | String | Size/Position data for a windowed projector, in Qt Base64 encoded format. Mutually exclusive with `monitorIndex` | N/A
  *
@@ -277,7 +281,7 @@ RequestResult RequestHandler::OpenSourceProjector(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease source = request.ValidateSource("sourceName", statusCode, comment);
+	OBSSourceAutoRelease source = request.ValidateSource("sourceName", "sourceUuid", statusCode, comment);
 	if (!source)
 		return RequestResult::Error(statusCode, comment);
 

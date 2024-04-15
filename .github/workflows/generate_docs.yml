@@ -18,7 +18,7 @@ jobs:
       IS_CI: "true"
     steps:
       - name: 'Checkout'
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           path: ${{ github.workspace }}/obs-websocket
       - name: 'Generate docs'

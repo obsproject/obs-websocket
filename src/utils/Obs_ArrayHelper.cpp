@@ -96,6 +96,7 @@ std::vector<json> Utils::Obs::ArrayHelper::GetSceneList()
 
 		json sceneJson;
 		sceneJson["sceneName"] = obs_source_get_name(scene);
+		sceneJson["sceneUuid"] = obs_source_get_uuid(scene);
 		sceneJson["sceneIndex"] = sceneList.sources.num - i - 1;
 
 		ret.push_back(sceneJson);
@@ -150,6 +151,7 @@ std::vector<json> Utils::Obs::ArrayHelper::GetSceneItemList(obs_scene_t *scene, 
 			item["sceneItemBlendMode"] = obs_sceneitem_get_blending_mode(sceneItem);
 			OBSSource itemSource = obs_sceneitem_get_source(sceneItem);
 			item["sourceName"] = obs_source_get_name(itemSource);
+			item["sourceUuid"] = obs_source_get_uuid(itemSource);
 			item["sourceType"] = obs_source_get_type(itemSource);
 			if (obs_source_get_type(itemSource) == OBS_SOURCE_TYPE_INPUT)
 				item["inputKind"] = obs_source_get_id(itemSource);
@@ -195,6 +197,7 @@ std::vector<json> Utils::Obs::ArrayHelper::GetInputList(std::string inputKind)
 
 		json inputJson;
 		inputJson["inputName"] = obs_source_get_name(input);
+		inputJson["inputUuid"] = obs_source_get_uuid(input);
 		inputJson["inputKind"] = inputKind;
 		inputJson["unversionedInputKind"] = obs_source_get_unversioned_id(input);
 
@@ -281,6 +284,7 @@ std::vector<json> Utils::Obs::ArrayHelper::GetSceneTransitionList()
 		obs_source_t *transition = transitionList.sources.array[i];
 		json transitionJson;
 		transitionJson["transitionName"] = obs_source_get_name(transition);
+		transitionJson["transitionUuid"] = obs_source_get_uuid(transition);
 		transitionJson["transitionKind"] = obs_source_get_id(transition);
 		transitionJson["transitionFixed"] = obs_transition_fixed(transition);
 		transitionJson["transitionConfigurable"] = obs_source_configurable(transition);

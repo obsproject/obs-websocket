@@ -22,8 +22,10 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 /**
  * Gets an array of all scenes in OBS.
  *
- * @responseField currentProgramSceneName | String        | Current program scene
- * @responseField currentPreviewSceneName | String        | Current preview scene. `null` if not in studio mode
+ * @responseField currentProgramSceneName | String        | Current program scene name. Can be `null` if internal state desync
+ * @responseField currentProgramSceneUuid | String        | Current program scene UUID. Can be `null` if internal state desync
+ * @responseField currentPreviewSceneName | String        | Current preview scene name. `null` if not in studio mode
+ * @responseField currentPreviewSceneUuid | String        | Current preview scene UUID. `null` if not in studio mode
  * @responseField scenes                  | Array<Object> | Array of scenes
  *
  * @requestType GetSceneList
@@ -38,16 +40,22 @@ RequestResult RequestHandler::GetSceneList(const Request &)
 	json responseData;
 
 	OBSSourceAutoRelease currentProgramScene = obs_frontend_get_current_scene();
-	if (currentProgramScene)
+	if (currentProgramScene) {
 		responseData["currentProgramSceneName"] = obs_source_get_name(currentProgramScene);
-	else
+		responseData["currentProgramSceneUuid"] = obs_source_get_uuid(currentProgramScene);
+	} else {
 		responseData["currentProgramSceneName"] = nullptr;
+		responseData["currentProgramSceneUuid"] = nullptr;
+	}
 
 	OBSSourceAutoRelease currentPreviewScene = obs_frontend_get_current_preview_scene();
-	if (currentPreviewScene)
+	if (currentPreviewScene) {
 		responseData["currentPreviewSceneName"] = obs_source_get_name(currentPreviewScene);
-	else
+		responseData["currentPreviewSceneUuid"] = obs_source_get_uuid(currentPreviewScene);
+	} else {
 		responseData["currentPreviewSceneName"] = nullptr;
+		responseData["currentPreviewSceneUuid"] = nullptr;
+	}
 
 	responseData["scenes"] = Utils::Obs::ArrayHelper::GetSceneList();
 
@@ -80,7 +88,12 @@ RequestResult RequestHandler::GetGroupList(const Request &)
 /**
  * Gets the current program scene.
  *
- * @responseField currentProgramSceneName | String | Current program scene
+ * Note: This request is slated to have the `currentProgram`-prefixed fields removed from in an upcoming RPC version.
+ *
+ * @responseField sceneName               | String | Current program scene name
+ * @responseField sceneUuid               | String | Current program scene UUID
+ * @responseField currentProgramSceneName | String | Current program scene name (Deprecated)
+ * @responseField currentProgramSceneUuid | String | Current program scene UUID (Deprecated)
  *
  * @requestType GetCurrentProgramScene
  * @complexity 1
@@ -93,7 +106,8 @@ RequestResult RequestHandler::GetCurrentProgramScene(const Request &)
 {
 	json responseData;
 	OBSSourceAutoRelease currentProgramScene = obs_frontend_get_current_scene();
-	responseData["currentProgramSceneName"] = obs_source_get_name(currentProgramScene);
+	responseData["sceneName"] = responseData["currentProgramSceneName"] = obs_source_get_name(currentProgramScene);
+	responseData["sceneUuid"] = responseData["currentProgramSceneUuid"] = obs_source_get_uuid(currentProgramScene);
 
 	return RequestResult::Success(responseData);
 }
@@ -101,7 +115,8 @@ RequestResult RequestHandler::GetCurrentProgramScene(const Request &)
 /**
  * Sets the current program scene.
  *
- * @requestField sceneName | String | Scene to set as the current program scene
+ * @requestField ?sceneName | String | Scene name to set as the current program scene
+ * @requestField ?sceneUuid | String | Scene UUID to set as the current program scene
  *
  * @requestType SetCurrentProgramScene
  * @complexity 1
@@ -114,7 +129,7 @@ RequestResult RequestHandler::SetCurrentProgramScene(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease scene = request.ValidateScene("sceneName", statusCode, comment);
+	OBSSourceAutoRelease scene = request.ValidateScene(statusCode, comment);
 	if (!scene)
 		return RequestResult::Error(statusCode, comment);
 
@@ -128,7 +143,12 @@ RequestResult RequestHandler::SetCurrentProgramScene(const Request &request)
  *
  * Only available when studio mode is enabled.
  *
- * @responseField currentPreviewSceneName | String | Current preview scene
+ * Note: This request is slated to have the `currentPreview`-prefixed fields removed from in an upcoming RPC version.
+ *
+ * @responseField sceneName               | String | Current preview scene name
+ * @responseField sceneUuid               | String | Current preview scene UUID
+ * @responseField currentPreviewSceneName | String | Current preview scene name
+ * @responseField currentPreviewSceneUuid | String | Current preview scene UUID
  *
  * @requestType GetCurrentPreviewScene
  * @complexity 1
@@ -145,7 +165,8 @@ RequestResult RequestHandler::GetCurrentPreviewScene(const Request &)
 	OBSSourceAutoRelease currentPreviewScene = obs_frontend_get_current_preview_scene();
 
 	json responseData;
-	responseData["currentPreviewSceneName"] = obs_source_get_name(currentPreviewScene);
+	responseData["sceneName"] = responseData["currentPreviewSceneName"] = obs_source_get_name(currentPreviewScene);
+	responseData["sceneUuid"] = responseData["currentPreviewSceneUuid"] = obs_source_get_uuid(currentPreviewScene);
 
 	return RequestResult::Success(responseData);
 }
@@ -155,7 +176,8 @@ RequestResult RequestHandler::GetCurrentPreviewScene(const Request &)
  *
  * Only available when studio mode is enabled.
  *
- * @requestField sceneName | String | Scene to set as the current preview scene
+ * @requestField ?sceneName | String | Scene name to set as the current preview scene
+ * @requestField ?sceneUuid | String | Scene UUID to set as the current preview scene
  *
  * @requestType SetCurrentPreviewScene
  * @complexity 1
@@ -171,7 +193,7 @@ RequestResult RequestHandler::SetCurrentPreviewScene(const Request &request)
 
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease scene = request.ValidateScene("sceneName", statusCode, comment);
+	OBSSourceAutoRelease scene = request.ValidateScene(statusCode, comment);
 	if (!scene)
 		return RequestResult::Error(statusCode, comment);
 
@@ -184,6 +206,8 @@ RequestResult RequestHandler::SetCurrentPreviewScene(const Request &request)
  * Creates a new scene in OBS.
  *
  * @requestField sceneName | String | Name for the new scene
+ *
+ * @responseField sceneUuid | String | UUID of the created scene
  *
  * @requestType CreateScene
  * @complexity 2
@@ -205,19 +229,21 @@ RequestResult RequestHandler::CreateScene(const Request &request)
 	if (scene)
 		return RequestResult::Error(RequestStatus::ResourceAlreadyExists, "A source already exists by that scene name.");
 
-	obs_scene_t *createdScene = obs_scene_create(sceneName.c_str());
+	OBSSceneAutoRelease createdScene = obs_scene_create(sceneName.c_str());
 	if (!createdScene)
 		return RequestResult::Error(RequestStatus::ResourceCreationFailed, "Failed to create the scene.");
 
-	obs_scene_release(createdScene);
+	json responseData;
+	responseData["sceneUuid"] = obs_source_get_uuid(obs_scene_get_source(createdScene));
 
-	return RequestResult::Success();
+	return RequestResult::Success(responseData);
 }
 
 /**
  * Removes a scene from OBS.
  *
- * @requestField sceneName | String | Name of the scene to remove
+ * @requestField ?sceneName | String | Name of the scene to remove
+ * @requestField ?sceneUuid | String | UUID of the scene to remove
  *
  * @requestType RemoveScene
  * @complexity 2
@@ -230,7 +256,7 @@ RequestResult RequestHandler::RemoveScene(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease scene = request.ValidateScene("sceneName", statusCode, comment);
+	OBSSourceAutoRelease scene = request.ValidateScene(statusCode, comment);
 	if (!scene)
 		return RequestResult::Error(statusCode, comment);
 
@@ -246,7 +272,8 @@ RequestResult RequestHandler::RemoveScene(const Request &request)
 /**
  * Sets the name of a scene (rename).
  *
- * @requestField sceneName    | String | Name of the scene to be renamed
+ * @requestField ?sceneName   | String | Name of the scene to be renamed
+ * @requestField ?sceneUuid   | String | UUID of the scene to be renamed
  * @requestField newSceneName | String | New name for the scene
  *
  * @requestType SetSceneName
@@ -260,7 +287,7 @@ RequestResult RequestHandler::SetSceneName(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease scene = request.ValidateScene("sceneName", statusCode, comment);
+	OBSSourceAutoRelease scene = request.ValidateScene(statusCode, comment);
 	if (!(scene && request.ValidateString("newSceneName", statusCode, comment)))
 		return RequestResult::Error(statusCode, comment);
 
@@ -279,7 +306,10 @@ RequestResult RequestHandler::SetSceneName(const Request &request)
 /**
  * Gets the scene transition overridden for a scene.
  *
- * @requestField sceneName | String | Name of the scene
+ * Note: A transition UUID response field is not currently able to be implemented as of 2024-1-18.
+ *
+ * @requestField ?sceneName | String | Name of the scene
+ * @requestField ?sceneUuid | String | UUID of the scene
  *
  * @responseField transitionName     | String | Name of the overridden scene transition, else `null`
  * @responseField transitionDuration | Number | Duration of the overridden scene transition, else `null`
@@ -295,7 +325,7 @@ RequestResult RequestHandler::GetSceneSceneTransitionOverride(const Request &req
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease scene = request.ValidateScene("sceneName", statusCode, comment);
+	OBSSourceAutoRelease scene = request.ValidateScene(statusCode, comment);
 	if (!scene)
 		return RequestResult::Error(statusCode, comment);
 
@@ -319,7 +349,8 @@ RequestResult RequestHandler::GetSceneSceneTransitionOverride(const Request &req
 /**
  * Sets the scene transition overridden for a scene.
  *
- * @requestField sceneName           | String | Name of the scene
+ * @requestField ?sceneName          | String | Name of the scene
+ * @requestField ?sceneUuid          | String | UUID of the scene
  * @requestField ?transitionName     | String | Name of the scene transition to use as override. Specify `null` to remove | Unchanged
  * @requestField ?transitionDuration | Number | Duration to use for any overridden transition. Specify `null` to remove | >= 50, <= 20000 | Unchanged
  *
@@ -334,7 +365,7 @@ RequestResult RequestHandler::SetSceneSceneTransitionOverride(const Request &req
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease scene = request.ValidateScene("sceneName", statusCode, comment);
+	OBSSourceAutoRelease scene = request.ValidateScene(statusCode, comment);
 	if (!scene)
 		return RequestResult::Error(statusCode, comment);
 
