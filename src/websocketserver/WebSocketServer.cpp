@@ -201,11 +201,6 @@ std::vector<WebSocketServer::WebSocketSessionState> WebSocketServer::GetWebSocke
 	return webSocketSessions;
 }
 
-void WebSocketServer::SetObsReady(bool ready)
-{
-	_obsReady = ready;
-}
-
 bool WebSocketServer::onValidate(websocketpp::connection_hdl hdl)
 {
 	auto conn = _server.get_con_from_hdl(hdl);

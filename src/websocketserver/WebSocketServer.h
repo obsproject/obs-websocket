@@ -30,8 +30,8 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include "rpc/WebSocketSession.h"
 #include "types/WebSocketCloseCode.h"
 #include "types/WebSocketOpCode.h"
-#include "../utils/Json.h"
 #include "../requesthandler/rpc/Request.h"
+#include "../utils/Json.h"
 #include "plugin-macros.generated.h"
 
 class WebSocketServer : QObject {
@@ -57,17 +57,14 @@ public:
 	void InvalidateSession(websocketpp::connection_hdl hdl);
 	void BroadcastEvent(uint64_t requiredIntent, const std::string &eventType, const json &eventData = nullptr,
 			    uint8_t rpcVersion = 0);
-	void SetObsReady(bool ready);
+	inline void SetObsReady(bool ready) { _obsReady = ready; }
+	inline bool IsListening() { return _server.is_listening(); }
+	std::vector<WebSocketSessionState> GetWebSocketSessions();
+	inline QThreadPool *GetThreadPool() { return &_threadPool; }
 
 	// Callback for when a client subscribes or unsubscribes. `true` for sub, `false` for unsub
 	typedef std::function<void(bool, uint64_t)> ClientSubscriptionCallback; // bool type, uint64_t eventSubscriptions
 	inline void SetClientSubscriptionCallback(ClientSubscriptionCallback cb) { _clientSubscriptionCallback = cb; }
-
-	inline bool IsListening() { return _server.is_listening(); }
-
-	std::vector<WebSocketSessionState> GetWebSocketSessions();
-
-	inline QThreadPool *GetThreadPool() { return &_threadPool; }
 
 signals:
 	void ClientConnected(WebSocketSessionState state);

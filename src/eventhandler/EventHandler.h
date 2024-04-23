@@ -34,17 +34,19 @@ public:
 	EventHandler();
 	~EventHandler();
 
-	typedef std::function<void(uint64_t, std::string, json, uint8_t)>
-		BroadcastCallback; // uint64_t requiredIntent, std::string eventType, json eventData, uint8_t rpcVersion
-	inline void SetBroadcastCallback(BroadcastCallback cb) { _broadcastCallback = cb; }
+	void ProcessSubscriptionChange(bool type, uint64_t eventSubscriptions);
 
+	// Callback when an event fires
+	typedef std::function<void(uint64_t, std::string, json, uint8_t)>
+		EventCallback; // uint64_t requiredIntent, std::string eventType, json eventData, uint8_t rpcVersion
+	inline void SetEventCallback(EventCallback cb) { _eventCallback = cb; }
+
+	// Callback when OBS becomes ready or non-ready
 	typedef std::function<void(bool)> ObsReadyCallback; // bool ready
 	inline void SetObsReadyCallback(ObsReadyCallback cb) { _obsReadyCallback = cb; }
 
-	void ProcessSubscriptionChange(bool type, uint64_t eventSubscriptions);
-
 private:
-	BroadcastCallback _broadcastCallback;
+	EventCallback _eventCallback;
 	ObsReadyCallback _obsReadyCallback;
 
 	std::atomic<bool> _obsReady = false;

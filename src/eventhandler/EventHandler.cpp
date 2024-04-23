@@ -110,10 +110,10 @@ void EventHandler::ProcessSubscriptionChange(bool type, uint64_t eventSubscripti
 // Function required in order to use default arguments
 void EventHandler::BroadcastEvent(uint64_t requiredIntent, std::string eventType, json eventData, uint8_t rpcVersion)
 {
-	if (!_broadcastCallback)
+	if (!_eventCallback)
 		return;
 
-	_broadcastCallback(requiredIntent, eventType, eventData, rpcVersion);
+	_eventCallback(requiredIntent, eventType, eventData, rpcVersion);
 }
 
 // Connect source signals for Inputs, Scenes, and Transitions. Filters are automatically connected.

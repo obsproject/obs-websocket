@@ -18,7 +18,6 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include "WebSocketApi.h"
 #include "requesthandler/RequestHandler.h"
-#include "obs-websocket.h"
 #include "utils/Json.h"
 
 #define RETURN_STATUS(status)                             \
@@ -79,9 +78,12 @@ WebSocketApi::~WebSocketApi()
 	blog_debug("[WebSocketApi::~WebSocketApi] Finished.");
 }
 
-void WebSocketApi::SetEventCallback(EventCallback cb)
+void WebSocketApi::BroadcastEvent(uint64_t requiredIntent, const std::string &eventType, const json &eventData, uint8_t rpcVersion)
 {
-	_eventCallback = cb;
+	UNUSED_PARAMETER(requiredIntent);
+	UNUSED_PARAMETER(eventType);
+	UNUSED_PARAMETER(eventData);
+	UNUSED_PARAMETER(rpcVersion);
 }
 
 enum WebSocketApi::RequestReturnCode WebSocketApi::PerformVendorRequest(std::string vendorName, std::string requestType,
@@ -289,10 +291,10 @@ void WebSocketApi::vendor_event_emit_cb(void *priv_data, calldata_t *cd)
 
 	auto eventData = static_cast<obs_data_t *>(voidEventData);
 
-	if (!c->_eventCallback)
+	if (!c->_vendorEventCallback)
 		RETURN_FAILURE();
 
-	c->_eventCallback(v->_name, eventType, eventData);
+	c->_vendorEventCallback(v->_name, eventType, eventData);
 
 	RETURN_SUCCESS();
 }

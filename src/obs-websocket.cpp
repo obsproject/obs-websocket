@@ -48,7 +48,9 @@ WebSocketApiPtr _webSocketApi;
 WebSocketServerPtr _webSocketServer;
 SettingsDialog *_settingsDialog = nullptr;
 
-void WebSocketApiEventCallback(std::string vendorName, std::string eventType, obs_data_t *obsEventData);
+void OnWebSocketApiVendorEvent(std::string vendorName, std::string eventType, obs_data_t *obsEventData);
+void OnEvent(uint64_t requiredIntent, std::string eventType, json eventData, uint8_t rpcVersion);
+void OnObsReady(bool ready);
 
 bool obs_module_load(void)
 {
@@ -73,19 +75,15 @@ bool obs_module_load(void)
 
 	// Initialize the event handler
 	_eventHandler = std::make_shared<EventHandler>();
+	_eventHandler->SetEventCallback(OnEvent);
+	_eventHandler->SetObsReadyCallback(OnObsReady);
 
 	// Initialize the plugin/script API
 	_webSocketApi = std::make_shared<WebSocketApi>();
-	_webSocketApi->SetEventCallback(WebSocketApiEventCallback);
+	_webSocketApi->SetVendorEventCallback(OnWebSocketApiVendorEvent);
 
 	// Initialize the WebSocket server
 	_webSocketServer = std::make_shared<WebSocketServer>();
-
-	// Attach event handlers between WebSocket server and event handler
-	_eventHandler->SetBroadcastCallback(std::bind(&WebSocketServer::BroadcastEvent, _webSocketServer.get(),
-						      std::placeholders::_1, std::placeholders::_2, std::placeholders::_3,
-						      std::placeholders::_4));
-	_eventHandler->SetObsReadyCallback(std::bind(&WebSocketServer::SetObsReady, _webSocketServer.get(), std::placeholders::_1));
 	_webSocketServer->SetClientSubscriptionCallback(std::bind(&EventHandler::ProcessSubscriptionChange, _eventHandler.get(),
 								  std::placeholders::_1, std::placeholders::_2));
 
@@ -131,18 +129,16 @@ void obs_module_unload(void)
 		_webSocketServer->Stop();
 	}
 
-	// Disconnect event handler from WebSocket server
-	_eventHandler->SetObsReadyCallback(nullptr);
-	_eventHandler->SetBroadcastCallback(nullptr);
-	_webSocketServer->SetClientSubscriptionCallback(nullptr);
-
 	// Release the WebSocket server
+	_webSocketServer->SetClientSubscriptionCallback(nullptr);
 	_webSocketServer = nullptr;
 
 	// Release the plugin/script api
 	_webSocketApi = nullptr;
 
 	// Release the event handler
+	_eventHandler->SetObsReadyCallback(nullptr);
+	_eventHandler->SetEventCallback(nullptr);
 	_eventHandler = nullptr;
 
 	// Release the config manager
@@ -202,7 +198,7 @@ bool IsDebugEnabled()
  * @api events
  * @category general
  */
-void WebSocketApiEventCallback(std::string vendorName, std::string eventType, obs_data_t *obsEventData)
+void OnWebSocketApiVendorEvent(std::string vendorName, std::string eventType, obs_data_t *obsEventData)
 {
 	json eventData = Utils::Json::ObsDataToJson(obsEventData);
 
@@ -212,6 +208,24 @@ void WebSocketApiEventCallback(std::string vendorName, std::string eventType, ob
 	broadcastEventData["eventData"] = eventData;
 
 	_webSocketServer->BroadcastEvent(EventSubscription::Vendors, "VendorEvent", broadcastEventData);
+}
+
+// Sent from: EventHandler
+void OnEvent(uint64_t requiredIntent, std::string eventType, json eventData, uint8_t rpcVersion)
+{
+	if (_webSocketServer)
+		_webSocketServer->BroadcastEvent(requiredIntent, eventType, eventData, rpcVersion);
+	if (_webSocketApi)
+		_webSocketApi->BroadcastEvent(requiredIntent, eventType, eventData, rpcVersion);
+}
+
+// Sent from: EventHandler
+void OnObsReady(bool ready)
+{
+	if (_webSocketServer)
+		_webSocketServer->SetObsReady(ready);
+	if (_webSocketApi)
+		_webSocketApi->SetObsReady(ready);
 }
 
 #ifdef PLUGIN_TESTS

@@ -23,8 +23,12 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <map>
 #include <mutex>
 #include <shared_mutex>
+#include <atomic>
 #include <obs.h>
 #include <obs-websocket-api.h>
+
+#include "utils/Json.h"
+#include "plugin-macros.generated.h"
 
 class WebSocketApi {
 public:
@@ -34,8 +38,6 @@ public:
 		NoVendorRequest,
 	};
 
-	typedef std::function<void(std::string, std::string, obs_data_t *)> EventCallback;
-
 	struct Vendor {
 		std::shared_mutex _mutex;
 		std::string _name;
@@ -44,12 +46,17 @@ public:
 
 	WebSocketApi();
 	~WebSocketApi();
-
-	void SetEventCallback(EventCallback cb);
-
+	void BroadcastEvent(uint64_t requiredIntent, const std::string &eventType, const json &eventData = nullptr,
+			    uint8_t rpcVersion = 0);
+	void SetObsReady(bool ready) { _obsReady = ready; }
 	enum RequestReturnCode PerformVendorRequest(std::string vendorName, std::string requestName, obs_data_t *requestData,
 						    obs_data_t *responseData);
 
+	// Callback for when a vendor emits an event
+	typedef std::function<void(std::string, std::string, obs_data_t *)> VendorEventCallback;
+	inline void SetVendorEventCallback(VendorEventCallback cb) { _vendorEventCallback = cb; }
+
+private:
 	static void get_ph_cb(void *priv_data, calldata_t *cd);
 	static void get_api_version(void *, calldata_t *cd);
 	static void call_request(void *, calldata_t *cd);
@@ -58,9 +65,11 @@ public:
 	static void vendor_request_unregister_cb(void *priv_data, calldata_t *cd);
 	static void vendor_event_emit_cb(void *priv_data, calldata_t *cd);
 
-private:
 	std::shared_mutex _mutex;
-	EventCallback _eventCallback;
 	proc_handler_t *_procHandler;
 	std::map<std::string, Vendor *> _vendors;
+
+	std::atomic<bool> _obsReady = false;
+
+	VendorEventCallback _vendorEventCallback;
 };
