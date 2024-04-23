@@ -238,7 +238,9 @@ void Utils::Obs::VolumeMeter::Meter::InputVolumeCallback(void *priv_data, callda
 }
 
 Utils::Obs::VolumeMeter::Handler::Handler(UpdateCallback cb, uint64_t updatePeriod)
-	: _updateCallback(cb), _updatePeriod(updatePeriod), _running(false)
+	: _updateCallback(cb),
+	  _updatePeriod(updatePeriod),
+	  _running(false)
 {
 	signal_handler_t *sh = obs_get_signal_handler();
 	if (!sh)

@@ -195,12 +195,14 @@ bool MigratePersistentData()
 	if (!std::filesystem::exists(moduleConfigDirectory, ec))
 		std::filesystem::create_directories(moduleConfigDirectory, ec);
 	if (ec) {
-		blog(LOG_ERROR, "[MigratePersistentData] Failed to create directory `%s`: %s", moduleConfigDirectory.c_str(), ec.message().c_str());
+		blog(LOG_ERROR, "[MigratePersistentData] Failed to create directory `%s`: %s", moduleConfigDirectory.c_str(),
+		     ec.message().c_str());
 		return false;
 	}
 
 	// Move any existing persistent data to module config directory, then delete old file
-	std::string oldPersistentDataPath = Utils::Obs::StringHelper::GetCurrentProfilePath() + "/../../../obsWebSocketPersistentData.json";
+	std::string oldPersistentDataPath =
+		Utils::Obs::StringHelper::GetCurrentProfilePath() + "/../../../obsWebSocketPersistentData.json";
 	if (std::filesystem::exists(oldPersistentDataPath, ec)) {
 		std::string persistentDataPath = Utils::Obs::StringHelper::GetModuleConfigPath("persistent_data.json");
 		std::filesystem::copy_file(oldPersistentDataPath, persistentDataPath, ec);

@@ -80,7 +80,8 @@ void EventHandler::ProcessSubscriptionChange(bool type, uint64_t eventSubscripti
 		if ((eventSubscriptions & EventSubscription::InputVolumeMeters) != 0) {
 			if (_inputVolumeMetersRef.fetch_add(1) == 0) {
 				if (_inputVolumeMetersHandler)
-					blog(LOG_WARNING, "[EventHandler::ProcessSubscription] Input volume meter handler already exists!");
+					blog(LOG_WARNING,
+					     "[EventHandler::ProcessSubscription] Input volume meter handler already exists!");
 				else
 					_inputVolumeMetersHandler = std::make_unique<Utils::Obs::VolumeMeter::Handler>(
 						std::bind(&EventHandler::HandleInputVolumeMeters, this, std::placeholders::_1));

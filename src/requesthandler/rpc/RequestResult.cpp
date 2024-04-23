@@ -20,7 +20,10 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include "RequestResult.h"
 
 RequestResult::RequestResult(RequestStatus::RequestStatus statusCode, json responseData, std::string comment)
-	: StatusCode(statusCode), ResponseData(responseData), Comment(comment), SleepFrames(0)
+	: StatusCode(statusCode),
+	  ResponseData(responseData),
+	  Comment(comment),
+	  SleepFrames(0)
 {
 }
 

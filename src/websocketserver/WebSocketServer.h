@@ -61,10 +61,7 @@ public:
 
 	// Callback for when a client subscribes or unsubscribes. `true` for sub, `false` for unsub
 	typedef std::function<void(bool, uint64_t)> ClientSubscriptionCallback; // bool type, uint64_t eventSubscriptions
-	inline void SetClientSubscriptionCallback(ClientSubscriptionCallback cb)
-	{
-		_clientSubscriptionCallback = cb;
-	}
+	inline void SetClientSubscriptionCallback(ClientSubscriptionCallback cb) { _clientSubscriptionCallback = cb; }
 
 	inline bool IsListening() { return _server.is_listening(); }
 

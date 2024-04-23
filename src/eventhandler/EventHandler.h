@@ -36,16 +36,10 @@ public:
 
 	typedef std::function<void(uint64_t, std::string, json, uint8_t)>
 		BroadcastCallback; // uint64_t requiredIntent, std::string eventType, json eventData, uint8_t rpcVersion
-	inline void SetBroadcastCallback(BroadcastCallback cb)
-	{
-		_broadcastCallback = cb;
-	}
+	inline void SetBroadcastCallback(BroadcastCallback cb) { _broadcastCallback = cb; }
 
 	typedef std::function<void(bool)> ObsReadyCallback; // bool ready
-	inline void SetObsReadyCallback(ObsReadyCallback cb)
-	{
-		_obsReadyCallback = cb;
-	}
+	inline void SetObsReadyCallback(ObsReadyCallback cb) { _obsReadyCallback = cb; }
 
 	void ProcessSubscriptionChange(bool type, uint64_t eventSubscriptions);
 
@@ -130,7 +124,7 @@ private:
 						  calldata_t *data); // Direct callback
 	static void HandleInputAudioMonitorTypeChanged(void *param,
 						       calldata_t *data); // Direct callback
-	void HandleInputVolumeMeters(std::vector<json> inputs); // AudioMeter::Handler callback
+	void HandleInputVolumeMeters(std::vector<json> inputs);           // AudioMeter::Handler callback
 
 	// Transitions
 	void HandleCurrentSceneTransitionChanged();
@@ -152,7 +146,7 @@ private:
 	void HandleSourceFilterCreated(obs_source_t *source, obs_source_t *filter);
 	void HandleSourceFilterRemoved(obs_source_t *source, obs_source_t *filter);
 	static void HandleSourceFilterNameChanged(void *param,
-						  calldata_t *data);                     // Direct callback
+						  calldata_t *data); // Direct callback
 	void HandleSourceFilterSettingsChanged(obs_source_t *source);
 	static void HandleSourceFilterEnableStateChanged(void *param, calldata_t *data); // Direct callback
 

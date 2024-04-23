@@ -185,7 +185,8 @@ bool Utils::Json::GetJsonFileContent(std::string fileName, json &content)
 	try {
 		content = json::parse(f);
 	} catch (json::parse_error &e) {
-		blog(LOG_WARNING, "[Utils::Json::GetJsonFileContent] Failed to decode content of JSON file `%s`. Error: %s", fileName.c_str(), e.what());
+		blog(LOG_WARNING, "[Utils::Json::GetJsonFileContent] Failed to decode content of JSON file `%s`. Error: %s",
+		     fileName.c_str(), e.what());
 		return false;
 	}
 
@@ -200,7 +201,8 @@ bool Utils::Json::SetJsonFileContent(std::string fileName, const json &content, 
 		if (!ec && !std::filesystem::exists(p, ec))
 			std::filesystem::create_directories(p, ec);
 		if (ec) {
-			blog(LOG_ERROR, "[Utils::Json::SetJsonFileContent] Failed to create path directories: %s", ec.message().c_str());
+			blog(LOG_ERROR, "[Utils::Json::SetJsonFileContent] Failed to create path directories: %s",
+			     ec.message().c_str());
 			return false;
 		}
 	}

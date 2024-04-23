@@ -21,6 +21,8 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 RequestBatchRequest::RequestBatchRequest(const std::string &requestType, const json &requestData,
 					 RequestBatchExecutionType::RequestBatchExecutionType executionType,
 					 const json &inputVariables, const json &outputVariables)
-	: Request(requestType, requestData, executionType), InputVariables(inputVariables), OutputVariables(outputVariables)
+	: Request(requestType, requestData, executionType),
+	  InputVariables(inputVariables),
+	  OutputVariables(outputVariables)
 {
 }
