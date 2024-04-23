@@ -76,7 +76,7 @@ namespace Utils {
 		obs_data_t *JsonToObsData(json j);
 		json ObsDataToJson(obs_data_t *d, bool includeDefault = false);
 		bool GetJsonFileContent(std::string fileName, json &content);
-		bool SetJsonFileContent(std::string fileName, const json &content);
+		bool SetJsonFileContent(std::string fileName, const json &content, bool makeDirs = true);
 		static inline bool Contains(const json &j, std::string key) { return j.contains(key) && !j[key].is_null(); }
 	}
 }

@@ -185,18 +185,31 @@ bool Utils::Json::GetJsonFileContent(std::string fileName, json &content)
 	try {
 		content = json::parse(f);
 	} catch (json::parse_error &e) {
-		blog(LOG_WARNING, "Failed to decode content of JSON file `%s`. Error: %s", fileName.c_str(), e.what());
+		blog(LOG_WARNING, "[Utils::Json::GetJsonFileContent] Failed to decode content of JSON file `%s`. Error: %s", fileName.c_str(), e.what());
 		return false;
 	}
 
 	return true;
 }
 
-bool Utils::Json::SetJsonFileContent(std::string fileName, const json &content)
+bool Utils::Json::SetJsonFileContent(std::string fileName, const json &content, bool makeDirs)
 {
+	if (makeDirs) {
+		std::error_code ec;
+		auto p = std::filesystem::path(fileName).parent_path();
+		if (!ec && !std::filesystem::exists(p, ec))
+			std::filesystem::create_directories(p, ec);
+		if (ec) {
+			blog(LOG_ERROR, "[Utils::Json::SetJsonFileContent] Failed to create path directories: %s", ec.message().c_str());
+			return false;
+		}
+	}
+
 	std::ofstream f(fileName);
-	if (!f.is_open())
+	if (!f.is_open()) {
+		blog(LOG_ERROR, "[Utils::Json::SetJsonFileContent] Failed to open file `%s` for writing", fileName.c_str());
 		return false;
+	}
 
 	// Set indent to 2 spaces, then dump content
 	f << std::setw(2) << content;
