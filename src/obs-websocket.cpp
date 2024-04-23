@@ -68,18 +68,18 @@ bool obs_module_load(void)
 	json migratedConfig = MigrateGlobalConfigData();
 
 	// Create the config manager then load the parameters from storage
-	_config = ConfigPtr(new Config());
+	_config = std::make_shared<Config>();
 	_config->Load(migratedConfig);
 
 	// Initialize the event handler
-	_eventHandler = EventHandlerPtr(new EventHandler());
+	_eventHandler = std::make_shared<EventHandler>();
 
 	// Initialize the plugin/script API
-	_webSocketApi = WebSocketApiPtr(new WebSocketApi());
+	_webSocketApi = std::make_shared<WebSocketApi>();
 	_webSocketApi->SetEventCallback(WebSocketApiEventCallback);
 
 	// Initialize the WebSocket server
-	_webSocketServer = WebSocketServerPtr(new WebSocketServer());
+	_webSocketServer = std::make_shared<WebSocketServer>();
 
 	// Initialize the settings dialog
 	obs_frontend_push_ui_translation(obs_module_get_string);
@@ -123,17 +123,17 @@ void obs_module_unload(void)
 		_webSocketServer->Stop();
 	}
 
-	// Destroy the WebSocket server
-	_webSocketServer.reset();
+	// Release the WebSocket server
+	_webSocketServer = nullptr;
 
-	// Destroy the plugin/script api
-	_webSocketApi.reset();
+	// Release the plugin/script api
+	_webSocketApi = nullptr;
 
-	// Destroy the event handler
-	_eventHandler.reset();
+	// Release the event handler
+	_eventHandler = nullptr;
 
-	// Destroy the config manager
-	_config.reset();
+	// Release the config manager
+	_config = nullptr;
 
 	// Destroy the cpu stats
 	os_cpu_usage_info_destroy(_cpuUsageInfo);
