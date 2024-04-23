@@ -64,7 +64,7 @@ void ConnectInfo::RefreshData()
 	QString serverPassword;
 	if (conf->AuthRequired) {
 		ui->copyServerPasswordButton->setEnabled(true);
-		serverPassword = QUrl::toPercentEncoding(conf->ServerPassword);
+		serverPassword = QUrl::toPercentEncoding(QString::fromStdString(conf->ServerPassword));
 	} else {
 		ui->copyServerPasswordButton->setEnabled(false);
 		serverPassword = obs_module_text("OBSWebSocket.ConnectInfo.ServerPasswordPlaceholderText");

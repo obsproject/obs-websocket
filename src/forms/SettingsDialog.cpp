@@ -123,7 +123,7 @@ void SettingsDialog::RefreshData()
 	ui->enableDebugLoggingCheckBox->setChecked(conf->DebugEnabled);
 	ui->serverPortSpinBox->setValue(conf->ServerPort);
 	ui->enableAuthenticationCheckBox->setChecked(conf->AuthRequired);
-	ui->serverPasswordLineEdit->setText(conf->ServerPassword);
+	ui->serverPasswordLineEdit->setText(QString::fromStdString(conf->ServerPassword));
 
 	ui->serverPasswordLineEdit->setEnabled(conf->AuthRequired);
 	ui->generatePasswordButton->setEnabled(conf->AuthRequired);
@@ -158,7 +158,7 @@ void SettingsDialog::SaveFormData()
 	}
 
 	// Show a confirmation box to the user if they attempt to provide their own password
-	if (passwordManuallyEdited && (conf->ServerPassword != ui->serverPasswordLineEdit->text())) {
+	if (passwordManuallyEdited && (conf->ServerPassword != ui->serverPasswordLineEdit->text().toStdString())) {
 		QMessageBox msgBox;
 		msgBox.setWindowTitle(obs_module_text("OBSWebSocket.Settings.Save.UserPasswordWarningTitle"));
 		msgBox.setText(obs_module_text("OBSWebSocket.Settings.Save.UserPasswordWarningMessage"));
@@ -172,7 +172,7 @@ void SettingsDialog::SaveFormData()
 			break;
 		case QMessageBox::No:
 		default:
-			ui->serverPasswordLineEdit->setText(conf->ServerPassword);
+			ui->serverPasswordLineEdit->setText(QString::fromStdString(conf->ServerPassword));
 			return;
 		}
 	}
@@ -180,14 +180,14 @@ void SettingsDialog::SaveFormData()
 	bool needsRestart =
 		(conf->ServerEnabled != ui->enableWebSocketServerCheckBox->isChecked()) ||
 		(conf->ServerPort != ui->serverPortSpinBox->value()) ||
-		(ui->enableAuthenticationCheckBox->isChecked() && conf->ServerPassword != ui->serverPasswordLineEdit->text());
+		(ui->enableAuthenticationCheckBox->isChecked() && conf->ServerPassword != ui->serverPasswordLineEdit->text().toStdString());
 
 	conf->ServerEnabled = ui->enableWebSocketServerCheckBox->isChecked();
 	conf->AlertsEnabled = ui->enableSystemTrayAlertsCheckBox->isChecked();
 	conf->DebugEnabled = ui->enableDebugLoggingCheckBox->isChecked();
 	conf->ServerPort = ui->serverPortSpinBox->value();
 	conf->AuthRequired = ui->enableAuthenticationCheckBox->isChecked();
-	conf->ServerPassword = ui->serverPasswordLineEdit->text();
+	conf->ServerPassword = ui->serverPasswordLineEdit->text().toStdString();
 
 	conf->Save();
 

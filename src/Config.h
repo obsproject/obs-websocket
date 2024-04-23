@@ -40,7 +40,7 @@ struct Config {
 	std::atomic<bool> DebugEnabled = false;
 	std::atomic<bool> AlertsEnabled = false;
 	std::atomic<bool> AuthRequired = true;
-	QString ServerPassword;
+	std::string ServerPassword;
 };
 
 json MigrateGlobalConfigData();

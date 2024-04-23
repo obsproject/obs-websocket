@@ -69,16 +69,16 @@ void Config::Load(json config)
 	if (config.contains(PARAM_AUTHREQUIRED) && config[PARAM_AUTHREQUIRED].is_boolean())
 		AuthRequired = config[PARAM_AUTHREQUIRED];
 	if (config.contains(PARAM_PASSWORD) && config[PARAM_PASSWORD].is_string())
-		ServerPassword = QString::fromStdString(config[PARAM_PASSWORD].get<std::string>());
+		ServerPassword = config[PARAM_PASSWORD];
 
 	// Set server password and save it to the config before processing overrides,
 	// so that there is always a true configured password regardless of if
 	// future loads use the override flag.
 	if (FirstLoad) {
 		FirstLoad = false;
-		if (ServerPassword.isEmpty()) {
+		if (ServerPassword.empty()) {
 			blog(LOG_INFO, "[Config::Load] (FirstLoad) Generating new server password.");
-			ServerPassword = QString::fromStdString(Utils::Crypto::GeneratePassword());
+			ServerPassword = Utils::Crypto::GeneratePassword();
 		} else {
 			blog(LOG_INFO, "[Config::Load] (FirstLoad) Not generating new password since one is already configured.");
 		}
@@ -111,7 +111,7 @@ void Config::Load(json config)
 		blog(LOG_INFO, "[Config::Load] --websocket_password passed. Overriding WebSocket password.");
 		PasswordOverridden = true;
 		AuthRequired = true;
-		ServerPassword = passwordArgument;
+		ServerPassword = passwordArgument.toStdString();
 	}
 
 	// Process `--websocket_debug` override
@@ -136,7 +136,7 @@ void Config::Save()
 	config[PARAM_ALERTS] = AlertsEnabled.load();
 	if (!PasswordOverridden) {
 		config[PARAM_AUTHREQUIRED] = AuthRequired.load();
-		config[PARAM_PASSWORD] = ServerPassword.toStdString();
+		config[PARAM_PASSWORD] = ServerPassword;
 	}
 
 	if (!Utils::Json::SetJsonFileContent(configFilePath, config))

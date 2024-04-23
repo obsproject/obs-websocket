@@ -97,7 +97,7 @@ void WebSocketServer::Start()
 	}
 
 	_authenticationSalt = Utils::Crypto::GenerateSalt();
-	_authenticationSecret = Utils::Crypto::GenerateSecret(conf->ServerPassword.toStdString(), _authenticationSalt);
+	_authenticationSecret = Utils::Crypto::GenerateSecret(conf->ServerPassword, _authenticationSalt);
 
 	// Set log levels if debug is enabled
 	if (IsDebugEnabled()) {
