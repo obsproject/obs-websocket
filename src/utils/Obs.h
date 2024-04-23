@@ -227,6 +227,7 @@ namespace Utils {
 	namespace Obs {
 		namespace StringHelper {
 			std::string GetObsVersion();
+			std::string GetModuleConfigPath(std::string &fileName);
 			std::string GetCurrentSceneCollection();
 			std::string GetCurrentProfile();
 			std::string GetCurrentProfilePath();

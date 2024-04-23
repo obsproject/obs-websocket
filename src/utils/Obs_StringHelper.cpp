@@ -20,6 +20,8 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <inttypes.h>
 #include <QString>
 
+#include <obs-module.h>
+
 #include <util/util.hpp>
 
 #include "Obs.h"
@@ -40,6 +42,13 @@ std::string Utils::Obs::StringHelper::GetObsVersion()
 
 	QString combined = QString("%1.%2.%3").arg(major).arg(minor).arg(patch);
 	return combined.toStdString();
+}
+
+std::string Utils::Obs::StringHelper::GetModuleConfigPath(std::string &fileName)
+{
+	BPtr<char> configPath = obs_module_config_path(fileName.c_str());
+	std::string ret = configPath.Get();
+	return ret;
 }
 
 std::string Utils::Obs::StringHelper::GetCurrentSceneCollection()
