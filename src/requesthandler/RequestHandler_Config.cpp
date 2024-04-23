@@ -22,6 +22,8 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include "RequestHandler.h"
 
+#define GLOBAL_PERSISTENT_DATA_FILE_NAME "persistent_data.json"
+
 /**
  * Gets the value of a "slot" from the selected persistent data realm.
  *
@@ -47,11 +49,11 @@ RequestResult RequestHandler::GetPersistentData(const Request &request)
 	std::string realm = request.RequestData["realm"];
 	std::string slotName = request.RequestData["slotName"];
 
-	std::string persistentDataPath = Utils::Obs::StringHelper::GetCurrentProfilePath();
+	std::string persistentDataPath;
 	if (realm == "OBS_WEBSOCKET_DATA_REALM_GLOBAL")
-		persistentDataPath += "/../../../obsWebSocketPersistentData.json";
+		persistentDataPath = Utils::Obs::StringHelper::GetModuleConfigPath(GLOBAL_PERSISTENT_DATA_FILE_NAME);
 	else if (realm == "OBS_WEBSOCKET_DATA_REALM_PROFILE")
-		persistentDataPath += "/obsWebSocketPersistentData.json";
+		persistentDataPath = Utils::Obs::StringHelper::GetCurrentProfilePath() + "/obsWebSocketPersistentData.json";
 	else
 		return RequestResult::Error(RequestStatus::ResourceNotFound,
 					    "You have specified an invalid persistent data realm.");
@@ -92,16 +94,16 @@ RequestResult RequestHandler::SetPersistentData(const Request &request)
 	std::string slotName = request.RequestData["slotName"];
 	json slotValue = request.RequestData["slotValue"];
 
-	std::string persistentDataPath = Utils::Obs::StringHelper::GetCurrentProfilePath();
+	std::string persistentDataPath;
 	if (realm == "OBS_WEBSOCKET_DATA_REALM_GLOBAL")
-		persistentDataPath += "/../../../obsWebSocketPersistentData.json";
+		persistentDataPath = Utils::Obs::StringHelper::GetModuleConfigPath(GLOBAL_PERSISTENT_DATA_FILE_NAME);
 	else if (realm == "OBS_WEBSOCKET_DATA_REALM_PROFILE")
-		persistentDataPath += "/obsWebSocketPersistentData.json";
+		persistentDataPath = Utils::Obs::StringHelper::GetCurrentProfilePath() + "/obsWebSocketPersistentData.json";
 	else
 		return RequestResult::Error(RequestStatus::ResourceNotFound,
 					    "You have specified an invalid persistent data realm.");
 
-	json persistentData = json::object();
+	json persistentData;
 	Utils::Json::GetJsonFileContent(persistentDataPath, persistentData);
 	persistentData[slotName] = slotValue;
 	if (!Utils::Json::SetJsonFileContent(persistentDataPath, persistentData))
