@@ -23,7 +23,6 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include "WebSocketServer.h"
 #include "../requesthandler/RequestHandler.h"
 #include "../requesthandler/RequestBatchHandler.h"
-#include "../eventhandler/EventHandler.h"
 #include "../obs-websocket.h"
 #include "../Config.h"
 #include "../utils/Crypto.h"
@@ -149,9 +148,9 @@ void WebSocketServer::ProcessMessage(SessionPtr session, WebSocketServer::Proces
 		if (ret.closeCode != WebSocketCloseCode::DontClose)
 			return;
 
-		// Increment refs for event subscriptions
-		auto eventHandler = GetEventHandler();
-		eventHandler->ProcessSubscription(session->EventSubscriptions());
+		// Announce subscribe
+		if (_clientSubscriptionCallback)
+			_clientSubscriptionCallback(true, session->EventSubscriptions());
 
 		// Mark session as identified
 		session->SetIsIdentified(true);
@@ -172,16 +171,17 @@ void WebSocketServer::ProcessMessage(SessionPtr session, WebSocketServer::Proces
 	case WebSocketOpCode::Reidentify: { // Reidentify
 		std::unique_lock<std::mutex> sessionLock(session->OperationMutex);
 
-		// Decrement refs for current subscriptions
-		auto eventHandler = GetEventHandler();
-		eventHandler->ProcessUnsubscription(session->EventSubscriptions());
+		// Announce unsubscribe
+		if (_clientSubscriptionCallback)
+			_clientSubscriptionCallback(false, session->EventSubscriptions());
 
 		SetSessionParameters(session, ret, payloadData);
 		if (ret.closeCode != WebSocketCloseCode::DontClose)
 			return;
 
-		// Increment refs for new subscriptions
-		eventHandler->ProcessSubscription(session->EventSubscriptions());
+		// Announce subscribe
+		if (_clientSubscriptionCallback)
+			_clientSubscriptionCallback(true, session->EventSubscriptions());
 
 		ret.result["op"] = WebSocketOpCode::Identified;
 		ret.result["d"]["negotiatedRpcVersion"] = session->RpcVersion();

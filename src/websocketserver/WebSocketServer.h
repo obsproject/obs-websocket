@@ -57,12 +57,20 @@ public:
 	void InvalidateSession(websocketpp::connection_hdl hdl);
 	void BroadcastEvent(uint64_t requiredIntent, const std::string &eventType, const json &eventData = nullptr,
 			    uint8_t rpcVersion = 0);
+	void SetObsReady(bool ready);
 
-	bool IsListening() { return _server.is_listening(); }
+	// Callback for when a client subscribes or unsubscribes. `true` for sub, `false` for unsub
+	typedef std::function<void(bool, uint64_t)> ClientSubscriptionCallback; // bool type, uint64_t eventSubscriptions
+	inline void SetClientSubscriptionCallback(ClientSubscriptionCallback cb)
+	{
+		_clientSubscriptionCallback = cb;
+	}
+
+	inline bool IsListening() { return _server.is_listening(); }
 
 	std::vector<WebSocketSessionState> GetWebSocketSessions();
 
-	QThreadPool *GetThreadPool() { return &_threadPool; }
+	inline QThreadPool *GetThreadPool() { return &_threadPool; }
 
 signals:
 	void ClientConnected(WebSocketSessionState state);
@@ -77,7 +85,6 @@ private:
 
 	void ServerRunner();
 
-	void onObsReady(bool loaded);
 	bool onValidate(websocketpp::connection_hdl hdl);
 	void onOpen(websocketpp::connection_hdl hdl);
 	void onClose(websocketpp::connection_hdl hdl);
@@ -98,4 +105,6 @@ private:
 	std::map<websocketpp::connection_hdl, SessionPtr, std::owner_less<websocketpp::connection_hdl>> _sessions;
 
 	std::atomic<bool> _obsReady = false;
+
+	ClientSubscriptionCallback _clientSubscriptionCallback;
 };

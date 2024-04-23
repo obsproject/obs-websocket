@@ -36,12 +36,18 @@ public:
 
 	typedef std::function<void(uint64_t, std::string, json, uint8_t)>
 		BroadcastCallback; // uint64_t requiredIntent, std::string eventType, json eventData, uint8_t rpcVersion
-	void SetBroadcastCallback(BroadcastCallback cb);
-	typedef std::function<void(bool)> ObsReadyCallback; // bool ready
-	void SetObsReadyCallback(ObsReadyCallback cb);
+	inline void SetBroadcastCallback(BroadcastCallback cb)
+	{
+		_broadcastCallback = cb;
+	}
 
-	void ProcessSubscription(uint64_t eventSubscriptions);
-	void ProcessUnsubscription(uint64_t eventSubscriptions);
+	typedef std::function<void(bool)> ObsReadyCallback; // bool ready
+	inline void SetObsReadyCallback(ObsReadyCallback cb)
+	{
+		_obsReadyCallback = cb;
+	}
+
+	void ProcessSubscriptionChange(bool type, uint64_t eventSubscriptions);
 
 private:
 	BroadcastCallback _broadcastCallback;

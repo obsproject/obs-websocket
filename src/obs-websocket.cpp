@@ -81,6 +81,11 @@ bool obs_module_load(void)
 	// Initialize the WebSocket server
 	_webSocketServer = std::make_shared<WebSocketServer>();
 
+	// Attach event handlers between WebSocket server and event handler
+	_eventHandler->SetBroadcastCallback(std::bind(&WebSocketServer::BroadcastEvent, _webSocketServer.get(), std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4));
+	_eventHandler->SetObsReadyCallback(std::bind(&WebSocketServer::SetObsReady, _webSocketServer.get(), std::placeholders::_1));
+	_webSocketServer->SetClientSubscriptionCallback(std::bind(&EventHandler::ProcessSubscriptionChange, _eventHandler.get(), std::placeholders::_1, std::placeholders::_2));
+
 	// Initialize the settings dialog
 	obs_frontend_push_ui_translation(obs_module_get_string);
 	QMainWindow *mainWindow = static_cast<QMainWindow *>(obs_frontend_get_main_window());
@@ -122,6 +127,11 @@ void obs_module_unload(void)
 		blog_debug("[obs_module_unload] WebSocket server is running. Stopping...");
 		_webSocketServer->Stop();
 	}
+
+	// Disconnect event handler from WebSocket server
+	_eventHandler->SetObsReadyCallback(nullptr);
+	_eventHandler->SetBroadcastCallback(nullptr);
+	_webSocketServer->SetClientSubscriptionCallback(nullptr);
 
 	// Release the WebSocket server
 	_webSocketServer = nullptr;
