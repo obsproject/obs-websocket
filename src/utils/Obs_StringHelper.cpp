@@ -40,7 +40,7 @@ std::string Utils::Obs::StringHelper::GetObsVersion()
 	return combined.toStdString();
 }
 
-std::string Utils::Obs::StringHelper::GetModuleConfigPath(std::string &fileName)
+std::string Utils::Obs::StringHelper::GetModuleConfigPath(std::string fileName)
 {
 	BPtr<char> configPath = obs_module_config_path(fileName.c_str());
 	return std::string(configPath.Get());
