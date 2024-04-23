@@ -23,14 +23,12 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <QString>
 #include <util/config-file.h>
 
+#include "utils/Json.h"
 #include "plugin-macros.generated.h"
 
 struct Config {
-	Config();
-	void Load();
+	void Load(json config = nullptr);
 	void Save();
-	void SetDefaultsToGlobalStore();
-	static config_t *GetConfigStore();
 
 	std::atomic<bool> PortOverridden = false;
 	std::atomic<bool> PasswordOverridden = false;
@@ -44,3 +42,6 @@ struct Config {
 	std::atomic<bool> AuthRequired = true;
 	QString ServerPassword;
 };
+
+json MigrateGlobalConfigData();
+bool MigratePersistentData();

@@ -60,9 +60,16 @@ bool obs_module_load(void)
 	// Initialize the cpu stats
 	_cpuUsageInfo = os_cpu_usage_info_start();
 
+	// Handle migrations
+	if (!MigratePersistentData()) {
+		os_cpu_usage_info_destroy(_cpuUsageInfo);
+		return false;
+	}
+	json migratedConfig = MigrateGlobalConfigData();
+
 	// Create the config manager then load the parameters from storage
 	_config = ConfigPtr(new Config());
-	_config->Load();
+	_config->Load(migratedConfig);
 
 	// Initialize the event handler
 	_eventHandler = EventHandlerPtr(new EventHandler());
