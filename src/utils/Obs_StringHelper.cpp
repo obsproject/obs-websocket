@@ -27,10 +27,6 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include "Obs.h"
 #include "plugin-macros.generated.h"
 
-#define CASE(x) \
-	case x: \
-		return #x;
-
 std::string Utils::Obs::StringHelper::GetObsVersion()
 {
 	uint32_t version = obs_get_version();
@@ -47,36 +43,31 @@ std::string Utils::Obs::StringHelper::GetObsVersion()
 std::string Utils::Obs::StringHelper::GetModuleConfigPath(std::string &fileName)
 {
 	BPtr<char> configPath = obs_module_config_path(fileName.c_str());
-	std::string ret = configPath.Get();
-	return ret;
+	return std::string(configPath.Get());
 }
 
 std::string Utils::Obs::StringHelper::GetCurrentSceneCollection()
 {
 	BPtr<char> sceneCollectionName = obs_frontend_get_current_scene_collection();
-	std::string ret = sceneCollectionName.Get();
-	return ret;
+	return std::string(sceneCollectionName.Get());
 }
 
 std::string Utils::Obs::StringHelper::GetCurrentProfile()
 {
 	BPtr<char> profileName = obs_frontend_get_current_profile();
-	std::string ret = profileName.Get();
-	return ret;
+	return std::string(profileName.Get());
 }
 
 std::string Utils::Obs::StringHelper::GetCurrentProfilePath()
 {
 	BPtr<char> profilePath = obs_frontend_get_current_profile_path();
-	std::string ret = profilePath.Get();
-	return ret;
+	return std::string(profilePath.Get());
 }
 
 std::string Utils::Obs::StringHelper::GetCurrentRecordOutputPath()
 {
 	BPtr<char> recordOutputPath = obs_frontend_get_current_record_output_path();
-	std::string ret = recordOutputPath.Get();
-	return ret;
+	return std::string(recordOutputPath.Get());
 }
 
 std::string Utils::Obs::StringHelper::GetLastRecordFileName()
@@ -102,15 +93,13 @@ std::string Utils::Obs::StringHelper::GetLastRecordFileName()
 std::string Utils::Obs::StringHelper::GetLastReplayBufferFileName()
 {
 	BPtr<char> replayBufferPath = obs_frontend_get_last_replay();
-	std::string ret = replayBufferPath.Get();
-	return ret;
+	return std::string(replayBufferPath.Get());
 }
 
 std::string Utils::Obs::StringHelper::GetLastScreenshotFileName()
 {
 	BPtr<char> screenshotPath = obs_frontend_get_last_screenshot();
-	std::string ret = screenshotPath.Get();
-	return ret;
+	return std::string(screenshotPath.Get());
 }
 
 std::string Utils::Obs::StringHelper::DurationToTimecode(uint64_t ms)
