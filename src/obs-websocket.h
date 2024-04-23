@@ -26,6 +26,8 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include "utils/Obs.h"
 #include "plugin-macros.generated.h"
 
+#define CURRENT_RPC_VERSION 1
+
 struct Config;
 typedef std::shared_ptr<Config> ConfigPtr;
 

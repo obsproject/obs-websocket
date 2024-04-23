@@ -57,9 +57,22 @@ public:
 	inline void SetVendorEventCallback(VendorEventCallback cb) { _vendorEventCallback = cb; }
 
 private:
+	inline int64_t GetEventCallbackIndex(obs_websocket_event_callback &cb)
+	{
+		for (int64_t i = 0; i < (int64_t)_eventCallbacks.size(); i++) {
+			auto currentCb = _eventCallbacks[i];
+			if (currentCb.callback == cb.callback && currentCb.priv_data == cb.priv_data)
+				return i;
+		}
+		return -1;
+	}
+
+	// Proc handlers
 	static void get_ph_cb(void *priv_data, calldata_t *cd);
 	static void get_api_version(void *, calldata_t *cd);
 	static void call_request(void *, calldata_t *cd);
+	static void register_event_callback(void *, calldata_t *cd);
+	static void unregister_event_callback(void *, calldata_t *cd);
 	static void vendor_register_cb(void *priv_data, calldata_t *cd);
 	static void vendor_request_register_cb(void *priv_data, calldata_t *cd);
 	static void vendor_request_unregister_cb(void *priv_data, calldata_t *cd);
@@ -68,6 +81,7 @@ private:
 	std::shared_mutex _mutex;
 	proc_handler_t *_procHandler;
 	std::map<std::string, Vendor *> _vendors;
+	std::vector<obs_websocket_event_callback> _eventCallbacks;
 
 	std::atomic<bool> _obsReady = false;
 

@@ -31,7 +31,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 static bool IsSupportedRpcVersion(uint8_t requestedVersion)
 {
-	return (requestedVersion == 1);
+	return (requestedVersion == CURRENT_RPC_VERSION);
 }
 
 static json ConstructRequestResult(RequestResult requestResult, const json &requestJson)

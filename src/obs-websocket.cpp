@@ -103,12 +103,16 @@ bool obs_module_load(void)
 }
 
 #ifdef PLUGIN_TESTS
+void test_call_request();
+void test_register_event_callback();
 void test_register_vendor();
 #endif
 
 void obs_module_post_load(void)
 {
 #ifdef PLUGIN_TESTS
+	test_call_request();
+	test_register_event_callback();
 	test_register_vendor();
 #endif
 
@@ -229,12 +233,43 @@ void OnObsReady(bool ready)
 }
 
 #ifdef PLUGIN_TESTS
+void test_call_request()
+{
+	blog(LOG_INFO, "[test_call_request] Testing obs-websocket plugin API request calling...");
+
+	struct obs_websocket_request_response *response = obs_websocket_call_request("GetVersion");
+	if (response) {
+		blog(LOG_INFO, "[test_call_request] Called GetVersion. Status Code: %u | Comment: %s | Response Data: %s",
+		     response->status_code, response->comment, response->response_data);
+		obs_websocket_request_response_free(response);
+	} else {
+		blog(LOG_ERROR, "[test_call_request] Failed to call GetVersion request via obs-websocket plugin API!");
+	}
+
+	blog(LOG_INFO, "[test_call_request] Test done.");
+}
+
+static void test_event_cb(uint64_t eventIntent, const char *eventType, const char *eventData, void *priv_data)
+{
+	blog(LOG_DEBUG, "[test_event_cb] New event! Type: %s | Data: %s", eventType, eventData);
+
+	UNUSED_PARAMETER(eventIntent);
+	UNUSED_PARAMETER(priv_data);
+}
+
+void test_register_event_callback()
+{
+	blog(LOG_INFO, "[test_register_event_callback] Registering test event callback...");
+
+	if (!obs_websocket_register_event_callback(test_event_cb, nullptr))
+		blog(LOG_ERROR, "[test_register_event_callback] Failed to register event callback!");
+
+	blog(LOG_INFO, "[test_register_event_callback] Test done.");
+}
 
 static void test_vendor_request_cb(obs_data_t *requestData, obs_data_t *responseData, void *priv_data)
 {
-	blog(LOG_INFO, "[test_vendor_request_cb] Request called!");
-
-	blog(LOG_INFO, "[test_vendor_request_cb] Request data: %s", obs_data_get_json(requestData));
+	blog(LOG_INFO, "[test_vendor_request_cb] Request called! Request data: %s", obs_data_get_json(requestData));
 
 	// Set an item to the response data
 	obs_data_set_string(responseData, "test", "pp");
@@ -245,34 +280,25 @@ static void test_vendor_request_cb(obs_data_t *requestData, obs_data_t *response
 
 void test_register_vendor()
 {
-	blog(LOG_INFO, "[test_register_vendor] Registering test vendor...");
+	blog(LOG_INFO, "[test_register_vendor] Testing vendor registration...");
 
 	// Test plugin API version fetch
 	uint apiVersion = obs_websocket_get_api_version();
 	blog(LOG_INFO, "[test_register_vendor] obs-websocket plugin API version: %u", apiVersion);
 
-	// Test calling obs-websocket requests
-	struct obs_websocket_request_response *response = obs_websocket_call_request("GetVersion");
-	if (response) {
-		blog(LOG_INFO, "[test_register_vendor] Called GetVersion. Status Code: %u | Comment: %s | Response Data: %s",
-		     response->status_code, response->comment, response->response_data);
-		obs_websocket_request_response_free(response);
-	}
-
 	// Test vendor creation
 	auto vendor = obs_websocket_register_vendor("obs-websocket-test");
 	if (!vendor) {
-		blog(LOG_WARNING, "[test_register_vendor] Failed to create vendor!");
+		blog(LOG_ERROR, "[test_register_vendor] Failed to create vendor!");
 		return;
 	}
 
 	// Test vendor request registration
 	if (!obs_websocket_vendor_register_request(vendor, "TestRequest", test_vendor_request_cb, vendor)) {
-		blog(LOG_WARNING, "[test_register_vendor] Failed to register vendor request!");
+		blog(LOG_ERROR, "[test_register_vendor] Failed to register vendor request!");
 		return;
 	}
 
-	blog(LOG_INFO, "[test_register_vendor] Post load completed.");
+	blog(LOG_INFO, "[test_register_vendor] Test done.");
 }
-
 #endif

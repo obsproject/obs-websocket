@@ -47,14 +47,19 @@ WebSocketApi::WebSocketApi()
 
 	proc_handler_add(_procHandler, "bool get_api_version(out int version)", &get_api_version, nullptr);
 	proc_handler_add(_procHandler, "bool call_request(in string request_type, in string request_data, out ptr response)",
-			 &call_request, nullptr);
-	proc_handler_add(_procHandler, "bool vendor_register(in string name, out ptr vendor)", &vendor_register_cb, this);
-	proc_handler_add(_procHandler, "bool vendor_request_register(in ptr vendor, in string type, in ptr callback)",
-			 &vendor_request_register_cb, this);
-	proc_handler_add(_procHandler, "bool vendor_request_unregister(in ptr vendor, in string type)",
-			 &vendor_request_unregister_cb, this);
-	proc_handler_add(_procHandler, "bool vendor_event_emit(in ptr vendor, in string type, in ptr data)", &vendor_event_emit_cb,
+			 &call_request, this);
+	proc_handler_add(_procHandler, "bool register_event_callback(in ptr callback, out bool success)", &register_event_callback,
 			 this);
+	proc_handler_add(_procHandler, "bool unregister_event_callback(in ptr callback, out bool success)",
+			 &unregister_event_callback, this);
+	proc_handler_add(_procHandler, "bool vendor_register(in string name, out ptr vendor)", &vendor_register_cb, this);
+	proc_handler_add(_procHandler,
+			 "bool vendor_request_register(in ptr vendor, in string type, in ptr callback, out bool success)",
+			 &vendor_request_register_cb, this);
+	proc_handler_add(_procHandler, "bool vendor_request_unregister(in ptr vendor, in string type, out bool success)",
+			 &vendor_request_unregister_cb, this);
+	proc_handler_add(_procHandler, "bool vendor_event_emit(in ptr vendor, in string type, in ptr data, out bool success)",
+			 &vendor_event_emit_cb, this);
 
 	proc_handler_t *ph = obs_get_proc_handler();
 	assert(ph != NULL);
@@ -70,6 +75,10 @@ WebSocketApi::~WebSocketApi()
 
 	proc_handler_destroy(_procHandler);
 
+	size_t numEventCallbacks = _eventCallbacks.size();
+	_eventCallbacks.clear();
+	blog_debug("[WebSocketApi::~WebSocketApi] Deleted %ld event callbacks", numEventCallbacks);
+
 	for (auto vendor : _vendors) {
 		blog_debug("[WebSocketApi::~WebSocketApi] Deleting vendor: %s", vendor.first.c_str());
 		delete vendor.second;
@@ -80,10 +89,19 @@ WebSocketApi::~WebSocketApi()
 
 void WebSocketApi::BroadcastEvent(uint64_t requiredIntent, const std::string &eventType, const json &eventData, uint8_t rpcVersion)
 {
-	UNUSED_PARAMETER(requiredIntent);
-	UNUSED_PARAMETER(eventType);
-	UNUSED_PARAMETER(eventData);
-	UNUSED_PARAMETER(rpcVersion);
+	if (!_obsReady)
+		return;
+
+	// Only broadcast events applicable to the latest RPC version
+	if (rpcVersion && rpcVersion != CURRENT_RPC_VERSION)
+		return;
+
+	std::string eventDataString = eventData.dump();
+
+	std::shared_lock l(_mutex);
+
+	for (auto &cb : _eventCallbacks)
+		cb.callback(requiredIntent, eventType.c_str(), eventDataString.c_str(), cb.priv_data);
 }
 
 enum WebSocketApi::RequestReturnCode WebSocketApi::PerformVendorRequest(std::string vendorName, std::string requestType,
@@ -128,13 +146,26 @@ void WebSocketApi::get_api_version(void *, calldata_t *cd)
 	RETURN_SUCCESS();
 }
 
-void WebSocketApi::call_request(void *, calldata_t *cd)
+void WebSocketApi::call_request(void *priv_data, calldata_t *cd)
 {
+	auto c = static_cast<WebSocketApi *>(priv_data);
+
+#if !defined(PLUGIN_TESTS)
+	if (!c->_obsReady)
+		RETURN_FAILURE();
+#endif
+
 	const char *request_type = calldata_string(cd, "request_type");
 	const char *request_data = calldata_string(cd, "request_data");
 
 	if (!request_type)
 		RETURN_FAILURE();
+
+#ifdef PLUGIN_TESTS
+	// Allow plugin tests to complete, even though OBS wouldn't be ready at the time of the test
+	if (!c->_obsReady && std::string(request_type) != "GetVersion")
+		RETURN_FAILURE();
+#endif
 
 	auto response = static_cast<obs_websocket_request_response *>(bzalloc(sizeof(struct obs_websocket_request_response)));
 	if (!response)
@@ -164,6 +195,52 @@ void WebSocketApi::call_request(void *, calldata_t *cd)
 	RETURN_SUCCESS();
 }
 
+void WebSocketApi::register_event_callback(void *priv_data, calldata_t *cd)
+{
+	auto c = static_cast<WebSocketApi *>(priv_data);
+
+	void *voidCallback;
+	if (!calldata_get_ptr(cd, "callback", &voidCallback) || !voidCallback) {
+		blog(LOG_WARNING, "[WebSocketApi::register_event_callback] Failed due to missing `callback` pointer.");
+		RETURN_FAILURE();
+	}
+
+	auto cb = static_cast<obs_websocket_event_callback *>(voidCallback);
+
+	std::unique_lock l(c->_mutex);
+
+	int64_t foundIndex = c->GetEventCallbackIndex(*cb);
+	if (foundIndex != -1)
+		RETURN_FAILURE();
+
+	c->_eventCallbacks.push_back(*cb);
+
+	RETURN_SUCCESS();
+}
+
+void WebSocketApi::unregister_event_callback(void *priv_data, calldata_t *cd)
+{
+	auto c = static_cast<WebSocketApi *>(priv_data);
+
+	void *voidCallback;
+	if (!calldata_get_ptr(cd, "callback", &voidCallback) || !voidCallback) {
+		blog(LOG_WARNING, "[WebSocketApi::register_event_callback] Failed due to missing `callback` pointer.");
+		RETURN_FAILURE();
+	}
+
+	auto cb = static_cast<obs_websocket_event_callback *>(voidCallback);
+
+	std::unique_lock l(c->_mutex);
+
+	int64_t foundIndex = c->GetEventCallbackIndex(*cb);
+	if (foundIndex == -1)
+		RETURN_FAILURE();
+
+	c->_eventCallbacks.erase(c->_eventCallbacks.begin() + foundIndex);
+
+	RETURN_SUCCESS();
+}
+
 void WebSocketApi::vendor_register_cb(void *priv_data, calldata_t *cd)
 {
 	auto c = static_cast<WebSocketApi *>(priv_data);
@@ -174,7 +251,7 @@ void WebSocketApi::vendor_register_cb(void *priv_data, calldata_t *cd)
 		RETURN_FAILURE();
 	}
 
-	// Theoretically doesn't need a mutex, but it's good to be safe.
+	// Theoretically doesn't need a mutex due to module load being single-thread, but it's good to be safe.
 	std::unique_lock l(c->_mutex);
 
 	if (c->_vendors.count(vendorName)) {
