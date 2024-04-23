@@ -17,8 +17,9 @@ You should have received a copy of the GNU General Public License along
 with this program. If not, see <https://www.gnu.org/licenses/>
 */
 
+#include <fstream>
+
 #include "Json.h"
-#include "Platform.h"
 #include "plugin-macros.generated.h"
 
 bool Utils::Json::JsonArrayIsValidObsArray(const json &j)
@@ -177,21 +178,28 @@ json Utils::Json::ObsDataToJson(obs_data_t *d, bool includeDefault)
 
 bool Utils::Json::GetJsonFileContent(std::string fileName, json &content)
 {
-	std::string textContent;
-	if (!Utils::Platform::GetTextFileContent(fileName, textContent))
+	std::ifstream f(fileName);
+	if (!f.is_open())
 		return false;
 
 	try {
-		content = json::parse(textContent);
+		content = json::parse(f);
 	} catch (json::parse_error &e) {
 		blog(LOG_WARNING, "Failed to decode content of JSON file `%s`. Error: %s", fileName.c_str(), e.what());
 		return false;
 	}
+
 	return true;
 }
 
-bool Utils::Json::SetJsonFileContent(std::string fileName, const json &content, bool createNew)
+bool Utils::Json::SetJsonFileContent(std::string fileName, const json &content)
 {
-	std::string textContent = content.dump(2);
-	return Utils::Platform::SetTextFileContent(fileName, textContent, createNew);
+	std::ofstream f(fileName);
+	if (!f.is_open())
+		return false;
+
+	// Set indent to 2 spaces, then dump content
+	f << std::setw(2) << content;
+
+	return true;
 }
