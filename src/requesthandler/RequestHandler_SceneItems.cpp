@@ -502,6 +502,13 @@ RequestResult RequestHandler::SetSceneItemTransform(const Request &request)
 		cropChanged = true;
 	}
 
+	if (r.Contains("cropToBounds")) {
+		if (!r.ValidateOptionalBoolean("cropToBounds", statusCode, comment))
+			return RequestResult::Error(statusCode, comment);
+		sceneItemTransform.crop_to_bounds = r.RequestData["cropToBounds"];
+		transformChanged = true;
+	}
+
 	if (!transformChanged && !cropChanged)
 		return RequestResult::Error(RequestStatus::CannotAct, "You have not provided any valid transform changes.");
 
