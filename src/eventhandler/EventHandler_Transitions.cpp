@@ -84,10 +84,11 @@ void SetToScene(json &eventData, obs_source_t *transition)
 /**
  * A scene transition has started.
  *
- * @dataField transitionName | String | Scene transition name
- * @dataField transitionUuid | String | Scene transition UUID
- * @dataField toScene | String | Scene that we transitioned to
- * @dataField fromScene | String | Scene that we transitioned away from
+ * @dataField transitionName     | String | Scene transition name
+ * @dataField transitionUuid     | String | Scene transition UUID
+ * @dataField transitionDuration | Number | Transition duration in milliseconds
+ * @dataField toScene            | String | Scene that we transitioned to
+ * @dataField fromScene          | String | Scene that we transitioned away from
  *
  * @eventType SceneTransitionStarted
  * @eventSubscription Transitions
@@ -120,9 +121,10 @@ void EventHandler::HandleSceneTransitionStarted(void *param, calldata_t *data)
  *
  * Note: Does not appear to trigger when the transition is interrupted by the user.
  *
- * @dataField transitionName | String | Scene transition name
- * @dataField transitionUuid | String | Scene transition UUID
- * @dataField toScene | String | Scene that we transitioned to
+ * @dataField transitionName     | String | Scene transition name
+ * @dataField transitionUuid     | String | Scene transition UUID
+ * @dataField transitionDuration | Number | Transition duration in milliseconds
+ * @dataField toScene            | String | Scene that we transitioned to
  *
  * @eventType SceneTransitionEnded
  * @eventSubscription Transitions
@@ -158,10 +160,11 @@ void EventHandler::HandleSceneTransitionEnded(void *param, calldata_t *data)
  *
  * Note: Appears to be called by every transition, regardless of relevance.
  *
- * @dataField transitionName | String | Scene transition name
- * @dataField transitionUuid | String | Scene transition UUID
- * @dataField toScene | String | Scene that we transitioned to
- * @dataField fromScene | String | Scene that we transitioned away from
+ * @dataField transitionName     | String | Scene transition name
+ * @dataField transitionUuid     | String | Scene transition UUID
+ * @dataField transitionDuration | Number | Transition duration in milliseconds
+ * @dataField toScene            | String | Scene that we transitioned to
+ * @dataField fromScene          | String | Scene that we transitioned away from
  *
  * @eventType SceneTransitionVideoEnded
  * @eventSubscription Transitions
