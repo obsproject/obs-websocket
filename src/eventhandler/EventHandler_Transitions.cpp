@@ -108,6 +108,7 @@ void EventHandler::HandleSceneTransitionStarted(void *param, calldata_t *data)
 	json eventData;
 	eventData["transitionName"] = obs_source_get_name(source);
 	eventData["transitionUuid"] = obs_source_get_uuid(source);
+	eventData["transitionDuration"] = obs_frontend_get_transition_duration();
 
 	SetFromAndToScene(eventData, source);
 
@@ -142,6 +143,7 @@ void EventHandler::HandleSceneTransitionEnded(void *param, calldata_t *data)
 	json eventData;
 	eventData["transitionName"] = obs_source_get_name(source);
 	eventData["transitionUuid"] = obs_source_get_uuid(source);
+	eventData["transitionDuration"] = obs_frontend_get_transition_duration();
 
 	SetToScene(eventData, source);
 
@@ -180,6 +182,7 @@ void EventHandler::HandleSceneTransitionVideoEnded(void *param, calldata_t *data
 	json eventData;
 	eventData["transitionName"] = obs_source_get_name(source);
 	eventData["transitionUuid"] = obs_source_get_uuid(source);
+	eventData["transitionDuration"] = obs_frontend_get_transition_duration();
 
 	SetFromAndToScene(eventData, source);
 
