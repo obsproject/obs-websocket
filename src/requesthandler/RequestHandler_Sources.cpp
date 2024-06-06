@@ -28,8 +28,8 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 QImage TakeSourceScreenshot(obs_source_t *source, bool &success, uint32_t requestedWidth = 0, uint32_t requestedHeight = 0)
 {
 	// Get info about the requested source
-	const uint32_t sourceWidth = obs_source_get_base_width(source);
-	const uint32_t sourceHeight = obs_source_get_base_height(source);
+	const uint32_t sourceWidth = obs_source_get_width(source);
+	const uint32_t sourceHeight = obs_source_get_height(source);
 	const double sourceAspectRatio = ((double)sourceWidth / (double)sourceHeight);
 
 	uint32_t imgWidth = sourceWidth;

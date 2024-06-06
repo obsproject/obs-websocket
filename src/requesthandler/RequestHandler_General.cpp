@@ -266,6 +266,7 @@ RequestResult RequestHandler::TriggerHotkeyByName(const Request &request)
 		return RequestResult::Error(RequestStatus::ResourceNotFound, "No hotkeys were found by that name.");
 
 	obs_hotkey_trigger_routed_callback(obs_hotkey_get_id(hotkey), true);
+	obs_hotkey_trigger_routed_callback(obs_hotkey_get_id(hotkey), false);
 
 	return RequestResult::Success();
 }

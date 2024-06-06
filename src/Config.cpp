@@ -49,14 +49,16 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 void Config::Load(json config)
 {
+	// Only load from plugin config directory if there hasn't been a migration
 	if (config.is_null()) {
 		std::string configFilePath = Utils::Obs::StringHelper::GetModuleConfigPath(CONFIG_FILE_NAME);
 		Utils::Json::GetJsonFileContent(configFilePath, config); // Fetch the existing config, which may not exist
 	}
 
-	// Should never happen, but just in case
-	if (!config.is_object())
-		return;
+	if (!config.is_object()) {
+		blog(LOG_INFO, "[Config::Load] Existing configuration not found, using defaults.");
+		config = json::object();
+	}
 
 	if (config.contains(PARAM_FIRSTLOAD) && config[PARAM_FIRSTLOAD].is_boolean())
 		FirstLoad = config[PARAM_FIRSTLOAD];
