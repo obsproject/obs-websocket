@@ -1548,6 +1548,7 @@ The output has been resumed (unpaused).
 - [Outputs Events](#outputs-events)
   - [StreamStateChanged](#streamstatechanged)
   - [RecordStateChanged](#recordstatechanged)
+  - [RecordFileChanged](#recordfilechanged)
   - [ReplayBufferStateChanged](#replaybufferstatechanged)
   - [VirtualcamStateChanged](#virtualcamstatechanged)
   - [ReplayBufferSaved](#replaybuffersaved)
@@ -2433,6 +2434,22 @@ The state of the record output has changed.
 
 ---
 
+### RecordFileChanged
+
+The record output has started writing to a new file. For example, when a file split happens.
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.5.0
+
+**Data Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| newOutputPath | String | File name that the output has begun writing to |
+
+---
+
 ### ReplayBufferStateChanged
 
 The state of the replay buffer output has changed.
@@ -2712,6 +2729,8 @@ communication is desired.
   - [ToggleRecordPause](#togglerecordpause)
   - [PauseRecord](#pauserecord)
   - [ResumeRecord](#resumerecord)
+  - [SplitRecordFile](#splitrecordfile)
+  - [CreateRecordChapter](#createrecordchapter)
 - [Media Inputs Requests](#media-inputs-1-requests)
   - [GetMediaInputStatus](#getmediainputstatus)
   - [SetMediaInputCursor](#setmediainputcursor)
@@ -5264,6 +5283,34 @@ Resumes the record output.
 - Complexity Rating: `1/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
+
+---
+
+### SplitRecordFile
+
+Splits the current file being recorded into a new file.
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.5.0
+
+---
+
+### CreateRecordChapter
+
+Adds a new chapter marker to the file currently being recorded.
+
+Note: As of OBS 30.2.0, the only file format supporting this feature is Hybrid MP4.
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.5.0
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| ?chapterName | String | Name of the new chapter | None | Unknown |
 
 ## Media Inputs Requests
 

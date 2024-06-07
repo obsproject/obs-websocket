@@ -3473,6 +3473,37 @@
       "responseFields": []
     },
     {
+      "description": "Splits the current file being recorded into a new file.",
+      "requestType": "SplitRecordFile",
+      "complexity": 2,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.5.0",
+      "category": "record",
+      "requestFields": [],
+      "responseFields": []
+    },
+    {
+      "description": "Adds a new chapter marker to the file currently being recorded.\n\nNote: As of OBS 30.2.0, the only file format supporting this feature is Hybrid MP4.",
+      "requestType": "CreateRecordChapter",
+      "complexity": 2,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.5.0",
+      "category": "record",
+      "requestFields": [
+        {
+          "valueName": "chapterName",
+          "valueType": "String",
+          "valueDescription": "Name of the new chapter",
+          "valueRestrictions": null,
+          "valueOptional": true,
+          "valueOptionalBehavior": "Unknown"
+        }
+      ],
+      "responseFields": []
+    },
+    {
       "description": "Gets a list of all scene items in a scene.\n\nScenes only",
       "requestType": "GetSceneItemList",
       "complexity": 3,
@@ -6043,6 +6074,23 @@
           "valueName": "outputPath",
           "valueType": "String",
           "valueDescription": "File name for the saved recording, if record stopped. `null` otherwise"
+        }
+      ]
+    },
+    {
+      "description": "The record output has started writing to a new file. For example, when a file split happens.",
+      "eventType": "RecordFileChanged",
+      "eventSubscription": "Outputs",
+      "complexity": 2,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.5.0",
+      "category": "outputs",
+      "dataFields": [
+        {
+          "valueName": "newOutputPath",
+          "valueType": "String",
+          "valueDescription": "File name that the output has begun writing to"
         }
       ]
     },
