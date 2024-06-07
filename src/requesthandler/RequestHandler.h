@@ -197,6 +197,7 @@ private:
 	RequestResult PauseRecord(const Request &);
 	RequestResult ResumeRecord(const Request &);
 	RequestResult SplitRecordFile(const Request &);
+	RequestResult CreateRecordChapter(const Request &);
 
 	// Media Inputs
 	RequestResult GetMediaInputStatus(const Request &);

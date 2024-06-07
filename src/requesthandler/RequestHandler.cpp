@@ -178,6 +178,7 @@ const std::unordered_map<std::string, RequestMethodHandler> RequestHandler::_han
 	{"PauseRecord", &RequestHandler::PauseRecord},
 	{"ResumeRecord", &RequestHandler::ResumeRecord},
 	{"SplitRecordFile", &RequestHandler::SplitRecordFile},
+	{"CreateRecordChapter", &RequestHandler::CreateRecordChapter},
 
 	// Media Inputs
 	{"GetMediaInputStatus", &RequestHandler::GetMediaInputStatus},
