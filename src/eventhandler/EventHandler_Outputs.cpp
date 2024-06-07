@@ -88,6 +88,28 @@ void EventHandler::HandleRecordStateChanged(ObsOutputState state)
 }
 
 /**
+ * The record output has started writing to a new file. For example, when a file split happens.
+ *
+ * @dataField newOutputPath | String | File name that the output has begun writing to
+ *
+ * @eventType RecordFileChanged
+ * @eventSubscription Outputs
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.5.0
+ * @api events
+ * @category outputs
+ */
+void EventHandler::HandleRecordFileChanged(void *param, calldata_t *data)
+{
+	auto eventHandler = static_cast<EventHandler *>(param);
+
+	json eventData;
+	eventData["newOutputPath"] = calldata_string(data, "next_file");
+	eventHandler->BroadcastEvent(EventSubscription::Outputs, "RecordFileChanged", eventData);
+}
+
+/**
  * The state of the replay buffer output has changed.
  *
  * @dataField outputActive | Boolean | Whether the output is active

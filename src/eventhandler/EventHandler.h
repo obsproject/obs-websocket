@@ -51,6 +51,9 @@ private:
 
 	std::atomic<bool> _obsReady = false;
 
+	std::vector<OBSSignal> coreSignals;
+	OBSSignal recordFileChangedSignal;
+
 	std::unique_ptr<Utils::Obs::VolumeMeter::Handler> _inputVolumeMetersHandler;
 	std::atomic<uint64_t> _inputVolumeMetersRef = 0;
 	std::atomic<uint64_t> _inputActiveStateChangedRef = 0;
@@ -155,6 +158,7 @@ private:
 	// Outputs
 	void HandleStreamStateChanged(ObsOutputState state);
 	void HandleRecordStateChanged(ObsOutputState state);
+	static void HandleRecordFileChanged(void *param, calldata_t *data); // Direct callback
 	void HandleReplayBufferStateChanged(ObsOutputState state);
 	void HandleVirtualcamStateChanged(ObsOutputState state);
 	void HandleReplayBufferSaved();

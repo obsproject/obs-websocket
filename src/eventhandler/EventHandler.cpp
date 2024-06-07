@@ -27,11 +27,11 @@ EventHandler::EventHandler()
 
 	signal_handler_t *coreSignalHandler = obs_get_signal_handler();
 	if (coreSignalHandler) {
-		signal_handler_connect(coreSignalHandler, "source_create", SourceCreatedMultiHandler, this);
-		signal_handler_connect(coreSignalHandler, "source_destroy", SourceDestroyedMultiHandler, this);
-		signal_handler_connect(coreSignalHandler, "source_remove", SourceRemovedMultiHandler, this);
-		signal_handler_connect(coreSignalHandler, "source_rename", SourceRenamedMultiHandler, this);
-		signal_handler_connect(coreSignalHandler, "source_update", SourceUpdatedMultiHandler, this);
+		coreSignals.emplace_back(coreSignalHandler, "source_create", SourceCreatedMultiHandler, this);
+		coreSignals.emplace_back(coreSignalHandler, "source_destroy", SourceDestroyedMultiHandler, this);
+		coreSignals.emplace_back(coreSignalHandler, "source_remove", SourceRemovedMultiHandler, this);
+		coreSignals.emplace_back(coreSignalHandler, "source_rename", SourceRenamedMultiHandler, this);
+		coreSignals.emplace_back(coreSignalHandler, "source_update", SourceUpdatedMultiHandler, this);
 	} else {
 		blog(LOG_ERROR, "[EventHandler::EventHandler] Unable to get libobs signal handler!");
 	}
@@ -45,16 +45,7 @@ EventHandler::~EventHandler()
 
 	obs_frontend_remove_event_callback(OnFrontendEvent, this);
 
-	signal_handler_t *coreSignalHandler = obs_get_signal_handler();
-	if (coreSignalHandler) {
-		signal_handler_disconnect(coreSignalHandler, "source_create", SourceCreatedMultiHandler, this);
-		signal_handler_disconnect(coreSignalHandler, "source_destroy", SourceDestroyedMultiHandler, this);
-		signal_handler_disconnect(coreSignalHandler, "source_remove", SourceRemovedMultiHandler, this);
-		signal_handler_disconnect(coreSignalHandler, "source_rename", SourceRenamedMultiHandler, this);
-		signal_handler_disconnect(coreSignalHandler, "source_update", SourceUpdatedMultiHandler, this);
-	} else {
-		blog(LOG_ERROR, "[EventHandler::~EventHandler] Unable to get libobs signal handler!");
-	}
+	coreSignals.clear();
 
 	// Revoke callbacks of all inputs and scenes, in case some still have our callbacks attached
 	auto enumInputs = [](void *param, obs_source_t *source) {
@@ -378,12 +369,21 @@ void EventHandler::OnFrontendEvent(enum obs_frontend_event event, void *private_
 		break;
 	case OBS_FRONTEND_EVENT_RECORDING_STARTED:
 		eventHandler->HandleRecordStateChanged(OBS_WEBSOCKET_OUTPUT_STARTED);
+		{
+			OBSOutputAutoRelease recordOutput = obs_frontend_get_recording_output();
+			if (recordOutput) {
+				signal_handler_t *sh = obs_output_get_signal_handler(recordOutput);
+				eventHandler->recordFileChangedSignal.Connect(sh, "file_changed", HandleRecordFileChanged,
+									      private_data);
+			}
+		}
 		break;
 	case OBS_FRONTEND_EVENT_RECORDING_STOPPING:
 		eventHandler->HandleRecordStateChanged(OBS_WEBSOCKET_OUTPUT_STOPPING);
 		break;
 	case OBS_FRONTEND_EVENT_RECORDING_STOPPED:
 		eventHandler->HandleRecordStateChanged(OBS_WEBSOCKET_OUTPUT_STOPPED);
+		eventHandler->recordFileChangedSignal.Disconnect();
 		break;
 	case OBS_FRONTEND_EVENT_RECORDING_PAUSED:
 		eventHandler->HandleRecordStateChanged(OBS_WEBSOCKET_OUTPUT_PAUSED);
