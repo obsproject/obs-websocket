@@ -189,3 +189,25 @@ RequestResult RequestHandler::ResumeRecord(const Request &)
 
 	return RequestResult::Success();
 }
+
+/**
+ * Splits the current file being recorded into a new file.
+ *
+ * @requestType SplitRecordFile
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.5.0
+ * @api requests
+ * @category record
+ */
+RequestResult RequestHandler::SplitRecordFile(const Request &)
+{
+	if (!obs_frontend_recording_active())
+		return RequestResult::Error(RequestStatus::OutputNotRunning);
+
+	if (!obs_frontend_recording_split_file())
+		return RequestResult::Error(RequestStatus::RequestProcessingFailed,
+					    "Verify that file splitting is enabled in the output settings.");
+
+	return RequestResult::Success();
+}
