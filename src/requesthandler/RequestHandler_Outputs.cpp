@@ -21,11 +21,8 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 static bool VirtualCamAvailable()
 {
-	OBSDataAutoRelease privateData = obs_get_private_data();
-	if (!privateData)
-		return false;
-
-	return obs_data_get_bool(privateData, "vcamEnabled");
+	OBSOutputAutoRelease output = obs_frontend_get_virtualcam_output();
+	return output != nullptr;
 }
 
 static bool ReplayBufferAvailable()
