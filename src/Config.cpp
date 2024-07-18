@@ -87,6 +87,10 @@ void Config::Load(json config)
 		Save();
 	}
 
+	// If there are migrated settings, write them to disk before processing arguments.
+	if (!config.empty())
+		Save();
+
 	// Process `--websocket_port` override
 	QString portArgument = Utils::Platform::GetCommandLineArgument(CMDLINE_WEBSOCKET_PORT);
 	if (portArgument != "") {
@@ -141,7 +145,9 @@ void Config::Save()
 		config[PARAM_PASSWORD] = ServerPassword;
 	}
 
-	if (!Utils::Json::SetJsonFileContent(configFilePath, config))
+	if (Utils::Json::SetJsonFileContent(configFilePath, config))
+		blog(LOG_DEBUG, "[Config::Save] Saved config.");
+	else
 		blog(LOG_ERROR, "[Config::Save] Failed to write config file!");
 }
 
