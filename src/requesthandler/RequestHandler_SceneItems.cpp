@@ -440,7 +440,7 @@ RequestResult RequestHandler::SetSceneItemTransform(const Request &request)
 	}
 
 	if (r.Contains("alignment")) {
-		if (!r.ValidateOptionalNumber("alignment", statusCode, comment, 0, std::numeric_limits<uint32_t>::max()))
+		if (!r.ValidateOptionalNumber("alignment", statusCode, comment, 0, (std::numeric_limits<uint32_t>::max)()))
 			return RequestResult::Error(statusCode, comment);
 		sceneItemTransform.alignment = r.RequestData["alignment"];
 		transformChanged = true;
@@ -458,7 +458,7 @@ RequestResult RequestHandler::SetSceneItemTransform(const Request &request)
 	}
 
 	if (r.Contains("boundsAlignment")) {
-		if (!r.ValidateOptionalNumber("boundsAlignment", statusCode, comment, 0, std::numeric_limits<uint32_t>::max()))
+		if (!r.ValidateOptionalNumber("boundsAlignment", statusCode, comment, 0, (std::numeric_limits<uint32_t>::max)()))
 			return RequestResult::Error(statusCode, comment);
 		sceneItemTransform.bounds_alignment = r.RequestData["boundsAlignment"];
 		transformChanged = true;
