@@ -144,6 +144,7 @@ target_compile_options(
           $<$<COMPILE_LANG_AND_ID:CXX,GNU>:-Wno-error=format-overflow>
           $<$<COMPILE_LANG_AND_ID:CXX,GNU>:-Wno-error=int-conversion>
           $<$<COMPILE_LANG_AND_ID:CXX,GNU>:-Wno-error=comment>
+          $<$<COMPILE_LANG_AND_ID:CXX,GNU>:-Wno-error=deprecated-declarations>
           $<$<COMPILE_LANG_AND_ID:CXX,AppleClang,Clang>:-Wno-error=null-pointer-subtraction>
           $<$<COMPILE_LANG_AND_ID:CXX,AppleClang,Clang>:-Wno-error=deprecated-declarations>
           $<$<COMPILE_LANG_AND_ID:CXX,AppleClang,Clang>:-Wno-error=implicit-int-conversion>
