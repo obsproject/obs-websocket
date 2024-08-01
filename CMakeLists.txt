@@ -138,6 +138,7 @@ target_compile_definitions(
 target_compile_options(
   obs-websocket
   PRIVATE $<$<PLATFORM_ID:Windows>:/wd4267>
+          $<$<PLATFORM_ID:Windows>:/wd4996>
           $<$<COMPILE_LANG_AND_ID:CXX,GNU,AppleClang,Clang>:-Wall>
           $<$<COMPILE_LANG_AND_ID:CXX,GNU,AppleClang,Clang>:-Wno-error=float-conversion>
           $<$<COMPILE_LANG_AND_ID:CXX,GNU,AppleClang,Clang>:-Wno-error=shadow>
