@@ -49,14 +49,16 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 void Config::Load(json config)
 {
+	// Only load from plugin config directory if there hasn't been a migration
 	if (config.is_null()) {
 		std::string configFilePath = Utils::Obs::StringHelper::GetModuleConfigPath(CONFIG_FILE_NAME);
 		Utils::Json::GetJsonFileContent(configFilePath, config); // Fetch the existing config, which may not exist
 	}
 
-	// Should never happen, but just in case
-	if (!config.is_object())
-		return;
+	if (!config.is_object()) {
+		blog(LOG_INFO, "[Config::Load] Existing configuration not found, using defaults.");
+		config = json::object();
+	}
 
 	if (config.contains(PARAM_FIRSTLOAD) && config[PARAM_FIRSTLOAD].is_boolean())
 		FirstLoad = config[PARAM_FIRSTLOAD];
@@ -84,6 +86,10 @@ void Config::Load(json config)
 		}
 		Save();
 	}
+
+	// If there are migrated settings, write them to disk before processing arguments.
+	if (!config.empty())
+		Save();
 
 	// Process `--websocket_port` override
 	QString portArgument = Utils::Platform::GetCommandLineArgument(CMDLINE_WEBSOCKET_PORT);
@@ -139,7 +145,9 @@ void Config::Save()
 		config[PARAM_PASSWORD] = ServerPassword;
 	}
 
-	if (!Utils::Json::SetJsonFileContent(configFilePath, config))
+	if (Utils::Json::SetJsonFileContent(configFilePath, config))
+		blog(LOG_DEBUG, "[Config::Save] Saved config.");
+	else
 		blog(LOG_ERROR, "[Config::Save] Failed to write config file!");
 }
 
@@ -191,7 +199,7 @@ bool MigratePersistentData()
 	std::error_code ec;
 
 	// Ensure module config directory exists
-	std::string moduleConfigDirectory = Utils::Obs::StringHelper::GetModuleConfigPath("");
+	auto moduleConfigDirectory = std::filesystem::u8path(Utils::Obs::StringHelper::GetModuleConfigPath(""));
 	if (!std::filesystem::exists(moduleConfigDirectory, ec))
 		std::filesystem::create_directories(moduleConfigDirectory, ec);
 	if (ec) {
@@ -201,10 +209,11 @@ bool MigratePersistentData()
 	}
 
 	// Move any existing persistent data to module config directory, then delete old file
-	std::string oldPersistentDataPath =
-		Utils::Obs::StringHelper::GetCurrentProfilePath() + "/../../../obsWebSocketPersistentData.json";
+	auto oldPersistentDataPath = std::filesystem::u8path(Utils::Obs::StringHelper::GetCurrentProfilePath() +
+							     "/../../../obsWebSocketPersistentData.json");
 	if (std::filesystem::exists(oldPersistentDataPath, ec)) {
-		std::string persistentDataPath = Utils::Obs::StringHelper::GetModuleConfigPath("persistent_data.json");
+		auto persistentDataPath =
+			std::filesystem::u8path(Utils::Obs::StringHelper::GetModuleConfigPath("persistent_data.json"));
 		std::filesystem::copy_file(oldPersistentDataPath, persistentDataPath, ec);
 		std::filesystem::remove(oldPersistentDataPath, ec);
 		blog(LOG_INFO, "[MigratePersistentData] Persistent data migrated to new path");

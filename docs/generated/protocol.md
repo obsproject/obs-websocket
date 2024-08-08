@@ -1336,7 +1336,6 @@ No action.
 
 - Identifier Value: `OBS_WEBSOCKET_MEDIA_INPUT_ACTION_NONE`
 - Latest Supported RPC Version: `1`
-- **⚠️ Deprecated. ⚠️**
 - Added in v5.0.0
 
 ---
@@ -1347,7 +1346,6 @@ Play the media input.
 
 - Identifier Value: `OBS_WEBSOCKET_MEDIA_INPUT_ACTION_PLAY`
 - Latest Supported RPC Version: `1`
-- **⚠️ Deprecated. ⚠️**
 - Added in v5.0.0
 
 ---
@@ -1358,7 +1356,6 @@ Pause the media input.
 
 - Identifier Value: `OBS_WEBSOCKET_MEDIA_INPUT_ACTION_PAUSE`
 - Latest Supported RPC Version: `1`
-- **⚠️ Deprecated. ⚠️**
 - Added in v5.0.0
 
 ---
@@ -1369,7 +1366,6 @@ Stop the media input.
 
 - Identifier Value: `OBS_WEBSOCKET_MEDIA_INPUT_ACTION_STOP`
 - Latest Supported RPC Version: `1`
-- **⚠️ Deprecated. ⚠️**
 - Added in v5.0.0
 
 ---
@@ -1380,7 +1376,6 @@ Restart the media input.
 
 - Identifier Value: `OBS_WEBSOCKET_MEDIA_INPUT_ACTION_RESTART`
 - Latest Supported RPC Version: `1`
-- **⚠️ Deprecated. ⚠️**
 - Added in v5.0.0
 
 ---
@@ -1391,7 +1386,6 @@ Go to the next playlist item.
 
 - Identifier Value: `OBS_WEBSOCKET_MEDIA_INPUT_ACTION_NEXT`
 - Latest Supported RPC Version: `1`
-- **⚠️ Deprecated. ⚠️**
 - Added in v5.0.0
 
 ---
@@ -1402,7 +1396,6 @@ Go to the previous playlist item.
 
 - Identifier Value: `OBS_WEBSOCKET_MEDIA_INPUT_ACTION_PREVIOUS`
 - Latest Supported RPC Version: `1`
-- **⚠️ Deprecated. ⚠️**
 - Added in v5.0.0
 
 ## ObsOutputState
@@ -1413,7 +1406,6 @@ Unknown state.
 
 - Identifier Value: `OBS_WEBSOCKET_OUTPUT_UNKNOWN`
 - Latest Supported RPC Version: `1`
-- **⚠️ Deprecated. ⚠️**
 - Added in v5.0.0
 
 ---
@@ -1424,7 +1416,6 @@ The output is starting.
 
 - Identifier Value: `OBS_WEBSOCKET_OUTPUT_STARTING`
 - Latest Supported RPC Version: `1`
-- **⚠️ Deprecated. ⚠️**
 - Added in v5.0.0
 
 ---
@@ -1435,7 +1426,6 @@ The input has started.
 
 - Identifier Value: `OBS_WEBSOCKET_OUTPUT_STARTED`
 - Latest Supported RPC Version: `1`
-- **⚠️ Deprecated. ⚠️**
 - Added in v5.0.0
 
 ---
@@ -1446,7 +1436,6 @@ The output is stopping.
 
 - Identifier Value: `OBS_WEBSOCKET_OUTPUT_STOPPING`
 - Latest Supported RPC Version: `1`
-- **⚠️ Deprecated. ⚠️**
 - Added in v5.0.0
 
 ---
@@ -1457,7 +1446,6 @@ The output has stopped.
 
 - Identifier Value: `OBS_WEBSOCKET_OUTPUT_STOPPED`
 - Latest Supported RPC Version: `1`
-- **⚠️ Deprecated. ⚠️**
 - Added in v5.0.0
 
 ---
@@ -1468,7 +1456,6 @@ The output has disconnected and is reconnecting.
 
 - Identifier Value: `OBS_WEBSOCKET_OUTPUT_RECONNECTING`
 - Latest Supported RPC Version: `1`
-- **⚠️ Deprecated. ⚠️**
 - Added in v5.0.0
 
 ---
@@ -1479,7 +1466,6 @@ The output has reconnected successfully.
 
 - Identifier Value: `OBS_WEBSOCKET_OUTPUT_RECONNECTED`
 - Latest Supported RPC Version: `1`
-- **⚠️ Deprecated. ⚠️**
 - Added in v5.1.0
 
 ---
@@ -1490,7 +1476,6 @@ The output is now paused.
 
 - Identifier Value: `OBS_WEBSOCKET_OUTPUT_PAUSED`
 - Latest Supported RPC Version: `1`
-- **⚠️ Deprecated. ⚠️**
 - Added in v5.1.0
 
 ---
@@ -1501,7 +1486,6 @@ The output has been resumed (unpaused).
 
 - Identifier Value: `OBS_WEBSOCKET_OUTPUT_RESUMED`
 - Latest Supported RPC Version: `1`
-- **⚠️ Deprecated. ⚠️**
 - Added in v5.0.0
 
 # Events
@@ -1564,6 +1548,7 @@ The output has been resumed (unpaused).
 - [Outputs Events](#outputs-events)
   - [StreamStateChanged](#streamstatechanged)
   - [RecordStateChanged](#recordstatechanged)
+  - [RecordFileChanged](#recordfilechanged)
   - [ReplayBufferStateChanged](#replaybufferstatechanged)
   - [VirtualcamStateChanged](#virtualcamstatechanged)
   - [ReplayBufferSaved](#replaybuffersaved)
@@ -2449,6 +2434,22 @@ The state of the record output has changed.
 
 ---
 
+### RecordFileChanged
+
+The record output has started writing to a new file. For example, when a file split happens.
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.5.0
+
+**Data Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| newOutputPath | String | File name that the output has begun writing to |
+
+---
+
 ### ReplayBufferStateChanged
 
 The state of the replay buffer output has changed.
@@ -2728,6 +2729,8 @@ communication is desired.
   - [ToggleRecordPause](#togglerecordpause)
   - [PauseRecord](#pauserecord)
   - [ResumeRecord](#resumerecord)
+  - [SplitRecordFile](#splitrecordfile)
+  - [CreateRecordChapter](#createrecordchapter)
 - [Media Inputs Requests](#media-inputs-1-requests)
   - [GetMediaInputStatus](#getmediainputstatus)
   - [SetMediaInputCursor](#setmediainputcursor)
@@ -5280,6 +5283,34 @@ Resumes the record output.
 - Complexity Rating: `1/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.0.0
+
+---
+
+### SplitRecordFile
+
+Splits the current file being recorded into a new file.
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.5.0
+
+---
+
+### CreateRecordChapter
+
+Adds a new chapter marker to the file currently being recorded.
+
+Note: As of OBS 30.2.0, the only file format supporting this feature is Hybrid MP4.
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.5.0
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| ?chapterName | String | Name of the new chapter | None | Unknown |
 
 ## Media Inputs Requests
 

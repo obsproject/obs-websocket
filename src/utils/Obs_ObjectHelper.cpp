@@ -83,5 +83,7 @@ json Utils::Obs::ObjectHelper::GetSceneItemTransform(obs_sceneitem_t *item)
 	ret["cropTop"] = (int)crop.top;
 	ret["cropBottom"] = (int)crop.bottom;
 
+	ret["cropToBounds"] = osi.crop_to_bounds;
+
 	return ret;
 }

@@ -189,3 +189,60 @@ RequestResult RequestHandler::ResumeRecord(const Request &)
 
 	return RequestResult::Success();
 }
+
+/**
+ * Splits the current file being recorded into a new file.
+ *
+ * @requestType SplitRecordFile
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.5.0
+ * @api requests
+ * @category record
+ */
+RequestResult RequestHandler::SplitRecordFile(const Request &)
+{
+	if (!obs_frontend_recording_active())
+		return RequestResult::Error(RequestStatus::OutputNotRunning);
+
+	if (!obs_frontend_recording_split_file())
+		return RequestResult::Error(RequestStatus::RequestProcessingFailed,
+					    "Verify that file splitting is enabled in the output settings.");
+
+	return RequestResult::Success();
+}
+
+/**
+ * Adds a new chapter marker to the file currently being recorded.
+ *
+ * Note: As of OBS 30.2.0, the only file format supporting this feature is Hybrid MP4.
+ *
+ * @requestField ?chapterName | String | Name of the new chapter
+ *
+ * @requestType CreateRecordChapter
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.5.0
+ * @api requests
+ * @category record
+ */
+RequestResult RequestHandler::CreateRecordChapter(const Request &request)
+{
+	std::string chapterName;
+	if (request.Contains("chapterName")) {
+		RequestStatus::RequestStatus statusCode;
+		std::string comment;
+		if (!request.ValidateOptionalString("chapterName", statusCode, comment))
+			return RequestResult::Error(statusCode, comment);
+		chapterName = request.RequestData["chapterName"];
+	}
+
+	if (!obs_frontend_recording_active())
+		return RequestResult::Error(RequestStatus::OutputNotRunning);
+
+	if (!obs_frontend_recording_add_chapter(chapterName.empty() ? nullptr : chapterName.c_str()))
+		return RequestResult::Error(RequestStatus::RequestProcessingFailed,
+					    "Verify that the output being used supports chapter markers.");
+
+	return RequestResult::Success();
+}
