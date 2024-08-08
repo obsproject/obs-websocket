@@ -63,11 +63,32 @@ void EventHandler::HandleCurrentSceneTransitionDurationChanged()
 	BroadcastEvent(EventSubscription::Transitions, "CurrentSceneTransitionDurationChanged", eventData);
 }
 
+void SetFromAndToScene(json &eventData, obs_source_t *transition)
+{
+	OBSSourceAutoRelease sourceScene = obs_transition_get_source(transition, OBS_TRANSITION_SOURCE_A);
+	OBSSourceAutoRelease destinationScene = obs_transition_get_source(transition, OBS_TRANSITION_SOURCE_B);
+
+	eventData["fromScene"] = obs_source_get_name(sourceScene);
+	eventData["toScene"] = obs_source_get_name(destinationScene);
+}
+
+// FIXME: OBS bug causes source B to be null for transition end but not video transition end.
+// Needs to be fixed in obs itself
+void SetToScene(json &eventData, obs_source_t *transition)
+{
+	OBSSourceAutoRelease sourceScene = obs_transition_get_source(transition, OBS_TRANSITION_SOURCE_A);
+
+	eventData["toScene"] = obs_source_get_name(sourceScene);
+}
+
 /**
  * A scene transition has started.
  *
- * @dataField transitionName | String | Scene transition name
- * @dataField transitionUuid | String | Scene transition UUID
+ * @dataField transitionName     | String | Scene transition name
+ * @dataField transitionUuid     | String | Scene transition UUID
+ * @dataField transitionDuration | Number | Transition duration in milliseconds
+ * @dataField toScene            | String | Scene that we transitioned to
+ * @dataField fromScene          | String | Scene that we transitioned away from
  *
  * @eventType SceneTransitionStarted
  * @eventSubscription Transitions
@@ -88,6 +109,10 @@ void EventHandler::HandleSceneTransitionStarted(void *param, calldata_t *data)
 	json eventData;
 	eventData["transitionName"] = obs_source_get_name(source);
 	eventData["transitionUuid"] = obs_source_get_uuid(source);
+	eventData["transitionDuration"] = obs_frontend_get_transition_duration();
+
+	SetFromAndToScene(eventData, source);
+
 	eventHandler->BroadcastEvent(EventSubscription::Transitions, "SceneTransitionStarted", eventData);
 }
 
@@ -96,8 +121,10 @@ void EventHandler::HandleSceneTransitionStarted(void *param, calldata_t *data)
  *
  * Note: Does not appear to trigger when the transition is interrupted by the user.
  *
- * @dataField transitionName | String | Scene transition name
- * @dataField transitionUuid | String | Scene transition UUID
+ * @dataField transitionName     | String | Scene transition name
+ * @dataField transitionUuid     | String | Scene transition UUID
+ * @dataField transitionDuration | Number | Transition duration in milliseconds
+ * @dataField toScene            | String | Scene that we transitioned to
  *
  * @eventType SceneTransitionEnded
  * @eventSubscription Transitions
@@ -118,6 +145,10 @@ void EventHandler::HandleSceneTransitionEnded(void *param, calldata_t *data)
 	json eventData;
 	eventData["transitionName"] = obs_source_get_name(source);
 	eventData["transitionUuid"] = obs_source_get_uuid(source);
+	eventData["transitionDuration"] = obs_frontend_get_transition_duration();
+
+	SetToScene(eventData, source);
+
 	eventHandler->BroadcastEvent(EventSubscription::Transitions, "SceneTransitionEnded", eventData);
 }
 
@@ -129,8 +160,11 @@ void EventHandler::HandleSceneTransitionEnded(void *param, calldata_t *data)
  *
  * Note: Appears to be called by every transition, regardless of relevance.
  *
- * @dataField transitionName | String | Scene transition name
- * @dataField transitionUuid | String | Scene transition UUID
+ * @dataField transitionName     | String | Scene transition name
+ * @dataField transitionUuid     | String | Scene transition UUID
+ * @dataField transitionDuration | Number | Transition duration in milliseconds
+ * @dataField toScene            | String | Scene that we transitioned to
+ * @dataField fromScene          | String | Scene that we transitioned away from
  *
  * @eventType SceneTransitionVideoEnded
  * @eventSubscription Transitions
@@ -151,5 +185,9 @@ void EventHandler::HandleSceneTransitionVideoEnded(void *param, calldata_t *data
 	json eventData;
 	eventData["transitionName"] = obs_source_get_name(source);
 	eventData["transitionUuid"] = obs_source_get_uuid(source);
+	eventData["transitionDuration"] = obs_frontend_get_transition_duration();
+
+	SetFromAndToScene(eventData, source);
+
 	eventHandler->BroadcastEvent(EventSubscription::Transitions, "SceneTransitionVideoEnded", eventData);
 }
