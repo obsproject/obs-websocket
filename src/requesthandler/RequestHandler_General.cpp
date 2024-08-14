@@ -68,17 +68,17 @@ RequestResult RequestHandler::GetVersion(const Request &)
 /**
  * Gets statistics about OBS, obs-websocket, and the current session.
  *
- * @responseField cpuUsage                         | Number | Current CPU usage in percent
- * @responseField memoryUsage                      | Number | Amount of memory in MB currently being used by OBS
- * @responseField availableDiskSpace               | Number | Available disk space on the device being used for recording storage
- * @responseField activeFps                        | Number | Current FPS being rendered
- * @responseField averageFrameRenderTime           | Number | Average time in milliseconds that OBS is taking to render a frame
- * @responseField renderSkippedFrames              | Number | Number of frames skipped by OBS in the render thread
- * @responseField renderTotalFrames                | Number | Total number of frames outputted by the render thread
- * @responseField outputSkippedFrames              | Number | Number of frames skipped by OBS in the output thread
- * @responseField outputTotalFrames                | Number | Total number of frames outputted by the output thread
- * @responseField webSocketSessionIncomingMessages | Number | Total number of messages received by obs-websocket from the client
- * @responseField webSocketSessionOutgoingMessages | Number | Total number of messages sent by obs-websocket to the client
+ * @responseField cpuUsage                         | Number(double) | Current CPU usage in percent
+ * @responseField memoryUsage                      | Number(double) | Amount of memory in MB currently being used by OBS
+ * @responseField availableDiskSpace               | Number(double) | Available disk space on the device being used for recording storage
+ * @responseField activeFps                        | Number(double) | Current FPS being rendered
+ * @responseField averageFrameRenderTime           | Number(double) | Average time in milliseconds that OBS is taking to render a frame
+ * @responseField renderSkippedFrames              | Number(uint32) | Number of frames skipped by OBS in the render thread
+ * @responseField renderTotalFrames                | Number(uint32) | Total number of frames outputted by the render thread
+ * @responseField outputSkippedFrames              | Number(uint32) | Number of frames skipped by OBS in the output thread
+ * @responseField outputTotalFrames                | Number(uint32) | Total number of frames outputted by the output thread
+ * @responseField webSocketSessionIncomingMessages | Number(uint64) | Total number of messages received by obs-websocket from the client
+ * @responseField webSocketSessionOutgoingMessages | Number(uint64) | Total number of messages sent by obs-websocket to the client
  *
  * @requestType GetStats
  * @complexity 2
@@ -341,8 +341,8 @@ RequestResult RequestHandler::TriggerHotkeyByKeySequence(const Request &request)
 /**
  * Sleeps for a time duration or number of frames. Only available in request batches with types `SERIAL_REALTIME` or `SERIAL_FRAME`.
  *
- * @requestField ?sleepMillis | Number | Number of milliseconds to sleep for (if `SERIAL_REALTIME` mode) | >= 0, <= 50000
- * @requestField ?sleepFrames | Number | Number of frames to sleep for (if `SERIAL_FRAME` mode) | >= 0, <= 10000
+ * @requestField ?sleepMillis | Number(int64) | Number of milliseconds to sleep for (if `SERIAL_REALTIME` mode) | >= 0, <= 50000
+ * @requestField ?sleepFrames | Number(int64) | Number of frames to sleep for (if `SERIAL_FRAME` mode) | >= 0, <= 10000
  *
  * @requestType Sleep
  * @complexity 2

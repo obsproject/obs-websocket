@@ -130,8 +130,8 @@ RequestResult RequestHandler::GetSpecialInputs(const Request &)
  * @requestField ?inputSettings    | Object | Settings object to initialize the input with                  | Default settings used
  * @requestField ?sceneItemEnabled | Boolean | Whether to set the created scene item to enabled or disabled | True
  *
- * @responseField inputUuid   | String | UUID of the newly created input
- * @responseField sceneItemId | Number | ID of the newly created scene item
+ * @responseField inputUuid   | String        | UUID of the newly created input
+ * @responseField sceneItemId | Number(int64) | ID of the newly created scene item
  *
  * @requestType CreateInput
  * @complexity 3
@@ -478,8 +478,8 @@ RequestResult RequestHandler::ToggleInputMute(const Request &request)
  * @requestField ?inputName | String | Name of the input to get the volume of
  * @requestField ?inputUuid | String | UUID of the input to get the volume of
  *
- * @responseField inputVolumeMul | Number | Volume setting in mul
- * @responseField inputVolumeDb  | Number | Volume setting in dB
+ * @responseField inputVolumeMul | Number(float) | Volume setting in mul
+ * @responseField inputVolumeDb  | Number(float) | Volume setting in dB
  *
  * @requestType GetInputVolume
  * @complexity 3
@@ -513,10 +513,10 @@ RequestResult RequestHandler::GetInputVolume(const Request &request)
 /**
  * Sets the volume setting of an input.
  *
- * @requestField ?inputName      | String | Name of the input to set the volume of
- * @requestField ?inputUuid      | String | UUID of the input to set the volume of
- * @requestField ?inputVolumeMul | Number | Volume setting in mul | >= 0, <= 20     | `inputVolumeDb` should be specified
- * @requestField ?inputVolumeDb  | Number | Volume setting in dB  | >= -100, <= 26 | `inputVolumeMul` should be specified
+ * @requestField ?inputName      | String        | Name of the input to set the volume of
+ * @requestField ?inputUuid      | String        | UUID of the input to set the volume of
+ * @requestField ?inputVolumeMul | Number(float) | Volume setting in mul | >= 0, <= 20     | `inputVolumeDb` should be specified
+ * @requestField ?inputVolumeDb  | Number(float) | Volume setting in dB  | >= -100, <= 26 | `inputVolumeMul` should be specified
  *
  * @requestType SetInputVolume
  * @complexity 3
@@ -567,7 +567,7 @@ RequestResult RequestHandler::SetInputVolume(const Request &request)
  * @requestField ?inputName | String | Name of the input to get the audio balance of
  * @requestField ?inputUuid | String | UUID of the input to get the audio balance of
  *
- * @responseField inputAudioBalance | Number | Audio balance value from 0.0-1.0
+ * @responseField inputAudioBalance | Number(float) | Audio balance value from 0.0-1.0
  *
  * @requestType GetInputAudioBalance
  * @complexity 2
@@ -596,9 +596,9 @@ RequestResult RequestHandler::GetInputAudioBalance(const Request &request)
 /**
  * Sets the audio balance of an input.
  *
- * @requestField ?inputName        | String | Name of the input to set the audio balance of
- * @requestField ?inputUuid        | String | UUID of the input to set the audio balance of
- * @requestField inputAudioBalance | Number | New audio balance value | >= 0.0, <= 1.0
+ * @requestField ?inputName        | String        | Name of the input to set the audio balance of
+ * @requestField ?inputUuid        | String        | UUID of the input to set the audio balance of
+ * @requestField inputAudioBalance | Number(float) | New audio balance value | >= 0.0, <= 1.0
  *
  * @requestType SetInputAudioBalance
  * @complexity 2
@@ -632,7 +632,7 @@ RequestResult RequestHandler::SetInputAudioBalance(const Request &request)
  * @requestField ?inputName | String | Name of the input to get the audio sync offset of
  * @requestField ?inputUuid | String | UUID of the input to get the audio sync offset of
  *
- * @responseField inputAudioSyncOffset | Number | Audio sync offset in milliseconds
+ * @responseField inputAudioSyncOffset | Number(int64) | Audio sync offset in milliseconds
  *
  * @requestType GetInputAudioSyncOffset
  * @complexity 3
@@ -662,9 +662,9 @@ RequestResult RequestHandler::GetInputAudioSyncOffset(const Request &request)
 /**
  * Sets the audio sync offset of an input.
  *
- * @requestField ?inputName           | String | Name of the input to set the audio sync offset of
- * @requestField ?inputUuid           | String | UUID of the input to set the audio sync offset of
- * @requestField inputAudioSyncOffset | Number | New audio sync offset in milliseconds | >= -950, <= 20000
+ * @requestField ?inputName           | String        | Name of the input to set the audio sync offset of
+ * @requestField ?inputUuid           | String        | UUID of the input to set the audio sync offset of
+ * @requestField inputAudioSyncOffset | Number(int64) | New audio sync offset in milliseconds | >= -950, <= 20000
  *
  * @requestType SetInputAudioSyncOffset
  * @complexity 3

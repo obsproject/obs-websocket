@@ -152,12 +152,12 @@ RequestResult RequestHandler::GetSourceActive(const Request &request)
  *
  * **Compatible with inputs and scenes.**
  *
- * @requestField ?sourceName              | String | Name of the source to take a screenshot of
- * @requestField ?sourceUuid              | String | UUID of the source to take a screenshot of
- * @requestField imageFormat              | String | Image compression format to use. Use `GetVersion` to get compatible image formats
- * @requestField ?imageWidth              | Number | Width to scale the screenshot to                                                                                         | >= 8, <= 4096 | Source value is used
- * @requestField ?imageHeight             | Number | Height to scale the screenshot to                                                                                        | >= 8, <= 4096 | Source value is used
- * @requestField ?imageCompressionQuality | Number | Compression quality to use. 0 for high compression, 100 for uncompressed. -1 to use "default" (whatever that means, idk) | >= -1, <= 100 | -1
+ * @requestField ?sourceName              | String         | Name of the source to take a screenshot of
+ * @requestField ?sourceUuid              | String         | UUID of the source to take a screenshot of
+ * @requestField imageFormat              | String         | Image compression format to use. Use `GetVersion` to get compatible image formats
+ * @requestField ?imageWidth              | Number(uint32) | Width to scale the screenshot to                                                                                         | >= 8, <= 4096 | Source value is used
+ * @requestField ?imageHeight             | Number(uint32) | Height to scale the screenshot to                                                                                        | >= 8, <= 4096 | Source value is used
+ * @requestField ?imageCompressionQuality | Number(int32)  | Compression quality to use. 0 for high compression, 100 for uncompressed. -1 to use "default" (whatever that means, idk) | >= -1, <= 100 | -1
  *
  * @responseField imageData | String | Base64-encoded screenshot
  *
@@ -240,13 +240,13 @@ RequestResult RequestHandler::GetSourceScreenshot(const Request &request)
  *
  * **Compatible with inputs and scenes.**
  *
- * @requestField ?sourceName              | String | Name of the source to take a screenshot of
- * @requestField ?sourceUuid              | String | UUID of the source to take a screenshot of
- * @requestField imageFormat              | String | Image compression format to use. Use `GetVersion` to get compatible image formats
- * @requestField imageFilePath            | String | Path to save the screenshot file to. Eg. `C:\Users\user\Desktop\screenshot.png`
- * @requestField ?imageWidth              | Number | Width to scale the screenshot to                                                                                         | >= 8, <= 4096 | Source value is used
- * @requestField ?imageHeight             | Number | Height to scale the screenshot to                                                                                        | >= 8, <= 4096 | Source value is used
- * @requestField ?imageCompressionQuality | Number | Compression quality to use. 0 for high compression, 100 for uncompressed. -1 to use "default" (whatever that means, idk) | >= -1, <= 100 | -1
+ * @requestField ?sourceName              | String         | Name of the source to take a screenshot of
+ * @requestField ?sourceUuid              | String         | UUID of the source to take a screenshot of
+ * @requestField imageFormat              | String         | Image compression format to use. Use `GetVersion` to get compatible image formats
+ * @requestField imageFilePath            | String         | Path to save the screenshot file to. Eg. `C:\Users\user\Desktop\screenshot.png`
+ * @requestField ?imageWidth              | Number(uint32) | Width to scale the screenshot to                                                                                         | >= 8, <= 4096 | Source value is used
+ * @requestField ?imageHeight             | Number(uint32) | Height to scale the screenshot to                                                                                        | >= 8, <= 4096 | Source value is used
+ * @requestField ?imageCompressionQuality | Number(int32)  | Compression quality to use. 0 for high compression, 100 for uncompressed. -1 to use "default" (whatever that means, idk) | >= -1, <= 100 | -1
  *
  * @requestType SaveSourceScreenshot
  * @complexity 3

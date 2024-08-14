@@ -46,7 +46,7 @@ void EventHandler::HandleCurrentSceneTransitionChanged()
 /**
  * The current scene transition duration has changed.
  *
- * @dataField transitionDuration | Number | Transition duration in milliseconds
+ * @dataField transitionDuration | Number(int32) | Transition duration in milliseconds
  *
  * @eventType CurrentSceneTransitionDurationChanged
  * @eventSubscription Transitions

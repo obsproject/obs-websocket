@@ -1964,8 +1964,8 @@ An input's volume level has changed.
 | ---- | :---: | ----------- |
 | inputName | String | Name of the input |
 | inputUuid | String | UUID of the input |
-| inputVolumeMul | Number | New volume level multiplier |
-| inputVolumeDb | Number | New volume level in dB |
+| inputVolumeMul | Number(double) | New volume level multiplier |
+| inputVolumeDb | Number(double) | New volume level in dB |
 
 ---
 
@@ -1983,7 +1983,7 @@ The audio balance value of an input has changed.
 | ---- | :---: | ----------- |
 | inputName | String | Name of the input |
 | inputUuid | String | UUID of the input |
-| inputAudioBalance | Number | New audio balance value of the input |
+| inputAudioBalance | Number(float) | New audio balance value of the input |
 
 ---
 
@@ -2001,7 +2001,7 @@ The sync offset of an input has changed.
 | ---- | :---: | ----------- |
 | inputName | String | Name of the input |
 | inputUuid | String | UUID of the input |
-| inputAudioSyncOffset | Number | New sync offset in milliseconds |
+| inputAudioSyncOffset | Number(int64) | New sync offset in milliseconds |
 
 ---
 
@@ -2092,7 +2092,7 @@ The current scene transition duration has changed.
 
 | Name | Type  | Description |
 | ---- | :---: | ----------- |
-| transitionDuration | Number | Transition duration in milliseconds |
+| transitionDuration | Number(int32) | Transition duration in milliseconds |
 
 ---
 
@@ -2186,7 +2186,7 @@ A filter has been added to a source.
 | sourceName | String | Name of the source the filter was added to |
 | filterName | String | Name of the filter |
 | filterKind | String | The kind of the filter |
-| filterIndex | Number | Index position of the filter |
+| filterIndex | Number(int64) | Index position of the filter |
 | filterSettings | Object | The settings configured to the filter when it was created |
 | defaultFilterSettings | Object | The default settings for the filter |
 
@@ -2279,8 +2279,8 @@ A scene item has been created.
 | sceneUuid | String | UUID of the scene the item was added to |
 | sourceName | String | Name of the underlying source (input/scene) |
 | sourceUuid | String | UUID of the underlying source (input/scene) |
-| sceneItemId | Number | Numeric ID of the scene item |
-| sceneItemIndex | Number | Index position of the item |
+| sceneItemId | Number(int64) | Numeric ID of the scene item |
+| sceneItemIndex | Number(int32) | Index position of the item |
 
 ---
 
@@ -2302,7 +2302,7 @@ This event is not emitted when the scene the item is in is removed.
 | sceneUuid | String | UUID of the scene the item was removed from |
 | sourceName | String | Name of the underlying source (input/scene) |
 | sourceUuid | String | UUID of the underlying source (input/scene) |
-| sceneItemId | Number | Numeric ID of the scene item |
+| sceneItemId | Number(int64) | Numeric ID of the scene item |
 
 ---
 
@@ -2394,7 +2394,7 @@ The transform/crop of a scene item has changed.
 | ---- | :---: | ----------- |
 | sceneName | String | The name of the scene the item is in |
 | sceneUuid | String | The UUID of the scene the item is in |
-| sceneItemId | Number | Numeric ID of the scene item |
+| sceneItemId | Number(int64) | Numeric ID of the scene item |
 | sceneItemTransform | Object | New transform/crop info of the scene item |
 
 ## Outputs Events
@@ -2782,17 +2782,17 @@ Gets statistics about OBS, obs-websocket, and the current session.
 
 | Name | Type  | Description |
 | ---- | :---: | ----------- |
-| cpuUsage | Number | Current CPU usage in percent |
-| memoryUsage | Number | Amount of memory in MB currently being used by OBS |
-| availableDiskSpace | Number | Available disk space on the device being used for recording storage |
-| activeFps | Number | Current FPS being rendered |
-| averageFrameRenderTime | Number | Average time in milliseconds that OBS is taking to render a frame |
-| renderSkippedFrames | Number | Number of frames skipped by OBS in the render thread |
-| renderTotalFrames | Number | Total number of frames outputted by the render thread |
-| outputSkippedFrames | Number | Number of frames skipped by OBS in the output thread |
-| outputTotalFrames | Number | Total number of frames outputted by the output thread |
-| webSocketSessionIncomingMessages | Number | Total number of messages received by obs-websocket from the client |
-| webSocketSessionOutgoingMessages | Number | Total number of messages sent by obs-websocket to the client |
+| cpuUsage | Number(double) | Current CPU usage in percent |
+| memoryUsage | Number(double) | Amount of memory in MB currently being used by OBS |
+| availableDiskSpace | Number(double) | Available disk space on the device being used for recording storage |
+| activeFps | Number(double) | Current FPS being rendered |
+| averageFrameRenderTime | Number(double) | Average time in milliseconds that OBS is taking to render a frame |
+| renderSkippedFrames | Number(uint32) | Number of frames skipped by OBS in the render thread |
+| renderTotalFrames | Number(uint32) | Total number of frames outputted by the render thread |
+| outputSkippedFrames | Number(uint32) | Number of frames skipped by OBS in the output thread |
+| outputTotalFrames | Number(uint32) | Total number of frames outputted by the output thread |
+| webSocketSessionIncomingMessages | Number(uint64) | Total number of messages received by obs-websocket from the client |
+| webSocketSessionOutgoingMessages | Number(uint64) | Total number of messages sent by obs-websocket to the client |
 
 ---
 
@@ -2913,8 +2913,8 @@ Sleeps for a time duration or number of frames. Only available in request batche
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
-| ?sleepMillis | Number | Number of milliseconds to sleep for (if `SERIAL_REALTIME` mode) | >= 0, <= 50000 | Unknown |
-| ?sleepFrames | Number | Number of frames to sleep for (if `SERIAL_FRAME` mode) | >= 0, <= 10000 | Unknown |
+| ?sleepMillis | Number(int64) | Number of milliseconds to sleep for (if `SERIAL_REALTIME` mode) | >= 0, <= 50000 | Unknown |
+| ?sleepFrames | Number(int64) | Number of frames to sleep for (if `SERIAL_FRAME` mode) | >= 0, <= 10000 | Unknown |
 
 ## Config Requests
 
@@ -3133,12 +3133,12 @@ Note: To get the true FPS value, divide the FPS numerator by the FPS denominator
 
 | Name | Type  | Description |
 | ---- | :---: | ----------- |
-| fpsNumerator | Number | Numerator of the fractional FPS value |
-| fpsDenominator | Number | Denominator of the fractional FPS value |
-| baseWidth | Number | Width of the base (canvas) resolution in pixels |
-| baseHeight | Number | Height of the base (canvas) resolution in pixels |
-| outputWidth | Number | Width of the output resolution in pixels |
-| outputHeight | Number | Height of the output resolution in pixels |
+| fpsNumerator | Number(uint32) | Numerator of the fractional FPS value |
+| fpsDenominator | Number(uint32) | Denominator of the fractional FPS value |
+| baseWidth | Number(uint32) | Width of the base (canvas) resolution in pixels |
+| baseHeight | Number(uint32) | Height of the base (canvas) resolution in pixels |
+| outputWidth | Number(uint32) | Width of the output resolution in pixels |
+| outputHeight | Number(uint32) | Height of the output resolution in pixels |
 
 ---
 
@@ -3156,12 +3156,12 @@ Note: Fields must be specified in pairs. For example, you cannot set only `baseW
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
-| ?fpsNumerator | Number | Numerator of the fractional FPS value | >= 1 | Not changed |
-| ?fpsDenominator | Number | Denominator of the fractional FPS value | >= 1 | Not changed |
-| ?baseWidth | Number | Width of the base (canvas) resolution in pixels | >= 1, <= 4096 | Not changed |
-| ?baseHeight | Number | Height of the base (canvas) resolution in pixels | >= 1, <= 4096 | Not changed |
-| ?outputWidth | Number | Width of the output resolution in pixels | >= 1, <= 4096 | Not changed |
-| ?outputHeight | Number | Height of the output resolution in pixels | >= 1, <= 4096 | Not changed |
+| ?fpsNumerator | Number(uint64) | Numerator of the fractional FPS value | >= 1 | Not changed |
+| ?fpsDenominator | Number(uint64) | Denominator of the fractional FPS value | >= 1 | Not changed |
+| ?baseWidth | Number(uint64) | Width of the base (canvas) resolution in pixels | >= 1, <= 4096 | Not changed |
+| ?baseHeight | Number(uint64) | Height of the base (canvas) resolution in pixels | >= 1, <= 4096 | Not changed |
+| ?outputWidth | Number(uint64) | Width of the output resolution in pixels | >= 1, <= 4096 | Not changed |
+| ?outputHeight | Number(uint64) | Height of the output resolution in pixels | >= 1, <= 4096 | Not changed |
 
 ---
 
@@ -3279,9 +3279,9 @@ If `imageWidth` and `imageHeight` are not specified, the compressed image will u
 | ?sourceName | String | Name of the source to take a screenshot of | None | Unknown |
 | ?sourceUuid | String | UUID of the source to take a screenshot of | None | Unknown |
 | imageFormat | String | Image compression format to use. Use `GetVersion` to get compatible image formats | None | N/A |
-| ?imageWidth | Number | Width to scale the screenshot to | >= 8, <= 4096 | Source value is used |
-| ?imageHeight | Number | Height to scale the screenshot to | >= 8, <= 4096 | Source value is used |
-| ?imageCompressionQuality | Number | Compression quality to use. 0 for high compression, 100 for uncompressed. -1 to use "default" (whatever that means, idk) | >= -1, <= 100 | -1 |
+| ?imageWidth | Number(uint32) | Width to scale the screenshot to | >= 8, <= 4096 | Source value is used |
+| ?imageHeight | Number(uint32) | Height to scale the screenshot to | >= 8, <= 4096 | Source value is used |
+| ?imageCompressionQuality | Number(int32) | Compression quality to use. 0 for high compression, 100 for uncompressed. -1 to use "default" (whatever that means, idk) | >= -1, <= 100 | -1 |
 
 **Response Fields:**
 
@@ -3312,9 +3312,9 @@ If `imageWidth` and `imageHeight` are not specified, the compressed image will u
 | ?sourceUuid | String | UUID of the source to take a screenshot of | None | Unknown |
 | imageFormat | String | Image compression format to use. Use `GetVersion` to get compatible image formats | None | N/A |
 | imageFilePath | String | Path to save the screenshot file to. Eg. `C:\Users\user\Desktop\screenshot.png` | None | N/A |
-| ?imageWidth | Number | Width to scale the screenshot to | >= 8, <= 4096 | Source value is used |
-| ?imageHeight | Number | Height to scale the screenshot to | >= 8, <= 4096 | Source value is used |
-| ?imageCompressionQuality | Number | Compression quality to use. 0 for high compression, 100 for uncompressed. -1 to use "default" (whatever that means, idk) | >= -1, <= 100 | -1 |
+| ?imageWidth | Number(uint32) | Width to scale the screenshot to | >= 8, <= 4096 | Source value is used |
+| ?imageHeight | Number(uint32) | Height to scale the screenshot to | >= 8, <= 4096 | Source value is used |
+| ?imageCompressionQuality | Number(int32) | Compression quality to use. 0 for high compression, 100 for uncompressed. -1 to use "default" (whatever that means, idk) | >= -1, <= 100 | -1 |
 
 ## Scenes Requests
 
@@ -3515,7 +3515,7 @@ Note: A transition UUID response field is not currently able to be implemented a
 | Name | Type  | Description |
 | ---- | :---: | ----------- |
 | transitionName | String | Name of the overridden scene transition, else `null` |
-| transitionDuration | Number | Duration of the overridden scene transition, else `null` |
+| transitionDuration | Number(int64) | Duration of the overridden scene transition, else `null` |
 
 ---
 
@@ -3534,7 +3534,7 @@ Sets the scene transition overridden for a scene.
 | ?sceneName | String | Name of the scene | None | Unknown |
 | ?sceneUuid | String | UUID of the scene | None | Unknown |
 | ?transitionName | String | Name of the scene transition to use as override. Specify `null` to remove | None | Unchanged |
-| ?transitionDuration | Number | Duration to use for any overridden transition. Specify `null` to remove | >= 50, <= 20000 | Unchanged |
+| ?transitionDuration | Number(int64) | Duration to use for any overridden transition. Specify `null` to remove | >= 50, <= 20000 | Unchanged |
 
 ## Inputs Requests
 
@@ -3627,7 +3627,7 @@ Creates a new input, adding it as a scene item to the specified scene.
 | Name | Type  | Description |
 | ---- | :---: | ----------- |
 | inputUuid | String | UUID of the newly created input |
-| sceneItemId | Number | ID of the newly created scene item |
+| sceneItemId | Number(int64) | ID of the newly created scene item |
 
 ---
 
@@ -3818,8 +3818,8 @@ Gets the current volume setting of an input.
 
 | Name | Type  | Description |
 | ---- | :---: | ----------- |
-| inputVolumeMul | Number | Volume setting in mul |
-| inputVolumeDb | Number | Volume setting in dB |
+| inputVolumeMul | Number(float) | Volume setting in mul |
+| inputVolumeDb | Number(float) | Volume setting in dB |
 
 ---
 
@@ -3837,8 +3837,8 @@ Sets the volume setting of an input.
 | ---- | :---: | ----------- | :----------------: | ----------------- |
 | ?inputName | String | Name of the input to set the volume of | None | Unknown |
 | ?inputUuid | String | UUID of the input to set the volume of | None | Unknown |
-| ?inputVolumeMul | Number | Volume setting in mul | >= 0, <= 20 | `inputVolumeDb` should be specified |
-| ?inputVolumeDb | Number | Volume setting in dB | >= -100, <= 26 | `inputVolumeMul` should be specified |
+| ?inputVolumeMul | Number(float) | Volume setting in mul | >= 0, <= 20 | `inputVolumeDb` should be specified |
+| ?inputVolumeDb | Number(float) | Volume setting in dB | >= -100, <= 26 | `inputVolumeMul` should be specified |
 
 ---
 
@@ -3861,7 +3861,7 @@ Gets the audio balance of an input.
 
 | Name | Type  | Description |
 | ---- | :---: | ----------- |
-| inputAudioBalance | Number | Audio balance value from 0.0-1.0 |
+| inputAudioBalance | Number(float) | Audio balance value from 0.0-1.0 |
 
 ---
 
@@ -3879,7 +3879,7 @@ Sets the audio balance of an input.
 | ---- | :---: | ----------- | :----------------: | ----------------- |
 | ?inputName | String | Name of the input to set the audio balance of | None | Unknown |
 | ?inputUuid | String | UUID of the input to set the audio balance of | None | Unknown |
-| inputAudioBalance | Number | New audio balance value | >= 0.0, <= 1.0 | N/A |
+| inputAudioBalance | Number(float) | New audio balance value | >= 0.0, <= 1.0 | N/A |
 
 ---
 
@@ -3904,7 +3904,7 @@ Note: The audio sync offset can be negative too!
 
 | Name | Type  | Description |
 | ---- | :---: | ----------- |
-| inputAudioSyncOffset | Number | Audio sync offset in milliseconds |
+| inputAudioSyncOffset | Number(int64) | Audio sync offset in milliseconds |
 
 ---
 
@@ -3922,7 +3922,7 @@ Sets the audio sync offset of an input.
 | ---- | :---: | ----------- | :----------------: | ----------------- |
 | ?inputName | String | Name of the input to set the audio sync offset of | None | Unknown |
 | ?inputUuid | String | UUID of the input to set the audio sync offset of | None | Unknown |
-| inputAudioSyncOffset | Number | New audio sync offset in milliseconds | >= -950, <= 20000 | N/A |
+| inputAudioSyncOffset | Number(int64) | New audio sync offset in milliseconds | >= -950, <= 20000 | N/A |
 
 ---
 
@@ -4153,7 +4153,7 @@ Sets the duration of the current scene transition, if it is not fixed.
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
-| transitionDuration | Number | Duration in milliseconds | >= 50, <= 20000 | N/A |
+| transitionDuration | Number(int32) | Duration in milliseconds | >= 50, <= 20000 | N/A |
 
 ---
 
@@ -4188,7 +4188,7 @@ Note: `transitionCursor` will return 1.0 when the transition is inactive.
 
 | Name | Type  | Description |
 | ---- | :---: | ----------- |
-| transitionCursor | Number | Cursor position, between 0.0 and 1.0 |
+| transitionCursor | Number(float) | Cursor position, between 0.0 and 1.0 |
 
 ---
 
@@ -4383,7 +4383,7 @@ Sets the index position of a filter on a source.
 | ?sourceName | String | Name of the source the filter is on | None | Unknown |
 | ?sourceUuid | String | UUID of the source the filter is on | None | Unknown |
 | filterName | String | Name of the filter | None | N/A |
-| filterIndex | Number | New index position of the filter | >= 0 | N/A |
+| filterIndex | Number(int32) | New index position of the filter | >= 0 | N/A |
 
 ---
 
@@ -4495,13 +4495,13 @@ Scenes and Groups
 | ?sceneName | String | Name of the scene or group to search in | None | Unknown |
 | ?sceneUuid | String | UUID of the scene or group to search in | None | Unknown |
 | sourceName | String | Name of the source to find | None | N/A |
-| ?searchOffset | Number | Number of matches to skip during search. >= 0 means first forward. -1 means last (top) item | >= -1 | 0 |
+| ?searchOffset | Number(int32) | Number of matches to skip during search. >= 0 means first forward. -1 means last (top) item | >= -1 | 0 |
 
 **Response Fields:**
 
 | Name | Type  | Description |
 | ---- | :---: | ----------- |
-| sceneItemId | Number | Numeric ID of the scene item |
+| sceneItemId | Number(int64) | Numeric ID of the scene item |
 
 ---
 
@@ -4519,7 +4519,7 @@ Gets the source associated with a scene item.
 | ---- | :---: | ----------- | :----------------: | ----------------- |
 | ?sceneName | String | Name of the scene the item is in | None | Unknown |
 | ?sceneUuid | String | UUID of the scene the item is in | None | Unknown |
-| sceneItemId | Number | Numeric ID of the scene item | >= 0 | N/A |
+| sceneItemId | Number(int64) | Numeric ID of the scene item | >= 0 | N/A |
 
 **Response Fields:**
 
@@ -4554,7 +4554,7 @@ Scenes only
 
 | Name | Type  | Description |
 | ---- | :---: | ----------- |
-| sceneItemId | Number | Numeric ID of the scene item |
+| sceneItemId | Number(int64) | Numeric ID of the scene item |
 
 ---
 
@@ -4574,7 +4574,7 @@ Scenes only
 | ---- | :---: | ----------- | :----------------: | ----------------- |
 | ?sceneName | String | Name of the scene the item is in | None | Unknown |
 | ?sceneUuid | String | UUID of the scene the item is in | None | Unknown |
-| sceneItemId | Number | Numeric ID of the scene item | >= 0 | N/A |
+| sceneItemId | Number(int64) | Numeric ID of the scene item | >= 0 | N/A |
 
 ---
 
@@ -4594,7 +4594,7 @@ Scenes only
 | ---- | :---: | ----------- | :----------------: | ----------------- |
 | ?sceneName | String | Name of the scene the item is in | None | Unknown |
 | ?sceneUuid | String | UUID of the scene the item is in | None | Unknown |
-| sceneItemId | Number | Numeric ID of the scene item | >= 0 | N/A |
+| sceneItemId | Number(int64) | Numeric ID of the scene item | >= 0 | N/A |
 | ?destinationSceneName | String | Name of the scene to create the duplicated item in | None | From scene is assumed |
 | ?destinationSceneUuid | String | UUID of the scene to create the duplicated item in | None | From scene is assumed |
 
@@ -4602,7 +4602,7 @@ Scenes only
 
 | Name | Type  | Description |
 | ---- | :---: | ----------- |
-| sceneItemId | Number | Numeric ID of the duplicated scene item |
+| sceneItemId | Number(int64) | Numeric ID of the duplicated scene item |
 
 ---
 
@@ -4622,7 +4622,7 @@ Scenes and Groups
 | ---- | :---: | ----------- | :----------------: | ----------------- |
 | ?sceneName | String | Name of the scene the item is in | None | Unknown |
 | ?sceneUuid | String | UUID of the scene the item is in | None | Unknown |
-| sceneItemId | Number | Numeric ID of the scene item | >= 0 | N/A |
+| sceneItemId | Number(int64) | Numeric ID of the scene item | >= 0 | N/A |
 
 **Response Fields:**
 
@@ -4646,7 +4646,7 @@ Sets the transform and crop info of a scene item.
 | ---- | :---: | ----------- | :----------------: | ----------------- |
 | ?sceneName | String | Name of the scene the item is in | None | Unknown |
 | ?sceneUuid | String | UUID of the scene the item is in | None | Unknown |
-| sceneItemId | Number | Numeric ID of the scene item | >= 0 | N/A |
+| sceneItemId | Number(int64) | Numeric ID of the scene item | >= 0 | N/A |
 | sceneItemTransform | Object | Object containing scene item transform info to update | None | N/A |
 
 ---
@@ -4667,7 +4667,7 @@ Scenes and Groups
 | ---- | :---: | ----------- | :----------------: | ----------------- |
 | ?sceneName | String | Name of the scene the item is in | None | Unknown |
 | ?sceneUuid | String | UUID of the scene the item is in | None | Unknown |
-| sceneItemId | Number | Numeric ID of the scene item | >= 0 | N/A |
+| sceneItemId | Number(int64) | Numeric ID of the scene item | >= 0 | N/A |
 
 **Response Fields:**
 
@@ -4693,7 +4693,7 @@ Scenes and Groups
 | ---- | :---: | ----------- | :----------------: | ----------------- |
 | ?sceneName | String | Name of the scene the item is in | None | Unknown |
 | ?sceneUuid | String | UUID of the scene the item is in | None | Unknown |
-| sceneItemId | Number | Numeric ID of the scene item | >= 0 | N/A |
+| sceneItemId | Number(int64) | Numeric ID of the scene item | >= 0 | N/A |
 | sceneItemEnabled | Boolean | New enable state of the scene item | None | N/A |
 
 ---
@@ -4714,7 +4714,7 @@ Scenes and Groups
 | ---- | :---: | ----------- | :----------------: | ----------------- |
 | ?sceneName | String | Name of the scene the item is in | None | Unknown |
 | ?sceneUuid | String | UUID of the scene the item is in | None | Unknown |
-| sceneItemId | Number | Numeric ID of the scene item | >= 0 | N/A |
+| sceneItemId | Number(int64) | Numeric ID of the scene item | >= 0 | N/A |
 
 **Response Fields:**
 
@@ -4740,7 +4740,7 @@ Scenes and Group
 | ---- | :---: | ----------- | :----------------: | ----------------- |
 | ?sceneName | String | Name of the scene the item is in | None | Unknown |
 | ?sceneUuid | String | UUID of the scene the item is in | None | Unknown |
-| sceneItemId | Number | Numeric ID of the scene item | >= 0 | N/A |
+| sceneItemId | Number(int64) | Numeric ID of the scene item | >= 0 | N/A |
 | sceneItemLocked | Boolean | New lock state of the scene item | None | N/A |
 
 ---
@@ -4763,13 +4763,13 @@ Scenes and Groups
 | ---- | :---: | ----------- | :----------------: | ----------------- |
 | ?sceneName | String | Name of the scene the item is in | None | Unknown |
 | ?sceneUuid | String | UUID of the scene the item is in | None | Unknown |
-| sceneItemId | Number | Numeric ID of the scene item | >= 0 | N/A |
+| sceneItemId | Number(int64) | Numeric ID of the scene item | >= 0 | N/A |
 
 **Response Fields:**
 
 | Name | Type  | Description |
 | ---- | :---: | ----------- |
-| sceneItemIndex | Number | Index position of the scene item |
+| sceneItemIndex | Number(int32) | Index position of the scene item |
 
 ---
 
@@ -4789,8 +4789,8 @@ Scenes and Groups
 | ---- | :---: | ----------- | :----------------: | ----------------- |
 | ?sceneName | String | Name of the scene the item is in | None | Unknown |
 | ?sceneUuid | String | UUID of the scene the item is in | None | Unknown |
-| sceneItemId | Number | Numeric ID of the scene item | >= 0 | N/A |
-| sceneItemIndex | Number | New index position of the scene item | >= 0 | N/A |
+| sceneItemId | Number(int64) | Numeric ID of the scene item | >= 0 | N/A |
+| sceneItemIndex | Number(int32) | New index position of the scene item | >= 0 | N/A |
 
 ---
 
@@ -4820,7 +4820,7 @@ Scenes and Groups
 | ---- | :---: | ----------- | :----------------: | ----------------- |
 | ?sceneName | String | Name of the scene the item is in | None | Unknown |
 | ?sceneUuid | String | UUID of the scene the item is in | None | Unknown |
-| sceneItemId | Number | Numeric ID of the scene item | >= 0 | N/A |
+| sceneItemId | Number(int64) | Numeric ID of the scene item | >= 0 | N/A |
 
 **Response Fields:**
 
@@ -4846,7 +4846,7 @@ Scenes and Groups
 | ---- | :---: | ----------- | :----------------: | ----------------- |
 | ?sceneName | String | Name of the scene the item is in | None | Unknown |
 | ?sceneUuid | String | UUID of the scene the item is in | None | Unknown |
-| sceneItemId | Number | Numeric ID of the scene item | >= 0 | N/A |
+| sceneItemId | Number(int64) | Numeric ID of the scene item | >= 0 | N/A |
 | sceneItemBlendMode | String | New blend mode | None | N/A |
 
 ## Outputs Requests
@@ -5345,8 +5345,8 @@ Media States:
 | Name | Type  | Description |
 | ---- | :---: | ----------- |
 | mediaState | String | State of the media input |
-| mediaDuration | Number | Total duration of the playing media in milliseconds. `null` if not playing |
-| mediaCursor | Number | Position of the cursor in milliseconds. `null` if not playing |
+| mediaDuration | Number(int64) | Total duration of the playing media in milliseconds. `null` if not playing |
+| mediaCursor | Number(int64) | Position of the cursor in milliseconds. `null` if not playing |
 
 ---
 
@@ -5366,7 +5366,7 @@ This request does not perform bounds checking of the cursor position.
 | ---- | :---: | ----------- | :----------------: | ----------------- |
 | ?inputName | String | Name of the media input | None | Unknown |
 | ?inputUuid | String | UUID of the media input | None | Unknown |
-| mediaCursor | Number | New cursor position to set | >= 0 | N/A |
+| mediaCursor | Number(int64) | New cursor position to set | >= 0 | N/A |
 
 ---
 
@@ -5386,7 +5386,7 @@ This request does not perform bounds checking of the cursor position.
 | ---- | :---: | ----------- | :----------------: | ----------------- |
 | ?inputName | String | Name of the media input | None | Unknown |
 | ?inputUuid | String | UUID of the media input | None | Unknown |
-| mediaCursorOffset | Number | Value to offset the current cursor position by | None | N/A |
+| mediaCursorOffset | Number(int64) | Value to offset the current cursor position by | None | N/A |
 
 ---
 
@@ -5528,7 +5528,7 @@ Note: This request serves to provide feature parity with 4.x. It is very likely 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
 | videoMixType | String | Type of mix to open | None | N/A |
-| ?monitorIndex | Number | Monitor index, use `GetMonitorList` to obtain index | None | -1: Opens projector in windowed mode |
+| ?monitorIndex | Number(int32) | Monitor index, use `GetMonitorList` to obtain index | None | -1: Opens projector in windowed mode |
 | ?projectorGeometry | String | Size/Position data for a windowed projector, in Qt Base64 encoded format. Mutually exclusive with `monitorIndex` | None | N/A |
 
 ---
@@ -5549,5 +5549,5 @@ Note: This request serves to provide feature parity with 4.x. It is very likely 
 | ---- | :---: | ----------- | :----------------: | ----------------- |
 | ?sourceName | String | Name of the source to open a projector for | None | Unknown |
 | ?sourceUuid | String | UUID of the source to open a projector for | None | Unknown |
-| ?monitorIndex | Number | Monitor index, use `GetMonitorList` to obtain index | None | -1: Opens projector in windowed mode |
+| ?monitorIndex | Number(int32) | Monitor index, use `GetMonitorList` to obtain index | None | -1: Opens projector in windowed mode |
 | ?projectorGeometry | String | Size/Position data for a windowed projector, in Qt Base64 encoded format. Mutually exclusive with `monitorIndex` | None | N/A |

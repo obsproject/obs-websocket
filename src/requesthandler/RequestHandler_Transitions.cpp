@@ -162,7 +162,7 @@ RequestResult RequestHandler::SetCurrentSceneTransition(const Request &request)
 /**
  * Sets the duration of the current scene transition, if it is not fixed.
  *
- * @requestField transitionDuration | Number | Duration in milliseconds | >= 50, <= 20000
+ * @requestField transitionDuration | Number(int32) | Duration in milliseconds | >= 50, <= 20000
  *
  * @requestType SetCurrentSceneTransitionDuration
  * @complexity 2
@@ -242,7 +242,7 @@ RequestResult RequestHandler::SetCurrentSceneTransitionSettings(const Request &r
  *
  * Note: `transitionCursor` will return 1.0 when the transition is inactive.
  *
- * @responseField transitionCursor | Number | Cursor position, between 0.0 and 1.0
+ * @responseField transitionCursor | Number(float) | Cursor position, between 0.0 and 1.0
  *
  * @requestType GetCurrentSceneTransitionCursor
  * @complexity 2

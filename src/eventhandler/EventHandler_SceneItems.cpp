@@ -22,12 +22,12 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 /**
  * A scene item has been created.
  *
- * @dataField sceneName      | String | Name of the scene the item was added to
- * @dataField sceneUuid      | String | UUID of the scene the item was added to
- * @dataField sourceName     | String | Name of the underlying source (input/scene)
- * @dataField sourceUuid     | String | UUID of the underlying source (input/scene)
- * @dataField sceneItemId    | Number | Numeric ID of the scene item
- * @dataField sceneItemIndex | Number | Index position of the item
+ * @dataField sceneName      | String        | Name of the scene the item was added to
+ * @dataField sceneUuid      | String        | UUID of the scene the item was added to
+ * @dataField sourceName     | String        | Name of the underlying source (input/scene)
+ * @dataField sourceUuid     | String        | UUID of the underlying source (input/scene)
+ * @dataField sceneItemId    | Number(int64) | Numeric ID of the scene item
+ * @dataField sceneItemIndex | Number(int32) | Index position of the item
  *
  * @eventType SceneItemCreated
  * @eventSubscription SceneItems
@@ -64,11 +64,11 @@ void EventHandler::HandleSceneItemCreated(void *param, calldata_t *data)
  *
  * This event is not emitted when the scene the item is in is removed.
  *
- * @dataField sceneName   | String | Name of the scene the item was removed from
- * @dataField sceneUuid   | String | UUID of the scene the item was removed from
- * @dataField sourceName  | String | Name of the underlying source (input/scene)
- * @dataField sourceUuid  | String | UUID of the underlying source (input/scene)
- * @dataField sceneItemId | Number | Numeric ID of the scene item
+ * @dataField sceneName   | String        | Name of the scene the item was removed from
+ * @dataField sceneUuid   | String        | UUID of the scene the item was removed from
+ * @dataField sourceName  | String        | Name of the underlying source (input/scene)
+ * @dataField sourceUuid  | String        | UUID of the underlying source (input/scene)
+ * @dataField sceneItemId | Number(int64) | Numeric ID of the scene item
  *
  * @eventType SceneItemRemoved
  * @eventSubscription SceneItems
@@ -242,10 +242,10 @@ void EventHandler::HandleSceneItemSelected(void *param, calldata_t *data)
 /**
  * The transform/crop of a scene item has changed.
  *
- * @dataField sceneName          | String | The name of the scene the item is in
- * @dataField sceneUuid          | String | The UUID of the scene the item is in
- * @dataField sceneItemId        | Number | Numeric ID of the scene item
- * @dataField sceneItemTransform | Object | New transform/crop info of the scene item
+ * @dataField sceneName          | String        | The name of the scene the item is in
+ * @dataField sceneUuid          | String        | The UUID of the scene the item is in
+ * @dataField sceneItemId        | Number(int64) | Numeric ID of the scene item
+ * @dataField sceneItemTransform | Object        | New transform/crop info of the scene item
  *
  * @eventType SceneItemTransformChanged
  * @eventSubscription SceneItemTransformChanged

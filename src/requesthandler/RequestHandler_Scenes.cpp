@@ -311,8 +311,8 @@ RequestResult RequestHandler::SetSceneName(const Request &request)
  * @requestField ?sceneName | String | Name of the scene
  * @requestField ?sceneUuid | String | UUID of the scene
  *
- * @responseField transitionName     | String | Name of the overridden scene transition, else `null`
- * @responseField transitionDuration | Number | Duration of the overridden scene transition, else `null`
+ * @responseField transitionName     | String        | Name of the overridden scene transition, else `null`
+ * @responseField transitionDuration | Number(int64) | Duration of the overridden scene transition, else `null`
  *
  * @requestType GetSceneSceneTransitionOverride
  * @complexity 2
@@ -349,10 +349,10 @@ RequestResult RequestHandler::GetSceneSceneTransitionOverride(const Request &req
 /**
  * Sets the scene transition overridden for a scene.
  *
- * @requestField ?sceneName          | String | Name of the scene
- * @requestField ?sceneUuid          | String | UUID of the scene
- * @requestField ?transitionName     | String | Name of the scene transition to use as override. Specify `null` to remove | Unchanged
- * @requestField ?transitionDuration | Number | Duration to use for any overridden transition. Specify `null` to remove | >= 50, <= 20000 | Unchanged
+ * @requestField ?sceneName          | String        | Name of the scene
+ * @requestField ?sceneUuid          | String        | UUID of the scene
+ * @requestField ?transitionName     | String        | Name of the scene transition to use as override. Specify `null` to remove | Unchanged
+ * @requestField ?transitionDuration | Number(int64) | Duration to use for any overridden transition. Specify `null` to remove | >= 50, <= 20000 | Unchanged
  *
  * @requestType SetSceneSceneTransitionOverride
  * @complexity 2

@@ -1082,32 +1082,32 @@
       "responseFields": [
         {
           "valueName": "fpsNumerator",
-          "valueType": "Number",
+          "valueType": "Number(uint32)",
           "valueDescription": "Numerator of the fractional FPS value"
         },
         {
           "valueName": "fpsDenominator",
-          "valueType": "Number",
+          "valueType": "Number(uint32)",
           "valueDescription": "Denominator of the fractional FPS value"
         },
         {
           "valueName": "baseWidth",
-          "valueType": "Number",
+          "valueType": "Number(uint32)",
           "valueDescription": "Width of the base (canvas) resolution in pixels"
         },
         {
           "valueName": "baseHeight",
-          "valueType": "Number",
+          "valueType": "Number(uint32)",
           "valueDescription": "Height of the base (canvas) resolution in pixels"
         },
         {
           "valueName": "outputWidth",
-          "valueType": "Number",
+          "valueType": "Number(uint32)",
           "valueDescription": "Width of the output resolution in pixels"
         },
         {
           "valueName": "outputHeight",
-          "valueType": "Number",
+          "valueType": "Number(uint32)",
           "valueDescription": "Height of the output resolution in pixels"
         }
       ]
@@ -1123,7 +1123,7 @@
       "requestFields": [
         {
           "valueName": "fpsNumerator",
-          "valueType": "Number",
+          "valueType": "Number(uint64)",
           "valueDescription": "Numerator of the fractional FPS value",
           "valueRestrictions": ">= 1",
           "valueOptional": true,
@@ -1131,7 +1131,7 @@
         },
         {
           "valueName": "fpsDenominator",
-          "valueType": "Number",
+          "valueType": "Number(uint64)",
           "valueDescription": "Denominator of the fractional FPS value",
           "valueRestrictions": ">= 1",
           "valueOptional": true,
@@ -1139,7 +1139,7 @@
         },
         {
           "valueName": "baseWidth",
-          "valueType": "Number",
+          "valueType": "Number(uint64)",
           "valueDescription": "Width of the base (canvas) resolution in pixels",
           "valueRestrictions": ">= 1, <= 4096",
           "valueOptional": true,
@@ -1147,7 +1147,7 @@
         },
         {
           "valueName": "baseHeight",
-          "valueType": "Number",
+          "valueType": "Number(uint64)",
           "valueDescription": "Height of the base (canvas) resolution in pixels",
           "valueRestrictions": ">= 1, <= 4096",
           "valueOptional": true,
@@ -1155,7 +1155,7 @@
         },
         {
           "valueName": "outputWidth",
-          "valueType": "Number",
+          "valueType": "Number(uint64)",
           "valueDescription": "Width of the output resolution in pixels",
           "valueRestrictions": ">= 1, <= 4096",
           "valueOptional": true,
@@ -1163,7 +1163,7 @@
         },
         {
           "valueName": "outputHeight",
-          "valueType": "Number",
+          "valueType": "Number(uint64)",
           "valueDescription": "Height of the output resolution in pixels",
           "valueRestrictions": ">= 1, <= 4096",
           "valueOptional": true,
@@ -1560,7 +1560,7 @@
         },
         {
           "valueName": "filterIndex",
-          "valueType": "Number",
+          "valueType": "Number(int32)",
           "valueDescription": "New index position of the filter",
           "valueRestrictions": ">= 0",
           "valueOptional": false,
@@ -1724,57 +1724,57 @@
       "responseFields": [
         {
           "valueName": "cpuUsage",
-          "valueType": "Number",
+          "valueType": "Number(double)",
           "valueDescription": "Current CPU usage in percent"
         },
         {
           "valueName": "memoryUsage",
-          "valueType": "Number",
+          "valueType": "Number(double)",
           "valueDescription": "Amount of memory in MB currently being used by OBS"
         },
         {
           "valueName": "availableDiskSpace",
-          "valueType": "Number",
+          "valueType": "Number(double)",
           "valueDescription": "Available disk space on the device being used for recording storage"
         },
         {
           "valueName": "activeFps",
-          "valueType": "Number",
+          "valueType": "Number(double)",
           "valueDescription": "Current FPS being rendered"
         },
         {
           "valueName": "averageFrameRenderTime",
-          "valueType": "Number",
+          "valueType": "Number(double)",
           "valueDescription": "Average time in milliseconds that OBS is taking to render a frame"
         },
         {
           "valueName": "renderSkippedFrames",
-          "valueType": "Number",
+          "valueType": "Number(uint32)",
           "valueDescription": "Number of frames skipped by OBS in the render thread"
         },
         {
           "valueName": "renderTotalFrames",
-          "valueType": "Number",
+          "valueType": "Number(uint32)",
           "valueDescription": "Total number of frames outputted by the render thread"
         },
         {
           "valueName": "outputSkippedFrames",
-          "valueType": "Number",
+          "valueType": "Number(uint32)",
           "valueDescription": "Number of frames skipped by OBS in the output thread"
         },
         {
           "valueName": "outputTotalFrames",
-          "valueType": "Number",
+          "valueType": "Number(uint32)",
           "valueDescription": "Total number of frames outputted by the output thread"
         },
         {
           "valueName": "webSocketSessionIncomingMessages",
-          "valueType": "Number",
+          "valueType": "Number(uint64)",
           "valueDescription": "Total number of messages received by obs-websocket from the client"
         },
         {
           "valueName": "webSocketSessionOutgoingMessages",
-          "valueType": "Number",
+          "valueType": "Number(uint64)",
           "valueDescription": "Total number of messages sent by obs-websocket to the client"
         }
       ]
@@ -1967,7 +1967,7 @@
       "requestFields": [
         {
           "valueName": "sleepMillis",
-          "valueType": "Number",
+          "valueType": "Number(int64)",
           "valueDescription": "Number of milliseconds to sleep for (if `SERIAL_REALTIME` mode)",
           "valueRestrictions": ">= 0, <= 50000",
           "valueOptional": true,
@@ -1975,7 +1975,7 @@
         },
         {
           "valueName": "sleepFrames",
-          "valueType": "Number",
+          "valueType": "Number(int64)",
           "valueDescription": "Number of frames to sleep for (if `SERIAL_FRAME` mode)",
           "valueRestrictions": ">= 0, <= 10000",
           "valueOptional": true,
@@ -2144,7 +2144,7 @@
         },
         {
           "valueName": "sceneItemId",
-          "valueType": "Number",
+          "valueType": "Number(int64)",
           "valueDescription": "ID of the newly created scene item"
         }
       ]
@@ -2455,12 +2455,12 @@
       "responseFields": [
         {
           "valueName": "inputVolumeMul",
-          "valueType": "Number",
+          "valueType": "Number(float)",
           "valueDescription": "Volume setting in mul"
         },
         {
           "valueName": "inputVolumeDb",
-          "valueType": "Number",
+          "valueType": "Number(float)",
           "valueDescription": "Volume setting in dB"
         }
       ]
@@ -2492,7 +2492,7 @@
         },
         {
           "valueName": "inputVolumeMul",
-          "valueType": "Number",
+          "valueType": "Number(float)",
           "valueDescription": "Volume setting in mul",
           "valueRestrictions": ">= 0, <= 20",
           "valueOptional": true,
@@ -2500,7 +2500,7 @@
         },
         {
           "valueName": "inputVolumeDb",
-          "valueType": "Number",
+          "valueType": "Number(float)",
           "valueDescription": "Volume setting in dB",
           "valueRestrictions": ">= -100, <= 26",
           "valueOptional": true,
@@ -2538,7 +2538,7 @@
       "responseFields": [
         {
           "valueName": "inputAudioBalance",
-          "valueType": "Number",
+          "valueType": "Number(float)",
           "valueDescription": "Audio balance value from 0.0-1.0"
         }
       ]
@@ -2570,7 +2570,7 @@
         },
         {
           "valueName": "inputAudioBalance",
-          "valueType": "Number",
+          "valueType": "Number(float)",
           "valueDescription": "New audio balance value",
           "valueRestrictions": ">= 0.0, <= 1.0",
           "valueOptional": false,
@@ -2608,7 +2608,7 @@
       "responseFields": [
         {
           "valueName": "inputAudioSyncOffset",
-          "valueType": "Number",
+          "valueType": "Number(int64)",
           "valueDescription": "Audio sync offset in milliseconds"
         }
       ]
@@ -2640,7 +2640,7 @@
         },
         {
           "valueName": "inputAudioSyncOffset",
-          "valueType": "Number",
+          "valueType": "Number(int64)",
           "valueDescription": "New audio sync offset in milliseconds",
           "valueRestrictions": ">= -950, <= 20000",
           "valueOptional": false,
@@ -2901,12 +2901,12 @@
         },
         {
           "valueName": "mediaDuration",
-          "valueType": "Number",
+          "valueType": "Number(int64)",
           "valueDescription": "Total duration of the playing media in milliseconds. `null` if not playing"
         },
         {
           "valueName": "mediaCursor",
-          "valueType": "Number",
+          "valueType": "Number(int64)",
           "valueDescription": "Position of the cursor in milliseconds. `null` if not playing"
         }
       ]
@@ -2938,7 +2938,7 @@
         },
         {
           "valueName": "mediaCursor",
-          "valueType": "Number",
+          "valueType": "Number(int64)",
           "valueDescription": "New cursor position to set",
           "valueRestrictions": ">= 0",
           "valueOptional": false,
@@ -2974,7 +2974,7 @@
         },
         {
           "valueName": "mediaCursorOffset",
-          "valueType": "Number",
+          "valueType": "Number(int64)",
           "valueDescription": "Value to offset the current cursor position by",
           "valueRestrictions": null,
           "valueOptional": false,
@@ -3606,7 +3606,7 @@
         },
         {
           "valueName": "searchOffset",
-          "valueType": "Number",
+          "valueType": "Number(int32)",
           "valueDescription": "Number of matches to skip during search. >= 0 means first forward. -1 means last (top) item",
           "valueRestrictions": ">= -1",
           "valueOptional": true,
@@ -3616,7 +3616,7 @@
       "responseFields": [
         {
           "valueName": "sceneItemId",
-          "valueType": "Number",
+          "valueType": "Number(int64)",
           "valueDescription": "Numeric ID of the scene item"
         }
       ]
@@ -3648,7 +3648,7 @@
         },
         {
           "valueName": "sceneItemId",
-          "valueType": "Number",
+          "valueType": "Number(int64)",
           "valueDescription": "Numeric ID of the scene item",
           "valueRestrictions": ">= 0",
           "valueOptional": false,
@@ -3721,7 +3721,7 @@
       "responseFields": [
         {
           "valueName": "sceneItemId",
-          "valueType": "Number",
+          "valueType": "Number(int64)",
           "valueDescription": "Numeric ID of the scene item"
         }
       ]
@@ -3753,7 +3753,7 @@
         },
         {
           "valueName": "sceneItemId",
-          "valueType": "Number",
+          "valueType": "Number(int64)",
           "valueDescription": "Numeric ID of the scene item",
           "valueRestrictions": ">= 0",
           "valueOptional": false,
@@ -3789,7 +3789,7 @@
         },
         {
           "valueName": "sceneItemId",
-          "valueType": "Number",
+          "valueType": "Number(int64)",
           "valueDescription": "Numeric ID of the scene item",
           "valueRestrictions": ">= 0",
           "valueOptional": false,
@@ -3815,7 +3815,7 @@
       "responseFields": [
         {
           "valueName": "sceneItemId",
-          "valueType": "Number",
+          "valueType": "Number(int64)",
           "valueDescription": "Numeric ID of the duplicated scene item"
         }
       ]
@@ -3847,7 +3847,7 @@
         },
         {
           "valueName": "sceneItemId",
-          "valueType": "Number",
+          "valueType": "Number(int64)",
           "valueDescription": "Numeric ID of the scene item",
           "valueRestrictions": ">= 0",
           "valueOptional": false,
@@ -3889,7 +3889,7 @@
         },
         {
           "valueName": "sceneItemId",
-          "valueType": "Number",
+          "valueType": "Number(int64)",
           "valueDescription": "Numeric ID of the scene item",
           "valueRestrictions": ">= 0",
           "valueOptional": false,
@@ -3933,7 +3933,7 @@
         },
         {
           "valueName": "sceneItemId",
-          "valueType": "Number",
+          "valueType": "Number(int64)",
           "valueDescription": "Numeric ID of the scene item",
           "valueRestrictions": ">= 0",
           "valueOptional": false,
@@ -3975,7 +3975,7 @@
         },
         {
           "valueName": "sceneItemId",
-          "valueType": "Number",
+          "valueType": "Number(int64)",
           "valueDescription": "Numeric ID of the scene item",
           "valueRestrictions": ">= 0",
           "valueOptional": false,
@@ -4019,7 +4019,7 @@
         },
         {
           "valueName": "sceneItemId",
-          "valueType": "Number",
+          "valueType": "Number(int64)",
           "valueDescription": "Numeric ID of the scene item",
           "valueRestrictions": ">= 0",
           "valueOptional": false,
@@ -4061,7 +4061,7 @@
         },
         {
           "valueName": "sceneItemId",
-          "valueType": "Number",
+          "valueType": "Number(int64)",
           "valueDescription": "Numeric ID of the scene item",
           "valueRestrictions": ">= 0",
           "valueOptional": false,
@@ -4105,7 +4105,7 @@
         },
         {
           "valueName": "sceneItemId",
-          "valueType": "Number",
+          "valueType": "Number(int64)",
           "valueDescription": "Numeric ID of the scene item",
           "valueRestrictions": ">= 0",
           "valueOptional": false,
@@ -4115,7 +4115,7 @@
       "responseFields": [
         {
           "valueName": "sceneItemIndex",
-          "valueType": "Number",
+          "valueType": "Number(int32)",
           "valueDescription": "Index position of the scene item"
         }
       ]
@@ -4147,7 +4147,7 @@
         },
         {
           "valueName": "sceneItemId",
-          "valueType": "Number",
+          "valueType": "Number(int64)",
           "valueDescription": "Numeric ID of the scene item",
           "valueRestrictions": ">= 0",
           "valueOptional": false,
@@ -4155,7 +4155,7 @@
         },
         {
           "valueName": "sceneItemIndex",
-          "valueType": "Number",
+          "valueType": "Number(int32)",
           "valueDescription": "New index position of the scene item",
           "valueRestrictions": ">= 0",
           "valueOptional": false,
@@ -4191,7 +4191,7 @@
         },
         {
           "valueName": "sceneItemId",
-          "valueType": "Number",
+          "valueType": "Number(int64)",
           "valueDescription": "Numeric ID of the scene item",
           "valueRestrictions": ">= 0",
           "valueOptional": false,
@@ -4233,7 +4233,7 @@
         },
         {
           "valueName": "sceneItemId",
-          "valueType": "Number",
+          "valueType": "Number(int64)",
           "valueDescription": "Numeric ID of the scene item",
           "valueRestrictions": ">= 0",
           "valueOptional": false,
@@ -4548,7 +4548,7 @@
         },
         {
           "valueName": "transitionDuration",
-          "valueType": "Number",
+          "valueType": "Number(int64)",
           "valueDescription": "Duration of the overridden scene transition, else `null`"
         }
       ]
@@ -4588,7 +4588,7 @@
         },
         {
           "valueName": "transitionDuration",
-          "valueType": "Number",
+          "valueType": "Number(int64)",
           "valueDescription": "Duration to use for any overridden transition. Specify `null` to remove",
           "valueRestrictions": ">= 50, <= 20000",
           "valueOptional": true,
@@ -4671,7 +4671,7 @@
         },
         {
           "valueName": "imageWidth",
-          "valueType": "Number",
+          "valueType": "Number(uint32)",
           "valueDescription": "Width to scale the screenshot to",
           "valueRestrictions": ">= 8, <= 4096",
           "valueOptional": true,
@@ -4679,7 +4679,7 @@
         },
         {
           "valueName": "imageHeight",
-          "valueType": "Number",
+          "valueType": "Number(uint32)",
           "valueDescription": "Height to scale the screenshot to",
           "valueRestrictions": ">= 8, <= 4096",
           "valueOptional": true,
@@ -4687,7 +4687,7 @@
         },
         {
           "valueName": "imageCompressionQuality",
-          "valueType": "Number",
+          "valueType": "Number(int32)",
           "valueDescription": "Compression quality to use. 0 for high compression, 100 for uncompressed. -1 to use \"default\" (whatever that means, idk)",
           "valueRestrictions": ">= -1, <= 100",
           "valueOptional": true,
@@ -4745,7 +4745,7 @@
         },
         {
           "valueName": "imageWidth",
-          "valueType": "Number",
+          "valueType": "Number(uint32)",
           "valueDescription": "Width to scale the screenshot to",
           "valueRestrictions": ">= 8, <= 4096",
           "valueOptional": true,
@@ -4753,7 +4753,7 @@
         },
         {
           "valueName": "imageHeight",
-          "valueType": "Number",
+          "valueType": "Number(uint32)",
           "valueDescription": "Height to scale the screenshot to",
           "valueRestrictions": ">= 8, <= 4096",
           "valueOptional": true,
@@ -4761,7 +4761,7 @@
         },
         {
           "valueName": "imageCompressionQuality",
-          "valueType": "Number",
+          "valueType": "Number(int32)",
           "valueDescription": "Compression quality to use. 0 for high compression, 100 for uncompressed. -1 to use \"default\" (whatever that means, idk)",
           "valueRestrictions": ">= -1, <= 100",
           "valueOptional": true,
@@ -5008,7 +5008,7 @@
       "requestFields": [
         {
           "valueName": "transitionDuration",
-          "valueType": "Number",
+          "valueType": "Number(int32)",
           "valueDescription": "Duration in milliseconds",
           "valueRestrictions": ">= 50, <= 20000",
           "valueOptional": false,
@@ -5057,7 +5057,7 @@
       "responseFields": [
         {
           "valueName": "transitionCursor",
-          "valueType": "Number",
+          "valueType": "Number(float)",
           "valueDescription": "Cursor position, between 0.0 and 1.0"
         }
       ]
@@ -5258,7 +5258,7 @@
         },
         {
           "valueName": "monitorIndex",
-          "valueType": "Number",
+          "valueType": "Number(int32)",
           "valueDescription": "Monitor index, use `GetMonitorList` to obtain index",
           "valueRestrictions": null,
           "valueOptional": true,
@@ -5302,7 +5302,7 @@
         },
         {
           "valueName": "monitorIndex",
-          "valueType": "Number",
+          "valueType": "Number(int32)",
           "valueDescription": "Monitor index, use `GetMonitorList` to obtain index",
           "valueRestrictions": null,
           "valueOptional": true,
@@ -5472,7 +5472,7 @@
         },
         {
           "valueName": "filterIndex",
-          "valueType": "Number",
+          "valueType": "Number(int64)",
           "valueDescription": "Index position of the filter"
         },
         {
@@ -5822,12 +5822,12 @@
         },
         {
           "valueName": "inputVolumeMul",
-          "valueType": "Number",
+          "valueType": "Number(double)",
           "valueDescription": "New volume level multiplier"
         },
         {
           "valueName": "inputVolumeDb",
-          "valueType": "Number",
+          "valueType": "Number(double)",
           "valueDescription": "New volume level in dB"
         }
       ]
@@ -5854,7 +5854,7 @@
         },
         {
           "valueName": "inputAudioBalance",
-          "valueType": "Number",
+          "valueType": "Number(float)",
           "valueDescription": "New audio balance value of the input"
         }
       ]
@@ -5881,7 +5881,7 @@
         },
         {
           "valueName": "inputAudioSyncOffset",
-          "valueType": "Number",
+          "valueType": "Number(int64)",
           "valueDescription": "New sync offset in milliseconds"
         }
       ]
@@ -6187,12 +6187,12 @@
         },
         {
           "valueName": "sceneItemId",
-          "valueType": "Number",
+          "valueType": "Number(int64)",
           "valueDescription": "Numeric ID of the scene item"
         },
         {
           "valueName": "sceneItemIndex",
-          "valueType": "Number",
+          "valueType": "Number(int32)",
           "valueDescription": "Index position of the item"
         }
       ]
@@ -6229,7 +6229,7 @@
         },
         {
           "valueName": "sceneItemId",
-          "valueType": "Number",
+          "valueType": "Number(int64)",
           "valueDescription": "Numeric ID of the scene item"
         }
       ]
@@ -6374,7 +6374,7 @@
         },
         {
           "valueName": "sceneItemId",
-          "valueType": "Number",
+          "valueType": "Number(int64)",
           "valueDescription": "Numeric ID of the scene item"
         },
         {
@@ -6560,7 +6560,7 @@
       "dataFields": [
         {
           "valueName": "transitionDuration",
-          "valueType": "Number",
+          "valueType": "Number(int32)",
           "valueDescription": "Transition duration in milliseconds"
         }
       ]

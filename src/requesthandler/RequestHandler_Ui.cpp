@@ -208,9 +208,9 @@ RequestResult RequestHandler::GetMonitorList(const Request &)
  *
  * Note: This request serves to provide feature parity with 4.x. It is very likely to be changed/deprecated in a future release.
  *
- * @requestField videoMixType            | String | Type of mix to open
- * @requestField ?monitorIndex      | Number | Monitor index, use `GetMonitorList` to obtain index | None | -1: Opens projector in windowed mode
- * @requestField ?projectorGeometry | String | Size/Position data for a windowed projector, in Qt Base64 encoded format. Mutually exclusive with `monitorIndex` | N/A
+ * @requestField videoMixType       | String        | Type of mix to open
+ * @requestField ?monitorIndex      | Number(int32) | Monitor index, use `GetMonitorList` to obtain index | None | -1: Opens projector in windowed mode
+ * @requestField ?projectorGeometry | String        | Size/Position data for a windowed projector, in Qt Base64 encoded format. Mutually exclusive with `monitorIndex` | N/A
  *
  * @requestType OpenVideoMixProjector
  * @complexity 3
@@ -265,10 +265,10 @@ RequestResult RequestHandler::OpenVideoMixProjector(const Request &request)
  *
  * Note: This request serves to provide feature parity with 4.x. It is very likely to be changed/deprecated in a future release.
  *
- * @requestField ?sourceName        | String | Name of the source to open a projector for
- * @requestField ?sourceUuid        | String | UUID of the source to open a projector for
- * @requestField ?monitorIndex      | Number | Monitor index, use `GetMonitorList` to obtain index | None | -1: Opens projector in windowed mode
- * @requestField ?projectorGeometry | String | Size/Position data for a windowed projector, in Qt Base64 encoded format. Mutually exclusive with `monitorIndex` | N/A
+ * @requestField ?sourceName        | String        | Name of the source to open a projector for
+ * @requestField ?sourceUuid        | String        | UUID of the source to open a projector for
+ * @requestField ?monitorIndex      | Number(int32) | Monitor index, use `GetMonitorList` to obtain index | None | -1: Opens projector in windowed mode
+ * @requestField ?projectorGeometry | String        | Size/Position data for a windowed projector, in Qt Base64 encoded format. Mutually exclusive with `monitorIndex` | N/A
  *
  * @requestType OpenSourceProjector
  * @complexity 3

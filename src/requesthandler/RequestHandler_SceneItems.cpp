@@ -88,12 +88,12 @@ RequestResult RequestHandler::GetGroupSceneItemList(const Request &request)
  *
  * Scenes and Groups
  *
- * @requestField ?sceneName    | String | Name of the scene or group to search in
- * @requestField ?sceneUuid    | String | UUID of the scene or group to search in
- * @requestField sourceName    | String | Name of the source to find
- * @requestField ?searchOffset | Number | Number of matches to skip during search. >= 0 means first forward. -1 means last (top) item | >= -1 | 0
+ * @requestField ?sceneName    | String        | Name of the scene or group to search in
+ * @requestField ?sceneUuid    | String        | UUID of the scene or group to search in
+ * @requestField sourceName    | String        | Name of the source to find
+ * @requestField ?searchOffset | Number(int32) | Number of matches to skip during search. >= 0 means first forward. -1 means last (top) item | >= -1 | 0
  *
- * @responseField sceneItemId | Number | Numeric ID of the scene item
+ * @responseField sceneItemId | Number(int64) | Numeric ID of the scene item
  *
  * @requestType GetSceneItemId
  * @complexity 3
@@ -133,9 +133,9 @@ RequestResult RequestHandler::GetSceneItemId(const Request &request)
 /**
  * Gets the source associated with a scene item.
  *
- * @requestField ?sceneName  | String | Name of the scene the item is in
- * @requestField ?sceneUuid  | String | UUID of the scene the item is in
- * @requestField sceneItemId | Number | Numeric ID of the scene item | >= 0
+ * @requestField ?sceneName  | String        | Name of the scene the item is in
+ * @requestField ?sceneUuid  | String        | UUID of the scene the item is in
+ * @requestField sceneItemId | Number(int64) | Numeric ID of the scene item | >= 0
  *
  * @responseField sourceName | String | Name of the source associated with the scene item
  * @responseField sourceUuid | String | UUID of the source associated with the scene item
@@ -175,7 +175,7 @@ RequestResult RequestHandler::GetSceneItemSource(const Request &request)
  * @requestField ?sourceUuid       | String  | UUID of the source to add to the scene
  * @requestField ?sceneItemEnabled | Boolean | Enable state to apply to the scene item on creation | True
  *
- * @responseField sceneItemId | Number | Numeric ID of the scene item
+ * @responseField sceneItemId | Number(int64) | Numeric ID of the scene item
  *
  * @requestType CreateSceneItem
  * @complexity 3
@@ -223,9 +223,9 @@ RequestResult RequestHandler::CreateSceneItem(const Request &request)
  *
  * Scenes only
  *
- * @requestField ?sceneName  | String | Name of the scene the item is in
- * @requestField ?sceneUuid  | String | UUID of the scene the item is in
- * @requestField sceneItemId | Number | Numeric ID of the scene item | >= 0
+ * @requestField ?sceneName  | String        | Name of the scene the item is in
+ * @requestField ?sceneUuid  | String        | UUID of the scene the item is in
+ * @requestField sceneItemId | Number(int64) | Numeric ID of the scene item | >= 0
  *
  * @requestType RemoveSceneItem
  * @complexity 3
@@ -253,13 +253,13 @@ RequestResult RequestHandler::RemoveSceneItem(const Request &request)
  *
  * Scenes only
  *
- * @requestField ?sceneName            | String | Name of the scene the item is in
- * @requestField ?sceneUuid            | String | UUID of the scene the item is in
- * @requestField sceneItemId           | Number | Numeric ID of the scene item | >= 0
- * @requestField ?destinationSceneName | String | Name of the scene to create the duplicated item in | From scene is assumed
- * @requestField ?destinationSceneUuid | String | UUID of the scene to create the duplicated item in | From scene is assumed
+ * @requestField ?sceneName            | String        | Name of the scene the item is in
+ * @requestField ?sceneUuid            | String        | UUID of the scene the item is in
+ * @requestField sceneItemId           | Number(int64) | Numeric ID of the scene item | >= 0
+ * @requestField ?destinationSceneName | String        | Name of the scene to create the duplicated item in | From scene is assumed
+ * @requestField ?destinationSceneUuid | String        | UUID of the scene to create the duplicated item in | From scene is assumed
  *
- * @responseField sceneItemId | Number | Numeric ID of the duplicated scene item
+ * @responseField sceneItemId | Number(int64) | Numeric ID of the duplicated scene item
  *
  * @requestType DuplicateSceneItem
  * @complexity 3
@@ -330,9 +330,9 @@ RequestResult RequestHandler::DuplicateSceneItem(const Request &request)
  *
  * Scenes and Groups
  *
- * @requestField ?sceneName  | String | Name of the scene the item is in
- * @requestField ?sceneUuid  | String | UUID of the scene the item is in
- * @requestField sceneItemId | Number | Numeric ID of the scene item | >= 0
+ * @requestField ?sceneName  | String        | Name of the scene the item is in
+ * @requestField ?sceneUuid  | String        | UUID of the scene the item is in
+ * @requestField sceneItemId | Number(int64) | Numeric ID of the scene item | >= 0
  *
  * @responseField sceneItemTransform | Object | Object containing scene item transform info
  *
@@ -361,10 +361,10 @@ RequestResult RequestHandler::GetSceneItemTransform(const Request &request)
 /**
  * Sets the transform and crop info of a scene item.
  *
- * @requestField ?sceneName         | String | Name of the scene the item is in
- * @requestField ?sceneUuid         | String | UUID of the scene the item is in
- * @requestField sceneItemId        | Number | Numeric ID of the scene item | >= 0
- * @requestField sceneItemTransform | Object | Object containing scene item transform info to update
+ * @requestField ?sceneName         | String        | Name of the scene the item is in
+ * @requestField ?sceneUuid         | String        | UUID of the scene the item is in
+ * @requestField sceneItemId        | Number(int64) | Numeric ID of the scene item | >= 0
+ * @requestField sceneItemTransform | Object        | Object containing scene item transform info to update
  *
  * @requestType SetSceneItemTransform
  * @complexity 3
@@ -526,9 +526,9 @@ RequestResult RequestHandler::SetSceneItemTransform(const Request &request)
  *
  * Scenes and Groups
  *
- * @requestField ?sceneName  | String | Name of the scene the item is in
- * @requestField ?sceneUuid  | String | UUID of the scene the item is in
- * @requestField sceneItemId | Number | Numeric ID of the scene item | >= 0
+ * @requestField ?sceneName  | String        | Name of the scene the item is in
+ * @requestField ?sceneUuid  | String        | UUID of the scene the item is in
+ * @requestField sceneItemId | Number(int64) | Numeric ID of the scene item | >= 0
  *
  * @responseField sceneItemEnabled | Boolean | Whether the scene item is enabled. `true` for enabled, `false` for disabled
  *
@@ -559,10 +559,10 @@ RequestResult RequestHandler::GetSceneItemEnabled(const Request &request)
  *
  * Scenes and Groups
  *
- * @requestField ?sceneName       | String  | Name of the scene the item is in
- * @requestField ?sceneUuid       | String  | UUID of the scene the item is in
- * @requestField sceneItemId      | Number  | Numeric ID of the scene item | >= 0
- * @requestField sceneItemEnabled | Boolean | New enable state of the scene item
+ * @requestField ?sceneName       | String        | Name of the scene the item is in
+ * @requestField ?sceneUuid       | String        | UUID of the scene the item is in
+ * @requestField sceneItemId      | Number(int64) | Numeric ID of the scene item | >= 0
+ * @requestField sceneItemEnabled | Boolean       | New enable state of the scene item
  *
  * @requestType SetSceneItemEnabled
  * @complexity 3
@@ -592,9 +592,9 @@ RequestResult RequestHandler::SetSceneItemEnabled(const Request &request)
  *
  * Scenes and Groups
  *
- * @requestField ?sceneName  | String | Name of the scene the item is in
- * @requestField ?sceneUuid  | String | UUID of the scene the item is in
- * @requestField sceneItemId | Number | Numeric ID of the scene item | >= 0
+ * @requestField ?sceneName  | String        | Name of the scene the item is in
+ * @requestField ?sceneUuid  | String        | UUID of the scene the item is in
+ * @requestField sceneItemId | Number(int64) | Numeric ID of the scene item | >= 0
  *
  * @responseField sceneItemLocked | Boolean | Whether the scene item is locked. `true` for locked, `false` for unlocked
  *
@@ -625,10 +625,10 @@ RequestResult RequestHandler::GetSceneItemLocked(const Request &request)
  *
  * Scenes and Group
  *
- * @requestField ?sceneName      | String  | Name of the scene the item is in
- * @requestField ?sceneUuid      | String  | UUID of the scene the item is in
- * @requestField sceneItemId     | Number  | Numeric ID of the scene item | >= 0
- * @requestField sceneItemLocked | Boolean | New lock state of the scene item
+ * @requestField ?sceneName      | String        | Name of the scene the item is in
+ * @requestField ?sceneUuid      | String        | UUID of the scene the item is in
+ * @requestField sceneItemId     | Number(int64) | Numeric ID of the scene item | >= 0
+ * @requestField sceneItemLocked | Boolean       | New lock state of the scene item
  *
  * @requestType SetSceneItemLocked
  * @complexity 3
@@ -660,11 +660,11 @@ RequestResult RequestHandler::SetSceneItemLocked(const Request &request)
  *
  * Scenes and Groups
  *
- * @requestField ?sceneName  | String | Name of the scene the item is in
- * @requestField ?sceneUuid  | String | UUID of the scene the item is in
- * @requestField sceneItemId | Number | Numeric ID of the scene item | >= 0
+ * @requestField ?sceneName  | String        | Name of the scene the item is in
+ * @requestField ?sceneUuid  | String        | UUID of the scene the item is in
+ * @requestField sceneItemId | Number(int64) | Numeric ID of the scene item | >= 0
  *
- * @responseField sceneItemIndex | Number | Index position of the scene item
+ * @responseField sceneItemIndex | Number(int32) | Index position of the scene item
  *
  * @requestType GetSceneItemIndex
  * @complexity 3
@@ -693,10 +693,10 @@ RequestResult RequestHandler::GetSceneItemIndex(const Request &request)
  *
  * Scenes and Groups
  *
- * @requestField ?sceneName     | String | Name of the scene the item is in
- * @requestField ?sceneUuid     | String | UUID of the scene the item is in
- * @requestField sceneItemId    | Number | Numeric ID of the scene item         | >= 0
- * @requestField sceneItemIndex | Number | New index position of the scene item | >= 0
+ * @requestField ?sceneName     | String        | Name of the scene the item is in
+ * @requestField ?sceneUuid     | String        | UUID of the scene the item is in
+ * @requestField sceneItemId    | Number(int64) | Numeric ID of the scene item         | >= 0
+ * @requestField sceneItemIndex | Number(int32) | New index position of the scene item | >= 0
  *
  * @requestType SetSceneItemIndex
  * @complexity 3
@@ -736,9 +736,9 @@ RequestResult RequestHandler::SetSceneItemIndex(const Request &request)
  *
  * Scenes and Groups
  *
- * @requestField ?sceneName  | String | Name of the scene the item is in
- * @requestField ?sceneUuid  | String | UUID of the scene the item is in
- * @requestField sceneItemId | Number | Numeric ID of the scene item | >= 0
+ * @requestField ?sceneName  | String        | Name of the scene the item is in
+ * @requestField ?sceneUuid  | String        | UUID of the scene the item is in
+ * @requestField sceneItemId | Number(int64) | Numeric ID of the scene item | >= 0
  *
  * @responseField sceneItemBlendMode | String | Current blend mode
  *
@@ -771,10 +771,10 @@ RequestResult RequestHandler::GetSceneItemBlendMode(const Request &request)
  *
  * Scenes and Groups
  *
- * @requestField ?sceneName         | String | Name of the scene the item is in
- * @requestField ?sceneUuid         | String | UUID of the scene the item is in
- * @requestField sceneItemId        | Number | Numeric ID of the scene item | >= 0
- * @requestField sceneItemBlendMode | String | New blend mode
+ * @requestField ?sceneName         | String        | Name of the scene the item is in
+ * @requestField ?sceneUuid         | String        | UUID of the scene the item is in
+ * @requestField sceneItemId        | Number(int64) | Numeric ID of the scene item | >= 0
+ * @requestField sceneItemBlendMode | String        | New blend mode
  *
  * @requestType SetSceneItemBlendMode
  * @complexity 2

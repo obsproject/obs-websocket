@@ -80,12 +80,12 @@ void EventHandler::HandleSourceFilterListReindexed(void *param, calldata_t *data
 /**
  * A filter has been added to a source.
  *
- * @dataField sourceName            | String | Name of the source the filter was added to
- * @dataField filterName            | String | Name of the filter
- * @dataField filterKind            | String | The kind of the filter
- * @dataField filterIndex           | Number | Index position of the filter
- * @dataField filterSettings        | Object | The settings configured to the filter when it was created
- * @dataField defaultFilterSettings | Object | The default settings for the filter
+ * @dataField sourceName            | String        | Name of the source the filter was added to
+ * @dataField filterName            | String        | Name of the filter
+ * @dataField filterKind            | String        | The kind of the filter
+ * @dataField filterIndex           | Number(int64) | Index position of the filter
+ * @dataField filterSettings        | Object        | The settings configured to the filter when it was created
+ * @dataField defaultFilterSettings | Object        | The default settings for the filter
  *
  * @eventType SourceFilterCreated
  * @eventSubscription Filters

@@ -262,10 +262,10 @@ RequestResult RequestHandler::GetSourceFilter(const Request &request)
 /**
  * Sets the index position of a filter on a source.
  *
- * @requestField ?sourceName | String | Name of the source the filter is on
- * @requestField ?sourceUuid | String | UUID of the source the filter is on
- * @requestField filterName  | String | Name of the filter
- * @requestField filterIndex | Number | New index position of the filter | >= 0
+ * @requestField ?sourceName | String        | Name of the source the filter is on
+ * @requestField ?sourceUuid | String        | UUID of the source the filter is on
+ * @requestField filterName  | String        | Name of the filter
+ * @requestField filterIndex | Number(int32) | New index position of the filter | >= 0
  *
  * @requestType SetSourceFilterIndex
  * @complexity 3
