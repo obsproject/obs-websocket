@@ -1510,7 +1510,7 @@
         },
         {
           "valueName": "filterIndex",
-          "valueType": "Number",
+          "valueType": "Number(int64)",
           "valueDescription": "Index of the filter in the list, beginning at 0"
         },
         {
@@ -1687,7 +1687,7 @@
         },
         {
           "valueName": "rpcVersion",
-          "valueType": "Number",
+          "valueType": "Number(int32)",
           "valueDescription": "Current latest obs-websocket RPC version"
         },
         {
@@ -3212,22 +3212,22 @@
         },
         {
           "valueName": "outputDuration",
-          "valueType": "Number",
+          "valueType": "Number(uint64)",
           "valueDescription": "Current duration in milliseconds for the output"
         },
         {
           "valueName": "outputCongestion",
-          "valueType": "Number",
+          "valueType": "Number(float)",
           "valueDescription": "Congestion of the output"
         },
         {
           "valueName": "outputBytes",
-          "valueType": "Number",
+          "valueType": "Number(uint64)",
           "valueDescription": "Number of bytes sent by the output"
         },
         {
           "valueName": "outputSkippedFrames",
-          "valueType": "Number",
+          "valueType": "Number(int32)",
           "valueDescription": "Number of frames skipped by the output's process"
         },
         {
@@ -3384,12 +3384,12 @@
         },
         {
           "valueName": "outputDuration",
-          "valueType": "Number",
+          "valueType": "Number(uint64)",
           "valueDescription": "Current duration in milliseconds for the output"
         },
         {
           "valueName": "outputBytes",
-          "valueType": "Number",
+          "valueType": "Number(uint64)",
           "valueDescription": "Number of bytes sent by the output"
         }
       ]
@@ -4797,27 +4797,27 @@
         },
         {
           "valueName": "outputDuration",
-          "valueType": "Number",
+          "valueType": "Number(uint64)",
           "valueDescription": "Current duration in milliseconds for the output"
         },
         {
           "valueName": "outputCongestion",
-          "valueType": "Number",
+          "valueType": "Number(float)",
           "valueDescription": "Congestion of the output"
         },
         {
           "valueName": "outputBytes",
-          "valueType": "Number",
+          "valueType": "Number(uint64)",
           "valueDescription": "Number of bytes sent by the output"
         },
         {
           "valueName": "outputSkippedFrames",
-          "valueType": "Number",
+          "valueType": "Number(int32)",
           "valueDescription": "Number of frames skipped by the output's process"
         },
         {
           "valueName": "outputTotalFrames",
-          "valueType": "Number",
+          "valueType": "Number(int32)",
           "valueDescription": "Total number of frames delivered by the output's process"
         }
       ]
@@ -4962,7 +4962,7 @@
         },
         {
           "valueName": "transitionDuration",
-          "valueType": "Number",
+          "valueType": "Number(int32)",
           "valueDescription": "Configured transition duration in milliseconds. `null` if transition is fixed"
         },
         {
@@ -5084,7 +5084,7 @@
       "requestFields": [
         {
           "valueName": "position",
-          "valueType": "Number",
+          "valueType": "Number(float)",
           "valueDescription": "New position",
           "valueRestrictions": ">= 0.0, <= 1.0",
           "valueOptional": false,
@@ -6283,7 +6283,7 @@
         },
         {
           "valueName": "sceneItemId",
-          "valueType": "Number",
+          "valueType": "Number(int64)",
           "valueDescription": "Numeric ID of the scene item"
         },
         {
@@ -6315,7 +6315,7 @@
         },
         {
           "valueName": "sceneItemId",
-          "valueType": "Number",
+          "valueType": "Number(int64)",
           "valueDescription": "Numeric ID of the scene item"
         },
         {
@@ -6347,7 +6347,7 @@
         },
         {
           "valueName": "sceneItemId",
-          "valueType": "Number",
+          "valueType": "Number(int64)",
           "valueDescription": "Numeric ID of the scene item"
         }
       ]

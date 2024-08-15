@@ -297,14 +297,14 @@ RequestResult RequestHandler::GetOutputList(const Request &)
  *
  * @requestField outputName | String | Output name
  *
- * @responseField outputActive        | Boolean | Whether the output is active
- * @responseField outputReconnecting  | Boolean | Whether the output is reconnecting
- * @responseField outputTimecode      | String  | Current formatted timecode string for the output
- * @responseField outputDuration      | Number  | Current duration in milliseconds for the output
- * @responseField outputCongestion    | Number  | Congestion of the output
- * @responseField outputBytes         | Number  | Number of bytes sent by the output
- * @responseField outputSkippedFrames | Number  | Number of frames skipped by the output's process
- * @responseField outputTotalFrames   | Number  | Total number of frames delivered by the output's process
+ * @responseField outputActive        | Boolean        | Whether the output is active
+ * @responseField outputReconnecting  | Boolean        | Whether the output is reconnecting
+ * @responseField outputTimecode      | String         | Current formatted timecode string for the output
+ * @responseField outputDuration      | Number(uint64) | Current duration in milliseconds for the output
+ * @responseField outputCongestion    | Number(float)  | Congestion of the output
+ * @responseField outputBytes         | Number(uint64) | Number of bytes sent by the output
+ * @responseField outputSkippedFrames | Number(int32)  | Number of frames skipped by the output's process
+ * @responseField outputTotalFrames   | Number(int32)  | Total number of frames delivered by the output's process
  *
  * @requestType GetOutputStatus
  * @complexity 4

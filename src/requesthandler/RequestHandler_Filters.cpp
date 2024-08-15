@@ -226,10 +226,10 @@ RequestResult RequestHandler::SetSourceFilterName(const Request &request)
  * @requestField ?sourceUuid | String | UUID of the source
  * @requestField filterName  | String | Name of the filter
  *
- * @responseField filterEnabled  | Boolean | Whether the filter is enabled
- * @responseField filterIndex    | Number  | Index of the filter in the list, beginning at 0
- * @responseField filterKind     | String  | The kind of filter
- * @responseField filterSettings | Object  | Settings object associated with the filter
+ * @responseField filterEnabled  | Boolean       | Whether the filter is enabled
+ * @responseField filterIndex    | Number(int64) | Index of the filter in the list, beginning at 0
+ * @responseField filterKind     | String        | The kind of filter
+ * @responseField filterSettings | Object        | Settings object associated with the filter
  *
  * @requestType GetSourceFilter
  * @complexity 2

@@ -31,7 +31,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
  *
  * @responseField obsVersion            | String        | Current OBS Studio version
  * @responseField obsWebSocketVersion   | String        | Current obs-websocket version
- * @responseField rpcVersion            | Number        | Current latest obs-websocket RPC version
+ * @responseField rpcVersion            | Number(int32) | Current latest obs-websocket RPC version
  * @responseField availableRequests     | Array<String> | Array of available RPC requests for the currently negotiated RPC version
  * @responseField supportedImageFormats | Array<String> | Image formats available in `GetSourceScreenshot` and `SaveSourceScreenshot` requests.
  * @responseField platform              | String        | Name of the platform. Usually `windows`, `macos`, or `ubuntu` (linux flavor). Not guaranteed to be any of those

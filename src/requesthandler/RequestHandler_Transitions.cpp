@@ -80,13 +80,13 @@ RequestResult RequestHandler::GetSceneTransitionList(const Request &)
 /**
  * Gets information about the current scene transition.
  *
- * @responseField transitionName         | String  | Name of the transition
- * @responseField transitionUuid         | String  | UUID of the transition
- * @responseField transitionKind         | String  | Kind of the transition
- * @responseField transitionFixed        | Boolean | Whether the transition uses a fixed (unconfigurable) duration
- * @responseField transitionDuration     | Number  | Configured transition duration in milliseconds. `null` if transition is fixed
- * @responseField transitionConfigurable | Boolean | Whether the transition supports being configured
- * @responseField transitionSettings     | Object  | Object of settings for the transition. `null` if transition is not configurable
+ * @responseField transitionName         | String        | Name of the transition
+ * @responseField transitionUuid         | String        | UUID of the transition
+ * @responseField transitionKind         | String        | Kind of the transition
+ * @responseField transitionFixed        | Boolean       | Whether the transition uses a fixed (unconfigurable) duration
+ * @responseField transitionDuration     | Number(int32) | Configured transition duration in milliseconds. `null` if transition is fixed
+ * @responseField transitionConfigurable | Boolean       | Whether the transition supports being configured
+ * @responseField transitionSettings     | Object        | Object of settings for the transition. `null` if transition is not configurable
  *
  * @requestType GetCurrentSceneTransition
  * @complexity 2
@@ -291,8 +291,8 @@ RequestResult RequestHandler::TriggerStudioModeTransition(const Request &)
  *
  * **Very important note**: This will be deprecated and replaced in a future version of obs-websocket.
  *
- * @requestField position | Number  | New position | >= 0.0, <= 1.0
- * @requestField ?release | Boolean | Whether to release the TBar. Only set `false` if you know that you will be sending another position update | `true`
+ * @requestField position | Number(float) | New position | >= 0.0, <= 1.0
+ * @requestField ?release | Boolean       | Whether to release the TBar. Only set `false` if you know that you will be sending another position update | `true`
  *
  * @requestType SetTBarPosition
  * @complexity 3

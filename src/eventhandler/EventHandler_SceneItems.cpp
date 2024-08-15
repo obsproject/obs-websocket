@@ -132,10 +132,10 @@ void EventHandler::HandleSceneItemListReindexed(void *param, calldata_t *data)
 /**
  * A scene item's enable state has changed.
  *
- * @dataField sceneName        | String  | Name of the scene the item is in
- * @dataField sceneUuid        | String  | UUID of the scene the item is in
- * @dataField sceneItemId      | Number  | Numeric ID of the scene item
- * @dataField sceneItemEnabled | Boolean | Whether the scene item is enabled (visible)
+ * @dataField sceneName        | String        | Name of the scene the item is in
+ * @dataField sceneUuid        | String        | UUID of the scene the item is in
+ * @dataField sceneItemId      | Number(int64) | Numeric ID of the scene item
+ * @dataField sceneItemEnabled | Boolean       | Whether the scene item is enabled (visible)
  *
  * @eventType SceneItemEnableStateChanged
  * @eventSubscription SceneItems
@@ -170,10 +170,10 @@ void EventHandler::HandleSceneItemEnableStateChanged(void *param, calldata_t *da
 /**
  * A scene item's lock state has changed.
  *
- * @dataField sceneName       | String  | Name of the scene the item is in
- * @dataField sceneUuid       | String  | UUID of the scene the item is in
- * @dataField sceneItemId     | Number  | Numeric ID of the scene item
- * @dataField sceneItemLocked | Boolean | Whether the scene item is locked
+ * @dataField sceneName       | String        | Name of the scene the item is in
+ * @dataField sceneUuid       | String        | UUID of the scene the item is in
+ * @dataField sceneItemId     | Number(int64) | Numeric ID of the scene item
+ * @dataField sceneItemLocked | Boolean       | Whether the scene item is locked
  *
  * @eventType SceneItemLockStateChanged
  * @eventSubscription SceneItems
@@ -208,9 +208,9 @@ void EventHandler::HandleSceneItemLockStateChanged(void *param, calldata_t *data
 /**
  * A scene item has been selected in the Ui.
  *
- * @dataField sceneName        | String  | Name of the scene the item is in
- * @dataField sceneUuid        | String  | UUID of the scene the item is in
- * @dataField sceneItemId      | Number  | Numeric ID of the scene item
+ * @dataField sceneName        | String        | Name of the scene the item is in
+ * @dataField sceneUuid        | String        | UUID of the scene the item is in
+ * @dataField sceneItemId      | Number(int64) | Numeric ID of the scene item
  *
  * @eventType SceneItemSelected
  * @eventSubscription SceneItems

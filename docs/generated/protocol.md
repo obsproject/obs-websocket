@@ -2338,7 +2338,7 @@ A scene item's enable state has changed.
 | ---- | :---: | ----------- |
 | sceneName | String | Name of the scene the item is in |
 | sceneUuid | String | UUID of the scene the item is in |
-| sceneItemId | Number | Numeric ID of the scene item |
+| sceneItemId | Number(int64) | Numeric ID of the scene item |
 | sceneItemEnabled | Boolean | Whether the scene item is enabled (visible) |
 
 ---
@@ -2357,7 +2357,7 @@ A scene item's lock state has changed.
 | ---- | :---: | ----------- |
 | sceneName | String | Name of the scene the item is in |
 | sceneUuid | String | UUID of the scene the item is in |
-| sceneItemId | Number | Numeric ID of the scene item |
+| sceneItemId | Number(int64) | Numeric ID of the scene item |
 | sceneItemLocked | Boolean | Whether the scene item is locked |
 
 ---
@@ -2376,7 +2376,7 @@ A scene item has been selected in the Ui.
 | ---- | :---: | ----------- |
 | sceneName | String | Name of the scene the item is in |
 | sceneUuid | String | UUID of the scene the item is in |
-| sceneItemId | Number | Numeric ID of the scene item |
+| sceneItemId | Number(int64) | Numeric ID of the scene item |
 
 ---
 
@@ -2762,7 +2762,7 @@ Gets data about the current plugin and RPC version.
 | ---- | :---: | ----------- |
 | obsVersion | String | Current OBS Studio version |
 | obsWebSocketVersion | String | Current obs-websocket version |
-| rpcVersion | Number | Current latest obs-websocket RPC version |
+| rpcVersion | Number(int32) | Current latest obs-websocket RPC version |
 | availableRequests | Array&lt;String&gt; | Array of available RPC requests for the currently negotiated RPC version |
 | supportedImageFormats | Array&lt;String&gt; | Image formats available in `GetSourceScreenshot` and `SaveSourceScreenshot` requests. |
 | platform | String | Name of the platform. Usually `windows`, `macos`, or `ubuntu` (linux flavor). Not guaranteed to be any of those |
@@ -4117,7 +4117,7 @@ Gets information about the current scene transition.
 | transitionUuid | String | UUID of the transition |
 | transitionKind | String | Kind of the transition |
 | transitionFixed | Boolean | Whether the transition uses a fixed (unconfigurable) duration |
-| transitionDuration | Number | Configured transition duration in milliseconds. `null` if transition is fixed |
+| transitionDuration | Number(int32) | Configured transition duration in milliseconds. `null` if transition is fixed |
 | transitionConfigurable | Boolean | Whether the transition supports being configured |
 | transitionSettings | Object | Object of settings for the transition. `null` if transition is not configurable |
 
@@ -4216,7 +4216,7 @@ Sets the position of the TBar.
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
-| position | Number | New position | >= 0.0, <= 1.0 | N/A |
+| position | Number(float) | New position | >= 0.0, <= 1.0 | N/A |
 | ?release | Boolean | Whether to release the TBar. Only set `false` if you know that you will be sending another position update | None | `true` |
 
 ## Filters Requests
@@ -4362,7 +4362,7 @@ Gets the info for a specific source filter.
 | Name | Type  | Description |
 | ---- | :---: | ----------- |
 | filterEnabled | Boolean | Whether the filter is enabled |
-| filterIndex | Number | Index of the filter in the list, beginning at 0 |
+| filterIndex | Number(int64) | Index of the filter in the list, beginning at 0 |
 | filterKind | String | The kind of filter |
 | filterSettings | Object | Settings object associated with the filter |
 
@@ -5018,10 +5018,10 @@ Gets the status of an output.
 | outputActive | Boolean | Whether the output is active |
 | outputReconnecting | Boolean | Whether the output is reconnecting |
 | outputTimecode | String | Current formatted timecode string for the output |
-| outputDuration | Number | Current duration in milliseconds for the output |
-| outputCongestion | Number | Congestion of the output |
-| outputBytes | Number | Number of bytes sent by the output |
-| outputSkippedFrames | Number | Number of frames skipped by the output's process |
+| outputDuration | Number(uint64) | Current duration in milliseconds for the output |
+| outputCongestion | Number(float) | Congestion of the output |
+| outputBytes | Number(uint64) | Number of bytes sent by the output |
+| outputSkippedFrames | Number(int32) | Number of frames skipped by the output's process |
 | outputTotalFrames | Number | Total number of frames delivered by the output's process |
 
 ---
@@ -5134,11 +5134,11 @@ Gets the status of the stream output.
 | outputActive | Boolean | Whether the output is active |
 | outputReconnecting | Boolean | Whether the output is currently reconnecting |
 | outputTimecode | String | Current formatted timecode string for the output |
-| outputDuration | Number | Current duration in milliseconds for the output |
-| outputCongestion | Number | Congestion of the output |
-| outputBytes | Number | Number of bytes sent by the output |
-| outputSkippedFrames | Number | Number of frames skipped by the output's process |
-| outputTotalFrames | Number | Total number of frames delivered by the output's process |
+| outputDuration | Number(uint64) | Current duration in milliseconds for the output |
+| outputCongestion | Number(float) | Congestion of the output |
+| outputBytes | Number(uint64) | Number of bytes sent by the output |
+| outputSkippedFrames | Number(int32) | Number of frames skipped by the output's process |
+| outputTotalFrames | Number(int32) | Total number of frames delivered by the output's process |
 
 ---
 
@@ -5209,8 +5209,8 @@ Gets the status of the record output.
 | outputActive | Boolean | Whether the output is active |
 | outputPaused | Boolean | Whether the output is paused |
 | outputTimecode | String | Current formatted timecode string for the output |
-| outputDuration | Number | Current duration in milliseconds for the output |
-| outputBytes | Number | Number of bytes sent by the output |
+| outputDuration | Number(uint64) | Current duration in milliseconds for the output |
+| outputBytes | Number(uint64) | Number of bytes sent by the output |
 
 ---
 
