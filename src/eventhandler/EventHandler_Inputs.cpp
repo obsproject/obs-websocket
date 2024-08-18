@@ -442,7 +442,7 @@ void EventHandler::HandleInputAudioMonitorTypeChanged(void *param, calldata_t *d
  * @api events
  * @category inputs
  */
-void EventHandler::HandleInputVolumeMeters(std::vector<json> inputs)
+void EventHandler::HandleInputVolumeMeters(std::vector<json> &inputs)
 {
 	json eventData;
 	eventData["inputs"] = inputs;

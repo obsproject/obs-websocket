@@ -72,7 +72,7 @@ namespace Utils {
 
 			// Maintains an array of active inputs
 			class Handler {
-				typedef std::function<void(std::vector<json>)> UpdateCallback;
+				typedef std::function<void(std::vector<json> &)> UpdateCallback;
 				typedef std::unique_ptr<Meter> MeterPtr;
 
 			public:
