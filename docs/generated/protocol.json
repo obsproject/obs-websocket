@@ -4,7 +4,7 @@
       "enumType": "EventSubscription",
       "enumIdentifiers": [
         {
-          "description": "Subcription value used to disable all events.",
+          "description": "Subscription value used to disable all events.",
           "enumIdentifier": "None",
           "rpcVersion": "1",
           "deprecated": false,
