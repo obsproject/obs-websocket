@@ -3232,7 +3232,7 @@
         },
         {
           "valueName": "outputTotalFrames",
-          "valueType": "Number",
+          "valueType": "Number(int32)",
           "valueDescription": "Total number of frames delivered by the output's process"
         }
       ]

@@ -5022,7 +5022,7 @@ Gets the status of an output.
 | outputCongestion | Number(float) | Congestion of the output |
 | outputBytes | Number(uint64) | Number of bytes sent by the output |
 | outputSkippedFrames | Number(int32) | Number of frames skipped by the output's process |
-| outputTotalFrames | Number | Total number of frames delivered by the output's process |
+| outputTotalFrames | Number(int32) | Total number of frames delivered by the output's process |
 
 ---
 
