@@ -56,8 +56,13 @@ SettingsDialog::SettingsDialog(QWidget *parent)
 
 	connect(sessionTableTimer, &QTimer::timeout, this, &SettingsDialog::FillSessionTable);
 	connect(ui->buttonBox, &QDialogButtonBox::clicked, this, &SettingsDialog::DialogButtonClicked);
+#if QT_VERSION >= QT_VERSION_CHECK(6, 7, 0)
+	connect(ui->enableAuthenticationCheckBox, &QCheckBox::checkStateChanged, this,
+		&SettingsDialog::EnableAuthenticationCheckBoxChanged);
+#else
 	connect(ui->enableAuthenticationCheckBox, &QCheckBox::stateChanged, this,
 		&SettingsDialog::EnableAuthenticationCheckBoxChanged);
+#endif
 	connect(ui->generatePasswordButton, &QPushButton::clicked, this, &SettingsDialog::GeneratePasswordButtonClicked);
 	connect(ui->showConnectInfoButton, &QPushButton::clicked, this, &SettingsDialog::ShowConnectInfoButtonClicked);
 	connect(ui->serverPasswordLineEdit, &QLineEdit::textEdited, this, &SettingsDialog::PasswordEdited);
