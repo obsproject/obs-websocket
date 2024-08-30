@@ -37,7 +37,9 @@ struct SerialFrameBatch {
 	std::condition_variable condition;
 
 	SerialFrameBatch(RequestHandler &requestHandler, json &variables, bool haltOnFailure)
-		: requestHandler(requestHandler), variables(variables), haltOnFailure(haltOnFailure)
+		: requestHandler(requestHandler),
+		  variables(variables),
+		  haltOnFailure(haltOnFailure)
 	{
 	}
 };

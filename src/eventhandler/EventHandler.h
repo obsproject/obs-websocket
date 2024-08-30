@@ -34,20 +34,25 @@ public:
 	EventHandler();
 	~EventHandler();
 
-	typedef std::function<void(uint64_t, std::string, json, uint8_t)>
-		BroadcastCallback; // uint64_t requiredIntent, std::string eventType, json eventData, uint8_t rpcVersion
-	void SetBroadcastCallback(BroadcastCallback cb);
-	typedef std::function<void(bool)> ObsReadyCallback; // bool ready
-	void SetObsReadyCallback(ObsReadyCallback cb);
+	void ProcessSubscriptionChange(bool type, uint64_t eventSubscriptions);
 
-	void ProcessSubscription(uint64_t eventSubscriptions);
-	void ProcessUnsubscription(uint64_t eventSubscriptions);
+	// Callback when an event fires
+	typedef std::function<void(uint64_t, std::string, json, uint8_t)>
+		EventCallback; // uint64_t requiredIntent, std::string eventType, json eventData, uint8_t rpcVersion
+	inline void SetEventCallback(EventCallback cb) { _eventCallback = cb; }
+
+	// Callback when OBS becomes ready or non-ready
+	typedef std::function<void(bool)> ObsReadyCallback; // bool ready
+	inline void SetObsReadyCallback(ObsReadyCallback cb) { _obsReadyCallback = cb; }
 
 private:
-	BroadcastCallback _broadcastCallback;
+	EventCallback _eventCallback;
 	ObsReadyCallback _obsReadyCallback;
 
 	std::atomic<bool> _obsReady = false;
+
+	std::vector<OBSSignal> coreSignals;
+	OBSSignal recordFileChangedSignal;
 
 	std::unique_ptr<Utils::Obs::VolumeMeter::Handler> _inputVolumeMetersHandler;
 	std::atomic<uint64_t> _inputVolumeMetersRef = 0;
@@ -124,7 +129,7 @@ private:
 						  calldata_t *data); // Direct callback
 	static void HandleInputAudioMonitorTypeChanged(void *param,
 						       calldata_t *data); // Direct callback
-	void HandleInputVolumeMeters(std::vector<json> inputs); // AudioMeter::Handler callback
+	void HandleInputVolumeMeters(std::vector<json> inputs);           // AudioMeter::Handler callback
 
 	// Transitions
 	void HandleCurrentSceneTransitionChanged();
@@ -146,13 +151,14 @@ private:
 	void HandleSourceFilterCreated(obs_source_t *source, obs_source_t *filter);
 	void HandleSourceFilterRemoved(obs_source_t *source, obs_source_t *filter);
 	static void HandleSourceFilterNameChanged(void *param,
-						  calldata_t *data);                     // Direct callback
+						  calldata_t *data); // Direct callback
 	void HandleSourceFilterSettingsChanged(obs_source_t *source);
 	static void HandleSourceFilterEnableStateChanged(void *param, calldata_t *data); // Direct callback
 
 	// Outputs
 	void HandleStreamStateChanged(ObsOutputState state);
 	void HandleRecordStateChanged(ObsOutputState state);
+	static void HandleRecordFileChanged(void *param, calldata_t *data); // Direct callback
 	void HandleReplayBufferStateChanged(ObsOutputState state);
 	void HandleVirtualcamStateChanged(ObsOutputState state);
 	void HandleReplayBufferSaved();

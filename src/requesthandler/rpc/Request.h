@@ -64,13 +64,18 @@ struct Request {
 			   const bool allowEmpty = false) const;
 
 	// All return values have incremented refcounts
-	obs_source_t *ValidateSource(const std::string &nameKeyName, const std::string &uuidKeyName, RequestStatus::RequestStatus &statusCode, std::string &comment) const;
-	obs_source_t *ValidateScene(RequestStatus::RequestStatus &statusCode, std::string &comment, const ObsWebSocketSceneFilter filter = OBS_WEBSOCKET_SCENE_FILTER_SCENE_ONLY) const;
-	obs_scene_t *ValidateScene2(RequestStatus::RequestStatus &statusCode, std::string &comment, const ObsWebSocketSceneFilter filter = OBS_WEBSOCKET_SCENE_FILTER_SCENE_ONLY) const;
+	obs_source_t *ValidateSource(const std::string &nameKeyName, const std::string &uuidKeyName,
+				     RequestStatus::RequestStatus &statusCode, std::string &comment) const;
+	obs_source_t *ValidateScene(RequestStatus::RequestStatus &statusCode, std::string &comment,
+				    const ObsWebSocketSceneFilter filter = OBS_WEBSOCKET_SCENE_FILTER_SCENE_ONLY) const;
+	obs_scene_t *ValidateScene2(RequestStatus::RequestStatus &statusCode, std::string &comment,
+				    const ObsWebSocketSceneFilter filter = OBS_WEBSOCKET_SCENE_FILTER_SCENE_ONLY) const;
 	obs_source_t *ValidateInput(RequestStatus::RequestStatus &statusCode, std::string &comment) const;
 	FilterPair ValidateFilter(RequestStatus::RequestStatus &statusCode, std::string &comment) const;
-	obs_sceneitem_t *ValidateSceneItem(RequestStatus::RequestStatus &statusCode, std::string &comment, const ObsWebSocketSceneFilter filter = OBS_WEBSOCKET_SCENE_FILTER_SCENE_ONLY) const;
-	obs_output_t *ValidateOutput(const std::string &keyName, RequestStatus::RequestStatus &statusCode, std::string &comment) const;
+	obs_sceneitem_t *ValidateSceneItem(RequestStatus::RequestStatus &statusCode, std::string &comment,
+					   const ObsWebSocketSceneFilter filter = OBS_WEBSOCKET_SCENE_FILTER_SCENE_ONLY) const;
+	obs_output_t *ValidateOutput(const std::string &keyName, RequestStatus::RequestStatus &statusCode,
+				     std::string &comment) const;
 
 	std::string RequestType;
 	bool HasRequestData;

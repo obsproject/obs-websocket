@@ -29,36 +29,6 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 inline void ___properties_dummy_addref(obs_properties_t *) {}
 using OBSPropertiesAutoDestroy = OBSRef<obs_properties_t *, ___properties_dummy_addref, obs_properties_destroy>;
 
-#if !defined(OBS_AUTORELEASE)
-inline void ___source_dummy_addref(obs_source_t *) {}
-inline void ___scene_dummy_addref(obs_scene_t *) {}
-inline void ___sceneitem_dummy_addref(obs_sceneitem_t *) {}
-inline void ___data_dummy_addref(obs_data_t *) {}
-inline void ___data_array_dummy_addref(obs_data_array_t *) {}
-inline void ___output_dummy_addref(obs_output_t *) {}
-inline void ___encoder_dummy_addref(obs_encoder_t *) {}
-inline void ___service_dummy_addref(obs_service_t *) {}
-
-inline void ___weak_source_dummy_addref(obs_weak_source_t *) {}
-inline void ___weak_output_dummy_addref(obs_weak_output_t *) {}
-inline void ___weak_encoder_dummy_addref(obs_weak_encoder_t *) {}
-inline void ___weak_service_dummy_addref(obs_weak_service_t *) {}
-
-using OBSSourceAutoRelease = OBSRef<obs_source_t *, ___source_dummy_addref, obs_source_release>;
-using OBSSceneAutoRelease = OBSRef<obs_scene_t *, ___scene_dummy_addref, obs_scene_release>;
-using OBSSceneItemAutoRelease = OBSRef<obs_sceneitem_t *, ___sceneitem_dummy_addref, obs_sceneitem_release>;
-using OBSDataAutoRelease = OBSRef<obs_data_t *, ___data_dummy_addref, obs_data_release>;
-using OBSDataArrayAutoRelease = OBSRef<obs_data_array_t *, ___data_array_dummy_addref, obs_data_array_release>;
-using OBSOutputAutoRelease = OBSRef<obs_output_t *, ___output_dummy_addref, obs_output_release>;
-using OBSEncoderAutoRelease = OBSRef<obs_encoder_t *, ___encoder_dummy_addref, obs_encoder_release>;
-using OBSServiceAutoRelease = OBSRef<obs_service_t *, ___service_dummy_addref, obs_service_release>;
-
-using OBSWeakSourceAutoRelease = OBSRef<obs_weak_source_t *, ___weak_source_dummy_addref, obs_weak_source_release>;
-using OBSWeakOutputAutoRelease = OBSRef<obs_weak_output_t *, ___weak_output_dummy_addref, obs_weak_output_release>;
-using OBSWeakEncoderAutoRelease = OBSRef<obs_weak_encoder_t *, ___weak_encoder_dummy_addref, obs_weak_encoder_release>;
-using OBSWeakServiceAutoRelease = OBSRef<obs_weak_service_t *, ___weak_service_dummy_addref, obs_weak_service_release>;
-#endif
-
 template<typename T> T *GetCalldataPointer(const calldata_t *data, const char *name)
 {
 	void *ptr = nullptr;
@@ -72,7 +42,7 @@ enum ObsOutputState {
 	*
 	* @enumIdentifier OBS_WEBSOCKET_OUTPUT_UNKNOWN
 	* @enumType ObsOutputState
-	* @rpcVersion 1
+	* @rpcVersion -1
 	* @initialVersion 5.0.0
 	* @api enums
 	*/
@@ -82,7 +52,7 @@ enum ObsOutputState {
 	*
 	* @enumIdentifier OBS_WEBSOCKET_OUTPUT_STARTING
 	* @enumType ObsOutputState
-	* @rpcVersion 1
+	* @rpcVersion -1
 	* @initialVersion 5.0.0
 	* @api enums
 	*/
@@ -92,7 +62,7 @@ enum ObsOutputState {
 	*
 	* @enumIdentifier OBS_WEBSOCKET_OUTPUT_STARTED
 	* @enumType ObsOutputState
-	* @rpcVersion 1
+	* @rpcVersion -1
 	* @initialVersion 5.0.0
 	* @api enums
 	*/
@@ -102,7 +72,7 @@ enum ObsOutputState {
 	*
 	* @enumIdentifier OBS_WEBSOCKET_OUTPUT_STOPPING
 	* @enumType ObsOutputState
-	* @rpcVersion 1
+	* @rpcVersion -1
 	* @initialVersion 5.0.0
 	* @api enums
 	*/
@@ -112,7 +82,7 @@ enum ObsOutputState {
 	*
 	* @enumIdentifier OBS_WEBSOCKET_OUTPUT_STOPPED
 	* @enumType ObsOutputState
-	* @rpcVersion 1
+	* @rpcVersion -1
 	* @initialVersion 5.0.0
 	* @api enums
 	*/
@@ -122,7 +92,7 @@ enum ObsOutputState {
 	*
 	* @enumIdentifier OBS_WEBSOCKET_OUTPUT_RECONNECTING
 	* @enumType ObsOutputState
-	* @rpcVersion 1
+	* @rpcVersion -1
 	* @initialVersion 5.0.0
 	* @api enums
 	*/
@@ -132,7 +102,7 @@ enum ObsOutputState {
 	*
 	* @enumIdentifier OBS_WEBSOCKET_OUTPUT_RECONNECTED
 	* @enumType ObsOutputState
-	* @rpcVersion 1
+	* @rpcVersion -1
 	* @initialVersion 5.1.0
 	* @api enums
 	*/
@@ -142,7 +112,7 @@ enum ObsOutputState {
 	*
 	* @enumIdentifier OBS_WEBSOCKET_OUTPUT_PAUSED
 	* @enumType ObsOutputState
-	* @rpcVersion 1
+	* @rpcVersion -1
 	* @initialVersion 5.1.0
 	* @api enums
 	*/
@@ -152,7 +122,7 @@ enum ObsOutputState {
 	*
 	* @enumIdentifier OBS_WEBSOCKET_OUTPUT_RESUMED
 	* @enumType ObsOutputState
-	* @rpcVersion 1
+	* @rpcVersion -1
 	* @initialVersion 5.0.0
 	* @api enums
 	*/
@@ -176,7 +146,7 @@ enum ObsMediaInputAction {
 	*
 	* @enumIdentifier OBS_WEBSOCKET_MEDIA_INPUT_ACTION_NONE
 	* @enumType ObsMediaInputAction
-	* @rpcVersion 1
+	* @rpcVersion -1
 	* @initialVersion 5.0.0
 	* @api enums
 	*/
@@ -186,7 +156,7 @@ enum ObsMediaInputAction {
 	*
 	* @enumIdentifier OBS_WEBSOCKET_MEDIA_INPUT_ACTION_PLAY
 	* @enumType ObsMediaInputAction
-	* @rpcVersion 1
+	* @rpcVersion -1
 	* @initialVersion 5.0.0
 	* @api enums
 	*/
@@ -196,7 +166,7 @@ enum ObsMediaInputAction {
 	*
 	* @enumIdentifier OBS_WEBSOCKET_MEDIA_INPUT_ACTION_PAUSE
 	* @enumType ObsMediaInputAction
-	* @rpcVersion 1
+	* @rpcVersion -1
 	* @initialVersion 5.0.0
 	* @api enums
 	*/
@@ -206,7 +176,7 @@ enum ObsMediaInputAction {
 	*
 	* @enumIdentifier OBS_WEBSOCKET_MEDIA_INPUT_ACTION_STOP
 	* @enumType ObsMediaInputAction
-	* @rpcVersion 1
+	* @rpcVersion -1
 	* @initialVersion 5.0.0
 	* @api enums
 	*/
@@ -216,7 +186,7 @@ enum ObsMediaInputAction {
 	*
 	* @enumIdentifier OBS_WEBSOCKET_MEDIA_INPUT_ACTION_RESTART
 	* @enumType ObsMediaInputAction
-	* @rpcVersion 1
+	* @rpcVersion -1
 	* @initialVersion 5.0.0
 	* @api enums
 	*/
@@ -226,7 +196,7 @@ enum ObsMediaInputAction {
 	*
 	* @enumIdentifier OBS_WEBSOCKET_MEDIA_INPUT_ACTION_NEXT
 	* @enumType ObsMediaInputAction
-	* @rpcVersion 1
+	* @rpcVersion -1
 	* @initialVersion 5.0.0
 	* @api enums
 	*/
@@ -236,7 +206,7 @@ enum ObsMediaInputAction {
 	*
 	* @enumIdentifier OBS_WEBSOCKET_MEDIA_INPUT_ACTION_PREVIOUS
 	* @enumType ObsMediaInputAction
-	* @rpcVersion 1
+	* @rpcVersion -1
 	* @initialVersion 5.0.0
 	* @api enums
 	*/
@@ -257,6 +227,7 @@ namespace Utils {
 	namespace Obs {
 		namespace StringHelper {
 			std::string GetObsVersion();
+			std::string GetModuleConfigPath(std::string fileName);
 			std::string GetCurrentSceneCollection();
 			std::string GetCurrentProfile();
 			std::string GetCurrentProfilePath();

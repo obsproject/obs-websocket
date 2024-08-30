@@ -17,8 +17,9 @@ You should have received a copy of the GNU General Public License along
 with this program. If not, see <https://www.gnu.org/licenses/>
 */
 
+#include <fstream>
+
 #include "Json.h"
-#include "Platform.h"
 #include "plugin-macros.generated.h"
 
 bool Utils::Json::JsonArrayIsValidObsArray(const json &j)
@@ -177,21 +178,43 @@ json Utils::Json::ObsDataToJson(obs_data_t *d, bool includeDefault)
 
 bool Utils::Json::GetJsonFileContent(std::string fileName, json &content)
 {
-	std::string textContent;
-	if (!Utils::Platform::GetTextFileContent(fileName, textContent))
+	std::ifstream f(fileName);
+	if (!f.is_open())
 		return false;
 
 	try {
-		content = json::parse(textContent);
+		content = json::parse(f);
 	} catch (json::parse_error &e) {
-		blog(LOG_WARNING, "Failed to decode content of JSON file `%s`. Error: %s", fileName.c_str(), e.what());
+		blog(LOG_WARNING, "[Utils::Json::GetJsonFileContent] Failed to decode content of JSON file `%s`. Error: %s",
+		     fileName.c_str(), e.what());
 		return false;
 	}
+
 	return true;
 }
 
-bool Utils::Json::SetJsonFileContent(std::string fileName, const json &content, bool createNew)
+bool Utils::Json::SetJsonFileContent(std::string fileName, const json &content, bool makeDirs)
 {
-	std::string textContent = content.dump(2);
-	return Utils::Platform::SetTextFileContent(fileName, textContent, createNew);
+	if (makeDirs) {
+		std::error_code ec;
+		auto p = std::filesystem::path(fileName).parent_path();
+		if (!ec && !std::filesystem::exists(p, ec))
+			std::filesystem::create_directories(p, ec);
+		if (ec) {
+			blog(LOG_ERROR, "[Utils::Json::SetJsonFileContent] Failed to create path directories: %s",
+			     ec.message().c_str());
+			return false;
+		}
+	}
+
+	std::ofstream f(fileName);
+	if (!f.is_open()) {
+		blog(LOG_ERROR, "[Utils::Json::SetJsonFileContent] Failed to open file `%s` for writing", fileName.c_str());
+		return false;
+	}
+
+	// Set indent to 2 spaces, then dump content
+	f << std::setw(2) << content;
+
+	return true;
 }

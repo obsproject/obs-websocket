@@ -27,11 +27,11 @@ EventHandler::EventHandler()
 
 	signal_handler_t *coreSignalHandler = obs_get_signal_handler();
 	if (coreSignalHandler) {
-		signal_handler_connect(coreSignalHandler, "source_create", SourceCreatedMultiHandler, this);
-		signal_handler_connect(coreSignalHandler, "source_destroy", SourceDestroyedMultiHandler, this);
-		signal_handler_connect(coreSignalHandler, "source_remove", SourceRemovedMultiHandler, this);
-		signal_handler_connect(coreSignalHandler, "source_rename", SourceRenamedMultiHandler, this);
-		signal_handler_connect(coreSignalHandler, "source_update", SourceUpdatedMultiHandler, this);
+		coreSignals.emplace_back(coreSignalHandler, "source_create", SourceCreatedMultiHandler, this);
+		coreSignals.emplace_back(coreSignalHandler, "source_destroy", SourceDestroyedMultiHandler, this);
+		coreSignals.emplace_back(coreSignalHandler, "source_remove", SourceRemovedMultiHandler, this);
+		coreSignals.emplace_back(coreSignalHandler, "source_rename", SourceRenamedMultiHandler, this);
+		coreSignals.emplace_back(coreSignalHandler, "source_update", SourceUpdatedMultiHandler, this);
 	} else {
 		blog(LOG_ERROR, "[EventHandler::EventHandler] Unable to get libobs signal handler!");
 	}
@@ -45,16 +45,7 @@ EventHandler::~EventHandler()
 
 	obs_frontend_remove_event_callback(OnFrontendEvent, this);
 
-	signal_handler_t *coreSignalHandler = obs_get_signal_handler();
-	if (coreSignalHandler) {
-		signal_handler_disconnect(coreSignalHandler, "source_create", SourceCreatedMultiHandler, this);
-		signal_handler_disconnect(coreSignalHandler, "source_destroy", SourceDestroyedMultiHandler, this);
-		signal_handler_disconnect(coreSignalHandler, "source_remove", SourceRemovedMultiHandler, this);
-		signal_handler_disconnect(coreSignalHandler, "source_rename", SourceRenamedMultiHandler, this);
-		signal_handler_disconnect(coreSignalHandler, "source_update", SourceUpdatedMultiHandler, this);
-	} else {
-		blog(LOG_ERROR, "[EventHandler::~EventHandler] Unable to get libobs signal handler!");
-	}
+	coreSignals.clear();
 
 	// Revoke callbacks of all inputs and scenes, in case some still have our callbacks attached
 	auto enumInputs = [](void *param, obs_source_t *source) {
@@ -73,58 +64,47 @@ EventHandler::~EventHandler()
 	blog_debug("[EventHandler::~EventHandler] Finished.");
 }
 
-void EventHandler::SetBroadcastCallback(EventHandler::BroadcastCallback cb)
+// Function to increment or decrement refcounts for high volume event subscriptions
+void EventHandler::ProcessSubscriptionChange(bool type, uint64_t eventSubscriptions)
 {
-	_broadcastCallback = cb;
-}
-
-void EventHandler::SetObsReadyCallback(EventHandler::ObsReadyCallback cb)
-{
-	_obsReadyCallback = cb;
-}
-
-// Function to increment refcounts for high volume event subscriptions
-void EventHandler::ProcessSubscription(uint64_t eventSubscriptions)
-{
-	if ((eventSubscriptions & EventSubscription::InputVolumeMeters) != 0) {
-		if (_inputVolumeMetersRef.fetch_add(1) == 0) {
-			if (_inputVolumeMetersHandler)
-				blog(LOG_WARNING, "[EventHandler::ProcessSubscription] Input volume meter handler already exists!");
-			else
-				_inputVolumeMetersHandler = std::make_unique<Utils::Obs::VolumeMeter::Handler>(
-					std::bind(&EventHandler::HandleInputVolumeMeters, this, std::placeholders::_1));
+	if (type) {
+		if ((eventSubscriptions & EventSubscription::InputVolumeMeters) != 0) {
+			if (_inputVolumeMetersRef.fetch_add(1) == 0) {
+				if (_inputVolumeMetersHandler)
+					blog(LOG_WARNING,
+					     "[EventHandler::ProcessSubscription] Input volume meter handler already exists!");
+				else
+					_inputVolumeMetersHandler = std::make_unique<Utils::Obs::VolumeMeter::Handler>(
+						std::bind(&EventHandler::HandleInputVolumeMeters, this, std::placeholders::_1));
+			}
 		}
+		if ((eventSubscriptions & EventSubscription::InputActiveStateChanged) != 0)
+			_inputActiveStateChangedRef++;
+		if ((eventSubscriptions & EventSubscription::InputShowStateChanged) != 0)
+			_inputShowStateChangedRef++;
+		if ((eventSubscriptions & EventSubscription::SceneItemTransformChanged) != 0)
+			_sceneItemTransformChangedRef++;
+	} else {
+		if ((eventSubscriptions & EventSubscription::InputVolumeMeters) != 0) {
+			if (_inputVolumeMetersRef.fetch_sub(1) == 1)
+				_inputVolumeMetersHandler.reset();
+		}
+		if ((eventSubscriptions & EventSubscription::InputActiveStateChanged) != 0)
+			_inputActiveStateChangedRef--;
+		if ((eventSubscriptions & EventSubscription::InputShowStateChanged) != 0)
+			_inputShowStateChangedRef--;
+		if ((eventSubscriptions & EventSubscription::SceneItemTransformChanged) != 0)
+			_sceneItemTransformChangedRef--;
 	}
-	if ((eventSubscriptions & EventSubscription::InputActiveStateChanged) != 0)
-		_inputActiveStateChangedRef++;
-	if ((eventSubscriptions & EventSubscription::InputShowStateChanged) != 0)
-		_inputShowStateChangedRef++;
-	if ((eventSubscriptions & EventSubscription::SceneItemTransformChanged) != 0)
-		_sceneItemTransformChangedRef++;
-}
-
-// Function to decrement refcounts for high volume event subscriptions
-void EventHandler::ProcessUnsubscription(uint64_t eventSubscriptions)
-{
-	if ((eventSubscriptions & EventSubscription::InputVolumeMeters) != 0) {
-		if (_inputVolumeMetersRef.fetch_sub(1) == 1)
-			_inputVolumeMetersHandler.reset();
-	}
-	if ((eventSubscriptions & EventSubscription::InputActiveStateChanged) != 0)
-		_inputActiveStateChangedRef--;
-	if ((eventSubscriptions & EventSubscription::InputShowStateChanged) != 0)
-		_inputShowStateChangedRef--;
-	if ((eventSubscriptions & EventSubscription::SceneItemTransformChanged) != 0)
-		_sceneItemTransformChangedRef--;
 }
 
 // Function required in order to use default arguments
 void EventHandler::BroadcastEvent(uint64_t requiredIntent, std::string eventType, json eventData, uint8_t rpcVersion)
 {
-	if (!_broadcastCallback)
+	if (!_eventCallback)
 		return;
 
-	_broadcastCallback(requiredIntent, eventType, eventData, rpcVersion);
+	_eventCallback(requiredIntent, eventType, eventData, rpcVersion);
 }
 
 // Connect source signals for Inputs, Scenes, and Transitions. Filters are automatically connected.
@@ -389,12 +369,21 @@ void EventHandler::OnFrontendEvent(enum obs_frontend_event event, void *private_
 		break;
 	case OBS_FRONTEND_EVENT_RECORDING_STARTED:
 		eventHandler->HandleRecordStateChanged(OBS_WEBSOCKET_OUTPUT_STARTED);
+		{
+			OBSOutputAutoRelease recordOutput = obs_frontend_get_recording_output();
+			if (recordOutput) {
+				signal_handler_t *sh = obs_output_get_signal_handler(recordOutput);
+				eventHandler->recordFileChangedSignal.Connect(sh, "file_changed", HandleRecordFileChanged,
+									      private_data);
+			}
+		}
 		break;
 	case OBS_FRONTEND_EVENT_RECORDING_STOPPING:
 		eventHandler->HandleRecordStateChanged(OBS_WEBSOCKET_OUTPUT_STOPPING);
 		break;
 	case OBS_FRONTEND_EVENT_RECORDING_STOPPED:
 		eventHandler->HandleRecordStateChanged(OBS_WEBSOCKET_OUTPUT_STOPPED);
+		eventHandler->recordFileChangedSignal.Disconnect();
 		break;
 	case OBS_FRONTEND_EVENT_RECORDING_PAUSED:
 		eventHandler->HandleRecordStateChanged(OBS_WEBSOCKET_OUTPUT_PAUSED);

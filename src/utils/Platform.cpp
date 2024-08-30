@@ -21,7 +21,6 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <QCommandLineParser>
 #include <QNetworkInterface>
 #include <QHostAddress>
-#include <QFile>
 #include <obs-frontend-api.h>
 
 #include "Platform.h"
@@ -125,28 +124,4 @@ void Utils::Platform::SendTrayNotification(QSystemTrayIcon::MessageIcon icon, QS
 			delete notification;
 		},
 		(void *)notification, false);
-}
-
-bool Utils::Platform::GetTextFileContent(std::string fileName, std::string &content)
-{
-	QFile f(QString::fromStdString(fileName));
-	if (!f.open(QIODevice::ReadOnly | QIODevice::Text))
-		return false;
-
-	content = f.readAll().toStdString();
-	return true;
-}
-
-bool Utils::Platform::SetTextFileContent(std::string fileName, std::string content, bool createNew)
-{
-	if (!createNew && !QFile::exists(QString::fromStdString(fileName)))
-		return false;
-
-	QFile f(QString::fromStdString(fileName));
-	if (!f.open(QIODevice::WriteOnly | QIODevice::Text))
-		return false;
-
-	QTextStream out(&f);
-	out << content.c_str();
-	return true;
 }

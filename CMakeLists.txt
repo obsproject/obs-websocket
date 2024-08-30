@@ -2,8 +2,10 @@ cmake_minimum_required(VERSION 3.16...3.25)
 
 legacy_check()
 
-set(obs-websocket_VERSION 5.4.2)
+set(obs-websocket_VERSION 5.5.2)
 set(OBS_WEBSOCKET_RPC_VERSION 1)
+
+include(cmake/obs-websocket-api.cmake)
 
 option(ENABLE_WEBSOCKET "Enable building OBS with websocket plugin" ON)
 if(NOT ENABLE_WEBSOCKET)
@@ -34,7 +36,6 @@ add_library(OBS::websocket ALIAS obs-websocket)
 target_sources(
   obs-websocket
   PRIVATE # cmake-format: sortable
-          lib/obs-websocket-api.h
           src/Config.cpp
           src/Config.h
           src/forms/ConnectInfo.cpp
@@ -137,12 +138,14 @@ target_compile_definitions(
 target_compile_options(
   obs-websocket
   PRIVATE $<$<PLATFORM_ID:Windows>:/wd4267>
+          $<$<PLATFORM_ID:Windows>:/wd4996>
           $<$<COMPILE_LANG_AND_ID:CXX,GNU,AppleClang,Clang>:-Wall>
           $<$<COMPILE_LANG_AND_ID:CXX,GNU,AppleClang,Clang>:-Wno-error=float-conversion>
           $<$<COMPILE_LANG_AND_ID:CXX,GNU,AppleClang,Clang>:-Wno-error=shadow>
           $<$<COMPILE_LANG_AND_ID:CXX,GNU>:-Wno-error=format-overflow>
           $<$<COMPILE_LANG_AND_ID:CXX,GNU>:-Wno-error=int-conversion>
           $<$<COMPILE_LANG_AND_ID:CXX,GNU>:-Wno-error=comment>
+          $<$<COMPILE_LANG_AND_ID:CXX,GNU>:-Wno-error=deprecated-declarations>
           $<$<COMPILE_LANG_AND_ID:CXX,AppleClang,Clang>:-Wno-error=null-pointer-subtraction>
           $<$<COMPILE_LANG_AND_ID:CXX,AppleClang,Clang>:-Wno-error=deprecated-declarations>
           $<$<COMPILE_LANG_AND_ID:CXX,AppleClang,Clang>:-Wno-error=implicit-int-conversion>
@@ -154,6 +157,7 @@ target_link_libraries(
   obs-websocket
   PRIVATE OBS::libobs
           OBS::frontend-api
+          OBS::websocket-api
           Qt::Core
           Qt::Widgets
           Qt::Svg

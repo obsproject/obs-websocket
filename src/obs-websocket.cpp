@@ -48,7 +48,9 @@ WebSocketApiPtr _webSocketApi;
 WebSocketServerPtr _webSocketServer;
 SettingsDialog *_settingsDialog = nullptr;
 
-void WebSocketApiEventCallback(std::string vendorName, std::string eventType, obs_data_t *obsEventData);
+void OnWebSocketApiVendorEvent(std::string vendorName, std::string eventType, obs_data_t *obsEventData);
+void OnEvent(uint64_t requiredIntent, std::string eventType, json eventData, uint8_t rpcVersion);
+void OnObsReady(bool ready);
 
 bool obs_module_load(void)
 {
@@ -60,19 +62,30 @@ bool obs_module_load(void)
 	// Initialize the cpu stats
 	_cpuUsageInfo = os_cpu_usage_info_start();
 
+	// Handle migrations
+	if (!MigratePersistentData()) {
+		os_cpu_usage_info_destroy(_cpuUsageInfo);
+		return false;
+	}
+	json migratedConfig = MigrateGlobalConfigData();
+
 	// Create the config manager then load the parameters from storage
-	_config = ConfigPtr(new Config());
-	_config->Load();
+	_config = std::make_shared<Config>();
+	_config->Load(migratedConfig);
 
 	// Initialize the event handler
-	_eventHandler = EventHandlerPtr(new EventHandler());
+	_eventHandler = std::make_shared<EventHandler>();
+	_eventHandler->SetEventCallback(OnEvent);
+	_eventHandler->SetObsReadyCallback(OnObsReady);
 
 	// Initialize the plugin/script API
-	_webSocketApi = WebSocketApiPtr(new WebSocketApi());
-	_webSocketApi->SetEventCallback(WebSocketApiEventCallback);
+	_webSocketApi = std::make_shared<WebSocketApi>();
+	_webSocketApi->SetVendorEventCallback(OnWebSocketApiVendorEvent);
 
 	// Initialize the WebSocket server
-	_webSocketServer = WebSocketServerPtr(new WebSocketServer());
+	_webSocketServer = std::make_shared<WebSocketServer>();
+	_webSocketServer->SetClientSubscriptionCallback(std::bind(&EventHandler::ProcessSubscriptionChange, _eventHandler.get(),
+								  std::placeholders::_1, std::placeholders::_2));
 
 	// Initialize the settings dialog
 	obs_frontend_push_ui_translation(obs_module_get_string);
@@ -90,12 +103,16 @@ bool obs_module_load(void)
 }
 
 #ifdef PLUGIN_TESTS
+void test_call_request();
+void test_register_event_callback();
 void test_register_vendor();
 #endif
 
 void obs_module_post_load(void)
 {
 #ifdef PLUGIN_TESTS
+	test_call_request();
+	test_register_event_callback();
 	test_register_vendor();
 #endif
 
@@ -116,17 +133,20 @@ void obs_module_unload(void)
 		_webSocketServer->Stop();
 	}
 
-	// Destroy the WebSocket server
-	_webSocketServer.reset();
+	// Release the WebSocket server
+	_webSocketServer->SetClientSubscriptionCallback(nullptr);
+	_webSocketServer = nullptr;
 
-	// Destroy the plugin/script api
-	_webSocketApi.reset();
+	// Release the plugin/script api
+	_webSocketApi = nullptr;
 
-	// Destroy the event handler
-	_eventHandler.reset();
+	// Release the event handler
+	_eventHandler->SetObsReadyCallback(nullptr);
+	_eventHandler->SetEventCallback(nullptr);
+	_eventHandler = nullptr;
 
-	// Destroy the config manager
-	_config.reset();
+	// Release the config manager
+	_config = nullptr;
 
 	// Destroy the cpu stats
 	os_cpu_usage_info_destroy(_cpuUsageInfo);
@@ -182,7 +202,7 @@ bool IsDebugEnabled()
  * @api events
  * @category general
  */
-void WebSocketApiEventCallback(std::string vendorName, std::string eventType, obs_data_t *obsEventData)
+void OnWebSocketApiVendorEvent(std::string vendorName, std::string eventType, obs_data_t *obsEventData)
 {
 	json eventData = Utils::Json::ObsDataToJson(obsEventData);
 
@@ -194,13 +214,62 @@ void WebSocketApiEventCallback(std::string vendorName, std::string eventType, ob
 	_webSocketServer->BroadcastEvent(EventSubscription::Vendors, "VendorEvent", broadcastEventData);
 }
 
+// Sent from: EventHandler
+void OnEvent(uint64_t requiredIntent, std::string eventType, json eventData, uint8_t rpcVersion)
+{
+	if (_webSocketServer)
+		_webSocketServer->BroadcastEvent(requiredIntent, eventType, eventData, rpcVersion);
+	if (_webSocketApi)
+		_webSocketApi->BroadcastEvent(requiredIntent, eventType, eventData, rpcVersion);
+}
+
+// Sent from: EventHandler
+void OnObsReady(bool ready)
+{
+	if (_webSocketServer)
+		_webSocketServer->SetObsReady(ready);
+	if (_webSocketApi)
+		_webSocketApi->SetObsReady(ready);
+}
+
 #ifdef PLUGIN_TESTS
+void test_call_request()
+{
+	blog(LOG_INFO, "[test_call_request] Testing obs-websocket plugin API request calling...");
+
+	struct obs_websocket_request_response *response = obs_websocket_call_request("GetVersion");
+	if (response) {
+		blog(LOG_INFO, "[test_call_request] Called GetVersion. Status Code: %u | Comment: %s | Response Data: %s",
+		     response->status_code, response->comment, response->response_data);
+		obs_websocket_request_response_free(response);
+	} else {
+		blog(LOG_ERROR, "[test_call_request] Failed to call GetVersion request via obs-websocket plugin API!");
+	}
+
+	blog(LOG_INFO, "[test_call_request] Test done.");
+}
+
+static void test_event_cb(uint64_t eventIntent, const char *eventType, const char *eventData, void *priv_data)
+{
+	blog(LOG_DEBUG, "[test_event_cb] New event! Type: %s | Data: %s", eventType, eventData);
+
+	UNUSED_PARAMETER(eventIntent);
+	UNUSED_PARAMETER(priv_data);
+}
+
+void test_register_event_callback()
+{
+	blog(LOG_INFO, "[test_register_event_callback] Registering test event callback...");
+
+	if (!obs_websocket_register_event_callback(test_event_cb, nullptr))
+		blog(LOG_ERROR, "[test_register_event_callback] Failed to register event callback!");
+
+	blog(LOG_INFO, "[test_register_event_callback] Test done.");
+}
 
 static void test_vendor_request_cb(obs_data_t *requestData, obs_data_t *responseData, void *priv_data)
 {
-	blog(LOG_INFO, "[test_vendor_request_cb] Request called!");
-
-	blog(LOG_INFO, "[test_vendor_request_cb] Request data: %s", obs_data_get_json(requestData));
+	blog(LOG_INFO, "[test_vendor_request_cb] Request called! Request data: %s", obs_data_get_json(requestData));
 
 	// Set an item to the response data
 	obs_data_set_string(responseData, "test", "pp");
@@ -211,34 +280,25 @@ static void test_vendor_request_cb(obs_data_t *requestData, obs_data_t *response
 
 void test_register_vendor()
 {
-	blog(LOG_INFO, "[test_register_vendor] Registering test vendor...");
+	blog(LOG_INFO, "[test_register_vendor] Testing vendor registration...");
 
 	// Test plugin API version fetch
 	uint apiVersion = obs_websocket_get_api_version();
 	blog(LOG_INFO, "[test_register_vendor] obs-websocket plugin API version: %u", apiVersion);
 
-	// Test calling obs-websocket requests
-	struct obs_websocket_request_response *response = obs_websocket_call_request("GetVersion");
-	if (response) {
-		blog(LOG_INFO, "[test_register_vendor] Called GetVersion. Status Code: %u | Comment: %s | Response Data: %s",
-		     response->status_code, response->comment, response->response_data);
-		obs_websocket_request_response_free(response);
-	}
-
 	// Test vendor creation
 	auto vendor = obs_websocket_register_vendor("obs-websocket-test");
 	if (!vendor) {
-		blog(LOG_WARNING, "[test_register_vendor] Failed to create vendor!");
+		blog(LOG_ERROR, "[test_register_vendor] Failed to create vendor!");
 		return;
 	}
 
 	// Test vendor request registration
 	if (!obs_websocket_vendor_register_request(vendor, "TestRequest", test_vendor_request_cb, vendor)) {
-		blog(LOG_WARNING, "[test_register_vendor] Failed to register vendor request!");
+		blog(LOG_ERROR, "[test_register_vendor] Failed to register vendor request!");
 		return;
 	}
 
-	blog(LOG_INFO, "[test_register_vendor] Post load completed.");
+	blog(LOG_INFO, "[test_register_vendor] Test done.");
 }
-
 #endif

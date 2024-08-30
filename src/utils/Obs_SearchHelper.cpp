@@ -32,40 +32,43 @@ obs_hotkey_t *Utils::Obs::SearchHelper::GetHotkeyByName(std::string name, std::s
 
 		if (context.empty())
 			return hotkey;
-		
+
 		auto type = obs_hotkey_get_registerer_type(hotkey);
 		if (type == OBS_HOTKEY_REGISTERER_SOURCE) {
-			OBSSourceAutoRelease source = obs_weak_source_get_source((obs_weak_source_t *)obs_hotkey_get_registerer(hotkey));
+			OBSSourceAutoRelease source =
+				obs_weak_source_get_source((obs_weak_source_t *)obs_hotkey_get_registerer(hotkey));
 			if (!source)
 				continue;
 
-			if (context != obs_source_get_name(source)) 
+			if (context != obs_source_get_name(source))
 				continue;
 
 		} else if (type == OBS_HOTKEY_REGISTERER_OUTPUT) {
-			OBSOutputAutoRelease output = obs_weak_output_get_output((obs_weak_output_t *)obs_hotkey_get_registerer(hotkey));
+			OBSOutputAutoRelease output =
+				obs_weak_output_get_output((obs_weak_output_t *)obs_hotkey_get_registerer(hotkey));
 			if (!output)
 				continue;
 
 			if (context != obs_output_get_name(output))
 				continue;
-			
+
 		} else if (type == OBS_HOTKEY_REGISTERER_ENCODER) {
-			OBSEncoderAutoRelease encoder = obs_weak_encoder_get_encoder((obs_weak_encoder_t *)obs_hotkey_get_registerer(hotkey));
+			OBSEncoderAutoRelease encoder =
+				obs_weak_encoder_get_encoder((obs_weak_encoder_t *)obs_hotkey_get_registerer(hotkey));
 			if (!encoder)
 				continue;
 
-			if (context != obs_encoder_get_name(encoder)) 
+			if (context != obs_encoder_get_name(encoder))
 				continue;
-			
+
 		} else if (type == OBS_HOTKEY_REGISTERER_SERVICE) {
-			OBSServiceAutoRelease service = obs_weak_service_get_service((obs_weak_service_t *)obs_hotkey_get_registerer(hotkey));
+			OBSServiceAutoRelease service =
+				obs_weak_service_get_service((obs_weak_service_t *)obs_hotkey_get_registerer(hotkey));
 			if (!service)
 				continue;
 
 			if (context != obs_service_get_name(service))
 				continue;
-
 		}
 		return hotkey;
 	}

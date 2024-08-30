@@ -24,7 +24,6 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <obs-frontend-api.h>
 
 #include "WebSocketServer.h"
-#include "../eventhandler/EventHandler.h"
 #include "../obs-websocket.h"
 #include "../Config.h"
 #include "../utils/Crypto.h"
@@ -47,23 +46,10 @@ WebSocketServer::WebSocketServer() : QObject(nullptr)
 	_server.set_close_handler(websocketpp::lib::bind(&WebSocketServer::onClose, this, websocketpp::lib::placeholders::_1));
 	_server.set_message_handler(websocketpp::lib::bind(&WebSocketServer::onMessage, this, websocketpp::lib::placeholders::_1,
 							   websocketpp::lib::placeholders::_2));
-
-	auto eventHandler = GetEventHandler();
-	if (eventHandler) {
-		eventHandler->SetBroadcastCallback(std::bind(&WebSocketServer::BroadcastEvent, this, std::placeholders::_1,
-							     std::placeholders::_2, std::placeholders::_3, std::placeholders::_4));
-		eventHandler->SetObsReadyCallback(std::bind(&WebSocketServer::onObsReady, this, std::placeholders::_1));
-	}
 }
 
 WebSocketServer::~WebSocketServer()
 {
-	auto eventHandler = GetEventHandler();
-	if (eventHandler) {
-		eventHandler->SetObsReadyCallback(nullptr);
-		eventHandler->SetBroadcastCallback(nullptr);
-	}
-
 	if (_server.is_listening())
 		Stop();
 }
@@ -97,7 +83,7 @@ void WebSocketServer::Start()
 	}
 
 	_authenticationSalt = Utils::Crypto::GenerateSalt();
-	_authenticationSecret = Utils::Crypto::GenerateSecret(conf->ServerPassword.toStdString(), _authenticationSalt);
+	_authenticationSecret = Utils::Crypto::GenerateSecret(conf->ServerPassword, _authenticationSalt);
 
 	// Set log levels if debug is enabled
 	if (IsDebugEnabled()) {
@@ -215,11 +201,6 @@ std::vector<WebSocketServer::WebSocketSessionState> WebSocketServer::GetWebSocke
 	return webSocketSessions;
 }
 
-void WebSocketServer::onObsReady(bool ready)
-{
-	_obsReady = ready;
-}
-
 bool WebSocketServer::onValidate(websocketpp::connection_hdl hdl)
 {
 	auto conn = _server.get_con_from_hdl(hdl);
@@ -327,11 +308,9 @@ void WebSocketServer::onClose(websocketpp::connection_hdl hdl)
 	_sessions.erase(hdl);
 	lock.unlock();
 
-	// If client was identified, decrement appropriate refs in eventhandler.
-	if (isIdentified) {
-		auto eventHandler = GetEventHandler();
-		eventHandler->ProcessUnsubscription(eventSubscriptions);
-	}
+	// If client was identified, announce unsubscription
+	if (isIdentified && _clientSubscriptionCallback)
+		_clientSubscriptionCallback(false, eventSubscriptions);
 
 	// Build SessionState object for signal
 	WebSocketSessionState state;

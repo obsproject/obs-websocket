@@ -211,8 +211,8 @@ bool Request::ValidateArray(const std::string &keyName, RequestStatus::RequestSt
 	return true;
 }
 
-obs_source_t *Request::ValidateSource(const std::string &nameKeyName, const std::string &uuidKeyName, RequestStatus::RequestStatus &statusCode,
-				      std::string &comment) const
+obs_source_t *Request::ValidateSource(const std::string &nameKeyName, const std::string &uuidKeyName,
+				      RequestStatus::RequestStatus &statusCode, std::string &comment) const
 {
 	if (ValidateString(nameKeyName, statusCode, comment)) {
 		std::string sourceName = RequestData[nameKeyName];
@@ -237,11 +237,13 @@ obs_source_t *Request::ValidateSource(const std::string &nameKeyName, const std:
 	}
 
 	statusCode = RequestStatus::MissingRequestField;
-	comment = std::string("Your request must contain at least one of the following fields: `") + nameKeyName + "` or `" + uuidKeyName + "`.";
+	comment = std::string("Your request must contain at least one of the following fields: `") + nameKeyName + "` or `" +
+		  uuidKeyName + "`.";
 	return nullptr;
 }
 
-obs_source_t *Request::ValidateScene(RequestStatus::RequestStatus &statusCode, std::string &comment, const ObsWebSocketSceneFilter filter) const
+obs_source_t *Request::ValidateScene(RequestStatus::RequestStatus &statusCode, std::string &comment,
+				     const ObsWebSocketSceneFilter filter) const
 {
 	obs_source_t *ret = ValidateSource("sceneName", "sceneUuid", statusCode, comment);
 	if (!ret)
@@ -270,7 +272,8 @@ obs_source_t *Request::ValidateScene(RequestStatus::RequestStatus &statusCode, s
 	return ret;
 }
 
-obs_scene_t *Request::ValidateScene2(RequestStatus::RequestStatus &statusCode, std::string &comment, const ObsWebSocketSceneFilter filter) const
+obs_scene_t *Request::ValidateScene2(RequestStatus::RequestStatus &statusCode, std::string &comment,
+				     const ObsWebSocketSceneFilter filter) const
 {
 	OBSSourceAutoRelease sceneSource = ValidateSource("sceneName", "sceneUuid", statusCode, comment);
 	if (!sceneSource)
@@ -338,7 +341,8 @@ FilterPair Request::ValidateFilter(RequestStatus::RequestStatus &statusCode, std
 	return FilterPair{source, filter};
 }
 
-obs_sceneitem_t *Request::ValidateSceneItem(RequestStatus::RequestStatus &statusCode, std::string &comment, const ObsWebSocketSceneFilter filter) const
+obs_sceneitem_t *Request::ValidateSceneItem(RequestStatus::RequestStatus &statusCode, std::string &comment,
+					    const ObsWebSocketSceneFilter filter) const
 {
 	OBSSceneAutoRelease scene = ValidateScene2(statusCode, comment, filter);
 	if (!scene)
@@ -353,7 +357,8 @@ obs_sceneitem_t *Request::ValidateSceneItem(RequestStatus::RequestStatus &status
 	if (!sceneItem) {
 		std::string sceneName = obs_source_get_name(obs_scene_get_source(scene));
 		statusCode = RequestStatus::ResourceNotFound;
-		comment = std::string("No scene items were found in scene `") + sceneName + "` with the ID `" + std::to_string(sceneItemId) + "`.";
+		comment = std::string("No scene items were found in scene `") + sceneName + "` with the ID `" +
+			  std::to_string(sceneItemId) + "`.";
 		return nullptr;
 	}
 

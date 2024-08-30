@@ -17,59 +17,79 @@ You should have received a copy of the GNU General Public License along
 with this program. If not, see <https://www.gnu.org/licenses/>
 */
 
+#include <filesystem>
+
 #include <obs-frontend-api.h>
 
 #include "Config.h"
 #include "utils/Crypto.h"
 #include "utils/Platform.h"
+#include "utils/Obs.h"
 
 #define CONFIG_SECTION_NAME "OBSWebSocket"
+#define CONFIG_PARAM_FIRSTLOAD "FirstLoad"
+#define CONFIG_PARAM_ENABLED "ServerEnabled"
+#define CONFIG_PARAM_PORT "ServerPort"
+#define CONFIG_PARAM_ALERTS "AlertsEnabled"
+#define CONFIG_PARAM_AUTHREQUIRED "AuthRequired"
+#define CONFIG_PARAM_PASSWORD "ServerPassword"
 
-#define PARAM_FIRSTLOAD "FirstLoad"
-#define PARAM_ENABLED "ServerEnabled"
-#define PARAM_PORT "ServerPort"
-#define PARAM_ALERTS "AlertsEnabled"
-#define PARAM_AUTHREQUIRED "AuthRequired"
-#define PARAM_PASSWORD "ServerPassword"
+#define CONFIG_FILE_NAME "config.json"
+#define PARAM_FIRSTLOAD "first_load"
+#define PARAM_ENABLED "server_enabled"
+#define PARAM_PORT "server_port"
+#define PARAM_ALERTS "alerts_enabled"
+#define PARAM_AUTHREQUIRED "auth_required"
+#define PARAM_PASSWORD "server_password"
 
 #define CMDLINE_WEBSOCKET_PORT "websocket_port"
 #define CMDLINE_WEBSOCKET_IPV4_ONLY "websocket_ipv4_only"
 #define CMDLINE_WEBSOCKET_PASSWORD "websocket_password"
 #define CMDLINE_WEBSOCKET_DEBUG "websocket_debug"
 
-Config::Config()
+void Config::Load(json config)
 {
-	SetDefaultsToGlobalStore();
-}
-
-void Config::Load()
-{
-	config_t *obsConfig = GetConfigStore();
-	if (!obsConfig) {
-		blog(LOG_ERROR, "[Config::Load] Unable to fetch OBS config!");
-		return;
+	// Only load from plugin config directory if there hasn't been a migration
+	if (config.is_null()) {
+		std::string configFilePath = Utils::Obs::StringHelper::GetModuleConfigPath(CONFIG_FILE_NAME);
+		Utils::Json::GetJsonFileContent(configFilePath, config); // Fetch the existing config, which may not exist
 	}
 
-	FirstLoad = config_get_bool(obsConfig, CONFIG_SECTION_NAME, PARAM_FIRSTLOAD);
-	ServerEnabled = config_get_bool(obsConfig, CONFIG_SECTION_NAME, PARAM_ENABLED);
-	AlertsEnabled = config_get_bool(obsConfig, CONFIG_SECTION_NAME, PARAM_ALERTS);
-	ServerPort = config_get_uint(obsConfig, CONFIG_SECTION_NAME, PARAM_PORT);
-	AuthRequired = config_get_bool(obsConfig, CONFIG_SECTION_NAME, PARAM_AUTHREQUIRED);
-	ServerPassword = config_get_string(obsConfig, CONFIG_SECTION_NAME, PARAM_PASSWORD);
+	if (!config.is_object()) {
+		blog(LOG_INFO, "[Config::Load] Existing configuration not found, using defaults.");
+		config = json::object();
+	}
+
+	if (config.contains(PARAM_FIRSTLOAD) && config[PARAM_FIRSTLOAD].is_boolean())
+		FirstLoad = config[PARAM_FIRSTLOAD];
+	if (config.contains(PARAM_ENABLED) && config[PARAM_ENABLED].is_boolean())
+		ServerEnabled = config[PARAM_ENABLED];
+	if (config.contains(PARAM_ALERTS) && config[PARAM_ALERTS].is_boolean())
+		AlertsEnabled = config[PARAM_ALERTS];
+	if (config.contains(PARAM_PORT) && config[PARAM_PORT].is_number_unsigned())
+		ServerPort = config[PARAM_PORT];
+	if (config.contains(PARAM_AUTHREQUIRED) && config[PARAM_AUTHREQUIRED].is_boolean())
+		AuthRequired = config[PARAM_AUTHREQUIRED];
+	if (config.contains(PARAM_PASSWORD) && config[PARAM_PASSWORD].is_string())
+		ServerPassword = config[PARAM_PASSWORD];
 
 	// Set server password and save it to the config before processing overrides,
 	// so that there is always a true configured password regardless of if
 	// future loads use the override flag.
 	if (FirstLoad) {
 		FirstLoad = false;
-		if (ServerPassword.isEmpty()) {
+		if (ServerPassword.empty()) {
 			blog(LOG_INFO, "[Config::Load] (FirstLoad) Generating new server password.");
-			ServerPassword = QString::fromStdString(Utils::Crypto::GeneratePassword());
+			ServerPassword = Utils::Crypto::GeneratePassword();
 		} else {
 			blog(LOG_INFO, "[Config::Load] (FirstLoad) Not generating new password since one is already configured.");
 		}
 		Save();
 	}
+
+	// If there are migrated settings, write them to disk before processing arguments.
+	if (!config.empty())
+		Save();
 
 	// Process `--websocket_port` override
 	QString portArgument = Utils::Platform::GetCommandLineArgument(CMDLINE_WEBSOCKET_PORT);
@@ -97,7 +117,7 @@ void Config::Load()
 		blog(LOG_INFO, "[Config::Load] --websocket_password passed. Overriding WebSocket password.");
 		PasswordOverridden = true;
 		AuthRequired = true;
-		ServerPassword = passwordArgument;
+		ServerPassword = passwordArgument.toStdString();
 	}
 
 	// Process `--websocket_debug` override
@@ -110,43 +130,98 @@ void Config::Load()
 
 void Config::Save()
 {
-	config_t *obsConfig = GetConfigStore();
-	if (!obsConfig) {
-		blog(LOG_ERROR, "[Config::Save] Unable to fetch OBS config!");
-		return;
-	}
+	json config;
 
-	config_set_bool(obsConfig, CONFIG_SECTION_NAME, PARAM_FIRSTLOAD, FirstLoad);
-	config_set_bool(obsConfig, CONFIG_SECTION_NAME, PARAM_ENABLED, ServerEnabled);
-	if (!PortOverridden) {
-		config_set_uint(obsConfig, CONFIG_SECTION_NAME, PARAM_PORT, ServerPort);
-	}
-	config_set_bool(obsConfig, CONFIG_SECTION_NAME, PARAM_ALERTS, AlertsEnabled);
+	std::string configFilePath = Utils::Obs::StringHelper::GetModuleConfigPath(CONFIG_FILE_NAME);
+	Utils::Json::GetJsonFileContent(configFilePath, config); // Fetch the existing config, which may not exist
+
+	config[PARAM_FIRSTLOAD] = FirstLoad.load();
+	config[PARAM_ENABLED] = ServerEnabled.load();
+	if (!PortOverridden)
+		config[PARAM_PORT] = ServerPort.load();
+	config[PARAM_ALERTS] = AlertsEnabled.load();
 	if (!PasswordOverridden) {
-		config_set_bool(obsConfig, CONFIG_SECTION_NAME, PARAM_AUTHREQUIRED, AuthRequired);
-		config_set_string(obsConfig, CONFIG_SECTION_NAME, PARAM_PASSWORD, QT_TO_UTF8(ServerPassword));
+		config[PARAM_AUTHREQUIRED] = AuthRequired.load();
+		config[PARAM_PASSWORD] = ServerPassword;
 	}
 
-	config_save(obsConfig);
+	if (Utils::Json::SetJsonFileContent(configFilePath, config))
+		blog(LOG_DEBUG, "[Config::Save] Saved config.");
+	else
+		blog(LOG_ERROR, "[Config::Save] Failed to write config file!");
 }
 
-void Config::SetDefaultsToGlobalStore()
+// Finds any old values in global.ini and removes them, then returns the values as JSON
+json MigrateGlobalConfigData()
 {
-	config_t *obsConfig = GetConfigStore();
-	if (!obsConfig) {
-		blog(LOG_ERROR, "[Config::SetDefaultsToGlobalStore] Unable to fetch OBS config!");
-		return;
+	// Get existing global config
+	config_t *config = obs_frontend_get_global_config();
+	json ret;
+
+	// Move values to temporary JSON blob
+	if (config_has_user_value(config, CONFIG_SECTION_NAME, CONFIG_PARAM_FIRSTLOAD)) {
+		ret[PARAM_FIRSTLOAD] = config_get_bool(config, CONFIG_SECTION_NAME, CONFIG_PARAM_FIRSTLOAD);
+		config_remove_value(config, CONFIG_SECTION_NAME, CONFIG_PARAM_FIRSTLOAD);
+	}
+	if (config_has_user_value(config, CONFIG_SECTION_NAME, CONFIG_PARAM_ENABLED)) {
+		ret[PARAM_ENABLED] = config_get_bool(config, CONFIG_SECTION_NAME, CONFIG_PARAM_ENABLED);
+		config_remove_value(config, CONFIG_SECTION_NAME, CONFIG_PARAM_ENABLED);
+	}
+	if (config_has_user_value(config, CONFIG_SECTION_NAME, CONFIG_PARAM_PORT)) {
+		ret[PARAM_PORT] = config_get_uint(config, CONFIG_SECTION_NAME, CONFIG_PARAM_PORT);
+		config_remove_value(config, CONFIG_SECTION_NAME, CONFIG_PARAM_PORT);
+	}
+	if (config_has_user_value(config, CONFIG_SECTION_NAME, CONFIG_PARAM_ALERTS)) {
+		ret[PARAM_ALERTS] = config_get_bool(config, CONFIG_SECTION_NAME, CONFIG_PARAM_ALERTS);
+		config_remove_value(config, CONFIG_SECTION_NAME, CONFIG_PARAM_ALERTS);
+	}
+	if (config_has_user_value(config, CONFIG_SECTION_NAME, CONFIG_PARAM_AUTHREQUIRED)) {
+		ret[PARAM_AUTHREQUIRED] = config_get_bool(config, CONFIG_SECTION_NAME, CONFIG_PARAM_AUTHREQUIRED);
+		config_remove_value(config, CONFIG_SECTION_NAME, CONFIG_PARAM_AUTHREQUIRED);
+	}
+	if (config_has_user_value(config, CONFIG_SECTION_NAME, CONFIG_PARAM_PASSWORD)) {
+		ret[PARAM_PASSWORD] = config_get_string(config, CONFIG_SECTION_NAME, CONFIG_PARAM_PASSWORD);
+		config_remove_value(config, CONFIG_SECTION_NAME, CONFIG_PARAM_PASSWORD);
 	}
 
-	config_set_default_bool(obsConfig, CONFIG_SECTION_NAME, PARAM_FIRSTLOAD, FirstLoad);
-	config_set_default_bool(obsConfig, CONFIG_SECTION_NAME, PARAM_ENABLED, ServerEnabled);
-	config_set_default_uint(obsConfig, CONFIG_SECTION_NAME, PARAM_PORT, ServerPort);
-	config_set_default_bool(obsConfig, CONFIG_SECTION_NAME, PARAM_ALERTS, AlertsEnabled);
-	config_set_default_bool(obsConfig, CONFIG_SECTION_NAME, PARAM_AUTHREQUIRED, AuthRequired);
-	config_set_default_string(obsConfig, CONFIG_SECTION_NAME, PARAM_PASSWORD, QT_TO_UTF8(ServerPassword));
+	if (!ret.is_null()) {
+		blog(LOG_INFO, "[MigrateGlobalConfigData] Some configurations have been migrated from old config");
+		config_save(config);
+	}
+
+	return ret;
 }
 
-config_t *Config::GetConfigStore()
+// Migration from storing persistent data in obsWebSocketPersistentData.json to the module config directory
+// This will overwrite any persistent data in the destination. People doing manual OBS config modification be warned!
+bool MigratePersistentData()
 {
-	return obs_frontend_get_global_config();
+	std::error_code ec;
+
+	// Ensure module config directory exists
+	auto moduleConfigDirectory = std::filesystem::u8path(Utils::Obs::StringHelper::GetModuleConfigPath(""));
+	if (!std::filesystem::exists(moduleConfigDirectory, ec))
+		std::filesystem::create_directories(moduleConfigDirectory, ec);
+	if (ec) {
+		blog(LOG_ERROR, "[MigratePersistentData] Failed to create directory `%s`: %s", moduleConfigDirectory.c_str(),
+		     ec.message().c_str());
+		return false;
+	}
+
+	// Move any existing persistent data to module config directory, then delete old file
+	auto oldPersistentDataPath = std::filesystem::u8path(Utils::Obs::StringHelper::GetCurrentProfilePath() +
+							     "/../../../obsWebSocketPersistentData.json");
+	if (std::filesystem::exists(oldPersistentDataPath, ec)) {
+		auto persistentDataPath =
+			std::filesystem::u8path(Utils::Obs::StringHelper::GetModuleConfigPath("persistent_data.json"));
+		std::filesystem::copy_file(oldPersistentDataPath, persistentDataPath, ec);
+		std::filesystem::remove(oldPersistentDataPath, ec);
+		blog(LOG_INFO, "[MigratePersistentData] Persistent data migrated to new path");
+	}
+	if (ec) {
+		blog(LOG_ERROR, "[MigratePersistentData] Failed to move persistent data: %s", ec.message().c_str());
+		return false;
+	}
+
+	return true;
 }
