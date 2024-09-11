@@ -1,8 +1,6 @@
 cmake_minimum_required(VERSION 3.16...3.25)
 
-legacy_check()
-
-set(obs-websocket_VERSION 5.5.2)
+set(obs-websocket_VERSION 5.5.3)
 set(OBS_WEBSOCKET_RPC_VERSION 1)
 
 include(cmake/obs-websocket-api.cmake)
