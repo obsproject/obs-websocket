@@ -22,11 +22,11 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 /**
  * Gets the status of the record output.
  *
- * @responseField outputActive        | Boolean | Whether the output is active
- * @responseField outputPaused        | Boolean | Whether the output is paused
- * @responseField outputTimecode      | String  | Current formatted timecode string for the output
- * @responseField outputDuration      | Number  | Current duration in milliseconds for the output
- * @responseField outputBytes         | Number  | Number of bytes sent by the output
+ * @responseField outputActive        | Boolean        | Whether the output is active
+ * @responseField outputPaused        | Boolean        | Whether the output is paused
+ * @responseField outputTimecode      | String         | Current formatted timecode string for the output
+ * @responseField outputDuration      | Number(uint64) | Current duration in milliseconds for the output
+ * @responseField outputBytes         | Number(uint64) | Number of bytes sent by the output
  *
  * @requestType GetRecordStatus
  * @complexity 2

@@ -239,10 +239,10 @@ void EventHandler::HandleInputMuteStateChanged(void *param, calldata_t *data)
 /**
  * An input's volume level has changed.
  *
- * @dataField inputName      | String | Name of the input
- * @dataField inputUuid      | String | UUID of the input
- * @dataField inputVolumeMul | Number | New volume level multiplier
- * @dataField inputVolumeDb  | Number | New volume level in dB
+ * @dataField inputName      | String         | Name of the input
+ * @dataField inputUuid      | String         | UUID of the input
+ * @dataField inputVolumeMul | Number(double) | New volume level multiplier
+ * @dataField inputVolumeDb  | Number(double) | New volume level in dB
  *
  * @eventType InputVolumeChanged
  * @eventSubscription Inputs
@@ -281,9 +281,9 @@ void EventHandler::HandleInputVolumeChanged(void *param, calldata_t *data)
 /**
  * The audio balance value of an input has changed.
  *
- * @dataField inputName         | String | Name of the input
- * @dataField inputUuid         | String | UUID of the input
- * @dataField inputAudioBalance | Number | New audio balance value of the input
+ * @dataField inputName         | String        | Name of the input
+ * @dataField inputUuid         | String        | UUID of the input
+ * @dataField inputAudioBalance | Number(float) | New audio balance value of the input
  *
  * @eventType InputAudioBalanceChanged
  * @eventSubscription Inputs
@@ -316,9 +316,9 @@ void EventHandler::HandleInputAudioBalanceChanged(void *param, calldata_t *data)
 /**
  * The sync offset of an input has changed.
  *
- * @dataField inputName            | String | Name of the input
- * @dataField inputUuid            | String | UUID of the input
- * @dataField inputAudioSyncOffset | Number | New sync offset in milliseconds
+ * @dataField inputName            | String        | Name of the input
+ * @dataField inputUuid            | String        | UUID of the input
+ * @dataField inputAudioSyncOffset | Number(int64) | New sync offset in milliseconds
  *
  * @eventType InputAudioSyncOffsetChanged
  * @eventSubscription Inputs

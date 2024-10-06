@@ -42,9 +42,9 @@ bool IsMediaTimeValid(obs_source_t *input)
  * @requestField ?inputName | String | Name of the media input
  * @requestField ?inputUuid | String | UUID of the media input
  *
- * @responseField mediaState    | String | State of the media input
- * @responseField mediaDuration | Number | Total duration of the playing media in milliseconds. `null` if not playing
- * @responseField mediaCursor   | Number | Position of the cursor in milliseconds. `null` if not playing
+ * @responseField mediaState    | String        | State of the media input
+ * @responseField mediaDuration | Number(int64) | Total duration of the playing media in milliseconds. `null` if not playing
+ * @responseField mediaCursor   | Number(int64) | Position of the cursor in milliseconds. `null` if not playing
  *
  * @requestType GetMediaInputStatus
  * @complexity 2
@@ -81,9 +81,9 @@ RequestResult RequestHandler::GetMediaInputStatus(const Request &request)
  *
  * This request does not perform bounds checking of the cursor position.
  *
- * @requestField ?inputName  | String | Name of the media input
- * @requestField ?inputUuid  | String | UUID of the media input
- * @requestField mediaCursor | Number | New cursor position to set | >= 0
+ * @requestField ?inputName  | String        | Name of the media input
+ * @requestField ?inputUuid  | String        | UUID of the media input
+ * @requestField mediaCursor | Number(int64) | New cursor position to set | >= 0
  *
  * @requestType SetMediaInputCursor
  * @complexity 2
@@ -117,9 +117,9 @@ RequestResult RequestHandler::SetMediaInputCursor(const Request &request)
  *
  * This request does not perform bounds checking of the cursor position.
  *
- * @requestField ?inputName        | String | Name of the media input
- * @requestField ?inputUuid        | String | UUID of the media input
- * @requestField mediaCursorOffset | Number | Value to offset the current cursor position by | None
+ * @requestField ?inputName        | String        | Name of the media input
+ * @requestField ?inputUuid        | String        | UUID of the media input
+ * @requestField mediaCursorOffset | Number(int64) | Value to offset the current cursor position by | None
  *
  * @requestType OffsetMediaInputCursor
  * @complexity 2

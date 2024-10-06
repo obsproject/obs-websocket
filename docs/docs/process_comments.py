@@ -47,7 +47,7 @@ def get_request_fields(fields):
 
         valueOptionalOffset = 3
         # If value type is a number, restrictions are required. Else, should not be added.
-        if field_out['valueType'].lower() == 'number':
+        if field_out['valueType'].lower().startswith('number'):
             # In the case of a number, the optional component gets pushed back.
             valueOptionalOffset += 1
             field_out['valueRestrictions'] = components[3] if components[3].lower() != 'none' else None
