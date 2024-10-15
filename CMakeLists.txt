@@ -15,7 +15,7 @@ endif()
 find_package(Qt6 REQUIRED Core Widgets Svg Network)
 
 # Find nlohmann JSON
-find_package(nlohmann_json 3 REQUIRED)
+find_package(nlohmann_json 3.11 REQUIRED)
 
 # Find qrcodegencpp
 set(CMAKE_FIND_PACKAGE_PREFER_CONFIG ON)
