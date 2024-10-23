@@ -290,7 +290,7 @@ RequestResult RequestHandler::CreateProfile(const Request &request)
 		return RequestResult::Error(RequestStatus::ResourceAlreadyExists);
 
 	QMainWindow *mainWindow = static_cast<QMainWindow *>(obs_frontend_get_main_window());
-	QMetaObject::invokeMethod(mainWindow, "NewProfile", Qt::BlockingQueuedConnection,
+	QMetaObject::invokeMethod(mainWindow, "CreateNewProfile", Qt::BlockingQueuedConnection,
 				  Q_ARG(QString, QString::fromStdString(profileName)));
 
 	return RequestResult::Success();
