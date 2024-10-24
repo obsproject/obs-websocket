@@ -289,7 +289,7 @@ RequestResult RequestHandler::CreateProfile(const Request &request)
 	if (std::find(profiles.begin(), profiles.end(), profileName) != profiles.end())
 		return RequestResult::Error(RequestStatus::ResourceAlreadyExists);
 
-	obs_frontend_create_profile(profileName);
+	obs_frontend_create_profile(profileName.c_str());
 
 	return RequestResult::Success();
 }
@@ -322,7 +322,7 @@ RequestResult RequestHandler::RemoveProfile(const Request &request)
 	if (profiles.size() < 2)
 		return RequestResult::Error(RequestStatus::NotEnoughResources);
 
-	obs_frontend_delete_profile(profileName);
+	obs_frontend_delete_profile(profileName.c_str());
 
 	return RequestResult::Success();
 }
