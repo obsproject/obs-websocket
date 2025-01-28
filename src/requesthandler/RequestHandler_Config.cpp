@@ -289,9 +289,7 @@ RequestResult RequestHandler::CreateProfile(const Request &request)
 	if (std::find(profiles.begin(), profiles.end(), profileName) != profiles.end())
 		return RequestResult::Error(RequestStatus::ResourceAlreadyExists);
 
-	QMainWindow *mainWindow = static_cast<QMainWindow *>(obs_frontend_get_main_window());
-	QMetaObject::invokeMethod(mainWindow, "NewProfile", Qt::BlockingQueuedConnection,
-				  Q_ARG(QString, QString::fromStdString(profileName)));
+	obs_frontend_create_profile(profileName.c_str());
 
 	return RequestResult::Success();
 }
@@ -324,9 +322,7 @@ RequestResult RequestHandler::RemoveProfile(const Request &request)
 	if (profiles.size() < 2)
 		return RequestResult::Error(RequestStatus::NotEnoughResources);
 
-	QMainWindow *mainWindow = static_cast<QMainWindow *>(obs_frontend_get_main_window());
-	QMetaObject::invokeMethod(mainWindow, "DeleteProfile", Qt::BlockingQueuedConnection,
-				  Q_ARG(QString, QString::fromStdString(profileName)));
+	obs_frontend_delete_profile(profileName.c_str());
 
 	return RequestResult::Success();
 }
