@@ -320,7 +320,7 @@ RequestResult RequestHandler::SaveSourceScreenshot(const Request &request)
 /**
  * Gets the deinterlace mode of a source.
  *
- * Deinterlace modes:
+ * Deinterlace Modes:
  *
  * - `OBS_DEINTERLACE_MODE_DISABLE`
  * - `OBS_DEINTERLACE_MODE_DISCARD`
@@ -332,13 +332,15 @@ RequestResult RequestHandler::SaveSourceScreenshot(const Request &request)
  * - `OBS_DEINTERLACE_MODE_YADIF`
  * - `OBS_DEINTERLACE_MODE_YADIF_2X`
  *
- * **Compatible with inputs.**
+ * **Compatible with input sources.**
  *
- * @requestField sourceName   			| String | Name of the source
- *
- * @responseField sourceDeinterlaceMode | String | Deinterlace mode
+ * @requestField sourceName               | String | Name of the source
+ * @responseField sourceDeinterlaceMode   | String | Deinterlace mode of the source
  *
  * @requestType GetSourceDeinterlaceMode
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
  * @api requests
  * @category sources
  */
@@ -363,10 +365,15 @@ RequestResult RequestHandler::GetSourceDeinterlaceMode(const Request &request)
 /**
  * Sets the deinterlace mode of a source.
  *
- * @requestField sourceName          	| String | Name of the source
- * @requestField sourceDeinterlaceMode 	| String | Deinterlace mode
+ * **Compatible with input sources.**
+ *
+ * @requestField sourceName               | String | Name of the source
+ * @requestField sourceDeinterlaceMode    | String | Deinterlace mode to set
  *
  * @requestType SetSourceDeinterlaceMode
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
  * @api requests
  * @category sources
  */
@@ -389,18 +396,20 @@ RequestResult RequestHandler::SetSourceDeinterlaceMode(const Request &request)
 /**
  * Gets the deinterlace field order of a source.
  *
- * Deinterlace field orders:
+ * Deinterlace Field Orders:
  *
  * - `OBS_DEINTERLACE_FIELD_ORDER_TOP`
  * - `OBS_DEINTERLACE_FIELD_ORDER_BOTTOM`
  *
- * **Compatible with inputs.**
+ * **Compatible with input sources.**
  *
- * @requestField sourceName   			| String | Name of the source
- *
- * @responseField sourceDeinterlaceFieldOrder | String | Deinterlace field order
+ * @requestField sourceName                       | String | Name of the source
+ * @responseField sourceDeinterlaceFieldOrder     | String | Deinterlace field order of the source
  *
  * @requestType GetSourceDeinterlaceFieldOrder
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
  * @api requests
  * @category sources
  */
@@ -425,13 +434,19 @@ RequestResult RequestHandler::GetSourceDeinterlaceFieldOrder(const Request &requ
 /**
  * Sets the deinterlace field order of a source.
  *
- * @requestField sourceName          			| String | Name of the source
- * @requestField sourceDeinterlaceFieldOrder 	| String | Deinterlace field order
+ * **Compatible with input sources.**
+ *
+ * @requestField sourceName                       | String | Name of the source
+ * @requestField sourceDeinterlaceFieldOrder      | String | Deinterlace field order to set
  *
  * @requestType SetSourceDeinterlaceFieldOrder
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.0.0
  * @api requests
  * @category sources
  */
+
 RequestResult RequestHandler::SetSourceDeinterlaceFieldOrder(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
