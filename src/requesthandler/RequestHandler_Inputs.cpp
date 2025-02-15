@@ -867,6 +867,163 @@ RequestResult RequestHandler::SetInputAudioTracks(const Request &request)
 }
 
 /**
+ * Gets the deinterlace mode of an input.
+ *
+ * Deinterlace Modes:
+ *
+ * - `OBS_DEINTERLACE_MODE_DISABLE`
+ * - `OBS_DEINTERLACE_MODE_DISCARD`
+ * - `OBS_DEINTERLACE_MODE_RETRO`
+ * - `OBS_DEINTERLACE_MODE_BLEND`
+ * - `OBS_DEINTERLACE_MODE_BLEND_2X`
+ * - `OBS_DEINTERLACE_MODE_LINEAR`
+ * - `OBS_DEINTERLACE_MODE_LINEAR_2X`
+ * - `OBS_DEINTERLACE_MODE_YADIF`
+ * - `OBS_DEINTERLACE_MODE_YADIF_2X`
+ *
+ * Note: Deinterlacing functionality is restricted to async inputs only.
+ *
+ * @requestField ?inputName | String | Name of the input
+ * @requestField ?inputUuid | String | UUID of the input
+ *
+ * @responseField inputDeinterlaceMode | String | Deinterlace mode of the input
+ *
+ * @requestType GetInputDeinterlaceMode
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.6.0
+ * @api requests
+ * @category inputs
+ */
+RequestResult RequestHandler::GetInputDeinterlaceMode(const Request &request)
+{
+	RequestStatus::RequestStatus statusCode;
+	std::string comment;
+	OBSSourceAutoRelease input = request.ValidateInput(statusCode, comment);
+	if (!input)
+		return RequestResult::Error(statusCode, comment);
+
+	if (!(obs_source_get_output_flags(input) & OBS_SOURCE_ASYNC))
+		return RequestResult::Error(RequestStatus::InvalidResourceState, "The specified input is not async.");
+
+	json responseData;
+	responseData["inputDeinterlaceMode"] = obs_source_get_deinterlace_mode(input);
+
+	return RequestResult::Success(responseData);
+}
+
+/**
+ * Sets the deinterlace mode of an input.
+ *
+ * Note: Deinterlacing functionality is restricted to async inputs only.
+ *
+ * @requestField ?inputName           | String | Name of the input
+ * @requestField ?inputUuid           | String | UUID of the input
+ * @requestField inputDeinterlaceMode | String | Deinterlace mode for the input
+ *
+ * @requestType SetInputDeinterlaceMode
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.6.0
+ * @api requests
+ * @category inputs
+ */
+RequestResult RequestHandler::SetInputDeinterlaceMode(const Request &request)
+{
+	RequestStatus::RequestStatus statusCode;
+	std::string comment;
+	OBSSourceAutoRelease input = request.ValidateInput(statusCode, comment);
+	if (!input || !request.ValidateString("inputDeinterlaceMode", statusCode, comment))
+		return RequestResult::Error(statusCode, comment);
+
+	if (!(obs_source_get_output_flags(input) & OBS_SOURCE_ASYNC))
+		return RequestResult::Error(RequestStatus::InvalidResourceState, "The specified input is not async.");
+
+	enum obs_deinterlace_mode deinterlaceMode = request.RequestData["inputDeinterlaceMode"];
+	if (deinterlaceMode == OBS_DEINTERLACE_MODE_DISABLE && request.RequestData["inputDeinterlaceMode"] != "OBS_DEINTERLACE_MODE_DISABLE")
+		return RequestResult::Error(RequestStatus::InvalidRequestField, "The field inputDeinterlaceMode has an invalid value.");
+
+	obs_source_set_deinterlace_mode(input, deinterlaceMode);
+
+	return RequestResult::Success();
+}
+
+/**
+ * Gets the deinterlace field order of an input.
+ *
+ * Deinterlace Field Orders:
+ *
+ * - `OBS_DEINTERLACE_FIELD_ORDER_TOP`
+ * - `OBS_DEINTERLACE_FIELD_ORDER_BOTTOM`
+ *
+ * Note: Deinterlacing functionality is restricted to async inputs only.
+ *
+ * @requestField ?inputName | String | Name of the input
+ * @requestField ?inputUuid | String | UUID of the input
+ *
+ * @responseField inputDeinterlaceFieldOrder | String | Deinterlace field order of the input
+ *
+ * @requestType GetInputDeinterlaceFieldOrder
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.6.0
+ * @api requests
+ * @category inputs
+ */
+RequestResult RequestHandler::GetInputDeinterlaceFieldOrder(const Request &request)
+{
+	RequestStatus::RequestStatus statusCode;
+	std::string comment;
+	OBSSourceAutoRelease input = request.ValidateInput(statusCode, comment);
+	if (!input)
+		return RequestResult::Error(statusCode, comment);
+
+	if (!(obs_source_get_output_flags(input) & OBS_SOURCE_ASYNC))
+		return RequestResult::Error(RequestStatus::InvalidResourceState, "The specified input is not async.");
+
+	json responseData;
+	responseData["inputDeinterlaceFieldOrder"] = obs_source_get_deinterlace_field_order(input);
+
+	return RequestResult::Success(responseData);
+}
+
+/**
+ * Sets the deinterlace field order of an input.
+ *
+ * Note: Deinterlacing functionality is restricted to async inputs only.
+ *
+ * @requestField ?inputName                 | String | Name of the input
+ * @requestField ?inputUuid                 | String | UUID of the input
+ * @requestField inputDeinterlaceFieldOrder | String | Deinterlace field order for the input
+ *
+ * @requestType SetInputDeinterlaceFieldOrder
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.6.0
+ * @api requests
+ * @category inputs
+ */
+RequestResult RequestHandler::SetInputDeinterlaceFieldOrder(const Request &request)
+{
+	RequestStatus::RequestStatus statusCode;
+	std::string comment;
+	OBSSourceAutoRelease input = request.ValidateInput(statusCode, comment);
+	if (!input || !request.ValidateString("inputDeinterlaceFieldOrder", statusCode, comment))
+		return RequestResult::Error(statusCode, comment);
+
+	if (!(obs_source_get_output_flags(input) & OBS_SOURCE_ASYNC))
+		return RequestResult::Error(RequestStatus::InvalidResourceState, "The specified input is not async.");
+
+	enum obs_deinterlace_field_order deinterlaceFieldOrder = request.RequestData["inputDeinterlaceFieldOrder"];
+	if (deinterlaceFieldOrder == OBS_DEINTERLACE_FIELD_ORDER_TOP && request.RequestData["inputDeinterlaceFieldOrder"] != "OBS_DEINTERLACE_FIELD_ORDER_TOP")
+		return RequestResult::Error(RequestStatus::InvalidRequestField, "The field inputDeinterlaceFieldOrder has an invalid value.");
+
+	obs_source_set_deinterlace_field_order(input, deinterlaceFieldOrder);
+
+	return RequestResult::Success();
+}
+
+/**
  * Gets the items of a list property from an input's properties.
  *
  * Note: Use this in cases where an input provides a dynamic, selectable list of items. For example, display capture, where it provides a list of available displays.
