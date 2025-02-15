@@ -26,6 +26,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
  * @dataField inputUuid            | String | UUID of the input
  * @dataField inputKind            | String | The kind of the input
  * @dataField unversionedInputKind | String | The unversioned kind of input (aka no `_v2` stuff)
+ * @dataField inputKindCaps        | Number | Bitflag value for the caps that an input supports. See obs_source_info.output_flags in the libobs docs
  * @dataField inputSettings        | Object | The settings configured to the input when it was created
  * @dataField defaultInputSettings | Object | The default settings for the input
  *
@@ -48,6 +49,7 @@ void EventHandler::HandleInputCreated(obs_source_t *source)
 	eventData["inputUuid"] = obs_source_get_uuid(source);
 	eventData["inputKind"] = inputKind;
 	eventData["unversionedInputKind"] = obs_source_get_unversioned_id(source);
+	eventData["inputKindCaps"] = obs_source_get_output_flags(source);
 	eventData["inputSettings"] = Utils::Json::ObsDataToJson(inputSettings);
 	eventData["defaultInputSettings"] = Utils::Json::ObsDataToJson(defaultInputSettings, true);
 	BroadcastEvent(EventSubscription::Inputs, "InputCreated", eventData);
