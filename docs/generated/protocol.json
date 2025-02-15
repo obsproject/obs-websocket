@@ -2790,6 +2790,146 @@
       "responseFields": []
     },
     {
+      "description": "Gets the deinterlace mode of an input.\n\nDeinterlace Modes:\n\n- `OBS_DEINTERLACE_MODE_DISABLE`\n- `OBS_DEINTERLACE_MODE_DISCARD`\n- `OBS_DEINTERLACE_MODE_RETRO`\n- `OBS_DEINTERLACE_MODE_BLEND`\n- `OBS_DEINTERLACE_MODE_BLEND_2X`\n- `OBS_DEINTERLACE_MODE_LINEAR`\n- `OBS_DEINTERLACE_MODE_LINEAR_2X`\n- `OBS_DEINTERLACE_MODE_YADIF`\n- `OBS_DEINTERLACE_MODE_YADIF_2X`\n\nNote: Deinterlacing functionality is restricted to async inputs only.",
+      "requestType": "GetInputDeinterlaceMode",
+      "complexity": 2,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.6.0",
+      "category": "inputs",
+      "requestFields": [
+        {
+          "valueName": "inputName",
+          "valueType": "String",
+          "valueDescription": "Name of the input",
+          "valueRestrictions": null,
+          "valueOptional": true,
+          "valueOptionalBehavior": "Unknown"
+        },
+        {
+          "valueName": "inputUuid",
+          "valueType": "String",
+          "valueDescription": "UUID of the input",
+          "valueRestrictions": null,
+          "valueOptional": true,
+          "valueOptionalBehavior": "Unknown"
+        }
+      ],
+      "responseFields": [
+        {
+          "valueName": "inputDeinterlaceMode",
+          "valueType": "String",
+          "valueDescription": "Deinterlace mode of the input"
+        }
+      ]
+    },
+    {
+      "description": "Sets the deinterlace mode of an input.\n\nNote: Deinterlacing functionality is restricted to async inputs only.",
+      "requestType": "SetInputDeinterlaceMode",
+      "complexity": 2,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.6.0",
+      "category": "inputs",
+      "requestFields": [
+        {
+          "valueName": "inputName",
+          "valueType": "String",
+          "valueDescription": "Name of the input",
+          "valueRestrictions": null,
+          "valueOptional": true,
+          "valueOptionalBehavior": "Unknown"
+        },
+        {
+          "valueName": "inputUuid",
+          "valueType": "String",
+          "valueDescription": "UUID of the input",
+          "valueRestrictions": null,
+          "valueOptional": true,
+          "valueOptionalBehavior": "Unknown"
+        },
+        {
+          "valueName": "inputDeinterlaceMode",
+          "valueType": "String",
+          "valueDescription": "Deinterlace mode for the input",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        }
+      ],
+      "responseFields": []
+    },
+    {
+      "description": "Gets the deinterlace field order of an input.\n\nDeinterlace Field Orders:\n\n- `OBS_DEINTERLACE_FIELD_ORDER_TOP`\n- `OBS_DEINTERLACE_FIELD_ORDER_BOTTOM`\n\nNote: Deinterlacing functionality is restricted to async inputs only.",
+      "requestType": "GetInputDeinterlaceFieldOrder",
+      "complexity": 2,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.6.0",
+      "category": "inputs",
+      "requestFields": [
+        {
+          "valueName": "inputName",
+          "valueType": "String",
+          "valueDescription": "Name of the input",
+          "valueRestrictions": null,
+          "valueOptional": true,
+          "valueOptionalBehavior": "Unknown"
+        },
+        {
+          "valueName": "inputUuid",
+          "valueType": "String",
+          "valueDescription": "UUID of the input",
+          "valueRestrictions": null,
+          "valueOptional": true,
+          "valueOptionalBehavior": "Unknown"
+        }
+      ],
+      "responseFields": [
+        {
+          "valueName": "inputDeinterlaceFieldOrder",
+          "valueType": "String",
+          "valueDescription": "Deinterlace field order of the input"
+        }
+      ]
+    },
+    {
+      "description": "Sets the deinterlace field order of an input.\n\nNote: Deinterlacing functionality is restricted to async inputs only.",
+      "requestType": "SetInputDeinterlaceFieldOrder",
+      "complexity": 2,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.6.0",
+      "category": "inputs",
+      "requestFields": [
+        {
+          "valueName": "inputName",
+          "valueType": "String",
+          "valueDescription": "Name of the input",
+          "valueRestrictions": null,
+          "valueOptional": true,
+          "valueOptionalBehavior": "Unknown"
+        },
+        {
+          "valueName": "inputUuid",
+          "valueType": "String",
+          "valueDescription": "UUID of the input",
+          "valueRestrictions": null,
+          "valueOptional": true,
+          "valueOptionalBehavior": "Unknown"
+        },
+        {
+          "valueName": "inputDeinterlaceFieldOrder",
+          "valueType": "String",
+          "valueDescription": "Deinterlace field order for the input",
+          "valueRestrictions": null,
+          "valueOptional": false,
+          "valueOptionalBehavior": null
+        }
+      ],
+      "responseFields": []
+    },
+    {
       "description": "Gets the items of a list property from an input's properties.\n\nNote: Use this in cases where an input provides a dynamic, selectable list of items. For example, display capture, where it provides a list of available displays.",
       "requestType": "GetInputPropertiesListPropertyItems",
       "complexity": 4,

@@ -2662,6 +2662,10 @@ communication is desired.
   - [SetInputAudioMonitorType](#setinputaudiomonitortype)
   - [GetInputAudioTracks](#getinputaudiotracks)
   - [SetInputAudioTracks](#setinputaudiotracks)
+  - [GetInputDeinterlaceMode](#getinputdeinterlacemode)
+  - [SetInputDeinterlaceMode](#setinputdeinterlacemode)
+  - [GetInputDeinterlaceFieldOrder](#getinputdeinterlacefieldorder)
+  - [SetInputDeinterlaceFieldOrder](#setinputdeinterlacefieldorder)
   - [GetInputPropertiesListPropertyItems](#getinputpropertieslistpropertyitems)
   - [PressInputPropertiesButton](#pressinputpropertiesbutton)
 - [Transitions Requests](#transitions-1-requests)
@@ -4017,6 +4021,113 @@ Sets the enable state of audio tracks of an input.
 | ?inputName | String | Name of the input | None | Unknown |
 | ?inputUuid | String | UUID of the input | None | Unknown |
 | inputAudioTracks | Object | Track settings to apply | None | N/A |
+
+---
+
+### GetInputDeinterlaceMode
+
+Gets the deinterlace mode of an input.
+
+Deinterlace Modes:
+
+- `OBS_DEINTERLACE_MODE_DISABLE`
+- `OBS_DEINTERLACE_MODE_DISCARD`
+- `OBS_DEINTERLACE_MODE_RETRO`
+- `OBS_DEINTERLACE_MODE_BLEND`
+- `OBS_DEINTERLACE_MODE_BLEND_2X`
+- `OBS_DEINTERLACE_MODE_LINEAR`
+- `OBS_DEINTERLACE_MODE_LINEAR_2X`
+- `OBS_DEINTERLACE_MODE_YADIF`
+- `OBS_DEINTERLACE_MODE_YADIF_2X`
+
+Note: Deinterlacing functionality is restricted to async inputs only.
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.6.0
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| ?inputName | String | Name of the input | None | Unknown |
+| ?inputUuid | String | UUID of the input | None | Unknown |
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| inputDeinterlaceMode | String | Deinterlace mode of the input |
+
+---
+
+### SetInputDeinterlaceMode
+
+Sets the deinterlace mode of an input.
+
+Note: Deinterlacing functionality is restricted to async inputs only.
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.6.0
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| ?inputName | String | Name of the input | None | Unknown |
+| ?inputUuid | String | UUID of the input | None | Unknown |
+| inputDeinterlaceMode | String | Deinterlace mode for the input | None | N/A |
+
+---
+
+### GetInputDeinterlaceFieldOrder
+
+Gets the deinterlace field order of an input.
+
+Deinterlace Field Orders:
+
+- `OBS_DEINTERLACE_FIELD_ORDER_TOP`
+- `OBS_DEINTERLACE_FIELD_ORDER_BOTTOM`
+
+Note: Deinterlacing functionality is restricted to async inputs only.
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.6.0
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| ?inputName | String | Name of the input | None | Unknown |
+| ?inputUuid | String | UUID of the input | None | Unknown |
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| inputDeinterlaceFieldOrder | String | Deinterlace field order of the input |
+
+---
+
+### SetInputDeinterlaceFieldOrder
+
+Sets the deinterlace field order of an input.
+
+Note: Deinterlacing functionality is restricted to async inputs only.
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.6.0
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| ?inputName | String | Name of the input | None | Unknown |
+| ?inputUuid | String | UUID of the input | None | Unknown |
+| inputDeinterlaceFieldOrder | String | Deinterlace field order for the input | None | N/A |
 
 ---
 
