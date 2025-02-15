@@ -101,7 +101,7 @@ To generate the authentication string, follow these steps:
 - Concatenate the base64 secret with the `challenge` sent by the server (`base64_secret + challenge`)
 - Generate a binary SHA256 hash of that result and base64 encode it. You now have your `authentication` string.
 
-For real-world examples of the `authentication` string creation, refer to the obs-websocket client libraries listed on the [README](README.md).
+For real-world examples of the `authentication` string creation, refer to the obs-websocket client libraries listed on the [README](../../README.md).
 
 ## Message Types (OpCodes)
 
