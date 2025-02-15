@@ -5632,6 +5632,11 @@
           "valueDescription": "The unversioned kind of input (aka no `_v2` stuff)"
         },
         {
+          "valueName": "inputKindCaps",
+          "valueType": "Number",
+          "valueDescription": "Bitflag value for the caps that an input supports. See obs_source_info.output_flags in the libobs docs"
+        },
+        {
           "valueName": "inputSettings",
           "valueType": "Object",
           "valueDescription": "The settings configured to the input when it was created"
