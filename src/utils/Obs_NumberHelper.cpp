@@ -31,8 +31,15 @@ uint64_t Utils::Obs::NumberHelper::GetOutputDuration(obs_output_t *output)
 	video_t *video = obs_output_video(output);
 	uint64_t frameTimeNs = video_output_get_frame_time(video);
 	int totalFrames = obs_output_get_total_frames(output);
-
-	return util_mul_div64(totalFrames, frameTimeNs, 1000000ULL);
+	uint64_t divisor = 0ULL;
+	for (size_t i = 0; i < MAX_OUTPUT_VIDEO_ENCODERS; i++) {
+		obs_encoder_t *encoder = obs_output_get_video_encoder2(output, i);
+		if (!encoder)
+			continue;
+		uint32_t encoder_divisor = obs_encoder_get_frame_rate_divisor(encoder);
+		divisor += encoder_divisor <= 1 ? 1000000ULL : 1000000ULL / encoder_divisor;
+	}
+	return util_mul_div64(totalFrames, frameTimeNs, divisor ? divisor : 1000000ULL);
 }
 
 size_t Utils::Obs::NumberHelper::GetSceneCount()
