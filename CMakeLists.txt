@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.16...3.25)
+cmake_minimum_required(VERSION 3.28...3.30)
 
 set(obs-websocket_VERSION 5.5.4)
 set(OBS_WEBSOCKET_RPC_VERSION 1)
