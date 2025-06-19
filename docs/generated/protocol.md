@@ -103,7 +103,7 @@ To generate the authentication string, follow these steps:
 - Concatenate the base64 secret with the `challenge` sent by the server (`base64_secret + challenge`)
 - Generate a binary SHA256 hash of that result and base64 encode it. You now have your `authentication` string.
 
-For real-world examples of the `authentication` string creation, refer to the obs-websocket client libraries listed on the [README](README.md).
+For real-world examples of the `authentication` string creation, refer to the obs-websocket client libraries listed on the [README](../../README.md).
 
 ## Message Types (OpCodes)
 
@@ -133,6 +133,7 @@ Messages sent from the obs-websocket server or client may contain these first-le
 
 ```txt
 {
+  "obsStudioVersion": string,
   "obsWebSocketVersion": string,
   "rpcVersion": number,
   "authentication": object(optional)
@@ -140,6 +141,8 @@ Messages sent from the obs-websocket server or client may contain these first-le
 ```
 
 - `rpcVersion` is a version number which gets incremented on each **breaking change** to the obs-websocket protocol. Its usage in this context is to provide the current rpc version that the server would like to use.
+- `obsWebSocketVersion` may be used as a soft feature level hint. For example, a new WebSocket request may only be available in a specific obs-websocket version or newer, but the rpcVersion will not be increased, as no
+  breaking changes have occured. Be aware, that no guarantees will be made on these assumptions, and you should still verify that the requests you desire to use are available in obs-websocket via the `GetVersion` request.
 
 **Example Messages:**
 Authentication is required
@@ -148,7 +151,8 @@ Authentication is required
 {
   "op": 0,
   "d": {
-    "obsWebSocketVersion": "5.1.0",
+    "obsStudioVersion": "30.2.2",
+    "obsWebSocketVersion": "5.5.2",
     "rpcVersion": 1,
     "authentication": {
       "challenge": "+IxH4CnCiqpX1rM9scsNynZzbOe4KhDeYcTNS3PDaeY=",
@@ -164,7 +168,8 @@ Authentication is not required
 {
   "op": 0,
   "d": {
-    "obsWebSocketVersion": "5.1.0",
+    "obsStudioVersion": "30.2.2",
+    "obsWebSocketVersion": "5.5.2",
     "rpcVersion": 1
   }
 }
@@ -1832,6 +1837,7 @@ An input has been created.
 | inputUuid | String | UUID of the input |
 | inputKind | String | The kind of the input |
 | unversionedInputKind | String | The unversioned kind of input (aka no `_v2` stuff) |
+| inputKindCaps | Number | Bitflag value for the caps that an input supports. See obs_source_info.output_flags in the libobs docs |
 | inputSettings | Object | The settings configured to the input when it was created |
 | defaultInputSettings | Object | The default settings for the input |
 
@@ -2656,6 +2662,10 @@ communication is desired.
   - [SetInputAudioMonitorType](#setinputaudiomonitortype)
   - [GetInputAudioTracks](#getinputaudiotracks)
   - [SetInputAudioTracks](#setinputaudiotracks)
+  - [GetInputDeinterlaceMode](#getinputdeinterlacemode)
+  - [SetInputDeinterlaceMode](#setinputdeinterlacemode)
+  - [GetInputDeinterlaceFieldOrder](#getinputdeinterlacefieldorder)
+  - [SetInputDeinterlaceFieldOrder](#setinputdeinterlacefieldorder)
   - [GetInputPropertiesListPropertyItems](#getinputpropertieslistpropertyitems)
   - [PressInputPropertiesButton](#pressinputpropertiesbutton)
 - [Transitions Requests](#transitions-1-requests)
@@ -4011,6 +4021,113 @@ Sets the enable state of audio tracks of an input.
 | ?inputName | String | Name of the input | None | Unknown |
 | ?inputUuid | String | UUID of the input | None | Unknown |
 | inputAudioTracks | Object | Track settings to apply | None | N/A |
+
+---
+
+### GetInputDeinterlaceMode
+
+Gets the deinterlace mode of an input.
+
+Deinterlace Modes:
+
+- `OBS_DEINTERLACE_MODE_DISABLE`
+- `OBS_DEINTERLACE_MODE_DISCARD`
+- `OBS_DEINTERLACE_MODE_RETRO`
+- `OBS_DEINTERLACE_MODE_BLEND`
+- `OBS_DEINTERLACE_MODE_BLEND_2X`
+- `OBS_DEINTERLACE_MODE_LINEAR`
+- `OBS_DEINTERLACE_MODE_LINEAR_2X`
+- `OBS_DEINTERLACE_MODE_YADIF`
+- `OBS_DEINTERLACE_MODE_YADIF_2X`
+
+Note: Deinterlacing functionality is restricted to async inputs only.
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.6.0
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| ?inputName | String | Name of the input | None | Unknown |
+| ?inputUuid | String | UUID of the input | None | Unknown |
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| inputDeinterlaceMode | String | Deinterlace mode of the input |
+
+---
+
+### SetInputDeinterlaceMode
+
+Sets the deinterlace mode of an input.
+
+Note: Deinterlacing functionality is restricted to async inputs only.
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.6.0
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| ?inputName | String | Name of the input | None | Unknown |
+| ?inputUuid | String | UUID of the input | None | Unknown |
+| inputDeinterlaceMode | String | Deinterlace mode for the input | None | N/A |
+
+---
+
+### GetInputDeinterlaceFieldOrder
+
+Gets the deinterlace field order of an input.
+
+Deinterlace Field Orders:
+
+- `OBS_DEINTERLACE_FIELD_ORDER_TOP`
+- `OBS_DEINTERLACE_FIELD_ORDER_BOTTOM`
+
+Note: Deinterlacing functionality is restricted to async inputs only.
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.6.0
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| ?inputName | String | Name of the input | None | Unknown |
+| ?inputUuid | String | UUID of the input | None | Unknown |
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| inputDeinterlaceFieldOrder | String | Deinterlace field order of the input |
+
+---
+
+### SetInputDeinterlaceFieldOrder
+
+Sets the deinterlace field order of an input.
+
+Note: Deinterlacing functionality is restricted to async inputs only.
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.6.0
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| ?inputName | String | Name of the input | None | Unknown |
+| ?inputUuid | String | UUID of the input | None | Unknown |
+| inputDeinterlaceFieldOrder | String | Deinterlace field order for the input | None | N/A |
 
 ---
 

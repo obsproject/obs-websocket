@@ -178,7 +178,7 @@ json Utils::Json::ObsDataToJson(obs_data_t *d, bool includeDefault)
 
 bool Utils::Json::GetJsonFileContent(std::string fileName, json &content)
 {
-	std::ifstream f(fileName);
+	std::ifstream f(std::filesystem::u8path(fileName));
 	if (!f.is_open())
 		return false;
 
@@ -195,9 +195,11 @@ bool Utils::Json::GetJsonFileContent(std::string fileName, json &content)
 
 bool Utils::Json::SetJsonFileContent(std::string fileName, const json &content, bool makeDirs)
 {
+	auto jsonFilePath = std::filesystem::u8path(fileName);
+
 	if (makeDirs) {
+		auto p = jsonFilePath.parent_path();
 		std::error_code ec;
-		auto p = std::filesystem::path(fileName).parent_path();
 		if (!ec && !std::filesystem::exists(p, ec))
 			std::filesystem::create_directories(p, ec);
 		if (ec) {
@@ -207,7 +209,7 @@ bool Utils::Json::SetJsonFileContent(std::string fileName, const json &content, 
 		}
 	}
 
-	std::ofstream f(fileName);
+	std::ofstream f(jsonFilePath);
 	if (!f.is_open()) {
 		blog(LOG_ERROR, "[Utils::Json::SetJsonFileContent] Failed to open file `%s` for writing", fileName.c_str());
 		return false;

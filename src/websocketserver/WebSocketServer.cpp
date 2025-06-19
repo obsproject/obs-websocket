@@ -246,6 +246,7 @@ void WebSocketServer::onOpen(websocketpp::connection_hdl hdl)
 
 	// Build `Hello`
 	json helloMessageData;
+	helloMessageData["obsStudioVersion"] = obs_get_version_string();
 	helloMessageData["obsWebSocketVersion"] = OBS_WEBSOCKET_VERSION;
 	helloMessageData["rpcVersion"] = OBS_WEBSOCKET_RPC_VERSION;
 	if (session->AuthenticationRequired()) {

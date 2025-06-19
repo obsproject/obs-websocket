@@ -101,7 +101,7 @@ To generate the authentication string, follow these steps:
 - Concatenate the base64 secret with the `challenge` sent by the server (`base64_secret + challenge`)
 - Generate a binary SHA256 hash of that result and base64 encode it. You now have your `authentication` string.
 
-For real-world examples of the `authentication` string creation, refer to the obs-websocket client libraries listed on the [README](README.md).
+For real-world examples of the `authentication` string creation, refer to the obs-websocket client libraries listed on the [README](../../README.md).
 
 ## Message Types (OpCodes)
 
@@ -131,6 +131,7 @@ Messages sent from the obs-websocket server or client may contain these first-le
 
 ```txt
 {
+  "obsStudioVersion": string,
   "obsWebSocketVersion": string,
   "rpcVersion": number,
   "authentication": object(optional)
@@ -138,6 +139,8 @@ Messages sent from the obs-websocket server or client may contain these first-le
 ```
 
 - `rpcVersion` is a version number which gets incremented on each **breaking change** to the obs-websocket protocol. Its usage in this context is to provide the current rpc version that the server would like to use.
+- `obsWebSocketVersion` may be used as a soft feature level hint. For example, a new WebSocket request may only be available in a specific obs-websocket version or newer, but the rpcVersion will not be increased, as no
+  breaking changes have occured. Be aware, that no guarantees will be made on these assumptions, and you should still verify that the requests you desire to use are available in obs-websocket via the `GetVersion` request.
 
 **Example Messages:**
 Authentication is required
@@ -146,7 +149,8 @@ Authentication is required
 {
   "op": 0,
   "d": {
-    "obsWebSocketVersion": "5.1.0",
+    "obsStudioVersion": "30.2.2",
+    "obsWebSocketVersion": "5.5.2",
     "rpcVersion": 1,
     "authentication": {
       "challenge": "+IxH4CnCiqpX1rM9scsNynZzbOe4KhDeYcTNS3PDaeY=",
@@ -162,7 +166,8 @@ Authentication is not required
 {
   "op": 0,
   "d": {
-    "obsWebSocketVersion": "5.1.0",
+    "obsStudioVersion": "30.2.2",
+    "obsWebSocketVersion": "5.5.2",
     "rpcVersion": 1
   }
 }

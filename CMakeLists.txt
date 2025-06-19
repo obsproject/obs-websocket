@@ -1,6 +1,6 @@
-cmake_minimum_required(VERSION 3.16...3.25)
+cmake_minimum_required(VERSION 3.28...3.30)
 
-set(obs-websocket_VERSION 5.5.4)
+set(obs-websocket_VERSION 5.6.1)
 set(OBS_WEBSOCKET_RPC_VERSION 1)
 
 include(cmake/obs-websocket-api.cmake)
@@ -15,7 +15,7 @@ endif()
 find_package(Qt6 REQUIRED Core Widgets Svg Network)
 
 # Find nlohmann JSON
-find_package(nlohmann_json 3 REQUIRED)
+find_package(nlohmann_json 3.11 REQUIRED)
 
 # Find qrcodegencpp
 set(CMAKE_FIND_PACKAGE_PREFER_CONFIG ON)
