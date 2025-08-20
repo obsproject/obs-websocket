@@ -80,6 +80,7 @@ target_sources(
           src/requesthandler/RequestBatchHandler.h
           src/requesthandler/RequestHandler.cpp
           src/requesthandler/RequestHandler.h
+          src/requesthandler/RequestHandler_Canvases.cpp
           src/requesthandler/RequestHandler_Config.cpp
           src/requesthandler/RequestHandler_Filters.cpp
           src/requesthandler/RequestHandler_General.cpp

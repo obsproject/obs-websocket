@@ -53,6 +53,9 @@ const std::unordered_map<std::string, RequestMethodHandler> RequestHandler::_han
 	{"GetRecordDirectory", &RequestHandler::GetRecordDirectory},
 	{"SetRecordDirectory", &RequestHandler::SetRecordDirectory},
 
+	// Canvases
+	{"GetCanvasList", &RequestHandler::GetCanvasList},
+
 	// Sources
 	{"GetSourceActive", &RequestHandler::GetSourceActive},
 	{"GetSourceScreenshot", &RequestHandler::GetSourceScreenshot},
