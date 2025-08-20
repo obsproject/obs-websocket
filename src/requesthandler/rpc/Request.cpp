@@ -214,9 +214,14 @@ bool Request::ValidateArray(const std::string &keyName, RequestStatus::RequestSt
 obs_source_t *Request::ValidateSource(const std::string &nameKeyName, const std::string &uuidKeyName,
 				      RequestStatus::RequestStatus &statusCode, std::string &comment) const
 {
+	OBSCanvasAutoRelease canvas = ValidateCanvas("canvasName", "canvasUuid", statusCode, comment);
+	if (statusCode == RequestStatus::ResourceNotFound)
+		return nullptr;
+
 	if (ValidateString(nameKeyName, statusCode, comment)) {
 		std::string sourceName = RequestData[nameKeyName];
-		obs_source_t *ret = obs_get_source_by_name(sourceName.c_str());
+		obs_source_t *ret = canvas ? obs_canvas_get_source_by_name(canvas, sourceName.c_str())
+					   : obs_get_source_by_name(sourceName.c_str());
 		if (!ret) {
 			statusCode = RequestStatus::ResourceNotFound;
 			comment = std::string("No source was found by the name of `") + sourceName + "`.";
@@ -382,4 +387,32 @@ obs_output_t *Request::ValidateOutput(const std::string &keyName, RequestStatus:
 	}
 
 	return ret;
+}
+
+obs_canvas_t *Request::ValidateCanvas(const std::string &nameKeyName, const std::string &uuidKeyName,
+				      RequestStatus::RequestStatus &statusCode, std::string &comment) const
+{
+	if (ValidateString(nameKeyName, statusCode, comment)) {
+		std::string canvasName = RequestData[nameKeyName];
+		obs_canvas_t *ret = obs_get_canvas_by_name(canvasName.c_str());
+		if (!ret) {
+			statusCode = RequestStatus::ResourceNotFound;
+			comment = std::string("No canvas was found by the name of `") + canvasName + "`.";
+			return nullptr;
+		}
+		return ret;
+	}
+
+	if (ValidateString(uuidKeyName, statusCode, comment)) {
+		std::string canvasUuid = RequestData[uuidKeyName];
+		obs_canvas_t *ret = obs_get_canvas_by_uuid(canvasUuid.c_str());
+		if (!ret) {
+			statusCode = RequestStatus::ResourceNotFound;
+			comment = std::string("No canvas was found by the UUID of `") + canvasUuid + "`.";
+			return nullptr;
+		}
+		return ret;
+	}
+
+	return nullptr;
 }

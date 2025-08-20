@@ -123,6 +123,8 @@ RequestResult RequestHandler::GetSpecialInputs(const Request &)
 /**
  * Creates a new input, adding it as a scene item to the specified scene.
  *
+ * @requestField ?canvasName       | String | Name of the canvas the scene is in
+ * @requestField ?canvasUuid       | String | UUID of the canvas the scene is in
  * @requestField ?sceneName        | String | Name of the scene to add the input to as a scene item
  * @requestField ?sceneUuid        | String | UUID of the scene to add the input to as a scene item
  * @requestField inputName         | String | Name of the new input to created

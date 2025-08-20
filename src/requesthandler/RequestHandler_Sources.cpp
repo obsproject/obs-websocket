@@ -114,6 +114,8 @@ bool IsImageFormatValid(std::string format)
  *
  * **Compatible with inputs and scenes.**
  *
+ * @requestField ?canvasName | String | Name of the canvas the source is in
+ * @requestField ?canvasUuid | String | UUID of the canvas the source is in
  * @requestField ?sourceName | String | Name of the source to get the active state of
  * @requestField ?sourceUuid | String | UUID of the source to get the active state of
  *
@@ -152,6 +154,8 @@ RequestResult RequestHandler::GetSourceActive(const Request &request)
  *
  * **Compatible with inputs and scenes.**
  *
+ * @requestField ?canvasName              | String | Name of the canvas the source is in
+ * @requestField ?canvasUuid              | String | UUID of the canvas the source is in
  * @requestField ?sourceName              | String | Name of the source to take a screenshot of
  * @requestField ?sourceUuid              | String | UUID of the source to take a screenshot of
  * @requestField imageFormat              | String | Image compression format to use. Use `GetVersion` to get compatible image formats
@@ -240,6 +244,8 @@ RequestResult RequestHandler::GetSourceScreenshot(const Request &request)
  *
  * **Compatible with inputs and scenes.**
  *
+ * @requestField ?canvasName              | String | Name of the canvas the source is in
+ * @requestField ?canvasUuid              | String | UUID of the canvas the source is in
  * @requestField ?sourceName              | String | Name of the source to take a screenshot of
  * @requestField ?sourceUuid              | String | UUID of the source to take a screenshot of
  * @requestField imageFormat              | String | Image compression format to use. Use `GetVersion` to get compatible image formats

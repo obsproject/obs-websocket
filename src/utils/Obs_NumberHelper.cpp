@@ -37,6 +37,12 @@ uint64_t Utils::Obs::NumberHelper::GetOutputDuration(obs_output_t *output)
 
 size_t Utils::Obs::NumberHelper::GetSceneCount()
 {
+	OBSCanvasAutoRelease canvas = obs_get_main_canvas();
+	return GetCanvasSceneCount(canvas);
+}
+
+size_t Utils::Obs::NumberHelper::GetCanvasSceneCount(obs_canvas_t *canvas)
+{
 	size_t ret;
 	auto sceneEnumProc = [](void *param, obs_source_t *scene) {
 		auto ret = static_cast<size_t *>(param);
@@ -48,7 +54,7 @@ size_t Utils::Obs::NumberHelper::GetSceneCount()
 		return true;
 	};
 
-	obs_enum_scenes(sceneEnumProc, &ret);
+	obs_canvas_enum_scenes(canvas, sceneEnumProc, &ret);
 
 	return ret;
 }
