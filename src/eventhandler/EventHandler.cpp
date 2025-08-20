@@ -28,10 +28,15 @@ EventHandler::EventHandler()
 	signal_handler_t *coreSignalHandler = obs_get_signal_handler();
 	if (coreSignalHandler) {
 		coreSignals.emplace_back(coreSignalHandler, "source_create", SourceCreatedMultiHandler, this);
+		coreSignals.emplace_back(coreSignalHandler, "source_create_canvas", SourceCreatedMultiHandler, this);
 		coreSignals.emplace_back(coreSignalHandler, "source_destroy", SourceDestroyedMultiHandler, this);
 		coreSignals.emplace_back(coreSignalHandler, "source_remove", SourceRemovedMultiHandler, this);
 		coreSignals.emplace_back(coreSignalHandler, "source_rename", SourceRenamedMultiHandler, this);
 		coreSignals.emplace_back(coreSignalHandler, "source_update", SourceUpdatedMultiHandler, this);
+		coreSignals.emplace_back(coreSignalHandler, "canvas_create", CanvasCreatedMultiHandler, this);
+		coreSignals.emplace_back(coreSignalHandler, "canvas_destroy", CanvasDestroyedMultiHandler, this);
+		coreSignals.emplace_back(coreSignalHandler, "canvas_remove", CanvasRemovedMultiHandler, this);
+		coreSignals.emplace_back(coreSignalHandler, "canvas_rename", CanvasRenamedMultiHandler, this);
 	} else {
 		blog(LOG_ERROR, "[EventHandler::EventHandler] Unable to get libobs signal handler!");
 	}
@@ -597,6 +602,58 @@ void EventHandler::SourceUpdatedMultiHandler(void *param, calldata_t *data)
 	default:
 		break;
 	}
+}
+
+void EventHandler::CanvasCreatedMultiHandler(void *param, calldata_t *data)
+{
+	auto eventHandler = static_cast<EventHandler *>(param);
+	obs_canvas_t *canvas = GetCalldataPointer<obs_canvas_t>(data, "canvas");
+	if (!canvas)
+		return;
+
+	signal_handler_t *sh = obs_canvas_get_signal_handler(canvas);
+	signal_handler_connect(sh, "source_rename", SourceRenamedMultiHandler, eventHandler);
+
+	eventHandler->HandleCanvasCreated(canvas);
+}
+
+void EventHandler::CanvasDestroyedMultiHandler(void *param, calldata_t *data)
+{
+	auto eventHandler = static_cast<EventHandler *>(param);
+	obs_canvas_t *canvas = GetCalldataPointer<obs_canvas_t>(data, "canvas");
+	if (!canvas)
+		return;
+
+	if (!obs_canvas_removed(canvas))
+		eventHandler->HandleCanvasRemoved(canvas);
+}
+
+void EventHandler::CanvasRemovedMultiHandler(void *param, calldata_t *data)
+{
+	auto eventHandler = static_cast<EventHandler *>(param);
+	obs_canvas_t *canvas = GetCalldataPointer<obs_canvas_t>(data, "canvas");
+	if (!canvas)
+		return;
+
+	signal_handler_t *sh = obs_canvas_get_signal_handler(canvas);
+	signal_handler_disconnect(sh, "source_rename", SourceRenamedMultiHandler, eventHandler);
+
+	eventHandler->HandleCanvasRemoved(canvas);
+}
+
+void EventHandler::CanvasRenamedMultiHandler(void *param, calldata_t *data)
+{
+	auto eventHandler = static_cast<EventHandler *>(param);
+	obs_canvas_t *canvas = GetCalldataPointer<obs_canvas_t>(data, "canvas");
+	if (!canvas)
+		return;
+
+	std::string oldCanvasName = calldata_string(data, "prev_name");
+	std::string canvasName = calldata_string(data, "new_name");
+	if (oldCanvasName.empty() || canvasName.empty())
+		return;
+
+	eventHandler->HandleCanvasNameChanged(canvas, oldCanvasName, canvasName);
 }
 
 void EventHandler::StreamOutputReconnectHandler(void *param, calldata_t *)

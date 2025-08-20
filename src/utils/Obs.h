@@ -241,6 +241,7 @@ namespace Utils {
 		namespace NumberHelper {
 			uint64_t GetOutputDuration(obs_output_t *output);
 			size_t GetSceneCount();
+			size_t GetCanvasSceneCount(obs_canvas_t *canvas);
 			size_t GetSourceFilterIndex(obs_source_t *source, obs_source_t *filter);
 		}
 
@@ -250,7 +251,9 @@ namespace Utils {
 			std::vector<obs_hotkey_t *> GetHotkeyList();
 			std::vector<std::string> GetHotkeyNameList();
 			std::vector<json> GetSceneList();
+			std::vector<json> GetCanvasSceneList(obs_canvas_t *canvas);
 			std::vector<std::string> GetGroupList();
+			std::vector<std::string> GetCanvasGroupList(obs_canvas_t *canvas);
 			std::vector<json> GetSceneItemList(obs_scene_t *scene, bool basic = false);
 			std::vector<json> GetInputList(std::string inputKind = "");
 			std::vector<std::string> GetInputKindList(bool unversioned = false, bool includeDisabled = false);

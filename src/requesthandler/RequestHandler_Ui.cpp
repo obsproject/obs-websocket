@@ -265,6 +265,8 @@ RequestResult RequestHandler::OpenVideoMixProjector(const Request &request)
  *
  * Note: This request serves to provide feature parity with 4.x. It is very likely to be changed/deprecated in a future release.
  *
+ * @requestField ?canvasName        | String | Name of the canvas the source is in
+ * @requestField ?canvasUuid        | String | UUID of the canvas the source is in
  * @requestField ?sourceName        | String | Name of the source to open a projector for
  * @requestField ?sourceUuid        | String | UUID of the source to open a projector for
  * @requestField ?monitorIndex      | Number | Monitor index, use `GetMonitorList` to obtain index | None | -1: Opens projector in windowed mode

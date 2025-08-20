@@ -61,6 +61,7 @@ target_sources(
   PRIVATE # cmake-format: sortable
           src/eventhandler/EventHandler.cpp
           src/eventhandler/EventHandler.h
+          src/eventhandler/EventHandler_Canvases.cpp
           src/eventhandler/EventHandler_Config.cpp
           src/eventhandler/EventHandler_Filters.cpp
           src/eventhandler/EventHandler_General.cpp
@@ -80,6 +81,7 @@ target_sources(
           src/requesthandler/RequestBatchHandler.h
           src/requesthandler/RequestHandler.cpp
           src/requesthandler/RequestHandler.h
+          src/requesthandler/RequestHandler_Canvases.cpp
           src/requesthandler/RequestHandler_Config.cpp
           src/requesthandler/RequestHandler_Filters.cpp
           src/requesthandler/RequestHandler_General.cpp

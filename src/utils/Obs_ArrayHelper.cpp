@@ -110,7 +110,35 @@ std::vector<json> Utils::Obs::ArrayHelper::GetSceneList()
 	return ret;
 }
 
+std::vector<json> Utils::Obs::ArrayHelper::GetCanvasSceneList(obs_canvas_t *canvas)
+{
+	std::vector<json> ret;
+
+	obs_canvas_enum_scenes(
+		canvas,
+		[](void *param, obs_source_t *scene) {
+			auto ret = static_cast<std::vector<json> *>(param);
+			json sceneJson;
+			sceneJson["sceneName"] = obs_source_get_name(scene);
+			sceneJson["sceneUuid"] = obs_source_get_uuid(scene);
+			ret->push_back(sceneJson);
+			return true;
+		},
+		&ret);
+	for (size_t i = 0; i < ret.size(); i++) {
+		ret[i]["sceneIndex"] = i + 1;
+	}
+
+	return ret;
+}
+
 std::vector<std::string> Utils::Obs::ArrayHelper::GetGroupList()
+{
+	OBSCanvasAutoRelease canvas = obs_get_main_canvas();
+	return GetCanvasGroupList(canvas);
+}
+
+std::vector<std::string> Utils::Obs::ArrayHelper::GetCanvasGroupList(obs_canvas_t *canvas)
 {
 	std::vector<std::string> ret;
 
@@ -125,7 +153,7 @@ std::vector<std::string> Utils::Obs::ArrayHelper::GetGroupList()
 		return true;
 	};
 
-	obs_enum_scenes(cb, &ret);
+	obs_canvas_enum_scenes(canvas, cb, &ret);
 
 	return ret;
 }

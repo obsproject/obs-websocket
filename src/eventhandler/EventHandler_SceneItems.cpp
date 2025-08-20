@@ -56,6 +56,11 @@ void EventHandler::HandleSceneItemCreated(void *param, calldata_t *data)
 	eventData["sourceUuid"] = obs_source_get_uuid(obs_sceneitem_get_source(sceneItem));
 	eventData["sceneItemId"] = obs_sceneitem_get_id(sceneItem);
 	eventData["sceneItemIndex"] = obs_sceneitem_get_order_position(sceneItem);
+	OBSCanvasAutoRelease canvas = obs_source_get_canvas(obs_scene_get_source(scene));
+	if (canvas) {
+		eventData["canvasName"] = obs_canvas_get_name(canvas);
+		eventData["canvasUuid"] = obs_canvas_get_uuid(canvas);
+	}
 	eventHandler->BroadcastEvent(EventSubscription::SceneItems, "SceneItemCreated", eventData);
 }
 
@@ -96,6 +101,11 @@ void EventHandler::HandleSceneItemRemoved(void *param, calldata_t *data)
 	eventData["sourceName"] = obs_source_get_name(obs_sceneitem_get_source(sceneItem));
 	eventData["sourceUuid"] = obs_source_get_uuid(obs_sceneitem_get_source(sceneItem));
 	eventData["sceneItemId"] = obs_sceneitem_get_id(sceneItem);
+	OBSCanvasAutoRelease canvas = obs_source_get_canvas(obs_scene_get_source(scene));
+	if (canvas) {
+		eventData["canvasName"] = obs_canvas_get_name(canvas);
+		eventData["canvasUuid"] = obs_canvas_get_uuid(canvas);
+	}
 	eventHandler->BroadcastEvent(EventSubscription::SceneItems, "SceneItemRemoved", eventData);
 }
 
@@ -126,6 +136,11 @@ void EventHandler::HandleSceneItemListReindexed(void *param, calldata_t *data)
 	eventData["sceneName"] = obs_source_get_name(obs_scene_get_source(scene));
 	eventData["sceneUuid"] = obs_source_get_uuid(obs_scene_get_source(scene));
 	eventData["sceneItems"] = Utils::Obs::ArrayHelper::GetSceneItemList(scene, true);
+	OBSCanvasAutoRelease canvas = obs_source_get_canvas(obs_scene_get_source(scene));
+	if (canvas) {
+		eventData["canvasName"] = obs_canvas_get_name(canvas);
+		eventData["canvasUuid"] = obs_canvas_get_uuid(canvas);
+	}
 	eventHandler->BroadcastEvent(EventSubscription::SceneItems, "SceneItemListReindexed", eventData);
 }
 
@@ -164,6 +179,11 @@ void EventHandler::HandleSceneItemEnableStateChanged(void *param, calldata_t *da
 	eventData["sceneUuid"] = obs_source_get_uuid(obs_scene_get_source(scene));
 	eventData["sceneItemId"] = obs_sceneitem_get_id(sceneItem);
 	eventData["sceneItemEnabled"] = sceneItemEnabled;
+	OBSCanvasAutoRelease canvas = obs_source_get_canvas(obs_scene_get_source(scene));
+	if (canvas) {
+		eventData["canvasName"] = obs_canvas_get_name(canvas);
+		eventData["canvasUuid"] = obs_canvas_get_uuid(canvas);
+	}
 	eventHandler->BroadcastEvent(EventSubscription::SceneItems, "SceneItemEnableStateChanged", eventData);
 }
 
@@ -202,6 +222,11 @@ void EventHandler::HandleSceneItemLockStateChanged(void *param, calldata_t *data
 	eventData["sceneUuid"] = obs_source_get_uuid(obs_scene_get_source(scene));
 	eventData["sceneItemId"] = obs_sceneitem_get_id(sceneItem);
 	eventData["sceneItemLocked"] = sceneItemLocked;
+	OBSCanvasAutoRelease canvas = obs_source_get_canvas(obs_scene_get_source(scene));
+	if (canvas) {
+		eventData["canvasName"] = obs_canvas_get_name(canvas);
+		eventData["canvasUuid"] = obs_canvas_get_uuid(canvas);
+	}
 	eventHandler->BroadcastEvent(EventSubscription::SceneItems, "SceneItemLockStateChanged", eventData);
 }
 
@@ -236,6 +261,11 @@ void EventHandler::HandleSceneItemSelected(void *param, calldata_t *data)
 	eventData["sceneName"] = obs_source_get_name(obs_scene_get_source(scene));
 	eventData["sceneUuid"] = obs_source_get_uuid(obs_scene_get_source(scene));
 	eventData["sceneItemId"] = obs_sceneitem_get_id(sceneItem);
+	OBSCanvasAutoRelease canvas = obs_source_get_canvas(obs_scene_get_source(scene));
+	if (canvas) {
+		eventData["canvasName"] = obs_canvas_get_name(canvas);
+		eventData["canvasUuid"] = obs_canvas_get_uuid(canvas);
+	}
 	eventHandler->BroadcastEvent(EventSubscription::SceneItems, "SceneItemSelected", eventData);
 }
 
@@ -275,5 +305,10 @@ void EventHandler::HandleSceneItemTransformChanged(void *param, calldata_t *data
 	eventData["sceneUuid"] = obs_source_get_uuid(obs_scene_get_source(scene));
 	eventData["sceneItemId"] = obs_sceneitem_get_id(sceneItem);
 	eventData["sceneItemTransform"] = Utils::Obs::ObjectHelper::GetSceneItemTransform(sceneItem);
+	OBSCanvasAutoRelease canvas = obs_source_get_canvas(obs_scene_get_source(scene));
+	if (canvas) {
+		eventData["canvasName"] = obs_canvas_get_name(canvas);
+		eventData["canvasUuid"] = obs_canvas_get_uuid(canvas);
+	}
 	eventHandler->BroadcastEvent(EventSubscription::SceneItemTransformChanged, "SceneItemTransformChanged", eventData);
 }
