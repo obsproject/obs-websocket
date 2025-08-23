@@ -940,8 +940,10 @@ RequestResult RequestHandler::SetInputDeinterlaceMode(const Request &request)
 		return RequestResult::Error(RequestStatus::InvalidResourceState, "The specified input is not async.");
 
 	enum obs_deinterlace_mode deinterlaceMode = request.RequestData["inputDeinterlaceMode"];
-	if (deinterlaceMode == OBS_DEINTERLACE_MODE_DISABLE && request.RequestData["inputDeinterlaceMode"] != "OBS_DEINTERLACE_MODE_DISABLE")
-		return RequestResult::Error(RequestStatus::InvalidRequestField, "The field inputDeinterlaceMode has an invalid value.");
+	if (deinterlaceMode == OBS_DEINTERLACE_MODE_DISABLE &&
+	    request.RequestData["inputDeinterlaceMode"] != "OBS_DEINTERLACE_MODE_DISABLE")
+		return RequestResult::Error(RequestStatus::InvalidRequestField,
+					    "The field inputDeinterlaceMode has an invalid value.");
 
 	obs_source_set_deinterlace_mode(input, deinterlaceMode);
 
@@ -1015,8 +1017,10 @@ RequestResult RequestHandler::SetInputDeinterlaceFieldOrder(const Request &reque
 		return RequestResult::Error(RequestStatus::InvalidResourceState, "The specified input is not async.");
 
 	enum obs_deinterlace_field_order deinterlaceFieldOrder = request.RequestData["inputDeinterlaceFieldOrder"];
-	if (deinterlaceFieldOrder == OBS_DEINTERLACE_FIELD_ORDER_TOP && request.RequestData["inputDeinterlaceFieldOrder"] != "OBS_DEINTERLACE_FIELD_ORDER_TOP")
-		return RequestResult::Error(RequestStatus::InvalidRequestField, "The field inputDeinterlaceFieldOrder has an invalid value.");
+	if (deinterlaceFieldOrder == OBS_DEINTERLACE_FIELD_ORDER_TOP &&
+	    request.RequestData["inputDeinterlaceFieldOrder"] != "OBS_DEINTERLACE_FIELD_ORDER_TOP")
+		return RequestResult::Error(RequestStatus::InvalidRequestField,
+					    "The field inputDeinterlaceFieldOrder has an invalid value.");
 
 	obs_source_set_deinterlace_field_order(input, deinterlaceFieldOrder);
 
