@@ -87,8 +87,6 @@ void EventHandler::ProcessSubscriptionChange(bool type, uint64_t eventSubscripti
 			_inputActiveStateChangedRef++;
 		if ((eventSubscriptions & EventSubscription::InputShowStateChanged) != 0)
 			_inputShowStateChangedRef++;
-		if ((eventSubscriptions & EventSubscription::SceneItemTransformChanged) != 0)
-			_sceneItemTransformChangedRef++;
 	} else {
 		if ((eventSubscriptions & EventSubscription::InputVolumeMeters) != 0) {
 			if (_inputVolumeMetersRef.fetch_sub(1) == 1)
@@ -98,8 +96,6 @@ void EventHandler::ProcessSubscriptionChange(bool type, uint64_t eventSubscripti
 			_inputActiveStateChangedRef--;
 		if ((eventSubscriptions & EventSubscription::InputShowStateChanged) != 0)
 			_inputShowStateChangedRef--;
-		if ((eventSubscriptions & EventSubscription::SceneItemTransformChanged) != 0)
-			_sceneItemTransformChangedRef--;
 	}
 }
 
