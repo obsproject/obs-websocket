@@ -248,7 +248,7 @@ void EventHandler::HandleSceneItemSelected(void *param, calldata_t *data)
  * @dataField sceneItemTransform | Object | New transform/crop info of the scene item
  *
  * @eventType SceneItemTransformChanged
- * @eventSubscription SceneItemTransformChanged
+ * @eventSubscription SceneItems
  * @complexity 4
  * @rpcVersion -1
  * @initialVersion 5.0.0
@@ -258,9 +258,6 @@ void EventHandler::HandleSceneItemSelected(void *param, calldata_t *data)
 void EventHandler::HandleSceneItemTransformChanged(void *param, calldata_t *data)
 {
 	auto eventHandler = static_cast<EventHandler *>(param);
-
-	if (!eventHandler->_sceneItemTransformChangedRef.load())
-		return;
 
 	obs_scene_t *scene = GetCalldataPointer<obs_scene_t>(data, "scene");
 	if (!scene)
@@ -275,5 +272,5 @@ void EventHandler::HandleSceneItemTransformChanged(void *param, calldata_t *data
 	eventData["sceneUuid"] = obs_source_get_uuid(obs_scene_get_source(scene));
 	eventData["sceneItemId"] = obs_sceneitem_get_id(sceneItem);
 	eventData["sceneItemTransform"] = Utils::Obs::ObjectHelper::GetSceneItemTransform(sceneItem);
-	eventHandler->BroadcastEvent(EventSubscription::SceneItemTransformChanged, "SceneItemTransformChanged", eventData);
+	eventHandler->BroadcastEvent(EventSubscription::SceneItems, "SceneItemTransformChanged", eventData);
 }
