@@ -155,7 +155,7 @@ void Config::Save()
 json MigrateGlobalConfigData()
 {
 	// Get existing global config
-	config_t *config = obs_frontend_get_global_config();
+	config_t *config = obs_frontend_get_app_config();
 	json ret;
 
 	// Move values to temporary JSON blob
