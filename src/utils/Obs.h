@@ -249,8 +249,8 @@ namespace Utils {
 			std::vector<std::string> GetProfileList();
 			std::vector<obs_hotkey_t *> GetHotkeyList();
 			std::vector<std::string> GetHotkeyNameList();
-			std::vector<json> GetSceneList();
-			std::vector<std::string> GetGroupList();
+			std::vector<json> GetSceneList(obs_canvas_t* canvas = NULL);
+			std::vector<std::string> GetGroupList(obs_canvas_t *canvas = NULL);
 			std::vector<json> GetSceneItemList(obs_scene_t *scene, bool basic = false);
 			std::vector<json> GetInputList(std::string inputKind = "");
 			std::vector<std::string> GetInputKindList(bool unversioned = false, bool includeDisabled = false);

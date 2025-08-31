@@ -383,3 +383,21 @@ obs_output_t *Request::ValidateOutput(const std::string &keyName, RequestStatus:
 
 	return ret;
 }
+
+obs_canvas_t *Request::ValidateCanvas(const std::string &keyName, RequestStatus::RequestStatus &statusCode,
+				      std::string &comment) const
+{
+	if (!ValidateString(keyName, statusCode, comment))
+		return nullptr;
+
+	std::string canvasName = RequestData[keyName];
+
+	obs_canvas_t *ret = obs_get_canvas_by_name(canvasName.c_str());
+	if (!ret) {
+		statusCode = RequestStatus::ResourceNotFound;
+		comment = std::string("No canvas was found with the name `") + canvasName + "`.";
+		return nullptr;
+	}
+
+	return ret;
+}

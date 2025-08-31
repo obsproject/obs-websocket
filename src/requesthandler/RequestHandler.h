@@ -72,6 +72,9 @@ private:
 	RequestResult GetRecordDirectory(const Request &);
 	RequestResult SetRecordDirectory(const Request &);
 
+	// Canvases
+	RequestResult GetCanvasList(const Request &);
+
 	// Sources
 	RequestResult GetSourceActive(const Request &);
 	RequestResult GetSourceScreenshot(const Request &);
