@@ -198,16 +198,5 @@ namespace EventSubscription {
 		* @api enums
 		*/
 		InputShowStateChanged = (1 << 18),
-		/**
-		* Subscription value to receive the `SceneItemTransformChanged` high-volume event.
-		*
-		* @enumIdentifier SceneItemTransformChanged
-		* @enumValue (1 << 19)
-		* @enumType EventSubscription
-		* @rpcVersion -1
-		* @initialVersion 5.0.0
-		* @api enums
-		*/
-		SceneItemTransformChanged = (1 << 19),
 	};
 }
