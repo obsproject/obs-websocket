@@ -147,6 +147,12 @@ const std::unordered_map<std::string, RequestMethodHandler> RequestHandler::_han
 	{"GetSceneItemPrivateSettings", &RequestHandler::GetSceneItemPrivateSettings},
 	{"SetSceneItemPrivateSettings", &RequestHandler::SetSceneItemPrivateSettings},
 
+	// Scene Item Transitions
+	{"GetSceneItemShowTransition", &RequestHandler::GetSceneItemShowTransition},
+	{"SetSceneItemShowTransition", &RequestHandler::SetSceneItemShowTransition},
+	{"GetSceneItemHideTransition", &RequestHandler::GetSceneItemHideTransition},
+	{"SetSceneItemHideTransition", &RequestHandler::SetSceneItemHideTransition},
+
 	// Outputs
 	{"GetVirtualCamStatus", &RequestHandler::GetVirtualCamStatus},
 	{"ToggleVirtualCam", &RequestHandler::ToggleVirtualCam},
