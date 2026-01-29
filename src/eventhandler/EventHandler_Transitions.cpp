@@ -69,15 +69,19 @@ void EventHandler::HandleCurrentSceneTransitionDurationChanged()
 void SetFromAndToScene(json &eventData, obs_source_t *transition)
 {
 	if (OBSSourceAutoRelease sourceScene = obs_transition_get_source(transition, OBS_TRANSITION_SOURCE_A)) {
-		eventData["fromScene"] = obs_source_get_name(sourceScene);
+		eventData["fromSceneName"] = obs_source_get_name(sourceScene);
+		eventData["fromSceneUuid"] = obs_source_get_uuid(sourceScene);
 	} else {
-		eventData["fromScene"] = nullptr;
+		eventData["fromSceneName"] = nullptr;
+		eventData["fromSceneUuid"] = nullptr;
 	}
 
 	if (OBSSourceAutoRelease destinationScene = obs_transition_get_source(transition, OBS_TRANSITION_SOURCE_B)) {
-		eventData["toScene"] = obs_source_get_name(destinationScene);
+		eventData["toSceneName"] = obs_source_get_name(destinationScene);
+		eventData["toSceneUuid"] = obs_source_get_uuid(destinationScene);
 	} else {
-		eventData["toScene"] = nullptr;
+		eventData["toSceneName"] = nullptr;
+		eventData["toSceneUuid"] = nullptr;
 	}
 }
 
@@ -86,9 +90,11 @@ void SetFromAndToScene(json &eventData, obs_source_t *transition)
 void SetToScene(json &eventData, obs_source_t *transition)
 {
 	if (OBSSourceAutoRelease sourceScene = obs_transition_get_source(transition, OBS_TRANSITION_SOURCE_A)) {
-		eventData["toScene"] = obs_source_get_name(sourceScene);
+		eventData["toSceneName"] = obs_source_get_name(sourceScene);
+		eventData["toSceneUuid"] = obs_source_get_uuid(sourceScene);
 	} else {
-		eventData["toScene"] = nullptr;
+		eventData["toSceneName"] = nullptr;
+		eventData["toSceneUuid"] = nullptr;
 	}
 }
 
@@ -98,8 +104,10 @@ void SetToScene(json &eventData, obs_source_t *transition)
  * @dataField transitionName     | String | Scene transition name
  * @dataField transitionUuid     | String | Scene transition UUID
  * @dataField transitionDuration | Number | Transition duration in milliseconds
- * @dataField toScene            | String | Scene that we transitioned to, possibly missing when using "Fade to Black" in studio mode.
- * @dataField fromScene          | String | Scene that we transitioned away from, possibly missing when using "Fade to Black" in studio mode.
+ * @dataField toSceneName        | String | Scene that we transitioned to, possibly missing when using "Fade to Black" in studio mode.
+ * @dataField toSceneUuid        | String | UUID of the scene, or null
+ * @dataField fromSceneName      | String | Scene that we transitioned away from, possibly missing when using "Fade to Black" in studio mode.
+ * @dataField fromSceneUuid      | String | UUID of the scene, or null
  *
  * @eventType SceneTransitionStarted
  * @eventSubscription Transitions
@@ -135,7 +143,8 @@ void EventHandler::HandleSceneTransitionStarted(void *param, calldata_t *data)
  * @dataField transitionName     | String | Scene transition name
  * @dataField transitionUuid     | String | Scene transition UUID
  * @dataField transitionDuration | Number | Transition duration in milliseconds
- * @dataField toScene            | String | Scene that we transitioned to, possibly missing when using "Fade to Black" in studio mode.
+ * @dataField toSceneName        | String | Scene that we transitioned to, possibly missing when using "Fade to Black" in studio mode.
+ * @dataField toSceneUuid        | String | UUID of the scene, or null
  *
  * @eventType SceneTransitionEnded
  * @eventSubscription Transitions
@@ -174,8 +183,10 @@ void EventHandler::HandleSceneTransitionEnded(void *param, calldata_t *data)
  * @dataField transitionName     | String | Scene transition name
  * @dataField transitionUuid     | String | Scene transition UUID
  * @dataField transitionDuration | Number | Transition duration in milliseconds
- * @dataField toScene            | String | Scene that we transitioned to, possibly missing when using "Fade to Black" in studio mode.
- * @dataField fromScene          | String | Scene that we transitioned away from, possibly missing when using "Fade to Black" in studio mode.
+ * @dataField toSceneName        | String | Scene that we transitioned to, possibly missing when using "Fade to Black" in studio mode.
+ * @dataField toSceneUuid        | String | UUID of the scene, or null
+ * @dataField fromSceneName      | String | Scene that we transitioned away from, possibly missing when using "Fade to Black" in studio mode.
+ * @dataField fromSceneUuid      | String | UUID of the scene, or null
  *
  * @eventType SceneTransitionVideoEnded
  * @eventSubscription Transitions
