@@ -25,6 +25,19 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include "RequestHandler.h"
 
 /**
+ * Monitor/display information.
+ *
+ * @typedef Monitor
+ * @field monitorName | String | Name and index of the monitor
+ * @field monitorIndex | Number | Index of the monitor
+ * @field monitorWidth | Number | Width of the monitor in pixels
+ * @field monitorHeight | Number | Height of the monitor in pixels
+ * @field monitorPositionX | Number | X position of the monitor
+ * @field monitorPositionY | Number | Y position of the monitor
+ * @api types
+ */
+
+/**
  * Gets whether studio is enabled.
  *
  * @responseField studioModeEnabled | Boolean | Whether studio mode is enabled
@@ -164,7 +177,7 @@ RequestResult RequestHandler::OpenInputInteractDialog(const Request &request)
 /**
  * Gets a list of connected monitors and information about them.
  *
- * @responseField monitors | Array<Object> | a list of detected monitors with some information
+ * @responseField monitors | Array<Monitor> | a list of detected monitors with some information
  *
  * @requestType GetMonitorList
  * @complexity 2

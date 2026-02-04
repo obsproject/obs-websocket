@@ -1,4 +1,406 @@
 {
+  "types": [
+    {
+      "typeName": "Filter",
+      "description": "Source filter information.",
+      "typeFields": [
+        {
+          "fieldName": "filterEnabled",
+          "fieldType": "Boolean",
+          "fieldDescription": "Whether the filter is enabled"
+        },
+        {
+          "fieldName": "filterIndex",
+          "fieldType": "Number",
+          "fieldDescription": "Index position of the filter"
+        },
+        {
+          "fieldName": "filterKind",
+          "fieldType": "String",
+          "fieldDescription": "Kind of the filter"
+        },
+        {
+          "fieldName": "filterName",
+          "fieldType": "String",
+          "fieldDescription": "Name of the filter"
+        },
+        {
+          "fieldName": "filterSettings",
+          "fieldType": "Object",
+          "fieldDescription": "Settings object associated with the filter"
+        }
+      ]
+    },
+    {
+      "typeName": "Input",
+      "description": "Input source information.",
+      "typeFields": [
+        {
+          "fieldName": "inputName",
+          "fieldType": "String",
+          "fieldDescription": "Name of the input"
+        },
+        {
+          "fieldName": "inputUuid",
+          "fieldType": "String",
+          "fieldDescription": "UUID of the input"
+        },
+        {
+          "fieldName": "inputKind",
+          "fieldType": "String",
+          "fieldDescription": "Kind of the input"
+        },
+        {
+          "fieldName": "unversionedInputKind",
+          "fieldType": "String",
+          "fieldDescription": "Unversioned kind of the input (can be used across OBS versions)"
+        },
+        {
+          "fieldName": "inputKindCaps",
+          "fieldType": "Number",
+          "fieldDescription": "Capabilities of the input kind"
+        }
+      ]
+    },
+    {
+      "typeName": "PropertyItem",
+      "description": "Property list item information.",
+      "typeFields": [
+        {
+          "fieldName": "itemName",
+          "fieldType": "String",
+          "fieldDescription": "Name of the item"
+        },
+        {
+          "fieldName": "itemEnabled",
+          "fieldType": "Boolean",
+          "fieldDescription": "Whether the item is enabled"
+        },
+        {
+          "fieldName": "itemValue",
+          "fieldType": "Any",
+          "fieldDescription": "Value of the item"
+        }
+      ]
+    },
+    {
+      "typeName": "OutputFlags",
+      "description": "Output flags information.",
+      "typeFields": [
+        {
+          "fieldName": "OBS_OUTPUT_AUDIO",
+          "fieldType": "Boolean",
+          "fieldDescription": "Output has audio capability"
+        },
+        {
+          "fieldName": "OBS_OUTPUT_VIDEO",
+          "fieldType": "Boolean",
+          "fieldDescription": "Output has video capability"
+        },
+        {
+          "fieldName": "OBS_OUTPUT_ENCODED",
+          "fieldType": "Boolean",
+          "fieldDescription": "Output uses encoded data"
+        },
+        {
+          "fieldName": "OBS_OUTPUT_MULTI_TRACK",
+          "fieldType": "Boolean",
+          "fieldDescription": "Output supports multi-track audio"
+        },
+        {
+          "fieldName": "OBS_OUTPUT_SERVICE",
+          "fieldType": "Boolean",
+          "fieldDescription": "Output is bound to a service"
+        }
+      ]
+    },
+    {
+      "typeName": "Output",
+      "description": "Output information.",
+      "typeFields": [
+        {
+          "fieldName": "outputName",
+          "fieldType": "String",
+          "fieldDescription": "Name of the output"
+        },
+        {
+          "fieldName": "outputKind",
+          "fieldType": "String",
+          "fieldDescription": "Kind of the output"
+        },
+        {
+          "fieldName": "outputWidth",
+          "fieldType": "Number",
+          "fieldDescription": "Width of the output in pixels"
+        },
+        {
+          "fieldName": "outputHeight",
+          "fieldType": "Number",
+          "fieldDescription": "Height of the output in pixels"
+        },
+        {
+          "fieldName": "outputActive",
+          "fieldType": "Boolean",
+          "fieldDescription": "Whether the output is active"
+        },
+        {
+          "fieldName": "outputFlags",
+          "fieldType": "OutputFlags",
+          "fieldDescription": "Output capability flags"
+        }
+      ]
+    },
+    {
+      "typeName": "SceneItemTransform",
+      "description": "Scene item transform information.",
+      "typeFields": [
+        {
+          "fieldName": "sourceWidth",
+          "fieldType": "Number",
+          "fieldDescription": "Width of the source associated with the scene item"
+        },
+        {
+          "fieldName": "sourceHeight",
+          "fieldType": "Number",
+          "fieldDescription": "Height of the source associated with the scene item"
+        },
+        {
+          "fieldName": "positionX",
+          "fieldType": "Number",
+          "fieldDescription": "The x position of the scene item from the left"
+        },
+        {
+          "fieldName": "positionY",
+          "fieldType": "Number",
+          "fieldDescription": "The y position of the scene item from the top"
+        },
+        {
+          "fieldName": "rotation",
+          "fieldType": "Number",
+          "fieldDescription": "The clockwise rotation of the scene item in degrees around the point of alignment"
+        },
+        {
+          "fieldName": "scaleX",
+          "fieldType": "Number",
+          "fieldDescription": "The x-scale factor of the scene item"
+        },
+        {
+          "fieldName": "scaleY",
+          "fieldType": "Number",
+          "fieldDescription": "The y-scale factor of the scene item"
+        },
+        {
+          "fieldName": "width",
+          "fieldType": "Number",
+          "fieldDescription": "The rendered width of the scene item"
+        },
+        {
+          "fieldName": "height",
+          "fieldType": "Number",
+          "fieldDescription": "The rendered height of the scene item"
+        },
+        {
+          "fieldName": "alignment",
+          "fieldType": "Number",
+          "fieldDescription": "The alignment of the scene item"
+        },
+        {
+          "fieldName": "boundsType",
+          "fieldType": "String",
+          "fieldDescription": "Type of bounding box"
+        },
+        {
+          "fieldName": "boundsAlignment",
+          "fieldType": "Number",
+          "fieldDescription": "Alignment of the bounding box"
+        },
+        {
+          "fieldName": "boundsWidth",
+          "fieldType": "Number",
+          "fieldDescription": "Width of the bounding box"
+        },
+        {
+          "fieldName": "boundsHeight",
+          "fieldType": "Number",
+          "fieldDescription": "Height of the bounding box"
+        },
+        {
+          "fieldName": "cropLeft",
+          "fieldType": "Number",
+          "fieldDescription": "The number of pixels cropped off the left of the source before scaling"
+        },
+        {
+          "fieldName": "cropRight",
+          "fieldType": "Number",
+          "fieldDescription": "The number of pixels cropped off the right of the source before scaling"
+        },
+        {
+          "fieldName": "cropTop",
+          "fieldType": "Number",
+          "fieldDescription": "The number of pixels cropped off the top of the source before scaling"
+        },
+        {
+          "fieldName": "cropBottom",
+          "fieldType": "Number",
+          "fieldDescription": "The number of pixels cropped off the bottom of the source before scaling"
+        },
+        {
+          "fieldName": "cropToBounds",
+          "fieldType": "Boolean",
+          "fieldDescription": "Whether the crop is to the bounding box or to the scene item bounding box"
+        }
+      ]
+    },
+    {
+      "typeName": "SceneItem",
+      "description": "Scene item information.",
+      "typeFields": [
+        {
+          "fieldName": "sceneItemId",
+          "fieldType": "Number",
+          "fieldDescription": "Numeric ID of the scene item"
+        },
+        {
+          "fieldName": "sceneItemIndex",
+          "fieldType": "Number",
+          "fieldDescription": "Index position of the scene item"
+        },
+        {
+          "fieldName": "sceneItemEnabled",
+          "fieldType": "Boolean",
+          "fieldDescription": "Whether the scene item is enabled"
+        },
+        {
+          "fieldName": "sceneItemLocked",
+          "fieldType": "Boolean",
+          "fieldDescription": "Whether the scene item is locked"
+        },
+        {
+          "fieldName": "sceneItemTransform",
+          "fieldType": "SceneItemTransform",
+          "fieldDescription": "Transform information of the scene item"
+        },
+        {
+          "fieldName": "sceneItemBlendMode",
+          "fieldType": "Number",
+          "fieldDescription": "Blend mode of the scene item"
+        },
+        {
+          "fieldName": "sourceName",
+          "fieldType": "String",
+          "fieldDescription": "Name of the source associated with the scene item"
+        },
+        {
+          "fieldName": "sourceUuid",
+          "fieldType": "String",
+          "fieldDescription": "UUID of the source associated with the scene item"
+        },
+        {
+          "fieldName": "sourceType",
+          "fieldType": "Number",
+          "fieldDescription": "Type of the source"
+        },
+        {
+          "fieldName": "inputKind",
+          "fieldType": "String",
+          "fieldDescription": "The kind of input source (null if not an input)"
+        },
+        {
+          "fieldName": "isGroup",
+          "fieldType": "Boolean",
+          "fieldDescription": "Whether the source is a group (null if not a scene)"
+        }
+      ]
+    },
+    {
+      "typeName": "Scene",
+      "description": "Scene information.",
+      "typeFields": [
+        {
+          "fieldName": "sceneName",
+          "fieldType": "String",
+          "fieldDescription": "Name of the scene"
+        },
+        {
+          "fieldName": "sceneUuid",
+          "fieldType": "String",
+          "fieldDescription": "UUID of the scene"
+        },
+        {
+          "fieldName": "sceneIndex",
+          "fieldType": "Number",
+          "fieldDescription": "Index of the scene"
+        }
+      ]
+    },
+    {
+      "typeName": "Transition",
+      "description": "Scene transition information.",
+      "typeFields": [
+        {
+          "fieldName": "transitionName",
+          "fieldType": "String",
+          "fieldDescription": "Name of the transition"
+        },
+        {
+          "fieldName": "transitionUuid",
+          "fieldType": "String",
+          "fieldDescription": "UUID of the transition"
+        },
+        {
+          "fieldName": "transitionKind",
+          "fieldType": "String",
+          "fieldDescription": "Kind of the transition"
+        },
+        {
+          "fieldName": "transitionFixed",
+          "fieldType": "Boolean",
+          "fieldDescription": "Whether the transition has fixed duration"
+        },
+        {
+          "fieldName": "transitionConfigurable",
+          "fieldType": "Boolean",
+          "fieldDescription": "Whether the transition is configurable"
+        }
+      ]
+    },
+    {
+      "typeName": "Monitor",
+      "description": "Monitor/display information.",
+      "typeFields": [
+        {
+          "fieldName": "monitorName",
+          "fieldType": "String",
+          "fieldDescription": "Name and index of the monitor"
+        },
+        {
+          "fieldName": "monitorIndex",
+          "fieldType": "Number",
+          "fieldDescription": "Index of the monitor"
+        },
+        {
+          "fieldName": "monitorWidth",
+          "fieldType": "Number",
+          "fieldDescription": "Width of the monitor in pixels"
+        },
+        {
+          "fieldName": "monitorHeight",
+          "fieldType": "Number",
+          "fieldDescription": "Height of the monitor in pixels"
+        },
+        {
+          "fieldName": "monitorPositionX",
+          "fieldType": "Number",
+          "fieldDescription": "X position of the monitor"
+        },
+        {
+          "fieldName": "monitorPositionY",
+          "fieldType": "Number",
+          "fieldDescription": "Y position of the monitor"
+        }
+      ]
+    }
+  ],
   "enums": [
     {
       "enumType": "EventSubscription",
@@ -1305,7 +1707,7 @@
       "responseFields": [
         {
           "valueName": "filters",
-          "valueType": "Array<Object>",
+          "valueType": "Array<Filter>",
           "valueDescription": "Array of filters"
         }
       ]
@@ -2005,7 +2407,7 @@
       "responseFields": [
         {
           "valueName": "inputs",
-          "valueType": "Array<Object>",
+          "valueType": "Array<Input>",
           "valueDescription": "Array of inputs"
         }
       ]
@@ -2966,7 +3368,7 @@
       "responseFields": [
         {
           "valueName": "propertyItems",
-          "valueType": "Array<Object>",
+          "valueType": "Array<PropertyItem>",
           "valueDescription": "Array of items in the list property"
         }
       ]
@@ -3311,7 +3713,7 @@
       "responseFields": [
         {
           "valueName": "outputs",
-          "valueType": "Array<Object>",
+          "valueType": "Array<Output>",
           "valueDescription": "Array of outputs"
         }
       ]
@@ -3672,7 +4074,7 @@
       "responseFields": [
         {
           "valueName": "sceneItems",
-          "valueType": "Array<Object>",
+          "valueType": "Array<SceneItem>",
           "valueDescription": "Array of scene items in the scene"
         }
       ]
@@ -3706,7 +4108,7 @@
       "responseFields": [
         {
           "valueName": "sceneItems",
-          "valueType": "Array<Object>",
+          "valueType": "Array<SceneItem>",
           "valueDescription": "Array of scene items in the group"
         }
       ]
@@ -3997,7 +4399,7 @@
       "responseFields": [
         {
           "valueName": "sceneItemTransform",
-          "valueType": "Object",
+          "valueType": "SceneItemTransform",
           "valueDescription": "Object containing scene item transform info"
         }
       ]
@@ -4037,7 +4439,7 @@
         },
         {
           "valueName": "sceneItemTransform",
-          "valueType": "Object",
+          "valueType": "SceneItemTransform",
           "valueDescription": "Object containing scene item transform info to update",
           "valueRestrictions": null,
           "valueOptional": false,
@@ -4422,7 +4824,7 @@
         },
         {
           "valueName": "scenes",
-          "valueType": "Array<Object>",
+          "valueType": "Array<Scene>",
           "valueDescription": "Array of scenes"
         }
       ]
@@ -5065,7 +5467,7 @@
         },
         {
           "valueName": "transitions",
-          "valueType": "Array<Object>",
+          "valueType": "Array<Transition>",
           "valueDescription": "Array of transitions"
         }
       ]
@@ -5374,7 +5776,7 @@
       "responseFields": [
         {
           "valueName": "monitors",
-          "valueType": "Array<Object>",
+          "valueType": "Array<Monitor>",
           "valueDescription": "a list of detected monitors with some information"
         }
       ]

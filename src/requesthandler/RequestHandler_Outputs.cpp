@@ -32,6 +32,31 @@ static bool ReplayBufferAvailable()
 }
 
 /**
+ * Output flags information.
+ *
+ * @typedef OutputFlags
+ * @field OBS_OUTPUT_AUDIO | Boolean | Output has audio capability
+ * @field OBS_OUTPUT_VIDEO | Boolean | Output has video capability
+ * @field OBS_OUTPUT_ENCODED | Boolean | Output uses encoded data
+ * @field OBS_OUTPUT_MULTI_TRACK | Boolean | Output supports multi-track audio
+ * @field OBS_OUTPUT_SERVICE | Boolean | Output is bound to a service
+ * @api types
+ */
+
+/**
+ * Output information.
+ *
+ * @typedef Output
+ * @field outputName | String | Name of the output
+ * @field outputKind | String | Kind of the output
+ * @field outputWidth | Number | Width of the output in pixels
+ * @field outputHeight | Number | Height of the output in pixels
+ * @field outputActive | Boolean | Whether the output is active
+ * @field outputFlags | OutputFlags | Output capability flags
+ * @api types
+ */
+
+/**
  * Gets the status of the virtualcam output.
  *
  * @responseField outputActive | Boolean | Whether the output is active
@@ -276,7 +301,7 @@ RequestResult RequestHandler::GetLastReplayBufferReplay(const Request &)
 /**
  * Gets the list of available outputs.
  * 
- * @responseField outputs | Array<Object> | Array of outputs
+ * @responseField outputs | Array<Output> | Array of outputs
  *
  * @requestType GetOutputList
  * @complexity 4

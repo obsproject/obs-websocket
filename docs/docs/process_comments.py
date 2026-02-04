@@ -26,12 +26,25 @@ def validate_fields(data, fields):
             return False
     return True
 
-# Get the individual components of a `requestField` or `responseField` or `dataField` entry
+# Get the individual components of a `requestField` or `responseField` or `dataField` or `field` entry
 def get_components(data):
     ret = []
     components_raw = data.split('|')
     for component in components_raw:
         ret.append(component.strip())
+    return ret
+
+# Convert all typedef fields from raw to final
+def get_typedef_fields(fields):
+    fields = field_to_array(fields)
+    ret = []
+    for field in fields:
+        components = get_components(field)
+        field_out = {}
+        field_out['fieldName'] = components[0]
+        field_out['fieldType'] = components[1]
+        field_out['fieldDescription'] = components[2] if len(components) > 2 else ''
+        ret.append(field_out)
     return ret
 
 # Convert all request fields from raw to final
@@ -90,6 +103,7 @@ with open('../work/comments.json', 'r') as f:
     comments_raw = json.load(f)
 
 # Prepare output variables
+types = []
 enums = []
 requests = []
 events = []
@@ -102,7 +116,27 @@ for comment in comments_raw:
         continue
 
     api = comment['api']
-    if api == 'enums':
+    if api == 'types':
+        if not validate_fields(comment, ['typedef']):
+            logging.warning('Failed to process type comment due to missing field(s):\n{}'.format(comment))
+            continue
+
+        typedef = {}
+        typedef['typeName'] = field_to_string(comment['typedef'])
+        typedef['description'] = field_to_string(comment.get('lead', '')) + field_to_string(comment.get('description', ''))
+        
+        try:
+            if 'field' in comment:
+                typedef['typeFields'] = get_typedef_fields(comment['field'])
+            else:
+                typedef['typeFields'] = []
+        except:
+            logging.exception('Failed to process type `{}` fields due to error:\n'.format(typedef['typeName']))
+            continue
+
+        types.append(typedef)
+        logging.info('Processed type: {}'.format(typedef['typeName']))
+    elif api == 'enums':
         if not validate_fields(comment, ['description', 'enumIdentifier', 'enumType', 'rpcVersion', 'initialVersion']):
             logging.warning('Failed to process enum id comment due to missing field(s):\n{}'.format(comment))
             continue
@@ -202,7 +236,7 @@ for enumType in enums_raw.keys():
     enum = enums_raw[enumType]
     enums.append({'enumType': enumType, 'enumIdentifiers': enum['enumIdentifiers']})
 
-finalObject = {'enums': enums, 'requests': requests, 'events': events}
+finalObject = {'types': types, 'enums': enums, 'requests': requests, 'events': events}
 
 with open('../generated/protocol.json', 'w') as f:
     json.dump(finalObject, f, indent=2)

@@ -20,6 +20,50 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include "RequestHandler.h"
 
 /**
+ * Scene item transform information.
+ *
+ * @typedef SceneItemTransform
+ * @field sourceWidth | Number | Width of the source associated with the scene item
+ * @field sourceHeight | Number | Height of the source associated with the scene item
+ * @field positionX | Number | The x position of the scene item from the left
+ * @field positionY | Number | The y position of the scene item from the top
+ * @field rotation | Number | The clockwise rotation of the scene item in degrees around the point of alignment
+ * @field scaleX | Number | The x-scale factor of the scene item
+ * @field scaleY | Number | The y-scale factor of the scene item
+ * @field width | Number | The rendered width of the scene item
+ * @field height | Number | The rendered height of the scene item
+ * @field alignment | Number | The alignment of the scene item
+ * @field boundsType | String | Type of bounding box
+ * @field boundsAlignment | Number | Alignment of the bounding box
+ * @field boundsWidth | Number | Width of the bounding box
+ * @field boundsHeight | Number | Height of the bounding box
+ * @field cropLeft | Number | The number of pixels cropped off the left of the source before scaling
+ * @field cropRight | Number | The number of pixels cropped off the right of the source before scaling
+ * @field cropTop | Number | The number of pixels cropped off the top of the source before scaling
+ * @field cropBottom | Number | The number of pixels cropped off the bottom of the source before scaling
+ * @field cropToBounds | Boolean | Whether the crop is to the bounding box or to the scene item bounding box
+ * @api types
+ */
+
+/**
+ * Scene item information.
+ *
+ * @typedef SceneItem
+ * @field sceneItemId | Number | Numeric ID of the scene item
+ * @field sceneItemIndex | Number | Index position of the scene item
+ * @field sceneItemEnabled | Boolean | Whether the scene item is enabled
+ * @field sceneItemLocked | Boolean | Whether the scene item is locked
+ * @field sceneItemTransform | SceneItemTransform | Transform information of the scene item
+ * @field sceneItemBlendMode | Number | Blend mode of the scene item
+ * @field sourceName | String | Name of the source associated with the scene item
+ * @field sourceUuid | String | UUID of the source associated with the scene item
+ * @field sourceType | Number | Type of the source
+ * @field inputKind | String | The kind of input source (null if not an input)
+ * @field isGroup | Boolean | Whether the source is a group (null if not a scene)
+ * @api types
+ */
+
+/**
  * Gets a list of all scene items in a scene.
  *
  * Scenes only
@@ -27,7 +71,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
  * @requestField ?sceneName | String | Name of the scene to get the items of
  * @requestField ?sceneUuid | String | UUID of the scene to get the items of
  *
- * @responseField sceneItems | Array<Object> | Array of scene items in the scene
+ * @responseField sceneItems | Array<SceneItem> | Array of scene items in the scene
  *
  * @requestType GetSceneItemList
  * @complexity 3
@@ -60,7 +104,7 @@ RequestResult RequestHandler::GetSceneItemList(const Request &request)
  * @requestField ?sceneName | String | Name of the group to get the items of
  * @requestField ?sceneUuid | String | UUID of the group to get the items of
  *
- * @responseField sceneItems | Array<Object> | Array of scene items in the group
+ * @responseField sceneItems | Array<SceneItem> | Array of scene items in the group
  *
  * @requestType GetGroupSceneItemList
  * @complexity 3
@@ -334,7 +378,7 @@ RequestResult RequestHandler::DuplicateSceneItem(const Request &request)
  * @requestField ?sceneUuid  | String | UUID of the scene the item is in
  * @requestField sceneItemId | Number | Numeric ID of the scene item | >= 0
  *
- * @responseField sceneItemTransform | Object | Object containing scene item transform info
+ * @responseField sceneItemTransform | SceneItemTransform | Object containing scene item transform info
  *
  * @requestType GetSceneItemTransform
  * @complexity 3
@@ -364,7 +408,7 @@ RequestResult RequestHandler::GetSceneItemTransform(const Request &request)
  * @requestField ?sceneName         | String | Name of the scene the item is in
  * @requestField ?sceneUuid         | String | UUID of the scene the item is in
  * @requestField sceneItemId        | Number | Numeric ID of the scene item | >= 0
- * @requestField sceneItemTransform | Object | Object containing scene item transform info to update
+ * @requestField sceneItemTransform | SceneItemTransform | Object containing scene item transform info to update
  *
  * @requestType SetSceneItemTransform
  * @complexity 3
