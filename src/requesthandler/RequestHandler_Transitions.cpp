@@ -22,6 +22,18 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include "RequestHandler.h"
 
 /**
+ * Scene transition information.
+ *
+ * @typedef Transition
+ * @field transitionName | String | Name of the transition
+ * @field transitionUuid | String | UUID of the transition
+ * @field transitionKind | String | Kind of the transition
+ * @field transitionFixed | Boolean | Whether the transition has fixed duration
+ * @field transitionConfigurable | Boolean | Whether the transition is configurable
+ * @api types
+ */
+
+/**
  * Gets an array of all available transition kinds.
  *
  * Similar to `GetInputKindList`
@@ -48,7 +60,7 @@ RequestResult RequestHandler::GetTransitionKindList(const Request &)
  * @responseField currentSceneTransitionName | String         | Name of the current scene transition. Can be null
  * @responseField currentSceneTransitionUuid | String         | UUID of the current scene transition. Can be null
  * @responseField currentSceneTransitionKind | String         | Kind of the current scene transition. Can be null
- * @responseField transitions                | Array<Object> | Array of transitions
+ * @responseField transitions                | Array<Transition> | Array of transitions
  *
  * @requestType GetSceneTransitionList
  * @complexity 3

@@ -52,6 +52,13 @@ dataFieldHeader = """
 | ---- | :---: | ----------- |
 """
 
+typeFieldHeader = """
+**Type Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+"""
+
 fragments = []
 
 # Utils
@@ -99,6 +106,34 @@ def get_enums_toc(enums):
             enumIdentifierHeader = '{}::{}'.format(enumType, enumIdentifier)
             enumIdentifierFragment = get_fragment(enumIdentifierHeader, False)
             ret += '  - [{}](#{})\n'.format(enumIdentifierHeader, enumIdentifierFragment)
+    return ret
+
+def get_types_toc(types):
+    ret = ''
+    for typedef in types:
+        typeName = typedef['typeName']
+        typeFragment = get_fragment(typeName, False)
+        ret += '- [{}](#{})\n'.format(typeName, typeFragment)
+    return ret
+
+def get_types(types):
+    ret = ''
+    for typedef in types:
+        typeName = typedef['typeName']
+        typeFragment = get_fragment(typeName)
+        ret += '## {}\n\n'.format(typeName)
+        ret += '{}\n\n'.format(typedef['description'])
+        
+        if typedef['typeFields']:
+            ret += typeFieldHeader
+        for typeField in typedef['typeFields']:
+            fieldType = typeField['fieldType'].replace('<', "&lt;").replace('>', "&gt;")
+            ret += '| {} | {} | {} |\n'.format(typeField['fieldName'], fieldType, typeField['fieldDescription'])
+        
+        if typedef != types[-1]:
+            ret += '\n---\n\n'
+        else:
+            ret += '\n'
     return ret
 
 def get_enums(enums):
@@ -277,6 +312,16 @@ output += read_file('partials/introduction.md')
 logging.info('Inserted introduction section.')
 
 output += '\n'
+
+# Generate types MD (if types exist)
+if 'types' in protocol and protocol['types']:
+    output += '# Types\n\n'
+    output += 'The following types are used as complex object structures in various requests and events.\n\n'
+    output += '## Table of Contents\n\n'
+    output += get_types_toc(protocol['types'])
+    output += '\n'
+    output += get_types(protocol['types'])
+    logging.info('Inserted types section.')
 
 # Generate enums MD
 output += read_file('partials/enumsHeader.md')

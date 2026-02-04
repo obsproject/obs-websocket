@@ -20,11 +20,33 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include "RequestHandler.h"
 
 /**
+ * Input source information.
+ *
+ * @typedef Input
+ * @field inputName | String | Name of the input
+ * @field inputUuid | String | UUID of the input
+ * @field inputKind | String | Kind of the input
+ * @field unversionedInputKind | String | Unversioned kind of the input (can be used across OBS versions)
+ * @field inputKindCaps | Number | Capabilities of the input kind
+ * @api types
+ */
+
+/**
+ * Property list item information.
+ *
+ * @typedef PropertyItem
+ * @field itemName | String | Name of the item
+ * @field itemEnabled | Boolean | Whether the item is enabled
+ * @field itemValue | Any | Value of the item
+ * @api types
+ */
+
+/**
  * Gets an array of all inputs in OBS.
  *
  * @requestField ?inputKind | String | Restrict the array to only inputs of the specified kind | All kinds included
  *
- * @responseField inputs | Array<Object> | Array of inputs
+ * @responseField inputs | Array<Input> | Array of inputs
  *
  * @requestType GetInputList
  * @complexity 2
@@ -1036,7 +1058,7 @@ RequestResult RequestHandler::SetInputDeinterlaceFieldOrder(const Request &reque
  * @requestField ?inputUuid   | String | UUID of the input
  * @requestField propertyName | String | Name of the list property to get the items of
  *
- * @responseField propertyItems | Array<Object> | Array of items in the list property
+ * @responseField propertyItems | Array<PropertyItem> | Array of items in the list property
  *
  * @requestType GetInputPropertiesListPropertyItems
  * @complexity 4

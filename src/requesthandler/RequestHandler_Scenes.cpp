@@ -20,13 +20,23 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include "RequestHandler.h"
 
 /**
+ * Scene information.
+ *
+ * @typedef Scene
+ * @field sceneName | String | Name of the scene
+ * @field sceneUuid | String | UUID of the scene
+ * @field sceneIndex | Number | Index of the scene
+ * @api types
+ */
+
+/**
  * Gets an array of all scenes in OBS.
  *
  * @responseField currentProgramSceneName | String        | Current program scene name. Can be `null` if internal state desync
  * @responseField currentProgramSceneUuid | String        | Current program scene UUID. Can be `null` if internal state desync
  * @responseField currentPreviewSceneName | String        | Current preview scene name. `null` if not in studio mode
  * @responseField currentPreviewSceneUuid | String        | Current preview scene UUID. `null` if not in studio mode
- * @responseField scenes                  | Array<Object> | Array of scenes
+ * @responseField scenes                  | Array<Scene> | Array of scenes
  *
  * @requestType GetSceneList
  * @complexity 2

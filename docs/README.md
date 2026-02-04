@@ -15,11 +15,50 @@ Some notes about documenting:
 - The description can be multiple lines, but must be contained above the first documentation property (the lines starting with `@`).
 - Value types are in reference to JSON values. The only ones you should use are `Any`, `String`, `Boolean`, `Number`, `Array`, `Object`.
   - `Array` types follow this format: `Array<subtype>`, for example `Array<String>` to specify an array of strings.
+  - `Object` types can be replaced with custom type names defined using `@typedef` (see "Creating type documentation" below).
+  - When referencing a custom type, use the type name directly (e.g., `SceneItemTransform`) or in an array (e.g., `Array<SceneItem>`).
 
 Formatting notes:
 
 - Fields should have their columns aligned. So in a request, the columns of all `@requestField`s should be aligned.
 - We suggest looking at how other enums/events/requests have been documented before documenting one of your own, to get a general feel of how things have been formatted.
+
+## Creating type documentation
+
+Custom types allow you to define reusable complex object structures instead of using generic `Object` types. This enables client libraries to auto-generate proper typed models.
+
+Types follow this code comment format:
+
+```js
+/**
+ * [description]
+ *
+ * @typedef [type name]
+ * @field [field name] | [value type] | [field description]
+ * [... more @field entries ...]
+ * @api types
+ */
+```
+
+Example code comment:
+
+```js
+/**
+ * Scene item transform information.
+ *
+ * @typedef SceneItemTransform
+ * @field sourceWidth | Number | Width of the source associated with the scene item
+ * @field sourceHeight | Number | Height of the source associated with the scene item
+ * @field positionX | Number | The x position of the scene item from the left
+ * @field positionY | Number | The y position of the scene item from the top
+ * @field rotation | Number | The clockwise rotation of the scene item in degrees around the point of alignment
+ * @api types
+ */
+```
+
+- Custom types are automatically added to the `types` section in `protocol.json` and `protocol.md`.
+- You can reference custom types in `@requestField`, `@responseField`, and `@dataField` declarations.
+- Types can reference other types (e.g., a `SceneItem` type can have a field of type `SceneItemTransform`).
 
 ## Creating enum documentation
 

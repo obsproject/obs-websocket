@@ -433,6 +433,209 @@ Failure Response
 }
 ```
 
+# Types
+
+The following types are used as complex object structures in various requests and events.
+
+## Table of Contents
+
+- [Filter](#filter)
+- [Input](#input)
+- [PropertyItem](#propertyitem)
+- [OutputFlags](#outputflags)
+- [Output](#output)
+- [SceneItemTransform](#sceneitemtransform)
+- [SceneItem](#sceneitem)
+- [Scene](#scene)
+- [Transition](#transition)
+- [Monitor](#monitor)
+
+## Filter
+
+Source filter information.
+
+
+**Type Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| filterEnabled | Boolean | Whether the filter is enabled |
+| filterIndex | Number | Index position of the filter |
+| filterKind | String | Kind of the filter |
+| filterName | String | Name of the filter |
+| filterSettings | Object | Settings object associated with the filter |
+
+---
+
+## Input
+
+Input source information.
+
+
+**Type Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| inputName | String | Name of the input |
+| inputUuid | String | UUID of the input |
+| inputKind | String | Kind of the input |
+| unversionedInputKind | String | Unversioned kind of the input (can be used across OBS versions) |
+| inputKindCaps | Number | Capabilities of the input kind |
+
+---
+
+## PropertyItem
+
+Property list item information.
+
+
+**Type Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| itemName | String | Name of the item |
+| itemEnabled | Boolean | Whether the item is enabled |
+| itemValue | Any | Value of the item |
+
+---
+
+## OutputFlags
+
+Output flags information.
+
+
+**Type Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| OBS_OUTPUT_AUDIO | Boolean | Output has audio capability |
+| OBS_OUTPUT_VIDEO | Boolean | Output has video capability |
+| OBS_OUTPUT_ENCODED | Boolean | Output uses encoded data |
+| OBS_OUTPUT_MULTI_TRACK | Boolean | Output supports multi-track audio |
+| OBS_OUTPUT_SERVICE | Boolean | Output is bound to a service |
+
+---
+
+## Output
+
+Output information.
+
+
+**Type Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| outputName | String | Name of the output |
+| outputKind | String | Kind of the output |
+| outputWidth | Number | Width of the output in pixels |
+| outputHeight | Number | Height of the output in pixels |
+| outputActive | Boolean | Whether the output is active |
+| outputFlags | OutputFlags | Output capability flags |
+
+---
+
+## SceneItemTransform
+
+Scene item transform information.
+
+
+**Type Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| sourceWidth | Number | Width of the source associated with the scene item |
+| sourceHeight | Number | Height of the source associated with the scene item |
+| positionX | Number | The x position of the scene item from the left |
+| positionY | Number | The y position of the scene item from the top |
+| rotation | Number | The clockwise rotation of the scene item in degrees around the point of alignment |
+| scaleX | Number | The x-scale factor of the scene item |
+| scaleY | Number | The y-scale factor of the scene item |
+| width | Number | The rendered width of the scene item |
+| height | Number | The rendered height of the scene item |
+| alignment | Number | The alignment of the scene item |
+| boundsType | String | Type of bounding box |
+| boundsAlignment | Number | Alignment of the bounding box |
+| boundsWidth | Number | Width of the bounding box |
+| boundsHeight | Number | Height of the bounding box |
+| cropLeft | Number | The number of pixels cropped off the left of the source before scaling |
+| cropRight | Number | The number of pixels cropped off the right of the source before scaling |
+| cropTop | Number | The number of pixels cropped off the top of the source before scaling |
+| cropBottom | Number | The number of pixels cropped off the bottom of the source before scaling |
+| cropToBounds | Boolean | Whether the crop is to the bounding box or to the scene item bounding box |
+
+---
+
+## SceneItem
+
+Scene item information.
+
+
+**Type Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| sceneItemId | Number | Numeric ID of the scene item |
+| sceneItemIndex | Number | Index position of the scene item |
+| sceneItemEnabled | Boolean | Whether the scene item is enabled |
+| sceneItemLocked | Boolean | Whether the scene item is locked |
+| sceneItemTransform | SceneItemTransform | Transform information of the scene item |
+| sceneItemBlendMode | Number | Blend mode of the scene item |
+| sourceName | String | Name of the source associated with the scene item |
+| sourceUuid | String | UUID of the source associated with the scene item |
+| sourceType | Number | Type of the source |
+| inputKind | String | The kind of input source (null if not an input) |
+| isGroup | Boolean | Whether the source is a group (null if not a scene) |
+
+---
+
+## Scene
+
+Scene information.
+
+
+**Type Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| sceneName | String | Name of the scene |
+| sceneUuid | String | UUID of the scene |
+| sceneIndex | Number | Index of the scene |
+
+---
+
+## Transition
+
+Scene transition information.
+
+
+**Type Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| transitionName | String | Name of the transition |
+| transitionUuid | String | UUID of the transition |
+| transitionKind | String | Kind of the transition |
+| transitionFixed | Boolean | Whether the transition has fixed duration |
+| transitionConfigurable | Boolean | Whether the transition is configurable |
+
+---
+
+## Monitor
+
+Monitor/display information.
+
+
+**Type Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| monitorName | String | Name and index of the monitor |
+| monitorIndex | Number | Index of the monitor |
+| monitorWidth | Number | Width of the monitor in pixels |
+| monitorHeight | Number | Height of the monitor in pixels |
+| monitorPositionX | Number | X position of the monitor |
+| monitorPositionY | Number | Y position of the monitor |
+
 # Enums
 
 These are enumeration declarations, which are referenced throughout obs-websocket's protocol.
@@ -3344,7 +3547,7 @@ Gets an array of all scenes in OBS.
 | currentProgramSceneUuid | String | Current program scene UUID. Can be `null` if internal state desync |
 | currentPreviewSceneName | String | Current preview scene name. `null` if not in studio mode |
 | currentPreviewSceneUuid | String | Current preview scene UUID. `null` if not in studio mode |
-| scenes | Array&lt;Object&gt; | Array of scenes |
+| scenes | Array&lt;Scene&gt; | Array of scenes |
 
 ---
 
@@ -3566,7 +3769,7 @@ Gets an array of all inputs in OBS.
 
 | Name | Type  | Description |
 | ---- | :---: | ----------- |
-| inputs | Array&lt;Object&gt; | Array of inputs |
+| inputs | Array&lt;Input&gt; | Array of inputs |
 
 ---
 
@@ -4153,7 +4356,7 @@ Note: Use this in cases where an input provides a dynamic, selectable list of it
 
 | Name | Type  | Description |
 | ---- | :---: | ----------- |
-| propertyItems | Array&lt;Object&gt; | Array of items in the list property |
+| propertyItems | Array&lt;PropertyItem&gt; | Array of items in the list property |
 
 ---
 
@@ -4214,7 +4417,7 @@ Gets an array of all scene transitions in OBS.
 | currentSceneTransitionName | String | Name of the current scene transition. Can be null |
 | currentSceneTransitionUuid | String | UUID of the current scene transition. Can be null |
 | currentSceneTransitionKind | String | Kind of the current scene transition. Can be null |
-| transitions | Array&lt;Object&gt; | Array of transitions |
+| transitions | Array&lt;Transition&gt; | Array of transitions |
 
 ---
 
@@ -4375,7 +4578,7 @@ Gets an array of all of a source's filters.
 
 | Name | Type  | Description |
 | ---- | :---: | ----------- |
-| filters | Array&lt;Object&gt; | Array of filters |
+| filters | Array&lt;Filter&gt; | Array of filters |
 
 ---
 
@@ -4564,7 +4767,7 @@ Scenes only
 
 | Name | Type  | Description |
 | ---- | :---: | ----------- |
-| sceneItems | Array&lt;Object&gt; | Array of scene items in the scene |
+| sceneItems | Array&lt;SceneItem&gt; | Array of scene items in the scene |
 
 ---
 
@@ -4591,7 +4794,7 @@ Groups only
 
 | Name | Type  | Description |
 | ---- | :---: | ----------- |
-| sceneItems | Array&lt;Object&gt; | Array of scene items in the group |
+| sceneItems | Array&lt;SceneItem&gt; | Array of scene items in the group |
 
 ---
 
@@ -4745,7 +4948,7 @@ Scenes and Groups
 
 | Name | Type  | Description |
 | ---- | :---: | ----------- |
-| sceneItemTransform | Object | Object containing scene item transform info |
+| sceneItemTransform | SceneItemTransform | Object containing scene item transform info |
 
 ---
 
@@ -4764,7 +4967,7 @@ Sets the transform and crop info of a scene item.
 | ?sceneName | String | Name of the scene the item is in | None | Unknown |
 | ?sceneUuid | String | UUID of the scene the item is in | None | Unknown |
 | sceneItemId | Number | Numeric ID of the scene item | >= 0 | N/A |
-| sceneItemTransform | Object | Object containing scene item transform info to update | None | N/A |
+| sceneItemTransform | SceneItemTransform | Object containing scene item transform info to update | None | N/A |
 
 ---
 
@@ -5110,7 +5313,7 @@ Gets the list of available outputs.
 
 | Name | Type  | Description |
 | ---- | :---: | ----------- |
-| outputs | Array&lt;Object&gt; | Array of outputs |
+| outputs | Array&lt;Output&gt; | Array of outputs |
 
 ---
 
@@ -5620,7 +5823,7 @@ Gets a list of connected monitors and information about them.
 
 | Name | Type  | Description |
 | ---- | :---: | ----------- |
-| monitors | Array&lt;Object&gt; | a list of detected monitors with some information |
+| monitors | Array&lt;Monitor&gt; | a list of detected monitors with some information |
 
 ---
 

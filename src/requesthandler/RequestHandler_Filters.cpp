@@ -20,6 +20,18 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include "RequestHandler.h"
 
 /**
+ * Source filter information.
+ *
+ * @typedef Filter
+ * @field filterEnabled | Boolean | Whether the filter is enabled
+ * @field filterIndex | Number | Index position of the filter
+ * @field filterKind | String | Kind of the filter
+ * @field filterName | String | Name of the filter
+ * @field filterSettings | Object | Settings object associated with the filter
+ * @api types
+ */
+
+/**
  * Gets an array of all available source filter kinds.
  *
  * Similar to `GetInputKindList`
@@ -46,7 +58,7 @@ RequestResult RequestHandler::GetSourceFilterKindList(const Request &)
  * @requestField ?sourceName | String | Name of the source
  * @requestField ?sourceUuid | String | UUID of the source
  *
- * @responseField filters | Array<Object> | Array of filters
+ * @responseField filters | Array<Filter> | Array of filters
  *
  * @requestType GetSourceFilterList
  * @complexity 2
