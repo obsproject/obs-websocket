@@ -11,6 +11,8 @@ if(NOT ENABLE_WEBSOCKET)
   return()
 endif()
 
+option(ENABLE_WEBSOCKET_CLIENT_TLS "Enable TLS (wss://) for obs-websocket client mode" ON)
+
 # Find Qt
 find_package(Qt6 REQUIRED Core Widgets Svg Network)
 
@@ -27,6 +29,11 @@ find_package(Websocketpp 0.8 REQUIRED)
 
 # Find Asio
 find_package(Asio 1.12.1 REQUIRED)
+
+if(ENABLE_WEBSOCKET_CLIENT_TLS)
+  # Find OpenSSL (required for TLS client mode)
+  find_package(OpenSSL REQUIRED)
+endif()
 
 add_library(obs-websocket MODULE)
 add_library(OBS::websocket ALIAS obs-websocket)
@@ -49,12 +56,15 @@ target_sources(
 target_sources(
   obs-websocket
   PRIVATE # cmake-format: sortable
+          src/websocketclient/WebSocketClient.cpp
+          src/websocketclient/WebSocketClient.h
           src/websocketserver/rpc/WebSocketSession.h
           src/websocketserver/types/WebSocketCloseCode.h
           src/websocketserver/types/WebSocketOpCode.h
+          src/websocketserver/WebSocketProtocol.cpp
+          src/websocketserver/WebSocketProtocol.h
           src/websocketserver/WebSocketServer.cpp
-          src/websocketserver/WebSocketServer.h
-          src/websocketserver/WebSocketServer_Protocol.cpp)
+          src/websocketserver/WebSocketServer.h)
 
 target_sources(
   obs-websocket
@@ -131,7 +141,8 @@ target_sources(obs-websocket PRIVATE plugin-macros.generated.h)
 
 target_compile_definitions(
   obs-websocket PRIVATE ASIO_STANDALONE $<$<BOOL:${PLUGIN_TESTS}>:PLUGIN_TESTS>
-                        $<$<PLATFORM_ID:Windows>:_WEBSOCKETPP_CPP11_STL_> $<$<PLATFORM_ID:Windows>:_WIN32_WINNT=0x0603>)
+                        $<$<PLATFORM_ID:Windows>:_WEBSOCKETPP_CPP11_STL_> $<$<PLATFORM_ID:Windows>:_WIN32_WINNT=0x0603>
+                        OBS_WEBSOCKET_CLIENT_TLS=$<BOOL:${ENABLE_WEBSOCKET_CLIENT_TLS}>)
 
 target_compile_options(
   obs-websocket
@@ -164,6 +175,10 @@ target_link_libraries(
           Websocketpp::Websocketpp
           Asio::Asio
           qrcodegencpp::qrcodegencpp)
+
+if(ENABLE_WEBSOCKET_CLIENT_TLS)
+  target_link_libraries(obs-websocket PRIVATE OpenSSL::SSL OpenSSL::Crypto)
+endif()
 
 target_link_options(obs-websocket PRIVATE $<$<PLATFORM_ID:Windows>:/IGNORE:4099>)
 

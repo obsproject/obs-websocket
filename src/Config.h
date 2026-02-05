@@ -41,6 +41,15 @@ struct Config {
 	std::atomic<bool> AlertsEnabled = false;
 	std::atomic<bool> AuthRequired = true;
 	std::string ServerPassword;
+
+	std::atomic<bool> ClientEnabled = false;
+	std::string ClientHost = "127.0.0.1";
+	std::atomic<uint16_t> ClientPort = 4455;
+	std::atomic<bool> ClientUseTls = true;
+	std::atomic<bool> ClientAllowInsecure = false;
+	std::atomic<bool> ClientAllowInvalidCert = false;
+	std::atomic<bool> ClientAuthRequired = true;
+	std::string ClientPassword;
 };
 
 json MigrateGlobalConfigData();

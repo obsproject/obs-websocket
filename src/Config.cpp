@@ -19,6 +19,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include <filesystem>
 
+#include <QUrl>
 #include <obs-frontend-api.h>
 
 #include "Config.h"
@@ -41,11 +42,89 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #define PARAM_ALERTS "alerts_enabled"
 #define PARAM_AUTHREQUIRED "auth_required"
 #define PARAM_PASSWORD "server_password"
+#define PARAM_CLIENT_ENABLED "client_enabled"
+#define PARAM_CLIENT_HOST "client_host"
+#define PARAM_CLIENT_PORT "client_port"
+#define PARAM_CLIENT_USE_TLS "client_use_tls"
+#define PARAM_CLIENT_ALLOW_INSECURE "client_allow_insecure"
+#define PARAM_CLIENT_ALLOW_INVALID_CERT "client_allow_invalid_cert"
+#define PARAM_CLIENT_AUTH_REQUIRED "client_auth_required"
+#define PARAM_CLIENT_PASSWORD "client_password"
 
 #define CMDLINE_WEBSOCKET_PORT "websocket_port"
 #define CMDLINE_WEBSOCKET_IPV4_ONLY "websocket_ipv4_only"
 #define CMDLINE_WEBSOCKET_PASSWORD "websocket_password"
 #define CMDLINE_WEBSOCKET_DEBUG "websocket_debug"
+#define CMDLINE_WEBSOCKET_CLIENT_ENABLED "websocket_client_enabled"
+#define CMDLINE_WEBSOCKET_CLIENT_URL "websocket_client_url"
+#define CMDLINE_WEBSOCKET_CLIENT_PASSWORD "websocket_client_password"
+#define CMDLINE_WEBSOCKET_CLIENT_ALLOW_INSECURE "websocket_client_allow_insecure"
+#define CMDLINE_WEBSOCKET_CLIENT_ALLOW_INVALID_CERT "websocket_client_allow_invalid_cert"
+
+namespace {
+	struct ParsedClientEndpoint {
+		bool valid = false;
+		bool useTls = false;
+		std::string host;
+		bool hasPort = false;
+		uint16_t port = 0;
+		std::string error;
+	};
+
+	ParsedClientEndpoint ParseClientEndpoint(QString endpointInput)
+	{
+		ParsedClientEndpoint parsed;
+		QString trimmed = endpointInput.trimmed();
+		if (trimmed.isEmpty()) {
+			parsed.error = "value is empty";
+			return parsed;
+		}
+
+		QUrl endpoint(trimmed, QUrl::StrictMode);
+		if (!endpoint.isValid()) {
+			parsed.error = "value is not a valid URL";
+			return parsed;
+		}
+
+		QString scheme = endpoint.scheme().toLower();
+		if (scheme != "ws" && scheme != "wss") {
+			parsed.error = "URL scheme must be ws:// or wss://";
+			return parsed;
+		}
+
+		if (endpoint.host().isEmpty()) {
+			parsed.error = "URL host is empty";
+			return parsed;
+		}
+
+		if (!endpoint.userName().isEmpty() || !endpoint.password().isEmpty()) {
+			parsed.error = "URL must not include credentials";
+			return parsed;
+		}
+
+		QString path = endpoint.path();
+		if ((path.size() > 1) || endpoint.hasQuery() || endpoint.hasFragment()) {
+			parsed.error = "URL must not include a path, query, or fragment";
+			return parsed;
+		}
+
+		int parsedPort = endpoint.port(-1);
+		if (parsedPort != -1) {
+			if (parsedPort < 1 || parsedPort > 65534) {
+				parsed.error = "URL port must be between 1 and 65534";
+				return parsed;
+			}
+
+			parsed.hasPort = true;
+			parsed.port = static_cast<uint16_t>(parsedPort);
+		}
+
+		parsed.valid = true;
+		parsed.useTls = (scheme == "wss");
+		parsed.host = endpoint.host().toStdString();
+		return parsed;
+	}
+}
 
 void Config::Load(json config)
 {
@@ -72,6 +151,22 @@ void Config::Load(json config)
 		AuthRequired = config[PARAM_AUTHREQUIRED];
 	if (config.contains(PARAM_PASSWORD) && config[PARAM_PASSWORD].is_string())
 		ServerPassword = config[PARAM_PASSWORD];
+	if (config.contains(PARAM_CLIENT_ENABLED) && config[PARAM_CLIENT_ENABLED].is_boolean())
+		ClientEnabled = config[PARAM_CLIENT_ENABLED];
+	if (config.contains(PARAM_CLIENT_HOST) && config[PARAM_CLIENT_HOST].is_string())
+		ClientHost = config[PARAM_CLIENT_HOST];
+	if (config.contains(PARAM_CLIENT_PORT) && config[PARAM_CLIENT_PORT].is_number_unsigned())
+		ClientPort = config[PARAM_CLIENT_PORT];
+	if (config.contains(PARAM_CLIENT_USE_TLS) && config[PARAM_CLIENT_USE_TLS].is_boolean())
+		ClientUseTls = config[PARAM_CLIENT_USE_TLS];
+	if (config.contains(PARAM_CLIENT_ALLOW_INSECURE) && config[PARAM_CLIENT_ALLOW_INSECURE].is_boolean())
+		ClientAllowInsecure = config[PARAM_CLIENT_ALLOW_INSECURE];
+	if (config.contains(PARAM_CLIENT_ALLOW_INVALID_CERT) && config[PARAM_CLIENT_ALLOW_INVALID_CERT].is_boolean())
+		ClientAllowInvalidCert = config[PARAM_CLIENT_ALLOW_INVALID_CERT];
+	if (config.contains(PARAM_CLIENT_AUTH_REQUIRED) && config[PARAM_CLIENT_AUTH_REQUIRED].is_boolean())
+		ClientAuthRequired = config[PARAM_CLIENT_AUTH_REQUIRED];
+	if (config.contains(PARAM_CLIENT_PASSWORD) && config[PARAM_CLIENT_PASSWORD].is_string())
+		ClientPassword = config[PARAM_CLIENT_PASSWORD];
 
 	// Set server password and save it to the config before processing overrides,
 	// so that there is always a true configured password regardless of if
@@ -86,6 +181,11 @@ void Config::Load(json config)
 		}
 		Save();
 	}
+
+	if (ClientHost.empty())
+		ClientHost = "127.0.0.1";
+	if (ClientPassword.empty())
+		ClientPassword = ServerPassword;
 
 	// If there are migrated settings, write them to disk before processing arguments.
 	if (!config.empty())
@@ -126,6 +226,49 @@ void Config::Load(json config)
 		blog(LOG_INFO, "[Config::Load] --websocket_debug passed. Enabling debug logging.");
 		DebugEnabled = true;
 	}
+
+	// Process `--websocket_client_enabled` override
+	if (Utils::Platform::GetCommandLineFlagSet(CMDLINE_WEBSOCKET_CLIENT_ENABLED)) {
+		blog(LOG_INFO, "[Config::Load] --websocket_client_enabled passed. Enabling WebSocket client mode.");
+		ClientEnabled = true;
+	}
+
+	// Process `--websocket_client_url` override
+	QString clientUrlArgument = Utils::Platform::GetCommandLineArgument(CMDLINE_WEBSOCKET_CLIENT_URL);
+	if (clientUrlArgument != "") {
+		auto parsedEndpoint = ParseClientEndpoint(clientUrlArgument);
+		if (parsedEndpoint.valid) {
+			blog(LOG_INFO, "[Config::Load] --websocket_client_url passed. Overriding client endpoint.");
+			ClientHost = parsedEndpoint.host;
+			ClientUseTls = parsedEndpoint.useTls;
+			if (parsedEndpoint.hasPort)
+				ClientPort = parsedEndpoint.port;
+		} else {
+			blog(LOG_WARNING, "[Config::Load] Ignoring --websocket_client_url override: %s",
+			     parsedEndpoint.error.c_str());
+		}
+	}
+
+	// Process `--websocket_client_password` override
+	QString clientPasswordArgument = Utils::Platform::GetCommandLineArgument(CMDLINE_WEBSOCKET_CLIENT_PASSWORD);
+	if (clientPasswordArgument != "") {
+		blog(LOG_INFO, "[Config::Load] --websocket_client_password passed. Overriding WebSocket client password.");
+		ClientAuthRequired = true;
+		ClientPassword = clientPasswordArgument.toStdString();
+	}
+
+	// Process `--websocket_client_allow_insecure` override
+	if (Utils::Platform::GetCommandLineFlagSet(CMDLINE_WEBSOCKET_CLIENT_ALLOW_INSECURE)) {
+		blog(LOG_INFO, "[Config::Load] --websocket_client_allow_insecure passed. Enabling insecure ws:// client mode.");
+		ClientAllowInsecure = true;
+	}
+
+	// Process `--websocket_client_allow_invalid_cert` override
+	if (Utils::Platform::GetCommandLineFlagSet(CMDLINE_WEBSOCKET_CLIENT_ALLOW_INVALID_CERT)) {
+		blog(LOG_INFO,
+		     "[Config::Load] --websocket_client_allow_invalid_cert passed. Allowing invalid TLS certs for client mode.");
+		ClientAllowInvalidCert = true;
+	}
 }
 
 void Config::Save()
@@ -144,6 +287,14 @@ void Config::Save()
 		config[PARAM_AUTHREQUIRED] = AuthRequired.load();
 		config[PARAM_PASSWORD] = ServerPassword;
 	}
+	config[PARAM_CLIENT_ENABLED] = ClientEnabled.load();
+	config[PARAM_CLIENT_HOST] = ClientHost;
+	config[PARAM_CLIENT_PORT] = ClientPort.load();
+	config[PARAM_CLIENT_USE_TLS] = ClientUseTls.load();
+	config[PARAM_CLIENT_ALLOW_INSECURE] = ClientAllowInsecure.load();
+	config[PARAM_CLIENT_ALLOW_INVALID_CERT] = ClientAllowInvalidCert.load();
+	config[PARAM_CLIENT_AUTH_REQUIRED] = ClientAuthRequired.load();
+	config[PARAM_CLIENT_PASSWORD] = ClientPassword;
 
 	if (Utils::Json::SetJsonFileContent(configFilePath, config))
 		blog(LOG_DEBUG, "[Config::Save] Saved config.");

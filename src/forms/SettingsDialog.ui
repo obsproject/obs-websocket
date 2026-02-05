@@ -7,13 +7,13 @@
     <x>0</x>
     <y>0</y>
     <width>675</width>
-    <height>565</height>
+    <height>700</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
     <width>675</width>
-    <height>0</height>
+    <height>700</height>
    </size>
   </property>
   <property name="maximumSize">
@@ -70,14 +70,73 @@
         </property>
        </widget>
       </item>
+      <item row="2" column="0">
+       <spacer name="horizontalSpacer_client_enable">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeType">
+         <enum>QSizePolicy::Fixed</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>150</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
       <item row="2" column="1">
+       <layout class="QHBoxLayout" name="horizontalLayout_clientMode">
+        <property name="spacing">
+         <number>2</number>
+        </property>
+        <item>
+         <widget class="QCheckBox" name="enableWebSocketClientCheckBox">
+          <property name="toolTip">
+           <string>OBSWebSocket.Settings.ClientWarningText</string>
+          </property>
+          <property name="text">
+           <string>OBSWebSocket.Settings.ClientEnable</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="clientWarningToolTipLabel">
+          <property name="toolTip">
+           <string>OBSWebSocket.Settings.ClientWarningText</string>
+          </property>
+          <property name="scaledContents">
+           <bool>true</bool>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer_clientMode">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+      <item row="3" column="1">
        <widget class="QCheckBox" name="enableSystemTrayAlertsCheckBox">
         <property name="text">
          <string>OBSWebSocket.Settings.AlertsEnable</string>
         </property>
        </widget>
       </item>
-      <item row="3" column="1">
+      <item row="4" column="1">
        <layout class="QHBoxLayout" name="horizontalLayout_2">
         <property name="spacing">
          <number>2</number>
@@ -124,7 +183,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QGroupBox" name="serverSettingsGroupBox">
+   <widget class="QGroupBox" name="serverSettingsGroupBox">
      <property name="minimumSize">
       <size>
        <width>0</width>
@@ -217,10 +276,112 @@
        </widget>
       </item>
      </layout>
-    </widget>
-   </item>
-   <item>
-    <widget class="QGroupBox" name="sessionTableGroupBox">
+   </widget>
+  </item>
+  <item>
+   <widget class="QGroupBox" name="clientSettingsGroupBox">
+    <property name="minimumSize">
+     <size>
+      <width>0</width>
+      <height>0</height>
+     </size>
+    </property>
+    <property name="title">
+     <string>OBSWebSocket.Settings.ClientSettingsTitle</string>
+    </property>
+    <layout class="QFormLayout" name="formLayout_client">
+     <property name="labelAlignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="topMargin">
+      <number>2</number>
+     </property>
+    <item row="0" column="0">
+     <widget class="QLabel" name="clientHostLabel">
+      <property name="text">
+       <string>OBSWebSocket.Settings.ClientHost</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="1">
+     <widget class="QLineEdit" name="clientHostLineEdit">
+      <property name="placeholderText">
+       <string>OBSWebSocket.Settings.ClientHostPlaceholder</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="1">
+     <widget class="QCheckBox" name="clientAllowInsecureCheckBox">
+      <property name="text">
+       <string>OBSWebSocket.Settings.ClientAllowInsecure</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="1">
+     <widget class="QCheckBox" name="clientAllowInvalidCertCheckBox">
+      <property name="text">
+       <string>OBSWebSocket.Settings.ClientAllowInvalidCert</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="1">
+     <widget class="QCheckBox" name="clientAuthRequiredCheckBox">
+      <property name="text">
+       <string>OBSWebSocket.Settings.ClientAuthRequired</string>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="0">
+     <widget class="QLabel" name="clientPasswordLabel">
+      <property name="text">
+       <string>OBSWebSocket.Settings.ClientPassword</string>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="1">
+     <layout class="QHBoxLayout" name="clientPasswordLayout">
+      <item>
+       <widget class="QLineEdit" name="clientPasswordLineEdit">
+         <property name="echoMode">
+          <enum>QLineEdit::Password</enum>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="showClientPasswordButton">
+         <property name="text">
+          <string>OBSWebSocket.Settings.Show</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="generateClientPasswordButton">
+         <property name="text">
+          <string>OBSWebSocket.Settings.ClientGeneratePassword</string>
+         </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item row="5" column="0">
+     <widget class="QLabel" name="clientStatusLabel">
+      <property name="text">
+       <string>OBSWebSocket.Settings.ClientStatus</string>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="1">
+     <widget class="QLabel" name="clientStatusValueLabel">
+      <property name="text">
+       <string>OBSWebSocket.Settings.ClientStatusDisabled</string>
+      </property>
+     </widget>
+    </item>
+    </layout>
+   </widget>
+  </item>
+  <item>
+   <widget class="QGroupBox" name="sessionTableGroupBox">
      <property name="minimumSize">
       <size>
        <width>0</width>
@@ -230,7 +391,7 @@
      <property name="title">
       <string>OBSWebSocket.SessionTable.Title</string>
      </property>
-     <layout class="QGridLayout" name="gridLayout_2">
+    <layout class="QGridLayout" name="gridLayout_2">
       <item row="0" column="0">
        <widget class="QTableWidget" name="websocketSessionTable">
         <property name="editTriggers">
@@ -281,9 +442,19 @@
         </column>
        </widget>
       </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="sessionTableNoteLabel">
+        <property name="text">
+         <string>OBSWebSocket.SessionTable.ServerOnlyNote</string>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
-   </item>
+  </item>
    <item>
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
