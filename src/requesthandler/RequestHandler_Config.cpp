@@ -440,17 +440,11 @@ RequestResult RequestHandler::SetProfileParameter(const Request &request)
  */
 RequestResult RequestHandler::GetVideoSettings(const Request &)
 {
-	struct obs_video_info ovi;
-	if (!obs_get_video_info(&ovi))
-		return RequestResult::Error(RequestStatus::RequestProcessingFailed, "Unable to get internal OBS video info.");
+	OBSCanvasAutoRelease mainCanvas = obs_get_main_canvas();
+	if (!mainCanvas)
+		return RequestResult::Error(RequestStatus::RequestProcessingFailed, "Unable to get internal main OBS canvas.");
 
-	json responseData;
-	responseData["fpsNumerator"] = ovi.fps_num;
-	responseData["fpsDenominator"] = ovi.fps_den;
-	responseData["baseWidth"] = ovi.base_width;
-	responseData["baseHeight"] = ovi.base_height;
-	responseData["outputWidth"] = ovi.output_width;
-	responseData["outputHeight"] = ovi.output_height;
+	json responseData = Utils::Obs::ObjectHelper::GetCanvasVideoSettings(mainCanvas);
 
 	return RequestResult::Success(responseData);
 }
