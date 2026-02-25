@@ -31,7 +31,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
  * @api requests
  * @category canvas
  */
-RequestResult RequestHandler::GetCanvasList(const Request &request)
+RequestResult RequestHandler::GetCanvasList(const Request &)
 {
 	json responseData;
 	std::vector<json> ret;
