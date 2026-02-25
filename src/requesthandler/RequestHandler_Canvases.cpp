@@ -34,21 +34,31 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 RequestResult RequestHandler::GetCanvasList(const Request &)
 {
 	json responseData;
-	std::vector<json> ret;
+	std::vector<json> canvases;
 
 	obs_enum_canvases(
 		[](void *param, obs_canvas_t *canvas) {
-			auto ret = static_cast<std::vector<json> *>(param);
+			auto canvases = static_cast<std::vector<json> *>(param);
+
 			json canvasJson;
 			canvasJson["canvasName"] = obs_canvas_get_name(canvas);
 			canvasJson["canvasUuid"] = obs_canvas_get_uuid(canvas);
-			canvasJson["flags"] = obs_canvas_get_flags(canvas);
+
+			auto flags = obs_canvas_get_flags(canvas);
+			json canvasFlags;
+			canvasFlags["MAIN"] = !!(flags & MAIN);
+			canvasFlags["ACTIVATE"] = !!(flags & ACTIVATE);
+			canvasFlags["MIX_AUDIO"] = !!(flags & MIX_AUDIO);
+			canvasFlags["SCENE_REF"] = !!(flags & SCENE_REF);
+			canvasFlags["EPHEMERAL"] = !!(flags & EPHEMERAL);
+			canvasJson["canvasFlags"] = canvasFlags;
+
 			canvasJson["canvasVideoSettings"] = Utils::Obs::ObjectHelper::GetCanvasVideoSettings(canvas);
-			ret->push_back(canvasJson);
+			canvases->push_back(canvasJson);
 			return true;
 		},
-		&ret);
-	responseData["canvases"] = ret;
+		&canvases);
+	responseData["canvases"] = canvases;
 
 	return RequestResult::Success(responseData);
 }
