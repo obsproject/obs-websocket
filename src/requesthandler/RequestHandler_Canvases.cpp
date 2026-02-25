@@ -43,15 +43,7 @@ RequestResult RequestHandler::GetCanvasList(const Request &)
 			canvasJson["canvasName"] = obs_canvas_get_name(canvas);
 			canvasJson["canvasUuid"] = obs_canvas_get_uuid(canvas);
 			canvasJson["flags"] = obs_canvas_get_flags(canvas);
-			struct obs_video_info ovi;
-			if (obs_canvas_get_video_info(canvas, &ovi)) {
-				canvasJson["fpsNumerator"] = ovi.fps_num;
-				canvasJson["fpsDenominator"] = ovi.fps_den;
-				canvasJson["baseWidth"] = ovi.base_width;
-				canvasJson["baseHeight"] = ovi.base_height;
-				canvasJson["outputWidth"] = ovi.output_width;
-				canvasJson["outputHeight"] = ovi.output_height;
-			}
+			canvasJson["canvasVideoSettings"] = Utils::Obs::ObjectHelper::GetCanvasVideoSettings(canvas);
 			ret->push_back(canvasJson);
 			return true;
 		},
