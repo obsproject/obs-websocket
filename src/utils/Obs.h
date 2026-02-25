@@ -268,6 +268,7 @@ namespace Utils {
 		namespace ObjectHelper {
 			json GetStats();
 			json GetSceneItemTransform(obs_sceneitem_t *item);
+			json GetCanvasVideoSettings(obs_canvas_t *canvas);
 		}
 
 		namespace SearchHelper {
