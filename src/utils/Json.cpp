@@ -75,6 +75,8 @@ void obs_data_set_json_object_item(obs_data_t *d, json j)
 			obs_data_set_double(d, key.c_str(), value.get<double>());
 		} else if (value.is_boolean()) {
 			obs_data_set_bool(d, key.c_str(), value.get<bool>());
+		} else if (value.is_null()) {
+			obs_data_set_obj(d, key.c_str(), NULL);
 		}
 	}
 }
