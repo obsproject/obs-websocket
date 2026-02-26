@@ -18,7 +18,7 @@ categoryOrder = [
     'General',
     'Config',
     'Sources',
-    'Canvas',
+    'Canvases',
     'Scenes',
     'Inputs',
     'Transitions',
