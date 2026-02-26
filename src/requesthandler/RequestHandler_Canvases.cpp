@@ -29,7 +29,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
  * @rpcVersion -1
  * @initialVersion 5.7.0
  * @api requests
- * @category canvas
+ * @category canvases
  */
 RequestResult RequestHandler::GetCanvasList(const Request &)
 {

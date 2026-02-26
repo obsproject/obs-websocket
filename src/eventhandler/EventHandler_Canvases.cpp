@@ -31,7 +31,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
  * @rpcVersion -1
  * @initialVersion 5.7.0
  * @api events
- * @category canvas
+ * @category canvases
  */
 void EventHandler::HandleCanvasCreated(obs_canvas_t *canvas)
 {
@@ -53,7 +53,7 @@ void EventHandler::HandleCanvasCreated(obs_canvas_t *canvas)
  * @rpcVersion -1
  * @initialVersion 5.7.0
  * @api events
- * @category canvas
+ * @category canvases
  */
 void EventHandler::HandleCanvasRemoved(obs_canvas_t *canvas)
 {
@@ -76,7 +76,7 @@ void EventHandler::HandleCanvasRemoved(obs_canvas_t *canvas)
  * @rpcVersion -1
  * @initialVersion 5.7.0
  * @api events
- * @category canvas
+ * @category canvases
  */
 void EventHandler::HandleCanvasNameChanged(obs_canvas_t *canvas, std::string oldCanvasName, std::string canvasName)
 {
