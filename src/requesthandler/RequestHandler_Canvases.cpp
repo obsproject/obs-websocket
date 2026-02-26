@@ -22,10 +22,10 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 /**
  * Gets an array of canvases in OBS.
  * 
- * @responseField canvases                  | Array<Object> | Array of canvases
+ * @responseField canvases | Array<Object> | Array of canvases
  *
  * @requestType GetCanvasList
- * @complexity 2
+ * @complexity 3
  * @rpcVersion -1
  * @initialVersion 5.7.0
  * @api requests
