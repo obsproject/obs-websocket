@@ -265,8 +265,7 @@ RequestResult RequestHandler::OpenVideoMixProjector(const Request &request)
  *
  * Note: This request serves to provide feature parity with 4.x. It is very likely to be changed/deprecated in a future release.
  *
- * @requestField ?canvasName        | String | Name of the canvas the source is in
- * @requestField ?canvasUuid        | String | UUID of the canvas the source is in
+ * @requestField ?canvasUuid        | String | UUID of the canvas the source is in, if using the sourceName field
  * @requestField ?sourceName        | String | Name of the source to open a projector for
  * @requestField ?sourceUuid        | String | UUID of the source to open a projector for
  * @requestField ?monitorIndex      | Number | Monitor index, use `GetMonitorList` to obtain index | None | -1: Opens projector in windowed mode
@@ -283,7 +282,7 @@ RequestResult RequestHandler::OpenSourceProjector(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease source = request.ValidateSource("sourceName", "sourceUuid", statusCode, comment);
+	OBSSourceAutoRelease source = request.ValidateSource("canvasUuid", "sourceName", "sourceUuid", statusCode, comment);
 	if (!source)
 		return RequestResult::Error(statusCode, comment);
 

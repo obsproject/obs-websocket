@@ -114,8 +114,7 @@ bool IsImageFormatValid(std::string format)
  *
  * **Compatible with inputs and scenes.**
  *
- * @requestField ?canvasName | String | Name of the canvas the source is in
- * @requestField ?canvasUuid | String | UUID of the canvas the source is in
+ * @requestField ?canvasUuid | String | UUID of the canvas the source is in, if using sourceName field
  * @requestField ?sourceName | String | Name of the source to get the active state of
  * @requestField ?sourceUuid | String | UUID of the source to get the active state of
  *
@@ -133,7 +132,7 @@ RequestResult RequestHandler::GetSourceActive(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease source = request.ValidateSource("sourceName", "sourceUuid", statusCode, comment);
+	OBSSourceAutoRelease source = request.ValidateSource("canvasUuid", "sourceName", "sourceUuid", statusCode, comment);
 	if (!source)
 		return RequestResult::Error(statusCode, comment);
 
@@ -154,8 +153,7 @@ RequestResult RequestHandler::GetSourceActive(const Request &request)
  *
  * **Compatible with inputs and scenes.**
  *
- * @requestField ?canvasName              | String | Name of the canvas the source is in
- * @requestField ?canvasUuid              | String | UUID of the canvas the source is in
+ * @requestField ?canvasUuid              | String | UUID of the canvas the source is in, if using sourceName field
  * @requestField ?sourceName              | String | Name of the source to take a screenshot of
  * @requestField ?sourceUuid              | String | UUID of the source to take a screenshot of
  * @requestField imageFormat              | String | Image compression format to use. Use `GetVersion` to get compatible image formats
@@ -176,7 +174,7 @@ RequestResult RequestHandler::GetSourceScreenshot(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease source = request.ValidateSource("sourceName", "sourceUuid", statusCode, comment);
+	OBSSourceAutoRelease source = request.ValidateSource("canvasUuid", "sourceName", "sourceUuid", statusCode, comment);
 	if (!(source && request.ValidateString("imageFormat", statusCode, comment)))
 		return RequestResult::Error(statusCode, comment);
 
@@ -244,8 +242,7 @@ RequestResult RequestHandler::GetSourceScreenshot(const Request &request)
  *
  * **Compatible with inputs and scenes.**
  *
- * @requestField ?canvasName              | String | Name of the canvas the source is in
- * @requestField ?canvasUuid              | String | UUID of the canvas the source is in
+ * @requestField ?canvasUuid              | String | UUID of the canvas the source is in, if using sourceName field
  * @requestField ?sourceName              | String | Name of the source to take a screenshot of
  * @requestField ?sourceUuid              | String | UUID of the source to take a screenshot of
  * @requestField imageFormat              | String | Image compression format to use. Use `GetVersion` to get compatible image formats
@@ -265,7 +262,7 @@ RequestResult RequestHandler::SaveSourceScreenshot(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease source = request.ValidateSource("sourceName", "sourceUuid", statusCode, comment);
+	OBSSourceAutoRelease source = request.ValidateSource("canvasUuid", "sourceName", "sourceUuid", statusCode, comment);
 	if (!(source && request.ValidateString("imageFormat", statusCode, comment) &&
 	      request.ValidateString("imageFilePath", statusCode, comment)))
 		return RequestResult::Error(statusCode, comment);
@@ -328,7 +325,7 @@ RequestResult RequestHandler::GetSourcePrivateSettings(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease source = request.ValidateSource("sourceName", "sourceUuid", statusCode, comment);
+	OBSSourceAutoRelease source = request.ValidateSource("canvasUuid", "sourceName", "sourceUuid", statusCode, comment);
 	if (!source)
 		return RequestResult::Error(statusCode, comment);
 
@@ -345,7 +342,7 @@ RequestResult RequestHandler::SetSourcePrivateSettings(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease source = request.ValidateSource("sourceName", "sourceUuid", statusCode, comment);
+	OBSSourceAutoRelease source = request.ValidateSource("canvasUuid", "sourceName", "sourceUuid", statusCode, comment);
 	if (!source || !request.ValidateObject("sourceSettings", statusCode, comment, true))
 		return RequestResult::Error(statusCode, comment);
 

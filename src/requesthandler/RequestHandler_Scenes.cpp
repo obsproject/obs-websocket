@@ -22,7 +22,6 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 /**
  * Gets an array of scenes in OBS.
  *
- * @requestField ?canvasName | String | Name of the canvas the scenes are in
  * @requestField ?canvasUuid | String | UUID of the canvas the scenes are in
  * 
  * @responseField currentProgramSceneName | String        | Current program scene name. Can be `null` if internal state desync
@@ -43,7 +42,7 @@ RequestResult RequestHandler::GetSceneList(const Request &request)
 	json responseData;
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSCanvasAutoRelease canvas = request.ValidateCanvas("canvasName", "canvasUuid", statusCode, comment);
+	OBSCanvasAutoRelease canvas = request.ValidateCanvas("canvasUuid", statusCode, comment);
 	if (statusCode == RequestStatus::ResourceNotFound)
 		return RequestResult::Error(statusCode, comment);
 	if (canvas) {
@@ -111,7 +110,7 @@ RequestResult RequestHandler::GetGroupList(const Request &request)
 	json responseData;
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSCanvasAutoRelease canvas = request.ValidateCanvas("canvasName", "canvasUuid", statusCode, comment);
+	OBSCanvasAutoRelease canvas = request.ValidateCanvas("canvasUuid", statusCode, comment);
 	if (statusCode == RequestStatus::ResourceNotFound)
 		return RequestResult::Error(statusCode, comment);
 
@@ -294,8 +293,7 @@ RequestResult RequestHandler::CreateScene(const Request &request)
 /**
  * Removes a scene from OBS.
  *
- * @requestField ?canvasName | String | Name of the canvas the scene is in
- * @requestField ?canvasUuid | String | UUID of the canvas the scene is in
+ * @requestField ?canvasUuid | String | UUID of the canvas the scene is in, if using the sceneName field
  * @requestField ?sceneName | String | Name of the scene to remove
  * @requestField ?sceneUuid | String | UUID of the scene to remove
  *
@@ -310,7 +308,7 @@ RequestResult RequestHandler::RemoveScene(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSCanvasAutoRelease canvas = request.ValidateCanvas("canvasName", "canvasUuid", statusCode, comment);
+	OBSCanvasAutoRelease canvas = request.ValidateCanvas("canvasUuid", statusCode, comment);
 	if (statusCode == RequestStatus::ResourceNotFound)
 		return RequestResult::Error(statusCode, comment);
 
@@ -331,8 +329,7 @@ RequestResult RequestHandler::RemoveScene(const Request &request)
 /**
  * Sets the name of a scene (rename).
  *
- * @requestField ?canvasName  | String | Name of the canvas the scene is in
- * @requestField ?canvasUuid  | String | UUID of the canvas the scene is in
+ * @requestField ?canvasUuid  | String | UUID of the canvas the scene is in, if using the sceneName field
  * @requestField ?sceneName   | String | Name of the scene to be renamed
  * @requestField ?sceneUuid   | String | UUID of the scene to be renamed
  * @requestField newSceneName | String | New name for the scene
@@ -348,7 +345,7 @@ RequestResult RequestHandler::SetSceneName(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSCanvasAutoRelease canvas = request.ValidateCanvas("canvasName", "canvasUuid", statusCode, comment);
+	OBSCanvasAutoRelease canvas = request.ValidateCanvas("canvasUuid", statusCode, comment);
 	if (statusCode == RequestStatus::ResourceNotFound)
 		return RequestResult::Error(statusCode, comment);
 
@@ -374,8 +371,7 @@ RequestResult RequestHandler::SetSceneName(const Request &request)
  *
  * Note: A transition UUID response field is not currently able to be implemented as of 2024-1-18.
  *
- * @requestField ?canvasName | String | Name of the canvas the scene is in
- * @requestField ?canvasUuid | String | UUID of the canvas the scene is in
+ * @requestField ?canvasUuid | String | UUID of the canvas the scene is in, if using the sceneName field
  * @requestField ?sceneName  | String | Name of the scene
  * @requestField ?sceneUuid  | String | UUID of the scene
  *
@@ -417,8 +413,7 @@ RequestResult RequestHandler::GetSceneSceneTransitionOverride(const Request &req
 /**
  * Sets the scene transition overridden for a scene.
  *
- * @requestField ?canvasName         | String | Name of the canvas the scene is in
- * @requestField ?canvasUuid         | String | UUID of the canvas the scene is in
+ * @requestField ?canvasUuid         | String | UUID of the canvas the scene is in, if using the sceneName field
  * @requestField ?sceneName          | String | Name of the scene
  * @requestField ?sceneUuid          | String | UUID of the scene
  * @requestField ?transitionName     | String | Name of the scene transition to use as override. Specify `null` to remove | Unchanged
