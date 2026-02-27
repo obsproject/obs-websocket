@@ -145,7 +145,7 @@ RequestResult RequestHandler::CreateInput(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease sceneSource = request.ValidateScene(statusCode, comment);
+	OBSSourceAutoRelease sceneSource = request.GetScene(statusCode, comment);
 	if (!(sceneSource && request.ValidateString("inputName", statusCode, comment) &&
 	      request.ValidateString("inputKind", statusCode, comment)))
 		return RequestResult::Error(statusCode, comment);
@@ -212,7 +212,7 @@ RequestResult RequestHandler::RemoveInput(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease input = request.ValidateInput(statusCode, comment);
+	OBSSourceAutoRelease input = request.GetInput(statusCode, comment);
 	if (!input)
 		return RequestResult::Error(statusCode, comment);
 
@@ -242,7 +242,7 @@ RequestResult RequestHandler::SetInputName(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease input = request.ValidateInput(statusCode, comment);
+	OBSSourceAutoRelease input = request.GetInput(statusCode, comment);
 	if (!(input && request.ValidateString("newInputName", statusCode, comment)))
 		return RequestResult::Error(statusCode, comment);
 
@@ -315,7 +315,7 @@ RequestResult RequestHandler::GetInputSettings(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease input = request.ValidateInput(statusCode, comment);
+	OBSSourceAutoRelease input = request.GetInput(statusCode, comment);
 	if (!input)
 		return RequestResult::Error(statusCode, comment);
 
@@ -346,7 +346,7 @@ RequestResult RequestHandler::SetInputSettings(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease input = request.ValidateInput(statusCode, comment);
+	OBSSourceAutoRelease input = request.GetInput(statusCode, comment);
 	if (!(input && request.ValidateObject("inputSettings", statusCode, comment, true)))
 		return RequestResult::Error(statusCode, comment);
 
@@ -397,7 +397,7 @@ RequestResult RequestHandler::GetInputMute(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease input = request.ValidateInput(statusCode, comment);
+	OBSSourceAutoRelease input = request.GetInput(statusCode, comment);
 	if (!input)
 		return RequestResult::Error(statusCode, comment);
 
@@ -427,7 +427,7 @@ RequestResult RequestHandler::SetInputMute(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease input = request.ValidateInput(statusCode, comment);
+	OBSSourceAutoRelease input = request.GetInput(statusCode, comment);
 	if (!(input && request.ValidateBoolean("inputMuted", statusCode, comment)))
 		return RequestResult::Error(statusCode, comment);
 
@@ -458,7 +458,7 @@ RequestResult RequestHandler::ToggleInputMute(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease input = request.ValidateInput(statusCode, comment);
+	OBSSourceAutoRelease input = request.GetInput(statusCode, comment);
 	if (!input)
 		return RequestResult::Error(statusCode, comment);
 
@@ -493,7 +493,7 @@ RequestResult RequestHandler::GetInputVolume(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease input = request.ValidateInput(statusCode, comment);
+	OBSSourceAutoRelease input = request.GetInput(statusCode, comment);
 	if (!input)
 		return RequestResult::Error(statusCode, comment);
 
@@ -530,7 +530,7 @@ RequestResult RequestHandler::SetInputVolume(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease input = request.ValidateInput(statusCode, comment);
+	OBSSourceAutoRelease input = request.GetInput(statusCode, comment);
 	if (!input)
 		return RequestResult::Error(statusCode, comment);
 
@@ -581,7 +581,7 @@ RequestResult RequestHandler::GetInputAudioBalance(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease input = request.ValidateInput(statusCode, comment);
+	OBSSourceAutoRelease input = request.GetInput(statusCode, comment);
 	if (!input)
 		return RequestResult::Error(statusCode, comment);
 
@@ -612,7 +612,7 @@ RequestResult RequestHandler::SetInputAudioBalance(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease input = request.ValidateInput(statusCode, comment);
+	OBSSourceAutoRelease input = request.GetInput(statusCode, comment);
 	if (!(input && request.ValidateNumber("inputAudioBalance", statusCode, comment, 0.0, 1.0)))
 		return RequestResult::Error(statusCode, comment);
 
@@ -646,7 +646,7 @@ RequestResult RequestHandler::GetInputAudioSyncOffset(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease input = request.ValidateInput(statusCode, comment);
+	OBSSourceAutoRelease input = request.GetInput(statusCode, comment);
 	if (!input)
 		return RequestResult::Error(statusCode, comment);
 
@@ -678,7 +678,7 @@ RequestResult RequestHandler::SetInputAudioSyncOffset(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease input = request.ValidateInput(statusCode, comment);
+	OBSSourceAutoRelease input = request.GetInput(statusCode, comment);
 	if (!(input && request.ValidateNumber("inputAudioSyncOffset", statusCode, comment, -950, 20000)))
 		return RequestResult::Error(statusCode, comment);
 
@@ -716,7 +716,7 @@ RequestResult RequestHandler::GetInputAudioMonitorType(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease input = request.ValidateInput(statusCode, comment);
+	OBSSourceAutoRelease input = request.GetInput(statusCode, comment);
 	if (!input)
 		return RequestResult::Error(statusCode, comment);
 
@@ -747,7 +747,7 @@ RequestResult RequestHandler::SetInputAudioMonitorType(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease input = request.ValidateInput(statusCode, comment);
+	OBSSourceAutoRelease input = request.GetInput(statusCode, comment);
 	if (!(input && request.ValidateString("monitorType", statusCode, comment)))
 		return RequestResult::Error(statusCode, comment);
 
@@ -794,7 +794,7 @@ RequestResult RequestHandler::GetInputAudioTracks(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease input = request.ValidateInput(statusCode, comment);
+	OBSSourceAutoRelease input = request.GetInput(statusCode, comment);
 	if (!input)
 		return RequestResult::Error(statusCode, comment);
 
@@ -832,7 +832,7 @@ RequestResult RequestHandler::SetInputAudioTracks(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease input = request.ValidateInput(statusCode, comment);
+	OBSSourceAutoRelease input = request.GetInput(statusCode, comment);
 	if (!input || !request.ValidateObject("inputAudioTracks", statusCode, comment))
 		return RequestResult::Error(statusCode, comment);
 
@@ -900,7 +900,7 @@ RequestResult RequestHandler::GetInputDeinterlaceMode(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease input = request.ValidateInput(statusCode, comment);
+	OBSSourceAutoRelease input = request.GetInput(statusCode, comment);
 	if (!input)
 		return RequestResult::Error(statusCode, comment);
 
@@ -933,7 +933,7 @@ RequestResult RequestHandler::SetInputDeinterlaceMode(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease input = request.ValidateInput(statusCode, comment);
+	OBSSourceAutoRelease input = request.GetInput(statusCode, comment);
 	if (!input || !request.ValidateString("inputDeinterlaceMode", statusCode, comment))
 		return RequestResult::Error(statusCode, comment);
 
@@ -977,7 +977,7 @@ RequestResult RequestHandler::GetInputDeinterlaceFieldOrder(const Request &reque
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease input = request.ValidateInput(statusCode, comment);
+	OBSSourceAutoRelease input = request.GetInput(statusCode, comment);
 	if (!input)
 		return RequestResult::Error(statusCode, comment);
 
@@ -1010,7 +1010,7 @@ RequestResult RequestHandler::SetInputDeinterlaceFieldOrder(const Request &reque
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease input = request.ValidateInput(statusCode, comment);
+	OBSSourceAutoRelease input = request.GetInput(statusCode, comment);
 	if (!input || !request.ValidateString("inputDeinterlaceFieldOrder", statusCode, comment))
 		return RequestResult::Error(statusCode, comment);
 
@@ -1050,7 +1050,7 @@ RequestResult RequestHandler::GetInputPropertiesListPropertyItems(const Request 
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease input = request.ValidateInput(statusCode, comment);
+	OBSSourceAutoRelease input = request.GetInput(statusCode, comment);
 	if (!(input && request.ValidateString("propertyName", statusCode, comment)))
 		return RequestResult::Error(statusCode, comment);
 
@@ -1093,7 +1093,7 @@ RequestResult RequestHandler::PressInputPropertiesButton(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease input = request.ValidateInput(statusCode, comment);
+	OBSSourceAutoRelease input = request.GetInput(statusCode, comment);
 	if (!(input && request.ValidateString("propertyName", statusCode, comment)))
 		return RequestResult::Error(statusCode, comment);
 

@@ -57,7 +57,7 @@ RequestResult RequestHandler::GetMediaInputStatus(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease input = request.ValidateInput(statusCode, comment);
+	OBSSourceAutoRelease input = request.GetInput(statusCode, comment);
 	if (!input)
 		return RequestResult::Error(statusCode, comment);
 
@@ -96,7 +96,7 @@ RequestResult RequestHandler::SetMediaInputCursor(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease input = request.ValidateInput(statusCode, comment);
+	OBSSourceAutoRelease input = request.GetInput(statusCode, comment);
 	if (!(input && request.ValidateNumber("mediaCursor", statusCode, comment, 0)))
 		return RequestResult::Error(statusCode, comment);
 
@@ -132,7 +132,7 @@ RequestResult RequestHandler::OffsetMediaInputCursor(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease input = request.ValidateInput(statusCode, comment);
+	OBSSourceAutoRelease input = request.GetInput(statusCode, comment);
 	if (!(input && request.ValidateNumber("mediaCursorOffset", statusCode, comment)))
 		return RequestResult::Error(statusCode, comment);
 
@@ -169,7 +169,7 @@ RequestResult RequestHandler::TriggerMediaInputAction(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease input = request.ValidateInput(statusCode, comment);
+	OBSSourceAutoRelease input = request.GetInput(statusCode, comment);
 	if (!(input && request.ValidateString("mediaAction", statusCode, comment)))
 		return RequestResult::Error(statusCode, comment);
 
