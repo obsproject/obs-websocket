@@ -24,8 +24,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
  *
  * Scenes only
  *
- * @requestField ?canvasName | String | Name of the canvas the scene is in
- * @requestField ?canvasUuid | String | UUID of the canvas the scene is in
+ * @requestField ?canvasUuid | String | UUID of the canvas the scene is in, if using the sceneName field
  * @requestField ?sceneName  | String | Name of the scene to get the items of
  * @requestField ?sceneUuid  | String | UUID of the scene to get the items of
  *
@@ -59,8 +58,7 @@ RequestResult RequestHandler::GetSceneItemList(const Request &request)
  *
  * Groups only
  *
- * @requestField ?canvasName | String | Name of the canvas the group is in
- * @requestField ?canvasUuid | String | UUID of the canvas the group is in
+ * @requestField ?canvasUuid | String | UUID of the canvas the group is in, if using the sceneName field
  * @requestField ?sceneName  | String | Name of the group to get the items of
  * @requestField ?sceneUuid  | String | UUID of the group to get the items of
  *
@@ -92,8 +90,7 @@ RequestResult RequestHandler::GetGroupSceneItemList(const Request &request)
  *
  * Scenes and Groups
  *
- * @requestField ?canvasName   | String | Name of the canvas the scene or group is in
- * @requestField ?canvasUuid   | String | UUID of the canvas the scene or group is in
+ * @requestField ?canvasUuid   | String | UUID of the canvas the scene or group is in, if using the sceneName field
  * @requestField ?sceneName    | String | Name of the scene or group to search in
  * @requestField ?sceneUuid    | String | UUID of the scene or group to search in
  * @requestField sourceName    | String | Name of the source to find
@@ -139,8 +136,7 @@ RequestResult RequestHandler::GetSceneItemId(const Request &request)
 /**
  * Gets the source associated with a scene item.
  *
- * @requestField ?canvasName | String | Name of the canvas the scene is in
- * @requestField ?canvasUuid | String | UUID of the canvas the scene is in
+ * @requestField ?canvasUuid | String | UUID of the canvas the scene is in, if using the sceneName field
  * @requestField ?sceneName  | String | Name of the scene the item is in
  * @requestField ?sceneUuid  | String | UUID of the scene the item is in
  * @requestField sceneItemId | Number | Numeric ID of the scene item | >= 0
@@ -177,8 +173,7 @@ RequestResult RequestHandler::GetSceneItemSource(const Request &request)
  *
  * Scenes only
  *
- * @requestField ?canvasName       | String  | Name of the canvas the scene is in
- * @requestField ?canvasUuid       | String  | UUID of the canvas the scene is in
+ * @requestField ?canvasUuid       | String  | UUID of the canvas the scene is in, if using the sceneName field
  * @requestField ?sceneName        | String  | Name of the scene to create the new item in
  * @requestField ?sceneUuid        | String  | UUID of the scene to create the new item in
  * @requestField ?sourceName       | String  | Name of the source to add to the scene
@@ -204,7 +199,7 @@ RequestResult RequestHandler::CreateSceneItem(const Request &request)
 
 	OBSScene scene = obs_scene_from_source(sceneSource);
 
-	OBSSourceAutoRelease source = request.ValidateSource("sourceName", "sourceUuid", statusCode, comment);
+	OBSSourceAutoRelease source = request.ValidateSource("canvasUuid", "sourceName", "sourceUuid", statusCode, comment);
 	if (!source)
 		return RequestResult::Error(statusCode, comment);
 
@@ -233,8 +228,7 @@ RequestResult RequestHandler::CreateSceneItem(const Request &request)
  *
  * Scenes only
  *
- * @requestField ?canvasName | String | Name of the canvas the scene is in
- * @requestField ?canvasUuid | String | UUID of the canvas the scene is in
+ * @requestField ?canvasUuid | String | UUID of the canvas the scene is in, if using the sceneName field
  * @requestField ?sceneName  | String | Name of the scene the item is in
  * @requestField ?sceneUuid  | String | UUID of the scene the item is in
  * @requestField sceneItemId | Number | Numeric ID of the scene item | >= 0
@@ -265,8 +259,7 @@ RequestResult RequestHandler::RemoveSceneItem(const Request &request)
  *
  * Scenes only
  *
- * @requestField ?canvasName           | String | Name of the canvas the scene is in
- * @requestField ?canvasUuid           | String | UUID of the canvas the scene is in
+ * @requestField ?canvasUuid           | String | UUID of the canvas the scene is in, if using the sceneName field
  * @requestField ?sceneName            | String | Name of the scene the item is in
  * @requestField ?sceneUuid            | String | UUID of the scene the item is in
  * @requestField sceneItemId           | Number | Numeric ID of the scene item | >= 0
@@ -293,8 +286,8 @@ RequestResult RequestHandler::DuplicateSceneItem(const Request &request)
 	// Get destination scene
 	obs_scene_t *destinationScene;
 	if (request.Contains("destinationSceneName")) {
-		OBSSourceAutoRelease destinationSceneSource =
-			request.ValidateSource("destinationSceneName", "destinationSceneUuid", statusCode, comment);
+		OBSSourceAutoRelease destinationSceneSource = request.ValidateSource(
+			"destinationCanvasUuid", "destinationSceneName", "destinationSceneUuid", statusCode, comment);
 		if (!destinationSceneSource)
 			return RequestResult::Error(statusCode, comment);
 
@@ -344,8 +337,7 @@ RequestResult RequestHandler::DuplicateSceneItem(const Request &request)
  *
  * Scenes and Groups
  *
- * @requestField ?canvasName | String | Name of the canvas the scene is in
- * @requestField ?canvasUuid | String | UUID of the canvas the scene is in
+ * @requestField ?canvasUuid | String | UUID of the canvas the scene is in, if using the sceneName field
  * @requestField ?sceneName  | String | Name of the scene the item is in
  * @requestField ?sceneUuid  | String | UUID of the scene the item is in
  * @requestField sceneItemId | Number | Numeric ID of the scene item | >= 0
@@ -377,8 +369,7 @@ RequestResult RequestHandler::GetSceneItemTransform(const Request &request)
 /**
  * Sets the transform and crop info of a scene item.
  *
- * @requestField ?canvasName        | String | Name of the canvas the scene is in
- * @requestField ?canvasUuid        | String | UUID of the canvas the scene is in
+ * @requestField ?canvasUuid        | String | UUID of the canvas the scene is in, if using the sceneName field
  * @requestField ?sceneName         | String | Name of the scene the item is in
  * @requestField ?sceneUuid         | String | UUID of the scene the item is in
  * @requestField sceneItemId        | Number | Numeric ID of the scene item | >= 0
@@ -544,8 +535,7 @@ RequestResult RequestHandler::SetSceneItemTransform(const Request &request)
  *
  * Scenes and Groups
  *
- * @requestField ?canvasName | String | Name of the canvas the scene is in
- * @requestField ?canvasUuid | String | UUID of the canvas the scene is in
+ * @requestField ?canvasUuid | String | UUID of the canvas the scene is in, if using the sceneName field
  * @requestField ?sceneName  | String | Name of the scene the item is in
  * @requestField ?sceneUuid  | String | UUID of the scene the item is in
  * @requestField sceneItemId | Number | Numeric ID of the scene item | >= 0
@@ -579,8 +569,7 @@ RequestResult RequestHandler::GetSceneItemEnabled(const Request &request)
  *
  * Scenes and Groups
  *
- * @requestField ?canvasName      | String  | Name of the canvas the scene is in
- * @requestField ?canvasUuid      | String  | UUID of the canvas the scene is in
+ * @requestField ?canvasUuid      | String  | UUID of the canvas the scene is in, if using the sceneName field
  * @requestField ?sceneName       | String  | Name of the scene the item is in
  * @requestField ?sceneUuid       | String  | UUID of the scene the item is in
  * @requestField sceneItemId      | Number  | Numeric ID of the scene item | >= 0
@@ -614,8 +603,7 @@ RequestResult RequestHandler::SetSceneItemEnabled(const Request &request)
  *
  * Scenes and Groups
  *
- * @requestField ?canvasName | String | Name of the canvas the scene is in
- * @requestField ?canvasUuid | String | UUID of the canvas the scene is in
+ * @requestField ?canvasUuid | String | UUID of the canvas the scene is in, if using the sceneName field
  * @requestField ?sceneName  | String | Name of the scene the item is in
  * @requestField ?sceneUuid  | String | UUID of the scene the item is in
  * @requestField sceneItemId | Number | Numeric ID of the scene item | >= 0
@@ -649,8 +637,7 @@ RequestResult RequestHandler::GetSceneItemLocked(const Request &request)
  *
  * Scenes and Group
  *
- * @requestField ?canvasName     | String  | Name of the canvas the scene is in
- * @requestField ?canvasUuid     | String  | UUID of the canvas the scene is in
+ * @requestField ?canvasUuid     | String  | UUID of the canvas the scene is in, if using the sceneName field
  * @requestField ?sceneName      | String  | Name of the scene the item is in
  * @requestField ?sceneUuid      | String  | UUID of the scene the item is in
  * @requestField sceneItemId     | Number  | Numeric ID of the scene item | >= 0
@@ -686,8 +673,7 @@ RequestResult RequestHandler::SetSceneItemLocked(const Request &request)
  *
  * Scenes and Groups
  *
- * @requestField ?canvasName | String | Name of the canvas the scene is in
- * @requestField ?canvasUuid | String | UUID of the canvas the scene is in
+ * @requestField ?canvasUuid | String | UUID of the canvas the scene is in, if using the sceneName field
  * @requestField ?sceneName  | String | Name of the scene the item is in
  * @requestField ?sceneUuid  | String | UUID of the scene the item is in
  * @requestField sceneItemId | Number | Numeric ID of the scene item | >= 0
@@ -721,8 +707,7 @@ RequestResult RequestHandler::GetSceneItemIndex(const Request &request)
  *
  * Scenes and Groups
  *
- * @requestField ?canvasName    | String | Name of the canvas the scene is in
- * @requestField ?canvasUuid    | String | UUID of the canvas the scene is in
+ * @requestField ?canvasUuid    | String | UUID of the canvas the scene is in, if using the sceneName field
  * @requestField ?sceneName     | String | Name of the scene the item is in
  * @requestField ?sceneUuid     | String | UUID of the scene the item is in
  * @requestField sceneItemId    | Number | Numeric ID of the scene item         | >= 0
@@ -766,8 +751,7 @@ RequestResult RequestHandler::SetSceneItemIndex(const Request &request)
  *
  * Scenes and Groups
  *
- * @requestField ?canvasName | String | Name of the canvas the scene is in
- * @requestField ?canvasUuid | String | UUID of the canvas the scene is in
+ * @requestField ?canvasUuid | String | UUID of the canvas the scene is in, if using the sceneName field
  * @requestField ?sceneName  | String | Name of the scene the item is in
  * @requestField ?sceneUuid  | String | UUID of the scene the item is in
  * @requestField sceneItemId | Number | Numeric ID of the scene item | >= 0
@@ -803,8 +787,7 @@ RequestResult RequestHandler::GetSceneItemBlendMode(const Request &request)
  *
  * Scenes and Groups
  *
- * @requestField ?canvasName        | String | Name of the canvas the scene is in
- * @requestField ?canvasUuid        | String | UUID of the canvas the scene is in
+ * @requestField ?canvasUuid        | String | UUID of the canvas the scene is in, if using the sceneName field
  * @requestField ?sceneName         | String | Name of the scene the item is in
  * @requestField ?sceneUuid         | String | UUID of the scene the item is in
  * @requestField sceneItemId        | Number | Numeric ID of the scene item | >= 0

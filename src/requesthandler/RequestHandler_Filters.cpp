@@ -43,8 +43,7 @@ RequestResult RequestHandler::GetSourceFilterKindList(const Request &)
 /**
  * Gets an array of all of a source's filters.
  *
- * @requestField ?canvasName | String | Name of the canvas the source is in
- * @requestField ?canvasUuid | String | UUID of the canvas the source is in
+ * @requestField ?canvasUuid | String | UUID of the canvas the source is in, if using the sourceName field
  * @requestField ?sourceName | String | Name of the source
  * @requestField ?sourceUuid | String | UUID of the source
  *
@@ -61,7 +60,7 @@ RequestResult RequestHandler::GetSourceFilterList(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease source = request.ValidateSource("sourceName", "sourceUuid", statusCode, comment);
+	OBSSourceAutoRelease source = request.ValidateSource("canvasUuid", "sourceName", "sourceUuid", statusCode, comment);
 	if (!source)
 		return RequestResult::Error(statusCode, comment);
 
@@ -109,8 +108,7 @@ RequestResult RequestHandler::GetSourceFilterDefaultSettings(const Request &requ
 /**
  * Creates a new filter, adding it to the specified source.
  *
- * @requestField ?canvasName     | String | Name of the canvas the source is in
- * @requestField ?canvasUuid     | String | UUID of the canvas the source is in
+ * @requestField ?canvasUuid     | String | UUID of the canvas the source is in, if using the sourceName field
  * @requestField ?sourceName     | String | Name of the source to add the filter to
  * @requestField ?sourceUuid     | String | UUID of the source to add the filter to
  * @requestField filterName      | String | Name of the new filter to be created
@@ -129,7 +127,7 @@ RequestResult RequestHandler::CreateSourceFilter(const Request &request)
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
 
-	OBSSourceAutoRelease source = request.ValidateSource("sourceName", "sourceUuid", statusCode, comment);
+	OBSSourceAutoRelease source = request.ValidateSource("canvasUuid", "sourceName", "sourceUuid", statusCode, comment);
 	if (!(source && request.ValidateString("filterName", statusCode, comment) &&
 	      request.ValidateString("filterKind", statusCode, comment)))
 		return RequestResult::Error(statusCode, comment);
@@ -165,8 +163,7 @@ RequestResult RequestHandler::CreateSourceFilter(const Request &request)
 /**
  * Removes a filter from a source.
  *
- * @requestField ?canvasName | String | Name of the canvas the source is in
- * @requestField ?canvasUuid | String | UUID of the canvas the source is in
+ * @requestField ?canvasUuid | String | UUID of the canvas the source is in, if using the sourceName field
  * @requestField ?sourceName | String | Name of the source the filter is on
  * @requestField ?sourceUuid | String | UUID of the source the filter is on
  * @requestField filterName  | String | Name of the filter to remove
@@ -194,8 +191,7 @@ RequestResult RequestHandler::RemoveSourceFilter(const Request &request)
 /**
  * Sets the name of a source filter (rename).
  *
- * @requestField ?canvasName   | String | Name of the canvas the source is in
- * @requestField ?canvasUuid   | String | UUID of the canvas the source is in
+ * @requestField ?canvasUuid   | String | UUID of the canvas the source is in, if using the sourceName field
  * @requestField ?sourceName   | String | Name of the source the filter is on
  * @requestField ?sourceUuid   | String | UUID of the source the filter is on
  * @requestField filterName    | String | Current name of the filter
@@ -230,8 +226,7 @@ RequestResult RequestHandler::SetSourceFilterName(const Request &request)
 /**
  * Gets the info for a specific source filter.
  *
- * @requestField ?canvasName | String | Name of the canvas the source is in
- * @requestField ?canvasUuid | String | UUID of the canvas the source is in
+ * @requestField ?canvasUuid | String | UUID of the canvas the source is in, if using the sourceName field
  * @requestField ?sourceName | String | Name of the source
  * @requestField ?sourceUuid | String | UUID of the source
  * @requestField filterName  | String | Name of the filter
@@ -272,8 +267,7 @@ RequestResult RequestHandler::GetSourceFilter(const Request &request)
 /**
  * Sets the index position of a filter on a source.
  *
- * @requestField ?canvasName | String | Name of the canvas the source is in
- * @requestField ?canvasUuid | String | UUID of the canvas the source is in
+ * @requestField ?canvasUuid | String | UUID of the canvas the source is in, if using the sourceName field
  * @requestField ?sourceName | String | Name of the source the filter is on
  * @requestField ?sourceUuid | String | UUID of the source the filter is on
  * @requestField filterName  | String | Name of the filter
@@ -304,8 +298,7 @@ RequestResult RequestHandler::SetSourceFilterIndex(const Request &request)
 /**
  * Sets the settings of a source filter.
  *
- * @requestField ?canvasName    | String  | Name of the canvas the source is in
- * @requestField ?canvasUuid    | String  | UUID of the canvas the source is in
+ * @requestField ?canvasUuid    | String  | UUID of the canvas the source is in, if using the sourceName field
  * @requestField ?sourceName    | String  | Name of the source the filter is on
  * @requestField ?sourceUuid    | String  | UUID of the source the filter is on
  * @requestField filterName     | String  | Name of the filter to set the settings of
@@ -355,8 +348,7 @@ RequestResult RequestHandler::SetSourceFilterSettings(const Request &request)
 /**
  * Sets the enable state of a source filter.
  *
- * @requestField ?canvasName   | String  | Name of the canvas the source is in
- * @requestField ?canvasUuid   | String  | UUID of the canvas the source is in
+ * @requestField ?canvasUuid   | String  | UUID of the canvas the source is in, if using the sourceName field
  * @requestField ?sourceName   | String  | Name of the source the filter is on
  * @requestField ?sourceUuid   | String  | UUID of the source the filter is on
  * @requestField filterName    | String  | Name of the filter
