@@ -43,7 +43,7 @@ RequestResult RequestHandler::GetSceneList(const Request &request)
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
 	OBSCanvasAutoRelease canvas = request.GetCanvas("canvasUuid", statusCode, comment);
-	if (statusCode == RequestStatus::ResourceNotFound)
+	if (!canvas)
 		return RequestResult::Error(statusCode, comment);
 	if (canvas) {
 		OBSSourceAutoRelease programSource = obs_canvas_get_channel(canvas, 0);
@@ -111,7 +111,7 @@ RequestResult RequestHandler::GetGroupList(const Request &request)
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
 	OBSCanvasAutoRelease canvas = request.GetCanvas("canvasUuid", statusCode, comment);
-	if (statusCode == RequestStatus::ResourceNotFound)
+	if (!canvas)
 		return RequestResult::Error(statusCode, comment);
 
 	if (canvas)
@@ -309,7 +309,7 @@ RequestResult RequestHandler::RemoveScene(const Request &request)
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
 	OBSCanvasAutoRelease canvas = request.GetCanvas("canvasUuid", statusCode, comment);
-	if (statusCode == RequestStatus::ResourceNotFound)
+	if (!canvas)
 		return RequestResult::Error(statusCode, comment);
 
 	OBSSourceAutoRelease scene = request.GetScene(statusCode, comment);
@@ -346,7 +346,7 @@ RequestResult RequestHandler::SetSceneName(const Request &request)
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
 	OBSCanvasAutoRelease canvas = request.GetCanvas("canvasUuid", statusCode, comment);
-	if (statusCode == RequestStatus::ResourceNotFound)
+	if (!canvas)
 		return RequestResult::Error(statusCode, comment);
 
 	OBSSourceAutoRelease scene = request.GetScene(statusCode, comment);
