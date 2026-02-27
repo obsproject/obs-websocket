@@ -211,7 +211,7 @@ bool Request::ValidateArray(const std::string &keyName, RequestStatus::RequestSt
 	return true;
 }
 
-obs_canvas_t *Request::GetCanvas(const std::string &uuidKeyName, RequestStatus::RequestStatus &statusCode,
+obs_canvas_t *Request::AcquireCanvas(const std::string &uuidKeyName, RequestStatus::RequestStatus &statusCode,
 				 std::string &comment) const
 {
 	if (ValidateString(uuidKeyName, statusCode, comment)) {
@@ -228,7 +228,7 @@ obs_canvas_t *Request::GetCanvas(const std::string &uuidKeyName, RequestStatus::
 	return obs_get_main_canvas();
 }
 
-obs_source_t *Request::GetSource(const std::string &canvasUuidKeyName, const std::string &nameKeyName,
+obs_source_t *Request::AcquireSource(const std::string &canvasUuidKeyName, const std::string &nameKeyName,
 				 const std::string &uuidKeyName, RequestStatus::RequestStatus &statusCode,
 				 std::string &comment) const
 {
@@ -244,7 +244,7 @@ obs_source_t *Request::GetSource(const std::string &canvasUuidKeyName, const std
 	}
 
 	if (ValidateString(nameKeyName, statusCode, comment)) {
-		OBSCanvasAutoRelease canvas = GetCanvas(canvasUuidKeyName, statusCode, comment);
+		OBSCanvasAutoRelease canvas = AcquireCanvas(canvasUuidKeyName, statusCode, comment);
 		if (!canvas)
 			return nullptr;
 		std::string sourceName = RequestData[nameKeyName];
@@ -264,10 +264,10 @@ obs_source_t *Request::GetSource(const std::string &canvasUuidKeyName, const std
 	return nullptr;
 }
 
-obs_source_t *Request::GetScene(RequestStatus::RequestStatus &statusCode, std::string &comment,
+obs_source_t *Request::AcquireScene(RequestStatus::RequestStatus &statusCode, std::string &comment,
 				const ObsWebSocketSceneFilter filter) const
 {
-	obs_source_t *ret = GetSource("canvasUuid", "sceneName", "sceneUuid", statusCode, comment);
+	obs_source_t *ret = AcquireSource("canvasUuid", "sceneName", "sceneUuid", statusCode, comment);
 	if (!ret)
 		return nullptr;
 
@@ -294,10 +294,10 @@ obs_source_t *Request::GetScene(RequestStatus::RequestStatus &statusCode, std::s
 	return ret;
 }
 
-obs_scene_t *Request::GetScene2(RequestStatus::RequestStatus &statusCode, std::string &comment,
+obs_scene_t *Request::AcquireScene2(RequestStatus::RequestStatus &statusCode, std::string &comment,
 				const ObsWebSocketSceneFilter filter) const
 {
-	OBSSourceAutoRelease sceneSource = GetSource("canvasUuid", "sceneName", "sceneUuid", statusCode, comment);
+	OBSSourceAutoRelease sceneSource = AcquireSource("canvasUuid", "sceneName", "sceneUuid", statusCode, comment);
 	if (!sceneSource)
 		return nullptr;
 
@@ -325,9 +325,9 @@ obs_scene_t *Request::GetScene2(RequestStatus::RequestStatus &statusCode, std::s
 	}
 }
 
-obs_source_t *Request::GetInput(RequestStatus::RequestStatus &statusCode, std::string &comment) const
+obs_source_t *Request::AcquireInput(RequestStatus::RequestStatus &statusCode, std::string &comment) const
 {
-	obs_source_t *ret = GetSource("canvasUuid", "inputName", "inputUuid", statusCode, comment);
+	obs_source_t *ret = AcquireSource("canvasUuid", "inputName", "inputUuid", statusCode, comment);
 	if (!ret)
 		return nullptr;
 
@@ -341,9 +341,9 @@ obs_source_t *Request::GetInput(RequestStatus::RequestStatus &statusCode, std::s
 	return ret;
 }
 
-FilterPair Request::GetFilter(RequestStatus::RequestStatus &statusCode, std::string &comment) const
+FilterPair Request::AcquireFilter(RequestStatus::RequestStatus &statusCode, std::string &comment) const
 {
-	obs_source_t *source = GetSource("canvasUuid", "sourceName", "sourceUuid", statusCode, comment);
+	obs_source_t *source = AcquireSource("canvasUuid", "sourceName", "sourceUuid", statusCode, comment);
 	if (!source)
 		return FilterPair{source, nullptr};
 
@@ -363,10 +363,10 @@ FilterPair Request::GetFilter(RequestStatus::RequestStatus &statusCode, std::str
 	return FilterPair{source, filter};
 }
 
-obs_sceneitem_t *Request::GetSceneItem(RequestStatus::RequestStatus &statusCode, std::string &comment,
+obs_sceneitem_t *Request::AcquireSceneItem(RequestStatus::RequestStatus &statusCode, std::string &comment,
 				       const ObsWebSocketSceneFilter filter) const
 {
-	OBSSceneAutoRelease scene = GetScene2(statusCode, comment, filter);
+	OBSSceneAutoRelease scene = AcquireScene2(statusCode, comment, filter);
 	if (!scene)
 		return nullptr;
 
@@ -388,7 +388,7 @@ obs_sceneitem_t *Request::GetSceneItem(RequestStatus::RequestStatus &statusCode,
 	return sceneItem;
 }
 
-obs_output_t *Request::GetOutput(const std::string &keyName, RequestStatus::RequestStatus &statusCode, std::string &comment) const
+obs_output_t *Request::AcquireOutput(const std::string &keyName, RequestStatus::RequestStatus &statusCode, std::string &comment) const
 {
 	if (!ValidateString(keyName, statusCode, comment))
 		return nullptr;

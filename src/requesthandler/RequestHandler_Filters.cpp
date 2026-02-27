@@ -60,7 +60,7 @@ RequestResult RequestHandler::GetSourceFilterList(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease source = request.GetSource("canvasUuid", "sourceName", "sourceUuid", statusCode, comment);
+	OBSSourceAutoRelease source = request.AcquireSource("canvasUuid", "sourceName", "sourceUuid", statusCode, comment);
 	if (!source)
 		return RequestResult::Error(statusCode, comment);
 
@@ -127,7 +127,7 @@ RequestResult RequestHandler::CreateSourceFilter(const Request &request)
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
 
-	OBSSourceAutoRelease source = request.GetSource("canvasUuid", "sourceName", "sourceUuid", statusCode, comment);
+	OBSSourceAutoRelease source = request.AcquireSource("canvasUuid", "sourceName", "sourceUuid", statusCode, comment);
 	if (!(source && request.ValidateString("filterName", statusCode, comment) &&
 	      request.ValidateString("filterKind", statusCode, comment)))
 		return RequestResult::Error(statusCode, comment);
@@ -179,7 +179,7 @@ RequestResult RequestHandler::RemoveSourceFilter(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	FilterPair pair = request.GetFilter(statusCode, comment);
+	FilterPair pair = request.AcquireFilter(statusCode, comment);
 	if (!pair.filter)
 		return RequestResult::Error(statusCode, comment);
 
@@ -208,7 +208,7 @@ RequestResult RequestHandler::SetSourceFilterName(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	FilterPair pair = request.GetFilter(statusCode, comment);
+	FilterPair pair = request.AcquireFilter(statusCode, comment);
 	if (!pair.filter || !request.ValidateString("newFilterName", statusCode, comment))
 		return RequestResult::Error(statusCode, comment);
 
@@ -247,7 +247,7 @@ RequestResult RequestHandler::GetSourceFilter(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	FilterPair pair = request.GetFilter(statusCode, comment);
+	FilterPair pair = request.AcquireFilter(statusCode, comment);
 	if (!pair.filter)
 		return RequestResult::Error(statusCode, comment);
 
@@ -284,7 +284,7 @@ RequestResult RequestHandler::SetSourceFilterIndex(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	FilterPair pair = request.GetFilter(statusCode, comment);
+	FilterPair pair = request.AcquireFilter(statusCode, comment);
 	if (!(pair.filter && request.ValidateNumber("filterIndex", statusCode, comment, 0, 8192)))
 		return RequestResult::Error(statusCode, comment);
 
@@ -316,7 +316,7 @@ RequestResult RequestHandler::SetSourceFilterSettings(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	FilterPair pair = request.GetFilter(statusCode, comment);
+	FilterPair pair = request.AcquireFilter(statusCode, comment);
 	if (!(pair.filter && request.ValidateObject("filterSettings", statusCode, comment, true)))
 		return RequestResult::Error(statusCode, comment);
 
@@ -365,7 +365,7 @@ RequestResult RequestHandler::SetSourceFilterEnabled(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	FilterPair pair = request.GetFilter(statusCode, comment);
+	FilterPair pair = request.AcquireFilter(statusCode, comment);
 	if (!(pair.filter && request.ValidateBoolean("filterEnabled", statusCode, comment)))
 		return RequestResult::Error(statusCode, comment);
 

@@ -64,20 +64,20 @@ struct Request {
 			   const bool allowEmpty = false) const;
 
 	// All return values have incremented refcounts
-	obs_canvas_t *GetCanvas(const std::string &uuidKeyName, RequestStatus::RequestStatus &statusCode,
+	obs_canvas_t *AcquireCanvas(const std::string &uuidKeyName, RequestStatus::RequestStatus &statusCode,
 				std::string &comment) const;
-	obs_source_t *GetSource(const std::string &canvasUuidKeyName, const std::string &nameKeyName,
+	obs_source_t *AcquireSource(const std::string &canvasUuidKeyName, const std::string &nameKeyName,
 				const std::string &uuidKeyName, RequestStatus::RequestStatus &statusCode,
 				std::string &comment) const;
-	obs_source_t *GetScene(RequestStatus::RequestStatus &statusCode, std::string &comment,
+	obs_source_t *AcquireScene(RequestStatus::RequestStatus &statusCode, std::string &comment,
 			       const ObsWebSocketSceneFilter filter = OBS_WEBSOCKET_SCENE_FILTER_SCENE_ONLY) const;
-	obs_scene_t *GetScene2(RequestStatus::RequestStatus &statusCode, std::string &comment,
+	obs_scene_t *AcquireScene2(RequestStatus::RequestStatus &statusCode, std::string &comment,
 			       const ObsWebSocketSceneFilter filter = OBS_WEBSOCKET_SCENE_FILTER_SCENE_ONLY) const;
-	obs_source_t *GetInput(RequestStatus::RequestStatus &statusCode, std::string &comment) const;
-	FilterPair GetFilter(RequestStatus::RequestStatus &statusCode, std::string &comment) const;
-	obs_sceneitem_t *GetSceneItem(RequestStatus::RequestStatus &statusCode, std::string &comment,
+	obs_source_t *AcquireInput(RequestStatus::RequestStatus &statusCode, std::string &comment) const;
+	FilterPair AcquireFilter(RequestStatus::RequestStatus &statusCode, std::string &comment) const;
+	obs_sceneitem_t *AcquireSceneItem(RequestStatus::RequestStatus &statusCode, std::string &comment,
 				      const ObsWebSocketSceneFilter filter = OBS_WEBSOCKET_SCENE_FILTER_SCENE_ONLY) const;
-	obs_output_t *GetOutput(const std::string &keyName, RequestStatus::RequestStatus &statusCode, std::string &comment) const;
+	obs_output_t *AcquireOutput(const std::string &keyName, RequestStatus::RequestStatus &statusCode, std::string &comment) const;
 
 	std::string RequestType;
 	bool HasRequestData;

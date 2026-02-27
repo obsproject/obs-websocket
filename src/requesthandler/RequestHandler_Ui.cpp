@@ -96,7 +96,7 @@ RequestResult RequestHandler::OpenInputPropertiesDialog(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease input = request.GetInput(statusCode, comment);
+	OBSSourceAutoRelease input = request.AcquireInput(statusCode, comment);
 	if (!input)
 		return RequestResult::Error(statusCode, comment);
 
@@ -122,7 +122,7 @@ RequestResult RequestHandler::OpenInputFiltersDialog(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease input = request.GetInput(statusCode, comment);
+	OBSSourceAutoRelease input = request.AcquireInput(statusCode, comment);
 	if (!input)
 		return RequestResult::Error(statusCode, comment);
 
@@ -148,7 +148,7 @@ RequestResult RequestHandler::OpenInputInteractDialog(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease input = request.GetInput(statusCode, comment);
+	OBSSourceAutoRelease input = request.AcquireInput(statusCode, comment);
 	if (!input)
 		return RequestResult::Error(statusCode, comment);
 
@@ -282,7 +282,7 @@ RequestResult RequestHandler::OpenSourceProjector(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease source = request.GetSource("canvasUuid", "sourceName", "sourceUuid", statusCode, comment);
+	OBSSourceAutoRelease source = request.AcquireSource("canvasUuid", "sourceName", "sourceUuid", statusCode, comment);
 	if (!source)
 		return RequestResult::Error(statusCode, comment);
 
