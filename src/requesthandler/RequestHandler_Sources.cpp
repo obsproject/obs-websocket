@@ -132,7 +132,7 @@ RequestResult RequestHandler::GetSourceActive(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease source = request.ValidateSource("canvasUuid", "sourceName", "sourceUuid", statusCode, comment);
+	OBSSourceAutoRelease source = request.GetSource("canvasUuid", "sourceName", "sourceUuid", statusCode, comment);
 	if (!source)
 		return RequestResult::Error(statusCode, comment);
 
@@ -174,7 +174,7 @@ RequestResult RequestHandler::GetSourceScreenshot(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease source = request.ValidateSource("canvasUuid", "sourceName", "sourceUuid", statusCode, comment);
+	OBSSourceAutoRelease source = request.GetSource("canvasUuid", "sourceName", "sourceUuid", statusCode, comment);
 	if (!(source && request.ValidateString("imageFormat", statusCode, comment)))
 		return RequestResult::Error(statusCode, comment);
 
@@ -262,7 +262,7 @@ RequestResult RequestHandler::SaveSourceScreenshot(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease source = request.ValidateSource("canvasUuid", "sourceName", "sourceUuid", statusCode, comment);
+	OBSSourceAutoRelease source = request.GetSource("canvasUuid", "sourceName", "sourceUuid", statusCode, comment);
 	if (!(source && request.ValidateString("imageFormat", statusCode, comment) &&
 	      request.ValidateString("imageFilePath", statusCode, comment)))
 		return RequestResult::Error(statusCode, comment);
@@ -325,7 +325,7 @@ RequestResult RequestHandler::GetSourcePrivateSettings(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease source = request.ValidateSource("canvasUuid", "sourceName", "sourceUuid", statusCode, comment);
+	OBSSourceAutoRelease source = request.GetSource("canvasUuid", "sourceName", "sourceUuid", statusCode, comment);
 	if (!source)
 		return RequestResult::Error(statusCode, comment);
 
@@ -342,7 +342,7 @@ RequestResult RequestHandler::SetSourcePrivateSettings(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease source = request.ValidateSource("canvasUuid", "sourceName", "sourceUuid", statusCode, comment);
+	OBSSourceAutoRelease source = request.GetSource("canvasUuid", "sourceName", "sourceUuid", statusCode, comment);
 	if (!source || !request.ValidateObject("sourceSettings", statusCode, comment, true))
 		return RequestResult::Error(statusCode, comment);
 

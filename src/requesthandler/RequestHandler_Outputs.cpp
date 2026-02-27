@@ -317,7 +317,7 @@ RequestResult RequestHandler::GetOutputStatus(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSOutputAutoRelease output = request.ValidateOutput("outputName", statusCode, comment);
+	OBSOutputAutoRelease output = request.GetOutput("outputName", statusCode, comment);
 	if (!output)
 		return RequestResult::Error(statusCode, comment);
 
@@ -354,7 +354,7 @@ RequestResult RequestHandler::ToggleOutput(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSOutputAutoRelease output = request.ValidateOutput("outputName", statusCode, comment);
+	OBSOutputAutoRelease output = request.GetOutput("outputName", statusCode, comment);
 	if (!output)
 		return RequestResult::Error(statusCode, comment);
 
@@ -385,7 +385,7 @@ RequestResult RequestHandler::StartOutput(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSOutputAutoRelease output = request.ValidateOutput("outputName", statusCode, comment);
+	OBSOutputAutoRelease output = request.GetOutput("outputName", statusCode, comment);
 	if (!output)
 		return RequestResult::Error(statusCode, comment);
 
@@ -413,7 +413,7 @@ RequestResult RequestHandler::StopOutput(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSOutputAutoRelease output = request.ValidateOutput("outputName", statusCode, comment);
+	OBSOutputAutoRelease output = request.GetOutput("outputName", statusCode, comment);
 	if (!output)
 		return RequestResult::Error(statusCode, comment);
 
@@ -443,7 +443,7 @@ RequestResult RequestHandler::GetOutputSettings(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSOutputAutoRelease output = request.ValidateOutput("outputName", statusCode, comment);
+	OBSOutputAutoRelease output = request.GetOutput("outputName", statusCode, comment);
 	if (!output)
 		return RequestResult::Error(statusCode, comment);
 
@@ -471,7 +471,7 @@ RequestResult RequestHandler::SetOutputSettings(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSOutputAutoRelease output = request.ValidateOutput("outputName", statusCode, comment);
+	OBSOutputAutoRelease output = request.GetOutput("outputName", statusCode, comment);
 	if (!(output && request.ValidateObject("outputSettings", statusCode, comment, true)))
 		return RequestResult::Error(statusCode, comment);
 
