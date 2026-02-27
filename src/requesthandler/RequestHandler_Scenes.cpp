@@ -239,7 +239,8 @@ RequestResult RequestHandler::SetCurrentPreviewScene(const Request &request)
 /**
  * Creates a new scene in OBS.
  *
- * @requestField sceneName | String | Name for the new scene
+ * @requestField ?canvasUuid | String | UUID of the canvas to create the new scene in. Leave default to assume main canvas
+ * @requestField sceneName   | String | Name for the new scene
  *
  * @responseField sceneUuid | String | UUID of the created scene
  *
@@ -263,7 +264,7 @@ RequestResult RequestHandler::CreateScene(const Request &request)
 	if (scene)
 		return RequestResult::Error(RequestStatus::ResourceAlreadyExists, "A source already exists by that scene name.");
 
-	OBSSceneAutoRelease createdScene = obs_scene_create(sceneName.c_str());
+	OBSSceneAutoRelease createdScene = obs_canvas_scene_create(canvas, sceneName.c_str());
 	if (!createdScene)
 		return RequestResult::Error(RequestStatus::ResourceCreationFailed, "Failed to create the scene.");
 
