@@ -50,7 +50,7 @@ void EventHandler::HandleSceneItemCreated(void *param, calldata_t *data)
 		return;
 
 	OBSCanvasAutoRelease canvas = obs_source_get_canvas(obs_scene_get_source(scene));
-	if (!(obs_canvas_get_flags(canvas) & MAIN))
+	if (!canvas || !(obs_canvas_get_flags(canvas) & MAIN))
 		return;
 
 	json eventData;
@@ -95,7 +95,7 @@ void EventHandler::HandleSceneItemRemoved(void *param, calldata_t *data)
 		return;
 
 	OBSCanvasAutoRelease canvas = obs_source_get_canvas(obs_scene_get_source(scene));
-	if (!(obs_canvas_get_flags(canvas) & MAIN))
+	if (!canvas || !(obs_canvas_get_flags(canvas) & MAIN))
 		return;
 
 	json eventData;
@@ -131,7 +131,7 @@ void EventHandler::HandleSceneItemListReindexed(void *param, calldata_t *data)
 		return;
 
 	OBSCanvasAutoRelease canvas = obs_source_get_canvas(obs_scene_get_source(scene));
-	if (!(obs_canvas_get_flags(canvas) & MAIN))
+	if (!canvas || !(obs_canvas_get_flags(canvas) & MAIN))
 		return;
 
 	json eventData;
@@ -172,7 +172,7 @@ void EventHandler::HandleSceneItemEnableStateChanged(void *param, calldata_t *da
 	bool sceneItemEnabled = calldata_bool(data, "visible");
 
 	OBSCanvasAutoRelease canvas = obs_source_get_canvas(obs_scene_get_source(scene));
-	if (!(obs_canvas_get_flags(canvas) & MAIN))
+	if (!canvas || !(obs_canvas_get_flags(canvas) & MAIN))
 		return;
 
 	json eventData;
@@ -214,7 +214,7 @@ void EventHandler::HandleSceneItemLockStateChanged(void *param, calldata_t *data
 	bool sceneItemLocked = calldata_bool(data, "locked");
 
 	OBSCanvasAutoRelease canvas = obs_source_get_canvas(obs_scene_get_source(scene));
-	if (!(obs_canvas_get_flags(canvas) & MAIN))
+	if (!canvas || !(obs_canvas_get_flags(canvas) & MAIN))
 		return;
 
 	json eventData;
@@ -253,7 +253,7 @@ void EventHandler::HandleSceneItemSelected(void *param, calldata_t *data)
 		return;
 
 	OBSCanvasAutoRelease canvas = obs_source_get_canvas(obs_scene_get_source(scene));
-	if (!(obs_canvas_get_flags(canvas) & MAIN))
+	if (!canvas || !(obs_canvas_get_flags(canvas) & MAIN))
 		return;
 
 	json eventData;
@@ -295,7 +295,7 @@ void EventHandler::HandleSceneItemTransformChanged(void *param, calldata_t *data
 		return;
 
 	OBSCanvasAutoRelease canvas = obs_source_get_canvas(obs_scene_get_source(scene));
-	if (!(obs_canvas_get_flags(canvas) & MAIN))
+	if (!canvas || !(obs_canvas_get_flags(canvas) & MAIN))
 		return;
 
 	json eventData;
