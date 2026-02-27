@@ -36,15 +36,14 @@ with this program. If not, see <https://www.gnu.org/licenses/>
  */
 void EventHandler::HandleSceneCreated(obs_source_t *source)
 {
+	OBSCanvasAutoRelease canvas = obs_source_get_canvas(source);
+	if (!(obs_canvas_get_flags(canvas) & MAIN))
+		return;
+
 	json eventData;
 	eventData["sceneName"] = obs_source_get_name(source);
 	eventData["sceneUuid"] = obs_source_get_uuid(source);
 	eventData["isGroup"] = obs_source_is_group(source);
-	OBSCanvasAutoRelease canvas = obs_source_get_canvas(source);
-	if (canvas) {
-		eventData["canvasName"] = obs_canvas_get_name(canvas);
-		eventData["canvasUuid"] = obs_canvas_get_uuid(canvas);
-	}
 	BroadcastEvent(EventSubscription::Scenes, "SceneCreated", eventData);
 }
 
@@ -65,15 +64,14 @@ void EventHandler::HandleSceneCreated(obs_source_t *source)
  */
 void EventHandler::HandleSceneRemoved(obs_source_t *source)
 {
+	OBSCanvasAutoRelease canvas = obs_source_get_canvas(source);
+	if (!(obs_canvas_get_flags(canvas) & MAIN))
+		return;
+
 	json eventData;
 	eventData["sceneName"] = obs_source_get_name(source);
 	eventData["sceneUuid"] = obs_source_get_uuid(source);
 	eventData["isGroup"] = obs_source_is_group(source);
-	OBSCanvasAutoRelease canvas = obs_source_get_canvas(source);
-	if (canvas) {
-		eventData["canvasName"] = obs_canvas_get_name(canvas);
-		eventData["canvasUuid"] = obs_canvas_get_uuid(canvas);
-	}
 	BroadcastEvent(EventSubscription::Scenes, "SceneRemoved", eventData);
 }
 
@@ -94,15 +92,14 @@ void EventHandler::HandleSceneRemoved(obs_source_t *source)
  */
 void EventHandler::HandleSceneNameChanged(obs_source_t *source, std::string oldSceneName, std::string sceneName)
 {
+	OBSCanvasAutoRelease canvas = obs_source_get_canvas(source);
+	if (!(obs_canvas_get_flags(canvas) & MAIN))
+		return;
+
 	json eventData;
 	eventData["sceneUuid"] = obs_source_get_uuid(source);
 	eventData["oldSceneName"] = oldSceneName;
 	eventData["sceneName"] = sceneName;
-	OBSCanvasAutoRelease canvas = obs_source_get_canvas(source);
-	if (canvas) {
-		eventData["canvasName"] = obs_canvas_get_name(canvas);
-		eventData["canvasUuid"] = obs_canvas_get_uuid(canvas);
-	}
 	BroadcastEvent(EventSubscription::Scenes, "SceneNameChanged", eventData);
 }
 
