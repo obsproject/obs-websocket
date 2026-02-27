@@ -114,20 +114,20 @@ std::vector<json> Utils::Obs::ArrayHelper::GetCanvasSceneList(obs_canvas_t *canv
 {
 	std::vector<json> ret;
 
-	obs_canvas_enum_scenes(
-		canvas,
-		[](void *param, obs_source_t *scene) {
-			auto ret = static_cast<std::vector<json> *>(param);
-			json sceneJson;
-			sceneJson["sceneName"] = obs_source_get_name(scene);
-			sceneJson["sceneUuid"] = obs_source_get_uuid(scene);
-			ret->push_back(sceneJson);
-			return true;
-		},
-		&ret);
-	for (size_t i = 0; i < ret.size(); i++) {
-		ret[i]["sceneIndex"] = i + 1;
-	}
+	auto cb = [](void *param, obs_source_t *scene) {
+		auto ret = static_cast<std::vector<json> *>(param);
+
+		json sceneJson;
+		sceneJson["sceneName"] = obs_source_get_name(scene);
+		sceneJson["sceneUuid"] = obs_source_get_uuid(scene);
+		sceneJson["sceneIndex"] = nullptr;
+
+		ret->push_back(sceneJson);
+
+		return true;
+	};
+
+	obs_canvas_enum_scenes(canvas, cb, &ret);
 
 	return ret;
 }
