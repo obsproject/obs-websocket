@@ -132,12 +132,6 @@ std::vector<json> Utils::Obs::ArrayHelper::GetCanvasSceneList(obs_canvas_t *canv
 	return ret;
 }
 
-std::vector<std::string> Utils::Obs::ArrayHelper::GetGroupList()
-{
-	OBSCanvasAutoRelease canvas = obs_get_main_canvas();
-	return GetCanvasGroupList(canvas);
-}
-
 std::vector<std::string> Utils::Obs::ArrayHelper::GetCanvasGroupList(obs_canvas_t *canvas)
 {
 	std::vector<std::string> ret;
