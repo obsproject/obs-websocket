@@ -1519,7 +1519,7 @@ The output has been resumed (unpaused).
   - [CurrentProfileChanging](#currentprofilechanging)
   - [CurrentProfileChanged](#currentprofilechanged)
   - [ProfileListChanged](#profilelistchanged)
-- [Canvas Events](#canvas-events)
+- [Canvases Events](#canvases-events)
   - [CanvasCreated](#canvascreated)
   - [CanvasRemoved](#canvasremoved)
   - [CanvasNameChanged](#canvasnamechanged)
@@ -1728,7 +1728,7 @@ The profile list has changed.
 | ---- | :---: | ----------- |
 | profiles | Array&lt;String&gt; | Updated list of profiles |
 
-## Canvas Events
+## Canvases Events
 
 ### CanvasCreated
 
@@ -2694,7 +2694,7 @@ communication is desired.
   - [GetSourceActive](#getsourceactive)
   - [GetSourceScreenshot](#getsourcescreenshot)
   - [SaveSourceScreenshot](#savesourcescreenshot)
-- [Canvas Requests](#canvas-1-requests)
+- [Canvases Requests](#canvases-1-requests)
   - [GetCanvasList](#getcanvaslist)
 - [Scenes Requests](#scenes-1-requests)
   - [GetSceneList](#getscenelist)
@@ -3326,8 +3326,7 @@ Gets the active and show state of a source.
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
-| ?canvasName | String | Name of the canvas the source is in | None | Unknown |
-| ?canvasUuid | String | UUID of the canvas the source is in | None | Unknown |
+| ?canvasUuid | String | UUID of the canvas the source is in, if using sourceName field | None | Unknown |
 | ?sourceName | String | Name of the source to get the active state of | None | Unknown |
 | ?sourceUuid | String | UUID of the source to get the active state of | None | Unknown |
 
@@ -3357,8 +3356,7 @@ If `imageWidth` and `imageHeight` are not specified, the compressed image will u
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
-| ?canvasName | String | Name of the canvas the source is in | None | Unknown |
-| ?canvasUuid | String | UUID of the canvas the source is in | None | Unknown |
+| ?canvasUuid | String | UUID of the canvas the source is in, if using sourceName field | None | Unknown |
 | ?sourceName | String | Name of the source to take a screenshot of | None | Unknown |
 | ?sourceUuid | String | UUID of the source to take a screenshot of | None | Unknown |
 | imageFormat | String | Image compression format to use. Use `GetVersion` to get compatible image formats | None | N/A |
@@ -3391,8 +3389,7 @@ If `imageWidth` and `imageHeight` are not specified, the compressed image will u
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
-| ?canvasName | String | Name of the canvas the source is in | None | Unknown |
-| ?canvasUuid | String | UUID of the canvas the source is in | None | Unknown |
+| ?canvasUuid | String | UUID of the canvas the source is in, if using sourceName field | None | Unknown |
 | ?sourceName | String | Name of the source to take a screenshot of | None | Unknown |
 | ?sourceUuid | String | UUID of the source to take a screenshot of | None | Unknown |
 | imageFormat | String | Image compression format to use. Use `GetVersion` to get compatible image formats | None | N/A |
@@ -3401,13 +3398,13 @@ If `imageWidth` and `imageHeight` are not specified, the compressed image will u
 | ?imageHeight | Number | Height to scale the screenshot to | >= 8, <= 4096 | Source value is used |
 | ?imageCompressionQuality | Number | Compression quality to use. 0 for high compression, 100 for uncompressed. -1 to use "default" (whatever that means, idk) | >= -1, <= 100 | -1 |
 
-## Canvas Requests
+## Canvases Requests
 
 ### GetCanvasList
 
 Gets an array of canvases in OBS.
 
-- Complexity Rating: `2/5`
+- Complexity Rating: `3/5`
 - Latest Supported RPC Version: `1`
 - Added in v5.7.0
 
@@ -3431,17 +3428,16 @@ Gets an array of scenes in OBS.
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
-| ?canvasName | String | Name of the canvas the scenes are in | None | Unknown |
 | ?canvasUuid | String | UUID of the canvas the scenes are in | None | Unknown |
 
 **Response Fields:**
 
 | Name | Type  | Description |
 | ---- | :---: | ----------- |
-| currentProgramSceneName | String | Current program scene name. Can be `null` if internal state desync |
-| currentProgramSceneUuid | String | Current program scene UUID. Can be `null` if internal state desync |
-| currentPreviewSceneName | String | Current preview scene name. `null` if not in studio mode |
-| currentPreviewSceneUuid | String | Current preview scene UUID. `null` if not in studio mode |
+| currentProgramSceneName | String | Current program scene name. Can be `null` if non-main canvas or internal state desync |
+| currentProgramSceneUuid | String | Current program scene UUID. Can be `null` if non-main canvas or internal state desync |
+| currentPreviewSceneName | String | Current preview scene name. `null` if not in studio mode or non-main canvas |
+| currentPreviewSceneUuid | String | Current preview scene UUID. `null` if not in studio mode or non-main canvas |
 | scenes | Array&lt;Object&gt; | Array of scenes |
 
 ---
@@ -3468,7 +3464,9 @@ Groups in OBS are actually scenes, but renamed and modified. In obs-websocket, w
 
 Gets the current program scene.
 
-Note: This request is slated to have the `currentProgram`-prefixed fields removed from in an upcoming RPC version.
+Note 1: This request is slated to have the `currentProgram`-prefixed fields removed from in an upcoming RPC version.
+
+Note 2: Canvases do not have any concept of a program or preview scene, so this request does not support canvases.
 
 - Complexity Rating: `1/5`
 - Latest Supported RPC Version: `1`
@@ -3556,6 +3554,7 @@ Creates a new scene in OBS.
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
+| ?canvasUuid | String | UUID of the canvas to create the new scene in. Leave default to assume main canvas | None | Unknown |
 | sceneName | String | Name for the new scene | None | N/A |
 
 **Response Fields:**
@@ -3578,8 +3577,7 @@ Removes a scene from OBS.
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
-| ?canvasName | String | Name of the canvas the scene is in | None | Unknown |
-| ?canvasUuid | String | UUID of the canvas the scene is in | None | Unknown |
+| ?canvasUuid | String | UUID of the canvas the scene is in, if using the sceneName field | None | Unknown |
 | ?sceneName | String | Name of the scene to remove | None | Unknown |
 | ?sceneUuid | String | UUID of the scene to remove | None | Unknown |
 
@@ -3597,8 +3595,7 @@ Sets the name of a scene (rename).
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
-| ?canvasName | String | Name of the canvas the scene is in | None | Unknown |
-| ?canvasUuid | String | UUID of the canvas the scene is in | None | Unknown |
+| ?canvasUuid | String | UUID of the canvas the scene is in, if using the sceneName field | None | Unknown |
 | ?sceneName | String | Name of the scene to be renamed | None | Unknown |
 | ?sceneUuid | String | UUID of the scene to be renamed | None | Unknown |
 | newSceneName | String | New name for the scene | None | N/A |
@@ -3619,8 +3616,7 @@ Note: A transition UUID response field is not currently able to be implemented a
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
-| ?canvasName | String | Name of the canvas the scene is in | None | Unknown |
-| ?canvasUuid | String | UUID of the canvas the scene is in | None | Unknown |
+| ?canvasUuid | String | UUID of the canvas the scene is in, if using the sceneName field | None | Unknown |
 | ?sceneName | String | Name of the scene | None | Unknown |
 | ?sceneUuid | String | UUID of the scene | None | Unknown |
 
@@ -3645,8 +3641,7 @@ Sets the scene transition overridden for a scene.
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
-| ?canvasName | String | Name of the canvas the scene is in | None | Unknown |
-| ?canvasUuid | String | UUID of the canvas the scene is in | None | Unknown |
+| ?canvasUuid | String | UUID of the canvas the scene is in, if using the sceneName field | None | Unknown |
 | ?sceneName | String | Name of the scene | None | Unknown |
 | ?sceneUuid | String | UUID of the scene | None | Unknown |
 | ?transitionName | String | Name of the scene transition to use as override. Specify `null` to remove | None | Unchanged |
@@ -3731,8 +3726,7 @@ Creates a new input, adding it as a scene item to the specified scene.
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
-| ?canvasName | String | Name of the canvas the scene is in | None | Unknown |
-| ?canvasUuid | String | UUID of the canvas the scene is in | None | Unknown |
+| ?canvasUuid | String | UUID of the canvas the scene is in, if using the sceneName field | None | Unknown |
 | ?sceneName | String | Name of the scene to add the input to as a scene item | None | Unknown |
 | ?sceneUuid | String | UUID of the scene to add the input to as a scene item | None | Unknown |
 | inputName | String | Name of the new input to created | None | N/A |
@@ -4476,8 +4470,7 @@ Gets an array of all of a source's filters.
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
-| ?canvasName | String | Name of the canvas the source is in | None | Unknown |
-| ?canvasUuid | String | UUID of the canvas the source is in | None | Unknown |
+| ?canvasUuid | String | UUID of the canvas the source is in, if using the sourceName field | None | Unknown |
 | ?sourceName | String | Name of the source | None | Unknown |
 | ?sourceUuid | String | UUID of the source | None | Unknown |
 
@@ -4523,8 +4516,7 @@ Creates a new filter, adding it to the specified source.
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
-| ?canvasName | String | Name of the canvas the source is in | None | Unknown |
-| ?canvasUuid | String | UUID of the canvas the source is in | None | Unknown |
+| ?canvasUuid | String | UUID of the canvas the source is in, if using the sourceName field | None | Unknown |
 | ?sourceName | String | Name of the source to add the filter to | None | Unknown |
 | ?sourceUuid | String | UUID of the source to add the filter to | None | Unknown |
 | filterName | String | Name of the new filter to be created | None | N/A |
@@ -4545,8 +4537,7 @@ Removes a filter from a source.
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
-| ?canvasName | String | Name of the canvas the source is in | None | Unknown |
-| ?canvasUuid | String | UUID of the canvas the source is in | None | Unknown |
+| ?canvasUuid | String | UUID of the canvas the source is in, if using the sourceName field | None | Unknown |
 | ?sourceName | String | Name of the source the filter is on | None | Unknown |
 | ?sourceUuid | String | UUID of the source the filter is on | None | Unknown |
 | filterName | String | Name of the filter to remove | None | N/A |
@@ -4565,8 +4556,7 @@ Sets the name of a source filter (rename).
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
-| ?canvasName | String | Name of the canvas the source is in | None | Unknown |
-| ?canvasUuid | String | UUID of the canvas the source is in | None | Unknown |
+| ?canvasUuid | String | UUID of the canvas the source is in, if using the sourceName field | None | Unknown |
 | ?sourceName | String | Name of the source the filter is on | None | Unknown |
 | ?sourceUuid | String | UUID of the source the filter is on | None | Unknown |
 | filterName | String | Current name of the filter | None | N/A |
@@ -4586,8 +4576,7 @@ Gets the info for a specific source filter.
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
-| ?canvasName | String | Name of the canvas the source is in | None | Unknown |
-| ?canvasUuid | String | UUID of the canvas the source is in | None | Unknown |
+| ?canvasUuid | String | UUID of the canvas the source is in, if using the sourceName field | None | Unknown |
 | ?sourceName | String | Name of the source | None | Unknown |
 | ?sourceUuid | String | UUID of the source | None | Unknown |
 | filterName | String | Name of the filter | None | N/A |
@@ -4615,8 +4604,7 @@ Sets the index position of a filter on a source.
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
-| ?canvasName | String | Name of the canvas the source is in | None | Unknown |
-| ?canvasUuid | String | UUID of the canvas the source is in | None | Unknown |
+| ?canvasUuid | String | UUID of the canvas the source is in, if using the sourceName field | None | Unknown |
 | ?sourceName | String | Name of the source the filter is on | None | Unknown |
 | ?sourceUuid | String | UUID of the source the filter is on | None | Unknown |
 | filterName | String | Name of the filter | None | N/A |
@@ -4636,8 +4624,7 @@ Sets the settings of a source filter.
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
-| ?canvasName | String | Name of the canvas the source is in | None | Unknown |
-| ?canvasUuid | String | UUID of the canvas the source is in | None | Unknown |
+| ?canvasUuid | String | UUID of the canvas the source is in, if using the sourceName field | None | Unknown |
 | ?sourceName | String | Name of the source the filter is on | None | Unknown |
 | ?sourceUuid | String | UUID of the source the filter is on | None | Unknown |
 | filterName | String | Name of the filter to set the settings of | None | N/A |
@@ -4658,8 +4645,7 @@ Sets the enable state of a source filter.
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
-| ?canvasName | String | Name of the canvas the source is in | None | Unknown |
-| ?canvasUuid | String | UUID of the canvas the source is in | None | Unknown |
+| ?canvasUuid | String | UUID of the canvas the source is in, if using the sourceName field | None | Unknown |
 | ?sourceName | String | Name of the source the filter is on | None | Unknown |
 | ?sourceUuid | String | UUID of the source the filter is on | None | Unknown |
 | filterName | String | Name of the filter | None | N/A |
@@ -4681,8 +4667,7 @@ Scenes only
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
-| ?canvasName | String | Name of the canvas the scene is in | None | Unknown |
-| ?canvasUuid | String | UUID of the canvas the scene is in | None | Unknown |
+| ?canvasUuid | String | UUID of the canvas the scene is in, if using the sceneName field | None | Unknown |
 | ?sceneName | String | Name of the scene to get the items of | None | Unknown |
 | ?sceneUuid | String | UUID of the scene to get the items of | None | Unknown |
 
@@ -4710,8 +4695,7 @@ Groups only
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
-| ?canvasName | String | Name of the canvas the group is in | None | Unknown |
-| ?canvasUuid | String | UUID of the canvas the group is in | None | Unknown |
+| ?canvasUuid | String | UUID of the canvas the group is in, if using the sceneName field | None | Unknown |
 | ?sceneName | String | Name of the group to get the items of | None | Unknown |
 | ?sceneUuid | String | UUID of the group to get the items of | None | Unknown |
 
@@ -4737,8 +4721,7 @@ Scenes and Groups
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
-| ?canvasName | String | Name of the canvas the scene or group is in | None | Unknown |
-| ?canvasUuid | String | UUID of the canvas the scene or group is in | None | Unknown |
+| ?canvasUuid | String | UUID of the canvas the scene or group is in, if using the sceneName field | None | Unknown |
 | ?sceneName | String | Name of the scene or group to search in | None | Unknown |
 | ?sceneUuid | String | UUID of the scene or group to search in | None | Unknown |
 | sourceName | String | Name of the source to find | None | N/A |
@@ -4764,8 +4747,7 @@ Gets the source associated with a scene item.
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
-| ?canvasName | String | Name of the canvas the scene is in | None | Unknown |
-| ?canvasUuid | String | UUID of the canvas the scene is in | None | Unknown |
+| ?canvasUuid | String | UUID of the canvas the scene is in, if using the sceneName field | None | Unknown |
 | ?sceneName | String | Name of the scene the item is in | None | Unknown |
 | ?sceneUuid | String | UUID of the scene the item is in | None | Unknown |
 | sceneItemId | Number | Numeric ID of the scene item | >= 0 | N/A |
@@ -4793,8 +4775,7 @@ Scenes only
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
-| ?canvasName | String | Name of the canvas the scene is in | None | Unknown |
-| ?canvasUuid | String | UUID of the canvas the scene is in | None | Unknown |
+| ?canvasUuid | String | UUID of the canvas the scene is in, if using the sceneName field | None | Unknown |
 | ?sceneName | String | Name of the scene to create the new item in | None | Unknown |
 | ?sceneUuid | String | UUID of the scene to create the new item in | None | Unknown |
 | ?sourceName | String | Name of the source to add to the scene | None | Unknown |
@@ -4823,8 +4804,7 @@ Scenes only
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
-| ?canvasName | String | Name of the canvas the scene is in | None | Unknown |
-| ?canvasUuid | String | UUID of the canvas the scene is in | None | Unknown |
+| ?canvasUuid | String | UUID of the canvas the scene is in, if using the sceneName field | None | Unknown |
 | ?sceneName | String | Name of the scene the item is in | None | Unknown |
 | ?sceneUuid | String | UUID of the scene the item is in | None | Unknown |
 | sceneItemId | Number | Numeric ID of the scene item | >= 0 | N/A |
@@ -4845,8 +4825,7 @@ Scenes only
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
-| ?canvasName | String | Name of the canvas the scene is in | None | Unknown |
-| ?canvasUuid | String | UUID of the canvas the scene is in | None | Unknown |
+| ?canvasUuid | String | UUID of the canvas the scene is in, if using the sceneName field | None | Unknown |
 | ?sceneName | String | Name of the scene the item is in | None | Unknown |
 | ?sceneUuid | String | UUID of the scene the item is in | None | Unknown |
 | sceneItemId | Number | Numeric ID of the scene item | >= 0 | N/A |
@@ -4875,8 +4854,7 @@ Scenes and Groups
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
-| ?canvasName | String | Name of the canvas the scene is in | None | Unknown |
-| ?canvasUuid | String | UUID of the canvas the scene is in | None | Unknown |
+| ?canvasUuid | String | UUID of the canvas the scene is in, if using the sceneName field | None | Unknown |
 | ?sceneName | String | Name of the scene the item is in | None | Unknown |
 | ?sceneUuid | String | UUID of the scene the item is in | None | Unknown |
 | sceneItemId | Number | Numeric ID of the scene item | >= 0 | N/A |
@@ -4901,8 +4879,7 @@ Sets the transform and crop info of a scene item.
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
-| ?canvasName | String | Name of the canvas the scene is in | None | Unknown |
-| ?canvasUuid | String | UUID of the canvas the scene is in | None | Unknown |
+| ?canvasUuid | String | UUID of the canvas the scene is in, if using the sceneName field | None | Unknown |
 | ?sceneName | String | Name of the scene the item is in | None | Unknown |
 | ?sceneUuid | String | UUID of the scene the item is in | None | Unknown |
 | sceneItemId | Number | Numeric ID of the scene item | >= 0 | N/A |
@@ -4924,8 +4901,7 @@ Scenes and Groups
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
-| ?canvasName | String | Name of the canvas the scene is in | None | Unknown |
-| ?canvasUuid | String | UUID of the canvas the scene is in | None | Unknown |
+| ?canvasUuid | String | UUID of the canvas the scene is in, if using the sceneName field | None | Unknown |
 | ?sceneName | String | Name of the scene the item is in | None | Unknown |
 | ?sceneUuid | String | UUID of the scene the item is in | None | Unknown |
 | sceneItemId | Number | Numeric ID of the scene item | >= 0 | N/A |
@@ -4952,8 +4928,7 @@ Scenes and Groups
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
-| ?canvasName | String | Name of the canvas the scene is in | None | Unknown |
-| ?canvasUuid | String | UUID of the canvas the scene is in | None | Unknown |
+| ?canvasUuid | String | UUID of the canvas the scene is in, if using the sceneName field | None | Unknown |
 | ?sceneName | String | Name of the scene the item is in | None | Unknown |
 | ?sceneUuid | String | UUID of the scene the item is in | None | Unknown |
 | sceneItemId | Number | Numeric ID of the scene item | >= 0 | N/A |
@@ -4975,8 +4950,7 @@ Scenes and Groups
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
-| ?canvasName | String | Name of the canvas the scene is in | None | Unknown |
-| ?canvasUuid | String | UUID of the canvas the scene is in | None | Unknown |
+| ?canvasUuid | String | UUID of the canvas the scene is in, if using the sceneName field | None | Unknown |
 | ?sceneName | String | Name of the scene the item is in | None | Unknown |
 | ?sceneUuid | String | UUID of the scene the item is in | None | Unknown |
 | sceneItemId | Number | Numeric ID of the scene item | >= 0 | N/A |
@@ -5003,8 +4977,7 @@ Scenes and Group
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
-| ?canvasName | String | Name of the canvas the scene is in | None | Unknown |
-| ?canvasUuid | String | UUID of the canvas the scene is in | None | Unknown |
+| ?canvasUuid | String | UUID of the canvas the scene is in, if using the sceneName field | None | Unknown |
 | ?sceneName | String | Name of the scene the item is in | None | Unknown |
 | ?sceneUuid | String | UUID of the scene the item is in | None | Unknown |
 | sceneItemId | Number | Numeric ID of the scene item | >= 0 | N/A |
@@ -5028,8 +5001,7 @@ Scenes and Groups
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
-| ?canvasName | String | Name of the canvas the scene is in | None | Unknown |
-| ?canvasUuid | String | UUID of the canvas the scene is in | None | Unknown |
+| ?canvasUuid | String | UUID of the canvas the scene is in, if using the sceneName field | None | Unknown |
 | ?sceneName | String | Name of the scene the item is in | None | Unknown |
 | ?sceneUuid | String | UUID of the scene the item is in | None | Unknown |
 | sceneItemId | Number | Numeric ID of the scene item | >= 0 | N/A |
@@ -5056,8 +5028,7 @@ Scenes and Groups
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
-| ?canvasName | String | Name of the canvas the scene is in | None | Unknown |
-| ?canvasUuid | String | UUID of the canvas the scene is in | None | Unknown |
+| ?canvasUuid | String | UUID of the canvas the scene is in, if using the sceneName field | None | Unknown |
 | ?sceneName | String | Name of the scene the item is in | None | Unknown |
 | ?sceneUuid | String | UUID of the scene the item is in | None | Unknown |
 | sceneItemId | Number | Numeric ID of the scene item | >= 0 | N/A |
@@ -5089,8 +5060,7 @@ Scenes and Groups
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
-| ?canvasName | String | Name of the canvas the scene is in | None | Unknown |
-| ?canvasUuid | String | UUID of the canvas the scene is in | None | Unknown |
+| ?canvasUuid | String | UUID of the canvas the scene is in, if using the sceneName field | None | Unknown |
 | ?sceneName | String | Name of the scene the item is in | None | Unknown |
 | ?sceneUuid | String | UUID of the scene the item is in | None | Unknown |
 | sceneItemId | Number | Numeric ID of the scene item | >= 0 | N/A |
@@ -5117,8 +5087,7 @@ Scenes and Groups
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
-| ?canvasName | String | Name of the canvas the scene is in | None | Unknown |
-| ?canvasUuid | String | UUID of the canvas the scene is in | None | Unknown |
+| ?canvasUuid | String | UUID of the canvas the scene is in, if using the sceneName field | None | Unknown |
 | ?sceneName | String | Name of the scene the item is in | None | Unknown |
 | ?sceneUuid | String | UUID of the scene the item is in | None | Unknown |
 | sceneItemId | Number | Numeric ID of the scene item | >= 0 | N/A |
@@ -5822,8 +5791,7 @@ Note: This request serves to provide feature parity with 4.x. It is very likely 
 
 | Name | Type  | Description | Value Restrictions | ?Default Behavior |
 | ---- | :---: | ----------- | :----------------: | ----------------- |
-| ?canvasName | String | Name of the canvas the source is in | None | Unknown |
-| ?canvasUuid | String | UUID of the canvas the source is in | None | Unknown |
+| ?canvasUuid | String | UUID of the canvas the source is in, if using the sourceName field | None | Unknown |
 | ?sourceName | String | Name of the source to open a projector for | None | Unknown |
 | ?sourceUuid | String | UUID of the source to open a projector for | None | Unknown |
 | ?monitorIndex | Number | Monitor index, use `GetMonitorList` to obtain index | None | -1: Opens projector in windowed mode |
