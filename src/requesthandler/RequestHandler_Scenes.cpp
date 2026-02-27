@@ -156,7 +156,7 @@ RequestResult RequestHandler::SetCurrentProgramScene(const Request &request)
 		return RequestResult::Error(statusCode, comment);
 
 	OBSCanvasAutoRelease canvas = obs_source_get_canvas(scene);
-	if (!(obs_canvas_get_flags(canvas) & MAIN))
+	if (!canvas || !(obs_canvas_get_flags(canvas) & MAIN))
 		return RequestResult::Error(
 			RequestStatus::InvalidResourceState,
 			"The specified scene is not from the main canvas and cannot be set as the program scene.");
@@ -226,7 +226,7 @@ RequestResult RequestHandler::SetCurrentPreviewScene(const Request &request)
 		return RequestResult::Error(statusCode, comment);
 
 	OBSCanvasAutoRelease canvas = obs_source_get_canvas(scene);
-	if (!(obs_canvas_get_flags(canvas) & MAIN))
+	if (!canvas || !(obs_canvas_get_flags(canvas) & MAIN))
 		return RequestResult::Error(
 			RequestStatus::InvalidResourceState,
 			"The specified scene is not from the main canvas and cannot be set as the preview scene.");
@@ -301,6 +301,9 @@ RequestResult RequestHandler::RemoveScene(const Request &request)
 		return RequestResult::Error(statusCode, comment);
 
 	OBSCanvasAutoRelease canvas = obs_source_get_canvas(scene);
+	if (!canvas)
+		return RequestResult::Error(RequestStatus::ResourceActionFailed, "Error getting canvas for the specified scene.");
+
 	if ((obs_canvas_get_flags(canvas) & MAIN) && Utils::Obs::NumberHelper::GetCanvasSceneCount(canvas) < 2)
 		return RequestResult::Error(RequestStatus::NotEnoughResources,
 					    "You cannot remove the last scene in the collection.");
