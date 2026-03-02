@@ -248,7 +248,9 @@ obs_source_t *Request::AcquireSource(const std::string &canvasUuidKeyName, const
 		if (!canvas)
 			return nullptr;
 		std::string sourceName = RequestData[nameKeyName];
-		obs_source_t *ret = obs_canvas_get_source_by_name(canvas, sourceName.c_str());
+		obs_source_t *ret = (obs_canvas_get_flags(canvas) & MAIN)
+					    ? obs_get_source_by_name(sourceName.c_str())
+					    : obs_canvas_get_source_by_name(canvas, sourceName.c_str());
 		if (!ret) {
 			statusCode = RequestStatus::ResourceNotFound;
 			comment = std::string("No source was found by the name of `") + sourceName + "` within the canvas `" +
