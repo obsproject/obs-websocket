@@ -26,6 +26,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include "Config.h"
 #include "WebSocketApi.h"
 #include "websocketserver/WebSocketServer.h"
+#include "websocketclient/WebSocketClient.h"
 #include "eventhandler/EventHandler.h"
 #include "forms/SettingsDialog.h"
 
@@ -46,6 +47,7 @@ ConfigPtr _config;
 EventHandlerPtr _eventHandler;
 WebSocketApiPtr _webSocketApi;
 WebSocketServerPtr _webSocketServer;
+WebSocketClientPtr _webSocketClient;
 SettingsDialog *_settingsDialog = nullptr;
 
 void OnWebSocketApiVendorEvent(std::string vendorName, std::string eventType, obs_data_t *obsEventData);
@@ -87,6 +89,11 @@ bool obs_module_load(void)
 	_webSocketServer->SetClientSubscriptionCallback(std::bind(&EventHandler::ProcessSubscriptionChange, _eventHandler.get(),
 								  std::placeholders::_1, std::placeholders::_2));
 
+	// Initialize the WebSocket client (outbound)
+	_webSocketClient = std::make_shared<WebSocketClient>();
+	_webSocketClient->SetClientSubscriptionCallback(std::bind(&EventHandler::ProcessSubscriptionChange, _eventHandler.get(),
+								  std::placeholders::_1, std::placeholders::_2));
+
 	// Initialize the settings dialog
 	obs_frontend_push_ui_translation(obs_module_get_string);
 	QMainWindow *mainWindow = static_cast<QMainWindow *>(obs_frontend_get_main_window());
@@ -121,6 +128,11 @@ void obs_module_post_load(void)
 		blog(LOG_INFO, "[obs_module_post_load] WebSocket server is enabled, starting...");
 		_webSocketServer->Start();
 	}
+
+	if (_config->ClientEnabled) {
+		blog(LOG_INFO, "[obs_module_post_load] WebSocket client mode is enabled, starting...");
+		_webSocketClient->Start();
+	}
 }
 
 void obs_module_unload(void)
@@ -133,9 +145,21 @@ void obs_module_unload(void)
 		_webSocketServer->Stop();
 	}
 
+	// Shutdown the WebSocket client if it is running
+	if (_webSocketClient) {
+		blog_debug("[obs_module_unload] WebSocket client is running. Stopping...");
+		_webSocketClient->Stop();
+	}
+
 	// Release the WebSocket server
 	_webSocketServer->SetClientSubscriptionCallback(nullptr);
 	_webSocketServer = nullptr;
+
+	// Release the WebSocket client
+	if (_webSocketClient) {
+		_webSocketClient->SetClientSubscriptionCallback(nullptr);
+		_webSocketClient = nullptr;
+	}
 
 	// Release the plugin/script api
 	_webSocketApi = nullptr;
@@ -179,6 +203,11 @@ WebSocketServerPtr GetWebSocketServer()
 	return _webSocketServer;
 }
 
+WebSocketClientPtr GetWebSocketClient()
+{
+	return _webSocketClient;
+}
+
 bool IsDebugEnabled()
 {
 	return !_config || _config->DebugEnabled;
@@ -212,6 +241,8 @@ void OnWebSocketApiVendorEvent(std::string vendorName, std::string eventType, ob
 	broadcastEventData["eventData"] = eventData;
 
 	_webSocketServer->BroadcastEvent(EventSubscription::Vendors, "VendorEvent", broadcastEventData);
+	if (_webSocketClient)
+		_webSocketClient->BroadcastEvent(EventSubscription::Vendors, "VendorEvent", broadcastEventData);
 }
 
 // Sent from: EventHandler
@@ -219,6 +250,8 @@ void OnEvent(uint64_t requiredIntent, std::string eventType, json eventData, uin
 {
 	if (_webSocketServer)
 		_webSocketServer->BroadcastEvent(requiredIntent, eventType, eventData, rpcVersion);
+	if (_webSocketClient)
+		_webSocketClient->BroadcastEvent(requiredIntent, eventType, eventData, rpcVersion);
 	if (_webSocketApi)
 		_webSocketApi->BroadcastEvent(requiredIntent, eventType, eventData, rpcVersion);
 }
@@ -228,6 +261,8 @@ void OnObsReady(bool ready)
 {
 	if (_webSocketServer)
 		_webSocketServer->SetObsReady(ready);
+	if (_webSocketClient)
+		_webSocketClient->SetObsReady(ready);
 	if (_webSocketApi)
 		_webSocketApi->SetObsReady(ready);
 }

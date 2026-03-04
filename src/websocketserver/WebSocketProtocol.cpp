@@ -20,14 +20,13 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <obs-module.h>
 #include <util/profiler.hpp>
 
-#include "WebSocketServer.h"
+#include "WebSocketProtocol.h"
 #include "../requesthandler/RequestHandler.h"
 #include "../requesthandler/RequestBatchHandler.h"
 #include "../obs-websocket.h"
 #include "../Config.h"
 #include "../utils/Crypto.h"
 #include "../utils/Platform.h"
-#include "../utils/Compat.h"
 
 static bool IsSupportedRpcVersion(uint8_t requestedVersion)
 {
@@ -54,7 +53,35 @@ static json ConstructRequestResult(RequestResult requestResult, const json &requ
 	return ret;
 }
 
-void WebSocketServer::SetSessionParameters(SessionPtr session, ProcessResult &ret, const json &payloadData)
+WebSocketProtocol::WebSocketProtocol() : _threadPool() {}
+
+void WebSocketProtocol::SetObsReady(bool ready)
+{
+	_obsReady = ready;
+}
+
+bool WebSocketProtocol::IsObsReady() const
+{
+	return _obsReady.load();
+}
+
+void WebSocketProtocol::SetClientSubscriptionCallback(ClientSubscriptionCallback cb)
+{
+	_clientSubscriptionCallback = cb;
+}
+
+void WebSocketProtocol::NotifyClientSubscriptionChange(bool type, uint64_t eventSubscriptions)
+{
+	if (_clientSubscriptionCallback)
+		_clientSubscriptionCallback(type, eventSubscriptions);
+}
+
+QThreadPool *WebSocketProtocol::GetThreadPool()
+{
+	return &_threadPool;
+}
+
+void WebSocketProtocol::SetSessionParameters(SessionPtr session, ProcessResult &ret, const json &payloadData)
 {
 	if (payloadData.contains("eventSubscriptions")) {
 		if (!payloadData["eventSubscriptions"].is_number_unsigned()) {
@@ -66,8 +93,8 @@ void WebSocketServer::SetSessionParameters(SessionPtr session, ProcessResult &re
 	}
 }
 
-void WebSocketServer::ProcessMessage(SessionPtr session, WebSocketServer::ProcessResult &ret,
-				     WebSocketOpCode::WebSocketOpCode opCode, json &payloadData)
+void WebSocketProtocol::ProcessMessage(SessionPtr session, WebSocketProtocol::ProcessResult &ret,
+				       WebSocketOpCode::WebSocketOpCode opCode, json &payloadData)
 {
 	if (!payloadData.is_object()) {
 		if (payloadData.is_null()) {
@@ -350,62 +377,4 @@ void WebSocketServer::ProcessMessage(SessionPtr session, WebSocketServer::Proces
 		ret.closeReason = std::string("Unknown OpCode: ") + std::to_string(opCode);
 		return;
 	}
-}
-
-// It isn't consistent to directly call the WebSocketServer from the events system, but it would also be dumb to make it unnecessarily complicated.
-void WebSocketServer::BroadcastEvent(uint64_t requiredIntent, const std::string &eventType, const json &eventData,
-				     uint8_t rpcVersion)
-{
-	if (!_server.is_listening() || !_obsReady)
-		return;
-
-	_threadPool.start(Utils::Compat::CreateFunctionRunnable([=]() {
-		// Populate message object
-		json eventMessage;
-		eventMessage["op"] = 5;
-		eventMessage["d"]["eventType"] = eventType;
-		eventMessage["d"]["eventIntent"] = requiredIntent;
-		if (eventData.is_object())
-			eventMessage["d"]["eventData"] = eventData;
-
-		// Initialize objects. The broadcast process only dumps the data when its needed.
-		std::string messageJson;
-		std::string messageMsgPack;
-
-		// Recurse connected sessions and send the event to suitable sessions.
-		std::unique_lock<std::mutex> lock(_sessionMutex);
-		for (auto &it : _sessions) {
-			if (!it.second->IsIdentified())
-				continue;
-			if (rpcVersion && it.second->RpcVersion() != rpcVersion)
-				continue;
-			if ((it.second->EventSubscriptions() & requiredIntent) != 0) {
-				websocketpp::lib::error_code errorCode;
-				switch (it.second->Encoding()) {
-				case WebSocketEncoding::Json:
-					if (messageJson.empty())
-						messageJson = eventMessage.dump();
-					_server.send((websocketpp::connection_hdl)it.first, messageJson,
-						     websocketpp::frame::opcode::text, errorCode);
-					it.second->IncrementOutgoingMessages();
-					break;
-				case WebSocketEncoding::MsgPack:
-					if (messageMsgPack.empty()) {
-						auto msgPackData = json::to_msgpack(eventMessage);
-						messageMsgPack = std::string(msgPackData.begin(), msgPackData.end());
-					}
-					_server.send((websocketpp::connection_hdl)it.first, messageMsgPack,
-						     websocketpp::frame::opcode::binary, errorCode);
-					it.second->IncrementOutgoingMessages();
-					break;
-				}
-				if (errorCode)
-					blog(LOG_ERROR, "[WebSocketServer::BroadcastEvent] Error sending event message: %s",
-					     errorCode.message().c_str());
-			}
-		}
-		lock.unlock();
-		if (IsDebugEnabled() && (EventSubscription::All & requiredIntent) != 0) // Don't log high volume events
-			blog(LOG_INFO, "[WebSocketServer::BroadcastEvent] Outgoing event:\n%s", eventMessage.dump(2).c_str());
-	}));
 }
