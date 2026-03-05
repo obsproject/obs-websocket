@@ -315,6 +315,7 @@ RequestResult RequestHandler::SetTBarPosition(const Request &request)
 	if (request.Contains("release")) {
 		if (!request.ValidateOptionalBoolean("release", statusCode, comment))
 			return RequestResult::Error(statusCode, comment);
+		release = request.RequestData["release"];
 	}
 
 	OBSSourceAutoRelease transition = obs_frontend_get_current_transition();

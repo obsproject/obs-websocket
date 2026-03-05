@@ -87,3 +87,27 @@ json Utils::Obs::ObjectHelper::GetSceneItemTransform(obs_sceneitem_t *item)
 
 	return ret;
 }
+
+json Utils::Obs::ObjectHelper::GetCanvasVideoSettings(obs_canvas_t *canvas)
+{
+	json ret;
+
+	struct obs_video_info ovi;
+	if (canvas && obs_canvas_get_video_info(canvas, &ovi)) {
+		ret["fpsNumerator"] = ovi.fps_num;
+		ret["fpsDenominator"] = ovi.fps_den;
+		ret["baseWidth"] = ovi.base_width;
+		ret["baseHeight"] = ovi.base_height;
+		ret["outputWidth"] = ovi.output_width;
+		ret["outputHeight"] = ovi.output_height;
+	} else {
+		ret["fpsNumerator"] = nullptr;
+		ret["fpsDenominator"] = nullptr;
+		ret["baseWidth"] = nullptr;
+		ret["baseHeight"] = nullptr;
+		ret["outputWidth"] = nullptr;
+		ret["outputHeight"] = nullptr;
+	}
+
+	return ret;
+}

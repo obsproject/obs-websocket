@@ -36,6 +36,10 @@ with this program. If not, see <https://www.gnu.org/licenses/>
  */
 void EventHandler::HandleSceneCreated(obs_source_t *source)
 {
+	OBSCanvasAutoRelease canvas = obs_source_get_canvas(source);
+	if (!canvas || !(obs_canvas_get_flags(canvas) & MAIN))
+		return;
+
 	json eventData;
 	eventData["sceneName"] = obs_source_get_name(source);
 	eventData["sceneUuid"] = obs_source_get_uuid(source);
@@ -60,6 +64,13 @@ void EventHandler::HandleSceneCreated(obs_source_t *source)
  */
 void EventHandler::HandleSceneRemoved(obs_source_t *source)
 {
+	OBSCanvasAutoRelease canvas = obs_source_get_canvas(source);
+	// NOTE: Groups do not emit source_remove when they are deleted and canvas will already be NULL
+	// during source_destroy. As a result, this event will never be emitted here for groups.
+	// This should be fixed in the future when more thorough canvas support is added.
+	if (!canvas || !(obs_canvas_get_flags(canvas) & MAIN))
+		return;
+
 	json eventData;
 	eventData["sceneName"] = obs_source_get_name(source);
 	eventData["sceneUuid"] = obs_source_get_uuid(source);
@@ -84,6 +95,10 @@ void EventHandler::HandleSceneRemoved(obs_source_t *source)
  */
 void EventHandler::HandleSceneNameChanged(obs_source_t *source, std::string oldSceneName, std::string sceneName)
 {
+	OBSCanvasAutoRelease canvas = obs_source_get_canvas(source);
+	if (!canvas || !(obs_canvas_get_flags(canvas) & MAIN))
+		return;
+
 	json eventData;
 	eventData["sceneUuid"] = obs_source_get_uuid(source);
 	eventData["oldSceneName"] = oldSceneName;

@@ -49,19 +49,19 @@ std::string Utils::Obs::StringHelper::GetModuleConfigPath(std::string fileName)
 std::string Utils::Obs::StringHelper::GetCurrentSceneCollection()
 {
 	BPtr<char> sceneCollectionName = obs_frontend_get_current_scene_collection();
-	return std::string(sceneCollectionName.Get());
+	return std::string(sceneCollectionName ? sceneCollectionName.Get() : "");
 }
 
 std::string Utils::Obs::StringHelper::GetCurrentProfile()
 {
 	BPtr<char> profileName = obs_frontend_get_current_profile();
-	return std::string(profileName.Get());
+	return std::string(profileName ? profileName.Get() : "");
 }
 
 std::string Utils::Obs::StringHelper::GetCurrentProfilePath()
 {
 	BPtr<char> profilePath = obs_frontend_get_current_profile_path();
-	return std::string(profilePath.Get());
+	return std::string(profilePath ? profilePath.Get() : "");
 }
 
 std::string Utils::Obs::StringHelper::GetCurrentRecordOutputPath()

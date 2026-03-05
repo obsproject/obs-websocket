@@ -100,12 +100,20 @@
           "enumValue": "(1 << 10)"
         },
         {
+          "description": "Subscription value to receive events in the `Canvases` category.",
+          "enumIdentifier": "Canvases",
+          "rpcVersion": "1",
+          "deprecated": false,
+          "initialVersion": "5.7.0",
+          "enumValue": "(1 << 11)"
+        },
+        {
           "description": "Helper to receive all non-high-volume events.",
           "enumIdentifier": "All",
           "rpcVersion": "1",
           "deprecated": false,
           "initialVersion": "5.0.0",
-          "enumValue": "(General | Config | Scenes | Inputs | Transitions | Filters | Outputs | SceneItems | MediaInputs | Vendors | Ui)"
+          "enumValue": "(General | Config | Scenes | Inputs | Transitions | Filters | Outputs | SceneItems | MediaInputs | Vendors | Ui | Canvases)"
         },
         {
           "description": "Subscription value to receive the `InputVolumeMeters` high-volume event.",
@@ -782,6 +790,23 @@
   ],
   "requests": [
     {
+      "description": "Gets an array of canvases in OBS.",
+      "requestType": "GetCanvasList",
+      "complexity": 3,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.7.0",
+      "category": "canvases",
+      "requestFields": [],
+      "responseFields": [
+        {
+          "valueName": "canvases",
+          "valueType": "Array<Object>",
+          "valueDescription": "Array of canvases"
+        }
+      ]
+    },
+    {
       "description": "Gets the value of a \"slot\" from the selected persistent data realm.",
       "requestType": "GetPersistentData",
       "complexity": 2,
@@ -1286,6 +1311,14 @@
       "category": "filters",
       "requestFields": [
         {
+          "valueName": "canvasUuid",
+          "valueType": "String",
+          "valueDescription": "UUID of the canvas the source is in, if using the sourceName field",
+          "valueRestrictions": null,
+          "valueOptional": true,
+          "valueOptionalBehavior": "Unknown"
+        },
+        {
           "valueName": "sourceName",
           "valueType": "String",
           "valueDescription": "Name of the source",
@@ -1346,6 +1379,14 @@
       "category": "filters",
       "requestFields": [
         {
+          "valueName": "canvasUuid",
+          "valueType": "String",
+          "valueDescription": "UUID of the canvas the source is in, if using the sourceName field",
+          "valueRestrictions": null,
+          "valueOptional": true,
+          "valueOptionalBehavior": "Unknown"
+        },
+        {
           "valueName": "sourceName",
           "valueType": "String",
           "valueDescription": "Name of the source to add the filter to",
@@ -1398,6 +1439,14 @@
       "category": "filters",
       "requestFields": [
         {
+          "valueName": "canvasUuid",
+          "valueType": "String",
+          "valueDescription": "UUID of the canvas the source is in, if using the sourceName field",
+          "valueRestrictions": null,
+          "valueOptional": true,
+          "valueOptionalBehavior": "Unknown"
+        },
+        {
           "valueName": "sourceName",
           "valueType": "String",
           "valueDescription": "Name of the source the filter is on",
@@ -1433,6 +1482,14 @@
       "initialVersion": "5.0.0",
       "category": "filters",
       "requestFields": [
+        {
+          "valueName": "canvasUuid",
+          "valueType": "String",
+          "valueDescription": "UUID of the canvas the source is in, if using the sourceName field",
+          "valueRestrictions": null,
+          "valueOptional": true,
+          "valueOptionalBehavior": "Unknown"
+        },
         {
           "valueName": "sourceName",
           "valueType": "String",
@@ -1477,6 +1534,14 @@
       "initialVersion": "5.0.0",
       "category": "filters",
       "requestFields": [
+        {
+          "valueName": "canvasUuid",
+          "valueType": "String",
+          "valueDescription": "UUID of the canvas the source is in, if using the sourceName field",
+          "valueRestrictions": null,
+          "valueOptional": true,
+          "valueOptionalBehavior": "Unknown"
+        },
         {
           "valueName": "sourceName",
           "valueType": "String",
@@ -1535,6 +1600,14 @@
       "category": "filters",
       "requestFields": [
         {
+          "valueName": "canvasUuid",
+          "valueType": "String",
+          "valueDescription": "UUID of the canvas the source is in, if using the sourceName field",
+          "valueRestrictions": null,
+          "valueOptional": true,
+          "valueOptionalBehavior": "Unknown"
+        },
+        {
           "valueName": "sourceName",
           "valueType": "String",
           "valueDescription": "Name of the source the filter is on",
@@ -1578,6 +1651,14 @@
       "initialVersion": "5.0.0",
       "category": "filters",
       "requestFields": [
+        {
+          "valueName": "canvasUuid",
+          "valueType": "String",
+          "valueDescription": "UUID of the canvas the source is in, if using the sourceName field",
+          "valueRestrictions": null,
+          "valueOptional": true,
+          "valueOptionalBehavior": "Unknown"
+        },
         {
           "valueName": "sourceName",
           "valueType": "String",
@@ -1630,6 +1711,14 @@
       "initialVersion": "5.0.0",
       "category": "filters",
       "requestFields": [
+        {
+          "valueName": "canvasUuid",
+          "valueType": "String",
+          "valueDescription": "UUID of the canvas the source is in, if using the sourceName field",
+          "valueRestrictions": null,
+          "valueOptional": true,
+          "valueOptionalBehavior": "Unknown"
+        },
         {
           "valueName": "sourceName",
           "valueType": "String",
@@ -2087,6 +2176,14 @@
       "initialVersion": "5.0.0",
       "category": "inputs",
       "requestFields": [
+        {
+          "valueName": "canvasUuid",
+          "valueType": "String",
+          "valueDescription": "UUID of the canvas the scene is in, if using the sceneName field",
+          "valueRestrictions": null,
+          "valueOptional": true,
+          "valueOptionalBehavior": "Unknown"
+        },
         {
           "valueName": "sceneName",
           "valueType": "String",
@@ -3653,6 +3750,14 @@
       "category": "scene items",
       "requestFields": [
         {
+          "valueName": "canvasUuid",
+          "valueType": "String",
+          "valueDescription": "UUID of the canvas the scene is in, if using the sceneName field",
+          "valueRestrictions": null,
+          "valueOptional": true,
+          "valueOptionalBehavior": "Unknown"
+        },
+        {
           "valueName": "sceneName",
           "valueType": "String",
           "valueDescription": "Name of the scene to get the items of",
@@ -3687,6 +3792,14 @@
       "category": "scene items",
       "requestFields": [
         {
+          "valueName": "canvasUuid",
+          "valueType": "String",
+          "valueDescription": "UUID of the canvas the group is in, if using the sceneName field",
+          "valueRestrictions": null,
+          "valueOptional": true,
+          "valueOptionalBehavior": "Unknown"
+        },
+        {
           "valueName": "sceneName",
           "valueType": "String",
           "valueDescription": "Name of the group to get the items of",
@@ -3720,6 +3833,14 @@
       "initialVersion": "5.0.0",
       "category": "scene items",
       "requestFields": [
+        {
+          "valueName": "canvasUuid",
+          "valueType": "String",
+          "valueDescription": "UUID of the canvas the scene or group is in, if using the sceneName field",
+          "valueRestrictions": null,
+          "valueOptional": true,
+          "valueOptionalBehavior": "Unknown"
+        },
         {
           "valueName": "sceneName",
           "valueType": "String",
@@ -3771,6 +3892,14 @@
       "category": "scene items",
       "requestFields": [
         {
+          "valueName": "canvasUuid",
+          "valueType": "String",
+          "valueDescription": "UUID of the canvas the scene is in, if using the sceneName field",
+          "valueRestrictions": null,
+          "valueOptional": true,
+          "valueOptionalBehavior": "Unknown"
+        },
+        {
           "valueName": "sceneName",
           "valueType": "String",
           "valueDescription": "Name of the scene the item is in",
@@ -3817,6 +3946,14 @@
       "initialVersion": "5.0.0",
       "category": "scene items",
       "requestFields": [
+        {
+          "valueName": "canvasUuid",
+          "valueType": "String",
+          "valueDescription": "UUID of the canvas the scene is in, if using the sceneName field",
+          "valueRestrictions": null,
+          "valueOptional": true,
+          "valueOptionalBehavior": "Unknown"
+        },
         {
           "valueName": "sceneName",
           "valueType": "String",
@@ -3876,6 +4013,14 @@
       "category": "scene items",
       "requestFields": [
         {
+          "valueName": "canvasUuid",
+          "valueType": "String",
+          "valueDescription": "UUID of the canvas the scene is in, if using the sceneName field",
+          "valueRestrictions": null,
+          "valueOptional": true,
+          "valueOptionalBehavior": "Unknown"
+        },
+        {
           "valueName": "sceneName",
           "valueType": "String",
           "valueDescription": "Name of the scene the item is in",
@@ -3911,6 +4056,14 @@
       "initialVersion": "5.0.0",
       "category": "scene items",
       "requestFields": [
+        {
+          "valueName": "canvasUuid",
+          "valueType": "String",
+          "valueDescription": "UUID of the canvas the scene is in, if using the sceneName field",
+          "valueRestrictions": null,
+          "valueOptional": true,
+          "valueOptionalBehavior": "Unknown"
+        },
         {
           "valueName": "sceneName",
           "valueType": "String",
@@ -3970,6 +4123,14 @@
       "category": "scene items",
       "requestFields": [
         {
+          "valueName": "canvasUuid",
+          "valueType": "String",
+          "valueDescription": "UUID of the canvas the scene is in, if using the sceneName field",
+          "valueRestrictions": null,
+          "valueOptional": true,
+          "valueOptionalBehavior": "Unknown"
+        },
+        {
           "valueName": "sceneName",
           "valueType": "String",
           "valueDescription": "Name of the scene the item is in",
@@ -4011,6 +4172,14 @@
       "initialVersion": "5.0.0",
       "category": "scene items",
       "requestFields": [
+        {
+          "valueName": "canvasUuid",
+          "valueType": "String",
+          "valueDescription": "UUID of the canvas the scene is in, if using the sceneName field",
+          "valueRestrictions": null,
+          "valueOptional": true,
+          "valueOptionalBehavior": "Unknown"
+        },
         {
           "valueName": "sceneName",
           "valueType": "String",
@@ -4056,6 +4225,14 @@
       "category": "scene items",
       "requestFields": [
         {
+          "valueName": "canvasUuid",
+          "valueType": "String",
+          "valueDescription": "UUID of the canvas the scene is in, if using the sceneName field",
+          "valueRestrictions": null,
+          "valueOptional": true,
+          "valueOptionalBehavior": "Unknown"
+        },
+        {
           "valueName": "sceneName",
           "valueType": "String",
           "valueDescription": "Name of the scene the item is in",
@@ -4097,6 +4274,14 @@
       "initialVersion": "5.0.0",
       "category": "scene items",
       "requestFields": [
+        {
+          "valueName": "canvasUuid",
+          "valueType": "String",
+          "valueDescription": "UUID of the canvas the scene is in, if using the sceneName field",
+          "valueRestrictions": null,
+          "valueOptional": true,
+          "valueOptionalBehavior": "Unknown"
+        },
         {
           "valueName": "sceneName",
           "valueType": "String",
@@ -4142,6 +4327,14 @@
       "category": "scene items",
       "requestFields": [
         {
+          "valueName": "canvasUuid",
+          "valueType": "String",
+          "valueDescription": "UUID of the canvas the scene is in, if using the sceneName field",
+          "valueRestrictions": null,
+          "valueOptional": true,
+          "valueOptionalBehavior": "Unknown"
+        },
+        {
           "valueName": "sceneName",
           "valueType": "String",
           "valueDescription": "Name of the scene the item is in",
@@ -4183,6 +4376,14 @@
       "initialVersion": "5.0.0",
       "category": "scene items",
       "requestFields": [
+        {
+          "valueName": "canvasUuid",
+          "valueType": "String",
+          "valueDescription": "UUID of the canvas the scene is in, if using the sceneName field",
+          "valueRestrictions": null,
+          "valueOptional": true,
+          "valueOptionalBehavior": "Unknown"
+        },
         {
           "valueName": "sceneName",
           "valueType": "String",
@@ -4228,6 +4429,14 @@
       "category": "scene items",
       "requestFields": [
         {
+          "valueName": "canvasUuid",
+          "valueType": "String",
+          "valueDescription": "UUID of the canvas the scene is in, if using the sceneName field",
+          "valueRestrictions": null,
+          "valueOptional": true,
+          "valueOptionalBehavior": "Unknown"
+        },
+        {
           "valueName": "sceneName",
           "valueType": "String",
           "valueDescription": "Name of the scene the item is in",
@@ -4269,6 +4478,14 @@
       "initialVersion": "5.0.0",
       "category": "scene items",
       "requestFields": [
+        {
+          "valueName": "canvasUuid",
+          "valueType": "String",
+          "valueDescription": "UUID of the canvas the scene is in, if using the sceneName field",
+          "valueRestrictions": null,
+          "valueOptional": true,
+          "valueOptionalBehavior": "Unknown"
+        },
         {
           "valueName": "sceneName",
           "valueType": "String",
@@ -4314,6 +4531,14 @@
       "category": "scene items",
       "requestFields": [
         {
+          "valueName": "canvasUuid",
+          "valueType": "String",
+          "valueDescription": "UUID of the canvas the scene is in, if using the sceneName field",
+          "valueRestrictions": null,
+          "valueOptional": true,
+          "valueOptionalBehavior": "Unknown"
+        },
+        {
           "valueName": "sceneName",
           "valueType": "String",
           "valueDescription": "Name of the scene the item is in",
@@ -4356,6 +4581,14 @@
       "category": "scene items",
       "requestFields": [
         {
+          "valueName": "canvasUuid",
+          "valueType": "String",
+          "valueDescription": "UUID of the canvas the scene is in, if using the sceneName field",
+          "valueRestrictions": null,
+          "valueOptional": true,
+          "valueOptionalBehavior": "Unknown"
+        },
+        {
           "valueName": "sceneName",
           "valueType": "String",
           "valueDescription": "Name of the scene the item is in",
@@ -4391,34 +4624,43 @@
       "responseFields": []
     },
     {
-      "description": "Gets an array of all scenes in OBS.",
+      "description": "Gets an array of scenes in OBS.",
       "requestType": "GetSceneList",
       "complexity": 2,
       "rpcVersion": "1",
       "deprecated": false,
       "initialVersion": "5.0.0",
       "category": "scenes",
-      "requestFields": [],
+      "requestFields": [
+        {
+          "valueName": "canvasUuid",
+          "valueType": "String",
+          "valueDescription": "UUID of the canvas the scenes are in",
+          "valueRestrictions": null,
+          "valueOptional": true,
+          "valueOptionalBehavior": "Unknown"
+        }
+      ],
       "responseFields": [
         {
           "valueName": "currentProgramSceneName",
           "valueType": "String",
-          "valueDescription": "Current program scene name. Can be `null` if internal state desync"
+          "valueDescription": "Current program scene name. Can be `null` if non-main canvas or internal state desync"
         },
         {
           "valueName": "currentProgramSceneUuid",
           "valueType": "String",
-          "valueDescription": "Current program scene UUID. Can be `null` if internal state desync"
+          "valueDescription": "Current program scene UUID. Can be `null` if non-main canvas or internal state desync"
         },
         {
           "valueName": "currentPreviewSceneName",
           "valueType": "String",
-          "valueDescription": "Current preview scene name. `null` if not in studio mode"
+          "valueDescription": "Current preview scene name. `null` if not in studio mode or non-main canvas"
         },
         {
           "valueName": "currentPreviewSceneUuid",
           "valueType": "String",
-          "valueDescription": "Current preview scene UUID. `null` if not in studio mode"
+          "valueDescription": "Current preview scene UUID. `null` if not in studio mode or non-main canvas"
         },
         {
           "valueName": "scenes",
@@ -4445,7 +4687,7 @@
       ]
     },
     {
-      "description": "Gets the current program scene.\n\nNote: This request is slated to have the `currentProgram`-prefixed fields removed from in an upcoming RPC version.",
+      "description": "Gets the current program scene.\n\nNote 1: This request is slated to have the `currentProgram`-prefixed fields removed from in an upcoming RPC version.\n\nNote 2: Canvases do not have any concept of a program or preview scene, so this request does not support canvases.",
       "requestType": "GetCurrentProgramScene",
       "complexity": 1,
       "rpcVersion": "1",
@@ -4574,6 +4816,14 @@
       "category": "scenes",
       "requestFields": [
         {
+          "valueName": "canvasUuid",
+          "valueType": "String",
+          "valueDescription": "UUID of the canvas to create the new scene in. Leave default to assume main canvas",
+          "valueRestrictions": null,
+          "valueOptional": true,
+          "valueOptionalBehavior": "Unknown"
+        },
+        {
           "valueName": "sceneName",
           "valueType": "String",
           "valueDescription": "Name for the new scene",
@@ -4599,6 +4849,14 @@
       "initialVersion": "5.0.0",
       "category": "scenes",
       "requestFields": [
+        {
+          "valueName": "canvasUuid",
+          "valueType": "String",
+          "valueDescription": "UUID of the canvas the scene is in, if using the sceneName field",
+          "valueRestrictions": null,
+          "valueOptional": true,
+          "valueOptionalBehavior": "Unknown"
+        },
         {
           "valueName": "sceneName",
           "valueType": "String",
@@ -4627,6 +4885,14 @@
       "initialVersion": "5.0.0",
       "category": "scenes",
       "requestFields": [
+        {
+          "valueName": "canvasUuid",
+          "valueType": "String",
+          "valueDescription": "UUID of the canvas the scene is in, if using the sceneName field",
+          "valueRestrictions": null,
+          "valueOptional": true,
+          "valueOptionalBehavior": "Unknown"
+        },
         {
           "valueName": "sceneName",
           "valueType": "String",
@@ -4663,6 +4929,14 @@
       "initialVersion": "5.0.0",
       "category": "scenes",
       "requestFields": [
+        {
+          "valueName": "canvasUuid",
+          "valueType": "String",
+          "valueDescription": "UUID of the canvas the scene is in, if using the sceneName field",
+          "valueRestrictions": null,
+          "valueOptional": true,
+          "valueOptionalBehavior": "Unknown"
+        },
         {
           "valueName": "sceneName",
           "valueType": "String",
@@ -4702,6 +4976,14 @@
       "initialVersion": "5.0.0",
       "category": "scenes",
       "requestFields": [
+        {
+          "valueName": "canvasUuid",
+          "valueType": "String",
+          "valueDescription": "UUID of the canvas the scene is in, if using the sceneName field",
+          "valueRestrictions": null,
+          "valueOptional": true,
+          "valueOptionalBehavior": "Unknown"
+        },
         {
           "valueName": "sceneName",
           "valueType": "String",
@@ -4747,6 +5029,14 @@
       "category": "sources",
       "requestFields": [
         {
+          "valueName": "canvasUuid",
+          "valueType": "String",
+          "valueDescription": "UUID of the canvas the source is in, if using sourceName field",
+          "valueRestrictions": null,
+          "valueOptional": true,
+          "valueOptionalBehavior": "Unknown"
+        },
+        {
           "valueName": "sourceName",
           "valueType": "String",
           "valueDescription": "Name of the source to get the active state of",
@@ -4785,6 +5075,14 @@
       "initialVersion": "5.0.0",
       "category": "sources",
       "requestFields": [
+        {
+          "valueName": "canvasUuid",
+          "valueType": "String",
+          "valueDescription": "UUID of the canvas the source is in, if using sourceName field",
+          "valueRestrictions": null,
+          "valueOptional": true,
+          "valueOptionalBehavior": "Unknown"
+        },
         {
           "valueName": "sourceName",
           "valueType": "String",
@@ -4851,6 +5149,14 @@
       "initialVersion": "5.0.0",
       "category": "sources",
       "requestFields": [
+        {
+          "valueName": "canvasUuid",
+          "valueType": "String",
+          "valueDescription": "UUID of the canvas the source is in, if using sourceName field",
+          "valueRestrictions": null,
+          "valueOptional": true,
+          "valueOptionalBehavior": "Unknown"
+        },
         {
           "valueName": "sourceName",
           "valueType": "String",
@@ -5425,6 +5731,14 @@
       "category": "ui",
       "requestFields": [
         {
+          "valueName": "canvasUuid",
+          "valueType": "String",
+          "valueDescription": "UUID of the canvas the source is in, if using the sourceName field",
+          "valueRestrictions": null,
+          "valueOptional": true,
+          "valueOptionalBehavior": "Unknown"
+        },
+        {
           "valueName": "sourceName",
           "valueType": "String",
           "valueDescription": "Name of the source to open a projector for",
@@ -5461,6 +5775,77 @@
     }
   ],
   "events": [
+    {
+      "description": "A new canvas has been created.",
+      "eventType": "CanvasCreated",
+      "eventSubscription": "Canvases",
+      "complexity": 2,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.7.0",
+      "category": "canvases",
+      "dataFields": [
+        {
+          "valueName": "canvasName",
+          "valueType": "String",
+          "valueDescription": "Name of the new canvas"
+        },
+        {
+          "valueName": "canvasUuid",
+          "valueType": "String",
+          "valueDescription": "UUID of the new canvas"
+        }
+      ]
+    },
+    {
+      "description": "A canvas has been removed.",
+      "eventType": "CanvasRemoved",
+      "eventSubscription": "Canvases",
+      "complexity": 2,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.7.0",
+      "category": "canvases",
+      "dataFields": [
+        {
+          "valueName": "canvasName",
+          "valueType": "String",
+          "valueDescription": "Name of the removed canvas"
+        },
+        {
+          "valueName": "canvasUuid",
+          "valueType": "String",
+          "valueDescription": "UUID of the removed canvas"
+        }
+      ]
+    },
+    {
+      "description": "The name of a canvas has changed.",
+      "eventType": "CanvasNameChanged",
+      "eventSubscription": "Canvases",
+      "complexity": 2,
+      "rpcVersion": "1",
+      "deprecated": false,
+      "initialVersion": "5.7.0",
+      "category": "canvases",
+      "dataFields": [
+        {
+          "valueName": "canvasUuid",
+          "valueType": "String",
+          "valueDescription": "UUID of the canvas"
+        },
+        {
+          "valueName": "oldCanvasName",
+          "valueType": "String",
+          "valueDescription": "Old name of the canvas"
+        },
+        {
+          "valueName": "canvasName",
+          "valueType": "String",
+          "valueDescription": "New name of the canvas"
+        }
+      ]
+    },
     {
       "description": "The current scene collection has begun changing.\n\nNote: We recommend using this event to trigger a pause of all polling requests, as performing any requests during a\nscene collection change is considered undefined behavior and can cause crashes!",
       "eventType": "CurrentSceneCollectionChanging",

@@ -211,20 +211,27 @@ bool Request::ValidateArray(const std::string &keyName, RequestStatus::RequestSt
 	return true;
 }
 
-obs_source_t *Request::ValidateSource(const std::string &nameKeyName, const std::string &uuidKeyName,
-				      RequestStatus::RequestStatus &statusCode, std::string &comment) const
+obs_canvas_t *Request::AcquireCanvas(const std::string &uuidKeyName, RequestStatus::RequestStatus &statusCode,
+				 std::string &comment) const
 {
-	if (ValidateString(nameKeyName, statusCode, comment)) {
-		std::string sourceName = RequestData[nameKeyName];
-		obs_source_t *ret = obs_get_source_by_name(sourceName.c_str());
+	if (ValidateString(uuidKeyName, statusCode, comment)) {
+		std::string canvasUuid = RequestData[uuidKeyName];
+		obs_canvas_t *ret = obs_get_canvas_by_uuid(canvasUuid.c_str());
 		if (!ret) {
 			statusCode = RequestStatus::ResourceNotFound;
-			comment = std::string("No source was found by the name of `") + sourceName + "`.";
+			comment = std::string("No canvas was found by the UUID of `") + canvasUuid + "`.";
 			return nullptr;
 		}
 		return ret;
 	}
 
+	return obs_get_main_canvas();
+}
+
+obs_source_t *Request::AcquireSource(const std::string &canvasUuidKeyName, const std::string &nameKeyName,
+				 const std::string &uuidKeyName, RequestStatus::RequestStatus &statusCode,
+				 std::string &comment) const
+{
 	if (ValidateString(uuidKeyName, statusCode, comment)) {
 		std::string sourceUuid = RequestData[uuidKeyName];
 		obs_source_t *ret = obs_get_source_by_uuid(sourceUuid.c_str());
@@ -236,16 +243,33 @@ obs_source_t *Request::ValidateSource(const std::string &nameKeyName, const std:
 		return ret;
 	}
 
+	if (ValidateString(nameKeyName, statusCode, comment)) {
+		OBSCanvasAutoRelease canvas = AcquireCanvas(canvasUuidKeyName, statusCode, comment);
+		if (!canvas)
+			return nullptr;
+		std::string sourceName = RequestData[nameKeyName];
+		obs_source_t *ret = (obs_canvas_get_flags(canvas) & MAIN)
+					    ? obs_get_source_by_name(sourceName.c_str())
+					    : obs_canvas_get_source_by_name(canvas, sourceName.c_str());
+		if (!ret) {
+			statusCode = RequestStatus::ResourceNotFound;
+			comment = std::string("No source was found by the name of `") + sourceName + "` within the canvas `" +
+				  obs_canvas_get_name(canvas) + "`.";
+			return nullptr;
+		}
+		return ret;
+	}
+
 	statusCode = RequestStatus::MissingRequestField;
-	comment = std::string("Your request must contain at least one of the following fields: `") + nameKeyName + "` or `" +
-		  uuidKeyName + "`.";
+	comment = std::string("Your request must contain at least one of the following fields: `") + nameKeyName +
+		  "` with optional `" + canvasUuidKeyName + "` or `" + uuidKeyName + "`.";
 	return nullptr;
 }
 
-obs_source_t *Request::ValidateScene(RequestStatus::RequestStatus &statusCode, std::string &comment,
-				     const ObsWebSocketSceneFilter filter) const
+obs_source_t *Request::AcquireScene(RequestStatus::RequestStatus &statusCode, std::string &comment,
+				const ObsWebSocketSceneFilter filter) const
 {
-	obs_source_t *ret = ValidateSource("sceneName", "sceneUuid", statusCode, comment);
+	obs_source_t *ret = AcquireSource("canvasUuid", "sceneName", "sceneUuid", statusCode, comment);
 	if (!ret)
 		return nullptr;
 
@@ -272,10 +296,10 @@ obs_source_t *Request::ValidateScene(RequestStatus::RequestStatus &statusCode, s
 	return ret;
 }
 
-obs_scene_t *Request::ValidateScene2(RequestStatus::RequestStatus &statusCode, std::string &comment,
-				     const ObsWebSocketSceneFilter filter) const
+obs_scene_t *Request::AcquireScene2(RequestStatus::RequestStatus &statusCode, std::string &comment,
+				const ObsWebSocketSceneFilter filter) const
 {
-	OBSSourceAutoRelease sceneSource = ValidateSource("sceneName", "sceneUuid", statusCode, comment);
+	OBSSourceAutoRelease sceneSource = AcquireSource("canvasUuid", "sceneName", "sceneUuid", statusCode, comment);
 	if (!sceneSource)
 		return nullptr;
 
@@ -303,9 +327,9 @@ obs_scene_t *Request::ValidateScene2(RequestStatus::RequestStatus &statusCode, s
 	}
 }
 
-obs_source_t *Request::ValidateInput(RequestStatus::RequestStatus &statusCode, std::string &comment) const
+obs_source_t *Request::AcquireInput(RequestStatus::RequestStatus &statusCode, std::string &comment) const
 {
-	obs_source_t *ret = ValidateSource("inputName", "inputUuid", statusCode, comment);
+	obs_source_t *ret = AcquireSource("canvasUuid", "inputName", "inputUuid", statusCode, comment);
 	if (!ret)
 		return nullptr;
 
@@ -319,9 +343,9 @@ obs_source_t *Request::ValidateInput(RequestStatus::RequestStatus &statusCode, s
 	return ret;
 }
 
-FilterPair Request::ValidateFilter(RequestStatus::RequestStatus &statusCode, std::string &comment) const
+FilterPair Request::AcquireFilter(RequestStatus::RequestStatus &statusCode, std::string &comment) const
 {
-	obs_source_t *source = ValidateSource("sourceName", "sourceUuid", statusCode, comment);
+	obs_source_t *source = AcquireSource("canvasUuid", "sourceName", "sourceUuid", statusCode, comment);
 	if (!source)
 		return FilterPair{source, nullptr};
 
@@ -341,10 +365,10 @@ FilterPair Request::ValidateFilter(RequestStatus::RequestStatus &statusCode, std
 	return FilterPair{source, filter};
 }
 
-obs_sceneitem_t *Request::ValidateSceneItem(RequestStatus::RequestStatus &statusCode, std::string &comment,
-					    const ObsWebSocketSceneFilter filter) const
+obs_sceneitem_t *Request::AcquireSceneItem(RequestStatus::RequestStatus &statusCode, std::string &comment,
+				       const ObsWebSocketSceneFilter filter) const
 {
-	OBSSceneAutoRelease scene = ValidateScene2(statusCode, comment, filter);
+	OBSSceneAutoRelease scene = AcquireScene2(statusCode, comment, filter);
 	if (!scene)
 		return nullptr;
 
@@ -366,8 +390,7 @@ obs_sceneitem_t *Request::ValidateSceneItem(RequestStatus::RequestStatus &status
 	return sceneItem;
 }
 
-obs_output_t *Request::ValidateOutput(const std::string &keyName, RequestStatus::RequestStatus &statusCode,
-				      std::string &comment) const
+obs_output_t *Request::AcquireOutput(const std::string &keyName, RequestStatus::RequestStatus &statusCode, std::string &comment) const
 {
 	if (!ValidateString(keyName, statusCode, comment))
 		return nullptr;

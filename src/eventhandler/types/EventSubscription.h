@@ -154,17 +154,28 @@ namespace EventSubscription {
 		*/
 		Ui = (1 << 10),
 		/**
+		* Subscription value to receive events in the `Canvases` category.
+		*
+		* @enumIdentifier Canvases
+		* @enumValue (1 << 11)
+		* @enumType EventSubscription
+		* @rpcVersion -1
+		* @initialVersion 5.7.0
+		* @api enums
+		*/
+		Canvases = (1 << 11),
+		/**
 		* Helper to receive all non-high-volume events.
 		*
 		* @enumIdentifier All
-		* @enumValue (General | Config | Scenes | Inputs | Transitions | Filters | Outputs | SceneItems | MediaInputs | Vendors | Ui)
+		* @enumValue (General | Config | Scenes | Inputs | Transitions | Filters | Outputs | SceneItems | MediaInputs | Vendors | Ui | Canvases)
 		* @enumType EventSubscription
 		* @rpcVersion -1
 		* @initialVersion 5.0.0
 		* @api enums
 		*/
 		All = (General | Config | Scenes | Inputs | Transitions | Filters | Outputs | SceneItems | MediaInputs | Vendors |
-		       Ui),
+		       Ui | Canvases),
 		/**
 		* Subscription value to receive the `InputVolumeMeters` high-volume event.
 		*

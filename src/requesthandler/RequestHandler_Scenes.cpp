@@ -20,12 +20,14 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include "RequestHandler.h"
 
 /**
- * Gets an array of all scenes in OBS.
+ * Gets an array of scenes in OBS.
  *
- * @responseField currentProgramSceneName | String        | Current program scene name. Can be `null` if internal state desync
- * @responseField currentProgramSceneUuid | String        | Current program scene UUID. Can be `null` if internal state desync
- * @responseField currentPreviewSceneName | String        | Current preview scene name. `null` if not in studio mode
- * @responseField currentPreviewSceneUuid | String        | Current preview scene UUID. `null` if not in studio mode
+ * @requestField ?canvasUuid | String | UUID of the canvas the scenes are in
+ * 
+ * @responseField currentProgramSceneName | String        | Current program scene name. Can be `null` if non-main canvas or internal state desync
+ * @responseField currentProgramSceneUuid | String        | Current program scene UUID. Can be `null` if non-main canvas or internal state desync
+ * @responseField currentPreviewSceneName | String        | Current preview scene name. `null` if not in studio mode or non-main canvas
+ * @responseField currentPreviewSceneUuid | String        | Current preview scene UUID. `null` if not in studio mode or non-main canvas
  * @responseField scenes                  | Array<Object> | Array of scenes
  *
  * @requestType GetSceneList
@@ -35,29 +37,42 @@ with this program. If not, see <https://www.gnu.org/licenses/>
  * @api requests
  * @category scenes
  */
-RequestResult RequestHandler::GetSceneList(const Request &)
+RequestResult RequestHandler::GetSceneList(const Request &request)
 {
+	RequestStatus::RequestStatus statusCode;
+	std::string comment;
+	OBSCanvasAutoRelease canvas = request.AcquireCanvas("canvasUuid", statusCode, comment);
+	if (!canvas)
+		return RequestResult::Error(statusCode, comment);
+
 	json responseData;
 
-	OBSSourceAutoRelease currentProgramScene = obs_frontend_get_current_scene();
-	if (currentProgramScene) {
-		responseData["currentProgramSceneName"] = obs_source_get_name(currentProgramScene);
-		responseData["currentProgramSceneUuid"] = obs_source_get_uuid(currentProgramScene);
-	} else {
+	if (obs_canvas_get_flags(canvas) & MAIN) { // Main canvas, which has a program scene, preview scene, and scene order
+		OBSSourceAutoRelease currentProgramScene = obs_frontend_get_current_scene();
+		if (currentProgramScene) {
+			responseData["currentProgramSceneName"] = obs_source_get_name(currentProgramScene);
+			responseData["currentProgramSceneUuid"] = obs_source_get_uuid(currentProgramScene);
+		} else {
+			responseData["currentProgramSceneName"] = nullptr;
+			responseData["currentProgramSceneUuid"] = nullptr;
+		}
+
+		OBSSourceAutoRelease currentPreviewScene = obs_frontend_get_current_preview_scene();
+		if (currentPreviewScene) {
+			responseData["currentPreviewSceneName"] = obs_source_get_name(currentPreviewScene);
+			responseData["currentPreviewSceneUuid"] = obs_source_get_uuid(currentPreviewScene);
+		} else {
+			responseData["currentPreviewSceneName"] = nullptr;
+			responseData["currentPreviewSceneUuid"] = nullptr;
+		}
+		responseData["scenes"] = Utils::Obs::ArrayHelper::GetSceneList();
+	} else { // Non-main canvas, which only has an unordered array of scenes
 		responseData["currentProgramSceneName"] = nullptr;
 		responseData["currentProgramSceneUuid"] = nullptr;
+		responseData["currentProgramSceneName"] = nullptr;
+		responseData["currentProgramSceneUuid"] = nullptr;
+		responseData["scenes"] = Utils::Obs::ArrayHelper::GetCanvasSceneList(canvas);
 	}
-
-	OBSSourceAutoRelease currentPreviewScene = obs_frontend_get_current_preview_scene();
-	if (currentPreviewScene) {
-		responseData["currentPreviewSceneName"] = obs_source_get_name(currentPreviewScene);
-		responseData["currentPreviewSceneUuid"] = obs_source_get_uuid(currentPreviewScene);
-	} else {
-		responseData["currentPreviewSceneName"] = nullptr;
-		responseData["currentPreviewSceneUuid"] = nullptr;
-	}
-
-	responseData["scenes"] = Utils::Obs::ArrayHelper::GetSceneList();
 
 	return RequestResult::Success(responseData);
 }
@@ -76,11 +91,16 @@ RequestResult RequestHandler::GetSceneList(const Request &)
  * @api requests
  * @category scenes
  */
-RequestResult RequestHandler::GetGroupList(const Request &)
+RequestResult RequestHandler::GetGroupList(const Request &request)
 {
-	json responseData;
+	RequestStatus::RequestStatus statusCode;
+	std::string comment;
+	OBSCanvasAutoRelease canvas = request.AcquireCanvas("canvasUuid", statusCode, comment);
+	if (!canvas)
+		return RequestResult::Error(statusCode, comment);
 
-	responseData["groups"] = Utils::Obs::ArrayHelper::GetGroupList();
+	json responseData;
+	responseData["groups"] = Utils::Obs::ArrayHelper::GetCanvasGroupList(canvas);
 
 	return RequestResult::Success(responseData);
 }
@@ -88,7 +108,9 @@ RequestResult RequestHandler::GetGroupList(const Request &)
 /**
  * Gets the current program scene.
  *
- * Note: This request is slated to have the `currentProgram`-prefixed fields removed from in an upcoming RPC version.
+ * Note 1: This request is slated to have the `currentProgram`-prefixed fields removed from in an upcoming RPC version.
+ *
+ * Note 2: Canvases do not have any concept of a program or preview scene, so this request does not support canvases.
  *
  * @responseField sceneName               | String | Current program scene name
  * @responseField sceneUuid               | String | Current program scene UUID
@@ -115,8 +137,8 @@ RequestResult RequestHandler::GetCurrentProgramScene(const Request &)
 /**
  * Sets the current program scene.
  *
- * @requestField ?sceneName | String | Scene name to set as the current program scene
- * @requestField ?sceneUuid | String | Scene UUID to set as the current program scene
+ * @requestField ?sceneName  | String | Scene name to set as the current program scene
+ * @requestField ?sceneUuid  | String | Scene UUID to set as the current program scene
  *
  * @requestType SetCurrentProgramScene
  * @complexity 1
@@ -129,9 +151,15 @@ RequestResult RequestHandler::SetCurrentProgramScene(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease scene = request.ValidateScene(statusCode, comment);
+	OBSSourceAutoRelease scene = request.AcquireScene(statusCode, comment);
 	if (!scene)
 		return RequestResult::Error(statusCode, comment);
+
+	OBSCanvasAutoRelease canvas = obs_source_get_canvas(scene);
+	if (!canvas || !(obs_canvas_get_flags(canvas) & MAIN))
+		return RequestResult::Error(
+			RequestStatus::InvalidResourceState,
+			"The specified scene is not from the main canvas and cannot be set as the program scene.");
 
 	obs_frontend_set_current_scene(scene);
 
@@ -176,8 +204,8 @@ RequestResult RequestHandler::GetCurrentPreviewScene(const Request &)
  *
  * Only available when studio mode is enabled.
  *
- * @requestField ?sceneName | String | Scene name to set as the current preview scene
- * @requestField ?sceneUuid | String | Scene UUID to set as the current preview scene
+ * @requestField ?sceneName  | String | Scene name to set as the current preview scene
+ * @requestField ?sceneUuid  | String | Scene UUID to set as the current preview scene
  *
  * @requestType SetCurrentPreviewScene
  * @complexity 1
@@ -193,9 +221,15 @@ RequestResult RequestHandler::SetCurrentPreviewScene(const Request &request)
 
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease scene = request.ValidateScene(statusCode, comment);
+	OBSSourceAutoRelease scene = request.AcquireScene(statusCode, comment);
 	if (!scene)
 		return RequestResult::Error(statusCode, comment);
+
+	OBSCanvasAutoRelease canvas = obs_source_get_canvas(scene);
+	if (!canvas || !(obs_canvas_get_flags(canvas) & MAIN))
+		return RequestResult::Error(
+			RequestStatus::InvalidResourceState,
+			"The specified scene is not from the main canvas and cannot be set as the preview scene.");
 
 	obs_frontend_set_current_preview_scene(scene);
 
@@ -205,7 +239,8 @@ RequestResult RequestHandler::SetCurrentPreviewScene(const Request &request)
 /**
  * Creates a new scene in OBS.
  *
- * @requestField sceneName | String | Name for the new scene
+ * @requestField ?canvasUuid | String | UUID of the canvas to create the new scene in. Leave default to assume main canvas
+ * @requestField sceneName   | String | Name for the new scene
  *
  * @responseField sceneUuid | String | UUID of the created scene
  *
@@ -225,11 +260,15 @@ RequestResult RequestHandler::CreateScene(const Request &request)
 
 	std::string sceneName = request.RequestData["sceneName"];
 
-	OBSSourceAutoRelease scene = obs_get_source_by_name(sceneName.c_str());
+	OBSCanvasAutoRelease canvas = request.AcquireCanvas("canvasUuid", statusCode, comment);
+	if (!canvas)
+		return RequestResult::Error(statusCode, comment);
+
+	OBSSourceAutoRelease scene = obs_canvas_get_source_by_name(canvas, sceneName.c_str());
 	if (scene)
 		return RequestResult::Error(RequestStatus::ResourceAlreadyExists, "A source already exists by that scene name.");
 
-	OBSSceneAutoRelease createdScene = obs_scene_create(sceneName.c_str());
+	OBSSceneAutoRelease createdScene = obs_canvas_scene_create(canvas, sceneName.c_str());
 	if (!createdScene)
 		return RequestResult::Error(RequestStatus::ResourceCreationFailed, "Failed to create the scene.");
 
@@ -242,6 +281,7 @@ RequestResult RequestHandler::CreateScene(const Request &request)
 /**
  * Removes a scene from OBS.
  *
+ * @requestField ?canvasUuid | String | UUID of the canvas the scene is in, if using the sceneName field
  * @requestField ?sceneName | String | Name of the scene to remove
  * @requestField ?sceneUuid | String | UUID of the scene to remove
  *
@@ -256,11 +296,15 @@ RequestResult RequestHandler::RemoveScene(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease scene = request.ValidateScene(statusCode, comment);
+	OBSSourceAutoRelease scene = request.AcquireScene(statusCode, comment);
 	if (!scene)
 		return RequestResult::Error(statusCode, comment);
 
-	if (Utils::Obs::NumberHelper::GetSceneCount() < 2)
+	OBSCanvasAutoRelease canvas = obs_source_get_canvas(scene);
+	if (!canvas)
+		return RequestResult::Error(RequestStatus::ResourceActionFailed, "Error getting canvas for the specified scene.");
+
+	if ((obs_canvas_get_flags(canvas) & MAIN) && Utils::Obs::NumberHelper::GetCanvasSceneCount(canvas) < 2)
 		return RequestResult::Error(RequestStatus::NotEnoughResources,
 					    "You cannot remove the last scene in the collection.");
 
@@ -272,6 +316,7 @@ RequestResult RequestHandler::RemoveScene(const Request &request)
 /**
  * Sets the name of a scene (rename).
  *
+ * @requestField ?canvasUuid  | String | UUID of the canvas the scene is in, if using the sceneName field
  * @requestField ?sceneName   | String | Name of the scene to be renamed
  * @requestField ?sceneUuid   | String | UUID of the scene to be renamed
  * @requestField newSceneName | String | New name for the scene
@@ -287,13 +332,14 @@ RequestResult RequestHandler::SetSceneName(const Request &request)
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease scene = request.ValidateScene(statusCode, comment);
+	OBSSourceAutoRelease scene = request.AcquireScene(statusCode, comment);
 	if (!(scene && request.ValidateString("newSceneName", statusCode, comment)))
 		return RequestResult::Error(statusCode, comment);
 
 	std::string newSceneName = request.RequestData["newSceneName"];
 
-	OBSSourceAutoRelease existingSource = obs_get_source_by_name(newSceneName.c_str());
+	OBSCanvasAutoRelease canvas = obs_source_get_canvas(scene);
+	OBSSourceAutoRelease existingSource = obs_canvas_get_source_by_name(canvas, newSceneName.c_str());
 	if (existingSource)
 		return RequestResult::Error(RequestStatus::ResourceAlreadyExists,
 					    "A source already exists by that new scene name.");
@@ -308,8 +354,9 @@ RequestResult RequestHandler::SetSceneName(const Request &request)
  *
  * Note: A transition UUID response field is not currently able to be implemented as of 2024-1-18.
  *
- * @requestField ?sceneName | String | Name of the scene
- * @requestField ?sceneUuid | String | UUID of the scene
+ * @requestField ?canvasUuid | String | UUID of the canvas the scene is in, if using the sceneName field
+ * @requestField ?sceneName  | String | Name of the scene
+ * @requestField ?sceneUuid  | String | UUID of the scene
  *
  * @responseField transitionName     | String | Name of the overridden scene transition, else `null`
  * @responseField transitionDuration | Number | Duration of the overridden scene transition, else `null`
@@ -325,7 +372,7 @@ RequestResult RequestHandler::GetSceneSceneTransitionOverride(const Request &req
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease scene = request.ValidateScene(statusCode, comment);
+	OBSSourceAutoRelease scene = request.AcquireScene(statusCode, comment);
 	if (!scene)
 		return RequestResult::Error(statusCode, comment);
 
@@ -349,6 +396,7 @@ RequestResult RequestHandler::GetSceneSceneTransitionOverride(const Request &req
 /**
  * Sets the scene transition overridden for a scene.
  *
+ * @requestField ?canvasUuid         | String | UUID of the canvas the scene is in, if using the sceneName field
  * @requestField ?sceneName          | String | Name of the scene
  * @requestField ?sceneUuid          | String | UUID of the scene
  * @requestField ?transitionName     | String | Name of the scene transition to use as override. Specify `null` to remove | Unchanged
@@ -365,7 +413,7 @@ RequestResult RequestHandler::SetSceneSceneTransitionOverride(const Request &req
 {
 	RequestStatus::RequestStatus statusCode;
 	std::string comment;
-	OBSSourceAutoRelease scene = request.ValidateScene(statusCode, comment);
+	OBSSourceAutoRelease scene = request.AcquireScene(statusCode, comment);
 	if (!scene)
 		return RequestResult::Error(statusCode, comment);
 
