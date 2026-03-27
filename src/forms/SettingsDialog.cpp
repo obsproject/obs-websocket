@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License along
 with this program. If not, see <https://www.gnu.org/licenses/>
 */
 
-#include <QtWidgets/QMessageBox>
+#include <QMessageBox>
 #include <QDateTime>
 #include <QTime>
 #include <obs-module.h>
