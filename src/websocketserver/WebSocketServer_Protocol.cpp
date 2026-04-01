@@ -359,7 +359,7 @@ void WebSocketServer::BroadcastEvent(uint64_t requiredIntent, const std::string 
 	if (!_server.is_listening() || !_obsReady)
 		return;
 
-	_threadPool.start(Utils::Compat::CreateFunctionRunnable([=]() {
+	_threadPool.start(Utils::Compat::CreateFunctionRunnable([eventType, requiredIntent, eventData, rpcVersion, this]() {
 		// Populate message object
 		json eventMessage;
 		eventMessage["op"] = 5;
