@@ -260,7 +260,8 @@ void SettingsDialog::FillSessionTable()
 		invalidateButtonLayout->setContentsMargins(0, 0, 0, 0);
 		invalidateButtonWidget->setLayout(invalidateButtonLayout);
 		ui->websocketSessionTable->setCellWidget(i, 4, invalidateButtonWidget);
-		connect(invalidateButton, &QPushButton::clicked, [=]() { webSocketServer->InvalidateSession(session.hdl); });
+		connect(invalidateButton, &QPushButton::clicked,
+			[webSocketServer, session]() { webSocketServer->InvalidateSession(session.hdl); });
 
 		i++;
 	}
