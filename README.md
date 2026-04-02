@@ -21,7 +21,7 @@ Binaries **for OBS Studio < 28.0.0** on Windows, MacOS, and Linux are available 
 
 It is **highly recommended** to keep obs-websocket protected with a password against unauthorized control. obs-websocket generates a password for you automatically when you load it for the first time. To change this, open the "obs-websocket Settings" dialog under OBS' "Tools" menu. In the settings dialog, you can enable or disable authentication and set a password for it.
 
-(Psst. You can use `--websocket_port`(value), `--websocket_password`(value), `--websocket_debug`(flag) and `--websocket_ipv4_only`(flag) on the command line to override the configured values.)
+(Psst. You can use `--websocket_port`(value), `--websocket_password`(value), `--websocket_debug`(flag) and `--websocket_ipv4_only`(flag) on the command line to override configured **server** values. For outbound client mode, you can use `--websocket_client_enabled`(flag), `--websocket_client_url`(value), `--websocket_client_password`(value), `--websocket_client_allow_insecure`(flag), and `--websocket_client_allow_invalid_cert`(flag).)
 
 ### Possible use cases
 
@@ -60,6 +60,14 @@ Here's a list of available language APIs for obs-websocket:
 
 The 5.x server is a typical WebSocket server running by default on port 4455 (the port number can be changed in the Settings dialog under `Tools`).
 The protocol we use is documented in [PROTOCOL.md](docs/generated/protocol.md).
+
+### Client mode (outbound)
+
+obs-websocket can optionally initiate an outbound WebSocket connection to a remote controller while preserving the existing protocol semantics (OBS still sends `Hello`, the remote controller `Identifies`). Client mode is disabled by default and lives in the obs-websocket Settings dialog. Enter a full WebSocket connection URL using `ws://` or `wss://` (for example `wss://controller.example.com:4455`).
+
+Client connection URLs must not include credentials, a path, a query string, or a fragment. If a port is provided, it must be in the range `1-65534`.
+
+TLS (`wss://`) is recommended, while unencrypted `ws://` connections are gated behind an explicit unsafe toggle. TLS support requires OpenSSL and can be toggled at build time with `-DENABLE_WEBSOCKET_CLIENT_TLS=ON|OFF` (default ON). Server mode and outbound client mode can be enabled independently and run at the same time.
 
 We'd like to know what you're building with obs-websocket! If you do something in this fashion, feel free to drop a message in `#project-showoff` in the [discord server!](https://discord.gg/WBaSQ3A)
 

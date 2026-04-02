@@ -40,6 +40,9 @@ typedef std::shared_ptr<WebSocketApi> WebSocketApiPtr;
 class WebSocketServer;
 typedef std::shared_ptr<WebSocketServer> WebSocketServerPtr;
 
+class WebSocketClient;
+typedef std::shared_ptr<WebSocketClient> WebSocketClientPtr;
+
 os_cpu_usage_info_t *GetCpuUsageInfo();
 
 ConfigPtr GetConfig();
@@ -49,5 +52,7 @@ EventHandlerPtr GetEventHandler();
 WebSocketApiPtr GetWebSocketApi();
 
 WebSocketServerPtr GetWebSocketServer();
+
+WebSocketClientPtr GetWebSocketClient();
 
 bool IsDebugEnabled();

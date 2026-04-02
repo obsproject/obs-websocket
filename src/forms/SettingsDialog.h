@@ -43,13 +43,20 @@ private Q_SLOTS:
 	void SaveFormData();
 	void FillSessionTable();
 	void EnableAuthenticationCheckBoxChanged();
+	void UpdateServerUiState();
+	void UpdateClientUiState();
+	void UpdateClientStatus();
 	void GeneratePasswordButtonClicked();
+	void GenerateClientPasswordButtonClicked();
+	void ToggleClientPasswordVisibility();
 	void ShowConnectInfoButtonClicked();
 	void PasswordEdited();
+	void ClientPasswordEdited();
 
 private:
 	Ui::SettingsDialog *ui;
 	ConnectInfo *connectInfo;
 	QTimer *sessionTableTimer;
 	bool passwordManuallyEdited;
+	bool clientPasswordManuallyEdited;
 };

@@ -152,7 +152,7 @@ void WebSocketServer::Stop()
 	}
 	lock.unlock();
 
-	_threadPool.waitForDone();
+	_protocol.GetThreadPool()->waitForDone();
 
 	// This can delay the thread that it is running on. Bad but kinda required.
 	while (_sessions.size() > 0)
@@ -310,8 +310,8 @@ void WebSocketServer::onClose(websocketpp::connection_hdl hdl)
 	lock.unlock();
 
 	// If client was identified, announce unsubscription
-	if (isIdentified && _clientSubscriptionCallback)
-		_clientSubscriptionCallback(false, eventSubscriptions);
+	if (isIdentified)
+		_protocol.NotifyClientSubscriptionChange(false, eventSubscriptions);
 
 	// Build SessionState object for signal
 	WebSocketSessionState state;
@@ -349,7 +349,7 @@ void WebSocketServer::onMessage(websocketpp::connection_hdl hdl,
 {
 	auto opCode = message->get_opcode();
 	std::string payload = message->get_payload();
-	_threadPool.start(Utils::Compat::CreateFunctionRunnable([=]() {
+	_protocol.GetThreadPool()->start(Utils::Compat::CreateFunctionRunnable([=]() {
 		std::unique_lock<std::mutex> lock(_sessionMutex);
 		SessionPtr session;
 		try {
@@ -401,7 +401,7 @@ void WebSocketServer::onMessage(websocketpp::connection_hdl hdl,
 
 		blog_debug("[WebSocketServer::onMessage] Incoming message (decoded):\n%s", incomingMessage.dump(2).c_str());
 
-		ProcessResult ret;
+		WebSocketProtocol::ProcessResult ret;
 
 		// Verify incoming message is an object
 		if (!incomingMessage.is_object()) {
@@ -433,7 +433,7 @@ void WebSocketServer::onMessage(websocketpp::connection_hdl hdl,
 			goto skipProcessing;
 		}
 
-		ProcessMessage(session, ret, incomingMessage["op"], incomingMessage["d"]);
+		_protocol.ProcessMessage(session, ret, incomingMessage["op"], incomingMessage["d"]);
 
 	skipProcessing:
 		if (ret.closeCode != WebSocketCloseCode::DontClose) {
@@ -460,5 +460,63 @@ void WebSocketServer::onMessage(websocketpp::connection_hdl hdl,
 				blog(LOG_WARNING, "[WebSocketServer::onMessage] Sending message to client failed: %s",
 				     errorCode.message().c_str());
 		}
+	}));
+}
+
+// It isn't consistent to directly call the WebSocketServer from the events system, but it would also be dumb to make it unnecessarily complicated.
+void WebSocketServer::BroadcastEvent(uint64_t requiredIntent, const std::string &eventType, const json &eventData,
+				     uint8_t rpcVersion)
+{
+	if (!_server.is_listening() || !_protocol.IsObsReady())
+		return;
+
+	_protocol.GetThreadPool()->start(Utils::Compat::CreateFunctionRunnable([=]() {
+		// Populate message object
+		json eventMessage;
+		eventMessage["op"] = 5;
+		eventMessage["d"]["eventType"] = eventType;
+		eventMessage["d"]["eventIntent"] = requiredIntent;
+		if (eventData.is_object())
+			eventMessage["d"]["eventData"] = eventData;
+
+		// Initialize objects. The broadcast process only dumps the data when its needed.
+		std::string messageJson;
+		std::string messageMsgPack;
+
+		// Recurse connected sessions and send the event to suitable sessions.
+		std::unique_lock<std::mutex> lock(_sessionMutex);
+		for (auto &it : _sessions) {
+			if (!it.second->IsIdentified())
+				continue;
+			if (rpcVersion && it.second->RpcVersion() != rpcVersion)
+				continue;
+			if ((it.second->EventSubscriptions() & requiredIntent) != 0) {
+				websocketpp::lib::error_code errorCode;
+				switch (it.second->Encoding()) {
+				case WebSocketEncoding::Json:
+					if (messageJson.empty())
+						messageJson = eventMessage.dump();
+					_server.send((websocketpp::connection_hdl)it.first, messageJson,
+						     websocketpp::frame::opcode::text, errorCode);
+					it.second->IncrementOutgoingMessages();
+					break;
+				case WebSocketEncoding::MsgPack:
+					if (messageMsgPack.empty()) {
+						auto msgPackData = json::to_msgpack(eventMessage);
+						messageMsgPack = std::string(msgPackData.begin(), msgPackData.end());
+					}
+					_server.send((websocketpp::connection_hdl)it.first, messageMsgPack,
+						     websocketpp::frame::opcode::binary, errorCode);
+					it.second->IncrementOutgoingMessages();
+					break;
+				}
+				if (errorCode)
+					blog(LOG_ERROR, "[WebSocketServer::BroadcastEvent] Error sending event message: %s",
+					     errorCode.message().c_str());
+			}
+		}
+		lock.unlock();
+		if (IsDebugEnabled() && (EventSubscription::All & requiredIntent) != 0) // Don't log high volume events
+			blog(LOG_INFO, "[WebSocketServer::BroadcastEvent] Outgoing event:\n%s", eventMessage.dump(2).c_str());
 	}));
 }
