@@ -181,6 +181,10 @@ void EventHandler::ConnectSourceSignals(obs_source_t *source) // Applies to inpu
 	if (sourceType == OBS_SOURCE_TYPE_FILTER) {
 		signal_handler_connect(sh, "enable", HandleSourceFilterEnableStateChanged, this);
 		signal_handler_connect(sh, "rename", HandleSourceFilterNameChanged, this);
+		
+		// This event is required as filters are always private sources
+		// Global signals are never fired for private sources 
+		signal_handler_connect(sh, "update", HandleSourceFilterSettingsChanged, this);
 	}
 }
 
@@ -250,6 +254,10 @@ void EventHandler::DisconnectSourceSignals(obs_source_t *source)
 	if (sourceType == OBS_SOURCE_TYPE_FILTER) {
 		signal_handler_disconnect(sh, "enable", HandleSourceFilterEnableStateChanged, this);
 		signal_handler_disconnect(sh, "rename", HandleSourceFilterNameChanged, this);
+		
+		// This event is required as filters are always private sources
+		// Global signals are never fired for private sources 
+		signal_handler_disconnect(sh, "update", HandleSourceFilterSettingsChanged, this);
 	}
 }
 
