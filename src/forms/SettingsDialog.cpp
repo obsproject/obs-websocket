@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License along
 with this program. If not, see <https://www.gnu.org/licenses/>
 */
 
-#include <QtWidgets/QMessageBox>
+#include <QMessageBox>
 #include <QDateTime>
 #include <QTime>
 #include <obs-module.h>
@@ -260,7 +260,8 @@ void SettingsDialog::FillSessionTable()
 		invalidateButtonLayout->setContentsMargins(0, 0, 0, 0);
 		invalidateButtonWidget->setLayout(invalidateButtonLayout);
 		ui->websocketSessionTable->setCellWidget(i, 4, invalidateButtonWidget);
-		connect(invalidateButton, &QPushButton::clicked, [=]() { webSocketServer->InvalidateSession(session.hdl); });
+		connect(invalidateButton, &QPushButton::clicked,
+			[webSocketServer, session]() { webSocketServer->InvalidateSession(session.hdl); });
 
 		i++;
 	}
