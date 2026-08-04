@@ -474,6 +474,113 @@ RequestResult RequestHandler::ToggleInputMute(const Request &request)
 }
 
 /**
+ * Gets whether an input's audio is forced to mono.
+ *
+ * @requestField ?inputName | String | Name of the input to get the audio mono state of
+ * @requestField ?inputUuid | String | UUID of the input to get the audio mono state of
+ *
+ * @responseField inputAudioMono | Boolean | Whether the input's audio is forced to mono
+ *
+ * @requestType GetInputAudioMono
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.8.0
+ * @api requests
+ * @category inputs
+ */
+RequestResult RequestHandler::GetInputAudioMono(const Request &request)
+{
+	RequestStatus::RequestStatus statusCode;
+	std::string comment;
+	OBSSourceAutoRelease input = request.AcquireInput(statusCode, comment);
+	if (!input)
+		return RequestResult::Error(statusCode, comment);
+
+	if (!(obs_source_get_output_flags(input) & OBS_SOURCE_AUDIO))
+		return RequestResult::Error(RequestStatus::InvalidResourceState, "The specified input does not support audio.");
+
+	json responseData;
+	responseData["inputAudioMono"] = (obs_source_get_flags(input) & OBS_SOURCE_FLAG_FORCE_MONO) != 0;
+	return RequestResult::Success(responseData);
+}
+
+/**
+ * Sets whether an input's audio is forced to mono.
+ *
+ * @requestField ?inputName     | String  | Name of the input to set the audio mono state of
+ * @requestField ?inputUuid     | String  | UUID of the input to set the audio mono state of
+ * @requestField inputAudioMono | Boolean | Whether the input's audio should be forced to mono
+ *
+ * @requestType SetInputAudioMono
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.8.0
+ * @api requests
+ * @category inputs
+ */
+RequestResult RequestHandler::SetInputAudioMono(const Request &request)
+{
+	RequestStatus::RequestStatus statusCode;
+	std::string comment;
+	OBSSourceAutoRelease input = request.AcquireInput(statusCode, comment);
+	if (!(input && request.ValidateBoolean("inputAudioMono", statusCode, comment)))
+		return RequestResult::Error(statusCode, comment);
+
+	if (!(obs_source_get_output_flags(input) & OBS_SOURCE_AUDIO))
+		return RequestResult::Error(RequestStatus::InvalidResourceState, "The specified input does not support audio.");
+
+	uint32_t flags = obs_source_get_flags(input);
+	if (request.RequestData["inputAudioMono"])
+		flags |= OBS_SOURCE_FLAG_FORCE_MONO;
+	else
+		flags &= ~OBS_SOURCE_FLAG_FORCE_MONO;
+
+	obs_source_set_flags(input, flags);
+
+	return RequestResult::Success();
+}
+
+/**
+ * Toggles whether an input's audio is forced to mono.
+ *
+ * @requestField ?inputName | String | Name of the input to toggle the audio mono state of
+ * @requestField ?inputUuid | String | UUID of the input to toggle the audio mono state of
+ *
+ * @responseField inputAudioMono | Boolean | Whether the input's audio is forced to mono
+ *
+ * @requestType ToggleInputAudioMono
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.8.0
+ * @api requests
+ * @category inputs
+ */
+RequestResult RequestHandler::ToggleInputAudioMono(const Request &request)
+{
+	RequestStatus::RequestStatus statusCode;
+	std::string comment;
+	OBSSourceAutoRelease input = request.AcquireInput(statusCode, comment);
+	if (!input)
+		return RequestResult::Error(statusCode, comment);
+
+	if (!(obs_source_get_output_flags(input) & OBS_SOURCE_AUDIO))
+		return RequestResult::Error(RequestStatus::InvalidResourceState, "The specified input does not support audio.");
+
+	uint32_t flags = obs_source_get_flags(input);
+	bool inputAudioMono = !(flags & OBS_SOURCE_FLAG_FORCE_MONO);
+	if (inputAudioMono)
+		flags |= OBS_SOURCE_FLAG_FORCE_MONO;
+	else
+		flags &= ~OBS_SOURCE_FLAG_FORCE_MONO;
+
+	obs_source_set_flags(input, flags);
+
+	json responseData;
+	responseData["inputAudioMono"] = inputAudioMono;
+	return RequestResult::Success(responseData);
+}
+
+/**
  * Gets the current volume setting of an input.
  *
  * @requestField ?inputName | String | Name of the input to get the volume of

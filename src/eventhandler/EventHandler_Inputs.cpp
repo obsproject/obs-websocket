@@ -281,6 +281,44 @@ void EventHandler::HandleInputVolumeChanged(void *param, calldata_t *data)
 }
 
 /**
+ * The audio mono state of an input has changed.
+ *
+ * @dataField inputName      | String  | Name of the input
+ * @dataField inputUuid      | String  | UUID of the input
+ * @dataField inputAudioMono | Boolean | Whether the input's audio is forced to mono
+ *
+ * @eventType InputAudioMonoChanged
+ * @eventSubscription Inputs
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.8.0
+ * @category inputs
+ * @api events
+ */
+void EventHandler::HandleInputAudioMonoChanged(void *param, calldata_t *data)
+{
+	auto eventHandler = static_cast<EventHandler *>(param);
+
+	obs_source_t *source = GetCalldataPointer<obs_source_t>(data, "source");
+	if (!source)
+		return;
+
+	if (obs_source_get_type(source) != OBS_SOURCE_TYPE_INPUT)
+		return;
+
+	if (!(obs_source_get_output_flags(source) & OBS_SOURCE_AUDIO))
+		return;
+
+	uint32_t flags = (uint32_t)calldata_int(data, "flags");
+
+	json eventData;
+	eventData["inputName"] = obs_source_get_name(source);
+	eventData["inputUuid"] = obs_source_get_uuid(source);
+	eventData["inputAudioMono"] = (flags & OBS_SOURCE_FLAG_FORCE_MONO) != 0;
+	eventHandler->BroadcastEvent(EventSubscription::Inputs, "InputAudioMonoChanged", eventData);
+}
+
+/**
  * The audio balance value of an input has changed.
  *
  * @dataField inputName         | String | Name of the input
