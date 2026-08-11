@@ -809,6 +809,84 @@ RequestResult RequestHandler::SetSceneItemBlendMode(const Request &request)
 	return RequestResult::Success();
 }
 
+/**
+ * Gets the blend method of a scene item.
+ *
+ * Blend methods:
+ *
+ * - `OBS_BLEND_METHOD_DEFAULT`
+ * - `OBS_BLEND_METHOD_SRGB_OFF`
+ *
+ * Scenes and Groups
+ *
+ * @requestField ?canvasUuid | String | UUID of the canvas the scene is in, if using the sceneName field
+ * @requestField ?sceneName  | String | Name of the scene the item is in
+ * @requestField ?sceneUuid  | String | UUID of the scene the item is in
+ * @requestField sceneItemId | Number | Numeric ID of the scene item | >= 0
+ *
+ * @responseField sceneItemBlendMethod | String | Current blend method
+ *
+ * @requestType GetSceneItemBlendMethod
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.8.0
+ * @api requests
+ * @category scene items
+ */
+RequestResult RequestHandler::GetSceneItemBlendMethod(const Request &request)
+{
+	RequestStatus::RequestStatus statusCode;
+	std::string comment;
+	OBSSceneItemAutoRelease sceneItem =
+		request.AcquireSceneItem(statusCode, comment, OBS_WEBSOCKET_SCENE_FILTER_SCENE_OR_GROUP);
+	if (!sceneItem)
+		return RequestResult::Error(statusCode, comment);
+
+	auto blendMethod = obs_sceneitem_get_blending_method(sceneItem);
+
+	json responseData;
+	responseData["sceneItemBlendMethod"] = blendMethod;
+
+	return RequestResult::Success(responseData);
+}
+
+/**
+ * Sets the blend method of a scene item.
+ *
+ * Scenes and Groups
+ *
+ * @requestField ?canvasUuid          | String | UUID of the canvas the scene is in, if using the sceneName field
+ * @requestField ?sceneName           | String | Name of the scene the item is in
+ * @requestField ?sceneUuid           | String | UUID of the scene the item is in
+ * @requestField sceneItemId          | Number | Numeric ID of the scene item | >= 0
+ * @requestField sceneItemBlendMethod | String | New blend method
+ *
+ * @requestType SetSceneItemBlendMethod
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.8.0
+ * @api requests
+ * @category scene items
+ */
+RequestResult RequestHandler::SetSceneItemBlendMethod(const Request &request)
+{
+	RequestStatus::RequestStatus statusCode;
+	std::string comment;
+	OBSSceneItemAutoRelease sceneItem =
+		request.AcquireSceneItem(statusCode, comment, OBS_WEBSOCKET_SCENE_FILTER_SCENE_OR_GROUP);
+	if (!(sceneItem && request.ValidateString("sceneItemBlendMethod", statusCode, comment)))
+		return RequestResult::Error(statusCode, comment);
+
+	enum obs_blending_method blendMethod = request.RequestData["sceneItemBlendMethod"];
+	if (blendMethod == OBS_BLEND_METHOD_DEFAULT && request.RequestData["sceneItemBlendMethod"] != "OBS_BLEND_METHOD_DEFAULT")
+		return RequestResult::Error(RequestStatus::InvalidRequestField,
+					    "The field sceneItemBlendMethod has an invalid value.");
+
+	obs_sceneitem_set_blending_method(sceneItem, blendMethod);
+
+	return RequestResult::Success();
+}
+
 // Intentionally undocumented
 RequestResult RequestHandler::GetSceneItemPrivateSettings(const Request &request)
 {
