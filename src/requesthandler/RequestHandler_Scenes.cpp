@@ -23,7 +23,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
  * Gets an array of scenes in OBS.
  *
  * @requestField ?canvasUuid | String | UUID of the canvas the scenes are in
- * 
+ *
  * @responseField currentProgramSceneName | String        | Current program scene name. Can be `null` if non-main canvas or internal state desync
  * @responseField currentProgramSceneUuid | String        | Current program scene UUID. Can be `null` if non-main canvas or internal state desync
  * @responseField currentPreviewSceneName | String        | Current preview scene name. `null` if not in studio mode or non-main canvas
@@ -128,8 +128,13 @@ RequestResult RequestHandler::GetCurrentProgramScene(const Request &)
 {
 	json responseData;
 	OBSSourceAutoRelease currentProgramScene = obs_frontend_get_current_scene();
-	responseData["sceneName"] = responseData["currentProgramSceneName"] = obs_source_get_name(currentProgramScene);
-	responseData["sceneUuid"] = responseData["currentProgramSceneUuid"] = obs_source_get_uuid(currentProgramScene);
+	if (currentProgramScene) {
+		responseData["sceneName"] = responseData["currentProgramSceneName"] = obs_source_get_name(currentProgramScene);
+		responseData["sceneUuid"] = responseData["currentProgramSceneUuid"] = obs_source_get_uuid(currentProgramScene);
+	} else {
+		responseData["sceneName"] = responseData["currentProgramSceneName"] = nullptr;
+		responseData["sceneUuid"] = responseData["currentProgramSceneUuid"] = nullptr;
+	}
 
 	return RequestResult::Success(responseData);
 }
@@ -306,7 +311,7 @@ RequestResult RequestHandler::RemoveScene(const Request &request)
 
 	if ((obs_canvas_get_flags(canvas) & MAIN) && Utils::Obs::NumberHelper::GetCanvasSceneCount(canvas) < 2)
 		return RequestResult::Error(RequestStatus::NotEnoughResources,
-					    "You cannot remove the last scene in the collection.");
+						"You cannot remove the last scene in the collection.");
 
 	obs_source_remove(scene);
 
@@ -342,7 +347,7 @@ RequestResult RequestHandler::SetSceneName(const Request &request)
 	OBSSourceAutoRelease existingSource = obs_canvas_get_source_by_name(canvas, newSceneName.c_str());
 	if (existingSource)
 		return RequestResult::Error(RequestStatus::ResourceAlreadyExists,
-					    "A source already exists by that new scene name.");
+						"A source already exists by that new scene name.");
 
 	obs_source_set_name(scene, newSceneName.c_str());
 
@@ -437,7 +442,7 @@ RequestResult RequestHandler::SetSceneSceneTransitionOverride(const Request &req
 
 	if (!hasName && !hasDuration)
 		return RequestResult::Error(RequestStatus::MissingRequestField,
-					    "Your request data must include either `transitionName` or `transitionDuration`.");
+						"Your request data must include either `transitionName` or `transitionDuration`.");
 
 	if (hasName) {
 		if (request.RequestData["transitionName"].is_null()) {
