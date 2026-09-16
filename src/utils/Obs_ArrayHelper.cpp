@@ -267,14 +267,19 @@ std::vector<json> Utils::Obs::ArrayHelper::GetListPropertyItems(obs_property_t *
 
 	for (size_t i = 0; i < itemCount; i++) {
 		json itemData;
-		itemData["itemName"] = obs_property_list_item_name(property, i);
+		// Plugins may register list items with a NULL name or string value (e.g. the
+		// macOS ScreenCaptureKit source lists applications without a localized name).
+		// Assigning a NULL const char* to json calls strlen(NULL) and crashes OBS.
+		const char *itemName = obs_property_list_item_name(property, i);
+		itemData["itemName"] = itemName ? itemName : "";
 		itemData["itemEnabled"] = !obs_property_list_item_disabled(property, i);
 		if (itemFormat == OBS_COMBO_FORMAT_INT) {
 			itemData["itemValue"] = obs_property_list_item_int(property, i);
 		} else if (itemFormat == OBS_COMBO_FORMAT_FLOAT) {
 			itemData["itemValue"] = obs_property_list_item_float(property, i);
 		} else if (itemFormat == OBS_COMBO_FORMAT_STRING) {
-			itemData["itemValue"] = obs_property_list_item_string(property, i);
+			const char *itemValue = obs_property_list_item_string(property, i);
+			itemData["itemValue"] = itemValue ? itemValue : "";
 		} else {
 			itemData["itemValue"] = nullptr;
 		}
