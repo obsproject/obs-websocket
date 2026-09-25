@@ -47,6 +47,7 @@ EventHandlerPtr _eventHandler;
 WebSocketApiPtr _webSocketApi;
 WebSocketServerPtr _webSocketServer;
 SettingsDialog *_settingsDialog = nullptr;
+static bool _serverOffBySafeMode = false;
 
 void OnWebSocketApiVendorEvent(std::string vendorName, std::string eventType, obs_data_t *obsEventData);
 void OnEvent(uint64_t requiredIntent, std::string eventType, json eventData, uint8_t rpcVersion);
@@ -116,6 +117,13 @@ void obs_module_post_load(void)
 	test_register_vendor();
 #endif
 
+	if (obs_frontend_is_safe_mode_enabled()) {
+		_serverOffBySafeMode = true;
+		if (_config->ServerEnabled)
+			blog(LOG_INFO, "[obs_module_post_load] OBS is in Safe Mode. WebSocket server will not be started.");
+		return;
+	}
+
 	// Server will accept clients, but requests and events will not be served until FINISHED_LOADING occurs
 	if (_config->ServerEnabled) {
 		blog(LOG_INFO, "[obs_module_post_load] WebSocket server is enabled, starting...");
@@ -182,6 +190,16 @@ WebSocketServerPtr GetWebSocketServer()
 bool IsDebugEnabled()
 {
 	return !_config || _config->DebugEnabled;
+}
+
+bool IsServerOffBySafeMode()
+{
+	return _serverOffBySafeMode;
+}
+
+void ClearServerOffBySafeMode()
+{
+	_serverOffBySafeMode = false;
 }
 
 /**
