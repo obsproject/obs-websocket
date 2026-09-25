@@ -51,3 +51,6 @@ WebSocketApiPtr GetWebSocketApi();
 WebSocketServerPtr GetWebSocketServer();
 
 bool IsDebugEnabled();
+
+bool IsServerOffBySafeMode();
+void ClearServerOffBySafeMode();

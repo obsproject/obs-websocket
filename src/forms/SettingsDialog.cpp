@@ -48,6 +48,18 @@ SettingsDialog::SettingsDialog(QWidget *parent)
 	ui->websocketSessionTable->horizontalHeader()->resizeSection(3, 100); // Resize Session Table column widths
 	ui->websocketSessionTable->horizontalHeader()->resizeSection(4, 100);
 
+	if (obs_frontend_is_safe_mode_enabled()) {
+		QFrame *safeModeFrame = new QFrame(this);
+		safeModeFrame->setProperty("class", "frame-notice");
+
+		safeModeFrame->setLayout(new QHBoxLayout);
+		safeModeFrame->layout()->setContentsMargins(0, 0, 0, 0);
+		QLabel *safeModeText = new QLabel(obs_module_text("OBSWebSocket.Settings.SafeModeWarning"), safeModeFrame);
+		safeModeText->setWordWrap(true);
+		safeModeFrame->layout()->addWidget(safeModeText);
+		ui->verticalLayout->insertWidget(0, safeModeFrame);
+	}
+
 	// Remove the ? button on dialogs on Windows
 	setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 
@@ -123,7 +135,11 @@ void SettingsDialog::RefreshData()
 		return;
 	}
 
-	ui->enableWebSocketServerCheckBox->setChecked(conf->ServerEnabled);
+	if (IsServerOffBySafeMode()) {
+		ui->enableWebSocketServerCheckBox->setChecked(false);
+	} else {
+		ui->enableWebSocketServerCheckBox->setChecked(conf->ServerEnabled);
+	}
 	ui->enableSystemTrayAlertsCheckBox->setChecked(conf->AlertsEnabled);
 	ui->enableDebugLoggingCheckBox->setChecked(conf->DebugEnabled);
 	ui->serverPortSpinBox->setValue(conf->ServerPort);
@@ -181,6 +197,8 @@ void SettingsDialog::SaveFormData()
 			return;
 		}
 	}
+
+	ClearServerOffBySafeMode();
 
 	bool needsRestart = (conf->ServerEnabled != ui->enableWebSocketServerCheckBox->isChecked()) ||
 			    (conf->ServerPort != ui->serverPortSpinBox->value()) ||
