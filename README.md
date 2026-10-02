@@ -3,7 +3,7 @@
 # obs-websocket
 
 <p align="center">
-  <img src="/.github/images/obsws_logo.png" width=150 align="center">
+  <img src="/.github/images/obsws_logo.png" alt="OBS WebSocket logo" width=150 align="center">
 </p>
 
 WebSocket API for OBS Studio.
@@ -75,19 +75,19 @@ Become a financial contributor and help us sustain our community. [Contribute Fi
 
 #### Individuals
 
-<a href="https://opencollective.com/obs-websocket-dev"><img src="https://opencollective.com/obs-websocket-dev/individuals.svg?width=890"></a>
+<a href="https://opencollective.com/obs-websocket-dev"><img src="https://opencollective.com/obs-websocket-dev/individuals.svg?width=890" alt="Individual contributors to obs-websocket-dev on Open Collective"></a>
 
 #### Organizations
 
 Support this project with your organization. Your logo will show up here with a link to your website. [Contribute](https://opencollective.com/obs-websocket-dev/contribute)
 
-<a href="https://opencollective.com/obs-websocket-dev/organization/0/website"><img src="https://opencollective.com/obs-websocket-dev/organization/0/avatar.svg"></a>
-<a href="https://opencollective.com/obs-websocket-dev/organization/1/website"><img src="https://opencollective.com/obs-websocket-dev/organization/1/avatar.svg"></a>
-<a href="https://opencollective.com/obs-websocket-dev/organization/2/website"><img src="https://opencollective.com/obs-websocket-dev/organization/2/avatar.svg"></a>
-<a href="https://opencollective.com/obs-websocket-dev/organization/3/website"><img src="https://opencollective.com/obs-websocket-dev/organization/3/avatar.svg"></a>
-<a href="https://opencollective.com/obs-websocket-dev/organization/4/website"><img src="https://opencollective.com/obs-websocket-dev/organization/4/avatar.svg"></a>
-<a href="https://opencollective.com/obs-websocket-dev/organization/5/website"><img src="https://opencollective.com/obs-websocket-dev/organization/5/avatar.svg"></a>
-<a href="https://opencollective.com/obs-websocket-dev/organization/6/website"><img src="https://opencollective.com/obs-websocket-dev/organization/6/avatar.svg"></a>
-<a href="https://opencollective.com/obs-websocket-dev/organization/7/website"><img src="https://opencollective.com/obs-websocket-dev/organization/7/avatar.svg"></a>
-<a href="https://opencollective.com/obs-websocket-dev/organization/8/website"><img src="https://opencollective.com/obs-websocket-dev/organization/8/avatar.svg"></a>
-<a href="https://opencollective.com/obs-websocket-dev/organization/9/website"><img src="https://opencollective.com/obs-websocket-dev/organization/9/avatar.svg"></a>
+<a href="https://opencollective.com/obs-websocket-dev/organization/0/website"><img src="https://opencollective.com/obs-websocket-dev/organization/0/avatar.svg" alt="OBS WebSocket supporting organization 0"></a>
+<a href="https://opencollective.com/obs-websocket-dev/organization/1/website"><img src="https://opencollective.com/obs-websocket-dev/organization/1/avatar.svg" alt="OBS WebSocket supporting organization 1"></a>
+<a href="https://opencollective.com/obs-websocket-dev/organization/2/website"><img src="https://opencollective.com/obs-websocket-dev/organization/2/avatar.svg" alt="OBS WebSocket supporting organization 2"></a>
+<a href="https://opencollective.com/obs-websocket-dev/organization/3/website"><img src="https://opencollective.com/obs-websocket-dev/organization/3/avatar.svg" alt="OBS WebSocket supporting organization 3"></a>
+<a href="https://opencollective.com/obs-websocket-dev/organization/4/website"><img src="https://opencollective.com/obs-websocket-dev/organization/4/avatar.svg" alt="OBS WebSocket supporting organization 4"></a>
+<a href="https://opencollective.com/obs-websocket-dev/organization/5/website"><img src="https://opencollective.com/obs-websocket-dev/organization/5/avatar.svg" alt="OBS WebSocket supporting organization 5"></a>
+<a href="https://opencollective.com/obs-websocket-dev/organization/6/website"><img src="https://opencollective.com/obs-websocket-dev/organization/6/avatar.svg" alt="OBS WebSocket supporting organization 6"></a>
+<a href="https://opencollective.com/obs-websocket-dev/organization/7/website"><img src="https://opencollective.com/obs-websocket-dev/organization/7/avatar.svg" alt="OBS WebSocket supporting organization 7"></a>
+<a href="https://opencollective.com/obs-websocket-dev/organization/8/website"><img src="https://opencollective.com/obs-websocket-dev/organization/8/avatar.svg" alt="OBS WebSocket supporting organization 8"></a>
+<a href="https://opencollective.com/obs-websocket-dev/organization/9/website"><img src="https://opencollective.com/obs-websocket-dev/organization/9/avatar.svg" alt="OBS WebSocket supporting organization 9"></a>
