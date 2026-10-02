@@ -162,7 +162,7 @@ def get_requests(requests):
             requestsOut.append(request)
         if not len(requestsOut):
             continue
-        categoryFragment = get_fragment(category)
+        categoryFragment = get_fragment(category, False)
         ret += '## {} Requests\n\n'.format(category)
         for request in requestsOut:
             requestType = request['requestType']
@@ -227,7 +227,7 @@ def get_events(events):
             eventsOut.append(event)
         if not len(eventsOut):
             continue
-        categoryFragment = get_fragment(category)
+        categoryFragment = get_fragment(category, False)
         ret += '## {} Events\n\n'.format(category)
         for event in eventsOut:
             eventType = event['eventType']
