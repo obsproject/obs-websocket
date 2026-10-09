@@ -16,7 +16,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along
 with this program. If not, see <https://www.gnu.org/licenses/>
 */
-
+#include <optional>
 #include "RequestHandler.h"
 
 /**
@@ -841,6 +841,218 @@ RequestResult RequestHandler::SetSceneItemPrivateSettings(const Request &request
 
 	// Always overlays to prevent destroying internal source unintentionally
 	obs_data_apply(privateSettings, newSettings);
+
+	return RequestResult::Success();
+}
+
+/**
+ * Gets the show transition for a scene item.
+ *
+ * Scenes and Groups
+ *
+ * @requestField ?sceneName  | String | Name of the scene the item is in
+ * @requestField ?sceneUuid  | String | UUID of the scene the item is in
+ * @requestField sceneItemId | Number | Numeric ID of the scene item | >= 0
+ *
+ * @responseField transitionName     | String | Name of the transition or null if none set
+ * @responseField transitionUuid     | String | UUID of the transition or null if none set
+ * @responseField transitionKind     | String | Kind of the transition or null if none set
+ * @responseField transitionDuration | Number | Duration of the transition in milliseconds or null if none set
+ *
+ * @requestType GetSceneItemShowTransition
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.7.0
+ * @api requests
+ * @category scene items
+ */
+RequestResult RequestHandler::GetSceneItemShowTransition(const Request &request)
+{
+	RequestStatus::RequestStatus statusCode;
+	std::string comment;
+	OBSSceneItemAutoRelease sceneItem =
+		request.ValidateSceneItem(statusCode, comment, OBS_WEBSOCKET_SCENE_FILTER_SCENE_OR_GROUP);
+	if (!sceneItem)
+		return RequestResult::Error(statusCode, comment);
+
+	json responseData;
+
+	OBSSourceAutoRelease transition = obs_sceneitem_get_transition(sceneItem, true);
+	if (transition) {
+		responseData["transitionName"] = obs_source_get_name(transition);
+		responseData["transitionUuid"] = obs_source_get_uuid(transition);
+		responseData["transitionKind"] = obs_source_get_id(transition);
+		responseData["transitionDuration"] = obs_sceneitem_get_transition_duration(sceneItem, true);
+	} else {
+		responseData["transitionName"] = nullptr;
+		responseData["transitionUuid"] = nullptr;
+		responseData["transitionKind"] = nullptr;
+		responseData["transitionDuration"] = nullptr;
+	}
+
+	return RequestResult::Success(responseData);
+}
+
+/**
+ * Sets the show transition for a scene item.
+ *
+ * Scenes and Groups
+ *
+ * @requestField ?sceneName           | String  | Name of the scene the item is in
+ * @requestField ?sceneUuid           | String  | UUID of the scene the item is in
+ * @requestField sceneItemId          | Number  | Numeric ID of the scene item | >= 0
+ * @requestField ?transitionName      | String  | Name of the transition to set. Pass null to remove transition | null
+ * @requestField ?transitionDuration  | Number  | Duration of the transition in milliseconds | >= 0
+ *
+ * @requestType SetSceneItemShowTransition
+ * @complexity 3
+ * @rpcVersion -1
+ * @initialVersion 5.7.0
+ * @api requests
+ * @category scene items
+ */
+RequestResult RequestHandler::SetSceneItemShowTransition(const Request &request)
+{
+	RequestStatus::RequestStatus statusCode;
+	std::string comment;
+	OBSSceneItemAutoRelease sceneItem =
+		request.ValidateSceneItem(statusCode, comment, OBS_WEBSOCKET_SCENE_FILTER_SCENE_OR_GROUP);
+	if (!sceneItem)
+		return RequestResult::Error(statusCode, comment);
+
+	// Get transition name if provided
+	std::optional<std::string> transitionName;
+	if (request.RequestData.contains("transitionName") && !request.RequestData["transitionName"].is_null()) {
+		if (!request.ValidateString("transitionName", statusCode, comment))
+			return RequestResult::Error(statusCode, comment);
+		transitionName = request.RequestData["transitionName"];
+	}
+
+	// Set transition if provided
+	if (transitionName) {
+		OBSSourceAutoRelease transition = Utils::Obs::SearchHelper::GetSceneTransitionByName(transitionName.value());
+		if (!transition)
+			return RequestResult::Error(RequestStatus::ResourceNotFound,
+				"No transition was found with the name '" + transitionName.value() + "'.");
+		obs_sceneitem_set_transition(sceneItem, true, transition);
+	} else if (request.RequestData.contains("transitionName") && request.RequestData["transitionName"].is_null()) {
+		// Remove transition if explicitly set to null
+		obs_sceneitem_set_transition(sceneItem, true, nullptr);
+	}
+
+	// Set duration if provided
+	if (request.RequestData.contains("transitionDuration")) {
+		if (!request.ValidateNumber("transitionDuration", statusCode, comment, 0))
+			return RequestResult::Error(statusCode, comment);
+		uint32_t duration = request.RequestData["transitionDuration"];
+		obs_sceneitem_set_transition_duration(sceneItem, true, duration);
+	}
+
+	return RequestResult::Success();
+}
+
+/**
+ * Gets the hide transition for a scene item.
+ *
+ * Scenes and Groups
+ *
+ * @requestField ?sceneName  | String | Name of the scene the item is in
+ * @requestField ?sceneUuid  | String | UUID of the scene the item is in
+ * @requestField sceneItemId | Number | Numeric ID of the scene item | >= 0
+ *
+ * @responseField transitionName     | String | Name of the transition or null if none set
+ * @responseField transitionUuid     | String | UUID of the transition or null if none set
+ * @responseField transitionKind     | String | Kind of the transition or null if none set
+ * @responseField transitionDuration | Number | Duration of the transition in milliseconds or null if none set
+ *
+ * @requestType GetSceneItemHideTransition
+ * @complexity 2
+ * @rpcVersion -1
+ * @initialVersion 5.7.0
+ * @api requests
+ * @category scene items
+ */
+RequestResult RequestHandler::GetSceneItemHideTransition(const Request &request)
+{
+	RequestStatus::RequestStatus statusCode;
+	std::string comment;
+	OBSSceneItemAutoRelease sceneItem =
+		request.ValidateSceneItem(statusCode, comment, OBS_WEBSOCKET_SCENE_FILTER_SCENE_OR_GROUP);
+	if (!sceneItem)
+		return RequestResult::Error(statusCode, comment);
+
+	json responseData;
+
+	OBSSourceAutoRelease transition = obs_sceneitem_get_transition(sceneItem, false);
+	if (transition) {
+		responseData["transitionName"] = obs_source_get_name(transition);
+		responseData["transitionUuid"] = obs_source_get_uuid(transition);
+		responseData["transitionKind"] = obs_source_get_id(transition);
+		responseData["transitionDuration"] = obs_sceneitem_get_transition_duration(sceneItem, false);
+	} else {
+		responseData["transitionName"] = nullptr;
+		responseData["transitionUuid"] = nullptr;
+		responseData["transitionKind"] = nullptr;
+		responseData["transitionDuration"] = nullptr;
+	}
+
+	return RequestResult::Success(responseData);
+}
+
+/**
+ * Sets the hide transition for a scene item.
+ *
+ * Scenes and Groups
+ *
+ * @requestField ?sceneName           | String  | Name of the scene the item is in
+ * @requestField ?sceneUuid           | String  | UUID of the scene the item is in
+ * @requestField sceneItemId          | Number  | Numeric ID of the scene item | >= 0
+ * @requestField ?transitionName      | String  | Name of the transition to set. Pass null to remove transition | null
+ * @requestField ?transitionDuration  | Number  | Duration of the transition in milliseconds | >= 0
+ *
+ * @requestType SetSceneItemHideTransition
+ * @complexity 3
+ * @rpcVersion -1
+ * @initialVersion 5.7.0
+ * @api requests
+ * @category scene items
+ */
+RequestResult RequestHandler::SetSceneItemHideTransition(const Request &request)
+{
+	RequestStatus::RequestStatus statusCode;
+	std::string comment;
+	OBSSceneItemAutoRelease sceneItem =
+		request.ValidateSceneItem(statusCode, comment, OBS_WEBSOCKET_SCENE_FILTER_SCENE_OR_GROUP);
+	if (!sceneItem)
+		return RequestResult::Error(statusCode, comment);
+
+	// Get transition name if provided
+	std::optional<std::string> transitionName;
+	if (request.RequestData.contains("transitionName") && !request.RequestData["transitionName"].is_null()) {
+		if (!request.ValidateString("transitionName", statusCode, comment))
+			return RequestResult::Error(statusCode, comment);
+		transitionName = request.RequestData["transitionName"];
+	}
+
+	// Set transition if provided
+	if (transitionName) {
+		OBSSourceAutoRelease transition = Utils::Obs::SearchHelper::GetSceneTransitionByName(transitionName.value());
+		if (!transition)
+			return RequestResult::Error(RequestStatus::ResourceNotFound,
+				"No transition was found with the name '" + transitionName.value() + "'.");
+		obs_sceneitem_set_transition(sceneItem, false, transition);
+	} else if (request.RequestData.contains("transitionName") && request.RequestData["transitionName"].is_null()) {
+		// Remove transition if explicitly set to null
+		obs_sceneitem_set_transition(sceneItem, false, nullptr);
+	}
+
+	// Set duration if provided
+	if (request.RequestData.contains("transitionDuration")) {
+		if (!request.ValidateNumber("transitionDuration", statusCode, comment, 0))
+			return RequestResult::Error(statusCode, comment);
+		uint32_t duration = request.RequestData["transitionDuration"];
+		obs_sceneitem_set_transition_duration(sceneItem, false, duration);
+	}
 
 	return RequestResult::Success();
 }

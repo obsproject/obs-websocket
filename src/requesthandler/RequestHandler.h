@@ -169,6 +169,12 @@ private:
 	RequestResult GetSceneItemPrivateSettings(const Request &);
 	RequestResult SetSceneItemPrivateSettings(const Request &);
 
+	// Scene Item Transitions
+	RequestResult GetSceneItemShowTransition(const Request &);
+	RequestResult SetSceneItemShowTransition(const Request &);
+	RequestResult GetSceneItemHideTransition(const Request &);
+	RequestResult SetSceneItemHideTransition(const Request &);
+
 	// Outputs
 	RequestResult GetVirtualCamStatus(const Request &);
 	RequestResult ToggleVirtualCam(const Request &);
