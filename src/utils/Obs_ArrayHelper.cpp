@@ -171,6 +171,7 @@ std::vector<json> Utils::Obs::ArrayHelper::GetSceneItemList(obs_scene_t *scene, 
 			item["sceneItemLocked"] = obs_sceneitem_locked(sceneItem);
 			item["sceneItemTransform"] = ObjectHelper::GetSceneItemTransform(sceneItem);
 			item["sceneItemBlendMode"] = obs_sceneitem_get_blending_mode(sceneItem);
+			item["sceneItemBlendMethod"] = obs_sceneitem_get_blending_method(sceneItem);
 			OBSSource itemSource = obs_sceneitem_get_source(sceneItem);
 			item["sourceName"] = obs_source_get_name(itemSource);
 			item["sourceUuid"] = obs_source_get_uuid(itemSource);

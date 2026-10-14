@@ -166,6 +166,8 @@ private:
 	RequestResult SetSceneItemIndex(const Request &);
 	RequestResult GetSceneItemBlendMode(const Request &);
 	RequestResult SetSceneItemBlendMode(const Request &);
+	RequestResult GetSceneItemBlendMethod(const Request &);
+	RequestResult SetSceneItemBlendMethod(const Request &);
 	RequestResult GetSceneItemPrivateSettings(const Request &);
 	RequestResult SetSceneItemPrivateSettings(const Request &);
 

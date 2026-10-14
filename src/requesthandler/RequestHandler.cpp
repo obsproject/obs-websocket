@@ -147,6 +147,8 @@ const std::unordered_map<std::string, RequestMethodHandler> RequestHandler::_han
 	{"SetSceneItemIndex", &RequestHandler::SetSceneItemIndex},
 	{"GetSceneItemBlendMode", &RequestHandler::GetSceneItemBlendMode},
 	{"SetSceneItemBlendMode", &RequestHandler::SetSceneItemBlendMode},
+	{"GetSceneItemBlendMethod", &RequestHandler::GetSceneItemBlendMethod},
+	{"SetSceneItemBlendMethod", &RequestHandler::SetSceneItemBlendMethod},
 	{"GetSceneItemPrivateSettings", &RequestHandler::GetSceneItemPrivateSettings},
 	{"SetSceneItemPrivateSettings", &RequestHandler::SetSceneItemPrivateSettings},
 
