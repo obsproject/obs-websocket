@@ -24,6 +24,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <QDir>
 
 #include "RequestHandler.h"
+#include "utils/ImageFormat.h"
 
 QImage TakeSourceScreenshot(obs_source_t *source, bool &success, uint32_t requestedWidth = 0, uint32_t requestedHeight = 0)
 {
@@ -227,7 +228,9 @@ RequestResult RequestHandler::GetSourceScreenshot(const Request &request)
 
 	buffer.close();
 
-	QString encodedPicture = QString("data:image/%1;base64,").arg(imageFormat.c_str()).append(encodedImgBytes.toBase64());
+	QString encodedPicture = QString("data:%1;base64,")
+				 .arg(ImageMimeType(imageFormat).c_str())
+				 .append(encodedImgBytes.toBase64());
 
 	json responseData;
 	responseData["imageData"] = encodedPicture.toStdString();
