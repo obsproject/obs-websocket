@@ -403,6 +403,8 @@ RequestResult RequestHandler::SetSceneItemTransform(const Request &request)
 	float sourceWidth = float(obs_source_get_width(source));
 	float sourceHeight = float(obs_source_get_height(source));
 
+	float minBounds = 1.0;
+
 	if (r.Contains("positionX")) {
 		if (!r.ValidateOptionalNumber("positionX", statusCode, comment, -90001.0, 90001.0))
 			return RequestResult::Error(statusCode, comment);
@@ -464,6 +466,10 @@ RequestResult RequestHandler::SetSceneItemTransform(const Request &request)
 		transformChanged = true;
 	}
 
+	// Adjust minimum limit based on the effective bounds type (either existing or newly set).
+	if (sceneItemTransform.bounds_type == OBS_BOUNDS_NONE)
+		minBounds = 0.0;
+
 	if (r.Contains("boundsAlignment")) {
 		if (!r.ValidateOptionalNumber("boundsAlignment", statusCode, comment, 0, std::numeric_limits<uint32_t>::max()))
 			return RequestResult::Error(statusCode, comment);
@@ -472,13 +478,13 @@ RequestResult RequestHandler::SetSceneItemTransform(const Request &request)
 	}
 
 	if (r.Contains("boundsWidth")) {
-		if (!r.ValidateOptionalNumber("boundsWidth", statusCode, comment, 1.0, 90001.0))
+		if (!r.ValidateOptionalNumber("boundsWidth", statusCode, comment, minBounds, 90001.0))
 			return RequestResult::Error(statusCode, comment);
 		sceneItemTransform.bounds.x = r.RequestData["boundsWidth"];
 		transformChanged = true;
 	}
 	if (r.Contains("boundsHeight")) {
-		if (!r.ValidateOptionalNumber("boundsHeight", statusCode, comment, 1.0, 90001.0))
+		if (!r.ValidateOptionalNumber("boundsHeight", statusCode, comment, minBounds, 90001.0))
 			return RequestResult::Error(statusCode, comment);
 		sceneItemTransform.bounds.y = r.RequestData["boundsHeight"];
 		transformChanged = true;
@@ -515,6 +521,13 @@ RequestResult RequestHandler::SetSceneItemTransform(const Request &request)
 		sceneItemTransform.crop_to_bounds = r.RequestData["cropToBounds"];
 		transformChanged = true;
 	}
+
+	// Prevent active bounds from having 0 dimensions
+    if (sceneItemTransform.bounds_type != OBS_BOUNDS_NONE) {
+        if (sceneItemTransform.bounds.x < 1.0 || sceneItemTransform.bounds.y < 1.0)
+            return RequestResult::Error(RequestStatus::InvalidRequestField,
+                            "Bounds dimensions must be at least 1.0 to activate a bounding box");
+    }
 
 	if (!transformChanged && !cropChanged)
 		return RequestResult::Error(RequestStatus::CannotAct, "You have not provided any valid transform changes.");
