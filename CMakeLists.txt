@@ -178,6 +178,8 @@ set_target_properties_obs(
              AUTORCC ON)
 
 if(OS_WINDOWS)
+  configure_file(cmake/windows/obs-module.rc.in obs-websocket.rc)
+  target_sources(obs-websocket PRIVATE obs-websocket.rc)
   set_property(
     TARGET obs-websocket
     APPEND
