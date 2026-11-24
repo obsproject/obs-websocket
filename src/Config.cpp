@@ -38,11 +38,13 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #define PARAM_FIRSTLOAD "first_load"
 #define PARAM_ENABLED "server_enabled"
 #define PARAM_PORT "server_port"
+#define PARAM_HOST "server_host"
 #define PARAM_ALERTS "alerts_enabled"
 #define PARAM_AUTHREQUIRED "auth_required"
 #define PARAM_PASSWORD "server_password"
 
 #define CMDLINE_WEBSOCKET_PORT "websocket_port"
+#define CMDLINE_WEBSOCKET_ADDRESS "websocket_address"
 #define CMDLINE_WEBSOCKET_IPV4_ONLY "websocket_ipv4_only"
 #define CMDLINE_WEBSOCKET_PASSWORD "websocket_password"
 #define CMDLINE_WEBSOCKET_DEBUG "websocket_debug"
@@ -66,6 +68,8 @@ void Config::Load(json config)
 		ServerEnabled = config[PARAM_ENABLED];
 	if (config.contains(PARAM_ALERTS) && config[PARAM_ALERTS].is_boolean())
 		AlertsEnabled = config[PARAM_ALERTS];
+	if (config.contains(PARAM_HOST) && config[PARAM_HOST].is_string())
+		ServerHost = config[PARAM_HOST];
 	if (config.contains(PARAM_PORT) && config[PARAM_PORT].is_number_unsigned())
 		ServerPort = config[PARAM_PORT];
 	if (config.contains(PARAM_AUTHREQUIRED) && config[PARAM_AUTHREQUIRED].is_boolean())
@@ -91,6 +95,15 @@ void Config::Load(json config)
 	if (!config.empty())
 		Save();
 
+	// Process `--websocket_address` override
+	QString host_argument = Utils::Platform::GetCommandLineArgument(CMDLINE_WEBSOCKET_ADDRESS);
+	if (host_argument != "") {
+		blog(LOG_INFO, "[Config::Load] --websocket_address passed. Overriding WebSocket host with: %s",
+		     host_argument.toStdString().c_str());
+		ServerHost = host_argument.toStdString();
+		HostOverridden = true;
+	}
+
 	// Process `--websocket_port` override
 	QString portArgument = Utils::Platform::GetCommandLineArgument(CMDLINE_WEBSOCKET_PORT);
 	if (portArgument != "") {
@@ -107,8 +120,12 @@ void Config::Load(json config)
 
 	// Process `--websocket_ipv4_only` override
 	if (Utils::Platform::GetCommandLineFlagSet(CMDLINE_WEBSOCKET_IPV4_ONLY)) {
-		blog(LOG_INFO, "[Config::Load] --websocket_ipv4_only passed. Binding only to IPv4 interfaces.");
-		Ipv4Only = true;
+		if (HostOverridden) {
+			blog(LOG_WARNING, "[Config::Load] IPv4 only cannot be used with --websocket_address.");
+		} else {
+			blog(LOG_INFO, "[Config::Load] --websocket_ipv4_only passed. Binding only to IPv4 interfaces.");
+			Ipv4Only = true;
+		}
 	}
 
 	// Process `--websocket_password` override
@@ -137,6 +154,8 @@ void Config::Save()
 
 	config[PARAM_FIRSTLOAD] = FirstLoad.load();
 	config[PARAM_ENABLED] = ServerEnabled.load();
+	if (!HostOverridden)
+		config[PARAM_HOST] = ServerHost;
 	if (!PortOverridden)
 		config[PARAM_PORT] = ServerPort.load();
 	config[PARAM_ALERTS] = AlertsEnabled.load();
