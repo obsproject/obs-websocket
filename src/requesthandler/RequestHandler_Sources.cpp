@@ -22,6 +22,8 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <QFileInfo>
 #include <QImage>
 #include <QDir>
+#include <QMimeDatabase>
+#include <QMimeType>
 
 #include "RequestHandler.h"
 
@@ -187,6 +189,15 @@ RequestResult RequestHandler::GetSourceScreenshot(const Request &request)
 		return RequestResult::Error(RequestStatus::InvalidRequestField,
 					    "Your specified image format is invalid or not supported by this system.");
 
+	// Used to get the correct MIME type that is compatible with web browsers.
+	// Ex: Both when requested "imageFormat" is "jpeg" and "jpg", the returned MIME type should be "image/jpeg" for both.
+	// See Issue #1298
+	QMimeDatabase mimeDatabase;
+	// Create fake file path with user requested image format(file extension)
+	QString fileName = QString::fromStdString("1." + imageFormat);
+	QMimeType mimeType = mimeDatabase.mimeTypeForFile(QFileInfo(fileName));
+	QString responseMimeStr = mimeType.name();
+
 	uint32_t requestedWidth{0};
 	uint32_t requestedHeight{0};
 	int compressionQuality{-1};
@@ -227,10 +238,11 @@ RequestResult RequestHandler::GetSourceScreenshot(const Request &request)
 
 	buffer.close();
 
-	QString encodedPicture = QString("data:image/%1;base64,").arg(imageFormat.c_str()).append(encodedImgBytes.toBase64());
+	QString encodedPicture = QString("data:%1;base64,").arg(responseMimeStr).append(encodedImgBytes.toBase64());
 
 	json responseData;
 	responseData["imageData"] = encodedPicture.toStdString();
+
 	return RequestResult::Success(responseData);
 }
 
