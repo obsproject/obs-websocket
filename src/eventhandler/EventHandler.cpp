@@ -301,9 +301,15 @@ void EventHandler::OnFrontendEvent(enum obs_frontend_event event, void *private_
 		break;
 	case OBS_FRONTEND_EVENT_PROFILE_CHANGING:
 		eventHandler->HandleCurrentProfileChanging();
+		eventHandler->_obsReady = false;
+		if (eventHandler->_obsReadyCallback)
+			eventHandler->_obsReadyCallback(false);
 		break;
 	case OBS_FRONTEND_EVENT_PROFILE_CHANGED:
 		eventHandler->HandleCurrentProfileChanged();
+		eventHandler->_obsReady = true;
+		if (eventHandler->_obsReadyCallback)
+			eventHandler->_obsReadyCallback(true);
 		break;
 	case OBS_FRONTEND_EVENT_PROFILE_LIST_CHANGED:
 		eventHandler->HandleProfileListChanged();
