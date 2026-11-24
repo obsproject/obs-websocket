@@ -2776,6 +2776,8 @@ communication is desired.
   - [SetSceneItemIndex](#setsceneitemindex)
   - [GetSceneItemBlendMode](#getsceneitemblendmode)
   - [SetSceneItemBlendMode](#setsceneitemblendmode)
+  - [GetSceneItemBlendMethod](#getsceneitemblendmethod)
+  - [SetSceneItemBlendMethod](#setsceneitemblendmethod)
 - [Outputs Requests](#outputs-requests)
   - [GetVirtualCamStatus](#getvirtualcamstatus)
   - [ToggleVirtualCam](#togglevirtualcam)
@@ -5092,6 +5094,60 @@ Scenes and Groups
 | ?sceneUuid | String | UUID of the scene the item is in | None | Unknown |
 | sceneItemId | Number | Numeric ID of the scene item | >= 0 | N/A |
 | sceneItemBlendMode | String | New blend mode | None | N/A |
+
+---
+
+### GetSceneItemBlendMethod
+
+Gets the blend method of a scene item.
+
+Blend methods:
+
+- `OBS_BLEND_METHOD_DEFAULT`
+- `OBS_BLEND_METHOD_SRGB_OFF`
+
+Scenes and Groups
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.8.0
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| ?canvasUuid | String | UUID of the canvas the scene is in, if using the sceneName field | None | Unknown |
+| ?sceneName | String | Name of the scene the item is in | None | Unknown |
+| ?sceneUuid | String | UUID of the scene the item is in | None | Unknown |
+| sceneItemId | Number | Numeric ID of the scene item | >= 0 | N/A |
+
+**Response Fields:**
+
+| Name | Type  | Description |
+| ---- | :---: | ----------- |
+| sceneItemBlendMethod | String | Current blend method |
+
+---
+
+### SetSceneItemBlendMethod
+
+Sets the blend method of a scene item.
+
+Scenes and Groups
+
+- Complexity Rating: `2/5`
+- Latest Supported RPC Version: `1`
+- Added in v5.8.0
+
+**Request Fields:**
+
+| Name | Type  | Description | Value Restrictions | ?Default Behavior |
+| ---- | :---: | ----------- | :----------------: | ----------------- |
+| ?canvasUuid | String | UUID of the canvas the scene is in, if using the sceneName field | None | Unknown |
+| ?sceneName | String | Name of the scene the item is in | None | Unknown |
+| ?sceneUuid | String | UUID of the scene the item is in | None | Unknown |
+| sceneItemId | Number | Numeric ID of the scene item | >= 0 | N/A |
+| sceneItemBlendMethod | String | New blend method | None | N/A |
 
 ## Outputs Requests
 
