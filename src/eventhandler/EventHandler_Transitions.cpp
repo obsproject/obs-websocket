@@ -63,11 +63,51 @@ void EventHandler::HandleCurrentSceneTransitionDurationChanged()
 	BroadcastEvent(EventSubscription::Transitions, "CurrentSceneTransitionDurationChanged", eventData);
 }
 
+// The "Fade to Black" transition works funny in studio mode.
+// In studio mode this first fades to black, essentially not showing a scene at all.
+// Then upon a second fade to black, it actually moves to the correct scene, but the from scene is null.
+void SetFromAndToScene(json &eventData, obs_source_t *transition)
+{
+	if (OBSSourceAutoRelease sourceScene = obs_transition_get_source(transition, OBS_TRANSITION_SOURCE_A)) {
+		eventData["fromSceneName"] = obs_source_get_name(sourceScene);
+		eventData["fromSceneUuid"] = obs_source_get_uuid(sourceScene);
+	} else {
+		eventData["fromSceneName"] = nullptr;
+		eventData["fromSceneUuid"] = nullptr;
+	}
+
+	if (OBSSourceAutoRelease destinationScene = obs_transition_get_source(transition, OBS_TRANSITION_SOURCE_B)) {
+		eventData["toSceneName"] = obs_source_get_name(destinationScene);
+		eventData["toSceneUuid"] = obs_source_get_uuid(destinationScene);
+	} else {
+		eventData["toSceneName"] = nullptr;
+		eventData["toSceneUuid"] = nullptr;
+	}
+}
+
+// FIXME: OBS bug causes source B to be null for transition end but not video transition end.
+// Needs to be fixed in obs itself
+void SetToScene(json &eventData, obs_source_t *transition)
+{
+	if (OBSSourceAutoRelease sourceScene = obs_transition_get_source(transition, OBS_TRANSITION_SOURCE_A)) {
+		eventData["toSceneName"] = obs_source_get_name(sourceScene);
+		eventData["toSceneUuid"] = obs_source_get_uuid(sourceScene);
+	} else {
+		eventData["toSceneName"] = nullptr;
+		eventData["toSceneUuid"] = nullptr;
+	}
+}
+
 /**
  * A scene transition has started.
  *
- * @dataField transitionName | String | Scene transition name
- * @dataField transitionUuid | String | Scene transition UUID
+ * @dataField transitionName     | String | Scene transition name
+ * @dataField transitionUuid     | String | Scene transition UUID
+ * @dataField transitionDuration | Number | Transition duration in milliseconds
+ * @dataField toSceneName        | String | Scene that we transitioned to, possibly missing when using "Fade to Black" in studio mode.
+ * @dataField toSceneUuid        | String | UUID of the scene, or null
+ * @dataField fromSceneName      | String | Scene that we transitioned away from, possibly missing when using "Fade to Black" in studio mode.
+ * @dataField fromSceneUuid      | String | UUID of the scene, or null
  *
  * @eventType SceneTransitionStarted
  * @eventSubscription Transitions
@@ -88,6 +128,10 @@ void EventHandler::HandleSceneTransitionStarted(void *param, calldata_t *data)
 	json eventData;
 	eventData["transitionName"] = obs_source_get_name(source);
 	eventData["transitionUuid"] = obs_source_get_uuid(source);
+	eventData["transitionDuration"] = obs_frontend_get_transition_duration();
+
+	SetFromAndToScene(eventData, source);
+
 	eventHandler->BroadcastEvent(EventSubscription::Transitions, "SceneTransitionStarted", eventData);
 }
 
@@ -96,8 +140,11 @@ void EventHandler::HandleSceneTransitionStarted(void *param, calldata_t *data)
  *
  * Note: Does not appear to trigger when the transition is interrupted by the user.
  *
- * @dataField transitionName | String | Scene transition name
- * @dataField transitionUuid | String | Scene transition UUID
+ * @dataField transitionName     | String | Scene transition name
+ * @dataField transitionUuid     | String | Scene transition UUID
+ * @dataField transitionDuration | Number | Transition duration in milliseconds
+ * @dataField toSceneName        | String | Scene that we transitioned to, possibly missing when using "Fade to Black" in studio mode.
+ * @dataField toSceneUuid        | String | UUID of the scene, or null
  *
  * @eventType SceneTransitionEnded
  * @eventSubscription Transitions
@@ -118,6 +165,10 @@ void EventHandler::HandleSceneTransitionEnded(void *param, calldata_t *data)
 	json eventData;
 	eventData["transitionName"] = obs_source_get_name(source);
 	eventData["transitionUuid"] = obs_source_get_uuid(source);
+	eventData["transitionDuration"] = obs_frontend_get_transition_duration();
+
+	SetToScene(eventData, source);
+
 	eventHandler->BroadcastEvent(EventSubscription::Transitions, "SceneTransitionEnded", eventData);
 }
 
@@ -129,8 +180,13 @@ void EventHandler::HandleSceneTransitionEnded(void *param, calldata_t *data)
  *
  * Note: Appears to be called by every transition, regardless of relevance.
  *
- * @dataField transitionName | String | Scene transition name
- * @dataField transitionUuid | String | Scene transition UUID
+ * @dataField transitionName     | String | Scene transition name
+ * @dataField transitionUuid     | String | Scene transition UUID
+ * @dataField transitionDuration | Number | Transition duration in milliseconds
+ * @dataField toSceneName        | String | Scene that we transitioned to, possibly missing when using "Fade to Black" in studio mode.
+ * @dataField toSceneUuid        | String | UUID of the scene, or null
+ * @dataField fromSceneName      | String | Scene that we transitioned away from, possibly missing when using "Fade to Black" in studio mode.
+ * @dataField fromSceneUuid      | String | UUID of the scene, or null
  *
  * @eventType SceneTransitionVideoEnded
  * @eventSubscription Transitions
@@ -151,5 +207,9 @@ void EventHandler::HandleSceneTransitionVideoEnded(void *param, calldata_t *data
 	json eventData;
 	eventData["transitionName"] = obs_source_get_name(source);
 	eventData["transitionUuid"] = obs_source_get_uuid(source);
+	eventData["transitionDuration"] = obs_frontend_get_transition_duration();
+
+	SetFromAndToScene(eventData, source);
+
 	eventHandler->BroadcastEvent(EventSubscription::Transitions, "SceneTransitionVideoEnded", eventData);
 }
