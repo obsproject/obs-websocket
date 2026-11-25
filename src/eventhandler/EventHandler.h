@@ -58,7 +58,6 @@ private:
 	std::atomic<uint64_t> _inputVolumeMetersRef = 0;
 	std::atomic<uint64_t> _inputActiveStateChangedRef = 0;
 	std::atomic<uint64_t> _inputShowStateChangedRef = 0;
-	std::atomic<uint64_t> _sceneItemTransformChangedRef = 0;
 
 	void ConnectSourceSignals(obs_source_t *source);
 	void DisconnectSourceSignals(obs_source_t *source);
