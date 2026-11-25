@@ -89,6 +89,8 @@ const std::unordered_map<std::string, RequestMethodHandler> RequestHandler::_han
 	{"GetInputMute", &RequestHandler::GetInputMute},
 	{"SetInputMute", &RequestHandler::SetInputMute},
 	{"ToggleInputMute", &RequestHandler::ToggleInputMute},
+	{"GetInputAudioMono", &RequestHandler::GetInputAudioMono},
+	{"SetInputAudioMono", &RequestHandler::SetInputAudioMono},
 	{"GetInputVolume", &RequestHandler::GetInputVolume},
 	{"SetInputVolume", &RequestHandler::SetInputVolume},
 	{"GetInputAudioBalance", &RequestHandler::GetInputAudioBalance},

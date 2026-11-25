@@ -108,6 +108,8 @@ private:
 	RequestResult GetInputMute(const Request &);
 	RequestResult SetInputMute(const Request &);
 	RequestResult ToggleInputMute(const Request &);
+	RequestResult GetInputAudioMono(const Request &);
+	RequestResult SetInputAudioMono(const Request &);
 	RequestResult GetInputVolume(const Request &);
 	RequestResult SetInputVolume(const Request &);
 	RequestResult GetInputAudioBalance(const Request &);
