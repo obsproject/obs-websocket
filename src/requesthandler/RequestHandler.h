@@ -189,6 +189,7 @@ private:
 	RequestResult StopOutput(const Request &);
 	RequestResult GetOutputSettings(const Request &);
 	RequestResult SetOutputSettings(const Request &);
+	RequestResult SaveOutputScreenshot(const Request &);
 
 	// Stream
 	RequestResult GetStreamStatus(const Request &);
