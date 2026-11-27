@@ -127,6 +127,8 @@ RequestResult RequestHandler::StopRecord(const Request &)
 /**
  * Toggles pause on the record output.
  *
+ * @responseField outputPaused | Boolean | The new paused state of the output
+ *
  * @requestType ToggleRecordPause
  * @complexity 1
  * @rpcVersion -1
